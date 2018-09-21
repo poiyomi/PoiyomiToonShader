@@ -86,7 +86,7 @@ Shader ".poiyomi/Master/Transparent"
         _Tex3Velocity ("Texture 3 Velocity", Vector) = (0, 0, 0, 0)
         
         [Toggle(_LIT)] _Lit ("Flat Lit?", Float) = 1
-        [Enum(UnityEngine.Rendering.CullMode)] _Cull ("Cull", Float) = 0
+        [Enum(UnityEngine.Rendering.CullMode)] _Cull ("Cull", Float) = 2
         [Enum(UnityEngine.Rendering.CompareFunction)] _ZTest ("ZTest", Float) = 4
         _Clip ("Clipping", Range(0, 1.001)) = 0.0
     }
