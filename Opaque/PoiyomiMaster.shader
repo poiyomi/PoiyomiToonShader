@@ -124,7 +124,7 @@ Shader ".poiyomi/Master/Opaque"
       }
       float4 frag(v2f i): COLOR
       {
-        return float4(75.0 / 255.0, 0, 130.0 / 255.0, 1);
+        return float4(243.0 / 255.0, 156.0/255.0, 18.0 / 255.0, 1);
       }
       ENDCG
       
