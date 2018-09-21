@@ -1,0 +1,19 @@
+fileFormatVersion: 2
+guid: 549a6e8687df34b4eb0a63f6356efcd0
+timeCreated: 1535478857
+licenseType: Free
+ShaderImporter:
+  defaultTextures:
+  - _MainTex: {instanceID: 0}
+  - _NormalMap: {instanceID: 0}
+  - _EmissionMap: {instanceID: 0}
+  - _BlendTexture: {instanceID: 0}
+  - _BlendNoiseTexture: {fileID: 2800000, guid: 06c991d827bc72c43932bb8124ac3ebf,
+      type: 3}
+  - _LightingGradient: {fileID: 2800000, guid: c8ee94f0168b75440ae490f72fd4dcf4, type: 3}
+  - _SpecularMap: {instanceID: 0}
+  - _SpecularRamp: {instanceID: 0}
+  - _RimTex: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
