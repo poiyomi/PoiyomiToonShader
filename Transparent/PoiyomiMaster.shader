@@ -85,6 +85,11 @@ Shader ".poiyomi/Master/Transparent"
         _OverlayTexture3 ("Overlay Texture 3", 2D) = "white" { }
         _Tex3Velocity ("Texture 3 Velocity", Vector) = (0, 0, 0, 0)
         
+        [Toggle(_PANOSPHERE)]_PANOSPHERE ("Enable Panoshpere", Float) = 0
+        _PanosphereTexture ("Panoshpere Texture", 2D) = "white" { }
+        _PanosphereColor ("Panosphere Color", Color) = (1, 1, 1, 1)
+        _PanosphereScroll ("Panosphere Scrolling", Vector) = (0,0,0,0)
+        
         [Toggle(_LIT)] _Lit ("Flat Lit?", Float) = 1
         [Enum(UnityEngine.Rendering.CullMode)] _Cull ("Cull", Float) = 2
         [Enum(UnityEngine.Rendering.CompareFunction)] _ZTest ("ZTest", Float) = 4
@@ -124,7 +129,7 @@ Shader ".poiyomi/Master/Transparent"
             }
             float4 frag(v2f i): COLOR
             {
-                return float4(243.0 / 255.0, 156.0 / 255.0, 18.0 / 255.0, 1);
+                return float4(255.0 / 255.0, 20.0 / 255.0, 147.0 / 255.0, 1);
             }
             ENDCG
             
@@ -205,6 +210,7 @@ Shader ".poiyomi/Master/Transparent"
             #pragma shader_feature _AUTO_BLEND
             #pragma multi_compile _RIMGLOW_OFF _RIMGLOW_HARD _RIMGLOW_SOFT
             #pragma shader_feature _INVERT_RIM
+            #pragma shader_feature _PANOSPHERE
             #pragma multi_compile _OVERLAY_OFF _OVERLAY_ONE _OVERLAY_TWO _OVERLAY_THREE
             
             #include "UnityCG.cginc"
@@ -280,6 +286,10 @@ Shader ".poiyomi/Master/Transparent"
             float4 _RimTexPanSpeed;
             sampler2D _RimTex;
             
+            sampler2D _PanosphereTexture;  float4 _PanosphereTexture_ST;
+            float4 _PanosphereColor;
+            float4 _PanosphereScroll;
+            
             float4 _OverlayColor1;
             sampler2D _OverlayTexture1; float4 _OverlayTexture1_ST;
             float4 _Tex1Velocity;
@@ -291,6 +301,17 @@ Shader ".poiyomi/Master/Transparent"
             float4 _Tex3Velocity;
             
             float _Clip;
+            
+            float2 StereoPanoProjection(float3 coords)
+            {
+                float3 normalizedCoords = normalize(coords);
+                float latitude = acos(normalizedCoords.y);
+                float longitude = atan2(normalizedCoords.z, normalizedCoords.x);
+                float2 sphereCoords = float2(longitude + _Time.y * _PanosphereScroll.x, latitude + _Time.y * _PanosphereScroll.y) * float2(0.5 / UNITY_PI, 1.0 / UNITY_PI);
+                sphereCoords = float2(0.5, 1.0) - sphereCoords;
+                return(sphereCoords + float4(0, 1 - unity_StereoEyeIndex, 1, 0.5).xy) * float4(0, 1 - unity_StereoEyeIndex, 1, 0.5).zw;
+            }
+            
             
             //Functions
             float3 LightingFunction(float3 normal)
@@ -353,6 +374,8 @@ Shader ".poiyomi/Master/Transparent"
                 fixed4 col = tex2D(_MainTex, TRANSFORM_TEX(i.uv, _MainTex));
                 col *= _Color;
                 
+                
+                
                 #ifdef _RGB_MASK
                     
                     fixed4 rgbMask_var = tex2D(_RGBMask, TRANSFORM_TEX(i.uv, _RGBMask));
@@ -362,6 +385,12 @@ Shader ".poiyomi/Master/Transparent"
                     
                     col = lerp(lerp(lerp(col, blueTexture_var, rgbMask_var.b), greenTexture_var, rgbMask_var.g), redTexture_var, rgbMask_var.r);
                     
+                #endif
+                
+                #ifdef _PANOSPHERE
+                    float2 _StereoEnabled_var = StereoPanoProjection(normalize(_WorldSpaceCameraPos.xyz - i.posWorld.xyz) * - 1);
+                    float3 _pano_var = tex2D(_PanosphereTexture, TRANSFORM_TEX(_StereoEnabled_var, _PanosphereTexture)) * _PanosphereColor.rgb;
+                    col.rgb = lerp(col.rgb, _pano_var,  _PanosphereColor.a);
                 #endif
                 
                 float facing_ing = dot(i.normalDir, i.cameraToVert);
@@ -505,14 +534,20 @@ Shader ".poiyomi/Master/Transparent"
             #pragma vertex vert
             #pragma fragment frag
             #define _GLOSSYENV 1
-            #pragma shader_feature _RGB_MASK
+            #pragma shader_feature _LIT
             #pragma shader_feature _EMISSION
+            #pragma shader_feature _RGB_MASK
+            #pragma shader_feature _SCROLLING_EMISSION
+            #pragma shader_feature _BLINKING_EMISSION
             #pragma shader_feature _FAKE_LIGHTING
             #pragma shader_feature _SPECULAR_HIGHLIGHTS
+            #pragma shader_feature _HARD_SPECULAR
             #pragma multi_compile _BLEND_OFF _BLEND_HARD _BLEND_SOFT
             #pragma shader_feature _AUTO_BLEND
             #pragma multi_compile _RIMGLOW_OFF _RIMGLOW_HARD _RIMGLOW_SOFT
             #pragma shader_feature _INVERT_RIM
+            #pragma shader_feature _PANOSPHERE
+            #pragma multi_compile _OVERLAY_OFF _OVERLAY_ONE _OVERLAY_TWO _OVERLAY_THREE
             #pragma multi_compile_fwdadd_fullshadows
             #include "UnityCG.cginc"
             #include "Lighting.cginc"
@@ -576,6 +611,10 @@ Shader ".poiyomi/Master/Transparent"
             float4 _RimTexPanSpeed;
             sampler2D _RimTex;
             
+            sampler2D _PanosphereTexture;  float4 _PanosphereTexture_ST;
+            float4 _PanosphereColor;
+            float4 _PanosphereScroll;
+            
             sampler2D _OverlayTexture1; float4 _OverlayTexture1_ST;
             float4 _Tex1Velocity;
             sampler2D _OverlayTexture2; float4 _OverlayTexture2_ST;
@@ -584,6 +623,17 @@ Shader ".poiyomi/Master/Transparent"
             float4 _Tex3Velocity;
             
             float _Clip;
+            
+            float2 StereoPanoProjection(float3 coords)
+            {
+                float3 normalizedCoords = normalize(coords);
+                float latitude = acos(normalizedCoords.y);
+                float longitude = atan2(normalizedCoords.z, normalizedCoords.x);
+                float2 sphereCoords = float2(longitude + _Time.y * _PanosphereScroll.x, latitude + _Time.y * _PanosphereScroll.y) * float2(0.5 / UNITY_PI, 1.0 / UNITY_PI);
+                sphereCoords = float2(0.5, 1.0) - sphereCoords;
+                return(sphereCoords + float4(0, 1 - unity_StereoEyeIndex, 1, 0.5).xy) * float4(0, 1 - unity_StereoEyeIndex, 1, 0.5).zw;
+            }
+            
             
             float3 getCameraPosition()
             {
@@ -630,7 +680,7 @@ Shader ".poiyomi/Master/Transparent"
             fixed4 frag(v2f i, float facing: VFACE): SV_Target
             {
                 fixed4 col = tex2D(_MainTex, i.uv);
-                col.rgb *= _Color.rgb;
+                col *= _Color;
                 
                 #ifdef _RGB_MASK
                     fixed4 rgbMask_var = tex2D(_RGBMask, TRANSFORM_TEX(i.uv, _RGBMask));
@@ -639,6 +689,12 @@ Shader ".poiyomi/Master/Transparent"
                     fixed4 blueTexture_var = tex2D(_BlueTexture, TRANSFORM_TEX(i.uv, _BlueTexture));
                     
                     col = lerp(lerp(lerp(col, blueTexture_var, rgbMask_var.b), greenTexture_var, rgbMask_var.g), redTexture_var, rgbMask_var.r);
+                #endif
+                
+                #ifdef _PANOSPHERE
+                    float2 _StereoEnabled_var = StereoPanoProjection(normalize(_WorldSpaceCameraPos.xyz - i.posWorld.xyz) * - 1);
+                    float3 _pano_var = tex2D(_PanosphereTexture, TRANSFORM_TEX(_StereoEnabled_var, _PanosphereTexture)) * _PanosphereColor.rgb;
+                    col.rgb = lerp(col.rgb, _pano_var,  _PanosphereColor.a);
                 #endif
                 
                 float facing_ing = dot(i.normalDir, i.cameraToVert);
@@ -723,7 +779,8 @@ Shader ".poiyomi/Master/Transparent"
                 // might want to take light color into account?
                 c.rgb *= _LightColor0.rgb;
                 
-                return col * c;
+                
+                return col * c *_Color.a;
             }
             ENDCG
             

@@ -19,6 +19,7 @@ public class PoiMaster : ShaderGUI
     public static GUIContent RimLightSection = new GUIContent("Rim Lighting", ""); // TODO:
     public static GUIContent BlendSection = new GUIContent("2 Texture Blending", ""); // TODO:
     public static GUIContent AutoBlendSection = new GUIContent("Automatic Blending (requires blending)", ""); // TODO:
+    public static GUIContent PanoshphereSection = new GUIContent("Panoshpere", ""); // TODO:
     public static GUIContent TextureOverlaySection = new GUIContent("Texture Overlays", "Overlay up to 3 textures"); // TODO:
 
     // no section
@@ -107,6 +108,11 @@ public class PoiMaster : ShaderGUI
     public static GUIContent OverlayTexture3 = new GUIContent("Overlay Texture 3", "");
     public static GUIContent OverlayTexture3Velocity = new GUIContent("Overlay Texture 3 Velocity", "");
 
+    public static GUIContent PanoshpereEnabled = new GUIContent("panosphere Enabled", "");
+    public static GUIContent PanosphereTexture = new GUIContent("panosphere Texture", "");
+    public static GUIContent PanosphereColor = new GUIContent("panosphere Color and Alpha", "");
+    public static GUIContent PanosphereScroll = new GUIContent("panosphere Scrolling", "");
+
     public static GUIContent RGBMaskEnabled = new GUIContent("RGB Mask Enabled", "");
     public static GUIContent EmissionEnabled = new GUIContent("Emission Enabled", "");
     public static GUIContent EmissiveBlinkEnabled = new GUIContent("Emissive Blinking Enabled", "");
@@ -182,6 +188,11 @@ public class PoiMaster : ShaderGUI
   MaterialProperty m_autoBlendSpeed = null;
   MaterialProperty m_autoBlendDelay = null;
 
+  MaterialProperty m_panosphereEnabled = null;
+  MaterialProperty m_panosphereTexture = null;
+  MaterialProperty m_panosphereColor = null;
+  MaterialProperty m_panosphereScroll = null;
+
   MaterialProperty m_numOverlayTextures = null;
   MaterialProperty m_OverlayColor1 = null;
   MaterialProperty m_overlayTexture1 = null;
@@ -206,6 +217,7 @@ public class PoiMaster : ShaderGUI
   bool m_blendOptions;
   bool m_autoBlendOptions;
   bool m_textureOverlayOptions;
+  bool m_panoshphereOptions;
 
   MaterialProperty m_rgbMaskEnabled = null;
   MaterialProperty m_emissionEnabled = null;
@@ -292,6 +304,11 @@ public class PoiMaster : ShaderGUI
     m_OverlayColor3 = FindProperty("_OverlayColor3", props);
     m_overlayTexture3 = FindProperty("_OverlayTexture3", props);
     m_overlayTexture3Velocity = FindProperty("_Tex3Velocity", props);
+
+    m_panosphereEnabled = FindProperty("_PANOSPHERE", props);
+    m_panosphereTexture = FindProperty("_PanosphereTexture", props);
+    m_panosphereColor = FindProperty("_PanosphereColor", props);
+    m_panosphereScroll = FindProperty("_PanosphereScroll", props);
 
     m_rgbMaskEnabled = FindProperty("_RGB_MASK", props);
     m_emissionEnabled = FindProperty("_EMISSION", props);
@@ -440,7 +457,7 @@ public class PoiMaster : ShaderGUI
     if (m_emissiveBlinkOptions)
     {
       EditorGUILayout.Space();
-      materialEditor.ShaderProperty(m_rgbMaskEnabled, Styles.RGBMaskEnabled);
+      materialEditor.ShaderProperty(m_emissiveBlinkEnabled, Styles.EmissiveBlinkEnabled);
       materialEditor.ShaderProperty(m_emissiveBlinkMin, Styles.EmissiveBlinkMin);
       materialEditor.ShaderProperty(m_emissiveBlinkMax, Styles.EmissiveBlinkMax);
       materialEditor.ShaderProperty(m_emissiveBlinkVelocity, Styles.EmissiveBlinkVelocity);
@@ -580,6 +597,23 @@ public class PoiMaster : ShaderGUI
       materialEditor.ShaderProperty(m_OverlayColor3, Styles.OverlayColor3);
       materialEditor.ShaderProperty(m_overlayTexture3, Styles.OverlayTexture3);
       materialEditor.ShaderProperty(m_overlayTexture3Velocity, Styles.OverlayTexture3Velocity);
+
+      EditorGUILayout.Space();
+    }
+
+    m_panoshphereOptions = GUI.Toggle(EditorGUILayout.BeginHorizontal("box"), m_panoshphereOptions, GUIContent.none, "box");
+    EditorGUILayout.Toggle(m_panoshphereOptions, EditorStyles.foldout, GUILayout.MaxWidth(15.0f));
+    EditorGUILayout.LabelField(Styles.PanoshphereSection, m_sectionStyle);
+    EditorGUILayout.EndHorizontal();
+
+    if (m_panoshphereOptions)
+    {
+      EditorGUILayout.Space();
+
+      materialEditor.ShaderProperty(m_panosphereEnabled, Styles.PanoshpereEnabled);
+      materialEditor.ShaderProperty(m_panosphereTexture, Styles.PanosphereTexture);
+      materialEditor.ShaderProperty(m_panosphereColor, Styles.PanosphereColor);
+      materialEditor.ShaderProperty(m_panosphereScroll, Styles.PanosphereScroll);
 
       EditorGUILayout.Space();
     }
