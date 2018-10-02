@@ -19,7 +19,7 @@ public class PoiMaster : ShaderGUI
     public static GUIContent RimLightSection = new GUIContent("Rim Lighting", ""); // TODO:
     public static GUIContent BlendSection = new GUIContent("2 Texture Blending", ""); // TODO:
     public static GUIContent AutoBlendSection = new GUIContent("Automatic Blending (requires blending)", ""); // TODO:
-    public static GUIContent PanoshphereSection = new GUIContent("Panoshpere", ""); // TODO:
+    public static GUIContent PanoshphereSection = new GUIContent("Panosphere", ""); // TODO:
     public static GUIContent TextureOverlaySection = new GUIContent("Texture Overlays", "Overlay up to 3 textures"); // TODO:
 
     // no section
