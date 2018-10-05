@@ -19,7 +19,7 @@ public class PoiMaster : ShaderGUI
     public static GUIContent RimLightSection = new GUIContent("Rim Lighting", ""); // TODO:
     public static GUIContent BlendSection = new GUIContent("2 Texture Blending", ""); // TODO:
     public static GUIContent AutoBlendSection = new GUIContent("Automatic Blending (requires blending)", ""); // TODO:
-    public static GUIContent PanoshphereSection = new GUIContent("Panosphere", ""); // TODO:
+    public static GUIContent PanosphereSection = new GUIContent("Panosphere", ""); // TODO:
     public static GUIContent TextureOverlaySection = new GUIContent("Texture Overlays", "Overlay up to 3 textures"); // TODO:
 
     // no section
@@ -603,7 +603,7 @@ public class PoiMaster : ShaderGUI
 
     m_panoshphereOptions = GUI.Toggle(EditorGUILayout.BeginHorizontal("box"), m_panoshphereOptions, GUIContent.none, "box");
     EditorGUILayout.Toggle(m_panoshphereOptions, EditorStyles.foldout, GUILayout.MaxWidth(15.0f));
-    EditorGUILayout.LabelField(Styles.PanoshphereSection, m_sectionStyle);
+    EditorGUILayout.LabelField(Styles.PanosphereSection, m_sectionStyle);
     EditorGUILayout.EndHorizontal();
 
     if (m_panoshphereOptions)
