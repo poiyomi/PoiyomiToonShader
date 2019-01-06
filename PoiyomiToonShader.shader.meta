@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 06b07f89e6009b24291a6e769320e24a
+ShaderImporter:
+  externalObjects: {}
+  defaultTextures:
+  - _MainTex: {instanceID: 0}
+  - _NormalMap: {instanceID: 0}
+  - _EmissionMap: {instanceID: 0}
+  - _LightingGradient: {fileID: 2800000, guid: c8ee94f0168b75440ae490f72fd4dcf4, type: 3}
+  - _SpecularMap: {instanceID: 0}
+  - _OutlineTexture: {instanceID: 0}
+  - _RimTex: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
