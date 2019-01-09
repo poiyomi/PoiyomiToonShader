@@ -61,7 +61,7 @@ Shader ".poiyomi/Toon/Opaque"
         [Enum(UnityEngine.Rendering.CullMode)] _Cull ("Cull", Float) = 0
         _Clip ("Clipping", Range(0, 1.001)) = 0.5
     }
-    
+    CustomEditor "PoiToon"
     SubShader
     {
         Tags { "RenderType" = "TransparentCutout" }

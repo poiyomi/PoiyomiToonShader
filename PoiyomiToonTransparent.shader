@@ -61,9 +61,9 @@ Shader ".poiyomi/Toon/Transparent"
         [Header(Misc)]
         [Toggle(_LIT)] _Lit ("Flat Lit?", Float) = 1
         [Enum(UnityEngine.Rendering.CullMode)] _Cull ("Cull", Float) = 2
-        _Clip ("Clipping", Range(0, 1.001)) = 0
+        _Clip ("Clipping", Range(0, 1.001)) = 0.5
     }
-    
+    CustomEditor "PoiToon"
     SubShader
     {
         Tags { "Queue" = "Transparent" "RenderType" = "Transparent" }
@@ -305,7 +305,7 @@ Shader ".poiyomi/Toon/Transparent"
                 float emissiveBlink = sin(_Time.y * _EmissiveBlink_Velocity) * amplitude + base;
                 emissionVar *= emissiveBlink;
                 
-                col.rgb += emissionVar.rgb;
+                col.rgb += emissionVar;
                 return col;
             }
             ENDCG
