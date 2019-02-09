@@ -1,6 +1,6 @@
 // Upgrade NOTE: replaced 'UNITY_PASS_TEXCUBE(unity_SpecCube1)' with 'UNITY_PASS_TEXCUBE_SAMPLER(unity_SpecCube1,unity_SpecCube0)'
 
-Shader ".poiyomi/Toon-2.3.0/Transparent"
+Shader ".poiyomi/Toon-2.3.0/stencil/Transparent+1"
 {
     Properties
     {
@@ -86,8 +86,7 @@ Shader ".poiyomi/Toon-2.3.0/Transparent"
     SubShader
     {
         Tags { "Queue" = "Transparent" "RenderType" = "Transparent" }
-        //Blend SrcAlpha OneMinusSrcAlpha
-        Blend [_SrcBlend] [_DstBlend]
+        Blend SrcAlpha OneMinusSrcAlpha
         
         Pass
         {

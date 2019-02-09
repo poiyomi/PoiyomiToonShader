@@ -1,10 +1,13 @@
 fileFormatVersion: 2
-guid: 06b07f89e6009b24291a6e769320e24a
+guid: 42a928feb44215249a84838bce186598
 ShaderImporter:
   externalObjects: {}
   defaultTextures:
   - _MainTex: {instanceID: 0}
   - _NormalMap: {instanceID: 0}
+  - _CubeMap: {fileID: 8900000, guid: ef7513b54a0670140b9b967af7620563, type: 3}
+  - _MetallicMap: {instanceID: 0}
+  - _RoughnessMap: {instanceID: 0}
   - _EmissionMap: {instanceID: 0}
   - _LightingGradient: {fileID: 2800000, guid: c8ee94f0168b75440ae490f72fd4dcf4, type: 3}
   - _SpecularMap: {instanceID: 0}

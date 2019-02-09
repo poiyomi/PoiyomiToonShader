@@ -1,6 +1,6 @@
 // Upgrade NOTE: replaced 'UNITY_PASS_TEXCUBE(unity_SpecCube1)' with 'UNITY_PASS_TEXCUBE_SAMPLER(unity_SpecCube1,unity_SpecCube0)'
 
-Shader ".poiyomi/Toon-2.3.0/Transparent"
+Shader ".poiyomi/Toon-2.3.0/stencil/opaque+1"
 {
     Properties
     {
@@ -52,7 +52,6 @@ Shader ".poiyomi/Toon-2.3.0/Transparent"
         [Toggle(_HARD_SPECULAR)]_HARD_SPECULAR ("Enable Hard Specular", Float) = 0
         _SpecularSize ("Hard Specular Size", Range(0, 1)) = .005
         
-        
         [Header(Outlines)]
         _LineWidth ("Outline Width", Float) = 0
         _LineColor ("Outline Color", Color) = (1, 1, 1, 1)
@@ -60,7 +59,6 @@ Shader ".poiyomi/Toon-2.3.0/Transparent"
         _OutlineTexture ("Outline Texture", 2D) = "white" { }
         _Speed ("Speed", Float) = 0.05
         
-
         [Header(Rim Lighting)]
         _RimLightColor ("Rim Color", Color) = (1, 1, 1, 1)
         _RimWidth ("Rim Width", Range(0, 1)) = 0.8
@@ -85,9 +83,7 @@ Shader ".poiyomi/Toon-2.3.0/Transparent"
     CustomEditor "PoiToonOutline"
     SubShader
     {
-        Tags { "Queue" = "Transparent" "RenderType" = "Transparent" }
-        //Blend SrcAlpha OneMinusSrcAlpha
-        Blend [_SrcBlend] [_DstBlend]
+        Tags { "RenderType" = "TransparentCutout" "Queue" = "AlphaTest" }
         
         Pass
         {
@@ -144,7 +140,7 @@ Shader ".poiyomi/Toon-2.3.0/Transparent"
             float4 frag(VertexOutput i, float facing: VFACE): COLOR
             {
                 clip(_LineWidth - 0.001);
-                fixed4 col = tex2D(_OutlineTexture, TRANSFORM_TEX((i.uv + (_Speed * _Time.g)), _OutlineTexture)) * _LineColor;
+                fixed4 col = fixed4(tex2D(_OutlineTexture, TRANSFORM_TEX((i.uv + (_Speed * _Time.g)), _OutlineTexture)).rgb, 0) * _LineColor;
                 #if _LIT
                     float attenuation = LIGHT_ATTENUATION(i) / SHADOW_ATTENUATION(i);
                     float3 _flat_lighting_var = saturate(ShadeSH9(half4(float3(0, 1, 0), 1.0)) + (_LightColor0.rgb * attenuation));
