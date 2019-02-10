@@ -129,7 +129,9 @@
         float4 _main_tex_var = tex2D(_MainTex, TRANSFORM_TEX(i.uv, _MainTex));
         float4 _diffuse_var = float4(lerp(_main_tex_var.rgb, dot(_main_tex_var.rgb, float3(0.3, 0.59, 0.11)), _Desaturation) * _Color.rgb, _main_tex_var.a * _Color.a);
         // cutout
-        clip(_diffuse_var.a - _Clip);
+        #ifndef TRANSPARENT
+            clip(_diffuse_var.a - _Clip);
+        #endif
         
         // math
         float3 _camera_to_vert_var = normalize(getCameraPosition() - i.posWorld);

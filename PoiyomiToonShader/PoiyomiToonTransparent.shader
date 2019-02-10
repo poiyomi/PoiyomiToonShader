@@ -1,6 +1,6 @@
 // Upgrade NOTE: replaced 'UNITY_PASS_TEXCUBE(unity_SpecCube1)' with 'UNITY_PASS_TEXCUBE_SAMPLER(unity_SpecCube1,unity_SpecCube0)'
 
-Shader ".poiyomi/Toon-2.3.0/Transparent"
+Shader ".poiyomi/Toon-2.0.1/Transparent"
 {
     Properties
     {
@@ -76,18 +76,18 @@ Shader ".poiyomi/Toon-2.3.0/Transparent"
         
         [Header(Misc)]
         [Toggle(_LIT)] _Lit ("Flat Lit?", Float) = 1
-        [Enum(UnityEngine.Rendering.CullMode)] _Cull ("Cull", Float) = 0
+        [Enum(UnityEngine.Rendering.CullMode)] _Cull ("Cull", Float) = 2
         [Enum(UnityEngine.Rendering.CompareFunction)] _ZTest ("ZTest", Float) = 4
-        [Enum(UnityEngine.Rendering.BlendMode)] _SrcBlend ("Source Blend", Float) = 5
-        [Enum(UnityEngine.Rendering.BlendMode)] _DstBlend ("Destination Blend", Float) = 10
-        _Clip ("Clipping", Range(0, 1.001)) = 0.5
+        [Enum(UnityEngine.Rendering.BlendMode)] _SourceBlend ("Source Blend", Float) = 5
+        [Enum(UnityEngine.Rendering.BlendMode)] _DestinationBlend ("Destination Blend", Float) = 10
+        _Clip ("Clipping", Range(0, 1.001)) = 0.0
     }
     CustomEditor "PoiToonOutline"
     SubShader
     {
         Tags { "Queue" = "Transparent" "RenderType" = "Transparent" }
         //Blend SrcAlpha OneMinusSrcAlpha
-        Blend [_SrcBlend] [_DstBlend]
+        Blend [_SourceBlend] [_DestinationBlend]
         
         Pass
         {
@@ -180,9 +180,11 @@ Shader ".poiyomi/Toon-2.3.0/Transparent"
             
             #pragma vertex vert
             #pragma fragment frag
+
             #define FORWARD_BASE_PASS
+            #define TRANSPARENT
+
             #include "PoiPass.cginc"
-            
             ENDCG
             
         }
@@ -209,7 +211,9 @@ Shader ".poiyomi/Toon-2.3.0/Transparent"
             
             #pragma vertex vert
             #pragma fragment frag
-            
+
+            #define TRANSPARENT
+
             #include "PoiPass.cginc"
             
             ENDCG

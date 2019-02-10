@@ -268,8 +268,8 @@ public class PoiToonOutline : ShaderGUI
         m_cullMode = FindProperty("_Cull", props);
         m_lit = FindProperty("_Lit", props);
         m_clip = FindProperty("_Clip", props);
-        m_srcBlend = FindProperty("_SrcBlend", props);
-        m_dstBlend = FindProperty("_DstBlend", props);
+        m_srcBlend = FindProperty("_SourceBlend", props);
+        m_dstBlend = FindProperty("_DestinationBlend", props);
         m_zTest = FindProperty("_ZTest", props);
     }
 
@@ -313,7 +313,7 @@ public class PoiToonOutline : ShaderGUI
         style.richText = true;
         style.alignment = TextAnchor.MiddleCenter;
 
-        EditorGUILayout.LabelField("<size=18><color=#de0653>Poiyomi Toon Shader V2.0.0</color></size>", style, GUILayout.MinHeight(16));
+        EditorGUILayout.LabelField("<size=18><color=#de0653>Poiyomi Toon Shader V2.0.1</color></size>", style, GUILayout.MinHeight(16));
     }
 
     public override void OnGUI(MaterialEditor materialEditor, MaterialProperty[] props)
