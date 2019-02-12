@@ -116,14 +116,20 @@
     float4 frag(v2f i, float facing: VFACE): SV_Target
     {
         float Pi = 3.141592654;
-        float3 _light_direction_var = normalize(_LightDirection);
-        #if defined(POINT) || defined(SPOT)
-            _light_direction_var = normalize(_WorldSpaceLightPos0.xyz - i.posWorld);
-        #else
+        #ifdef FORWARD_BASE_PASS
+            float3 _light_direction_var = normalize(_LightDirection);
             if (!any(_WorldSpaceLightPos0) == 0 && _ForceLightDirection == 0)
             {
+
                 _light_direction_var = _WorldSpaceLightPos0;
             }
+        #else
+            #if defined(POINT) || defined(SPOT)
+                float3 _light_direction_var = normalize(_WorldSpaceLightPos0.xyz - i.posWorld);
+            #elif defined(DIRECTIONAL)
+                return 0;
+                float3 _light_direction_var = _WorldSpaceLightPos0;
+            #endif
         #endif
         // diffuse
         float4 _main_tex_var = tex2D(_MainTex, TRANSFORM_TEX(i.uv, _MainTex));
@@ -185,16 +191,13 @@
         float FakeLight = clamp((nDotL + 1) / 2 + _ShadowOffset, 0, 1);
         float4 LightColor = tex2D(_LightingGradient, float2(FakeLight, FakeLight));
 
-        float3 _flat_lighting_var = float3(1, 1, 1);
-        #if (defined(POINT) || defined(SPOT))
-            UNITY_LIGHT_ATTENUATION(attenuation, 0, i.posWorld.xyz);
-            _flat_lighting_var = _LightColor0.rgb * attenuation * smoothstep(.59, .61, .5 * nDotL + .5);
-        #else
+        #if _LIT
             #if defined(FORWARD_BASE_PASS)
-                #if _LIT
-                    float attenuation = LIGHT_ATTENUATION(i) / SHADOW_ATTENUATION(i);
-                    _flat_lighting_var = saturate(ShadeSH9(half4(float3(0, 1, 0), 1.0)) + (_LightColor0.rgb * attenuation));
-                #endif
+                float attenuation = LIGHT_ATTENUATION(i) / SHADOW_ATTENUATION(i);
+                float3 _flat_lighting_var = saturate(ShadeSH9(half4(float3(0, 1, 0), 1.0)) + (_LightColor0.rgb * attenuation));
+            #else
+                UNITY_LIGHT_ATTENUATION(attenuation, 0, i.posWorld.xyz);
+                float3 _flat_lighting_var = saturate(_LightColor0.rgb)*.5 * attenuation * smoothstep(.59, .61, .5 * nDotL + .5);
             #endif
         #endif
 

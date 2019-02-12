@@ -1,6 +1,6 @@
 // Upgrade NOTE: replaced 'UNITY_PASS_TEXCUBE(unity_SpecCube1)' with 'UNITY_PASS_TEXCUBE_SAMPLER(unity_SpecCube1,unity_SpecCube0)'
 
-Shader ".poiyomi/Toon-2.0.1/opaque"
+Shader ".poiyomi/Toon-2.0.2/opaque"
 {
     Properties
     {
@@ -202,12 +202,10 @@ Shader ".poiyomi/Toon-2.0.1/opaque"
             #pragma shader_feature _HARD_SPECULAR
             #pragma shader_feature _SCROLLING_EMISSION
             #pragma multi_compile DIRECTIONAL POINT SPOT
-            
             #pragma vertex vert
             #pragma fragment frag
             
             #include "PoiPass.cginc"
-            
             ENDCG
             
         }
