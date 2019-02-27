@@ -1,6 +1,6 @@
 // Upgrade NOTE: replaced 'UNITY_PASS_TEXCUBE(unity_SpecCube1)' with 'UNITY_PASS_TEXCUBE_SAMPLER(unity_SpecCube1,unity_SpecCube0)'
 
-Shader ".poiyomi/Toon-2.0.2/opaque"
+Shader ".poiyomi/Toon-2.0.3/opaque"
 {
     Properties
     {
