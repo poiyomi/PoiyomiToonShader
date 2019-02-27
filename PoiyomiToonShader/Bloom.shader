@@ -1,6 +1,6 @@
 // Upgrade NOTE: replaced 'UNITY_PASS_TEXCUBE(unity_SpecCube1)' with 'UNITY_PASS_TEXCUBE_SAMPLER(unity_SpecCube1,unity_SpecCube0)'
 
-Shader ".poiyomi/Toon-2.0.3/stencil/Transparent+1"
+Shader ".poiyomi/Bloomer"
 {
     Properties
     {
@@ -11,6 +11,12 @@ Shader ".poiyomi/Toon-2.0.3/stencil/Transparent+1"
         [Normal]_NormalMap ("Normal Map", 2D) = "bump" { }
         _NormalIntensity ("Normal Intensity", Range(0, 10)) = 1
         
+        [Header(Post Processing)]
+        [MaterialToggle] _Inverted ("Inverted?", Range(0, 1)) = 0
+        [MaterialToggle] _PPNormalize ("Normalize?", Range(0, 1)) = 0
+        _BlurDistance ("Blur Distance", Float) = 0
+
+        [Header(Reflections)]
         _CubeMap ("Cube Reflection", Cube) = "" { }
         [MaterialToggle]_SampleWorld ("Force Baked Cubemap", Range(0, 1)) = 0
         _MetallicMap ("Metallic Map", 2D) = "white" { }
@@ -52,7 +58,6 @@ Shader ".poiyomi/Toon-2.0.3/stencil/Transparent+1"
         [Toggle(_HARD_SPECULAR)]_HARD_SPECULAR ("Enable Hard Specular", Float) = 0
         _SpecularSize ("Hard Specular Size", Range(0, 1)) = .005
         
-        
         [Header(Outlines)]
         _LineWidth ("Outline Width", Float) = 0
         _LineColor ("Outline Color", Color) = (1, 1, 1, 1)
@@ -60,7 +65,6 @@ Shader ".poiyomi/Toon-2.0.3/stencil/Transparent+1"
         _OutlineTexture ("Outline Texture", 2D) = "white" { }
         _Speed ("Speed", Float) = 0.05
         
-
         [Header(Rim Lighting)]
         _RimLightColor ("Rim Color", Color) = (1, 1, 1, 1)
         _RimWidth ("Rim Width", Range(0, 1)) = 0.8
@@ -80,82 +84,13 @@ Shader ".poiyomi/Toon-2.0.3/stencil/Transparent+1"
         [Enum(UnityEngine.Rendering.CompareFunction)] _ZTest ("ZTest", Float) = 4
         [Enum(UnityEngine.Rendering.BlendMode)] _SourceBlend ("Source Blend", Float) = 5
         [Enum(UnityEngine.Rendering.BlendMode)] _DestinationBlend ("Destination Blend", Float) = 10
-        _Clip ("Clipping", Range(0, 1.001)) = 0.0
+        _Clip ("Clipping", Range(0, 1.001)) = 0.5
     }
-    CustomEditor "PoiToonOutline"
+    //CustomEditor "PoiToonOutline"
+    
     SubShader
     {
-        Tags { "Queue" = "Transparent" "RenderType" = "Transparent+1" }
-        Blend SrcAlpha OneMinusSrcAlpha
-        
-        Pass
-        {
-            Name "Outline"
-            Tags { "LightMode" = "ForwardBase" }
-            Stencil
-            {
-                Ref [_StencilRef]
-                Comp [_StencilCompareFunction]
-                Pass [_StencilOp]
-            }
-            ZTest [_ZTest]
-            Cull Front
-            CGPROGRAM
-            
-            #include "UnityCG.cginc"
-            #pragma fragmentoption ARB_precision_hint_fastest
-            #pragma only_renderers d3d9 d3d11 glcore gles
-            #pragma shader_feature _LIT
-            #pragma target 3.0
-            
-            #include "Lighting.cginc"
-            #include "AutoLight.cginc"
-
-            #pragma vertex vert
-            #pragma fragment frag
-            
-            uniform float _LineWidth;
-            uniform float _OutlineEmission;
-            uniform float4 _LineColor;
-            uniform float4 _Color;
-            uniform float _Clip;
-            uniform sampler2D _OutlineTexture; uniform float4 _OutlineTexture_ST;
-            uniform sampler2D _MainTex; uniform float4 _MainTex_ST;
-            uniform float _Speed;
-            struct VertexInput
-            {
-                float4 vertex: POSITION;
-                float3 normal: NORMAL;
-                float2 texcoord0: TEXCOORD0;
-            };
-            struct VertexOutput
-            {
-                float4 pos: SV_POSITION;
-                float2 uv: TEXCOORD0;
-            };
-            VertexOutput vert(VertexInput v)
-            {
-                VertexOutput o = (VertexOutput)0;
-                o.uv = v.texcoord0;
-                o.pos = UnityObjectToClipPos(float4(v.vertex.xyz + v.normal * _LineWidth / 10000, 1));
-                return o;
-            }
-            float4 frag(VertexOutput i, float facing: VFACE): COLOR
-            {
-                clip(_LineWidth - 0.001);
-                fixed4 col = tex2D(_OutlineTexture, TRANSFORM_TEX((i.uv + (_Speed * _Time.g)), _OutlineTexture)) * _LineColor;
-                #if _LIT
-                    float attenuation = LIGHT_ATTENUATION(i) / SHADOW_ATTENUATION(i);
-                    float3 _flat_lighting_var = saturate(ShadeSH9(half4(float3(0, 1, 0), 1.0)) + (_LightColor0.rgb * attenuation));
-                    col.rgb *= _flat_lighting_var;
-                #endif
-                 col.rgb = col.rgb + (col.rgb * _OutlineEmission);
-                 return col;
-                
-            }
-            ENDCG
-            
-        }
+        Tags { "RenderType" = "TransparentCutout" "Queue" = "AlphaTest" }
         
         Pass
         {
@@ -179,10 +114,7 @@ Shader ".poiyomi/Toon-2.0.3/stencil/Transparent+1"
             
             #pragma vertex vert
             #pragma fragment frag
-
-            #define TRANSPARENT
             #define FORWARD_BASE_PASS
-
             #include "PoiPass.cginc"
             
             ENDCG
@@ -208,17 +140,87 @@ Shader ".poiyomi/Toon-2.0.3/stencil/Transparent+1"
             #pragma shader_feature _HARD_SPECULAR
             #pragma shader_feature _SCROLLING_EMISSION
             #pragma multi_compile DIRECTIONAL POINT SPOT
-            
             #pragma vertex vert
             #pragma fragment frag
-
-            #define TRANSPARENT
-
-            #include "PoiPass.cginc"
             
+            #include "PoiPass.cginc"
             ENDCG
             
         }
         UsePass "VertexLit/SHADOWCASTER"
+        GrabPass
+        {
+            "_GrabThePP"
+        }
+        Pass
+        {
+            CGPROGRAM
+            
+            #pragma vertex vert
+            #pragma fragment frag
+            #include "UnityCG.cginc"
+            
+            sampler2D _GrabThePP;
+            float _Inverted;
+            float _BlurDistance;
+            float _PPNormalize;
+
+            struct appdata
+            {
+                float4 vertex: POSITION;
+                float3 normal: NORMAL;
+                float2 uv: TEXCOORD0;
+            };
+            
+            struct v2f
+            {
+                float4 pos: SV_POSITION;
+                float4 screenCoord: TEXCOORD1;
+                float4 grabPos: TEXCOORD2;
+                float3 objectDistance: TEXCOORD3;
+            };
+            
+            //functions
+            half3 Sample(float4 uv)
+            {
+                return tex2Dproj(_GrabThePP, uv).rgb;
+            }
+            
+            half3 SampleBox(float4 uv, float delta)
+            {
+                float2 mainTexelSize = float2(1 / _ScreenParams.x, 1 / _ScreenParams.y);
+                float4 o = mainTexelSize.xyxy * float2(-delta, delta).xxyy;
+                half3 s = Sample(uv + float4(o.x, o.y, 0, 0)) + Sample(uv + float4(0, o.y, o.z, 0)) +
+                Sample(uv + float4(o.x, 0, 0, o.w)) + Sample(uv + float4(0, 0, o.z, o.w));
+                return s * 0.25f;
+            }
+            
+            v2f vert(appdata v)
+            {
+                v2f o;
+                o.pos = UnityObjectToClipPos(float4(v.vertex.xyz + v.normal * .1 / 10000, 1));
+                o.screenCoord.xy = ComputeScreenPos(o.pos);
+                o.grabPos = ComputeGrabScreenPos(o.pos);
+                return o;
+            }
+            
+            fixed4 frag(v2f i): SV_Target
+            {
+                float3 c = tex2Dproj(_GrabThePP, i.grabPos).xyz;
+                c.rgb = SampleBox(i.grabPos, _BlurDistance);
+
+                if (_Inverted == 1)
+                {
+                    c.rgb = 1 - c.rgb;
+                }
+                if (_PPNormalize == 1)
+                {
+                    c.rgb = normalize(c.rgb);
+                }
+                return float4(c, 1);
+            }
+            ENDCG
+            
+        }
     }
 }
