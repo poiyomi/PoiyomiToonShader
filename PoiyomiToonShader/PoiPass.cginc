@@ -175,15 +175,15 @@
         #if (defined(POINT) || defined(SPOT))
             _SpecularColor.rgb = _LightColor0.rgb;
         #endif
-        float specular_map_var = tex2D(_SpecularMap, TRANSFORM_TEX(i.uv, _SpecularMap));
+        float NdotL = saturate(dot(_normal_var, _light_direction_var));
         float3 specularColor = ((_diffuse_var.a * _SpecularStrength) * lerp(_diffuse_var.rgb, _SpecularColor.rgb, _SpecularBias));
         float specPow = exp2(_Gloss * 20.0 + 1.0);
         float normTerm = (specPow + 10) / (10 * Pi);
         float3 halfDirection = normalize(_camera_to_vert_var + _light_direction_var);
         #if _HARD_SPECULAR
-            float3 _specular_var = step(1 - (.5 * dot(halfDirection, _normal_var) + .5), _SpecularSize) * _SpecularColor * _SpecularBias * specular_map_var;
+            float3 _specular_var = step(1 - (.5 * dot(halfDirection, _normal_var) + .5), _SpecularSize) * _SpecularColor * _SpecularBias;
         #else
-            float3 _specular_var = pow(max(0, dot(halfDirection, _normal_var)), specPow) * normTerm * specularColor * _SpecularStrength * specular_map_var;
+            float3 _specular_var = pow(max(0, dot(halfDirection, _normal_var)), specPow) * normTerm * specularColor * _SpecularStrength;
         #endif
 
         // lighting

@@ -1,6 +1,6 @@
 // Upgrade NOTE: replaced 'UNITY_PASS_TEXCUBE(unity_SpecCube1)' with 'UNITY_PASS_TEXCUBE_SAMPLER(unity_SpecCube1,unity_SpecCube0)'
 
-Shader ".poiyomi/Toon-2.0.3/Transparent"
+Shader ".poiyomi/Toon-2.0.2/Transparent"
 {
     Properties
     {
@@ -162,7 +162,6 @@ Shader ".poiyomi/Toon-2.0.3/Transparent"
         {
             Name "MainPass"
             Tags { "LightMode" = "ForwardBase" }
-            
             Stencil
             {
                 Ref [_StencilRef]
