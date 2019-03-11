@@ -1,44 +1,46 @@
-﻿//designed for 2.0.3
+﻿//designed for 2.1.0
 
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-public static class PoiToonUI
+public class PoiToon210 : ShaderGUI
 {
-    public static bool Foldout(string title, bool display)
+
+    private static class PoiToonUI
     {
-        var style = new GUIStyle("ShurikenModuleTitle");
-        style.font = new GUIStyle(EditorStyles.label).font;
-        style.border = new RectOffset(15, 7, 4, 4);
-        style.fixedHeight = 22;
-        style.contentOffset = new Vector2(20f, -2f);
-
-        var rect = GUILayoutUtility.GetRect(16f, 22f, style);
-        GUI.Box(rect, title, style);
-
-        var e = Event.current;
-
-        var toggleRect = new Rect(rect.x + 4f, rect.y + 2f, 13f, 13f);
-        if (e.type == EventType.Repaint)
+        public static bool Foldout(string title, bool display)
         {
-            EditorStyles.foldout.Draw(toggleRect, false, false, display, false);
-        }
+            var style = new GUIStyle("ShurikenModuleTitle");
+            style.font = new GUIStyle(EditorStyles.label).font;
+            style.border = new RectOffset(15, 7, 4, 4);
+            style.fixedHeight = 22;
+            style.contentOffset = new Vector2(20f, -2f);
 
-        if (e.type == EventType.MouseDown && rect.Contains(e.mousePosition))
-        {
-            display = !display;
-            e.Use();
-        }
+            var rect = GUILayoutUtility.GetRect(16f, 22f, style);
+            GUI.Box(rect, title, style);
 
-        return display;
+            var e = Event.current;
+
+            var toggleRect = new Rect(rect.x + 4f, rect.y + 2f, 13f, 13f);
+            if (e.type == EventType.Repaint)
+            {
+                EditorStyles.foldout.Draw(toggleRect, false, false, display, false);
+            }
+
+            if (e.type == EventType.MouseDown && rect.Contains(e.mousePosition))
+            {
+                display = !display;
+                e.Use();
+            }
+
+            return display;
+        }
     }
-}
 
-public class PoiToonOutline : ShaderGUI
-{
     private static class Styles
     {
+
         // sections
         public static GUIContent MainSection = new GUIContent("Main", "Main configuration section");
         public static GUIContent EmissionSection = new GUIContent("Emission", "Configuration for emissiveness");
@@ -51,6 +53,7 @@ public class PoiToonOutline : ShaderGUI
         public static GUIContent Color = new GUIContent("Color", "Color used for tinting the main texture");
         public static GUIContent Desaturation = new GUIContent("Desaturation", "Desaturate the colors before applying Color");
         public static GUIContent MainTex = new GUIContent("Main Tex", "Main texture for the shader");
+        public static GUIContent Clip = new GUIContent("Alpha Cutoff", "Alpha treshold");
         public static GUIContent NormalMap = new GUIContent("Normal Map", "Bump map");
         public static GUIContent NormalIntensity = new GUIContent("Normal Intensity", "Normal Strength");
 
@@ -59,7 +62,7 @@ public class PoiToonOutline : ShaderGUI
         public static GUIContent MetallicMap = new GUIContent("MetallicMap", "");
         public static GUIContent Metallic = new GUIContent("Metallic", "");
         public static GUIContent RoughnessMap = new GUIContent("RoughnessMap", "");
-        public static GUIContent Roughness = new GUIContent("Roughness", "");
+        public static GUIContent Roughness = new GUIContent("Smoothness", "");
 
         // outlines
 
@@ -93,6 +96,7 @@ public class PoiToonOutline : ShaderGUI
         public static GUIContent LightingShadowOffsett = new GUIContent("Shadow Offset", "Shadow Offset");
         public static GUIContent LightingDirection = new GUIContent("Light Direction", "Direction towards which the light will cast shadows");
         public static GUIContent ForceLightDirection = new GUIContent("Force Light Direction", "");
+        public static GUIContent MinBrightness = new GUIContent("Min Brightness", "Limit how dark you can get");
 
         // specular
         public static GUIContent HardSpecular = new GUIContent("Hard Specular?", ""); // TODO: all of these vvv
@@ -120,7 +124,6 @@ public class PoiToonOutline : ShaderGUI
         // misc section
         public static GUIContent CullMode = new GUIContent("Cull Mode", "Controls which face of the mesh is rendered \nOff = Double sided \nFront = Single sided (reverse) \nBack = Single sided");
         public static GUIContent Lit = new GUIContent("Lit", "Toggles environmental lighting");
-        public static GUIContent Clip = new GUIContent("Clip", "Transparency treshold");
         public static GUIContent SrcBlend = new GUIContent("Src Blend", "");
         public static GUIContent DstBlend = new GUIContent("Dst Blend", "");
         public static GUIContent ZTest = new GUIContent("ZTest", "don't be an asshole");
@@ -166,6 +169,7 @@ public class PoiToonOutline : ShaderGUI
     MaterialProperty m_lightingShadowOffset = null;
     MaterialProperty m_lightingDirection = null;
     MaterialProperty m_forceLightDirection = null;
+    MaterialProperty m_minBrightness = null;
 
     MaterialProperty m_specularMap = null;
     MaterialProperty m_specularColor = null;
@@ -182,7 +186,7 @@ public class PoiToonOutline : ShaderGUI
     MaterialProperty m__rimLightColorBias = null;
     MaterialProperty m_rimTex = null;
     MaterialProperty m_rimTexPanSpeed = null;
-    
+
     MaterialProperty m_stencilRef = null;
     MaterialProperty m_stencilOp = null;
     MaterialProperty m_stencilCompareFunction = null;
@@ -193,7 +197,7 @@ public class PoiToonOutline : ShaderGUI
     MaterialProperty m_srcBlend = null;
     MaterialProperty m_dstBlend = null;
     MaterialProperty m_zTest = null;
-    
+
 
     bool m_mainOptions = true;
     bool m_metallicOptions;
@@ -246,6 +250,7 @@ public class PoiToonOutline : ShaderGUI
         m_lightingShadowOffset = FindProperty("_ShadowOffset", props);
         m_lightingDirection = FindProperty("_LightDirection", props);
         m_forceLightDirection = FindProperty("_ForceLightDirection", props);
+        m_minBrightness = FindProperty("_MinBrightness", props);
 
         m_specularMap = FindProperty("_SpecularMap", props);
         m_specularColor = FindProperty("_SpecularColor", props);
@@ -315,7 +320,7 @@ public class PoiToonOutline : ShaderGUI
         style.richText = true;
         style.alignment = TextAnchor.MiddleCenter;
 
-        EditorGUILayout.LabelField("<size=18><color=#de0653>Poiyomi Toon Shader V2.0.3</color></size>", style, GUILayout.MinHeight(16));
+        EditorGUILayout.LabelField("<size=18><color=#de0653>Poiyomi Toon Shader V2.1.0</color></size>", style, GUILayout.MinHeight(16));
     }
 
     public override void OnGUI(MaterialEditor materialEditor, MaterialProperty[] props)
@@ -346,6 +351,7 @@ public class PoiToonOutline : ShaderGUI
             materialEditor.ShaderProperty(m_mainTex, Styles.MainTex);
             materialEditor.ShaderProperty(m_normalMap, Styles.NormalMap);
             materialEditor.ShaderProperty(m_normalIntensity, Styles.NormalIntensity);
+            materialEditor.ShaderProperty(m_clip, Styles.Clip);
 
             EditorGUILayout.Space();
         }
@@ -410,6 +416,7 @@ public class PoiToonOutline : ShaderGUI
             materialEditor.ShaderProperty(m_lightingShadowOffset, Styles.LightingShadowOffsett);
             materialEditor.ShaderProperty(m_forceLightDirection, Styles.ForceLightDirection);
             materialEditor.ShaderProperty(m_lightingDirection, Styles.LightingDirection);
+            materialEditor.ShaderProperty(m_minBrightness, Styles.MinBrightness);
             EditorGUILayout.Space();
         }
 
@@ -462,7 +469,6 @@ public class PoiToonOutline : ShaderGUI
 
             materialEditor.ShaderProperty(m_cullMode, Styles.CullMode);
             materialEditor.ShaderProperty(m_lit, Styles.Lit);
-            materialEditor.ShaderProperty(m_clip, Styles.Clip);
             materialEditor.ShaderProperty(m_srcBlend, Styles.SrcBlend);
             materialEditor.ShaderProperty(m_dstBlend, Styles.DstBlend);
             materialEditor.ShaderProperty(m_zTest, Styles.ZTest);

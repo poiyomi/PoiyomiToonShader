@@ -1,10 +1,9 @@
 // Upgrade NOTE: replaced 'UNITY_PASS_TEXCUBE(unity_SpecCube1)' with 'UNITY_PASS_TEXCUBE_SAMPLER(unity_SpecCube1,unity_SpecCube0)'
 
-Shader ".poiyomi/Toon-2.0.3/stencil/Transparent+1"
+Shader ".poiyomi/Toon-2.1.0/stencil/Transparent+1"
 {
     Properties
     {
-        
         _Color ("Color", Color) = (1, 1, 1, 1)
         _Desaturation ("Desaturation", Range(-1, 1)) = 0
         _MainTex ("Texture", 2D) = "white" { }
@@ -42,6 +41,7 @@ Shader ".poiyomi/Toon-2.0.3/stencil/Transparent+1"
         _ShadowOffset ("Shadow Offset", Range(-1, 1)) = 0
         [MaterialToggle] _ForceLightDirection ("Force Light Direction", Range(0, 1)) = 0
         _LightDirection ("Fake Light Direction", Vector) = (0, 1, 0, 0)
+        _MinBrightness ("Min Brightness", Range(0, 1)) = 0
         
         [Header(Specular Highlights)]
         _SpecularMap ("Specular Map", 2D) = "white" { }
@@ -52,7 +52,6 @@ Shader ".poiyomi/Toon-2.0.3/stencil/Transparent+1"
         [Toggle(_HARD_SPECULAR)]_HARD_SPECULAR ("Enable Hard Specular", Float) = 0
         _SpecularSize ("Hard Specular Size", Range(0, 1)) = .005
         
-        
         [Header(Outlines)]
         _LineWidth ("Outline Width", Float) = 0
         _LineColor ("Outline Color", Color) = (1, 1, 1, 1)
@@ -60,7 +59,6 @@ Shader ".poiyomi/Toon-2.0.3/stencil/Transparent+1"
         _OutlineTexture ("Outline Texture", 2D) = "white" { }
         _Speed ("Speed", Float) = 0.05
         
-
         [Header(Rim Lighting)]
         _RimLightColor ("Rim Color", Color) = (1, 1, 1, 1)
         _RimWidth ("Rim Width", Range(0, 1)) = 0.8
@@ -80,9 +78,10 @@ Shader ".poiyomi/Toon-2.0.3/stencil/Transparent+1"
         [Enum(UnityEngine.Rendering.CompareFunction)] _ZTest ("ZTest", Float) = 4
         [Enum(UnityEngine.Rendering.BlendMode)] _SourceBlend ("Source Blend", Float) = 5
         [Enum(UnityEngine.Rendering.BlendMode)] _DestinationBlend ("Destination Blend", Float) = 10
-        _Clip ("Clipping", Range(0, 1.001)) = 0.0
+        _Clip ("Clipping", Range(0, 1.001)) = 0.5
     }
-    CustomEditor "PoiToonOutline"
+    
+    CustomEditor "PoiToon210"
     SubShader
     {
         Tags { "Queue" = "Transparent" "RenderType" = "Transparent+1" }
@@ -110,7 +109,7 @@ Shader ".poiyomi/Toon-2.0.3/stencil/Transparent+1"
             
             #include "Lighting.cginc"
             #include "AutoLight.cginc"
-
+            
             #pragma vertex vert
             #pragma fragment frag
             
@@ -149,9 +148,8 @@ Shader ".poiyomi/Toon-2.0.3/stencil/Transparent+1"
                     float3 _flat_lighting_var = saturate(ShadeSH9(half4(float3(0, 1, 0), 1.0)) + (_LightColor0.rgb * attenuation));
                     col.rgb *= _flat_lighting_var;
                 #endif
-                 col.rgb = col.rgb + (col.rgb * _OutlineEmission);
-                 return col;
-                
+                col.rgb = col.rgb + (col.rgb * _OutlineEmission);
+                return col;
             }
             ENDCG
             
@@ -179,10 +177,10 @@ Shader ".poiyomi/Toon-2.0.3/stencil/Transparent+1"
             
             #pragma vertex vert
             #pragma fragment frag
-
+            
             #define TRANSPARENT
             #define FORWARD_BASE_PASS
-
+            
             #include "PoiPass.cginc"
             
             ENDCG
@@ -211,9 +209,9 @@ Shader ".poiyomi/Toon-2.0.3/stencil/Transparent+1"
             
             #pragma vertex vert
             #pragma fragment frag
-
+            
             #define TRANSPARENT
-
+            
             #include "PoiPass.cginc"
             
             ENDCG

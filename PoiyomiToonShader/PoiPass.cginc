@@ -62,6 +62,7 @@
     float _ShadowStrength;
     float _ShadowOffset;
     float3 _LightDirection;
+    float _MinBrightness;
 
     float4 _SpecularColor;
     float _SpecularBias;
@@ -141,6 +142,7 @@
         
         // math
         float3 _camera_to_vert_var = normalize(getCameraPosition() - i.posWorld);
+        float3 _camera_to_vert_vr_var = normalize(_WorldSpaceCameraPos - i.posWorld);
         float3x3 tangentTransform = float3x3(i.tangentDir, i.bitangentDir, i.normalDir);
         float3 normal = UnpackNormal(tex2D(_NormalMap, TRANSFORM_TEX(i.uv, _NormalMap)));
         float3 normalLocal = lerp(float3(0, 0, 1), normal, _NormalIntensity);
@@ -153,14 +155,15 @@
         float _roughness_map_var = tex2D(_RoughnessMap, TRANSFORM_TEX(i.uv, _RoughnessMap));
         float roughness = (1 - _final_metalic_var * _Roughness * _roughness_map_var);
         roughness *= 1.7 - 0.7 * roughness;
-        float3 reflectedDir = reflect(-_camera_to_vert_var, _normal_var);
+        float3 reflectedDir = reflect(-_camera_to_vert_vr_var, _normal_var);
         float4 envSample = UNITY_SAMPLE_TEXCUBE_LOD(unity_SpecCube0, reflectedDir, roughness * UNITY_SPECCUBE_LOD_STEPS);
-        
         float3 reflection = float3(0, 0, 0);
         reflection = DecodeHDR(envSample, unity_SpecCube0_HDR);
+        float reflecty_lighty_boy_uwu_var = 1-roughness;
         if (any(reflection.xyz) == 0 || _SampleWorld)
         {
             reflection = texCUBElod(_CubeMap, float4(reflectedDir, roughness * UNITY_SPECCUBE_LOD_STEPS));
+            reflecty_lighty_boy_uwu_var = 0;
         }
         
         //rim lighting
@@ -174,12 +177,13 @@
         // specular
         #if (defined(POINT) || defined(SPOT))
             _SpecularColor.rgb = _LightColor0.rgb;
+            _SpecularBias = 0;
         #endif
         float specular_map_var = tex2D(_SpecularMap, TRANSFORM_TEX(i.uv, _SpecularMap));
-        float3 specularColor = ((_diffuse_var.a * _SpecularStrength) * lerp(_diffuse_var.rgb, _SpecularColor.rgb, _SpecularBias));
+        float3 specularColor = ((_diffuse_var.a * _SpecularStrength) * lerp(_diffuse_var.rgb * _LightColor0.rgb, _SpecularColor.rgb, _SpecularBias));
         float specPow = exp2(_Gloss * 20.0 + 1.0);
         float normTerm = (specPow + 10) / (10 * Pi);
-        float3 halfDirection = normalize(_camera_to_vert_var + _light_direction_var);
+        float3 halfDirection = normalize(_camera_to_vert_vr_var + _light_direction_var);
         #if _HARD_SPECULAR
             float3 _specular_var = step(1 - (.5 * dot(halfDirection, _normal_var) + .5), _SpecularSize) * _SpecularColor * _SpecularBias * specular_map_var;
         #else
@@ -193,11 +197,10 @@
 
         #if _LIT
             #if defined(FORWARD_BASE_PASS)
-                float attenuation = LIGHT_ATTENUATION(i) / SHADOW_ATTENUATION(i);
-                float3 _flat_lighting_var = saturate(ShadeSH9(half4(float3(0, 1, 0), 1.0)) + (_LightColor0.rgb * attenuation));
+                float3 _flat_lighting_var = max(((ShadeSH9(float4(0, 0, 0, 1)) + _LightColor0.rgb) * saturate(LightColor + (1 - _ShadowStrength))), _MinBrightness);
             #else
                 UNITY_LIGHT_ATTENUATION(attenuation, 0, i.posWorld.xyz);
-                float3 _flat_lighting_var = saturate(_LightColor0.rgb)*.5 * attenuation * smoothstep(.59, .61, .5 * nDotL + .5);
+                float3 _flat_lighting_var = _LightColor0.rgb * attenuation * smoothstep(.59, .61, .5 * nDotL + .5);
             #endif
         #endif
 
@@ -229,17 +232,11 @@
         finalColor.rgb += finalreflections * ((1 - roughness + _final_metalic_var) / 2);
         finalColor.rgb += _specular_var;
         float3 _rim_color_var = lerp(finalColor.rgb, rimColor, _RimLightColorBias);
-        finalColor.rgb = lerp(finalColor.rgb, _rim_color_var, rim * _RimLightColor.a);
-        
+        finalColor.rgb = lerp(finalColor.rgb, _rim_color_var, rim * _RimLightColor.a * rimColor.a);
         #if _LIT
-            #if defined(FORWARD_BASE_PASS)
-                finalColor.rgb *= saturate(LightColor + (1 - _ShadowStrength)).rgb;
-                finalColor.rgb *= _flat_lighting_var;
-                finalColor.rgb += _emission_var + (rim * _rim_color_var * _RimStrength);
-            #else
-                finalColor.rgb *= _flat_lighting_var;
-            #endif
+                finalColor.rgb *= lerp(_flat_lighting_var,1,  smoothstep(0.5,1,reflecty_lighty_boy_uwu_var));
         #endif
+        finalColor.rgb += _emission_var + ((rim * _rim_color_var * _RimStrength) * rimColor.a);
         return finalColor;
     }
 

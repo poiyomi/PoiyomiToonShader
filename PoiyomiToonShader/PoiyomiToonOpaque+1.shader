@@ -1,10 +1,9 @@
 // Upgrade NOTE: replaced 'UNITY_PASS_TEXCUBE(unity_SpecCube1)' with 'UNITY_PASS_TEXCUBE_SAMPLER(unity_SpecCube1,unity_SpecCube0)'
 
-Shader ".poiyomi/Toon-2.0.3/stencil/opaque+1"
+Shader ".poiyomi/Toon-2.1.0/stencil/opaque+1"
 {
-    Properties
+       Properties
     {
-        
         _Color ("Color", Color) = (1, 1, 1, 1)
         _Desaturation ("Desaturation", Range(-1, 1)) = 0
         _MainTex ("Texture", 2D) = "white" { }
@@ -42,6 +41,7 @@ Shader ".poiyomi/Toon-2.0.3/stencil/opaque+1"
         _ShadowOffset ("Shadow Offset", Range(-1, 1)) = 0
         [MaterialToggle] _ForceLightDirection ("Force Light Direction", Range(0, 1)) = 0
         _LightDirection ("Fake Light Direction", Vector) = (0, 1, 0, 0)
+        _MinBrightness ("Min Brightness", Range(0, 1)) = 0
         
         [Header(Specular Highlights)]
         _SpecularMap ("Specular Map", 2D) = "white" { }
@@ -80,7 +80,8 @@ Shader ".poiyomi/Toon-2.0.3/stencil/opaque+1"
         [Enum(UnityEngine.Rendering.BlendMode)] _DestinationBlend ("Destination Blend", Float) = 10
         _Clip ("Clipping", Range(0, 1.001)) = 0.5
     }
-    CustomEditor "PoiToonOutline"
+    
+    CustomEditor "PoiToon210"
     SubShader
     {
         Tags { "RenderType" = "TransparentCutout" "Queue" = "AlphaTest+1" }

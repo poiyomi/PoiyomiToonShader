@@ -1,10 +1,9 @@
 // Upgrade NOTE: replaced 'UNITY_PASS_TEXCUBE(unity_SpecCube1)' with 'UNITY_PASS_TEXCUBE_SAMPLER(unity_SpecCube1,unity_SpecCube0)'
 
-Shader ".poiyomi/Toon-2.0.3/opaque"
+Shader ".poiyomi/Toon-2.1.0/opaque"
 {
     Properties
     {
-        
         _Color ("Color", Color) = (1, 1, 1, 1)
         _Desaturation ("Desaturation", Range(-1, 1)) = 0
         _MainTex ("Texture", 2D) = "white" { }
@@ -42,6 +41,7 @@ Shader ".poiyomi/Toon-2.0.3/opaque"
         _ShadowOffset ("Shadow Offset", Range(-1, 1)) = 0
         [MaterialToggle] _ForceLightDirection ("Force Light Direction", Range(0, 1)) = 0
         _LightDirection ("Fake Light Direction", Vector) = (0, 1, 0, 0)
+        _MinBrightness ("Min Brightness", Range(0, 1)) = 0
         
         [Header(Specular Highlights)]
         _SpecularMap ("Specular Map", 2D) = "white" { }
@@ -80,7 +80,8 @@ Shader ".poiyomi/Toon-2.0.3/opaque"
         [Enum(UnityEngine.Rendering.BlendMode)] _DestinationBlend ("Destination Blend", Float) = 10
         _Clip ("Clipping", Range(0, 1.001)) = 0.5
     }
-    CustomEditor "PoiToonOutline"
+    
+    CustomEditor "PoiToon210"
     SubShader
     {
         Tags { "RenderType" = "TransparentCutout" "Queue" = "AlphaTest" }
@@ -107,7 +108,7 @@ Shader ".poiyomi/Toon-2.0.3/opaque"
             
             #include "Lighting.cginc"
             #include "AutoLight.cginc"
-
+            
             #pragma vertex vert
             #pragma fragment frag
             
@@ -146,9 +147,8 @@ Shader ".poiyomi/Toon-2.0.3/opaque"
                     float3 _flat_lighting_var = saturate(ShadeSH9(half4(float3(0, 1, 0), 1.0)) + (_LightColor0.rgb * attenuation));
                     col.rgb *= _flat_lighting_var;
                 #endif
-                 col.rgb = col.rgb + (col.rgb * _OutlineEmission);
-                 return col;
-                
+                col.rgb = col.rgb + (col.rgb * _OutlineEmission);
+                return col;
             }
             ENDCG
             
