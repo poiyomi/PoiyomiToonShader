@@ -32,7 +32,7 @@ public class PoiToon210 : ShaderGUI
                     return true;
             }
 
-            Debug.Log("Fetching");
+
 
             return false;
         }
