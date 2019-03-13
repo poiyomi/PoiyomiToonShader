@@ -1,4 +1,4 @@
-﻿//designed for 2.1.0
+//designed for 2.1.0
 
 using System.Collections.Generic;
 using UnityEditor;
@@ -6,10 +6,66 @@ using UnityEngine;
 
 public class PoiToon210 : ShaderGUI
 {
+    
+    private class PoiToonHeader
+    {
+        private List<MaterialProperty> propertyes;
+        private bool currentState;
+
+        public PoiToonHeader(MaterialEditor materialEditor, string propertyName)
+        {
+            this.propertyes = new List<MaterialProperty>();
+            foreach (Material materialEditorTarget in materialEditor.targets)
+            {
+                Object[] asArray = new Object[] { materialEditorTarget };
+                propertyes.Add(MaterialEditor.GetMaterialProperty(asArray, propertyName));
+            }
+
+            this.currentState = fetchState();
+        }
+        
+        public bool fetchState()
+        {
+            foreach (MaterialProperty materialProperty in propertyes)
+            {
+                if (materialProperty.floatValue == 1)
+                    return true;
+            }
+
+
+
+            return false;
+        }
+
+        public bool getState()
+        {
+            return this.currentState;
+        }
+
+        public void Toggle()
+        {
+            if (getState())
+            {
+                foreach (MaterialProperty materialProperty in propertyes)
+                {
+                    materialProperty.floatValue = 0;
+                }
+            }
+            else
+            {
+                foreach (MaterialProperty materialProperty in propertyes)
+                {
+                    materialProperty.floatValue = 1;
+                }
+            }
+
+            this.currentState = !this.currentState;
+        }
+    }
 
     private static class PoiToonUI
     {
-        public static bool Foldout(string title, bool display)
+        public static PoiToonHeader Foldout(string title, PoiToonHeader display)
         {
             var style = new GUIStyle("ShurikenModuleTitle");
             style.font = new GUIStyle(EditorStyles.label).font;
@@ -25,12 +81,12 @@ public class PoiToon210 : ShaderGUI
             var toggleRect = new Rect(rect.x + 4f, rect.y + 2f, 13f, 13f);
             if (e.type == EventType.Repaint)
             {
-                EditorStyles.foldout.Draw(toggleRect, false, false, display, false);
+                EditorStyles.foldout.Draw(toggleRect, false, false, display.getState(), false);
             }
 
             if (e.type == EventType.MouseDown && rect.Contains(e.mousePosition))
             {
-                display = !display;
+                display.Toggle();
                 e.Use();
             }
 
@@ -198,19 +254,32 @@ public class PoiToon210 : ShaderGUI
     MaterialProperty m_dstBlend = null;
     MaterialProperty m_zTest = null;
 
+    PoiToonHeader m_mainOptions;
+    PoiToonHeader m_metallicOptions;
+    PoiToonHeader m_outlineOptions;
+    PoiToonHeader m_emissionOptions;
+    PoiToonHeader m_fakeLightingOptions;
+    PoiToonHeader m_specularHighlightsOptions;
+    PoiToonHeader m_stencilOptions;
+    PoiToonHeader m_rimLightOptions;
+    PoiToonHeader m_miscOptions;
 
-    bool m_mainOptions = true;
-    bool m_metallicOptions;
-    bool m_outlineOptions;
-    bool m_emissionOptions;
-    bool m_fakeLightingOptions;
-    bool m_specularHighlightsOptions;
-    bool m_stencilOptions;
-    bool m_rimLightOptions;
-    bool m_miscOptions;
+    private void HeaderInit(MaterialEditor materialEditor)
+    {
+        m_mainOptions = new PoiToonHeader(materialEditor, "m_mainOptions");
+        m_metallicOptions = new PoiToonHeader(materialEditor, "m_metallicOptions");
+        m_outlineOptions = new PoiToonHeader(materialEditor, "m_outlineOptions");
+        m_emissionOptions = new PoiToonHeader(materialEditor, "m_emissionOptions");
+        m_fakeLightingOptions = new PoiToonHeader(materialEditor, "m_fakeLightingOptions");
+        m_specularHighlightsOptions = new PoiToonHeader(materialEditor, "m_specularHighlightsOptions");
+        m_stencilOptions = new PoiToonHeader(materialEditor, "m_stencilOptions");
+        m_rimLightOptions = new PoiToonHeader(materialEditor, "m_rimLightOptions");
+        m_miscOptions = new PoiToonHeader(materialEditor, "m_miscOptions");
+    }
 
     private void FindProperties(MaterialProperty[] props)
     {
+
         m_color = FindProperty("_Color", props);
         m_desaturation = FindProperty("_Desaturation", props);
         m_mainTex = FindProperty("_MainTex", props);
@@ -297,6 +366,7 @@ public class PoiToon210 : ShaderGUI
             mat.DisableKeyword(define);
         }
     }
+    
     void ToggleDefines(Material mat)
     {
     }
@@ -327,6 +397,8 @@ public class PoiToon210 : ShaderGUI
     {
         Material material = materialEditor.target as Material;
 
+        HeaderInit(materialEditor);
+
         // map shader properties to script variables
         FindProperties(props);
 
@@ -342,7 +414,7 @@ public class PoiToon210 : ShaderGUI
 
         // main section
         m_mainOptions = PoiToonUI.Foldout("Main", m_mainOptions);
-        if (m_mainOptions)
+        if (m_mainOptions.getState())
         {
             EditorGUILayout.Space();
 
@@ -357,7 +429,7 @@ public class PoiToon210 : ShaderGUI
         }
 
         m_metallicOptions = PoiToonUI.Foldout("Metallic", m_metallicOptions);
-        if (m_metallicOptions)
+        if (m_metallicOptions.getState())
         {
             EditorGUILayout.Space();
             materialEditor.ShaderProperty(m_cubeMap, Styles.CubeMap);
@@ -372,7 +444,7 @@ public class PoiToon210 : ShaderGUI
         // outline section
         m_outlineOptions = PoiToonUI.Foldout("Outline", m_outlineOptions);
 
-        if (m_outlineOptions)
+        if (m_outlineOptions.getState())
         {
             EditorGUILayout.Space();
             materialEditor.ShaderProperty(m_lineWidth, Styles.LineWidth);
@@ -386,7 +458,7 @@ public class PoiToon210 : ShaderGUI
 
         // emissive section
         m_emissionOptions = PoiToonUI.Foldout("Emission", m_emissionOptions);
-        if (m_emissionOptions)
+        if (m_emissionOptions.getState())
         {
             EditorGUILayout.Space();
             materialEditor.ShaderProperty(m_emissionColor, Styles.EmissionColor);
@@ -408,7 +480,7 @@ public class PoiToon210 : ShaderGUI
 
         // fake lighting
         m_fakeLightingOptions = PoiToonUI.Foldout("Fake Lighting", m_fakeLightingOptions);
-        if (m_fakeLightingOptions)
+        if (m_fakeLightingOptions.getState())
         {
             EditorGUILayout.Space();
             materialEditor.ShaderProperty(m_lightingGradient, Styles.LightingGradient);
@@ -422,7 +494,7 @@ public class PoiToon210 : ShaderGUI
 
         // Specular Highlights
         m_specularHighlightsOptions = PoiToonUI.Foldout("Specular Highlight", m_specularHighlightsOptions);
-        if (m_specularHighlightsOptions)
+        if (m_specularHighlightsOptions.getState())
         {
             EditorGUILayout.Space();
             materialEditor.ShaderProperty(m_specularMap, Styles.SpecularMap);
@@ -437,7 +509,7 @@ public class PoiToon210 : ShaderGUI
 
         // Rim Lighting
         m_rimLightOptions = PoiToonUI.Foldout("Rim Lighting", m_rimLightOptions);
-        if (m_rimLightOptions)
+        if (m_rimLightOptions.getState())
         {
             EditorGUILayout.Space();
             materialEditor.ShaderProperty(m_rimColor, Styles.RimColor);
@@ -451,7 +523,7 @@ public class PoiToon210 : ShaderGUI
         }
 
         m_stencilOptions = PoiToonUI.Foldout("Stencil", m_stencilOptions);
-        if (m_stencilOptions)
+        if (m_stencilOptions.getState())
         {
             EditorGUILayout.Space();
 
@@ -463,7 +535,7 @@ public class PoiToon210 : ShaderGUI
         }
 
         m_miscOptions = PoiToonUI.Foldout("Misc", m_miscOptions);
-        if (m_miscOptions)
+        if (m_miscOptions.getState())
         {
             EditorGUILayout.Space();
 

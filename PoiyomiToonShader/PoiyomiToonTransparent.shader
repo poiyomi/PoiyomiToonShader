@@ -2,8 +2,18 @@
 
 Shader ".poiyomi/Toon-2.1.0/Transparent"
 {
-        Properties
+    Properties
     {
+    	[HideInInspector] m_mainOptions("Float", Float) = 0
+	[HideInInspector] m_metallicOptions("Float", Float) = 0
+	[HideInInspector] m_outlineOptions("Float", Float) = 0
+	[HideInInspector] m_emissionOptions("Float", Float) = 0
+	[HideInInspector] m_fakeLightingOptions("Float", Float) = 0
+	[HideInInspector] m_specularHighlightsOptions("Float", Float) = 0
+	[HideInInspector] m_stencilOptions("Float", Float) = 0
+	[HideInInspector] m_rimLightOptions("Float", Float) = 0
+	[HideInInspector] m_miscOptions("Float", Float) = 0
+    
         _Color ("Color", Color) = (1, 1, 1, 1)
         _Desaturation ("Desaturation", Range(-1, 1)) = 0
         _MainTex ("Texture", 2D) = "white" { }
