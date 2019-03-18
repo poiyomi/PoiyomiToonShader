@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 269f676b2e019cf438acc224422e3d85
+guid: 54c59b85e76583645b92e9e392baa88f
 ShaderImporter:
   externalObjects: {}
   defaultTextures:
@@ -9,7 +9,8 @@ ShaderImporter:
   - _MetallicMap: {instanceID: 0}
   - _RoughnessMap: {instanceID: 0}
   - _EmissionMap: {instanceID: 0}
-  - _LightingGradient: {fileID: 2800000, guid: 0fdb67b33acb93444a47b79bbcb079d1, type: 3}
+  - _LightingGradient: {fileID: 2800000, guid: 2b2456e68290a8847a6903bc0005d58f, type: 3}
+  - _AdditiveRamp: {fileID: 2800000, guid: 2b2456e68290a8847a6903bc0005d58f, type: 3}
   - _SpecularMap: {instanceID: 0}
   - _OutlineTexture: {instanceID: 0}
   - _RimTex: {instanceID: 0}

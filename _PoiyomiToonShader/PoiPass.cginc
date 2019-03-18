@@ -4,8 +4,8 @@
 
     #include "UnityCG.cginc"
     #include "Lighting.cginc"
-    #include "AutoLight.cginc"
     #include "UnityPBSLighting.cginc"
+    #include "AutoLight.cginc"
 
     //Structs
     struct appdata
@@ -24,8 +24,9 @@
         float3 tangentDir: TEXCOORD6;
         float3 bitangentDir: TEXCOORD7;
         float4 pos: SV_POSITION;
-        float4 posWorld: TEXCOORD8;
-        float4 posLocal: TEXCOORD9;
+        float4 worldPos: TEXCOORD8;
+        float4 localPos: TEXCOORD9;
+        SHADOW_COORDS(5)
     };
 
     //Properties
@@ -63,6 +64,8 @@
     float _ShadowOffset;
     float3 _LightDirection;
     float _MinBrightness;
+    float _MaxDirectionalIntensity;
+    sampler2D _AdditiveRamp;
 
     float4 _SpecularColor;
     float _SpecularBias;
@@ -103,12 +106,12 @@
     {
         v2f o;
         TANGENT_SPACE_ROTATION;
-        o.posLocal = v.vertex;
+        o.localPos = v.vertex;
         o.pos = UnityObjectToClipPos(v.vertex);
-        o.posWorld = mul(unity_ObjectToWorld, v.vertex);
+        o.worldPos = mul(unity_ObjectToWorld, v.vertex);
         o.normalDir = normalize(mul(unity_ObjectToWorld, v.normal));
         o.uv = float4(v.texcoord.xy, 0, 0);
-        
+        TRANSFER_SHADOW(i);
         o.tangentDir = normalize(mul(unity_ObjectToWorld, float4(v.tangent.xyz, 0.0)).xyz);
         o.bitangentDir = normalize(cross(o.normalDir, o.tangentDir) * v.tangent.w);
         return o;
@@ -126,12 +129,13 @@
             }
         #else
             #if defined(POINT) || defined(SPOT)
-                float3 _light_direction_var = normalize(_WorldSpaceLightPos0.xyz - i.posWorld);
+                float3 _light_direction_var = normalize(_WorldSpaceLightPos0.xyz - i.worldPos);
             #elif defined(DIRECTIONAL)
                 return 0;
                 float3 _light_direction_var = _WorldSpaceLightPos0;
             #endif
         #endif
+        
         // diffuse
         float4 _main_tex_var = tex2D(_MainTex, TRANSFORM_TEX(i.uv, _MainTex));
         float4 _diffuse_var = float4(lerp(_main_tex_var.rgb, dot(_main_tex_var.rgb, float3(0.3, 0.59, 0.11)), _Desaturation) * _Color.rgb, _main_tex_var.a * _Color.a);
@@ -141,8 +145,8 @@
         #endif
         
         // math
-        float3 _camera_to_vert_var = normalize(getCameraPosition() - i.posWorld);
-        float3 _camera_to_vert_vr_var = normalize(_WorldSpaceCameraPos - i.posWorld);
+        float3 _camera_to_vert_var = normalize(getCameraPosition() - i.worldPos);
+        float3 _camera_to_vert_vr_var = normalize(_WorldSpaceCameraPos - i.worldPos);
         float3x3 tangentTransform = float3x3(i.tangentDir, i.bitangentDir, i.normalDir);
         float3 normal = UnpackNormal(tex2D(_NormalMap, TRANSFORM_TEX(i.uv, _NormalMap)));
         float3 normalLocal = lerp(float3(0, 0, 1), normal, _NormalIntensity);
@@ -159,7 +163,7 @@
         float4 envSample = UNITY_SAMPLE_TEXCUBE_LOD(unity_SpecCube0, reflectedDir, roughness * UNITY_SPECCUBE_LOD_STEPS);
         float3 reflection = float3(0, 0, 0);
         reflection = DecodeHDR(envSample, unity_SpecCube0_HDR);
-        float reflecty_lighty_boy_uwu_var = 1-roughness;
+        float reflecty_lighty_boy_uwu_var = 1 - roughness;
         if (any(reflection.xyz) == 0 || _SampleWorld)
         {
             reflection = texCUBElod(_CubeMap, float4(reflectedDir, roughness * UNITY_SPECCUBE_LOD_STEPS));
@@ -171,8 +175,6 @@
         float rim = pow((1 - _camera_vert_dot_var), (1 - _RimWidth) * 10);
         _RimSharpness /= 2;
         rim = (smoothstep(_RimSharpness, 1 - _RimSharpness, rim));
-        
-
         
         // specular
         #if (defined(POINT) || defined(SPOT))
@@ -191,17 +193,14 @@
         #endif
 
         // lighting
+        UNITY_LIGHT_ATTENUATION(attenuation, i, i.worldPos.xyz);
         float nDotL = dot(_normal_var, _light_direction_var);
         float FakeLight = clamp((nDotL + 1) / 2 + _ShadowOffset, 0, 1);
         float4 LightColor = tex2D(_LightingGradient, float2(FakeLight, FakeLight));
-
-        #if _LIT
-            #if defined(FORWARD_BASE_PASS)
-                float3 _flat_lighting_var = max(((ShadeSH9(float4(0, 0, 0, 1)) + _LightColor0.rgb) * saturate(LightColor + (1 - _ShadowStrength))), _MinBrightness);
-            #else
-                UNITY_LIGHT_ATTENUATION(attenuation, 0, i.posWorld.xyz);
-                float3 _flat_lighting_var = _LightColor0.rgb * attenuation * smoothstep(.59, .61, .5 * nDotL + .5);
-            #endif
+        #if defined(FORWARD_BASE_PASS)
+            float3 _flat_lighting_var = max(((ShadeSH9(float4(0, 0, 0, 1)) + clamp(_LightColor0.rgb * attenuation,0,_MaxDirectionalIntensity)) * saturate(LightColor + (1 - _ShadowStrength))), _MinBrightness);
+        #else
+            float3 _flat_lighting_var = _LightColor0.rgb * attenuation * tex2D(_AdditiveRamp, .5 * nDotL + .5);
         #endif
 
         // emission
@@ -210,7 +209,7 @@
         
         // scrolling emission
         #if _SCROLLING_EMISSION
-            float phase = dot(i.posLocal, _EmissiveScroll_Direction);
+            float phase = dot(i.localPos, _EmissiveScroll_Direction);
             phase -= _Time.y * _EmissiveScroll_Velocity;
             phase /= _EmissiveScroll_Interval;
             phase -= floor(phase);
@@ -233,11 +232,10 @@
         finalColor.rgb += _specular_var;
         float3 _rim_color_var = lerp(finalColor.rgb, rimColor, _RimLightColorBias);
         finalColor.rgb = lerp(finalColor.rgb, _rim_color_var, rim * _RimLightColor.a * rimColor.a);
-        #if _LIT
-                finalColor.rgb *= lerp(_flat_lighting_var,1,  smoothstep(0.5,1,reflecty_lighty_boy_uwu_var));
+        finalColor.rgb *= lerp(_flat_lighting_var, 1, smoothstep(0.5, 1, reflecty_lighty_boy_uwu_var));
+        #if defined(FORWARD_BASE_PASS)
+            finalColor.rgb += _emission_var + ((rim * _rim_color_var * _RimStrength) * rimColor.a);
         #endif
-        finalColor.rgb += _emission_var + ((rim * _rim_color_var * _RimStrength) * rimColor.a);
         return finalColor;
     }
-
 #endif

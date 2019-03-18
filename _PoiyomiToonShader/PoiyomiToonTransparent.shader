@@ -1,19 +1,19 @@
 // Upgrade NOTE: replaced 'UNITY_PASS_TEXCUBE(unity_SpecCube1)' with 'UNITY_PASS_TEXCUBE_SAMPLER(unity_SpecCube1,unity_SpecCube0)'
 
-Shader ".poiyomi/Toon-2.1.0/stencil/opaque+1"
+Shader ".poiyomi/Toon/Transparent"
 {
     Properties
     {
-       [HideInInspector] m_mainOptions("Float", Float) = 0
-       [HideInInspector] m_metallicOptions("Float", Float) = 0
-	[HideInInspector] m_outlineOptions("Float", Float) = 0
-	[HideInInspector] m_emissionOptions("Float", Float) = 0
-	[HideInInspector] m_fakeLightingOptions("Float", Float) = 0
-	[HideInInspector] m_specularHighlightsOptions("Float", Float) = 0
-	[HideInInspector] m_stencilOptions("Float", Float) = 0
-	[HideInInspector] m_rimLightOptions("Float", Float) = 0
-	[HideInInspector] m_miscOptions("Float", Float) = 0
-    
+        [HideInInspector] m_mainOptions ("Float", Float) = 0
+        [HideInInspector] m_metallicOptions ("Float", Float) = 0
+        [HideInInspector] m_outlineOptions ("Float", Float) = 0
+        [HideInInspector] m_emissionOptions ("Float", Float) = 0
+        [HideInInspector] m_fakeLightingOptions ("Float", Float) = 0
+        [HideInInspector] m_specularHighlightsOptions ("Float", Float) = 0
+        [HideInInspector] m_stencilOptions ("Float", Float) = 0
+        [HideInInspector] m_rimLightOptions ("Float", Float) = 0
+        [HideInInspector] m_miscOptions ("Float", Float) = 0
+        
         _Color ("Color", Color) = (1, 1, 1, 1)
         _Desaturation ("Desaturation", Range(-1, 1)) = 0
         _MainTex ("Texture", 2D) = "white" { }
@@ -52,6 +52,8 @@ Shader ".poiyomi/Toon-2.1.0/stencil/opaque+1"
         [MaterialToggle] _ForceLightDirection ("Force Light Direction", Range(0, 1)) = 0
         _LightDirection ("Fake Light Direction", Vector) = (0, 1, 0, 0)
         _MinBrightness ("Min Brightness", Range(0, 1)) = 0
+        _MaxDirectionalIntensity("Max Directional Intensity", Float) = 1
+        [NoScaleOffset]_AdditiveRamp ("Additive Ramp", 2D) = "white" { }
         
         [Header(Specular Highlights)]
         _SpecularMap ("Specular Map", 2D) = "white" { }
@@ -83,7 +85,6 @@ Shader ".poiyomi/Toon-2.1.0/stencil/opaque+1"
         [Enum(UnityEngine.Rendering.CompareFunction)] _StencilCompareFunction ("Stencil Compare Function", Float) = 0
         
         [Header(Misc)]
-        [Toggle(_LIT)] _Lit ("Flat Lit?", Float) = 1
         [Enum(UnityEngine.Rendering.CullMode)] _Cull ("Cull", Float) = 2
         [Enum(UnityEngine.Rendering.CompareFunction)] _ZTest ("ZTest", Float) = 4
         [Enum(UnityEngine.Rendering.BlendMode)] _SourceBlend ("Source Blend", Float) = 5
@@ -91,21 +92,23 @@ Shader ".poiyomi/Toon-2.1.0/stencil/opaque+1"
         _Clip ("Clipping", Range(0, 1.001)) = 0.5
     }
     
-    CustomEditor "PoiToon210"
+    CustomEditor "PoiToon"
     SubShader
     {
-        Tags { "RenderType" = "TransparentCutout" "Queue" = "AlphaTest+1" }
+        Tags { "Queue" = "Transparent" "RenderType" = "Transparent" }
+        //Blend SrcAlpha OneMinusSrcAlpha
+        Blend [_SourceBlend] [_DestinationBlend]
         
+        Stencil
+        {
+            Ref [_StencilRef]
+            Comp [_StencilCompareFunction]
+            Pass [_StencilOp]
+        }
         Pass
         {
             Name "Outline"
             Tags { "LightMode" = "ForwardBase" }
-            Stencil
-            {
-                Ref [_StencilRef]
-                Comp [_StencilCompareFunction]
-                Pass [_StencilOp]
-            }
             ZTest [_ZTest]
             Cull Front
             CGPROGRAM
@@ -113,12 +116,11 @@ Shader ".poiyomi/Toon-2.1.0/stencil/opaque+1"
             #include "UnityCG.cginc"
             #pragma fragmentoption ARB_precision_hint_fastest
             #pragma only_renderers d3d9 d3d11 glcore gles
-            #pragma shader_feature _LIT
             #pragma target 3.0
             
             #include "Lighting.cginc"
             #include "AutoLight.cginc"
-
+            
             #pragma vertex vert
             #pragma fragment frag
             
@@ -151,15 +153,12 @@ Shader ".poiyomi/Toon-2.1.0/stencil/opaque+1"
             float4 frag(VertexOutput i, float facing: VFACE): COLOR
             {
                 clip(_LineWidth - 0.001);
-                fixed4 col = fixed4(tex2D(_OutlineTexture, TRANSFORM_TEX((i.uv + (_Speed * _Time.g)), _OutlineTexture)).rgb, 0) * _LineColor;
-                #if _LIT
-                    float attenuation = LIGHT_ATTENUATION(i) / SHADOW_ATTENUATION(i);
-                    float3 _flat_lighting_var = saturate(ShadeSH9(half4(float3(0, 1, 0), 1.0)) + (_LightColor0.rgb * attenuation));
-                    col.rgb *= _flat_lighting_var;
-                #endif
-                 col.rgb = col.rgb + (col.rgb * _OutlineEmission);
-                 return col;
-                
+                fixed4 col = tex2D(_OutlineTexture, TRANSFORM_TEX((i.uv + (_Speed * _Time.g)), _OutlineTexture)) * _LineColor;
+                float attenuation = LIGHT_ATTENUATION(i) / SHADOW_ATTENUATION(i);
+                float3 _flat_lighting_var = saturate(ShadeSH9(half4(float3(0, 1, 0), 1.0)) + (_LightColor0.rgb * attenuation));
+                col.rgb *= _flat_lighting_var;
+                col.rgb = col.rgb + (col.rgb * _OutlineEmission);
+                return col;
             }
             ENDCG
             
@@ -169,27 +168,18 @@ Shader ".poiyomi/Toon-2.1.0/stencil/opaque+1"
         {
             Name "MainPass"
             Tags { "LightMode" = "ForwardBase" }
-            Stencil
-            {
-                Ref [_StencilRef]
-                Comp [_StencilCompareFunction]
-                Pass [_StencilOp]
-            }
             Cull [_Cull]
             ZTest [_ZTest]
             CGPROGRAM
             
             #pragma target 3.0
-            
-            #pragma shader_feature _LIT
             #pragma shader_feature _HARD_SPECULAR
             #pragma shader_feature _SCROLLING_EMISSION
-            
             #pragma vertex vert
             #pragma fragment frag
             #define FORWARD_BASE_PASS
+            #define TRANSPARENT
             #include "PoiPass.cginc"
-            
             ENDCG
             
         }
@@ -198,30 +188,33 @@ Shader ".poiyomi/Toon-2.1.0/stencil/opaque+1"
         {
             Tags { "LightMode" = "ForwardAdd" }
             ZWrite Off Blend One One
-            Stencil
-            {
-                Ref [_StencilRef]
-                Comp [_StencilCompareFunction]
-                Pass [_StencilOp]
-            }
             Cull [_Cull]
             ZTest [_ZTest]
             CGPROGRAM
             
             #pragma target 3.0
-            #pragma shader_feature _LIT
             #pragma shader_feature _HARD_SPECULAR
             #pragma shader_feature _SCROLLING_EMISSION
             #pragma multi_compile DIRECTIONAL POINT SPOT
-            
             #pragma vertex vert
             #pragma fragment frag
-            
+            #define TRANSPARENT
             #include "PoiPass.cginc"
-            
             ENDCG
             
         }
-        UsePass "VertexLit/SHADOWCASTER"
+        Pass
+        {
+            Tags { "LightMode" = "ShadowCaster" }
+            CGPROGRAM
+            
+            #pragma target 3.0
+            #pragma multi_compile_shadowcaster
+            #pragma vertex MyShadowVertexProgram
+            #pragma fragment MyShadowFragmentProgram
+            #include "PoiShadows.cginc"
+            ENDCG
+            
+        }
     }
 }

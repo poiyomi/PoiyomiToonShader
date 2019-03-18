@@ -1,6 +1,6 @@
 // Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
 
-Shader ".poiyomi/Toon-2.1.0/stencil/invis"
+Shader ".poiyomi/Toon/stencil/invis"
 {
     properties
     {
