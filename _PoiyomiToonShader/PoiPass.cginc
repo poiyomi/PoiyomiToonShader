@@ -58,7 +58,7 @@
     uniform float _EmissiveBlink_Max;
     uniform float _EmissiveBlink_Velocity;
 
-    sampler2D _LightingGradient;
+    sampler2D _Ramp;
     float _ForceLightDirection;
     float _ShadowStrength;
     float _ShadowOffset;
@@ -66,6 +66,7 @@
     float _MinBrightness;
     float _MaxDirectionalIntensity;
     sampler2D _AdditiveRamp;
+    float _FlatOrFullAmbientLighting;
 
     float4 _SpecularColor;
     float _SpecularBias;
@@ -164,7 +165,8 @@
         float3 reflection = float3(0, 0, 0);
         reflection = DecodeHDR(envSample, unity_SpecCube0_HDR);
         float reflecty_lighty_boy_uwu_var = 1 - roughness;
-        if (any(reflection.xyz) == 0 || _SampleWorld)
+        bool no_probe = unity_SpecCube0_HDR.a == 0 && envSample.a == 0;
+        if (no_probe || _SampleWorld)
         {
             reflection = texCUBElod(_CubeMap, float4(reflectedDir, roughness * UNITY_SPECCUBE_LOD_STEPS));
             reflecty_lighty_boy_uwu_var = 0;
@@ -196,15 +198,27 @@
         UNITY_LIGHT_ATTENUATION(attenuation, i, i.worldPos.xyz);
         float nDotL = dot(_normal_var, _light_direction_var);
         float FakeLight = clamp((nDotL + 1) / 2 + _ShadowOffset, 0, 1);
-        float4 LightColor = tex2D(_LightingGradient, float2(FakeLight, FakeLight));
+        float4 LightingRamp = tex2D(_Ramp, float2(FakeLight, FakeLight));
         #if defined(FORWARD_BASE_PASS)
-            float3 _flat_lighting_var = max(((ShadeSH9(float4(0, 0, 0, 1)) + clamp(_LightColor0.rgb * attenuation,0,_MaxDirectionalIntensity)) * saturate(LightColor + (1 - _ShadowStrength))), _MinBrightness);
+            //return float4(ShadeSH9(half4(0.0, 0.0, 0.0, 1.0)),1);
+            float3 _flat_lighting_var = 1;
+            float3 ambient = ShadeSH9(float4(_normal_var * _FlatOrFullAmbientLighting,1));
+            if (any(_LightColor0.rgb))
+            {
+                _flat_lighting_var = max(ambient + min(_LightColor0.rgb, _MaxDirectionalIntensity) * lerp(1, LightingRamp, _ShadowStrength), _MinBrightness);
+            }
+            else
+            {
+                _flat_lighting_var = max(ambient + ambient * lerp(1, LightingRamp, _ShadowStrength), _MinBrightness);
+            }
+            //return float4(_flat_lighting_var, 1);
         #else
             float3 _flat_lighting_var = _LightColor0.rgb * attenuation * tex2D(_AdditiveRamp, .5 * nDotL + .5);
         #endif
 
         // emission
         float4 _Emissive_Tex_var = tex2D(_EmissionMap, TRANSFORM_TEX(i.uv, _EmissionMap) + _Time.y * _EmissionScrollSpeed);
+        ///
         float4 _emission_var = _Emissive_Tex_var * _EmissionColor * _EmissionStrength;
         
         // scrolling emission

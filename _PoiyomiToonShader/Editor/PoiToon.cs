@@ -1,4 +1,4 @@
-//designed for 2.2.0
+//designed for 2.2.4
 
 using System.Collections.Generic;
 using UnityEditor;
@@ -100,7 +100,6 @@ public class PoiToon : ShaderGUI
 
     private static class Styles
     {
-
         // sections
         public static GUIContent MainSection = new GUIContent("Main", "Main configuration section");
         public static GUIContent EmissionSection = new GUIContent("Emission", "Configuration for emissiveness");
@@ -158,6 +157,7 @@ public class PoiToon : ShaderGUI
         public static GUIContent MinBrightness = new GUIContent("Min Brightness", "Limit how dark you can get");
         public static GUIContent MaxDirectionalIntensity = new GUIContent("Max Directional Intensity", "Limit how bright the directional light in a map can be");
         public static GUIContent AdditiveRamp = new GUIContent("Additive Ramp", "Don't touch this if you don't know what it does");
+        public static GUIContent FlatOrFullAmbientLighting = new GUIContent("Flat-Full Ambient Lighting", "Use normals for ambient lighting");
 
         // specular
         public static GUIContent HardSpecular = new GUIContent("Hard Specular?", ""); // TODO: all of these vvv
@@ -224,7 +224,7 @@ public class PoiToon : ShaderGUI
     MaterialProperty m_emissiveScrollVelocity = null;
     MaterialProperty m_emissiveScrollInterval = null;
 
-    MaterialProperty m_lightingGradient = null;
+    MaterialProperty m_Ramp = null;
     MaterialProperty m_lightingShadowStrength = null;
     MaterialProperty m_lightingShadowOffset = null;
     MaterialProperty m_lightingDirection = null;
@@ -232,6 +232,7 @@ public class PoiToon : ShaderGUI
     MaterialProperty m_minBrightness = null;
     MaterialProperty m_maxDirectionalIntensity = null;
     MaterialProperty m_additiveRamp = null;
+    MaterialProperty m_flatOrFullAmbientLighting = null;
 
     MaterialProperty m_specularMap = null;
     MaterialProperty m_specularColor = null;
@@ -284,7 +285,6 @@ public class PoiToon : ShaderGUI
 
     private void FindProperties(MaterialProperty[] props)
     {
-
         m_color = FindProperty("_Color", props);
         m_desaturation = FindProperty("_Desaturation", props);
         m_mainTex = FindProperty("_MainTex", props);
@@ -319,7 +319,7 @@ public class PoiToon : ShaderGUI
         m_emissiveScrollVelocity = FindProperty("_EmissiveScroll_Velocity", props);
         m_emissiveScrollInterval = FindProperty("_EmissiveScroll_Interval", props);
 
-        m_lightingGradient = FindProperty("_LightingGradient", props);
+        m_Ramp = FindProperty("_Ramp", props);
         m_lightingShadowStrength = FindProperty("_ShadowStrength", props);
         m_lightingShadowOffset = FindProperty("_ShadowOffset", props);
         m_lightingDirection = FindProperty("_LightDirection", props);
@@ -327,6 +327,7 @@ public class PoiToon : ShaderGUI
         m_minBrightness = FindProperty("_MinBrightness", props);
         m_maxDirectionalIntensity = FindProperty("_MaxDirectionalIntensity", props);
         m_additiveRamp = FindProperty("_AdditiveRamp", props);
+        m_flatOrFullAmbientLighting = FindProperty("_FlatOrFullAmbientLighting", props);
 
         m_specularMap = FindProperty("_SpecularMap", props);
         m_specularColor = FindProperty("_SpecularColor", props);
@@ -396,7 +397,7 @@ public class PoiToon : ShaderGUI
         style.richText = true;
         style.alignment = TextAnchor.MiddleCenter;
 
-        EditorGUILayout.LabelField("<size=16><color=#008080>❤ Poiyomi Toon Shader V2.2.0 ❤</color></size>", style, GUILayout.MinHeight(18));
+        EditorGUILayout.LabelField("<size=16><color=#008080>❤ Poiyomi Toon Shader V2.2.4 ❤</color></size>", style, GUILayout.MinHeight(18));
     }
 
     public override void OnGUI(MaterialEditor materialEditor, MaterialProperty[] props)
@@ -404,13 +405,12 @@ public class PoiToon : ShaderGUI
         Material material = materialEditor.target as Material;
 
         HeaderInit(materialEditor);
-
+        
         // map shader properties to script variables
         FindProperties(props);
 
         // set up style for the base look
         SetupStyle();
-
         // load default toggle values
         LoadDefaults(material);
 
@@ -487,13 +487,14 @@ public class PoiToon : ShaderGUI
         if (m_fakeLightingOptions.getState())
         {
             EditorGUILayout.Space();
-            materialEditor.ShaderProperty(m_lightingGradient, Styles.LightingGradient);
+            materialEditor.ShaderProperty(m_Ramp, Styles.LightingGradient);
             materialEditor.ShaderProperty(m_lightingShadowStrength, Styles.LightingShadowStrength);
             materialEditor.ShaderProperty(m_lightingShadowOffset, Styles.LightingShadowOffsett);
             materialEditor.ShaderProperty(m_forceLightDirection, Styles.ForceLightDirection);
             materialEditor.ShaderProperty(m_lightingDirection, Styles.LightingDirection);
             materialEditor.ShaderProperty(m_minBrightness, Styles.MinBrightness);
             materialEditor.ShaderProperty(m_maxDirectionalIntensity, Styles.MaxDirectionalIntensity);
+            materialEditor.ShaderProperty(m_flatOrFullAmbientLighting, Styles.FlatOrFullAmbientLighting);
             materialEditor.ShaderProperty(m_additiveRamp, Styles.AdditiveRamp);
             EditorGUILayout.Space();
         }
@@ -562,6 +563,8 @@ public class PoiToon : ShaderGUI
         PoiToon.linkButton(70, 20, "Discord", "https://discord.gg/Ays52PY");
         GUILayout.Space(2);
         PoiToon.linkButton(70, 20, "Donate", "https://www.paypal.me/poiyomi");
+        GUILayout.Space(2);
+        PoiToon.linkButton(70, 20, "Patreon", "https://www.patreon.com/poiyomi");
         GUILayout.FlexibleSpace();
         EditorGUILayout.EndHorizontal();
     }

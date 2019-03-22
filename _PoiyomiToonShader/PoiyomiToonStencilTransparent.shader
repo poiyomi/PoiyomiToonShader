@@ -1,6 +1,4 @@
-// Upgrade NOTE: replaced 'UNITY_PASS_TEXCUBE(unity_SpecCube1)' with 'UNITY_PASS_TEXCUBE_SAMPLER(unity_SpecCube1,unity_SpecCube0)'
-
-Shader ".poiyomi/Toon/opaque"
+Shader ".poiyomi/Toon/Stencil/Transparent+1"
 {
     Properties
     {
@@ -46,15 +44,16 @@ Shader ".poiyomi/Toon/opaque"
         _EmissiveScroll_Interval ("Emissive Scroll Interval", Float) = 20
         
         [Header(Fake Lighting)]
-        [NoScaleOffset]_LightingGradient ("Lighting Ramp", 2D) = "white" { }
-        _ShadowStrength ("Shadow Strength", Range(0, 1)) = 0.25
+        [NoScaleOffset]_Ramp ("Lighting Ramp", 2D) = "white" { }
+        _ShadowStrength ("Shadow Strength", Range(0, 1)) = 1
         _ShadowOffset ("Shadow Offset", Range(-1, 1)) = 0
         [MaterialToggle] _ForceLightDirection ("Force Light Direction", Range(0, 1)) = 0
         _LightDirection ("Fake Light Direction", Vector) = (0, 1, 0, 0)
         _MinBrightness ("Min Brightness", Range(0, 1)) = 0
         _MaxDirectionalIntensity("Max Directional Intensity", Float) = 1
         [NoScaleOffset]_AdditiveRamp ("Additive Ramp", 2D) = "white" { }
-        
+        _FlatOrFullAmbientLighting ("Flat or Full Ambient Lighting", Range(0, 1)) = 0
+
         [Header(Specular Highlights)]
         _SpecularMap ("Specular Map", 2D) = "white" { }
         _Gloss ("Glossiness", Range(0, 1)) = 0
@@ -95,18 +94,19 @@ Shader ".poiyomi/Toon/opaque"
     CustomEditor "PoiToon"
     SubShader
     {
-        Tags { "RenderType" = "TransparentCutout" "Queue" = "AlphaTest" }
+        Tags { "Queue" = "Transparent" "RenderType" = "Transparent+1" }
+        Blend SrcAlpha OneMinusSrcAlpha
         Stencil
         {
             Ref [_StencilRef]
             Comp [_StencilCompareFunction]
             Pass [_StencilOp]
         }
+        
         Pass
         {
             Name "Outline"
             Tags { "LightMode" = "ForwardBase" }
-            
             ZTest [_ZTest]
             Cull Front
             CGPROGRAM
@@ -151,7 +151,7 @@ Shader ".poiyomi/Toon/opaque"
             float4 frag(VertexOutput i, float facing: VFACE): COLOR
             {
                 clip(_LineWidth - 0.001);
-                fixed4 col = fixed4(tex2D(_OutlineTexture, TRANSFORM_TEX((i.uv + (_Speed * _Time.g)), _OutlineTexture)).rgb, 0) * _LineColor;
+                fixed4 col = tex2D(_OutlineTexture, TRANSFORM_TEX((i.uv + (_Speed * _Time.g)), _OutlineTexture)) * _LineColor;
                 float attenuation = LIGHT_ATTENUATION(i) / SHADOW_ATTENUATION(i);
                 float3 _flat_lighting_var = saturate(ShadeSH9(half4(float3(0, 1, 0), 1.0)) + (_LightColor0.rgb * attenuation));
                 col.rgb *= _flat_lighting_var;
@@ -175,6 +175,7 @@ Shader ".poiyomi/Toon/opaque"
             #pragma shader_feature _SCROLLING_EMISSION
             #pragma vertex vert
             #pragma fragment frag
+            #define TRANSPARENT
             #define FORWARD_BASE_PASS
             #include "PoiPass.cginc"
             ENDCG
@@ -195,6 +196,7 @@ Shader ".poiyomi/Toon/opaque"
             #pragma multi_compile DIRECTIONAL POINT SPOT
             #pragma vertex vert
             #pragma fragment frag
+            #define TRANSPARENT
             #include "PoiPass.cginc"
             ENDCG
             

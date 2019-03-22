@@ -1,5 +1,3 @@
-// Upgrade NOTE: replaced 'UNITY_PASS_TEXCUBE(unity_SpecCube1)' with 'UNITY_PASS_TEXCUBE_SAMPLER(unity_SpecCube1,unity_SpecCube0)'
-
 Shader ".poiyomi/Toon/Transparent"
 {
     Properties
@@ -46,14 +44,15 @@ Shader ".poiyomi/Toon/Transparent"
         _EmissiveScroll_Interval ("Emissive Scroll Interval", Float) = 20
         
         [Header(Fake Lighting)]
-        [NoScaleOffset]_LightingGradient ("Lighting Ramp", 2D) = "white" { }
-        _ShadowStrength ("Shadow Strength", Range(0, 1)) = 0.25
+        [NoScaleOffset]_Ramp ("Lighting Ramp", 2D) = "white" { }
+        _ShadowStrength ("Shadow Strength", Range(0, 1)) = 1
         _ShadowOffset ("Shadow Offset", Range(-1, 1)) = 0
         [MaterialToggle] _ForceLightDirection ("Force Light Direction", Range(0, 1)) = 0
         _LightDirection ("Fake Light Direction", Vector) = (0, 1, 0, 0)
         _MinBrightness ("Min Brightness", Range(0, 1)) = 0
         _MaxDirectionalIntensity("Max Directional Intensity", Float) = 1
         [NoScaleOffset]_AdditiveRamp ("Additive Ramp", 2D) = "white" { }
+        _FlatOrFullAmbientLighting ("Flat or Full Ambient Lighting", Range(0, 1)) = 0
         
         [Header(Specular Highlights)]
         _SpecularMap ("Specular Map", 2D) = "white" { }
