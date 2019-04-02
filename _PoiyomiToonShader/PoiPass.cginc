@@ -290,11 +290,11 @@
         float4 finalColorBeforeLighting = finalColor;
 
         finalColor.rgb *= _flat_lighting_var;
-        
-        float3 finalreflections = reflection.rgb * lerp(finalColorBeforeLighting.rgb, 1, _PurelyAdditive);
-        finalColor.rgb = finalColor.rgb * lerp((1 - _final_metalic_var), 1, _AdditiveClearCoat);
-        finalColor.rgb += (finalreflections * ((1 - roughness + _final_metalic_var) / 2)) * lerp(1, _flat_lighting_var, lighty_boy_uwu_var);
-
+        #ifdef FORWARD_BASE_PASS
+            float3 finalreflections = reflection.rgb * lerp(finalColorBeforeLighting.rgb, 1, _PurelyAdditive);
+            finalColor.rgb = finalColor.rgb * lerp((1 - _final_metalic_var), 1, _AdditiveClearCoat);
+            finalColor.rgb += (finalreflections * ((1 - roughness + _final_metalic_var) / 2)) * lerp(1, _flat_lighting_var, lighty_boy_uwu_var);
+        #endif
         // specular
         #if (defined(POINT) || defined(SPOT))
             _SpecularColor.rgb = _LightColor0.rgb;
@@ -320,6 +320,10 @@
             finalColor.rgb += _emission_var + ((rim * _rim_color_var * _RimStrength) * rimColor.a);
         #else
             finalColor.rgb += _specular_var;
+        #endif
+
+        #if(defined(POINT) || defined(SPOT))
+            finalColor *= (1 - _final_metalic_var);
         #endif
 
         return finalColor;

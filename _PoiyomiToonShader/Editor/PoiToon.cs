@@ -1,4 +1,4 @@
-//designed for 2.3.6
+//designed for 2.3.7
 
 using System.Collections.Generic;
 using UnityEditor;
@@ -423,7 +423,7 @@ public class PoiToon : ShaderGUI
         style.richText = true;
         style.alignment = TextAnchor.MiddleCenter;
 
-        EditorGUILayout.LabelField("<size=16><color=#008080>❤ Poiyomi Toon Shader V2.3.6 ❤</color></size>", style, GUILayout.MinHeight(18));
+        EditorGUILayout.LabelField("<size=16><color=#008080>❤ Poiyomi Toon Shader V2.3.7 ❤</color></size>", style, GUILayout.MinHeight(18));
     }
 
     public override void OnGUI(MaterialEditor materialEditor, MaterialProperty[] props)
