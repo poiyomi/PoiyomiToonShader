@@ -1,4 +1,4 @@
-//designed for 2.2.4
+//designed for 2.3.6
 
 using System.Collections.Generic;
 using UnityEditor;
@@ -100,15 +100,6 @@ public class PoiToon : ShaderGUI
 
     private static class Styles
     {
-        // sections
-        public static GUIContent MainSection = new GUIContent("Main", "Main configuration section");
-        public static GUIContent EmissionSection = new GUIContent("Emission", "Configuration for emissiveness");
-        public static GUIContent FakeLightingSection = new GUIContent("Fake Lighting", "Simulates a local light if the world lacks one");
-        public static GUIContent SpecularHighlightsSection = new GUIContent("Specular Highlights", "");
-        public static GUIContent RimLightSection = new GUIContent("Rim Lighting", "");
-        public static GUIContent MiscSection = new GUIContent("Misc", "Miscellaneous settings");
-
-        // main section
         public static GUIContent Color = new GUIContent("Color", "Color used for tinting the main texture");
         public static GUIContent Desaturation = new GUIContent("Desaturation", "Desaturate the colors before applying Color");
         public static GUIContent MainTex = new GUIContent("Main Tex", "Main texture for the shader");
@@ -118,10 +109,20 @@ public class PoiToon : ShaderGUI
 
         public static GUIContent CubeMap = new GUIContent("Baked CubeMap", "");
         public static GUIContent SampleWorld = new GUIContent("Force Baked Cubemap", "Don't sample the world for reflections if 1");
+        public static GUIContent AdditiveClearCoat = new GUIContent("Additive Clear Coat", "");
+        public static GUIContent PurelyAdditive = new GUIContent("Purely Additive", "");
         public static GUIContent MetallicMap = new GUIContent("MetallicMap", "");
         public static GUIContent Metallic = new GUIContent("Metallic", "");
         public static GUIContent RoughnessMap = new GUIContent("RoughnessMap", "");
         public static GUIContent Roughness = new GUIContent("Smoothness", "");
+
+        public static GUIContent Matcap = new GUIContent("Matcap", "");
+        public static GUIContent MatcapMap = new GUIContent("Matcap Map", "");
+        public static GUIContent MatcapColor = new GUIContent("Matcap Color", "");
+        public static GUIContent MatcapStrength = new GUIContent("Matcap Strength", "");
+        public static GUIContent ReplaceWithMatcap = new GUIContent("Replace With Matcap", "");
+        public static GUIContent MultiplyMatcap = new GUIContent("Multiply Matcap", "");
+        public static GUIContent AddMatcap = new GUIContent("Add Matcap", "");
 
         // outlines
         public static GUIContent LineWidth = new GUIContent("Line Width", "Width of the outline");
@@ -154,6 +155,7 @@ public class PoiToon : ShaderGUI
         public static GUIContent LightingShadowOffsett = new GUIContent("Shadow Offset", "Shadow Offset");
         public static GUIContent LightingDirection = new GUIContent("Light Direction", "Direction towards which the light will cast shadows");
         public static GUIContent ForceLightDirection = new GUIContent("Force Light Direction", "");
+        public static GUIContent ForceShadowStrength = new GUIContent("Force Shadow Strength", "");
         public static GUIContent MinBrightness = new GUIContent("Min Brightness", "Limit how dark you can get");
         public static GUIContent MaxDirectionalIntensity = new GUIContent("Max Directional Intensity", "Limit how bright the directional light in a map can be");
         public static GUIContent AdditiveRamp = new GUIContent("Additive Ramp", "Don't touch this if you don't know what it does");
@@ -182,7 +184,7 @@ public class PoiToon : ShaderGUI
         public static GUIContent StencilCompareFunction = new GUIContent("Stencil Compare Function", "How the referenced value is being compared");
         public static GUIContent StencilOp = new GUIContent("Stencil Op", "What to do if stencil comparison passes");
 
-        // misc section
+        // misc
         public static GUIContent CullMode = new GUIContent("Cull Mode", "Controls which face of the mesh is rendered \nOff = Double sided \nFront = Single sided (reverse) \nBack = Single sided");
         public static GUIContent SrcBlend = new GUIContent("Src Blend", "");
         public static GUIContent DstBlend = new GUIContent("Dst Blend", "");
@@ -198,10 +200,20 @@ public class PoiToon : ShaderGUI
 
     MaterialProperty m_cubeMap;
     MaterialProperty m_sampleWorld;
+    MaterialProperty m_additiveClearCoat;
+    MaterialProperty m_purelyAdditive;
     MaterialProperty m_metallicMap;
     MaterialProperty m_metallic;
     MaterialProperty m_roughnessMap;
     MaterialProperty m_roughness;
+
+    MaterialProperty m_matcap;
+    MaterialProperty m_matcapMap;
+    MaterialProperty m_matcapColor;
+    MaterialProperty m_matcapStrength;
+    MaterialProperty m_replaceWithMatcap;
+    MaterialProperty m_multiplyMatcap;
+    MaterialProperty m_addMatcap;
 
     MaterialProperty m_lineWidth;
     MaterialProperty m_outlineColor;
@@ -229,6 +241,7 @@ public class PoiToon : ShaderGUI
     MaterialProperty m_lightingShadowOffset = null;
     MaterialProperty m_lightingDirection = null;
     MaterialProperty m_forceLightDirection = null;
+    MaterialProperty m_forceShadowStrength = null;
     MaterialProperty m_minBrightness = null;
     MaterialProperty m_maxDirectionalIntensity = null;
     MaterialProperty m_additiveRamp = null;
@@ -262,6 +275,7 @@ public class PoiToon : ShaderGUI
 
     PoiToonHeader m_mainOptions;
     PoiToonHeader m_metallicOptions;
+    PoiToonHeader m_matcapOptions;
     PoiToonHeader m_outlineOptions;
     PoiToonHeader m_emissionOptions;
     PoiToonHeader m_fakeLightingOptions;
@@ -274,6 +288,7 @@ public class PoiToon : ShaderGUI
     {
         m_mainOptions = new PoiToonHeader(materialEditor, "m_mainOptions");
         m_metallicOptions = new PoiToonHeader(materialEditor, "m_metallicOptions");
+        m_matcapOptions = new PoiToonHeader(materialEditor, "m_matcapOptions");
         m_outlineOptions = new PoiToonHeader(materialEditor, "m_outlineOptions");
         m_emissionOptions = new PoiToonHeader(materialEditor, "m_emissionOptions");
         m_fakeLightingOptions = new PoiToonHeader(materialEditor, "m_fakeLightingOptions");
@@ -293,10 +308,20 @@ public class PoiToon : ShaderGUI
 
         m_cubeMap = FindProperty("_CubeMap", props);
         m_sampleWorld = FindProperty("_SampleWorld", props);
+        m_additiveClearCoat = FindProperty("_AdditiveClearCoat", props);
+        m_purelyAdditive = FindProperty("_PurelyAdditive", props);
         m_metallicMap = FindProperty("_MetallicMap", props);
         m_metallic = FindProperty("_Metallic", props);
         m_roughnessMap = FindProperty("_RoughnessMap", props);
         m_roughness = FindProperty("_Roughness", props);
+
+        m_matcap = FindProperty("_Matcap", props);
+        m_matcapMap = FindProperty("_MatcapMap", props);
+        m_matcapColor = FindProperty("_MatcapColor", props);
+        m_matcapStrength = FindProperty("_MatcapStrength", props);
+        m_replaceWithMatcap = FindProperty("_ReplaceWithMatcap", props);
+        m_multiplyMatcap = FindProperty("_MultiplyMatcap", props);
+        m_addMatcap = FindProperty("_AddMatcap", props);
 
         m_lineWidth = FindProperty("_LineWidth", props);
         m_outlineColor = FindProperty("_LineColor", props);
@@ -313,7 +338,7 @@ public class PoiToon : ShaderGUI
         m_emissiveBlinkMax = FindProperty("_EmissiveBlink_Max", props);
         m_emissiveBlinkVelocity = FindProperty("_EmissiveBlink_Velocity", props);
 
-        m_emissiveScrollEnabled = FindProperty("_SCROLLING_EMISSION", props);
+        m_emissiveScrollEnabled = FindProperty("_ScrollingEmission", props);
         m_emissiveScrollDirection = FindProperty("_EmissiveScroll_Direction", props);
         m_emissiveScrollWidth = FindProperty("_EmissiveScroll_Width", props);
         m_emissiveScrollVelocity = FindProperty("_EmissiveScroll_Velocity", props);
@@ -324,6 +349,7 @@ public class PoiToon : ShaderGUI
         m_lightingShadowOffset = FindProperty("_ShadowOffset", props);
         m_lightingDirection = FindProperty("_LightDirection", props);
         m_forceLightDirection = FindProperty("_ForceLightDirection", props);
+        m_forceShadowStrength = FindProperty("_ForceShadowStrength", props);
         m_minBrightness = FindProperty("_MinBrightness", props);
         m_maxDirectionalIntensity = FindProperty("_MaxDirectionalIntensity", props);
         m_additiveRamp = FindProperty("_AdditiveRamp", props);
@@ -334,7 +360,7 @@ public class PoiToon : ShaderGUI
         m_gloss = FindProperty("_Gloss", props);
         m_specularStrength = FindProperty("_SpecularStrength", props);
         m_specularBias = FindProperty("_SpecularBias", props);
-        m_hardSpecular = FindProperty("_HARD_SPECULAR", props);
+        m_hardSpecular = FindProperty("_HardSpecular", props);
         m_specularSize = FindProperty("_SpecularSize", props);
 
         m_rimColor = FindProperty("_RimLightColor", props);
@@ -397,7 +423,7 @@ public class PoiToon : ShaderGUI
         style.richText = true;
         style.alignment = TextAnchor.MiddleCenter;
 
-        EditorGUILayout.LabelField("<size=16><color=#008080>❤ Poiyomi Toon Shader V2.2.4 ❤</color></size>", style, GUILayout.MinHeight(18));
+        EditorGUILayout.LabelField("<size=16><color=#008080>❤ Poiyomi Toon Shader V2.3.6 ❤</color></size>", style, GUILayout.MinHeight(18));
     }
 
     public override void OnGUI(MaterialEditor materialEditor, MaterialProperty[] props)
@@ -405,7 +431,7 @@ public class PoiToon : ShaderGUI
         Material material = materialEditor.target as Material;
 
         HeaderInit(materialEditor);
-        
+
         // map shader properties to script variables
         FindProperties(props);
 
@@ -438,6 +464,8 @@ public class PoiToon : ShaderGUI
             EditorGUILayout.Space();
             materialEditor.ShaderProperty(m_cubeMap, Styles.CubeMap);
             materialEditor.ShaderProperty(m_sampleWorld, Styles.SampleWorld);
+            materialEditor.ShaderProperty(m_additiveClearCoat, Styles.AdditiveClearCoat);
+            materialEditor.ShaderProperty(m_purelyAdditive, Styles.PurelyAdditive);
             materialEditor.ShaderProperty(m_metallicMap, Styles.MetallicMap);
             materialEditor.ShaderProperty(m_metallic, Styles.Metallic);
             materialEditor.ShaderProperty(m_roughnessMap, Styles.RoughnessMap);
@@ -445,9 +473,22 @@ public class PoiToon : ShaderGUI
             EditorGUILayout.Space();
         }
 
+        m_matcapOptions = PoiToonUI.Foldout("Matcap / Sphere Textures", m_matcapOptions);
+        if (m_matcapOptions.getState())
+        {
+            EditorGUILayout.Space();
+            materialEditor.ShaderProperty(m_matcap, Styles.Matcap);
+            materialEditor.ShaderProperty(m_matcapMap, Styles.MatcapMap);
+            materialEditor.ShaderProperty(m_matcapColor, Styles.MatcapColor);
+            materialEditor.ShaderProperty(m_matcapStrength, Styles.MatcapStrength);
+            materialEditor.ShaderProperty(m_replaceWithMatcap, Styles.ReplaceWithMatcap);
+            materialEditor.ShaderProperty(m_multiplyMatcap, Styles.MultiplyMatcap);
+            materialEditor.ShaderProperty(m_addMatcap, Styles.AddMatcap);
+            EditorGUILayout.Space();
+        }
+
         // outline section
         m_outlineOptions = PoiToonUI.Foldout("Outline", m_outlineOptions);
-
         if (m_outlineOptions.getState())
         {
             EditorGUILayout.Space();
@@ -491,6 +532,7 @@ public class PoiToon : ShaderGUI
             materialEditor.ShaderProperty(m_lightingShadowStrength, Styles.LightingShadowStrength);
             materialEditor.ShaderProperty(m_lightingShadowOffset, Styles.LightingShadowOffsett);
             materialEditor.ShaderProperty(m_forceLightDirection, Styles.ForceLightDirection);
+            materialEditor.ShaderProperty(m_forceShadowStrength, Styles.ForceShadowStrength);
             materialEditor.ShaderProperty(m_lightingDirection, Styles.LightingDirection);
             materialEditor.ShaderProperty(m_minBrightness, Styles.MinBrightness);
             materialEditor.ShaderProperty(m_maxDirectionalIntensity, Styles.MaxDirectionalIntensity);

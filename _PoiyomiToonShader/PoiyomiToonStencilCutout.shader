@@ -4,6 +4,7 @@ Shader ".poiyomi/Toon/Stencil/Cutout+1"
     {
         [HideInInspector] m_mainOptions ("Float", Float) = 0
         [HideInInspector] m_metallicOptions ("Float", Float) = 0
+        [HideInInspector] m_matcapOptions ("Float", Float) = 0
         [HideInInspector] m_outlineOptions ("Float", Float) = 0
         [HideInInspector] m_emissionOptions ("Float", Float) = 0
         [HideInInspector] m_fakeLightingOptions ("Float", Float) = 0
@@ -19,11 +20,21 @@ Shader ".poiyomi/Toon/Stencil/Cutout+1"
         _NormalIntensity ("Normal Intensity", Range(0, 10)) = 1
         
         _CubeMap ("Cube Reflection", Cube) = "" { }
-        [MaterialToggle]_SampleWorld ("Force Baked Cubemap", Range(0, 1)) = 0
+        [Toggle(_)]_SampleWorld ("Force Baked Cubemap", Range(0, 1)) = 0
+        _AdditiveClearCoat ("Additive Clear Coat", Range(0, 1)) = 0
+        _PurelyAdditive ("Purely Additive", Range(0, 1)) = 0
         _MetallicMap ("Metallic Map", 2D) = "white" { }
         _Metallic ("Metallic", Range(0, 1)) = 0
         _RoughnessMap ("Roughness Map", 2D) = "white" { }
         _Roughness ("Roughness", Range(0, 1)) = 0
+        
+        _Matcap ("Matcap", 2D) = "white" { }
+        _MatcapMap ("Matcap Map", 2D) = "white" { }
+        _MatcapColor ("Matcap Color", Color) = (1, 1, 1, 1)
+        _MatcapStrength ("Matcap Strength", Range(0, 20)) = 1
+        _ReplaceWithMatcap ("Replace With Matcap", Range(0, 1)) = 0
+        _MultiplyMatcap ("Multiply Matcap", Range(0, 1)) = 0
+        _AddMatcap ("Add Matcap Additive", Range(0, 1)) = 0
         
         [Header(Emission)]
         [HDR]_EmissionColor ("Emission Color", Color) = (1, 1, 1, 1)
@@ -37,7 +48,7 @@ Shader ".poiyomi/Toon/Stencil/Cutout+1"
         _EmissiveBlink_Velocity ("Emissive Blink Velocity", Float) = 4
         
         [Header(Scrolling Emission)]
-        [Toggle(_SCROLLING_EMISSION)] _SCROLLING_EMISSION ("Enable Scrolling Emission", Float) = 0
+        [Toggle(_)] _ScrollingEmission ("Enable Scrolling Emission", Float) = 0
         _EmissiveScroll_Direction ("Emissive Scroll Direction", Vector) = (0, -10, 0, 0)
         _EmissiveScroll_Width ("Emissive Scroll Width", Float) = 10
         _EmissiveScroll_Velocity ("Emissive Scroll Velocity", Float) = 10
@@ -47,20 +58,21 @@ Shader ".poiyomi/Toon/Stencil/Cutout+1"
         [NoScaleOffset]_Ramp ("Lighting Ramp", 2D) = "white" { }
         _ShadowStrength ("Shadow Strength", Range(0, 1)) = 1
         _ShadowOffset ("Shadow Offset", Range(-1, 1)) = 0
-        [MaterialToggle] _ForceLightDirection ("Force Light Direction", Range(0, 1)) = 0
+        [Toggle(_)] _ForceLightDirection ("Force Light Direction", Range(0, 1)) = 0
+        [Toggle(_)] _ForceShadowStrength ("Force Shadow Strength", Range(0, 1)) = 0
         _LightDirection ("Fake Light Direction", Vector) = (0, 1, 0, 0)
         _MinBrightness ("Min Brightness", Range(0, 1)) = 0
-        _MaxDirectionalIntensity("Max Directional Intensity", Float) = 1
+        _MaxDirectionalIntensity ("Max Directional Intensity", Float) = 1
         [NoScaleOffset]_AdditiveRamp ("Additive Ramp", 2D) = "white" { }
         _FlatOrFullAmbientLighting ("Flat or Full Ambient Lighting", Range(0, 1)) = 0
-
+        
         [Header(Specular Highlights)]
         _SpecularMap ("Specular Map", 2D) = "white" { }
         _Gloss ("Glossiness", Range(0, 1)) = 0
         _SpecularColor ("Specular Color", Color) = (1, 1, 1, 1)
         _SpecularBias ("Specular Color Bias", Range(0, 1)) = 0
         _SpecularStrength ("Specular Strength", Range(0, 5)) = 0
-        [Toggle(_HARD_SPECULAR)]_HARD_SPECULAR ("Enable Hard Specular", Float) = 0
+        [Toggle(_)]_HardSpecular ("Enable Hard Specular", Float) = 0
         _SpecularSize ("Hard Specular Size", Range(0, 1)) = .005
         
         [Header(Outlines)]
@@ -170,7 +182,7 @@ Shader ".poiyomi/Toon/Stencil/Cutout+1"
             
             #pragma target 3.0
             #pragma shader_feature _HARD_SPECULAR
-            #pragma shader_feature _SCROLLING_EMISSION
+            #pragma shader_feature _ScrollingEmission
             #pragma vertex vert
             #pragma fragment frag
             #define FORWARD_BASE_PASS
@@ -189,7 +201,7 @@ Shader ".poiyomi/Toon/Stencil/Cutout+1"
             
             #pragma target 3.0
             #pragma shader_feature _HARD_SPECULAR
-            #pragma shader_feature _SCROLLING_EMISSION
+            #pragma shader_feature _ScrollingEmission
             #pragma multi_compile DIRECTIONAL POINT SPOT
             #pragma vertex vert
             #pragma fragment frag
