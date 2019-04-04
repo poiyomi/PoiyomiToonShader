@@ -1,6 +1,7 @@
 //for most shaders
 
 using System.Collections.Generic;
+using System.IO;
 using System.Text.RegularExpressions;
 using UnityEditor;
 using UnityEngine;
@@ -109,6 +110,49 @@ public class PoiToon : ShaderGUI
     GUIStyle m_sectionStyle;
 
     public static string EXTRA_OFFSET_OPTION = "extraOffset";
+    public static string CONFIG_FILE_PATH = "./Assets/poiToonEditorConfig.json";
+
+    public static Config config;
+
+    public class Config
+    {
+        public bool bigTextures;
+
+        public string SaveToString()
+        {
+            return JsonUtility.ToJson(this);
+        }
+
+        public static Config GetDefaultConfig()
+        {
+            Config config = new Config();
+            config.bigTextures = false;
+            return config;
+        }
+    }
+
+    public static void LoadConfig()
+    {
+        if (File.Exists(CONFIG_FILE_PATH))
+        {
+            StreamReader reader = new StreamReader(CONFIG_FILE_PATH);
+            config = JsonUtility.FromJson<Config>(reader.ReadToEnd());
+        }
+        else
+        {
+            File.CreateText(CONFIG_FILE_PATH).Close();
+            config = Config.GetDefaultConfig();
+            saveConfig();
+        }
+    }
+
+    public static void saveConfig()
+    {
+        StreamWriter writer = new StreamWriter(CONFIG_FILE_PATH, true);
+        writer.WriteLine(config.SaveToString());
+        writer.Close();
+        AssetDatabase.ImportAsset(CONFIG_FILE_PATH);
+    }
 
     private class ShaderPart
     {
@@ -306,7 +350,7 @@ public class PoiToon : ShaderGUI
     void drawShaderProperty(ShaderProperty property, MaterialEditor materialEditor)
     {
         //materialEditor.ShaderProperty(property.materialProperty, property.style);
-        if (property.materialProperty.type == MaterialProperty.PropType.Texture)
+        if (property.materialProperty.type == MaterialProperty.PropType.Texture && config.bigTextures == false)
         {
             int oldIndentLevel = EditorGUI.indentLevel;
             EditorGUI.indentLevel = property.xOffset * 2 + 1;
@@ -339,11 +383,11 @@ public class PoiToon : ShaderGUI
         }
     }
 
-    public bool test = false;
-
     public override void OnGUI(MaterialEditor materialEditor, MaterialProperty[] props)
     {
         Material material = materialEditor.target as Material;
+
+        if (config == null) LoadConfig();
 
         SetupStyle();
 
@@ -365,6 +409,8 @@ public class PoiToon : ShaderGUI
         }
 
         ToggleDefines(material);
+
+        config.bigTextures = EditorGUILayout.Toggle("Big Texture Fields", config.bigTextures);
 
         EditorGUILayout.BeginHorizontal();
         GUILayout.FlexibleSpace();
