@@ -17,10 +17,10 @@ public class PoiToon : ShaderGUI
     //variables for the presets
     private bool hasPresets = false;
     private bool presetsLoaded = false;
+    private string presetsFilePath = null;
     private Dictionary<string, List<string[]>> presets = new Dictionary<string, List<string[]>>(); //presets
 
     //variabled for the preset selector
-    public bool showPresets = false;
     public int selectedPreset = 0;
     private string[] presetOptions;
 
@@ -415,27 +415,34 @@ public class PoiToon : ShaderGUI
         {
             string presetsFileName = presetsProperty.displayName;
             hasPresets = true;
+            presets.Clear();
+
             string[] guid = AssetDatabase.FindAssets(presetsFileName, null);
             if (guid.Length > 0)
             {
-                string path = AssetDatabase.GUIDToAssetPath(guid[0]);
-                StreamReader reader = new StreamReader(path);
+                presetsFilePath = AssetDatabase.GUIDToAssetPath(guid[0]);
+                StreamReader reader = new StreamReader(presetsFilePath);
                 string line;
                 List<string[]> currentPreset = null;
                 while ((line = reader.ReadLine()) != null)
                 {
-                    if (line.Contains("="))
+                    if (line.Length > 0 && !line.StartsWith("//"))
                     {
-                        currentPreset.Add(line.Split(new string[] { " = " }, System.StringSplitOptions.None));
-                    }
-                    else
-                    {
-                        currentPreset = new List<string[]>();
-                        presets.Add(line, currentPreset);
+                        if (line.Contains("="))
+                        {
+                            currentPreset.Add(line.Split(new string[] { " = " }, System.StringSplitOptions.None));
+                        }
+                        else
+                        {
+                            currentPreset = new List<string[]>();
+                            presets.Add(line, currentPreset);
+                        }
                     }
                 }
-                presetOptions = new string[presets.Count + 1];
-                presetOptions[0] = "none";
+                reader.Close();
+                presetOptions = new string[presets.Count + 2];
+                presetOptions[0] = "Presets";
+                presetOptions[presets.Count + 1] = "+ New +";
                 int i = 1;
                 foreach (string k in presets.Keys) presetOptions[i++] = k;
             }
@@ -452,20 +459,75 @@ public class PoiToon : ShaderGUI
     {
         if (hasPresets)
         {
-            if (GUILayout.Button("Presets", GUILayout.Width(70), GUILayout.Height(20)))
+            int newSelectedPreset = EditorGUILayout.Popup(selectedPreset, presetOptions, GUILayout.MaxWidth(100));
+            if (newSelectedPreset != selectedPreset)
             {
-                showPresets = !showPresets;
+                selectedPreset = newSelectedPreset;
+                if (selectedPreset != presetOptions.Length - 1) applyPreset(presetOptions[selectedPreset], materialEditor, props);
             }
-            if (showPresets)
-            {
-                int newSelectedPreset = EditorGUILayout.Popup(selectedPreset, presetOptions);
-                if (newSelectedPreset != selectedPreset)
-                {
-                    selectedPreset = newSelectedPreset;
-                    applyPreset(presetOptions[selectedPreset], materialEditor, props);
-                }
-            }
+            if (selectedPreset == presetOptions.Length - 1) drawNewPreset(props);
         }
+    }
+
+    string newPresetName = "Preset Name";
+
+    public void drawNewPreset(MaterialProperty[] props)
+    {
+        newPresetName = GUILayout.TextField(newPresetName, GUILayout.MaxWidth(100));
+
+        if (GUILayout.Button("Add", GUILayout.Width(40), GUILayout.Height(20)))
+        {
+            addNewPreset(newPresetName, props);
+        }
+    }
+
+    public void addNewPreset(string name, MaterialProperty[] props)
+    {
+        //find all non default values
+
+        //add to presets list
+        List<string[]> sets = new List<string[]>();
+
+        foreach (MaterialProperty p in props)
+        {
+            string[] set = new string[] { p.name, "" };
+            bool empty = false;
+            switch (p.type)
+            {
+                case MaterialProperty.PropType.Float:
+                case MaterialProperty.PropType.Range:
+                    set[1] = "" + p.floatValue;
+                    break;
+                case MaterialProperty.PropType.Texture:
+                    if (p.textureValue == null) empty = true;
+                    else set[1] = "" + p.textureValue.name;
+                    break;
+                case MaterialProperty.PropType.Color:
+                    if (p.colorValue == null) empty = true;
+                    else set[1] = "" + p.colorValue.r + "," + p.colorValue.g + "," + p.colorValue.b;
+                    break;
+            }
+            if (p.flags != MaterialProperty.PropFlags.HideInInspector && !empty) sets.Add(set);
+        }
+
+        //fix all preset variables
+        presets.Add(name, sets);
+        string[] newPresetOptions = new string[presetOptions.Length + 1];
+        for (int i = 0; i < presetOptions.Length; i++) newPresetOptions[i] = presetOptions[i];
+        newPresetOptions[newPresetOptions.Length - 1] = presetOptions[newPresetOptions.Length - 2];
+        newPresetOptions[newPresetOptions.Length - 2] = name;
+        presetOptions = newPresetOptions;
+        newPresetName = "Preset Name";
+
+        //save all presets into file
+        StreamWriter writer = new StreamWriter(presetsFilePath, false);
+        foreach (KeyValuePair<string, List<string[]>> preset in presets)
+        {
+            writer.WriteLine(preset.Key);
+            foreach (string[] set in preset.Value) writer.WriteLine(set[0] + " = " + set[1]);
+            writer.WriteLine("");
+        }
+        writer.Close();
     }
 
     public void applyPreset(string presetName, MaterialEditor materialEditor, MaterialProperty[] props)
@@ -486,7 +548,7 @@ public class PoiToon : ShaderGUI
                         {
                             string path = AssetDatabase.GUIDToAssetPath(guids[0]);
                             Texture tex = (Texture)EditorGUIUtility.Load(path);
-                            #pragma warning disable CS0618 // Type or member is obsolete
+#pragma warning disable CS0618 // Type or member is obsolete
                             materialEditor.SetTexture(set[0], tex);
                         }
                     }
@@ -503,7 +565,7 @@ public class PoiToon : ShaderGUI
                         float.TryParse(rgbString[1], out rgb[1]);
                         float.TryParse(rgbString[2], out rgb[2]);
                         materialEditor.SetColor(set[0], new Color(rgb[0], rgb[1], rgb[2]));
-                        #pragma warning restore CS0618 // Type or member is obsolete
+#pragma warning restore CS0618 // Type or member is obsolete
                     }
                 }
             }
@@ -520,6 +582,7 @@ public class PoiToon : ShaderGUI
         SetupStyle();
 
         CollectAllProperties(props, materialEditor);
+
 
         // load default toggle values
         LoadDefaults(material);
