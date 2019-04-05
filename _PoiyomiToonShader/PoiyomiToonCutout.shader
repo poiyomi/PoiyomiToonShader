@@ -3,6 +3,7 @@
     Properties
     {
 		[HideInInspector] shader_name("<color=#008080>❤ Poiyomi Toon Shader V2.3.7 ❤</color>", Float) = 0
+		[HideInInspector] shader_presets("poiToonPresets", Float) = 0
 		
 		[HideInInspector] m_mainOptions("Main", Float) = 0
         _Color ("Color", Color) = (1, 1, 1, 1)

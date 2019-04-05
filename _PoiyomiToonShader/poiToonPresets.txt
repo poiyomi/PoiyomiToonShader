@@ -1,0 +1,71 @@
+Light Ramps/Default Ramp
+_Ramp = poiyomiDefaultShadow
+_AdditiveRamp = poiyomiDefaultShadow
+
+Light Ramps/Skin
+_Ramp = PoiyomiSkinRamp
+_AdditiveRamp = poiyomiDefaultShadow
+
+Light Ramps/Hair
+_Ramp = PoiyomiHairRamp
+_AdditiveRamp = poiyomiDefaultShadow
+
+Light Ramps/Toon Skin
+_Ramp = ToonSkin
+_AdditiveRamp = poiyomiDefaultShadow
+
+Light Ramps/Toon Ramp
+_Ramp = BasicToonRamp
+_AdditiveRamp = poiyomiDefaultShadow
+
+Light Ramps/Grey Ramp
+_Ramp = greyShadowRamp
+_AdditiveRamp = poiyomiDefaultShadow
+
+Light Ramps/Black Ramp
+_Ramp = blackShadowRamp
+_AdditiveRamp = poiyomiDefaultShadow
+
+Light Ramps/Metall
+_Ramp = PoiyomiMetalRamp
+_AdditiveRamp = poiyomiDefaultShadow
+
+Light Ramps/Colored Shadow/ToonBlue
+_Ramp = ToonBlue
+_AdditiveRamp = poiyomiDefaultShadow
+
+Light Ramps/Colored Shadow/ToonCyan
+_Ramp = ToonCyan
+_AdditiveRamp = poiyomiDefaultShadow
+
+Light Ramps/Colored Shadow/ToonEmGreen
+_Ramp = ToonEmGreen
+_AdditiveRamp = poiyomiDefaultShadow
+
+Light Ramps/Colored Shadow/ToonGray
+_Ramp = ToonGray
+_AdditiveRamp = poiyomiDefaultShadow
+
+Light Ramps/Colored Shadow/ToonGray_Smooth
+_Ramp = ToonGray_Smooth
+_AdditiveRamp = poiyomiDefaultShadow
+
+Light Ramps/Colored Shadow/ToonGreen
+_Ramp = ToonGreen
+_AdditiveRamp = poiyomiDefaultShadow
+
+Light Ramps/Colored Shadow/ToonMagenta
+_Ramp = ToonMagenta
+_AdditiveRamp = poiyomiDefaultShadow
+
+Light Ramps/Colored Shadow/ToonPurple
+_Ramp = ToonPurple
+_AdditiveRamp = poiyomiDefaultShadow
+
+Light Ramps/Colored Shadow/ToonRed
+_Ramp = ToonRed
+_AdditiveRamp = poiyomiDefaultShadow
+
+Light Ramps/Colored Shadow/ToonYellow
+_Ramp = ToonYellow
+_AdditiveRamp = poiyomiDefaultShadow
