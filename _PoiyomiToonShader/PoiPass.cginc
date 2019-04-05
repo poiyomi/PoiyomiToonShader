@@ -235,11 +235,11 @@
 
                 if(_ForceShadowStrength == 0)
                 {
-                    _flat_lighting_var = clamp(ambient + lightZero.rgb * lerp(1, LightingRamp, _ShadowStrength), _MinBrightness, max(lightZero.rgb, ambient));
+                    _flat_lighting_var = clamp(ambient + lightZero.rgb * lerp(1, LightingRamp, _ShadowStrength), _MinBrightness, max(lightZero.a, ambient));
                 }
                 else
                 {
-                    _flat_lighting_var = clamp((ambient + lightZero.rgb) * lerp(1, LightingRamp, _ShadowStrength), _MinBrightness, max(lightZero.rgb, ambient));
+                    _flat_lighting_var = clamp((ambient + lightZero.rgb) * lerp(1, LightingRamp, _ShadowStrength), _MinBrightness, max(lightZero.a, ambient));
                 }
             }
             else
