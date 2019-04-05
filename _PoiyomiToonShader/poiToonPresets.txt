@@ -1,0 +1,8 @@
+Skin
+_Ramp = PoiyomiSkinRamp
+_AdditiveRamp = PoiyomiSkinRamp
+Test/Range,Int,Float Setting
+_AddMatcap = 1
+_LineWidth = 1
+Test/Color Setting
+_Color = 0.1,0.3,0.9
