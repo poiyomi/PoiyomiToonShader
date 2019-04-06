@@ -4,6 +4,11 @@
     {
 		[HideInInspector] shader_name("<color=#008080>❤ Poiyomi Toon Shader V2.3.7 ❤</color>", Float) = 0
 
+		[HideInInspector] footer_github("linkButton(Github,https://github.com/poiyomi/PoiyomiToonShader)", Float) = 0
+		[HideInInspector] footer_discord("linkButton(Discord,https://discord.gg/Ays52PY)", Float) = 0
+		[HideInInspector] footer_donate("linkButton(Donate,https://www.paypal.me/poiyomi)", Float) = 0
+		[HideInInspector] footer_patreon("linkButton(Patreon,https://www.patreon.com/poiyomi)", Float) = 0
+
 		[HideInInspector] m_mainOptions("Main", Float) = 0
 		_Color("Color", Color) = (1, 1, 1, 1)
 		_Desaturation("Desaturation", Range(-1, 1)) = 0
