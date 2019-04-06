@@ -6,6 +6,8 @@ Shader ".poiyomi/Toon/Stencil/Invis"
         [Enum(UnityEngine.Rendering.StencilOp)] _StencilOp ("Stencil Op", Float) = 0
         [Enum(UnityEngine.Rendering.CompareFunction)] _StencilCompareFunction ("Stencil Compare Function", Float) = 0
     }
+	CustomEditor "PoiToon"
+
     SubShader
     {
         
