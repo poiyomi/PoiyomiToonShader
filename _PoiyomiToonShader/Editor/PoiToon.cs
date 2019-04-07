@@ -403,12 +403,13 @@ public class PoiToon : ShaderGUI
         }
         EditorGUILayout.LabelField("Render Queue", GUILayout.ExpandWidth(true));
         int newQueueSelection = EditorGUILayout.Popup(queueSelection, queueOptions, GUILayout.MaxWidth(100));
-        int newQueue = queueOptionsQueues[newQueueSelection];
-        bool isInput = Event.current.isKey || queueSelection != newQueueSelection;
+        int newQueue = queueOptionsQueues[newQueueSelection]; 
         if (queueSelection != newQueueSelection) customQueueFieldInput = newQueue;
-        if (newQueue != material.renderQueue && isInput) material.renderQueue = customQueueFieldInput;
-        if (newQueue != material.renderQueue && !isInput) customQueueFieldInput = material.renderQueue;
-        customQueueFieldInput = EditorGUILayout.IntField(customQueueFieldInput, GUILayout.MaxWidth(65));
+        int newCustomQueueFieldInput = EditorGUILayout.IntField(customQueueFieldInput, GUILayout.MaxWidth(65));
+        bool isInput = customQueueFieldInput!=newCustomQueueFieldInput || queueSelection != newQueueSelection;
+        customQueueFieldInput = newCustomQueueFieldInput;
+        if (customQueueFieldInput != material.renderQueue && isInput) material.renderQueue = customQueueFieldInput;
+        if (customQueueFieldInput != material.renderQueue && !isInput) customQueueFieldInput = material.renderQueue;
         EditorGUILayout.EndHorizontal();
     }
 
