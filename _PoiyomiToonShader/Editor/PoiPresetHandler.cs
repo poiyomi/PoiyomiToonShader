@@ -83,7 +83,7 @@ public class PoiPresetHandler {
     }
 
     //draws presets if exists
-    public void drawPresets(MaterialEditor materialEditor, MaterialProperty[] props)
+    public void drawPresets(MaterialEditor materialEditor, MaterialProperty[] props, Material material)
     {
         if (hasPresets&&presetsLoaded)
         {
@@ -91,23 +91,23 @@ public class PoiPresetHandler {
             if (newSelectedPreset != selectedPreset)
             {
                 selectedPreset = newSelectedPreset;
-                if (selectedPreset != presetOptions.Length - 1) applyPreset(presetOptions[selectedPreset], materialEditor, props);
+                if (selectedPreset != presetOptions.Length - 1) applyPreset(presetOptions[selectedPreset], materialEditor, props,material);
             }
-            if (selectedPreset == presetOptions.Length - 1) drawNewPreset(props);
+            if (selectedPreset == presetOptions.Length - 1) drawNewPreset(props, material);
         }
     }
 
-    public void drawNewPreset(MaterialProperty[] props)
+    public void drawNewPreset(MaterialProperty[] props, Material material)
     {
         newPresetName = GUILayout.TextField(newPresetName, GUILayout.MaxWidth(100));
 
         if (GUILayout.Button("Add", GUILayout.Width(40), GUILayout.Height(20)))
         {
-            addNewPreset(newPresetName, props);
+            addNewPreset(newPresetName, props, material);
         }
     }
 
-    public void addNewPreset(string name, MaterialProperty[] props)
+    public void addNewPreset(string name, MaterialProperty[] props, Material material)
     {
         //find all non default values
 
@@ -118,17 +118,24 @@ public class PoiPresetHandler {
         {
             string[] set = new string[] { p.name, "" };
             bool empty = false;
+            Material defaultValues = new Material(material.shader);
             switch (p.type)
             {
                 case MaterialProperty.PropType.Float:
                 case MaterialProperty.PropType.Range:
+                    if (defaultValues != null && defaultValues.GetFloat(Shader.PropertyToID(set[0]))== p.floatValue) empty = true;
                     set[1] = "" + p.floatValue;
                     break;
                 case MaterialProperty.PropType.Texture:
                     if (p.textureValue == null) empty = true;
                     else set[1] = "" + p.textureValue.name;
                     break;
+                case MaterialProperty.PropType.Vector:
+                    if (defaultValues != null && defaultValues.GetVector(Shader.PropertyToID(set[0])).Equals(p.vectorValue)) empty = true;
+                    set[1] = "" + p.vectorValue.x + "," + p.vectorValue.y + "," + p.vectorValue.z + "," + p.vectorValue.w;
+                    break;
                 case MaterialProperty.PropType.Color:
+                    if (defaultValues != null && defaultValues.GetColor(Shader.PropertyToID(set[0])).Equals(p.colorValue)) empty = true;
                     set[1] = "" + p.colorValue.r + "," + p.colorValue.g + "," + p.colorValue.b;
                     break;
             }
@@ -155,7 +162,7 @@ public class PoiPresetHandler {
         writer.Close();
     }
 
-    public void applyPreset(string presetName, MaterialEditor materialEditor, MaterialProperty[] props)
+    public void applyPreset(string presetName, MaterialEditor materialEditor, MaterialProperty[] props, Material material)
     {
         List<string[]> sets;
         if (presets.TryGetValue(presetName, out sets))
@@ -173,14 +180,19 @@ public class PoiPresetHandler {
                         {
                             string path = AssetDatabase.GUIDToAssetPath(guids[0]);
                             Texture tex = (Texture)EditorGUIUtility.Load(path);
-#pragma warning disable CS0618 // Type or member is obsolete
-                            materialEditor.SetTexture(set[0], tex);
+                            material.SetTexture(Shader.PropertyToID(set[0]), tex);
                         }
                     }
                     else if (p.type == MaterialProperty.PropType.Float || p.type == MaterialProperty.PropType.Range)
                     {
                         float value;
-                        if (float.TryParse(set[1], out value)) materialEditor.SetFloat(set[0], value);
+                        if (float.TryParse(set[1], out value)) material.SetFloat(Shader.PropertyToID(set[0]), value);
+                    }
+                    else if (p.type == MaterialProperty.PropType.Vector)
+                    {
+                        string[] xyzw = set[1].Split(",".ToCharArray());
+                        Vector4 vector = new Vector4(float.Parse(xyzw[0]), float.Parse(xyzw[1]), float.Parse(xyzw[2]), float.Parse(xyzw[3]));
+                        material.SetVector(Shader.PropertyToID(set[0]), vector);
                     }
                     else if (p.type == MaterialProperty.PropType.Color)
                     {
@@ -189,8 +201,14 @@ public class PoiPresetHandler {
                         float.TryParse(rgbString[0], out rgb[0]);
                         float.TryParse(rgbString[1], out rgb[1]);
                         float.TryParse(rgbString[2], out rgb[2]);
-                        materialEditor.SetColor(set[0], new Color(rgb[0], rgb[1], rgb[2]));
-#pragma warning restore CS0618 // Type or member is obsolete
+                        material.SetColor(Shader.PropertyToID(set[0]), new Color(rgb[0], rgb[1], rgb[2]));
+                    }
+                }else if (set[0] == "render_queue")
+                {
+                    int q = 0;
+                    Debug.Log(set[0] + "," + set[1]);
+                    if(int.TryParse(set[1],out q)){
+                        material.renderQueue = q;
                     }
                 }
             }

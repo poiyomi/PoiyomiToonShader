@@ -69,3 +69,6 @@ _AdditiveRamp = poiyomiDefaultShadow
 Light Ramps/Colored Shadow/ToonYellow
 _Ramp = ToonYellow
 _AdditiveRamp = poiyomiDefaultShadow
+
+Test/RenderQueue
+render_queue = 1234
