@@ -2,7 +2,7 @@
 {
     Properties
     {
-		[HideInInspector] shader_name("<color=#008080>❤ Poiyomi Toon Shader V2.3.7 ❤</color>", Float) = 0
+		[HideInInspector] shader_master_label("<color=#008080>❤ Poiyomi Toon Shader V2.3.7 ❤</color>", Float) = 0
 		[HideInInspector] shader_presets("poiToonPresets", Float) = 0
 
 		[HideInInspector] footer_github("linkButton(Github,https://github.com/poiyomi/PoiyomiToonShader)", Float) = 0
