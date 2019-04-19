@@ -70,5 +70,37 @@ Light Ramps/Colored Shadow/ToonYellow
 _Ramp = ToonYellow
 _AdditiveRamp = poiyomiDefaultShadow
 
-Test/RenderQueue
-render_queue = 1234
+Stencil/Stenciled Outlines
+_StencilRef = 10
+_StencilReadMaskRef = 0
+_StencilWriteMaskRef = 10
+_StencilPassOp = 2
+_StencilFailOp = 0
+_StencilZFailOp = 0
+_StencilCompareFunction = 8
+_OutlineStencilRef = 10
+_OutlineStencilReadMaskRef = 10
+_OutlineStencilWriteMaskRef = 0
+_OutlineStencilPassOp = 0
+_OutlineStencilFailOp = 0
+_OutlineStencilZFailOp = 0
+_OutlineStencilCompareFunction = 6
+
+star emission
+_Color = 0.5367647,0.5367647,0.5367647
+_CubeMap = Default
+_EmissionMap = rainbow_texture
+_EmissionMask = StarMask
+_EmissionScrollSpeed = 0,0.2,0,0
+_EmissionStrength = 8
+_EmissiveScroll_Direction = 0,10,0,0
+_Ramp = poiyomiDefaultShadow
+_AdditiveRamp = poiyomiDefaultShadow
+_StencilRef = 10
+_StencilReadMaskRef = 10
+_StencilWriteMaskRef = 10
+_StencilPassOp = 2
+_OutlineStencilRef = 10
+_OutlineStencilReadMaskRef = 10
+_OutlineStencilWriteMaskRef = 10
+_OutlineStencilCompareFunction = 6

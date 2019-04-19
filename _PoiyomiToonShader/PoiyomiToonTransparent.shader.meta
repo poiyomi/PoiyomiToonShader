@@ -4,7 +4,7 @@ ShaderImporter:
   externalObjects: {}
   defaultTextures:
   - _MainTex: {instanceID: 0}
-  - _NormalMap: {instanceID: 0}
+  - _BumpMap: {instanceID: 0}
   - _CubeMap: {fileID: 8900000, guid: a0fde614a95c2d44ca3dec1fba756a6f, type: 3}
   - _MetallicMap: {instanceID: 0}
   - _RoughnessMap: {instanceID: 0}
