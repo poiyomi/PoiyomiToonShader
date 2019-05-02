@@ -3,7 +3,7 @@
     Properties
     {
         
-        [HideInInspector] shader_master_label ("<color=#008080>❤ Poiyomi Toon Shader V2.4.0 ❤</color>", Float) = 0
+        [HideInInspector] shader_master_label ("<color=#008080>❤ Poiyomi Toon Shader V2.5.0 ❤</color>", Float) = 0
         [HideInInspector] shader_presets ("poiToonPresets", Float) = 0
         
         [HideInInspector] footer_github("linkButton(Github,https://github.com/poiyomi/PoiyomiToonShader)", Float) = 0
@@ -19,6 +19,7 @@
         _BumpScale ("Normal Intensity", Range(0, 10)) = 1
         _Clip ("Alpha Cuttoff", Range(0, 1.001)) = 0.5
         [HideInInspector] m_start_mainAdvanced ("Advanced", Float) = 0
+        _GlobalPanSpeed("Pan Speed XY", Vector) = (0,0,0,0)
         [Normal]_DetailNormalMap ("Detail Map", 2D) = "bump" { }
         _DetailNormalMapScale ("Detail Intensity", Range(0, 10)) = 1
         [HideInInspector] m_end_mainAdvanced ("Advanced", Float) = 0
@@ -30,8 +31,9 @@
         _PurelyAdditive ("Purely Additive", Range(0, 1)) = 0
         _MetallicMap ("Metallic Map", 2D) = "white" { }
         _Metallic ("Metallic", Range(0, 1)) = 0
-        _RoughnessMap ("Roughness Map", 2D) = "white" { }
-        _Roughness ("Smoothness", Range(0, 1)) = 0
+        _SmoothnessMap ("Smoothness Map", 2D) = "white" { }
+        [Toggle(_)]_InvertSmoothness("Invert Smoothness Map",Range(0,1)) = 0
+        _Smoothness ("Smoothness", Range(0, 1)) = 0
         
         [HideInInspector] m_matcapOptions ("Matcap / Sphere Textures", Float) = 0
         _Matcap ("Matcap", 2D) = "white" { }
@@ -71,7 +73,7 @@
         [HideInInspector] m_end_scrollingEmissionOptions ("Scrolling Emission", Float) = 0
         
         [HideInInspector] m_fakeLightingOptions ("Lighting", Float) = 0
-        [NoScaleOffset]_Ramp ("Lighting Ramp", 2D) = "white" { }
+        [NoScaleOffset]_ToonRamp ("Lighting Ramp", 2D) = "white" { }
         _ShadowStrength ("Shadow Strength", Range(0, 1)) = .75
         _ShadowOffset ("Shadow Offset", Range(-1, 1)) = 0
         [Toggle(_)] _ForceLightDirection ("Force Light Direction", Range(0, 1)) = 0
@@ -91,6 +93,14 @@
         [Toggle(_)]_HardSpecular ("Enable Hard Specular", Float) = 0
         _SpecularSize ("Hard Specular Size", Range(0, 1)) = .005
         
+        [HideInInspector] m_panosphereOptions ("Panosphere", Float) = 0
+        _PanosphereTexture ("Panoshpere Texture", 2D) = "white" { }
+        _PanoMapTexture ("Pano Map Texture", 2D) = "white" { }
+        _PanoEmission ("Pano Emission", Range(0,10)) = 0
+        _PanoBlend ("Pano Blend", Range(0,1)) = 0
+        _PanosphereColor ("Panosphere Color", Color) = (1, 1, 1, 1)
+        _PanosphereScroll ("Panosphere Scrolling", Vector) = (0,0,0,0)
+
         [HideInInspector] m_rimLightOptions ("Rim Lighting", Float) = 0
         _RimLightColor ("Rim Color", Color) = (1, 1, 1, 1)
         _RimWidth ("Rim Width", Range(0, 1)) = 0.8
@@ -108,7 +118,7 @@
         [Enum(UnityEngine.Rendering.StencilOp)] _StencilFailOp ("Stencil Fail Op", Float) = 0
         [Enum(UnityEngine.Rendering.StencilOp)] _StencilZFailOp ("Stencil ZFail Op", Float) = 0
         [Enum(UnityEngine.Rendering.CompareFunction)] _StencilCompareFunction ("Stencil Compare Function", Float) = 8
-        
+
         [HideInInspector] m_start_OutlineStencil ("Outline Stencil", Float) = 0
         [IntRange] _OutlineStencilRef ("Stencil Reference Value", Range(0, 255)) = 0
         [IntRange] _OutlineStencilReadMaskRef ("Stencil ReadMask Value", Range(0, 255)) = 0
@@ -124,6 +134,7 @@
         [Enum(UnityEngine.Rendering.CompareFunction)] _ZTest ("ZTest", Float) = 4
         [Enum(UnityEngine.Rendering.BlendMode)] _SourceBlend ("Source Blend", Float) = 5
         [Enum(UnityEngine.Rendering.BlendMode)] _DestinationBlend ("Destination Blend", Float) = 10
+        [Enum(Off, 0, On, 1)] _ZWrite ("ZWrite", Int) = 1
     }
     
     CustomEditor "PoiToon"
@@ -147,6 +158,7 @@
                 Fail [_StencilFailOp]
                 ZFail [_StencilZFailOp]
             }
+            ZWrite [_ZWrite]
             Cull [_Cull]
             ZTest [_ZTest]
             CGPROGRAM
@@ -156,6 +168,38 @@
             #pragma fragment frag
             #define FORWARD_BASE_PASS
             #define BINORMAL_PER_FRAGMENT
+            #define PANOSPHERE
+            #include "PoiPass.cginc"
+            ENDCG
+            
+        }
+        
+        Pass
+        {
+            Tags { "LightMode" = "ForwardAdd" }
+            Stencil
+            {
+                Ref [_StencilRef]
+                ReadMask [_StencilReadMaskRef]
+                WriteMask [_StencilWriteMaskRef]
+                Ref [_StencilRef]
+                Comp [_StencilCompareFunction]
+                Pass [_StencilPassOp]
+                Fail [_StencilFailOp]
+                ZFail [_StencilZFailOp]
+            }
+            ZWrite Off
+            Blend One One
+            Cull [_Cull]
+            ZTest [_ZTest]
+            CGPROGRAM
+            
+            #pragma target 3.0
+            #pragma multi_compile DIRECTIONAL POINT SPOT
+            #pragma vertex vert
+            #pragma fragment frag
+            #define BINORMAL_PER_FRAGMENT
+            #define PANOSPHERE
             #include "PoiPass.cginc"
             ENDCG
             
@@ -176,6 +220,7 @@
                 Fail [_OutlineStencilFailOp]
                 ZFail [_OutlineStencilZFailOp]
             }
+            ZWrite [_ZWrite]
             ZTest [_ZTest]
             Cull Front
             CGPROGRAM
@@ -187,35 +232,6 @@
             #pragma vertex vert
             #pragma fragment frag
             #include "PoiOutlinePass.cginc"
-            ENDCG
-            
-        }
-        
-        Pass
-        {
-            Tags { "LightMode" = "ForwardAdd" }
-            Stencil
-            {
-                Ref [_StencilRef]
-                ReadMask [_StencilReadMaskRef]
-                WriteMask [_StencilWriteMaskRef]
-                Ref [_StencilRef]
-                Comp [_StencilCompareFunction]
-                Pass [_StencilPassOp]
-                Fail [_StencilFailOp]
-                ZFail [_StencilZFailOp]
-            }
-            ZWrite Off Blend One One
-            Cull [_Cull]
-            ZTest [_ZTest]
-            CGPROGRAM
-            
-            #pragma target 3.0
-            #pragma multi_compile DIRECTIONAL POINT SPOT
-            #pragma vertex vert
-            #pragma fragment frag
-            #define BINORMAL_PER_FRAGMENT
-            #include "PoiPass.cginc"
             ENDCG
             
         }
@@ -237,8 +253,9 @@
             
             #pragma target 3.0
             #pragma multi_compile_shadowcaster
-            #pragma vertex MyShadowVertexProgram
-            #pragma fragment MyShadowFragmentProgram
+            #pragma vertex vertShadowCaster
+            #pragma fragment fragShadowCaster
+            #define CUTOUT
             #include "PoiShadows.cginc"
             ENDCG
             

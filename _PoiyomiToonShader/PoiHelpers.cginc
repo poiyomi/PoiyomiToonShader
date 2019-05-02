@@ -37,8 +37,8 @@ float3 getCameraForward()
 
 void InitializeFragmentNormal(inout v2f i)
 {
-    float3 mainNormal = UnpackScaleNormal(tex2D(_BumpMap, TRANSFORM_TEX(i.uv, _BumpMap)), _BumpScale);
-    float3 detailNormal = UnpackScaleNormal(tex2D(_DetailNormalMap, TRANSFORM_TEX(i.uv, _DetailNormalMap)), _DetailNormalMapScale);
+    float3 mainNormal = UnpackScaleNormal(UNITY_SAMPLE_TEX2D_SAMPLER(_BumpMap, _MainTex,TRANSFORM_TEX(i.uv, _BumpMap)), _BumpScale);
+    float3 detailNormal = UnpackScaleNormal(UNITY_SAMPLE_TEX2D_SAMPLER(_DetailNormalMap, _MainTex,TRANSFORM_TEX(i.uv, _DetailNormalMap)), _DetailNormalMapScale);
     float3 tangentSpaceNormal = BlendNormals(mainNormal, detailNormal);
     
     #if defined(BINORMAL_PER_FRAGMENT)
@@ -53,3 +53,16 @@ void InitializeFragmentNormal(inout v2f i)
         tangentSpaceNormal.z * i.normal
     );
 }
+
+#ifdef PANOSPHERE
+    // Panosphere
+    float2 StereoPanoProjection(float3 coords)
+    {
+        float3 normalizedCoords = normalize(coords);
+        float latitude = acos(normalizedCoords.y);
+        float longitude = atan2(normalizedCoords.z, normalizedCoords.x);
+        float2 sphereCoords = float2(longitude + _Time.y * _PanosphereScroll.x, latitude + _Time.y * _PanosphereScroll.y) * float2(0.5 / UNITY_PI, 1.0 / UNITY_PI);
+        sphereCoords = float2(0.5, 1.0) - sphereCoords;
+        return(sphereCoords + float4(0, 1 - unity_StereoEyeIndex, 1, 0.5).xy) * float4(0, 1 - unity_StereoEyeIndex, 1, 0.5).zw;
+    }
+#endif

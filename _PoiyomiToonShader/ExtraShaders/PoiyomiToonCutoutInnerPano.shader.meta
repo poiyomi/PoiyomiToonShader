@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 4e5b5cafd518d074cbcb92803448e369
+guid: 465c5eed70b2b8642b4d026cccfc81bc
 ShaderImporter:
   externalObjects: {}
   defaultTextures:
@@ -8,11 +8,14 @@ ShaderImporter:
   - _CubeMap: {fileID: 8900000, guid: a0fde614a95c2d44ca3dec1fba756a6f, type: 3}
   - _MetallicMap: {instanceID: 0}
   - _SmoothnessMap: {instanceID: 0}
+  - _Matcap: {instanceID: 0}
+  - _MatcapMap: {instanceID: 0}
+  - _OutlineTexture: {instanceID: 0}
   - _EmissionMap: {instanceID: 0}
+  - _EmissionMask: {instanceID: 0}
   - _ToonRamp: {fileID: 2800000, guid: 2b2456e68290a8847a6903bc0005d58f, type: 3}
   - _AdditiveRamp: {fileID: 2800000, guid: 2b2456e68290a8847a6903bc0005d58f, type: 3}
   - _SpecularMap: {instanceID: 0}
-  - _OutlineTexture: {instanceID: 0}
   - _RimTex: {instanceID: 0}
   userData: 
   assetBundleName: 

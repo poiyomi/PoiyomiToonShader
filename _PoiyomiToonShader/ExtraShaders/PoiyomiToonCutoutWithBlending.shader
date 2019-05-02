@@ -1,28 +1,39 @@
-﻿Shader ".poiyomi/Toon/Transparent"
+﻿Shader ".poiyomi/Toon/Extras/Cutout With Texture Blending"
 {
     Properties
     {
+        
         [HideInInspector] shader_master_label ("<color=#008080>❤ Poiyomi Toon Shader V2.5.0 ❤</color>", Float) = 0
         [HideInInspector] shader_presets ("poiToonPresets", Float) = 0
         
-		[HideInInspector] footer_github("linkButton(Github,https://github.com/poiyomi/PoiyomiToonShader)", Float) = 0
+        [HideInInspector] footer_github("linkButton(Github,https://github.com/poiyomi/PoiyomiToonShader)", Float) = 0
 		[HideInInspector] footer_discord("linkButton(Discord,https://discord.gg/Ays52PY)", Float) = 0
 		[HideInInspector] footer_donate("linkButton(Donate,https://www.paypal.me/poiyomi)", Float) = 0
 		[HideInInspector] footer_patreon("linkButton(Patreon,https://www.patreon.com/poiyomi)", Float) = 0
-
+        
         [HideInInspector] m_mainOptions ("Main", Float) = 0
         _Color ("Color", Color) = (1, 1, 1, 1)
         _Desaturation ("Desaturation", Range(-1, 1)) = 0
         _MainTex ("Texture", 2D) = "white" { }
         [Normal]_BumpMap ("Normal Map", 2D) = "bump" { }
         _BumpScale ("Normal Intensity", Range(0, 10)) = 1
-        [HideInInspector]_Clip ("Alpha Cuttoff", Range(0, 1.001)) = 0.0
+        _Clip ("Alpha Cuttoff", Range(0, 1.001)) = 0.5
         [HideInInspector] m_start_mainAdvanced ("Advanced", Float) = 0
         _GlobalPanSpeed("Pan Speed XY", Vector) = (0,0,0,0)
         [Normal]_DetailNormalMap ("Detail Map", 2D) = "bump" { }
         _DetailNormalMapScale ("Detail Intensity", Range(0, 10)) = 1
         [HideInInspector] m_end_mainAdvanced ("Advanced", Float) = 0
         
+        [HideInInspector] m_textureBlending ("Texture Blending", Float) = 0
+        [Enum(Off, 0, Soft, 1, Hard, 2)] _Blend ("Blending Type", Int) = 0
+        _BlendTextureColor ("Blend Texture Color", Color) = (1, 1, 1, 1)
+        [NoScaleOffset]_BlendTexture ("Blend Texture", 2D) = "white" { }
+        [NoScaleOffset]_BlendNoiseTexture ("Blend Noise Texture", 2D) = "white" { }
+        _BlendAlpha ("Blend Alpha", Range(0, 1)) = 0
+        [Toggle(_)]_AutoBlend ("Enable Auto Blending", Float) = 0
+        [Gamma]_AutoBlendSpeed ("Auto Blend Speed", Float) = 2
+        [Gamma]_AutoBlendDelay ("Auto Blend Delay", Float) = 2
+
         [HideInInspector] m_metallicOptions ("Metallic", Float) = 0
         _CubeMap ("Baked CubeMap", Cube) = "" { }
         [Toggle(_)]_SampleWorld ("Force Baked Cubemap", Range(0, 1)) = 0
@@ -32,7 +43,7 @@
         _Metallic ("Metallic", Range(0, 1)) = 0
         _SmoothnessMap ("Smoothness Map", 2D) = "white" { }
         [Toggle(_)]_InvertSmoothness("Invert Smoothness Map",Range(0,1)) = 0
-_Smoothness ("Smoothness", Range(0, 1)) = 0
+        _Smoothness ("Smoothness", Range(0, 1)) = 0
         
         [HideInInspector] m_matcapOptions ("Matcap / Sphere Textures", Float) = 0
         _Matcap ("Matcap", 2D) = "white" { }
@@ -92,14 +103,6 @@ _Smoothness ("Smoothness", Range(0, 1)) = 0
         [Toggle(_)]_HardSpecular ("Enable Hard Specular", Float) = 0
         _SpecularSize ("Hard Specular Size", Range(0, 1)) = .005
 
-        [HideInInspector] m_panosphereOptions ("Panosphere", Float) = 0
-        _PanosphereTexture ("Panoshpere Texture", 2D) = "white" { }
-        _PanoMapTexture ("Pano Map Texture", 2D) = "white" { }
-        _PanoEmission ("Pano Emission", Range(0,10)) = 0
-        _PanoBlend ("Pano Blend", Range(0,1)) = 0
-        _PanosphereColor ("Panosphere Color", Color) = (1, 1, 1, 1)
-        _PanosphereScroll ("Panosphere Scrolling", Vector) = (0,0,0,0)
-
         [HideInInspector] m_rimLightOptions ("Rim Lighting", Float) = 0
         _RimLightColor ("Rim Color", Color) = (1, 1, 1, 1)
         _RimWidth ("Rim Width", Range(0, 1)) = 0.8
@@ -117,7 +120,7 @@ _Smoothness ("Smoothness", Range(0, 1)) = 0
         [Enum(UnityEngine.Rendering.StencilOp)] _StencilFailOp ("Stencil Fail Op", Float) = 0
         [Enum(UnityEngine.Rendering.StencilOp)] _StencilZFailOp ("Stencil ZFail Op", Float) = 0
         [Enum(UnityEngine.Rendering.CompareFunction)] _StencilCompareFunction ("Stencil Compare Function", Float) = 8
-        
+
         [HideInInspector] m_start_OutlineStencil ("Outline Stencil", Float) = 0
         [IntRange] _OutlineStencilRef ("Stencil Reference Value", Range(0, 255)) = 0
         [IntRange] _OutlineStencilReadMaskRef ("Stencil ReadMask Value", Range(0, 255)) = 0
@@ -133,21 +136,19 @@ _Smoothness ("Smoothness", Range(0, 1)) = 0
         [Enum(UnityEngine.Rendering.CompareFunction)] _ZTest ("ZTest", Float) = 4
         [Enum(UnityEngine.Rendering.BlendMode)] _SourceBlend ("Source Blend", Float) = 5
         [Enum(UnityEngine.Rendering.BlendMode)] _DestinationBlend ("Destination Blend", Float) = 10
-        [Enum(Off, 0, On, 1)] _ZWrite ("ZWrite", Int) = 0
+        [Enum(Off, 0, On, 1)] _ZWrite ("ZWrite", Int) = 1
     }
     
     CustomEditor "PoiToon"
     SubShader
     {
-        Tags { "Queue" = "Transparent" "RenderType" = "Transparent" }
-        //Blend SrcAlpha OneMinusSrcAlpha
-        Blend [_SourceBlend] [_DestinationBlend]
+        Tags { "RenderType" = "TransparentCutout" "Queue" = "AlphaTest" }
+        
         
         Pass
         {
             Name "MainPass"
             Tags { "LightMode" = "ForwardBase" }
-            
             Stencil
             {
                 Ref [_StencilRef]
@@ -159,23 +160,22 @@ _Smoothness ("Smoothness", Range(0, 1)) = 0
                 Fail [_StencilFailOp]
                 ZFail [_StencilZFailOp]
             }
-            ZWrite [_ZWrite] 
+            ZWrite [_ZWrite]
             Cull [_Cull]
             ZTest [_ZTest]
-            
             CGPROGRAM
             
             #pragma target 3.0
             #pragma vertex vert
             #pragma fragment frag
-            #define BINORMAL_PER_FRAGMENT
             #define FORWARD_BASE_PASS
-            #define TRANSPARENT
-            #define PANOSPHERE
-            #include "PoiPass.cginc"
+            #define BINORMAL_PER_FRAGMENT
+            #define TEXTURE_BLENDING
+            #include "../PoiPass.cginc"
             ENDCG
             
         }
+
         Pass
         {
             Tags { "LightMode" = "ForwardAdd" }
@@ -190,7 +190,7 @@ _Smoothness ("Smoothness", Range(0, 1)) = 0
                 Fail [_StencilFailOp]
                 ZFail [_StencilZFailOp]
             }
-            ZWrite Off  
+            ZWrite Off
             Blend One One
             Cull [_Cull]
             ZTest [_ZTest]
@@ -200,13 +200,13 @@ _Smoothness ("Smoothness", Range(0, 1)) = 0
             #pragma multi_compile DIRECTIONAL POINT SPOT
             #pragma vertex vert
             #pragma fragment frag
-            #define TRANSPARENT
-            #define PANOSPHERE
             #define BINORMAL_PER_FRAGMENT
-            #include "PoiPass.cginc"
+            #define TEXTURE_BLENDING
+            #include "../PoiPass.cginc"
             ENDCG
             
         }
+
         Pass
         {
             Name "Outline"
@@ -222,8 +222,8 @@ _Smoothness ("Smoothness", Range(0, 1)) = 0
                 Fail [_OutlineStencilFailOp]
                 ZFail [_OutlineStencilZFailOp]
             }
+            ZWrite [_ZWrite]
             ZTest [_ZTest]
-            ZWrite [_ZWrite] 
             Cull Front
             CGPROGRAM
             
@@ -233,11 +233,12 @@ _Smoothness ("Smoothness", Range(0, 1)) = 0
             #pragma target 3.0
             #pragma vertex vert
             #pragma fragment frag
-            #define TRANSPARENT
-            #include "PoiOutlinePass.cginc"
+            #include "../PoiOutlinePass.cginc"
             ENDCG
             
         }
+        
+        
         Pass
         {
             Tags { "LightMode" = "ShadowCaster" }
@@ -258,8 +259,8 @@ _Smoothness ("Smoothness", Range(0, 1)) = 0
             #pragma multi_compile_shadowcaster
             #pragma vertex vertShadowCaster
             #pragma fragment fragShadowCaster
-            #define TRANSPARENT
-            #include "PoiShadows.cginc"
+            #define CUTOUT
+            #include "../PoiShadows.cginc"
             ENDCG
             
         }

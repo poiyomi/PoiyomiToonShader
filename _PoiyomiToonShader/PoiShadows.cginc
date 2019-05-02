@@ -1,42 +1,61 @@
-#if !defined(MY_SHADOWS_INCLUDED)
-#define MY_SHADOWS_INCLUDED
-
 #include "UnityCG.cginc"
+#include "UnityShaderVariables.cginc"
 
-struct VertexData {
-	float4 position : POSITION;
-	float3 normal : NORMAL;
+#define UNITY_STANDARD_USE_SHADOW_UVS 1
+
+float4      _Color;
+float       _Clip;
+sampler2D   _MainTex;
+float4      _MainTex_ST;
+float4 		_GlobalPanSpeed;
+
+struct VertexInput
+{
+    float4 vertex: POSITION;
+    float3 normal: NORMAL;
+    float2 uv0: TEXCOORD0;
 };
 
-#if defined(SHADOWS_CUBE)
-	struct Interpolators {
-		float4 position : SV_POSITION;
-		float3 lightVec : TEXCOORD0;
-	};
-
-	Interpolators MyShadowVertexProgram (VertexData v) {
-		Interpolators i;
-		i.position = UnityObjectToClipPos(v.position);
-		i.lightVec =
-			mul(unity_ObjectToWorld, v.position).xyz - _LightPositionRange.xyz;
-		return i;
-	}
-
-	float4 MyShadowFragmentProgram (Interpolators i) : SV_TARGET {
-		float depth = length(i.lightVec) + unity_LightShadowBias.x;
-		depth *= _LightPositionRange.w;
-		return UnityEncodeCubeShadowDepth(depth);
-	}
-#else
-	float4 MyShadowVertexProgram (VertexData v) : SV_POSITION {
-		float4 position =
-			UnityClipSpaceShadowCasterPos(v.position.xyz, v.normal);
-		return UnityApplyLinearShadowBias(position);
-	}
-
-	half4 MyShadowFragmentProgram () : SV_TARGET {
-		return 0;
-	}
+#if !defined(V2F_SHADOW_CASTER_NOPOS_IS_EMPTY) || defined(UNITY_STANDARD_USE_SHADOW_UVS)
+    struct VertexOutputShadowCaster
+    {
+        V2F_SHADOW_CASTER_NOPOS
+        #if defined(UNITY_STANDARD_USE_SHADOW_UVS)
+            float2 uv: TEXCOORD1;
+        #endif
+    };
 #endif
 
+
+void vertShadowCaster(VertexInput v,
+#if !defined(V2F_SHADOW_CASTER_NOPOS_IS_EMPTY) || defined(UNITY_STANDARD_USE_SHADOW_UVS)
+    out VertexOutputShadowCaster o,
 #endif
+out float4 opos: SV_POSITION)
+{
+    TRANSFER_SHADOW_CASTER_NOPOS(o, opos)
+    #if defined(UNITY_STANDARD_USE_SHADOW_UVS)
+        o.uv = TRANSFORM_TEX(v.uv0 + _GlobalPanSpeed.xy * float2(_Time.y,_Time.y), _MainTex);
+    #endif
+}
+
+
+half4 fragShadowCaster(
+    #if !defined(V2F_SHADOW_CASTER_NOPOS_IS_EMPTY) || defined(UNITY_STANDARD_USE_SHADOW_UVS)
+        VertexOutputShadowCaster i
+        #endif
+        ): SV_Target
+        {
+            #if defined(UNITY_STANDARD_USE_SHADOW_UVS)
+                half alpha = tex2D(_MainTex, TRANSFORM_TEX(i.uv, _MainTex)).a * _Color.a;
+                
+                #ifdef CUTOUT
+                    clip(alpha - _Clip);
+                #endif
+				#ifdef TRANSPARENT
+					clip(alpha - 0.01);
+				#endif
+            #endif
+            
+            SHADOW_CASTER_FRAGMENT(i)
+        }

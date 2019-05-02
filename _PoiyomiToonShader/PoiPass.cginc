@@ -36,9 +36,10 @@
     //Properties
     float4 _Color;
     float _Desaturation;
-    sampler2D _MainTex; float4 _MainTex_ST;
-    sampler2D _BumpMap; float4 _BumpMap_ST;
-    sampler2D _DetailNormalMap; float4 _DetailNormalMap_ST;
+    UNITY_DECLARE_TEX2D(_MainTex); float4 _MainTex_ST;
+    UNITY_DECLARE_TEX2D_NOSAMPLER(_BumpMap); float4 _BumpMap_ST;
+    float4 _GlobalPanSpeed;
+    UNITY_DECLARE_TEX2D_NOSAMPLER(_DetailNormalMap); float4 _DetailNormalMap_ST;
     float _BumpScale;
     float _DetailNormalMapScale;
     
@@ -48,18 +49,30 @@
     float _PurelyAdditive;
     sampler2D _MetallicMap; float4 _MetallicMap_ST;
     float _Metallic;
-    sampler2D _RoughnessMap; float4 _RoughnessMap_ST;
-    float _Roughness;
+    sampler2D _SmoothnessMap; float4 _SmoothnessMap_ST;
+    float _InvertSmoothness;
+    float _Smoothness;
     
-    sampler2D _Matcap;
-    sampler2D _MatcapMap; float4 _MatcapMap_ST;
+    UNITY_DECLARE_TEX2D_NOSAMPLER(_Matcap);
+    UNITY_DECLARE_TEX2D_NOSAMPLER(_MatcapMap); float4 _MatcapMap_ST;
     float4 _MatcapColor;
     float  _MatcapStrength;
     float _ReplaceWithMatcap;
     float _MultiplyMatcap;
     float _AddMatcap;
     
-    sampler2D _SpecularMap; float4 _SpecularMap_ST;
+    #ifdef TEXTURE_BLENDING
+        int _Blend;
+        float4 _BlendTextureColor;
+        sampler2D _BlendTexture; float4 _BlendTexture_ST;
+        sampler2D _BlendNoiseTexture; float4 _BlendNoiseTexture_ST;
+        float _BlendAlpha;
+        float _BlendTiling;
+        float _AutoBlend;
+        float _AutoBlendSpeed;
+        float _AutoBlendDelay;
+    #endif
+    
     float _Gloss;
     float4 _EmissionColor;
     sampler2D _EmissionMap; float4 _EmissionMap_ST;
@@ -76,7 +89,8 @@
     float _EmissiveBlink_Velocity;
     float _ScrollingEmission;
     
-    sampler2D _Ramp;
+    sampler2D _ToonRamp;
+    sampler2D _AdditiveRamp;
     float _ForceLightDirection;
     float _ShadowStrength;
     float _ShadowOffset;
@@ -84,14 +98,23 @@
     float _ForceShadowStrength;
     float _MinBrightness;
     float _MaxDirectionalIntensity;
-    sampler2D _AdditiveRamp;
     float _FlatOrFullAmbientLighting;
     
+    sampler2D _SpecularMap; float4 _SpecularMap_ST;
     float4 _SpecularColor;
     float _SpecularBias;
     float _SpecularStrength;
     float _SpecularSize;
     float _HardSpecular;
+    
+    #ifdef PANOSPHERE
+        sampler2D _PanosphereTexture; float4 _PanosphereTexture_ST;
+        sampler2D _PanoMapTexture; float4 _PanoMapTexture_ST;
+        float _PanoEmission;
+        float _PanoBlend;
+        float4 _PanosphereColor;
+        float4 _PanosphereScroll;
+    #endif
     
     float4 _RimLightColor;
     float _RimWidth;
@@ -102,9 +125,9 @@
     sampler2D _RimTex; float4 _RimTex_ST;
     
     float _Clip;
-
+    
     #include "PoiHelpers.cginc"
-
+    
     v2f vert(appdata v)
     {
         v2f o;
@@ -112,7 +135,7 @@
         o.localPos = v.vertex;
         o.pos = UnityObjectToClipPos(v.vertex);
         o.worldPos = mul(unity_ObjectToWorld, v.vertex);
-        o.uv = v.texcoord.xy;
+        o.uv = v.texcoord.xy + _GlobalPanSpeed.xy * _Time.y;
         o.normal = UnityObjectToWorldNormal(v.normal);
         
         #if defined(BINORMAL_PER_FRAGMENT)
@@ -128,6 +151,7 @@
     
     float4 frag(v2f i, float facing: VFACE): SV_Target
     {
+        float3 _flat_lighting_var = 1;
         float Pi = 3.141592654;
         #ifdef FORWARD_BASE_PASS
             float3 _light_direction_var = normalize(_LightDirection);
@@ -144,10 +168,25 @@
                 float3 _light_direction_var = _WorldSpaceLightPos0;
             #endif
         #endif
-        
         // diffuse
-        float4 _main_tex_var = tex2D(_MainTex, TRANSFORM_TEX(i.uv, _MainTex));
+        float4 _main_tex_var = UNITY_SAMPLE_TEX2D(_MainTex, TRANSFORM_TEX(i.uv, _MainTex));
         float4 _diffuse_var = float4(lerp(_main_tex_var.rgb, dot(_main_tex_var.rgb, float3(0.3, 0.59, 0.11)), _Desaturation) * _Color.rgb, _main_tex_var.a * _Color.a);
+        
+        // Texture Blending
+        #ifdef TEXTURE_BLENDING
+            UNITY_BRANCH
+            if (_Blend != 0)
+            {
+                float4 blendCol = tex2D(_BlendTexture, TRANSFORM_TEX(i.uv, _BlendTexture)) * _BlendTextureColor;
+                float blendNoise = tex2D(_BlendNoiseTexture, TRANSFORM_TEX(i.uv, _BlendNoiseTexture));
+                if(_AutoBlend > 0)
+                {
+                    _BlendAlpha = (clamp(sin(_Time.y * _AutoBlendSpeed / _AutoBlendDelay) * (_AutoBlendDelay + 1), -1, 1) + 1) / 2;
+                }
+                float blendAlpha = lerp(clamp(_BlendAlpha + blendNoise * _BlendAlpha, 0, 1), step(_BlendAlpha * 1.001, blendNoise), _Blend - 1);
+                _diffuse_var = lerp(_diffuse_var, blendCol, blendAlpha);
+            }
+        #endif
         
         // cutout
         #ifndef TRANSPARENT
@@ -162,10 +201,14 @@
         float3 _camera_vert_dot_var = abs(dot(_camera_to_vert_var, i.normal));
         
         // metal
-        float _metallic_map_var = tex2D(_MetallicMap, TRANSFORM_TEX(i.uv, _MetallicMap));
-        float _final_metalic_var = _metallic_map_var * _Metallic;
-        float _roughness_map_var = tex2D(_RoughnessMap, TRANSFORM_TEX(i.uv, _RoughnessMap));
-        float roughness = (1 - _final_metalic_var * _Roughness * _roughness_map_var);
+        float _metallic_map_var = tex2D(_MetallicMap, TRANSFORM_TEX(i.uv, _MetallicMap)) * _Metallic;
+        float _Smoothness_map_var = (tex2D(_SmoothnessMap, TRANSFORM_TEX(i.uv, _SmoothnessMap)));
+        if (_InvertSmoothness == 1)
+        {
+            _Smoothness_map_var = 1 - _Smoothness_map_var;
+        }
+        _Smoothness_map_var *= _Smoothness;
+        float roughness = 1 - _Smoothness_map_var;
         roughness *= 1.7 - 0.7 * roughness;
         float3 reflectedDir = reflect(-_camera_to_vert_vr_var, i.normal);
         float3 reflection = float3(0, 0, 0);
@@ -174,7 +217,7 @@
         
         float interpolator = unity_SpecCube0_BoxMin.w;
         UNITY_BRANCH
-        if (interpolator < 0.99999)
+        if(interpolator < 0.99999)
         {
             //Probe 1
             float4 reflectionData0 = UNITY_SAMPLE_TEXCUBE_LOD(unity_SpecCube0, reflectedDir, roughness * UNITY_SPECCUBE_LOD_STEPS);
@@ -200,49 +243,52 @@
             lighty_boy_uwu_var = 1;
             reflection = texCUBElod(_CubeMap, float4(reflectedDir, roughness * UNITY_SPECCUBE_LOD_STEPS));
         }
-        
         // matcap / spehere textures
-        half2 matcapUV = getMatcapUV(_camera_to_vert_vr_var, i.normal);
-        float _matcapMap_var = tex2D(_MatcapMap, TRANSFORM_TEX(i.uv, _MatcapMap));
-        float3 _matcap_var = tex2D(_Matcap, matcapUV) * _MatcapColor * _MatcapStrength;
-        
+        float2 matcapUV = getMatcapUV(_camera_to_vert_vr_var, i.normal);
+        float3 _matcap_var = UNITY_SAMPLE_TEX2D_SAMPLER(_Matcap, _MainTex, matcapUV) * _MatcapColor * _MatcapStrength;
+        float _matcapMap_var = UNITY_SAMPLE_TEX2D_SAMPLER(_MatcapMap, _MainTex, TRANSFORM_TEX(i.uv, _MatcapMap));
         //rim lighting
         float4 rimColor = tex2D(_RimTex, TRANSFORM_TEX(i.uv, _RimTex) + (_Time.y * _RimTexPanSpeed.xy)) * _RimLightColor;
         float rim = pow((1 - _camera_vert_dot_var), (1 - _RimWidth) * 10);
         _RimSharpness /= 2;
         rim = (smoothstep(_RimSharpness, 1 - _RimSharpness, rim));
         
+        
         // lighting
         UNITY_LIGHT_ATTENUATION(attenuation, i, i.worldPos.xyz);
         float nDotL = dot(i.normal, _light_direction_var);
         float fakeLight = clamp((nDotL + 1) / 2 + _ShadowOffset, 0, 1);
-        float4 LightingRamp = tex2D(_Ramp, float2(fakeLight, fakeLight));
+        float4 LightingRamp = tex2D(_ToonRamp, float2(fakeLight, fakeLight));
         #if defined(FORWARD_BASE_PASS)
             //return float4(ShadeSH9(half4(0.0, 0.0, 0.0, 1.0)),1);
-            float3 _flat_lighting_var = 1;
             float3 ambient = ShadeSH9(float4(i.normal * _FlatOrFullAmbientLighting, 1));
-            if (any(_LightColor0.rgb))
+            if (_ForceShadowStrength == 0)
             {
-                float4 lightZero = min(_LightColor0, _MaxDirectionalIntensity);
-                
-                if(_ForceShadowStrength == 0)
+                if(any(_LightColor0.rgb))
                 {
+                    float4 lightZero = min(_LightColor0, _MaxDirectionalIntensity);
                     _flat_lighting_var = ambient + lightZero.rgb * lerp(1, LightingRamp, _ShadowStrength);
-                    _flat_lighting_var = clamp(_flat_lighting_var, _MinBrightness, max(lightZero.a, ambient));
+                    _flat_lighting_var = clamp(_flat_lighting_var, _MinBrightness, max(length(lightZero.rgb), ambient));
                 }
                 else
                 {
-                    _flat_lighting_var = (ambient + lightZero.rgb) * lerp(1, LightingRamp, _ShadowStrength);
-                    _flat_lighting_var = clamp(_flat_lighting_var, _MinBrightness, max(lightZero.a, ambient));
+                    
+                    _flat_lighting_var = clamp(ambient + ambient * lerp(1, LightingRamp, _ShadowStrength) - ambient * (_ShadowStrength * lerp(.75, 1, _ForceShadowStrength)), _MinBrightness, ambient);
                 }
             }
             else
             {
-                _flat_lighting_var = clamp(ambient + ambient * lerp(1, LightingRamp, _ShadowStrength) - ambient * (_ShadowStrength * lerp(.75, 1, _ForceShadowStrength)), _MinBrightness, ambient);
+                _flat_lighting_var = max(lerp(1, LightingRamp, _ShadowStrength), _MinBrightness);
             }
             //return float4(_flat_lighting_var, 1);
         #else
-            float3 _flat_lighting_var = _LightColor0.rgb * attenuation * tex2D(_AdditiveRamp, .5 * nDotL + .5);
+            _flat_lighting_var = _LightColor0.rgb * attenuation * tex2D(_AdditiveRamp, .5 * nDotL + .5);
+        #endif
+        
+        #ifdef PANOSPHERE
+            float2 _StereoEnabled_var = StereoPanoProjection(normalize(_WorldSpaceCameraPos.xyz - i.worldPos.xyz) * - 1);
+            float3 _pano_var = tex2D(_PanosphereTexture, TRANSFORM_TEX(_StereoEnabled_var, _PanosphereTexture)) * _PanosphereColor.rgb;
+            float _panoMap_var = tex2D(_PanoMapTexture, TRANSFORM_TEX(i.uv, _PanoMapTexture));
         #endif
         
         // emission
@@ -281,13 +327,16 @@
         finalColor.rgb = lerp(finalColor, _matcap_var, _ReplaceWithMatcap * _matcapMap_var);
         finalColor.rgb *= lerp(1, _matcap_var, _MultiplyMatcap * _matcapMap_var);
         finalColor.rgb += _matcap_var * _AddMatcap * _matcapMap_var;
+        #ifdef PANOSPHERE
+            finalColor.rgb = lerp(finalColor.rgb, _pano_var, _PanoBlend * _panoMap_var);
+        #endif
         float4 finalColorBeforeLighting = finalColor;
         
         finalColor.rgb *= _flat_lighting_var;
         #ifdef FORWARD_BASE_PASS
             float3 finalreflections = reflection.rgb * lerp(finalColorBeforeLighting.rgb, 1, _PurelyAdditive);
-            finalColor.rgb = finalColor.rgb * lerp((1 - _final_metalic_var), 1, _AdditiveClearCoat);
-            finalColor.rgb += (finalreflections * ((1 - roughness + _final_metalic_var) / 2)) * lerp(1, _flat_lighting_var, lighty_boy_uwu_var);
+            finalColor.rgb = finalColor.rgb * lerp((1 - _metallic_map_var), 1, _AdditiveClearCoat);
+            finalColor.rgb += (finalreflections * ((1 - roughness + _metallic_map_var) / 2)) * lerp(1, _flat_lighting_var, lighty_boy_uwu_var);
         #endif
         
         // specular
@@ -312,15 +361,20 @@
         
         #if defined(FORWARD_BASE_PASS)
             finalColor.rgb += _specular_var * _flat_lighting_var;
+            #ifdef PANOSPHERE
+                finalColor.rgb += _pano_var * _PanoBlend * _panoMap_var * _PanoEmission;
+            #endif
             finalColor.rgb += _emission_var + ((rim * _rim_color_var * _RimStrength) * rimColor.a);
         #else
             finalColor.rgb += _specular_var;
         #endif
         
         #if(defined(POINT) || defined(SPOT))
-            finalColor *= (1 - _final_metalic_var);
+            finalColor *= (1 - _metallic_map_var);
+            #ifdef TRANSPARENT
+                finalColor.rgb *= finalColor.a;
+            #endif
         #endif
-        
         return finalColor;
     }
 #endif
