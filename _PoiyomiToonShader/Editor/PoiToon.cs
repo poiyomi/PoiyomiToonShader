@@ -10,9 +10,9 @@ public class PoiToon : ShaderGUI
 {
 
 	public const string EXTRA_OFFSET_OPTION = "extraOffset"; //can be used to specify and extra x-offset for properties
-	public const string CONFIG_FILE_PATH = "./Assets/poiToonEditorConfig.json"; //location of config file
+	public const string CONFIG_FILE_PATH = "./Assets/.poiToonEditorConfig.json"; //location of config file
 
-	public static Config config;
+	public static PoiHelper.Config config;
 
 	private ShaderHeader shaderparts; //stores headers and properties in correct order
 	private GUIStyle m_sectionStyle;
@@ -83,7 +83,7 @@ public class PoiToon : ShaderGUI
 			this.currentState = !this.currentState;
 		}
 
-		public void Foldout(int xOffset, string name)
+		public void Foldout(int xOffset, string name, PoiToon gui)
 		{
 			var style = new GUIStyle("ShurikenModuleTitle");
 			style.font = new GUIStyle(EditorStyles.label).font;
@@ -107,8 +107,9 @@ public class PoiToon : ShaderGUI
 			{
 				this.Toggle();
 				e.Use();
+                gui.sendActiveShader = true;
 			}
-		}
+        }
 	}
 
 	//--------classes for storing property data---------
@@ -154,52 +155,6 @@ public class PoiToon : ShaderGUI
 		}
 	}
 
-	//---------------config functions---------------
-
-	//Config class
-	public class Config
-	{
-		public bool bigTextures;
-
-		public string SaveToString()
-		{
-			return JsonUtility.ToJson(this);
-		}
-
-		public static Config GetDefaultConfig()
-		{
-			Config config = new Config();
-			config.bigTextures = false;
-			return config;
-		}
-	}
-
-	//load the config from file
-	public static void LoadConfig()
-	{
-		if (File.Exists(CONFIG_FILE_PATH))
-		{
-			StreamReader reader = new StreamReader(CONFIG_FILE_PATH);
-			config = JsonUtility.FromJson<Config>(reader.ReadToEnd());
-            reader.Close();
-		}
-		else
-		{
-			File.CreateText(CONFIG_FILE_PATH).Close();
-			config = Config.GetDefaultConfig();
-			saveConfig();
-		}
-	}
-
-	//save the config to the file
-	public static void saveConfig()
-	{
-		StreamWriter writer = new StreamWriter(CONFIG_FILE_PATH, true);
-		writer.WriteLine(config.SaveToString());
-		writer.Close();
-		AssetDatabase.ImportAsset(CONFIG_FILE_PATH);
-	}
-
 	//-------------Init functions--------------------
 
 	//finds all properties and headers and stores them in correct order
@@ -240,7 +195,7 @@ public class PoiToon : ShaderGUI
 			else if (props[i].flags != MaterialProperty.PropFlags.HideInInspector)
 			{
 				int extraOffset = 0;
-				extraOffset = propertyOptionToInt(EXTRA_OFFSET_OPTION, props[i]);
+				extraOffset = PoiHelper.propertyOptionToInt(EXTRA_OFFSET_OPTION, props[i]);
 				string displayName = props[i].displayName.Replace("-" + EXTRA_OFFSET_OPTION + "=" + extraOffset, "");
 				ShaderProperty newPorperty = new ShaderProperty(props[i], displayName, headerCount + extraOffset);
 				headerStack.Peek().addPart(newPorperty);
@@ -279,18 +234,12 @@ public class PoiToon : ShaderGUI
 
     //-------------Functions------------------
 
-    private void UpdateRenderQueue(Material material, Shader defaultShader)
+    public static void UpdateRenderQueue(Material material, Shader defaultShader)
     {
         if (material.shader.renderQueue != material.renderQueue)
         {
-            EditorGUILayout.LabelField("Not the default render queue");
             Shader renderQueueShader = defaultShader;
-            if (material.renderQueue != renderQueueShader.renderQueue)
-            {
-                string renderQueueShaderName = ".differentQueues/" + defaultShader.name + "-queue" + material.renderQueue;
-                renderQueueShader = Shader.Find(renderQueueShaderName);
-                if (renderQueueShader == null) renderQueueShader = createRenderQueueShader(defaultShader, material.renderQueue);
-            }
+            if (material.renderQueue != renderQueueShader.renderQueue) renderQueueShader = PoiHelper.createRenderQueueShaderIfNotExists(defaultShader, material.renderQueue,true);
             material.shader = renderQueueShader;
         }
     }
@@ -334,7 +283,7 @@ public class PoiToon : ShaderGUI
 	void drawShaderHeader(ShaderHeader header, MaterialEditor materialEditor)
 	{
 		//header.header = PoiToonUI.Foldout(header);
-		header.guiElement.Foldout(header.xOffset, header.name);
+		header.guiElement.Foldout(header.xOffset, header.name, this);
 		if (header.guiElement.getState())
 		{
 			EditorGUILayout.Space();
@@ -425,9 +374,12 @@ public class PoiToon : ShaderGUI
     //-------------Main Function--------------
     public override void OnGUI(MaterialEditor materialEditor, MaterialProperty[] props)
 	{
-		Material material = materialEditor.target as Material;
+        PoiHelper.updateQueueShadersIfNessecary();
+        Object[] targets = materialEditor.targets;
+        Material[] materials = new Material[targets.Length];
+        for (int i = 0; i < targets.Length; i++) materials[i] = targets[i] as Material;
 
-		if (config == null) LoadConfig();
+        config = PoiHelper.GetConfig();
 		if (presetHandler == null) presetHandler = new PoiPresetHandler(props);
         else presetHandler.testPresetsChanged(props);
 
@@ -436,13 +388,21 @@ public class PoiToon : ShaderGUI
 		CollectAllProperties(props, materialEditor);
 
 		// load default toggle values
-		LoadDefaults(material);
+		LoadDefaults(materials[0]);
 
 		//shader name + presets
 		EditorGUILayout.BeginHorizontal();
+        byte[] fileData = File.ReadAllBytes(AssetDatabase.GUIDToAssetPath(AssetDatabase.FindAssets("poiSettigsIcon")[0]));
+        Texture2D tex = new Texture2D(2, 2);
+        tex.LoadImage(fileData);
+        if (GUILayout.Button(tex, new GUILayoutOption[] { GUILayout.MaxWidth(24), GUILayout.MaxHeight(18) })) { sendActiveShader = true;
+            PoiSettings window = PoiSettings.getInstance();
+            window.Show();
+            window.Focus();
+        }
 		MaterialProperty shader_master_label = FindProperty(props, "shader_master_label");
 		if (shader_master_label != null) DrawMasterLabel(shader_master_label.displayName);
-		presetHandler.drawPresets(materialEditor, props, material);
+		presetHandler.drawPresets(props, materials);
 		EditorGUILayout.EndHorizontal();
 
 		//shader properties
@@ -451,18 +411,28 @@ public class PoiToon : ShaderGUI
 			drawShaderPart(part, materialEditor);
 		}
 
-        //Render Queue
-        Shader shader = material.shader;
-        string defaultShaderName = material.shader.name.Split(new string[] { "-queue" }, System.StringSplitOptions.None)[0].Replace(".differentQueues/","");
+        Shader shader = materials[0].shader;
+        string defaultShaderName = materials[0].shader.name.Split(new string[] { "-queue" }, System.StringSplitOptions.None)[0].Replace(".differentQueues/", "");
         Shader defaultShader = Shader.Find(defaultShaderName);
-        drawRenderQueueSelector(material, defaultShader);
-        EditorGUILayout.LabelField("Default: " + defaultShaderName);
-        EditorGUILayout.LabelField("Shader: " + shader.name);
+
+        //Render Queue
+        if (config.useRenderQueueSelection)
+        {
+            drawRenderQueueSelector(materials[0], defaultShader);
+            EditorGUILayout.LabelField("Default: " + defaultShaderName);
+            EditorGUILayout.LabelField("Shader: " + shader.name);
+        }
         
-        ToggleDefines(material);
+        ToggleDefines(materials[0]);
 
         //big/small texture toggle
-        if (textureFieldsCount > 0) config.bigTextures = EditorGUILayout.Toggle("Big Texture Fields", config.bigTextures);
+        /*if (textureFieldsCount > 0) {
+            if(EditorGUILayout.Toggle("Big Texture Fields", config.bigTextures) != config.bigTextures)
+            {
+                config.bigTextures = !config.bigTextures;
+                config.save();
+            }
+        }*/
 
         //footer
         EditorGUILayout.BeginHorizontal();
@@ -483,7 +453,22 @@ public class PoiToon : ShaderGUI
         GUILayout.FlexibleSpace();
         EditorGUILayout.EndHorizontal();
 
-        UpdateRenderQueue(material, defaultShader);
+        if (!config.useRenderQueueSelection) materials[0].renderQueue = defaultShader.renderQueue;
+        UpdateRenderQueue(materials[0], defaultShader);
+        if (sendActiveShader) {
+            PoiSettings.activeShader = defaultShader;
+            PoiSettings.presetHandler = presetHandler;
+            PoiHelper.FindEditorWindow(typeof(PoiSettings)).Repaint();
+            sendActiveShader = false;
+        }
+    }
+
+    bool sendActiveShader = true;
+
+    public override void OnClosed(Material material)
+    {
+        base.OnClosed(material);
+        sendActiveShader = true;
     }
 
     //----------Static Helper Functions
@@ -497,60 +482,5 @@ public class PoiToon : ShaderGUI
 			if (p.name == name) { ret = p; }
 		}
 		return ret;
-	}
-
-    //copys og shader and changed render queue and name in there
-    public static Shader createRenderQueueShader(Shader defaultShader, int renderQueue)
-    {
-        string defaultPath = AssetDatabase.GetAssetPath(defaultShader);
-        string shaderCode = readFileIntoString(defaultPath);
-        string pattern = @"""Queue"" ?= ?""\w+(\+\d+)?""";
-        string replacementQueue = "Background+" + (renderQueue-1000);
-        if (renderQueue == 1000) replacementQueue = "Background";
-        else if(renderQueue<1000) replacementQueue = "Background-" + (1000-renderQueue);
-        shaderCode = Regex.Replace(shaderCode, pattern, "\"Queue\" = \""+ replacementQueue + "\"");
-        pattern = @"Shader ?""(\w|\/|\.)+""";
-        string newShaderName = ".differentQueues/"+defaultShader.name + "-queue" + renderQueue;
-        shaderCode = Regex.Replace(shaderCode, pattern, "Shader \""+ newShaderName + "\"");
-        pattern = @"#include ""(?!.*(Lighting)|(AutoLight)|(UnityCG)|(UnityShaderVariables)|(HLSLSupport)|(TerrainEngine))";
-        shaderCode = Regex.Replace(shaderCode, pattern, "#include \"../", RegexOptions.Multiline);
-        string[] pathParts = defaultPath.Split('/');
-        string fileName = pathParts[pathParts.Length - 1];
-        string newPath = defaultPath.Replace(fileName, "")+"_differentQueues";
-        Directory.CreateDirectory(newPath);
-        newPath = newPath+ "/" + fileName.Replace(".shader", "-queue" + renderQueue + ".shader");
-        writeStringToFile(shaderCode, newPath);
-        return Shader.Find(newShaderName);
-    }
-
-    public static string readFileIntoString(string path)
-    {
-        StreamReader reader = new StreamReader(path);
-        string ret = reader.ReadToEnd();
-        reader.Close();
-        return ret;
-    }
-
-    public static void writeStringToFile(string s, string path)
-    {
-        StreamWriter writer = new StreamWriter(path, false);
-        writer.Write(s);
-        writer.Close();
-        AssetDatabase.ImportAsset(path);
-    }
-
-    //used to parse extra options in display name like offset
-    public static int propertyOptionToInt(string optionName, MaterialProperty p)
-	{
-		string pattern = @"-" + optionName + "=\\d+";
-		Match match = Regex.Match(p.displayName, pattern);
-		if (match.Success)
-		{
-			int ret = 0;
-			string value = match.Value.Replace("-" + optionName + "=", "");
-			int.TryParse(value, out ret);
-			return ret;
-		}
-		return 0;
 	}
 }

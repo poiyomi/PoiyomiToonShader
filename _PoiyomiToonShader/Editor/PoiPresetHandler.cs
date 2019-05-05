@@ -22,20 +22,39 @@ public class PoiPresetHandler {
         testPresetsChanged(props);
     }
 
+    public PoiPresetHandler(MaterialProperty p)
+    {
+        testPresetsChanged(p);
+    }
+
+    public PoiPresetHandler(Shader s)
+    {
+        Material m = new Material(s);
+        MaterialProperty[] props = MaterialEditor.GetMaterialProperties(new Material[] { m });
+        testPresetsChanged(props);
+    }
+
     //test if the path to the presets has changed
     public void testPresetsChanged(MaterialProperty[] props)
     {
         MaterialProperty presetsProperty = PoiToon.FindProperty(props, "shader_presets");
         if (!(presetsProperty == null))
         {
-            string newPath = stringToFilePath(presetsProperty.displayName);
-            if (presetsFilePath != newPath)
-            {
-                presetsFilePath = newPath;
-                if (hasPresets) { loadPresets(); }
-            }
-        }else {
+            testPresetsChanged(presetsProperty);
+        }
+        else {
             hasPresets = false;
+        }
+    }
+
+    //test if the path to the presets has changed
+    public void testPresetsChanged(MaterialProperty p)
+    {
+        string newPath = stringToFilePath(p.displayName);
+        if (presetsFilePath != newPath)
+        {
+            presetsFilePath = newPath;
+            if (hasPresets) { loadPresets(); }
         }
     }
 
@@ -82,8 +101,20 @@ public class PoiPresetHandler {
         presetsLoaded = true;
     }
 
+    public void drawPresetsSettings()
+    {
+        if (hasPresets)
+        {
+            GUILayout.Label("Preset Settings", EditorStyles.boldLabel);
+            for (int i= 1; i < presetOptions.Length-1; i++)
+            {
+                GUILayout.Label(presetOptions[i]);
+            }
+        }
+    }
+
     //draws presets if exists
-    public void drawPresets(MaterialEditor materialEditor, MaterialProperty[] props, Material material)
+    public void drawPresets(MaterialProperty[] props, Material[] materials)
     {
         if (hasPresets&&presetsLoaded)
         {
@@ -91,23 +122,23 @@ public class PoiPresetHandler {
             if (newSelectedPreset != selectedPreset)
             {
                 selectedPreset = newSelectedPreset;
-                if (selectedPreset != presetOptions.Length - 1) applyPreset(presetOptions[selectedPreset], materialEditor, props,material);
+                if (selectedPreset != presetOptions.Length - 1) applyPreset(presetOptions[selectedPreset], props,materials);
             }
-            if (selectedPreset == presetOptions.Length - 1) drawNewPreset(props, material);
+            if (selectedPreset == presetOptions.Length - 1) drawNewPreset(props, materials);
         }
     }
 
-    public void drawNewPreset(MaterialProperty[] props, Material material)
+    public void drawNewPreset(MaterialProperty[] props, Material[] materials)
     {
         newPresetName = GUILayout.TextField(newPresetName, GUILayout.MaxWidth(100));
 
         if (GUILayout.Button("Add", GUILayout.Width(40), GUILayout.Height(20)))
         {
-            addNewPreset(newPresetName, props, material);
+            addNewPreset(newPresetName, props, materials);
         }
     }
 
-    public void addNewPreset(string name, MaterialProperty[] props, Material material)
+    public void addNewPreset(string name, MaterialProperty[] props, Material[] materials)
     {
         //find all non default values
 
@@ -118,7 +149,7 @@ public class PoiPresetHandler {
         {
             string[] set = new string[] { p.name, "" };
             bool empty = false;
-            Material defaultValues = new Material(material.shader);
+            Material defaultValues = new Material(materials[0].shader);
             switch (p.type)
             {
                 case MaterialProperty.PropType.Float:
@@ -162,7 +193,7 @@ public class PoiPresetHandler {
         writer.Close();
     }
 
-    public void applyPreset(string presetName, MaterialEditor materialEditor, MaterialProperty[] props, Material material)
+    public void applyPreset(string presetName, MaterialProperty[] props, Material[] materials)
     {
         List<string[]> sets;
         if (presets.TryGetValue(presetName, out sets))
@@ -180,19 +211,19 @@ public class PoiPresetHandler {
                         {
                             string path = AssetDatabase.GUIDToAssetPath(guids[0]);
                             Texture tex = (Texture)EditorGUIUtility.Load(path);
-                            material.SetTexture(Shader.PropertyToID(set[0]), tex);
+                            foreach(Material m in materials) m.SetTexture(Shader.PropertyToID(set[0]), tex);
                         }
                     }
                     else if (p.type == MaterialProperty.PropType.Float || p.type == MaterialProperty.PropType.Range)
                     {
                         float value;
-                        if (float.TryParse(set[1], out value)) material.SetFloat(Shader.PropertyToID(set[0]), value);
+                        if (float.TryParse(set[1], out value)) foreach (Material m in materials) m.SetFloat(Shader.PropertyToID(set[0]), value);
                     }
                     else if (p.type == MaterialProperty.PropType.Vector)
                     {
                         string[] xyzw = set[1].Split(",".ToCharArray());
                         Vector4 vector = new Vector4(float.Parse(xyzw[0]), float.Parse(xyzw[1]), float.Parse(xyzw[2]), float.Parse(xyzw[3]));
-                        material.SetVector(Shader.PropertyToID(set[0]), vector);
+                        foreach (Material m in materials) m.SetVector(Shader.PropertyToID(set[0]), vector);
                     }
                     else if (p.type == MaterialProperty.PropType.Color)
                     {
@@ -201,14 +232,14 @@ public class PoiPresetHandler {
                         float.TryParse(rgbString[0], out rgb[0]);
                         float.TryParse(rgbString[1], out rgb[1]);
                         float.TryParse(rgbString[2], out rgb[2]);
-                        material.SetColor(Shader.PropertyToID(set[0]), new Color(rgb[0], rgb[1], rgb[2]));
+                        foreach (Material m in materials) m.SetColor(Shader.PropertyToID(set[0]), new Color(rgb[0], rgb[1], rgb[2]));
                     }
                 }else if (set[0] == "render_queue")
                 {
                     int q = 0;
                     Debug.Log(set[0] + "," + set[1]);
                     if(int.TryParse(set[1],out q)){
-                        material.renderQueue = q;
+                        foreach (Material m in materials) m.renderQueue = q;
                     }
                 }
             }

@@ -1,9 +1,10 @@
-﻿Shader ".poiyomi/Toon/Cutout"
+Shader ".poiyomi/Toon/Cutout"
 {
     Properties
     {
 		[HideInInspector] shader_master_label("<color=#008080>❤ Poiyomi Toon Shader V2.3.7 ❤</color>", Float) = 0
 		[HideInInspector] shader_presets("poiToonPresets", Float) = 0
+		[HideInInspector] shader_eable_poi_settings_selection("", Float) = 0
 
 		[HideInInspector] footer_github("linkButton(Github,https://github.com/poiyomi/PoiyomiToonShader)", Float) = 0
 		[HideInInspector] footer_discord("linkButton(Discord,https://discord.gg/Ays52PY)", Float) = 0
