@@ -1,74 +1,106 @@
 Light Ramps/Default Ramp
-_Ramp = poiyomiDefaultShadow
+_ToonRamp = poiyomiDefaultShadow
 _AdditiveRamp = poiyomiDefaultShadow
 
 Light Ramps/Skin
-_Ramp = PoiyomiSkinRamp
+_ToonRamp = PoiyomiSkinRamp
 _AdditiveRamp = poiyomiDefaultShadow
 
 Light Ramps/Hair
-_Ramp = PoiyomiHairRamp
+_ToonRamp = PoiyomiHairRamp
 _AdditiveRamp = poiyomiDefaultShadow
 
 Light Ramps/Toon Skin
-_Ramp = ToonSkin
+_ToonRamp = ToonSkin
 _AdditiveRamp = poiyomiDefaultShadow
 
 Light Ramps/Toon Ramp
-_Ramp = BasicToonRamp
+_ToonRamp = BasicToonRamp
 _AdditiveRamp = poiyomiDefaultShadow
 
 Light Ramps/Grey Ramp
-_Ramp = greyShadowRamp
+_ToonRamp = greyShadowRamp
 _AdditiveRamp = poiyomiDefaultShadow
 
 Light Ramps/Black Ramp
-_Ramp = blackShadowRamp
+_ToonRamp = blackShadowRamp
 _AdditiveRamp = poiyomiDefaultShadow
 
 Light Ramps/Metall
-_Ramp = PoiyomiMetalRamp
+_ToonRamp = PoiyomiMetalRamp
 _AdditiveRamp = poiyomiDefaultShadow
 
 Light Ramps/Colored Shadow/ToonBlue
-_Ramp = ToonBlue
+_ToonRamp = ToonBlue
 _AdditiveRamp = poiyomiDefaultShadow
 
 Light Ramps/Colored Shadow/ToonCyan
-_Ramp = ToonCyan
+_ToonRamp = ToonCyan
 _AdditiveRamp = poiyomiDefaultShadow
 
 Light Ramps/Colored Shadow/ToonEmGreen
-_Ramp = ToonEmGreen
+_ToonRamp = ToonEmGreen
 _AdditiveRamp = poiyomiDefaultShadow
 
 Light Ramps/Colored Shadow/ToonGray
-_Ramp = ToonGray
+_ToonRamp = ToonGray
 _AdditiveRamp = poiyomiDefaultShadow
 
 Light Ramps/Colored Shadow/ToonGray_Smooth
-_Ramp = ToonGray_Smooth
+_ToonRamp = ToonGray_Smooth
 _AdditiveRamp = poiyomiDefaultShadow
 
 Light Ramps/Colored Shadow/ToonGreen
-_Ramp = ToonGreen
+_ToonRamp = ToonGreen
 _AdditiveRamp = poiyomiDefaultShadow
 
 Light Ramps/Colored Shadow/ToonMagenta
-_Ramp = ToonMagenta
+_ToonRamp = ToonMagenta
 _AdditiveRamp = poiyomiDefaultShadow
 
 Light Ramps/Colored Shadow/ToonPurple
-_Ramp = ToonPurple
+_ToonRamp = ToonPurple
 _AdditiveRamp = poiyomiDefaultShadow
 
 Light Ramps/Colored Shadow/ToonRed
-_Ramp = ToonRed
+_ToonRamp = ToonRed
 _AdditiveRamp = poiyomiDefaultShadow
 
 Light Ramps/Colored Shadow/ToonYellow
-_Ramp = ToonYellow
+_ToonRamp = ToonYellow
 _AdditiveRamp = poiyomiDefaultShadow
 
-Test/RenderQueue
-render_queue = 1234
+Stencil/Stenciled Outlines
+_StencilRef = 10
+_StencilReadMaskRef = 0
+_StencilWriteMaskRef = 10
+_StencilPassOp = 2
+_StencilFailOp = 0
+_StencilZFailOp = 0
+_StencilCompareFunction = 8
+_OutlineStencilRef = 10
+_OutlineStencilReadMaskRef = 10
+_OutlineStencilWriteMaskRef = 0
+_OutlineStencilPassOp = 0
+_OutlineStencilFailOp = 0
+_OutlineStencilZFailOp = 0
+_OutlineStencilCompareFunction = 6
+
+star emission
+_Color = 0.5367647,0.5367647,0.5367647
+_CubeMap = Default
+_EmissionMap = rainbow_texture
+_EmissionMask = StarMask
+_EmissionScrollSpeed = 0,0.2,0,0
+_EmissionStrength = 8
+_EmissiveScroll_Direction = 0,10,0,0
+_ToonRamp = poiyomiDefaultShadow
+_AdditiveRamp = poiyomiDefaultShadow
+_StencilRef = 10
+_StencilReadMaskRef = 10
+_StencilWriteMaskRef = 10
+_StencilPassOp = 2
+_OutlineStencilRef = 10
+_OutlineStencilReadMaskRef = 10
+_OutlineStencilWriteMaskRef = 10
+_OutlineStencilCompareFunction = 6

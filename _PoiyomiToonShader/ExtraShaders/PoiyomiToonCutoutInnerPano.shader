@@ -1,12 +1,12 @@
-Shader ".poiyomi/Toon/Cutout"
+﻿Shader ".poiyomi/Toon/Extras/InnerPano/Cutout"
 {
     Properties
     {
-		[HideInInspector] shader_master_label("<color=#008080>❤ Poiyomi Toon Shader V2.5 ❤</color>", Float) = 0
-		[HideInInspector] shader_presets("poiToonPresets", Float) = 0
-		[HideInInspector] shader_eable_poi_settings_selection("", Float) = 0
-
-		[HideInInspector] footer_github("linkButton(Github,https://github.com/poiyomi/PoiyomiToonShader)", Float) = 0
+        
+        [HideInInspector] shader_master_label ("<color=#008080>❤ Poiyomi Toon Shader V2.5.0 ❤</color>", Float) = 0
+        [HideInInspector] shader_presets ("poiToonPresets", Float) = 0
+        
+        [HideInInspector] footer_github("linkButton(Github,https://github.com/poiyomi/PoiyomiToonShader)", Float) = 0
 		[HideInInspector] footer_discord("linkButton(Discord,https://discord.gg/Ays52PY)", Float) = 0
 		[HideInInspector] footer_donate("linkButton(Donate,https://www.paypal.me/poiyomi)", Float) = 0
 		[HideInInspector] footer_patreon("linkButton(Patreon,https://www.patreon.com/poiyomi)", Float) = 0
@@ -19,7 +19,6 @@ Shader ".poiyomi/Toon/Cutout"
         _BumpScale ("Normal Intensity", Range(0, 10)) = 1
         _Clip ("Alpha Cuttoff", Range(0, 1.001)) = 0.5
         [HideInInspector] m_start_mainAdvanced ("Advanced", Float) = 0
-        _GlobalPanSpeed("Pan Speed XY", Vector) = (0,0,0,0)
         [Normal]_DetailNormalMap ("Detail Map", 2D) = "bump" { }
         _DetailNormalMapScale ("Detail Intensity", Range(0, 10)) = 1
         [HideInInspector] m_end_mainAdvanced ("Advanced", Float) = 0
@@ -43,13 +42,6 @@ Shader ".poiyomi/Toon/Cutout"
         _ReplaceWithMatcap ("Replace With Matcap", Range(0, 1)) = 0
         _MultiplyMatcap ("Multiply Matcap", Range(0, 1)) = 0
         _AddMatcap ("Add Matcap", Range(0, 1)) = 0
-        
-        [HideInInspector] m_outlineOptions ("Outlines", Float) = 0
-        _LineWidth ("Outline Width", Float) = 0
-        _LineColor ("Outline Color", Color) = (1, 1, 1, 1)
-        _OutlineEmission ("Outline Emission", Float) = 0
-        _OutlineTexture ("Outline Texture", 2D) = "white" { }
-        _OutlineTexturePan ("Outline Texture Pan", Vector) = (0, 0, 0, 0)
         
         [HideInInspector] m_emissionOptions ("Emission", Float) = 0
         [HDR]_EmissionColor ("Emission Color", Color) = (1, 1, 1, 1)
@@ -159,7 +151,7 @@ Shader ".poiyomi/Toon/Cutout"
                 ZFail [_StencilZFailOp]
             }
             ZWrite [_ZWrite]
-            Cull [_Cull]
+            Cull Back
             ZTest [_ZTest]
             CGPROGRAM
             
@@ -167,13 +159,111 @@ Shader ".poiyomi/Toon/Cutout"
             #pragma vertex vert
             #pragma fragment frag
             #define FORWARD_BASE_PASS
-            #define BINORMAL_PER_FRAGMENT
             #define PANOSPHERE
-            #include "PoiPass.cginc"
+            #define BINORMAL_PER_FRAGMENT
+            #include "../PoiPass.cginc"
             ENDCG
             
         }
         
+        Pass
+        {
+            Name "InPass"
+            Stencil
+            {
+                Ref [_StencilRef]
+                ReadMask [_StencilReadMaskRef]
+                WriteMask [_StencilWriteMaskRef]
+                Ref [_StencilRef]
+                Comp [_StencilCompareFunction]
+                Pass [_StencilPassOp]
+                Fail [_StencilFailOp]
+                ZFail [_StencilZFailOp]
+            }
+            ZWrite [_ZWrite]
+            Cull Front
+            ZTest [_ZTest]
+            CGPROGRAM
+            
+            #pragma target 3.0
+            #pragma vertex vert
+            #pragma fragment frag
+
+            #include "UnityCG.cginc"
+            #include "Lighting.cginc"
+            #include "UnityPBSLighting.cginc"
+            #include "AutoLight.cginc"
+
+            struct appdata
+            {
+                float4 vertex: POSITION;
+                float3 normal: NORMAL;
+                float4 tangent: TANGENT;
+                float2 texcoord: TEXCOORD0;
+                float2 texcoord1: TEXCOORD1;
+            };
+            
+            struct v2f
+            {
+                float2 uv: TEXCOORD0;
+                float3 normal: TEXCOORD1;
+                #if defined(BINORMAL_PER_FRAGMENT)
+                    float4 tangent: TEXCOORD2;
+                #else
+                    float3 tangent: TEXCOORD2;
+                    float3 binormal: TEXCOORD3;
+                #endif
+                float4 pos: SV_POSITION;
+                float4 worldPos: TEXCOORD4;
+                float4 localPos: TEXCOORD5;
+                SHADOW_COORDS(6)
+            };
+
+            sampler2D _PanosphereTexture; float4 _PanosphereTexture_ST;
+            sampler2D _PanoMapTexture; float4 _PanoMapTexture_ST;
+            float _PanoEmission;
+            float _PanoBlend;
+            float4 _PanosphereColor;
+            float4 _PanosphereScroll;
+
+            float2 StereoPanoProjection(float3 coords)
+            {
+                float3 normalizedCoords = normalize(coords);
+                float latitude = acos(normalizedCoords.y);
+                float longitude = atan2(normalizedCoords.z, normalizedCoords.x);
+                float2 sphereCoords = float2(longitude + _Time.y * _PanosphereScroll.x, latitude + _Time.y * _PanosphereScroll.y) * float2(0.5 / UNITY_PI, 1.0 / UNITY_PI);
+                sphereCoords = float2(0.5, 1.0) - sphereCoords;
+                return(sphereCoords + float4(0, 1 - unity_StereoEyeIndex, 1, 0.5).xy) * float4(0, 1 - unity_StereoEyeIndex, 1, 0.5).zw;
+            }
+            
+            v2f vert(appdata v)
+            {
+                v2f o;
+                TANGENT_SPACE_ROTATION;
+                o.localPos = v.vertex;
+                o.pos = UnityObjectToClipPos(v.vertex);
+                o.worldPos = mul(unity_ObjectToWorld, v.vertex);
+                o.uv = v.texcoord.xy;
+                o.normal = UnityObjectToWorldNormal(v.normal);
+                
+
+                o.tangent = UnityObjectToWorldDir(v.tangent.xyz);
+                o.binormal = 1;
+
+                
+                TRANSFER_SHADOW(i);
+                return o;
+            }
+
+            float4 frag(v2f i, float facing: VFACE): SV_Target
+            {
+                float2 _StereoEnabled_var = StereoPanoProjection(normalize(_WorldSpaceCameraPos.xyz - i.worldPos.xyz) * - 1);
+                float3 _pano_var = tex2D(_PanosphereTexture, TRANSFORM_TEX(_StereoEnabled_var, _PanosphereTexture)) * _PanosphereColor.rgb;
+                return float4(_pano_var,1);
+            }
+            ENDCG
+        }
+
         Pass
         {
             Tags { "LightMode" = "ForwardAdd" }
@@ -190,7 +280,7 @@ Shader ".poiyomi/Toon/Cutout"
             }
             ZWrite Off
             Blend One One
-            Cull [_Cull]
+            Cull Back
             ZTest [_ZTest]
             CGPROGRAM
             
@@ -200,41 +290,11 @@ Shader ".poiyomi/Toon/Cutout"
             #pragma fragment frag
             #define BINORMAL_PER_FRAGMENT
             #define PANOSPHERE
-            #include "PoiPass.cginc"
+            #include "../PoiPass.cginc"
             ENDCG
             
         }
-        
-        Pass
-        {
-            Name "Outline"
-            Tags { "LightMode" = "ForwardBase" }
-            Stencil
-            {
-                Ref [_OutlineStencilRef]
-                ReadMask [_OutlineStencilReadMaskRef]
-                WriteMask [_OutlineStencilWriteMaskRef]
-                Ref [_OutlineStencilRef]
-                Comp [_OutlineStencilCompareFunction]
-                Pass [_OutlineStencilPassOp]
-                Fail [_OutlineStencilFailOp]
-                ZFail [_OutlineStencilZFailOp]
-            }
-            ZWrite [_ZWrite]
-            ZTest [_ZTest]
-            Cull Front
-            CGPROGRAM
-            
-            #include "UnityCG.cginc"
-            #pragma fragmentoption ARB_precision_hint_fastest
-            #pragma only_renderers d3d9 d3d11 glcore gles
-            #pragma target 3.0
-            #pragma vertex vert
-            #pragma fragment frag
-            #include "PoiOutlinePass.cginc"
-            ENDCG
-            
-        }
+
         Pass
         {
             Tags { "LightMode" = "ShadowCaster" }
@@ -256,7 +316,7 @@ Shader ".poiyomi/Toon/Cutout"
             #pragma vertex vertShadowCaster
             #pragma fragment fragShadowCaster
             #define CUTOUT
-            #include "PoiShadows.cginc"
+            #include "../PoiShadows.cginc"
             ENDCG
             
         }

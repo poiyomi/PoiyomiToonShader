@@ -1,12 +1,12 @@
-Shader ".poiyomi/Toon/Cutout"
+﻿Shader ".poiyomi/Toon/Extras/Cutout With Texture Blending"
 {
     Properties
     {
-		[HideInInspector] shader_master_label("<color=#008080>❤ Poiyomi Toon Shader V2.5 ❤</color>", Float) = 0
-		[HideInInspector] shader_presets("poiToonPresets", Float) = 0
-		[HideInInspector] shader_eable_poi_settings_selection("", Float) = 0
-
-		[HideInInspector] footer_github("linkButton(Github,https://github.com/poiyomi/PoiyomiToonShader)", Float) = 0
+        
+        [HideInInspector] shader_master_label ("<color=#008080>❤ Poiyomi Toon Shader V2.5.0 ❤</color>", Float) = 0
+        [HideInInspector] shader_presets ("poiToonPresets", Float) = 0
+        
+        [HideInInspector] footer_github("linkButton(Github,https://github.com/poiyomi/PoiyomiToonShader)", Float) = 0
 		[HideInInspector] footer_discord("linkButton(Discord,https://discord.gg/Ays52PY)", Float) = 0
 		[HideInInspector] footer_donate("linkButton(Donate,https://www.paypal.me/poiyomi)", Float) = 0
 		[HideInInspector] footer_patreon("linkButton(Patreon,https://www.patreon.com/poiyomi)", Float) = 0
@@ -24,6 +24,16 @@ Shader ".poiyomi/Toon/Cutout"
         _DetailNormalMapScale ("Detail Intensity", Range(0, 10)) = 1
         [HideInInspector] m_end_mainAdvanced ("Advanced", Float) = 0
         
+        [HideInInspector] m_textureBlending ("Texture Blending", Float) = 0
+        [Enum(Off, 0, Soft, 1, Hard, 2)] _Blend ("Blending Type", Int) = 0
+        _BlendTextureColor ("Blend Texture Color", Color) = (1, 1, 1, 1)
+        [NoScaleOffset]_BlendTexture ("Blend Texture", 2D) = "white" { }
+        [NoScaleOffset]_BlendNoiseTexture ("Blend Noise Texture", 2D) = "white" { }
+        _BlendAlpha ("Blend Alpha", Range(0, 1)) = 0
+        [Toggle(_)]_AutoBlend ("Enable Auto Blending", Float) = 0
+        [Gamma]_AutoBlendSpeed ("Auto Blend Speed", Float) = 2
+        [Gamma]_AutoBlendDelay ("Auto Blend Delay", Float) = 2
+
         [HideInInspector] m_metallicOptions ("Metallic", Float) = 0
         _CubeMap ("Baked CubeMap", Cube) = "" { }
         [Toggle(_)]_SampleWorld ("Force Baked Cubemap", Range(0, 1)) = 0
@@ -92,14 +102,6 @@ Shader ".poiyomi/Toon/Cutout"
         _SpecularStrength ("Specular Strength", Range(0, 5)) = 0
         [Toggle(_)]_HardSpecular ("Enable Hard Specular", Float) = 0
         _SpecularSize ("Hard Specular Size", Range(0, 1)) = .005
-        
-        [HideInInspector] m_panosphereOptions ("Panosphere", Float) = 0
-        _PanosphereTexture ("Panoshpere Texture", 2D) = "white" { }
-        _PanoMapTexture ("Pano Map Texture", 2D) = "white" { }
-        _PanoEmission ("Pano Emission", Range(0,10)) = 0
-        _PanoBlend ("Pano Blend", Range(0,1)) = 0
-        _PanosphereColor ("Panosphere Color", Color) = (1, 1, 1, 1)
-        _PanosphereScroll ("Panosphere Scrolling", Vector) = (0,0,0,0)
 
         [HideInInspector] m_rimLightOptions ("Rim Lighting", Float) = 0
         _RimLightColor ("Rim Color", Color) = (1, 1, 1, 1)
@@ -168,12 +170,12 @@ Shader ".poiyomi/Toon/Cutout"
             #pragma fragment frag
             #define FORWARD_BASE_PASS
             #define BINORMAL_PER_FRAGMENT
-            #define PANOSPHERE
-            #include "PoiPass.cginc"
+            #define TEXTURE_BLENDING
+            #include "../PoiPass.cginc"
             ENDCG
             
         }
-        
+
         Pass
         {
             Tags { "LightMode" = "ForwardAdd" }
@@ -199,12 +201,12 @@ Shader ".poiyomi/Toon/Cutout"
             #pragma vertex vert
             #pragma fragment frag
             #define BINORMAL_PER_FRAGMENT
-            #define PANOSPHERE
-            #include "PoiPass.cginc"
+            #define TEXTURE_BLENDING
+            #include "../PoiPass.cginc"
             ENDCG
             
         }
-        
+
         Pass
         {
             Name "Outline"
@@ -231,10 +233,12 @@ Shader ".poiyomi/Toon/Cutout"
             #pragma target 3.0
             #pragma vertex vert
             #pragma fragment frag
-            #include "PoiOutlinePass.cginc"
+            #include "../PoiOutlinePass.cginc"
             ENDCG
             
         }
+        
+        
         Pass
         {
             Tags { "LightMode" = "ShadowCaster" }
@@ -256,7 +260,7 @@ Shader ".poiyomi/Toon/Cutout"
             #pragma vertex vertShadowCaster
             #pragma fragment fragShadowCaster
             #define CUTOUT
-            #include "PoiShadows.cginc"
+            #include "../PoiShadows.cginc"
             ENDCG
             
         }
