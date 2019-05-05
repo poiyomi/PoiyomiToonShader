@@ -78,10 +78,13 @@ public class PoiSettings : EditorWindow
             config.save();
             PoiHelper.RepaintAllMaterialEditors();
         }
-        
+
+        drawLine();
+
+
         if (poiShaders == null || reload)
         {
-            
+
             string[] shaderGuids = AssetDatabase.FindAssets("t:shader");
             List<string> poiShaders = new List<string>();
             foreach (string g in shaderGuids)
@@ -98,21 +101,23 @@ public class PoiSettings : EditorWindow
             for (int i = 0; i < poiShaders.Count; i++) this.poiShaders[i + 1] = poiShaders[i];
         }
 
+        if (GUILayout.Button("Backup Poi Materials", GUILayout.MaxWidth(150))) PoiHelper.saveAllPoiMaterials();
+        if (GUILayout.Button("Restore Poi Materials", GUILayout.MaxWidth(150))) PoiHelper.restorePoiMaterials();
         drawLine();
 
         if (activeShader != null) poiShaders[0] = PoiHelper.getDefaultShaderName(activeShader.name);
         else poiShaders[0] = "None";
         int newSelectShader = EditorGUILayout.Popup(0, poiShaders, GUILayout.MaxWidth(200));
-        if(newSelectShader!= selectedShader)
+        if (newSelectShader != selectedShader)
         {
             selectedShader = newSelectShader;
             activeShader = Shader.Find(poiShaders[newSelectShader]);
             presetHandler = new PoiPresetHandler(activeShader);
         }
 
-        if(reload) presetHandler = new PoiPresetHandler(activeShader);
+        if (reload) presetHandler = new PoiPresetHandler(activeShader);
 
-        if (activeShader!=null)
+        if (activeShader != null)
         {
             string defaultShaderName = PoiHelper.getDefaultShaderName(activeShader.name); ;
             Shader defaultShader = Shader.Find(defaultShaderName);
@@ -125,7 +130,7 @@ public class PoiSettings : EditorWindow
             GUILayout.BeginHorizontal();
             if (GUILayout.Button("Generate All Queues", GUILayout.MaxWidth(200)))
             {
-                for (int i = createShadersFrom; i <= createShadersTo; i++) { PoiHelper.createRenderQueueShaderIfNotExists(defaultShader, i,false); }
+                for (int i = createShadersFrom; i <= createShadersTo; i++) { PoiHelper.createRenderQueueShaderIfNotExists(defaultShader, i, false); }
                 AssetDatabase.Refresh();
             }
             GUILayout.Label("from", GUILayout.MaxWidth(30));
@@ -133,9 +138,9 @@ public class PoiSettings : EditorWindow
             GUILayout.Label("to", GUILayout.MaxWidth(15));
             createShadersTo = EditorGUILayout.IntField(createShadersTo, GUILayout.MaxWidth(50));
             GUILayout.EndHorizontal();
-            if(GUILayout.Button("Generate most common Queues", GUILayout.MaxWidth(200)))
+            if (GUILayout.Button("Generate most common Queues", GUILayout.MaxWidth(200)))
             {
-                foreach(int i in COMMON_QUEUES) { PoiHelper.createRenderQueueShaderIfNotExists(defaultShader, i,false); }
+                foreach (int i in COMMON_QUEUES) { PoiHelper.createRenderQueueShaderIfNotExists(defaultShader, i, false); }
                 AssetDatabase.Refresh();
             }
             if (presetHandler != null) presetHandler.drawPresetsSettings();
