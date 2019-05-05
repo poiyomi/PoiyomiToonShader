@@ -5,7 +5,8 @@ using System.Text.RegularExpressions;
 using UnityEditor;
 using UnityEngine;
 
-public class PoiHelper{
+public class PoiHelper
+{
 
     public static Config config;
 
@@ -33,7 +34,7 @@ public class PoiHelper{
         Directory.CreateDirectory(newPath);
         newPath = newPath + "/" + fileName.Replace(".shader", "-queue" + renderQueue + ".shader");
         writeStringToFile(shaderCode, newPath);
-        if(import) AssetDatabase.ImportAsset(newPath);
+        if (import) AssetDatabase.ImportAsset(newPath);
         return Shader.Find(newShaderName);
     }
 
@@ -50,6 +51,45 @@ public class PoiHelper{
         StreamWriter writer = new StreamWriter(path, false);
         writer.Write(s);
         writer.Close();
+    }
+
+    //save mats
+    public const string POI_MATERIALS_FILE_PATH = "./Assets/.poiMaterials.json";
+
+    public static void saveAllPoiMaterials()
+    {
+        StreamWriter writer = new StreamWriter(POI_MATERIALS_FILE_PATH, false);
+
+        string[] materialGuids = AssetDatabase.FindAssets("t:material");
+        foreach (string mG in materialGuids)
+        {
+            Material material = AssetDatabase.LoadAssetAtPath<Material>(AssetDatabase.GUIDToAssetPath(mG));
+            if (material.HasProperty(Shader.PropertyToID("shader_eable_poi_settings_selection")))
+            {
+                writer.WriteLine(mG + ":" + PoiHelper.getDefaultShaderName(material.shader.name) + ":" + material.renderQueue);
+            }
+        }
+
+        writer.Close();
+    }
+
+    public static void restorePoiMaterials()
+    {
+        StreamReader reader = new StreamReader(POI_MATERIALS_FILE_PATH);
+
+        string l;
+        while ((l = reader.ReadLine()) != null)
+        {
+            string[] materialData = l.Split(new string[] { ":" }, System.StringSplitOptions.None);
+            Material material = AssetDatabase.LoadAssetAtPath<Material>(AssetDatabase.GUIDToAssetPath(materialData[0]));
+            Shader shader = Shader.Find(materialData[1]);
+            material.shader = shader;
+            material.renderQueue = int.Parse(materialData[2]);
+            PoiToon.UpdateRenderQueue(material, shader);
+        }
+        RepaintAllMaterialEditors();
+
+        reader.Close();
     }
 
     //used to parse extra options in display name like offset
@@ -77,13 +117,13 @@ public class PoiHelper{
         string shader_file_name;
         List<Material> materialsToUpdate = new List<Material>();
         List<int> renderQueues = new List<int>();
-        while ((shader_file_name = reader.ReadLine())!=null)
+        while ((shader_file_name = reader.ReadLine()) != null)
         {
             //for each updated shader
             string[] shaderGuids = AssetDatabase.FindAssets(shader_file_name);
             string defaultShaderGuid = null;
             foreach (string g in shaderGuids) if (AssetDatabase.GUIDToAssetPath(g).EndsWith(shader_file_name + ".shader")) defaultShaderGuid = g;
-            if (defaultShaderGuid==null) continue;
+            if (defaultShaderGuid == null) continue;
             Shader defaultShader = AssetDatabase.LoadAssetAtPath<Shader>(AssetDatabase.GUIDToAssetPath(defaultShaderGuid));
             string[] matGuids = AssetDatabase.FindAssets("t:material");
             materialsToUpdate.Clear();
@@ -98,8 +138,8 @@ public class PoiHelper{
                     material.shader = defaultShader;
                 }
             }
-            for(int i = 0;i<shaderGuids.Length;i++) if(shaderGuids[i]!= defaultShaderGuid) AssetDatabase.DeleteAsset(AssetDatabase.GUIDToAssetPath(shaderGuids[i]));
-            for(int i=0;i<materialsToUpdate.Count;i++)
+            for (int i = 0; i < shaderGuids.Length; i++) if (shaderGuids[i] != defaultShaderGuid) AssetDatabase.DeleteAsset(AssetDatabase.GUIDToAssetPath(shaderGuids[i]));
+            for (int i = 0; i < materialsToUpdate.Count; i++)
             {
                 materialsToUpdate[i].renderQueue = renderQueues[i];
                 PoiToon.UpdateRenderQueue(materialsToUpdate[i], defaultShader);
