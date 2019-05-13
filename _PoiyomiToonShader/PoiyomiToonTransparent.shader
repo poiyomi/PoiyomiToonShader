@@ -32,7 +32,7 @@
         _Metallic ("Metallic", Range(0, 1)) = 0
         _SmoothnessMap ("Smoothness Map", 2D) = "white" { }
         [Toggle(_)]_InvertSmoothness("Invert Smoothness Map",Range(0,1)) = 0
-_Smoothness ("Smoothness", Range(0, 1)) = 0
+        _Smoothness ("Smoothness", Range(0, 1)) = 0
         
         [HideInInspector] m_matcapOptions ("Matcap / Sphere Textures", Float) = 0
         _Matcap ("Matcap", 2D) = "white" { }
