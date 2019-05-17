@@ -458,7 +458,11 @@ public class PoiToon : ShaderGUI
         if (sendActiveShader) {
             PoiSettings.activeShader = defaultShader;
             PoiSettings.presetHandler = presetHandler;
-            PoiHelper.FindEditorWindow(typeof(PoiSettings)).Repaint();
+            EditorWindow win = PoiHelper.FindEditorWindow(typeof(PoiSettings));
+			if(win != null)
+			{
+				win.Repaint();
+			}
             sendActiveShader = false;
         }
     }

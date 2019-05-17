@@ -26,7 +26,7 @@ public class PoiHelper
         shaderCode = Regex.Replace(shaderCode, pattern, "\"Queue\" = \"" + replacementQueue + "\"");
         pattern = @"Shader ?""(\w|\/|\.)+""";
         shaderCode = Regex.Replace(shaderCode, pattern, "Shader \"" + newShaderName + "\"");
-        pattern = @"#include ""(?!.*(Lighting)|(AutoLight)|(UnityCG)|(UnityShaderVariables)|(HLSLSupport)|(TerrainEngine))";
+        pattern = @"#include ""(?!.*(AutoLight)|(UnityCG)|(UnityShaderVariables)|(HLSLSupport)|(TerrainEngine))";
         shaderCode = Regex.Replace(shaderCode, pattern, "#include \"../", RegexOptions.Multiline);
         string[] pathParts = defaultPath.Split('/');
         string fileName = pathParts[pathParts.Length - 1];
@@ -35,6 +35,7 @@ public class PoiHelper
         newPath = newPath + "/" + fileName.Replace(".shader", "-queue" + renderQueue + ".shader");
         writeStringToFile(shaderCode, newPath);
         if (import) AssetDatabase.ImportAsset(newPath);
+
         return Shader.Find(newShaderName);
     }
 

@@ -1,6 +1,0 @@
-Put all updated shaders in here by file name to update their different queue shaders when a poi editor is opened
-remove the "-" in the file name to activate this file
-!this file is deleted after the shaders have been updated
-Put the names like this
-PoiToonCutout
-PoiToonTransparent

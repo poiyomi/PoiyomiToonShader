@@ -14,6 +14,11 @@ float3 CreateBinormal(float3 normal, float3 tangent, float binormalSign)
     (binormalSign * unity_WorldTransformParams.w);
 }
 
+bool IsInMirror()
+{
+    return unity_CameraProjection[2][0] != 0.f || unity_CameraProjection[2][1] != 0.f;
+}
+
 // Camera
 float3 getCameraPosition()
 {
@@ -37,8 +42,9 @@ float3 getCameraForward()
 
 void InitializeFragmentNormal(inout v2f i)
 {
-    float3 mainNormal = UnpackScaleNormal(UNITY_SAMPLE_TEX2D_SAMPLER(_BumpMap, _MainTex,TRANSFORM_TEX(i.uv, _BumpMap)), _BumpScale);
-    float3 detailNormal = UnpackScaleNormal(UNITY_SAMPLE_TEX2D_SAMPLER(_DetailNormalMap, _MainTex,TRANSFORM_TEX(i.uv, _DetailNormalMap)), _DetailNormalMapScale);
+    float3 mainNormal = UnpackScaleNormal(UNITY_SAMPLE_TEX2D_SAMPLER(_BumpMap, _MainTex, TRANSFORM_TEX(i.uv, _BumpMap)), _BumpScale);
+    float detailNormalMask = UNITY_SAMPLE_TEX2D_SAMPLER(_DetailNormalMask, _MainTex, TRANSFORM_TEX(i.uv, _DetailNormalMask));
+    float3 detailNormal = UnpackScaleNormal(UNITY_SAMPLE_TEX2D_SAMPLER(_DetailNormalMap, _MainTex, TRANSFORM_TEX(i.uv, _DetailNormalMap)), _DetailNormalMapScale * detailNormalMask);
     float3 tangentSpaceNormal = BlendNormals(mainNormal, detailNormal);
     
     #if defined(BINORMAL_PER_FRAGMENT)

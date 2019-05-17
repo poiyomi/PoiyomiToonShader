@@ -5,9 +5,9 @@
 
 float4      _Color;
 float       _Clip;
-sampler2D   _MainTex;
-float4      _MainTex_ST;
+sampler2D   _MainTex; float4 _MainTex_ST;
 float4 		_GlobalPanSpeed;
+sampler2D _AlphaMask; float4 _AlphaMask_ST;
 
 struct VertexInput
 {
@@ -48,12 +48,13 @@ half4 fragShadowCaster(
         {
             #if defined(UNITY_STANDARD_USE_SHADOW_UVS)
                 half alpha = tex2D(_MainTex, TRANSFORM_TEX(i.uv, _MainTex)).a * _Color.a;
+                half alphaMask = tex2D(_AlphaMask, TRANSFORM_TEX(i.uv, _AlphaMask));
                 
                 #ifdef CUTOUT
-                    clip(alpha - _Clip);
+                    clip(alpha * alphaMask - _Clip);
                 #endif
 				#ifdef TRANSPARENT
-					clip(alpha - 0.01);
+					clip(alpha * alphaMask - 0.01);
 				#endif
             #endif
             

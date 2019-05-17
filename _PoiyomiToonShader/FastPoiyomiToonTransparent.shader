@@ -1,4 +1,4 @@
-﻿Shader ".poiyomi/Toon/Transparent"
+﻿Shader ".poiyomi/Toon/simple/Transparent"
 {
     Properties
     {
@@ -27,7 +27,7 @@
         _DetailNormalMask ("Detail Mask", 2D) = "white" { }
         _DetailNormalMapScale ("Detail Intensity", Range(0, 10)) = 1
         [HideInInspector] m_end_mainAdvanced ("Advanced", Float) = 0
-        
+        /*
         [HideInInspector] m_metallicOptions ("Metallic", Float) = 0
         _CubeMap ("Baked CubeMap", Cube) = "" { }
         [Toggle(_)]_SampleWorld ("Force Baked Cubemap", Range(0, 1)) = 0
@@ -47,7 +47,6 @@
         _MultiplyMatcap ("Multiply Matcap", Range(0, 1)) = 0
         _AddMatcap ("Add Matcap", Range(0, 1)) = 0
         
-        /*
         [HideInInspector] m_outlineOptions ("Outlines", Float) = 0
         _LineWidth ("Outline Width", Float) = 0
         _LineColor ("Outline Color", Color) = (1, 1, 1, 1)
@@ -60,8 +59,8 @@
         _OutlineGlobalPan ("Outline Global Pan", Vector) = (0,0,0,0)
         [Enum(UnityEngine.Rendering.CullMode)] _OutlineCull ("Cull", Float) = 1
         [HideInInspector] m_end_outlineAdvanced ("Advanced", Float) = 0
-        */
         
+        */
         [HideInInspector] m_emissionOptions ("Emission", Float) = 0
         [HDR]_EmissionColor ("Emission Color", Color) = (1, 1, 1, 1)
         _EmissionMap ("Emission Map", 2D) = "white" { }
@@ -99,7 +98,7 @@
         [NoScaleOffset]_AdditiveRamp ("Additive Ramp", 2D) = "white" { }
        _AttenuationMultiplier ("Attenuation", Range(0,1)) = 0
         [HideInInspector] m_end_lightingAdvanced ("Advanced", Float) = 0
-        
+        /*
         [HideInInspector] m_specularHighlightsOptions ("Specular Highlights", Float) = 0
         _SpecularMap ("Specular Map", 2D) = "white" { }
         _Gloss ("Glossiness", Range(0, 1)) = 0
@@ -145,7 +144,7 @@
         [Enum(UnityEngine.Rendering.StencilOp)] _StencilFailOp ("Stencil Fail Op", Float) = 0
         [Enum(UnityEngine.Rendering.StencilOp)] _StencilZFailOp ("Stencil ZFail Op", Float) = 0
         [Enum(UnityEngine.Rendering.CompareFunction)] _StencilCompareFunction ("Stencil Compare Function", Float) = 8
-        /*
+        
         [HideInInspector] m_start_OutlineStencil ("Outline Stencil", Float) = 0
         [IntRange] _OutlineStencilRef ("Stencil Reference Value", Range(0, 255)) = 0
         [IntRange] _OutlineStencilReadMaskRef ("Stencil ReadMask Value", Range(0, 255)) = 0
@@ -156,7 +155,6 @@
         [Enum(UnityEngine.Rendering.CompareFunction)] _OutlineStencilCompareFunction ("Stencil Compare Function", Float) = 8
         [HideInInspector] m_end_OutlineStencil ("Outline Stencil", Float) = 0
         */
-
         [HideInInspector] m_miscOptions ("Misc", Float) = 0
         [Enum(UnityEngine.Rendering.CullMode)] _Cull ("Cull", Float) = 2
         [Enum(UnityEngine.Rendering.CompareFunction)] _ZTest ("ZTest", Float) = 4
@@ -200,7 +198,8 @@
             #define BINORMAL_PER_FRAGMENT
             #define FORWARD_BASE_PASS
             #define TRANSPARENT
-            #include "Includes/MainShaderDefines.cginc"
+            #define LIGHTING
+            #define EMISSION
             #include "Includes/Poicludes.cginc"
             #include "Includes/PoiHelpers.cginc"
             #include "Includes/PoiLighting.cginc"
@@ -211,7 +210,6 @@
         }
         Pass
         {
-            Name "ForwardAddPass"
             Tags { "LightMode" = "ForwardAdd" }
             Stencil
             {
@@ -236,7 +234,8 @@
             #pragma fragment frag
             #define TRANSPARENT
             #define BINORMAL_PER_FRAGMENT
-            #include "Includes/MainShaderDefines.cginc"
+            #define LIGHTING
+            #define EMISSION
             #include "Includes/Poicludes.cginc"
             #include "Includes/PoiHelpers.cginc"
             #include "Includes/PoiLighting.cginc"
@@ -247,7 +246,6 @@
         }
         Pass
         {
-            Name "ShadowCasterPass"
             Tags { "LightMode" = "ShadowCaster" }
             Stencil
             {
@@ -262,7 +260,6 @@
             }
             CGPROGRAM
             
-            #pragma target 3.0
             #pragma multi_compile_shadowcaster
             #pragma vertex vertShadowCaster
             #pragma fragment fragShadowCaster

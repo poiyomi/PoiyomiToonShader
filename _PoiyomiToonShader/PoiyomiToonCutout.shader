@@ -1,11 +1,11 @@
-Shader ".poiyomi/Toon/Cutout"
+﻿Shader ".poiyomi/Toon/Cutout"
 {
     Properties
     {
-		[HideInInspector] shader_master_label("<color=#008080>❤ Poiyomi Toon Shader V2.5 ❤</color>", Float) = 0
-		[HideInInspector] shader_presets("poiToonPresets", Float) = 0
-		[HideInInspector] shader_eable_poi_settings_selection("", Float) = 0
-
+        [HideInInspector] shader_master_label ("<color=#008080>❤ Poiyomi Toon Shader V2.6 ❤</color>", Float) = 0
+        [HideInInspector] shader_presets ("poiToonPresets", Float) = 0
+        [HideInInspector] shader_eable_poi_settings_selection("", Float) = 0
+        
 		[HideInInspector] footer_github("linkButton(Github,https://github.com/poiyomi/PoiyomiToonShader)", Float) = 0
 		[HideInInspector] footer_discord("linkButton(Discord,https://discord.gg/Ays52PY)", Float) = 0
 		[HideInInspector] footer_donate("linkButton(Donate,https://www.paypal.me/poiyomi)", Float) = 0
@@ -17,22 +17,25 @@ Shader ".poiyomi/Toon/Cutout"
         _MainTex ("Texture", 2D) = "white" { }
         [Normal]_BumpMap ("Normal Map", 2D) = "bump" { }
         _BumpScale ("Normal Intensity", Range(0, 10)) = 1
+        _AlphaMask ("Alpha Mask", 2D) = "white" { }
+        _AOMap ("AO Map", 2D) = "white" { }
+        _AOStrength ("AO Strength", Range(0,1)) = 1
         _Clip ("Alpha Cuttoff", Range(0, 1.001)) = 0.5
         [HideInInspector] m_start_mainAdvanced ("Advanced", Float) = 0
-        _GlobalPanSpeed("Pan Speed XY", Vector) = (0,0,0,0)
+        _GlobalPanSpeed ("Pan Speed XY", Vector) = (0, 0, 0, 0)
         [Normal]_DetailNormalMap ("Detail Map", 2D) = "bump" { }
+        _DetailNormalMask ("Detail Mask", 2D) = "white" { }
         _DetailNormalMapScale ("Detail Intensity", Range(0, 10)) = 1
         [HideInInspector] m_end_mainAdvanced ("Advanced", Float) = 0
         
         [HideInInspector] m_metallicOptions ("Metallic", Float) = 0
         _CubeMap ("Baked CubeMap", Cube) = "" { }
         [Toggle(_)]_SampleWorld ("Force Baked Cubemap", Range(0, 1)) = 0
-        _AdditiveClearCoat ("Additive Clear Coat", Range(0, 1)) = 0
         _PurelyAdditive ("Purely Additive", Range(0, 1)) = 0
         _MetallicMap ("Metallic Map", 2D) = "white" { }
         _Metallic ("Metallic", Range(0, 1)) = 0
         _SmoothnessMap ("Smoothness Map", 2D) = "white" { }
-        [Toggle(_)]_InvertSmoothness("Invert Smoothness Map",Range(0,1)) = 0
+        [Toggle(_)]_InvertSmoothness ("Invert Smoothness Map", Range(0, 1)) = 0
         _Smoothness ("Smoothness", Range(0, 1)) = 0
         
         [HideInInspector] m_matcapOptions ("Matcap / Sphere Textures", Float) = 0
@@ -44,12 +47,20 @@ Shader ".poiyomi/Toon/Cutout"
         _MultiplyMatcap ("Multiply Matcap", Range(0, 1)) = 0
         _AddMatcap ("Add Matcap", Range(0, 1)) = 0
         
+        /*
         [HideInInspector] m_outlineOptions ("Outlines", Float) = 0
         _LineWidth ("Outline Width", Float) = 0
         _LineColor ("Outline Color", Color) = (1, 1, 1, 1)
         _OutlineEmission ("Outline Emission", Float) = 0
         _OutlineTexture ("Outline Texture", 2D) = "white" { }
         _OutlineTexturePan ("Outline Texture Pan", Vector) = (0, 0, 0, 0)
+        _OutlineShadowStrength ("Shadow Strength", Range(0, 1)) = 1
+        [HideInInspector] m_start_outlineAdvanced ("Advanced", Float) = 0
+        _OutlineFadeDistance ("Outline distance Fade X-Y", Vector) = (0,0,0,0)
+        _OutlineGlobalPan ("Outline Global Pan", Vector) = (0,0,0,0)
+        [Enum(UnityEngine.Rendering.CullMode)] _OutlineCull ("Cull", Float) = 1
+        [HideInInspector] m_end_outlineAdvanced ("Advanced", Float) = 0
+        */
         
         [HideInInspector] m_emissionOptions ("Emission", Float) = 0
         [HDR]_EmissionColor ("Emission Color", Color) = (1, 1, 1, 1)
@@ -74,15 +85,20 @@ Shader ".poiyomi/Toon/Cutout"
         
         [HideInInspector] m_fakeLightingOptions ("Lighting", Float) = 0
         [NoScaleOffset]_ToonRamp ("Lighting Ramp", 2D) = "white" { }
-        _ShadowStrength ("Shadow Strength", Range(0, 1)) = .75
+        _ShadowStrength ("Shadow Strength", Range(0, 1)) = 1
         _ShadowOffset ("Shadow Offset", Range(-1, 1)) = 0
+        _MinBrightness ("Min Brightness", Range(0, 1)) = 0
+        _MaxBrightness ("Max Brightness", Float) = 1
+        [HideInInspector] m_start_fakeLighting ("Fake Lighting", Float) = 0
         [Toggle(_)] _ForceLightDirection ("Force Light Direction", Range(0, 1)) = 0
         [Toggle(_)] _ForceShadowStrength ("Force Shadow Strength", Range(0, 1)) = 0
         _LightDirection ("Fake Light Direction", Vector) = (0, 1, 0, 0)
-        _MinBrightness ("Min Brightness", Range(0, 1)) = 0
-        _MaxDirectionalIntensity ("Max Directional Intensity", Float) = 1
+        [HideInInspector] m_end_fakeLighting ("Fake Lighting", Float) = 0
+        [HideInInspector] m_start_lightingAdvanced ("Advanced", Float) = 0
+        _IndirectContribution ("Indirect Contribution", Range(0, 1)) = 0
         [NoScaleOffset]_AdditiveRamp ("Additive Ramp", 2D) = "white" { }
-        _FlatOrFullAmbientLighting ("Flat or Full Ambient Lighting", Range(0, 1)) = 0
+       _AttenuationMultiplier ("Attenuation", Range(0,1)) = 0
+        [HideInInspector] m_end_lightingAdvanced ("Advanced", Float) = 0
         
         [HideInInspector] m_specularHighlightsOptions ("Specular Highlights", Float) = 0
         _SpecularMap ("Specular Map", 2D) = "white" { }
@@ -96,11 +112,11 @@ Shader ".poiyomi/Toon/Cutout"
         [HideInInspector] m_panosphereOptions ("Panosphere", Float) = 0
         _PanosphereTexture ("Panoshpere Texture", 2D) = "white" { }
         _PanoMapTexture ("Pano Map Texture", 2D) = "white" { }
-        _PanoEmission ("Pano Emission", Range(0,10)) = 0
-        _PanoBlend ("Pano Blend", Range(0,1)) = 0
+        _PanoEmission ("Pano Emission", Range(0, 10)) = 0
+        _PanoBlend ("Pano Blend", Range(0, 1)) = 0
         _PanosphereColor ("Panosphere Color", Color) = (1, 1, 1, 1)
-        _PanosphereScroll ("Panosphere Scrolling", Vector) = (0,0,0,0)
-
+        _PanosphereScroll ("Panosphere Scrolling", Vector) = (0, 0, 0, 0)
+        
         [HideInInspector] m_rimLightOptions ("Rim Lighting", Float) = 0
         _RimLightColor ("Rim Color", Color) = (1, 1, 1, 1)
         _RimWidth ("Rim Width", Range(0, 1)) = 0.8
@@ -108,7 +124,18 @@ Shader ".poiyomi/Toon/Cutout"
         _RimSharpness ("Rim Sharpness", Range(0, 1)) = .25
         _RimLightColorBias ("Rim Color Bias", Range(0, 1)) = 0
         _RimTex ("Rim Texture", 2D) = "white" { }
+        _RimMask("Rim Mask", 2D) = "white" { }
         _RimTexPanSpeed ("Rim Texture Pan Speed", Vector) = (0, 0, 0, 0)
+        
+        [HideInInspector] m_textureBlending ("Texture Blending", Float) = 0
+        [Enum(Off, 0, Soft, 1, Hard, 2)] _Blend ("Blending Type", Int) = 0
+        _BlendTextureColor ("Blend Texture Color", Color) = (1, 1, 1, 1)
+        [NoScaleOffset]_BlendTexture ("Blend Texture", 2D) = "white" { }
+        [NoScaleOffset]_BlendNoiseTexture ("Blend Noise Texture", 2D) = "white" { }
+        _BlendAlpha ("Blend Alpha", Range(0, 1)) = 0
+        [Toggle(_)]_AutoBlend ("Enable Auto Blending", Float) = 0
+        [Gamma]_AutoBlendSpeed ("Auto Blend Speed", Float) = 2
+        [Gamma]_AutoBlendDelay ("Auto Blend Delay", Float) = 2
         
         [HideInInspector] m_StencilPassOptions ("Stencil", Float) = 0
         [IntRange] _StencilRef ("Stencil Reference Value", Range(0, 255)) = 0
@@ -118,7 +145,7 @@ Shader ".poiyomi/Toon/Cutout"
         [Enum(UnityEngine.Rendering.StencilOp)] _StencilFailOp ("Stencil Fail Op", Float) = 0
         [Enum(UnityEngine.Rendering.StencilOp)] _StencilZFailOp ("Stencil ZFail Op", Float) = 0
         [Enum(UnityEngine.Rendering.CompareFunction)] _StencilCompareFunction ("Stencil Compare Function", Float) = 8
-
+        /*
         [HideInInspector] m_start_OutlineStencil ("Outline Stencil", Float) = 0
         [IntRange] _OutlineStencilRef ("Stencil Reference Value", Range(0, 255)) = 0
         [IntRange] _OutlineStencilReadMaskRef ("Stencil ReadMask Value", Range(0, 255)) = 0
@@ -128,6 +155,7 @@ Shader ".poiyomi/Toon/Cutout"
         [Enum(UnityEngine.Rendering.StencilOp)] _OutlineStencilZFailOp ("Stencil ZFail Op", Float) = 0
         [Enum(UnityEngine.Rendering.CompareFunction)] _OutlineStencilCompareFunction ("Stencil Compare Function", Float) = 8
         [HideInInspector] m_end_OutlineStencil ("Outline Stencil", Float) = 0
+        */
         
         [HideInInspector] m_miscOptions ("Misc", Float) = 0
         [Enum(UnityEngine.Rendering.CullMode)] _Cull ("Cull", Float) = 2
@@ -141,7 +169,6 @@ Shader ".poiyomi/Toon/Cutout"
     SubShader
     {
         Tags { "RenderType" = "TransparentCutout" "Queue" = "AlphaTest" }
-        
         
         Pass
         {
@@ -166,16 +193,24 @@ Shader ".poiyomi/Toon/Cutout"
             #pragma target 3.0
             #pragma vertex vert
             #pragma fragment frag
+            #pragma multi_compile_fwdbase
+            #pragma fragmentoption ARB_precision_hint_fastest
             #define FORWARD_BASE_PASS
             #define BINORMAL_PER_FRAGMENT
-            #define PANOSPHERE
-            #include "PoiPass.cginc"
+            
+            #include "Includes/MainShaderDefines.cginc"
+            #include "Includes/Poicludes.cginc"
+            #include "Includes/PoiHelpers.cginc"
+            #include "Includes/PoiLighting.cginc"
+            #include "Includes/PoiVert.cginc"
+            #include "Includes/PoiFrag.cginc"
             ENDCG
             
         }
         
         Pass
         {
+            Name "ForwardAddPass"
             Tags { "LightMode" = "ForwardAdd" }
             Stencil
             {
@@ -199,44 +234,19 @@ Shader ".poiyomi/Toon/Cutout"
             #pragma vertex vert
             #pragma fragment frag
             #define BINORMAL_PER_FRAGMENT
-            #define PANOSPHERE
-            #include "PoiPass.cginc"
+            #include "Includes/MainShaderDefines.cginc"
+            #include "Includes/Poicludes.cginc"
+            #include "Includes/PoiHelpers.cginc"
+            #include "Includes/PoiLighting.cginc"
+            #include "Includes/PoiVert.cginc"
+            #include "Includes/PoiFrag.cginc"
             ENDCG
             
         }
         
         Pass
         {
-            Name "Outline"
-            Tags { "LightMode" = "ForwardBase" }
-            Stencil
-            {
-                Ref [_OutlineStencilRef]
-                ReadMask [_OutlineStencilReadMaskRef]
-                WriteMask [_OutlineStencilWriteMaskRef]
-                Ref [_OutlineStencilRef]
-                Comp [_OutlineStencilCompareFunction]
-                Pass [_OutlineStencilPassOp]
-                Fail [_OutlineStencilFailOp]
-                ZFail [_OutlineStencilZFailOp]
-            }
-            ZWrite [_ZWrite]
-            ZTest [_ZTest]
-            Cull Front
-            CGPROGRAM
-            
-            #include "UnityCG.cginc"
-            #pragma fragmentoption ARB_precision_hint_fastest
-            #pragma only_renderers d3d9 d3d11 glcore gles
-            #pragma target 3.0
-            #pragma vertex vert
-            #pragma fragment frag
-            #include "PoiOutlinePass.cginc"
-            ENDCG
-            
-        }
-        Pass
-        {
+            Name "ShadowCasterPass"
             Tags { "LightMode" = "ShadowCaster" }
             Stencil
             {
@@ -256,7 +266,7 @@ Shader ".poiyomi/Toon/Cutout"
             #pragma vertex vertShadowCaster
             #pragma fragment fragShadowCaster
             #define CUTOUT
-            #include "PoiShadows.cginc"
+            #include "Includes/PoiShadows.cginc"
             ENDCG
             
         }

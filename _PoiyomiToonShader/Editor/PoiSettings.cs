@@ -153,7 +153,7 @@ public class PoiSettings : EditorWindow
     public static PoiSettings getInstance()
     {
         PoiSettings instance = (PoiSettings)PoiHelper.FindEditorWindow(typeof(PoiSettings));
-        if (instance == null) instance = new PoiSettings();
+        if (instance == null) instance = ScriptableObject.CreateInstance<PoiSettings>();
         return instance;
     }
 }
