@@ -21,7 +21,7 @@
                 {
                     _light_direction_var = _WorldSpaceLightPos0;
                 }
-                _flat_lighting_var = clamp(getNewPoiLighting(_light_direction_var, i.normal, _ShadowStrength, attenuation, _AttenuationMultiplier,AOMap), _MinBrightness, _MaxBrightness);
+                _flat_lighting_var = clamp(getNewPoiLighting(_light_direction_var, i.normal, _ShadowStrength, attenuation, _AttenuationMultiplier, AOMap), _MinBrightness, _MaxBrightness);
             #else
                 #if defined(POINT) || defined(SPOT)
                     float3 _light_direction_var = normalize(_WorldSpaceLightPos0.xyz - i.worldPos);
@@ -230,7 +230,9 @@
         
         #ifdef LIGHTING
             #if(defined(POINT) || defined(SPOT))
-                finalColor *= (1 - _metallic_map_var);
+                #ifdef METALLIC
+                    finalColor *= (1 - _metallic_map_var);
+                #endif
                 #ifdef TRANSPARENT
                     finalColor.rgb *= finalColor.a;
                 #endif
