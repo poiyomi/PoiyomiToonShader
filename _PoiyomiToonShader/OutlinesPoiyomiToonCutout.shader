@@ -1,8 +1,9 @@
-﻿Shader ".poiyomi/Toon/outlines/Cutout"
+Shader ".poiyomi/Toon/outlines/Cutout"
 {
-    Properties
-    {
-        [HideInInspector] shader_master_label ("<color=#008080>❤ Poiyomi Toon Shader V2.6 ❤</color>", Float) = 0
+    Properties 
+  { 
+      [HideInInspector] shader_is_using_thry_editor("", Float)=0
+        [HideInInspector] shader_master_label ("<color=#008080>❤ Poiyomi Toon Shader V2.7B ❤</color>", Float) = 0
         [HideInInspector] shader_presets ("poiToonPresets", Float) = 0
         [HideInInspector] shader_eable_poi_settings_selection("", Float) = 0
         
@@ -27,6 +28,7 @@
         _DetailNormalMask ("Detail Mask", 2D) = "white" { }
         _DetailNormalMapScale ("Detail Intensity", Range(0, 10)) = 1
         [HideInInspector] m_end_mainAdvanced ("Advanced", Float) = 0
+
         
         [HideInInspector] m_metallicOptions ("Metallic", Float) = 0
         _CubeMap ("Baked CubeMap", Cube) = "" { }
@@ -48,7 +50,7 @@
         _AddMatcap ("Add Matcap", Range(0, 1)) = 0
         
         [HideInInspector] m_outlineOptions ("Outlines", Float) = 0
-        _LineWidth ("Outline Width", Float) = 0
+        _LineWidth ("Outline Width (cm)", Float) = 0
         _LineColor ("Outline Color", Color) = (1, 1, 1, 1)
         _OutlineEmission ("Outline Emission", Float) = 0
         _OutlineTexture ("Outline Texture", 2D) = "white" { }
@@ -87,25 +89,19 @@
         _ShadowOffset ("Shadow Offset", Range(-1, 1)) = 0
         _MinBrightness ("Min Brightness", Range(0, 1)) = 0
         _MaxBrightness ("Max Brightness", Float) = 1
-        [HideInInspector] m_start_fakeLighting ("Fake Lighting", Float) = 0
-        [Toggle(_)] _ForceLightDirection ("Force Light Direction", Range(0, 1)) = 0
-        [Toggle(_)] _ForceShadowStrength ("Force Shadow Strength", Range(0, 1)) = 0
-        _LightDirection ("Fake Light Direction", Vector) = (0, 1, 0, 0)
-        [HideInInspector] m_end_fakeLighting ("Fake Lighting", Float) = 0
         [HideInInspector] m_start_lightingAdvanced ("Advanced", Float) = 0
         _IndirectContribution ("Indirect Contribution", Range(0, 1)) = 0
-        [NoScaleOffset]_AdditiveRamp ("Additive Ramp", 2D) = "white" { }
+        _AdditiveSoftness ("Additive Softness", Range(0,0.5)) = 0.005
+        _AdditiveOffset("Additive Offset", Range(-.5,.5)) = 0
        _AttenuationMultiplier ("Attenuation", Range(0,1)) = 0
         [HideInInspector] m_end_lightingAdvanced ("Advanced", Float) = 0
         
         [HideInInspector] m_specularHighlightsOptions ("Specular Highlights", Float) = 0
         _SpecularMap ("Specular Map", 2D) = "white" { }
-        _Gloss ("Glossiness", Range(0, 1)) = 0
-        _SpecularColor ("Specular Color", Color) = (1, 1, 1, 1)
-        _SpecularBias ("Specular Color Bias", Range(0, 1)) = 0
-        _SpecularStrength ("Specular Strength", Range(0, 5)) = 0
-        [Toggle(_)]_HardSpecular ("Enable Hard Specular", Float) = 0
-        _SpecularSize ("Hard Specular Size", Range(0, 1)) = .005
+        _SpecularSmoothness ("Smoothness", Range(0, 1)) = 0
+        _SpecularTint ("Specular Tint", Color) = (1, 1, 1, 1)
+        _IOR ("IOR", Range(1.0, 5.0)) = 1.45
+        _Fresnel("Fresnel", Range(1.0, 8.0)) = 5.0
         
         [HideInInspector] m_panosphereOptions ("Panosphere", Float) = 0
         _PanosphereTexture ("Panoshpere Texture", 2D) = "white" { }
@@ -153,6 +149,9 @@
         [Enum(UnityEngine.Rendering.CompareFunction)] _OutlineStencilCompareFunction ("Stencil Compare Function", Float) = 8
         [HideInInspector] m_end_OutlineStencil ("Outline Stencil", Float) = 0
         
+        [HideInInspector] m_funOptions("Fun", Float) = 0
+        [Enum(ShowInBoth, 0, ShowOnlyInMirror, 1, DontShowInMirror, 2)] _Mirror ("Show in mirror", Int) = 0
+        
         [HideInInspector] m_miscOptions ("Misc", Float) = 0
         [Enum(UnityEngine.Rendering.CullMode)] _Cull ("Cull", Float) = 2
         [Enum(UnityEngine.Rendering.CompareFunction)] _ZTest ("ZTest", Float) = 4
@@ -161,10 +160,11 @@
         [Enum(Off, 0, On, 1)] _ZWrite ("ZWrite", Int) = 1
     }
     
-    CustomEditor "PoiToon"
+    //originalEditorCustomEditor "PoiToon"
+CustomEditor "ThryEditor"
     SubShader
     {
-        Tags { "RenderType" = "TransparentCutout" "Queue" = "AlphaTest" }
+        Tags { "RenderType" = "Opaque" "Queue" = "Geometry" }
         
         Pass
         {
@@ -185,23 +185,16 @@
             Cull [_Cull]
             ZTest [_ZTest]
             CGPROGRAM
-            
             #pragma target 3.0
-            #pragma vertex vert
-            #pragma fragment frag
+            #define FORWARD_BASE_PASS
+            #pragma multi_compile_instancing
             #pragma multi_compile_fwdbase
             #pragma fragmentoption ARB_precision_hint_fastest
-            #define FORWARD_BASE_PASS
-            #define BINORMAL_PER_FRAGMENT
-            
-            #include "Includes/MainShaderDefines.cginc"
-            #include "Includes/Poicludes.cginc"
-            #include "Includes/PoiHelpers.cginc"
-            #include "Includes/PoiLighting.cginc"
-            #include "Includes/PoiVert.cginc"
-            #include "Includes/PoiFrag.cginc"
+            #pragma multi_compile_fog
+            #pragma vertex vert
+            #pragma fragment frag
+            #include "Includes/PoiPass.cginc"
             ENDCG
-            
         }
         
         Pass
@@ -223,18 +216,13 @@
             Cull [_Cull]
             ZTest [_ZTest]
             CGPROGRAM
-            
             #pragma target 3.0
-            #pragma multi_compile DIRECTIONAL POINT SPOT
+            #define FORWARD_ADD_PASS
+            #pragma multi_compile_instancing
+            #pragma multi_compile_fwdadd
             #pragma vertex vert
             #pragma fragment frag
-            #define BINORMAL_PER_FRAGMENT
-            #include "Includes/MainShaderDefines.cginc"
-            #include "Includes/Poicludes.cginc"
-            #include "Includes/PoiHelpers.cginc"
-            #include "Includes/PoiLighting.cginc"
-            #include "Includes/PoiVert.cginc"
-            #include "Includes/PoiFrag.cginc"
+            #include "Includes/PoiPass.cginc"
             ENDCG
             
         }
@@ -258,17 +246,12 @@
             ZTest [_ZTest]
             Cull [_OutlineCull]
             CGPROGRAM
-            
-            #include "UnityCG.cginc"
-            #pragma fragmentoption ARB_precision_hint_fastest
-            #pragma only_renderers d3d9 d3d11 glcore gles
             #pragma target 3.0
+            #pragma multi_compile_instancing
             #pragma vertex vert
             #pragma fragment frag
-            #define LIGHTING
-            #include "Includes/PoiOutlinePass.cginc"
+            #include "Includes/PoiPassOutline.cginc"
             ENDCG
-            
         }
         
         Pass
@@ -286,15 +269,13 @@
                 ZFail [_StencilZFailOp]
             }
             CGPROGRAM
-            
             #pragma target 3.0
-            #pragma multi_compile_shadowcaster
+            #define CUTOUT
+            #pragma multi_compile_instancing
             #pragma vertex vertShadowCaster
             #pragma fragment fragShadowCaster
-            #define CUTOUT
-            #include "Includes/PoiShadows.cginc"
+            #include "Includes/PoiPassShadow.cginc"
             ENDCG
-            
         }
     }
 }

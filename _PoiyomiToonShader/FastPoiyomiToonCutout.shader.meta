@@ -1,11 +1,12 @@
 fileFormatVersion: 2
-guid: 74e04df4822b32c41a3350fa7f40efa6
+guid: c7b90a4d40dc70b4db0c2f0dcde27c2e
 ShaderImporter:
   externalObjects: {}
   defaultTextures:
   - _MainTex: {instanceID: 0}
   - _BumpMap: {instanceID: 0}
   - _AlphaMask: {instanceID: 0}
+  - _AOMap: {instanceID: 0}
   - _DetailNormalMap: {instanceID: 0}
   - _DetailNormalMask: {instanceID: 0}
   - _EmissionMap: {instanceID: 0}

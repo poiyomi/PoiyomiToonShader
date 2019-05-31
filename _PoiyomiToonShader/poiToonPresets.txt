@@ -104,3 +104,21 @@ _OutlineStencilRef = 10
 _OutlineStencilReadMaskRef = 10
 _OutlineStencilWriteMaskRef = 10
 _OutlineStencilCompareFunction = 6
+
+random
+_MainTex = socks_black_gray
+_CubeMap = Default
+_EmissionScrollSpeed = 0,0.5,0,0
+_ToonRamp = poiyomiOldDefaultShadow
+_RimLightColor = 0.9966531,0.7573529,1,1
+_RimWidth = 0
+_RimSharpness = 0
+_BlendAlpha = 1
+_StencilRef = 10
+_StencilWriteMaskRef = 10
+_StencilPassOp = 2
+_OutlineStencilRef = 10
+_OutlineStencilReadMaskRef = 10
+_OutlineStencilCompareFunction = 6
+_Mirror = 2
+

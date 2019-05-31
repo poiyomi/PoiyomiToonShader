@@ -1,15 +1,17 @@
-﻿Shader ".poiyomi/Toon/Cutout"
+Shader ".poiyomi/Toon/Cutout"
 {
     Properties
     {
-        [HideInInspector] shader_master_label ("<color=#008080>❤ Poiyomi Toon Shader V2.6 ❤</color>", Float) = 0
+        [HideInInspector] shader_is_using_thry_editor ("", Float) = 0
+        [HideInInspector] shader_is_using_thry_editor ("", Float) = 0
+        [HideInInspector] shader_master_label ("<color=#008080>❤ Poiyomi Toon Shader V2.7B ❤</color>", Float) = 0
         [HideInInspector] shader_presets ("poiToonPresets", Float) = 0
-        [HideInInspector] shader_eable_poi_settings_selection("", Float) = 0
+        [HideInInspector] shader_eable_poi_settings_selection ("", Float) = 0
         
-		[HideInInspector] footer_github("linkButton(Github,https://github.com/poiyomi/PoiyomiToonShader)", Float) = 0
-		[HideInInspector] footer_discord("linkButton(Discord,https://discord.gg/Ays52PY)", Float) = 0
-		[HideInInspector] footer_donate("linkButton(Donate,https://www.paypal.me/poiyomi)", Float) = 0
-		[HideInInspector] footer_patreon("linkButton(Patreon,https://www.patreon.com/poiyomi)", Float) = 0
+        [HideInInspector] footer_github ("linkButton(Github,https://github.com/poiyomi/PoiyomiToonShader)", Float) = 0
+        [HideInInspector] footer_discord ("linkButton(Discord,https://discord.gg/Ays52PY)", Float) = 0
+        [HideInInspector] footer_donate ("linkButton(Donate,https://www.paypal.me/poiyomi)", Float) = 0
+        [HideInInspector] footer_patreon ("linkButton(Patreon,https://www.patreon.com/poiyomi)", Float) = 0
         
         [HideInInspector] m_mainOptions ("Main", Float) = 0
         _Color ("Color", Color) = (1, 1, 1, 1)
@@ -19,7 +21,7 @@
         _BumpScale ("Normal Intensity", Range(0, 10)) = 1
         _AlphaMask ("Alpha Mask", 2D) = "white" { }
         _AOMap ("AO Map", 2D) = "white" { }
-        _AOStrength ("AO Strength", Range(0,1)) = 1
+        _AOStrength ("AO Strength", Range(0, 1)) = 1
         _Clip ("Alpha Cuttoff", Range(0, 1.001)) = 0.5
         [HideInInspector] m_start_mainAdvanced ("Advanced", Float) = 0
         _GlobalPanSpeed ("Pan Speed XY", Vector) = (0, 0, 0, 0)
@@ -48,8 +50,17 @@
         _AddMatcap ("Add Matcap", Range(0, 1)) = 0
         
         /*
+        [HideInInspector] m_layerOptions ("Scrolling Layers", Float) = 0
+        _LayerTexture ("Layer Texture", 2D) = "black" { }
+        [HDR]_LayerColor ("Layer Color", Color) = (1, 1, 1, 1)
+        _LayerSpeed ("Layer Speed", Vector) = (0, 0, 0, 0)
+        _LayerShrinkage ("Layer Shrinkage", Float) = .1
+        _Layers ("Number of Layer", Int) = 0
+        */
+        
+        /*
         [HideInInspector] m_outlineOptions ("Outlines", Float) = 0
-        _LineWidth ("Outline Width", Float) = 0
+        _LineWidth ("Outline Width (cm)", Float) = 0
         _LineColor ("Outline Color", Color) = (1, 1, 1, 1)
         _OutlineEmission ("Outline Emission", Float) = 0
         _OutlineTexture ("Outline Texture", 2D) = "white" { }
@@ -89,25 +100,27 @@
         _ShadowOffset ("Shadow Offset", Range(-1, 1)) = 0
         _MinBrightness ("Min Brightness", Range(0, 1)) = 0
         _MaxBrightness ("Max Brightness", Float) = 1
-        [HideInInspector] m_start_fakeLighting ("Fake Lighting", Float) = 0
-        [Toggle(_)] _ForceLightDirection ("Force Light Direction", Range(0, 1)) = 0
-        [Toggle(_)] _ForceShadowStrength ("Force Shadow Strength", Range(0, 1)) = 0
-        _LightDirection ("Fake Light Direction", Vector) = (0, 1, 0, 0)
-        [HideInInspector] m_end_fakeLighting ("Fake Lighting", Float) = 0
         [HideInInspector] m_start_lightingAdvanced ("Advanced", Float) = 0
         _IndirectContribution ("Indirect Contribution", Range(0, 1)) = 0
-        [NoScaleOffset]_AdditiveRamp ("Additive Ramp", 2D) = "white" { }
-       _AttenuationMultiplier ("Attenuation", Range(0,1)) = 0
+        _AdditiveSoftness ("Additive Softness", Range(0,0.5)) = 0.005
+        _AdditiveOffset("Additive Offset", Range(-.5,.5)) = 0
+        _AttenuationMultiplier ("Attenuation", Range(0, 1)) = 0
         [HideInInspector] m_end_lightingAdvanced ("Advanced", Float) = 0
         
         [HideInInspector] m_specularHighlightsOptions ("Specular Highlights", Float) = 0
         _SpecularMap ("Specular Map", 2D) = "white" { }
+        _SpecularSmoothness ("Smoothness", Range(0, 1)) = 0
+        _SpecularTint ("Specular Tint", Color) = (1, 1, 1, 1)
+        _IOR ("IOR", Range(1.0, 5.0)) = 1.45
+        _Fresnel ("Fresnel", Range(1.0, 8.0)) = 5.0
+        /*
         _Gloss ("Glossiness", Range(0, 1)) = 0
         _SpecularColor ("Specular Color", Color) = (1, 1, 1, 1)
         _SpecularBias ("Specular Color Bias", Range(0, 1)) = 0
         _SpecularStrength ("Specular Strength", Range(0, 5)) = 0
         [Toggle(_)]_HardSpecular ("Enable Hard Specular", Float) = 0
         _SpecularSize ("Hard Specular Size", Range(0, 1)) = .005
+        */
         
         [HideInInspector] m_panosphereOptions ("Panosphere", Float) = 0
         _PanosphereTexture ("Panoshpere Texture", 2D) = "white" { }
@@ -124,7 +137,7 @@
         _RimSharpness ("Rim Sharpness", Range(0, 1)) = .25
         _RimLightColorBias ("Rim Color Bias", Range(0, 1)) = 0
         _RimTex ("Rim Texture", 2D) = "white" { }
-        _RimMask("Rim Mask", 2D) = "white" { }
+        _RimMask ("Rim Mask", 2D) = "white" { }
         _RimTexPanSpeed ("Rim Texture Pan Speed", Vector) = (0, 0, 0, 0)
         
         [HideInInspector] m_textureBlending ("Texture Blending", Float) = 0
@@ -157,6 +170,9 @@
         [HideInInspector] m_end_OutlineStencil ("Outline Stencil", Float) = 0
         */
         
+        [HideInInspector] m_funOptions ("Fun", Float) = 0
+        [Enum(ShowInBoth, 0, ShowOnlyInMirror, 1, DontShowInMirror, 2)] _Mirror ("Show in mirror", Int) = 0
+        
         [HideInInspector] m_miscOptions ("Misc", Float) = 0
         [Enum(UnityEngine.Rendering.CullMode)] _Cull ("Cull", Float) = 2
         [Enum(UnityEngine.Rendering.CompareFunction)] _ZTest ("ZTest", Float) = 4
@@ -165,10 +181,11 @@
         [Enum(Off, 0, On, 1)] _ZWrite ("ZWrite", Int) = 1
     }
     
-    CustomEditor "PoiToon"
+    //originalEditorCustomEditor "PoiToon"
+    CustomEditor "ThryEditor"
     SubShader
     {
-        Tags { "RenderType" = "TransparentCutout" "Queue" = "AlphaTest" }
+        Tags { "RenderType" = "Opaque" "Queue" = "Geometry" }
         
         Pass
         {
@@ -189,21 +206,16 @@
             Cull [_Cull]
             ZTest [_ZTest]
             CGPROGRAM
-            
             #pragma target 3.0
-            #pragma vertex vert
-            #pragma fragment frag
+            #pragma target 3.0
+            #define FORWARD_BASE_PASS
+            #pragma multi_compile_instancing
             #pragma multi_compile_fwdbase
             #pragma fragmentoption ARB_precision_hint_fastest
-            #define FORWARD_BASE_PASS
-            #define BINORMAL_PER_FRAGMENT
-            
-            #include "Includes/MainShaderDefines.cginc"
-            #include "Includes/Poicludes.cginc"
-            #include "Includes/PoiHelpers.cginc"
-            #include "Includes/PoiLighting.cginc"
-            #include "Includes/PoiVert.cginc"
-            #include "Includes/PoiFrag.cginc"
+            #pragma multi_compile_fog
+            #pragma vertex vert
+            #pragma fragment frag
+            #include "Includes/PoiPass.cginc"
             ENDCG
             
         }
@@ -228,18 +240,13 @@
             Cull [_Cull]
             ZTest [_ZTest]
             CGPROGRAM
-            
             #pragma target 3.0
-            #pragma multi_compile DIRECTIONAL POINT SPOT
+            #define FORWARD_ADD_PASS
+            #pragma multi_compile_instancing
+            #pragma multi_compile_fwdadd
             #pragma vertex vert
             #pragma fragment frag
-            #define BINORMAL_PER_FRAGMENT
-            #include "Includes/MainShaderDefines.cginc"
-            #include "Includes/Poicludes.cginc"
-            #include "Includes/PoiHelpers.cginc"
-            #include "Includes/PoiLighting.cginc"
-            #include "Includes/PoiVert.cginc"
-            #include "Includes/PoiFrag.cginc"
+            #include "Includes/PoiPass.cginc"
             ENDCG
             
         }
@@ -260,13 +267,12 @@
                 ZFail [_StencilZFailOp]
             }
             CGPROGRAM
-            
             #pragma target 3.0
-            #pragma multi_compile_shadowcaster
+            #define CUTOUT
+            #pragma multi_compile_instancing
             #pragma vertex vertShadowCaster
             #pragma fragment fragShadowCaster
-            #define CUTOUT
-            #include "Includes/PoiShadows.cginc"
+            #include "Includes/PoiPassShadow.cginc"
             ENDCG
             
         }

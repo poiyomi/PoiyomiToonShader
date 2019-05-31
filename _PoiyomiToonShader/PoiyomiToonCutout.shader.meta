@@ -1,14 +1,15 @@
 fileFormatVersion: 2
-guid: d37fa11508d29c94e9216dffbdd08e6f
+guid: ba54a79ea1607b14dbec95bc38cd2129
 ShaderImporter:
   externalObjects: {}
   defaultTextures:
   - _MainTex: {instanceID: 0}
   - _BumpMap: {instanceID: 0}
   - _AlphaMask: {instanceID: 0}
+  - _AOMap: {instanceID: 0}
   - _DetailNormalMap: {instanceID: 0}
   - _DetailNormalMask: {instanceID: 0}
-  - _CubeMap: {fileID: 8900000, guid: a0fde614a95c2d44ca3dec1fba756a6f, type: 3}
+  - _CubeMap: {instanceID: 0}
   - _MetallicMap: {instanceID: 0}
   - _SmoothnessMap: {instanceID: 0}
   - _Matcap: {instanceID: 0}
