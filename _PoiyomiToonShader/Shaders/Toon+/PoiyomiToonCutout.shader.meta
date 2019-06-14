@@ -1,0 +1,31 @@
+fileFormatVersion: 2
+guid: ec85ba4dc918b754a80a20415b809dfb
+ShaderImporter:
+  externalObjects: {}
+  defaultTextures:
+  - _MainTex: {instanceID: 0}
+  - _BumpMap: {instanceID: 0}
+  - _AlphaMask: {instanceID: 0}
+  - _DetailNormalMap: {instanceID: 0}
+  - _DetailNormalMask: {instanceID: 0}
+  - _CubeMap: {fileID: 8900000, guid: a0fde614a95c2d44ca3dec1fba756a6f, type: 3}
+  - _MetallicMap: {instanceID: 0}
+  - _SmoothnessMap: {instanceID: 0}
+  - _Matcap: {instanceID: 0}
+  - _MatcapMap: {instanceID: 0}
+  - _EmissionMap: {instanceID: 0}
+  - _EmissionMask: {instanceID: 0}
+  - _ToonRamp: {fileID: 2800000, guid: 7744a2dff3641604fa8b6601a055824c, type: 3}
+  - _AOMap: {instanceID: 0}
+  - _SpecularMap: {instanceID: 0}
+  - _SpecularHighTexture: {instanceID: 0}
+  - _SSSThicknessMap: {instanceID: 0}
+  - _PanosphereTexture: {instanceID: 0}
+  - _PanoMapTexture: {instanceID: 0}
+  - _RimTex: {instanceID: 0}
+  - _RimMask: {instanceID: 0}
+  - _BlendTexture: {instanceID: 0}
+  - _BlendNoiseTexture: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
