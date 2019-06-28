@@ -3,7 +3,7 @@
     
     //Properties
     float4 _Color;
-    float _Desaturation;
+    float _Saturation;
     UNITY_DECLARE_TEX2D(_MainTex); float4 _MainTex_ST;
     UNITY_DECLARE_TEX2D_NOSAMPLER(_BumpMap); float4 _BumpMap_ST;
     float4 _GlobalPanSpeed;
@@ -55,6 +55,6 @@
         
         mainTexture = UNITY_SAMPLE_TEX2D(_MainTex, TRANSFORM_TEX(i.uv, _MainTex));
         alphaMask = UNITY_SAMPLE_TEX2D_SAMPLER(_AlphaMask, _MainTex, TRANSFORM_TEX(i.uv, _AlphaMask));
-        albedo = float4(lerp(mainTexture.rgb, dot(mainTexture.rgb, float3(0.3, 0.59, 0.11)), _Desaturation) * _Color.rgb, mainTexture.a * _Color.a * alphaMask);
+        albedo = float4(lerp(mainTexture.rgb, dot(mainTexture.rgb, float3(0.3, 0.59, 0.11)), -_Saturation) * _Color.rgb, mainTexture.a * _Color.a * alphaMask);
     }
 #endif

@@ -1,7 +1,7 @@
 #ifndef POI_PASS_OUTLINE
     #define POI_PASS_OUTLINE
     
-    #pragma target 3.0
+    #pragma target 5.0
     #pragma multi_compile_fwdbase
     #pragma fragmentoption ARB_precision_hint_fastest
     #pragma multi_compile_fog

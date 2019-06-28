@@ -91,7 +91,7 @@ _Color = 0.5367647,0.5367647,0.5367647
 _CubeMap = Default
 _EmissionMap = rainbow_texture
 _EmissionMask = StarMask
-_EmissionScrollSpeed = 0,0.2,0,0
+_EmissionPan = 0,0.2,0,0
 _EmissionStrength = 8
 _EmissiveScroll_Direction = 0,10,0,0
 _ToonRamp = poiyomiDefaultShadow
@@ -108,7 +108,7 @@ _OutlineStencilCompareFunction = 6
 random
 _MainTex = socks_black_gray
 _CubeMap = Default
-_EmissionScrollSpeed = 0,0.5,0,0
+_EmissionPan = 0,0.5,0,0
 _ToonRamp = poiyomiOldDefaultShadow
 _RimLightColor = 0.9966531,0.7573529,1,1
 _RimWidth = 0

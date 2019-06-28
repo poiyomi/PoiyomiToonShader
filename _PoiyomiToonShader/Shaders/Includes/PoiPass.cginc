@@ -5,13 +5,16 @@
     #include "PoiHelpers.cginc"
     #include "PoiBasics.cginc"
     #include "PoiEmission.cginc"
+    #ifdef PLUS_ULTRA
+        #include "PoiTextureBlending.cginc"
+        #include "PoiPanosphere.cginc"
+    #endif
     #ifndef DRAG_N_DROP
         #include "PoiLighting.cginc"
         #include "PoiFun.cginc"
         #ifndef GOTTA_GO_FAST
+            #include "PoiFlipbook.cginc"
             #include "PoiScrollingLayers.cginc"
-            #include "PoiTextureBlending.cginc"
-            #include "PoiPanosphere.cginc"
             #include "PoiRimlighting.cginc"
             #include "PoiMetal.cginc"
             #include "PoiMatcap.cginc"

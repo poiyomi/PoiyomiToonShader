@@ -33,7 +33,7 @@
     
     void ApplyRimEmission(inout float4 finalColor)
     {
-        finalColor.rgb += rim * rimColor * _RimStrength;
+        finalColor.rgb += rim * lerp(finalColor.rgb, rimColor, _RimLightColorBias) * _RimStrength;
     }
     
 #endif

@@ -7,7 +7,7 @@
     float _EmissionStrength;
     
     float4 _EmissiveScroll_Direction;
-    float4 _EmissionScrollSpeed;
+    float4 _EmissionPan;
     float _EmissiveScroll_Width;
     float _EmissiveScroll_Velocity;
     float _EmissiveScroll_Interval;
@@ -20,7 +20,7 @@
     
     void calculateEmission(float2 uv, float3 localPos)
     {
-        float4 _Emissive_Tex_var = tex2D(_EmissionMap, TRANSFORM_TEX(uv, _EmissionMap) + _Time.y * _EmissionScrollSpeed);
+        float4 _Emissive_Tex_var = tex2D(_EmissionMap, TRANSFORM_TEX(uv, _EmissionMap) + _Time.y * _EmissionPan);
         emission = _Emissive_Tex_var * _EmissionColor * _EmissionStrength;
         
         // scrolling emission

@@ -12,7 +12,8 @@
     #include "PoiMatcap.cginc"
     #include "PoiSpecular.cginc"
     #include "PoiSubsurfaceScattering.cginc"
-
+    #include "PoiFlipbook.cginc"
+    
     #include "PoiVert.cginc"
     #include "PoiFrag.cginc"
     

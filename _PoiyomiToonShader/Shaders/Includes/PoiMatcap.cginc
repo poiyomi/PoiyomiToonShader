@@ -2,9 +2,9 @@
     #define MATCAP
     
     UNITY_DECLARE_TEX2D_NOSAMPLER(_Matcap);
-    UNITY_DECLARE_TEX2D_NOSAMPLER(_MatcapMap); float4 _MatcapMap_ST;
+    UNITY_DECLARE_TEX2D_NOSAMPLER(_MatcapMask); float4 _MatcapMask_ST;
     float4 _MatcapColor;
-    float  _MatcapStrength;
+    float  _MatcapBrightness;
     float _ReplaceWithMatcap;
     float _MultiplyMatcap;
     float _AddMatcap;
@@ -23,8 +23,8 @@
     void calculateMatcap(float3 cameraToVert, float3 normal, float2 uv)
     {
         float2 matcapUV = getMatcapUV(cameraToVert, normal);
-        matcap = UNITY_SAMPLE_TEX2D_SAMPLER(_Matcap, _MainTex, matcapUV) * _MatcapColor * _MatcapStrength;
-        matcapMask = UNITY_SAMPLE_TEX2D_SAMPLER(_MatcapMap, _MainTex, TRANSFORM_TEX(uv, _MatcapMap));
+        matcap = UNITY_SAMPLE_TEX2D_SAMPLER(_Matcap, _MainTex, matcapUV) * _MatcapColor * _MatcapBrightness;
+        matcapMask = UNITY_SAMPLE_TEX2D_SAMPLER(_MatcapMask, _MainTex, TRANSFORM_TEX(uv, _MatcapMask));
     }
     
     void applyMatcap(inout float4 finalColor)

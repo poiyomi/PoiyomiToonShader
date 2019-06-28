@@ -1,6 +1,7 @@
 #ifndef LIGHTING
     #define LIGHTING
     
+    int _LightingType;
     sampler2D _ToonRamp;
     float _AdditiveSoftness;
     float _AdditiveOffset;
@@ -84,7 +85,15 @@
         poiLight.lightMap = smoothstep(0, lightDifference, bw_directLighting - bw_bottomIndirectLighting);
         poiLight.rampedLightMap = tex2D(_ToonRamp, poiLight.lightMap + _ShadowOffset);
         
-        poiLight.finalLighting = lerp(poiLight.indirectLighting, lerp(poiLight.directLighting, poiLight.indirectLighting, _IndirectContribution), lerp(1, poiLight.rampedLightMap, _ShadowStrength)) * AOMap;
+        if (_LightingType == 0)
+        {
+            poiLight.finalLighting = lerp(saturate(poiLight.indirectLighting), lerp(poiLight.directLighting, poiLight.indirectLighting, _IndirectContribution), lerp(1, poiLight.rampedLightMap, _ShadowStrength)) * AOMap;
+        }
+        else
+        {
+            poiLight.finalLighting = saturate(poiLight.directLighting) * lerp(1, poiLight.rampedLightMap, _ShadowStrength) * AOMap;
+        }
+        
         poiLight.finalLighting = clamp(poiLight.finalLighting, _MinBrightness, _MaxBrightness);
     }
     
@@ -103,7 +112,7 @@
                 poiLight.position = _WorldSpaceLightPos0.xyz;
                 poiLight.direction = normalize(poiLight.position - i.worldPos);
                 poiLight.nDotL = dot(i.normal, poiLight.direction);
-                poiLight.finalLighting = poiLight.color * poiLight.attenuation * smoothstep(.5 -_AdditiveSoftness + _AdditiveOffset, .5 + _AdditiveSoftness + _AdditiveOffset, .5 * poiLight.nDotL + .5);
+                poiLight.finalLighting = poiLight.color * poiLight.attenuation * smoothstep(.5 - _AdditiveSoftness + _AdditiveOffset, .5 + _AdditiveSoftness + _AdditiveOffset, .5 * poiLight.nDotL + .5);
             #endif
         #endif
     }

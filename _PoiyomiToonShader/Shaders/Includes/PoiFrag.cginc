@@ -37,6 +37,10 @@
             calculateMatcap(viewDirection, i.normal, i.uv);
         #endif
         
+        #ifdef FLIPBOOK
+            calculateFlipbook(i.uv);
+        #endif
+        
         #ifdef LIGHTING
             #ifdef SUBSURFACE
                 calculateSubsurfaceScattering(i, viewDirection);
@@ -73,19 +77,22 @@
             applyPanosphereColor(finalColor);
         #endif
         
+        #ifdef FLIPBOOK
+            applyFlipbook(finalColor);
+        #endif
+        
         #ifdef FORWARD_BASE_PASS
             #ifdef REFRACTION
                 applyRefraction(finalColor);
             #endif
         #endif
         
-        
         float4 finalColorBeforeLighting = finalColor;
         
         #ifdef LIGHTING
             applyLighting(finalColor);
         #endif
-
+        
         #ifdef DND_LIGHTING
             applyDNDLighting(finalColor);
         #endif
@@ -138,6 +145,10 @@
             #ifdef SUBSURFACE
                 applySubsurfaceScattering(finalColor);
             #endif
+        #endif
+        
+        #ifdef FLIPBOOK
+            applyFlipbookEmission(finalColor);
         #endif
         
         #ifdef FORWARD_BASE_PASS

@@ -11,19 +11,19 @@
     float3 panoColor;
     float panoMask;
     
-    float2 StereoPanoProjection(float3 coords)
+    float2 projectIt(float3 coords)
     {
         float3 normalizedCoords = normalize(coords);
         float latitude = acos(normalizedCoords.y);
         float longitude = atan2(normalizedCoords.z, normalizedCoords.x);
-        float2 sphereCoords = float2(longitude + _Time.y * _PanosphereScroll.x, latitude + _Time.y * _PanosphereScroll.y) * float2(0.5 / UNITY_PI, 1.0 / UNITY_PI);
-        sphereCoords = float2(0.5, 1.0) - sphereCoords;
-        return(sphereCoords + float4(0, 1 - unity_StereoEyeIndex, 1, 0.5).xy) * float4(0, 1 - unity_StereoEyeIndex, 1, 0.5).zw;
+        float2 sphereCoords = float2(longitude + _Time.y * _PanosphereScroll.x, latitude + _Time.y * _PanosphereScroll.y) * float2(1.0 / UNITY_PI, 1.0 / UNITY_PI);
+        sphereCoords = float2(1.0, 1.0) - sphereCoords;
+        return(sphereCoords + float4(0, 1 - unity_StereoEyeIndex, 1, 1.0).xy) * float4(0, 1 - unity_StereoEyeIndex, 1, 1.0).zw;
     }
     
     void calculatePanosphere(float3 worldPos, float2 uv)
     {
-        float2 _StereoEnabled_var = StereoPanoProjection(normalize(_WorldSpaceCameraPos.xyz - worldPos.xyz) * - 1);
+        float2 _StereoEnabled_var = projectIt(normalize(_WorldSpaceCameraPos.xyz - worldPos.xyz) * - 1);
         panoColor = tex2D(_PanosphereTexture, TRANSFORM_TEX(_StereoEnabled_var, _PanosphereTexture)) * _PanosphereColor.rgb;
         panoMask = tex2D(_PanoMapTexture, TRANSFORM_TEX(uv, _PanoMapTexture));
     }

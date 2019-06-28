@@ -1,0 +1,14 @@
+_MainTex0:=Tex Default--hover=hover text example--altClick=url:http://github.com/thryrallo/thryeditor
+_MainTex01:=Tex Default No Scale/Offset--hover=hover text example--altClick=url:http://github.com/thryrallo/thryeditor
+_MainTex1:=Tex Small--hover=hover text example--altClick=url:http://github.com/thryrallo/thryeditor
+_MainTex2:=Tex Big--hover=hover text example--altClick=url:http://github.com/thryrallo/thryeditor
+_MainTex3:=Tex Small No scale/offset--hover=hover text example--altClick=url:http://github.com/thryrallo/thryeditor
+_MainTex4:=Tex Big No scale/offset--hover=hover text example--altClick=url:http://github.com/thryrallo/thryeditor
+_MainTex5:=Tex Gradient--hover=hover text example--altClick=url:http://github.com/thryrallo/thryeditor
+
+_ToggleSmth:=Toggle--hover=hover text example--altClick=url:http://github.com/thryrallo/thryeditor
+
+m_start_special:=Special --hover=This is a sub menu
+m_already_shown_stuff:=Already demonstrated in other stuff
+m_end_special:=Advanced
+m_other_stuff:=Other stuff

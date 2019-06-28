@@ -4,7 +4,7 @@ Shader ".poiyomi/Toon/Default/Cutout"
     {
         [HideInInspector] shader_is_using_thry_editor ("", Float) = 0
         [HideInInspector] shader_is_using_thry_editor ("", Float) = 0
-        [HideInInspector] shader_master_label ("<color=#008080>❤ Poiyomi Toon Shader V3.0 ❤</color>", Float) = 0
+        [HideInInspector] shader_master_label ("<color=#ff69b4>❤ Poiyomi Toon Shader V3.1 ❤</color>", Float) = 0
         [HideInInspector] shader_presets ("poiToonPresets", Float) = 0
         [HideInInspector] shader_eable_poi_settings_selection ("", Float) = 0
         
@@ -15,8 +15,8 @@ Shader ".poiyomi/Toon/Default/Cutout"
         
 
         [HideInInspector] m_mainOptions ("Main", Float) = 0
-        _Color ("Color--hover=Color modifies the tint of the main texture (MainTexture * Color). The alpha value also controls the overall alpha of the material when used in the transparent version of the shader.", Color) = (1, 1, 1, 1)
-        _Desaturation ("Desaturation--hover=When set to 1 the main texture will be void of all color. If set to negative 1 the main texture will become more saturated in color. Desaturation is applied before Color so that color may be used more effectively.", Range(-1, 1)) = 0
+        _Color ("Color & Alpha--hover=Color modifies the tint of the main texture (MainTexture * Color). The alpha value also controls the overall alpha of the material when used in the transparent version of the shader.", Color) = (1, 1, 1, 1)
+        _Saturation ("Saturation--hover=When set to negative 1 the main texture will be void of all color. If set to 1 the main texture will become more saturated in color. Desaturation is applied before Color so that color may be used more effectively.", Range(-1, 1)) = 0
         _MainTex ("Texture--hover=The base texture used for the material. The transparent values are used for Alpha cutoff.", 2D) = "white" { }
         [Normal]_BumpMap ("Normal Map--hover=A texture used to fake bumps of dents in a material. modifies how many things react on the surface of the material including light, reflections, rim lighting, etc...", 2D) = "bump" { }
         _BumpScale ("Normal Intensity--hover=Controls the strength of the normal map. Pushes the normals away from a straight out orientation.", Range(0, 10)) = 1
@@ -33,17 +33,17 @@ Shader ".poiyomi/Toon/Default/Cutout"
         _CubeMap ("Baked CubeMap--hover=This cubemap will be used as a fallback when a map does not have reflection probes or a skybox from which to draw reflections.", Cube) = "" { }
         [Toggle(_)]_SampleWorld ("Force Baked Cubemap--hover=This forces the use of the baked cubemap rather than attempting to use a cubemap within the present scene.", Range(0, 1)) = 0
         _PurelyAdditive ("Purely Additive--hover=Forces reflections to be purely additive rather than multiplicative. This can be used with very dark materials or cubemaps that are being used for glossy effects.", Range(0, 1)) = 0
-        _MetallicMap ("Metallic Map--hover=Controls the areas that are set to metallic.", 2D) = "white" { }
+        _MetallicMask ("Metallic Mask--hover=Controls the areas that are set to metallic.", 2D) = "white" { }
         _Metallic ("Metallic--hover=How metallic a material is. Generally set to 0 or 1, an in between value can represent something like plastic.", Range(0, 1)) = 0
-        _SmoothnessMap ("Smoothness Map--hover=How smooth specific parts of a material are.", 2D) = "white" { }
-        [Toggle(_)]_InvertSmoothness ("Invert Smoothness Map--hover=Some smoothness maps are actually roughness maps and may require inversion to function properly.", Range(0, 1)) = 0
+        _SmoothnessMask ("Smoothness Mask--hover=How smooth specific parts of a material are.", 2D) = "white" { }
+        [Toggle(_)]_InvertSmoothness ("Invert Smoothness Mask--hover=Some Smoothness Masks are actually roughness maps and may require inversion to function properly.", Range(0, 1)) = 0
         _Smoothness ("Smoothness--hover=How blurred the reflection becomes on a material. 0 = No reflection visible. 1 = Mirror like reflections.", Range(0, 1)) = 0
         
         [HideInInspector] m_matcapOptions ("Matcap / Sphere Textures", Float) = 0
         _Matcap ("Matcap--hover=matcap stands for “material capture” – it is a complete material including lighting and reflections so you can add it to an object and not have any need for, well, lighting and reflections.", 2D) = "white" { }
-        _MatcapMap ("Matcap Map--hover=Where the Matcap texture will be blended with the base material. White: FullBlend, Black: No Blend", 2D) = "white" { }
+        _MatcapMask ("Matcap Map--hover=Where the Matcap texture will be blended with the base material. White: FullBlend, Black: No Blend", 2D) = "white" { }
         _MatcapColor ("Matcap Color--hover=Tints the matcap color.", Color) = (1, 1, 1, 1)
-        _MatcapStrength ("Matcap Strength--hover=The brightness of the matcap. Can be turned up to make the matcap emissive.", Range(0, 20)) = 1
+        _MatcapBrightness ("Matcap Brightness--hover=How Bright the matcap is. Values above 1 will be emissive. Note: When above 1 It will only glow in worlds that have bloom post processing.", Range(0, 20)) = 1
         _ReplaceWithMatcap ("Replace With Matcap--hover=A 0 to 1 slider when at 1 replaces the underlying color with the matcap entirely. A value between 0 and 1 is a mix of the base and matcap colors", Range(0, 1)) = 0
         _MultiplyMatcap ("Multiply Matcap--hover=Multiplies the base color by that of the matcap. Useful when you have a black and white matcap representing specular reflections.", Range(0, 1)) = 0
         _AddMatcap ("Add Matcap--hover=Simply adds the matcap to base material. Useful when the base is black and you just want to add color or shine.", Range(0, 1)) = 0
@@ -52,7 +52,7 @@ Shader ".poiyomi/Toon/Default/Cutout"
         [HDR]_EmissionColor ("Emission Color--hover=The color of the emission or glow.", Color) = (1, 1, 1, 1)
         _EmissionMap ("Emission Map--hover=The color of the emission represented by a texture. Black will not glow at all.", 2D) = "white" { }
         _EmissionMask ("Emission Mask--hover=A mask of where emissions should take place. The mask should be in black and white. the emission color is multiplied by the mask. black = 0 white = 1", 2D) = "white" { }
-        _EmissionScrollSpeed ("Emission Scroll Speed--hover=The speed at which which emission is panned across the model. Only X and Y values are used.", Vector) = (0, 0, 0, 0)
+        _EmissionPan ("Emission Pan--hover=The speed at which which emission is panned across the model. Only X and Y values are used.", Vector) = (0, 0, 0, 0)
         _EmissionStrength ("Emission Strength--hover=The strength of the glow or emission. (Emission * Emission Strength)", Range(0, 20)) = 0
         
         [HideInInspector] m_start_blinkingEmissionOptions ("Blinking Emission", Float) = 0
@@ -70,7 +70,8 @@ Shader ".poiyomi/Toon/Default/Cutout"
         [HideInInspector] m_end_scrollingEmissionOptions ("Scrolling Emission", Float) = 0
         
         [HideInInspector] m_fakeLightingOptions ("Lighting", Float) = 0
-        [NoScaleOffset]_ToonRamp ("Lighting Ramp--hover=How light will be applied to the model. The top left side of the texture is maximum light and the bottom right is minimum light. Make sure the lighting ramp texture settings are set to clamp to avoid bugs.", 2D) = "white" { }
+        [Enum(Natural, 0, Controlled, 1)] _LightingType("Lighting Type--hover=How shadows are handled. | Natural: world controled shadow Color * shadow ramp, Controlled: The color of the shadow ramp is the color of the shadow period", Int) = 0
+        [Gradient]_ToonRamp ("Lighting Ramp--hover=How light will be applied to the model. The top right side of the texture is maximum light and the bottom left is minimum light. Make sure the lighting ramp texture settings are set to clamp to avoid bugs.", 2D) = "white" { }
         _ShadowStrength ("Shadow Strength--hover=How much the lighting ramp will alter the material color. If 0 your material will simply take the direct lighting of your scene.", Range(0, 1)) = 1
         _ShadowOffset ("Shadow Offset--hover=Offsets the lighting ramp location so you can change where shadows start and stop", Range(-1, 1)) = 0
         _MinBrightness ("Min Brightness--hover=The minimum brightness your material may become. Use this if you want your avatar to never go below a set brightness so you will be visible in the dark.", Range(0, 1)) = 0
@@ -115,11 +116,25 @@ Shader ".poiyomi/Toon/Default/Cutout"
         _ShadowMixThreshold ("Shadow Mix Threshold--hover=Adjust this so the shadowmix fits your shadow ramp threshold", Range(0, 1)) = .5
         _ShadowMixWidthMod ("Shadow Mix Width Mod--hover=Modifies how wide the rim lighting is in the light", Range(0, 10)) = .5
         [HideInInspector] m_end_ShadowMix ("Shadow Mix", Float) = 0
+        
+        [HideInInspector] m_flipBook ("Flipbook", Float) = 0
+        _FlipbookTexture ("Texture--hover=The spritesheet used for the animation. You can use ezgif.com to convert gifs to spritesheets.", 2D) = "red" {}
+        _FlipbookColor ("Color & alpha--hover=Tints the flipbook texture and controls the alpha", Color) = (1, 1, 1, 1)
+        _FlipbookTotalFrames ("Total Frames--hover=Total number of frames to be used in the animation.", Int) = 1
+        _FlipbookRows ("Rows--hover=Total number of rows in the spritesheet", Float) = 1.0
+        _FlipbookColumns ("Columns--hover=Total number of columns used for the spritesheet", Float) = 1.0
+        _FlipbookFPS ("FPS--hover=The framerate you want to use for the gif", Float) = 30.0
+        _FlipbookScaleOffset ("Scale | Offset--hover= X,Y controls the animation scale, Z,W controls the offset.", Vector) = (1,1,0,0)
+        _FlipbookEmissionStrength("Emission Strength--hover=How emissive the animation is.", Range(0,20)) = 0
+        _FlipbookRotation("Rotation--hover=Rotate the animation in degrees around the center point", Range(0,360)) = 0
+        [HideInInspector] m_start_manualFlipbookControl ("Manual Control", Float) = 0
+        _FlipbookCurrentFrame ("Current Frame--hover= Manually control which frame is currently set, negative numbers won't do anything.", Float) = -1
+        [HideInInspector] m_end_manualFlipbookControl ("Manual Control", Float) = 0
 
         [HideInInspector] m_StencilPassOptions ("Stencil", Float) = 0
         [IntRange] _StencilRef ("Stencil Reference Value--hover=The value to be compared against (if Comp is anything else than always) and/or the value to be written to the buffer (if either Pass, Fail or ZFail is set to replace). 0–255 integer.", Range(0, 255)) = 0
-        [IntRange] _StencilReadMaskRef ("Stencil ReadMask Value--hover=An 8 bit mask as an 0–255 integer, used when comparing the reference value with the contents of the buffer (referenceValue & readMask) comparisonFunction (stencilBufferValue & readMask). Default: 255.", Range(0, 255)) = 0
-        [IntRange] _StencilWriteMaskRef ("Stencil WriteMask Value--hover=An 8 bit mask as an 0–255 integer, used when writing to the buffer. Note that, like other write masks, it specifies which bits of stencil buffer will be affected by write (i.e. WriteMask 0 means that no bits are affected and not that 0 will be written). Default: 255.", Range(0, 255)) = 0
+        //[IntRange] _StencilReadMaskRef ("Stencil ReadMask Value--hover=An 8 bit mask as an 0–255 integer, used when comparing the reference value with the contents of the buffer (referenceValue & readMask) comparisonFunction (stencilBufferValue & readMask). Default: 255.", Range(0, 255)) = 0
+        //[IntRange] _StencilWriteMaskRef ("Stencil WriteMask Value--hover=An 8 bit mask as an 0–255 integer, used when writing to the buffer. Note that, like other write masks, it specifies which bits of stencil buffer will be affected by write (i.e. WriteMask 0 means that no bits are affected and not that 0 will be written). Default: 255.", Range(0, 255)) = 0
         [Enum(UnityEngine.Rendering.StencilOp)] _StencilPassOp ("Stencil Pass Op--hover=What to do with the contents of the buffer if the stencil test (and the depth test) passes. Default: keep.", Float) = 0
         [Enum(UnityEngine.Rendering.StencilOp)] _StencilFailOp ("Stencil Fail Op--hover=What to do with the contents of the buffer if the stencil test fails. Default: keep.", Float) = 0
         [Enum(UnityEngine.Rendering.StencilOp)] _StencilZFailOp ("Stencil ZFail Op--hover=What to do with the contents of the buffer if the stencil test passes, but the depth test fails. Default: keep.", Float) = 0
@@ -149,9 +164,6 @@ Shader ".poiyomi/Toon/Default/Cutout"
             Stencil
             {
                 Ref [_StencilRef]
-                ReadMask [_StencilReadMaskRef]
-                WriteMask [_StencilWriteMaskRef]
-                Ref [_StencilRef]
                 Comp [_StencilCompareFunction]
                 Pass [_StencilPassOp]
                 Fail [_StencilFailOp]
@@ -162,8 +174,8 @@ Shader ".poiyomi/Toon/Default/Cutout"
             ZTest [_ZTest]
             CGPROGRAM
             
-            #pragma target 3.0
-            #pragma target 3.0
+            #pragma target 5.0
+            #pragma target 5.0
             #define FORWARD_BASE_PASS
             #pragma multi_compile_instancing
             #pragma multi_compile_fwdbase
@@ -183,9 +195,6 @@ Shader ".poiyomi/Toon/Default/Cutout"
             Stencil
             {
                 Ref [_StencilRef]
-                ReadMask [_StencilReadMaskRef]
-                WriteMask [_StencilWriteMaskRef]
-                Ref [_StencilRef]
                 Comp [_StencilCompareFunction]
                 Pass [_StencilPassOp]
                 Fail [_StencilFailOp]
@@ -197,7 +206,7 @@ Shader ".poiyomi/Toon/Default/Cutout"
             ZTest [_ZTest]
             CGPROGRAM
             
-            #pragma target 3.0
+            #pragma target 5.0
             #define FORWARD_ADD_PASS
             #pragma multi_compile_instancing
             #pragma multi_compile_fwdadd_fullshadows
@@ -215,9 +224,6 @@ Shader ".poiyomi/Toon/Default/Cutout"
             Stencil
             {
                 Ref [_StencilRef]
-                ReadMask [_StencilReadMaskRef]
-                WriteMask [_StencilWriteMaskRef]
-                Ref [_StencilRef]
                 Comp [_StencilCompareFunction]
                 Pass [_StencilPassOp]
                 Fail [_StencilFailOp]
@@ -225,7 +231,7 @@ Shader ".poiyomi/Toon/Default/Cutout"
             }
             CGPROGRAM
             
-            #pragma target 3.0
+            #pragma target 5.0
             #define CUTOUT
             #pragma multi_compile_instancing
             #pragma vertex vertShadowCaster

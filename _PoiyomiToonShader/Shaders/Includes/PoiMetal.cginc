@@ -4,9 +4,9 @@
     samplerCUBE _CubeMap;
     float _SampleWorld;
     float _PurelyAdditive;
-    sampler2D _MetallicMap; float4 _MetallicMap_ST;
+    sampler2D _MetallicMask; float4 _MetallicMask_ST;
     float _Metallic;
-    sampler2D _SmoothnessMap; float4 _SmoothnessMap_ST;
+    sampler2D _SmoothnessMask; float4 _SmoothnessMask_ST;
     float _InvertSmoothness;
     float _Smoothness;
     
@@ -18,8 +18,8 @@
     
     void calculateReflections(float2 uv, float3 normal, float3 cameraToVert)
     {
-        metalicMap = tex2D(_MetallicMap, TRANSFORM_TEX(uv, _MetallicMap)) * _Metallic;
-        float _Smoothness_map_var = (tex2D(_SmoothnessMap, TRANSFORM_TEX(uv, _SmoothnessMap)));
+        metalicMap = tex2D(_MetallicMask, TRANSFORM_TEX(uv, _MetallicMask)) * _Metallic;
+        float _Smoothness_map_var = (tex2D(_SmoothnessMask, TRANSFORM_TEX(uv, _SmoothnessMask)));
         if (_InvertSmoothness == 1)
         {
             _Smoothness_map_var = 1 - _Smoothness_map_var;

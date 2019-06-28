@@ -19,6 +19,7 @@
         if (_Blend != 0)
         {
             float blendNoise = tex2D(_BlendNoiseTexture, TRANSFORM_TEX(uv, _BlendNoiseTexture));
+            blendAlpha = _BlendAlpha;
             if(_AutoBlend > 0)
             {
                 blendAlpha = (clamp(sin(_Time.y * _AutoBlendSpeed / _AutoBlendDelay) * (_AutoBlendDelay + 1), -1, 1) + 1) / 2;

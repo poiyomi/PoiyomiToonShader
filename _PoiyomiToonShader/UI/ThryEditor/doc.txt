@@ -1,0 +1,41 @@
+#----Custom Drawers----
+
+Drawers for Textures:
+[Texture] big or small texture depending on config
+[TextureNoSO] big or small texture depending on config, no scale or offset
+[SmallTexture] always small texture
+[SmallTextureNoSO] always small texture, no scale or offset
+[BigTexture] always big texture
+[BigTextureNoSO] always big texture, no scale or offset
+[Gradient] gradient editor - not implemented yet
+
+#----Settings Properties----
+
+[HideInInspector] shader_is_using_thry_editor
+	-Tell Thry Editor you are using it 
+	-essential
+[HideInInspector] shader_master_label
+	-Display name customizes the header
+	-optional
+[HideInInspector] shader_presets
+	-Display name specifies preset file
+	-optional
+	
+#----Additional Editor Properties----
+
+[HideInInspector] shader_properties_label_file
+	-If specified property's display names are loaded out of this file
+	-File syntax: <PropertyName>:=<displayName>
+
+#----Property Additions----
+
+--extraOffset=<int>
+	addes and extra x-offset to the property
+
+--hover=<text>
+	text that is shown when hovering above property
+
+--altClick=action:value
+	performs an action when holding alt down and clicking on property
+	actions:
+		url: opens url in browser

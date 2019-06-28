@@ -40,3 +40,25 @@ float3 grayscale_for_light()
 {
     return float3(0.298912, 0.586611, 0.114478);
 }
+
+//Math Operators
+
+float remap(float x, float minOld, float maxOld, float minNew, float maxNew)
+{
+    return minNew + (x - minOld) * (maxNew - minNew) / (maxOld - minOld);
+}
+
+float2 remap(float2 x, float2 minOld, float2 maxOld, float2 minNew, float2 maxNew)
+{
+    return minNew + (x - minOld) * (maxNew - minNew) / (maxOld - minOld);
+}
+
+float3 remap(float3 x, float3 minOld, float3 maxOld, float3 minNew, float3 maxNew)
+{
+    return minNew + (x - minOld) * (maxNew - minNew) / (maxOld - minOld);
+}
+
+float4 remap(float4 x, float4 minOld, float4 maxOld, float4 minNew, float4 maxNew)
+{
+    return minNew + (x - minOld) * (maxNew - minNew) / (maxOld - minOld);
+}
