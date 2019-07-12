@@ -11,7 +11,7 @@ namespace Thry
         //static methods
         private static Config config;
         private const string CONFIG_FILE_PATH = "./Assets/.ThryConfig.json";
-        private const string VERSION = "0.10.2";
+        private const string VERSION = "0.10.3";
 
         [InitializeOnLoad]
         public class Startup

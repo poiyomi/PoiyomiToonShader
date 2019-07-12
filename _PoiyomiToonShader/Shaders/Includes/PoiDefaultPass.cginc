@@ -3,7 +3,9 @@
     
     #include "Poicludes.cginc"
     #include "PoiHelpers.cginc"
+    #include "PoiParallax.cginc"
     #include "PoiBasics.cginc"
+    #include "PoiLightingData.cginc"
     #include "PoiEmission.cginc"
     #include "PoiLighting.cginc"
     #include "PoiFun.cginc"
@@ -13,7 +15,6 @@
     #include "PoiSpecular.cginc"
     #include "PoiSubsurfaceScattering.cginc"
     #include "PoiFlipbook.cginc"
-    
     #include "PoiVert.cginc"
     #include "PoiFrag.cginc"
     

@@ -22,7 +22,6 @@
     
     void InitializeFragmentNormal(inout v2f i)
     {
-        
         float3 mainNormal = UnpackScaleNormal(UNITY_SAMPLE_TEX2D_SAMPLER(_BumpMap, _MainTex, TRANSFORM_TEX(i.uv, _BumpMap)), _BumpScale);
         float detailNormalMask = UNITY_SAMPLE_TEX2D_SAMPLER(_DetailNormalMask, _MainTex, TRANSFORM_TEX(i.uv, _DetailNormalMask));
         float3 detailNormal = UnpackScaleNormal(UNITY_SAMPLE_TEX2D_SAMPLER(_DetailNormalMap, _MainTex, TRANSFORM_TEX(i.uv, _DetailNormalMap)), _DetailNormalMapScale * detailNormalMask);

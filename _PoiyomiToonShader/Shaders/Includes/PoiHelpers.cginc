@@ -62,3 +62,18 @@ float4 remap(float4 x, float4 minOld, float4 maxOld, float4 minNew, float4 maxNe
 {
     return minNew + (x - minOld) * (maxNew - minNew) / (maxOld - minOld);
 }
+
+float poiMax(float2 i)
+{
+    return max(i.x, i.y);
+}
+
+float poiMax(float3 i)
+{
+    return max(max(i.x, i.y),i.z);
+}
+
+float poiMax(float4 i)
+{
+    return max(max(max(i.x, i.y),i.z),i.w);
+}

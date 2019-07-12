@@ -1,7 +1,6 @@
 #ifndef POICLUDES
     #define POICLUDES
     
-    #include "PoiData.cginc"
     #include "UnityCG.cginc"
     #include "Lighting.cginc"
     #include "UnityPBSLighting.cginc"
@@ -32,14 +31,16 @@
         float4 worldPos: TEXCOORD4;
         float4 localPos: TEXCOORD5;
         float4 screenPos: TEXCOORD6;
+        #if defined(_PARALLAX_MAP)
+            float3 tangentViewDir: TEXCOORD7;
+        #endif
         UNITY_VERTEX_INPUT_INSTANCE_ID
         UNITY_VERTEX_OUTPUT_STEREO
-        UNITY_SHADOW_COORDS(7)
-        UNITY_FOG_COORDS(8)
+        UNITY_SHADOW_COORDS(8)
+        UNITY_FOG_COORDS(9)
     };
     
-    static PoiLighting poiLight;
     float3 baseNormal;
     #define pi float(3.14159265359)
-
+    
 #endif

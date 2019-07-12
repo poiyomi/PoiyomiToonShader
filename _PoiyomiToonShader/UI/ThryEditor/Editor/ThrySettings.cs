@@ -42,8 +42,10 @@ namespace Thry
         private static bool firstLoad = true;
         private static bool thry_vrc_tools_version_loaded = false;
         private static string thry_vrc_tools_version = "";
-        private static string thry_vrc_tools_vrc_sdk_version = "";
         private static string thry_vrc_tools_installed_version = "";
+        private static string vrc_sdk_version;
+        private static string[] thry_vrc_tools_vrc_sdk_versions;
+        private static string thry_vrc_tools_vrc_sdk_versions_string = "";
         private static bool has_vrc_tools = false;
         private bool is_installing_vrc_tools = false;
 
@@ -104,6 +106,37 @@ namespace Thry
                               BuildTargetGroup.Standalone, symbols + ";VRC_SDK_EXISTS");
                 else if (!hasVRCSdk && symbols.Contains("VRC_SDK_EXISTS")) PlayerSettings.SetScriptingDefineSymbolsForGroup(
                      BuildTargetGroup.Standalone, symbols.Replace(";VRC_SDK_EXISTS", ""));
+
+                if (vrcImported)
+                {
+                    if (thry_vrc_tools_version_loaded)
+                        CheckVRCVersionCallback("");
+                    else
+                        Helper.getStringFromUrl(THRY_VRC_TOOLS_REPO_URL + THRY_VRC_TOOLS_FILE_LIST_URL, CheckVRCVersionCallback);
+                }
+            }
+        }
+
+        public static void CheckVRCVersionCallback(string s)
+        {
+            string[] data = Regex.Split(s, @"\r?\n");
+            if (data.Length > 1)
+            {
+                thry_vrc_tools_version = data[0];
+                thry_vrc_tools_vrc_sdk_versions_string = data[1];
+                thry_vrc_tools_vrc_sdk_versions = Regex.Split(data[1], ",");
+                thry_vrc_tools_version_loaded = true;
+            }
+            if (thry_vrc_tools_version_loaded)
+            {
+                bool supportedVersion = thry_vrc_tools_vrc_sdk_versions.Contains(Helper.GetCurrentVRCSDKVersion());
+                Debug.Log("Supports version: " + supportedVersion);
+                string symbols = PlayerSettings.GetScriptingDefineSymbolsForGroup(
+                    BuildTargetGroup.Standalone);
+                if (supportedVersion && !symbols.Contains("VRC_SDK_SUPPORTED_VERSION")) PlayerSettings.SetScriptingDefineSymbolsForGroup(
+                              BuildTargetGroup.Standalone, symbols + ";VRC_SDK_SUPPORTED_VERSION");
+                else if (!supportedVersion && symbols.Contains("VRC_SDK_SUPPORTED_VERSION")) PlayerSettings.SetScriptingDefineSymbolsForGroup(
+                     BuildTargetGroup.Standalone, symbols.Replace(";VRC_SDK_SUPPORTED_VERSION", ""));
             }
         }
 
@@ -159,7 +192,8 @@ namespace Thry
 
             if (hasVRCSdk)
             {
-                GUILayout.Label("VRC Sdk version: " + Helper.GetCurrentVRCSDKVersion());
+                vrc_sdk_version= Helper.GetCurrentVRCSDKVersion();
+                GUILayout.Label("VRC Sdk version: " + vrc_sdk_version);
                 if (vrcIsLoggedIn)
                 {
                     GUILayout.Label("VRChat user: " + EditorPrefs.GetString("sdk#username"));
@@ -263,6 +297,7 @@ namespace Thry
         {
             GUILayout.Label("Thry's VRC Tools Installer", EditorStyles.boldLabel);
 
+
             bool needsUpdate = false;
             if (thry_vrc_tools_version_loaded && has_vrc_tools)
                 needsUpdate = Helper.compareVersions(thry_vrc_tools_version, thry_vrc_tools_installed_version) == -1;
@@ -278,7 +313,7 @@ namespace Thry
                 is_installing_vrc_tools = true;
                 Helper.getStringFromUrl(THRY_VRC_TOOLS_REPO_URL + THRY_VRC_TOOLS_FILE_LIST_URL, thry_vrc_tools_file_list_callback);
             }
-            GUILayout.Label("(v" + thry_vrc_tools_version + ", vrc_sdk_version: "+ thry_vrc_tools_vrc_sdk_version+")", GUILayout.ExpandWidth(false));
+            GUILayout.Label("(v" + thry_vrc_tools_version + ", vrc_sdk_versions: "+ thry_vrc_tools_vrc_sdk_versions_string+")", GUILayout.ExpandWidth(false));
             GUILayout.EndHorizontal();
             GUILayout.Label("Includes: ");
             GUILayout.Label(" - VRC Content Manager with search function, sorting function and tags for avatars");
@@ -292,9 +327,11 @@ namespace Thry
             if (data.Length > 1)
             {
                 thry_vrc_tools_version = data[0];
-                thry_vrc_tools_vrc_sdk_version = data[1];
+                thry_vrc_tools_vrc_sdk_versions_string = data[1];
+                thry_vrc_tools_vrc_sdk_versions = Regex.Split(data[1],",");
                 thry_vrc_tools_version_loaded = true;
                 Helper.RepaintEditorWindow(typeof(Settings));
+                CheckVRCVersionCallback("");
             }
         }
 

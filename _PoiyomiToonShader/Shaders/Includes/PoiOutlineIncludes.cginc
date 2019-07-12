@@ -2,7 +2,6 @@
 #ifndef POICLUDES
     #define POICLUDES
 
-    #include "PoiData.cginc"
     #include "UnityCG.cginc"
     #include "Lighting.cginc"
     #include "UnityPBSLighting.cginc"
@@ -40,7 +39,6 @@
         UNITY_FOG_COORDS(4)
     };
     
-    static PoiLighting poiLight;
     float pi;
     
 #endif

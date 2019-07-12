@@ -18,6 +18,7 @@
     float _AttenuationMultiplier;
     
     UNITY_DECLARE_TEX2D_NOSAMPLER(_AOMap); float4 _AOMap_ST;
+    UNITY_DECLARE_TEX2D_NOSAMPLER(_LightingShadowMask); float4 _LightingShadowMask_ST;
     float _AOStrength;
     
     float3 ShadeSH9Indirect()
@@ -47,15 +48,6 @@
         return x + x1;
     }
     
-    float FadeShadows(float attenuation, float3 worldPosition)
-    {
-        float viewZ = dot(_WorldSpaceCameraPos - worldPosition, UNITY_MATRIX_V[2].xyz);
-        float shadowFadeDistance = UnityComputeShadowFadeDistance(worldPosition, viewZ);
-        float shadowFade = UnityComputeShadowFade(shadowFadeDistance);
-        attenuation = saturate(attenuation + shadowFade);
-        return attenuation;
-    }
-    
     float calculateAOMap(float AOMap, float AOStrength)
     {
         return lerp(1, AOMap, AOStrength);
@@ -63,8 +55,6 @@
     
     void calculateBasePassLighting(float3 normal, float2 uv)
     {
-        poiLight.direction = _WorldSpaceLightPos0;
-        poiLight.nDotL = dot(normal, poiLight.direction);
         float AOMap = 1;
         #ifndef OUTLINE
             AOMap = UNITY_SAMPLE_TEX2D_SAMPLER(_AOMap, _MainTex, TRANSFORM_TEX(uv, _AOMap));
@@ -77,6 +67,11 @@
         poiLight.directLighting = ShadeSH9Plus + poiLight.color;
         poiLight.indirectLighting = ShadeSH9Minus;
         
+        #ifndef OUTLINE
+            float ShadowStrengthMap = UNITY_SAMPLE_TEX2D_SAMPLER(_LightingShadowMask, _MainTex, TRANSFORM_TEX(uv, _LightingShadowMask)).r;
+            _ShadowStrength *= ShadowStrengthMap;
+        #endif
+
         float bw_lightColor = dot(poiLight.color, grayscale_vector);
         float bw_directLighting = (((poiLight.nDotL * 0.5 + 0.5) * bw_lightColor * lerp(1, poiLight.attenuation, _AttenuationMultiplier)) + dot(ShadeSH9Normal(normal), grayscale_vector));
         float bw_bottomIndirectLighting = dot(ShadeSH9Minus, grayscale_vector);
@@ -102,16 +97,10 @@
         #ifdef OUTLINE
             _ShadowStrength = _OutlineShadowStrength;
         #endif
-        UNITY_LIGHT_ATTENUATION(attenuation, i, i.worldPos.xyz)
-        poiLight.attenuation = FadeShadows(attenuation, i.worldPos.xyz);
-        poiLight.color = _LightColor0.rgb;
         #ifdef FORWARD_BASE_PASS
             calculateBasePassLighting(i.normal, i.uv);
         #else
             #if defined(POINT) || defined(SPOT)
-                poiLight.position = _WorldSpaceLightPos0.xyz;
-                poiLight.direction = normalize(poiLight.position - i.worldPos);
-                poiLight.nDotL = dot(i.normal, poiLight.direction);
                 poiLight.finalLighting = poiLight.color * poiLight.attenuation * smoothstep(.5 - _AdditiveSoftness + _AdditiveOffset, .5 + _AdditiveSoftness + _AdditiveOffset, .5 * poiLight.nDotL + .5);
             #endif
         #endif

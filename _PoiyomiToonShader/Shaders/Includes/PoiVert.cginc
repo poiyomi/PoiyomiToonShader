@@ -24,6 +24,16 @@
             o.tangent = UnityObjectToWorldDir(v.tangent.xyz);
             o.binormal = CreateBinormal(o.normal, o.tangent, v.tangent.w);
         #endif
+        
+        #if defined(_PARALLAX_MAP)
+            float3x3 objectToTangent = float3x3(
+                v.tangent.xyz,
+                cross(v.normal, v.tangent.xyz) * v.tangent.w,
+                v.normal
+            );
+            o.tangentViewDir = mul(objectToTangent, ObjSpaceViewDir(v.vertex));
+        #endif
+        
         UNITY_TRANSFER_SHADOW(o, o.uv);
         UNITY_TRANSFER_FOG(o, o.pos);
         return o;

@@ -24,7 +24,7 @@
             {
                 blendAlpha = (clamp(sin(_Time.y * _AutoBlendSpeed / _AutoBlendDelay) * (_AutoBlendDelay + 1), -1, 1) + 1) / 2;
             }
-            blendAlpha = lerp(saturate((blendNoise - 1) + blendAlpha * 2), step(blendAlpha * 1.001, blendNoise), _Blend - 1);
+            blendAlpha = lerp(saturate((blendNoise - 1) + blendAlpha * 2), step((1-blendAlpha) * 1.001, blendNoise), _Blend - 1);
             
             float4 blendCol = tex2D(_BlendTexture, TRANSFORM_TEX(uv, _BlendTexture)) * _BlendTextureColor;
             diffuse = lerp(diffuse, blendCol, blendAlpha);

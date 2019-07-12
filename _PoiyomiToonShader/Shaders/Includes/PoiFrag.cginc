@@ -3,11 +3,18 @@
     
     float4 frag(v2f i, float facing: VFACE): SV_Target
     {
-        
+        #ifdef POI_PARALLAX
+            calculateandApplyParallax(i);
+        #endif
         
         #ifdef BASICS
             calculateBasics(i);
         #endif
+        
+        #ifdef POI_LIGHTING_DATA
+            calculateLightingData(i);
+        #endif
+        
         
         #ifdef LIGHTING
             calculateLighting(i);
@@ -17,11 +24,13 @@
             calculateDNDLighting(i);
         #endif
         
+        
         #ifdef FORWARD_BASE_PASS
             #ifdef REFRACTION
                 calculateRefraction(i);
             #endif
         #endif
+        
         
         #ifdef METAL
             calculateReflections(i.uv, i.normal, viewDirection);
@@ -102,7 +111,7 @@
         #endif
         
         #ifdef SPECULAR
-            calculateSpecular(i.normal, albedo, viewDirection, i.uv);
+            calculateSpecular(i.normal, finalColorBeforeLighting, viewDirection, i.uv);
         #endif
         
         #ifdef FORWARD_BASE_PASS
@@ -154,7 +163,7 @@
         #ifdef FORWARD_BASE_PASS
             UNITY_APPLY_FOG(i.fogCoord, finalColor);
         #endif
-        
+
         return finalColor;
     }
 #endif

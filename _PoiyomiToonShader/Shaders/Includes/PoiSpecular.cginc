@@ -161,7 +161,7 @@
     {
         if(_SpecularColorFrom == 0)
         {
-            finalColor.rgb += finalSpecular.rgb * _SpecularTint.rgb;
+            finalColor.rgb += finalSpecular.rgb * _SpecularTint.rgb * saturate(poiMax(poiLight.color.rgb));
         }
         else
         {

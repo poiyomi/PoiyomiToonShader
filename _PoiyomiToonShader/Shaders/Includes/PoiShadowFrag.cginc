@@ -12,7 +12,7 @@
             #endif
             
             #if defined(UNITY_STANDARD_USE_SHADOW_UVS)
-                half alpha = tex2D(_MainTex, TRANSFORM_TEX(i.uv, _MainTex)).a * _Color.a;
+                half alpha = tex2D(_MainTex, TRANSFORM_TEX(i.uv, _MainTex)).a;
                 half alphaMask = tex2D(_AlphaMask, TRANSFORM_TEX(i.uv, _AlphaMask));
                 
                 #ifdef CUTOUT

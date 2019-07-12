@@ -20,7 +20,7 @@
     
     void calculateEmission(float2 uv, float3 localPos)
     {
-        float4 _Emissive_Tex_var = tex2D(_EmissionMap, TRANSFORM_TEX(uv, _EmissionMap) + _Time.y * _EmissionPan);
+        float4 _Emissive_Tex_var = tex2D(_EmissionMap, TRANSFORM_TEX(uv, _EmissionMap) + _Time.y * _EmissionPan.xy);
         emission = _Emissive_Tex_var * _EmissionColor * _EmissionStrength;
         
         // scrolling emission
@@ -41,7 +41,7 @@
         float emissiveBlink = sin(_Time.y * _EmissiveBlink_Velocity) * amplitude + base;
         emission *= emissiveBlink;
         
-        float _Emission_mask_var = tex2D(_EmissionMask, TRANSFORM_TEX(uv, _EmissionMask));
+        float _Emission_mask_var = tex2D(_EmissionMask, TRANSFORM_TEX(uv, _EmissionMask) + _Time.y * _EmissionPan.zw);
         emission *= _Emission_mask_var;
     }
     

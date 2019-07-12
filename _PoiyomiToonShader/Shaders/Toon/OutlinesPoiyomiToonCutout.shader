@@ -3,7 +3,7 @@ Shader ".poiyomi/Toon/Default/outlines Cutout"
     Properties
     {
         [HideInInspector] shader_is_using_thry_editor ("", Float) = 0
-        [HideInInspector] shader_master_label ("<color=#ff69b4>❤ Poiyomi Toon Shader V3.1 ❤</color>", Float) = 0
+        [HideInInspector] shader_master_label ("<color=#ff69b4>❤ Poiyomi Toon Shader V3.2 ❤</color>", Float) = 0
         [HideInInspector] shader_presets ("poiToonPresets", Float) = 0
         [HideInInspector] shader_eable_poi_settings_selection ("", Float) = 0
         
@@ -55,7 +55,7 @@ Shader ".poiyomi/Toon/Default/outlines Cutout"
         _OutlineShadowStrength ("Shadow Strength--hover=How Dark the shadows will appear on the outlines.", Range(0, 1)) = 1
         [HideInInspector] m_start_outlineAdvanced ("Advanced", Float) = 0
         _OutlineFadeDistance ("Outline distance Fade--hover=The outline will fade in linearly from x distance to y distance. anything below x will be 100% transparent. This is useful when your camera may go inside your mesh and you don't want to see outlines from close range.", Vector) = (0, 0, 0, 0)
-
+        
         [Enum(UnityEngine.Rendering.CullMode)] _OutlineCull ("Cull--hover=Controls which side of the mesh is rendered. Example: Back culling will not render the back side of the polygons.", Float) = 1
         [HideInInspector] m_end_outlineAdvanced ("Advanced", Float) = 0
         
@@ -81,8 +81,9 @@ Shader ".poiyomi/Toon/Default/outlines Cutout"
         [HideInInspector] m_end_scrollingEmissionOptions ("Scrolling Emission", Float) = 0
         
         [HideInInspector] m_fakeLightingOptions ("Lighting", Float) = 0
-        [Enum(Natural, 0, Controlled, 1)] _LightingType("Lighting Type--hover=How shadows are handled. | Natural: world controled shadow Color * shadow ramp, Controlled: The color of the shadow ramp is the color of the shadow period", Int) = 0
-        [NoScaleOffset][Gradient]_ToonRamp ("Lighting Ramp--hover=How light will be applied to the model. The top right side of the texture is maximum light and the bottom left is minimum light. Make sure the lighting ramp texture settings are set to clamp to avoid bugs.", 2D) = "white" { }        
+        [Enum(Natural, 0, Controlled, 1)] _LightingType ("Lighting Type--hover=How shadows are handled. | Natural: world controled shadow Color * shadow ramp, Controlled: The color of the shadow ramp is the color of the shadow period", Int) = 0
+        [NoScaleOffset][Gradient]_ToonRamp ("Lighting Ramp--hover=How light will be applied to the model. The top right side of the texture is maximum light and the bottom left is minimum light. Make sure the lighting ramp texture settings are set to clamp to avoid bugs.", 2D) = "white" { }
+        _LightingShadowMask ("Shadow Mask (R)--hover=Controls Shadow Strength", 2D) = "white" { }
         _ShadowStrength ("Shadow Strength--hover=How much the lighting ramp will alter the material color. If 0 your material will simply take the direct lighting of your scene.", Range(0, 1)) = 1
         _ShadowOffset ("Shadow Offset--hover=Offsets the lighting ramp location so you can change where shadows start and stop", Range(-1, 1)) = 0
         _MinBrightness ("Min Brightness--hover=The minimum brightness your material may become. Use this if you want your avatar to never go below a set brightness so you will be visible in the dark.", Range(0, 1)) = 0
@@ -98,13 +99,21 @@ Shader ".poiyomi/Toon/Default/outlines Cutout"
         
         [HideInInspector] m_specularHighlightsOptions ("Specular Highlights", Float) = 0
         [Enum(Off, 0, Realistic, 1, Toon, 2, soon.jpg, 3)] _SpecularType ("Specular Type--hover=How the specular highlights will be styled", Int) = 0
-        _SpecularTint ("Specular Tint--hover=Tints the specular color upon reflection", Color) = (1, 1, 1, 1)
+        _SpecularTint ("Specular Tint--hover=Tints the specular color upon reflection", Color) = (.2, .2, .2, 1)
         _SpecularSmoothness ("Smoothness--hover=How smooth or shiny a material is. Changing this will change how light reflects off the material.", Range(0, 1)) = 0
         _SpecularMap ("Specular Map--hover=Adjusts the smoothness of an area by the texture. white = 1 smooth, black = 0 smooth", 2D) = "white" { }
         [Enum(Alpha, 0, Grayscale, 1)] _SmoothnessFrom ("Smoothness From--hover=What it derives the smoothness value from using the texture", Int) = 1
         _SpecularHighTexture ("Specular High Tex--hover=When there would be specular sample this texture instead", 2D) = "white" { }
-        [Enum(Lighting, 0, HighTexture, 1)] _SpecularColorFrom("Specular Color From--hover=Whether or not the shader should derive specular color from the hight texture or the light color.", Int) = 0
-
+        [Enum(Lighting, 0, HighTexture, 1)] _SpecularColorFrom ("Specular Color From--hover=Whether or not the shader should derive specular color from the hight texture or the light color.", Int) = 0
+        
+        [HideInInspector] m_parallaxMap ("Parallax/height Map", Float) = 0
+        [Toggle(_PARALLAX_MAP)]_ParallaxMap ("Enable Parallax Map", Float) = 0
+        _ParallaxHeightMap ("Height Map--hover=Controls how the texture distors", 2D) = "black" { }
+        _ParallaxStrength ("Parallax Strength--hover=How much the texture distorts", Range(0, 0.1)) = 0
+        [HideInInspector] m_start_parallaxAdvanced ("Advanced", Float) = 0
+        _ParallaxBias ("Parallax Bias (0.42)--hover=Don't touch this unless you already know what it does", Float) = 0.42
+        [HideInInspector] m_end_parallaxAdvanced ("Advanced", Float) = 0
+        
         [HideInInspector] m_subsurfaceOptions ("Subsurface Scattering", Float) = 0
         _SSSColor ("Subsurface Color--hover=The internal color of the material. Light is tinted this color when it shines through you", Color) = (1, 1, 1, 1)
         _SSSThicknessMap ("Thickness Map--hover=How thicc the material is. Controls how difficult it is for light to pass through.", 2D) = "black" { }
@@ -112,7 +121,7 @@ Shader ".poiyomi/Toon/Default/outlines Cutout"
         _SSSSCale ("Light Strength--hover=How much of the light passes through the material", Range(0, 1)) = 0
         _SSSPower ("Light Spread--hover=How far the light spreads out inside the mesh.", Range(1, 100)) = 1
         _SSSDistortion ("Light Distortion--hover=The angle at which the light is visible through the mesh. Higher distortion means the light will only show up along the edges.", Range(0, 1)) = 0
-
+        
         [HideInInspector] m_rimLightOptions ("Rim Lighting", Float) = 0
         _RimLightColor ("Rim Color--hover=The tint applied to the rim lighting.", Color) = (1, 1, 1, 1)
         _RimWidth ("Rim Width--hover=The width of the rim effect on the material.", Range(0, 1)) = 0.8
@@ -129,18 +138,46 @@ Shader ".poiyomi/Toon/Default/outlines Cutout"
         [HideInInspector] m_end_ShadowMix ("Shadow Mix", Float) = 0
         
         [HideInInspector] m_flipBook ("Flipbook", Float) = 0
-        _FlipbookTexture ("Texture--hover=The spritesheet used for the animation. You can use ezgif.com to convert gifs to spritesheets.", 2D) = "red" {}
+        _FlipbookTexArray ("Texture Array--hover=The texture array used for animation", 2DArray) = "" { }
         _FlipbookColor ("Color & alpha--hover=Tints the flipbook texture and controls the alpha", Color) = (1, 1, 1, 1)
         _FlipbookTotalFrames ("Total Frames--hover=Total number of frames to be used in the animation.", Int) = 1
-        _FlipbookRows ("Rows--hover=Total number of rows in the spritesheet", Float) = 1.0
-        _FlipbookColumns ("Columns--hover=Total number of columns used for the spritesheet", Float) = 1.0
         _FlipbookFPS ("FPS--hover=The framerate you want to use for the gif", Float) = 30.0
-        _FlipbookScaleOffset ("Scale | Offset--hover= X,Y controls the animation scale, Z,W controls the offset.", Vector) = (1,1,0,0)
-        _FlipbookEmissionStrength("Emission Strength--hover=How emissive the animation is.", Range(0,20)) = 0
-        _FlipbookRotation("Rotation--hover=Rotate the animation in degrees around the center point", Range(0,360)) = 0
+        _FlipbookScaleOffset ("Scale | Offset--hover= X,Y controls the animation scale, Z,W controls the offset.", Vector) = (1, 1, 0, 0)
+        [Toggle(_)]_FlipbookTiled ("Tiled?--hover=Should the animation be tiled over the entire model?", Float) = 0
+        _FlipbookEmissionStrength ("Emission Strength--hover=How emissive the animation is.", Range(0, 20)) = 0
+        _FlipbookRotation ("Rotation--hover=Rotate the animation in degrees around the center point", Range(0, 360)) = 0
+        _FlipbookReplace ("Replace--hover=Replace the material color with the flipbook", Range(0, 1)) = 0
+        _FlipbookMultiply ("Multiply--hover=Multiply the material color by the flipbook", Range(0, 1)) = 0
+        _FlipbookAdd ("Add--hover=Add the flipbook color to the material", Range(0, 1)) = 0
+        /*
+        [HideInInspector] m_start_FlipbookOffsetLoop ("Offset Animation", Float) = 0
+        [Enum(Off, 0, Loop, 1, Bounce, 2, Smooth Bounce, 3)]_FlipbookMovementType ("Movement Type", Int) = 1
+        _FlipbookStartEndOffset ("Start & End Offset", Vector) = (0,0,0,0)
+        _FlipbookMovementSpeed ("Speed", Float) = 1.0
+        [HideInInspector] m_end_FlipbookOffsetLoop ("Offset Animation", Float) = 0
+        */
         [HideInInspector] m_start_manualFlipbookControl ("Manual Control", Float) = 0
-        _FlipbookCurrentFrame ("Current Frame--hover= Manually control which frame is currently set, negative numbers won't do anything.", Float) = -1
+        _FlipbookCurrentFrame ("Current Frame--hover= Manually control which frame is currently set, negative numbers cause it to play normally.", Float) = -1
         [HideInInspector] m_end_manualFlipbookControl ("Manual Control", Float) = 0
+        
+        [HideInInspector] m_textureBlending ("Texture Blending", Float) = 0
+        [Enum(Off, 0, Soft, 1, Hard, 2)] _Blend ("Blending Type--hover=Off: doesn't Blend Soft: blends smoothly from one texture to the other (0 to 1) Hard: Blends from one texture to the other along a hard edge (0 or 1)", Int) = 0
+        _BlendTextureColor ("Blend Texture Color--hover=Tints the blend target blend texture.", Color) = (1, 1, 1, 1)
+        [NoScaleOffset]_BlendTexture ("Blend Texture--hover=The texture to blend to.", 2D) = "white" { }
+        [NoScaleOffset]_BlendNoiseTexture ("Blend Noise Texture--hover=The pattern in which blending is applied.", 2D) = "white" { }
+        _BlendAlpha ("Blend Alpha--hover=how mixed the blend currently is. 0 = base texture 1 = blend texture", Range(0, 1)) = 0
+        [Toggle(_)]_AutoBlend ("Enable Auto Blending--hover=automatically adjusts the blend alpha back and forth from 0 to 1.", Float) = 0
+        [Gamma]_AutoBlendSpeed ("Auto Blend Speed--hover=the speed at which it blends between 0 and 1.", Float) = 2
+        [Gamma]_AutoBlendDelay ("Auto Blend Delay--hover=how long it sits at each end of the blend.", Float) = 2
+        
+        [HideInInspector] m_panosphereOptions ("Panosphere", Float) = 0
+        [Toggle(_)]_PanoToggle("Panosphere Enabled?", Float) = 0
+        _PanosphereColor ("Color--hover=Tints the panosphere effect", Color) = (1, 1, 1, 1)
+        _PanosphereTexture ("Texture--hover=The texture to be projected on the panosphere. If this appears too zomed in simply alter the tiling options for the texture.", 2D) = "white" { }
+        _PanoMapTexture ("Mask--hover=Where the panosphere effect should take place on the material.", 2D) = "white" { }
+        _PanoEmission ("Emission Strength--hover=Makes the panosphere emissive / glow. the higher the value the more it will glow. Note: You can not glow in worlds without post processing bloom.", Range(0, 10)) = 0
+        _PanoBlend ("Alpha--hover=How the panosphere effect is blended into your base material. 0.0 = only see base material 0.5 = even mix of base and pano 1.0 = only see pano", Range(0, 1)) = 0
+        _PanosphereScroll ("Pan Speed--hover=Pans the panosphere texture", Vector) = (0, 0, 0, 0)
 
         [HideInInspector] m_StencilPassOptions ("Stencil", Float) = 0
         [IntRange] _StencilRef ("Stencil Reference Value--hover=The value to be compared against (if Comp is anything else than always) and/or the value to be written to the buffer (if either Pass, Fail or ZFail is set to replace). 0–255 integer.", Range(0, 255)) = 0
@@ -197,13 +234,14 @@ Shader ".poiyomi/Toon/Default/outlines Cutout"
             
             #pragma target 5.0
             #define FORWARD_BASE_PASS
+            #pragma shader_feature _PARALLAX_MAP
             #pragma multi_compile_instancing
             #pragma multi_compile_fwdbase
             #pragma fragmentoption ARB_precision_hint_fastest
             #pragma multi_compile_fog
             #pragma vertex vert
             #pragma fragment frag
-            #include "../Includes/PoiDefaultPass.cginc"
+            #include "../Includes/PoiPass.cginc"
             ENDCG
             
         }
@@ -227,11 +265,12 @@ Shader ".poiyomi/Toon/Default/outlines Cutout"
             
             #pragma target 5.0
             #define FORWARD_ADD_PASS
+            #pragma shader_feature _PARALLAX_MAP
             #pragma multi_compile_instancing
             #pragma multi_compile_fwdadd_fullshadows
             #pragma vertex vert
             #pragma fragment frag
-            #include "../Includes/PoiDefaultPass.cginc"
+            #include "../Includes/PoiPass.cginc"
             ENDCG
             
         }
@@ -254,12 +293,17 @@ Shader ".poiyomi/Toon/Default/outlines Cutout"
             CGPROGRAM
             
             #pragma target 5.0
+            #define FORWARD_BASE_PASS
+            #define OUTLINE
+            #pragma shader_feature _PARALLAX_MAP
+            #pragma multi_compile_fwdbase
+            #pragma fragmentoption ARB_precision_hint_fastest
+            #pragma multi_compile_fog
             #pragma multi_compile_instancing
             #pragma vertex vert
             #pragma fragment frag
             #include "../Includes/PoiPassOutline.cginc"
             ENDCG
-            
         }
         
         Pass

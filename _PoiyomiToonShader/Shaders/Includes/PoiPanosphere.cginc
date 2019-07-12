@@ -7,7 +7,8 @@
     float _PanoBlend;
     float4 _PanosphereColor;
     float4 _PanosphereScroll;
-    
+    float _PanoToggle;
+
     float3 panoColor;
     float panoMask;
     
@@ -23,19 +24,31 @@
     
     void calculatePanosphere(float3 worldPos, float2 uv)
     {
-        float2 _StereoEnabled_var = projectIt(normalize(_WorldSpaceCameraPos.xyz - worldPos.xyz) * - 1);
-        panoColor = tex2D(_PanosphereTexture, TRANSFORM_TEX(_StereoEnabled_var, _PanosphereTexture)) * _PanosphereColor.rgb;
-        panoMask = tex2D(_PanoMapTexture, TRANSFORM_TEX(uv, _PanoMapTexture));
+        UNITY_BRANCH
+        if (_PanoToggle)
+        {
+            float2 _StereoEnabled_var = projectIt(normalize(_WorldSpaceCameraPos.xyz - worldPos.xyz) * - 1);
+            panoColor = tex2D(_PanosphereTexture, TRANSFORM_TEX(_StereoEnabled_var, _PanosphereTexture)) * _PanosphereColor.rgb;
+            panoMask = tex2D(_PanoMapTexture, TRANSFORM_TEX(uv, _PanoMapTexture));
+        }
     }
     
     void applyPanosphereColor(inout float4 finalColor)
     {
-        finalColor.rgb = lerp(finalColor.rgb, panoColor, _PanoBlend * panoMask);
+        UNITY_BRANCH
+        if(_PanoToggle)
+        {
+            finalColor.rgb = lerp(finalColor.rgb, panoColor, _PanoBlend * panoMask);
+        }
     }
     
     void applyPanosphereEmission(inout float4 finalColor)
     {
-        finalColor.rgb += panoColor * _PanoBlend * panoMask * _PanoEmission;
+        UNITY_BRANCH
+        if(_PanoToggle)
+        {
+            finalColor.rgb += panoColor * _PanoBlend * panoMask * _PanoEmission;
+        }
     }
     
 #endif

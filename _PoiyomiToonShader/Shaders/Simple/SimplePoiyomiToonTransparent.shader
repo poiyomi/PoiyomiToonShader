@@ -3,7 +3,7 @@ Shader ".poiyomi/Toon/Simple/Transparent"
     Properties
     {
         [HideInInspector] shader_is_using_thry_editor ("", Float) = 0
-        [HideInInspector] shader_master_label ("<color=#ff69b4>❤ Poiyomi Toon Shader V3.1 ❤</color>", Float) = 0
+        [HideInInspector] shader_master_label ("<color=#ff69b4>❤ Poiyomi Toon Shader V3.2 ❤</color>", Float) = 0
         [HideInInspector] shader_presets ("poiToonPresets", Float) = 0
         [HideInInspector] shader_eable_poi_settings_selection ("", Float) = 0
         
@@ -50,7 +50,8 @@ Shader ".poiyomi/Toon/Simple/Transparent"
         
         [HideInInspector] m_fakeLightingOptions ("Lighting", Float) = 0
         [Enum(Natural, 0, Controlled, 1)] _LightingType("Lighting Type--hover=How shadows are handled. | Natural: world controled shadow Color * shadow ramp, Controlled: The color of the shadow ramp is the color of the shadow period", Int) = 0
-        [NoScaleOffset][Gradient]_ToonRamp ("Lighting Ramp--hover=How light will be applied to the model. The top right side of the texture is maximum light and the bottom left is minimum light. Make sure the lighting ramp texture settings are set to clamp to avoid bugs.", 2D) = "white" { }        _ShadowStrength ("Shadow Strength--hover=How much the lighting ramp will alter the material color. If 0 your material will simply take the direct lighting of your scene.", Range(0, 1)) = 1
+        [NoScaleOffset][Gradient]_ToonRamp ("Lighting Ramp--hover=How light will be applied to the model. The top right side of the texture is maximum light and the bottom left is minimum light. Make sure the lighting ramp texture settings are set to clamp to avoid bugs.", 2D) = "white" { }
+        _LightingShadowMask ("Shadow Mask (R)--hover=Controls Shadow Strength", 2D) = "white" { }        _ShadowStrength ("Shadow Strength--hover=How much the lighting ramp will alter the material color. If 0 your material will simply take the direct lighting of your scene.", Range(0, 1)) = 1
         _ShadowOffset ("Shadow Offset--hover=Offsets the lighting ramp location so you can change where shadows start and stop", Range(-1, 1)) = 0
         _MinBrightness ("Min Brightness--hover=The minimum brightness your material may become. Use this if you want your avatar to never go below a set brightness so you will be visible in the dark.", Range(0, 1)) = 0
         _MaxBrightness ("Max Brightness--hover=The maximum Brightness your material will achieve. Limit this if you don't want your material to get too bright.", Float) = 1
