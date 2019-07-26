@@ -81,12 +81,12 @@
         poiLight.attenuation = FadeShadows(attenuation, i.worldPos.xyz);
         poiLight.color = _LightColor0.rgb;
         #ifdef FORWARD_BASE_PASS
-            calculateBasePassLighting(i.normal, i.uv);
+            calculateBasePassLighting(poiMesh.fragmentNormal, i.uv);
         #else
             #if defined(POINT) || defined(SPOT)
                 poiLight.position = _WorldSpaceLightPos0.xyz;
                 poiLight.direction = normalize(poiLight.position - i.worldPos);
-                poiLight.nDotL = dot(i.normal, poiLight.direction);
+                poiLight.nDotL = dot(poiMesh.fragmentNormal, poiLight.direction);
                 poiLight.finalLighting = poiLight.color * poiLight.attenuation * smoothstep(.499, .5, .5 * poiLight.nDotL + .5);
             #endif
         #endif

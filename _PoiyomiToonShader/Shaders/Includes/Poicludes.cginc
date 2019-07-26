@@ -6,6 +6,17 @@
     #include "UnityPBSLighting.cginc"
     #include "AutoLight.cginc"
     
+    #ifdef OUTLINE
+        float _LineWidth;
+        float _OutlineEmission;
+        float4 _LineColor;
+        sampler2D _OutlineTexture; float4 _OutlineTexture_ST;
+        float4 _OutlineTexturePan;
+        
+        float4 _OutlineFadeDistance;
+        float4 _OutlineGlobalPan;
+    #endif
+    
     //Structs
     struct appdata
     {
@@ -19,28 +30,22 @@
     
     struct v2f
     {
+        float4 pos: SV_POSITION;
+        
         float2 uv: TEXCOORD0;
         float3 normal: TEXCOORD1;
-        #if defined(BINORMAL_PER_FRAGMENT)
-            float4 tangent: TEXCOORD2;
-        #else
-            float3 tangent: TEXCOORD2;
-            float3 binormal: TEXCOORD3;
-        #endif
-        float4 pos: SV_POSITION;
+        float3 tangent: TEXCOORD2;
+        float3 bitangent: TEXCOORD3;
         float4 worldPos: TEXCOORD4;
         float4 localPos: TEXCOORD5;
         float4 screenPos: TEXCOORD6;
-        #if defined(_PARALLAX_MAP)
-            float3 tangentViewDir: TEXCOORD7;
-        #endif
+        float3 tangentViewDir: TEXCOORD7;
         UNITY_VERTEX_INPUT_INSTANCE_ID
         UNITY_VERTEX_OUTPUT_STEREO
         UNITY_SHADOW_COORDS(8)
         UNITY_FOG_COORDS(9)
     };
     
-    float3 baseNormal;
     #define pi float(3.14159265359)
     
 #endif

@@ -1,18 +1,19 @@
 #ifndef OutlineVert
     #define OutlineVert
     
-    v2f vert(VertexInput v)
+    v2f vert(appdata v)
     {
-        v2f o;
         UNITY_SETUP_INSTANCE_ID(v);
-        UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
+        v2f o;
+        UNITY_INITIALIZE_OUTPUT(v2f, o);
         UNITY_TRANSFER_INSTANCE_ID(v, o);
+        UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
         
         #ifdef FUN
             applyFun(v.vertex);
         #endif
 
-        o.uv = v.texcoord0 + _OutlineGlobalPan.xy * _Time.y;
+        o.uv = v.texcoord + _OutlineGlobalPan.xy * _Time.y;
         
         o.normal = UnityObjectToWorldNormal(v.normal);
         float3 offset = o.normal * (_LineWidth/100);

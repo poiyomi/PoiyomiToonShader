@@ -27,6 +27,7 @@ Shader ".poiyomi/Toon/Extras/StencilInvis"
         ZWrite [_ZWrite]
         Cull [_Cull]
         ZTest [_ZTest]
+            Offset [_ZBias], [_ZBias]
         Stencil
         {
             Ref [_StencilRef]

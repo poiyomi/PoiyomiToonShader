@@ -8,9 +8,7 @@
             #include "PoiParallax.cginc"
         #endif
     #endif
-    #include "PoiLightingData.cginc"
-    #include "PoiBasics.cginc"
-    #include "PoiEmission.cginc"
+    #include "PoiData.cginc"
     #include "PoiTextureBlending.cginc"
     #include "PoiPanosphere.cginc"
     #ifndef DRAG_N_DROP
@@ -29,6 +27,8 @@
         #include "PoiDragNDropLighting.cginc"
     #endif
     
+    #include "PoiEmission.cginc"
+    #include "PoiDebug.cginc"
     #include "PoiVert.cginc"
     #include "PoiFrag.cginc"
     

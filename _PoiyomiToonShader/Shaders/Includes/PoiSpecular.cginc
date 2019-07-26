@@ -1,18 +1,29 @@
 #ifndef SPECULAR
     #define SPECULAR
-    
+    int _SpecWhatTangent;
     int _SpecularType;
     int _SmoothnessFrom;
     int _SpecularColorFrom;
     UNITY_DECLARE_TEX2D_NOSAMPLER(_SpecularMap); float4 _SpecularMap_ST;
     UNITY_DECLARE_TEX2D_NOSAMPLER(_SpecularHighTexture); float4 _SpecularHighTexture_ST;
+    UNITY_DECLARE_TEX2D_NOSAMPLER(_ShiftTexture); float4 _ShiftTexture_ST;
+    UNITY_DECLARE_TEX2D_NOSAMPLER(_AnisoTangentMap); float4 _AnisoTangentMap_ST;
     float4 _SpecularTint;
     float _SpecularSmoothness;
-    
+    float _Spec1Offset;
+    float _Spec1JitterStrength;
+    float _Spec2Smoothness;
+    float _Spec2Offset;
+    float _Spec2JitterStrength;
+    float _AnisoUseTangentMap;
+    float _AnisoSpec1Alpha;
+    float _AnisoSpec2Alpha;
     // Globals
-    half4 finalSpecular;
+    half3 finalSpecular;
     half4 highTexture;
-
+    float shiftTexture;
+    float3 tangentDirectionMap;
+    float4 specularMap;
     UnityIndirect ZeroIndirect()
     {
         UnityIndirect ind;
@@ -23,11 +34,10 @@
     
     // From unity just putting it here in case I want to mod it
     half4 poiRealisticSpecular(half3 diffColor, half3 specColor, half oneMinusReflectivity, half smoothness,
-    float3 normal, float3 viewDir,
+    float3 normal,
     UnityLight light, UnityIndirect gi)
     {
         float perceptualRoughness = SmoothnessToPerceptualRoughness(smoothness);
-        float3 halfDir = Unity_SafeNormalize(float3(light.dir) + viewDir);
         
         // NdotV should not be negative for visible pixels, but it can happen due to perspective projection and normal mapping
         // In this case normal should be modified to become valid (i.e facing camera) and not cause weird artifacts.
@@ -39,21 +49,21 @@
         
         #if UNITY_HANDLE_CORRECTLY_NEGATIVE_NDOTV
             // The amount we shift the normal toward the view vector is defined by the dot product.
-            half shiftAmount = dot(normal, viewDir);
-            normal = shiftAmount < 0.0f ? normal + viewDir * (-shiftAmount + 1e-5f): normal;
+            half shiftAmount = dot(normal, poiCam.viewDir);
+            normal = shiftAmount < 0.0f ? normal + poiCam.viewDir * (-shiftAmount + 1e-5f): normal;
             // A re-normalization should be applied here but as the shift is small we don't do it to save ALU.
             //normal = normalize(normal);
             
-            float nv = saturate(dot(normal, viewDir)); // TODO: this saturate should no be necessary here
+            float nv = saturate(dot(normal, poiCam.viewDir)); // TODO: this saturate should no be necessary here
         #else
-            half nv = abs(dot(normal, viewDir));    // This abs allow to limit artifact
+            half nv = abs(dot(normal, poiCam.viewDir));    // This abs allow to limit artifact
         #endif
         
         float nl = saturate(dot(normal, light.dir));
-        float nh = saturate(dot(normal, halfDir));
+        float nh = saturate(dot(normal, poiLight.halfDir));
         
-        half lv = saturate(dot(light.dir, viewDir));
-        half lh = saturate(dot(light.dir, halfDir));
+        half lv = saturate(dot(light.dir, poiCam.viewDir));
+        half lh = saturate(dot(light.dir, poiLight.halfDir));
         
         // Diffuse term
         half diffuseTerm = DisneyDiffuse(nv, nl, lh, perceptualRoughness) * nl;
@@ -100,9 +110,8 @@
         return half4(color, 1);
     }
     
-    void calculateRealisticSpecular(float3 normal, float4 albedo, float3 viewDir, float2 uv)
+    void calculateRealisticSpecular(float4 albedo, float2 uv)
     {
-        half4 spec = UNITY_SAMPLE_TEX2D_SAMPLER(_SpecularMap, _MainTex, TRANSFORM_TEX(uv, _SpecularMap));
         
         half oneMinusReflectivity;
         
@@ -110,63 +119,108 @@
         unityLight.color = poiLight.color;
         unityLight.dir = poiLight.direction;
         unityLight.ndotl = poiLight.nDotL;
-
+        
         UNITY_BRANCH
-        if(_SmoothnessFrom == 0)
+        if (_SmoothnessFrom == 0)
         {
-            half3 diffColor = EnergyConservationBetweenDiffuseAndSpecular(albedo, spec.rgb * _SpecularTint.rgb, /*out*/ oneMinusReflectivity);
-            finalSpecular = poiRealisticSpecular(diffColor, spec.rgb, oneMinusReflectivity, spec.a * _SpecularSmoothness, normal, viewDir, unityLight, ZeroIndirect());
+            half3 diffColor = EnergyConservationBetweenDiffuseAndSpecular(albedo, specularMap.rgb * _SpecularTint.rgb, /*out*/ oneMinusReflectivity);
+            finalSpecular = poiRealisticSpecular(diffColor, specularMap.rgb, oneMinusReflectivity, specularMap.a * _SpecularSmoothness, poiMesh.fragmentNormal, unityLight, ZeroIndirect());
         }
         else
         {
             half3 diffColor = EnergyConservationBetweenDiffuseAndSpecular(albedo, _SpecularTint.rgb, /*out*/ oneMinusReflectivity);
-            float smoothness = max (max (spec.r, spec.g), spec.b);
-            finalSpecular = poiRealisticSpecular(diffColor, 1, oneMinusReflectivity, smoothness * _SpecularSmoothness, normal, viewDir, unityLight, ZeroIndirect());
+            float smoothness = max(max(specularMap.r, specularMap.g), specularMap.b);
+            finalSpecular = poiRealisticSpecular(diffColor, 1, oneMinusReflectivity, smoothness * _SpecularSmoothness, poiMesh.fragmentNormal, unityLight, ZeroIndirect());
         }
     }
     
-    void calculateToonSpecular(float3 normal, float4 albedo, float3 viewDir, float2 uv)
+    void calculateToonSpecular(float4 albedo, float2 uv)
     {
         finalSpecular = 1;
-        calculateRealisticSpecular(normal, albedo, viewDir, uv);
+        calculateRealisticSpecular(albedo, uv);
         float specIntensity = dot(finalSpecular.rgb, grayscale_for_light());
-        finalSpecular.rgb = smoothstep(0.99,1, specIntensity) * poiLight.color.rgb * poiLight.attenuation;
+        finalSpecular.rgb = smoothstep(0.99, 1, specIntensity) * poiLight.color.rgb * poiLight.attenuation;
     }
     
-    void calculateSpecular(float3 normal, float4 albedo, float3 viewDir, float2 uv)
+    float3 strandSpecular(float TdotL, float TdotV, float specPower)
+    {
+        float Specular = saturate(poiLight.nDotL) * pow(saturate(sqrt(1.0 - (TdotL * TdotL)) * sqrt(1.0 - (TdotV * TdotV)) - TdotL * TdotV), specPower);
+        half normalization = sqrt((specPower + 1) * ((specPower) + 1)) / (8 * pi);//
+        Specular *= normalization;
+        return Specular;
+    }
+    
+    void AnisotropicSpecular()
+    {
+        float3 tangentOrBitangent = _SpecWhatTangent ? poiMesh.tangent : poiMesh.bitangent;
+        
+
+        float4 packedTangentMap = UNITY_SAMPLE_TEX2D_SAMPLER(_AnisoTangentMap, _MainTex, TRANSFORM_TEX(poiMesh.uv, _AnisoTangentMap));
+        float3 normalLocalAniso = lerp(float3(0, 0, 1), UnpackNormal(packedTangentMap), _AnisoUseTangentMap);
+        normalLocalAniso = BlendNormals(normalLocalAniso, poiMesh.tangentSpaceNormal);
+        //float3 normalDirection = normalize(mul(poiMesh.fragmentNormal, poiTData.tangentTransform));
+        float3 normalDirectionAniso = Unity_SafeNormalize(mul(normalLocalAniso, poiTData.tangentTransform));
+        float3 tangentDirection = mul(poiTData.tangentTransform, tangentOrBitangent).xyz;
+        float3 viewReflectDirectionAniso = reflect(-poiCam.viewDir, normalDirectionAniso); // possible bad negation
+        tangentDirectionMap = mul(poiTData.tangentToWorld, float3(normalLocalAniso.rg, 0.0)).xyz;
+        tangentDirectionMap = normalize(lerp(tangentOrBitangent, tangentDirectionMap, _AnisoUseTangentMap));
+        float TdotL = dot(poiLight.direction, tangentDirectionMap);
+        float TdotV = dot(poiCam.viewDir, tangentDirectionMap);
+        float TdotH = dot(poiLight.halfDir, tangentDirectionMap);
+        half specPower = RoughnessToSpecPower(1.0 - _SpecularSmoothness * specularMap.a);
+        half spec2Power = RoughnessToSpecPower(1.0 - _Spec2Smoothness * specularMap.a);
+        half Specular = 0;
+
+        float3 spec = strandSpecular(TdotL, TdotV, specPower) * _AnisoSpec1Alpha;
+        float3 spec2 = strandSpecular(TdotL, TdotV, spec2Power) * _AnisoSpec2Alpha;
+
+        finalSpecular = max(spec, spec2) * specularMap.rgb * _SpecularTint.a * poiLight.color;
+    }
+    
+    void calculateSpecular(float4 albedo, float2 uv)
     {
         highTexture = UNITY_SAMPLE_TEX2D_SAMPLER(_SpecularHighTexture, _MainTex, TRANSFORM_TEX(uv, _SpecularHighTexture));
-
+        
         UNITY_BRANCH
-        if (_SpecularType == 0) // Off
+        if (_SpecularType != 0) // Off
         {
-            return;
-        }
-        else if (_SpecularType == 1) // Realistic
-        {
-            calculateRealisticSpecular(normal, albedo, viewDir, uv);
-            finalSpecular *= poiLight.attenuation;
-        }
-        else if (_SpecularType == 2) // Toon
-        {
-            calculateToonSpecular(normal, albedo, viewDir, uv);
-        }
-        else if (_SpecularType == 4) // anisotropic
-        {
-            return;
+            specularMap = UNITY_SAMPLE_TEX2D_SAMPLER(_SpecularMap, _MainTex, TRANSFORM_TEX(uv, _SpecularMap));
+            
+            UNITY_BRANCH
+            if (_SpecularType == 1) // Realistic
+            {
+                calculateRealisticSpecular(albedo, uv);
+                finalSpecular *= poiLight.attenuation;
+            }
+            UNITY_BRANCH
+            if (_SpecularType == 2) // Toon
+            {
+                calculateToonSpecular(albedo, uv);
+            }
+            UNITY_BRANCH
+            if (_SpecularType == 3) // anisotropic
+            {
+                AnisotropicSpecular();
+            }
         }
     }
     
     void applySpecular(inout float4 finalColor)
     {
-        if(_SpecularColorFrom == 0)
+        UNITY_BRANCH
+        if (_SpecularType != 0) // Off
         {
-            finalColor.rgb += finalSpecular.rgb * _SpecularTint.rgb * saturate(poiMax(poiLight.color.rgb));
-        }
-        else
-        {
-            float specIntensity = max (max (finalSpecular.r, finalSpecular.g), finalSpecular.b);
-            finalColor.rgb += lerp(0, highTexture.rgb, saturate(specIntensity)) * _SpecularTint.rgb;
+            if (_SpecularColorFrom == 0)
+            {
+                finalSpecular = finalSpecular.rgb * _SpecularTint.rgb * saturate(poiMax(poiLight.color.rgb));
+                finalColor.rgb += finalSpecular;
+            }
+            else
+            {
+                float specIntensity = max(max(finalSpecular.r, finalSpecular.g), finalSpecular.b);
+                finalSpecular = lerp(0, highTexture.rgb, saturate(specIntensity)) * _SpecularTint.rgb;
+                finalColor.rgb += finalSpecular;
+            }
         }
     }
     

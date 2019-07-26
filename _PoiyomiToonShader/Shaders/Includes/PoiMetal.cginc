@@ -9,6 +9,7 @@
     sampler2D _SmoothnessMask; float4 _SmoothnessMask_ST;
     float _InvertSmoothness;
     float _Smoothness;
+    float _EnableMetallic;
     
     float3 finalreflections;
     float metalicMap;
@@ -63,15 +64,22 @@
     void applyReflections(inout float4 finalColor, float4 finalColorBeforeLighting)
     {
         #ifdef FORWARD_BASE_PASS
-            finalreflections = reflection.rgb * lerp(finalColorBeforeLighting.rgb, 1, _PurelyAdditive);
-            finalColor.rgb = finalColor.rgb * (1 - metalicMap);
-            finalColor.rgb += (finalreflections * ((1 - roughness + metalicMap) / 2)) * lerp(1, poiLight.finalLighting, lighty_boy_uwu_var);
+            UNITY_BRANCH
+            if(_EnableMetallic)
+            {
+                finalreflections = reflection.rgb * lerp(finalColorBeforeLighting.rgb, 1, _PurelyAdditive);
+                finalColor.rgb = finalColor.rgb * (1 - metalicMap);
+                finalColor.rgb += (finalreflections * ((1 - roughness + metalicMap) / 2)) * lerp(1, poiLight.finalLighting, lighty_boy_uwu_var);
+            }
         #endif
     }
     
     void applyAdditiveReflectiveLighting(inout float4 finalColor)
     {
-        finalColor *= (1 - metalicMap);
+        UNITY_BRANCH
+        if(_EnableMetallic)
+        {
+            finalColor *= (1 - metalicMap);
+        }
     }
-    
-#endif
+    #endif

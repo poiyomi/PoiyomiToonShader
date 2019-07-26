@@ -8,6 +8,7 @@
     float _ReplaceWithMatcap;
     float _MultiplyMatcap;
     float _AddMatcap;
+    float _EnableMatcap;
     
     float3 matcap;
     float matcapMask;
@@ -22,15 +23,23 @@
     
     void calculateMatcap(float3 cameraToVert, float3 normal, float2 uv)
     {
-        float2 matcapUV = getMatcapUV(cameraToVert, normal);
-        matcap = UNITY_SAMPLE_TEX2D_SAMPLER(_Matcap, _MainTex, matcapUV) * _MatcapColor * _MatcapBrightness;
-        matcapMask = UNITY_SAMPLE_TEX2D_SAMPLER(_MatcapMask, _MainTex, TRANSFORM_TEX(uv, _MatcapMask));
+        UNITY_BRANCH
+        if (_EnableMatcap)
+        {
+            float2 matcapUV = getMatcapUV(cameraToVert, normal);
+            matcap = UNITY_SAMPLE_TEX2D_SAMPLER(_Matcap, _MainTex, matcapUV) * _MatcapColor * _MatcapBrightness;
+            matcapMask = UNITY_SAMPLE_TEX2D_SAMPLER(_MatcapMask, _MainTex, TRANSFORM_TEX(uv, _MatcapMask));
+        }
     }
     
     void applyMatcap(inout float4 finalColor)
     {
-        finalColor.rgb = lerp(finalColor, matcap, _ReplaceWithMatcap * matcapMask);
-        finalColor.rgb *= lerp(1, matcap, _MultiplyMatcap * matcapMask);
-        finalColor.rgb += matcap * _AddMatcap * matcapMask;
+        UNITY_BRANCH
+        if(_EnableMatcap)
+        {
+            finalColor.rgb = lerp(finalColor, matcap, _ReplaceWithMatcap * matcapMask);
+            finalColor.rgb *= lerp(1, matcap, _MultiplyMatcap * matcapMask);
+            finalColor.rgb += matcap * _AddMatcap * matcapMask;
+        }
     }
 #endif

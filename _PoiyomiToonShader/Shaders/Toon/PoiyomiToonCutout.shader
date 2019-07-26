@@ -4,7 +4,7 @@ Shader ".poiyomi/Toon/Default/Cutout"
     {
         [HideInInspector] shader_is_using_thry_editor ("", Float) = 0
         [HideInInspector] shader_is_using_thry_editor ("", Float) = 0
-        [HideInInspector] shader_master_label ("<color=#ff69b4>❤ Poiyomi Toon Shader V3.2 ❤</color>", Float) = 0
+        [HideInInspector] shader_master_label ("<color=#ff69b4>❤ Poiyomi Toon Shader V3.3 ❤</color>", Float) = 0
         [HideInInspector] shader_presets ("poiToonPresets", Float) = 0
         [HideInInspector] shader_eable_poi_settings_selection ("", Float) = 0
         
@@ -13,7 +13,6 @@ Shader ".poiyomi/Toon/Default/Cutout"
         [HideInInspector] footer_donate ("linkButton(Donate,https://www.paypal.me/poiyomi)", Float) = 0
         [HideInInspector] footer_patreon ("linkButton(Patreon,https://www.patreon.com/poiyomi)", Float) = 0
         
-
         [HideInInspector] m_mainOptions ("Main", Float) = 0
         _Color ("Color & Alpha--hover=Color modifies the tint of the main texture (MainTexture * Color). The alpha value also controls the overall alpha of the material when used in the transparent version of the shader.", Color) = (1, 1, 1, 1)
         _Saturation ("Saturation--hover=When set to negative 1 the main texture will be void of all color. If set to 1 the main texture will become more saturated in color. Desaturation is applied before Color so that color may be used more effectively.", Range(-1, 1)) = 0
@@ -30,6 +29,7 @@ Shader ".poiyomi/Toon/Default/Cutout"
         [HideInInspector] m_end_mainAdvanced ("Advanced", Float) = 0
         
         [HideInInspector] m_metallicOptions ("Metallic", Float) = 0
+        [Toggle(_)]_EnableMetallic("Enable Metallics", Float) = 0
         _CubeMap ("Baked CubeMap--hover=This cubemap will be used as a fallback when a map does not have reflection probes or a skybox from which to draw reflections.", Cube) = "" { }
         [Toggle(_)]_SampleWorld ("Force Baked Cubemap--hover=This forces the use of the baked cubemap rather than attempting to use a cubemap within the present scene.", Range(0, 1)) = 0
         _PurelyAdditive ("Purely Additive--hover=Forces reflections to be purely additive rather than multiplicative. This can be used with very dark materials or cubemaps that are being used for glossy effects.", Range(0, 1)) = 0
@@ -40,6 +40,7 @@ Shader ".poiyomi/Toon/Default/Cutout"
         _Smoothness ("Smoothness--hover=How blurred the reflection becomes on a material. 0 = No reflection visible. 1 = Mirror like reflections.", Range(0, 1)) = 0
         
         [HideInInspector] m_matcapOptions ("Matcap / Sphere Textures", Float) = 0
+        [Toggle(_)]_EnableMatcap("Enable Matcap", Float) = 0
         _Matcap ("Matcap--hover=matcap stands for “material capture” – it is a complete material including lighting and reflections so you can add it to an object and not have any need for, well, lighting and reflections.", 2D) = "white" { }
         _MatcapMask ("Matcap Map--hover=Where the Matcap texture will be blended with the base material. White: FullBlend, Black: No Blend", 2D) = "white" { }
         _MatcapColor ("Matcap Color--hover=Tints the matcap color.", Color) = (1, 1, 1, 1)
@@ -49,12 +50,22 @@ Shader ".poiyomi/Toon/Default/Cutout"
         _AddMatcap ("Add Matcap--hover=Simply adds the matcap to base material. Useful when the base is black and you just want to add color or shine.", Range(0, 1)) = 0
         
         [HideInInspector] m_emissionOptions ("Emission", Float) = 0
+        [Toggle(_)]_EnableEmission("Enable Emission", Float) = 0
         [HDR]_EmissionColor ("Emission Color--hover=The color of the emission or glow.", Color) = (1, 1, 1, 1)
         _EmissionMap ("Emission Map--hover=The color of the emission represented by a texture. Black will not glow at all.", 2D) = "white" { }
         _EmissionMask ("Emission Mask--hover=A mask of where emissions should take place. The mask should be in black and white. the emission color is multiplied by the mask. black = 0 white = 1", 2D) = "white" { }
-        _EmissionPan ("Emission Pan--hover=The speed at which which emission is panned across the model. Only X and Y values are used.", Vector) = (0, 0, 0, 0)
+        _EmissionPan ("Map(XY) | Mask(ZW) Pan--hover=The speed at which which emission is panned across the model. Only X and Y values are used.", Vector) = (0, 0, 0, 0)
         _EmissionStrength ("Emission Strength--hover=The strength of the glow or emission. (Emission * Emission Strength)", Range(0, 20)) = 0
-        
+
+        [HideInInspector] m_start_glowInDarkEmissionOptions ("Glow In The Dark Emission (Requires Lighting Enabled)", Float) = 0
+        [Toggle(_)]_EnableGITDEmission("Enable Glow In The Dark", Float) = 0
+        [Enum(World, 0, Mesh, 1)] _GITDEWorldOrMesh("Lighting Type--hover=Should Light levels be based on your Mesh's lighting or the world lighting", Int) = 0
+        _GITDEMinEmissionMultiplier ("Min Emission Multiplier", Range(0,1)) = 1
+        _GITDEMaxEmissionMultiplier ("Max Emission Multiplier", Range(0,1)) = 0
+        _GITDEMinLight ("Min Lighting", Range(0,1)) = 0
+        _GITDEMaxLight ("Max Lighting", Range(0,1)) = 1
+        [HideInInspector] m_end_glowInDarkEmissionOptions ("Glow In The Dark Emission (Requires Lighting Enabled)", Float) = 0
+
         [HideInInspector] m_start_blinkingEmissionOptions ("Blinking Emission", Float) = 0
         _EmissiveBlink_Min ("Emissive Blink Min--hover=The minimum value the emission will be multiplied by when blinking.", Float) = 1
         _EmissiveBlink_Max ("Emissive Blink Max--hover=The maximum value the emission will be multiplied by when blinking.", Float) = 1
@@ -70,6 +81,7 @@ Shader ".poiyomi/Toon/Default/Cutout"
         [HideInInspector] m_end_scrollingEmissionOptions ("Scrolling Emission", Float) = 0
         
         [HideInInspector] m_fakeLightingOptions ("Lighting", Float) = 0
+        [Toggle(_)]_EnableLighting("Enable Lighting", Float) = 1
         [Enum(Natural, 0, Controlled, 1)] _LightingType("Lighting Type--hover=How shadows are handled. | Natural: world controled shadow Color * shadow ramp, Controlled: The color of the shadow ramp is the color of the shadow period", Int) = 0
         [Gradient]_ToonRamp ("Lighting Ramp--hover=How light will be applied to the model. The top right side of the texture is maximum light and the bottom left is minimum light. Make sure the lighting ramp texture settings are set to clamp to avoid bugs.", 2D) = "white" { }
         _LightingShadowMask ("Shadow Mask (R)--hover=Controls Shadow Strength", 2D) = "white" { }
@@ -87,13 +99,26 @@ Shader ".poiyomi/Toon/Default/Cutout"
         [HideInInspector] m_end_lightingAdvanced ("Advanced", Float) = 0
         
         [HideInInspector] m_specularHighlightsOptions ("Specular Highlights", Float) = 0
-        [Enum(Off, 0, Realistic, 1, Toon, 2, soon.jpg, 3)] _SpecularType ("Specular Type--hover=How the specular highlights will be styled", Int) = 0
+        [Enum(Off, 0, Realistic, 1, Toon, 2, Anisotropic, 3)] _SpecularType ("Specular Type--hover=How the specular highlights will be styled", Int) = 0
         _SpecularTint ("Specular Tint--hover=Tints the specular color upon reflection", Color) = (.2, .2, .2, 1)
         _SpecularSmoothness ("Smoothness--hover=How smooth or shiny a material is. Changing this will change how light reflects off the material.", Range(0, 1)) = 0
         _SpecularMap ("Specular Map--hover=Adjusts the smoothness of an area by the texture. white = 1 smooth, black = 0 smooth", 2D) = "white" { }
         [Enum(Alpha, 0, Grayscale, 1)] _SmoothnessFrom ("Smoothness From--hover=What it derives the smoothness value from using the texture", Int) = 1
         _SpecularHighTexture ("Specular High Tex--hover=When there would be specular sample this texture instead", 2D) = "white" { }
         [Enum(Lighting, 0, HighTexture, 1)] _SpecularColorFrom("Specular Color From--hover=Whether or not the shader should derive specular color from the hight texture or the light color.", Int) = 0
+        [HideInInspector] m_start_Anisotropic ("Anisotropic", Float) = 0
+        [Enum(Tangent, 0, Bitangent, 1)] _SpecWhatTangent("(Bi)Tangent?", Int) = 0
+        _AnisoSpec1Alpha("Spec1 Alpha", Range(0,1)) = 1
+        _AnisoSpec2Alpha("Spec2 Alpha", Range(0,1)) = 1
+        //_Spec1Offset ("Spec1 Offset", Float) = 0
+        //_Spec1JitterStrength ("Spec1 Jitter Strength", Float) = 1.0
+        _Spec2Smoothness ("Spec2 Smoothness", Range(0, 1)) = 0
+        //_Spec2Offset ("Spec2 Offset", Float) = 0
+        //_Spec2JitterStrength ("Spec2 Jitter Strength", Float) = 1.0
+        [Toggle(_)]_AnisoUseTangentMap ("Use Directional Map?", Float) = 0
+        _AnisoTangentMap ("Anisotropic Directional Map", 2D) = "bump" {}
+        //_ShiftTexture ("Shift Texture", 2D) = "black" { }
+        [HideInInspector] m_end_Anisotropic ("Anisotropic", Float) = 0
 
         [HideInInspector] m_parallaxMap ("Parallax/height Map", Float) = 0
         [Toggle(_PARALLAX_MAP)]_ParallaxMap ("Enable Parallax Map", Float) = 0
@@ -104,6 +129,7 @@ Shader ".poiyomi/Toon/Default/Cutout"
         [HideInInspector] m_end_parallaxAdvanced ("Advanced", Float) = 0
 
         [HideInInspector] m_subsurfaceOptions ("Subsurface Scattering", Float) = 0
+        [Toggle(_)]_EnableSSS("Enable Subsurface Scattering", Float) = 0
         _SSSColor ("Subsurface Color--hover=The internal color of the material. Light is tinted this color when it shines through you", Color) = (1, 1, 1, 1)
         _SSSThicknessMap ("Thickness Map--hover=How thicc the material is. Controls how difficult it is for light to pass through.", 2D) = "black" { }
         _SSSThicknessMod ("Thickness mod--hover=Modifies the thickness map. adds or subtracts x from the map.", Range(-1, 1)) = 0
@@ -112,6 +138,7 @@ Shader ".poiyomi/Toon/Default/Cutout"
         _SSSDistortion ("Light Distortion--hover=The angle at which the light is visible through the mesh. Higher distortion means the light will only show up along the edges.", Range(0, 1)) = 0
 
         [HideInInspector] m_rimLightOptions ("Rim Lighting", Float) = 0
+        [Toggle(_)]_EnableRimLighting("Enable Rim Lighting", Float) = 0
         _RimLightColor ("Rim Color--hover=The tint applied to the rim lighting.", Color) = (1, 1, 1, 1)
         _RimWidth ("Rim Width--hover=The width of the rim effect on the material.", Range(0, 1)) = 0.8
         _RimSharpness ("Rim Sharpness--hover=How sharp the edge of the rim effect is. 0 = smooth gradient 1 = hard edge", Range(0, 1)) = .25
@@ -127,6 +154,7 @@ Shader ".poiyomi/Toon/Default/Cutout"
         [HideInInspector] m_end_ShadowMix ("Shadow Mix", Float) = 0
         
         [HideInInspector] m_flipBook ("Flipbook", Float) = 0
+        [Toggle(_)]_EnableFlipbook("Enable Flipbook", Float) = 0
         _FlipbookTexArray ("Texture Array--hover=The texture array used for animation", 2DArray) = "" {}
         _FlipbookColor ("Color & alpha--hover=Tints the flipbook texture and controls the alpha", Color) = (1, 1, 1, 1)
         _FlipbookTotalFrames ("Total Frames--hover=Total number of frames to be used in the animation.", Int) = 1
@@ -178,15 +206,22 @@ Shader ".poiyomi/Toon/Default/Cutout"
         [Enum(UnityEngine.Rendering.CompareFunction)] _StencilCompareFunction ("Stencil Compare Function--hover=The function used to compare the reference value to the current contents of the buffer. Default: always.", Float) = 8
         
         [HideInInspector] m_funOptions ("Fun", Float) = 0
+        [Toggle(_)]_EnableFun("EnableFun", Float) = 0
         [Enum(ShowInBoth, 0, ShowOnlyInMirror, 1, DontShowInMirror, 2)] _Mirror ("Show in mirror--hover=ShowInBoth: shows your material in both the mirror and the world. ShowOnlyInMirror: shows your material only in the mirror. DontShowInMirror: Only shows your avatar in the world and does not reflect in mirror.", Int) = 0
         
         [HideInInspector] m_miscOptions ("Misc", Float) = 0
         [Enum(UnityEngine.Rendering.CullMode)] _Cull ("Cull--hover=Controls which sides of polygons should be culled (not drawn) Back: Don’t render polygons facing away from the viewer (default). Front: Don’t render polygons facing towards the viewer. Used for turning objects insideout. Off: Disables culling all faces are drawn. Used for special effects.", Float) = 2
-        [Enum(UnityEngine.Rendering.CompareFunction)] _ZTest ("ZTest--hover=How should depth testing be performed. Default is LEqual (draw objects in from or at the distance as existing objects; hide objects behind them).", Float) = 4
+        [Enum(UnityEngine.Rendering.CompareFunction)] _ZTest ("ZTest--hover=How should depth testing be performed. Default is LEqual.", Float) = 4
         [Enum(UnityEngine.Rendering.BlendMode)] _SourceBlend ("Source Blend--hover=When graphics are rendered, after all Shaders have executed and all Textures have been applied, the pixels are written to the screen. How they are combined with what is already there is controlled by the Blend command.", Float) = 5
         [Enum(UnityEngine.Rendering.BlendMode)] _DestinationBlend ("Destination Blend--hover=When graphics are rendered, after all Shaders have executed and all Textures have been applied, the pixels are written to the screen. How they are combined with what is already there is controlled by the Blend command.", Float) = 10
         [Enum(Off, 0, On, 1)] _ZWrite ("ZWrite--hover=Controls whether pixels from this object are written to the depth buffer (default is On). If you’re drawng solid objects, leave this on. If you’re drawing semitransparent effects, switch to ZWrite Off. For more details read below.", Int) = 1
-    
+        _ZBias ("ZBias", Float) = 0.0
+
+        [HideInInspector] m_debugOptions ("Debug", Float) = 0
+        [Toggle(_)]_DebugDisplayDebug("Display Debug Info", Float) = 0
+        [Enum(Off, 0, Vertex Normal, 1, Pixel Normal, 2, Tangent, 3, Binormal, 4)] _DebugMeshData ("Mesh Data", Int) = 0
+        [Enum(Off, 0, Attenuation, 1, Direct Lighting, 2, Indirect Lighting, 3, light Map, 4, Ramped Light Map, 5, Final Lighting, 6)] _DebugLightingData ("Lighting Data", Int) = 0
+        [Enum(Off, 0, finalSpecular, 1, highTexture, 2, tangentDirectionMap, 3, shiftTexture, 4)] _DebugSpecularData ("Specular Data", Int) = 0
     }
     
     CustomEditor "ThryEditor"
@@ -209,11 +244,13 @@ Shader ".poiyomi/Toon/Default/Cutout"
             ZWrite [_ZWrite]
             Cull [_Cull]
             ZTest [_ZTest]
+            Offset [_ZBias], [_ZBias]
             CGPROGRAM
             
             #pragma target 5.0
             #pragma target 5.0
             #define FORWARD_BASE_PASS
+            #define BINORMAL_PER_FRAGMENT
             #pragma shader_feature _PARALLAX_MAP
             #pragma multi_compile_instancing
             #pragma multi_compile_fwdbase
@@ -242,10 +279,12 @@ Shader ".poiyomi/Toon/Default/Cutout"
             Blend One One
             Cull [_Cull]
             ZTest [_ZTest]
+            Offset [_ZBias], [_ZBias]
             CGPROGRAM
             
             #pragma target 5.0
             #define FORWARD_ADD_PASS
+            #define BINORMAL_PER_FRAGMENT
             #pragma shader_feature _PARALLAX_MAP
             #pragma multi_compile_instancing
             #pragma multi_compile_fwdadd_fullshadows

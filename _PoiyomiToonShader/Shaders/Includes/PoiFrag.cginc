@@ -3,19 +3,21 @@
     
     float4 frag(v2f i, float facing: VFACE): SV_Target
     {
+        
         #ifdef POI_PARALLAX
             calculateandApplyParallax(i);
         #endif
         
+        #ifdef POI_DATA
+            calculateData(i);
+        #endif
+        
+        //return float4(poiMesh.vertexNormal,1);
+        
         #ifdef BASICS
             calculateBasics(i);
         #endif
-        
-        #ifdef POI_LIGHTING_DATA
-            calculateLightingData(i);
-        #endif
-        
-        
+
         #ifdef LIGHTING
             calculateLighting(i);
         #endif
@@ -33,7 +35,7 @@
         
         
         #ifdef METAL
-            calculateReflections(i.uv, i.normal, viewDirection);
+            calculateReflections(i.uv, poiMesh.fragmentNormal, poiCam.viewDir);
         #endif
         
         #ifdef TEXTURE_BLENDING
@@ -43,7 +45,7 @@
         clip(mainTexture.a * alphaMask - _Clip);
         
         #ifdef MATCAP
-            calculateMatcap(viewDirection, i.normal, i.uv);
+            calculateMatcap(poiCam.viewDir, poiMesh.fragmentNormal, i.uv);
         #endif
         
         #ifdef FLIPBOOK
@@ -52,12 +54,12 @@
         
         #ifdef LIGHTING
             #ifdef SUBSURFACE
-                calculateSubsurfaceScattering(i, viewDirection);
+                calculateSubsurfaceScattering(i);
             #endif
         #endif
         
         #ifdef RIM_LIGHTING
-            calculateRimLighting(i.uv, viewDotNormal);
+            calculateRimLighting(i.uv, poiCam.viewDotNormal);
         #endif
         
         #ifdef PANOSPHERE
@@ -111,7 +113,7 @@
         #endif
         
         #ifdef SPECULAR
-            calculateSpecular(i.normal, finalColorBeforeLighting, viewDirection, i.uv);
+            calculateSpecular(finalColorBeforeLighting, i.uv);
         #endif
         
         #ifdef FORWARD_BASE_PASS
@@ -163,7 +165,11 @@
         #ifdef FORWARD_BASE_PASS
             UNITY_APPLY_FOG(i.fogCoord, finalColor);
         #endif
-
+        
+        #ifdef POI_DEBUG
+            displayDebugInfo(finalColor);
+        #endif
+        
         return finalColor;
     }
 #endif
