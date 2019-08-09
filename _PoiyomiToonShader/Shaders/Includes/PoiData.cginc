@@ -19,78 +19,6 @@
     float4 albedo;
     float3x3 tangentMatrix;
     
-    struct FragmentCommonData
-    {
-        half3 diffColor, specColor;
-        // Note: smoothness & oneMinusReflectivity for optimization purposes, mostly for DX9 SM2.0 level.
-        // Most of the math is being done on these (1-x) values, and that saves a few precious ALU slots.
-        half oneMinusReflectivity, smoothness;
-        float3 normalWorld;
-        float3 eyeVec;
-        half alpha;
-        float3 posWorld;
-        
-        #if UNITY_STANDARD_SIMPLE
-            half3 reflUVW;
-        #endif
-        
-        #if UNITY_STANDARD_SIMPLE
-            half3 tangentSpaceNormal;
-        #endif
-    };
-    
-    struct PoiLighting
-    {
-        half3 direction;
-        half3 color;
-        half attenuation;
-        half3 directLighting;
-        half3 indirectLighting;
-        half lightMap;
-        half3 rampedLightMap;
-        half3 finalLighting;
-        half3 halfDir;
-        half nDotL;
-        half nDotH;
-        half lDotv;
-        half lDotH;
-        half nDotV;
-        half diffuseTerm;
-    };
-    
-    struct PoiCamera
-    {
-        half3 viewDir;
-        half3 tangentViewDir;
-        half3 forwardDir;
-        half3 worldPos;
-        float viewDotNormal;
-    };
-    
-    struct PoiMesh
-    {
-        float3 vertexNormal;
-        float3 fragmentNormal;
-        float3 tangent;
-        float3 bitangent;
-        float3 worldPos;
-        float3 tangentSpaceNormal;
-        float2 uv;
-    };
-    
-    struct PoiTangentData
-    {
-        float3x3 tangentTransform;
-        float3x3 tangentToWorld;
-    };
-    
-    static PoiLighting poiLight;
-    static PoiCamera poiCam;
-    static PoiMesh poiMesh;
-    static UnityGI gi;
-    static FragmentCommonData s;
-    static PoiTangentData poiTData;
-    
     float FadeShadows(float attenuation, float3 worldPosition)
     {
         float viewZ = dot(_WorldSpaceCameraPos - worldPosition, UNITY_MATRIX_V[2].xyz);
@@ -173,6 +101,7 @@
         poiCam.viewDir = normalize(_WorldSpaceCameraPos - i.worldPos);
         poiCam.forwardDir = getCameraForward();
         poiCam.worldPos = _WorldSpaceCameraPos;
+        poiCam.tangentViewDir = normalize(i.tangentViewDir);
     }
     
     inline FragmentCommonData SpecularSetup(float4 i_tex)

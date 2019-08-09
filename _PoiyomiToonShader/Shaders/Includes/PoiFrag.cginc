@@ -1,6 +1,8 @@
 #ifndef POIFRAG
     #define POIFRAG
     
+    float _ForceOpaque;
+    
     float4 frag(v2f i, float facing: VFACE): SV_Target
     {
         
@@ -17,7 +19,7 @@
         #ifdef BASICS
             calculateBasics(i);
         #endif
-
+        
         #ifdef LIGHTING
             calculateLighting(i);
         #endif
@@ -59,7 +61,7 @@
         #endif
         
         #ifdef RIM_LIGHTING
-            calculateRimLighting(i.uv, poiCam.viewDotNormal);
+            calculateRimLighting(i.uv);
         #endif
         
         #ifdef PANOSPHERE
@@ -74,7 +76,9 @@
             calculateEmission(i.uv, i.localPos);
         #endif
         
-        float4 finalColor = albedo;
+        finalColor = albedo;
+        
+        
         
         #ifdef RIM_LIGHTING
             applyRimColor(finalColor);
@@ -114,6 +118,10 @@
         
         #ifdef SPECULAR
             calculateSpecular(finalColorBeforeLighting, i.uv);
+        #endif
+        
+        #ifdef POI_PARALLAX
+            calculateAndApplyInternalParallax();
         #endif
         
         #ifdef FORWARD_BASE_PASS
@@ -169,7 +177,7 @@
         #ifdef POI_DEBUG
             displayDebugInfo(finalColor);
         #endif
-        
+        finalColor.a = max(_ForceOpaque, finalColor.a);
         return finalColor;
     }
 #endif

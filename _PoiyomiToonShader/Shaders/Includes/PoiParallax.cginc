@@ -2,12 +2,29 @@
     #define POI_PARALLAX
     
     sampler2D _ParallaxHeightMap; float4 _ParallaxHeightMap_ST;
+    float _ParallaxHeightIterations;
     float _ParallaxStrength;
     float _ParallaxBias;
+    float _ParallaxHeightMapEnabled;
+    
+    //Internal
+    float _ParallaxInternalMapEnabled;
+    sampler2D _ParallaxInternalMap; float4 _ParallaxInternalMap_ST;
+    float _ParallaxInternalIterations;
+    float _ParallaxInternalMinDepth;
+    float _ParallaxInternalMaxDepth;
+    float _ParallaxInternalMinFade;
+    float _ParallaxInternalMaxFade;
+    float4 _ParallaxInternalMinColor;
+    float4 _ParallaxInternalMaxColor;
+    float4 _ParallaxInternalPanSpeed;
+    float4 _ParallaxInternalPanDepthSpeed;
+    float _ParallaxInternalHeightmapMode;
+    float _ParallaxInternalHeightFromAlpha;
     
     float GetParallaxHeight(float2 uv)
     {
-        return clamp(tex2D(_ParallaxHeightMap, TRANSFORM_TEX(uv, _ParallaxHeightMap)).g,0,.99999);
+        return clamp(tex2D(_ParallaxHeightMap, TRANSFORM_TEX(uv, _ParallaxHeightMap)).g, 0, .99999);
     }
     
     float2 ParallaxOffset(float2 uv, float2 viewDir)
@@ -23,7 +40,7 @@
         float2 uvOffset = 0;
         float stepSize = 0.1;
         float2 uvDelta = viewDir * (stepSize * _ParallaxStrength);
-
+        
         float stepHeight = 1;
         float surfaceHeight = GetParallaxHeight(uv);
         
@@ -31,7 +48,7 @@
         float prevStepHeight = stepHeight;
         float prevSurfaceHeight = surfaceHeight;
         
-        for (int i = 1; i < 10 && stepHeight > surfaceHeight; i ++)
+        for (int i = 1; i < _ParallaxHeightIterations && stepHeight > surfaceHeight; i ++)
         {
             prevUVOffset = uvOffset;
             prevStepHeight = stepHeight;
@@ -52,12 +69,56 @@
     
     void calculateandApplyParallax(inout v2f i)
     {
+        
         #if defined(_PARALLAX_MAP)
-            i.tangentViewDir = normalize(i.tangentViewDir);
-            i.tangentViewDir.xy /= (i.tangentViewDir.z + _ParallaxBias);
-            float2 uvOffset = ParallaxRaymarching(i.uv.xy, i.tangentViewDir.xy);
-            i.uv.xy += uvOffset;
+            UNITY_BRANCH
+            if (_ParallaxHeightMapEnabled)
+            {
+                i.tangentViewDir = normalize(i.tangentViewDir);
+                i.tangentViewDir.xy /= (i.tangentViewDir.z + _ParallaxBias);
+                float2 uvOffset = ParallaxRaymarching(i.uv.xy, i.tangentViewDir.xy);
+                i.uv.xy += uvOffset;
+            }
         #endif
     }
     
+    void calculateAndApplyInternalParallax()
+    {
+        #if defined(_PARALLAX_MAP)
+            UNITY_BRANCH
+            if(_ParallaxInternalMapEnabled)
+            {
+                float3 parallax = 0;
+                for (int j = _ParallaxInternalIterations; j > 0; j --)
+                {
+                    float ratio = (float)j / _ParallaxInternalIterations;
+                    float2 parallaxOffset = _Time.y * (_ParallaxInternalPanSpeed + (1-ratio) * _ParallaxInternalPanDepthSpeed);
+                    float fade = lerp(_ParallaxInternalMinFade, _ParallaxInternalMaxFade, ratio);
+                    float4 parallaxColor = tex2D(_ParallaxInternalMap, TRANSFORM_TEX(poiMesh.uv, _ParallaxInternalMap) + lerp(_ParallaxInternalMinDepth, _ParallaxInternalMaxDepth, ratio) * - poiCam.tangentViewDir.xy + parallaxOffset);
+                    float3 parallaxTint = lerp(_ParallaxInternalMinColor,_ParallaxInternalMaxColor, ratio);
+                    float parallaxHeight;
+                    if(_ParallaxInternalHeightFromAlpha)
+                    {
+                        parallaxTint *= parallaxColor.rgb;
+                        parallaxHeight = parallaxColor.a;
+                    } else
+                    {
+                        parallaxHeight = parallaxColor.r;
+                    }
+                    //float parallaxColor *= lerp(_ParallaxInternalMinColor, _ParallaxInternalMaxColor, 1 - ratio);
+                    UNITY_BRANCH
+                    if (_ParallaxInternalHeightmapMode == 1)
+                    {
+                        parallax = lerp(parallax, parallaxTint * fade, parallaxHeight >= 1-ratio);
+                    }
+                    else
+                    {
+                        parallax += parallaxTint * parallaxHeight * fade;
+                    }
+                }
+                //parallax /= _ParallaxInternalIterations;
+                finalColor.rgb += parallax;
+            }
+        #endif
+    }
 #endif

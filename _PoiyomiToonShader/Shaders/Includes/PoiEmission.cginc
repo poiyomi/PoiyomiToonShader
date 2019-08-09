@@ -2,8 +2,8 @@
     #define EMISSION
     
     float4 _EmissionColor;
-    sampler2D _EmissionMap; float4 _EmissionMap_ST;
-    sampler2D _EmissionMask; float4 _EmissionMask_ST;
+    UNITY_DECLARE_TEX2D_NOSAMPLER(_EmissionMap); float4 _EmissionMap_ST;
+    UNITY_DECLARE_TEX2D_NOSAMPLER(_EmissionMask); float4 _EmissionMask_ST;
     float _EmissionStrength;
     float _EnableEmission;
     float4 _EmissiveScroll_Direction;
@@ -39,7 +39,7 @@
                 }
             #endif
 
-            float4 _Emissive_Tex_var = tex2D(_EmissionMap, TRANSFORM_TEX(uv, _EmissionMap) + _Time.y * _EmissionPan.xy);
+            float4 _Emissive_Tex_var = UNITY_SAMPLE_TEX2D_SAMPLER(_EmissionMap, _MainTex, TRANSFORM_TEX(uv, _EmissionMap) + _Time.y * _EmissionPan.xy);
             emission = _Emissive_Tex_var * _EmissionColor * _EmissionStrength;
             
             // scrolling emission
@@ -60,7 +60,7 @@
             float emissiveBlink = sin(_Time.y * _EmissiveBlink_Velocity) * amplitude + base;
             emission *= emissiveBlink;
             
-            float _Emission_mask_var = tex2D(_EmissionMask, TRANSFORM_TEX(uv, _EmissionMask) + _Time.y * _EmissionPan.zw);
+            float _Emission_mask_var = UNITY_SAMPLE_TEX2D_SAMPLER(_EmissionMask, _MainTex, TRANSFORM_TEX(uv, _EmissionMask) + _Time.y * _EmissionPan.zw);
             
             
             

@@ -4,7 +4,7 @@ Shader ".poiyomi/Toon/Default/Cutout"
     {
         [HideInInspector] shader_is_using_thry_editor ("", Float) = 0
         [HideInInspector] shader_is_using_thry_editor ("", Float) = 0
-        [HideInInspector] shader_master_label ("<color=#ff69b4>❤ Poiyomi Toon Shader V3.3 ❤</color>", Float) = 0
+        [HideInInspector] shader_master_label ("<color=#ff69b4>❤ Poiyomi Toon Shader V3.4 ❤</color>", Float) = 0
         [HideInInspector] shader_presets ("poiToonPresets", Float) = 0
         [HideInInspector] shader_eable_poi_settings_selection ("", Float) = 0
         
@@ -21,6 +21,7 @@ Shader ".poiyomi/Toon/Default/Cutout"
         _BumpScale ("Normal Intensity--hover=Controls the strength of the normal map. Pushes the normals away from a straight out orientation.", Range(0, 10)) = 1
         _AlphaMask ("Alpha Mask--hover=contributes to the cutoff or transparency of a material. The Alpha mask can be used to make things transparent that would otherwise be seen.", 2D) = "white" { }
         _Clip ("Alpha Cuttoff--hover=If the Alpha/Opacity of the main texture is below that of the alpha cutoff it will be made invisible.", Range(0, 1.001)) = 0.5
+        [Toggle(_)]_ForceOpaque("Force Opaque", Float) = 1
         [HideInInspector] m_start_mainAdvanced ("Advanced", Float) = 0
         _GlobalPanSpeed ("Pan Speed XY--hover=Pans the UV values based on the X and Y values inputted. This will rotate all effects as this modifies the base UV that all things derive texture positions from. Excludes things that do not use the UV for texture look up such as panosphere.", Vector) = (0, 0, 0, 0)
         [Normal]_DetailNormalMap ("Detail Map--hover=A second normal map which can be used to add finder detail to a material. This is blended with the primary normal map.", 2D) = "bump" { }
@@ -120,13 +121,30 @@ Shader ".poiyomi/Toon/Default/Cutout"
         //_ShiftTexture ("Shift Texture", 2D) = "black" { }
         [HideInInspector] m_end_Anisotropic ("Anisotropic", Float) = 0
 
-        [HideInInspector] m_parallaxMap ("Parallax/height Map", Float) = 0
-        [Toggle(_PARALLAX_MAP)]_ParallaxMap ("Enable Parallax Map", Float) = 0
+        [HideInInspector] m_parallaxMap ("Parallax", Float) = 0
+        [Toggle(_PARALLAX_MAP)]_ParallaxMap ("Enable Parallax FX", Float) = 0
+        [Toggle(_)]_ParallaxHeightMapEnabled ("Enable Parallax Height", Float) = 0
+        [Toggle(_)]_ParallaxInternalMapEnabled ("Enable Parallax Internal", Float) = 0
+        [HideInInspector] m_start_parallaxHeightmap ("Heightmap", Float) = 0
 		_ParallaxHeightMap ("Height Map--hover=Controls how the texture distors", 2D) = "black" {}
+		_ParallaxHeightIterations ("Parallax Height Iterations", Range(1, 20)) = 1
 		_ParallaxStrength ("Parallax Strength--hover=How much the texture distorts", Range(0, 0.1)) = 0
-        [HideInInspector] m_start_parallaxAdvanced ("Advanced", Float) = 0
         _ParallaxBias ("Parallax Bias (0.42)--hover=Don't touch this unless you already know what it does",Float) = 0.42
-        [HideInInspector] m_end_parallaxAdvanced ("Advanced", Float) = 0
+        [HideInInspector] m_end_parallaxHeightmap ("Heightmap", Float) = 0
+        [HideInInspector] m_start_parallaxInternal ("Internal", Float) = 0
+        [Enum(Basic, 0, HeightMap, 1)] _ParallaxInternalHeightmapMode("Parallax Mode", Int) = 0
+        [Toggle(_)]_ParallaxInternalHeightFromAlpha ("HeightFromAlpha", Float) = 0
+		_ParallaxInternalMap ("Internal Map--hover=Controls how the texture distors", 2D) = "black" {}
+		_ParallaxInternalIterations ("Parallax Internal Iterations", Range(1, 50)) = 1
+        _ParallaxInternalMinDepth("Min Depth", Float) = 0
+        _ParallaxInternalMaxDepth("Max Depth", Float) = 1
+        _ParallaxInternalMinFade("Min Depth Brightness", Range(0,5)) = 1
+        _ParallaxInternalMaxFade("Max Depth Brightness", Range(0,5)) = 0
+        _ParallaxInternalMinColor("Min Depth Color", Color) = (1, 1, 1, 1)
+        _ParallaxInternalMaxColor("Max Depth Color", Color) = (1, 1, 1, 1)
+        _ParallaxInternalPanSpeed("Pan Speed", Vector) = (0,0,0,0)
+        _ParallaxInternalPanDepthSpeed("Per Level Speed Multiplier", Vector) = (0,0,0,0)
+        [HideInInspector] m_end_parallaxInternal ("Internal", Float) = 0
 
         [HideInInspector] m_subsurfaceOptions ("Subsurface Scattering", Float) = 0
         [Toggle(_)]_EnableSSS("Enable Subsurface Scattering", Float) = 0
@@ -139,6 +157,7 @@ Shader ".poiyomi/Toon/Default/Cutout"
 
         [HideInInspector] m_rimLightOptions ("Rim Lighting", Float) = 0
         [Toggle(_)]_EnableRimLighting("Enable Rim Lighting", Float) = 0
+        [Toggle(_)]_RimLightingInvert("Invert Rim Lighting", Float) = 0
         _RimLightColor ("Rim Color--hover=The tint applied to the rim lighting.", Color) = (1, 1, 1, 1)
         _RimWidth ("Rim Width--hover=The width of the rim effect on the material.", Range(0, 1)) = 0.8
         _RimSharpness ("Rim Sharpness--hover=How sharp the edge of the rim effect is. 0 = smooth gradient 1 = hard edge", Range(0, 1)) = .25
@@ -147,6 +166,11 @@ Shader ".poiyomi/Toon/Default/Cutout"
         _RimTex ("Rim Texture--hover=The texture used for the color of the rim light. Note: Alpha is respected and can cause lighting to go away.", 2D) = "white" { }
         _RimMask ("Rim Mask--hover=Where the rim lighting should occur", 2D) = "white" { }
         _RimTexPanSpeed ("Rim Texture Pan Speed--hover=Pans the texture used for rim lighting. Only X and Y have an effect.", Vector) = (0, 0, 0, 0)
+        [HideInInspector] m_start_rimWidthNoise ("Width Noise", Float) = 0
+        _RimWidthNoiseTexture ("Rim Width Noise", 2D) = "black" { }
+        _RimWidthNoiseStrength ("Intensity", Range(0,1)) = 0.1
+        _RimWidthNoisePan ("Pan Speed (XY)", Vector) = (0,0,0,0)
+        [HideInInspector] m_end_rimWidthNoise ("Width Noise", Float) = 0
         [HideInInspector] m_start_ShadowMix ("Shadow Mix", Float) = 0
         _ShadowMix ("Shadow Mix In--hover=The brightness of the lighting now effects the width of the rimlight.", Range(0, 1)) = 0
         _ShadowMixThreshold ("Shadow Mix Threshold--hover=Adjust this so the shadowmix fits your shadow ramp threshold", Range(0, 1)) = .5
@@ -222,12 +246,14 @@ Shader ".poiyomi/Toon/Default/Cutout"
         [Enum(Off, 0, Vertex Normal, 1, Pixel Normal, 2, Tangent, 3, Binormal, 4)] _DebugMeshData ("Mesh Data", Int) = 0
         [Enum(Off, 0, Attenuation, 1, Direct Lighting, 2, Indirect Lighting, 3, light Map, 4, Ramped Light Map, 5, Final Lighting, 6)] _DebugLightingData ("Lighting Data", Int) = 0
         [Enum(Off, 0, finalSpecular, 1, highTexture, 2, tangentDirectionMap, 3, shiftTexture, 4)] _DebugSpecularData ("Specular Data", Int) = 0
+        [Enum(Off, 0, View Dir, 1, Tangent View Dir, 2, Forward Dir, 3, WorldPos, 4, View Dot Normal, 5)] _DebugCameraData ("Camera Data", Int) = 0
+
     }
     
     CustomEditor "ThryEditor"
     SubShader
     {
-        Tags { "RenderType" = "Opaque" "Queue" = "Geometry" }
+        Tags {"DisableBatching" = "True" "RenderType" = "TransparentCutout" "Queue" = "AlphaTest"}
         
         Pass
         {
@@ -243,12 +269,12 @@ Shader ".poiyomi/Toon/Default/Cutout"
             }
             ZWrite [_ZWrite]
             Cull [_Cull]
+            AlphaToMask On
             ZTest [_ZTest]
             Offset [_ZBias], [_ZBias]
             CGPROGRAM
             
-            #pragma target 5.0
-            #pragma target 5.0
+            #pragma target 4.0
             #define FORWARD_BASE_PASS
             #define BINORMAL_PER_FRAGMENT
             #pragma shader_feature _PARALLAX_MAP
@@ -278,11 +304,12 @@ Shader ".poiyomi/Toon/Default/Cutout"
             ZWrite Off
             Blend One One
             Cull [_Cull]
+            AlphaToMask On
             ZTest [_ZTest]
             Offset [_ZBias], [_ZBias]
             CGPROGRAM
             
-            #pragma target 5.0
+            #pragma target 4.0
             #define FORWARD_ADD_PASS
             #define BINORMAL_PER_FRAGMENT
             #pragma shader_feature _PARALLAX_MAP
@@ -309,7 +336,7 @@ Shader ".poiyomi/Toon/Default/Cutout"
             }
             CGPROGRAM
             
-            #pragma target 5.0
+            #pragma target 4.0
             #define CUTOUT
             #pragma multi_compile_instancing
             #pragma vertex vertShadowCaster

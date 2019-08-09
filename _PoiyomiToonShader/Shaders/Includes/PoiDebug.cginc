@@ -5,7 +5,8 @@
     uint _DebugMeshData;
     uint _DebugLightingData;
     uint _DebugSpecularData;
-
+    uint _DebugCameraData;
+    
     void displayDebugInfo(inout float4 finalColor)
     {
         UNITY_BRANCH
@@ -69,7 +70,7 @@
                 finalColor.rgb = poiLight.nDotL;
                 return;
             }
-
+            
             //specular
             if (_DebugSpecularData == 1)
             {
@@ -91,7 +92,32 @@
                 finalColor.rgb = shiftTexture;
                 return;
             }
-
+            
+            if(_DebugCameraData == 1)
+            {
+                finalColor.rgb = poiCam.viewDir;
+                return;
+            }
+            else if(_DebugCameraData == 2)
+            {
+                finalColor.rgb = poiCam.tangentViewDir;
+                return;
+            }
+            else if(_DebugCameraData == 3)
+            {
+                finalColor.rgb = poiCam.forwardDir;
+                return;
+            }
+            else if(_DebugCameraData == 4)
+            {
+                finalColor.rgb = poiCam.worldPos;
+                return;
+            }
+            else if(_DebugCameraData == 5)
+            {
+                finalColor.rgb = poiCam.viewDotNormal;
+                return;
+            }
         }
     }
     
