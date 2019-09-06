@@ -2,85 +2,78 @@
     #define POIFRAG
     
     float _ForceOpaque;
-    
+    float4 _GlobalPanSpeed;
+    float _Clip;
     float4 frag(v2f i, float facing: VFACE): SV_Target
     {
         
+        i.uv += _GlobalPanSpeed.xy * _Time.x;
+        //This has to be first because it modifies the UVs for the rest of the functions
+        
+        #ifdef POI_DATA
+            InitData(i);
+        #endif
+        
+        // This has to happen in init because it alters UV data globally
         #ifdef POI_PARALLAX
             calculateandApplyParallax(i);
         #endif
         
+        #ifdef POI_MAINTEXTURE
+            initTextureData();
+        #endif
+        
+        #ifdef REFRACTION
+            calculateRefraction(i);
+        #endif
+        
+        #ifdef POI_LIGHTING
+            calculateLighting();
+        #endif
+        
+        #ifdef POI_METAL
+            calculateReflections();
+        #endif
+        
         #ifdef POI_DATA
-            calculateData(i);
-        #endif
-        
-        //return float4(poiMesh.vertexNormal,1);
-        
-        #ifdef BASICS
-            calculateBasics(i);
-        #endif
-        
-        #ifdef LIGHTING
-            calculateLighting(i);
-        #endif
-        
-        #ifdef DND_LIGHTING
-            calculateDNDLighting(i);
-        #endif
-        
-        
-        #ifdef FORWARD_BASE_PASS
-            #ifdef REFRACTION
-                calculateRefraction(i);
-            #endif
-        #endif
-        
-        
-        #ifdef METAL
-            calculateReflections(i.uv, poiMesh.fragmentNormal, poiCam.viewDir);
-        #endif
-        
-        #ifdef TEXTURE_BLENDING
-            calculateTextureBlending(blendAlpha, mainTexture, albedo, i.uv);
+            distanceFade();
         #endif
         
         clip(mainTexture.a * alphaMask - _Clip);
         
         #ifdef MATCAP
-            calculateMatcap(poiCam.viewDir, poiMesh.fragmentNormal, i.uv);
+            calculateMatcap();
         #endif
         
         #ifdef FLIPBOOK
-            calculateFlipbook(i.uv);
+            calculateFlipbook();
         #endif
         
-        #ifdef LIGHTING
+        #ifdef POI_LIGHTING
             #ifdef SUBSURFACE
-                calculateSubsurfaceScattering(i);
+                calculateSubsurfaceScattering();
             #endif
         #endif
         
-        #ifdef RIM_LIGHTING
-            calculateRimLighting(i.uv);
+        #ifdef POI_RIM
+            calculateRimLighting();
         #endif
         
         #ifdef PANOSPHERE
-            calculatePanosphere(i.worldPos, i.uv);
+            calculatePanosphere();
         #endif
         
-        #ifdef SCROLLING_LAYERS
-            calculateScrollingLayers(i.uv);
-        #endif
-        
-        #ifdef EMISSION
-            calculateEmission(i.uv, i.localPos);
+        #ifdef POI_EMISSION
+            calculateEmission();
         #endif
         
         finalColor = albedo;
         
+        #ifdef REFRACTION
+            applyRefraction(finalColor);
+        #endif
         
-        
-        #ifdef RIM_LIGHTING
+        #ifdef POI_RIM
             applyRimColor(finalColor);
         #endif
         
@@ -96,28 +89,26 @@
             applyFlipbook(finalColor);
         #endif
         
-        #ifdef FORWARD_BASE_PASS
-            #ifdef REFRACTION
-                applyRefraction(finalColor);
-            #endif
-        #endif
-        
         float4 finalColorBeforeLighting = finalColor;
         
-        #ifdef LIGHTING
+        #ifdef POI_LIGHTING
             applyLighting(finalColor);
         #endif
         
-        #ifdef DND_LIGHTING
+        #ifdef POI_RIM
+            applyEnviroRim(finalColor);
+        #endif
+        
+        #ifdef DND_POI_LIGHTING
             applyDNDLighting(finalColor);
         #endif
         
-        #ifdef METAL
+        #ifdef POI_METAL
             applyReflections(finalColor, finalColorBeforeLighting);
         #endif
         
-        #ifdef SPECULAR
-            calculateSpecular(finalColorBeforeLighting, i.uv);
+        #ifdef POI_SPECULAR
+            calculateSpecular(finalColorBeforeLighting);
         #endif
         
         #ifdef POI_PARALLAX
@@ -125,8 +116,8 @@
         #endif
         
         #ifdef FORWARD_BASE_PASS
-            #ifdef LIGHTING
-                #ifdef SPECULAR
+            #ifdef POI_LIGHTING
+                #ifdef POI_SPECULAR
                     //applyLightingToSpecular();
                     applySpecular(finalColor);
                 #endif
@@ -136,31 +127,35 @@
                 applyPanosphereEmission(finalColor);
             #endif
             
-            #ifdef EMISSION
+            #ifdef POI_EMISSION
                 applyEmission(finalColor);
             #endif
             
-            #ifdef RIM_LIGHTING
+            #ifdef POI_DISSOLVE
+                applyDissolveEmission(finalColor);
+            #endif
+            
+            #ifdef POI_RIM
                 ApplyRimEmission(finalColor);
             #endif
         #endif
         
-        #ifdef LIGHTING
+        #ifdef POI_LIGHTING
             #if (defined(POINT) || defined(SPOT))
-                #ifdef METAL
+                #ifdef POI_METAL
                     applyAdditiveReflectiveLighting(finalColor);
                 #endif
                 #ifdef TRANSPARENT
                     finalColor.rgb *= finalColor.a;
                 #endif
                 
-                #ifdef SPECULAR
+                #ifdef POI_SPECULAR
                     applySpecular(finalColor);
                 #endif
             #endif
         #endif
         
-        #ifdef LIGHTING
+        #ifdef POI_LIGHTING
             #ifdef SUBSURFACE
                 applySubsurfaceScattering(finalColor);
             #endif
@@ -177,6 +172,7 @@
         #ifdef POI_DEBUG
             displayDebugInfo(finalColor);
         #endif
+        
         finalColor.a = max(_ForceOpaque, finalColor.a);
         return finalColor;
     }

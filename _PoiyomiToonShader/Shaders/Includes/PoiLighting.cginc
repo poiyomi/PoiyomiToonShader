@@ -1,5 +1,6 @@
-#ifndef LIGHTING
-    #define LIGHTING
+
+#ifndef POI_LIGHTING
+    #define POI_LIGHTING
     
     int _LightingType;
     sampler2D _ToonRamp;
@@ -12,64 +13,14 @@
     float3 _LightDirection;
     float _ForceShadowStrength;
     float _CastedShadowSmoothing;
-    float _MinBrightness;
-    float _MaxBrightness;
     float _IndirectContribution;
     float _AttenuationMultiplier;
     float _EnableLighting;
+    float _LightingControlledUseLightColor;
     
     UNITY_DECLARE_TEX2D_NOSAMPLER(_AOMap); float4 _AOMap_ST;
     UNITY_DECLARE_TEX2D_NOSAMPLER(_LightingShadowMask); float4 _LightingShadowMask_ST;
     float _AOStrength;
-    
-    inline UnityGI FragmentGI(FragmentCommonData s, half occlusion, half4 i_ambientOrLightmapUV, half atten, UnityLight light, bool reflections)
-    {
-        UnityGIInput d;
-        d.light = light;
-        d.worldPos = s.posWorld;
-        d.worldViewDir = -s.eyeVec;
-        d.atten = atten;
-        #if defined(LIGHTMAP_ON) || defined(DYNAMICLIGHTMAP_ON)
-            d.ambient = 0;
-            d.lightmapUV = i_ambientOrLightmapUV;
-        #else
-            d.ambient = i_ambientOrLightmapUV.rgb;
-            d.lightmapUV = 0;
-        #endif
-        
-        d.probeHDR[0] = unity_SpecCube0_HDR;
-        d.probeHDR[1] = unity_SpecCube1_HDR;
-        #if defined(UNITY_SPECCUBE_BLENDING) || defined(UNITY_SPECCUBE_BOX_PROJECTION)
-            d.boxMin[0] = unity_SpecCube0_BoxMin; // .w holds lerp value for blending
-        #endif
-        #ifdef UNITY_SPECCUBE_BOX_PROJECTION
-            d.boxMax[0] = unity_SpecCube0_BoxMax;
-            d.probePosition[0] = unity_SpecCube0_ProbePosition;
-            d.boxMax[1] = unity_SpecCube1_BoxMax;
-            d.boxMin[1] = unity_SpecCube1_BoxMin;
-            d.probePosition[1] = unity_SpecCube1_ProbePosition;
-        #endif
-        
-        if (reflections)
-        {
-            Unity_GlossyEnvironmentData g = UnityGlossyEnvironmentSetup(s.smoothness, -s.eyeVec, s.normalWorld, s.specColor);
-            // Replace the reflUVW if it has been compute in Vertex shader. Note: the compiler will optimize the calcul in UnityGlossyEnvironmentSetup itself
-            #if UNITY_STANDARD_SIMPLE
-                g.reflUVW = s.reflUVW;
-            #endif
-            
-            return UnityGlobalIllumination(d, occlusion, s.normalWorld, g);
-        }
-        else
-        {
-            return UnityGlobalIllumination(d, occlusion, s.normalWorld);
-        }
-    }
-    
-    inline UnityGI FragmentGI(FragmentCommonData s, half occlusion, half4 i_ambientOrLightmapUV, half atten, UnityLight light)
-    {
-        return FragmentGI(s, occlusion, i_ambientOrLightmapUV, atten, light, true);
-    }
     
     half PoiDiffuse(half NdotV, half NdotL, half LdotH)
     {
@@ -113,81 +64,62 @@
         return lerp(1, AOMap, AOStrength);
     }
     
-    UnityLight MainLight()
-    {
-        UnityLight l = (UnityLight)0;
-        
-        l.color = poiLight.color.rgb;
-        l.dir = poiLight.direction;
-        
-        return l;
-    }
-    
-    void calculateBasePassLighting(float3 normal, float2 uv)
+    void calculateBasePassLighting()
     {
         float AOMap = 1;
         #ifndef OUTLINE
-            AOMap = UNITY_SAMPLE_TEX2D_SAMPLER(_AOMap, _MainTex, TRANSFORM_TEX(uv, _AOMap));
+            AOMap = UNITY_SAMPLE_TEX2D_SAMPLER(_AOMap, _MainTex, TRANSFORM_TEX(poiMesh.uv, _AOMap));
             AOMap = calculateAOMap(AOMap, _AOStrength);
         #endif
         
-        float3 grayscale_vector = grayscale_for_light();
+        float3 grayscale_vector = float3(.33333, .33333, .33333);
         float3 ShadeSH9Plus = GetSHLength();
         float3 ShadeSH9Minus = ShadeSH9(float4(0, 0, 0, 1));
         
         #ifndef OUTLINE
-            float ShadowStrengthMap = UNITY_SAMPLE_TEX2D_SAMPLER(_LightingShadowMask, _MainTex, TRANSFORM_TEX(uv, _LightingShadowMask)).r;
+            float ShadowStrengthMap = UNITY_SAMPLE_TEX2D_SAMPLER(_LightingShadowMask, _MainTex, TRANSFORM_TEX(poiMesh.uv, _LightingShadowMask)).r;
             _ShadowStrength *= ShadowStrengthMap;
         #endif
         
         float bw_lightColor = dot(poiLight.color, grayscale_vector);
-        float bw_directLighting = (((poiLight.nDotL * 0.5 + 0.5) * bw_lightColor * lerp(1, poiLight.attenuation, _AttenuationMultiplier)) + dot(ShadeSH9Normal(normal), grayscale_vector));
+        float bw_directLighting = (((poiLight.nDotL * 0.5 + 0.5) * bw_lightColor * lerp(1, poiLight.attenuation, _AttenuationMultiplier)) + dot(ShadeSH9Normal(poiMesh.fragmentNormal), grayscale_vector));
         float bw_bottomIndirectLighting = dot(ShadeSH9Minus, grayscale_vector);
         float bw_topIndirectLighting = dot(ShadeSH9Plus, grayscale_vector);
         float lightDifference = ((bw_topIndirectLighting + bw_lightColor) - bw_bottomIndirectLighting);
         poiLight.lightMap = smoothstep(0, lightDifference, bw_directLighting - bw_bottomIndirectLighting);
+
+        poiLight.directLighting = lerp(ShadeSH9Plus, poiLight.color, .75);
+        poiLight.indirectLighting = ShadeSH9Minus;
         
-        gi = FragmentGI(s, AOMap, 0, poiLight.attenuation, MainLight());
-        poiLight.directLighting = gi.indirect.diffuse + poiLight.color;
-        poiLight.indirectLighting = gi.indirect.diffuse;
-        
-        poiLight.rampedLightMap = tex2D(_ToonRamp, poiLight.lightMap + _ShadowOffset);
+        poiLight.rampedLightMap = tex2D(_ToonRamp, poiLight.lightMap * AOMap + _ShadowOffset);
         
         if (_LightingType == 0)
         {
-            poiLight.finalLighting = lerp((poiLight.indirectLighting), lerp(poiLight.directLighting, poiLight.indirectLighting, _IndirectContribution), lerp(1, poiLight.rampedLightMap, _ShadowStrength)) * AOMap;
+            poiLight.finalLighting = lerp((poiLight.indirectLighting), lerp(poiLight.directLighting, poiLight.indirectLighting, _IndirectContribution), lerp(1, poiLight.rampedLightMap, _ShadowStrength)) ;
         }
-        else
+        else if(_LightingType == 1)
         {
-            poiLight.finalLighting = (poiLight.directLighting) * lerp(1, poiLight.rampedLightMap, _ShadowStrength);
+            float3 ramp0 = tex2D(_ToonRamp, float2(1,1));
+            poiLight.finalLighting = lerp(ramp0, poiLight.rampedLightMap, _ShadowStrength) * poiLight.directLighting;
         }
-        
-        poiLight.finalLighting = clamp(poiLight.finalLighting, _MinBrightness, _MaxBrightness);
+        poiLight.finalLighting = poiLight.finalLighting;
     }
     
-    void calculateLighting(v2f i)
+    void calculateLighting()
     {
-        UNITY_BRANCH
-        if(_EnableLighting)
-        {
-            #ifdef OUTLINE
-                _ShadowStrength = _OutlineShadowStrength;
+        #ifdef OUTLINE
+            _ShadowStrength = _OutlineShadowStrength;
+        #endif
+        #ifdef FORWARD_BASE_PASS
+            calculateBasePassLighting();
+        #else
+            #if defined(POINT) || defined(SPOT)
+                poiLight.finalLighting = poiLight.color * poiLight.attenuation * smoothstep(.5 - _AdditiveSoftness + _AdditiveOffset, .5 + _AdditiveSoftness + _AdditiveOffset, .5 * poiLight.nDotL + .5);
             #endif
-            #ifdef FORWARD_BASE_PASS
-                calculateBasePassLighting(poiMesh.fragmentNormal, i.uv);
-            #else
-                #if defined(POINT) || defined(SPOT)
-                    poiLight.finalLighting = poiLight.color * poiLight.attenuation * smoothstep(.5 - _AdditiveSoftness + _AdditiveOffset, .5 + _AdditiveSoftness + _AdditiveOffset, .5 * poiLight.nDotL + .5);
-                #endif
-            #endif
-        }
+        #endif
     }
     void applyLighting(inout float4 finalColor)
     {
-        UNITY_BRANCH
-        if(_EnableLighting)
-        {
-            finalColor.rgb *= poiLight.finalLighting;
-        }
+        finalColor.rgb *= poiLight.finalLighting;
     }
 #endif

@@ -71,27 +71,29 @@
                 return;
             }
             
-            //specular
-            if (_DebugSpecularData == 1)
-            {
-                finalColor.rgb = finalSpecular;
-                return;
-            }
-            else if(_DebugSpecularData == 2)
-            {
-                finalColor.rgb = highTexture;
-                return;
-            }
-            else if(_DebugSpecularData == 3)
-            {
-                finalColor.rgb = tangentDirectionMap;
-                return;
-            }
-            else if(_DebugSpecularData == 4)
-            {
-                finalColor.rgb = shiftTexture;
-                return;
-            }
+            #ifdef _SPECGLOSSMAP
+                //specular
+                if (_DebugSpecularData == 1)
+                {
+                    finalColor.rgb = finalSpecular;
+                    return;
+                }
+                else if(_DebugSpecularData == 2)
+                {
+                    finalColor.rgb = highTexture;
+                    return;
+                }
+                else if(_DebugSpecularData == 3)
+                {
+                    finalColor.rgb = tangentDirectionMap;
+                    return;
+                }
+                else if(_DebugSpecularData == 4)
+                {
+                    finalColor.rgb = shiftTexture;
+                    return;
+                }
+            #endif
             
             if(_DebugCameraData == 1)
             {

@@ -1,5 +1,5 @@
-#ifndef METAL
-    #define METAL
+#ifndef POI_METAL
+    #define POI_METAL
     
     samplerCUBE _CubeMap;
     float _SampleWorld;
@@ -17,10 +17,10 @@
     float roughness;
     float lighty_boy_uwu_var;
     
-    void calculateReflections(float2 uv, float3 normal, float3 cameraToVert)
+    void calculateReflections()
     {
-        metalicMap = tex2D(_MetallicMask, TRANSFORM_TEX(uv, _MetallicMask)) * _Metallic;
-        float _Smoothness_map_var = (tex2D(_SmoothnessMask, TRANSFORM_TEX(uv, _SmoothnessMask)));
+        metalicMap = tex2D(_MetallicMask, TRANSFORM_TEX(poiMesh.uv, _MetallicMask)) * _Metallic;
+        float _Smoothness_map_var = (tex2D(_SmoothnessMask, TRANSFORM_TEX(poiMesh.uv, _SmoothnessMask)));
         if (_InvertSmoothness == 1)
         {
             _Smoothness_map_var = 1 - _Smoothness_map_var;
@@ -28,7 +28,7 @@
         _Smoothness_map_var *= _Smoothness;
         roughness = 1 - _Smoothness_map_var;
         roughness *= 1.7 - 0.7 * roughness;
-        float3 reflectedDir = reflect(-cameraToVert, normal);
+        float3 reflectedDir = reflect(-poiCam.viewDir, poiMesh.fragmentNormal);
         
         float4 envSample = UNITY_SAMPLE_TEXCUBE_LOD(unity_SpecCube0, reflectedDir, roughness * UNITY_SPECCUBE_LOD_STEPS);
         
@@ -64,22 +64,19 @@
     void applyReflections(inout float4 finalColor, float4 finalColorBeforeLighting)
     {
         #ifdef FORWARD_BASE_PASS
-            UNITY_BRANCH
-            if(_EnableMetallic)
-            {
-                finalreflections = reflection.rgb * lerp(finalColorBeforeLighting.rgb, 1, _PurelyAdditive);
-                finalColor.rgb = finalColor.rgb * (1 - metalicMap);
+            finalreflections = reflection.rgb * lerp(finalColorBeforeLighting.rgb, 1, _PurelyAdditive);
+            finalColor.rgb = finalColor.rgb * (1 - metalicMap);
+            #ifdef _NORMALMAP
                 finalColor.rgb += (finalreflections * ((1 - roughness + metalicMap) / 2)) * lerp(1, poiLight.finalLighting, lighty_boy_uwu_var);
-            }
+            #else
+                finalColor.rgb += (finalreflections * ((1 - roughness + metalicMap) / 2));
+            #endif
+            
         #endif
     }
     
     void applyAdditiveReflectiveLighting(inout float4 finalColor)
     {
-        UNITY_BRANCH
-        if(_EnableMetallic)
-        {
-            finalColor *= (1 - metalicMap);
-        }
+        finalColor *= (1 - metalicMap);
     }
-    #endif
+#endif

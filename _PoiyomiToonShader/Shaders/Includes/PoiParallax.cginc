@@ -26,23 +26,23 @@
     {
         return clamp(tex2D(_ParallaxHeightMap, TRANSFORM_TEX(uv, _ParallaxHeightMap)).g, 0, .99999);
     }
-    
-    float2 ParallaxOffset(float2 uv, float2 viewDir)
+    /*
+    float2 ParallaxOffset(float2 viewDir)
     {
-        float height = GetParallaxHeight(uv);
+        float height = GetParallaxHeight();
         height -= 0.5;
         height *= _ParallaxStrength;
         return viewDir * height;
     }
-    
-    float2 ParallaxRaymarching(float2 uv, float2 viewDir)
+    */
+    float2 ParallaxRaymarching(float2 viewDir)
     {
         float2 uvOffset = 0;
         float stepSize = 0.1;
         float2 uvDelta = viewDir * (stepSize * _ParallaxStrength);
         
         float stepHeight = 1;
-        float surfaceHeight = GetParallaxHeight(uv);
+        float surfaceHeight = GetParallaxHeight(poiMesh.uv);
         
         float2 prevUVOffset = uvOffset;
         float prevStepHeight = stepHeight;
@@ -56,7 +56,7 @@
             
             uvOffset -= uvDelta;
             stepHeight -= stepSize;
-            surfaceHeight = GetParallaxHeight(uv + uvOffset);
+            surfaceHeight = GetParallaxHeight(poiMesh.uv + uvOffset);
         }
         
         float prevDifference = prevStepHeight - prevSurfaceHeight;
@@ -67,24 +67,20 @@
         return uvOffset;
     }
     
-    void calculateandApplyParallax(inout v2f i)
+    void calculateandApplyParallax(v2f i)
     {
-        
-        #if defined(_PARALLAX_MAP)
-            UNITY_BRANCH
-            if (_ParallaxHeightMapEnabled)
-            {
-                i.tangentViewDir = normalize(i.tangentViewDir);
-                i.tangentViewDir.xy /= (i.tangentViewDir.z + _ParallaxBias);
-                float2 uvOffset = ParallaxRaymarching(i.uv.xy, i.tangentViewDir.xy);
-                i.uv.xy += uvOffset;
-            }
-        #endif
+        UNITY_BRANCH
+        if (_ParallaxHeightMapEnabled)
+        {
+            i.tangentViewDir = normalize(i.tangentViewDir);
+            i.tangentViewDir.xy /= (i.tangentViewDir.z + _ParallaxBias);
+            poiMesh.uv += ParallaxRaymarching(i.tangentViewDir.xy);
+        }
     }
     
     void calculateAndApplyInternalParallax()
     {
-        #if defined(_PARALLAX_MAP)
+        #if defined(_PARALLAXMAP)
             UNITY_BRANCH
             if(_ParallaxInternalMapEnabled)
             {
@@ -92,16 +88,17 @@
                 for (int j = _ParallaxInternalIterations; j > 0; j --)
                 {
                     float ratio = (float)j / _ParallaxInternalIterations;
-                    float2 parallaxOffset = _Time.y * (_ParallaxInternalPanSpeed + (1-ratio) * _ParallaxInternalPanDepthSpeed);
+                    float2 parallaxOffset = _Time.y * (_ParallaxInternalPanSpeed + (1 - ratio) * _ParallaxInternalPanDepthSpeed);
                     float fade = lerp(_ParallaxInternalMinFade, _ParallaxInternalMaxFade, ratio);
                     float4 parallaxColor = tex2D(_ParallaxInternalMap, TRANSFORM_TEX(poiMesh.uv, _ParallaxInternalMap) + lerp(_ParallaxInternalMinDepth, _ParallaxInternalMaxDepth, ratio) * - poiCam.tangentViewDir.xy + parallaxOffset);
-                    float3 parallaxTint = lerp(_ParallaxInternalMinColor,_ParallaxInternalMaxColor, ratio);
+                    float3 parallaxTint = lerp(_ParallaxInternalMinColor, _ParallaxInternalMaxColor, ratio);
                     float parallaxHeight;
                     if(_ParallaxInternalHeightFromAlpha)
                     {
                         parallaxTint *= parallaxColor.rgb;
                         parallaxHeight = parallaxColor.a;
-                    } else
+                    }
+                    else
                     {
                         parallaxHeight = parallaxColor.r;
                     }
@@ -109,7 +106,7 @@
                     UNITY_BRANCH
                     if (_ParallaxInternalHeightmapMode == 1)
                     {
-                        parallax = lerp(parallax, parallaxTint * fade, parallaxHeight >= 1-ratio);
+                        parallax = lerp(parallax, parallaxTint * fade, parallaxHeight >= 1 - ratio);
                     }
                     else
                     {

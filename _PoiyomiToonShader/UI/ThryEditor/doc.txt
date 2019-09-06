@@ -7,7 +7,13 @@ Drawers for Textures:
 [SmallTextureNoSO] always small texture, no scale or offset
 [BigTexture] always big texture
 [BigTextureNoSO] always big texture, no scale or offset
-[Gradient] gradient editor - not implemented yet
+[Gradient] gradient editor
+[TextTexture] texture field that creates a texture from text - has to be imrpoved
+[MultiSlider] slider with two values (defined as vector, x,y are slider values z,w are min,max
+[TextureArray] field for a texture array. automatically converts gifs/images to a texture array
+	put --frameCountProp=<property name> to automatically fill a float property when creating a texture array
+[Vector2] vector with only fields for xy
+[Vector3] vector with only fields for xyz
 
 #----Settings Properties----
 
@@ -29,13 +35,30 @@ Drawers for Textures:
 
 #----Property Additions----
 
---extraOffset=<int>
-	addes and extra x-offset to the property
+extraOffset
+	adds an extra x-offset to the property
+	<string> := extraOffset
+	<optionData> := <int>
 
---hover=<text>
+hover
 	text that is shown when hovering above property
+	<string> := hover
+	<optionData> := <string>
 
---altClick=action:value
+altClick
 	performs an action when holding alt down and clicking on property
-	actions:
-		url: opens url in browser
+	<string> := altClick
+	<optionData> := <action>
+	
+button_right (only for menu headers)
+	<string> := button_right
+	<optionData> := <button>
+
+<displayName> := <string><extraOption>*
+<extraOption> := --<string>=<optionData>
+<action> := {type:<type>,data:<string>}
+<type> := url
+<button> := {text:<string>,hover:<string>,action:<action>}
+
+actions:
+	url: opens <data> as url in browser

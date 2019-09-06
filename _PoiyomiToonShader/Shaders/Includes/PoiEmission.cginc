@@ -1,5 +1,5 @@
-#ifndef EMISSION
-    #define EMISSION
+#ifndef POI_EMISSION
+    #define POI_EMISSION
     
     float4 _EmissionColor;
     UNITY_DECLARE_TEX2D_NOSAMPLER(_EmissionMap); float4 _EmissionMap_ST;
@@ -23,56 +23,47 @@
     uint _GITDEWorldOrMesh;
     float4 emission = 0;
     
-    void calculateEmission(float2 uv, float3 localPos)
+    void calculateEmission()
     {
-        UNITY_BRANCH
-        if (_EnableEmission)
-        {
-            
-            #ifdef LIGHTING
-                UNITY_BRANCH
-                if(_EnableGITDEmission != 0)
-                {
-                    float3 lightValue = _GITDEWorldOrMesh ? poiLight.finalLighting.rgb : poiLight.directLighting.rgb;
-                    float gitdeAlpha = (clamp(poiMax(lightValue), _GITDEMinLight, _GITDEMaxLight) - _GITDEMinLight)/(_GITDEMaxLight - _GITDEMinLight);
-                    _EmissionStrength *= lerp(_GITDEMinEmissionMultiplier, _GITDEMaxEmissionMultiplier, gitdeAlpha);
-                }
-            #endif
-
-            float4 _Emissive_Tex_var = UNITY_SAMPLE_TEX2D_SAMPLER(_EmissionMap, _MainTex, TRANSFORM_TEX(uv, _EmissionMap) + _Time.y * _EmissionPan.xy);
-            emission = _Emissive_Tex_var * _EmissionColor * _EmissionStrength;
-            
-            // scrolling emission
-            if (_ScrollingEmission == 1)
+        #ifdef POI_LIGHTING
+            UNITY_BRANCH
+            if (_EnableGITDEmission != 0)
             {
-                float phase = dot(localPos, _EmissiveScroll_Direction);
-                phase -= _Time.y * _EmissiveScroll_Velocity;
-                phase /= _EmissiveScroll_Interval;
-                phase -= floor(phase);
-                float width = _EmissiveScroll_Width;
-                phase = (pow(phase, width) + pow(1 - phase, width * 4)) * 0.5;
-                emission *= phase;
+                float3 lightValue = _GITDEWorldOrMesh ? poiLight.finalLighting.rgb: poiLight.directLighting.rgb;
+                float gitdeAlpha = (clamp(poiMax(lightValue), _GITDEMinLight, _GITDEMaxLight) - _GITDEMinLight) / (_GITDEMaxLight - _GITDEMinLight);
+                _EmissionStrength *= lerp(_GITDEMinEmissionMultiplier, _GITDEMaxEmissionMultiplier, gitdeAlpha);
             }
-            
-            // blinking emission
-            float amplitude = (_EmissiveBlink_Max - _EmissiveBlink_Min) * 0.5f;
-            float base = _EmissiveBlink_Min + amplitude;
-            float emissiveBlink = sin(_Time.y * _EmissiveBlink_Velocity) * amplitude + base;
-            emission *= emissiveBlink;
-            
-            float _Emission_mask_var = UNITY_SAMPLE_TEX2D_SAMPLER(_EmissionMask, _MainTex, TRANSFORM_TEX(uv, _EmissionMask) + _Time.y * _EmissionPan.zw);
-            
-            
-            
-            emission *= _Emission_mask_var;
+        #endif
+        
+        float4 _Emissive_Tex_var = UNITY_SAMPLE_TEX2D_SAMPLER(_EmissionMap, _MainTex, TRANSFORM_TEX(poiMesh.uv, _EmissionMap) + _Time.y * _EmissionPan.xy);
+        emission = _Emissive_Tex_var * _EmissionColor * _EmissionStrength;
+        
+        // scrolling emission
+        if (_ScrollingEmission == 1)
+        {
+            float phase = dot(poiMesh.localPos, _EmissiveScroll_Direction);
+            phase -= _Time.y * _EmissiveScroll_Velocity;
+            phase /= _EmissiveScroll_Interval;
+            phase -= floor(phase);
+            float width = _EmissiveScroll_Width;
+            phase = (pow(phase, width) + pow(1 - phase, width * 4)) * 0.5;
+            emission *= phase;
         }
+        
+        // blinking emission
+        float amplitude = (_EmissiveBlink_Max - _EmissiveBlink_Min) * 0.5f;
+        float base = _EmissiveBlink_Min + amplitude;
+        float emissiveBlink = sin(_Time.y * _EmissiveBlink_Velocity) * amplitude + base;
+        emission *= emissiveBlink;
+        
+        float _Emission_mask_var = UNITY_SAMPLE_TEX2D_SAMPLER(_EmissionMask, _MainTex, TRANSFORM_TEX(poiMesh.uv, _EmissionMask) + _Time.x * _EmissionPan.zw);
+        
+        
+        
+        emission *= _Emission_mask_var;
     }
     void applyEmission(inout float4 finalColor)
     {
-        UNITY_BRANCH
-        if (_EnableEmission)
-        {
-            finalColor.rgb += emission;
-        }
+        finalColor.rgb += emission;
     }
 #endif

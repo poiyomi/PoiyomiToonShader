@@ -6,6 +6,9 @@
     #include "UnityPBSLighting.cginc"
     #include "AutoLight.cginc"
     
+    UNITY_DECLARE_TEX2D(_MainTex); float4 _MainTex_ST;
+    
+    
     #ifdef OUTLINE
         float _LineWidth;
         float _OutlineEmission;
@@ -40,10 +43,11 @@
         float4 localPos: TEXCOORD5;
         float4 screenPos: TEXCOORD6;
         float3 tangentViewDir: TEXCOORD7;
+        float3 modelPos: TEXCOORD8;
         UNITY_VERTEX_INPUT_INSTANCE_ID
         UNITY_VERTEX_OUTPUT_STEREO
-        UNITY_SHADOW_COORDS(8)
-        UNITY_FOG_COORDS(9)
+        UNITY_SHADOW_COORDS(9)
+        UNITY_FOG_COORDS(10)
     };
     
     struct PoiLighting
@@ -72,6 +76,7 @@
         half3 forwardDir;
         half3 worldPos;
         float viewDotNormal;
+        float distanceToModel;
     };
     
     struct PoiMesh
@@ -80,7 +85,9 @@
         float3 fragmentNormal;
         float3 tangent;
         float3 bitangent;
+        float3 localPos;
         float3 worldPos;
+        float3 modelPos;
         float3 tangentSpaceNormal;
         float2 uv;
     };
@@ -118,6 +125,7 @@
     static FragmentCommonData s;
     static PoiTangentData poiTData;
     float4 finalColor;
+    float4 mainTexture;
     
     #define pi float(3.14159265359)
     

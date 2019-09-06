@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using UnityEditor;
@@ -30,6 +31,11 @@ namespace Thry
             Settings window = (Settings)EditorWindow.GetWindow(typeof(Settings));
             window.updatedVersion = compare;
             window.Show();
+        }
+
+        public new void Show()
+        {
+            base.Show();
         }
 
         public static Shader activeShader = null;
@@ -131,12 +137,7 @@ namespace Thry
             {
                 bool supportedVersion = thry_vrc_tools_vrc_sdk_versions.Contains(Helper.GetCurrentVRCSDKVersion());
                 Debug.Log("Supports version: " + supportedVersion);
-                string symbols = PlayerSettings.GetScriptingDefineSymbolsForGroup(
-                    BuildTargetGroup.Standalone);
-                if (supportedVersion && !symbols.Contains("VRC_SDK_SUPPORTED_VERSION")) PlayerSettings.SetScriptingDefineSymbolsForGroup(
-                              BuildTargetGroup.Standalone, symbols + ";VRC_SDK_SUPPORTED_VERSION");
-                else if (!supportedVersion && symbols.Contains("VRC_SDK_SUPPORTED_VERSION")) PlayerSettings.SetScriptingDefineSymbolsForGroup(
-                     BuildTargetGroup.Standalone, symbols.Replace(";VRC_SDK_SUPPORTED_VERSION", ""));
+                SetDefineSymbol("VRC_SDK_SUPPORTED_VERSION", supportedVersion);
             }
         }
 
@@ -176,6 +177,61 @@ namespace Thry
 
             greenStyle = new GUIStyle();
             greenStyle.normal.textColor = new Color(0, 0.5f, 0);
+        }
+
+        public void Awake()
+        {
+            //check and set api level
+            if(PlayerSettings.GetApiCompatibilityLevel(BuildTargetGroup.Standalone) != ApiCompatibilityLevel.NET_2_0)
+            {
+                PlayerSettings.SetApiCompatibilityLevel(BuildTargetGroup.Standalone, ApiCompatibilityLevel.NET_2_0);
+            }
+            SetDefineSymbol("NET_SET_TWO_POINT_ZERO", true);
+            //move msc.rsp
+            int mcs_good = CheckMCS();
+            if (mcs_good == 0)
+                MoveMCS();
+            mcs_good = CheckMCS();
+            SetDefineSymbol("MCS_EXISTS", mcs_good == 1);
+        }
+
+        private static void SetDefineSymbol(string symbol, bool active)
+        {
+            string symbols = PlayerSettings.GetScriptingDefineSymbolsForGroup(
+                    BuildTargetGroup.Standalone);
+            if (!symbols.Contains(symbol)&&active)
+                PlayerSettings.SetScriptingDefineSymbolsForGroup(
+                              BuildTargetGroup.Standalone, symbols + ";"+ symbol);
+            if (symbols.Contains(symbol) && !active)
+                PlayerSettings.SetScriptingDefineSymbolsForGroup(
+                              BuildTargetGroup.Standalone, symbols.Replace(";"+symbol,""));
+        }
+
+        private int CheckMCS()
+        {
+            bool mcs_wrong_path = false;
+            foreach (string id in AssetDatabase.FindAssets("mcs"))
+            {
+                string path = AssetDatabase.GUIDToAssetPath(id);
+                if (path.Contains("Assets/mcs.rsp"))
+                    return 1;
+                else if (path.Contains("mcs.rsp"))
+                    mcs_wrong_path = true;
+            }
+            if (mcs_wrong_path)
+                return 0;
+            return -1;
+        }
+
+        private void MoveMCS()
+        {
+            foreach (string id in AssetDatabase.FindAssets("mcs"))
+            {
+                string path = AssetDatabase.GUIDToAssetPath(id);
+                if (path.Contains("mcs.rsp"))
+                    AssetDatabase.MoveAsset(path, "Assets/mcs.rsp");
+            }
+            AssetDatabase.Refresh();
         }
 
         void OnGUI()

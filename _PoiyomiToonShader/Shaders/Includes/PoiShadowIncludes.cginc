@@ -5,7 +5,7 @@
     
     float4      _Color;
     float       _Clip;
-    sampler2D   _MainTex; float4 _MainTex_ST;
+    UNITY_DECLARE_TEX2D(_MainTex); float4 _MainTex_ST;
     float4 		_GlobalPanSpeed;
     sampler2D _AlphaMask; float4 _AlphaMask_ST;
     
@@ -23,6 +23,9 @@
             #if defined(UNITY_STANDARD_USE_SHADOW_UVS)
                 float2 uv: TEXCOORD1;
             #endif
+            float3 modelPos: TEXCOORD2;
+            float3 worldPos: TEXCOORD3;
+            float3 localPos: TEXCOORD4;
         };
     #endif
     

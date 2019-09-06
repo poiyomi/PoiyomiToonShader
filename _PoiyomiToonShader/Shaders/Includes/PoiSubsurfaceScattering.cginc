@@ -12,32 +12,24 @@
     
     float3 finalSSS;
     
-    void calculateSubsurfaceScattering(v2f i)
+    void calculateSubsurfaceScattering()
     {
-        UNITY_BRANCH
-        if (_EnableSSS)
-        {
-            float SSS = 1 - UNITY_SAMPLE_TEX2D_SAMPLER(_SSSThicknessMap, _MainTex, TRANSFORM_TEX(i.uv, _SSSThicknessMap));
-            
-            half3 vLTLight = poiLight.direction + poiMesh.vertexNormal * _SSSDistortion;
-            half flTDot = pow(saturate(dot(poiCam.viewDir, -vLTLight)), _SSSPower) * _SSSSCale;
-            #ifdef FORWARD_BASE_PASS
-                half3 fLT = (flTDot) * saturate(SSS + - 1 * _SSSThicknessMod);
-            #else
-                half3 fLT = poiLight.attenuation * (flTDot) * saturate(SSS + - 1 * _SSSThicknessMod);
-            #endif
-            
-            finalSSS = fLT;
-        }
+        float SSS = 1 - UNITY_SAMPLE_TEX2D_SAMPLER(_SSSThicknessMap, _MainTex, TRANSFORM_TEX(poiMesh.uv, _SSSThicknessMap));
+        
+        half3 vLTLight = poiLight.direction + poiMesh.vertexNormal * _SSSDistortion;
+        half flTDot = pow(saturate(dot(poiCam.viewDir, -vLTLight)), _SSSPower) * _SSSSCale;
+        #ifdef FORWARD_BASE_PASS
+            half3 fLT = (flTDot) * saturate(SSS + - 1 * _SSSThicknessMod);
+        #else
+            half3 fLT = poiLight.attenuation * (flTDot) * saturate(SSS + - 1 * _SSSThicknessMod);
+        #endif
+        
+        finalSSS = fLT;
     }
     
     void applySubsurfaceScattering(inout float4 finalColor)
     {
-        UNITY_BRANCH
-        if(_EnableSSS)
-        {
-            finalColor.rgb += finalSSS * poiLight.color * albedo * _SSSColor;
-        }
+        finalColor.rgb += finalSSS * poiLight.color * albedo * _SSSColor;
     }
     
 #endif

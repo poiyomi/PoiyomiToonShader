@@ -1,5 +1,5 @@
-#ifndef DND_LIGHTING
-    #define DND_LIGHTING
+#ifndef DND_POI_LIGHTING
+    #define DND_POI_LIGHTING
     
     sampler2D _ToonRamp;
     float _AdditiveSoftness;

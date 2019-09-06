@@ -13,33 +13,24 @@
     float3 matcap;
     float matcapMask;
     
-    float2 getMatcapUV(float3 viewDirection, float3 normalDirection)
+    float2 getMatcapUV()
     {
-        half3 worldViewUp = normalize(half3(0, 1, 0) - viewDirection * dot(viewDirection, half3(0, 1, 0)));
-        half3 worldViewRight = normalize(cross(viewDirection, worldViewUp));
-        half2 matcapUV = half2(dot(worldViewRight, normalDirection), dot(worldViewUp, normalDirection)) * 0.5 + 0.5;
-        return matcapUV;
+        half3 worldViewUp = normalize(half3(0, 1, 0) - poiCam.viewDir * dot(poiCam.viewDir, half3(0, 1, 0)));
+        half3 worldViewRight = normalize(cross(poiCam.viewDir, worldViewUp));
+        return half2(dot(worldViewRight, poiMesh.fragmentNormal), dot(worldViewUp, poiMesh.fragmentNormal)) * 0.5 + 0.5;
     }
     
-    void calculateMatcap(float3 cameraToVert, float3 normal, float2 uv)
+    void calculateMatcap()
     {
-        UNITY_BRANCH
-        if (_EnableMatcap)
-        {
-            float2 matcapUV = getMatcapUV(cameraToVert, normal);
-            matcap = UNITY_SAMPLE_TEX2D_SAMPLER(_Matcap, _MainTex, matcapUV) * _MatcapColor * _MatcapBrightness;
-            matcapMask = UNITY_SAMPLE_TEX2D_SAMPLER(_MatcapMask, _MainTex, TRANSFORM_TEX(uv, _MatcapMask));
-        }
+        float2 matcapUV = getMatcapUV();
+        matcap = UNITY_SAMPLE_TEX2D_SAMPLER(_Matcap, _MainTex, matcapUV) * _MatcapColor * _MatcapBrightness;
+        matcapMask = UNITY_SAMPLE_TEX2D_SAMPLER(_MatcapMask, _MainTex, TRANSFORM_TEX(poiMesh.uv, _MatcapMask));
     }
     
     void applyMatcap(inout float4 finalColor)
     {
-        UNITY_BRANCH
-        if(_EnableMatcap)
-        {
-            finalColor.rgb = lerp(finalColor, matcap, _ReplaceWithMatcap * matcapMask);
-            finalColor.rgb *= lerp(1, matcap, _MultiplyMatcap * matcapMask);
-            finalColor.rgb += matcap * _AddMatcap * matcapMask;
-        }
+        finalColor.rgb = lerp(finalColor, matcap, _ReplaceWithMatcap * matcapMask);
+        finalColor.rgb *= lerp(1, matcap, _MultiplyMatcap * matcapMask);
+        finalColor.rgb += matcap * _AddMatcap * matcapMask;
     }
 #endif

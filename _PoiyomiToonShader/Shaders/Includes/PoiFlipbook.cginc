@@ -24,57 +24,45 @@
     // Global
     float4 flipBookPixel;
     float4 flipBookPixelMultiply;
-    void calculateFlipbook(float2 uv)
+    void calculateFlipbook()
     {
+        _FlipbookScaleOffset.xy = 1 - _FlipbookScaleOffset.xy;
+        
+        float2 uv = remap(poiMesh.uv, float2(0, 0) + _FlipbookScaleOffset.xy / 2 + _FlipbookScaleOffset.zw, float2(1, 1) - _FlipbookScaleOffset.xy / 2 + _FlipbookScaleOffset.zw, float2(0, 0), float2(1, 1));
+        float theta = radians(_FlipbookRotation);
+        
+        float cs = cos(theta);
+        float sn = sin(theta);
+        
+        float2 newUV = float2((uv.x - .5) * cs - (uv.y - .5) * sn + .5, (uv.x - .5) * sn + (uv.y - .5) * cs + .5);
+        
         UNITY_BRANCH
-        if (_EnableFlipbook)
+        if (_FlipbookTiled == 0)
         {
-            _FlipbookScaleOffset.xy = 1 - _FlipbookScaleOffset.xy;
-            
-            uv = remap(uv, float2(0, 0) + _FlipbookScaleOffset.xy / 2 + _FlipbookScaleOffset.zw, float2(1, 1) - _FlipbookScaleOffset.xy / 2 + _FlipbookScaleOffset.zw, float2(0, 0), float2(1, 1));
-            float theta = radians(_FlipbookRotation);
-            
-            float cs = cos(theta);
-            float sn = sin(theta);
-            
-            float2 newUV = float2((uv.x - .5) * cs - (uv.y - .5) * sn + .5, (uv.x - .5) * sn + (uv.y - .5) * cs + .5);
-            
-            UNITY_BRANCH
-            if(_FlipbookTiled == 0)
+            if(max(newUV.x, newUV.y) > 1 || min(newUV.x, newUV.y) < 0)
             {
-                if(max(newUV.x, newUV.y) > 1 || min(newUV.x, newUV.y) < 0)
-                {
-                    flipBookPixel = 0;
-                    flipBookPixelMultiply = 1;
-                    return;
-                }
+                flipBookPixel = 0;
+                flipBookPixelMultiply = 1;
+                return;
             }
-            
-            uint currentFrame = floor(_FlipbookCurrentFrame) % _FlipbookTotalFrames;
-            if(_FlipbookCurrentFrame < 0)
-            {
-                currentFrame = (_Time.y / (1 / _FlipbookFPS)) % _FlipbookTotalFrames;
-            }
-            flipBookPixel = UNITY_SAMPLE_TEX2DARRAY(_FlipbookTexArray, float3(TRANSFORM_TEX(newUV, _FlipbookTexArray), currentFrame));
-            flipBookPixelMultiply = flipBookPixel;
         }
+        
+        uint currentFrame = floor(_FlipbookCurrentFrame) % _FlipbookTotalFrames;
+        if(_FlipbookCurrentFrame < 0)
+        {
+            currentFrame = (_Time.y / (1 / _FlipbookFPS)) % _FlipbookTotalFrames;
+        }
+        flipBookPixel = UNITY_SAMPLE_TEX2DARRAY(_FlipbookTexArray, float3(TRANSFORM_TEX(newUV, _FlipbookTexArray), currentFrame));
+        flipBookPixelMultiply = flipBookPixel;
     }
     void applyFlipbook(inout float4 finalColor)
     {
-        UNITY_BRANCH
-        if(_EnableFlipbook)
-        {
-            finalColor.rgb = lerp(finalColor, flipBookPixel.rgb * _FlipbookColor.rgb, flipBookPixel.a * _FlipbookColor.a * _FlipbookReplace);
-            finalColor.rgb = finalColor + flipBookPixel.rgb * _FlipbookColor.rgb * _FlipbookAdd;
-            finalColor.rgb = finalColor * lerp(1, flipBookPixelMultiply.rgb * _FlipbookColor.rgb, _FlipbookMultiply * flipBookPixelMultiply.a * _FlipbookColor.a);
-        }
+        finalColor.rgb = lerp(finalColor, flipBookPixel.rgb * _FlipbookColor.rgb, flipBookPixel.a * _FlipbookColor.a * _FlipbookReplace);
+        finalColor.rgb = finalColor + flipBookPixel.rgb * _FlipbookColor.rgb * _FlipbookAdd;
+        finalColor.rgb = finalColor * lerp(1, flipBookPixelMultiply.rgb * _FlipbookColor.rgb, _FlipbookMultiply * flipBookPixelMultiply.a * _FlipbookColor.a);
     }
     void applyFlipbookEmission(inout float4 finalColor)
     {
-        UNITY_BRANCH
-        if(_EnableFlipbook)
-        {
-            finalColor.rgb += lerp(0, flipBookPixel.rgb * _FlipbookColor.rgb * _FlipbookEmissionStrength, flipBookPixel.a * _FlipbookColor.a);
-        }
+        finalColor.rgb += lerp(0, flipBookPixel.rgb * _FlipbookColor.rgb * _FlipbookEmissionStrength, flipBookPixel.a * _FlipbookColor.a);
     }
 #endif
