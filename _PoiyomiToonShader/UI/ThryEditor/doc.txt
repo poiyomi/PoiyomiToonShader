@@ -14,6 +14,10 @@ Drawers for Textures:
 	put --frameCountProp=<property name> to automatically fill a float property when creating a texture array
 [Vector2] vector with only fields for xy
 [Vector3] vector with only fields for xyz
+[Curve] texture field with curve field that creates texture from curve
+	[optional]--width=<int> default:128
+	[optional]--height=<int> default: 8
+	[optional]--channel=r|g|b|a default:r
 
 #----Settings Properties----
 
@@ -27,6 +31,10 @@ Drawers for Textures:
 	-Display name specifies preset file
 	-optional
 	
+[HideInInspector] DSGI //add this property for double sided illumination settings to be shown
+[HideInInspector] Instancing //add this property for instancing variants settings to be shown
+[HideInInspector] LightmapFlags //add this property for lightmap flags settings to be shown
+	
 #----Additional Editor Properties----
 
 [HideInInspector] shader_properties_label_file
@@ -39,26 +47,31 @@ extraOffset
 	adds an extra x-offset to the property
 	<string> := extraOffset
 	<optionData> := <int>
+	Example: --extraOffset=1
 
 hover
 	text that is shown when hovering above property
 	<string> := hover
 	<optionData> := <string>
+	Example: --hover=hover text
 
 altClick
 	performs an action when holding alt down and clicking on property
 	<string> := altClick
 	<optionData> := <action>
+	Example: --altClick={type:URL,data:https://github.com/Thryrallo/thryeditor}
 	
 button_right (only for menu headers)
 	<string> := button_right
 	<optionData> := <button>
+	Example: --button_right={text:Test Button,action:{type:URL,data:https://github.com/Thryrallo/thryeditor},hover:hover text,condition_show:{type:PROPERTY_BOOL,data:_ShowButtonOnMenus}}
 
 <displayName> := <string><extraOption>*
 <extraOption> := --<string>=<optionData>
 <action> := {type:<type>,data:<string>}
-<type> := url
-<button> := {text:<string>,hover:<string>,action:<action>}
-
-actions:
-	url: opens <data> as url in browser
+<type> := URL
+	URL: open url, data is url, don't forget http://
+<button> := {text:<string>,hover:<string>,action:<action>,condition_show:<condition>}
+<condition> := {type:<condition_type>,data:<string>}
+<condition_type> := PROPERTY_BOOL
+	PROPERTY_BOOL: check if float value of property with name <data> is 1

@@ -34,44 +34,46 @@
                 return;
             }
             
-            // Lighting
-            if (_DebugLightingData == 1)
-            {
-                finalColor.rgb = poiLight.attenuation;
-                return;
-            }
-            else if(_DebugLightingData == 2)
-            {
-                finalColor.rgb = poiLight.directLighting;
-                return;
-            }
-            else if(_DebugLightingData == 3)
-            {
-                finalColor.rgb = poiLight.indirectLighting;
-                return;
-            }
-            else if(_DebugLightingData == 4)
-            {
-                finalColor.rgb = poiLight.lightMap;
-                return;
-            }
-            else if(_DebugLightingData == 5)
-            {
-                finalColor.rgb = poiLight.rampedLightMap;
-                return;
-            }
-            else if(_DebugLightingData == 6)
-            {
-                finalColor.rgb = poiLight.finalLighting;
-                return;
-            }
-            else if(_DebugLightingData == 7)
-            {
-                finalColor.rgb = poiLight.nDotL;
-                return;
-            }
+            #ifdef POI_LIGHTING
+                // Lighting
+                if (_DebugLightingData == 1)
+                {
+                    finalColor.rgb = poiLight.attenuation;
+                    return;
+                }
+                else if(_DebugLightingData == 2)
+                {
+                    finalColor.rgb = poiLight.directLighting;
+                    return;
+                }
+                else if(_DebugLightingData == 3)
+                {
+                    finalColor.rgb = poiLight.indirectLighting;
+                    return;
+                }
+                else if(_DebugLightingData == 4)
+                {
+                    finalColor.rgb = poiLight.lightMap;
+                    return;
+                }
+                else if(_DebugLightingData == 5)
+                {
+                    finalColor.rgb = poiLight.rampedLightMap;
+                    return;
+                }
+                else if(_DebugLightingData == 6)
+                {
+                    finalColor.rgb = poiLight.finalLighting;
+                    return;
+                }
+                else if(_DebugLightingData == 7)
+                {
+                    finalColor.rgb = poiLight.nDotL;
+                    return;
+                }
+            #endif
             
-            #ifdef _SPECGLOSSMAP
+            #ifdef POI_SPECULAR
                 //specular
                 if (_DebugSpecularData == 1)
                 {
@@ -80,15 +82,10 @@
                 }
                 else if(_DebugSpecularData == 2)
                 {
-                    finalColor.rgb = highTexture;
-                    return;
-                }
-                else if(_DebugSpecularData == 3)
-                {
                     finalColor.rgb = tangentDirectionMap;
                     return;
                 }
-                else if(_DebugSpecularData == 4)
+                else if(_DebugSpecularData == 3)
                 {
                     finalColor.rgb = shiftTexture;
                     return;

@@ -26,6 +26,7 @@
             float3 modelPos: TEXCOORD2;
             float3 worldPos: TEXCOORD3;
             float3 localPos: TEXCOORD4;
+            float3 angleAlpha: TEXCOORD5;
         };
     #endif
     

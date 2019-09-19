@@ -15,6 +15,18 @@ float3 getCameraPosition()
     return _WorldSpaceCameraPos;
 }
 
+float3 getCameraForward()
+{
+    #if UNITY_SINGLE_PASS_STEREO
+        float3 p1 = mul(unity_StereoCameraToWorld[0], float4(0, 0, 1, 1));
+        float3 p2 = mul(unity_StereoCameraToWorld[0], float4(0, 0, 0, 1));
+    #else
+        float3 p1 = mul(unity_CameraToWorld, float4(0, 0, 1, 1));
+        float3 p2 = mul(unity_CameraToWorld, float4(0, 0, 0, 1));
+    #endif
+    return normalize(p2 - p1);
+}
+
 float3 grayscale_vector_node()
 {
     return float3(0, 0.3823529, 0.01845836);
@@ -120,13 +132,13 @@ float4x4 poiRotationMatrixFromAngles(float x, float y, float z)
     s, c, 0, 0,
     0, 0, 1, 0,
     0, 0, 0, 1);
-
+    
     return mul(mul(rotateXMatrix, rotateYMatrix), rotateZMatrix);
 }
 
 float4x4 poiRotationMatrixFromAngles(float3 angles)
 {
-        float angleX = radians(angles.x);
+    float angleX = radians(angles.x);
     float c = cos(angleX);
     float s = sin(angleX);
     float4x4 rotateXMatrix = float4x4(1, 0, 0, 0,
@@ -149,6 +161,6 @@ float4x4 poiRotationMatrixFromAngles(float3 angles)
     s, c, 0, 0,
     0, 0, 1, 0,
     0, 0, 0, 1);
-
+    
     return mul(mul(rotateXMatrix, rotateYMatrix), rotateZMatrix);
 }

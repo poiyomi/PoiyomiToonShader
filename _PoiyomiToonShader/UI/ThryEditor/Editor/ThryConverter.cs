@@ -144,7 +144,7 @@ namespace Thry
 
                 string file_name = "text_" + Regex.Replace(text, @"\s", "_");
                 string save_path = "Assets/Textures/Text/" + file_name + ".png";
-                return Helper.SaveTextureAsPNG(text_texture, save_path);
+                return Helper.SaveTextureAsPNG(text_texture, save_path, TextureWrapMode.Clamp, FilterMode.Point);
             }
             else
             {
@@ -152,6 +152,8 @@ namespace Thry
             }
             return null;
         }
+
+        //--Start--Gradient
 
         public static void TextureToGradient(ref GradientData data)
         {
@@ -318,6 +320,8 @@ namespace Thry
             data.texture.Apply();
         }
 
+        //--End--Gradient
+
         public static Texture2DArray PathsToTexture2DArray(string[] paths)
         {
             if (paths[0].EndsWith(".gif"))
@@ -391,6 +395,31 @@ namespace Thry
             path = path.Remove(path.LastIndexOf('/')) + "/"+ AssetDatabase.LoadAssetAtPath<Texture>(path).name+ "_Texture2DArray.asset";
             AssetDatabase.CreateAsset(array, path);
             return array;
+        }
+
+        public static Texture2D CurveToTexture(AnimationCurve curve, int width, int height, char color_channel)
+        {
+            Texture2D texture = new Texture2D(width, height);
+            for(int i = 0; i < width;i++)
+            {
+                Color color = new Color();
+                float value = curve.Evaluate((float)i / width);
+                value = Mathf.Clamp01(value);
+                if (color_channel == 'r')
+                    color.r = value;
+                else if (color_channel == 'g')
+                    color.g = value;
+                else if (color_channel == 'b')
+                    color.b = value;
+                else if (color_channel == 'a')
+                    color.a = value;
+                if (color_channel != 'a')
+                    color.a = 1;
+                    for (int y = 0; y < height; y++)
+                    texture.SetPixel(i, y, color);
+            }
+            texture.Apply();
+            return texture;
         }
     }
 }

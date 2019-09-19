@@ -11,7 +11,7 @@ namespace Thry
         //static methods
         private static Config config;
         private const string CONFIG_FILE_PATH = "./Assets/.ThryConfig.json";
-        private const string VERSION = "0.12";
+        private const string VERSION = "0.17";
 
         [InitializeOnLoad]
         public class Startup
@@ -63,10 +63,6 @@ namespace Thry
         public bool renderQueueShaders = true;
 
         public string gradient_name = "gradient_<hash>.png";
-
-        public bool vrchatAutoFillAvatarDescriptor = false;
-        public int vrchatDefaultAnimationSetFallback = 2;
-        public bool vrchatForceFallbackAnimationSet = false;
 
         public bool showImportPopup = false;
         public string verion = "0";

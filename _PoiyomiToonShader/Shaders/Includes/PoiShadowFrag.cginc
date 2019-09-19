@@ -22,10 +22,14 @@
                     alpha *= calculateShadowDissolveAlpha(i.worldPos, i.localPos, i.uv);
                 #endif
                 
+                #ifdef POI_RANDOM
+                    alpha *= i.angleAlpha;
+                #endif
+                
                 #ifdef CUTOUT
                     clip(alpha * alphaMask - _Clip);
                     UNITY_BRANCH
-                    if(!_ForceOpaque)
+                    if (!_ForceOpaque)
                     {
                         clip(_Color.a - .75);
                     }

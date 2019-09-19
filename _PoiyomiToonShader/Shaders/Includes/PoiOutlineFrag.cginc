@@ -6,7 +6,7 @@ float4 frag(v2f i): COLOR
     #ifdef POI_DATA
         InitData(i);
     #endif
-
+    
     #ifdef POI_MAINTEXTURE
         initTextureData();
     #endif
@@ -18,6 +18,10 @@ float4 frag(v2f i): COLOR
     col = col * 0.00000000001 + tex2D(_OutlineTexture, TRANSFORM_TEX((i.uv + (_OutlineTexturePan.xy * _Time.g)), _OutlineTexture));
     col.a *= mainTexture.a;
     col.a *= alphaMultiplier;
+    
+    #ifdef POI_RANDOM
+        col.a *= i.angleAlpha;
+    #endif
     
     clip(col.a * _alphaMask_tex_var - _Clip);
     

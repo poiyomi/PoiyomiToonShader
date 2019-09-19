@@ -11,4 +11,8 @@ out float4 opos: SV_POSITION)
     #endif
     o.localPos = v.vertex;
     o.worldPos = mul(unity_ObjectToWorld, o.localPos);
+    o.angleAlpha = 1;
+    #ifdef POI_RANDOM
+        o.angleAlpha = ApplyAngleBasedRendering(o.modelPos);
+    #endif
 }

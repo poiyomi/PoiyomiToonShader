@@ -64,6 +64,10 @@
     }
     void applyEmission(inout float4 finalColor)
     {
-        finalColor.rgb += emission;
+        #ifdef TRANSPARENT
+            finalColor.rgb += emission * mainTexture.a;
+        #else
+            finalColor.rgb += emission;
+        #endif
     }
 #endif

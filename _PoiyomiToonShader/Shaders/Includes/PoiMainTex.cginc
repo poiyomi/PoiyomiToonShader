@@ -5,6 +5,7 @@
     UNITY_DECLARE_TEX2D_NOSAMPLER(_DetailNormalMap); float4 _DetailNormalMap_ST;
     UNITY_DECLARE_TEX2D_NOSAMPLER(_DetailNormalMask); float4 _DetailNormalMask_ST;
     UNITY_DECLARE_TEX2D_NOSAMPLER(_AlphaMask); float4 _AlphaMask_ST;
+    UNITY_DECLARE_TEX2D_NOSAMPLER(_MainFadeTexture); float4 _MainFadeTexture_ST;
     float4 _Color;
     float _Saturation;
     float _BumpScale;
@@ -12,7 +13,7 @@
     float2 _MainNormalPan;
     float2 _MainDetailNormalPan;
     float2 _MainDistanceFade;
-    
+    half _MainMinAlpha;
     //globals
     float4 albedo;
     float alphaMask;
@@ -91,7 +92,12 @@
     
     void distanceFade()
     {
-        mainTexture.a *= smoothstep(_MainDistanceFade.x, _MainDistanceFade.y, poiCam.distanceToModel);
-        albedo.a *= smoothstep(_MainDistanceFade.x, _MainDistanceFade.y, poiCam.distanceToModel);
+        half fadeMap = UNITY_SAMPLE_TEX2D_SAMPLER(_MainFadeTexture, _MainTex, TRANSFORM_TEX(poiMesh.uv, _MainFadeTexture));
+        if (fadeMap)
+        {
+            half fadeValue = max(smoothstep(_MainDistanceFade.x, _MainDistanceFade.y, poiCam.distanceToVert),_MainMinAlpha);
+            mainTexture.a *= fadeValue;
+            albedo.a *= fadeValue;
+        }
     }
 #endif

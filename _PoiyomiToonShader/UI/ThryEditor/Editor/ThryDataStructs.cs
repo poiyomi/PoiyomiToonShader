@@ -17,6 +17,9 @@ namespace Thry
         public Dictionary<string, ThryEditor.ShaderProperty> propertyDictionary;
         public List<MaterialProperty> textureArrayProperties;
         public bool firstCall;
+        public bool draw_material_option_lightmap;
+        public bool draw_material_option_instancing;
+        public bool draw_material_option_dsgi;
     }
 
     public class DrawingData
@@ -54,7 +57,8 @@ namespace Thry
         public string text;
         public DefinableAction action;
         public string hover;
-        public override string ToString(){ return "{Text:" + text + ",Hover:" + hover + ",Action:"+action.ToString()+"}"; }
+        public DefineableCondition condition_show;
+        public override string ToString(){ return "{text:" + text + ",hover:" + hover + ",action:"+action.ToString()+",condition_show:"+ condition_show .ToString()+ "}"; }
     }
 
     public class DefinableAction
@@ -70,12 +74,56 @@ namespace Thry
                     break;
             }
         }
-        public override string ToString(){ return "{Type:" + type + ",Data:" + data + "}";}
+        public override string ToString(){ return "{type:" + type + ",data:" + data + "}";}
     }
 
     public enum DefinableActionType
     {
         NONE,
         URL
+    }
+
+    public class DefineableCondition
+    {
+        public DefineableConditionType type;
+        public string data;
+        public bool Test()
+        {
+            switch (type)
+            {
+                case DefineableConditionType.PROPERTY_BOOL:
+                    ThryEditor.ShaderProperty prop = ThryEditor.currentlyDrawing.propertyDictionary[data];
+                    if (prop != null) return prop.materialProperty.floatValue == 1;
+                    break;
+            }
+            
+            return false;
+        }
+        public override string ToString() { return "{type:" + type + ",data:" + data + "}"; }
+    }
+
+    public enum DefineableConditionType
+    {
+        NONE,
+        PROPERTY_BOOL
+    }
+
+    public class ModuleHeader
+    {
+        public string name = "";
+        public string version = "0";
+        public string description = "";
+        public string url = "";
+        public string classname = "";
+        public string settings_file_name = "";
+        public bool is_being_installed_or_removed = false;
+        public ModuleInfo installed_module = null;
+    }
+
+    public class ModuleInfo
+    {
+        public string version = "";
+        public List<string> requirements;
+        public List<string> files;
     }
 }

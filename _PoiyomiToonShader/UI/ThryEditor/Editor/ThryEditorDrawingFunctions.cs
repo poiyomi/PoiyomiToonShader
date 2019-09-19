@@ -131,6 +131,90 @@ namespace Thry
 
             EditorGUILayout.LabelField("<size=16>" + shaderName + "</size>", Styles.Get().masterLabel, GUILayout.MinHeight(18));
         }
+
+        public static void DrawDSGIOptions()
+        {
+            EditorGUILayout.BeginHorizontal();
+            GUILayout.FlexibleSpace();
+            EditorGUI.BeginChangeCheck();
+            bool value = EditorGUILayout.Toggle("Double Sided Global Illumination", ThryEditor.currentlyDrawing.materials[0].doubleSidedGI, GUILayout.ExpandWidth(false));
+            if (EditorGUI.EndChangeCheck())
+                foreach (Material m in ThryEditor.currentlyDrawing.materials)
+                    m.doubleSidedGI = value;
+            EditorGUILayout.EndHorizontal();
+        }
+
+        public static void DrawInstancingOptions()
+        {
+            EditorGUILayout.BeginHorizontal();
+            GUILayout.FlexibleSpace();
+            EditorGUI.BeginChangeCheck();
+            bool value = EditorGUILayout.Toggle("Instancing", ThryEditor.currentlyDrawing.materials[0].enableInstancing, GUILayout.ExpandWidth(false));
+            if (EditorGUI.EndChangeCheck())
+                foreach (Material m in ThryEditor.currentlyDrawing.materials)
+                    m.enableInstancing = value;
+            EditorGUILayout.EndHorizontal();
+        }
+
+        public static void DrawLightmapFlagsOptions()
+        {
+            EditorGUILayout.BeginHorizontal();
+            GUILayout.FlexibleSpace();
+            EditorGUI.BeginChangeCheck();
+            MaterialGlobalIlluminationFlags value = (MaterialGlobalIlluminationFlags)EditorGUILayout.EnumPopup(ThryEditor.currentlyDrawing.materials[0].globalIlluminationFlags, GUILayout.ExpandWidth(false));
+            if (EditorGUI.EndChangeCheck())
+                foreach (Material m in ThryEditor.currentlyDrawing.materials)
+                    m.globalIlluminationFlags = value;
+            EditorGUILayout.EndHorizontal();
+        }
+
+        const float kNumberWidth = 65;
+
+        public static void MinMaxSlider(Rect settingsRect, GUIContent content, MaterialProperty prop)
+        {
+            bool changed = false;
+            Vector4 vec = prop.vectorValue;
+            Rect sliderRect = settingsRect;
+
+            EditorGUI.LabelField(settingsRect, content);
+
+            float capAtX = vec.x;
+            float capAtY = vec.y;
+
+            if (settingsRect.width > 160)
+            {
+                Rect numberRect = settingsRect;
+                numberRect.width = kNumberWidth+ (EditorGUI.indentLevel - 1) * 15;
+
+                numberRect.x = EditorGUIUtility.labelWidth - (EditorGUI.indentLevel-1)*15;
+
+                EditorGUI.BeginChangeCheck();
+                vec.x = EditorGUI.FloatField(numberRect, vec.x, EditorStyles.textField);
+                changed |= EditorGUI.EndChangeCheck();
+
+                numberRect.x = settingsRect.xMax - numberRect.width;
+
+                EditorGUI.BeginChangeCheck();
+                vec.y = EditorGUI.FloatField(numberRect, vec.y);
+                changed |= EditorGUI.EndChangeCheck();
+
+                sliderRect.xMin = EditorGUIUtility.labelWidth - (EditorGUI.indentLevel - 1) * 15;
+                sliderRect.xMin += (kNumberWidth + -8);
+                sliderRect.xMax -= (kNumberWidth + -8);
+            }
+
+            vec.x = Mathf.Clamp(vec.x, vec.z, capAtY);
+            vec.y = Mathf.Clamp(vec.y, capAtX, vec.w);
+
+            EditorGUI.BeginChangeCheck();
+            EditorGUI.MinMaxSlider(sliderRect, ref vec.x, ref vec.y, vec.z, vec.w);
+            changed |= EditorGUI.EndChangeCheck();
+
+            if (changed)
+            {
+                prop.vectorValue = vec;
+            }
+        }
     }
 
     //-----------------------------------------------------------------
@@ -197,7 +281,7 @@ namespace Thry
             data.hasRightButton = ThryEditor.currentlyDrawing.currentProperty.ExtraOptionExists(ThryEditor.EXTRA_OPTION_BUTTON_RIGHT);
             if (data.hasRightButton)
             {
-                data.rightButton = Parsers.ParseButton(ThryEditor.currentlyDrawing.currentProperty.GetExtraOptionValue<string>(ThryEditor.EXTRA_OPTION_BUTTON_RIGHT));
+                data.rightButton = Parsers.ConvertParsedToObject<ButtonData>(ThryEditor.currentlyDrawing.currentProperty.GetExtraOptionValue(ThryEditor.EXTRA_OPTION_BUTTON_RIGHT));
             }
             ThryEditor.currentlyDrawing.currentProperty.property_data = data;
         }
@@ -216,7 +300,7 @@ namespace Thry
                 this.Init();
 
             MenuHeaderData data = (MenuHeaderData)ThryEditor.currentlyDrawing.currentProperty.property_data;
-            if (data.hasRightButton)
+            if (data.hasRightButton && (data.rightButton.condition_show == null || (data.rightButton.condition_show != null && data.rightButton.condition_show.Test())))
             {
                 Rect buttonRect = new Rect(rect);
                 GUIContent buttoncontent = new GUIContent(data.rightButton.text, data.rightButton.hover);
@@ -226,7 +310,8 @@ namespace Thry
                 buttonRect.y += 2;
                 buttonRect.width = width;
                 if (GUI.Button(buttonRect, buttoncontent, Styles.Get().dropDownHeaderButton))
-                    data.rightButton.action.Perform();
+                    if(data.rightButton.action!=null)
+                        data.rightButton.action.Perform();
             }
 
             var e = Event.current;

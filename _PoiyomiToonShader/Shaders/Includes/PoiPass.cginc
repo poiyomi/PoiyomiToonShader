@@ -12,6 +12,7 @@ _TERRAIN_NORMAL_MAP
 _COLOROVERLAY_ON
 _COLORADDSUBDIFF_ON
 _NORMALMAP
+_SUNDISK_NONE
 
 _ALPHAMODULATE_ON
 _ALPHAPREMULTIPLY_ON
@@ -21,7 +22,6 @@ _COLORCOLOR_ON
 _SMOOTHNESS_TEXTURE_ALBEDO_CHANNEL_A
 _SPECULARHIGHLIGHTS_OFF
 _SUNDISK_HIGH_QUALITY
-_SUNDISK_NONE
 _SUNDISK_SIMPLE
 BILLBOARD_FACE_CAMERA_POS
 EFFECT_BUMP
@@ -54,18 +54,20 @@ UNITY_UI_CLIP_RECT
         #include "PoiParallax.cginc"
     #endif
     
-    
     #ifdef _REQUIRE_UV2
         #include "PoiMirror.cginc"
     #endif
     
     #include "PoiData.cginc"
     
+    #ifdef _SUNDISK_NONE
+        #include "PoiRandom.cginc"
+    #endif
     
     #ifdef _ALPHABLEND_ON
         #include "PoiDissolve.cginc"
     #endif
-
+    
     #include "PoiMainTex.cginc"
     
     #ifdef _DETAIL_MULX2

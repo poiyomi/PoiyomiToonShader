@@ -21,6 +21,7 @@
     float _RimEnviroWidth;
     float _RimEnviroSharpness;
     
+    UNITY_DECLARE_TEX2D_NOSAMPLER(_RimEnviroMask); float4 _RimEnviroMask_ST;
     UNITY_DECLARE_TEX2D_NOSAMPLER(_RimTex); float4 _RimTex_ST;
     UNITY_DECLARE_TEX2D_NOSAMPLER(_RimMask); float4 _RimMask_ST;
     
@@ -87,7 +88,8 @@
                 enviroRimColor = DecodeHDR(reflectionData, unity_SpecCube0_HDR);
             }
             
-            finalColor.rgb += lerp(0, max(0, (enviroRimColor - _RimEnviroMinBrightness) * albedo.rgb), enviroRimAlpha).rgb;
+            half enviroMask = poiMax(UNITY_SAMPLE_TEX2D_SAMPLER(_RimEnviroMask, _MainTex, TRANSFORM_TEX(poiMesh.uv, _RimEnviroMask)).rgb);
+            finalColor.rgb += lerp(0, max(0, (enviroRimColor - _RimEnviroMinBrightness) * albedo.rgb), enviroRimAlpha).rgb * enviroMask;
         }
     }
 #endif

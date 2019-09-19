@@ -4,6 +4,7 @@
     uint _OutlineMode;
     float4 _OutlinePersonaDirection;
     float4 _OutlineDropShadowOffset;
+    sampler2D _OutlineMask; float4 _OutlineMask_ST;
     v2f vert(appdata v)
     {
         UNITY_SETUP_INSTANCE_ID(v);
@@ -17,11 +18,11 @@
         #endif
         
         o.uv = v.texcoord + _OutlineGlobalPan.xy * _Time.y;
-        
+        float outlineMask = poiMax(tex2Dlod(_OutlineMask,  float4(TRANSFORM_TEX(o.uv, _OutlineMask) + _Time.x * _OutlineTexturePan.zw, 0, 0)).rgb);
         o.normal = UnityObjectToWorldNormal(v.normal);
         
         
-        float3 offset = o.normal * (_LineWidth / 100);
+        float3 offset = o.normal * (_LineWidth / 100) * outlineMask;
         
         half offsetMultiplier = 1;
         UNITY_BRANCH
@@ -44,8 +45,13 @@
         }
         
         o.worldPos = mul(unity_ObjectToWorld, v.vertex) + float4(offset, 0);
-        
+        o.modelPos = mul(unity_ObjectToWorld, float4(0,0,0,1));
         o.pos = UnityWorldToClipPos(o.worldPos);
+        
+        o.angleAlpha = 1;
+        #ifdef POI_RANDOM
+            o.angleAlpha = ApplyAngleBasedRendering(o.modelPos);
+        #endif
         
         UNITY_TRANSFER_SHADOW(o, o.uv);
         UNITY_TRANSFER_FOG(o, o.pos);

@@ -87,9 +87,9 @@
         float bw_topIndirectLighting = dot(ShadeSH9Plus, grayscale_vector);
         float lightDifference = ((bw_topIndirectLighting + bw_lightColor) - bw_bottomIndirectLighting);
         poiLight.lightMap = smoothstep(0, lightDifference, bw_directLighting - bw_bottomIndirectLighting);
-
-        poiLight.directLighting = lerp(ShadeSH9Plus, poiLight.color, .75);
-        poiLight.indirectLighting = ShadeSH9Minus;
+        
+        poiLight.directLighting = saturate(lerp(ShadeSH9Plus, poiLight.color, .75));
+        poiLight.indirectLighting = saturate(ShadeSH9Minus);
         
         poiLight.rampedLightMap = tex2D(_ToonRamp, poiLight.lightMap * AOMap + _ShadowOffset);
         
@@ -99,10 +99,14 @@
         }
         else if(_LightingType == 1)
         {
-            float3 ramp0 = tex2D(_ToonRamp, float2(1,1));
+            float3 ramp0 = tex2D(_ToonRamp, float2(1, 1));
             poiLight.finalLighting = lerp(ramp0, poiLight.rampedLightMap, _ShadowStrength) * poiLight.directLighting;
         }
-        poiLight.finalLighting = poiLight.finalLighting;
+        else if(_LightingType == 2)
+        {
+            float3 real = ShadeSH9(float4(poiMesh.fragmentNormal, 1));
+            poiLight.finalLighting = saturate(_LightColor0.rgb * AOMap * lerp(1, poiLight.attenuation, _AttenuationMultiplier) * (poiLight.nDotL * 0.5 + 0.5) + real);
+        }
     }
     
     void calculateLighting()

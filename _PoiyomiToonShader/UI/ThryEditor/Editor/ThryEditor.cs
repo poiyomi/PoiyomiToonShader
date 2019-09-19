@@ -60,6 +60,10 @@ public class ThryEditor : ShaderGUI
         {
             return (optionValue)Helper.GetValueFromDictionary<string, object>(extraOptions, key);
         }
+        public object GetExtraOptionValue(string key)
+        {
+            return Helper.GetValueFromDictionary<string, object>(extraOptions, key);
+        }
 
         public bool ExtraOptionExists(string option)
         {
@@ -114,10 +118,13 @@ public class ThryEditor : ShaderGUI
         public float setFloat;
         public bool updateFloat;
 
-        public ShaderProperty(MaterialProperty materialProperty, string displayName, int xOffset, Dictionary<string, object> extraOptions) : base(xOffset, displayName, extraOptions)
+        public bool forceOneLine = false;
+
+        public ShaderProperty(MaterialProperty materialProperty, string displayName, int xOffset, Dictionary<string, object> extraOptions, bool forceOneLine) : base(xOffset, displayName, extraOptions)
         {
             this.materialProperty = materialProperty;
             drawDefault = false;
+            this.forceOneLine = forceOneLine;
         }
 
         public override void Draw()
@@ -127,10 +134,10 @@ public class ThryEditor : ShaderGUI
             DrawingData.lastGuiObjectRect = new Rect(-1,-1,-1,-1);
             int oldIndentLevel = EditorGUI.indentLevel;
             EditorGUI.indentLevel = xOffset * 2 + 1;
-            //if (materialProperty.name == "_FlipbookTotalFrames")
-                //Debug.Log(Event.current.type + ":" + materialProperty.floatValue);
             if (drawDefault)
                 DrawDefault();
+            else if (forceOneLine)
+                currentlyDrawing.editor.ShaderProperty(GUILayoutUtility.GetRect(content, Styles.Get().vectorPropertyStyle), this.materialProperty, this.content);
             else
                 currentlyDrawing.editor.ShaderProperty(this.materialProperty, this.content);
             EditorGUI.indentLevel = oldIndentLevel;
@@ -148,7 +155,7 @@ public class ThryEditor : ShaderGUI
     {
         public bool showScaleOffset = false;
 
-        public TextureProperty(MaterialProperty materialProperty, string displayName, int xOffset, Dictionary<string, object> extraOptions, bool forceThryUI) : base(materialProperty, displayName, xOffset, extraOptions)
+        public TextureProperty(MaterialProperty materialProperty, string displayName, int xOffset, Dictionary<string, object> extraOptions, bool forceThryUI) : base(materialProperty, displayName, xOffset, extraOptions, false)
         {
             drawDefault = forceThryUI;
         }
@@ -177,7 +184,11 @@ public class ThryEditor : ShaderGUI
         if (label_file_property != null)
         {
             string[] guids = AssetDatabase.FindAssets(label_file_property.displayName);
-            if (guids.Length == 0) Debug.LogError("Label File could not be found");
+            if (guids.Length == 0)
+            {
+                Debug.LogWarning("Label File could not be found");
+                return labels;
+            }
             string path = AssetDatabase.GUIDToAssetPath(guids[0]);
             string[] data = Regex.Split(Helper.ReadFileIntoString(path), @"\r?\n");
             foreach (string d in data)
@@ -199,17 +210,38 @@ public class ThryEditor : ShaderGUI
             displayName = displayName.Replace(m.Value,"");
             string key = Regex.Split(m.Value, EXTRA_OPTION_INFIX)[0].Replace(EXTRA_OPTION_PREFIX,"");
             string valueString = Regex.Split(m.Value, EXTRA_OPTION_INFIX)[1];
-            float floatValue;
-            object value = valueString.TrimStart(new char[]{' '});
-            if (float.TryParse(valueString, out floatValue))
-            {
-                value = floatValue;
-                if ((int)floatValue == floatValue)
-                    value = (int)floatValue;
-            }
-            extraOptions.Add(key, value);
+            object parsed = Parsers.Parse(valueString);
+            extraOptions.Add(key, parsed);
         }
         return extraOptions;
+    }
+
+    private enum ThryPropertyType
+    {
+        none,property, footer,header,header_end,header_start,instancing,dsgi,lightmap_flags
+    }
+
+    private ThryPropertyType GetPropertyType(MaterialProperty p)
+    {
+        string name = p.name;
+        MaterialProperty.PropFlags flags = p.flags;
+        if (name.StartsWith("footer_") && flags == MaterialProperty.PropFlags.HideInInspector)
+            return ThryPropertyType.footer;
+        if (name.StartsWith("m_end") && flags == MaterialProperty.PropFlags.HideInInspector)
+            return ThryPropertyType.header_end;
+        if (name.StartsWith("m_start") && flags == MaterialProperty.PropFlags.HideInInspector)
+            return ThryPropertyType.header_start;
+        if (name.StartsWith("m_") && flags == MaterialProperty.PropFlags.HideInInspector)
+            return ThryPropertyType.header;
+        if (name.Replace(" ","") == "Instancing" && flags == MaterialProperty.PropFlags.HideInInspector)
+            return ThryPropertyType.instancing;
+        if (name.Replace(" ", "") == "DSGI" && flags == MaterialProperty.PropFlags.HideInInspector)
+            return ThryPropertyType.dsgi;
+        if (name.Replace(" ", "") == "LightmapFlags" && flags == MaterialProperty.PropFlags.HideInInspector)
+            return ThryPropertyType.lightmap_flags;
+        if (flags != MaterialProperty.PropFlags.HideInInspector)
+            return ThryPropertyType.property;
+        return ThryPropertyType.none;
     }
 
     //finds all properties and headers and stores them in correct order
@@ -228,53 +260,62 @@ public class ThryEditor : ShaderGUI
 		int headerCount = 0;
 		for (int i = 0; i < props.Length; i++)
 		{
-            //if property is a footer add to footer list
-            if (props[i].name.StartsWith("footer_") && props[i].flags == MaterialProperty.PropFlags.HideInInspector)
-            {
-                footer.Add(props[i].displayName);
-            //if property is end if a header block pop the top header
-            }else if (props[i].name.StartsWith("m_end") && props[i].flags == MaterialProperty.PropFlags.HideInInspector)
-            {
-                headerStack.Pop();
-                headerCount--;
-            } else
-            //else add new object under current header
-            {
-                string displayName = props[i].displayName;
-                if (labels.ContainsKey(props[i].name)) displayName = labels[props[i].name];
-                Dictionary<string, object> extraOptions = ExtractExtraOptionsFromDisplayName(ref displayName);
+            string displayName = props[i].displayName;
+            if (labels.ContainsKey(props[i].name)) displayName = labels[props[i].name];
+            Dictionary<string, object> extraOptions = ExtractExtraOptionsFromDisplayName(ref displayName);
 
-                int extraOffset = (int)Helper.GetValueFromDictionary<string,object>(extraOptions, EXTRA_OPTION_EXTRA_OFFSET,0);
-                int offset = extraOffset + headerCount;
+            int extraOffset = (int)Helper.GetValueFromDictionary<string, object>(extraOptions, EXTRA_OPTION_EXTRA_OFFSET, 0);
+            int offset = extraOffset + headerCount;
 
-                //if property is submenu add 1 extra offset
-                if (props[i].name.StartsWith("m_start") && props[i].flags == MaterialProperty.PropFlags.HideInInspector)
-                    offset = extraOffset + ++headerCount;
-                //if property is normal menu pop out if old header
-                else if (props[i].name.StartsWith("m_") && props[i].flags == MaterialProperty.PropFlags.HideInInspector)
+            ThryPropertyType type = GetPropertyType(props[i]);
+            switch (type)
+            {
+                case ThryPropertyType.header:
                     headerStack.Pop();
-                //if proeprty is submenu or normal menu push in header stack
-                if (props[i].name.StartsWith("m_") && props[i].flags == MaterialProperty.PropFlags.HideInInspector)
-                {
+                    break;
+                case ThryPropertyType.header_start:
+                    offset = extraOffset + ++headerCount;
+                    break;
+                case ThryPropertyType.header_end:
+                    headerStack.Pop();
+                    headerCount--;
+                    break;
+            }
+            switch (type)
+            {
+                case ThryPropertyType.footer:
+                    footer.Add(props[i].displayName);
+                    break;
+                case ThryPropertyType.header:
+                case ThryPropertyType.header_start:
                     ShaderHeader newHeader = new ShaderHeader(props[i], current.editor, displayName, offset, extraOptions);
                     headerStack.Peek().addPart(newHeader);
                     headerStack.Push(newHeader);
-                }
-                //if property is actual property and not hidden add under current header
-                else if (props[i].flags != MaterialProperty.PropFlags.HideInInspector)
-                {
+                    break;
+                case ThryPropertyType.property:
                     ShaderProperty newPorperty = null;
 
                     DrawingData.lastPropertyUsedCustomDrawer = false;
                     current.editor.GetPropertyHeight(props[i]);
 
+                    bool forceOneLine = props[i].type == MaterialProperty.PropType.Vector && !DrawingData.lastPropertyUsedCustomDrawer;
+
                     if (props[i].type == MaterialProperty.PropType.Texture)
                         newPorperty = new TextureProperty(props[i], displayName, offset, extraOptions, !DrawingData.lastPropertyUsedCustomDrawer);
                     else
-                        newPorperty = new ShaderProperty(props[i], displayName, offset, extraOptions);
+                        newPorperty = new ShaderProperty(props[i], displayName, offset, extraOptions, forceOneLine);
                     headerStack.Peek().addPart(newPorperty);
                     current.propertyDictionary.Add(props[i].name, newPorperty);
-                }
+                    break;
+                case ThryPropertyType.lightmap_flags:
+                    current.draw_material_option_lightmap = true;
+                    break;
+                case ThryPropertyType.dsgi:
+                    current.draw_material_option_dsgi = true;
+                    break;
+                case ThryPropertyType.instancing:
+                    current.draw_material_option_instancing = true;
+                    break;
             }
 		}
 	}
@@ -297,8 +338,7 @@ public class ThryEditor : ShaderGUI
         {
             if (property.ExtraOptionExists(EXTRA_OPTION_ALT_CLICK))
             {
-                string altClick = property.GetExtraOptionValue<string>(EXTRA_OPTION_ALT_CLICK);
-                DefinableAction action = Parsers.ParseDefinableAction(altClick);
+                DefinableAction action = Parsers.ConvertParsedToObject<DefinableAction>(property.GetExtraOptionValue(EXTRA_OPTION_ALT_CLICK));
                 action.Perform();
             }
         }
@@ -366,6 +406,9 @@ public class ThryEditor : ShaderGUI
             current.properties = props;
             current.textureArrayProperties = new List<MaterialProperty>();
             current.firstCall = true;
+            current.draw_material_option_dsgi = false;
+            current.draw_material_option_instancing = false;
+            current.draw_material_option_lightmap = false;
         }
 
         //handle events
@@ -405,6 +448,14 @@ public class ThryEditor : ShaderGUI
 		{
             part.Draw();
 		}
+
+        //Mateiral Options
+        if (current.draw_material_option_lightmap)
+            ThryEditorGuiHelper.DrawLightmapFlagsOptions();
+        if (current.draw_material_option_instancing)
+            ThryEditorGuiHelper.DrawInstancingOptions();
+        if (current.draw_material_option_dsgi)
+            ThryEditorGuiHelper.DrawDSGIOptions();
 
         //Render Queue selection
         if (config.showRenderQueue)
@@ -535,6 +586,18 @@ public class ThryEditor : ShaderGUI
                 Debug.Log(e.ToString());
             }
         }
+    }
+
+    public static string GetThryEditorDirectoryPath()
+    {
+        string[] guids = AssetDatabase.FindAssets("ThryEditor");
+        foreach (string g in guids)
+        {
+            string p = AssetDatabase.GUIDToAssetPath(g);
+            if (p.EndsWith("/ThryEditor.cs"))
+                return p.GetDirectoryPath().RemoveOneDirectory();
+        }
+        return null;
     }
 
     //----------Static Helper Functions

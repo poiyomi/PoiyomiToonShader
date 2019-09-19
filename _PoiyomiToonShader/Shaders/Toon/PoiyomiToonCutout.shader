@@ -3,34 +3,39 @@ Shader ".poiyomi/Toon/Default/Cutout"
     Properties
     {
         [HideInInspector] shader_is_using_thry_editor ("", Float) = 0
-                [HideInInspector] shader_master_label ("<color=#ff0000ff>❤</color> <color=#000000ff>Poiyomi Toon Shader V4.0</color> <color=#ff0000ff>❤</color>", Float) = 0
+        [HideInInspector] shader_master_label ("<color=#ff0000ff>❤</color> <color=#000000ff>Poiyomi Toon Shader V4.1</color> <color=#ff0000ff>❤</color>", Float) = 0
         [HideInInspector] shader_presets ("poiToonPresets", Float) = 0
-        [HideInInspector] shader_eable_poi_settings_selection ("", Float) = 0
+        [HideInInspector] shader_properties_label_file ("PoiLabels", Float) = 0
         
         [HideInInspector] footer_github ("linkButton(Github,https://github.com/poiyomi/PoiyomiToonShader)", Float) = 0
         [HideInInspector] footer_discord ("linkButton(Discord,https://discord.gg/Ays52PY)", Float) = 0
-        [HideInInspector] footer_donate ("linkButton(Donate,https://www.paypal.me/poiyomi)", Float) = 0
         [HideInInspector] footer_patreon ("linkButton(Patreon,https://www.patreon.com/poiyomi)", Float) = 0
-        [HideInInspector] footer_patch ("linkButton(Patch,https://www.youtube.com/watch?v=WSKKynXWBpo)", Float) = 0
+        [HideInInspector] footer_patch ("linkButton(Patch,https://youtu.be/h0KB3ZW5MXI)", Float) = 0
         
-        [HideInInspector] m_mainOptions ("Main--button_right={text:Tutorial,action:{type:url,data:https://youtu.be/FX3Uvcj35Rk},hover:YouTube}", Float) = 0
+        [HideInInspector] m_mainOptions ("Main", Float) = 0
         _Color ("Color & Alpha", Color) = (1, 1, 1, 1)
+        
         _Saturation ("Saturation", Range(-1, 1)) = 0
         _MainTex ("Texture", 2D) = "white" { }
         [Normal]_BumpMap ("Normal Map", 2D) = "bump" { }
+        
         _BumpScale ("Normal Intensity", Range(0, 10)) = 1
         _AlphaMask ("Alpha Mask", 2D) = "white" { }
         _Clip ("Alpha Cuttoff", Range(0, 1.001)) = 0.5
         [Toggle(_)]_ForceOpaque("Force Opaque", Float) = 1
         [HideInInspector] m_start_mainAdvanced ("Advanced", Float) = 0
-        _MainDistanceFade("Distance Fade X to Y", Vector) = (0,0,0,0)
-        _GlobalPanSpeed ("Pan Speed XY", Vector) = (0, 0, 0, 0)
+        [Vector2]_GlobalPanSpeed ("Pan Speed XY", Vector) = (0, 0, 0, 0)
         [Normal]_DetailNormalMap ("Detail Normal Map", 2D) = "bump" { }
         _DetailNormalMask ("Detail Mask", 2D) = "white" { }
         _DetailNormalMapScale ("Detail Intensity", Range(0, 10)) = 1
         [HideInInspector] m_end_mainAdvanced ("Advanced", Float) = 0
+        [HideInInspector] m_start_Fade ("Fade", Float) = 0
+        _MainMinAlpha ("Minimum Alpha", Range(0,1)) = 0
+        _MainFadeTexture ("Fade Map", 2D) = "white" { }
+        [Vector2]_MainDistanceFade("Distance Fade X to Y", Vector) = (0,0,0,0)
+        [HideInInspector] m_end_Fade ("Fade", Float) = 0
         
-        [HideInInspector] m_metallicOptions ("Metallic--button_right={text:Tutorial,action:{type:url,data:https://youtu.be/DyluMaFn64M},hover:YouTube}", Float) = 0
+        [HideInInspector] m_metallicOptions ("Metallic", Float) = 0
         [Toggle(_METALLICGLOSSMAP)]_EnableMetallic("Enable Metallics", Float) = 0
         _CubeMap ("Baked CubeMap", Cube) = "" { }
         [Toggle(_)]_SampleWorld ("Force Baked Cubemap", Range(0, 1)) = 0
@@ -41,17 +46,31 @@ Shader ".poiyomi/Toon/Default/Cutout"
         [Toggle(_)]_InvertSmoothness ("Invert Smoothness Mask", Range(0, 1)) = 0
         _Smoothness ("Smoothness", Range(0, 1)) = 0
         
-        [HideInInspector] m_matcapOptions ("Matcap / Sphere Textures--button_right={text:Tutorial,action:{type:url,data:https://youtu.be/DFo87kuO1OI},hover:YouTube}", Float) = 0
-        [Toggle(_COLORADDSUBDIFF_ON)]_EnableMatcap("Enable Matcap", Float) = 0
-        _Matcap ("Matcap", 2D) = "white" { }
-        _MatcapMask ("Matcap Mask", 2D) = "white" { }
-        _MatcapColor ("Matcap Color", Color) = (1, 1, 1, 1)
-        _MatcapBrightness ("Matcap Brightness", Range(0, 20)) = 1
-        _ReplaceWithMatcap ("Replace With Matcap", Range(0, 1)) = 1
-        _MultiplyMatcap ("Multiply Matcap", Range(0, 1)) = 0
-        _AddMatcap ("Add Matcap", Range(0, 1)) = 0
+        [HideInInspector] m_matcapOptions ("Matcap / Sphere Textures", Float) = 0
+        [Toggle(_COLORADDSUBDIFF_ON)]_MatcapEnable("Enable Matcap", Float) = 0
+        _MatcapColor ("Color", Color) = (1, 1, 1, 1)
+        [TextureNoSO]_Matcap ("Matcap", 2D) = "white" { }
+        _MatcapBorder ("Border", Range(0, .5)) = 0.43
+        _MatcapMask ("Mask", 2D) = "white" { }
+        _MatcapIntensity ("Intensity", Range(0, 5)) = 1
+        _MatcapLightMask ("Hide in Shadow", Range(0,1)) = 0
+        _MatcapReplace ("Replace With Matcap", Range(0, 1)) = 1
+        _MatcapMultiply ("Multiply Matcap", Range(0, 1)) = 0
+        _MatcapAdd ("Add Matcap", Range(0, 1)) = 0
+        [HideInInspector] m_start_Matcap2("Matcap 2", Float) = 0
+        [Toggle(_)]_Matcap2Enable("Enable Matcap 2", Float) = 0
+        _Matcap2Color ("Color", Color) = (1, 1, 1, 1)
+        [TextureNoSO]_Matcap2 ("Matcap", 2D) = "white" { }
+        _Matcap2Border ("Border", Range(0, .5)) = 0.43
+        _Matcap2Mask ("Mask", 2D) = "white" { }
+        _Matcap2Intensity ("Intensity", Range(0, 5)) = 1
+        _Matcap2LightMask ("Hide in Shadow", Range(0,1)) = 0
+        _Matcap2Replace ("Replace With Matcap", Range(0, 1)) = 0
+        _Matcap2Multiply ("Multiply Matcap", Range(0, 1)) = 0
+        _Matcap2Add ("Add Matcap", Range(0, 1)) = 0
+        [HideInInspector] m_end_Matcap2 ("Matcap 2", Float) = 0
         
-        [HideInInspector] m_emissionOptions ("Emission / Glow--button_right={text:Tutorial,action:{type:url,data:https://youtu.be/iqk23gtwkz0},hover:YouTube}", Float) = 0
+        [HideInInspector] m_emissionOptions ("Emission / Glow", Float) = 0
         [Toggle(_EMISSION)]_EnableEmission("Enable Emission", Float) = 0
         [HDR]_EmissionColor ("Emission Color", Color) = (1, 1, 1, 1)
         _EmissionMap ("Emission Map", 2D) = "white" { }
@@ -82,9 +101,9 @@ Shader ".poiyomi/Toon/Default/Cutout"
         _EmissiveScroll_Interval ("Emissive Scroll Interval", Float) = 20
         [HideInInspector] m_end_scrollingEmissionOptions ("Scrolling Emission", Float) = 0
         
-        [HideInInspector] m_fakeLightingOptions ("Light & Shadow--button_right={text:Tutorial,action:{type:url,data:https://youtu.be/2B-EJutVjs8},hover:YouTube}", Float) = 0
+        [HideInInspector] m_fakeLightingOptions ("Light & Shadow", Float) = 0
         [Toggle(_NORMALMAP)]_EnableLighting("Enable Lighting", Float) = 1
-        [Enum(Natural, 0, Controlled, 1)] _LightingType("Lighting Type", Int) = 0
+        [Enum(Natural, 0, Controlled, 1, Standardish, 2)] _LightingType("Lighting Type", Int) = 0
         [Gradient]_ToonRamp ("Lighting Ramp", 2D) = "white" { }
         _LightingShadowMask ("Shadow Mask (R)", 2D) = "white" { }
         _ShadowStrength ("Shadow Strength", Range(0, 1)) = 1
@@ -96,10 +115,9 @@ Shader ".poiyomi/Toon/Default/Cutout"
         _AdditiveSoftness ("Additive Softness", Range(0, 0.5)) = 0.005
         _AdditiveOffset ("Additive Offset", Range(-0.5, 0.5)) = 0
         _AttenuationMultiplier ("Attenuation", Range(0, 1)) = 0
-        _LightingControlledUseLightColor("Controlled: Use Light Color", Range(0,1)) = 1
         [HideInInspector] m_end_lightingAdvanced ("Advanced", Float) = 0
         
-        [HideInInspector] m_specularHighlightsOptions ("Specular Highlights--button_right={text:Tutorial,action:{type:url,data:https://youtu.be/YFFe8IrXVnc},hover:YouTube}", Float) = 0
+        [HideInInspector] m_specularHighlightsOptions ("Specular Highlights", Float) = 0
         [Toggle(_SPECGLOSSMAP)]_EnableSpecular("Enable Specular", Float) = 0
         [Enum(Realistic, 1, Toon, 2, Anisotropic, 3)] _SpecularType ("Specular Type", Int) = 1
         _SpecularTint ("Specular Tint", Color) = (.2, .2, .2, 1)
@@ -129,7 +147,7 @@ Shader ".poiyomi/Toon/Default/Cutout"
         [Toggle(_)]_ParallaxInternalMapEnabled ("Enable Parallax Internal", Float) = 0
         [HideInInspector] m_start_parallaxHeightmap ("Heightmap", Float) = 0
 		_ParallaxHeightMap ("Height Map", 2D) = "black" {}
-		_ParallaxHeightIterations ("Parallax Height Iterations", Range(1, 20)) = 1
+		_ParallaxHeightIterations ("Parallax Height Iterations", Range(1, 10)) = 1
 		_ParallaxStrength ("Parallax Strength", Range(0, 1)) = 0
         _ParallaxBias ("Parallax Bias (0.42)",Float) = 0.42
         [HideInInspector] m_end_parallaxHeightmap ("Heightmap", Float) = 0
@@ -144,11 +162,11 @@ Shader ".poiyomi/Toon/Default/Cutout"
         _ParallaxInternalMaxFade("Max Depth Brightness", Range(0,5)) = 0
         _ParallaxInternalMinColor("Min Depth Color", Color) = (1, 1, 1, 1)
         _ParallaxInternalMaxColor("Max Depth Color", Color) = (1, 1, 1, 1)
-        _ParallaxInternalPanSpeed("Pan Speed", Vector) = (0,0,0,0)
-        _ParallaxInternalPanDepthSpeed("Per Level Speed Multiplier", Vector) = (0,0,0,0)
+        [Vector2]_ParallaxInternalPanSpeed("Pan Speed", Vector) = (0,0,0,0)
+        [Vector2]_ParallaxInternalPanDepthSpeed("Per Level Speed Multiplier", Vector) = (0,0,0,0)
         [HideInInspector] m_end_parallaxInternal ("Internal", Float) = 0
 
-        [HideInInspector] m_subsurfaceOptions ("Subsurface Scattering--button_right={text:Tutorial,action:{type:url,data:https://youtu.be/hs1bnnPmDFc},hover:YouTube}", Float) = 0
+        [HideInInspector] m_subsurfaceOptions ("Subsurface Scattering", Float) = 0
         [Toggle(_TERRAIN_NORMAL_MAP)]_EnableSSS("Enable Subsurface Scattering", Float) = 0
         _SSSColor ("Subsurface Color", Color) = (1, 1, 1, 1)
         _SSSThicknessMap ("Thickness Map", 2D) = "black" { }
@@ -157,7 +175,7 @@ Shader ".poiyomi/Toon/Default/Cutout"
         _SSSPower ("Light Spread", Range(1, 100)) = 1
         _SSSDistortion ("Light Distortion", Range(0, 1)) = 0
 
-        [HideInInspector] m_rimLightOptions ("Rim Lighting--button_right={text:Tutorial,action:{type:url,data:https://youtu.be/JNxzcRY_BZ8},hover:YouTube}", Float) = 0
+        [HideInInspector] m_rimLightOptions ("Rim Lighting", Float) = 0
         [Toggle(_GLOSSYREFLECTIONS_OFF)]_EnableRimLighting("Enable Rim Lighting", Float) = 0
         [Toggle(_)]_RimLightingInvert("Invert Rim Lighting", Float) = 0
         _RimLightColor ("Rim Color", Color) = (1, 1, 1, 1)
@@ -168,7 +186,7 @@ Shader ".poiyomi/Toon/Default/Cutout"
         _RimLightColorBias ("Rim Color Bias", Range(0, 1)) = 0
         _RimTex ("Rim Texture", 2D) = "white" { }
         _RimMask ("Rim Mask", 2D) = "white" { }
-        _RimTexPanSpeed ("Rim Texture Pan Speed", Vector) = (0, 0, 0, 0)
+        [Vector2]_RimTexPanSpeed ("Pan Speed", Vector) = (0, 0, 0, 0)
         
         [HideInInspector] m_start_reflectionRim ("Environmental Rim", Float) = 0
         [Toggle(_)]_EnableEnvironmentalRim("Enable Environmental Rim", Float) = 0
@@ -180,7 +198,7 @@ Shader ".poiyomi/Toon/Default/Cutout"
         [HideInInspector] m_start_rimWidthNoise ("Width Noise", Float) = 0
         _RimWidthNoiseTexture ("Rim Width Noise", 2D) = "black" { }
         _RimWidthNoiseStrength ("Intensity", Range(0,1)) = 0.1
-        _RimWidthNoisePan ("Pan Speed (XY)", Vector) = (0,0,0,0)
+        [Vector2]_RimWidthNoisePan ("Pan Speed", Vector) = (0,0,0,0)
         [HideInInspector] m_end_rimWidthNoise ("Width Noise", Float) = 0
         [HideInInspector] m_start_ShadowMix ("Shadow Mix", Float) = 0
         _ShadowMix ("Shadow Mix In", Range(0, 1)) = 0
@@ -188,9 +206,9 @@ Shader ".poiyomi/Toon/Default/Cutout"
         _ShadowMixWidthMod ("Shadow Mix Width Mod", Range(0, 10)) = .5
         [HideInInspector] m_end_ShadowMix ("Shadow Mix", Float) = 0
         
-        [HideInInspector] m_flipBook ("Flipbook--button_right={text:Tutorial,action:{type:url,data:https://youtu.be/NrA18CITEVs},hover:YouTube}", Float) = 0
+        [HideInInspector] m_flipBook ("Flipbook", Float) = 0
         [Toggle(_FADING_ON)]_EnableFlipbook("Enable Flipbook", Float) = 0
-        [TextureArray]_FlipbookTexArray ("Texture Array", 2DArray) = "" {}
+        _FlipbookTexArray ("Texture Array", 2DArray) = "" {}
         _FlipbookColor ("Color & alpha", Color) = (1, 1, 1, 1)
         _FlipbookTotalFrames ("Total Frames", Int) = 1
         _FlipbookFPS ("FPS", Float) = 30.0
@@ -202,18 +220,12 @@ Shader ".poiyomi/Toon/Default/Cutout"
         _FlipbookMultiply("Multiply", Range(0,1)) = 0
         _FlipbookAdd("Add", Range(0,1)) = 0
         //[Toggle(_)]_FlipbookControlsAlpha("Flipbook Controls Alpha", Float) = 0
-        /*
-        [HideInInspector] m_start_FlipbookOffsetLoop ("Offset Animation", Float) = 0
-        [Enum(Off, 0, Loop, 1, Bounce, 2, Smooth Bounce, 3)]_FlipbookMovementType("Movement Type", Int) = 1
-        _FlipbookStartEndOffset("Start & End Offset", Vector) = (0,0,0,0)
-        _FlipbookMovementSpeed("Speed", Float) = 1.0
-        [HideInInspector] m_end_FlipbookOffsetLoop ("Offset Animation", Float) = 0
-        */
+
         [HideInInspector] m_start_manualFlipbookControl ("Manual Control", Float) = 0
         _FlipbookCurrentFrame ("Current Frame", Float) = -1
         [HideInInspector] m_end_manualFlipbookControl ("Manual Control", Float) = 0
 
-        [HideInInspector] m_dissolve ("Dissolve--button_right={text:Tutorial,action:{type:url,data:https://youtu.be/abTejmV4yGU},hover:YouTube}", Float) = 0
+        [HideInInspector] m_dissolve ("Dissolve", Float) = 0
         [Toggle(_ALPHABLEND_ON)]_EnableDissolve("Enable Dissolve", Float) = 0
         [Enum(Basic, 1, Point2Point, 2)] _DissolveType ("Dissolve Type", Int) = 1
         _DissolveEdgeWidth ("Edge Width", Range(0,.5)) = 0.025
@@ -224,7 +236,7 @@ Shader ".poiyomi/Toon/Default/Cutout"
         _DissolveTextureColor ("Dissolve to Color", Color) = (1, 1, 1, 1)
         _DissolveToTexture ("Dissolve to Texture", 2D) = "white" { }
         _DissolveToEmissionStrength ("Dissolve to Emission Strength", Range(0,20)) = 0
-        _DissolveToPanning ("Dissolve to Panning XY", Vector) = (0,0,0,0)
+        [Vector2]_DissolveToPanning ("Dissolve to Panning", Vector) = (0,0,0,0)
         _DissolveNoiseTexture ("Dissolve Noise", 2D) = "white" { }
         [Toggle(_)]_DissolveInvertNoise ("Invert Noise", Float) = 0
         _DissolveDetailNoise ("Dissolve Detail Noise", 2D) = "black" { }
@@ -237,22 +249,22 @@ Shader ".poiyomi/Toon/Default/Cutout"
         [HideInInspector] m_start_pointToPoint ("point to point", Float) = 0
         [Enum(Local, 0, World, 1)] _DissolveP2PWorldLocal ("World/Local", Int) = 0
         _DissolveP2PEdgeLength ("Edge Length", Float) = 0.1
-        _DissolveStartPoint ("Start Point", Vector) = (0,-1,0,0)
-        _DissolveEndPoint ("End Point", Vector) = (0,1,0,0)
+        [Vector3]_DissolveStartPoint ("Start Point", Vector) = (0,-1,0,0)
+        [Vector3]_DissolveEndPoint ("End Point", Vector) = (0,1,0,0)
         [HideInInspector] m_end_pointToPoint ("Point To Point", Float) = 0
         
-        [HideInInspector] m_panosphereOptions ("Panosphere / Cubemaps--button_right={text:Tutorial,action:{type:url,data:https://youtu.be/wyCY6qE0_Vg},hover:YouTube}", Float) = 0
+        [HideInInspector] m_panosphereOptions ("Panosphere / Cubemaps", Float) = 0
         [Toggle(_DETAIL_MULX2)]_PanoToggle("Enable Panosphere", Float) = 0
         _PanosphereColor ("Color", Color) = (1, 1, 1, 1)
         _PanosphereTexture ("Texture", 2D) = "white" { }
         _PanoMapTexture ("Mask", 2D) = "white" { }
         _PanoEmission ("Emission Strength", Range(0, 10)) = 0
         _PanoBlend ("Alpha", Range(0, 1)) = 0
-        _PanospherePan ("Pan Speed", Vector) = (0, 0, 0, 0)
+        [Vector3]_PanospherePan ("Pan Speed", Vector) = (0, 0, 0, 0)
         [Toggle(_)]_PanoCubeMapToggle("Use Cubemap", Float) = 0
-        _PanoCubeMap ("CubeMap", Cube) = "" { }
+        [TextureNoSO]_PanoCubeMap ("CubeMap", Cube) = "" { }
 
-        [HideInInspector] m_StencilPassOptions ("Stencil--button_right={text:Tutorial,action:{type:url,data:https://youtu.be/uniOEpw88jk},hover:YouTube}", Float) = 0
+        [HideInInspector] m_StencilPassOptions ("Stencil", Float) = 0
         [IntRange] _StencilRef ("Stencil Reference Value", Range(0, 255)) = 0
         //[IntRange] _StencilReadMaskRef ("Stencil ReadMask Value", Range(0, 255)) = 0
         //[IntRange] _StencilWriteMaskRef ("Stencil WriteMask Value", Range(0, 255)) = 0
@@ -261,13 +273,25 @@ Shader ".poiyomi/Toon/Default/Cutout"
         [Enum(UnityEngine.Rendering.StencilOp)] _StencilZFailOp ("Stencil ZFail Op", Float) = 0
         [Enum(UnityEngine.Rendering.CompareFunction)] _StencilCompareFunction ("Stencil Compare Function", Float) = 8
         
-        [HideInInspector] m_mirrorOptions ("Mirror--button_right={text:Tutorial,action:{type:url,data:https://youtu.be/ptnVKyuijO4},hover:YouTube}", Float) = 0
+        [HideInInspector] m_mirrorOptions ("Mirror", Float) = 0
         [Toggle(_REQUIRE_UV2)]_EnableMirrorOptions("Enable Mirror Options", Float) = 0
         [Enum(ShowInBoth, 0, ShowOnlyInMirror, 1, DontShowInMirror, 2)] _Mirror ("Show in mirror", Int) = 0
         [Toggle(_)]_EnableMirrorTexture("Enable Mirror Texture", Float) = 0
         _MirrorTexture ("Mirror Tex", 2D) = "white" {}
 
-        [HideInInspector] m_miscOptions ("Misc--button_right={text:Tutorial,action:{type:url,data:https://youtu.be/P5KlE9rk9pg},hover:YouTube}", Float) = 0
+        [HideInInspector] m_RandomOptions ("Random", Float) = 0
+        [Toggle(_SUNDISK_NONE)]_EnableRandom ("Enable Random", Float) = 0
+        [HideInInspector] m_start_Angle ("Angular Rendering", Float) = 0
+        [Enum(Camera Face Model, 0, Model Face Camera, 1, Face Each Other, 2)] _AngleType ("Angle Type", Int) = 0
+        [Vector3]_AngleForwardDirection ("Forward Direction", Vector) = (0,0,1,0)
+        _CameraAngleMin ("Camera Angle Min", Range(0,180)) = 45
+        _CameraAngleMax ("Camera Angle Max", Range(0,180)) = 90
+        _ModelAngleMin ("Model Angle Min", Range(0,180)) = 45
+        _ModelAngleMax ("Model Angle Max", Range(0,180)) = 90
+        _AngleMinAlpha ("Min Alpha", Range(0,1)) = 0
+        [HideInInspector] m_end_Angle ("Angular Rendering", Float) = 0
+
+        [HideInInspector] m_renderingOptions ("Rendering Options", Float) = 0
         [Enum(UnityEngine.Rendering.CullMode)] _Cull ("Cull", Float) = 2
         [Enum(UnityEngine.Rendering.CompareFunction)] _ZTest ("ZTest", Float) = 4
         [Enum(UnityEngine.Rendering.BlendMode)] _SourceBlend ("Source Blend", Float) = 5
@@ -279,9 +303,8 @@ Shader ".poiyomi/Toon/Default/Cutout"
         [Toggle(_COLOROVERLAY_ON)]_DebugDisplayDebug("Display Debug Info", Float) = 0
         [Enum(Off, 0, Vertex Normal, 1, Pixel Normal, 2, Tangent, 3, Binormal, 4)] _DebugMeshData ("Mesh Data", Int) = 0
         [Enum(Off, 0, Attenuation, 1, Direct Lighting, 2, Indirect Lighting, 3, light Map, 4, Ramped Light Map, 5, Final Lighting, 6)] _DebugLightingData ("Lighting Data", Int) = 0
-        [Enum(Off, 0, finalSpecular, 1, highTexture, 2, tangentDirectionMap, 3, shiftTexture, 4)] _DebugSpecularData ("Specular Data", Int) = 0
+        [Enum(Off, 0, finalSpecular, 1, tangentDirectionMap, 2, shiftTexture, 3)] _DebugSpecularData ("Specular Data", Int) = 0
         [Enum(Off, 0, View Dir, 1, Tangent View Dir, 2, Forward Dir, 3, WorldPos, 4, View Dot Normal, 5)] _DebugCameraData ("Camera Data", Int) = 0
-
     }
     
     CustomEditor "ThryEditor"
@@ -313,7 +336,9 @@ Shader ".poiyomi/Toon/Default/Cutout"
             #pragma shader_feature _PARALLAXMAP
             // Mirror
             #pragma shader_feature _REQUIRE_UV2
-            // Texture Blending
+            // Random
+            #pragma shader_feature _SUNDISK_NONE
+            // Dissolve
             #pragma shader_feature _ALPHABLEND_ON
             // Panosphere
             #pragma shader_feature _DETAIL_MULX2
@@ -370,7 +395,9 @@ Shader ".poiyomi/Toon/Default/Cutout"
             #pragma shader_feature _PARALLAX_MAP
             // Mirror
             #pragma shader_feature _REQUIRE_UV2
-            // Texture Blending
+            // Random
+            #pragma shader_feature _SUNDISK_NONE
+            // Dissolve
             #pragma shader_feature _ALPHABLEND_ON
             // Panosphere
             #pragma shader_feature _DETAIL_MULX2
@@ -422,7 +449,9 @@ Shader ".poiyomi/Toon/Default/Cutout"
             #define POISHADOW
             // Mirror
             #pragma shader_feature _REQUIRE_UV2
-            // Texture Blending
+            // Random
+            #pragma shader_feature _SUNDISK_NONE
+            // Dissolve
             #pragma shader_feature _ALPHABLEND_ON
             #pragma multi_compile_instancing
             #pragma vertex vertShadowCaster

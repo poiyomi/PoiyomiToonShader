@@ -30,26 +30,15 @@
     void calculateLightColor()
     {
         #ifdef FORWARD_BASE_PASS
+            //poiLight.color = saturate(_LightColor0.rgb) + saturate(ShadeSH9(normalize(unity_SHAr + unity_SHAg + unity_SHAb)));
             float3 magic = saturate(ShadeSH9(normalize(unity_SHAr + unity_SHAg + unity_SHAb)));
             float3 normalLight = saturate(_LightColor0.rgb);
-            poiLight.color = magic+normalLight;
+            poiLight.color = saturate(magic+normalLight);
         #else
             #if defined(POINT) || defined(SPOT)
                 poiLight.color = _LightColor0.rgb;
             #endif
         #endif
-    }
-    
-    float3 getCameraForward()
-    {
-        #if UNITY_SINGLE_PASS_STEREO
-            float3 p1 = mul(unity_StereoCameraToWorld[0], float4(0, 0, 1, 1));
-            float3 p2 = mul(unity_StereoCameraToWorld[0], float4(0, 0, 0, 1));
-        #else
-            float3 p1 = mul(unity_CameraToWorld, float4(0, 0, 1, 1));
-            float3 p2 = mul(unity_CameraToWorld, float4(0, 0, 0, 1));
-        #endif
-        return normalize(p2 - p1);
     }
     
     float3 CreateBinormal(float3 normal, float3 tangent, float binormalSign)
@@ -75,6 +64,7 @@
         poiCam.worldPos = _WorldSpaceCameraPos;
         poiCam.tangentViewDir = normalize(i.tangentViewDir);
         poiCam.distanceToModel = distance(poiMesh.modelPos, poiCam.worldPos);
+        poiCam.distanceToVert = distance(poiMesh.worldPos, poiCam.worldPos);
     }
     
     void calculateTangentData()

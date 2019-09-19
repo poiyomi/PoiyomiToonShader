@@ -27,6 +27,11 @@
             bulgyWolgy(o);
         #endif
 
+        o.angleAlpha = 1;
+        #ifdef POI_RANDOM
+            o.angleAlpha = ApplyAngleBasedRendering(o.modelPos);
+        #endif
+
         float3x3 objectToTangent = float3x3(
             v.tangent.xyz,
             cross(v.normal, v.tangent.xyz) * v.tangent.w,

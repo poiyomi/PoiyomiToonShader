@@ -44,10 +44,11 @@
         float4 screenPos: TEXCOORD6;
         float3 tangentViewDir: TEXCOORD7;
         float3 modelPos: TEXCOORD8;
+        float angleAlpha: TEXCOORD9;
         UNITY_VERTEX_INPUT_INSTANCE_ID
         UNITY_VERTEX_OUTPUT_STEREO
-        UNITY_SHADOW_COORDS(9)
-        UNITY_FOG_COORDS(10)
+        UNITY_SHADOW_COORDS(10)
+        UNITY_FOG_COORDS(11)
     };
     
     struct PoiLighting
@@ -77,6 +78,7 @@
         half3 worldPos;
         float viewDotNormal;
         float distanceToModel;
+        float distanceToVert;
     };
     
     struct PoiMesh

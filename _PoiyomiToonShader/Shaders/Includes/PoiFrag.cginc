@@ -35,6 +35,11 @@
             calculateReflections();
         #endif
         
+        #ifdef POI_RANDOM
+            mainTexture.a *= i.angleAlpha;
+            albedo.a *= i.angleAlpha;
+        #endif
+
         #ifdef POI_DATA
             distanceFade();
         #endif
@@ -97,10 +102,6 @@
         
         #ifdef POI_RIM
             applyEnviroRim(finalColor);
-        #endif
-        
-        #ifdef DND_POI_LIGHTING
-            applyDNDLighting(finalColor);
         #endif
         
         #ifdef POI_METAL
@@ -172,7 +173,7 @@
         #ifdef POI_DEBUG
             displayDebugInfo(finalColor);
         #endif
-        
+
         finalColor.a = max(_ForceOpaque, finalColor.a);
         return finalColor;
     }
