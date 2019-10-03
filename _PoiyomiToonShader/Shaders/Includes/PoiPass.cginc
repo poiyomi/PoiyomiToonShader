@@ -5,7 +5,7 @@ _EMISSION
 _REQUIRE_UV2
 _ALPHABLEND_ON
 _DETAIL_MULX2
-_FADING_ON
+_FLIPBOOK_BLENDING
 _GLOSSYREFLECTIONS_OFF
 _METALLICGLOSSMAP
 _TERRAIN_NORMAL_MAP
@@ -13,12 +13,12 @@ _COLOROVERLAY_ON
 _COLORADDSUBDIFF_ON
 _NORMALMAP
 _SUNDISK_NONE
+_COLORCOLOR_ON
 
 _ALPHAMODULATE_ON
 _ALPHAPREMULTIPLY_ON
 _ALPHATEST_ON
 _MAPPING_6_FRAMES_LAYOUT
-_COLORCOLOR_ON
 _SMOOTHNESS_TEXTURE_ALBEDO_CHANNEL_A
 _SPECULARHIGHLIGHTS_OFF
 _SUNDISK_HIGH_QUALITY
@@ -78,7 +78,7 @@ UNITY_UI_CLIP_RECT
         #include "PoiLighting.cginc"
     #endif
     
-    #ifdef _FADING_ON
+    #ifdef _FLIPBOOK_BLENDING
         #include "PoiFlipbook.cginc"
     #endif
     
@@ -110,6 +110,14 @@ UNITY_UI_CLIP_RECT
         #include "PoiEmission.cginc"
     #endif
     
+    #ifdef _COLORCOLOR_ON
+        #include "PoiClearCoat.cginc"
+    #endif
+    
+    #ifdef CUTOUT
+        #include "PoiAlphaToCoverage.cginc"
+    #endif
+
     #ifdef _COLOROVERLAY_ON
         #include "PoiDebug.cginc"
     #endif

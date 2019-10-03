@@ -92,7 +92,7 @@ namespace Thry
 
         private static bool IsVRCSDKInstalled()
         {
-            return System.Type.GetType("VRC.AccountEditorWindow") != null || System.Type.GetType("SDKUpdater") != null;
+            return Helper.NameSpaceExists("VRCSDK2");
         }
 
         public void RemoveVRCSDK()
@@ -147,7 +147,7 @@ namespace Thry
 
             if (File.Exists(TEMP_VRC_SDK_PACKAGE_PATH))
                 File.Delete(TEMP_VRC_SDK_PACKAGE_PATH);
-            Helper.DownloadBytesToPath(url, TEMP_VRC_SDK_PACKAGE_PATH, VRCSDKUpdateCallback);
+            Helper.DownloadFileASync(url, TEMP_VRC_SDK_PACKAGE_PATH, VRCSDKUpdateCallback);
         }
 
         public static void VRCSDKUpdateCallback(string data)

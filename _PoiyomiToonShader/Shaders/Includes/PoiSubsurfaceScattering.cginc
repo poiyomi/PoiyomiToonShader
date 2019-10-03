@@ -14,7 +14,7 @@
     
     void calculateSubsurfaceScattering()
     {
-        float SSS = 1 - UNITY_SAMPLE_TEX2D_SAMPLER(_SSSThicknessMap, _MainTex, TRANSFORM_TEX(poiMesh.uv, _SSSThicknessMap));
+        float SSS = 1 - UNITY_SAMPLE_TEX2D_SAMPLER(_SSSThicknessMap, _MainTex, TRANSFORM_TEX(poiMesh.uv[0], _SSSThicknessMap));
         
         half3 vLTLight = poiLight.direction + poiMesh.vertexNormal * _SSSDistortion;
         half flTDot = pow(saturate(dot(poiCam.viewDir, -vLTLight)), _SSSPower) * _SSSSCale;

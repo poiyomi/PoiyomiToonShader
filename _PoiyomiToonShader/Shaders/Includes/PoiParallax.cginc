@@ -42,7 +42,7 @@
         float2 uvDelta = viewDir * (stepSize * _ParallaxStrength);
         
         float stepHeight = 1;
-        float surfaceHeight = GetParallaxHeight(poiMesh.uv);
+        float surfaceHeight = GetParallaxHeight(poiMesh.uv[0]);
         
         float2 prevUVOffset = uvOffset;
         float prevStepHeight = stepHeight;
@@ -56,7 +56,7 @@
             
             uvOffset -= uvDelta;
             stepHeight -= stepSize;
-            surfaceHeight = GetParallaxHeight(poiMesh.uv + uvOffset);
+            surfaceHeight = GetParallaxHeight(poiMesh.uv[0] + uvOffset);
         }
         
         float prevDifference = prevStepHeight - prevSurfaceHeight;
@@ -74,7 +74,7 @@
         {
             i.tangentViewDir = normalize(i.tangentViewDir);
             i.tangentViewDir.xy /= (i.tangentViewDir.z + _ParallaxBias);
-            poiMesh.uv += ParallaxRaymarching(i.tangentViewDir.xy);
+            poiMesh.uv[0] += ParallaxRaymarching(i.tangentViewDir.xy);
         }
     }
     
@@ -90,7 +90,7 @@
                     float ratio = (float)j / _ParallaxInternalIterations;
                     float2 parallaxOffset = _Time.y * (_ParallaxInternalPanSpeed + (1 - ratio) * _ParallaxInternalPanDepthSpeed);
                     float fade = lerp(_ParallaxInternalMinFade, _ParallaxInternalMaxFade, ratio);
-                    float4 parallaxColor = tex2D(_ParallaxInternalMap, TRANSFORM_TEX(poiMesh.uv, _ParallaxInternalMap) + lerp(_ParallaxInternalMinDepth, _ParallaxInternalMaxDepth, ratio) * - poiCam.tangentViewDir.xy + parallaxOffset);
+                    float4 parallaxColor = tex2D(_ParallaxInternalMap, TRANSFORM_TEX(poiMesh.uv[0], _ParallaxInternalMap) + lerp(_ParallaxInternalMinDepth, _ParallaxInternalMaxDepth, ratio) * - poiCam.tangentViewDir.xy + parallaxOffset);
                     float3 parallaxTint = lerp(_ParallaxInternalMinColor, _ParallaxInternalMaxColor, ratio);
                     float parallaxHeight;
                     if(_ParallaxInternalHeightFromAlpha)

@@ -144,7 +144,7 @@ namespace Thry
 
                 string file_name = "text_" + Regex.Replace(text, @"\s", "_");
                 string save_path = "Assets/Textures/Text/" + file_name + ".png";
-                return Helper.SaveTextureAsPNG(text_texture, save_path, TextureWrapMode.Clamp, FilterMode.Point);
+                return Helper.SaveTextureAsPNG(text_texture, save_path, null);
             }
             else
             {
@@ -155,24 +155,24 @@ namespace Thry
 
         //--Start--Gradient
 
-        public static void TextureToGradient(ref GradientData data)
+        public static Gradient TextureToGradient(Texture2D texture)
         {
             Debug.Log("Texture converted to gradient.");
 
-            int d = (int)Mathf.Sqrt(Mathf.Pow(data.texture.width, 2) + Mathf.Pow(data.texture.height, 2));
+            int d = (int)Mathf.Sqrt(Mathf.Pow(texture.width, 2) + Mathf.Pow(texture.height, 2));
             List<GradientColorKey> colorKeys = new List<GradientColorKey>();
             List<GradientAlphaKey> alphaKeys = new List<GradientAlphaKey>();
-            colorKeys.Add(new GradientColorKey(data.texture.GetPixel(data.texture.width - 1, data.texture.height - 1), 1));
-            alphaKeys.Add(new GradientAlphaKey(data.texture.GetPixel(data.texture.width - 1, data.texture.height - 1).a, 1));
-            colorKeys.Add(new GradientColorKey(data.texture.GetPixel(0, 0), 0));
-            alphaKeys.Add(new GradientAlphaKey(data.texture.GetPixel(0, 0).a, 0));
+            colorKeys.Add(new GradientColorKey(texture.GetPixel(texture.width - 1, texture.height - 1), 1));
+            alphaKeys.Add(new GradientAlphaKey(texture.GetPixel(texture.width - 1, texture.height - 1).a, 1));
+            colorKeys.Add(new GradientColorKey(texture.GetPixel(0, 0), 0));
+            alphaKeys.Add(new GradientAlphaKey(texture.GetPixel(0, 0).a, 0));
             int colKeys = 0;
             int alphaKeysCount = 0;
 
             bool isFlat = false;
             bool isNotFlat = false;
 
-            float[][] prevSteps = new float[][] { GetSteps(GetColorAtI(ref data, 0, d), GetColorAtI(ref data, 1, d)), GetSteps(GetColorAtI(ref data, 0, d), GetColorAtI(ref data, 1, d)) };
+            float[][] prevSteps = new float[][] { GetSteps(GetColorAtI(texture, 0, d), GetColorAtI(texture, 1, d)), GetSteps(GetColorAtI(texture, 0, d), GetColorAtI(texture, 1, d)) };
 
             bool wasFlat = false;
             int maxBetweenFlats = 3;
@@ -182,10 +182,10 @@ namespace Thry
             int nonFlats = 0;
             float[][] steps = new float[d][];
             float[] alphaStep = new float[d];
-            Color prevColor = GetColorAtI(ref data, 0, d);
+            Color prevColor = GetColorAtI(texture, 0, d);
             for (int i = 0; i < d; i++)
             {
-                Color col = GetColorAtI(ref data, i, d);
+                Color col = GetColorAtI(texture, i, d);
                 steps[i] = GetSteps(prevColor, col);
                 alphaStep[i] = Mathf.Abs(prevColor.a - col.a);
                 prevColor = col;
@@ -210,12 +210,12 @@ namespace Thry
             }
 
 
-            Color lastStableColor = GetColorAtI(ref data, 0, d);
+            Color lastStableColor = GetColorAtI(texture, 0, d);
             float lastStableTime = 0;
             bool added = false;
             for (int i = 1; i < d; i++)
             {
-                Color col = GetColorAtI(ref data, i, d);
+                Color col = GetColorAtI(texture, i, d);
                 float[] newColSteps = steps[i];
                 float time = (float)(i) / d;
 
@@ -247,11 +247,10 @@ namespace Thry
                 if (nonFlats > maxBetweenFlats) isNotFlat = true;
                 wasFlat = thisOneFlat;
             }
-            data.gradientObj.gradient.SetKeys(colorKeys.ToArray(), alphaKeys.ToArray());
-            if (isFlat && !isNotFlat) data.gradientObj.gradient.mode = GradientMode.Fixed;
-            data.serializedGradient = new SerializedObject(data.gradientObj);
-            data.colorGradient = data.serializedGradient.FindProperty("gradient");
-            ThryEditor.repaint();
+            Gradient gradient = new Gradient();
+            gradient.SetKeys(colorKeys.ToArray(), alphaKeys.ToArray());
+            if (isFlat && !isNotFlat) gradient.mode = GradientMode.Fixed;
+            return gradient;
         }
 
         private static bool SimilarSteps(float[] steps1, float[] steps2, float perc)
@@ -270,54 +269,24 @@ namespace Thry
             return new float[] { col1.r - col2.r, col1.g - col2.g, col1.b - col2.b };
         }
 
-        private static Color GetColorAtI(ref GradientData data, int i, int d)
+        private static Color GetColorAtI(Texture2D texture, int i, int d)
         {
-            int y = (int)(((float)i) / d * data.texture.height);
-            int x = (int)(((float)i) / d * data.texture.width);
-            Color col = data.texture.GetPixel(x, y);
+            int y = (int)(((float)i) / d * texture.height);
+            int x = (int)(((float)i) / d * texture.width);
+            Color col = texture.GetPixel(x, y);
             return col;
         }
 
-        public static string GradientToString(ref GradientData data)
+        public static Texture2D GradientToTexture(Gradient gradient, int width, int height)
         {
-            string ret = "";
-            foreach (GradientColorKey key in data.gradientObj.gradient.colorKeys)
-                ret += "c," + key.color.r + "," + key.color.g + "," + key.color.b + "," + key.time;
-            foreach (GradientAlphaKey key in data.gradientObj.gradient.alphaKeys)
-                ret += "a," + key.alpha + "," + key.time;
-            ret += "m" + ((int)data.gradientObj.gradient.mode);
-            return ret;
-        }
-
-        public static void StringToGradient(ref GradientData data, string s)
-        {
-            List<GradientColorKey> colorKeys = new List<GradientColorKey>();
-            List<GradientAlphaKey> alphaKeys = new List<GradientAlphaKey>();
-            MatchCollection colorMatches = Regex.Matches(s, @"c,\d+(\.\d+)?,\d+(\.\d+)?,\d+(\.\d+)?,\d+(\.?\d+)?");
-            MatchCollection alphaMatches = Regex.Matches(s, @"a,\d+(\.\d+)?,\d+(\.\d+)?");
-            Match blendMatch = Regex.Match(s, @"m\d+");
-            foreach (Match m in colorMatches)
+            Texture2D texture = new Texture2D(width, height);
+            for (int x = 0; x < width; x++)
             {
-                string[] graddata = Regex.Split(m.Value, @",");
-                colorKeys.Add(new GradientColorKey(new Color(float.Parse(graddata[1]), float.Parse(graddata[2]), float.Parse(graddata[3]), 1), float.Parse(graddata[4])));
+                Color col = gradient.Evaluate((float)x / width);
+                for (int y = 0; y < height; y++) texture.SetPixel(x, y, col);
             }
-            foreach (Match m in alphaMatches)
-            {
-                string[] graddata = Regex.Split(m.Value, @",");
-                alphaKeys.Add(new GradientAlphaKey(float.Parse(graddata[1]), float.Parse(graddata[2])));
-            }
-            data.gradientObj.gradient.SetKeys(colorKeys.ToArray(), alphaKeys.ToArray());
-            data.gradientObj.gradient.mode = (GradientMode)(int.Parse(blendMatch.Value.Replace("m", "")));
-        }
-
-        public static void GradientToTexture(ref GradientData data)
-        {
-            for (int x = 0; x < data.texture.width; x++)
-            {
-                Color col = data.gradientObj.gradient.Evaluate((float)x / data.texture.width);
-                for (int y = 0; y < data.texture.height; y++) data.texture.SetPixel(x, y, col);
-            }
-            data.texture.Apply();
+            texture.Apply();
+            return texture;
         }
 
         //--End--Gradient

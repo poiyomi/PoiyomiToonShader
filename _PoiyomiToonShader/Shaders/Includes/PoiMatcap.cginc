@@ -40,7 +40,7 @@
         half2 matcapUV = half2(dot(worldViewRight, poiMesh.fragmentNormal), dot(worldViewUp, poiMesh.fragmentNormal)) * _MatcapBorder + 0.5;
         matcap = UNITY_SAMPLE_TEX2D_SAMPLER(_Matcap, _MainTex, matcapUV) * _MatcapColor;
         matcap.rgb *= _MatcapIntensity;
-        matcapMask = UNITY_SAMPLE_TEX2D_SAMPLER(_MatcapMask, _MainTex, TRANSFORM_TEX(poiMesh.uv, _MatcapMask));
+        matcapMask = UNITY_SAMPLE_TEX2D_SAMPLER(_MatcapMask, _MainTex, TRANSFORM_TEX(poiMesh.uv[0], _MatcapMask));
         #ifdef POI_LIGHTING
             if (_MatcapLightMask)
             {
@@ -53,9 +53,9 @@
         if (_Matcap2Enable)
         {
             half2 matcapUV2 = half2(dot(worldViewRight, poiMesh.fragmentNormal), dot(worldViewUp, poiMesh.fragmentNormal)) * _Matcap2Border + 0.5;
-            matcap2 = UNITY_SAMPLE_TEX2D_SAMPLER(_Matcap2, _MainTex, matcapUV) * _Matcap2Color;
+            matcap2 = UNITY_SAMPLE_TEX2D_SAMPLER(_Matcap2, _MainTex, matcapUV2) * _Matcap2Color;
             matcap2 *= _Matcap2Intensity;
-            matcap2Mask = UNITY_SAMPLE_TEX2D_SAMPLER(_Matcap2Mask, _MainTex, TRANSFORM_TEX(poiMesh.uv, _Matcap2Mask));
+            matcap2Mask = UNITY_SAMPLE_TEX2D_SAMPLER(_Matcap2Mask, _MainTex, TRANSFORM_TEX(poiMesh.uv[0], _Matcap2Mask));
             #ifdef POI_LIGHTING
                 if(_Matcap2LightMask)
                 {

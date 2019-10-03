@@ -58,9 +58,12 @@ namespace Thry
 
         const string THRY_MCS_URL = "https://raw.githubusercontent.com/Thryrallo/ThryEditor/master/mcs.rsp";
 
+        const string THRY_MESSAGE_URL = "http://thryeditor.thryrallo.de/message.json";
+        public static ButtonData thry_message = null;
+
         const string THRY_VRC_TOOLS_VERSION_PATH = "thry_vrc_tools_version";
 
-        const string MCS_NEEDED_PATH = "Assets/mcs.rsp";
+        const string MCS_NEEDED_PATH = "Assets/";
 
         private static string[][] SETTINGS_CONTENT = new string[][]
         {
@@ -128,6 +131,9 @@ namespace Thry
             {
                 moduleSettings[i++] = (ModuleSettings)Activator.CreateInstance(classtype);
             }
+
+            if (thry_message == null)
+                Helper.DownloadStringASync(THRY_MESSAGE_URL, delegate (string s) { thry_message = Parser.ParseToObject<ButtonData>(s); });
         }
 
         private static void CheckVRCSDK()
@@ -148,33 +154,34 @@ namespace Thry
 
         private static void CheckAPICompatibility()
         {
-            if (PlayerSettings.GetApiCompatibilityLevel(BuildTargetGroup.Standalone) != ApiCompatibilityLevel.NET_2_0)
-            {
+            ApiCompatibilityLevel level = PlayerSettings.GetApiCompatibilityLevel(BuildTargetGroup.Standalone);
+            if (level == ApiCompatibilityLevel.NET_2_0_Subset)
                 PlayerSettings.SetApiCompatibilityLevel(BuildTargetGroup.Standalone, ApiCompatibilityLevel.NET_2_0);
-            }
-            Helper.SetDefineSymbol(DEFINE_SYMBOLE_API_NET_TWO, true);
+            Helper.SetDefineSymbol(DEFINE_SYMBOLE_API_NET_TWO, true, true);
         }
 
         private static void CheckMCS()
         {
-            int mcs_good = CheckMCSAvailability();
+            string filename = "mcs";
+            if (Helper.compareVersions("2018", Application.unityVersion) == 1)
+                filename = "csc";
+            int mcs_good = CheckRSPAvailability(filename);
             if (mcs_good == 0)
-                MoveMCS();
+                MoveRSP(filename);
             else if (mcs_good == -1)
-                GenerateMCS();
-            mcs_good = CheckMCSAvailability();
-            Helper.SetDefineSymbol(DEFINE_SYMBOLE_MCS_EXISTS, mcs_good == 1);
+                GenerateRSP(filename);
+            Helper.SetDefineSymbol(DEFINE_SYMBOLE_MCS_EXISTS, mcs_good == 1, true);
         }
 
-        private static int CheckMCSAvailability()
+        private static int CheckRSPAvailability(string filename)
         {
             bool mcs_wrong_path = false;
-            foreach (string id in AssetDatabase.FindAssets("mcs"))
+            foreach (string id in AssetDatabase.FindAssets(filename))
             {
                 string path = AssetDatabase.GUIDToAssetPath(id);
-                if (path.Contains(MCS_NEEDED_PATH))
+                if (path.Contains(MCS_NEEDED_PATH+ filename))
                     return 1;
-                else if (path.Contains("mcs.rsp"))
+                else if (path.Contains(filename+".rsp"))
                     mcs_wrong_path = true;
             }
             if (mcs_wrong_path)
@@ -182,21 +189,21 @@ namespace Thry
             return -1;
         }
 
-        private static void MoveMCS()
+        private static void MoveRSP(string name)
         {
             foreach (string id in AssetDatabase.FindAssets("mcs"))
             {
                 string path = AssetDatabase.GUIDToAssetPath(id);
                 if (path.Contains("mcs.rsp"))
-                    AssetDatabase.MoveAsset(path, MCS_NEEDED_PATH);
+                    AssetDatabase.MoveAsset(path, MCS_NEEDED_PATH+ name + ".rsp");
             }
             AssetDatabase.Refresh();
         }
 
-        private static void GenerateMCS()
+        private static void GenerateRSP(string name)
         {
             string mcs_data = "-r:System.Drawing.dll";
-            Helper.WriteStringToFile(mcs_data, MCS_NEEDED_PATH);
+            Helper.WriteStringToFile(mcs_data, MCS_NEEDED_PATH+ name+ ".rsp");
             AssetDatabase.Refresh();
             CheckMCS();
         }
@@ -235,6 +242,7 @@ namespace Thry
 
             GUINotification();
             drawLine();
+            GUIMessage();
             GUIVRC();
             GUIEditor();
             drawLine();
@@ -289,6 +297,22 @@ namespace Thry
                 GUILayout.Label(" Thry editor has been updated", redInfostyle);
             else if (updatedVersion == 1)
                 GUILayout.Label(" Warning: Thry editor version has declined", redInfostyle);
+        }
+
+        private void GUIMessage()
+        {
+            if(thry_message!=null && thry_message.text.Length > 0)
+            {
+                GUIStyle style = new GUIStyle();
+                style.richText = true;
+                style.margin = new RectOffset(7, 0, 0, 0);
+                style.wordWrap = true;
+                GUILayout.Label(new GUIContent(thry_message.text,thry_message.hover), style);
+                Rect r = GUILayoutUtility.GetLastRect();
+                if (Event.current.type == EventType.MouseDown && r.Contains(Event.current.mousePosition))
+                    thry_message.action.Perform();
+                drawLine();
+            }
         }
 
         private void GUIVRC()
@@ -396,19 +420,31 @@ namespace Thry
             foreach (ModuleHeader module in ModuleHandler.GetModules())
             {
                 EditorGUILayout.BeginHorizontal();
+                EditorGUI.BeginDisabledGroup(!module.available_requirement_fullfilled);
                 EditorGUI.BeginChangeCheck();
-                string displayName = module.name;
+                bool is_installed = Helper.ClassExists(module.available_module.classname);
+                bool update_available = is_installed;
+                if (module.installed_module != null)
+                    update_available = Helper.compareVersions(module.installed_module.version, module.available_module.version) == 1;
+                string displayName = module.available_module.name;
                 if (module.installed_module != null)
                     displayName += " v" + module.installed_module.version;
-                bool install = GUILayout.Toggle(Helper.ClassExists(module.classname), new GUIContent(displayName, module.description), GUILayout.ExpandWidth(false));
+
+                bool install = GUILayout.Toggle(is_installed, new GUIContent(displayName, module.available_module.description), GUILayout.ExpandWidth(false));
                 if (EditorGUI.EndChangeCheck())
                     ModuleHandler.InstallRemoveModule(module,install);
-                bool update_available = false;
-                if (module.installed_module != null)
-                    update_available = Helper.compareVersions(module.installed_module.version, module.version)==1;
                 if(update_available)
-                    if (GUILayout.Button("update", GUILayout.ExpandWidth(false)))
+                    if (GUILayout.Button("update to v"+module.available_module.version, GUILayout.ExpandWidth(false)))
                         ModuleHandler.UpdateModule(module);
+                EditorGUI.EndDisabledGroup();
+                if (module.available_module.requirement != null && (update_available || !is_installed))
+                {
+                    GUIStyle requirementStyle = new GUIStyle(EditorStyles.label);
+                    requirementStyle.normal.textColor = greenStyle.normal.textColor;
+                    if(!module.available_requirement_fullfilled)
+                        requirementStyle.normal.textColor = redInfostyle.normal.textColor;
+                    GUILayout.Label("Requirements: " + module.available_module.requirement.ToString(),requirementStyle);
+                }
                 EditorGUILayout.EndHorizontal();
             }
             EditorGUI.EndDisabledGroup();

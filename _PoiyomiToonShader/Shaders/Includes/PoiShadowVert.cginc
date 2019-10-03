@@ -13,6 +13,6 @@ out float4 opos: SV_POSITION)
     o.worldPos = mul(unity_ObjectToWorld, o.localPos);
     o.angleAlpha = 1;
     #ifdef POI_RANDOM
-        o.angleAlpha = ApplyAngleBasedRendering(o.modelPos);
+        o.angleAlpha = ApplyAngleBasedRendering(o.modelPos, o.worldPos);
     #endif
 }

@@ -11,6 +11,7 @@
     float _FlipbookEmissionStrength;
     float _FlipbookRotation;
     float _EnableFlipbook;
+    uint _FlipbookUV;
     // blending
     float _FlipbookReplace;
     float _FlipbookMultiply;
@@ -27,14 +28,15 @@
     void calculateFlipbook()
     {
         _FlipbookScaleOffset.xy = 1 - _FlipbookScaleOffset.xy;
-        
-        float2 uv = remap(poiMesh.uv, float2(0, 0) + _FlipbookScaleOffset.xy / 2 + _FlipbookScaleOffset.zw, float2(1, 1) - _FlipbookScaleOffset.xy / 2 + _FlipbookScaleOffset.zw, float2(0, 0), float2(1, 1));
+        float2 uv = poiMesh.uv[_FlipbookUV];
         float theta = radians(_FlipbookRotation);
         
         float cs = cos(theta);
         float sn = sin(theta);
-        
-        float2 newUV = float2((uv.x - .5) * cs - (uv.y - .5) * sn + .5, (uv.x - .5) * sn + (uv.y - .5) * cs + .5);
+        float2 spriteCenter = _FlipbookScaleOffset.zw + .5;
+        uv = float2((uv.x - spriteCenter.x) * cs - (uv.y - spriteCenter.y) * sn + spriteCenter.x, (uv.x - spriteCenter.x) * sn + (uv.y - spriteCenter.y) * cs + spriteCenter.y);
+
+        float2 newUV = remap(uv, float2(0, 0) + _FlipbookScaleOffset.xy / 2 + _FlipbookScaleOffset.zw, float2(1, 1) - _FlipbookScaleOffset.xy / 2 + _FlipbookScaleOffset.zw, float2(0, 0), float2(1, 1));
         
         UNITY_BRANCH
         if (_FlipbookTiled == 0)

@@ -1,0 +1,527 @@
+﻿<html>
+<head>
+    <title>Thry Editor Documentation</title>
+    <style>
+        body {
+            font-family: Verdana;
+        }
+
+        table, th, td {
+            border: 1px solid black;
+            border-collapse: collapse;
+        }
+
+        th, tr, td {
+            padding: 7px;
+        }
+
+        h2 {
+            text-decoration: underline;
+        }
+        div {
+            border: 1px solid black;
+            border-collapse: collapse;
+            padding: 7px;
+        }
+        .noborder{
+            border: 0px solid black;
+        }
+    </style>
+    <head>
+        <body>
+            <h2>Editor Properties</h2>
+            <table>
+                <tr>
+                    <th>Name</th>
+                    <th>Effect</th>
+                    <th>Required</th>
+                    <th>Example</th>
+                </tr>
+                <tr>
+                    <td>shader_is_using_thry_editor</td>
+                    <td>Tell Thry Editor you are using it</td>
+                    <td>Yes</td>
+                    <td>[HideInInspector] shader_is_using_thry_editor ("", Float) = 0</td>
+                </tr>
+                <tr>
+                    <td>shader_master_label</td>
+                    <td>Display name customizes the gui header</td>
+                    <td>No</td>
+                    <td>[HideInInspector] shader_master_label ("&lt;color =#ff0000ff>❤&lt;/color> &lt;color =#000000ff>Poiyomi Toon Shader V4.0&lt;/color> &lt;color =#ff0000ff>❤&lt;/color>", Float) = 0</td>
+                </tr>
+                <tr>
+                    <td>shader_presets</td>
+                    <td>Display name specifies preset file</td>
+                    <td>No</td>
+                    <td>[HideInInspector] shader_presets ("poiToonPresets", Float) = 0</td>
+                </tr>
+                <tr>
+                    <td>shader_properties_label_file</td>
+                    <td>If specified the editor tries to load property's display names out of this file</td>
+                    <td>No</td>
+                    <td>[HideInInspector] shader_properties_label_file ("poiToonLabels", Float) = 0</td>
+                </tr>
+                <tr>
+                    <td>footer_&lt;string></td>
+                    <td>Adds a footer button to the bottom of the ui. Multiple footers can be added to one shader. The displayname has to be a ButtonData object</td>
+                    <td>No</td>
+                    <td>
+                        [HideInInspector] footer_github ("{text:Github,action:{type:URL,data:https://github.com/thryrallo/thryeditor}}", Float) = 0<br />
+                        [HideInInspector] footer_discord ("{texture:{name:discord-icon,height:40},action:{type:URL,data:https://discord.gg}}", Float) = 0
+                    </td>
+                </tr>
+                <tr class="noborder"><td class="noborder"></td></tr>
+                <tr>
+                    <td>DSGI</td>
+                    <td>add this property for double sided illumination settings to be shown</td>
+                    <td>No</td>
+                    <td>[HideInInspector] DSGI ("", Float) = 0</td>
+                </tr>
+                <tr>
+                    <td>Instancing</td>
+                    <td>add this property for instancing variants settings to be shown</td>
+                    <td>No</td>
+                    <td>[HideInInspector] Instancing ("", Float) = 0</td>
+                </tr>
+                <tr>
+                    <td>LightmapFlags</td>
+                    <td>add this property for lightmap flags settings to be shown</td>
+                    <td>No</td>
+                    <td>[HideInInspector] LightmapFlags ("", Float) = 0</td>
+                </tr>
+            </table>
+            <h2>Drawers</h2>
+            <table>
+                <tr>
+                    <th>Drawer Name</th>
+                    <th>Effect</th>
+                    <th>Extra Property Options</th>
+                    <th>Example</th>
+                </tr>
+                <tr>
+                    <td>[SmallTexture]</td>
+                    <td>Creates a texture field that will always be small</td>
+                    <td></td>
+                    <td>[SmallTexture]_MainTex("Main Texture",2D)= "white" { }</td>
+                </tr>
+                <tr>
+                    <td>[BigTexture]</td>
+                    <td>Creates a texture field that will always be big</td>
+                    <td></td>
+                    <td>[BigTexture]_MainTex("Main Texture",2D)= "white" { }</td>
+                </tr>
+                <tr>
+                    <td>[Gradient]</td>
+                    <td>
+                        Creates a texture field with a gradient field next to it.
+                        <br /> Gradient is automatically converted to texture.
+                    </td>
+                    <td></td>
+                    <td>[Gradient]_ColorRamp("Color Ramp",2D)= "white" { }</td>
+                </tr>
+                <tr>
+                    <td>[TextTexture]</td>
+                    <td>
+                        Creates a texture field with a text field next to it.
+                        <br />Text is automatically convertes in texture with text.
+                        <br />!!!Currently not reliable!!!
+                    </td>
+                    <td></td>
+                    <td>[TextTexture]_TextureSign("Sign Texture",2D)= "white" { }</td>
+                </tr>
+                <tr>
+                    <td>[MultiSlider]</td>
+                    <td>
+                        Creates a slider for a range.
+                        <br />Is used with a vector property.
+                        <br />x and y are the slider values. z is slider minimum. w is slider maximum.
+                    </td>
+                    <td></td>
+                    <td>[MultiSlider]_Slider("Multi Slider",Vector)= (0.1,0.9,0,1)</td>
+                </tr>
+                <tr>
+                    <td>[TextureArray]</td>
+                    <td>Creates a texture field with a gradient field next to it</td>
+                    <td></td>
+                    <td>[TextureArray]_FlipbookTexArray ("Texture Array", 2DArray) = "" {}</td>
+                </tr>
+                <tr>
+                    <td>[Vector2]</td>
+                    <td>Creates a texture field with a gradient field next to it</td>
+                    <td></td>
+                    <td>[Vector2]_Vector("Vector with 3 values",Vector)= (0,0,0,0)</td>
+                </tr>
+                <tr>
+                    <td>[Vector3]</td>
+                    <td>Creates a texture field with a gradient field next to it</td>
+                    <td></td>
+                    <td>[Vector3]_Vector("Vector with 3 values",Vector)= (0,0,0,0)</td>
+                </tr>
+                <tr>
+                    <td>[Curve]</td>
+                    <td>Creates a texture field with a gradient field next to it</td>
+                    <td></td>
+                    <td>[Curve]_ColorCurve("Curve",2D)= "white" { }</td>
+                </tr>
+            </table>
+
+            <h2>Supported Default Unity Flags</h2>
+            <table>
+                <tr>
+                    <th>Name</th>
+                    <th>Effect</th>
+                </tr>
+                <tr>
+                    <td>[NoScaleOffset]</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>[Normal]</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>[Space]</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>[Space(Int)]</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>[Toggle()]</td>
+                    <td></td>
+                </tr>
+            </table>
+
+            <h2>Property Options</h2>
+            <b>
+                None of the poperty options are required.<br />
+                Options are defined in the display name of a property inside curly brackets and after "--":<br />
+                In practice:
+            </b><br /> _Tex("Texture--{Put all your options in here}",2D) = "white" { }<br />
+            _Tex("Texture--{offet:2,hover:read this on hover,altClick{type:URL,data:http://thryrallo.de}}",2D) = "white" { }<br />
+            <font color="red">
+                Use json syntax instead to future proof your properties!<br />
+                You can use '' instead of " inside property display names
+            </font><br />
+            Example:<br />
+            {''text'':''Youtube'',''action'':{''type'':''URL'',''data'':''https://www.youtube.com/''}
+            <table>
+                <tr>
+                    <th>Name</th>
+                    <th>Value Type</th>
+                    <th>Effect</th>
+                    <th>Drawer Specific</th>
+                    <th>Example</th>
+                </tr>
+                <tr>
+                    <td>offset</td>
+                    <td>int</td>
+                    <td>adds an extra x-offset to the property</td>
+                    <td>No</td>
+                    <td>_Tex("Texture--{offset:1}",2D) = "white" { }</td>
+                </tr>
+                <tr>
+                    <td>hover</td>
+                    <td>string</td>
+                    <td>text that is shown when hovering above property</td>
+                    <td>No</td>
+                    <td>_Tex("Texture--{hover:use this texture for albedo}",2D) = "white" { }</td>
+                </tr>
+                <tr>
+                    <td>altClick</td>
+                    <td>Action</td>
+                    <td>performs an action when holding alt down and clicking on property</td>
+                    <td>No</td>
+                    <td>_Tex("Texture--{altClick:{type:URL,data:http://thryrallo.de}}",2D) = "white" { }</td>
+                </tr>
+                <tr>
+                    <td>condition_show</td>
+                    <td>Condition</td>
+                    <td>let's you define a condition that has to be true for this property to be shown in the ui</td>
+                    <td>No</td>
+                    <td>_Tex("Texture--{condition_show:{type:PROPERTY_BOOL,data:_ForceOpaque==1}}",2D) = "white" { }</td>
+                </tr>
+                <tr>
+                    <td>button_right</td>
+                    <td>Button</td>
+                    <td>let's you define a button that is shown on the side of a dropdown header</td>
+                    <td>Yes, only headers</td>
+                    <td>_Tex("Texture--{button_right:{text:Test Button,action:{type:URL,data:https://github.com/Thryrallo/thryeditor},hover:hover text,condition_show:{type:PROPERTY_BOOL,data:_ShowButtonOnMenus}}}",2D) = "white" { }</td>
+                </tr>
+                <tr>
+                    <td>frameCountProp</td>
+                    <td>string</td>
+                    <td>if this is set the editor trys to assign the frame count/depth the the value if the specified Property after creating a texture array</td>
+                    <td>[TextureArray]</td>
+                    <td>[TextureArray]_FlipbookTexArray ("Texture Array--{frameCountProp:_FlipbookTotalFrames}", 2DArray) = "" {}</td>
+                </tr>
+                <tr>
+                    <td>image</td>
+                    <td>ImageData</td>
+                    <td>Defines the create image size and to which channel the curve is written.</td>
+                    <td>[Curve]</td>
+                    <td>[Curve]_MainTex ("Texture --{image:{width:256,height:16,channel:b}}", 2D) = "white" { }</td>
+                </tr>
+                <tr>
+                    <td>texture</td>
+                    <td>TextureData</td>
+                    <td>Defines the texture settings for created gradients.</td>
+                    <td>[Gradient]</td>
+                    <td>[Gradient]_ColorRamp ("Gradient --{texture:{width:256,height:16,filterMode:Point,wrapMode:Clamp}}", 2D) = "white" { }</td>
+                </tr>
+            </table>
+
+            <h2>Data Structures</h2>
+            <div>
+                <h3>Button</h3>
+                Variables:
+                <table>
+                    <tr>
+                        <th>Name</th>
+                        <th>Value Type</th>
+                        <th>required</th>
+                        <th>default</th>
+                    </tr>
+                    <tr>
+                        <td>text</td>
+                        <td>string</td>
+                        <td>text or texture</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>texture</td>
+                        <td>TextureData</td>
+                        <td>text or texture</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>hover</td>
+                        <td>string</td>
+                        <td>no</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>action</td>
+                        <td>Action</td>
+                        <td>kinda</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>condition_show</td>
+                        <td>Condition</td>
+                        <td>no</td>
+                        <td></td>
+                    </tr>
+                </table>
+            </div>
+            <div>
+                <h3>Action</h3>
+                Variables:
+                <table>
+                    <tr>
+                        <th>Name</th>
+                        <th>Value Type</th>
+                        <th>required</th>
+                    </tr>
+                    <tr>
+                        <td>type</td>
+                        <td>ActionType</td>
+                        <td>Yes</td>
+                    </tr>
+                    <tr>
+                        <td>data</td>
+                        <td>string</td>
+                        <td>Yes</td>
+                    </tr>
+                </table>
+                <h3>Enum: ActionType</h3>
+                States:
+                <table>
+                    <tr>
+                        <th>Value</th>
+                        <th>Effect</th>
+                    </tr>
+                    <tr>
+                        <td>URL</td>
+                        <td>Opens the url in browser</td>
+                    </tr>
+                </table>
+            </div>
+            <div>
+                <h3>TextureData</h3>
+                Variables:
+                <table>
+                    <tr>
+                        <th>Name</th>
+                        <th>Value Type</th>
+                        <th>required</th>
+                        <th>default</th>
+                        <th>Explanation</th>
+                    </tr>
+                    <tr>
+                        <td>name</td>
+                        <td>string</td>
+                        <td>no</td>
+                        <td></td>
+                        <td>File name of image</td>
+                    </tr>
+                    <tr>
+                        <td>width</td>
+                        <td>int</td>
+                        <td>no</td>
+                        <td>128</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>height</td>
+                        <td>int</td>
+                        <td>no</td>
+                        <td>128</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>ansioLevel</td>
+                        <td>int</td>
+                        <td>no</td>
+                        <td>1</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>filterMode</td>
+                        <td>Enum(FilterMode)</td>
+                        <td>no</td>
+                        <td>Bilinear</td>
+                        <td>EnumValues: Bilinear,Point,Trilinear</td>
+                    </tr>
+                    <tr>
+                        <td>wrapMode</td>
+                        <td>Enum(TextureWrapMode)</td>
+                        <td>no</td>
+                        <td>Repeat</td>
+                        <td>EnumValues: Clamp,Mirror,MirrorOnce,Repeat</td>
+                    </tr>
+                </table>
+            </div>
+            <div>
+                <h3>Condition</h3>
+                Variables:
+                <table>
+                    <tr>
+                        <th>Name</th>
+                        <th>Value Type</th>
+                        <th>required</th>
+                        <th>default</th>
+                    </tr>
+                    <tr>
+                        <td>type</td>
+                        <td>ConditionType</td>
+                        <td>Yes</td>
+                        <td>None</td>
+                    </tr>
+                    <tr>
+                        <td>data</td>
+                        <td>string</td>
+                        <td>If type!=AND && type!=OR yes</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>condition1</td>
+                        <td>Condition</td>
+                        <td>if type==AND || type==OR yes</td>
+                        <td>null</td>
+                    </tr>
+                    <tr>
+                        <td>condition2</td>
+                        <td>Condition</td>
+                        <td>if type==AND || type==OR yes</td>
+                        <td>null</td>
+                    </tr>
+                </table>
+                Data will have different meanings depending on type<br />
+                <br />
+                <b>Data</b><br />
+                Useable Comparators: ==,!=,>,<
+                <table>
+                    <tr>
+                        <th>type</th>
+                        <th>data value</th>
+                        <th>example</th>
+                    </tr>
+                    <tr>
+                        <td>PROPERTY_BOOL</td>
+                        <td>&lt;PropertyName>(&lt;Comparator>&lt;value>)?</td>
+                        <td>{type:PROPERTY_BOOL,data:_ForceOpaque}<br />or {type:PROPERTY_BOOL,data:_ForceOpaque==0}</td>
+                    </tr>
+                    <tr>
+                        <td>EDITOR_VERSION</td>
+                        <td>&lt;Comparator>&lt;value></td>
+                        <td>{type:EDITOR_VERSION,data:>0.17} #checks if installed editor version > 0.17</td>
+                    </tr>
+                    <tr>
+                        <td>VRC_SDK_VERSION</td>
+                        <td>&lt;Comparator>&lt;value></td>
+                        <td>{type:VRC_SDK_VERSION,data:>0.17} #checks if installed vrc sdk version > 0.17</td>
+                    </tr>
+                </table>
+                <h3>Enum: ConditionType</h3>
+                States:
+                <table>
+                    <tr>
+                        <th>Value</th>
+                        <th>Effect</th>
+                    </tr>
+                    <tr>
+                        <td>AND</td>
+                        <td>Combines two conditions with &&</td>
+                    </tr>
+                    <tr>
+                        <td>OR</td>
+                        <td>Combines two conditions with ||</td>
+                    </tr>
+                    <tr>
+                        <td>PROPERTY_BOOL</td>
+                        <td>checks agains the float value of a property</td>
+                    </tr>
+                    <tr>
+                        <td>EDITOR_VERSION</td>
+                        <td>checks agains the version number of ThryEditor</td>
+                    </tr>
+                    <tr>
+                        <td>VRC_SDK_VERSION</td>
+                        <td>checks agains the version number of the VRC SDK</td>
+                    </tr>
+                </table>
+            </div>
+            <div>
+                <h3>Image Data</h3>
+                Variables:
+                <table>
+                    <tr>
+                        <th>Name</th>
+                        <th>Value Type</th>
+                        <th>required</th>
+                        <th>default</th>
+                    </tr>
+                    <tr>
+                        <td>width</td>
+                        <td>int</td>
+                        <td>No</td>
+                        <td>128</td>
+                    </tr>
+                    <tr>
+                        <td>height</td>
+                        <td>int</td>
+                        <td>no</td>
+                        <td>8</td>
+                    </tr>
+                    <tr>
+                        <td>channel</td>
+                        <td>char</td>
+                        <td>no</td>
+                        <td>r</td>
+                    </tr>
+                </table>
+            </div>
+        </body>
+</html>

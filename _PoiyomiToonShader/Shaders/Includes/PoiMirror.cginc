@@ -68,7 +68,7 @@
             {
                 if(IsInMirror())
                 {
-                    mainTexture = UNITY_SAMPLE_TEX2D_SAMPLER(_MirrorTexture, _MainTex, TRANSFORM_TEX(poiMesh.uv, _MirrorTexture));
+                    mainTexture = UNITY_SAMPLE_TEX2D_SAMPLER(_MirrorTexture, _MainTex, TRANSFORM_TEX(poiMesh.uv[0], _MirrorTexture));
                 }
             }
         }

@@ -57,14 +57,14 @@ namespace Thry
             {
                 GUILayout.Label("Create Texture Array for " + Helper.MaterialsToString(ThryEditor.currentlyDrawing.materials));
                 GUILayout.BeginHorizontal();
-                foreach (MaterialProperty p in ThryEditor.currentlyDrawing.textureArrayProperties)
+                foreach (ThryEditor.ShaderProperty p in ThryEditor.currentlyDrawing.textureArrayProperties)
                 {
-                    if (GUILayout.Button(p.displayName,GUILayout.ExpandWidth(false)))
+                    if (GUILayout.Button(p.content.text,GUILayout.ExpandWidth(false)))
                     {
                         string[] paths = new string[Selection.objects.Length];
                         for (int i = 0; i < paths.Length; i++) paths[i] = AssetDatabase.GetAssetPath(Selection.objects[i]);
                         Texture tex = Converter.PathsToTexture2DArray(paths);
-                        Helper.UpdateTextureValue(p, tex);
+                        Helper.UpdateTextureValue(p.materialProperty, tex);
                     }
                 }
                 GUILayout.EndHorizontal();

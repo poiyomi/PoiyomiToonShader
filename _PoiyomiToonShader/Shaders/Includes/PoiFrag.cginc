@@ -1,13 +1,13 @@
 #ifndef POIFRAG
     #define POIFRAG
     
-    float _ForceOpaque;
     float4 _GlobalPanSpeed;
-    float _Clip;
+    float _MainEmissionStrength;
+    
     float4 frag(v2f i, float facing: VFACE): SV_Target
     {
         
-        i.uv += _GlobalPanSpeed.xy * _Time.x;
+        i.uv0 += _GlobalPanSpeed.xy * _Time.x;
         //This has to be first because it modifies the UVs for the rest of the functions
         
         #ifdef POI_DATA
@@ -31,20 +31,23 @@
             calculateLighting();
         #endif
         
+        #if defined(POI_METAL) || defined(POI_CLEARCOAT)
+            CalculateReflectionData();
+        #endif
+        
         #ifdef POI_METAL
             calculateReflections();
         #endif
         
-        #ifdef POI_RANDOM
-            mainTexture.a *= i.angleAlpha;
-            albedo.a *= i.angleAlpha;
-        #endif
-
         #ifdef POI_DATA
             distanceFade();
         #endif
         
-        clip(mainTexture.a * alphaMask - _Clip);
+        #ifdef POI_RANDOM
+            albedo.a *= i.angleAlpha;
+        #endif
+        
+        clip(albedo.a - _Clip);
         
         #ifdef MATCAP
             calculateMatcap();
@@ -124,6 +127,8 @@
                 #endif
             #endif
             
+            finalColor.rgb += albedo.rgb * _MainEmissionStrength * albedo.a;
+            
             #ifdef PANOSPHERE
                 applyPanosphereEmission(finalColor);
             #endif
@@ -139,6 +144,7 @@
             #ifdef POI_RIM
                 ApplyRimEmission(finalColor);
             #endif
+            
         #endif
         
         #ifdef POI_LIGHTING
@@ -170,11 +176,20 @@
             UNITY_APPLY_FOG(i.fogCoord, finalColor);
         #endif
         
+        #ifdef POI_ALPHA_TO_COVERAGE
+            ApplyAlphaToCoverage(finalColor);
+        #endif
+        
+        #ifdef FORWARD_BASE_PASS
+            #ifdef POI_CLEARCOAT
+                calculateAndApplyClearCoat(finalColor);
+            #endif
+        #endif
+        
         #ifdef POI_DEBUG
             displayDebugInfo(finalColor);
         #endif
-
-        finalColor.a = max(_ForceOpaque, finalColor.a);
+        
         return finalColor;
     }
 #endif

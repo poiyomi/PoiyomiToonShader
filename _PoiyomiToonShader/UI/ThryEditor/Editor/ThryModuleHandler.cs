@@ -10,7 +10,7 @@ namespace Thry
 {
     public class ModuleHandler
     {
-        private const string THRY_MODULES_URL = "https://raw.githubusercontent.com/Thryrallo/ThryEditor/master/modules.txt";
+        private const string THRY_MODULES_URL = "https://raw.githubusercontent.com/Thryrallo/ThryEditor/master/modules.json";
 
         private static List<ModuleHeader> modules;
         private static bool modules_are_being_loaded = false;
@@ -25,33 +25,44 @@ namespace Thry
         private static void LoadModules()
         {
             modules_are_being_loaded = true;
-            Helper.getStringFromUrl(THRY_MODULES_URL, delegate (string s) {
-                modules = Parsers.ParseToObject<List<ModuleHeader>>(s);
-                InitModulesVersions();
-                Helper.RepaintEditorWindow(typeof(Settings));
+            Helper.DownloadStringASync(THRY_MODULES_URL, delegate (string s) {
+                modules = new List<ModuleHeader>();
+                List<string> module_urls = Parser.ParseToObject<List<string>>(s);
+                foreach(string url in module_urls)
+                {
+                    Helper.DownloadStringASync(url, delegate (string data)
+                     {
+                         ModuleHeader new_module = new ModuleHeader();
+                         new_module.url = url;
+                         new_module.available_module = Parser.ParseToObject<ModuleInfo>(data);
+                         InitInstalledModule(new_module);
+                         if (new_module.available_module.requirement != null)
+                             new_module.available_requirement_fullfilled = new_module.available_module.requirement.Test();
+                         modules.Add(new_module);
+                         //Debug.Log(Parser.ObjectToString(new_module));
+                         Helper.RepaintEditorWindow(typeof(Settings));
+                     });
+                }
             });
         }
 
-        private static void InitModulesVersions()
+        private static void InitInstalledModule(ModuleHeader m)
         {
-            foreach(ModuleHeader m in modules)
+            if (Helper.ClassExists(m.available_module.classname))
             {
-                if (Helper.ClassExists(m.classname))
+                string path = GetModuleDirectoryPath(m) + "/module.json";
+                if (File.Exists(path))
                 {
-                    string path = GetModuleDirectoryPath(m) + "/module.thry";
-                    if (File.Exists(path))
-                    {
-                        m.installed_module = Parsers.ParseToObject<ModuleInfo>(Helper.ReadFileIntoString(path));
-                    }
+                    m.installed_module = Parser.ParseToObject<ModuleInfo>(Helper.ReadFileIntoString(path));
                 }
             }
         }
 
         public static void InstallRemoveModule(ModuleHeader module, bool install)
         {
-            if (install && !Helper.ClassExists(module.classname))
+            if (install && !Helper.ClassExists(module.available_module.classname))
                 InstallModule(module);
-            else if (!install && Helper.ClassExists(module.classname))
+            else if (!install && Helper.ClassExists(module.available_module.classname))
                 RemoveModule(module);
         }
 
@@ -75,7 +86,7 @@ namespace Thry
         {
             module.is_being_installed_or_removed = true;
             Helper.SaveValueToFile("update_module_url", module.url, ".thry_after_compile_data");
-            Helper.SaveValueToFile("update_module_name", module.name, ".thry_after_compile_data");
+            Helper.SaveValueToFile("update_module_name", module.available_module.name, ".thry_after_compile_data");
             RemoveModule(module);
         }
 
@@ -84,12 +95,13 @@ namespace Thry
         {
 
             module.is_being_installed_or_removed = true;
-            InstallModule(module.url, module.name);
+            InstallModule(module.url, module.available_module.name);
         }
 
         private static void InstallModule(string url, string name)
         {
-            Helper.getStringFromUrl(url, delegate (string s)
+
+            Helper.DownloadStringASync(url, delegate (string s)
             {
                 if (s.StartsWith("404"))
                 {
@@ -97,7 +109,7 @@ namespace Thry
                     return;
                 }
                 //Debug.Log(s);
-                ModuleInfo module_info = Parsers.ParseToObject<ModuleInfo>(s);
+                ModuleInfo module_info = Parser.ParseToObject<ModuleInfo>(s);
                 string thry_modules_path = ThryEditor.GetThryEditorDirectoryPath();
                 string temp_path = "temp_" + name;
                 if (thry_modules_path == null)
@@ -105,12 +117,12 @@ namespace Thry
                 thry_modules_path += "/thry_modules";
                 string install_path = thry_modules_path + "/" + name;
                 string base_url = url.RemoveFileName();
-                Helper.WriteStringToFile(s, temp_path + "/module.thry");
+                Helper.WriteStringToFile(s, temp_path + "/module.json");
                 int i = 0;
                 foreach (string f in module_info.files)
                 {
                     //Debug.Log(base_url + f);
-                    Helper.DownloadBytesToPath(base_url + f, temp_path + "/" + f, delegate (string data)
+                    Helper.DownloadFileASync(base_url + f, temp_path + "/" + f, delegate (string data)
                     {
                         i++;
                         if (i == module_info.files.Count)
@@ -134,9 +146,9 @@ namespace Thry
             int i = 0;
             if (!Directory.Exists(Helper.DELETING_FOLDER))
                 Directory.CreateDirectory(Helper.DELETING_FOLDER);
-            string newpath = Helper.DELETING_FOLDER + "/" + module.name + i;
+            string newpath = Helper.DELETING_FOLDER + "/" + module.available_module.name + i;
             while (Directory.Exists(newpath))
-                newpath = Helper.DELETING_FOLDER + "/" + module.name + (++i);
+                newpath = Helper.DELETING_FOLDER + "/" + module.available_module.name + (++i);
             //Debug.Log(path + "," + newpath);
             Directory.Move(path, newpath);
             AssetDatabase.Refresh();
@@ -156,11 +168,11 @@ namespace Thry
 
         private static string GetModuleDirectoryPath(ModuleHeader module)
         {
-            string[] guids = AssetDatabase.FindAssets(module.settings_file_name.RemoveFileExtension());
+            string[] guids = AssetDatabase.FindAssets(module.available_module.settings_file_name.RemoveFileExtension());
             foreach(string g in guids)
             {
                 string path = AssetDatabase.GUIDToAssetPath(g);
-                if (path.EndsWith(module.settings_file_name.RemoveFileExtension() + ".cs"))
+                if (path.EndsWith(module.available_module.settings_file_name.RemoveFileExtension() + ".cs"))
                 {
                     path = path.GetDirectoryPath().RemoveOneDirectory();
                     if (Directory.Exists(path))

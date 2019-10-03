@@ -6,53 +6,11 @@ using UnityEngine;
 
 namespace Thry
 {
-    public class TextureDrawer : MaterialPropertyDrawer
-    {
-        public override void OnGUI(Rect position, MaterialProperty prop, GUIContent label, MaterialEditor editor)
-        {
-            ThryEditorGuiHelper.drawConfigTextureProperty(position, prop, label, editor, true);
-        }
-
-        public override float GetPropertyHeight(MaterialProperty prop, string label, MaterialEditor editor)
-        {
-            DrawingData.lastPropertyUsedCustomDrawer = true;
-            return base.GetPropertyHeight(prop, label, editor);
-        }
-    }
-
-    public class TextureNoSODrawer : MaterialPropertyDrawer
-    {
-        public override void OnGUI(Rect position, MaterialProperty prop, GUIContent label, MaterialEditor editor)
-        {
-            ThryEditorGuiHelper.drawConfigTextureProperty(position, prop, label, editor, false);
-        }
-
-        public override float GetPropertyHeight(MaterialProperty prop, string label, MaterialEditor editor)
-        {
-            DrawingData.lastPropertyUsedCustomDrawer = true;
-            return base.GetPropertyHeight(prop, label, editor);
-        }
-    }
-
     public class SmallTextureDrawer : MaterialPropertyDrawer
     {
         public override void OnGUI(Rect position, MaterialProperty prop, GUIContent label, MaterialEditor editor)
         {
-            ThryEditorGuiHelper.drawSmallTextureProperty(position, prop, label, editor, true);
-        }
-
-        public override float GetPropertyHeight(MaterialProperty prop, string label, MaterialEditor editor)
-        {
-            DrawingData.lastPropertyUsedCustomDrawer = true;
-            return base.GetPropertyHeight(prop, label, editor);
-        }
-    }
-
-    public class SmallTextureNoSODrawer : MaterialPropertyDrawer
-    {
-        public override void OnGUI(Rect position, MaterialProperty prop, GUIContent label, MaterialEditor editor)
-        {
-            ThryEditorGuiHelper.drawSmallTextureProperty(position, prop, label, editor, false);
+            GuiHelper.drawSmallTextureProperty(position, prop, label, editor, ((ThryEditor.TextureProperty)ThryEditor.currentlyDrawing.currentProperty).hasScaleOffset);
         }
 
         public override float GetPropertyHeight(MaterialProperty prop, string label, MaterialEditor editor)
@@ -66,21 +24,7 @@ namespace Thry
     {
         public override void OnGUI(Rect position, MaterialProperty prop, GUIContent label, MaterialEditor editor)
         {
-            ThryEditorGuiHelper.drawBigTextureProperty(position, prop, label, editor, true);
-        }
-
-        public override float GetPropertyHeight(MaterialProperty prop, string label, MaterialEditor editor)
-        {
-            DrawingData.lastPropertyUsedCustomDrawer = true;
-            return base.GetPropertyHeight(prop, label, editor);
-        }
-    }
-
-    public class BigTextureNoSODrawer : MaterialPropertyDrawer
-    {
-        public override void OnGUI(Rect position, MaterialProperty prop, GUIContent label, MaterialEditor editor)
-        {
-            ThryEditorGuiHelper.drawBigTextureProperty(position, prop, label, editor, false);
+            GuiHelper.drawBigTextureProperty(position, prop, label, editor, ((ThryEditor.TextureProperty)ThryEditor.currentlyDrawing.currentProperty).hasScaleOffset);
         }
 
         public override float GetPropertyHeight(MaterialProperty prop, string label, MaterialEditor editor)
@@ -96,10 +40,8 @@ namespace Thry
             public AnimationCurve curve;
             public EditorWindow window;
             public Texture2D texture;
-            public char color_channel = 'r';
-            public int width = 128;
-            public int height = 8;
             public bool saved = true;
+            public ImageData imageData;
         }
         public override void OnGUI(Rect position, MaterialProperty prop, GUIContent label, MaterialEditor editor)
         {
@@ -108,12 +50,10 @@ namespace Thry
             {
                 data = new CurveData();
                 data.curve = new AnimationCurve();
-                if(ThryEditor.currentlyDrawing.currentProperty.ExtraOptionExists("width"))
-                    data.width = ThryEditor.currentlyDrawing.currentProperty.GetExtraOptionValue<int>("width");
-                if (ThryEditor.currentlyDrawing.currentProperty.ExtraOptionExists("height"))
-                    data.height = ThryEditor.currentlyDrawing.currentProperty.GetExtraOptionValue<int>("height");
-                if (ThryEditor.currentlyDrawing.currentProperty.ExtraOptionExists("channel"))
-                    data.color_channel = ThryEditor.currentlyDrawing.currentProperty.GetExtraOptionValue<string>("channel")[0];
+                if (ThryEditor.currentlyDrawing.currentProperty.options.image == null)
+                    data.imageData = new ImageData();
+                else
+                    data.imageData = ThryEditor.currentlyDrawing.currentProperty.options.image;
             }
 
             editor.TexturePropertyMiniThumbnail(position, prop, "", "");
@@ -122,7 +62,7 @@ namespace Thry
             data.curve = EditorGUI.CurveField(position, new GUIContent("       " + label.text, label.tooltip), data.curve);
             if (EditorGUI.EndChangeCheck())
             {
-                data.texture = Converter.CurveToTexture(data.curve, data.width, data.height, data.color_channel);
+                data.texture = Converter.CurveToTexture(data.curve, data.imageData.width, data.imageData.height, data.imageData.channel);
                 prop.textureValue = data.texture;
                 data.saved = false;
             }
@@ -136,7 +76,7 @@ namespace Thry
             if(data.window==null && !data.saved)
             {
                 Debug.Log(prop.textureValue.ToString());
-                Texture saved_texture = Helper.SaveTextureAsPNG(data.texture, "Assets/textures/curves/" + data.curve.GetHashCode() + ".png", TextureWrapMode.Clamp, FilterMode.Point);
+                Texture saved_texture = Helper.SaveTextureAsPNG(data.texture, "Assets/textures/curves/" + data.curve.GetHashCode() + ".png", null);
                 prop.textureValue = saved_texture;
                 data.saved = true;
             }
@@ -155,135 +95,51 @@ namespace Thry
     {
         const string GRADIENT_INFO_FILE_PATH = "Assets/.thry_gradients";
 
+        GradientData data;
+        bool is_init = false;
+
         public override void OnGUI(Rect position, MaterialProperty prop, GUIContent label, MaterialEditor editor)
         {
-            GradientData data;
-            if (ThryEditor.currentlyDrawing.currentProperty.property_data != null) data = (GradientData)ThryEditor.currentlyDrawing.currentProperty.property_data;
-            else { data = new GradientData(); data.saved = true; ThryEditor.currentlyDrawing.currentProperty.property_data = data; }
+            if (!is_init)
+                Init(prop);
 
-            if (data.gradientObj == null)
-            {
-                data.gradientObj = GradientObject.CreateInstance<GradientObject>();
-                if (prop.textureValue != null)
-                {
-                    data.texture = (Texture2D)prop.textureValue;
-                    TextureUpdated(ref data);
-                }
-                else
-                {
-                    data.texture = new Texture2D(256, 1);
-                    data.serializedGradient = new SerializedObject(data.gradientObj);
-                    data.colorGradient = data.serializedGradient.FindProperty("gradient");
-                }
-                data.saved = true;
-            }
             EditorGUI.BeginChangeCheck();
-            editor.TexturePropertyMiniThumbnail(position, prop, "", "");
+            editor.TexturePropertyMiniThumbnail(position, prop, label.text, label.tooltip);
             if (EditorGUI.EndChangeCheck())
+                Init(prop);
+
+            Rect border_position = new Rect(position.x + EditorGUIUtility.labelWidth, position.y, Screen.width - EditorGUIUtility.labelWidth - position.x - EditorGUI.indentLevel * 15 - 10, position.height);
+            Rect gradient_position = new Rect(border_position.x + 1, border_position.y + 1, border_position.width - 2, border_position.height - 2);
+
+            Texture2D backgroundTexture = Helper.GetBackgroundTexture();
+            Rect texCoordsRect = new Rect(0, 0, gradient_position.width / backgroundTexture.width, gradient_position.height / backgroundTexture.height);
+            GUI.DrawTextureWithTexCoords(gradient_position, backgroundTexture, texCoordsRect, false);
+
+            if (data.preview_texture != null)
             {
-                data.texture = (Texture2D)prop.textureValue;
-                TextureUpdated(ref data);
-            }
-            EditorGUI.BeginChangeCheck();
-            EditorGUI.PropertyField(position, data.colorGradient, new GUIContent("       " + label.text, label.tooltip));
-            string windowName = "";
-            if (EditorWindow.focusedWindow != null)
-                windowName = EditorWindow.focusedWindow.titleContent.text;
-            bool isGradientEditor = windowName == "Gradient Editor";
-            if (isGradientEditor)
-            {
-                data.gradientWindow = EditorWindow.focusedWindow;
-            }
-            bool changed = EditorGUI.EndChangeCheck();
-            if (changed)
-            {
-                if (data.texture == prop.textureValue) data.texture = new Texture2D(256, 1);
-                data.serializedGradient.ApplyModifiedProperties();
-                Converter.GradientToTexture(ref data);
-                prop.textureValue = data.texture;
-                data.saved = false;
-            }
+                TextureWrapMode wrap_mode = data.preview_texture.wrapMode;
+                data.preview_texture.wrapMode = TextureWrapMode.Clamp;
+                GUI.DrawTexture(gradient_position, data.preview_texture, ScaleMode.StretchToFill, true);
+                GUI.DrawTexture(border_position, data.preview_texture, ScaleMode.StretchToFill, false, 0, Color.grey, 1, 1);
+                data.preview_texture.wrapMode = wrap_mode;
+            }else
+                GUI.DrawTexture(border_position, Texture2D.whiteTexture, ScaleMode.StretchToFill, false, 0, Color.grey, 1, 1);
 
-            if (data.gradientWindow == null && !data.saved)
-            {
-                byte[] encoding = data.texture.EncodeToPNG();
-
-                string gradient_data = Converter.GradientToString(ref data);
-                string gradient_name = Config.Get().gradient_name;
-                gradient_name = gradient_name.Replace("<material>", editor.target.name);
-                gradient_name = gradient_name.Replace("<hash>", "" + gradient_data.GetHashCode());
-                gradient_name = gradient_name.Replace("<prop>", prop.name);
-
-                string path = "Assets/Textures/Gradients/" + gradient_name;
-                Debug.Log("Gradient saved at \"" + path + "\".");
-                Helper.writeBytesToFile(encoding, path);
-
-                Helper.SaveValueToFile(gradient_name, gradient_data, GRADIENT_INFO_FILE_PATH);
-
-                AssetDatabase.ImportAsset(path);
-                Texture tex = (Texture)EditorGUIUtility.Load(path);
-                tex.wrapMode = TextureWrapMode.Clamp;
-                SetTextureImporterFormat((Texture2D)tex, true);
-                prop.textureValue = tex;
-                data.saved = true;
-            }
+            if (Event.current.type == EventType.MouseDown && border_position.Contains(Event.current.mousePosition))
+                GradientEditor.Open(data, prop);
         }
 
-        private void TextureUpdated(ref GradientData data)
+        public void Init(MaterialProperty prop)
         {
-            data.texture = SetTextureImporterFormat(data.texture, true);
-            string gradientInfo = Helper.LoadValueFromFile(data.texture.name, GRADIENT_INFO_FILE_PATH);
-            if (gradientInfo != null)
-            {
-                Debug.Log("Gradient Data: " + gradientInfo);
-                Debug.Log("Load Gradient from save file.");
-                Converter.StringToGradient(ref data, gradientInfo);
-                data.serializedGradient = new SerializedObject(data.gradientObj);
-                data.colorGradient = data.serializedGradient.FindProperty("gradient");
-            }
-            else
-            {
-                Converter.TextureToGradient(ref data);
-            }
+            data = new GradientData();
+            data.preview_texture = prop.textureValue;
+            is_init = true;
         }
 
         public override float GetPropertyHeight(MaterialProperty prop, string label, MaterialEditor editor)
         {
             DrawingData.lastPropertyUsedCustomDrawer = true;
             return base.GetPropertyHeight(prop, label, editor);
-        }
-
-        private string GradientFileName(ref GradientData data, string material_name)
-        {
-            string hash = "" + Converter.GradientToString(ref data).GetHashCode();
-            return GradientFileName(hash, material_name);
-        }
-
-        private string GradientFileName(string hash, string material_name)
-        {
-            Config config = Config.Get();
-            string ret = config.gradient_name;
-            ret = Regex.Replace(ret, "<hash>", hash);
-            ret = Regex.Replace(ret, "<material>", material_name);
-            return ret;
-        }
-
-        public static Texture2D SetTextureImporterFormat(Texture2D texture, bool isReadable)
-        {
-            if (null == texture) return texture;
-            string assetPath = AssetDatabase.GetAssetPath(texture);
-            var tImporter = AssetImporter.GetAtPath(assetPath) as TextureImporter;
-            if (tImporter != null)
-            {
-                tImporter.isReadable = isReadable;
-                tImporter.wrapMode = TextureWrapMode.Clamp;
-
-                AssetDatabase.ImportAsset(assetPath);
-                AssetDatabase.Refresh();
-
-                return AssetDatabase.LoadAssetAtPath<Texture2D>(assetPath);
-            }
-            return texture;
         }
     }
 
@@ -371,7 +227,7 @@ namespace Thry
     {
         public override void OnGUI(Rect position, MaterialProperty prop, GUIContent label, MaterialEditor editor)
         {
-            ThryEditorGuiHelper.MinMaxSlider(position, label, prop);
+            GuiHelper.MinMaxSlider(position, label, prop);
         }
 
         public override float GetPropertyHeight(MaterialProperty prop, string label, MaterialEditor editor)
@@ -425,15 +281,7 @@ namespace Thry
     {
         public override void OnGUI(Rect position, MaterialProperty prop, GUIContent label, MaterialEditor editor)
         {
-            if (ThryEditor.currentlyDrawing.currentProperty.property_data == null)
-            {
-                if (label.text.Contains("--frameCountProp="))
-                    ThryEditor.currentlyDrawing.currentProperty.property_data = label.text.Split(new string[] { "--frameCountProp=" }, System.StringSplitOptions.None);
-                else
-                    ThryEditor.currentlyDrawing.currentProperty.property_data = new string[] { label.text };
-            }
-            label.text = ((string[])ThryEditor.currentlyDrawing.currentProperty.property_data)[0];
-            ThryEditorGuiHelper.drawConfigTextureProperty(position, prop, label, editor, true);
+            GuiHelper.drawConfigTextureProperty(position, prop, label, editor, true);
 
             string n = "";
             if (prop.textureValue != null) n = prop.textureValue.name;
@@ -444,11 +292,10 @@ namespace Thry
                 {
                     Texture2DArray tex = Converter.PathsToTexture2DArray(paths);
                     Helper.UpdateTargetsValue(prop, tex);
-                    string[] data = ((string[])ThryEditor.currentlyDrawing.currentProperty.property_data);
-                    if (data.Length > 1)
+                    if (ThryEditor.currentlyDrawing.currentProperty.options.frameCountProp != null)
                     {
                         ThryEditor.ShaderProperty p;
-                        ThryEditor.currentlyDrawing.propertyDictionary.TryGetValue(data[1], out p);
+                        ThryEditor.currentlyDrawing.propertyDictionary.TryGetValue(ThryEditor.currentlyDrawing.currentProperty.options.frameCountProp, out p);
                         if (p != null)
                             Helper.UpdateTargetsValue(p.materialProperty, tex.depth);
                     }
@@ -456,7 +303,7 @@ namespace Thry
                 }
             }
             if (ThryEditor.currentlyDrawing.firstCall)
-                ThryEditor.currentlyDrawing.textureArrayProperties.Add(prop);
+                ThryEditor.currentlyDrawing.textureArrayProperties.Add((ThryEditor.ShaderProperty)ThryEditor.currentlyDrawing.currentProperty);
         }
 
         public override float GetPropertyHeight(MaterialProperty prop, string label, MaterialEditor editor)

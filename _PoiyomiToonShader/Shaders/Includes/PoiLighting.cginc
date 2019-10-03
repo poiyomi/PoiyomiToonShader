@@ -17,7 +17,8 @@
     float _AttenuationMultiplier;
     float _EnableLighting;
     float _LightingControlledUseLightColor;
-    
+    uint _LightingAOUV;
+
     UNITY_DECLARE_TEX2D_NOSAMPLER(_AOMap); float4 _AOMap_ST;
     UNITY_DECLARE_TEX2D_NOSAMPLER(_LightingShadowMask); float4 _LightingShadowMask_ST;
     float _AOStrength;
@@ -68,7 +69,7 @@
     {
         float AOMap = 1;
         #ifndef OUTLINE
-            AOMap = UNITY_SAMPLE_TEX2D_SAMPLER(_AOMap, _MainTex, TRANSFORM_TEX(poiMesh.uv, _AOMap));
+            AOMap = UNITY_SAMPLE_TEX2D_SAMPLER(_AOMap, _MainTex, TRANSFORM_TEX(poiMesh.uv[_LightingAOUV], _AOMap));
             AOMap = calculateAOMap(AOMap, _AOStrength);
         #endif
         
@@ -77,7 +78,7 @@
         float3 ShadeSH9Minus = ShadeSH9(float4(0, 0, 0, 1));
         
         #ifndef OUTLINE
-            float ShadowStrengthMap = UNITY_SAMPLE_TEX2D_SAMPLER(_LightingShadowMask, _MainTex, TRANSFORM_TEX(poiMesh.uv, _LightingShadowMask)).r;
+            float ShadowStrengthMap = UNITY_SAMPLE_TEX2D_SAMPLER(_LightingShadowMask, _MainTex, TRANSFORM_TEX(poiMesh.uv[0], _LightingShadowMask)).r;
             _ShadowStrength *= ShadowStrengthMap;
         #endif
         

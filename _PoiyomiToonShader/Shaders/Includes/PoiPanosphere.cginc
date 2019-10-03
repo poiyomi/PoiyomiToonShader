@@ -26,7 +26,7 @@
     
     void calculatePanosphere()
     {
-        panoMask = tex2D(_PanoMapTexture, TRANSFORM_TEX(poiMesh.uv, _PanoMapTexture));
+        panoMask = tex2D(_PanoMapTexture, TRANSFORM_TEX(poiMesh.uv[0], _PanoMapTexture));
         
         UNITY_BRANCH
         if (_PanoCubeMapToggle)

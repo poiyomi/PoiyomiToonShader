@@ -1,6 +1,6 @@
 #ifndef POI_DATA
     #define POI_DATA
-
+    
     float FadeShadows(float attenuation, float3 worldPosition)
     {
         float viewZ = dot(_WorldSpaceCameraPos - worldPosition, UNITY_MATRIX_V[2].xyz);
@@ -33,7 +33,7 @@
             //poiLight.color = saturate(_LightColor0.rgb) + saturate(ShadeSH9(normalize(unity_SHAr + unity_SHAg + unity_SHAb)));
             float3 magic = saturate(ShadeSH9(normalize(unity_SHAr + unity_SHAg + unity_SHAb)));
             float3 normalLight = saturate(_LightColor0.rgb);
-            poiLight.color = saturate(magic+normalLight);
+            poiLight.color = saturate(magic + normalLight);
         #else
             #if defined(POINT) || defined(SPOT)
                 poiLight.color = _LightColor0.rgb;
@@ -53,7 +53,10 @@
         poiMesh.tangent = i.tangent;
         poiMesh.worldPos = i.worldPos;
         poiMesh.localPos = i.localPos;
-        poiMesh.uv = i.uv;
+        poiMesh.uv[0] = i.uv0;
+        poiMesh.uv[1] = i.uv1;
+        poiMesh.uv[2] = i.uv2;
+        poiMesh.uv[3] = i.uv3;
         poiMesh.modelPos = i.modelPos;
     }
     
@@ -69,16 +72,19 @@
     
     void calculateTangentData()
     {
-        poiTData.tangentTransform = float3x3(poiMesh.tangent, poiMesh.bitangent, poiMesh.vertexNormal);
+        poiTData. tangentTransform = float3x3(poiMesh.tangent, poiMesh.bitangent, poiMesh.vertexNormal);
         poiTData.tangentToWorld = transpose(float3x3(poiMesh.tangent, poiMesh.bitangent, poiMesh.vertexNormal));
     }
-
+    
     void InitData(inout v2f i)
     {
         UNITY_SETUP_INSTANCE_ID(i);
         
         calculateAttenuation(i);
         calculateLightColor();
+        #if defined(VERTEXLIGHT_ON)
+            poiLight.vertexLightColor = i.vertexLightColor;
+        #endif
         calculateLightDirection(i);
         
         InitializeMeshData(i);
@@ -86,7 +92,13 @@
         calculateTangentData();
         
         poiLight.halfDir = Unity_SafeNormalize(poiLight.direction + poiCam.viewDir);
-        
     }
     
+    void CalculateReflectionData()
+    {
+        #if defined(_METALLICGLOSSMAP) || defined(_COLORCOLOR_ON)
+            poiCam.reflectionDir = reflect(-poiCam.viewDir, poiMesh.fragmentNormal);
+            poiCam.vertexReflectionDir = reflect(-poiCam.viewDir, poiMesh.vertexNormal);
+        #endif
+    }
 #endif

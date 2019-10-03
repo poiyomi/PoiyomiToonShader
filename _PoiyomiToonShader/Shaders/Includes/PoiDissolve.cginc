@@ -42,10 +42,10 @@
     #ifndef POISHADOW
         void calculateDissolve()
         {
-            float dissolveMask = UNITY_SAMPLE_TEX2D_SAMPLER(_DissolveMask, _MainTex, TRANSFORM_TEX(poiMesh.uv, _DissolveMask)).r;
-            dissolveToTexture = UNITY_SAMPLE_TEX2D_SAMPLER(_DissolveToTexture, _MainTex, TRANSFORM_TEX(poiMesh.uv, _DissolveToTexture) + _Time.y * _DissolveToPanning.xy) * _DissolveTextureColor;
-            float dissolveNoiseTexture = UNITY_SAMPLE_TEX2D_SAMPLER(_DissolveNoiseTexture, _MainTex, TRANSFORM_TEX(poiMesh.uv, _DissolveNoiseTexture) + _Time.y * _DissolvePan.xy);
-            float dissolveDetailNoise = UNITY_SAMPLE_TEX2D_SAMPLER(_DissolveDetailNoise, _MainTex, TRANSFORM_TEX(poiMesh.uv, _DissolveDetailNoise) + _Time.y * _DissolvePan.zw);
+            float dissolveMask = UNITY_SAMPLE_TEX2D_SAMPLER(_DissolveMask, _MainTex, TRANSFORM_TEX(poiMesh.uv[0], _DissolveMask)).r;
+            dissolveToTexture = UNITY_SAMPLE_TEX2D_SAMPLER(_DissolveToTexture, _MainTex, TRANSFORM_TEX(poiMesh.uv[0], _DissolveToTexture) + _Time.y * _DissolveToPanning.xy) * _DissolveTextureColor;
+            float dissolveNoiseTexture = UNITY_SAMPLE_TEX2D_SAMPLER(_DissolveNoiseTexture, _MainTex, TRANSFORM_TEX(poiMesh.uv[0], _DissolveNoiseTexture) + _Time.y * _DissolvePan.xy);
+            float dissolveDetailNoise = UNITY_SAMPLE_TEX2D_SAMPLER(_DissolveDetailNoise, _MainTex, TRANSFORM_TEX(poiMesh.uv[0], _DissolveDetailNoise) + _Time.y * _DissolvePan.zw);
             
             if (_DissolveInvertNoise)
             {
@@ -132,8 +132,8 @@
         
         void applyDissolveEmission(inout float4 finalColor)
         {
-            finalColor += lerp(0, dissolveToTexture * _DissolveToEmissionStrength, dissolveAlpha);
-            finalColor.rgb += lerp(0, edgeColor.rgb * _DissolveEdgeEmission, remapClamped(edgeAlpha, 0, 1 - _DissolveEdgeHardness, 0, 1));
+            finalColor += lerp(0, dissolveToTexture * _DissolveToEmissionStrength, dissolveAlpha) * albedo.a;
+            finalColor.rgb += lerp(0, edgeColor.rgb * _DissolveEdgeEmission, remapClamped(edgeAlpha, 0, 1 - _DissolveEdgeHardness, 0, 1)) * albedo.a;
         }
         
     #endif
