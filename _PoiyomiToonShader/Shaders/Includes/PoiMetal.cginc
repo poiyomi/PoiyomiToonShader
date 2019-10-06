@@ -77,6 +77,6 @@
     
     void applyAdditiveReflectiveLighting(inout float4 finalColor)
     {
-        finalColor *= (1 - metalicMap);
+        finalColor.rgb *= (1 - metalicMap);
     }
 #endif

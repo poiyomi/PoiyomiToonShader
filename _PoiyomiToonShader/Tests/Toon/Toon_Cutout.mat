@@ -4,8 +4,9 @@
 Material:
   serializedVersion: 6
   m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
   m_Name: Toon_Cutout
   m_Shader: {fileID: 4800000, guid: 3d24dbdc8379bac44a1ef1bd03ebcde5, type: 3}
   m_ShaderKeywords: _NORMALMAP
@@ -183,10 +184,13 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _ToonRamp:
-        m_Texture: {fileID: 2800000, guid: 7744a2dff3641604fa8b6601a055824c, type: 3}
+        m_Texture: {fileID: 2800000, guid: 49e10996dc80f794da61ee12a6d2886f, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
+    - DSGI: 0
+    - Instancing: 0
+    - LightmapFlags: 0
     - _AOStrength: 1
     - _AdditiveOffset: 0
     - _AdditiveSoftness: 0.005
@@ -197,6 +201,7 @@ Material:
     - _AnisoSpec2Alpha: 1
     - _AnisoUseTangentMap: 0
     - _AttenuationMultiplier: 0
+    - _BumpMapUV: 0
     - _BumpScale: 1
     - _CameraAngleMax: 90
     - _CameraAngleMin: 45
@@ -230,6 +235,8 @@ Material:
     - _DissolveP2PWorldLocal: 0
     - _DissolveToEmissionStrength: 0
     - _DissolveType: 1
+    - _EmissionCenterOutEnabled: 0
+    - _EmissionCenterOutSpeed: 5
     - _EmissionStrength: 0
     - _EmissionUV: 0
     - _EmissiveBlink_Max: 1
@@ -262,23 +269,24 @@ Material:
     - _FlipbookTiled: 0
     - _FlipbookTotalFrames: 1
     - _FlipbookUV: 0
-    - _Footer_discord: 0
-    - _Footer_github: 0
-    - _Footer_patreon: 0
-    - _Footer_twitter: 0
-    - _Footer_youtube: 0
-    - _ForceOpaque: 1
+    - _ForceOpaque: 0
+    - _GIEmissionMultiplier: 1
     - _GITDEMaxEmissionMultiplier: 0
     - _GITDEMaxLight: 1
     - _GITDEMinEmissionMultiplier: 1
     - _GITDEMinLight: 0
     - _GITDEWorldOrMesh: 0
-    - _IndirectContribution: 0
     - _InvertSmoothness: 0
     - _LightingAOUV: 0
-    - _LightingType: 0
+    - _LightingIndirectContribution: 0.25
+    - _LightingMinLightBrightness: 0
+    - _LightingStandardControlsToon: 0
+    - _LightingStandardSmoothness: 0
+    - _LightingType: 1
+    - _MainAlphaToCoverage: 1
     - _MainEmissionStrength: 0
     - _MainMinAlpha: 0
+    - _MainMipScale: 0.25
     - _Matcap2Add: 0
     - _Matcap2Border: 0.43
     - _Matcap2Enable: 0
@@ -336,15 +344,16 @@ Material:
     - _ShadowMixThreshold: 0.5
     - _ShadowMixWidthMod: 0.5
     - _ShadowOffset: 0
-    - _ShadowStrength: 1
+    - _ShadowStrength: 0.2
     - _Smoothness: 0
     - _SmoothnessFrom: 1
     - _SourceBlend: 5
     - _Spec2Smoothness: 0
     - _SpecWhatTangent: 0
     - _SpecularInvertSmoothness: 0
+    - _SpecularMinLightBrightness: 0
     - _SpecularMixAlbedoIntoTint: 0
-    - _SpecularSmoothness: 1
+    - _SpecularSmoothness: 0.75
     - _SpecularType: 1
     - _StencilCompareFunction: 8
     - _StencilFailOp: 0
@@ -354,11 +363,6 @@ Material:
     - _ZBias: 0
     - _ZTest: 4
     - _ZWrite: 1
-    - _footer_discord: 0
-    - _footer_github: 0
-    - _footer_patreon: 0
-    - _footer_twitter: 0
-    - _footer_youtube: 0
     - footer_discord: 0
     - footer_github: 0
     - footer_patreon: 0
@@ -366,11 +370,14 @@ Material:
     - footer_youtube: 0
     - m_RandomOptions: 0
     - m_StencilPassOptions: 0
+    - m_bakedLighting: 0
     - m_debugOptions: 0
     - m_dissolve: 0
     - m_emissionOptions: 0
+    - m_end_Alpha: 0
     - m_end_Angle: 0
     - m_end_Anisotropic: 0
+    - m_end_CenterOutEmission: 0
     - m_end_DetailOptions: 0
     - m_end_Fade: 0
     - m_end_Matcap2: 0
@@ -380,6 +387,8 @@ Material:
     - m_end_clearCoat: 0
     - m_end_glowInDarkEmissionOptions: 0
     - m_end_lightingAdvanced: 0
+    - m_end_lightingBeta: 0
+    - m_end_lightingStandard: 0
     - m_end_manualFlipbookControl: 0
     - m_end_parallaxHeightmap: 0
     - m_end_parallaxInternal: 0
@@ -398,8 +407,10 @@ Material:
     - m_renderingOptions: 0
     - m_rimLightOptions: 0
     - m_specularHighlightsOptions: 0
+    - m_start_Alpha: 0
     - m_start_Angle: 0
     - m_start_Anisotropic: 0
+    - m_start_CenterOutEmission: 0
     - m_start_DetailOptions: 0
     - m_start_Fade: 0
     - m_start_Matcap2: 0
@@ -409,6 +420,8 @@ Material:
     - m_start_clearCoat: 0
     - m_start_glowInDarkEmissionOptions: 0
     - m_start_lightingAdvanced: 0
+    - m_start_lightingBeta: 0
+    - m_start_lightingStandard: 0
     - m_start_manualFlipbookControl: 0
     - m_start_parallaxHeightmap: 0
     - m_start_parallaxInternal: 0
@@ -455,5 +468,5 @@ Material:
     - _RimTexPanSpeed: {r: 0, g: 0, b: 0, a: 0}
     - _RimWidthNoisePan: {r: 0, g: 0, b: 0, a: 0}
     - _SSSColor: {r: 1, g: 1, b: 1, a: 1}
-    - _SpecularTint: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
+    - _SpecularTint: {r: 0.2, g: 0.2, b: 0.2, a: 1}
     - _SpecularToonInnerOuter: {r: 0.25, g: 0.3, b: 0, a: 1}

@@ -17,6 +17,8 @@ m_RandomOptions:=Random
 m_renderingOptions:=Rendering Options--{button_right:{text:Tutorial,action:{type:URL,data:https://youtu.be/P5KlE9rk9pg},hover:YouTube}}
 m_debugOptions:=Debug
 
+_ToonRamp:=Lighting Ramp--{texture:{width:512,height:1,filterMode:Bilinear,wrapMode:Clamp}}
+
 footer_youtube:={texture:{name:icon-youtube,height:32},action:{type:URL,data:https://www.youtube.com/poiyomi},hover:YOUTUBE}
 footer_twitter:={texture:{name:icon-twitter,height:32},action:{type:URL,data:https://twitter.com/poiyomi},hover:TWITTER}
 footer_patreon:={texture:{name:icon-patreon,height:32},action:{type:URL,data:https://www.patreon.com/poiyomi},hover:PATREON}

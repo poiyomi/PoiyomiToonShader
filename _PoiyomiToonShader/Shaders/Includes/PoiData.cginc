@@ -1,19 +1,10 @@
 #ifndef POI_DATA
     #define POI_DATA
     
-    float FadeShadows(float attenuation, float3 worldPosition)
-    {
-        float viewZ = dot(_WorldSpaceCameraPos - worldPosition, UNITY_MATRIX_V[2].xyz);
-        float shadowFadeDistance = UnityComputeShadowFadeDistance(worldPosition, viewZ);
-        float shadowFade = UnityComputeShadowFade(shadowFadeDistance);
-        attenuation = saturate(attenuation + shadowFade);
-        return attenuation;
-    }
-    
     void calculateAttenuation(v2f i)
     {
         UNITY_LIGHT_ATTENUATION(attenuation, i, i.worldPos.xyz)
-        poiLight.attenuation = FadeShadows(attenuation, i.worldPos.xyz);
+        poiLight.attenuation = attenuation;
     }
     
     void calculateLightDirection(v2f i)
@@ -57,6 +48,9 @@
         poiMesh.uv[1] = i.uv1;
         poiMesh.uv[2] = i.uv2;
         poiMesh.uv[3] = i.uv3;
+        #if defined(LIGHTMAP_ON) || defined(DYNAMICLIGHTMAP_ON)
+            poiMesh.lightmapUV = i.lightmapUV;
+        #endif
         poiMesh.modelPos = i.modelPos;
     }
     
@@ -65,21 +59,29 @@
         poiCam.viewDir = normalize(_WorldSpaceCameraPos - i.worldPos);
         poiCam.forwardDir = getCameraForward();
         poiCam.worldPos = _WorldSpaceCameraPos;
-        poiCam.tangentViewDir = normalize(i.tangentViewDir);
         poiCam.distanceToModel = distance(poiMesh.modelPos, poiCam.worldPos);
         poiCam.distanceToVert = distance(poiMesh.worldPos, poiCam.worldPos);
+        
+        #ifdef _PARALLAXMAP
+            float3x3 objectToTangent = float3x3(
+                i.localTangent.xyz,
+                cross(poiMesh.vertexNormal, i.localTangent.xyz) * i.localTangent.w,
+                poiMesh.vertexNormal
+            );
+            poiCam.tangentViewDir = normalize(mul(objectToTangent, ObjSpaceViewDir(i.localPos)));
+        #endif
     }
     
     void calculateTangentData()
     {
-        poiTData. tangentTransform = float3x3(poiMesh.tangent, poiMesh.bitangent, poiMesh.vertexNormal);
+        poiTData.tangentTransform = float3x3(poiMesh.tangent, poiMesh.bitangent, poiMesh.vertexNormal);
         poiTData.tangentToWorld = transpose(float3x3(poiMesh.tangent, poiMesh.bitangent, poiMesh.vertexNormal));
     }
     
     void InitData(inout v2f i)
     {
         UNITY_SETUP_INSTANCE_ID(i);
-        
+
         calculateAttenuation(i);
         calculateLightColor();
         #if defined(VERTEXLIGHT_ON)

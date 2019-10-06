@@ -1,0 +1,499 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 6
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: New Material
+  m_Shader: {fileID: 4800000, guid: 3d24dbdc8379bac44a1ef1bd03ebcde5, type: 3}
+  m_ShaderKeywords: _ _NORMALMAP
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _AOMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _AlphaMask:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _AnisoTangentMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _BumpMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _ClearCoatCubeMap:
+        m_Texture: {fileID: 8900000, guid: a0fde614a95c2d44ca3dec1fba756a6f, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _ClearCoatMask:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _ClearCoatSmoothnessMask:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _CubeMap:
+        m_Texture: {fileID: 8900000, guid: a0fde614a95c2d44ca3dec1fba756a6f, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailAlbedoMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailMask:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailNormalMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DissolveDetailNoise:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DissolveEdgeGradient:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DissolveMask:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DissolveNoiseTexture:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DissolveToTexture:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _EmissionMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _EmissionMask:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _FlipbookTexArray:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _LightingShadowMask:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainFadeTexture:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Matcap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Matcap2:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Matcap2Mask:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MatcapMask:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MetallicGlossMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MetallicMask:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MirrorTexture:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _OcclusionMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _PanoCubeMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _PanoMapTexture:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _PanosphereTexture:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _ParallaxHeightMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _ParallaxInternalMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _ParallaxMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _RimEnviroMask:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _RimMask:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _RimTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _RimWidthNoiseTexture:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SSSThicknessMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SmoothnessMask:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SpecularMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SpecularMask:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _ToonRamp:
+        m_Texture: {fileID: 2800000, guid: e9668f1a82414bb458cfdf278ef1563f, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Floats:
+    - DSGI: 0
+    - Instancing: 0
+    - LightmapFlags: 0
+    - _AOStrength: 1
+    - _AdditiveOffset: 0
+    - _AdditiveSoftness: 0.005
+    - _AngleCompareTo: 0
+    - _AngleMinAlpha: 0
+    - _AngleType: 0
+    - _AnisoSpec1Alpha: 1
+    - _AnisoSpec2Alpha: 1
+    - _AnisoUseTangentMap: 0
+    - _AttenuationMultiplier: 0
+    - _BumpMapUV: 0
+    - _BumpScale: 1
+    - _CameraAngleMax: 90
+    - _CameraAngleMin: 45
+    - _ClearCoat: 1
+    - _ClearCoatInvertSmoothness: 0
+    - _ClearCoatNormalToUse: 0
+    - _ClearCoatSampleWorld: 0
+    - _ClearCoatSmoothness: 0
+    - _Clip: 0.5
+    - _ContinuousDissolve: 0
+    - _Cull: 2
+    - _Cutoff: 0.5
+    - _DebugCameraData: 0
+    - _DebugDisplayDebug: 0
+    - _DebugLightingData: 0
+    - _DebugMeshData: 0
+    - _DebugSpecularData: 0
+    - _DestinationBlend: 10
+    - _DetailBrightness: 1
+    - _DetailNormalMapScale: 1
+    - _DetailNormalUV: 0
+    - _DetailTexIntensity: 1
+    - _DetailTexUV: 0
+    - _DissolveAlpha: 0
+    - _DissolveDetailStrength: 0.1
+    - _DissolveEdgeEmission: 0
+    - _DissolveEdgeHardness: 0.5
+    - _DissolveEdgeWidth: 0.025
+    - _DissolveInvertDetailNoise: 0
+    - _DissolveInvertNoise: 0
+    - _DissolveP2PEdgeLength: 0.1
+    - _DissolveP2PWorldLocal: 0
+    - _DissolveToEmissionStrength: 0
+    - _DissolveType: 1
+    - _DstBlend: 0
+    - _EmissionCenterOutEnabled: 0
+    - _EmissionCenterOutSpeed: 5
+    - _EmissionStrength: 0
+    - _EmissionUV: 0
+    - _EmissiveBlink_Max: 1
+    - _EmissiveBlink_Min: 1
+    - _EmissiveBlink_Velocity: 4
+    - _EmissiveScroll_Interval: 20
+    - _EmissiveScroll_Velocity: 10
+    - _EmissiveScroll_Width: 10
+    - _EnableClearCoat: 0
+    - _EnableDissolve: 0
+    - _EnableEmission: 0
+    - _EnableEnvironmentalRim: 0
+    - _EnableFlipbook: 0
+    - _EnableGITDEmission: 0
+    - _EnableLighting: 1
+    - _EnableMetallic: 0
+    - _EnableMirrorOptions: 0
+    - _EnableMirrorTexture: 0
+    - _EnableRandom: 0
+    - _EnableRimLighting: 0
+    - _EnableSSS: 0
+    - _EnableSpecular: 0
+    - _FlipbookAdd: 0
+    - _FlipbookCurrentFrame: -1
+    - _FlipbookEmissionStrength: 0
+    - _FlipbookFPS: 30
+    - _FlipbookMultiply: 0
+    - _FlipbookReplace: 1
+    - _FlipbookRotation: 0
+    - _FlipbookTiled: 0
+    - _FlipbookTotalFrames: 1
+    - _FlipbookUV: 0
+    - _ForceOpaque: 0
+    - _GIEmissionMultiplier: 1
+    - _GITDEMaxEmissionMultiplier: 0
+    - _GITDEMaxLight: 1
+    - _GITDEMinEmissionMultiplier: 1
+    - _GITDEMinLight: 0
+    - _GITDEWorldOrMesh: 0
+    - _GlossMapScale: 1
+    - _Glossiness: 0.5
+    - _GlossyReflections: 1
+    - _InvertSmoothness: 0
+    - _LightingAOUV: 0
+    - _LightingIndirectContribution: 0.25666666
+    - _LightingMinLightBrightness: 0
+    - _LightingStandardControlsToon: 1
+    - _LightingStandardSmoothness: 0.556
+    - _LightingType: 2
+    - _MainAlphaToCoverage: 1
+    - _MainEmissionStrength: 0
+    - _MainMinAlpha: 0
+    - _MainMipScale: 0.25
+    - _Matcap2Add: 0
+    - _Matcap2Border: 0.43
+    - _Matcap2Enable: 0
+    - _Matcap2Intensity: 1
+    - _Matcap2LightMask: 0
+    - _Matcap2Multiply: 0
+    - _Matcap2Replace: 0
+    - _MatcapAdd: 0
+    - _MatcapBorder: 0.43
+    - _MatcapEnable: 0
+    - _MatcapIntensity: 1
+    - _MatcapLightMask: 0
+    - _MatcapMultiply: 0
+    - _MatcapReplace: 1
+    - _Metallic: 0
+    - _Mirror: 0
+    - _Mode: 0
+    - _ModelAngleMax: 90
+    - _ModelAngleMin: 45
+    - _OcclusionStrength: 1
+    - _PanoBlend: 0
+    - _PanoCubeMapToggle: 0
+    - _PanoEmission: 0
+    - _PanoToggle: 0
+    - _Parallax: 0.02
+    - _ParallaxBias: 0.42
+    - _ParallaxHeightIterations: 1
+    - _ParallaxHeightMapEnabled: 0
+    - _ParallaxInternalHeightFromAlpha: 0
+    - _ParallaxInternalHeightmapMode: 0
+    - _ParallaxInternalIterations: 1
+    - _ParallaxInternalMapEnabled: 0
+    - _ParallaxInternalMaxDepth: 1
+    - _ParallaxInternalMaxFade: 0
+    - _ParallaxInternalMinDepth: 0
+    - _ParallaxInternalMinFade: 1
+    - _ParallaxMap: 0
+    - _ParallaxStrength: 0
+    - _RimBrighten: 0
+    - _RimEnviroBlur: 0.7
+    - _RimEnviroMinBrightness: 0
+    - _RimEnviroSharpness: 0
+    - _RimEnviroWidth: 0.45
+    - _RimLightColorBias: 0
+    - _RimLightingInvert: 0
+    - _RimSharpness: 0.25
+    - _RimStrength: 0
+    - _RimWidth: 0.8
+    - _RimWidthNoiseStrength: 0.1
+    - _SSSDistortion: 0
+    - _SSSPower: 1
+    - _SSSSCale: 0
+    - _SSSThicknessMod: 0
+    - _SampleWorld: 0
+    - _Saturation: 0
+    - _ScrollingEmission: 0
+    - _ShadowMix: 0
+    - _ShadowMixThreshold: 0.5
+    - _ShadowMixWidthMod: 0.5
+    - _ShadowOffset: -0.13
+    - _ShadowStrength: 1
+    - _Smoothness: 0
+    - _SmoothnessFrom: 1
+    - _SmoothnessTextureChannel: 0
+    - _SourceBlend: 5
+    - _Spec2Smoothness: 0
+    - _SpecWhatTangent: 0
+    - _SpecularHighlights: 1
+    - _SpecularInvertSmoothness: 0
+    - _SpecularMinLightBrightness: 0
+    - _SpecularMixAlbedoIntoTint: 0
+    - _SpecularSmoothness: 0.75
+    - _SpecularType: 1
+    - _SrcBlend: 1
+    - _StencilCompareFunction: 8
+    - _StencilFailOp: 0
+    - _StencilPassOp: 0
+    - _StencilRef: 0
+    - _StencilZFailOp: 0
+    - _UVSec: 0
+    - _ZBias: 0
+    - _ZTest: 4
+    - _ZWrite: 1
+    - footer_discord: 0
+    - footer_github: 0
+    - footer_patreon: 0
+    - footer_twitter: 0
+    - footer_youtube: 0
+    - m_RandomOptions: 0
+    - m_StencilPassOptions: 0
+    - m_bakedLighting: 0
+    - m_debugOptions: 0
+    - m_dissolve: 0
+    - m_emissionOptions: 0
+    - m_end_Alpha: 0
+    - m_end_Angle: 0
+    - m_end_Anisotropic: 0
+    - m_end_CenterOutEmission: 0
+    - m_end_DetailOptions: 0
+    - m_end_Fade: 0
+    - m_end_Matcap2: 0
+    - m_end_ShadowMix: 0
+    - m_end_SpecularToon: 0
+    - m_end_blinkingEmissionOptions: 0
+    - m_end_clearCoat: 0
+    - m_end_glowInDarkEmissionOptions: 0
+    - m_end_lightingAdvanced: 0
+    - m_end_lightingBeta: 0
+    - m_end_lightingStandard: 0
+    - m_end_manualFlipbookControl: 0
+    - m_end_parallaxHeightmap: 0
+    - m_end_parallaxInternal: 0
+    - m_end_pointToPoint: 0
+    - m_end_reflectionRim: 0
+    - m_end_rimWidthNoise: 0
+    - m_end_scrollingEmissionOptions: 0
+    - m_fakeLightingOptions: 1
+    - m_flipBook: 0
+    - m_mainOptions: 0
+    - m_matcapOptions: 0
+    - m_metallicOptions: 0
+    - m_mirrorOptions: 0
+    - m_panosphereOptions: 0
+    - m_parallaxMap: 0
+    - m_renderingOptions: 0
+    - m_rimLightOptions: 0
+    - m_specularHighlightsOptions: 0
+    - m_start_Alpha: 0
+    - m_start_Angle: 0
+    - m_start_Anisotropic: 0
+    - m_start_CenterOutEmission: 0
+    - m_start_DetailOptions: 0
+    - m_start_Fade: 0
+    - m_start_Matcap2: 0
+    - m_start_ShadowMix: 0
+    - m_start_SpecularToon: 0
+    - m_start_blinkingEmissionOptions: 0
+    - m_start_clearCoat: 0
+    - m_start_glowInDarkEmissionOptions: 0
+    - m_start_lightingAdvanced: 0
+    - m_start_lightingBeta: 0
+    - m_start_lightingStandard: 1
+    - m_start_manualFlipbookControl: 0
+    - m_start_parallaxHeightmap: 0
+    - m_start_parallaxInternal: 0
+    - m_start_pointToPoint: 0
+    - m_start_reflectionRim: 0
+    - m_start_rimWidthNoise: 0
+    - m_start_scrollingEmissionOptions: 0
+    - m_subsurfaceOptions: 0
+    - shader_is_using_thry_editor: 69.12
+    - shader_master_label: 0
+    - shader_presets: 0
+    - shader_properties_label_file: 0
+    m_Colors:
+    - _AngleForwardDirection: {r: 0, g: 0, b: 1, a: 0}
+    - _ClearCoatTint: {r: 1, g: 1, b: 1, a: 1}
+    - _Color: {r: 0.8161765, g: 0.8161765, b: 0.8161765, a: 1}
+    - _DetailTexturePan: {r: 0, g: 0, b: 0, a: 0}
+    - _DetailTint: {r: 1, g: 1, b: 1, a: 1}
+    - _DissolveEdgeColor: {r: 1, g: 1, b: 1, a: 1}
+    - _DissolveEndPoint: {r: 0, g: 1, b: 0, a: 0}
+    - _DissolvePan: {r: 0, g: 0, b: 0, a: 0}
+    - _DissolveStartPoint: {r: 0, g: -1, b: 0, a: 0}
+    - _DissolveTextureColor: {r: 1, g: 1, b: 1, a: 1}
+    - _DissolveToPanning: {r: 0, g: 0, b: 0, a: 0}
+    - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _EmissionPan: {r: 0, g: 0, b: 0, a: 0}
+    - _EmissiveScroll_Direction: {r: 0, g: -10, b: 0, a: 0}
+    - _FlipbookColor: {r: 1, g: 1, b: 1, a: 1}
+    - _FlipbookScaleOffset: {r: 1, g: 1, b: 0, a: 0}
+    - _GlobalPanSpeed: {r: 0, g: 0, b: 0, a: 0}
+    - _MainDetailNormalPan: {r: 0, g: 0, b: 0, a: 0}
+    - _MainDistanceFade: {r: 0, g: 0, b: 0, a: 0}
+    - _MainNormalPan: {r: 0, g: 0, b: 0, a: 0}
+    - _Matcap2Color: {r: 1, g: 1, b: 1, a: 1}
+    - _MatcapColor: {r: 1, g: 1, b: 1, a: 1}
+    - _MetalReflectionTint: {r: 1, g: 1, b: 1, a: 1}
+    - _PanosphereColor: {r: 1, g: 1, b: 1, a: 1}
+    - _PanospherePan: {r: 0, g: 0, b: 0, a: 0}
+    - _ParallaxInternalMaxColor: {r: 1, g: 1, b: 1, a: 1}
+    - _ParallaxInternalMinColor: {r: 1, g: 1, b: 1, a: 1}
+    - _ParallaxInternalPanDepthSpeed: {r: 0, g: 0, b: 0, a: 0}
+    - _ParallaxInternalPanSpeed: {r: 0, g: 0, b: 0, a: 0}
+    - _RimLightColor: {r: 1, g: 1, b: 1, a: 1}
+    - _RimTexPanSpeed: {r: 0, g: 0, b: 0, a: 0}
+    - _RimWidthNoisePan: {r: 0, g: 0, b: 0, a: 0}
+    - _SSSColor: {r: 1, g: 1, b: 1, a: 1}
+    - _SpecularTint: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
+    - _SpecularToonInnerOuter: {r: 0.25, g: 0.3, b: 0, a: 1}

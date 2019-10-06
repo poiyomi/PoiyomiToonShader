@@ -1,12 +1,8 @@
 #ifndef POICLUDES
     #define POICLUDES
     
-    #include "UnityCG.cginc"
-    #include "Lighting.cginc"
-    #include "UnityPBSLighting.cginc"
-    #include "AutoLight.cginc"
-    
     UNITY_DECLARE_TEX2D(_MainTex); float4 _MainTex_ST; float4 _MainTex_TexelSize;
+    
     float _Clip;
     
     //Structs
@@ -32,19 +28,24 @@
         float2 uv3: TEXCOORD3;
         float3 normal: TEXCOORD4;
         float3 tangent: TEXCOORD5;
-        float3 bitangent: TEXCOORD6;
-        float4 worldPos: TEXCOORD7;
-        float4 localPos: TEXCOORD8;
-        float4 screenPos: TEXCOORD9;
-        float3 tangentViewDir: TEXCOORD10;
-        float3 modelPos: TEXCOORD11;
-        float angleAlpha: TEXCOORD12;
+        #ifdef _PARALLAXMAP
+            float4 localTangent: TEXCOORD6;
+        #endif
+        float3 bitangent: TEXCOORD7;
+        float4 worldPos: TEXCOORD8;
+        float4 localPos: TEXCOORD9;
+        float4 screenPos: TEXCOORD10;
+        #if defined(LIGHTMAP_ON) || defined(DYNAMICLIGHTMAP_ON)
+            float4 lightmapUV: TEXCOORD11;
+        #endif
+        float3 modelPos: TEXCOORD12;
+        float angleAlpha: TEXCOORD13;
         UNITY_VERTEX_INPUT_INSTANCE_ID
         UNITY_VERTEX_OUTPUT_STEREO
-        UNITY_SHADOW_COORDS(13)
-        UNITY_FOG_COORDS(14)
+        UNITY_SHADOW_COORDS(14)
+        UNITY_FOG_COORDS(15)
         #if defined(VERTEXLIGHT_ON)
-            float3 vertexLightColor: TEXCOORD15;
+            float3 vertexLightColor: TEXCOORD16;
         #endif
     };
     
@@ -106,6 +107,9 @@
         float3 modelPos;
         float3 tangentSpaceNormal;
         float2 uv[4];
+        #if defined(LIGHTMAP_ON) || defined(DYNAMICLIGHTMAP_ON)
+            float4 lightmapUV;
+        #endif
     };
     
     struct PoiTangentData
@@ -141,8 +145,10 @@
     static FragmentCommonData s;
     static PoiTangentData poiTData;
     float4 finalColor;
+    float3 finalEmission;
     float4 mainTexture;
     float4 albedo;
+
     #define pi float(3.14159265359)
     
 #endif

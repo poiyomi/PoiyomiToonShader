@@ -54,9 +54,9 @@
     {
         finalColor.rgb = lerp(finalColor.rgb, lerp(finalColor.rgb, rimColor, _RimLightColorBias) + lerp(finalColor.rgb, rimColor, _RimLightColorBias) * _RimBrighten, rim);
     }
-    void ApplyRimEmission(inout float4 finalColor)
+    void ApplyRimEmission(inout float3 finalEmission)
     {
-        finalColor.rgb += rim * lerp(finalColor.rgb, rimColor, _RimLightColorBias) * _RimStrength;
+        finalEmission += rim * lerp(finalColor.rgb, rimColor, _RimLightColorBias) * _RimStrength;
     }
     
     void applyEnviroRim(inout float4 finalColor)

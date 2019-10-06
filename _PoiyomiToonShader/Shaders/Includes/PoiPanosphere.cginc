@@ -47,9 +47,9 @@
         finalColor.rgb = lerp(finalColor.rgb, panoColor, _PanoBlend * panoMask);
     }
     
-    void applyPanosphereEmission(inout float4 finalColor)
+    void applyPanosphereEmission(inout float3 finalEmission)
     {
-        finalColor.rgb += panoColor * _PanoBlend * panoMask * _PanoEmission;
+        finalEmission += panoColor * _PanoBlend * panoMask * _PanoEmission;
     }
     
 #endif

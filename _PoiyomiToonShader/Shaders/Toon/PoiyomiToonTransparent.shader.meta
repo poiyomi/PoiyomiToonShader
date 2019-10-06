@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 0e5388c0852a7bf47b0af21eb03d3641
+guid: 70d24c069ad93b543848e49761d6cd22
 ShaderImporter:
   externalObjects: {}
   defaultTextures:
@@ -45,6 +45,7 @@ ShaderImporter:
   - _PanoMapTexture: {instanceID: 0}
   - _PanoCubeMap: {instanceID: 0}
   - _MirrorTexture: {instanceID: 0}
+  nonModifiableTextures: []
   userData: 
   assetBundleName: 
   assetBundleVariant: 

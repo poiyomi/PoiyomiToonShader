@@ -4,6 +4,7 @@
     #pragma multi_compile_shadowcaster
     #include "UnityCG.cginc"
     #include "UnityShaderVariables.cginc"
+    
     #include "PoiShadowIncludes.cginc"
     #include "PoiHelpers.cginc"
     #include "poiMirror.cginc"

@@ -19,6 +19,7 @@
     float _AnisoSpec2Alpha;
     float _SpecularInvertSmoothness;
     half _SpecularMixAlbedoIntoTint;
+    float _SpecularMinLightBrightness;
     // Toon
     half4 _SpecularToonInnerOuter;
     
@@ -27,6 +28,7 @@
     float shiftTexture;
     float3 tangentDirectionMap;
     float4 specularMap;
+    float3 specularLight;
     UnityIndirect ZeroIndirect()
     {
         UnityIndirect ind;
@@ -99,7 +101,7 @@
         half oneMinusReflectivity;
         
         UnityLight unityLight;
-        unityLight.color = poiLight.color;
+        unityLight.color = specularLight;
         unityLight.dir = poiLight.direction;
         unityLight.ndotl = poiLight.nDotL;
         
@@ -126,7 +128,7 @@
         float specIntensity = dot(finalSpecular.rgb, grayscale_for_light());
         finalSpecular.rgb = smoothstep(0.99, 1, specIntensity) * poiLight.color.rgb * poiLight.attenuation;
         */
-        finalSpecular = smoothstep(1 - _SpecularToonInnerOuter.y, 1 - _SpecularToonInnerOuter.x, dot(poiLight.halfDir, poiMesh.fragmentNormal) * poiLight.attenuation) * poiLight.color.rgb;
+        finalSpecular = smoothstep(1 - _SpecularToonInnerOuter.y, 1 - _SpecularToonInnerOuter.x, dot(poiLight.halfDir, poiMesh.fragmentNormal) * poiLight.attenuation) * specularLight;
         UNITY_BRANCH
         if (_SmoothnessFrom == 0)
         {
@@ -171,13 +173,13 @@
         float3 spec = strandSpecular(TdotL, TdotV, specPower) * _AnisoSpec1Alpha;
         float3 spec2 = strandSpecular(TdotL, TdotV, spec2Power) * _AnisoSpec2Alpha;
         
-        finalSpecular = max(spec, spec2) * specularMap.rgb * _SpecularTint.a * poiLight.color * lerp(1, albedo.rgb, _SpecularMixAlbedoIntoTint);
+        finalSpecular = max(spec, spec2) * specularMap.rgb * _SpecularTint.a * specularLight * lerp(1, albedo.rgb, _SpecularMixAlbedoIntoTint);
     }
     
     void calculateSpecular(float4 albedo)
     {
         specularMap = UNITY_SAMPLE_TEX2D_SAMPLER(_SpecularMap, _MainTex, TRANSFORM_TEX(poiMesh.uv[0], _SpecularMap));
-        
+        specularLight = float3(max(poiLight.color.r,_SpecularMinLightBrightness),max(poiLight.color.g,_SpecularMinLightBrightness),max(poiLight.color.b,_SpecularMinLightBrightness));
         UNITY_BRANCH
         if (_SpecularType == 1) // Realistic
         {
@@ -200,7 +202,7 @@
     {
         half specularMask = UNITY_SAMPLE_TEX2D_SAMPLER(_SpecularMask, _MainTex, TRANSFORM_TEX(poiMesh.uv[0], _SpecularMask)).r;
         finalSpecular *= _SpecularTint.a;
-        finalSpecular = finalSpecular.rgb * _SpecularTint.rgb * saturate(poiMax(poiLight.color.rgb));
+        finalSpecular = finalSpecular.rgb * _SpecularTint.rgb * saturate(poiMax(specularLight));
         finalColor.rgb += finalSpecular * specularMask;
     }
     

@@ -23,6 +23,8 @@
     uint _GITDEWorldOrMesh;
     uint _EmissionUV;
     float4 emission = 0;
+    float _EmissionCenterOutEnabled;
+    float _EmissionCenterOutSpeed;
     
     void calculateEmission()
     {
@@ -36,8 +38,19 @@
             }
         #endif
         
-        float4 _Emissive_Tex_var = UNITY_SAMPLE_TEX2D_SAMPLER(_EmissionMap, _MainTex, TRANSFORM_TEX(poiMesh.uv[_EmissionUV], _EmissionMap) + _Time.y * _EmissionPan.xy);
-        emission = _Emissive_Tex_var * _EmissionColor * _EmissionStrength;
+        UNITY_BRANCH
+        if(!_EmissionCenterOutEnabled)
+        {
+            float4 _Emissive_Tex_var = UNITY_SAMPLE_TEX2D_SAMPLER(_EmissionMap, _MainTex, TRANSFORM_TEX(poiMesh.uv[_EmissionUV], _EmissionMap) + _Time.y * _EmissionPan.xy);
+            emission = _Emissive_Tex_var * _EmissionColor * _EmissionStrength;
+        }
+        
+        UNITY_BRANCH
+        if(_EmissionCenterOutEnabled)
+        {
+            emission = UNITY_SAMPLE_TEX2D_SAMPLER(_EmissionMap, _MainTex, (.5 + poiLight.nDotV * .5) + _Time.x * _EmissionCenterOutSpeed) * _EmissionColor * _EmissionStrength;
+        }
+        
         
         // scrolling emission
         if (_ScrollingEmission == 1)
@@ -58,17 +71,11 @@
         emission *= emissiveBlink;
         
         float _Emission_mask_var = UNITY_SAMPLE_TEX2D_SAMPLER(_EmissionMask, _MainTex, TRANSFORM_TEX(poiMesh.uv[_EmissionUV], _EmissionMask) + _Time.x * _EmissionPan.zw);
-        
-        
-        
         emission *= _Emission_mask_var;
     }
-    void applyEmission(inout float4 finalColor)
+    
+    void applyEmission(inout float3 finalEmission)
     {
-        #ifdef TRANSPARENT
-            finalColor.rgb += emission * albedo.a;
-        #else
-            finalColor.rgb += emission;
-        #endif
+        finalEmission += emission;
     }
 #endif

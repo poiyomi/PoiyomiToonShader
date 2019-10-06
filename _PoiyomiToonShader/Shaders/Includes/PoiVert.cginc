@@ -1,6 +1,6 @@
 #ifndef POI_VERT
     #define POI_VERT
-
+    
     void ComputeVertexLightColor(inout v2f i)
     {
         #if defined(VERTEXLIGHT_ON)
@@ -17,6 +17,12 @@
     {
         UNITY_SETUP_INSTANCE_ID(v);
         v2f o;
+        
+        #ifdef POI_META_PASS
+            v.vertex.xy = v.uv1 * unity_LightmapST.xy + unity_LightmapST.zw;
+            v.vertex.z = v.vertex.z > 0 ? 0.0001: 0;
+        #endif
+        
         UNITY_INITIALIZE_OUTPUT(v2f, o);
         UNITY_TRANSFER_INSTANCE_ID(v, o);
         UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
@@ -35,6 +41,9 @@
         o.uv2 = v.uv2.xy;
         o.uv3 = v.uv3.xy;
         o.normal = UnityObjectToWorldNormal(v.normal);
+        #ifdef POI_PARALLAX
+            o.localTangent = v.tangent;
+        #endif
         o.tangent = normalize(mul(unity_ObjectToWorld, float4(v.tangent.xyz, 0.0)).xyz);
         o.bitangent = normalize(cross(o.normal, o.tangent) * v.tangent.w);
         o.modelPos = mul(unity_ObjectToWorld, float4(0, 0, 0, 1));
@@ -48,12 +57,12 @@
             o.angleAlpha = ApplyAngleBasedRendering(o.modelPos, o.worldPos);
         #endif
         
-        float3x3 objectToTangent = float3x3(
-            v.tangent.xyz,
-            cross(v.normal, v.tangent.xyz) * v.tangent.w,
-            v.normal
-        );
-        o.tangentViewDir = mul(objectToTangent, ObjSpaceViewDir(v.vertex));
+        #if defined(LIGHTMAP_ON)
+            o.lightmapUV.xy = v.uv1.xy * unity_LightmapST.xy + unity_LightmapST.zw;
+        #endif
+        #ifdef DYNAMICLIGHTMAP_ON
+            o.lightmapUV.zw = v.uv2.xy * unity_DynamicLightmapST.xy + unity_DynamicLightmapST.zw;
+        #endif
         
         UNITY_TRANSFER_SHADOW(o, o.uv0);
         UNITY_TRANSFER_FOG(o, o.pos);

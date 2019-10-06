@@ -67,14 +67,14 @@
         return uvOffset;
     }
     
-    void calculateandApplyParallax(v2f i)
+    void calculateandApplyParallax()
     {
         UNITY_BRANCH
         if (_ParallaxHeightMapEnabled)
         {
-            i.tangentViewDir = normalize(i.tangentViewDir);
-            i.tangentViewDir.xy /= (i.tangentViewDir.z + _ParallaxBias);
-            poiMesh.uv[0] += ParallaxRaymarching(i.tangentViewDir.xy);
+            poiCam.tangentViewDir = normalize(poiCam.tangentViewDir);
+            poiCam.tangentViewDir.xy /= (poiCam.tangentViewDir.z + _ParallaxBias);
+            poiMesh.uv[0] += ParallaxRaymarching(poiCam.tangentViewDir.xy);
         }
     }
     

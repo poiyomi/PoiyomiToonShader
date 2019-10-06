@@ -1,5 +1,11 @@
 #ifndef POI_PASS_OUTLINE
     #define POI_PASS_OUTLINE
+
+    #include "UnityCG.cginc"
+    #include "Lighting.cginc"
+    #include "UnityPBSLighting.cginc"
+    #include "AutoLight.cginc"
+    
     #include "Poicludes.cginc"
     #include "PoiHelpers.cginc"
     #include "PoiDissolve.cginc"

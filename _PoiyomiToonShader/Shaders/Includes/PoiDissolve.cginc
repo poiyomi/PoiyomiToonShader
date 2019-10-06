@@ -39,7 +39,7 @@
     float dissolveAlpha;
     float4 dissolveToTexture;
     //Globals
-    #ifndef POISHADOW
+    #ifndef POI_SHADOW
         void calculateDissolve()
         {
             float dissolveMask = UNITY_SAMPLE_TEX2D_SAMPLER(_DissolveMask, _MainTex, TRANSFORM_TEX(poiMesh.uv[0], _DissolveMask)).r;
@@ -130,10 +130,10 @@
             */
         }
         
-        void applyDissolveEmission(inout float4 finalColor)
+        void applyDissolveEmission(inout float3 finalEmission)
         {
-            finalColor += lerp(0, dissolveToTexture * _DissolveToEmissionStrength, dissolveAlpha) * albedo.a;
-            finalColor.rgb += lerp(0, edgeColor.rgb * _DissolveEdgeEmission, remapClamped(edgeAlpha, 0, 1 - _DissolveEdgeHardness, 0, 1)) * albedo.a;
+            finalEmission += lerp(0, dissolveToTexture * _DissolveToEmissionStrength, dissolveAlpha);
+            finalEmission += lerp(0, edgeColor.rgb * _DissolveEdgeEmission, remapClamped(edgeAlpha, 0, 1 - _DissolveEdgeHardness, 0, 1));
         }
         
     #endif

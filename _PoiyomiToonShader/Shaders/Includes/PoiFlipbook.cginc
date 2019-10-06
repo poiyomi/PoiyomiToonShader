@@ -35,7 +35,7 @@
         float sn = sin(theta);
         float2 spriteCenter = _FlipbookScaleOffset.zw + .5;
         uv = float2((uv.x - spriteCenter.x) * cs - (uv.y - spriteCenter.y) * sn + spriteCenter.x, (uv.x - spriteCenter.x) * sn + (uv.y - spriteCenter.y) * cs + spriteCenter.y);
-
+        
         float2 newUV = remap(uv, float2(0, 0) + _FlipbookScaleOffset.xy / 2 + _FlipbookScaleOffset.zw, float2(1, 1) - _FlipbookScaleOffset.xy / 2 + _FlipbookScaleOffset.zw, float2(0, 0), float2(1, 1));
         
         UNITY_BRANCH
@@ -63,8 +63,8 @@
         finalColor.rgb = finalColor + flipBookPixel.rgb * _FlipbookColor.rgb * _FlipbookAdd;
         finalColor.rgb = finalColor * lerp(1, flipBookPixelMultiply.rgb * _FlipbookColor.rgb, _FlipbookMultiply * flipBookPixelMultiply.a * _FlipbookColor.a);
     }
-    void applyFlipbookEmission(inout float4 finalColor)
+    void applyFlipbookEmission(inout float3 finalEmission)
     {
-        finalColor.rgb += lerp(0, flipBookPixel.rgb * _FlipbookColor.rgb * _FlipbookEmissionStrength, flipBookPixel.a * _FlipbookColor.a);
+        finalEmission += lerp(0, flipBookPixel.rgb * _FlipbookColor.rgb * _FlipbookEmissionStrength, flipBookPixel.a * _FlipbookColor.a);
     }
 #endif

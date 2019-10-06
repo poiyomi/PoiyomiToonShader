@@ -47,6 +47,15 @@ UNITY_UI_CLIP_RECT
 #ifndef POI_PASS
     #define POI_PASS
     
+    #include "UnityCG.cginc"
+    #include "Lighting.cginc"
+    #include "UnityPBSLighting.cginc"
+    #include "AutoLight.cginc"
+
+    #ifdef POI_META_PASS
+        #include "UnityMetaPass.cginc"
+    #endif
+
     #include "Poicludes.cginc"
     #include "PoiHelpers.cginc"
     
@@ -117,7 +126,7 @@ UNITY_UI_CLIP_RECT
     #ifdef CUTOUT
         #include "PoiAlphaToCoverage.cginc"
     #endif
-
+    
     #ifdef _COLOROVERLAY_ON
         #include "PoiDebug.cginc"
     #endif

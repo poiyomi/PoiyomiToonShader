@@ -3,7 +3,7 @@ Shader ".poiyomi/Toon/Default/outlines Cutout"
     Properties
     {
         [HideInInspector] shader_is_using_thry_editor ("", Float) = 0
-        [HideInInspector] shader_master_label ("<color=#ff0000ff>❤</color> <color=#000000ff>Poiyomi Toon Shader V4.2</color> <color=#ff0000ff>❤</color>", Float) = 0
+        [HideInInspector] shader_master_label ("<color=#ff0000ff>❤</color> <color=#000000ff>Poiyomi Toon Shader V4.3</color> <color=#ff0000ff>❤</color>", Float) = 0
         [HideInInspector] shader_presets ("poiToonPresets", Float) = 0
         [HideInInspector] shader_properties_label_file ("PoiLabels", Float) = 0
         
@@ -13,24 +13,29 @@ Shader ".poiyomi/Toon/Default/outlines Cutout"
         [HideInInspector] footer_discord ("discord footer button", Float) = 0
         [HideInInspector] footer_github ("github footer button", Float) = 0
         
+        [HideInInspector] DSGI ("DSGI", Float) = 0 //add this property for double sided illumination settings to be shown
+        [HideInInspector] Instancing ("Instancing", Float) = 0 //add this property for instancing variants settings to be shown
+        [HideInInspector] LightmapFlags ("Lightmap Flags", Float) = 0 //add this property for lightmap flags settings to be shown
+        
         [HideInInspector] m_mainOptions ("Main", Float) = 0
         _Color ("Color & Alpha", Color) = (1, 1, 1, 1)
         _Saturation ("Saturation", Range(-1, 1)) = 0
         _MainEmissionStrength ("Basic Emission", Range(0, 20)) = 0
         _MainTex ("Texture", 2D) = "white" { }
         [Normal]_BumpMap ("Normal Map", 2D) = "bump" { }
+        [Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3)] _BumpMapUV ("Normal UV#", Int) = 0
         [Vector2]_MainNormalPan ("Normal Pan", Vector) = (0, 0, 0, 0)
         _BumpScale ("Normal Intensity", Range(0, 10)) = 1
         _AlphaMask ("Alpha Mask", 2D) = "white" { }
         [Vector2]_GlobalPanSpeed ("Global Pan Speed", Vector) = (0, 0, 0, 0)
-
+        
         [HideInInspector] m_start_Alpha ("Alpha Options", Float) = 0
         _Clip ("Alpha Cuttoff", Range(0, 1.001)) = 0.5
         [Toggle(_)]_ForceOpaque ("Force Opaque", Float) = 0
-        [Toggle(_)]_MainAlphaToCoverage("Alpha To Coverage", Float) = 1
-        _MainMipScale ("Mip Level Alpha Scale", Range(0,1)) = 0.25
+        [Toggle(_)]_MainAlphaToCoverage ("Alpha To Coverage", Float) = 1
+        _MainMipScale ("Mip Level Alpha Scale", Range(0, 1)) = 0.25
         [HideInInspector] m_end_Alpha ("Alpha Options", Float) = 0
-
+        
         [HideInInspector] m_start_DetailOptions ("Details", Float) = 0
         _DetailMask ("Detail Mask (R:Texture, G:Normal)", 2D) = "white" { }
         _DetailTex ("Detail Texture", 2D) = "gray" { }
@@ -124,7 +129,12 @@ Shader ".poiyomi/Toon/Default/outlines Cutout"
         _EmissionMask ("Emission Mask", 2D) = "white" { }
         _EmissionPan ("Map(XY) | Mask(ZW) Pan", Vector) = (0, 0, 0, 0)
         _EmissionStrength ("Emission Strength", Range(0, 20)) = 0
-        
+        // Inward out emission
+        [HideInInspector] m_start_CenterOutEmission ("Center Out Emission", Float) = 0
+        [Toggle(_)]_EmissionCenterOutEnabled ("Enable Center Out", Float) = 0
+        _EmissionCenterOutSpeed ("Flow Speed", Float) = 5
+        [HideInInspector] m_end_CenterOutEmission ("inward out emission", Float) = 0
+        // Glow in the dark emission
         [HideInInspector] m_start_glowInDarkEmissionOptions ("Glow In The Dark Emission (Requires Lighting Enabled)", Float) = 0
         [Toggle(_)]_EnableGITDEmission ("Enable Glow In The Dark", Float) = 0
         [Enum(World, 0, Mesh, 1)] _GITDEWorldOrMesh ("Lighting Type", Int) = 0
@@ -158,19 +168,27 @@ Shader ".poiyomi/Toon/Default/outlines Cutout"
         _AOMap ("AO Map", 2D) = "white" { }
         [Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3)] _LightingAOUV ("AO Map UV#", Int) = 0
         _AOStrength ("AO Strength", Range(0, 1)) = 1
+        _LightingMinLightBrightness("Min Brightness", Range(0,1)) = 0
+        [HideInInspector] m_start_lightingStandard ("Standardish Settings", Float) = 0
+        _LightingStandardSmoothness ("Smoothness", Range(0, 1)) = 0
+        [HideInInspector] m_end_lightingStandard ("Standardish Settings", Float) = 0
         [HideInInspector] m_start_lightingAdvanced ("Advanced", Float) = 0
-        _IndirectContribution ("Indirect Contribution", Range(0, 1)) = 0
+        _LightingIndirectContribution ("Indirect Contribution", Range(0, 1)) = .25
         _AdditiveSoftness ("Additive Softness", Range(0, 0.5)) = 0.005
         _AdditiveOffset ("Additive Offset", Range(-0.5, 0.5)) = 0
         _AttenuationMultiplier ("Attenuation", Range(0, 1)) = 0
         [HideInInspector] m_end_lightingAdvanced ("Advanced", Float) = 0
+        [HideInInspector] m_start_lightingBeta ("Beta", Float) = 0
+        [Toggle(_)]_LightingStandardControlsToon ("Standard Lighting Controls Toon Ramp", Float) = 0
+        [HideInInspector] m_end_lightingBeta ("Beta", Float) = 0
         
         [HideInInspector] m_specularHighlightsOptions ("Specular Highlights", Float) = 0
         [Toggle(_SPECGLOSSMAP)]_EnableSpecular ("Enable Specular", Float) = 0
         [Enum(Realistic, 1, Toon, 2, Anisotropic, 3)] _SpecularType ("Specular Type", Int) = 1
+        _SpecularMinLightBrightness ("Min Light Brightness", Range(0, 1)) = 0
         _SpecularTint ("Specular Tint", Color) = (.2, .2, .2, 1)
         _SpecularMixAlbedoIntoTint ("Mix Material Color Into Tint", Range(0, 1)) = 0
-        _SpecularSmoothness ("Smoothness", Range(0, 1)) = 1
+        _SpecularSmoothness ("Smoothness", Range(-2, 1)) = .75
         _SpecularMap ("Specular Map", 2D) = "white" { }
         [Toggle(_)]_SpecularInvertSmoothness ("Invert Smoothness", Float) = 0
         _SpecularMask ("Specular Mask", 2D) = "white" { }
@@ -361,6 +379,9 @@ Shader ".poiyomi/Toon/Default/outlines Cutout"
         _AngleMinAlpha ("Min Alpha", Range(0, 1)) = 0
         [HideInInspector] m_end_Angle ("Angular Rendering", Float) = 0
         
+        [HideInInspector] m_bakedLighting ("Baked Lighting", Float) = 0
+        _GIEmissionMultiplier ("GI Emission Multiplier", Float) = 1
+        
         [HideInInspector] m_renderingOptions ("Rendering Options", Float) = 0
         [Enum(UnityEngine.Rendering.CullMode)] _Cull ("Cull", Float) = 2
         [Enum(UnityEngine.Rendering.CompareFunction)] _ZTest ("ZTest", Float) = 4
@@ -381,7 +402,7 @@ Shader ".poiyomi/Toon/Default/outlines Cutout"
     CustomEditor "ThryEditor"
     SubShader
     {
-        Tags { "DisableBatching" = "True" "RenderType" = "Opaque" "Queue" = "Geometry" }
+        Tags { "RenderType" = "Opaque" "Queue" = "Geometry" }
         
         Pass
         {
@@ -558,7 +579,7 @@ Shader ".poiyomi/Toon/Default/outlines Cutout"
             
             #pragma target 4.0
             #define CUTOUT
-            #define POISHADOW
+            #define POI_SHADOW
             // Mirror
             #pragma shader_feature _REQUIRE_UV2
             // Random
@@ -569,6 +590,49 @@ Shader ".poiyomi/Toon/Default/outlines Cutout"
             #pragma vertex vertShadowCaster
             #pragma fragment fragShadowCaster
             #include "../Includes/PoiPassShadow.cginc"
+            ENDCG
+            
+        }
+        
+        Pass
+        {
+            Tags { "LightMode" = "Meta" }
+            Cull Off
+            CGPROGRAM
+            
+            #define POI_META_PASS
+            
+            #pragma shader_feature _PARALLAXMAP
+            // Mirror
+            #pragma shader_feature _REQUIRE_UV2
+            // Random
+            #pragma shader_feature _SUNDISK_NONE
+            // Dissolve
+            #pragma shader_feature _ALPHABLEND_ON
+            // Panosphere
+            #pragma shader_feature _DETAIL_MULX2
+            // Lighting
+            #pragma shader_feature _NORMALMAP
+            // Flipbook
+            #pragma shader_feature _FLIPBOOK_BLENDING
+            // Rim Lighting
+            #pragma shader_feature _GLOSSYREFLECTIONS_OFF
+            // Metal
+            #pragma shader_feature _METALLICGLOSSMAP
+            // Matcap
+            #pragma shader_feature _COLORADDSUBDIFF_ON
+            // Specular
+            #pragma shader_feature _SPECGLOSSMAP
+            // SubSurface
+            #pragma shader_feature _TERRAIN_NORMAL_MAP
+            // Debug
+            #pragma shader_feature _COLOROVERLAY_ON
+            #pragma shader_feature _EMISSION
+            // Clear Coat
+            #pragma shader_feature _COLORCOLOR_ON
+            #pragma vertex vert
+            #pragma fragment frag
+            #include "../Includes/PoiPass.cginc"
             ENDCG
             
         }

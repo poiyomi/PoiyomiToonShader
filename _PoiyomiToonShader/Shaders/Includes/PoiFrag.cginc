@@ -4,8 +4,11 @@
     float4 _GlobalPanSpeed;
     float _MainEmissionStrength;
     
+    half _GIEmissionMultiplier;
+    
     float4 frag(v2f i, float facing: VFACE): SV_Target
     {
+        finalEmission = 0;
         
         i.uv0 += _GlobalPanSpeed.xy * _Time.x;
         //This has to be first because it modifies the UVs for the rest of the functions
@@ -16,7 +19,7 @@
         
         // This has to happen in init because it alters UV data globally
         #ifdef POI_PARALLAX
-            calculateandApplyParallax(i);
+            calculateandApplyParallax();
         #endif
         
         #ifdef POI_MAINTEXTURE
@@ -119,32 +122,36 @@
             calculateAndApplyInternalParallax();
         #endif
         
-        #ifdef FORWARD_BASE_PASS
+        #if defined(FORWARD_BASE_PASS)
             #ifdef POI_LIGHTING
                 #ifdef POI_SPECULAR
                     //applyLightingToSpecular();
                     applySpecular(finalColor);
                 #endif
             #endif
-            
-            finalColor.rgb += albedo.rgb * _MainEmissionStrength * albedo.a;
+        #endif
+        #if defined(FORWARD_BASE_PASS) || defined(POI_META_PASS)
+            finalEmission += finalColorBeforeLighting.rgb * _MainEmissionStrength * albedo.a;
             
             #ifdef PANOSPHERE
-                applyPanosphereEmission(finalColor);
+                applyPanosphereEmission(finalEmission);
             #endif
             
             #ifdef POI_EMISSION
-                applyEmission(finalColor);
+                applyEmission(finalEmission);
             #endif
             
             #ifdef POI_DISSOLVE
-                applyDissolveEmission(finalColor);
+                applyDissolveEmission(finalEmission);
             #endif
             
             #ifdef POI_RIM
-                ApplyRimEmission(finalColor);
+                ApplyRimEmission(finalEmission);
             #endif
             
+            #ifdef FLIPBOOK
+                applyFlipbookEmission(finalEmission);
+            #endif
         #endif
         
         #ifdef POI_LIGHTING
@@ -168,9 +175,6 @@
             #endif
         #endif
         
-        #ifdef FLIPBOOK
-            applyFlipbookEmission(finalColor);
-        #endif
         
         #ifdef FORWARD_BASE_PASS
             UNITY_APPLY_FOG(i.fogCoord, finalColor);
@@ -189,6 +193,23 @@
         #ifdef POI_DEBUG
             displayDebugInfo(finalColor);
         #endif
+        
+        finalEmission *= albedo.a;
+        
+        #ifdef POI_META_PASS
+            UnityMetaInput meta;
+            UNITY_INITIALIZE_OUTPUT(UnityMetaInput, meta);
+            meta.Emission = finalEmission * _GIEmissionMultiplier;
+            meta.Albedo = saturate(finalColor.rgb);
+            #ifdef POI_SPECULAR
+                meta.SpecularColor = poiLight.color.rgb * _SpecularTint.rgb * lerp(1, albedo.rgb, _SpecularMixAlbedoIntoTint) * _SpecularTint.a;
+            #else
+                meta.SpecularColor = poiLight.color.rgb * albedo.rgb;
+            #endif
+            return UnityMetaFragment(meta);
+        #endif
+        
+        finalColor.rgb += finalEmission;
         
         return finalColor;
     }

@@ -26,7 +26,7 @@
                     alpha *= i.angleAlpha;
                 #endif
                 
-                #ifdef CUTOUT
+                #if defined(CUTOUT) || defined(OPAQUE) 
                     clip(alpha * alphaMask - _Clip);
                     UNITY_BRANCH
                     if (!_ForceOpaque)
