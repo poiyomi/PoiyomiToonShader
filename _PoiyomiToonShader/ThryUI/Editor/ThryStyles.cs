@@ -1,4 +1,7 @@
-﻿using System.Collections;
+﻿// Material/Shader Inspector for Unity 2017/2018
+// Copyright (C) 2019 Thryrallo
+
+using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
@@ -23,6 +26,10 @@ namespace Thry
         public GUIStyle bigTextureStyle;
         public GUIStyle vectorPropertyStyle;
 
+        public GUIStyle redStyle;
+        public GUIStyle yellowStyle;
+        public GUIStyle greenStyle;
+
         private Styles()
         {
             InitMasterLabel();
@@ -31,6 +38,7 @@ namespace Thry
             InitDropDownHeaderButton();
             InitBigTextureStyle();
             InitVectorProperty();
+            InitColoredStyles();
         }
 
         private void InitMasterLabel()
@@ -70,6 +78,18 @@ namespace Thry
         {
             vectorPropertyStyle = new GUIStyle();
             vectorPropertyStyle.padding = new RectOffset(0, 0, 2, 2);
+        }
+
+        private void InitColoredStyles()
+        {
+            redStyle = new GUIStyle();
+            redStyle.normal.textColor = Color.red;
+
+            yellowStyle = new GUIStyle();
+            yellowStyle.normal.textColor = new Color(1, 0.79f, 0);
+
+            greenStyle = new GUIStyle();
+            greenStyle.normal.textColor = new Color(0, 0.5f, 0);
         }
     }
 }

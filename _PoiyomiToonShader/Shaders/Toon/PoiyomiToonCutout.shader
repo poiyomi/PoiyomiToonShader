@@ -13,9 +13,7 @@ Shader ".poiyomi/Toon/Default/Cutout"
         [HideInInspector] footer_discord ("discord footer button", Float) = 0
         [HideInInspector] footer_github ("github footer button", Float) = 0
         
-        [HideInInspector] DSGI ("DSGI", Float) = 0 //add this property for double sided illumination settings to be shown
-        [HideInInspector] Instancing ("Instancing", Float) = 0 //add this property for instancing variants settings to be shown
-        [HideInInspector] LightmapFlags ("Lightmap Flags", Float) = 0 //add this property for lightmap flags settings to be shown
+
         [HideInInspector] m_mainOptions ("Main", Float) = 0
         _Color ("Color & Alpha", Color) = (1, 1, 1, 1)
         
@@ -298,7 +296,7 @@ Shader ".poiyomi/Toon/Default/Cutout"
         _DissolvePan ("Noise (XY) | Detail (ZW) Pan", Vector) = (0, 0, 0, 0)
         _DissolveAlpha ("Dissolve Alpha", Range(0, 1)) = 0
         _DissolveMask ("Dissolve Mask", 2D) = "white" { }
-        _ContinuousDissolve ("Continuous Dissolve Speed", Float) = 0
+        [Toggle(_)]_ContinuousDissolve ("Continuous Dissolve Speed", Float) = 0
         [HideInInspector] m_start_pointToPoint ("point to point", Float) = 0
         [Enum(Local, 0, World, 1)] _DissolveP2PWorldLocal ("World/Local", Int) = 0
         _DissolveP2PEdgeLength ("Edge Length", Float) = 0.1
@@ -347,6 +345,8 @@ Shader ".poiyomi/Toon/Default/Cutout"
         
         [HideInInspector] m_bakedLighting ("Baked Lighting", Float) = 0
         _GIEmissionMultiplier ("GI Emission Multiplier", Float) = 1
+        [HideInInspector] DSGI ("DSGI", Float) = 0 //add this property for double sided illumination settings to be shown
+        [HideInInspector] LightmapFlags ("Lightmap Flags", Float) = 0 //add this property for lightmap flags settings to be shown
         
         [HideInInspector] m_renderingOptions ("Rendering Options", Float) = 0
         [Enum(UnityEngine.Rendering.CullMode)] _Cull ("Cull", Float) = 2
@@ -355,6 +355,7 @@ Shader ".poiyomi/Toon/Default/Cutout"
         [Enum(UnityEngine.Rendering.BlendMode)] _DestinationBlend ("Destination Blend", Float) = 10
         [Enum(Off, 0, On, 1)] _ZWrite ("ZWrite", Int) = 1
         _ZBias ("ZBias", Float) = 0.0
+        [HideInInspector] Instancing ("Instancing", Float) = 0 //add this property for instancing variants settings to be shown
         
         [HideInInspector] m_debugOptions ("Debug", Float) = 0
         [Toggle(_COLOROVERLAY_ON)]_DebugDisplayDebug ("Display Debug Info", Float) = 0

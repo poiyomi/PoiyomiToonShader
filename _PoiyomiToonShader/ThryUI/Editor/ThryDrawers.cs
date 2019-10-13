@@ -1,4 +1,7 @@
-﻿using System.Collections;
+﻿// Material/Shader Inspector for Unity 2017/2018
+// Copyright (C) 2019 Thryrallo
+
+using System.Collections;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using UnityEditor;
@@ -25,6 +28,20 @@ namespace Thry
         public override void OnGUI(Rect position, MaterialProperty prop, GUIContent label, MaterialEditor editor)
         {
             GuiHelper.drawBigTextureProperty(position, prop, label, editor, ((ThryEditor.TextureProperty)ThryEditor.currentlyDrawing.currentProperty).hasScaleOffset);
+        }
+
+        public override float GetPropertyHeight(MaterialProperty prop, string label, MaterialEditor editor)
+        {
+            DrawingData.lastPropertyUsedCustomDrawer = true;
+            return base.GetPropertyHeight(prop, label, editor);
+        }
+    }
+
+    public class PanningTextureDrawer : MaterialPropertyDrawer
+    {
+        public override void OnGUI(Rect position, MaterialProperty prop, GUIContent label, MaterialEditor editor)
+        {
+            GuiHelper.drawSmallTextureProperty(position, prop, label, editor, ((ThryEditor.TextureProperty)ThryEditor.currentlyDrawing.currentProperty).hasScaleOffset,true);
         }
 
         public override float GetPropertyHeight(MaterialProperty prop, string label, MaterialEditor editor)
@@ -76,7 +93,7 @@ namespace Thry
             if(data.window==null && !data.saved)
             {
                 Debug.Log(prop.textureValue.ToString());
-                Texture saved_texture = Helper.SaveTextureAsPNG(data.texture, "Assets/textures/curves/" + data.curve.GetHashCode() + ".png", null);
+                Texture saved_texture = Helper.SaveTextureAsPNG(data.texture, PATH.TEXTURES_DIR+ "curves/" + data.curve.GetHashCode() + ".png", null);
                 prop.textureValue = saved_texture;
                 data.saved = true;
             }
@@ -93,9 +110,7 @@ namespace Thry
 
     public class GradientDrawer : MaterialPropertyDrawer
     {
-        const string GRADIENT_INFO_FILE_PATH = "Assets/.thry_gradients";
-
-        GradientData data;
+       GradientData data;
         bool is_init = false;
 
         public override void OnGUI(Rect position, MaterialProperty prop, GUIContent label, MaterialEditor editor)
@@ -126,7 +141,7 @@ namespace Thry
                 GUI.DrawTexture(border_position, Texture2D.whiteTexture, ScaleMode.StretchToFill, false, 0, Color.grey, 1, 1);
 
             if (Event.current.type == EventType.MouseDown && border_position.Contains(Event.current.mousePosition))
-                GradientEditor.Open(data, prop);
+                GradientEditor.Open(data, prop, !ThryEditor.currentlyDrawing.currentProperty.options.force_texture_options);
         }
 
         public void Init(MaterialProperty prop)
@@ -145,7 +160,7 @@ namespace Thry
 
     public class TextTextureDrawer : MaterialPropertyDrawer
     {
-        const string TEXT_INFO_FILE_PATH = "Assets/.thry_text_textures";
+        
 
         public struct TextData
         {
@@ -158,7 +173,7 @@ namespace Thry
             string text = "";
             int selectedAlphabet = 0;
             if (ThryEditor.currentlyDrawing.currentProperty.property_data == null)
-                ThryEditor.currentlyDrawing.currentProperty.property_data = new TextData { text = Helper.LoadValueFromFile(editor.target.name + ":" + prop.name, TEXT_INFO_FILE_PATH), selectedAlphabet = 0 };
+                ThryEditor.currentlyDrawing.currentProperty.property_data = new TextData { text = Helper.LoadValueFromFile(editor.target.name + ":" + prop.name, PATH.TEXT_INFO_FILE), selectedAlphabet = 0 };
             text = ((TextData)ThryEditor.currentlyDrawing.currentProperty.property_data).text;
             selectedAlphabet = ((TextData)ThryEditor.currentlyDrawing.currentProperty.property_data).selectedAlphabet;
 
@@ -188,7 +203,7 @@ namespace Thry
             if (EditorGUI.EndChangeCheck())
             {
                 foreach (Material m in ThryEditor.currentlyDrawing.materials)
-                    Helper.SaveValueToFile(m.name + ":" + prop.name, text, TEXT_INFO_FILE_PATH);
+                    Helper.SaveValueToFile(m.name + ":" + prop.name, text, PATH.TEXT_INFO_FILE);
                 ThryEditor.currentlyDrawing.currentProperty.property_data = new TextData { text = text, selectedAlphabet = selectedAlphabet };
                 prop.textureValue = Converter.TextToTexture(text, alphabets[selectedAlphabet]);
                 Debug.Log("text '" + text + "' saved as texture.");
@@ -204,7 +219,7 @@ namespace Thry
                     text = "<texture>";
                 ThryEditor.currentlyDrawing.currentProperty.property_data = text;
                 foreach (Material m in ThryEditor.currentlyDrawing.materials)
-                    Helper.SaveValueToFile(m.name + ":" + prop.name, "<texture>", TEXT_INFO_FILE_PATH);
+                    Helper.SaveValueToFile(m.name + ":" + prop.name, "<texture>", PATH.TEXT_INFO_FILE);
             }
         }
 
@@ -218,7 +233,7 @@ namespace Thry
         {
             foreach (Material m in ThryEditor.currentlyDrawing.materials)
             {
-                Helper.SaveValueToFileKeyIsRegex(Regex.Escape(m.name) + @".*", "", TEXT_INFO_FILE_PATH);
+                Helper.SaveValueToFileKeyIsRegex(Regex.Escape(m.name) + @".*", "", PATH.TEXT_INFO_FILE);
             }
         }
     }
@@ -292,10 +307,10 @@ namespace Thry
                 {
                     Texture2DArray tex = Converter.PathsToTexture2DArray(paths);
                     Helper.UpdateTargetsValue(prop, tex);
-                    if (ThryEditor.currentlyDrawing.currentProperty.options.frameCountProp != null)
+                    if (ThryEditor.currentlyDrawing.currentProperty.options.reference_property != null)
                     {
                         ThryEditor.ShaderProperty p;
-                        ThryEditor.currentlyDrawing.propertyDictionary.TryGetValue(ThryEditor.currentlyDrawing.currentProperty.options.frameCountProp, out p);
+                        ThryEditor.currentlyDrawing.propertyDictionary.TryGetValue(ThryEditor.currentlyDrawing.currentProperty.options.reference_property, out p);
                         if (p != null)
                             Helper.UpdateTargetsValue(p.materialProperty, tex.depth);
                     }

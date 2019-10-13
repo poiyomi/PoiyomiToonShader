@@ -1,4 +1,7 @@
-﻿using System.Collections;
+﻿// Material/Shader Inspector for Unity 2017/2018
+// Copyright (C) 2019 Thryrallo
+
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
@@ -10,8 +13,6 @@ namespace Thry
 {
     public class VRCInterface
     {
-        private const string TEMP_VRC_SDK_PACKAGE_PATH = "./vrc_sdk_package.unitypackage";
-
         private static VRCInterface instance;
         public static VRCInterface Get()
         {
@@ -102,27 +103,23 @@ namespace Thry
 
         public void RemoveVRCSDK(bool refresh)
         {
-            Helper.SaveValueToFile("delete_vrc_sdk", "true", ".thry_after_compile_data");
-            Helper.SetDefineSymbol(Settings.DEFINE_SYMBOLE_VRC_SDK_INSTALLED, false);
+            Helper.SaveValueToFile("delete_vrc_sdk", "true", PATH.AFTER_COMPILE_DATA);
+            Helper.SetDefineSymbol(DEFINE_SYMBOLS.VRC_SDK_INSTALLED, false);
             AssetDatabase.Refresh();
         }
 
-        [InitializeOnLoad]
-        public class Startup
+        public static void OnCompile()
         {
-            static Startup()
-            {
-                if (Helper.LoadValueFromFile("delete_vrc_sdk",  ".thry_after_compile_data")=="true")
-                    DeleteVRCSDKFolder();
-            }
+            if (Helper.LoadValueFromFile("delete_vrc_sdk", PATH.AFTER_COMPILE_DATA) == "true")
+                DeleteVRCSDKFolder();
         }
 
         private static void DeleteVRCSDKFolder()
         {
             if (!Get().sdk_is_installed)
             {
-                Helper.SaveValueToFile("delete_vrc_sdk", "false", ".thry_after_compile_data");
-                if (Helper.LoadValueFromFile("update_vrc_sdk", ".thry_after_compile_data") == "true")
+                Helper.SaveValueToFile("delete_vrc_sdk", "false", PATH.AFTER_COMPILE_DATA);
+                if (Helper.LoadValueFromFile("update_vrc_sdk", PATH.AFTER_COMPILE_DATA) == "true")
                     DownloadAndInstallVRCSDK();
                 else
                     Settings.is_changing_vrc_sdk = false;
@@ -137,7 +134,7 @@ namespace Thry
 
         public void UpdateVRCSDK()
         {
-            Helper.SaveValueToFile("update_vrc_sdk", "true", ".thry_after_compile_data");
+            Helper.SaveValueToFile("update_vrc_sdk", "true", PATH.AFTER_COMPILE_DATA);
             this.RemoveVRCSDK();
         }
 
@@ -145,17 +142,44 @@ namespace Thry
         {
             string url = "https://vrchat.net/download/sdk";
 
-            if (File.Exists(TEMP_VRC_SDK_PACKAGE_PATH))
-                File.Delete(TEMP_VRC_SDK_PACKAGE_PATH);
-            Helper.DownloadFileASync(url, TEMP_VRC_SDK_PACKAGE_PATH, VRCSDKUpdateCallback);
+            if (File.Exists(PATH.TEMP_VRC_SDK_PACKAGE))
+                File.Delete(PATH.TEMP_VRC_SDK_PACKAGE);
+            Helper.DownloadFileASync(url, PATH.TEMP_VRC_SDK_PACKAGE, VRCSDKUpdateCallback);
         }
 
         public static void VRCSDKUpdateCallback(string data)
         {
-            Helper.SaveValueToFile("update_vrc_sdk", "false", ".thry_after_compile_data");
-            AssetDatabase.ImportPackage(TEMP_VRC_SDK_PACKAGE_PATH, false);
-            File.Delete(TEMP_VRC_SDK_PACKAGE_PATH);
+            Helper.SaveValueToFile("update_vrc_sdk", "false", PATH.AFTER_COMPILE_DATA);
+            AssetDatabase.ImportPackage(PATH.TEMP_VRC_SDK_PACKAGE, false);
+            File.Delete(PATH.TEMP_VRC_SDK_PACKAGE);
             Update();
+        }
+
+        public static void SetVRCDefineSybolIfSDKImported(string[] importedAssets)
+        {
+            bool currently_deleteing_sdk = (Helper.LoadValueFromFile("delete_vrc_sdk", PATH.AFTER_COMPILE_DATA) == "true");
+            if (!Settings.is_changing_vrc_sdk && !currently_deleteing_sdk && AssetsContainVRCSDK(importedAssets))
+            {
+                Helper.SetDefineSymbol(DEFINE_SYMBOLS.VRC_SDK_INSTALLED, true);
+                Update();
+            }
+        }
+
+        public static void SetVRCDefineSybolIfSDKDeleted(string[] importedAssets)
+        {
+            bool currently_deleteing_sdk = (Helper.LoadValueFromFile("delete_vrc_sdk", PATH.AFTER_COMPILE_DATA) == "true");
+            if (!Settings.is_changing_vrc_sdk && !currently_deleteing_sdk && AssetsContainVRCSDK(importedAssets))
+            {
+                Helper.SetDefineSymbol(DEFINE_SYMBOLS.VRC_SDK_INSTALLED, false);
+                Update();
+            }
+        }
+
+        public static bool AssetsContainVRCSDK(string[] assets)
+        {
+            bool vrcImported = false;
+            foreach (string s in assets) if (s.Contains("VRCSDK2.dll")) vrcImported = true;
+            return vrcImported; 
         }
     }
 }

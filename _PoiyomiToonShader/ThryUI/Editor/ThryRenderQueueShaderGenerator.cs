@@ -1,4 +1,7 @@
-﻿using System.Collections;
+﻿// Material/Shader Inspector for Unity 2017/2018
+// Copyright (C) 2019 Thryrallo
+
+using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
@@ -37,7 +40,7 @@ namespace Thry
                 {
                     Shader shader = AssetDatabase.LoadAssetAtPath<Shader>(AssetDatabase.GUIDToAssetPath(g));
                     Material m = new Material(shader);
-                    if (m.HasProperty(Shader.PropertyToID("shader_is_using_thry_editor")))
+                    if (m.HasProperty(Shader.PropertyToID(ThryEditor.PROPERTY_NAME_USING_THRY_EDITOR)))
                     {
                         string defaultShaderName = Helper.getDefaultShaderName(shader.name);
                         if (!poiShaders.Contains(defaultShaderName)) poiShaders.Add(defaultShaderName);

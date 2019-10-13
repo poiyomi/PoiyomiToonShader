@@ -1,4 +1,7 @@
-﻿using System.Collections;
+﻿// Material/Shader Inspector for Unity 2017/2018
+// Copyright (C) 2019 Thryrallo
+
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEditor;
@@ -41,7 +44,7 @@ namespace Thry
         //test if the path to the presets has changed
         public void testPresetsChanged(MaterialProperty[] props)
         {
-            MaterialProperty presetsProperty = ThryEditor.FindProperty(props, "shader_presets");
+            MaterialProperty presetsProperty = ThryEditor.FindProperty(props, ThryEditor.PROPERTY_NAME_PRESETS_FILE);
             loadProperties(props);
             if (presetsProperty != null)
             {

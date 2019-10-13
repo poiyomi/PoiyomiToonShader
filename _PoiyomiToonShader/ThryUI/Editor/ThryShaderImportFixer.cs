@@ -1,4 +1,7 @@
-﻿using UnityEngine;
+﻿// Material/Shader Inspector for Unity 2017/2018
+// Copyright (C) 2019 Thryrallo
+
+using UnityEngine;
 using UnityEditor;
 using System.IO;
 using System.Collections;
@@ -65,7 +68,7 @@ namespace Thry
 
         public static void fixMaterials()
         {
-            if (!File.Exists(MATERIALS_BACKUP_FILE_PATH))
+            if (!File.Exists(PATH.MATERIALS_BACKUP_FILE))
             {
                 backupAllMaterials();
                 return;
@@ -84,7 +87,7 @@ namespace Thry
 
         public static void fixAllMaterials()
         {
-            if (!File.Exists(MATERIALS_BACKUP_FILE_PATH))
+            if (!File.Exists(PATH.MATERIALS_BACKUP_FILE))
             {
                 backupAllMaterials();
                 return;
@@ -108,7 +111,7 @@ namespace Thry
         {
             restoring_in_progress = true;
 
-            StreamReader reader = new StreamReader(MATERIALS_BACKUP_FILE_PATH);
+            StreamReader reader = new StreamReader(PATH.MATERIALS_BACKUP_FILE);
 
             string l;
             while ((l = reader.ReadLine()) != null)
@@ -196,14 +199,13 @@ namespace Thry
         }
 
         //save mats
-        public const string MATERIALS_BACKUP_FILE_PATH = "./Assets/.materialsBackup.txt";
 
         public static void backupAllMaterials()
         {
             if (restoring_in_progress) return;
-            if (!File.Exists(MATERIALS_BACKUP_FILE_PATH)) File.CreateText(MATERIALS_BACKUP_FILE_PATH).Close();
+            if (!File.Exists(PATH.MATERIALS_BACKUP_FILE)) File.CreateText(PATH.MATERIALS_BACKUP_FILE).Close();
             EditorUtility.DisplayProgressBar("Backup materials", "", 0);
-            StreamWriter writer = new StreamWriter(MATERIALS_BACKUP_FILE_PATH, false);
+            StreamWriter writer = new StreamWriter(PATH.MATERIALS_BACKUP_FILE, false);
 
             string[] materialGuids = AssetDatabase.FindAssets("t:material");
             for (int mG = 0; mG < materialGuids.Length; mG++)
@@ -221,8 +223,8 @@ namespace Thry
         {
             if (restoring_in_progress) return;
             string[] mats = new string[0];
-            if (!File.Exists(MATERIALS_BACKUP_FILE_PATH)) File.CreateText(MATERIALS_BACKUP_FILE_PATH).Close();
-            else mats = Helper.ReadFileIntoString(MATERIALS_BACKUP_FILE_PATH).Split(new string[] { "\n" }, System.StringSplitOptions.None);
+            if (!File.Exists(PATH.MATERIALS_BACKUP_FILE)) File.CreateText(PATH.MATERIALS_BACKUP_FILE).Close();
+            else mats = Helper.ReadFileIntoString(PATH.MATERIALS_BACKUP_FILE).Split(new string[] { "\n" }, System.StringSplitOptions.None);
             bool updated = false;
             string matGuid = AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(m.GetInstanceID()));
             string newString = "";
@@ -241,17 +243,17 @@ namespace Thry
             }
             if (!updated) newString += matGuid + ":" + Helper.getDefaultShaderName(m.shader.name) + ":" + m.renderQueue;
             else newString = newString.Substring(0, newString.LastIndexOf("\n"));
-            Helper.WriteStringToFile(newString, MATERIALS_BACKUP_FILE_PATH);
+            Helper.WriteStringToFile(newString, PATH.MATERIALS_BACKUP_FILE);
         }
 
         public static void restoreAllMaterials()
         {
-            if (!File.Exists(MATERIALS_BACKUP_FILE_PATH))
+            if (!File.Exists(PATH.MATERIALS_BACKUP_FILE))
             {
                 backupAllMaterials();
                 return;
             }
-            StreamReader reader = new StreamReader(MATERIALS_BACKUP_FILE_PATH);
+            StreamReader reader = new StreamReader(PATH.MATERIALS_BACKUP_FILE);
 
             string l;
             while ((l = reader.ReadLine()) != null)

@@ -1,4 +1,7 @@
-﻿using System.Collections;
+﻿// Material/Shader Inspector for Unity 2017/2018
+// Copyright (C) 2019 Thryrallo
+
+using System.Collections;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using UnityEditor;
@@ -7,6 +10,42 @@ using UnityEngine.Rendering;
 
 namespace Thry
 {
+    public class PATH
+    {
+        public const string TEXTURES_DIR = "Assets/textures/";
+        public const string RSP_NEEDED_PATH = "Assets/";
+
+        public const string DELETING_DIR = "Thry/trash";
+
+        public const string PERSISTENT_DATA = "Thry/persistent_data";
+        public const string AFTER_COMPILE_DATA = "Thry/after_compile_data";
+        public const string MATERIALS_BACKUP_FILE = "Thry/materialsBackup.txt";
+        public const string THRY_EDITOR_SHADERS = "Thry/shaders";
+
+        public const string GRADIENT_INFO_FILE = "Thry/gradients";
+        public const string TEXT_INFO_FILE = "Thry/text_textures";
+
+        public const string TEMP_VRC_SDK_PACKAGE = "./vrc_sdk_package.unitypackage";
+    }
+
+    public class URL
+    {
+        public const string PUBLIC_MODULES_COLLECTION = "https://raw.githubusercontent.com/Thryrallo/ThryEditor/master/modules.json";
+        public const string SETTINGS_MESSAGE_URL = "http://thryeditor.thryrallo.de/message.json";
+
+        public const string DATA_SHARE_SEND = "http://thryeditor.thryrallo.de/send_analytics.php";
+        public const string DATA_SHARE_GET_MY_DATA = "http://thryeditor.thryrallo.de/get_my_data.php";
+        public const string COUNT_PROJECT = "http://thryeditor.thryrallo.de/count_project.php";
+        public const string COUNT_USER = "http://thryeditor.thryrallo.de/count_user.php";
+    }
+
+    public class DEFINE_SYMBOLS
+    {
+        public const string VRC_SDK_INSTALLED = "VRC_SDK_EXISTS";
+        public const string API_NET_TWO = "DOT_NET_TWO_POINT_ZERO_OR_ABOVE";
+        public const string IMAGING_EXISTS = "IMAGING_DLL_EXISTS";
+    }
+
     public struct EditorData
     {
         public MaterialEditor editor;
@@ -19,9 +58,6 @@ namespace Thry
         public Dictionary<string, ThryEditor.ShaderProperty> propertyDictionary;
         public List<ThryEditor.ShaderProperty> textureArrayProperties;
         public bool firstCall;
-        public bool draw_material_option_lightmap;
-        public bool draw_material_option_instancing;
-        public bool draw_material_option_dsgi;
     }
 
     public class DrawingData
@@ -46,7 +82,8 @@ namespace Thry
         public ButtonData button_right;
         public ImageData image;
         public TextureData texture;
-        public string frameCountProp;
+        public string reference_property;
+        public bool force_texture_options = false;
     }
 
     public class ImageData

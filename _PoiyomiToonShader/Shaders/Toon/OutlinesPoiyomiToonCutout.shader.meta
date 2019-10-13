@@ -10,10 +10,10 @@ ShaderImporter:
   - _DetailTex: {instanceID: 0}
   - _DetailNormalMap: {instanceID: 0}
   - _MainFadeTexture: {instanceID: 0}
-  - _CubeMap: {fileID: 8900000, guid: a0fde614a95c2d44ca3dec1fba756a6f, type: 3}
+  - _CubeMap: {fileID: 8900000, guid: 1f79f71b84fc2844bb81e9ae4f5bc384, type: 3}
   - _MetallicMask: {instanceID: 0}
   - _SmoothnessMask: {instanceID: 0}
-  - _ClearCoatCubeMap: {fileID: 8900000, guid: a0fde614a95c2d44ca3dec1fba756a6f, type: 3}
+  - _ClearCoatCubeMap: {fileID: 8900000, guid: 1f79f71b84fc2844bb81e9ae4f5bc384, type: 3}
   - _ClearCoatMask: {instanceID: 0}
   - _ClearCoatSmoothnessMask: {instanceID: 0}
   - _Matcap: {instanceID: 0}
@@ -24,7 +24,7 @@ ShaderImporter:
   - _OutlineMask: {instanceID: 0}
   - _EmissionMap: {instanceID: 0}
   - _EmissionMask: {instanceID: 0}
-  - _ToonRamp: {fileID: 2800000, guid: 49e10996dc80f794da61ee12a6d2886f, type: 3}
+  - _ToonRamp: {fileID: 2800000, guid: 61bd594533da4fc42bd46ef93ba5a4f6, type: 3}
   - _LightingShadowMask: {instanceID: 0}
   - _AOMap: {instanceID: 0}
   - _SpecularMap: {instanceID: 0}

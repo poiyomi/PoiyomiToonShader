@@ -1,4 +1,7 @@
-﻿using System;
+﻿// Material/Shader Inspector for Unity 2017/2018
+// Copyright (C) 2019 Thryrallo
+
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
@@ -18,7 +21,7 @@ namespace Thry
             else drawSmallTextureProperty(position, prop, label, editor, scaleOffset);
         }
 
-        public static void drawSmallTextureProperty(Rect position, MaterialProperty prop, GUIContent label, MaterialEditor editor, bool scaleOffset)
+        public static void drawSmallTextureProperty(Rect position, MaterialProperty prop, GUIContent label, MaterialEditor editor, bool scaleOffset, bool has_panning_field = false)
         {
             Rect thumbnailPos = position;
             thumbnailPos.x += scaleOffset ? 20 : 0;
@@ -30,7 +33,17 @@ namespace Thry
                 if (Event.current.type == EventType.Repaint)
                     EditorStyles.foldout.Draw(thumbnailPos, false, false, DrawingData.currentTexProperty.showScaleOffset, false);
                 //test click and draw scale/offset
-                if (DrawingData.currentTexProperty.showScaleOffset) ThryEditor.currentlyDrawing.editor.TextureScaleOffsetProperty(prop);
+                if (DrawingData.currentTexProperty.showScaleOffset)
+                {
+                    ThryEditor.currentlyDrawing.editor.TextureScaleOffsetProperty(prop);
+                    if (has_panning_field && ThryEditor.currentlyDrawing.currentProperty.options.reference_property != null)
+                    {
+                        ThryEditor.ShaderProperty pan_property = ThryEditor.currentlyDrawing.propertyDictionary[ThryEditor.currentlyDrawing.currentProperty.options.reference_property];
+                        EditorGUI.indentLevel *= 2;
+                        ThryEditor.currentlyDrawing.editor.ShaderProperty(GUILayoutUtility.GetRect(pan_property.content, Styles.Get().vectorPropertyStyle), pan_property.materialProperty, pan_property.content);
+                        EditorGUI.indentLevel /= 2;
+                    }
+                }
                 if (ThryEditor.MouseClick && position.Contains(Event.current.mousePosition))
                 {
                     DrawingData.currentTexProperty.showScaleOffset = !DrawingData.currentTexProperty.showScaleOffset;
@@ -268,45 +281,10 @@ namespace Thry
             EditorGUILayout.EndHorizontal();
         }
 
-        public static void DrawMasterLabel(string shaderName)
+        public static void DrawMasterLabel(string shaderName, float y)
         {
-            EditorGUILayout.LabelField("<size=16>" + shaderName + "</size>", Styles.Get().masterLabel, GUILayout.MinHeight(18));
-        }
-
-        public static void DrawDSGIOptions()
-        {
-            EditorGUILayout.BeginHorizontal();
-            GUILayout.FlexibleSpace();
-            EditorGUI.BeginChangeCheck();
-            bool value = EditorGUILayout.Toggle("Double Sided Global Illumination", ThryEditor.currentlyDrawing.materials[0].doubleSidedGI, GUILayout.ExpandWidth(false));
-            if (EditorGUI.EndChangeCheck())
-                foreach (Material m in ThryEditor.currentlyDrawing.materials)
-                    m.doubleSidedGI = value;
-            EditorGUILayout.EndHorizontal();
-        }
-
-        public static void DrawInstancingOptions()
-        {
-            EditorGUILayout.BeginHorizontal();
-            GUILayout.FlexibleSpace();
-            EditorGUI.BeginChangeCheck();
-            bool value = EditorGUILayout.Toggle("Instancing", ThryEditor.currentlyDrawing.materials[0].enableInstancing, GUILayout.ExpandWidth(false));
-            if (EditorGUI.EndChangeCheck())
-                foreach (Material m in ThryEditor.currentlyDrawing.materials)
-                    m.enableInstancing = value;
-            EditorGUILayout.EndHorizontal();
-        }
-
-        public static void DrawLightmapFlagsOptions()
-        {
-            EditorGUILayout.BeginHorizontal();
-            GUILayout.FlexibleSpace();
-            EditorGUI.BeginChangeCheck();
-            MaterialGlobalIlluminationFlags value = (MaterialGlobalIlluminationFlags)EditorGUILayout.EnumPopup(ThryEditor.currentlyDrawing.materials[0].globalIlluminationFlags, GUILayout.ExpandWidth(false));
-            if (EditorGUI.EndChangeCheck())
-                foreach (Material m in ThryEditor.currentlyDrawing.materials)
-                    m.globalIlluminationFlags = value;
-            EditorGUILayout.EndHorizontal();
+            Rect rect = new Rect(0, y, Screen.width, 18);
+            EditorGUI.LabelField(rect,"<size=16>" + shaderName + "</size>", Styles.Get().masterLabel);
         }
     }
 

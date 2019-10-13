@@ -1,0 +1,19 @@
+{
+    "name": "com.poiyomi.poiyomi-toon-shader",
+    "version": "4.3.6",
+    "displayName": "Poiyomi Toon Shader",
+    "description": "A feature rich toon shader for Unity and VRChat",
+    "unity": "2018.1",
+    "unityRelease": "0b5",
+    "dependencies": {},
+   "keywords": [
+      "poiyomi",
+      "toon",
+      "shader"
+    ],
+    "author": {
+      "name": "poiyomi",
+      "email": "poi@poiyomi.com",
+      "url": "https://www.patreon.com/poiyomi"
+    } 
+  }

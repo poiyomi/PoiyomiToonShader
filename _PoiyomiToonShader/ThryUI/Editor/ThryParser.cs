@@ -1,4 +1,7 @@
-﻿using System;
+﻿// Material/Shader Inspector for Unity 2017/2018
+// Copyright (C) 2019 Thryrallo
+
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -203,7 +206,7 @@ namespace Thry
         {
             if (obj == null) return "null";
             if (Helper.IsPrimitive(obj.GetType())) return PrimitiveToString(obj);
-            if (obj.GetType() == typeof(List<object>)) return ListToString(obj);
+            if (obj is IList) return ListToString(obj);
             if (obj.GetType().IsArray) return ListToString(obj);
             if (obj.GetType().IsEnum) return obj.ToString();
             if (obj.GetType().IsClass) return ClassObjectToString(obj);

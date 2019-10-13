@@ -1,4 +1,7 @@
-﻿using System;
+﻿// Material/Shader Inspector for Unity 2017/2018
+// Copyright (C) 2019 Thryrallo
+
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -27,6 +30,11 @@ namespace Thry
             return url;
         }
 
+        /// <summary>
+        /// returns string up to (excluding) last '.'
+        /// </summary>
+        /// <param name="file"></param>
+        /// <returns>returns input string if not possible</returns>
         public static string RemoveFileExtension(this string file)
         {
             Match m = Regex.Match(file, @".+?(?=\.|$)");
@@ -35,6 +43,11 @@ namespace Thry
             return file;
         }
 
+        /// <summary>
+        /// returns string up to (including) last '/'
+        /// </summary>
+        /// <param name="file"></param>
+        /// <returns>returns input string if not possible</returns>
         public static string RemoveFileName(this string file)
         {
             Match m = Regex.Match(file, @".+\/");
@@ -43,12 +56,17 @@ namespace Thry
             return file;
         }
 
+        /// <summary>
+        /// returns string up to (excluding) last '/'
+        /// </summary>
+        /// <param name="file"></param>
+        /// <returns>returns emtpy string if not possible</returns>
         public static string GetDirectoryPath(this string file)
         {
             Match m = Regex.Match(file, @".+(?=\/)");
             if (m.Success)
                 return m.Value;
-            return file;
+            return "";
         }
 
         public static bool EndsOnFileExtension(this string s)
@@ -69,9 +87,11 @@ namespace Thry
 
     public class Helper
     {
-
-        public const string DELETING_FOLDER = "thry_trash";
-
+        /// <summary>
+        /// Finds the path of the specified file in the Unity AssetDatabase
+        /// </summary>
+        /// <param name="filename">Name of file</param>
+        /// <returns>if found returns path else returns filename</returns>
         public static string FindPathOfFileWithExtension(string filename)
         {
             string[] guids = AssetDatabase.FindAssets(filename.RemoveFileExtension());
@@ -84,6 +104,11 @@ namespace Thry
             return filename;
         }
 
+        /// <summary>
+        /// Finds the paths of all files with specified name in the Unity AssetDatabase
+        /// </summary>
+        /// <param name="filename">Name of files</param>
+        /// <returns>if found returns paths list</returns>
         public static List<string> FindPathsOfFilesWithExtension(string filename)
         {
             List<string> ret = new List<string>();
@@ -95,6 +120,33 @@ namespace Thry
                     ret.Add(path);
             }
             return ret;
+        }
+
+        public static void SendAnalytics()
+        {
+            string url_values_postfix = "?hash="+ GetMacAddress().GetHashCode();
+            if (Config.Get().share_installed_editor_version) url_values_postfix += "&editor=" + Config.Get().verion;
+            if (Config.Get().share_installed_unity_version) url_values_postfix += "&unity=" + Application.unityVersion;
+            if (Config.Get().share_used_shaders)
+            {
+                url_values_postfix += "&shaders=[";
+                foreach(ShaderHelper.ThryEditorShader s in ShaderHelper.thry_editor_shaders)
+                {
+                    url_values_postfix += "{\"name\":\""+s.name+ "\",\"version\":\"";
+                    if (s.version != null && s.version != "null") url_values_postfix += s.version;
+                    url_values_postfix += "\"},";
+                }
+                url_values_postfix = url_values_postfix.TrimEnd(new char[] { ',' }) + "]";
+            }
+            DownloadStringASync(URL.DATA_SHARE_SEND+url_values_postfix, null);
+        }
+
+        public static string GetMacAddress()
+        {
+            return (from nic in System.Net.NetworkInformation.NetworkInterface.GetAllNetworkInterfaces()
+                where nic.OperationalStatus == System.Net.NetworkInformation.OperationalStatus.Up
+                select nic.GetPhysicalAddress().ToString()
+            ).FirstOrDefault();
         }
 
         public static valuetype GetValueFromDictionary<keytype, valuetype>(Dictionary<keytype, valuetype> dictionary, keytype key)
@@ -189,7 +241,7 @@ namespace Thry
         {
             if (texture != null)
             {
-                string gradient_data_string = Helper.LoadValueFromFile(texture.name, ".thry_gradients");
+                string gradient_data_string = Helper.LoadValueFromFile(texture.name, PATH.GRADIENT_INFO_FILE);
                 if (gradient_data_string != null)
                 {
                     return Parser.ParseToObject<Gradient>(gradient_data_string);
@@ -327,27 +379,6 @@ namespace Thry
             }
         }
 
-        //used to parse extra options in display name like offset
-        public static int propertyOptionToInt(string optionName, string displayName)
-        {
-            int ret = 0;
-            string value = getPropertyOptionValue(optionName, displayName);
-            int.TryParse(value, out ret);
-            return ret;
-        }
-
-        public static string getPropertyOptionValue(string optionName, string displayName)
-        {
-            string pattern = @"" + ThryEditor.EXTRA_OPTION_PREFIX + optionName + ThryEditor.EXTRA_OPTION_INFIX + "[^-]+";
-            Match match = Regex.Match(displayName, pattern);
-            if (match.Success)
-            {
-                string value = match.Value.Replace(ThryEditor.EXTRA_OPTION_PREFIX + optionName + ThryEditor.EXTRA_OPTION_INFIX, "");
-                return value;
-            }
-            return "";
-        }
-
         //-----------------------File Interaction---------------------
 
         public static string FindFileAndReadIntoString(string fileName)
@@ -367,7 +398,11 @@ namespace Thry
 
         public static string ReadFileIntoString(string path)
         {
-            if (!File.Exists(path)) File.Create(path).Close();
+            if (!File.Exists(path))
+            {
+                CreateFileWithDirectories(path);
+                return "";
+            }
             StreamReader reader = new StreamReader(path);
             string ret = reader.ReadToEnd();
             reader.Close();
@@ -376,9 +411,7 @@ namespace Thry
 
         public static void WriteStringToFile(string s, string path)
         {
-            Match dirMatch = Regex.Match(path, @".*\/");
-            if (dirMatch.Success) Directory.CreateDirectory(dirMatch.Value);
-            if (!File.Exists(path)) File.Create(path).Close();
+            if (!File.Exists(path)) CreateFileWithDirectories(path);
             StreamWriter writer = new StreamWriter(path, false);
             writer.Write(s);
             writer.Close();
@@ -386,9 +419,7 @@ namespace Thry
 
         public static bool writeBytesToFile(byte[] bytes, string path)
         {
-            Match dirMatch = Regex.Match(path, @".*\/");
-            if (dirMatch.Success) Directory.CreateDirectory(dirMatch.Value);
-            if (!File.Exists(path)) File.Create(path).Close();
+            if (!File.Exists(path)) if (!File.Exists(path)) CreateFileWithDirectories(path);
             try
             {
                 using (var fs = new FileStream(path, FileMode.OpenOrCreate, FileAccess.Write))
@@ -404,6 +435,14 @@ namespace Thry
             }
         }
 
+        public static void CreateFileWithDirectories(string path)
+        {
+            string dir_path = path.GetDirectoryPath();
+            if (dir_path != "")
+                Directory.CreateDirectory(dir_path);
+            File.Create(path).Close();
+        }
+
         //-------------------Unity Helpers-----------------------------
 
         public static void SetDefineSymbol(string symbol, bool active)
@@ -413,19 +452,25 @@ namespace Thry
 
         public static void SetDefineSymbol(string symbol, bool active, bool refresh_if_changed)
         {
-            string symbols = PlayerSettings.GetScriptingDefineSymbolsForGroup(
-                    BuildTargetGroup.Standalone);
-            if (!symbols.Contains(symbol) && active)
+            try
             {
-                PlayerSettings.SetScriptingDefineSymbolsForGroup(
-                              BuildTargetGroup.Standalone, symbols + ";" + symbol);
-                AssetDatabase.Refresh();
-            }
-            else if (symbols.Contains(symbol) && !active)
+                string symbols = PlayerSettings.GetScriptingDefineSymbolsForGroup(
+                        BuildTargetGroup.Standalone);
+                if (!symbols.Contains(symbol) && active)
+                {
+                    PlayerSettings.SetScriptingDefineSymbolsForGroup(
+                                  BuildTargetGroup.Standalone, symbols + ";" + symbol);
+                    AssetDatabase.Refresh();
+                }
+                else if (symbols.Contains(symbol) && !active)
+                {
+                    PlayerSettings.SetScriptingDefineSymbolsForGroup(
+                                  BuildTargetGroup.Standalone, Regex.Replace(symbols, @";?" + @symbol, ""));
+                    AssetDatabase.Refresh();
+                }
+            }catch(Exception e)
             {
-                PlayerSettings.SetScriptingDefineSymbolsForGroup(
-                              BuildTargetGroup.Standalone, Regex.Replace(symbols, @";?" + @symbol, ""));
-                AssetDatabase.Refresh();
+                e.ToString();
             }
         }
 
@@ -572,6 +617,8 @@ namespace Thry
 
             public static void Call(Action<string> action, params object[] args)
             {
+                if (action == null)
+                    return;
                 CallData data = new CallData();
                 data.action = action;
                 data.arguments = args;
@@ -764,8 +811,8 @@ namespace Thry
         /// </summary>
         public static int compareVersions(string v1, string v2)
         {
-            Match v1_match = Regex.Match(v1,@"\d+(\.\d+)*");
-            Match v2_match = Regex.Match(v2,@"\d+(\.\d+)*");
+            Match v1_match = Regex.Match(v1, @"\d+(\.\d+)*");
+            Match v2_match = Regex.Match(v2, @"\d+(\.\d+)*");
             if (!v1_match.Success && !v2_match.Success) return 0;
             else if (!v1_match.Success) return 1;
             else if (!v2_match.Success) return -1;
@@ -788,16 +835,16 @@ namespace Thry
             return t.IsPrimitive || t == typeof(Decimal) || t == typeof(String);
         }
 
-        [InitializeOnLoad]
-        public class DeleteFilesInTrash
+        public class TashHandler
         {
-            static DeleteFilesInTrash()
+            public static void EmptyThryTrash()
             {
-                if (Directory.Exists(DELETING_FOLDER))
+                if (Directory.Exists(PATH.DELETING_DIR))
                 {
-                    DeleteDirectory(DELETING_FOLDER);
+                    DeleteDirectory(PATH.DELETING_DIR);
                 }
             }
+
             static void DeleteDirectory(string path)
             {
                 foreach (string f in Directory.GetFiles(path))
@@ -819,5 +866,163 @@ namespace Thry
                 }
             }
         }
+    }
+
+    public class ShaderHelper
+    {
+        public class ThryEditorShader
+        {
+            public string path;
+            public string name;
+            public string version;
+        }
+
+        private static List<ThryEditorShader> shaders;
+        public static List<ThryEditorShader> thry_editor_shaders
+        {
+            get{
+                if (shaders == null)
+                    LoadThryEditorShaders();
+                return shaders;
+            }
+        }
+
+        public static string[] GetThryEditorShaderNames()
+        {
+            string[] r = new string[thry_editor_shaders.Count];
+            for (int i = 0; i < r.Length; i++)
+                r[i] = thry_editor_shaders[i].name;
+            return r;
+        }
+
+
+        private static void LoadThryEditorShaders()
+        {
+            string data = Helper.ReadFileIntoString(PATH.THRY_EDITOR_SHADERS);
+            if (data != "")
+                shaders = Parser.ParseToObject<List<ThryEditorShader>>(data);
+            else
+                SearchAllShadersForThryEditorUsage();
+        }
+
+        public static void SearchAllShadersForThryEditorUsage()
+        {
+            shaders = new List<ThryEditorShader>();
+            string[] guids = AssetDatabase.FindAssets("t:shader");
+            foreach(string g in guids)
+            {
+                string path = AssetDatabase.GUIDToAssetPath(g);
+                TestShaderForThryEditor(path);
+            }
+            Save();
+        }
+
+        private static void Save()
+        {
+            Helper.WriteStringToFile(Parser.ObjectToString(thry_editor_shaders), PATH.THRY_EDITOR_SHADERS);
+        }
+
+        private static string GetActiveCustomEditorParagraph(string code)
+        {
+            Match match = Regex.Match(code, @"(^|\*\/)((.|\n)(?!(\/\*)))*CustomEditor\s*\""(\w|\d)*\""((.|\n)(?!(\/\*)))*");
+            if (match.Success) return match.Value;
+            return null;
+        }
+
+        private static bool ParagraphContainsActiveThryEditorDefinition(string code)
+        {
+            Match match = Regex.Match(code, @"\n\s+CustomEditor\s+\""ThryEditor\""");
+            return match.Success;
+        }
+
+        private static bool ShaderUsesThryEditor(string code)
+        {
+            string activeCustomEditorParagraph = GetActiveCustomEditorParagraph(code);
+            if (activeCustomEditorParagraph == null)
+                return false;
+            return ParagraphContainsActiveThryEditorDefinition(activeCustomEditorParagraph);
+        }
+
+        private static bool TestShaderForThryEditor(string path)
+        {
+            string code = Helper.ReadFileIntoString(path);
+            if (ShaderUsesThryEditor(code))
+            {
+                ThryEditorShader shader = new ThryEditorShader();
+                shader.path = path;
+                Match name_match = Regex.Match(code, @"(?<=[Ss]hader)\s*\""[^\""]+(?=\""\s*{)");
+                if (name_match.Success) shader.name = name_match.Value.TrimStart(new char[] { ' ', '"' });
+                Match master_label_match = Regex.Match(code, @"\[HideInInspector\]\s*shader_master_label\s*\(\s*\""[^\""]*(?=\"")");
+                if (master_label_match.Success) shader.version = GetVersionFromMasterLabel(master_label_match.Value);
+                thry_editor_shaders.Add(shader);
+                return true;
+            }
+            return false;
+        }
+
+        private static string GetVersionFromMasterLabel(string label)
+        {
+            Match match = Regex.Match(label, @"(?<=v|V)\d+(\.\d+)*");
+            if (!match.Success)
+                match = Regex.Match(label, @"\d+(\.\d+)+");
+            if (match.Success)
+                return match.Value;
+            return null;
+        }
+
+        public static void AssetsImported(string[] paths)
+        {
+            bool save = false;
+            foreach(string path in paths)
+            {
+                if (!path.EndsWith(".shader"))
+                    continue;
+                if (TestShaderForThryEditor(path))
+                    save = true;
+            }
+            if(save)
+                Save();
+        }
+
+        public static void AssetsDeleted(string[] paths)
+        {
+            bool save = false;
+            foreach(string path in paths)
+            {
+                if (!path.EndsWith(".shader"))
+                    continue;
+                for(int i= 0;i<thry_editor_shaders.Count;i++)
+                {
+                    if (thry_editor_shaders[i].path == path)
+                    {
+                        thry_editor_shaders.RemoveAt(i--);
+                        save = true;
+                    }
+                }
+            }
+            if(save)
+                Save();
+        }
+
+        public static void AssetsMoved(string[] old_paths, string[] paths)
+        {
+            bool save = false;
+            for(int i=0;i<paths.Length;i++)
+            {
+                if (!paths[i].EndsWith(".shader"))
+                    continue;
+                foreach (ThryEditorShader s in thry_editor_shaders)
+                {
+                    if (s.path == old_paths[i])
+                    {
+                        s.path = paths[i];
+                        save = true;
+                    }
+                }
+            }
+            if (save)
+                Save();
+        }
+
     }
 }

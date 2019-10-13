@@ -1,4 +1,7 @@
-﻿using System.Collections;
+﻿// Material/Shader Inspector for Unity 2017/2018
+// Copyright (C) 2019 Thryrallo
+
+using System.Collections;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using UnityEditor;
@@ -74,7 +77,7 @@ namespace Thry
                 if (init)
                 {
                     EditorUtility.DisplayProgressBar("Load all shaders...", "", (float)p / paths.Count);
-                    setEditor[p] = (new Material(shaders[p])).HasProperty("shader_is_using_thry_editor");
+                    setEditor[p] = (new Material(shaders[p])).HasProperty(ThryEditor.PROPERTY_NAME_USING_THRY_EDITOR);
                     wasEditor[p] = setEditor[p];
                 }
                 setEditor[p] = GUILayout.Toggle(setEditor[p], shaders[p].name);

@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-#if NET_SET_TWO_POINT_ZERO
-#if MCS_EXISTS
+#if DOT_NET_TWO_POINT_ZERO_OR_ABOVE
+// Material/Shader Inspector for Unity 2017/2018
+// Copyright (C) 2019 Thryrallo
+
+#if IMAGING_DLL_EXISTS
 using System.Drawing.Imaging;
 #endif
 #endif
@@ -317,8 +320,8 @@ namespace Thry
         public static Texture2DArray GifToTextureArray(string path)
         {
             Texture2DArray array = null;
-#if NET_SET_TWO_POINT_ZERO
-#if MCS_EXISTS
+#if DOT_NET_TWO_POINT_ZERO_OR_ABOVE
+#if IMAGING_DLL_EXISTS
             EditorUtility.DisplayProgressBar("Creating Texture Array for " + path, "", 0);
             System.Drawing.Image IMG = System.Drawing.Image.FromFile(path);
             int Length = IMG.GetFrameCount(FrameDimension.Time);

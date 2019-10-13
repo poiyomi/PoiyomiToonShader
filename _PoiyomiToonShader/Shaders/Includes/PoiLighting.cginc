@@ -21,7 +21,7 @@
     fixed _LightingStandardSmoothness;
     fixed _LightingStandardControlsToon;
     fixed _LightingMinLightBrightness;
-
+    
     UNITY_DECLARE_TEX2D_NOSAMPLER(_AOMap); float4 _AOMap_ST;
     UNITY_DECLARE_TEX2D_NOSAMPLER(_LightingShadowMask); float4 _LightingShadowMask_ST;
     float _AOStrength;
@@ -187,9 +187,9 @@
             #endif
             
             float occlusion = lerp(1, UNITY_SAMPLE_TEX2D_SAMPLER(_AOMap, _MainTex, TRANSFORM_TEX(poiMesh.uv[_LightingAOUV], _AOMap)), _AOStrength);
-
+            
             indirectLight.diffuse *= occlusion;
-            indirectLight.diffuse = max(indirectLight.diffuse,_LightingMinLightBrightness);
+            indirectLight.diffuse = max(indirectLight.diffuse, _LightingMinLightBrightness);
             indirectLight.specular *= occlusion;
         #endif
         
@@ -319,7 +319,7 @@
         }
         else
         {
-            finalColor.rgb *= max(poiLight.finalLighting,_LightingMinLightBrightness);
+            finalColor.rgb *= max(poiLight.finalLighting, _LightingMinLightBrightness);
         }
     }
 #endif
