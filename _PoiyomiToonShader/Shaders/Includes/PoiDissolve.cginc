@@ -11,7 +11,8 @@
     UNITY_DECLARE_TEX2D_NOSAMPLER(_DissolveToTexture); float4 _DissolveToTexture_ST;
     UNITY_DECLARE_TEX2D_NOSAMPLER(_DissolveNoiseTexture); float4 _DissolveNoiseTexture_ST;
     UNITY_DECLARE_TEX2D_NOSAMPLER(_DissolveDetailNoise); float4 _DissolveDetailNoise_ST;
-    float4 _DissolvePan;
+    float2 _DissolveNoisePan;
+    float2 _DissolveDetailPan;
     float _DissolveAlpha;
     float _ContinuousDissolve;
     float _DissolveDetailStrength;
@@ -43,9 +44,9 @@
         void calculateDissolve()
         {
             float dissolveMask = UNITY_SAMPLE_TEX2D_SAMPLER(_DissolveMask, _MainTex, TRANSFORM_TEX(poiMesh.uv[0], _DissolveMask)).r;
-            dissolveToTexture = UNITY_SAMPLE_TEX2D_SAMPLER(_DissolveToTexture, _MainTex, TRANSFORM_TEX(poiMesh.uv[0], _DissolveToTexture) + _Time.y * _DissolveToPanning.xy) * _DissolveTextureColor;
-            float dissolveNoiseTexture = UNITY_SAMPLE_TEX2D_SAMPLER(_DissolveNoiseTexture, _MainTex, TRANSFORM_TEX(poiMesh.uv[0], _DissolveNoiseTexture) + _Time.y * _DissolvePan.xy);
-            float dissolveDetailNoise = UNITY_SAMPLE_TEX2D_SAMPLER(_DissolveDetailNoise, _MainTex, TRANSFORM_TEX(poiMesh.uv[0], _DissolveDetailNoise) + _Time.y * _DissolvePan.zw);
+            dissolveToTexture = UNITY_SAMPLE_TEX2D_SAMPLER(_DissolveToTexture, _MainTex, TRANSFORM_TEX(poiMesh.uv[0], _DissolveToTexture) + _Time.y * _DissolveToPanning) * _DissolveTextureColor;
+            float dissolveNoiseTexture = UNITY_SAMPLE_TEX2D_SAMPLER(_DissolveNoiseTexture, _MainTex, TRANSFORM_TEX(poiMesh.uv[0], _DissolveNoiseTexture) + _Time.y * _DissolveNoisePan);
+            float dissolveDetailNoise = UNITY_SAMPLE_TEX2D_SAMPLER(_DissolveDetailNoise, _MainTex, TRANSFORM_TEX(poiMesh.uv[0], _DissolveDetailNoise) + _Time.y * _DissolveDetailPan);
             
             if (_DissolveInvertNoise)
             {
@@ -141,9 +142,9 @@
     float calculateShadowDissolveAlpha(float3 worldPos, float3 localPos, float2 uv)
     {
         float dissolveMask = UNITY_SAMPLE_TEX2D_SAMPLER(_DissolveMask, _MainTex, TRANSFORM_TEX(uv, _DissolveMask)).r;
-        dissolveToTexture = UNITY_SAMPLE_TEX2D_SAMPLER(_DissolveToTexture, _MainTex, TRANSFORM_TEX(uv, _DissolveToTexture) + _Time.y * _DissolveToPanning.xy) * _DissolveTextureColor;
-        float dissolveNoiseTexture = UNITY_SAMPLE_TEX2D_SAMPLER(_DissolveNoiseTexture, _MainTex, TRANSFORM_TEX(uv, _DissolveNoiseTexture) + _Time.y * _DissolvePan.xy);
-        float dissolveDetailNoise = UNITY_SAMPLE_TEX2D_SAMPLER(_DissolveDetailNoise, _MainTex, TRANSFORM_TEX(uv, _DissolveDetailNoise) + _Time.y * _DissolvePan.zw);
+        dissolveToTexture = UNITY_SAMPLE_TEX2D_SAMPLER(_DissolveToTexture, _MainTex, TRANSFORM_TEX(uv, _DissolveToTexture) + _Time.y * _DissolveToPanning) * _DissolveTextureColor;
+        float dissolveNoiseTexture = UNITY_SAMPLE_TEX2D_SAMPLER(_DissolveNoiseTexture, _MainTex, TRANSFORM_TEX(uv, _DissolveNoiseTexture) + _Time.y * _DissolveNoisePan);
+        float dissolveDetailNoise = UNITY_SAMPLE_TEX2D_SAMPLER(_DissolveDetailNoise, _MainTex, TRANSFORM_TEX(uv, _DissolveDetailNoise) + _Time.y * _DissolveDetailPan);
         
         if (_DissolveInvertNoise)
         {

@@ -37,11 +37,25 @@ namespace Thry
         }
     }
 
+    public class StylizedBigTextureDrawer : MaterialPropertyDrawer
+    {
+        public override void OnGUI(Rect position, MaterialProperty prop, GUIContent label, MaterialEditor editor)
+        {
+            GuiHelper.drawStylizedBigTextureProperty(position, prop, label, editor, ((ThryEditor.TextureProperty)ThryEditor.currentlyDrawing.currentProperty).hasScaleOffset);
+        }
+
+        public override float GetPropertyHeight(MaterialProperty prop, string label, MaterialEditor editor)
+        {
+            DrawingData.lastPropertyUsedCustomDrawer = true;
+            return base.GetPropertyHeight(prop, label, editor);
+        }
+    }
+
     public class PanningTextureDrawer : MaterialPropertyDrawer
     {
         public override void OnGUI(Rect position, MaterialProperty prop, GUIContent label, MaterialEditor editor)
         {
-            GuiHelper.drawSmallTextureProperty(position, prop, label, editor, ((ThryEditor.TextureProperty)ThryEditor.currentlyDrawing.currentProperty).hasScaleOffset,true);
+            GuiHelper.drawConfigTextureProperty(position, prop, label, editor, ((ThryEditor.TextureProperty)ThryEditor.currentlyDrawing.currentProperty).hasScaleOffset,true);
         }
 
         public override float GetPropertyHeight(MaterialProperty prop, string label, MaterialEditor editor)
@@ -119,7 +133,8 @@ namespace Thry
                 Init(prop);
 
             EditorGUI.BeginChangeCheck();
-            editor.TexturePropertyMiniThumbnail(position, prop, label.text, label.tooltip);
+            PropertyOptions options =  ThryEditor.currentlyDrawing.currentProperty.options;
+            GuiHelper.drawSmallTextureProperty(position, prop, label, editor, options.has_tile_offset, options.has_panning);
             if (EditorGUI.EndChangeCheck())
                 Init(prop);
 

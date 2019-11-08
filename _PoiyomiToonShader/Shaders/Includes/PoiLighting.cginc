@@ -21,6 +21,7 @@
     fixed _LightingStandardSmoothness;
     fixed _LightingStandardControlsToon;
     fixed _LightingMinLightBrightness;
+    fixed _LightingAdditiveIntensity;
     
     UNITY_DECLARE_TEX2D_NOSAMPLER(_AOMap); float4 _AOMap_ST;
     UNITY_DECLARE_TEX2D_NOSAMPLER(_LightingShadowMask); float4 _LightingShadowMask_ST;
@@ -34,22 +35,8 @@
         UnityLight light;
         light.dir = poiLight.direction;
         light.color = saturate(_LightColor0.rgb * lerp(1, poiLight.attenuation, _AttenuationMultiplier));
-        light.ndotl = DotClamped(poiMesh.fragmentNormal, poiLight.direction);
+        light.ndotl = DotClamped(poiMesh.normals[1], poiLight.direction);
         return light;
-    }
-    
-    float3 BoxProjection(float3 direction, float3 position, float4 cubemapPosition, float3 boxMin, float3 boxMax)
-    {
-        #if UNITY_SPECCUBE_BOX_PROJECTION
-            UNITY_BRANCH
-            if (cubemapPosition.w > 0)
-            {
-                float3 factors = ((direction > 0 ? boxMax: boxMin) - position) / direction;
-                float scalar = min(min(factors.x, factors.y), factors.z);
-                direction = direction * scalar + (position - cubemapPosition);
-            }
-        #endif
-        return direction;
     }
     
     float FadeShadows(float attenuation)
@@ -106,7 +93,7 @@
                         unity_LightmapInd, unity_Lightmap, poiMesh.lightmapUV.xy
                     );
                     indirectLight.diffuse = DecodeDirectionalLightmap(
-                        indirectLight.diffuse, lightmapDirection, poiMesh.fragmentNormal
+                        indirectLight.diffuse, lightmapDirection, poiMesh.normals[1]
                     );
                 #endif
                 ApplySubtractiveLighting(indirectLight);
@@ -123,7 +110,7 @@
                         poiMesh.lightmapUV.zw
                     );
                     indirectLight.diffuse += DecodeDirectionalLightmap(
-                        dynamicLightDiffuse, dynamicLightmapDirection, poiMesh.fragmentNormal
+                        dynamicLightDiffuse, dynamicLightmapDirection, poiMesh.normals[1]
                     );
                 #else
                     indirectLight.diffuse += dynamicLightDiffuse;
@@ -135,7 +122,7 @@
                     if (unity_ProbeVolumeParams.x == 1)
                     {
                         indirectLight.diffuse = SHEvalLinearL0L1_SampleProbeVolume(
-                            float4(poiMesh.fragmentNormal, 1), poiMesh.worldPos
+                            float4(poiMesh.normals[1], 1), poiMesh.worldPos
                         );
                         indirectLight.diffuse = max(0, indirectLight.diffuse);
                         #if defined(UNITY_COLORSPACE_GAMMA)
@@ -144,14 +131,14 @@
                     }
                     else
                     {
-                        indirectLight.diffuse += max(0, ShadeSH9(float4(poiMesh.fragmentNormal, 1)));
+                        indirectLight.diffuse += max(0, ShadeSH9(float4(poiMesh.normals[1], 1)));
                     }
                 #else
-                    indirectLight.diffuse += max(0, ShadeSH9(float4(poiMesh.fragmentNormal, 1)));
+                    indirectLight.diffuse += max(0, ShadeSH9(float4(poiMesh.normals[1], 1)));
                 #endif
             #endif
             
-            float3 reflectionDir = reflect(-poiCam.viewDir, poiMesh.fragmentNormal);
+            float3 reflectionDir = reflect(-poiCam.viewDir, poiMesh.normals[1]);
             Unity_GlossyEnvironmentData envData;
             envData.roughness = 1 - _LightingStandardSmoothness;
             envData.reflUVW = BoxProjection(
@@ -240,7 +227,7 @@
     float3 calculateRealisticLighting(float4 colorToLight)
     {
         return UNITY_BRDF_PBS(colorToLight, 0, 0, _LightingStandardSmoothness,
-        poiMesh.fragmentNormal, poiCam.viewDir, CreateLight(), CreateIndirectLight());
+        poiMesh.normals[1], poiCam.viewDir, CreateLight(), CreateIndirectLight());
     }
     
     void calculateBasePassLighting()
@@ -270,7 +257,7 @@
             {
                 
                 float bw_lightColor = dot(poiLight.color, grayscale_vector);
-                float bw_directLighting = (((poiLight.nDotL * 0.5 + 0.5) * bw_lightColor * lerp(1, poiLight.attenuation, _AttenuationMultiplier)) + dot(ShadeSH9Normal(poiMesh.fragmentNormal), grayscale_vector));
+                float bw_directLighting = (((poiLight.nDotL * 0.5 + 0.5) * bw_lightColor * lerp(1, poiLight.attenuation, _AttenuationMultiplier)) + dot(ShadeSH9Normal(poiMesh.normals[1]), grayscale_vector));
                 float bw_bottomIndirectLighting = dot(ShadeSH9Minus, grayscale_vector);
                 float bw_topIndirectLighting = dot(ShadeSH9Plus, grayscale_vector);
                 float lightDifference = ((bw_topIndirectLighting + bw_lightColor) - bw_bottomIndirectLighting);
@@ -306,6 +293,7 @@
         #else
             #if defined(POINT) || defined(SPOT)
                 poiLight.finalLighting = poiLight.color * poiLight.attenuation * smoothstep(.5 - _AdditiveSoftness + _AdditiveOffset, .5 + _AdditiveSoftness + _AdditiveOffset, .5 * poiLight.nDotL + .5);
+                poiLight.finalLighting *= _LightingAdditiveIntensity;
             #endif
         #endif
     }

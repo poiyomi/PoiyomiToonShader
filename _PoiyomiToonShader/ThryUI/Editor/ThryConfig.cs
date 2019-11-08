@@ -13,7 +13,7 @@ namespace Thry
     {
         // consts
         private const string PATH_CONFIG_FILE = "Thry/Config.json";
-        private const string VERSION = "0.23.5";
+        private const string VERSION = "0.26";
 
         // static
         private static Config config;
@@ -49,7 +49,7 @@ namespace Thry
         }
 
         //actual config class
-        public bool useBigTextures = false;
+        public TextureDisplayType default_texture_type = TextureDisplayType.small;
         public bool showRenderQueue = true;
         public bool renderQueueShaders = true;
 

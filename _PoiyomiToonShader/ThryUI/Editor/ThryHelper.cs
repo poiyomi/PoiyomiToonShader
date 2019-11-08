@@ -903,6 +903,7 @@ namespace Thry
                 shaders = Parser.ParseToObject<List<ThryEditorShader>>(data);
             else
                 SearchAllShadersForThryEditorUsage();
+            DeleteNull();
         }
 
         public static void SearchAllShadersForThryEditorUsage()
@@ -915,6 +916,23 @@ namespace Thry
                 TestShaderForThryEditor(path);
             }
             Save();
+        }
+
+        private static void DeleteNull()
+        {
+            bool save = false;
+            int length = thry_editor_shaders.Count;
+            for (int i = 0; i < length; i++)
+            {
+                if (thry_editor_shaders[i] == null)
+                {
+                    thry_editor_shaders.RemoveAt(i--);
+                    length--;
+                    save = true;
+                }
+            }
+            if (save)
+                Save();
         }
 
         private static void Save()
@@ -991,11 +1009,13 @@ namespace Thry
             {
                 if (!path.EndsWith(".shader"))
                     continue;
-                for(int i= 0;i<thry_editor_shaders.Count;i++)
+                int length = thry_editor_shaders.Count;
+                for (int i= 0;i< length; i++)
                 {
                     if (thry_editor_shaders[i].path == path)
                     {
                         thry_editor_shaders.RemoveAt(i--);
+                        length--;
                         save = true;
                     }
                 }

@@ -3,14 +3,14 @@
     
     float4 _GlobalPanSpeed;
     float _MainEmissionStrength;
-    
+    float _IgnoreFog;
     half _GIEmissionMultiplier;
     
     float4 frag(v2f i, float facing: VFACE): SV_Target
     {
         finalEmission = 0;
         
-        i.uv0 += _GlobalPanSpeed.xy * _Time.x;
+        i.uv0.xy += _GlobalPanSpeed.xy * _Time.x;
         //This has to be first because it modifies the UVs for the rest of the functions
         
         #ifdef POI_DATA
@@ -39,7 +39,8 @@
         #endif
         
         #ifdef POI_METAL
-            calculateReflections();
+            //calculateReflections();
+            CalculateEnvironmentalReflections();
         #endif
         
         #ifdef POI_DATA
@@ -50,7 +51,9 @@
             albedo.a *= i.angleAlpha;
         #endif
         
-        clip(albedo.a - _Clip);
+        #ifndef OPAQUE
+            clip(albedo.a - _Clip);
+        #endif
         
         #ifdef MATCAP
             calculateMatcap();
@@ -175,11 +178,6 @@
             #endif
         #endif
         
-        
-        #ifdef FORWARD_BASE_PASS
-            UNITY_APPLY_FOG(i.fogCoord, finalColor);
-        #endif
-        
         #ifdef POI_ALPHA_TO_COVERAGE
             ApplyAlphaToCoverage(finalColor);
         #endif
@@ -210,6 +208,14 @@
         #endif
         
         finalColor.rgb += finalEmission;
+        
+        #ifdef FORWARD_BASE_PASS
+            UNITY_BRANCH
+            if(_IgnoreFog == 0)
+            {
+                UNITY_APPLY_FOG(i.fogCoord, finalColor);
+            }
+        #endif
         
         return finalColor;
     }

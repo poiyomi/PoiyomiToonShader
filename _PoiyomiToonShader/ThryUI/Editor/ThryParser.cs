@@ -250,5 +250,30 @@ namespace Thry
                 return "\"" + obj + "\"";
             return obj.ToString();
         }
+
+        public static string[][] ParseLocale(string input, int selected)
+        {
+            string[] rows = Regex.Split(input, @"\r?\n");
+            List<string[]> locale_list = new List<string[]>();
+            for(int r=1;r<rows.Length;r++)
+            {
+                string[] variable_values = Regex.Split(rows[r], @",");
+                if(selected+1 < variable_values.Length)
+                {
+                    locale_list.Add(new string[] { variable_values[0], variable_values[selected + 1] });
+                }
+            }
+            return locale_list.ToArray();
+        }
+
+        public static string[] ParseLocalenames(string input)
+        {
+            string[] rows = Regex.Split(input, @"\r?\n");
+            string[] variable_values = Regex.Split(rows[0], @",");
+            string[] ret = new string[variable_values.Length];
+            for (int i = 1; i < variable_values.Length; i++)
+                ret[i - 1] = variable_values[i];
+            return ret;
+        }
     }
 }

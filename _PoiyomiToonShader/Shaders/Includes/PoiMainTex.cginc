@@ -9,6 +9,7 @@
     UNITY_DECLARE_TEX2D_NOSAMPLER(_DetailTex); float4 _DetailTex_ST;
     
     float4 _Color;
+    float _MainVertexColoring;
     float _Saturation;
     float _BumpScale;
     float _DetailNormalMapScale;
@@ -62,7 +63,7 @@
     {
         mainTexture = UNITY_SAMPLE_TEX2D(_MainTex, TRANSFORM_TEX(poiMesh.uv[0], _MainTex));
         
-        #ifdef MIRROR
+        #ifdef POI_MIRROR
             applyMirrorTexture();
         #endif
         
@@ -72,7 +73,7 @@
         
         #ifndef POI_SHADOW
             alphaMask = UNITY_SAMPLE_TEX2D_SAMPLER(_AlphaMask, _MainTex, TRANSFORM_TEX(poiMesh.uv[0], _AlphaMask));
-            albedo = float4(lerp(mainTexture.rgb, dot(mainTexture.rgb, float3(0.3, 0.59, 0.11)), -_Saturation) * _Color.rgb, mainTexture.a * _Color.a * alphaMask);
+            albedo = float4(lerp(mainTexture.rgb, dot(mainTexture.rgb, float3(0.3, 0.59, 0.11)), -_Saturation) * _Color.rgb * lerp(1, poiMesh.vertexColor.rgb, _MainVertexColoring), mainTexture.a * _Color.a * alphaMask);
             
             float3 mainNormal = UnpackScaleNormal(UNITY_SAMPLE_TEX2D_SAMPLER(_BumpMap, _MainTex, TRANSFORM_TEX(poiMesh.uv[_BumpMapUV], _BumpMap) + _Time.x * _MainNormalPan), _BumpScale);
             float3 detailMask = UNITY_SAMPLE_TEX2D_SAMPLER(_DetailMask, _MainTex, TRANSFORM_TEX(poiMesh.uv[0], _DetailMask));
@@ -81,20 +82,20 @@
 
             albedo.rgb *= lerp(1, UNITY_SAMPLE_TEX2D_SAMPLER(_DetailTex, _MainTex, TRANSFORM_TEX(poiMesh.uv[_DetailTexUV], _DetailTex) + _Time.x * _DetailTexturePan).rgb * _DetailBrightness * _DetailTint * unity_ColorSpaceDouble, detailMask.r * _DetailTexIntensity);
             albedo.rgb = saturate(albedo.rgb);
-            poiMesh.fragmentNormal = normalize(
+            poiMesh.normals[1] = normalize(
                 poiMesh.tangentSpaceNormal.x * poiMesh.tangent +
                 poiMesh.tangentSpaceNormal.y * poiMesh.bitangent +
-                poiMesh.tangentSpaceNormal.z * poiMesh.vertexNormal
+                poiMesh.tangentSpaceNormal.z * poiMesh.normals[0]
             );
             
-            poiLight.nDotV = dot(poiMesh.fragmentNormal, poiCam.viewDir);
-            poiLight.vNDotV = dot(poiMesh.vertexNormal, poiCam.viewDir);
-            poiLight.nDotL = dot(poiMesh.fragmentNormal, poiLight.direction);
-            poiLight.nDotH = dot(poiMesh.fragmentNormal, poiLight.halfDir);
+            poiLight.nDotV = dot(poiMesh.normals[1], poiCam.viewDir);
+            poiLight.vNDotV = dot(poiMesh.normals[0], poiCam.viewDir);
+            poiLight.nDotL = dot(poiMesh.normals[1], poiLight.direction);
+            poiLight.nDotH = dot(poiMesh.normals[1], poiLight.halfDir);
             poiLight.lDotv = dot(poiLight.direction, poiCam.viewDir);
             poiLight.lDotH = dot(poiLight.direction, poiLight.halfDir);
             
-            poiCam.viewDotNormal = abs(dot(poiCam.viewDir, poiMesh.fragmentNormal));
+            poiCam.viewDotNormal = abs(dot(poiCam.viewDir, poiMesh.normals[1]));
             
             s = FragmentSetup(float4(poiMesh.uv[0], 1, 1), poiCam.viewDir, poiMesh.worldPos);
         #endif

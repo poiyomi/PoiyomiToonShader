@@ -62,6 +62,12 @@
                     <td>[HideInInspector] shader_properties_label_file ("poiToonLabels", Float) = 0</td>
                 </tr>
                 <tr>
+                    <td>shader_properties_locale</td>
+                    <td>Is used to specify a locale file and locale selector. Specify "locale::&lt;string>" anywhere to load a string from the locale file.</td>
+                    <td>No</td>
+                    <td>shader_properties_locale ("locale::locale--{file_name:locale_file_name}", Float) = 0</td>
+                </tr>
+                <tr>
                     <td>footer_&lt;string></td>
                     <td>Adds a footer button to the bottom of the ui. Multiple footers can be added to one shader. The displayname has to be a ButtonData object</td>
                     <td>No</td>
@@ -109,6 +115,12 @@
                     <td>Creates a texture field that will always be big</td>
                     <td></td>
                     <td>[BigTexture]_MainTex("Main Texture",2D)= "white" { }</td>
+                </tr>
+                <tr>
+                    <td>[StylizedBigTexture]</td>
+                    <td>Creates a texture field that will always be big but stylized differently</td>
+                    <td></td>
+                    <td>[StylizedBigTexture]_MainTex("Main Texture",2D)= "white" { }</td>
                 </tr>
                 <tr>
                     <td>[Gradient]</td>
@@ -276,6 +288,27 @@
                     <td>Default: false. Set this to true to hide the texture options and force your defined texture settings.</td>
                     <td>[Gradient]</td>
                     <td>[Gradient]_ColorRamp ("Gradient --{texture:{width:256,height:16,filterMode:Point,wrapMode:Clamp},force_texture_options:true}", 2D) = "white" { }</td>
+                </tr>
+                <tr>
+                    <td>reference_property</td>
+                    <td>string</td>
+                    <td>Default: null. Meaning dependent on porperty used on. (Example: panning property for textures)</td>
+                    <td>[Gradient],[PanningTexture]</td>
+                    <td>_Texture("Panning Texture --{texture:{width:256,height:16,filterMode:Point,wrapMode:Clamp},reference_property:_PanSpeed}", 2D) = "white" { }</td>
+                </tr>
+                <tr>
+                    <td>has_tile_offset</td>
+                    <td>bool</td>
+                    <td>Default: false. Show tile offset for gradient property.</td>
+                    <td>[Gradient]</td>
+                    <td>[Gradient]_ColorRamp ("Gradient --{texture:{width:256,height:16,filterMode:Point,wrapMode:Clamp},has_tile_offset:true}", 2D) = "white" { }</td>
+                </tr>
+                <tr>
+                    <td>has_panning</td>
+                    <td>bool</td>
+                    <td>Default: false. Show panning field for gradient property.</td>
+                    <td>[Gradient]</td>
+                    <td>[Gradient]_ColorRamp ("Gradient --{texture:{width:256,height:16,filterMode:Point,wrapMode:Clamp},has_panning:true}", 2D) = "white" { }</td>
                 </tr>
             </table>
 
@@ -469,6 +502,16 @@
                         <td>VRC_SDK_VERSION</td>
                         <td>&lt;Comparator>&lt;value></td>
                         <td>{type:VRC_SDK_VERSION,data:>0.17} #checks if installed vrc sdk version > 0.17</td>
+                    </tr>
+                    <tr>
+                        <td>TEXTURE_SET</td>
+                        <td>&lt;PropertyName></td>
+                        <td>{type:TEXTURE_SET,data:_ToonRamp} #checks if texture _ToonRamp is set</td>
+                    </tr>
+                    <tr>
+                        <td>DROPDOWN</td>
+                        <td>&lt;PropertyName>&lt;Comparator>&lt;value></td>
+                        <td>{type:DROPDOWN,data:_LightingType==2} #checks if property _LightingType has enum 2 selected</td>
                     </tr>
                 </table>
                 <h3>Enum: ConditionType</h3>

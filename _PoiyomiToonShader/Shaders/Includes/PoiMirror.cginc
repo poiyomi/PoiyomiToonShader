@@ -1,5 +1,5 @@
-#ifndef MIRROR
-    #define MIRROR
+#ifndef POI_MIRROR
+    #define POI_MIRROR
     
     int _Mirror;
     float _EnableMirrorTexture;

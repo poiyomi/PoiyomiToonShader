@@ -73,18 +73,18 @@
             if(interpolator < 0.99999)
             {
                 //Probe 1
-                float4 reflectionData0 = UNITY_SAMPLE_TEXCUBE_LOD(unity_SpecCube0, poiMesh.fragmentNormal, _RimEnviroBlur * UNITY_SPECCUBE_LOD_STEPS);
+                float4 reflectionData0 = UNITY_SAMPLE_TEXCUBE_LOD(unity_SpecCube0, poiMesh.normals[1], _RimEnviroBlur * UNITY_SPECCUBE_LOD_STEPS);
                 float3 reflectionColor0 = DecodeHDR(reflectionData0, unity_SpecCube0_HDR);
                 
                 //Probe 2
-                float4 reflectionData1 = UNITY_SAMPLE_TEXCUBE_SAMPLER_LOD(unity_SpecCube1, unity_SpecCube0, poiMesh.fragmentNormal, _RimEnviroBlur * UNITY_SPECCUBE_LOD_STEPS);
+                float4 reflectionData1 = UNITY_SAMPLE_TEXCUBE_SAMPLER_LOD(unity_SpecCube1, unity_SpecCube0, poiMesh.normals[1], _RimEnviroBlur * UNITY_SPECCUBE_LOD_STEPS);
                 float3 reflectionColor1 = DecodeHDR(reflectionData1, unity_SpecCube1_HDR);
                 
                 enviroRimColor = lerp(reflectionColor1, reflectionColor0, interpolator);
             }
             else
             {
-                float4 reflectionData = UNITY_SAMPLE_TEXCUBE_LOD(unity_SpecCube0, poiMesh.fragmentNormal, _RimEnviroBlur * UNITY_SPECCUBE_LOD_STEPS);
+                float4 reflectionData = UNITY_SAMPLE_TEXCUBE_LOD(unity_SpecCube0, poiMesh.normals[1], _RimEnviroBlur * UNITY_SPECCUBE_LOD_STEPS);
                 enviroRimColor = DecodeHDR(reflectionData, unity_SpecCube0_HDR);
             }
             

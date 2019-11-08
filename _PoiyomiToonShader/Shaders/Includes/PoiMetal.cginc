@@ -17,47 +17,61 @@
     float roughness;
     float lighty_boy_uwu_var;
     
-    void calculateReflections()
+    void CalculateEnvironmentalReflections()
     {
         metalicMap = tex2D(_MetallicMask, TRANSFORM_TEX(poiMesh.uv[0], _MetallicMask)) * _Metallic;
-        float _Smoothness_map_var = (tex2D(_SmoothnessMask, TRANSFORM_TEX(poiMesh.uv[0], _SmoothnessMask)));
+        float smoothnessMap = (tex2D(_SmoothnessMask, TRANSFORM_TEX(poiMesh.uv[0], _SmoothnessMask)));
         if (_InvertSmoothness == 1)
         {
-            _Smoothness_map_var = 1 - _Smoothness_map_var;
+            smoothnessMap = 1 - smoothnessMap;
         }
-        _Smoothness_map_var *= _Smoothness;
-        roughness = 1 - _Smoothness_map_var;
-        roughness *= 1.7 - 0.7 * roughness;
-        float3 reflectedDir = poiCam.reflectionDir;
+        smoothnessMap *= _Smoothness;
+        roughness = 1 - smoothnessMap;
         
-        float4 envSample = UNITY_SAMPLE_TEXCUBE_LOD(unity_SpecCube0, reflectedDir, roughness * UNITY_SPECCUBE_LOD_STEPS);
+        lighty_boy_uwu_var = 0;
         
-        float interpolator = unity_SpecCube0_BoxMin.w;
+        float4 envSample = UNITY_SAMPLE_TEXCUBE_LOD(unity_SpecCube0, poiCam.reflectionDir, roughness * UNITY_SPECCUBE_LOD_STEPS);
+        bool no_probe = unity_SpecCube0_HDR.a == 0 && envSample.a == 0;
+
         UNITY_BRANCH
-        if(interpolator < 0.99999)
+        if(_SampleWorld == 0 && no_probe == 0)
         {
-            //Probe 1
-            float4 reflectionData0 = UNITY_SAMPLE_TEXCUBE_LOD(unity_SpecCube0, reflectedDir, roughness * UNITY_SPECCUBE_LOD_STEPS);
-            float3 reflectionColor0 = DecodeHDR(reflectionData0, unity_SpecCube0_HDR);
             
-            //Probe 2
-            float4 reflectionData1 = UNITY_SAMPLE_TEXCUBE_SAMPLER_LOD(unity_SpecCube1, unity_SpecCube0, reflectedDir, roughness * UNITY_SPECCUBE_LOD_STEPS);
-            float3 reflectionColor1 = DecodeHDR(reflectionData1, unity_SpecCube1_HDR);
+            Unity_GlossyEnvironmentData envData;
+            envData.roughness = roughness;
+            envData.reflUVW = BoxProjection(
+                poiCam.reflectionDir, poiMesh.worldPos.xyz,
+                unity_SpecCube0_ProbePosition,
+                unity_SpecCube0_BoxMin, unity_SpecCube0_BoxMax
+            );
+            float3 probe0 = Unity_GlossyEnvironment(
+                UNITY_PASS_TEXCUBE(unity_SpecCube0), unity_SpecCube0_HDR, envData
+            );
+            envData.reflUVW = BoxProjection(
+                poiCam.reflectionDir, poiMesh.worldPos.xyz,
+                unity_SpecCube1_ProbePosition,
+                unity_SpecCube1_BoxMin, unity_SpecCube1_BoxMax
+            );
             
-            reflection = lerp(reflectionColor1, reflectionColor0, interpolator);
+            float interpolator = unity_SpecCube0_BoxMin.w;
+            UNITY_BRANCH
+            if(interpolator < 0.99999)
+            {
+                float3 probe1 = Unity_GlossyEnvironment(
+                    UNITY_PASS_TEXCUBE_SAMPLER(unity_SpecCube1, unity_SpecCube0),
+                    unity_SpecCube0_HDR, envData
+                );
+                reflection = lerp(probe1, probe0, interpolator);
+            }
+            else
+            {
+                reflection = probe0;
+            }
         }
         else
         {
-            float4 reflectionData = UNITY_SAMPLE_TEXCUBE_LOD(unity_SpecCube0, reflectedDir, roughness * UNITY_SPECCUBE_LOD_STEPS);
-            reflection = DecodeHDR(reflectionData, unity_SpecCube0_HDR);
-        }
-        
-        bool no_probe = unity_SpecCube0_HDR.a == 0 && envSample.a == 0;
-        lighty_boy_uwu_var = 0;
-        if (no_probe || _SampleWorld)
-        {
             lighty_boy_uwu_var = 1;
-            reflection = texCUBElod(_CubeMap, float4(reflectedDir, roughness * UNITY_SPECCUBE_LOD_STEPS));
+            reflection = texCUBElod(_CubeMap, float4(poiCam.reflectionDir, roughness * UNITY_SPECCUBE_LOD_STEPS));
         }
     }
     

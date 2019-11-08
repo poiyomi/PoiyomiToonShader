@@ -1,23 +1,43 @@
 m_mainOptions:=Main--{button_right:{text:Tutorial,action:{type:URL,data:https://youtu.be/FX3Uvcj35Rk},hover:YouTube}}
-m_metallicOptions:=Metallics & Reflections--{button_right:{text:Tutorial,action:{type:URL,data:https://youtu.be/DyluMaFn64M},hover:YouTube}}
-m_matcapOptions:=Matcap / Sphere Textures--{button_right:{text:Tutorial,action:{type:URL,data:https://youtu.be/DFo87kuO1OI},hover:YouTube}}
-m_outlineOptions:=Outlines
-m_emissionOptions:=Emission / Glow--{button_right:{text:Tutorial,action:{type:URL,data:https://youtu.be/iqk23gtwkz0},hover:YouTube}}
-m_fakeLightingOptions:=Light & Shadow--{button_right:{text:Tutorial,action:{type:URL,data:https://youtu.be/2B-EJutVjs8},hover:YouTube}}
-m_specularHighlightsOptions:=Specular Highlights--{button_right:{text:Tutorial,action:{type:URL,data:https://youtu.be/YFFe8IrXVnc},hover:YouTube}}
-m_parallaxMap:=Parallax
-m_subsurfaceOptions:=Subsurface Scattering--{button_right:{text:Tutorial,action:{type:URL,data:https://youtu.be/hs1bnnPmDFc},hover:YouTube}}
-m_rimLightOptions:=Rim Lighting--{button_right:{text:Tutorial,action:{type:URL,data:https://youtu.be/JNxzcRY_BZ8},hover:YouTube}}
-m_flipBook:=Flipbook--{button_right:{text:Tutorial,action:{type:URL,data:https://youtu.be/NrA18CITEVs},hover:YouTube}}
-m_dissolve:=Dissolve--{button_right:{text:Tutorial,action:{type:URL,data:https://youtu.be/abTejmV4yGU},hover:YouTube}}
-m_panosphereOptions:=Panosphere / Cubemaps--{button_right:{text:Tutorial,action:{type:URL,data:https://youtu.be/wyCY6qE0_Vg},hover:YouTube}}
-m_StencilPassOptions:=Stencil--{button_right:{text:Tutorial,action:{type:URL,data:https://youtu.be/uniOEpw88jk},hover:YouTube}}
-m_mirrorOptions:=Mirror--{button_right:{text:Tutorial,action:{type:URL,data:https://youtu.be/ptnVKyuijO4},hover:YouTube}}
-m_RandomOptions:=Random
-m_renderingOptions:=Rendering Options--{button_right:{text:Tutorial,action:{type:URL,data:https://youtu.be/P5KlE9rk9pg},hover:YouTube}}
-m_debugOptions:=Debug
+_BumpMap:=Normal Map--{reference_property:_MainNormalPan}
+_DetailTex:=Detail Texture--{reference_property:_DetailTexturePan}
+_DetailNormalMap:=Detail Normal--{reference_property:_MainDetailNormalPan}
 
-_ToonRamp:=Lighting Ramp--{texture:{width:512,height:1,filterMode:Bilinear,wrapMode:Clamp}}
+m_lightingOptions:=Lighting
+m_start_Lighting:=Light & Shadow--{button_right:{text:Tutorial,action:{type:URL,data:https://youtu.be/2B-EJutVjs8},hover:YouTube}}
+_ToonRamp:=Lighting Ramp--{texture:{width:512,height:1,filterMode:Bilinear,wrapMode:Clamp},force_texture_options:true}
+m_start_subsurface:=Subsurface Scattering--{button_right:{text:Tutorial,action:{type:URL,data:https://youtu.be/hs1bnnPmDFc},hover:YouTube}}
+m_start_rimLightOptions:=Rim Lighting--{button_right:{text:Tutorial,action:{type:URL,data:https://youtu.be/JNxzcRY_BZ8},hover:YouTube}}
+_RimTex:=Rim Texture--{reference_property:_RimTexPanSpeed}
+_RimWidthNoiseTexture:=Rim Width Noise--{reference_property:_RimWidthNoisePan}
+m_start_bakedLighting:=Baked Lighting
+
+m_reflectionOptions:=Reflections
+m_start_Metallic:=Metallics--{button_right:{text:Tutorial,action:{type:URL,data:https://youtu.be/DyluMaFn64M},hover:YouTube}}
+m_start_matcap:=Matcap--{button_right:{text:Tutorial,action:{type:URL,data:https://youtu.be/DFo87kuO1OI},hover:YouTube}}
+m_start_Matcap2:=Matcap 2--{button_right:{text:Tutorial,action:{type:URL,data:https://youtu.be/DFo87kuO1OI},hover:YouTube}}
+m_start_specular:=Specular Reflections--{button_right:{text:Tutorial,action:{type:URL,data:https://youtu.be/YFFe8IrXVnc},hover:YouTube}}
+
+m_outlineOptions:=Outlines
+
+m_start_emissionOptions:=Emission / Glow--{button_right:{text:Tutorial,action:{type:URL,data:https://youtu.be/iqk23gtwkz0},hover:YouTube}}
+_EmissionMap:=Emission Map--{reference_property:_EmissionMapPan}
+_EmissionMask:=Emission Mask--{reference_property:_EmissionMaskPan}
+m_start_flipBook:=Flipbook--{button_right:{text:Tutorial,action:{type:URL,data:https://youtu.be/NrA18CITEVs},hover:YouTube}}
+m_start_dissolve:=Dissolve--{button_right:{text:Tutorial,action:{type:URL,data:https://youtu.be/abTejmV4yGU},hover:YouTube}}
+_DissolveToTexture:=Dissolved Texture--{reference_property:_DissolveToPanning}
+_DissolveNoiseTexture:=Dissolve Noise--{reference_property:_DissolveNoisePan}
+_DissolveDetailNoise:=Dissolve Detail Noise--{reference_property:_DissolveDetailPan}
+m_start_panosphereOptions:=Panosphere / Cubemaps--{button_right:{text:Tutorial,action:{type:URL,data:https://youtu.be/wyCY6qE0_Vg},hover:YouTube}}
+m_start_mirrorOptions:=Mirror--{button_right:{text:Tutorial,action:{type:URL,data:https://youtu.be/ptnVKyuijO4},hover:YouTube}}
+m_start_distanceFade:=Distance Fade
+m_start_angularFade:=Angular Fade
+
+m_parallaxMap:=Parallax
+
+m_renderingOptions:=Rendering Options--{button_right:{text:Tutorial,action:{type:URL,data:https://youtu.be/P5KlE9rk9pg},hover:YouTube}}
+m_start_StencilPassOptions:=Stencil--{button_right:{text:Tutorial,action:{type:URL,data:https://youtu.be/uniOEpw88jk},hover:YouTube}}
+m_start_debugOptions:=Debug
 
 footer_youtube:={texture:{name:icon-youtube,height:32},action:{type:URL,data:https://www.youtube.com/poiyomi},hover:YOUTUBE}
 footer_twitter:={texture:{name:icon-twitter,height:32},action:{type:URL,data:https://twitter.com/poiyomi},hover:TWITTER}

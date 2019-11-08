@@ -112,6 +112,8 @@ namespace Thry
         {
             if (Helper.LoadValueFromFile("delete_vrc_sdk", PATH.AFTER_COMPILE_DATA) == "true")
                 DeleteVRCSDKFolder();
+            if (!Get().sdk_is_installed && Helper.LoadValueFromFile("update_vrc_sdk", PATH.AFTER_COMPILE_DATA) == "true")
+                DownloadAndInstallVRCSDK();
         }
 
         private static void DeleteVRCSDKFolder()
@@ -119,10 +121,7 @@ namespace Thry
             if (!Get().sdk_is_installed)
             {
                 Helper.SaveValueToFile("delete_vrc_sdk", "false", PATH.AFTER_COMPILE_DATA);
-                if (Helper.LoadValueFromFile("update_vrc_sdk", PATH.AFTER_COMPILE_DATA) == "true")
-                    DownloadAndInstallVRCSDK();
-                else
-                    Settings.is_changing_vrc_sdk = false;
+                Settings.is_changing_vrc_sdk = false;
             }
             if (Get().sdk_path != null && Directory.Exists(Get().sdk_path))
             {

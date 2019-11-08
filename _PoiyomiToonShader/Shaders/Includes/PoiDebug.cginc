@@ -15,12 +15,12 @@
             //Mesh Data
             if (_DebugMeshData == 1)
             {
-                finalColor.rgb = poiMesh.vertexNormal;
+                finalColor.rgb = poiMesh.normals[0];
                 return;
             }
             else if(_DebugMeshData == 2)
             {
-                finalColor.rgb = poiMesh.fragmentNormal;
+                finalColor.rgb = poiMesh.normals[1];
                 return;
             }
             else if(_DebugMeshData == 3)

@@ -109,13 +109,13 @@
         if (_SmoothnessFrom == 0)
         {
             half3 diffColor = EnergyConservationBetweenDiffuseAndSpecular(albedo, specularMap.rgb * _SpecularTint.rgb, /*out*/ oneMinusReflectivity);
-            finalSpecular = poiRealisticSpecular(diffColor, specularMap.rgb, oneMinusReflectivity, specularMap.a * _SpecularSmoothness * lerp(1,-1,_SpecularInvertSmoothness), poiMesh.fragmentNormal, unityLight, ZeroIndirect());
+            finalSpecular = poiRealisticSpecular(diffColor, specularMap.rgb, oneMinusReflectivity, specularMap.a * _SpecularSmoothness * lerp(1,-1,_SpecularInvertSmoothness), poiMesh.normals[1], unityLight, ZeroIndirect());
         }
         else
         {
             half3 diffColor = EnergyConservationBetweenDiffuseAndSpecular(albedo, _SpecularTint.rgb, /*out*/ oneMinusReflectivity);
             float smoothness = max(max(specularMap.r, specularMap.g), specularMap.b);
-            finalSpecular = poiRealisticSpecular(diffColor, 1, oneMinusReflectivity, smoothness * _SpecularSmoothness * lerp(1,-1,_SpecularInvertSmoothness), poiMesh.fragmentNormal, unityLight, ZeroIndirect());
+            finalSpecular = poiRealisticSpecular(diffColor, 1, oneMinusReflectivity, smoothness * _SpecularSmoothness * lerp(1,-1,_SpecularInvertSmoothness), poiMesh.normals[1], unityLight, ZeroIndirect());
         }
         finalSpecular *= lerp(1, albedo.rgb, _SpecularMixAlbedoIntoTint);
     }
@@ -128,7 +128,7 @@
         float specIntensity = dot(finalSpecular.rgb, grayscale_for_light());
         finalSpecular.rgb = smoothstep(0.99, 1, specIntensity) * poiLight.color.rgb * poiLight.attenuation;
         */
-        finalSpecular = smoothstep(1 - _SpecularToonInnerOuter.y, 1 - _SpecularToonInnerOuter.x, dot(poiLight.halfDir, poiMesh.fragmentNormal) * poiLight.attenuation) * specularLight;
+        finalSpecular = smoothstep(1 - _SpecularToonInnerOuter.y, 1 - _SpecularToonInnerOuter.x, dot(poiLight.halfDir, poiMesh.normals[1]) * poiLight.attenuation) * specularLight;
         UNITY_BRANCH
         if (_SmoothnessFrom == 0)
         {
@@ -157,7 +157,7 @@
         float4 packedTangentMap = UNITY_SAMPLE_TEX2D_SAMPLER(_AnisoTangentMap, _MainTex, TRANSFORM_TEX(poiMesh.uv[0], _AnisoTangentMap));
         float3 normalLocalAniso = lerp(float3(0, 0, 1), UnpackNormal(packedTangentMap), _AnisoUseTangentMap);
         normalLocalAniso = BlendNormals(normalLocalAniso, poiMesh.tangentSpaceNormal);
-        //float3 normalDirection = normalize(mul(poiMesh.fragmentNormal, poiTData.tangentTransform));
+        //float3 normalDirection = normalize(mul(poiMesh.normals[1], poiTData.tangentTransform));
         float3 normalDirectionAniso = Unity_SafeNormalize(mul(normalLocalAniso, poiTData.tangentTransform));
         float3 tangentDirection = mul(poiTData.tangentTransform, tangentOrBitangent).xyz;
         float3 viewReflectDirectionAniso = reflect(-poiCam.viewDir, normalDirectionAniso); // possible bad negation

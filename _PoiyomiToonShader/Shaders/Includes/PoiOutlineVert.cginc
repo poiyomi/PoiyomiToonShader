@@ -15,12 +15,12 @@
         UNITY_TRANSFER_INSTANCE_ID(v, o);
         UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
         
-        #ifdef MIRROR
+        #ifdef POI_MIRROR
             applyMirrorRenderVert(v.vertex);
         #endif
         
-        o.uv0 = v.uv0 + _OutlineGlobalPan.xy * _Time.y;
-        float outlineMask = poiMax(tex2Dlod(_OutlineMask, float4(TRANSFORM_TEX(o.uv0, _OutlineMask) + _Time.x * _OutlineTexturePan.zw, 0, 0)).rgb);
+        o.uv0.xy = v.uv0 + _OutlineGlobalPan.xy * _Time.y;
+        float outlineMask = poiMax(tex2Dlod(_OutlineMask, float4(TRANSFORM_TEX(o.uv0.xy, _OutlineMask) + _Time.x * _OutlineTexturePan.zw, 0, 0)).rgb);
         
         UNITY_BRANCH
         if (_OutlineUseVertexColors == 0)

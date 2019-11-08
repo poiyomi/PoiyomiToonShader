@@ -91,5 +91,21 @@ namespace Thry
             greenStyle = new GUIStyle();
             greenStyle.normal.textColor = new Color(0, 0.5f, 0);
         }
+
+        private static Texture2D p_white_rounded_texture;
+        public static Texture2D white_rounded_texture
+        {
+            get{
+                if (p_white_rounded_texture == null)
+                {
+                    string[] guids = AssetDatabase.FindAssets("thry_white_rect t:texture");
+                    if (guids.Length == 0)
+                        p_white_rounded_texture = Texture2D.whiteTexture;
+                    else
+                        p_white_rounded_texture = AssetDatabase.LoadAssetAtPath<Texture2D>(AssetDatabase.GUIDToAssetPath(guids[0]));
+                }
+                return p_white_rounded_texture;
+            }
+        }
     }
 }

@@ -25,7 +25,7 @@
         #endif
         float2 projScreenPos = (screenPos / screenPos.w).xy;
         float3 worldViewDir = normalize(UnityWorldSpaceViewDir(i.worldPos));
-        float3 refractionOffset = ((((indexOfRefraction - 1.0) * mul(UNITY_MATRIX_V, float4(poiMesh.fragmentNormal, 0.0))) * (1.0 / (screenPos.z + 1.0))) * (1.0 - dot(poiMesh.fragmentNormal, worldViewDir)));
+        float3 refractionOffset = ((((indexOfRefraction - 1.0) * mul(UNITY_MATRIX_V, float4(poiMesh.normals[1], 0.0))) * (1.0 / (screenPos.z + 1.0))) * (1.0 - dot(poiMesh.normals[1], worldViewDir)));
         float2 cameraRefraction = float2(refractionOffset.x, - (refractionOffset.y * _ProjectionParams.x));
         //return tex2D(_PoiGrab, (projScreenPos + cameraRefraction));
         

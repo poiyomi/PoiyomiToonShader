@@ -15,6 +15,16 @@
             
             #if defined(UNITY_STANDARD_USE_SHADOW_UVS)
                 half alpha = UNITY_SAMPLE_TEX2D(_MainTex, TRANSFORM_TEX(i.uv, _MainTex)).a;
+                
+                UNITY_BRANCH
+                if (_EnableMirrorTexture)
+                {
+                    if(IsInMirror())
+                    {
+                        alpha = UNITY_SAMPLE_TEX2D_SAMPLER(_MirrorTexture, _MainTex, TRANSFORM_TEX(i.uv, _MirrorTexture)).a;
+                    }
+                }
+                
                 alpha *= smoothstep(_MainDistanceFade.x, _MainDistanceFade.y, distance(i.modelPos, _WorldSpaceCameraPos));
                 half alphaMask = tex2D(_AlphaMask, TRANSFORM_TEX(i.uv, _AlphaMask));
                 
@@ -26,10 +36,10 @@
                     alpha *= i.angleAlpha;
                 #endif
                 
-                #if defined(CUTOUT) || defined(OPAQUE) 
+                #if defined(CUTOUT)
                     clip(alpha * alphaMask - _Clip);
                     UNITY_BRANCH
-                    if (!_ForceOpaque)
+                    if(!_ForceOpaque)
                     {
                         clip(_Color.a - .75);
                     }

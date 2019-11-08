@@ -78,12 +78,15 @@ namespace Thry
         public int offset = 0;
         public string hover = "";
         public DefinableAction altClick;
-        public DefineableCondition condition_show;
+        public DefineableCondition condition_show = new DefineableCondition();
         public ButtonData button_right;
         public ImageData image;
         public TextureData texture;
         public string reference_property;
         public bool force_texture_options = false;
+        public string file_name;
+        public bool has_tile_offset = false;
+        public bool has_panning = false;
     }
 
     public class ImageData
@@ -172,6 +175,8 @@ namespace Thry
         public DefineableCondition condition2;
         public bool Test()
         {
+            if (type == DefineableConditionType.NONE)
+                return true;
             string comparator = GetComparetor();
             string[] parts = Regex.Split(data, comparator);
             string obj = parts[0];
@@ -198,6 +203,17 @@ namespace Thry
                     if (comparator == "!=") return c_vrc != 0;
                     if (comparator == "<") return c_vrc == 1;
                     if (comparator == ">") return c_vrc == -1;
+                    break;
+                case DefineableConditionType.TEXTURE_SET:
+                    ThryEditor.ShaderProperty shaderProperty = ThryEditor.currentlyDrawing.propertyDictionary[data];
+                    if (shaderProperty == null) return false;
+                    return shaderProperty.materialProperty.textureValue != null;
+                case DefineableConditionType.DROPDOWN:
+                    ThryEditor.ShaderProperty dropdownProperty = ThryEditor.currentlyDrawing.propertyDictionary[obj];
+                    if (dropdownProperty == null) return false;
+                    if (comparator == "##") return dropdownProperty.materialProperty.floatValue == 1;
+                    if (comparator == "==") return "" + dropdownProperty.materialProperty.floatValue == parts[1];
+                    if (comparator == "!=") return "" + dropdownProperty.materialProperty.floatValue != parts[1];
                     break;
                 case DefineableConditionType.AND:
                     if(condition1!=null&&condition2!=null) return condition1.Test() && condition2.Test();
@@ -249,6 +265,8 @@ namespace Thry
         PROPERTY_BOOL,
         EDITOR_VERSION,
         VRC_SDK_VERSION,
+        TEXTURE_SET,
+        DROPDOWN,
         AND,
         OR
     }
@@ -271,5 +289,10 @@ namespace Thry
         public string settings_file_name = "";
         public DefineableCondition requirement;
         public List<string> files;
+    }
+
+    public enum TextureDisplayType
+    {
+        small,big,stylized_big
     }
 }

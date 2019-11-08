@@ -16,7 +16,7 @@
     {
         float SSS = 1 - UNITY_SAMPLE_TEX2D_SAMPLER(_SSSThicknessMap, _MainTex, TRANSFORM_TEX(poiMesh.uv[0], _SSSThicknessMap));
         
-        half3 vLTLight = poiLight.direction + poiMesh.vertexNormal * _SSSDistortion;
+        half3 vLTLight = poiLight.direction + poiMesh.normals[0] * _SSSDistortion;
         half flTDot = pow(saturate(dot(poiCam.viewDir, -vLTLight)), _SSSPower) * _SSSSCale;
         #ifdef FORWARD_BASE_PASS
             half3 fLT = (flTDot) * saturate(SSS + - 1 * _SSSThicknessMod);

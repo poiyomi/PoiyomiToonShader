@@ -36,8 +36,6 @@ namespace Thry
         public static void updatedPopup(int compare)
         {
             Settings window = (Settings)EditorWindow.GetWindow(typeof(Settings));
-            if(Config.Get().share_user_data)
-                Helper.SendAnalytics();
             window.updatedVersion = compare;
             window.Show();
         }
@@ -48,6 +46,7 @@ namespace Thry
         }
 
         public const string RSP_DRAWING_DLL_CODE = "-r:System.Drawing.dll";
+        public const string RSP_DRAWING_DLL_REGEX = @"-r:\s*System\.Drawing\.dll";
 
         public static Shader activeShader = null;
         public static Material activeShaderMaterial = null;
@@ -70,18 +69,19 @@ namespace Thry
         new string[]{ "Use Render Queue", "enable a render queue selector" },
         new string[]{ "Show popup on shader import", "This popup gives you the option to try to restore materials if they broke on importing" },
         new string[]{ "Render Queue Shaders", "Have the render queue selector work with vrchat by creating seperate shaders for the different queues" },
-        new string[]{ "Gradient Save File Names", "configures the way gradient texture files are named. use <material>, <hash> and <prop> to identify the texture." }
+        new string[]{ "Gradient Save File Names", "configures the way gradient texture files are named. use <material>, <hash> and <prop> to identify the texture." },
+        new string[]{ "Default Texture Display", "Select how your textures should be displayed if the property doesn't force the type." }
         };
         enum SETTINGS_IDX
         {
-            bigTexFields = 0, render_queue = 1, show_popup_on_import = 2, render_queue_shaders = 3, gradient_file_name = 4
+            bigTexFields = 0, render_queue = 1, show_popup_on_import = 2, render_queue_shaders = 3, gradient_file_name = 4, default_texture_type = 5
         };
 
         //------------------Message Calls-------------------------
 
         public void OnDestroy()
         {
-            if (isFirstPopop && Config.Get().share_user_data)
+            if ((isFirstPopop|| updatedVersion!=0) && Config.Get().share_user_data)
                 Helper.SendAnalytics();
             if (!EditorPrefs.GetBool("thry_has_counted_user", false))
             {
@@ -91,6 +91,7 @@ namespace Thry
                         EditorPrefs.SetBool("thry_has_counted_user", true);
                 });
             }
+            
             string projectPrefix = PlayerSettings.companyName + "." +PlayerSettings.productName;
             if (!EditorPrefs.GetBool(projectPrefix+"_thry_has_counted_project", false))
             {
@@ -212,7 +213,7 @@ namespace Thry
         private static bool DoesRSPContainDrawingDLL(string rsp_path)
         {
             string rsp_data = Helper.ReadFileIntoString(rsp_path);
-            return (rsp_data.Contains(RSP_DRAWING_DLL_CODE));
+            return (Regex.Match(rsp_data, RSP_DRAWING_DLL_REGEX).Success);
         }
 
         private static void AddDrawingDLLToRSP(string rsp_path)
@@ -365,7 +366,7 @@ namespace Thry
             if (is_editor_expanded)
             {
                 EditorGUI.indentLevel += 2;
-                Toggle("useBigTextures", SETTINGS_CONTENT[(int)SETTINGS_IDX.bigTexFields]);
+                Dropdown("default_texture_type", SETTINGS_CONTENT[(int)SETTINGS_IDX.default_texture_type]);
                 Toggle("showRenderQueue", SETTINGS_CONTENT[(int)SETTINGS_IDX.render_queue]);
                 if (Config.Get().showRenderQueue)
                     Toggle("renderQueueShaders", SETTINGS_CONTENT[(int)SETTINGS_IDX.render_queue_shaders]);
@@ -539,6 +540,33 @@ namespace Thry
                 if (Toggle(value, label, hover, label_style) != value)
                 {
                     field.SetValue(config, !value);
+                    config.save();
+                    ThryEditor.repaint();
+                }
+            }
+        }
+
+        private static void Dropdown(string configField, string[] content)
+        {
+            Dropdown(configField, content[0], content[1]);
+        }
+
+        private static void Dropdown(string configField, string label, string hover, GUIStyle label_style = null)
+        {
+            Config config = Config.Get();
+            System.Reflection.FieldInfo field = typeof(Config).GetField(configField);
+            if (field != null)
+            {
+                Enum value = (Enum)field.GetValue(config);
+                EditorGUI.BeginChangeCheck();
+                EditorGUILayout.BeginHorizontal();
+                GUILayout.Space(57);
+                GUILayout.Label(new GUIContent(label, hover), GUILayout.ExpandWidth(false));
+                value = EditorGUILayout.EnumPopup(value,GUILayout.ExpandWidth(false));
+                EditorGUILayout.EndHorizontal();
+                if(EditorGUI.EndChangeCheck())
+                {
+                    field.SetValue(config, value);
                     config.save();
                     ThryEditor.repaint();
                 }

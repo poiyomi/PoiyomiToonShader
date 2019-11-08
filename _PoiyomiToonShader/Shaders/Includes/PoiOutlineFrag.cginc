@@ -1,4 +1,5 @@
 float _OutlineRimLightBlend;
+float _OutlineLit;
 float4 frag(v2f i): COLOR
 {
     
@@ -13,8 +14,8 @@ float4 frag(v2f i): COLOR
     fixed4 col = mainTexture;
     float alphaMultiplier = smoothstep(_OutlineFadeDistance.x, _OutlineFadeDistance.y, distance(getCameraPosition(), i.worldPos));
     clip(_LineWidth - 0.001);
-    float _alphaMask_tex_var = UNITY_SAMPLE_TEX2D_SAMPLER(_AlphaMask, _MainTex, TRANSFORM_TEX(i.uv0, _AlphaMask));
-    col = col * 0.00000000001 + tex2D(_OutlineTexture, TRANSFORM_TEX((i.uv0 + (_OutlineTexturePan.xy * _Time.g)), _OutlineTexture));
+    float _alphaMask_tex_var = UNITY_SAMPLE_TEX2D_SAMPLER(_AlphaMask, _MainTex, TRANSFORM_TEX(i.uv0.xy, _AlphaMask));
+    col = col * 0.00000000001 + tex2D(_OutlineTexture, TRANSFORM_TEX((i.uv0.xy + (_OutlineTexturePan.xy * _Time.g)), _OutlineTexture));
     col.a *= albedo.a;
     col.a *= alphaMultiplier;
     
@@ -27,7 +28,7 @@ float4 frag(v2f i): COLOR
     UNITY_BRANCH
     if (_OutlineMode == 1)
     {
-        #ifdef MIRROR
+        #ifdef POI_MIRROR
             applyMirrorTexture();
         #endif
         col.rgb = mainTexture.rgb;
@@ -40,13 +41,21 @@ float4 frag(v2f i): COLOR
     
     
     #ifdef POI_LIGHTING
-        calculateLighting();
+        UNITY_BRANCH
+        if(_OutlineLit)
+        {
+            calculateLighting();
+        }
     #endif
     
     float4 finalColor = col;
     
     #ifdef POI_LIGHTING
-        applyLighting(finalColor);
+        UNITY_BRANCH
+        if(_OutlineLit)
+        {
+            applyLighting(finalColor);
+        }
     #endif
     
     finalColor.rgb += (col.rgb * _OutlineEmission);

@@ -4,12 +4,11 @@
 Material:
   serializedVersion: 6
   m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
   m_Name: Dev
   m_Shader: {fileID: 4800000, guid: 45429b755005c8245b20248fbc150a0a, type: 3}
-  m_ShaderKeywords: _NORMALMAP
+  m_ShaderKeywords: _COLORCOLOR_ON _NORMALMAP
   m_LightmapFlags: 1
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -36,7 +35,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _ClearCoatCubeMap:
-        m_Texture: {fileID: 8900000, guid: 1f79f71b84fc2844bb81e9ae4f5bc384, type: 3}
+        m_Texture: {fileID: 8900000, guid: 40ea18bf7298bd3428adcd1737d4b66e, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _ClearCoatMask:
@@ -189,7 +188,6 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Floats:
     - DSGI: 0
-    - Instancing: 0
     - LightmapFlags: 0
     - _AOStrength: 1
     - _AdditiveOffset: 0
@@ -206,11 +204,11 @@ Material:
     - _CameraAngleMax: 90
     - _CameraAngleMin: 45
     - _ClearCoat: 1
+    - _ClearCoatForceLighting: 0
     - _ClearCoatInvertSmoothness: 0
     - _ClearCoatNormalToUse: 0
     - _ClearCoatSampleWorld: 0
-    - _ClearCoatSmoothness: 0
-    - _Clip: 0.5
+    - _ClearCoatSmoothness: 1
     - _ContinuousDissolve: 0
     - _Cull: 2
     - _DebugCameraData: 0
@@ -245,7 +243,7 @@ Material:
     - _EmissiveScroll_Interval: 20
     - _EmissiveScroll_Velocity: 10
     - _EmissiveScroll_Width: 10
-    - _EnableClearCoat: 0
+    - _EnableClearCoat: 1
     - _EnableDissolve: 0
     - _EnableEmission: 0
     - _EnableEnvironmentalRim: 0
@@ -275,8 +273,10 @@ Material:
     - _GITDEMinEmissionMultiplier: 1
     - _GITDEMinLight: 0
     - _GITDEWorldOrMesh: 0
+    - _IgnoreFog: 0
     - _InvertSmoothness: 0
     - _LightingAOUV: 0
+    - _LightingAdditiveIntensity: 1
     - _LightingIndirectContribution: 0.25
     - _LightingMinLightBrightness: 0
     - _LightingStandardControlsToon: 0
@@ -284,12 +284,14 @@ Material:
     - _LightingType: 1
     - _MainEmissionStrength: 0
     - _MainMinAlpha: 0
+    - _MainVertexColoring: 0
     - _Matcap2Add: 0
     - _Matcap2Border: 0.43
     - _Matcap2Enable: 0
     - _Matcap2Intensity: 1
     - _Matcap2LightMask: 0
     - _Matcap2Multiply: 0
+    - _Matcap2Normal: 1
     - _Matcap2Replace: 0
     - _MatcapAdd: 0
     - _MatcapBorder: 0.43
@@ -297,8 +299,9 @@ Material:
     - _MatcapIntensity: 1
     - _MatcapLightMask: 0
     - _MatcapMultiply: 0
+    - _MatcapNormal: 1
     - _MatcapReplace: 1
-    - _Metallic: 0
+    - _Metallic: 1
     - _Mirror: 0
     - _ModelAngleMax: 90
     - _ModelAngleMin: 45
@@ -307,16 +310,15 @@ Material:
     - _PanoEmission: 0
     - _PanoToggle: 0
     - _ParallaxBias: 0.42
-    - _ParallaxHeightIterations: 1
     - _ParallaxHeightMapEnabled: 0
     - _ParallaxInternalHeightFromAlpha: 0
     - _ParallaxInternalHeightmapMode: 0
     - _ParallaxInternalIterations: 1
     - _ParallaxInternalMapEnabled: 0
     - _ParallaxInternalMaxDepth: 1
-    - _ParallaxInternalMaxFade: 0
+    - _ParallaxInternalMaxFade: 1
     - _ParallaxInternalMinDepth: 0
-    - _ParallaxInternalMinFade: 1
+    - _ParallaxInternalMinFade: 0
     - _ParallaxMap: 0
     - _ParallaxStrength: 0
     - _RimBrighten: 0
@@ -342,7 +344,7 @@ Material:
     - _ShadowMixWidthMod: 0.5
     - _ShadowOffset: 0
     - _ShadowStrength: 0.2
-    - _Smoothness: 0
+    - _Smoothness: 1
     - _SmoothnessFrom: 1
     - _SourceBlend: 5
     - _Spec2Smoothness: 0
@@ -365,68 +367,84 @@ Material:
     - footer_patreon: 0
     - footer_twitter: 0
     - footer_youtube: 0
-    - m_RandomOptions: 0
-    - m_StencilPassOptions: 0
-    - m_bakedLighting: 1
-    - m_debugOptions: 0
-    - m_dissolve: 0
-    - m_emissionOptions: 0
-    - m_end_Alpha: 0
-    - m_end_Angle: 0
+    - m_Special_Effects: 0
     - m_end_Anisotropic: 0
     - m_end_CenterOutEmission: 0
     - m_end_DetailOptions: 0
-    - m_end_Fade: 0
+    - m_end_Lighting: 0
     - m_end_Matcap2: 0
+    - m_end_Metallic: 0
     - m_end_ShadowMix: 0
     - m_end_SpecularToon: 0
+    - m_end_StencilPassOptions: 0
+    - m_end_angularFade: 0
+    - m_end_bakedLighting: 0
     - m_end_blinkingEmissionOptions: 0
     - m_end_clearCoat: 0
+    - m_end_debugOptions: 0
+    - m_end_dissolve: 0
+    - m_end_distanceFade: 0
+    - m_end_emissionOptions: 0
+    - m_end_flipBook: 0
     - m_end_glowInDarkEmissionOptions: 0
     - m_end_lightingAdvanced: 0
     - m_end_lightingBeta: 0
     - m_end_lightingStandard: 0
     - m_end_manualFlipbookControl: 0
+    - m_end_matcap: 0
+    - m_end_mirrorOptions: 0
+    - m_end_panosphereOptions: 0
+    - m_end_parallaxAdvanced: 0
     - m_end_parallaxHeightmap: 0
     - m_end_parallaxInternal: 0
     - m_end_pointToPoint: 0
     - m_end_reflectionRim: 0
+    - m_end_rimLightOptions: 0
     - m_end_rimWidthNoise: 0
     - m_end_scrollingEmissionOptions: 0
-    - m_fakeLightingOptions: 0
-    - m_flipBook: 0
-    - m_mainOptions: 0
-    - m_matcapOptions: 0
-    - m_metallicOptions: 0
-    - m_mirrorOptions: 0
-    - m_panosphereOptions: 0
+    - m_end_specular: 0
+    - m_end_subsurface: 0
+    - m_lightingOptions: 1
+    - m_mainOptions: 1
     - m_parallaxMap: 0
-    - m_renderingOptions: 1
-    - m_rimLightOptions: 0
-    - m_specularHighlightsOptions: 0
-    - m_start_Alpha: 0
-    - m_start_Angle: 0
+    - m_reflectionOptions: 1
+    - m_renderingOptions: 0
     - m_start_Anisotropic: 0
     - m_start_CenterOutEmission: 0
     - m_start_DetailOptions: 0
-    - m_start_Fade: 0
+    - m_start_Lighting: 1
     - m_start_Matcap2: 0
+    - m_start_Metallic: 1
     - m_start_ShadowMix: 0
     - m_start_SpecularToon: 0
+    - m_start_StencilPassOptions: 0
+    - m_start_angularFade: 0
+    - m_start_bakedLighting: 0
     - m_start_blinkingEmissionOptions: 0
-    - m_start_clearCoat: 0
+    - m_start_clearCoat: 1
+    - m_start_debugOptions: 0
+    - m_start_dissolve: 0
+    - m_start_distanceFade: 0
+    - m_start_emissionOptions: 0
+    - m_start_flipBook: 0
     - m_start_glowInDarkEmissionOptions: 0
     - m_start_lightingAdvanced: 0
     - m_start_lightingBeta: 0
     - m_start_lightingStandard: 0
     - m_start_manualFlipbookControl: 0
+    - m_start_matcap: 0
+    - m_start_mirrorOptions: 0
+    - m_start_panosphereOptions: 0
+    - m_start_parallaxAdvanced: 0
     - m_start_parallaxHeightmap: 0
     - m_start_parallaxInternal: 0
     - m_start_pointToPoint: 0
     - m_start_reflectionRim: 0
+    - m_start_rimLightOptions: 0
     - m_start_rimWidthNoise: 0
     - m_start_scrollingEmissionOptions: 0
-    - m_subsurfaceOptions: 0
+    - m_start_specular: 0
+    - m_start_subsurface: 0
     - shader_is_using_thry_editor: 69.12
     - shader_master_label: 0
     - shader_presets: 0
@@ -437,14 +455,16 @@ Material:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _DetailTexturePan: {r: 0, g: 0, b: 0, a: 0}
     - _DetailTint: {r: 1, g: 1, b: 1, a: 1}
+    - _DissolveDetailPan: {r: 0, g: 0, b: 0, a: 0}
     - _DissolveEdgeColor: {r: 1, g: 1, b: 1, a: 1}
     - _DissolveEndPoint: {r: 0, g: 1, b: 0, a: 0}
-    - _DissolvePan: {r: 0, g: 0, b: 0, a: 0}
+    - _DissolveNoisePan: {r: 0, g: 0, b: 0, a: 0}
     - _DissolveStartPoint: {r: 0, g: -1, b: 0, a: 0}
     - _DissolveTextureColor: {r: 1, g: 1, b: 1, a: 1}
     - _DissolveToPanning: {r: 0, g: 0, b: 0, a: 0}
     - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
-    - _EmissionPan: {r: 0, g: 0, b: 0, a: 0}
+    - _EmissionMapPan: {r: 0, g: 0, b: 0, a: 0}
+    - _EmissionMaskPan: {r: 0, g: 0, b: 0, a: 0}
     - _EmissiveScroll_Direction: {r: 0, g: -10, b: 0, a: 0}
     - _FlipbookColor: {r: 1, g: 1, b: 1, a: 1}
     - _FlipbookScaleOffset: {r: 1, g: 1, b: 0, a: 0}

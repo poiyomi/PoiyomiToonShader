@@ -1,6 +1,8 @@
 #ifndef POI_DATA
     #define POI_DATA
     
+    float _ParallaxBias;
+
     void calculateAttenuation(v2f i)
     {
         UNITY_LIGHT_ATTENUATION(attenuation, i, i.worldPos.xyz)
@@ -39,15 +41,16 @@
     
     void InitializeMeshData(inout v2f i)
     {
-        poiMesh.vertexNormal = i.normal;
-        poiMesh.bitangent = i.bitangent;
-        poiMesh.tangent = i.tangent;
+        poiMesh.normals[0] = i.normal;
+        poiMesh.bitangent = CreateBinormal(i.normal, i.tangent.xyz, i.tangent.w);
+        poiMesh.tangent = i.tangent.xyz;
         poiMesh.worldPos = i.worldPos;
         poiMesh.localPos = i.localPos;
-        poiMesh.uv[0] = i.uv0;
-        poiMesh.uv[1] = i.uv1;
-        poiMesh.uv[2] = i.uv2;
-        poiMesh.uv[3] = i.uv3;
+        poiMesh.uv[0] = i.uv0.xy;
+        poiMesh.uv[1] = i.uv0.zw;
+        poiMesh.uv[2] = i.uv1.xy;
+        poiMesh.uv[3] = i.uv1.zw;
+        poiMesh.vertexColor = i.vertexColor;
         #if defined(LIGHTMAP_ON) || defined(DYNAMICLIGHTMAP_ON)
             poiMesh.lightmapUV = i.lightmapUV;
         #endif
@@ -62,26 +65,20 @@
         poiCam.distanceToModel = distance(poiMesh.modelPos, poiCam.worldPos);
         poiCam.distanceToVert = distance(poiMesh.worldPos, poiCam.worldPos);
         
-        #ifdef _PARALLAXMAP
-            float3x3 objectToTangent = float3x3(
-                i.localTangent.xyz,
-                cross(poiMesh.vertexNormal, i.localTangent.xyz) * i.localTangent.w,
-                poiMesh.vertexNormal
-            );
-            poiCam.tangentViewDir = normalize(mul(objectToTangent, ObjSpaceViewDir(i.localPos)));
-        #endif
+        poiCam.tangentViewDir = normalize(i.tangentViewDir);
+        poiCam.tangentViewDir.xy /= (poiCam.tangentViewDir.z + _ParallaxBias);
     }
     
     void calculateTangentData()
     {
-        poiTData.tangentTransform = float3x3(poiMesh.tangent, poiMesh.bitangent, poiMesh.vertexNormal);
-        poiTData.tangentToWorld = transpose(float3x3(poiMesh.tangent, poiMesh.bitangent, poiMesh.vertexNormal));
+        poiTData.tangentTransform = float3x3(poiMesh.tangent, poiMesh.bitangent, poiMesh.normals[0]);
+        poiTData.tangentToWorld = transpose(float3x3(poiMesh.tangent, poiMesh.bitangent, poiMesh.normals[0]));
     }
     
     void InitData(inout v2f i)
     {
         UNITY_SETUP_INSTANCE_ID(i);
-
+        
         calculateAttenuation(i);
         calculateLightColor();
         #if defined(VERTEXLIGHT_ON)
@@ -99,8 +96,8 @@
     void CalculateReflectionData()
     {
         #if defined(_METALLICGLOSSMAP) || defined(_COLORCOLOR_ON)
-            poiCam.reflectionDir = reflect(-poiCam.viewDir, poiMesh.fragmentNormal);
-            poiCam.vertexReflectionDir = reflect(-poiCam.viewDir, poiMesh.vertexNormal);
+            poiCam.reflectionDir = reflect(-poiCam.viewDir, poiMesh.normals[1]);
+            poiCam.vertexReflectionDir = reflect(-poiCam.viewDir, poiMesh.normals[0]);
         #endif
     }
 #endif

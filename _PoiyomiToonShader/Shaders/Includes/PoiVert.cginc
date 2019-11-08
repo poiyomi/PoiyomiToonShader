@@ -27,27 +27,24 @@
         UNITY_TRANSFER_INSTANCE_ID(v, o);
         UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
         
-        #ifdef MIRROR
+        #ifdef POI_MIRROR
             applyMirrorRenderVert(v.vertex);
         #endif
-        
         TANGENT_SPACE_ROTATION;
         o.localPos = v.vertex;
+        //o.localPos.x *= -1;
+        //o.localPos.xz += sin(o.localPos.y * 100 + _Time.y * 5) * .0025;
         o.pos = UnityObjectToClipPos(o.localPos);
-        o.screenPos = ComputeScreenPos(o.pos);
+        //o.screenPos = ComputeScreenPos(o.pos);
         o.worldPos = mul(unity_ObjectToWorld, o.localPos);
-        o.uv0 = v.uv0.xy;
-        o.uv1 = v.uv1.xy;
-        o.uv2 = v.uv2.xy;
-        o.uv3 = v.uv3.xy;
+        o.uv0.xy = v.uv0.xy;
+        o.uv0.zw = v.uv1.xy;
+        o.uv1.xy = v.uv2.xy;
+        o.uv1.zw = v.uv3.xy;
+        o.vertexColor = v.color;
         o.normal = UnityObjectToWorldNormal(v.normal);
-        #ifdef POI_PARALLAX
-            o.localTangent = v.tangent;
-        #endif
-        o.tangent = normalize(mul(unity_ObjectToWorld, float4(v.tangent.xyz, 0.0)).xyz);
-        o.bitangent = normalize(cross(o.normal, o.tangent) * v.tangent.w);
         o.modelPos = mul(unity_ObjectToWorld, float4(0, 0, 0, 1));
-        
+        o.tangent = float4(UnityObjectToWorldDir(v.tangent.xyz), v.tangent.w);
         #ifdef POI_TOUCH
             bulgyWolgy(o);
         #endif
@@ -64,9 +61,21 @@
             o.lightmapUV.zw = v.uv2.xy * unity_DynamicLightmapST.xy + unity_DynamicLightmapST.zw;
         #endif
         
-        UNITY_TRANSFER_SHADOW(o, o.uv0);
+        UNITY_TRANSFER_SHADOW(o, o.uv0.xy);
         UNITY_TRANSFER_FOG(o, o.pos);
         ComputeVertexLightColor(o);
+        
+        #if defined(POI_PARALLAX)
+            v.tangent.xyz = normalize(v.tangent.xyz);
+            v.normal = normalize(v.normal);
+            float3x3 objectToTangent = float3x3(
+                v.tangent.xyz,
+                cross(v.normal, v.tangent.xyz) * v.tangent.w,
+                v.normal
+            );
+            o.tangentViewDir = mul(objectToTangent, ObjSpaceViewDir(v.vertex));
+        #endif
+        
         return o;
     }
 #endif

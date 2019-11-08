@@ -6,6 +6,20 @@ bool IsInMirror()
     return unity_CameraProjection[2][0] != 0.f || unity_CameraProjection[2][1] != 0.f;
 }
 
+float3 BoxProjection(float3 direction, float3 position, float4 cubemapPosition, float3 boxMin, float3 boxMax)
+{
+    #if UNITY_SPECCUBE_BOX_PROJECTION
+        UNITY_BRANCH
+        if (cubemapPosition.w > 0)
+        {
+            float3 factors = ((direction > 0 ? boxMax: boxMin) - position) / direction;
+            float scalar = min(min(factors.x, factors.y), factors.z);
+            direction = direction * scalar + (position - cubemapPosition);
+        }
+    #endif
+    return direction;
+}
+
 // Camera
 float3 getCameraPosition()
 {

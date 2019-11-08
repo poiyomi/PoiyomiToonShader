@@ -11,6 +11,7 @@
     float _MatcapAdd;
     float _MatcapEnable;
     float _MatcapLightMask;
+    uint _MatcapNormal;
     
     UNITY_DECLARE_TEX2D_NOSAMPLER(_Matcap2);
     UNITY_DECLARE_TEX2D_NOSAMPLER(_Matcap2Mask); float4 _Matcap2Mask_ST;
@@ -22,6 +23,7 @@
     float _Matcap2Add;
     float _Matcap2Enable;
     float _Matcap2LightMask;
+    uint _Matcap2Normal;
     
     float3 matcap;
     float matcapMask;
@@ -37,7 +39,7 @@
         half3 worldViewRight = normalize(cross(poiCam.viewDir, worldViewUp));
         
         // Matcap 1
-        half2 matcapUV = half2(dot(worldViewRight, poiMesh.fragmentNormal), dot(worldViewUp, poiMesh.fragmentNormal)) * _MatcapBorder + 0.5;
+        half2 matcapUV = half2(dot(worldViewRight, poiMesh.normals[_MatcapNormal]), dot(worldViewUp, poiMesh.normals[_MatcapNormal])) * _MatcapBorder + 0.5;
         matcap = UNITY_SAMPLE_TEX2D_SAMPLER(_Matcap, _MainTex, matcapUV) * _MatcapColor;
         matcap.rgb *= _MatcapIntensity;
         matcapMask = UNITY_SAMPLE_TEX2D_SAMPLER(_MatcapMask, _MainTex, TRANSFORM_TEX(poiMesh.uv[0], _MatcapMask));
@@ -52,7 +54,7 @@
         UNITY_BRANCH
         if (_Matcap2Enable)
         {
-            half2 matcapUV2 = half2(dot(worldViewRight, poiMesh.fragmentNormal), dot(worldViewUp, poiMesh.fragmentNormal)) * _Matcap2Border + 0.5;
+            half2 matcapUV2 = half2(dot(worldViewRight, poiMesh.normals[_Matcap2Normal]), dot(worldViewUp, poiMesh.normals[_Matcap2Normal])) * _Matcap2Border + 0.5;
             matcap2 = UNITY_SAMPLE_TEX2D_SAMPLER(_Matcap2, _MainTex, matcapUV2) * _Matcap2Color;
             matcap2 *= _Matcap2Intensity;
             matcap2Mask = UNITY_SAMPLE_TEX2D_SAMPLER(_Matcap2Mask, _MainTex, TRANSFORM_TEX(poiMesh.uv[0], _Matcap2Mask));

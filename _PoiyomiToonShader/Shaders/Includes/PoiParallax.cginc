@@ -2,9 +2,7 @@
     #define POI_PARALLAX
     
     sampler2D _ParallaxHeightMap; float4 _ParallaxHeightMap_ST;
-    float _ParallaxHeightIterations;
     float _ParallaxStrength;
-    float _ParallaxBias;
     float _ParallaxHeightMapEnabled;
     
     //Internal
@@ -48,7 +46,7 @@
         float prevStepHeight = stepHeight;
         float prevSurfaceHeight = surfaceHeight;
         
-        for (int i = 1; i < _ParallaxHeightIterations && stepHeight > surfaceHeight; i ++)
+        for (int i = 1; i < 10 && stepHeight > surfaceHeight; i ++)
         {
             prevUVOffset = uvOffset;
             prevStepHeight = stepHeight;
@@ -72,8 +70,6 @@
         UNITY_BRANCH
         if (_ParallaxHeightMapEnabled)
         {
-            poiCam.tangentViewDir = normalize(poiCam.tangentViewDir);
-            poiCam.tangentViewDir.xy /= (poiCam.tangentViewDir.z + _ParallaxBias);
             poiMesh.uv[0] += ParallaxRaymarching(poiCam.tangentViewDir.xy);
         }
     }

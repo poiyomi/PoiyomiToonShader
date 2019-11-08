@@ -15,10 +15,24 @@ namespace Thry
     public class GuiHelper
     {
 
-        public static void drawConfigTextureProperty(Rect position, MaterialProperty prop, GUIContent label, MaterialEditor editor, bool scaleOffset)
+        public static void drawConfigTextureProperty(Rect position, MaterialProperty prop, GUIContent label, MaterialEditor editor, bool scaleOffset, bool panning=false)
         {
-            if (Config.Get().useBigTextures) drawBigTextureProperty(position, prop, label, editor, scaleOffset);
-            else drawSmallTextureProperty(position, prop, label, editor, scaleOffset);
+            switch (Config.Get().default_texture_type)
+            {
+                case TextureDisplayType.small:
+                    drawSmallTextureProperty(position, prop, label, editor, scaleOffset,panning);
+                    break;
+                case TextureDisplayType.big:
+                    if(panning==false)
+                        drawBigTextureProperty(position, prop, label, editor, scaleOffset);
+                    else
+                        drawStylizedBigTextureProperty(position, prop, label, editor, scaleOffset,panning);
+                    break;
+
+                case TextureDisplayType.stylized_big:
+                    drawStylizedBigTextureProperty(position, prop, label, editor, scaleOffset,panning);
+                    break;
+            }
         }
 
         public static void drawSmallTextureProperty(Rect position, MaterialProperty prop, GUIContent label, MaterialEditor editor, bool scaleOffset, bool has_panning_field = false)
@@ -40,7 +54,7 @@ namespace Thry
                     {
                         ThryEditor.ShaderProperty pan_property = ThryEditor.currentlyDrawing.propertyDictionary[ThryEditor.currentlyDrawing.currentProperty.options.reference_property];
                         EditorGUI.indentLevel *= 2;
-                        ThryEditor.currentlyDrawing.editor.ShaderProperty(GUILayoutUtility.GetRect(pan_property.content, Styles.Get().vectorPropertyStyle), pan_property.materialProperty, pan_property.content);
+                        ThryEditor.currentlyDrawing.editor.ShaderProperty(pan_property.materialProperty, pan_property.content);
                         EditorGUI.indentLevel /= 2;
                     }
                 }
@@ -57,7 +71,111 @@ namespace Thry
         public static void drawBigTextureProperty(Rect position, MaterialProperty prop, GUIContent label, MaterialEditor editor, bool scaleOffset)
         {
             GUILayoutUtility.GetRect(label, Styles.Get().bigTextureStyle);
+            float defaultLabelWidth = EditorGUIUtility.labelWidth;
+            float defaultFieldWidth = EditorGUIUtility.fieldWidth;
+            editor.SetDefaultGUIWidths();
             editor.TextureProperty(position, prop, label.text, label.tooltip, scaleOffset);
+            EditorGUIUtility.labelWidth = defaultLabelWidth;
+            EditorGUIUtility.fieldWidth = defaultFieldWidth;
+            DrawingData.lastGuiObjectRect = position;
+        }
+
+        static int texturePickerWindow  = -1;
+        public static void drawStylizedBigTextureProperty(Rect position, MaterialProperty prop, GUIContent label, MaterialEditor editor, bool scaleOffset, bool panning=false)
+        {
+            bool is_displaying_panning = scaleOffset && panning && ThryEditor.currentlyDrawing.currentProperty.options.reference_property != null;
+
+            position.x += (EditorGUI.indentLevel) * 15;
+            position.width -= (EditorGUI.indentLevel) * 15;
+            Rect rect = GUILayoutUtility.GetRect(label, Styles.Get().bigTextureStyle);
+            rect.x += (EditorGUI.indentLevel) * 15;
+            rect.width -= (EditorGUI.indentLevel) * 15;
+            Rect border = new Rect(rect);
+            border.position = new Vector2(border.x, border.y-position.height);
+            border.height += position.height;
+            if (is_displaying_panning)
+                border.height += 25;
+
+            //background
+            GUI.DrawTexture(border, Styles.white_rounded_texture, ScaleMode.StretchToFill, true);
+            Rect quad = new Rect(border);
+            quad.width = quad.height/2;
+            GUI.DrawTextureWithTexCoords(quad, Styles.white_rounded_texture, new Rect(0, 0, 0.5f, 1), true);
+            quad.x += border.width - quad.width;
+            GUI.DrawTextureWithTexCoords(quad, Styles.white_rounded_texture, new Rect(0.5f, 0, 0.5f, 1), true);
+
+            quad.width = border.height - 4;
+            quad.height = quad.width;
+            quad.x = border.x + border.width - quad.width - 1;
+            quad.y += 2;
+
+
+            Rect preview_rect_border = new Rect(position);
+            preview_rect_border.height = rect.height + position.height-6;
+            preview_rect_border.width = preview_rect_border.height;
+            preview_rect_border.y += 3;
+            preview_rect_border.x += position.width - preview_rect_border.width - 3;
+            Rect preview_rect = new Rect(preview_rect_border);
+            preview_rect.height -= 6;
+            preview_rect.width -= 6;
+            preview_rect.x += 3;
+            preview_rect.y += 3;
+            if (prop.hasMixedValue)
+            {
+                Rect mixedRect = new Rect(preview_rect);
+                mixedRect.y -= 5;
+                mixedRect.x += mixedRect.width / 2 -4;
+                GUI.Label(mixedRect, "_");
+            }else if (prop.textureValue != null)
+            {
+                GUI.DrawTexture(preview_rect, prop.textureValue);
+            }
+            GUI.DrawTexture(preview_rect_border, Texture2D.whiteTexture, ScaleMode.StretchToFill, false, 0, Color.grey, 3, 5);
+
+            //selection button and pinging
+            Rect select_rect = new Rect(preview_rect);
+            select_rect.height = 12;
+            select_rect.y += preview_rect.height - 12;
+            if(Event.current.commandName== "ObjectSelectorUpdated" && EditorGUIUtility.GetObjectPickerControlID()== texturePickerWindow)
+            {
+                prop.textureValue = (Texture)EditorGUIUtility.GetObjectPickerObject();
+                ThryEditor.repaint();
+            }
+            if (Event.current.commandName== "ObjectSelectorClosed" && EditorGUIUtility.GetObjectPickerControlID()== texturePickerWindow)
+            {
+                texturePickerWindow = -1;
+            }
+            if(GUI.Button(select_rect, "Select", EditorStyles.miniButton))
+            {
+                EditorGUIUtility.ShowObjectPicker<Texture>(prop.textureValue,false,"",0);
+                texturePickerWindow = EditorGUIUtility.GetObjectPickerControlID();
+            }
+            else if (Event.current.type == EventType.MouseDown && preview_rect.Contains(Event.current.mousePosition))
+            {
+                EditorGUIUtility.PingObject(prop.textureValue);
+            }
+
+            //scale offset rect
+            if (scaleOffset)
+            {
+                Rect scale_offset_rect = new Rect(position);
+                scale_offset_rect.y += 37;
+                scale_offset_rect.width -= 2 + preview_rect.width + 10;
+                editor.TextureScaleOffsetProperty(scale_offset_rect, prop);
+                if (is_displaying_panning)
+                {
+                    ThryEditor.ShaderProperty pan_property = ThryEditor.currentlyDrawing.propertyDictionary[ThryEditor.currentlyDrawing.currentProperty.options.reference_property];
+                    EditorGUI.indentLevel *= 2;
+                    ThryEditor.currentlyDrawing.editor.ShaderProperty(pan_property.materialProperty, pan_property.content);
+                    EditorGUI.indentLevel /= 2;
+                }
+            }
+
+            Rect label_rect = new Rect(position);
+            label_rect.x += 2;
+            label_rect.y += 2;
+            GUI.Label(label_rect, label);
+
             DrawingData.lastGuiObjectRect = position;
         }
 
@@ -228,6 +346,17 @@ namespace Thry
             EditorGUILayout.EndHorizontal();
         }
 
+        public static void DrawLocaleSelection(GUIContent label, string[] locales, int selected)
+        {
+            EditorGUI.BeginChangeCheck();
+            selected = EditorGUILayout.Popup(label.text, selected, locales);
+            if(EditorGUI.EndChangeCheck())
+            {
+                ThryEditor.currentlyDrawing.propertyDictionary[ThryEditor.PROPERTY_NAME_LOCALE].materialProperty.floatValue = selected;
+                ThryEditor.reload();
+            }
+        }
+
         //draw single footer
         private static void drawFooter(ButtonData data)
         {
@@ -243,33 +372,36 @@ namespace Thry
         {
             GUIContent content;
             Rect cursorRect;
-            if (button.texture == null)
+            if (button != null)
             {
-                content = new GUIContent(button.text, button.hover);
-                if (default_height != -1)
+                if (button.texture == null)
                 {
-                    if (GUILayout.Button(content, GUILayout.ExpandWidth(false), GUILayout.Height(default_height)))
-                        button.action.Perform();
+                    content = new GUIContent(button.text, button.hover);
+                    if (default_height != -1)
+                    {
+                        if (GUILayout.Button(content, GUILayout.ExpandWidth(false), GUILayout.Height(default_height)))
+                            button.action.Perform();
+                    }
+                    else
+                    {
+                        if (GUILayout.Button(content, GUILayout.ExpandWidth(false)))
+                            button.action.Perform();
+                    }
+                    cursorRect = GUILayoutUtility.GetLastRect();
                 }
                 else
                 {
-                    if (GUILayout.Button(content, GUILayout.ExpandWidth(false)))
+                    GUILayout.Space(4);
+                    content = new GUIContent(button.texture.GetTextureFromName(), button.hover);
+                    int height = (button.texture.height == 128 && default_height != -1) ? default_height : button.texture.height;
+                    int width = (int)((float)button.texture.loaded_texture.width / button.texture.loaded_texture.height * height);
+                    if (GUILayout.Button(new GUIContent(button.texture.loaded_texture, button.hover), new GUIStyle(), GUILayout.MaxWidth(width), GUILayout.Height(height)))
                         button.action.Perform();
+                    cursorRect = GUILayoutUtility.GetLastRect();
+                    GUILayout.Space(4);
                 }
-                cursorRect = GUILayoutUtility.GetLastRect();
+                EditorGUIUtility.AddCursorRect(cursorRect, MouseCursor.Link);
             }
-            else
-            {
-                GUILayout.Space(4);
-                content = new GUIContent(button.texture.GetTextureFromName(), button.hover);
-                int height = (button.texture.height == 128 && default_height != -1) ? default_height : button.texture.height;
-                int width = (int)((float)button.texture.loaded_texture.width / button.texture.loaded_texture.height * height);
-                if (GUILayout.Button(new GUIContent(button.texture.loaded_texture, button.hover), new GUIStyle(), GUILayout.MaxWidth(width), GUILayout.Height(height)))
-                    button.action.Perform();
-                cursorRect = GUILayoutUtility.GetLastRect();
-                GUILayout.Space(4);
-            }
-            EditorGUIUtility.AddCursorRect(cursorRect, MouseCursor.Link);
         }
 
         public static void DrawHeader(ref bool enabled, ref bool options, GUIContent name)

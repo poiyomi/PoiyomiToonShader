@@ -1,4 +1,6 @@
 #ifndef POICLUDES
+    // Upgrade NOTE: excluded shader from DX11 because it uses wrong array syntax (type[size] name)
+    #pragma exclude_renderers d3d11
     #define POICLUDES
     
     UNITY_DECLARE_TEX2D(_MainTex); float4 _MainTex_ST; float4 _MainTex_TexelSize;
@@ -22,31 +24,27 @@
     struct v2f
     {
         float4 pos: SV_POSITION;
-        float2 uv0: TEXCOORD0;
-        float2 uv1: TEXCOORD1;
-        float2 uv2: TEXCOORD2;
-        float2 uv3: TEXCOORD3;
-        float3 normal: TEXCOORD4;
-        float3 tangent: TEXCOORD5;
-        #ifdef _PARALLAXMAP
-            float4 localTangent: TEXCOORD6;
-        #endif
-        float3 bitangent: TEXCOORD7;
-        float4 worldPos: TEXCOORD8;
-        float4 localPos: TEXCOORD9;
-        float4 screenPos: TEXCOORD10;
+        float4 uv0: TEXCOORD1;
+        float4 uv1: TEXCOORD2;
+        float3 normal: TEXCOORD3;
+        float3 tangentViewDir: TEXCOORD4;
+        float4 tangent: TEXCOORD5;
+        float4 worldPos: TEXCOORD6;
+        float4 localPos: TEXCOORD7;
+        //float4 screenPos: TEXCOORD8;
         #if defined(LIGHTMAP_ON) || defined(DYNAMICLIGHTMAP_ON)
-            float4 lightmapUV: TEXCOORD11;
+            float4 lightmapUV: TEXCOORD8;
         #endif
-        float3 modelPos: TEXCOORD12;
-        float angleAlpha: TEXCOORD13;
+        float3 modelPos: TEXCOORD9;
+        float angleAlpha: TEXCOORD10;
         UNITY_VERTEX_INPUT_INSTANCE_ID
         UNITY_VERTEX_OUTPUT_STEREO
-        UNITY_SHADOW_COORDS(14)
-        UNITY_FOG_COORDS(15)
         #if defined(VERTEXLIGHT_ON)
-            float3 vertexLightColor: TEXCOORD16;
+            float3 vertexLightColor: TEXCOORD11;
         #endif
+        float4 vertexColor: TEXCOORD12;
+        UNITY_SHADOW_COORDS(13)
+        UNITY_FOG_COORDS(14)
     };
     
     #ifdef OUTLINE
@@ -55,7 +53,6 @@
         float4 _LineColor;
         sampler2D _OutlineTexture; float4 _OutlineTexture_ST;
         float4 _OutlineTexturePan;
-        
         float4 _OutlineFadeDistance;
         float4 _OutlineGlobalPan;
     #endif
@@ -98,8 +95,7 @@
     
     struct PoiMesh
     {
-        float3 vertexNormal;
-        float3 fragmentNormal;
+        float3 normals[2];
         float3 tangent;
         float3 bitangent;
         float3 localPos;
@@ -107,6 +103,7 @@
         float3 modelPos;
         float3 tangentSpaceNormal;
         float2 uv[4];
+        float4 vertexColor;
         #if defined(LIGHTMAP_ON) || defined(DYNAMICLIGHTMAP_ON)
             float4 lightmapUV;
         #endif
@@ -148,7 +145,7 @@
     float3 finalEmission;
     float4 mainTexture;
     float4 albedo;
-
+    
     #define pi float(3.14159265359)
     
 #endif
