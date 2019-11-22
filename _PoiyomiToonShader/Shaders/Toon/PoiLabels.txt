@@ -1,15 +1,17 @@
 m_mainOptions:=Main--{button_right:{text:Tutorial,action:{type:URL,data:https://youtu.be/FX3Uvcj35Rk},hover:YouTube}}
-_BumpMap:=Normal Map--{reference_property:_MainNormalPan}
-_DetailTex:=Detail Texture--{reference_property:_DetailTexturePan}
-_DetailNormalMap:=Detail Normal--{reference_property:_MainDetailNormalPan}
+_BumpMap:=Normal Map--{reference_properties:[_MainNormalPan]}
+_VertexManipulationHeightMask:=Height Map--{reference_properties:[_VertexManipulationHeightPan]}
+_DetailTex:=Detail Texture--{reference_properties:[_DetailTexturePan]}
+_DetailNormalMap:=Detail Normal--{reference_properties:[_MainDetailNormalPan]}
+_BackFaceTexture:= Texture--{reference_properties:[_BackFacePanning, _BackFaceTextureUV]}
 
 m_lightingOptions:=Lighting
 m_start_Lighting:=Light & Shadow--{button_right:{text:Tutorial,action:{type:URL,data:https://youtu.be/2B-EJutVjs8},hover:YouTube}}
-_ToonRamp:=Lighting Ramp--{texture:{width:512,height:1,filterMode:Bilinear,wrapMode:Clamp},force_texture_options:true}
+_ToonRamp:=Lighting Ramp--{texture:{width:512,height:4,filterMode:Bilinear,wrapMode:Clamp},force_texture_options:true}
 m_start_subsurface:=Subsurface Scattering--{button_right:{text:Tutorial,action:{type:URL,data:https://youtu.be/hs1bnnPmDFc},hover:YouTube}}
 m_start_rimLightOptions:=Rim Lighting--{button_right:{text:Tutorial,action:{type:URL,data:https://youtu.be/JNxzcRY_BZ8},hover:YouTube}}
-_RimTex:=Rim Texture--{reference_property:_RimTexPanSpeed}
-_RimWidthNoiseTexture:=Rim Width Noise--{reference_property:_RimWidthNoisePan}
+_RimTex:=Rim Texture--{reference_properties:[_RimTexPanSpeed]}
+_RimWidthNoiseTexture:=Rim Width Noise--{reference_properties:[_RimWidthNoisePan]}
 m_start_bakedLighting:=Baked Lighting
 
 m_reflectionOptions:=Reflections
@@ -21,13 +23,15 @@ m_start_specular:=Specular Reflections--{button_right:{text:Tutorial,action:{typ
 m_outlineOptions:=Outlines
 
 m_start_emissionOptions:=Emission / Glow--{button_right:{text:Tutorial,action:{type:URL,data:https://youtu.be/iqk23gtwkz0},hover:YouTube}}
-_EmissionMap:=Emission Map--{reference_property:_EmissionMapPan}
-_EmissionMask:=Emission Mask--{reference_property:_EmissionMaskPan}
+_EmissionMap:=Emission Map--{texture:{width:1024,height:4,filterMode:Bilinear,wrapMode:Repeat},reference_properties:[_EmissionMapPan], force_texture_options:true}
+_EmissionMask:=Emission Mask--{reference_properties:[_EmissionMaskPan]}
+_EmissionMap1:=Emission Map--{texture:{width:1024,height:4,filterMode:Bilinear,wrapMode:Repeat},reference_properties:[_EmissionMapPan1], force_texture_options:true}
+_EmissionMask1:=Emission Mask--{reference_properties:[_EmissionMaskPan1]}
 m_start_flipBook:=Flipbook--{button_right:{text:Tutorial,action:{type:URL,data:https://youtu.be/NrA18CITEVs},hover:YouTube}}
 m_start_dissolve:=Dissolve--{button_right:{text:Tutorial,action:{type:URL,data:https://youtu.be/abTejmV4yGU},hover:YouTube}}
-_DissolveToTexture:=Dissolved Texture--{reference_property:_DissolveToPanning}
-_DissolveNoiseTexture:=Dissolve Noise--{reference_property:_DissolveNoisePan}
-_DissolveDetailNoise:=Dissolve Detail Noise--{reference_property:_DissolveDetailPan}
+_DissolveToTexture:=Dissolved Texture--{reference_properties:[_DissolveToPanning]}
+_DissolveNoiseTexture:=Dissolve Noise--{reference_properties:[_DissolveNoisePan]}
+_DissolveDetailNoise:=Dissolve Detail Noise--{reference_properties:[_DissolveDetailPan]}
 m_start_panosphereOptions:=Panosphere / Cubemaps--{button_right:{text:Tutorial,action:{type:URL,data:https://youtu.be/wyCY6qE0_Vg},hover:YouTube}}
 m_start_mirrorOptions:=Mirror--{button_right:{text:Tutorial,action:{type:URL,data:https://youtu.be/ptnVKyuijO4},hover:YouTube}}
 m_start_distanceFade:=Distance Fade

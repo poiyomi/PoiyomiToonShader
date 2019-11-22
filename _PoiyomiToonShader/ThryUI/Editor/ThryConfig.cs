@@ -13,7 +13,7 @@ namespace Thry
     {
         // consts
         private const string PATH_CONFIG_FILE = "Thry/Config.json";
-        private const string VERSION = "0.26";
+        private const string VERSION = "1.0.1";
 
         // static
         private static Config config;
@@ -37,7 +37,7 @@ namespace Thry
         private static Config LoadConfig()
         {
             if (File.Exists(PATH_CONFIG_FILE))
-                return JsonUtility.FromJson<Config>(Helper.ReadFileIntoString(PATH_CONFIG_FILE));
+                return JsonUtility.FromJson<Config>(FileHelper.ReadFileIntoString(PATH_CONFIG_FILE));
             new Config().save();
             return new Config();
         }
@@ -53,6 +53,8 @@ namespace Thry
         public bool showRenderQueue = true;
         public bool renderQueueShaders = true;
 
+        public string locale = "English";
+
         public string gradient_name = "gradient_<hash>.png";
 
         public bool showImportPopup = false;
@@ -65,7 +67,7 @@ namespace Thry
 
         public void save()
         {
-            Helper.WriteStringToFile(JsonUtility.ToJson(this), PATH_CONFIG_FILE);
+            FileHelper.WriteStringToFile(JsonUtility.ToJson(this), PATH_CONFIG_FILE);
         }
     }
 }

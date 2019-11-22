@@ -3,9 +3,9 @@
     
     samplerCUBE _CubeMap;
     float _SampleWorld;
-    sampler2D _MetallicMask; float4 _MetallicMask_ST;
+    UNITY_DECLARE_TEX2D_NOSAMPLER(_MetallicMask); float4 _MetallicMask_ST;
+    UNITY_DECLARE_TEX2D_NOSAMPLER(_SmoothnessMask); float4 _SmoothnessMask_ST;
     float _Metallic;
-    sampler2D _SmoothnessMask; float4 _SmoothnessMask_ST;
     float _InvertSmoothness;
     float _Smoothness;
     float _EnableMetallic;
@@ -19,8 +19,8 @@
     
     void CalculateEnvironmentalReflections()
     {
-        metalicMap = tex2D(_MetallicMask, TRANSFORM_TEX(poiMesh.uv[0], _MetallicMask)) * _Metallic;
-        float smoothnessMap = (tex2D(_SmoothnessMask, TRANSFORM_TEX(poiMesh.uv[0], _SmoothnessMask)));
+        metalicMap = UNITY_SAMPLE_TEX2D_SAMPLER(_MetallicMask, _MainTex, TRANSFORM_TEX(poiMesh.uv[0], _MetallicMask)) * _Metallic;
+        float smoothnessMap = (UNITY_SAMPLE_TEX2D_SAMPLER(_SmoothnessMask, _MainTex, TRANSFORM_TEX(poiMesh.uv[0], _SmoothnessMask)));
         if (_InvertSmoothness == 1)
         {
             smoothnessMap = 1 - smoothnessMap;
@@ -32,7 +32,7 @@
         
         float4 envSample = UNITY_SAMPLE_TEXCUBE_LOD(unity_SpecCube0, poiCam.reflectionDir, roughness * UNITY_SPECCUBE_LOD_STEPS);
         bool no_probe = unity_SpecCube0_HDR.a == 0 && envSample.a == 0;
-
+        
         UNITY_BRANCH
         if(_SampleWorld == 0 && no_probe == 0)
         {

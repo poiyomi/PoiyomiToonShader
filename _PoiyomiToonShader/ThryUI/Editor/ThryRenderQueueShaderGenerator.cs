@@ -42,7 +42,7 @@ namespace Thry
                     Material m = new Material(shader);
                     if (m.HasProperty(Shader.PropertyToID(ThryEditor.PROPERTY_NAME_USING_THRY_EDITOR)))
                     {
-                        string defaultShaderName = Helper.getDefaultShaderName(shader.name);
+                        string defaultShaderName = ShaderHelper.getDefaultShaderName(shader.name);
                         if (!poiShaders.Contains(defaultShaderName)) poiShaders.Add(defaultShaderName);
                     }
                 }
@@ -54,7 +54,7 @@ namespace Thry
 
             Shader activeShader = Settings.activeShader;
 
-            if (activeShader != null) poiShaders[0] = Helper.getDefaultShaderName(activeShader.name);
+            if (activeShader != null) poiShaders[0] = ShaderHelper.getDefaultShaderName(activeShader.name);
             else poiShaders[0] = "None";
             int newSelectShader = EditorGUILayout.Popup(0, poiShaders, GUILayout.MaxWidth(200));
             if (newSelectShader != selectedShader)
@@ -66,7 +66,7 @@ namespace Thry
 
             if (activeShader != null)
             {
-                string defaultShaderName = Helper.getDefaultShaderName(activeShader.name); ;
+                string defaultShaderName = ShaderHelper.getDefaultShaderName(activeShader.name); ;
                 Shader defaultShader = Shader.Find(defaultShaderName);
 
                 GUIStyle style = new GUIStyle(GUI.skin.label);
@@ -78,7 +78,7 @@ namespace Thry
                 GUILayout.BeginHorizontal();
                 if (GUILayout.Button("Generate All Queues", GUILayout.MaxWidth(200)))
                 {
-                    for (int i = createShadersFrom; i <= createShadersTo; i++) { Helper.createRenderQueueShaderIfNotExists(defaultShader, i, false); }
+                    for (int i = createShadersFrom; i <= createShadersTo; i++) { ShaderHelper.createRenderQueueShaderIfNotExists(defaultShader, i, false); }
                     AssetDatabase.Refresh();
                 }
                 GUILayout.Label("from", GUILayout.MaxWidth(30));
@@ -88,7 +88,7 @@ namespace Thry
                 GUILayout.EndHorizontal();
                 if (GUILayout.Button("Generate most common Queues", GUILayout.MaxWidth(200)))
                 {
-                    foreach (int i in COMMON_QUEUES) { Helper.createRenderQueueShaderIfNotExists(defaultShader, i, false); }
+                    foreach (int i in COMMON_QUEUES) { ShaderHelper.createRenderQueueShaderIfNotExists(defaultShader, i, false); }
                     AssetDatabase.Refresh();
                 }
             }

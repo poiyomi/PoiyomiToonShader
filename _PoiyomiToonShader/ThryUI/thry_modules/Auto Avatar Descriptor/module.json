@@ -1,9 +1,9 @@
 {
 "name":"Auto Avatar Descriptor",
-"version":0.3,
+"version":0.4,
 "description":"Automatically fills out the vrc avatar descriptor for you",
 "classname":"Thry.AAD_Settings",
 "settings_file_name":"AAD_Settings",
-"requirement":{"type":"EDITOR_VERSION","data":">0.18"},
+"requirement":{"type":"EDITOR_VERSION","data":">=1.0"},
 "files":["Editor/AAD_Main.cs","Editor/GenderGuesser.cs","Editor/AAD_Settings.cs"]
 }

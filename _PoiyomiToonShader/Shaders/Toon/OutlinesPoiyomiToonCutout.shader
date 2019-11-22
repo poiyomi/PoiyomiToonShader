@@ -3,7 +3,7 @@ Shader ".poiyomi/Toon/Default/outlines Cutout"
     Properties
     {
         [HideInInspector] shader_is_using_thry_editor ("", Float) = 0
-        [HideInInspector] shader_master_label ("<color=#ff0000ff>❤</color> <color=#000000ff>Poiyomi Toon Shader V4.4</color> <color=#ff0000ff>❤</color>", Float) = 0
+        [HideInInspector] shader_master_label ("<color=#ff0000ff>❤</color> <color=#000000ff>Poiyomi Toon Shader V4.5</color> <color=#ff0000ff>❤</color>", Float) = 0
         [HideInInspector] shader_presets ("poiToonPresets", Float) = 0
         [HideInInspector] shader_properties_label_file ("PoiLabels", Float) = 0
         
@@ -13,31 +13,23 @@ Shader ".poiyomi/Toon/Default/outlines Cutout"
         [HideInInspector] footer_discord ("discord footer button", Float) = 0
         [HideInInspector] footer_github ("github footer button", Float) = 0
         
-
-        
         [HideInInspector] m_mainOptions ("Main", Float) = 0
         _Color ("Color & Alpha", Color) = (1, 1, 1, 1)
         _Saturation ("Saturation", Range(-1, 1)) = 0
-        _MainVertexColoring("Use Vertex Color", Range(0,1)) = 0
+        _MainVertexColoring ("Use Vertex Color", Range(0, 1)) = 0
         _MainEmissionStrength ("Basic Emission", Range(0, 20)) = 0
         _MainTex ("Texture", 2D) = "white" { }
-        [PanningTexture][Normal]_BumpMap ("Normal Map", 2D) = "bump" { }
+        _MainHueShift ("HueShift", Range(0,1)) = 0
+        [Normal]_BumpMap ("Normal Map", 2D) = "bump" { }
         [Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3)] _BumpMapUV ("Normal UV#", Int) = 0
         [HideInInspector][Vector2]_MainNormalPan ("Panning", Vector) = (0, 0, 0, 0)
         _BumpScale ("Normal Intensity", Range(0, 10)) = 1
         _AlphaMask ("Alpha Mask", 2D) = "white" { }
         [Vector2]_GlobalPanSpeed ("Global Pan Speed", Vector) = (0, 0, 0, 0)
-        
-        [HideInInspector] m_start_Alpha ("Alpha Options", Float) = 0
-        _Clip ("Alpha Cuttoff", Range(0, 1.001)) = 0.5
-        [Toggle(_)]_ForceOpaque ("Force Opaque", Float) = 0
-        [Toggle(_)]_MainAlphaToCoverage ("Alpha To Coverage", Float) = 1
-        _MainMipScale ("Mip Level Alpha Scale", Range(0, 1)) = 0.25
-        [HideInInspector] m_end_Alpha ("Alpha Options", Float) = 0
-        
+
         [HideInInspector] m_start_DetailOptions ("Details", Float) = 0
         _DetailMask ("Detail Mask (R:Texture, G:Normal)", 2D) = "white" { }
-        [PanningTexture]_DetailTex ("Detail Texture", 2D) = "gray" { }
+        _DetailTex ("Detail Texture", 2D) = "gray" { }
         [HideInInspector][Vector2]_DetailTexturePan ("Panning", Vector) = (0, 0, 0, 0)
         [Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3)] _DetailTexUV ("Detail Tex UV#", Int) = 0
         _DetailTexIntensity ("Detail Tex Intensity", Range(0, 10)) = 1
@@ -48,6 +40,37 @@ Shader ".poiyomi/Toon/Default/outlines Cutout"
         _DetailNormalMapScale ("Detail Normal Intensity", Range(0, 10)) = 1
         [HideInInspector][Vector2]_MainDetailNormalPan ("Panning", Vector) = (0, 0, 0, 0)
         [HideInInspector] m_end_DetailOptions ("Details", Float) = 0
+
+        [HideInInspector] m_start_vertexManipulation ("Vertex Options", Float) = 0
+        [Vector3]_VertexManipulationLocalTranslation ("Local Translation", Vector) = (0, 0, 0, 1)
+        [Vector3]_VertexManipulationLocalRotation ("Local Rotation", Vector) = (0, 0, 0, 1)
+        [Vector3]_VertexManipulationLocalScale ("Local Scale", Vector) = (1, 1, 1, 1)
+        [Vector3]_VertexManipulationWorldTranslation ("World Translation", Vector) = (0, 0, 0, 1)
+        _VertexManipulationHeight ("Vertex Height", Float) = 0
+        _VertexManipulationHeightMask ("Height Map", 2D) = "while" { }
+        _VertexManipulationHeightBias ("Mask Bias", Range(0, 1)) = 0
+        [HideInInspector][Vector2]_VertexManipulationHeightPan ("Panning", Vector) = (0,0,0,0)
+        [HideInInspector] m_end_vertexManipulation ("Vertex Options", Float) = 0
+        
+        [HideInInspector] m_start_Alpha ("Alpha Options", Float) = 0
+        _Clip ("Alpha Cuttoff", Range(0, 1.001)) = 0.5
+        [Toggle(_)]_DitheringEnabled("Enable Dithering", Float) = 0
+        [Toggle(_)]_ForceOpaque ("Force Opaque", Float) = 0
+        [Toggle(_)]_MainAlphaToCoverage ("Alpha To Coverage", Float) = 1
+        _MainMipScale ("Mip Level Alpha Scale", Range(0, 1)) = 0.25
+        [HideInInspector] m_end_Alpha ("Alpha Options", Float) = 0
+        
+
+
+        [HideInInspector] m_start_backFace ("Back Face", Float) = 0
+        [Toggle(_)]_BackFaceEnabled("Enable Back Face Options", Float) = 0
+        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3)]_BackFaceTextureUV("UV#", Int) = 0
+        _BackFaceTexture("Texture", 2D) = "white" { }
+        [HideInInspector][Vector2]_BackFacePanning("Panning", Vector) = (0,0,0,0)
+        _BackFaceDetailIntensity("Detail Intensity", Range(0,5)) = 1
+        _BackFaceHueShift("Hue Shift", Range(0,1)) = 0
+        _BackFaceEmissionStrength("Emission Strength", Range(0,20)) = 0
+        [HideInInspector] m_end_backFace ("Back Face", Float) = 0
         
         [HideInInspector] m_lightingOptions ("Lighting", Float) = 0
         [HideInInspector] m_start_Lighting ("Light and Shadow", Float) = 0
@@ -60,7 +83,7 @@ Shader ".poiyomi/Toon/Default/outlines Cutout"
         _AOMap ("AO Map", 2D) = "white" { }
         [Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3)] _LightingAOUV ("AO Map UV#", Int) = 0
         _AOStrength ("AO Strength", Range(0, 1)) = 1
-        _LightingMinLightBrightness("Min Brightness", Range(0,1)) = 0
+        _LightingMinLightBrightness ("Min Brightness", Range(0, 1)) = 0
         [HideInInspector] m_start_lightingStandard ("Standardish Settings", Float) = 0
         _LightingStandardSmoothness ("Smoothness", Range(0, 1)) = 0
         [HideInInspector] m_end_lightingStandard ("Standardish Settings", Float) = 0
@@ -68,7 +91,7 @@ Shader ".poiyomi/Toon/Default/outlines Cutout"
         _LightingIndirectContribution ("Indirect Contribution", Range(0, 1)) = .25
         _AdditiveSoftness ("Additive Softness", Range(0, 0.5)) = 0.005
         _AdditiveOffset ("Additive Offset", Range(-0.5, 0.5)) = 0
-        _LightingAdditiveIntensity("Additive Intensity", Range(0,1)) = 1
+        _LightingAdditiveIntensity ("Additive Intensity", Range(0, 1)) = 1
         _AttenuationMultiplier ("Attenuation", Range(0, 1)) = 0
         [HideInInspector] m_end_lightingAdvanced ("Advanced", Float) = 0
         [HideInInspector] m_start_lightingBeta ("Beta", Float) = 0
@@ -76,7 +99,7 @@ Shader ".poiyomi/Toon/Default/outlines Cutout"
         [HideInInspector] m_end_lightingBeta ("Beta", Float) = 0
         [HideInInspector] m_end_Lighting ("Light and Shadow", Float) = 0
         
-        [HideInInspector] m_start_subsurface("Subsurface Scattering", Float) = 0
+        [HideInInspector] m_start_subsurface ("Subsurface Scattering", Float) = 0
         [Toggle(_TERRAIN_NORMAL_MAP)]_EnableSSS ("Enable Subsurface Scattering", Float) = 0
         _SSSColor ("Subsurface Color", Color) = (1, 1, 1, 1)
         _SSSThicknessMap ("Thickness Map", 2D) = "black" { }
@@ -84,7 +107,7 @@ Shader ".poiyomi/Toon/Default/outlines Cutout"
         _SSSSCale ("Light Strength", Range(0, 1)) = 0
         _SSSPower ("Light Spread", Range(1, 100)) = 1
         _SSSDistortion ("Light Distortion", Range(0, 1)) = 0
-        [HideInInspector] m_end_subsurface("Subsurface Scattering", Float) = 0
+        [HideInInspector] m_end_subsurface ("Subsurface Scattering", Float) = 0
         
         [HideInInspector] m_start_rimLightOptions ("Rim Lighting", Float) = 0
         [Toggle(_GLOSSYREFLECTIONS_OFF)]_EnableRimLighting ("Enable Rim Lighting", Float) = 0
@@ -95,7 +118,7 @@ Shader ".poiyomi/Toon/Default/outlines Cutout"
         _RimStrength ("Rim Emission", Range(0, 20)) = 0
         _RimBrighten ("Rim Color Brighten", Range(0, 3)) = 0
         _RimLightColorBias ("Rim Color Bias", Range(0, 1)) = 0
-        [PanningTexture]_RimTex ("Rim Texture", 2D) = "white" { }
+        _RimTex ("Rim Texture", 2D) = "white" { }
         _RimMask ("Rim Mask", 2D) = "white" { }
         [HideInInspector][Vector2]_RimTexPanSpeed ("Panning", Vector) = (0, 0, 0, 0)
         [HideInInspector] m_start_reflectionRim ("Environmental Rim", Float) = 0
@@ -107,7 +130,7 @@ Shader ".poiyomi/Toon/Default/outlines Cutout"
         _RimEnviroMinBrightness ("Min Brightness Threshold", Range(0, 2)) = 0
         [HideInInspector] m_end_reflectionRim ("Environmental Rim", Float) = 0
         [HideInInspector] m_start_rimWidthNoise ("Width Noise", Float) = 0
-        [PanningTexture]_RimWidthNoiseTexture ("Rim Width Noise", 2D) = "black" { }
+        _RimWidthNoiseTexture ("Rim Width Noise", 2D) = "black" { }
         _RimWidthNoiseStrength ("Intensity", Range(0, 1)) = 0.1
         [HideInInspector][Vector2]_RimWidthNoisePan ("Panning", Vector) = (0, 0, 0, 0)
         [HideInInspector] m_end_rimWidthNoise ("Width Noise", Float) = 0
@@ -117,7 +140,7 @@ Shader ".poiyomi/Toon/Default/outlines Cutout"
         _ShadowMixWidthMod ("Shadow Mix Width Mod", Range(0, 10)) = .5
         [HideInInspector] m_end_ShadowMix ("Shadow Mix", Float) = 0
         [HideInInspector] m_end_rimLightOptions ("Rim Lighting", Float) = 0
-
+        
         [HideInInspector] m_start_bakedLighting ("Baked Lighting", Float) = 0
         _GIEmissionMultiplier ("GI Emission Multiplier", Float) = 1
         [HideInInspector] DSGI ("DSGI", Float) = 0 //add this property for double sided illumination settings to be shown
@@ -177,7 +200,7 @@ Shader ".poiyomi/Toon/Default/outlines Cutout"
         _Matcap2Add ("Add Matcap", Range(0, 1)) = 0
         [Enum(Vertex, 0, Pixel, 1)] _Matcap2Normal ("Normal to use", Int) = 1
         [HideInInspector] m_end_Matcap2 ("Matcap 2", Float) = 0
- 
+        
         [HideInInspector] m_start_specular ("Specular Reflections", Float) = 0
         [Toggle(_SPECGLOSSMAP)]_EnableSpecular ("Enable Specular", Float) = 0
         [Enum(Realistic, 1, Toon, 2, Anisotropic, 3)] _SpecularType ("Specular Type", Int) = 1
@@ -210,7 +233,7 @@ Shader ".poiyomi/Toon/Default/outlines Cutout"
         [HideInInspector] m_outlineOptions ("Outlines", Float) = 0
         [Enum(Basic, 0, Tint, 1, Rim Light, 2, Directional, 3, DropShadow, 4)]_OutlineMode ("Mode", Int) = 0
         [Toggle(_)]_OutlineUseVertexColors ("V Color as Normal", Float) = 0
-        [Toggle(_)]_OutlineLit("Enable Lighting", Float) = 0
+        [Toggle(_)]_OutlineLit ("Enable Lighting", Float) = 0
         _LineWidth ("Width", Float) = 0
         _LineColor ("Color", Color) = (1, 1, 1, 1)
         _OutlineEmission ("Outline Emission", Float) = 0
@@ -222,7 +245,7 @@ Shader ".poiyomi/Toon/Default/outlines Cutout"
         _OutlinePersonaDirection ("directional Offset XY", Vector) = (1, 0, 0, 0)
         _OutlineDropShadowOffset ("Drop Direction XY", Vector) = (1, 0, 0, 0)
         [HideInInspector] m_start_outlineAdvanced ("Advanced", Float) = 0
-        _OutlineFadeDistance ("Outline distance Fade", Vector) = (0, 0, 0, 0)
+        [Vector2]_OutlineFadeDistance ("Outline distance Fade", Vector) = (0, 0, 0, 0)
         [Enum(UnityEngine.Rendering.CullMode)] _OutlineCull ("Cull", Float) = 1
         [HideInInspector] m_end_outlineAdvanced ("Advanced", Float) = 0
         
@@ -231,8 +254,8 @@ Shader ".poiyomi/Toon/Default/outlines Cutout"
         [Toggle(_EMISSION)]_EnableEmission ("Enable Emission", Float) = 0
         [Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3)] _EmissionUV ("Emission UV#", Int) = 0
         [HDR]_EmissionColor ("Emission Color", Color) = (1, 1, 1, 1)
-        [PanningTexture]_EmissionMap ("Emission Map", 2D) = "white" { }
-        [PanningTexture]_EmissionMask ("Emission Mask", 2D) = "white" { }
+        [Gradient]_EmissionMap ("Emission Map", 2D) = "white" { }
+        _EmissionMask ("Emission Mask", 2D) = "white" { }
         [HideInInspector][Vector2]_EmissionMapPan ("Panning", Vector) = (0, 0, 0, 0)
         [HideInInspector][Vector2]_EmissionMaskPan ("Panning", Vector) = (0, 0, 0, 0)
         _EmissionStrength ("Emission Strength", Range(0, 20)) = 0
@@ -266,6 +289,41 @@ Shader ".poiyomi/Toon/Default/outlines Cutout"
         [HideInInspector] m_end_scrollingEmissionOptions ("Scrolling Emission", Float) = 0
         [HideInInspector] m_end_emissionOptions ("Emission / Glow", Float) = 0
         
+        [HideInInspector] m_start_emission1Options ("Emission / Glow 2 (Requires Emission 1 Enabled)", Float) = 0
+        [Toggle(_)]_EnableEmission1 ("Enable Emission 2", Float) = 0
+        [Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3)] _EmissionUV1 ("Emission UV#", Int) = 0
+        [HDR]_EmissionColor1 ("Emission Color", Color) = (1, 1, 1, 1)
+        [Gradient]_EmissionMap1 ("Emission Map", 2D) = "white" { }
+        _EmissionMask1 ("Emission Mask", 2D) = "white" { }
+        [HideInInspector][Vector2]_EmissionMapPan1 ("Panning", Vector) = (0, 0, 0, 0)
+        [HideInInspector][Vector2]_EmissionMaskPan1 ("Panning", Vector) = (0, 0, 0, 0)
+        _EmissionStrength1 ("Emission Strength", Range(0, 20)) = 0
+        [HideInInspector] m_start_CenterOutEmission1 ("Center Out Emission", Float) = 0
+        [Toggle(_)]_EmissionCenterOutEnabled1 ("Enable Center Out", Float) = 0
+        _EmissionCenterOutSpeed1 ("Flow Speed", Float) = 5
+        [HideInInspector] m_end_CenterOutEmission1 ("inward out emission", Float) = 0
+        [HideInInspector] m_start_glowInDarkEmissionOptions1 ("Glow In The Dark Emission (Requires Lighting Enabled)", Float) = 0
+        [Toggle(_)]_EnableGITDEmission1 ("Enable Glow In The Dark", Float) = 0
+        [Enum(World, 0, Mesh, 1)] _GITDEWorldOrMesh1 ("Lighting Type", Int) = 0
+        _GITDEMinEmissionMultiplier1 ("Min Emission Multiplier", Range(0, 1)) = 1
+        _GITDEMaxEmissionMultiplier1 ("Max Emission Multiplier", Range(0, 1)) = 0
+        _GITDEMinLight1 ("Min Lighting", Range(0, 1)) = 0
+        _GITDEMaxLight1 ("Max Lighting", Range(0, 1)) = 1
+        [HideInInspector] m_end_glowInDarkEmissionOptions1 ("Glow In The Dark Emission (Requires Lighting Enabled)", Float) = 0
+        [HideInInspector] m_start_blinkingEmissionOptions1 ("Blinking Emission", Float) = 0
+        _EmissiveBlink_Min1 ("Emissive Blink Min", Float) = 1
+        _EmissiveBlink_Max1 ("Emissive Blink Max", Float) = 1
+        _EmissiveBlink_Velocity1 ("Emissive Blink Velocity", Float) = 4
+        [HideInInspector] m_end_blinkingEmissionOptions1 ("Blinking Emission", Float) = 0
+        [HideInInspector] m_start_scrollingEmissionOptions1 ("Scrolling Emission", Float) = 0
+        [Toggle(_)] _ScrollingEmission1 ("Enable Scrolling Emission", Float) = 0
+        _EmissiveScroll_Direction1 ("Emissive Scroll Direction", Vector) = (0, -10, 0, 0)
+        _EmissiveScroll_Width1 ("Emissive Scroll Width", Float) = 10
+        _EmissiveScroll_Velocity1 ("Emissive Scroll Velocity", Float) = 10
+        _EmissiveScroll_Interval1 ("Emissive Scroll Interval", Float) = 20
+        [HideInInspector] m_end_scrollingEmission1Options ("Scrolling Emission", Float) = 0
+        [HideInInspector] m_end_emission1Options ("Emission / Glow 2", Float) = 0
+
         [HideInInspector] m_start_flipBook ("Flipbook", Float) = 0
         [Toggle(_FLIPBOOK_BLENDING)]_EnableFlipbook ("Enable Flipbook", Float) = 0
         [Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3)] _FlipbookUV ("Flipbook UV#", Int) = 0
@@ -284,7 +342,7 @@ Shader ".poiyomi/Toon/Default/outlines Cutout"
         _FlipbookCurrentFrame ("Current Frame", Float) = -1
         [HideInInspector] m_end_manualFlipbookControl ("Manual Control", Float) = 0
         [HideInInspector] m_end_flipBook ("Flipbook", Float) = 0
-
+        
         [HideInInspector] m_start_dissolve ("Dissolve", Float) = 0
         [Toggle(_ALPHABLEND_ON)]_EnableDissolve ("Enable Dissolve", Float) = 0
         [Enum(Basic, 1, Point2Point, 2)] _DissolveType ("Dissolve Type", Int) = 1
@@ -294,12 +352,12 @@ Shader ".poiyomi/Toon/Default/outlines Cutout"
         [Gradient]_DissolveEdgeGradient ("Edge Gradient", 2D) = "white" { }
         _DissolveEdgeEmission ("Edge Emission", Range(0, 20)) = 0
         _DissolveTextureColor ("Dissolve to Color", Color) = (1, 1, 1, 1)
-        [PanningTexture]_DissolveToTexture ("Dissolve to Texture", 2D) = "white" { }
+        _DissolveToTexture ("Dissolve to Texture", 2D) = "white" { }
         _DissolveToEmissionStrength ("Dissolve to Emission Strength", Range(0, 20)) = 0
         [HideInInspector][Vector2]_DissolveToPanning ("Panning", Vector) = (0, 0, 0, 0)
-        [PanningTexture]_DissolveNoiseTexture ("Dissolve Noise", 2D) = "white" { }
+        _DissolveNoiseTexture ("Dissolve Noise", 2D) = "white" { }
         [Toggle(_)]_DissolveInvertNoise ("Invert Noise", Float) = 0
-        [PanningTexture]_DissolveDetailNoise ("Dissolve Detail Noise", 2D) = "black" { }
+        _DissolveDetailNoise ("Dissolve Detail Noise", 2D) = "black" { }
         [Toggle(_)]_DissolveInvertDetailNoise ("Invert Detail Noise", Float) = 0
         _DissolveDetailStrength ("Dissolve Detail Strength", Range(0, 1)) = 0.1
         [HideInInspector][Vector2]_DissolveNoisePan ("Panning", Vector) = (0, 0, 0, 0)
@@ -314,7 +372,7 @@ Shader ".poiyomi/Toon/Default/outlines Cutout"
         [Vector3]_DissolveEndPoint ("End Point", Vector) = (0, 1, 0, 0)
         [HideInInspector] m_end_pointToPoint ("Point To Point", Float) = 0
         [HideInInspector] m_end_dissolve ("Dissolve", Float) = 0
-
+        
         [HideInInspector] m_start_panosphereOptions ("Panosphere / Cubemaps", Float) = 0
         [Toggle(_DETAIL_MULX2)]_PanoToggle ("Enable Panosphere", Float) = 0
         _PanosphereColor ("Color", Color) = (1, 1, 1, 1)
@@ -351,7 +409,7 @@ Shader ".poiyomi/Toon/Default/outlines Cutout"
         _AngleMinAlpha ("Min Alpha", Range(0, 1)) = 0
         [HideInInspector] m_end_angularFade ("Angular Fade", Float) = 0
         // End Special Effects
-
+        
         
         [HideInInspector] m_parallaxMap ("Parallax", Float) = 0
         [Toggle(_PARALLAXMAP)]_ParallaxMap ("Enable Parallax FX", Float) = 0
@@ -386,9 +444,9 @@ Shader ".poiyomi/Toon/Default/outlines Cutout"
         [Enum(UnityEngine.Rendering.BlendMode)] _DestinationBlend ("Destination Blend", Float) = 10
         [Enum(Off, 0, On, 1)] _ZWrite ("ZWrite", Int) = 1
         _ZBias ("ZBias", Float) = 0.0
-        [Toggle(_)]_IgnoreFog("Ignore Fog", Float) = 0
+        [Toggle(_)]_IgnoreFog ("Ignore Fog", Float) = 0
         //[HideInInspector] Instancing ("Instancing", Float) = 0 //add this property for instancing variants settings to be shown
-
+        
         [HideInInspector] m_start_StencilPassOptions ("Stencil", Float) = 0
         [IntRange] _StencilRef ("Stencil Reference Value", Range(0, 255)) = 0
         //[IntRange] _StencilReadMaskRef ("Stencil ReadMask Value", Range(0, 255)) = 0
@@ -408,7 +466,7 @@ Shader ".poiyomi/Toon/Default/outlines Cutout"
         [Enum(UnityEngine.Rendering.StencilOp)] _OutlineStencilZFailOp ("Stencil ZFail Op", Float) = 0
         [Enum(UnityEngine.Rendering.CompareFunction)] _OutlineStencilCompareFunction ("Stencil Compare Function", Float) = 8
         [HideInInspector] m_end_OutlineStencil ("Outline Stencil", Float) = 0
-
+        
         [HideInInspector] m_start_debugOptions ("Debug", Float) = 0
         [Toggle(_COLOROVERLAY_ON)]_DebugDisplayDebug ("Display Debug Info", Float) = 0
         [Enum(Off, 0, Vertex Normal, 1, Pixel Normal, 2, Tangent, 3, Binormal, 4)] _DebugMeshData ("Mesh Data", Int) = 0

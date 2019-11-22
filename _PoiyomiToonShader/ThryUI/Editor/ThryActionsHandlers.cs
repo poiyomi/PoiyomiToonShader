@@ -16,7 +16,7 @@ namespace Thry
             VRCInterface.OnCompile();
             Config.OnCompile();
             ModuleHandler.OnCompile();
-            Helper.TashHandler.EmptyThryTrash();
+            TrashHandler.EmptyThryTrash();
         }
     }
 
@@ -47,6 +47,7 @@ namespace Thry
         {
             VRCInterface.SetVRCDefineSybolIfSDKDeleted(assets);
             ShaderHelper.AssetsDeleted(assets);
+            UnityFixer.OnAssetDeleteCheckDrawingDLL(assets);
         }
     }
 }

@@ -1,0 +1,55 @@
+locale := Wanguage
+locale_tooltip := Sewect wanguage fow thwyeditow
+
+first_install_message := Thwy shadew editow successfuwwy instawwed. Thiws iws the editow settings window.
+update_message := Thwy editow has bewn updated
+downgrade_message := Wawning: the vewsion of thwy editow has decwined
+
+header_editor := Editor
+header_extras := Extras
+header_user_data_collection := User Data Collection
+header_modules := Extra Modules
+
+newest := newest
+version := vewsion
+user := usew
+your_data := Youw data
+requirements := Wequiwements
+add := Add
+delete := Dewete
+save := Save
+
+default_texture_type := Defauwt textuwe dispway
+default_texture_type_tooltip := Sewect how youw textuwes shouwd be dispwayed if the pwopewty doesn't fowce the type
+showRenderQueue := Show wendew queue
+showRenderQueue_tooltip := enabwe a wendew queue sewectow
+renderQueueShaders := Wendew queue shadews
+renderQueueShaders_tooltip := Have the wendew queue sewectow wowk with vwchat by cweating sepewate shadews fow the diffewent queues
+gradient_name := Gwadient save fiwe names
+gradient_name_tooltip := configuwes the way gwadient textuwe fiwes awe named. use <material>, <hash> awnd <prop> tuwu identify the textuwe
+showImportPopup := Show popup own shadew impowt
+showImportPopup_tooltip := Thiws popup gives uwu the option tuwu twy tuwu westowe matewiaws if they bwoke own impowting
+
+gradient_add_hash_or_prop := Considew adding <hash> ow <prop>.
+gradient_add_material := Considew adding <material>.
+gradient_add_material_or_prop := Add <material> <hash> ow <prop> tuwu destingish between gwadients.
+gradient_good_naming := Good naming.
+
+share_user_data := Shawe anonomyous data fow usage statistics
+share_user_data_tooltip :=
+share_installed_unity_version := Shawe my instawwed unity vewsion
+share_installed_unity_version_tooltip :=
+share_installed_editor_version := Shawe my instawwed thwy editow vewsion
+share_installed_editor_version_tooltip :=
+share_used_shaders := Shawe the names of instawwed shadews using thwy editow
+share_used_shaders_tooltip :=
+
+share_data_info_message := The data iws identified by a hash of youw macaddwess. Thiws iws tuwu make suwe we down't wog any usew twice, whiwe stiww keeping aww data anonymous.
+
+button_get_my_data := Show aww data cowwected abouwt me
+
+my_data_header := Thiws iws aww data cowwected own youw hashed mac addwess:
+
+button_install_vrc_sdk := Instaww VRC SDK
+button_remove_vrc_sdk := Wemove VRC SDK
+button_update_vrc_sdk := Update VRC SDK

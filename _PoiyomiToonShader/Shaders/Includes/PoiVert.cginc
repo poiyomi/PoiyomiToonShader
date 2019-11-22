@@ -18,6 +18,8 @@
         UNITY_SETUP_INSTANCE_ID(v);
         v2f o;
         
+        applyLocalVertexTransformation(v.normal, v.tangent, v.vertex);
+
         #ifdef POI_META_PASS
             v.vertex.xy = v.uv1 * unity_LightmapST.xy + unity_LightmapST.zw;
             v.vertex.z = v.vertex.z > 0 ? 0.0001: 0;
@@ -32,17 +34,21 @@
         #endif
         TANGENT_SPACE_ROTATION;
         o.localPos = v.vertex;
+        o.worldPos = mul(unity_ObjectToWorld, o.localPos);
+        o.normal = UnityObjectToWorldNormal(v.normal);
         //o.localPos.x *= -1;
         //o.localPos.xz += sin(o.localPos.y * 100 + _Time.y * 5) * .0025;
+
+        applyWorldVertexTransformation(o.worldPos, o.localPos, o.normal, v.uv0.xy);
         o.pos = UnityObjectToClipPos(o.localPos);
-        //o.screenPos = ComputeScreenPos(o.pos);
-        o.worldPos = mul(unity_ObjectToWorld, o.localPos);
+        o.grabPos = ComputeGrabScreenPos(o.pos);
+        o.screenPos = ComputeGrabScreenPos(o.pos);
+
         o.uv0.xy = v.uv0.xy;
         o.uv0.zw = v.uv1.xy;
         o.uv1.xy = v.uv2.xy;
         o.uv1.zw = v.uv3.xy;
         o.vertexColor = v.color;
-        o.normal = UnityObjectToWorldNormal(v.normal);
         o.modelPos = mul(unity_ObjectToWorld, float4(0, 0, 0, 1));
         o.tangent = float4(UnityObjectToWorldDir(v.tangent.xyz), v.tangent.w);
         #ifdef POI_TOUCH

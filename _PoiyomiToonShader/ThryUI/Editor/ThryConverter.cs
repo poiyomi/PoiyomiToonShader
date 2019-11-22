@@ -1,10 +1,10 @@
-﻿using System;
+﻿// Material/Shader Inspector for Unity 2017/2018
+// Copyright (C) 2019 Thryrallo
+
+using System;
 using System.Collections;
 using System.Collections.Generic;
 #if DOT_NET_TWO_POINT_ZERO_OR_ABOVE
-// Material/Shader Inspector for Unity 2017/2018
-// Copyright (C) 2019 Thryrallo
-
 #if IMAGING_DLL_EXISTS
 using System.Drawing.Imaging;
 #endif
@@ -19,141 +19,48 @@ namespace Thry
     public class Converter
     {
 
-        public static Texture TextToTexture(string text)
+        public static Color stringToColor(string s)
         {
-            return TextToTexture(text, "alphabet_thry_default");
+            s = s.Trim(new char[] { '(', ')' });
+            string[] split = s.Split(",".ToCharArray());
+            float[] rgba = new float[4] { 1, 1, 1, 1 };
+            for (int i = 0; i < split.Length; i++) if (split[i].Replace(" ", "") != "") rgba[i] = float.Parse(split[i]);
+            return new Color(rgba[0], rgba[1], rgba[2], rgba[3]);
+
         }
 
-        public static Texture TextToTexture(string text, string alphabetTextureName)
+        public static Vector4 stringToVector(string s)
         {
-            string[] guids = AssetDatabase.FindAssets(alphabetTextureName + " t:texture");
-            if (guids.Length > 0)
-            {
-                string path = null;
-                foreach (string g in guids)
-                {
-                    string p = AssetDatabase.GUIDToAssetPath(g);
-                    if (p.Contains("/" + alphabetTextureName + ".")) path = p;
-                }
-                if (path == null)
-                {
-                    Debug.LogWarning("Alphabet texture could not be found.");
-                    return null;
-                }
-                TextureImporter importer = (TextureImporter)TextureImporter.GetAtPath(path);
-                importer.isReadable = true;
-                importer.SaveAndReimport();
+            s = s.Trim(new char[] { '(', ')' });
+            string[] split = s.Split(",".ToCharArray());
+            float[] xyzw = new float[4];
+            for (int i = 0; i < 4; i++) if (i < split.Length && split[i].Replace(" ", "") != "") xyzw[i] = float.Parse(split[i]); else xyzw[i] = 0;
+            return new Vector4(xyzw[0], xyzw[1], xyzw[2], xyzw[3]);
+        }
 
-                Texture2D alphabet_texture = AssetDatabase.LoadAssetAtPath<Texture2D>(path);
+        public static string MaterialsToString(Material[] materials)
+        {
+            string s = "";
+            foreach (Material m in materials)
+                s += "\"" + m.name + "\"" + ",";
+            s = s.TrimEnd(',');
+            return s;
+        }
 
-                Color background = alphabet_texture.GetPixel(0, 0);
+        public static string ArrayToString(object[] a)
+        {
+            string ret = "";
+            foreach (object o in a)
+                ret += o.ToString() + ",";
+            return ret.TrimEnd(new char[] { ',' });
+        }
 
-                //load letter data from alphabet
-                int padding = 0;
-                int[][] letterSpaces = new int[62][];
-                int currentLetterIndex = -1;
-                bool wasLetter = false;
-                int pixelLetterFreshhold = 3;
-                for (int x = 0; x < alphabet_texture.width; x++)
-                {
-                    int pixelIsLetter = 0;
-                    for (int y = 0; y < alphabet_texture.height; y++)
-                    {
-                        if (Helper.ColorDifference(background, alphabet_texture.GetPixel(x, y)) > 0.01) pixelIsLetter += 1;
-                    }
-                    bool isLetter = pixelIsLetter > pixelLetterFreshhold;
-                    if (isLetter && !wasLetter)
-                    {
-                        currentLetterIndex += 1;
-                        if (currentLetterIndex >= letterSpaces.Length)
-                            break;
-                        letterSpaces[currentLetterIndex] = new int[2];
-                        letterSpaces[currentLetterIndex][0] = x;
-                    }
-                    else if (isLetter && wasLetter)
-                    {
-                        letterSpaces[currentLetterIndex][1] += 1;
-                    }
-                    else if (!isLetter)
-                    {
-                        padding += 1;
-                    }
-                    wasLetter = isLetter;
-                }
-                int spaceWidth = 0;
-                foreach (int[] s in letterSpaces) if (s != null) spaceWidth += s[1];
-                spaceWidth /= 62;
-                padding /= 61;
-
-                int a = 97;
-                int A = 65;
-                int zero = 48;
-                int space = 32;
-
-                int totalWidth = 0;
-                int[] letterIndecies = new int[text.Length];
-
-                // text to alphabet texture letter indecies
-                int i = 0;
-                foreach (char c in text)
-                {
-                    if ((int)c == 10) continue;
-                    int letterIndex = 0;
-                    if ((int)c - a >= 0) letterIndex = ((int)c - a) * 2 + 1;
-                    else if ((int)c - A >= 0) letterIndex = ((int)c - A) * 2;
-                    else if ((int)c - zero >= 0) letterIndex = 52 + (int)c - zero;
-                    else if ((int)c - space >= 0) letterIndex = -1;
-                    //Debug.Log("Char: " + c +","+ (int)c+","+letterIndex);
-                    letterIndecies[i] = letterIndex;
-                    if (letterIndex == -1)
-                        totalWidth += spaceWidth;
-                    else
-                        totalWidth += letterSpaces[letterIndex][1] + padding;
-                    i++;
-                }
-
-                Texture2D text_texture = new Texture2D(totalWidth, alphabet_texture.height);
-
-                Debug.Log("Padding: " + padding);
-                Debug.Log("Total width: " + totalWidth);
-                // indecies to texture
-                int letterX = 0;
-                for (i = 0; i < letterIndecies.Length; i++)
-                {
-                    //Debug.Log(i + "," + letterIndecies[i]);
-                    if (letterIndecies[i] == -1)
-                    {
-                        for (int x = 0; x < spaceWidth; x++)
-                        {
-                            for (int y = 0; y < text_texture.height; y++)
-                            {
-                                text_texture.SetPixel(letterX + x, y, background);
-                            }
-                        }
-                        letterX += spaceWidth;
-                    }
-                    else
-                    {
-                        for (int x = 0; x < letterSpaces[letterIndecies[i]][1] + padding; x++)
-                        {
-                            for (int y = 0; y < text_texture.height; y++)
-                            {
-                                text_texture.SetPixel(letterX + x, y, alphabet_texture.GetPixel(letterSpaces[letterIndecies[i]][0] + x - padding / 2, y));
-                            }
-                        }
-                        letterX += letterSpaces[letterIndecies[i]][1] + padding;
-                    }
-                }
-
-                string file_name = "text_" + Regex.Replace(text, @"\s", "_");
-                string save_path = "Assets/Textures/Text/" + file_name + ".png";
-                return Helper.SaveTextureAsPNG(text_texture, save_path, null);
-            }
-            else
-            {
-                Debug.LogWarning("Alphabet texture could not be found.");
-            }
-            return null;
+        public static string ArrayToString(Array a)
+        {
+            string ret = "";
+            foreach (object o in a)
+                ret += o.ToString() + ",";
+            return ret.TrimEnd(new char[] { ',' });
         }
 
         //--Start--Gradient
@@ -307,7 +214,7 @@ namespace Thry
                 foreach (string p in paths)
                 {
                     if (AssetDatabase.GetMainAssetTypeAtPath(p).IsSubclassOf(typeof(Texture)))
-                        textures.Add(Helper.GetReadableTexture(AssetDatabase.LoadAssetAtPath<Texture>(p)));
+                        textures.Add(TextureHelper.GetReadableTexture(AssetDatabase.LoadAssetAtPath<Texture>(p)));
                 }
                 if (textures.Count > 0)
                 {
@@ -360,7 +267,7 @@ namespace Thry
             {
                 Texture2D resized_texture = texture;
                 if (texture.width != size[0] || texture.height != size[1])
-                    resized_texture = Helper.Resize(texture, size[0], size[1]);
+                    resized_texture = TextureHelper.Resize(texture, size[0], size[1]);
                 array.SetPixels(resized_texture.GetPixels(), i++);
             }
             array.Apply();

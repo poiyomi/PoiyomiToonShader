@@ -14,11 +14,11 @@ _COLORADDSUBDIFF_ON
 _NORMALMAP
 _SUNDISK_NONE
 _COLORCOLOR_ON
+_MAPPING_6_FRAMES_LAYOUT
 
 _ALPHAMODULATE_ON
 _ALPHAPREMULTIPLY_ON
 _ALPHATEST_ON
-_MAPPING_6_FRAMES_LAYOUT
 _SMOOTHNESS_TEXTURE_ALBEDO_CHANNEL_A
 _SPECULARHIGHLIGHTS_OFF
 _SUNDISK_HIGH_QUALITY
@@ -59,6 +59,10 @@ UNITY_UI_CLIP_RECT
     #include "Poicludes.cginc"
     #include "PoiHelpers.cginc"
     
+    #ifdef CUTOUT
+        #include "PoiDithering.cginc"
+    #endif
+
     #ifdef _PARALLAXMAP
         #include "PoiParallax.cginc"
     #endif
@@ -76,7 +80,7 @@ UNITY_UI_CLIP_RECT
     #ifdef _ALPHABLEND_ON
         #include "PoiDissolve.cginc"
     #endif
-    
+
     #include "PoiMainTex.cginc"
     
     #ifdef _DETAIL_MULX2
@@ -111,7 +115,7 @@ UNITY_UI_CLIP_RECT
         #include "PoiSubsurfaceScattering.cginc"
     #endif
     
-    #ifdef REFRACTIVE
+    #ifdef POI_GRABS_ASS
         #include "PoiRefraction.cginc"
     #endif
     
@@ -130,7 +134,7 @@ UNITY_UI_CLIP_RECT
     #ifdef _COLOROVERLAY_ON
         #include "PoiDebug.cginc"
     #endif
-    
+    #include "PoiVertexManipulations.cginc"
     #include "PoiVert.cginc"
     #include "PoiFrag.cginc"
     

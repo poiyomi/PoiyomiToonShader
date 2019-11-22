@@ -1,0 +1,69 @@
+translator := 
+translation := Translation
+
+locale := Language
+locale_tooltip := Select Language for ThryEditor
+
+first_install_message := Thry Shader Editor successfully installed. This is the editor settings window.
+update_message := Thry editor has been updated
+downgrade_message := Warning: The Version of Thry Editor has declined
+
+header_editor := Editor
+header_extras := Extras
+header_user_data_collection := User Data Collection
+header_modules := Extra Modules
+
+newest := newest
+version := version
+user := user
+your_data := Your Data
+requirements := Requirements
+add := Add
+delete := Delete
+save := Save
+
+default_texture_type := Default Texture Display
+default_texture_type_tooltip := Select how your textures should be displayed if the property doesn't force the type
+showRenderQueue := Show Render Queue
+showRenderQueue_tooltip := enable a render queue selector
+renderQueueShaders := Render Queue Shaders
+renderQueueShaders_tooltip := Have the render queue selector work with vrchat by creating seperate shaders for the different queues
+gradient_name := Gradient Save File Names
+gradient_name_tooltip := configures the way gradient texture files are named. use <material>, <hash> and <prop> to identify the texture
+showImportPopup := Show popup on shader import
+showImportPopup_tooltip := This popup gives you the option to try to restore materials if they broke on importing
+
+gradient_add_hash_or_prop := Consider adding <hash> or <prop>.
+gradient_add_material := Consider adding <material>.
+gradient_add_material_or_prop := Add <material> <hash> or <prop> to destingish between gradients.
+gradient_good_naming := Good naming.
+
+share_user_data := Share Anonomyous Data for usage statistics
+share_user_data_tooltip :=
+share_installed_unity_version := Share my installed Unity Version
+share_installed_unity_version_tooltip :=
+share_installed_editor_version := Share my installed Thry Editor Version
+share_installed_editor_version_tooltip :=
+share_used_shaders := Share the names of installed shaders using thry editor
+share_used_shaders_tooltip :=
+
+share_data_info_message := The data is identified by a hash of your macaddress. This is to make sure we don't log any user twice, while still keeping all data anonymous.
+
+button_get_my_data := Show all data collected about me
+
+my_data_header := This is all data collected on your hashed mac address: 
+
+button_install_vrc_sdk := Install VRC SDK
+button_remove_vrc_sdk := Remove VRC SDK
+button_update_vrc_sdk := Update VRC SDK
+
+message_presets_file_missing := Presets File Missing
+presets := Presets
+manage_presets := - Manage Presets -
+add_preset := Add Preset
+apply_preset := Apply preset
+new_preset := + New +
+new_preset2 := <New Preset>
+new_preset_name := Preset Name
+new_preset_name2 := Preset Name
+preset_saved := Preset saved

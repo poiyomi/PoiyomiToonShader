@@ -34,7 +34,7 @@ namespace Thry
         public const string SETTINGS_MESSAGE_URL = "http://thryeditor.thryrallo.de/message.json";
 
         public const string DATA_SHARE_SEND = "http://thryeditor.thryrallo.de/send_analytics.php";
-        public const string DATA_SHARE_GET_MY_DATA = "http://thryeditor.thryrallo.de/get_my_data.php";
+        public const string DATA_SHARE_GET_MY_DATA = "https://thryeditor.thryrallo.de/get_my_data.php";
         public const string COUNT_PROJECT = "http://thryeditor.thryrallo.de/count_project.php";
         public const string COUNT_USER = "http://thryeditor.thryrallo.de/count_user.php";
     }
@@ -64,6 +64,7 @@ namespace Thry
     {
         public static ThryEditor.TextureProperty currentTexProperty;
         public static Rect lastGuiObjectRect;
+        public static Rect lastGuiObjectHeaderRect;
         public static bool lastPropertyUsedCustomDrawer;
     }
 
@@ -82,11 +83,10 @@ namespace Thry
         public ButtonData button_right;
         public ImageData image;
         public TextureData texture;
+        public string[] reference_properties;
         public string reference_property;
         public bool force_texture_options = false;
         public string file_name;
-        public bool has_tile_offset = false;
-        public bool has_panning = false;
     }
 
     public class ImageData
@@ -136,7 +136,7 @@ namespace Thry
         {
             if (loaded_texture == null)
             {
-                string path = Helper.FindFile(name, "texture");
+                string path = FileHelper.FindFile(name, "texture");
                 if (path != null)
                     loaded_texture = AssetDatabase.LoadAssetAtPath<Texture>(path);
                 else
@@ -196,6 +196,8 @@ namespace Thry
                     if (comparator == "!=") return c_ev != 0;
                     if (comparator == "<") return c_ev == 1;
                     if (comparator == ">") return c_ev == -1;
+                    if (comparator == ">=") return c_ev == -1 || c_ev == 0;
+                    if (comparator == "<=") return c_ev == 1 || c_ev == 0;
                     break;
                 case DefineableConditionType.VRC_SDK_VERSION:
                     int c_vrc = Helper.compareVersions(VRCInterface.Get().installed_sdk_version, value);
@@ -203,6 +205,8 @@ namespace Thry
                     if (comparator == "!=") return c_vrc != 0;
                     if (comparator == "<") return c_vrc == 1;
                     if (comparator == ">") return c_vrc == -1;
+                    if (comparator == ">=") return c_vrc == -1 || c_vrc == 0;
+                    if (comparator == "<=") return c_vrc == 1 || c_vrc == 0;
                     break;
                 case DefineableConditionType.TEXTURE_SET:
                     ThryEditor.ShaderProperty shaderProperty = ThryEditor.currentlyDrawing.propertyDictionary[data];
@@ -231,6 +235,10 @@ namespace Thry
                 return "==";
             if (data.Contains("!="))
                 return "!=";
+            if (data.Contains(">="))
+                return ">=";
+            if (data.Contains("<="))
+                return "<=";
             if (data.Contains(">"))
                 return ">";
             if (data.Contains("<"))

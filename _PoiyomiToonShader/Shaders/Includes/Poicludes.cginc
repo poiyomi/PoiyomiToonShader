@@ -31,20 +31,21 @@
         float4 tangent: TEXCOORD5;
         float4 worldPos: TEXCOORD6;
         float4 localPos: TEXCOORD7;
-        //float4 screenPos: TEXCOORD8;
+        float4 screenPos: TEXCOORD8;
+        float4 grabPos: TEXCOORD9;
         #if defined(LIGHTMAP_ON) || defined(DYNAMICLIGHTMAP_ON)
-            float4 lightmapUV: TEXCOORD8;
+            float4 lightmapUV: TEXCOORD10;
         #endif
-        float3 modelPos: TEXCOORD9;
-        float angleAlpha: TEXCOORD10;
+        float3 modelPos: TEXCOORD11;
+        float angleAlpha: TEXCOORD12;
+        #if defined(VERTEXLIGHT_ON)
+            float3 vertexLightColor: TEXCOORD13;
+        #endif
+        float4 vertexColor: TEXCOORD14;
+        UNITY_SHADOW_COORDS(15)
+        UNITY_FOG_COORDS(16)
         UNITY_VERTEX_INPUT_INSTANCE_ID
         UNITY_VERTEX_OUTPUT_STEREO
-        #if defined(VERTEXLIGHT_ON)
-            float3 vertexLightColor: TEXCOORD11;
-        #endif
-        float4 vertexColor: TEXCOORD12;
-        UNITY_SHADOW_COORDS(13)
-        UNITY_FOG_COORDS(14)
     };
     
     #ifdef OUTLINE
@@ -91,6 +92,9 @@
         float distanceToVert;
         float3 reflectionDir;
         float3 vertexReflectionDir;
+        float2 screenUV;
+        float4 screenPos;
+        float4 grabPos;
     };
     
     struct PoiMesh
@@ -107,6 +111,7 @@
         #if defined(LIGHTMAP_ON) || defined(DYNAMICLIGHTMAP_ON)
             float4 lightmapUV;
         #endif
+        float isFrontFace;
     };
     
     struct PoiTangentData
@@ -145,7 +150,6 @@
     float3 finalEmission;
     float4 mainTexture;
     float4 albedo;
-    
     #define pi float(3.14159265359)
     
 #endif

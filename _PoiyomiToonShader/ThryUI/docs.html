@@ -95,6 +95,37 @@
                     <td>No</td>
                     <td>[HideInInspector] LightmapFlags ("", Float) = 0</td>
                 </tr>
+                <tr class="noborder"><td class="noborder"></td></tr>
+                <tr>
+                    <td>m_&lt;string></td>
+                    <td>starts a dropdown menu. all properties underneath, till the next menu is specified, are in this menu</td>
+                    <td>No</td>
+                    <td>[HideInInspector] m_mainOptions ("Main", Float) = 0</td>
+                </tr>
+                <tr>
+                    <td>m_start_&lt;string></td>
+                    <td>starts a dropdown menu. all properties underneath, till this menu's end is specified, are in this menu. use if you want to layer menus.</td>
+                    <td>No</td>
+                    <td>[HideInInspector] m_start_Alpha ("Alpha Options", Float) = 0</td>
+                </tr>
+                <tr>
+                    <td>m_start_&lt;string></td>
+                    <td>ends a dropdown menu that has been started with m_start_&lt;string></td>
+                    <td>No</td>
+                    <td>[HideInInspector] m_end_Alpha ("", Float) = 0</td>
+                </tr>
+                <tr>
+                    <td>g_start_&lt;string></td>
+                    <td>starts a group. properties are grouped together. not visible to the user. can be used to hide multiple properties with one condition specification.</td>
+                    <td>No</td>
+                    <td>[HideInInspector] g_start_blending ("--{condition_show:{type:PROPERTY_BOOL,data:_DisplayBlending}}", Float) = 0</td>
+                </tr>
+                <tr>
+                    <td>g_end_&lt;string></td>
+                    <td>ends a group that has been started with g_start_&lt;string></td>
+                    <td>No</td>
+                    <td>[HideInInspector] g_start_blending ("", Float) = 0</td>
+                </tr>
             </table>
             <h2>Drawers</h2>
             <table>
@@ -130,16 +161,6 @@
                     </td>
                     <td></td>
                     <td>[Gradient]_ColorRamp("Color Ramp",2D)= "white" { }</td>
-                </tr>
-                <tr>
-                    <td>[TextTexture]</td>
-                    <td>
-                        Creates a texture field with a text field next to it.
-                        <br />Text is automatically convertes in texture with text.
-                        <br />!!!Currently not reliable!!!
-                    </td>
-                    <td></td>
-                    <td>[TextTexture]_TextureSign("Sign Texture",2D)= "white" { }</td>
                 </tr>
                 <tr>
                     <td>[MultiSlider]</td>
@@ -290,25 +311,18 @@
                     <td>[Gradient]_ColorRamp ("Gradient --{texture:{width:256,height:16,filterMode:Point,wrapMode:Clamp},force_texture_options:true}", 2D) = "white" { }</td>
                 </tr>
                 <tr>
+                    <td>reference_properties</td>
+                    <td>string[]</td>
+                    <td>Default: null. specified properties will be drawn in texture foldout menu</td>
+                    <td>Texture</td>
+                    <td>_Texture("Panning Texture --{reference_properties:[_PanSpeed,_PanUV]}", 2D) = "white" { }</td>
+                </tr>
+                <tr>
                     <td>reference_property</td>
                     <td>string</td>
-                    <td>Default: null. Meaning dependent on porperty used on. (Example: panning property for textures)</td>
-                    <td>[Gradient],[PanningTexture]</td>
-                    <td>_Texture("Panning Texture --{texture:{width:256,height:16,filterMode:Point,wrapMode:Clamp},reference_property:_PanSpeed}", 2D) = "white" { }</td>
-                </tr>
-                <tr>
-                    <td>has_tile_offset</td>
-                    <td>bool</td>
-                    <td>Default: false. Show tile offset for gradient property.</td>
-                    <td>[Gradient]</td>
-                    <td>[Gradient]_ColorRamp ("Gradient --{texture:{width:256,height:16,filterMode:Point,wrapMode:Clamp},has_tile_offset:true}", 2D) = "white" { }</td>
-                </tr>
-                <tr>
-                    <td>has_panning</td>
-                    <td>bool</td>
-                    <td>Default: false. Show panning field for gradient property.</td>
-                    <td>[Gradient]</td>
-                    <td>[Gradient]_ColorRamp ("Gradient --{texture:{width:256,height:16,filterMode:Point,wrapMode:Clamp},has_panning:true}", 2D) = "white" { }</td>
+                    <td>Specifies a property by it's name. If defined the TextureArray Creator will fill this property with the texture array depth after creating an array from a gif or multiple images.</td>
+                    <td>[TextureArray]</td>
+                    <td>[TextureArray]_Texture("Animated Texture --{reference_property:_FrameCount}", 2DArray) = { }</td>
                 </tr>
             </table>
 

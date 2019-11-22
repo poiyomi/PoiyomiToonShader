@@ -28,12 +28,12 @@ namespace Thry
         private static void LoadModules()
         {
             modules_are_being_loaded = true;
-            Helper.DownloadStringASync(URL.PUBLIC_MODULES_COLLECTION, delegate (string s) {
+            WebHelper.DownloadStringASync(URL.PUBLIC_MODULES_COLLECTION, delegate (string s) {
                 modules = new List<ModuleHeader>();
                 List<string> module_urls = Parser.ParseToObject<List<string>>(s);
                 foreach(string url in module_urls)
                 {
-                    Helper.DownloadStringASync(url, delegate (string data)
+                    WebHelper.DownloadStringASync(url, delegate (string data)
                      {
                          ModuleHeader new_module = new ModuleHeader();
                          new_module.url = url;
@@ -43,7 +43,7 @@ namespace Thry
                              new_module.available_requirement_fullfilled = new_module.available_module.requirement.Test();
                          modules.Add(new_module);
                          //Debug.Log(Parser.ObjectToString(new_module));
-                         Helper.RepaintEditorWindow(typeof(Settings));
+                         UnityHelper.RepaintEditorWindow(typeof(Settings));
                      });
                 }
             });
@@ -56,7 +56,7 @@ namespace Thry
                 string path = GetModuleDirectoryPath(m) + "/module.json";
                 if (File.Exists(path))
                 {
-                    m.installed_module = Parser.ParseToObject<ModuleInfo>(Helper.ReadFileIntoString(path));
+                    m.installed_module = Parser.ParseToObject<ModuleInfo>(FileHelper.ReadFileIntoString(path));
                 }
             }
         }
@@ -71,21 +71,21 @@ namespace Thry
 
         public static void OnCompile()
         {
-            string url = Helper.LoadValueFromFile("update_module_url", PATH.AFTER_COMPILE_DATA);
-            string name = Helper.LoadValueFromFile("update_module_name", PATH.AFTER_COMPILE_DATA);
+            string url = FileHelper.LoadValueFromFile("update_module_url", PATH.AFTER_COMPILE_DATA);
+            string name = FileHelper.LoadValueFromFile("update_module_name", PATH.AFTER_COMPILE_DATA);
             if (url != null && url.Length > 0 && name != null && name.Length > 0)
             {
                 InstallModule(url, name);
-                Helper.SaveValueToFile("update_module_url", "", PATH.AFTER_COMPILE_DATA);
-                Helper.SaveValueToFile("update_module_url", "", PATH.AFTER_COMPILE_DATA);
+                FileHelper.SaveValueToFile("update_module_url", "", PATH.AFTER_COMPILE_DATA);
+                FileHelper.SaveValueToFile("update_module_url", "", PATH.AFTER_COMPILE_DATA);
             }
         }
 
         public static void UpdateModule(ModuleHeader module)
         {
             module.is_being_installed_or_removed = true;
-            Helper.SaveValueToFile("update_module_url", module.url, PATH.AFTER_COMPILE_DATA);
-            Helper.SaveValueToFile("update_module_name", module.available_module.name, PATH.AFTER_COMPILE_DATA);
+            FileHelper.SaveValueToFile("update_module_url", module.url, PATH.AFTER_COMPILE_DATA);
+            FileHelper.SaveValueToFile("update_module_name", module.available_module.name, PATH.AFTER_COMPILE_DATA);
             RemoveModule(module);
         }
 
@@ -100,7 +100,7 @@ namespace Thry
         private static void InstallModule(string url, string name)
         {
             EditorUtility.DisplayProgressBar( name + " download progress", "", 0);
-            Helper.DownloadStringASync(url, delegate (string s)
+            WebHelper.DownloadStringASync(url, delegate (string s)
             {
                 if (s.StartsWith("404"))
                 {
@@ -116,12 +116,12 @@ namespace Thry
                 thry_modules_path += "/thry_modules";
                 string install_path = thry_modules_path + "/" + name;
                 string base_url = url.RemoveFileName();
-                Helper.WriteStringToFile(s, temp_path + "/module.json");
+                FileHelper.WriteStringToFile(s, temp_path + "/module.json");
                 int i = 0;
                 foreach (string f in module_info.files)
                 {
                     //Debug.Log(base_url + f);
-                    Helper.DownloadFileASync(base_url + f, temp_path + "/" + f, delegate (string data)
+                    WebHelper.DownloadFileASync(base_url + f, temp_path + "/" + f, delegate (string data)
                     {
                         i++;
                         EditorUtility.DisplayProgressBar("Downloading files for "+name, "Downloaded "+ base_url + f, (float)i / module_info.files.Count);

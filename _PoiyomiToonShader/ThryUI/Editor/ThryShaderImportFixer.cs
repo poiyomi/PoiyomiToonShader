@@ -49,23 +49,6 @@ namespace Thry
 
         }
 
-        /*private static List<string> allShaderPaths = new List<string>();
-
-        [InitializeOnLoad]
-        public class Startup
-        {
-            static Startup()
-            {
-                loadAllShaderPaths();
-            }
-        }
-
-        private static void loadAllShaderPaths()
-        {
-            allShaderPaths.Clear();
-            foreach (string g in AssetDatabase.FindAssets("t:shader")) allShaderPaths.Add(AssetDatabase.GUIDToAssetPath(g));
-        }*/
-
         public static void fixMaterials()
         {
             if (!File.Exists(PATH.MATERIALS_BACKUP_FILE))
@@ -126,7 +109,7 @@ namespace Thry
                     //Debug.Log("Shader: " + shader.name);
                     material.shader = shader;
                     material.renderQueue = int.Parse(materialData[2]);
-                    Helper.UpdateRenderQueue(material, shader);
+                    MaterialHelper.UpdateRenderQueue(material, shader);
                 }
             }
             reader.Close();
@@ -164,7 +147,7 @@ namespace Thry
 
             if (ignore) return;
             if (!Config.Get().showImportPopup) return;
-            EditorWindow window = Helper.FindEditorWindow(typeof(ShaderImportFixerGui));
+            EditorWindow window = UnityHelper.FindEditorWindow(typeof(ShaderImportFixerGui));
             if (window == null) window = EditorWindow.CreateInstance<ShaderImportFixerGui>();
             window.Show();
         }
@@ -191,7 +174,7 @@ namespace Thry
 
         private static string readShaderName(string path)
         {
-            string shaderCode = Helper.ReadFileIntoString(path);
+            string shaderCode = FileHelper.ReadFileIntoString(path);
             string pattern = @"Shader *""(\w|\/|\.)+";
             string ogShaderName = Regex.Match(shaderCode, pattern).Value;
             ogShaderName = Regex.Replace(ogShaderName, @"Shader *""", "");
@@ -211,7 +194,7 @@ namespace Thry
             for (int mG = 0; mG < materialGuids.Length; mG++)
             {
                 Material material = AssetDatabase.LoadAssetAtPath<Material>(AssetDatabase.GUIDToAssetPath(materialGuids[mG]));
-                writer.WriteLine(materialGuids[mG] + ":" + Helper.getDefaultShaderName(material.shader.name) + ":" + material.renderQueue);
+                writer.WriteLine(materialGuids[mG] + ":" + ShaderHelper.getDefaultShaderName(material.shader.name) + ":" + material.renderQueue);
                 EditorUtility.DisplayProgressBar("Backup materials", "", (float)(mG + 1) / materialGuids.Length);
             }
 
@@ -224,7 +207,7 @@ namespace Thry
             if (restoring_in_progress) return;
             string[] mats = new string[0];
             if (!File.Exists(PATH.MATERIALS_BACKUP_FILE)) File.CreateText(PATH.MATERIALS_BACKUP_FILE).Close();
-            else mats = Helper.ReadFileIntoString(PATH.MATERIALS_BACKUP_FILE).Split(new string[] { "\n" }, System.StringSplitOptions.None);
+            else mats = FileHelper.ReadFileIntoString(PATH.MATERIALS_BACKUP_FILE).Split(new string[] { "\n" }, System.StringSplitOptions.None);
             bool updated = false;
             string matGuid = AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(m.GetInstanceID()));
             string newString = "";
@@ -233,7 +216,7 @@ namespace Thry
                 if (mats[mat].Contains(matGuid))
                 {
                     updated = true;
-                    newString += matGuid + ":" + Helper.getDefaultShaderName(m.shader.name) + ":" + m.renderQueue + "\r\n";
+                    newString += matGuid + ":" + ShaderHelper.getDefaultShaderName(m.shader.name) + ":" + m.renderQueue + "\r\n";
                 }
                 else
                 {
@@ -241,9 +224,9 @@ namespace Thry
                 }
 
             }
-            if (!updated) newString += matGuid + ":" + Helper.getDefaultShaderName(m.shader.name) + ":" + m.renderQueue;
+            if (!updated) newString += matGuid + ":" + ShaderHelper.getDefaultShaderName(m.shader.name) + ":" + m.renderQueue;
             else newString = newString.Substring(0, newString.LastIndexOf("\n"));
-            Helper.WriteStringToFile(newString, PATH.MATERIALS_BACKUP_FILE);
+            FileHelper.WriteStringToFile(newString, PATH.MATERIALS_BACKUP_FILE);
         }
 
         public static void restoreAllMaterials()
@@ -263,7 +246,7 @@ namespace Thry
                 Shader shader = Shader.Find(materialData[1]);
                 material.shader = shader;
                 material.renderQueue = int.Parse(materialData[2]);
-                Helper.UpdateRenderQueue(material, shader);
+                MaterialHelper.UpdateRenderQueue(material, shader);
             }
             ThryEditor.repaint();
 

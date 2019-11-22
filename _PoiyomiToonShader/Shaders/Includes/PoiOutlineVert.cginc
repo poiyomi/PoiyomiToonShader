@@ -61,7 +61,7 @@
         
         o.angleAlpha = 1;
         #ifdef POI_RANDOM
-            o.angleAlpha = ApplyAngleBasedRendering(o.modelPos);
+            o.angleAlpha = ApplyAngleBasedRendering(o.modelPos, o.worldPos);
         #endif
         
         UNITY_TRANSFER_SHADOW(o, o.uv0);

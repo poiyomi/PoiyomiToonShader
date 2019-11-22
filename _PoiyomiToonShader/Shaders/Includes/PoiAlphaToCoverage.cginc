@@ -24,7 +24,7 @@
             // rescale alpha by mip level (if not using preserved coverage mip maps)
             finalColor.a *= 1 + max(0, CalcMipLevel()) * _MainMipScale;
             // rescale alpha by partial derivative
-            finalColor.a = (finalColor.a - _Clip) / max(fwidth(finalColor.a), 0.0001) + 0.5;
+            finalColor.a = (finalColor.a - _Clip) / fwidth(finalColor.a) + 0.5;
         }
     }
 #endif

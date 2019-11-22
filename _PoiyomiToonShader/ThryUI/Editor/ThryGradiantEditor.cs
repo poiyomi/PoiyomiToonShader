@@ -16,7 +16,7 @@ namespace Thry
 
         public static void Open(GradientData data, MaterialProperty prop, bool show_texture_options=true)
         {
-            data.gradient = Helper.GetGradient(prop.textureValue);
+            data.gradient = TextureHelper.GetGradient(prop.textureValue);
             texture_settings_data = null;
             GradientEditor window = (GradientEditor)EditorWindow.GetWindow(typeof(GradientEditor));
             window.privious_preview_texture = prop.textureValue;
@@ -52,7 +52,7 @@ namespace Thry
             TextureData defined_default = ThryEditor.currentlyDrawing.currentProperty.options.texture;
             if (ThryEditor.currentlyDrawing.currentProperty.options.force_texture_options && defined_default!=null)
                 return defined_default;
-            string json_texture_settings = Helper.LoadValueFromFile("gradient_texture_options_"+prop.name, PATH.PERSISTENT_DATA);
+            string json_texture_settings = FileHelper.LoadValueFromFile("gradient_texture_options_"+prop.name, PATH.PERSISTENT_DATA);
             if (json_texture_settings != null)
                 return Parser.ParseToObject<TextureData>(json_texture_settings);
             else if (defined_default != null)
@@ -89,9 +89,9 @@ namespace Thry
                 if (data.preview_texture.GetType() == typeof(Texture2D))
                 {
                     string file_name = GradientFileName(data.gradient, prop.targets[0].name); ;
-                    Texture saved = Helper.SaveTextureAsPNG((Texture2D)data.preview_texture, PATH.TEXTURES_DIR+"/Gradients/" + file_name, textureSettings);
+                    Texture saved = TextureHelper.SaveTextureAsPNG((Texture2D)data.preview_texture, PATH.TEXTURES_DIR+"/Gradients/" + file_name, textureSettings);
                     file_name = Regex.Replace(file_name, @"\.((png)|(jpg))$", "");
-                    Helper.SaveValueToFile(file_name, Parser.ObjectToString(data.gradient), PATH.GRADIENT_INFO_FILE);
+                    FileHelper.SaveValueToFile(file_name, Parser.ObjectToString(data.gradient), PATH.GRADIENT_INFO_FILE);
                     prop.textureValue = saved;
                 }
             }
@@ -194,7 +194,7 @@ namespace Thry
         private void DiscardChanges()
         {
             prop.textureValue = privious_preview_texture;
-            SetGradient(Helper.GetGradient(privious_preview_texture));
+            SetGradient(TextureHelper.GetGradient(privious_preview_texture));
             gradient_has_been_edited = false;
             ThryEditor.repaint();
         }
@@ -207,7 +207,7 @@ namespace Thry
             bool changed = GuiHelper.GUIDataStruct<TextureData>(textureSettings, new string[]{"name"});
             if (changed)
             {
-                Helper.SaveValueToFile("gradient_texture_options_" + prop.name, Parser.ObjectToString(textureSettings), PATH.PERSISTENT_DATA);
+                FileHelper.SaveValueToFile("gradient_texture_options_" + prop.name, Parser.ObjectToString(textureSettings), PATH.PERSISTENT_DATA);
                 UpdateGradientPreviewTexture();
             }
         }
@@ -243,7 +243,7 @@ namespace Thry
 
             Rect r2 = new Rect(gradient_texture_position.x + 1, gradient_texture_position.y + 1, gradient_texture_position.width - 2, gradient_texture_position.height - 2);
 
-            Texture2D backgroundTexture = Helper.GetBackgroundTexture();
+            Texture2D backgroundTexture = TextureHelper.GetBackgroundTexture();
             Rect texCoordsRect = new Rect(0, 0, r2.width / backgroundTexture.width, r2.height / backgroundTexture.height);
             GUI.DrawTextureWithTexCoords(r2, backgroundTexture, texCoordsRect, false);
 

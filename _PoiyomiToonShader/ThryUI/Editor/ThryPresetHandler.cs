@@ -22,7 +22,7 @@ namespace Thry
         //variabled for the preset selector
         public int selectedPreset = 0;
         private string[] presetOptions;
-        string newPresetName = "Preset Name";
+        string newPresetName = Locale.locale["new_preset_name"];
 
         public PresetHandler(MaterialProperty[] props)
         {
@@ -110,7 +110,7 @@ namespace Thry
             }
             else if (hasPresets && !presetsLoaded)
             {
-                GUILayout.Label("Presets File Missing");
+                GUILayout.Label(Locale.locale["message_presets_file_missing"]);
             }
         }
 
@@ -118,7 +118,7 @@ namespace Thry
         {
             newPresetName = GUILayout.TextField(newPresetName, GUILayout.MaxWidth(100));
 
-            if (GUILayout.Button("Add", GUILayout.Width(40), GUILayout.Height(20)))
+            if (GUILayout.Button(Locale.locale["add"], GUILayout.Width(40), GUILayout.Height(20)))
             {
                 addNewPreset(newPresetName, props, materials);
             }
@@ -148,9 +148,9 @@ namespace Thry
             }
             reader.Close();
             presetOptions = new string[presets.Count + 3];
-            presetOptions[0] = "Presets";
-            presetOptions[presets.Count + 1] = " - Manage Presets -";
-            presetOptions[presets.Count + 2] = "+ New +";
+            presetOptions[0] = Locale.locale["presets"];
+            presetOptions[presets.Count + 1] = Locale.locale["manage_presets"];
+            presetOptions[presets.Count + 2] = Locale.locale["new_preset"];
             int i = 1;
             foreach (string k in presets.Keys) presetOptions[i++] = k;
             presetsLoaded = true;
@@ -231,7 +231,7 @@ namespace Thry
                         break;
                     case MaterialProperty.PropType.Texture:
                         if (p.textureValue == null || p.textureValue.Equals(defaultValues.GetTexture(Shader.PropertyToID(set[0])))) empty = true;
-                        else set[1] = "" + p.textureValue.name;
+                        else set[1] = "" + AssetDatabase.GetAssetPath(p.textureValue);
                         break;
                     case MaterialProperty.PropType.Vector:
                         if (p.vectorValue.Equals(defaultValues.GetVector(Shader.PropertyToID(set[0])))) empty = true;
@@ -248,7 +248,7 @@ namespace Thry
             //fix all preset variables
             presets.Add(name, sets);
             addToPresetOptions(name);
-            newPresetName = "Preset Name";
+            newPresetName = Locale.locale["new_preset_name"];
 
             //save all presets into file
             savePresets();
@@ -293,7 +293,7 @@ namespace Thry
 
         public void applyPreset(string presetName, MaterialProperty[] props, Material[] materials)
         {
-            ThryEditor.addUndo("Apply preset: " + presetName);
+            ThryEditor.addUndo(Locale.locale["apply_preset"] +": " + presetName);
             List<string[]> sets;
             if (presets.TryGetValue(presetName, out sets))
             {
@@ -304,14 +304,9 @@ namespace Thry
                     {
                         if (p.type == MaterialProperty.PropType.Texture)
                         {
-                            string[] guids = AssetDatabase.FindAssets(set[1] + " t:Texture", null);
-                            if (guids.Length == 0) Debug.Log("Couldn't find texture: " + set[1]);
-                            else
-                            {
-                                string path = AssetDatabase.GUIDToAssetPath(guids[0]);
-                                Texture tex = (Texture)EditorGUIUtility.Load(path);
+                            Texture tex = AssetDatabase.LoadAssetAtPath<Texture>(set[1]);
+                            if(tex!=null)
                                 foreach (Material m in materials) m.SetTexture(Shader.PropertyToID(set[0]), tex);
-                            }
                         }
                         else if (p.type == MaterialProperty.PropType.Float || p.type == MaterialProperty.PropType.Range)
                         {
@@ -326,7 +321,7 @@ namespace Thry
                         }
                         else if (p.type == MaterialProperty.PropType.Color)
                         {
-                            Color col = Helper.stringToColor(set[1]);
+                            Color col = Converter.stringToColor(set[1]);
                             foreach (Material m in materials) m.SetColor(Shader.PropertyToID(set[0]), col);
                         }
                     }

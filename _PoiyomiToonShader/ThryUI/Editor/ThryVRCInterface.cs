@@ -73,7 +73,7 @@ namespace Thry
             if (path == null || !File.Exists(path))
                 return "";
             sdk_path = Regex.Match(path, @".*\/").Value;
-            return Helper.ReadFileIntoString(path);
+            return FileHelper.ReadFileIntoString(path);
         }
 
         private static string GetNewestSDKVersion()
@@ -103,16 +103,16 @@ namespace Thry
 
         public void RemoveVRCSDK(bool refresh)
         {
-            Helper.SaveValueToFile("delete_vrc_sdk", "true", PATH.AFTER_COMPILE_DATA);
-            Helper.SetDefineSymbol(DEFINE_SYMBOLS.VRC_SDK_INSTALLED, false);
+            FileHelper.SaveValueToFile("delete_vrc_sdk", "true", PATH.AFTER_COMPILE_DATA);
+            UnityHelper.SetDefineSymbol(DEFINE_SYMBOLS.VRC_SDK_INSTALLED, false);
             AssetDatabase.Refresh();
         }
 
         public static void OnCompile()
         {
-            if (Helper.LoadValueFromFile("delete_vrc_sdk", PATH.AFTER_COMPILE_DATA) == "true")
+            if (FileHelper.LoadValueFromFile("delete_vrc_sdk", PATH.AFTER_COMPILE_DATA) == "true")
                 DeleteVRCSDKFolder();
-            if (!Get().sdk_is_installed && Helper.LoadValueFromFile("update_vrc_sdk", PATH.AFTER_COMPILE_DATA) == "true")
+            if (!Get().sdk_is_installed && FileHelper.LoadValueFromFile("update_vrc_sdk", PATH.AFTER_COMPILE_DATA) == "true")
                 DownloadAndInstallVRCSDK();
         }
 
@@ -120,7 +120,7 @@ namespace Thry
         {
             if (!Get().sdk_is_installed)
             {
-                Helper.SaveValueToFile("delete_vrc_sdk", "false", PATH.AFTER_COMPILE_DATA);
+                FileHelper.SaveValueToFile("delete_vrc_sdk", "false", PATH.AFTER_COMPILE_DATA);
                 Settings.is_changing_vrc_sdk = false;
             }
             if (Get().sdk_path != null && Directory.Exists(Get().sdk_path))
@@ -133,7 +133,7 @@ namespace Thry
 
         public void UpdateVRCSDK()
         {
-            Helper.SaveValueToFile("update_vrc_sdk", "true", PATH.AFTER_COMPILE_DATA);
+            FileHelper.SaveValueToFile("update_vrc_sdk", "true", PATH.AFTER_COMPILE_DATA);
             this.RemoveVRCSDK();
         }
 
@@ -143,12 +143,12 @@ namespace Thry
 
             if (File.Exists(PATH.TEMP_VRC_SDK_PACKAGE))
                 File.Delete(PATH.TEMP_VRC_SDK_PACKAGE);
-            Helper.DownloadFileASync(url, PATH.TEMP_VRC_SDK_PACKAGE, VRCSDKUpdateCallback);
+            WebHelper.DownloadFileASync(url, PATH.TEMP_VRC_SDK_PACKAGE, VRCSDKUpdateCallback);
         }
 
         public static void VRCSDKUpdateCallback(string data)
         {
-            Helper.SaveValueToFile("update_vrc_sdk", "false", PATH.AFTER_COMPILE_DATA);
+            FileHelper.SaveValueToFile("update_vrc_sdk", "false", PATH.AFTER_COMPILE_DATA);
             AssetDatabase.ImportPackage(PATH.TEMP_VRC_SDK_PACKAGE, false);
             File.Delete(PATH.TEMP_VRC_SDK_PACKAGE);
             Update();
@@ -156,20 +156,20 @@ namespace Thry
 
         public static void SetVRCDefineSybolIfSDKImported(string[] importedAssets)
         {
-            bool currently_deleteing_sdk = (Helper.LoadValueFromFile("delete_vrc_sdk", PATH.AFTER_COMPILE_DATA) == "true");
+            bool currently_deleteing_sdk = (FileHelper.LoadValueFromFile("delete_vrc_sdk", PATH.AFTER_COMPILE_DATA) == "true");
             if (!Settings.is_changing_vrc_sdk && !currently_deleteing_sdk && AssetsContainVRCSDK(importedAssets))
             {
-                Helper.SetDefineSymbol(DEFINE_SYMBOLS.VRC_SDK_INSTALLED, true);
+                UnityHelper.SetDefineSymbol(DEFINE_SYMBOLS.VRC_SDK_INSTALLED, true);
                 Update();
             }
         }
 
         public static void SetVRCDefineSybolIfSDKDeleted(string[] importedAssets)
         {
-            bool currently_deleteing_sdk = (Helper.LoadValueFromFile("delete_vrc_sdk", PATH.AFTER_COMPILE_DATA) == "true");
+            bool currently_deleteing_sdk = (FileHelper.LoadValueFromFile("delete_vrc_sdk", PATH.AFTER_COMPILE_DATA) == "true");
             if (!Settings.is_changing_vrc_sdk && !currently_deleteing_sdk && AssetsContainVRCSDK(importedAssets))
             {
-                Helper.SetDefineSymbol(DEFINE_SYMBOLS.VRC_SDK_INSTALLED, false);
+                UnityHelper.SetDefineSymbol(DEFINE_SYMBOLS.VRC_SDK_INSTALLED, false);
                 Update();
             }
         }

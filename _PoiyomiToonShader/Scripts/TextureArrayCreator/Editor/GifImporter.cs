@@ -1,6 +1,4 @@
 
-#if DOT_NET_TWO_POINT_ZERO_OR_ABOVE 
-
     using System.Collections.Generic;
     using System.Drawing;
     using System.Drawing.Imaging;
@@ -67,4 +65,3 @@
 
         }
     }
-#endif

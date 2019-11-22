@@ -9,7 +9,7 @@
     float4 frag(v2f i, float facing: VFACE): SV_Target
     {
         finalEmission = 0;
-        
+        poiMesh.isFrontFace = facing;
         i.uv0.xy += _GlobalPanSpeed.xy * _Time.x;
         //This has to be first because it modifies the UVs for the rest of the functions
         
@@ -24,10 +24,6 @@
         
         #ifdef POI_MAINTEXTURE
             initTextureData();
-        #endif
-        
-        #ifdef REFRACTION
-            calculateRefraction(i);
         #endif
         
         #ifdef POI_LIGHTING
@@ -77,15 +73,8 @@
             calculatePanosphere();
         #endif
         
-        #ifdef POI_EMISSION
-            calculateEmission();
-        #endif
-        
         finalColor = albedo;
         
-        #ifdef REFRACTION
-            applyRefraction(finalColor);
-        #endif
         
         #ifdef POI_RIM
             applyRimColor(finalColor);
@@ -135,7 +124,7 @@
         #endif
         #if defined(FORWARD_BASE_PASS) || defined(POI_META_PASS)
             finalEmission += finalColorBeforeLighting.rgb * _MainEmissionStrength * albedo.a;
-            
+            finalEmission += BackFaceColor * _BackFaceEmissionStrength;
             #ifdef PANOSPHERE
                 applyPanosphereEmission(finalEmission);
             #endif
@@ -162,9 +151,6 @@
                 #ifdef POI_METAL
                     applyAdditiveReflectiveLighting(finalColor);
                 #endif
-                #ifdef TRANSPARENT
-                    finalColor.rgb *= finalColor.a;
-                #endif
                 
                 #ifdef POI_SPECULAR
                     applySpecular(finalColor);
@@ -172,10 +158,18 @@
             #endif
         #endif
         
+        #if defined(TRANSPARENT) && defined(FORWARD_ADD_PASS)
+            finalColor.rgb *= finalColor.a;
+        #endif
+        
         #ifdef POI_LIGHTING
             #ifdef SUBSURFACE
                 applySubsurfaceScattering(finalColor);
             #endif
+        #endif
+        
+        #ifdef CUTOUT
+            applyDithering(finalColor);
         #endif
         
         #ifdef POI_ALPHA_TO_COVERAGE
@@ -207,7 +201,12 @@
             return UnityMetaFragment(meta);
         #endif
         
+        
         finalColor.rgb += finalEmission;
+        
+        #ifdef POI_REFRACTION
+            applyRefraction(finalColor);
+        #endif
         
         #ifdef FORWARD_BASE_PASS
             UNITY_BRANCH

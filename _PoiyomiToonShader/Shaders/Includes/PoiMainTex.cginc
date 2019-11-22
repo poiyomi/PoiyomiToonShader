@@ -23,10 +23,13 @@
     uint _DetailNormalUV;
     float _DetailBrightness;
     float2 _DetailTexturePan;
+    float _MainHueShift;
     //globals
     float alphaMask;
     half3 diffColor;
     uint _BumpMapUV;
+    
+    #include "PoiBackFace.cginc"
     
     inline FragmentCommonData SpecularSetup(float4 i_tex)
     {
@@ -63,10 +66,12 @@
     {
         mainTexture = UNITY_SAMPLE_TEX2D(_MainTex, TRANSFORM_TEX(poiMesh.uv[0], _MainTex));
         
-        #ifdef POI_MIRROR
-            applyMirrorTexture();
+        #if (defined(FORWARD_BASE_PASS) || defined(FORWARD_ADD_PASS))
+            #ifdef POI_MIRROR
+                applyMirrorTexture();
+            #endif
         #endif
-        
+
         #ifdef _ALPHABLEND_ON
             calculateDissolve();
         #endif
@@ -74,12 +79,22 @@
         #ifndef POI_SHADOW
             alphaMask = UNITY_SAMPLE_TEX2D_SAMPLER(_AlphaMask, _MainTex, TRANSFORM_TEX(poiMesh.uv[0], _AlphaMask));
             albedo = float4(lerp(mainTexture.rgb, dot(mainTexture.rgb, float3(0.3, 0.59, 0.11)), -_Saturation) * _Color.rgb * lerp(1, poiMesh.vertexColor.rgb, _MainVertexColoring), mainTexture.a * _Color.a * alphaMask);
+            applyBackFaceTexture();
+            
+            UNITY_BRANCH
+            if(_MainHueShift != 0)
+            {
+                float3 HSVAlbedo = RGBtoHSV(albedo.rgb);
+                HSVAlbedo.r = frac(HSVAlbedo.r + _MainHueShift);
+                albedo.rgb = HSVtoRGB(HSVAlbedo);
+            }
+            
             
             float3 mainNormal = UnpackScaleNormal(UNITY_SAMPLE_TEX2D_SAMPLER(_BumpMap, _MainTex, TRANSFORM_TEX(poiMesh.uv[_BumpMapUV], _BumpMap) + _Time.x * _MainNormalPan), _BumpScale);
             float3 detailMask = UNITY_SAMPLE_TEX2D_SAMPLER(_DetailMask, _MainTex, TRANSFORM_TEX(poiMesh.uv[0], _DetailMask));
             float3 detailNormal = UnpackScaleNormal(UNITY_SAMPLE_TEX2D_SAMPLER(_DetailNormalMap, _MainTex, TRANSFORM_TEX(poiMesh.uv[_DetailNormalUV], _DetailNormalMap) + _Time.x * _MainDetailNormalPan), _DetailNormalMapScale * detailMask.g);
             poiMesh.tangentSpaceNormal = BlendNormals(mainNormal, detailNormal);
-
+            
             albedo.rgb *= lerp(1, UNITY_SAMPLE_TEX2D_SAMPLER(_DetailTex, _MainTex, TRANSFORM_TEX(poiMesh.uv[_DetailTexUV], _DetailTex) + _Time.x * _DetailTexturePan).rgb * _DetailBrightness * _DetailTint * unity_ColorSpaceDouble, detailMask.r * _DetailTexIntensity);
             albedo.rgb = saturate(albedo.rgb);
             poiMesh.normals[1] = normalize(

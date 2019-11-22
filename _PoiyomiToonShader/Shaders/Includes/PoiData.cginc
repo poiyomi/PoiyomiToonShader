@@ -64,7 +64,13 @@
         poiCam.worldPos = _WorldSpaceCameraPos;
         poiCam.distanceToModel = distance(poiMesh.modelPos, poiCam.worldPos);
         poiCam.distanceToVert = distance(poiMesh.worldPos, poiCam.worldPos);
-        
+        poiCam.screenPos = i.screenPos;
+        #ifdef CUTOUT
+            poiCam.screenUV = calcScreenUVs(i.screenPos);
+        #endif
+        poiCam.grabPos = i.grabPos;
+
+
         poiCam.tangentViewDir = normalize(i.tangentViewDir);
         poiCam.tangentViewDir.xy /= (poiCam.tangentViewDir.z + _ParallaxBias);
     }

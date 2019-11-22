@@ -43,6 +43,8 @@ namespace Thry
                     if (i == input.Length - 1 || (depth == 0 && input[i] == ',' && !escaped))
                     {
                         string[] parts = input.Substring(variableStart, i - variableStart).Split(new char[] { ':' }, 2);
+                        if (parts.Length < 2)
+                            break;
                         string key = ""+ParsePrimitive(parts[0]);
                         object value = ParseJson(parts[1]);
                         variables.Add(key, value);
@@ -90,6 +92,8 @@ namespace Thry
                 return true;
             else if (input.ToLower() == "false")
                 return false;
+            else if (input == "null")
+                return null;
             else
             {
                 float floatValue;
@@ -140,7 +144,7 @@ namespace Thry
             {
                 if (Enum.IsDefined(objtype, (string)parsed))
                     return Enum.Parse(objtype, (string)parsed);
-                Debug.LogWarning("The specified enum for " + objtype.Name + " does not exist. Existing Values are: " + Helper.ArrayToString(Enum.GetValues(objtype)));
+                Debug.LogWarning("The specified enum for " + objtype.Name + " does not exist. Existing Values are: " + Converter.ArrayToString(Enum.GetValues(objtype)));
                 return Enum.GetValues(objtype).GetValue(0);
             }
             return null; 
@@ -196,7 +200,7 @@ namespace Thry
         private static object PrimitiveToObject(object parsed, Type objtype)
         {
             if (typeof(String) == objtype)
-                return parsed.ToString();
+                return parsed!=null?parsed.ToString():null;
             if (typeof(char) == objtype)
                 return ((string)parsed)[0];
             return parsed;

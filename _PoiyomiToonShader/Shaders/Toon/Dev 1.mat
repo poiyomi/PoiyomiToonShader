@@ -7,7 +7,7 @@ Material:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_Name: Dev 1
-  m_Shader: {fileID: 4800000, guid: 3ea1f79935b9bd049a40bf60dcf574ae, type: 3}
+  m_Shader: {fileID: 4800000, guid: 45429b755005c8245b20248fbc150a0a, type: 3}
   m_ShaderKeywords: _NORMALMAP
   m_LightmapFlags: 1
   m_EnableInstancingVariants: 0
@@ -28,6 +28,10 @@ Material:
         m_Offset: {x: 0, y: 0}
     - _AnisoTangentMap:
         m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _BackFaceTexture:
+        m_Texture: {fileID: 2800000, guid: 6dbf4247f9aed3942ab87007c07186a6, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BumpMap:
@@ -86,7 +90,15 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _EmissionMap1:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _EmissionMask:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _EmissionMask1:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
@@ -103,7 +115,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: c327162d2cab6a64885a190024d00b29, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Matcap:
@@ -183,7 +195,11 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _ToonRamp:
-        m_Texture: {fileID: 2800000, guid: d133d9da0d838e14eae7874a08f8017a, type: 3}
+        m_Texture: {fileID: 2800000, guid: 61bd594533da4fc42bd46ef93ba5a4f6, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _VertexManipulationHeightMask:
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
@@ -199,6 +215,11 @@ Material:
     - _AnisoSpec2Alpha: 1
     - _AnisoUseTangentMap: 0
     - _AttenuationMultiplier: 0
+    - _BackFaceDetailIntensity: 1
+    - _BackFaceEmissionStrength: 0
+    - _BackFaceEnabled: 0
+    - _BackFaceHueShift: 0
+    - _BackFaceTextureUV: 0
     - _BumpMapUV: 0
     - _BumpScale: 1
     - _CameraAngleMax: 90
@@ -211,7 +232,7 @@ Material:
     - _ClearCoatSmoothness: 0
     - _Clip: 0.5
     - _ContinuousDissolve: 0
-    - _Cull: 2
+    - _Cull: 0
     - _DebugCameraData: 0
     - _DebugDisplayDebug: 0
     - _DebugLightingData: 0
@@ -234,22 +255,35 @@ Material:
     - _DissolveP2PWorldLocal: 0
     - _DissolveToEmissionStrength: 0
     - _DissolveType: 1
+    - _DitheringEnabled: 0
     - _EmissionCenterOutEnabled: 0
+    - _EmissionCenterOutEnabled1: 0
     - _EmissionCenterOutSpeed: 5
+    - _EmissionCenterOutSpeed1: 5
     - _EmissionStrength: 0
+    - _EmissionStrength1: 0
     - _EmissionUV: 0
+    - _EmissionUV1: 0
     - _EmissiveBlink_Max: 1
+    - _EmissiveBlink_Max1: 1
     - _EmissiveBlink_Min: 1
+    - _EmissiveBlink_Min1: 1
     - _EmissiveBlink_Velocity: 4
+    - _EmissiveBlink_Velocity1: 4
     - _EmissiveScroll_Interval: 20
+    - _EmissiveScroll_Interval1: 20
     - _EmissiveScroll_Velocity: 10
+    - _EmissiveScroll_Velocity1: 10
     - _EmissiveScroll_Width: 10
+    - _EmissiveScroll_Width1: 10
     - _EnableClearCoat: 0
     - _EnableDissolve: 0
     - _EnableEmission: 0
+    - _EnableEmission1: 0
     - _EnableEnvironmentalRim: 0
     - _EnableFlipbook: 0
     - _EnableGITDEmission: 0
+    - _EnableGITDEmission1: 0
     - _EnableLighting: 1
     - _EnableMetallic: 0
     - _EnableMirrorOptions: 0
@@ -271,10 +305,15 @@ Material:
     - _ForceOpaque: 0
     - _GIEmissionMultiplier: 1
     - _GITDEMaxEmissionMultiplier: 0
+    - _GITDEMaxEmissionMultiplier1: 0
     - _GITDEMaxLight: 1
+    - _GITDEMaxLight1: 1
     - _GITDEMinEmissionMultiplier: 1
+    - _GITDEMinEmissionMultiplier1: 1
     - _GITDEMinLight: 0
+    - _GITDEMinLight1: 0
     - _GITDEWorldOrMesh: 0
+    - _GITDEWorldOrMesh1: 0
     - _IgnoreFog: 0
     - _InvertSmoothness: 0
     - _LightingAOUV: 0
@@ -286,6 +325,7 @@ Material:
     - _LightingType: 1
     - _MainAlphaToCoverage: 1
     - _MainEmissionStrength: 0
+    - _MainHueShift: 0
     - _MainMinAlpha: 0
     - _MainMipScale: 0.25
     - _MainVertexColoring: 0
@@ -343,6 +383,7 @@ Material:
     - _SampleWorld: 0
     - _Saturation: 0
     - _ScrollingEmission: 0
+    - _ScrollingEmission1: 0
     - _ShadowMix: 0
     - _ShadowMixThreshold: 0.5
     - _ShadowMixWidthMod: 0.5
@@ -363,6 +404,8 @@ Material:
     - _StencilPassOp: 0
     - _StencilRef: 0
     - _StencilZFailOp: 0
+    - _VertexManipulationHeight: 0
+    - _VertexManipulationHeightBias: 0
     - _ZBias: 0
     - _ZTest: 4
     - _ZWrite: 1
@@ -375,6 +418,7 @@ Material:
     - m_end_Alpha: 0
     - m_end_Anisotropic: 0
     - m_end_CenterOutEmission: 0
+    - m_end_CenterOutEmission1: 0
     - m_end_DetailOptions: 0
     - m_end_Lighting: 0
     - m_end_Matcap2: 0
@@ -383,15 +427,19 @@ Material:
     - m_end_SpecularToon: 0
     - m_end_StencilPassOptions: 0
     - m_end_angularFade: 0
+    - m_end_backFace: 0
     - m_end_bakedLighting: 0
     - m_end_blinkingEmissionOptions: 0
+    - m_end_blinkingEmissionOptions1: 0
     - m_end_clearCoat: 0
     - m_end_debugOptions: 0
     - m_end_dissolve: 0
     - m_end_distanceFade: 0
+    - m_end_emission1Options: 0
     - m_end_emissionOptions: 0
     - m_end_flipBook: 0
     - m_end_glowInDarkEmissionOptions: 0
+    - m_end_glowInDarkEmissionOptions1: 0
     - m_end_lightingAdvanced: 0
     - m_end_lightingBeta: 0
     - m_end_lightingStandard: 0
@@ -406,17 +454,20 @@ Material:
     - m_end_reflectionRim: 0
     - m_end_rimLightOptions: 0
     - m_end_rimWidthNoise: 0
+    - m_end_scrollingEmission1Options: 0
     - m_end_scrollingEmissionOptions: 0
     - m_end_specular: 0
     - m_end_subsurface: 0
+    - m_end_vertexManipulation: 0
     - m_lightingOptions: 0
-    - m_mainOptions: 0
+    - m_mainOptions: 1
     - m_parallaxMap: 0
     - m_reflectionOptions: 0
-    - m_renderingOptions: 0
+    - m_renderingOptions: 1
     - m_start_Alpha: 0
     - m_start_Anisotropic: 0
     - m_start_CenterOutEmission: 0
+    - m_start_CenterOutEmission1: 0
     - m_start_DetailOptions: 0
     - m_start_Lighting: 0
     - m_start_Matcap2: 0
@@ -425,15 +476,19 @@ Material:
     - m_start_SpecularToon: 0
     - m_start_StencilPassOptions: 0
     - m_start_angularFade: 0
+    - m_start_backFace: 1
     - m_start_bakedLighting: 0
     - m_start_blinkingEmissionOptions: 0
+    - m_start_blinkingEmissionOptions1: 0
     - m_start_clearCoat: 0
     - m_start_debugOptions: 0
     - m_start_dissolve: 0
     - m_start_distanceFade: 0
+    - m_start_emission1Options: 0
     - m_start_emissionOptions: 0
     - m_start_flipBook: 0
     - m_start_glowInDarkEmissionOptions: 0
+    - m_start_glowInDarkEmissionOptions1: 0
     - m_start_lightingAdvanced: 0
     - m_start_lightingBeta: 0
     - m_start_lightingStandard: 0
@@ -449,14 +504,17 @@ Material:
     - m_start_rimLightOptions: 0
     - m_start_rimWidthNoise: 0
     - m_start_scrollingEmissionOptions: 0
+    - m_start_scrollingEmissionOptions1: 0
     - m_start_specular: 0
     - m_start_subsurface: 0
+    - m_start_vertexManipulation: 0
     - shader_is_using_thry_editor: 69.12
     - shader_master_label: 0
     - shader_presets: 0
     - shader_properties_label_file: 0
     m_Colors:
     - _AngleForwardDirection: {r: 0, g: 0, b: 1, a: 0}
+    - _BackFacePanning: {r: 0, g: 0, b: 0, a: 0}
     - _ClearCoatTint: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _DetailTexturePan: {r: 0, g: 0, b: 0, a: 0}
@@ -469,9 +527,13 @@ Material:
     - _DissolveTextureColor: {r: 1, g: 1, b: 1, a: 1}
     - _DissolveToPanning: {r: 0, g: 0, b: 0, a: 0}
     - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
+    - _EmissionColor1: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionMapPan: {r: 0, g: 0, b: 0, a: 0}
+    - _EmissionMapPan1: {r: 0, g: 0, b: 0, a: 0}
     - _EmissionMaskPan: {r: 0, g: 0, b: 0, a: 0}
+    - _EmissionMaskPan1: {r: 0, g: 0, b: 0, a: 0}
     - _EmissiveScroll_Direction: {r: 0, g: -10, b: 0, a: 0}
+    - _EmissiveScroll_Direction1: {r: 0, g: -10, b: 0, a: 0}
     - _FlipbookColor: {r: 1, g: 1, b: 1, a: 1}
     - _FlipbookScaleOffset: {r: 1, g: 1, b: 0, a: 0}
     - _GlobalPanSpeed: {r: 0, g: 0, b: 0, a: 0}
@@ -493,3 +555,8 @@ Material:
     - _SSSColor: {r: 1, g: 1, b: 1, a: 1}
     - _SpecularTint: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
     - _SpecularToonInnerOuter: {r: 0.25, g: 0.3, b: 0, a: 1}
+    - _VertexManipulationHeightPan: {r: 0, g: 0, b: 0, a: 0}
+    - _VertexManipulationLocalRotation: {r: 0, g: 0, b: 0, a: 1}
+    - _VertexManipulationLocalScale: {r: 1, g: 1, b: 1, a: 1}
+    - _VertexManipulationLocalTranslation: {r: 0, g: 0, b: 0, a: 1}
+    - _VertexManipulationWorldTranslation: {r: 0, g: 0, b: 0, a: 1}

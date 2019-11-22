@@ -92,19 +92,22 @@ namespace Thry
             greenStyle.normal.textColor = new Color(0, 0.5f, 0);
         }
 
-        private static Texture2D p_white_rounded_texture;
-        public static Texture2D white_rounded_texture
+        private static Texture2D p_rounded_texture;
+        public static Texture2D rounded_texture
         {
             get{
-                if (p_white_rounded_texture == null)
+                if (p_rounded_texture == null)
                 {
-                    string[] guids = AssetDatabase.FindAssets("thry_white_rect t:texture");
+                    string search_name = "thry_white_rect";
+                    if (EditorGUIUtility.isProSkin)
+                        search_name = "thry_dark_rect";
+                    string[] guids = AssetDatabase.FindAssets(search_name+" t:texture");
                     if (guids.Length == 0)
-                        p_white_rounded_texture = Texture2D.whiteTexture;
+                        p_rounded_texture = Texture2D.whiteTexture;
                     else
-                        p_white_rounded_texture = AssetDatabase.LoadAssetAtPath<Texture2D>(AssetDatabase.GUIDToAssetPath(guids[0]));
+                        p_rounded_texture = AssetDatabase.LoadAssetAtPath<Texture2D>(AssetDatabase.GUIDToAssetPath(guids[0]));
                 }
-                return p_white_rounded_texture;
+                return p_rounded_texture;
             }
         }
     }

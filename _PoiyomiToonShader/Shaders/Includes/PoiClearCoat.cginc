@@ -3,8 +3,8 @@
     
     samplerCUBE _ClearCoatCubeMap;
     float _ClearCoatSampleWorld;
-    sampler2D _ClearCoatMask; float4 _ClearCoatMask_ST;
-    sampler2D _ClearCoatSmoothnessMask; float4 _ClearCoatSmoothnessMask_ST;
+    UNITY_DECLARE_TEX2D_NOSAMPLER(_ClearCoatMask); float4 _ClearCoatMask_ST;
+    UNITY_DECLARE_TEX2D_NOSAMPLER(_ClearCoatSmoothnessMask); float4 _ClearCoatSmoothnessMask_ST;
     float _ClearCoatInvertSmoothness;
     float _ClearCoat;
     float _ClearCoatSmoothness;
@@ -18,7 +18,7 @@
     {
         float3 reflectionColor;
 
-        float smoothnessMap = (tex2D(_ClearCoatSmoothnessMask, TRANSFORM_TEX(poiMesh.uv[0], _ClearCoatSmoothnessMask)));
+        float smoothnessMap = (UNITY_SAMPLE_TEX2D_SAMPLER(_ClearCoatSmoothnessMask, _MainTex, TRANSFORM_TEX(poiMesh.uv[0], _ClearCoatSmoothnessMask)));
         if (_ClearCoatInvertSmoothness == 1)
         {
             smoothnessMap = 1 - smoothnessMap;
@@ -84,7 +84,7 @@
     
     void calculateAndApplyClearCoat(inout float4 finalColor)
     {
-        half clearCoatMap = tex2D(_ClearCoatMask, TRANSFORM_TEX(poiMesh.uv[0], _ClearCoatMask));
+        half clearCoatMap = UNITY_SAMPLE_TEX2D_SAMPLER(_ClearCoatMask, _MainTex, TRANSFORM_TEX(poiMesh.uv[0], _ClearCoatMask));
         half3 reflectionColor = CalculateClearCoatEnvironmentalReflections();
         
         float NormalDotView = abs(dot(_ClearCoat,_ClearCoatNormalToUse == 0 ? poiLight.vNDotV : poiLight.nDotV).r);

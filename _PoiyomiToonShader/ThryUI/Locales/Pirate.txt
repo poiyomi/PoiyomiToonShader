@@ -1,0 +1,37 @@
+locale := Language
+locale_tooltip := Select Language for ThryEditor
+
+first_install_message := Thry shader editor successfully installed. This here be the editor settings window.
+update_message := Thry editor has been updated
+downgrade_message := Warning: the version o' thry editor 'as declined
+
+default_texture_type := Default Texture Display
+default_texture_type_tooltip := Select 'ow yer textures should be displayed if the property doesn't force the type
+showRenderQueue := Show Render Queue
+showRenderQueue_tooltip := enable a render queue selector
+renderQueueShaders := Render Queue Shaders
+renderQueueShaders_tooltip := 'ave the render queue selector work with vrchat by creatin' seperate shaders fer the different queues
+gradient_name := Gradient Save File Names
+gradient_name_tooltip := configures the way gradient texture files are named. use <material>, <hash> and <prop> to identify the texture
+showImportPopup := Show popup on shader import
+showImportPopup_tooltip := This here popup gives ye the option to try to restore arr, materials if they broke on importin'
+
+gradient_add_hash_or_prop := Consider adding <hash> or <prop>.
+gradient_add_material := Consider adding <material>.
+gradient_add_material_or_prop := Add <material> <hash> or <prop> to destingish between gradients.
+gradient_good_naming := Good naming.
+
+share_user_data := Share anonomyous data fer usage statistics
+share_user_data_tooltip :=
+share_installed_unity_version := Share me installed unity version
+share_installed_unity_version_tooltip :=
+share_installed_editor_version := Share me installed thry editor version
+share_installed_editor_version_tooltip :=
+share_used_shaders := Share the names o' installed shaders usin' thry editor
+share_used_shaders_tooltip :=
+
+share_data_info_message := The data be identified by a 'ash o' yer macaddress. This here be to make sure we don't log any user twice, while still keeping all data anonymous.
+
+button_get_my_data := Show all data collected about me
+
+my_data_header := This is all data collected on your hashed mac address: 

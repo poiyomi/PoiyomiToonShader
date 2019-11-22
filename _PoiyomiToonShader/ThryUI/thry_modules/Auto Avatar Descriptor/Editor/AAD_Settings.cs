@@ -47,12 +47,12 @@ namespace Thry
             data.force_fallback = GUILayout.Toggle(data.force_fallback, new GUIContent("Force Fallback Default Animation Set", "always set default animation set as fallback set"));
 
             if (EditorGUI.EndChangeCheck())
-                Helper.SaveValueToFile("aap", Parser.ObjectToString(data), ModuleSettings.MODULES_CONFIG);
+                FileHelper.SaveValueToFile("aap", Parser.ObjectToString(data), ModuleSettings.MODULES_CONFIG);
         }
         
         private static void InitValues()
         {
-            string stringData = Helper.LoadValueFromFile("aap", ModuleSettings.MODULES_CONFIG);
+            string stringData = FileHelper.LoadValueFromFile("aap", ModuleSettings.MODULES_CONFIG);
             if (stringData != null)
                 data = Parser.ParseToObject<AAD_Data>(stringData);
             else
