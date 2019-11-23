@@ -17,6 +17,9 @@ namespace Thry
             Config.OnCompile();
             ModuleHandler.OnCompile();
             TrashHandler.EmptyThryTrash();
+
+            UnityFixer.CheckAPICompatibility(); //check that Net_2.0 is ApiLevel
+            UnityFixer.CheckDrawingDll(); //check that drawing.dll is imported
         }
     }
 

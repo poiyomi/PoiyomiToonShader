@@ -13,30 +13,14 @@ namespace Thry
 
         public static void OnAssetDeleteCheckDrawingDLL(string[] deleted_assets)
         {
-            /*
             foreach (string path in deleted_assets)
             {
                 if (path == PATH.RSP_NEEDED_PATH + GetRSPFilename() + ".rsp")
                     UnityHelper.SetDefineSymbol(DEFINE_SYMBOLS.IMAGING_EXISTS, false, true);
             }
-            */
         }
 
-        [InitializeOnLoad]
-        public class OnStartup
-        {
-
-            static OnStartup()
-            {
-                //CheckAPICompatibility(); //check that Net_2.0 is ApiLevel
-                //CheckDrawingDll(); //check that drawing.dll is imported
-                PoiKillMCSAndCSC();
-            }
-
-        }
-
-
-        private static void CheckAPICompatibility()
+        public static void CheckAPICompatibility()
         {
             ApiCompatibilityLevel level = PlayerSettings.GetApiCompatibilityLevel(BuildTargetGroup.Standalone);
             if (level == ApiCompatibilityLevel.NET_2_0_Subset)
@@ -51,7 +35,7 @@ namespace Thry
             return "mcs";
         }
 
-        private static void CheckDrawingDll()
+        public static void CheckDrawingDll()
         {
             string rsp_path = null;
             string filename = GetRSPFilename();
@@ -63,32 +47,12 @@ namespace Thry
                 case RSP_State.missing_drawing_dll:
                     AddDrawingDLLToRSP(PATH.RSP_NEEDED_PATH + filename + ".rsp");
                     break;
-                case RSP_State.wrong_path:
-                    AssetDatabase.MoveAsset(rsp_path, PATH.RSP_NEEDED_PATH + filename + ".rsp");
-                    break;
             }
 
             UnityHelper.SetDefineSymbol(DEFINE_SYMBOLS.IMAGING_EXISTS, true, true);
         }
 
-        private static void PoiKillMCSAndCSC()
-        {
-            string rsp_path = null;
-            string filename = GetRSPFilename();
-
-            RSP_State state = CheckRSPState(filename, ref rsp_path);
-            if (state == RSP_State.correct)
-            {
-                string rsp_data = FileHelper.ReadFileIntoString(rsp_path);
-                if (rsp_data.Contains(RSP_DRAWING_DLL_CODE))
-                {
-                    rsp_data = rsp_data.Remove(rsp_data.IndexOf(RSP_DRAWING_DLL_CODE), RSP_DRAWING_DLL_CODE.Length);
-                    FileHelper.WriteStringToFile(rsp_data, rsp_path);
-                }
-            }
-        }
-
-        private enum RSP_State { correct = 3, wrong_path = 2, missing = 0, missing_drawing_dll = 1 };
+        private enum RSP_State { correct=2, missing=0, missing_drawing_dll=1};
 
         private static RSP_State CheckRSPState(string rsp_name, ref string rsp_path)
         {
@@ -97,9 +61,11 @@ namespace Thry
             {
                 string path = AssetDatabase.GUIDToAssetPath(id);
                 int new_state = 0;
-                if (path == PATH.RSP_NEEDED_PATH + rsp_name + ".rsp") new_state = 3;
-                else if (path.EndsWith(rsp_name + ".rsp")) new_state = 2;
-                else if (DoesRSPContainDrawingDLL(rsp_path)) new_state = 1;
+                bool correctPath = path == PATH.RSP_NEEDED_PATH + rsp_name + ".rsp";
+                bool includesDrawingDLL = DoesRSPContainDrawingDLL(rsp_path);
+
+                if (correctPath && includesDrawingDLL) new_state = 2;
+                else if (correctPath) new_state = 1;
 
                 if (new_state > state)
                 {
