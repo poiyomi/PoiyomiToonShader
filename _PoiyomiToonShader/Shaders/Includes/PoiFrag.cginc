@@ -13,6 +13,7 @@
         i.uv0.xy += _GlobalPanSpeed.xy * _Time.x;
         //This has to be first because it modifies the UVs for the rest of the functions
         
+
         #ifdef POI_DATA
             InitData(i);
         #endif
@@ -125,6 +126,7 @@
         #if defined(FORWARD_BASE_PASS) || defined(POI_META_PASS)
             finalEmission += finalColorBeforeLighting.rgb * _MainEmissionStrength * albedo.a;
             finalEmission += BackFaceColor * _BackFaceEmissionStrength;
+            
             #ifdef PANOSPHERE
                 applyPanosphereEmission(finalEmission);
             #endif
@@ -144,6 +146,11 @@
             #ifdef FLIPBOOK
                 applyFlipbookEmission(finalEmission);
             #endif
+            
+            #ifdef POI_GLITTER
+                applyGlitter(finalEmission, finalColor);
+            #endif
+            
         #endif
         
         #ifdef POI_LIGHTING
@@ -186,7 +193,9 @@
             displayDebugInfo(finalColor);
         #endif
         
-        finalEmission *= albedo.a;
+        #if defined(TRANSPARENT) || defined(CUTOUT)
+            finalEmission *= albedo.a;
+        #endif
         
         #ifdef POI_META_PASS
             UnityMetaInput meta;

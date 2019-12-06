@@ -15,6 +15,8 @@ _NORMALMAP
 _SUNDISK_NONE
 _COLORCOLOR_ON
 _MAPPING_6_FRAMES_LAYOUT
+_SUNDISK_SIMPLE
+
 
 _ALPHAMODULATE_ON
 _ALPHAPREMULTIPLY_ON
@@ -22,7 +24,6 @@ _ALPHATEST_ON
 _SMOOTHNESS_TEXTURE_ALBEDO_CHANNEL_A
 _SPECULARHIGHLIGHTS_OFF
 _SUNDISK_HIGH_QUALITY
-_SUNDISK_SIMPLE
 BILLBOARD_FACE_CAMERA_POS
 EFFECT_BUMP
 EFFECT_HUE_VARIATION
@@ -51,18 +52,18 @@ UNITY_UI_CLIP_RECT
     #include "Lighting.cginc"
     #include "UnityPBSLighting.cginc"
     #include "AutoLight.cginc"
-
+    
     #ifdef POI_META_PASS
         #include "UnityMetaPass.cginc"
     #endif
-
+    
     #include "Poicludes.cginc"
     #include "PoiHelpers.cginc"
     
     #ifdef CUTOUT
         #include "PoiDithering.cginc"
     #endif
-
+    
     #ifdef _PARALLAXMAP
         #include "PoiParallax.cginc"
     #endif
@@ -80,7 +81,7 @@ UNITY_UI_CLIP_RECT
     #ifdef _ALPHABLEND_ON
         #include "PoiDissolve.cginc"
     #endif
-
+    
     #include "PoiMainTex.cginc"
     
     #ifdef _DETAIL_MULX2
@@ -116,7 +117,12 @@ UNITY_UI_CLIP_RECT
     #endif
     
     #ifdef POI_GRABS_ASS
+        #include "PoiBlending.cginc"
         #include "PoiRefraction.cginc"
+    #endif
+    
+    #ifdef _SUNDISK_SIMPLE
+        #include "CGI_PoiGlitter.cginc"
     #endif
     
     #ifdef _EMISSION

@@ -12,6 +12,7 @@
     float _FlipbookRotation;
     float _EnableFlipbook;
     uint _FlipbookUV;
+    float _FlipbookAlphaControlsFinalAlpha;
     // blending
     float _FlipbookReplace;
     float _FlipbookMultiply;
@@ -62,6 +63,12 @@
         finalColor.rgb = lerp(finalColor, flipBookPixel.rgb * _FlipbookColor.rgb, flipBookPixel.a * _FlipbookColor.a * _FlipbookReplace);
         finalColor.rgb = finalColor + flipBookPixel.rgb * _FlipbookColor.rgb * _FlipbookAdd;
         finalColor.rgb = finalColor * lerp(1, flipBookPixelMultiply.rgb * _FlipbookColor.rgb, _FlipbookMultiply * flipBookPixelMultiply.a * _FlipbookColor.a);
+
+        UNITY_BRANCH
+        if(_FlipbookAlphaControlsFinalAlpha)
+        {
+            finalColor.a = flipBookPixel.a * _FlipbookColor.a;
+        }
     }
     void applyFlipbookEmission(inout float3 finalEmission)
     {

@@ -3,7 +3,6 @@
     #define POI_LIGHTING
     
     int _LightingType;
-    sampler2D _ToonRamp;
     float _AdditiveSoftness;
     float _AdditiveOffset;
     float _ForceLightDirection;
@@ -23,6 +22,21 @@
     fixed _LightingMinLightBrightness;
     fixed _LightingAdditiveIntensity;
     
+    UNITY_DECLARE_TEX2D(_ToonRamp);
+    
+    uint _LightingNumRamps;
+    UNITY_DECLARE_TEX2D_NOSAMPLER(_ToonRamp1);
+    UNITY_DECLARE_TEX2D_NOSAMPLER(_ToonRamp2);
+    half _LightingShadowStrength1;
+    half _LightingShadowStrength2;
+    half _ShadowOffset1;
+    half _ShadowOffset2;
+    /*
+    UNITY_DECLARE_TEX2D_NOSAMPLER(_ToonRamp3);
+    half _LightingShadowStrength3;
+    half _ShadowOffset3;
+    */
+
     UNITY_DECLARE_TEX2D_NOSAMPLER(_AOMap); float4 _AOMap_ST;
     UNITY_DECLARE_TEX2D_NOSAMPLER(_LightingShadowMask); float4 _LightingShadowMask_ST;
     float _AOStrength;
@@ -241,15 +255,20 @@
                 AOMap = lerp(1, AOMap, _AOStrength);
             #endif
             
+            
+            
             float3 grayscale_vector = float3(.33333, .33333, .33333);
             float3 ShadeSH9Plus = GetSHLength();
             float3 ShadeSH9Minus = ShadeSH9(float4(0, 0, 0, 1));
             poiLight.directLighting = saturate(lerp(ShadeSH9Plus, poiLight.color, 1 - _LightingIndirectContribution));
             poiLight.indirectLighting = saturate(ShadeSH9Minus);
-            
+
+            half4 shadowStrength = 1;
             #ifndef OUTLINE
-                float ShadowStrengthMap = UNITY_SAMPLE_TEX2D_SAMPLER(_LightingShadowMask, _MainTex, TRANSFORM_TEX(poiMesh.uv[0], _LightingShadowMask)).r;
-                _ShadowStrength *= ShadowStrengthMap;
+                shadowStrength = UNITY_SAMPLE_TEX2D_SAMPLER(_LightingShadowMask, _MainTex, TRANSFORM_TEX(poiMesh.uv[0], _LightingShadowMask));
+                shadowStrength *= half4(_ShadowStrength, _LightingShadowStrength1, _LightingShadowStrength2, 0);
+            #else
+                shadowStrength = _OutlineShadowStrength;
             #endif
             
             float bw_lightColor = dot(poiLight.color, grayscale_vector);
@@ -257,40 +276,52 @@
             float bw_bottomIndirectLighting = dot(ShadeSH9Minus, grayscale_vector);
             float bw_topIndirectLighting = dot(ShadeSH9Plus, grayscale_vector);
             float lightDifference = ((bw_topIndirectLighting + bw_lightColor) - bw_bottomIndirectLighting);
-            poiLight.lightMap = smoothstep(0, lightDifference, bw_directLighting - bw_bottomIndirectLighting);
-            poiLight.rampedLightMap = tex2D(_ToonRamp, poiLight.lightMap * AOMap + _ShadowOffset);
+            poiLight.lightMap = smoothstep(0, lightDifference, bw_directLighting - bw_bottomIndirectLighting) * AOMap;
+            poiLight.rampedLightMap = lerp(1, UNITY_SAMPLE_TEX2D(_ToonRamp, poiLight.lightMap + _ShadowOffset), shadowStrength.r);
+            
+            UNITY_BRANCH
+            if(_LightingNumRamps >= 2)
+            {
+                poiLight.rampedLightMap *= lerp(1, UNITY_SAMPLE_TEX2D_SAMPLER(_ToonRamp1, _ToonRamp, poiLight.lightMap + _ShadowOffset1), shadowStrength.g);
+            }
+            UNITY_BRANCH
+            if(_LightingNumRamps >= 3)
+            {
+                poiLight.rampedLightMap *= lerp(1, UNITY_SAMPLE_TEX2D_SAMPLER(_ToonRamp2, _ToonRamp, poiLight.lightMap + _ShadowOffset2), shadowStrength.b);
+            }
+            /*
+            UNITY_BRANCH
+            if(_LightingNumRamps >= 4)
+            {
+                poiLight.rampedLightMap *= lerp(1, UNITY_SAMPLE_TEX2D_SAMPLER(_ToonRamp3, _ToonRamp, poiLight.lightMap + _ShadowOffset3), shadowStrength.a);
+            }
+            */
+
+            UNITY_SAMPLE_TEX2D_SAMPLER(_AOMap, _MainTex, TRANSFORM_TEX(poiMesh.uv[_LightingAOUV], _AOMap));
             
             UNITY_BRANCH
             if(_LightingStandardControlsToon)
             {
-                /*
-                poiLight.finalLighting = UNITY_BRDF_PBS(1, 0, 0, _LightingStandardSmoothness,
-                poiMesh.normals[1], poiCam.viewDir, CreateLight(0), CreateIndirectLight(0));
-                poiLight.finalLighting = lerp( CreateIndirectLight(0).diffuse, poiLight.directLighting, lerp(1, poiLight.rampedLightMap, _ShadowStrength)) ;
-                return;
-                */
                 float3 RealisticLighting = calculateRealisticLighting(1);
-                poiLight.rampedLightMap = tex2D(_ToonRamp, (.5 + dot(RealisticLighting, float3(.33333, .33333, .33333)) * .5) + _ShadowOffset);
+                poiLight.rampedLightMap = UNITY_SAMPLE_TEX2D(_ToonRamp, (.5 + dot(RealisticLighting, float3(.33333, .33333, .33333)) * .5) + _ShadowOffset);
+                return;
             }
+            
             UNITY_BRANCH
-            if (_LightingType == 0)
+            if(_LightingType == 0)
             {
-                poiLight.finalLighting = lerp(poiLight.indirectLighting, poiLight.directLighting, lerp(1, poiLight.rampedLightMap, _ShadowStrength)) ;
+                poiLight.finalLighting = lerp(poiLight.indirectLighting, poiLight.directLighting, poiLight.rampedLightMap);
             }
             UNITY_BRANCH
             if(_LightingType == 1)
             {
-                float3 ramp0 = tex2D(_ToonRamp, float2(1, 1));
-                poiLight.finalLighting = lerp(ramp0, poiLight.rampedLightMap, _ShadowStrength) * poiLight.directLighting;
+                poiLight.finalLighting = poiLight.rampedLightMap * poiLight.directLighting;
             }
         }
     }
     
     void calculateLighting()
     {
-        #ifdef OUTLINE
-            _ShadowStrength = _OutlineShadowStrength;
-        #endif
         #ifdef FORWARD_BASE_PASS
             calculateBasePassLighting();
         #else

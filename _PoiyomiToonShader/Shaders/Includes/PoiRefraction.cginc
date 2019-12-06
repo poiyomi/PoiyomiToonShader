@@ -6,6 +6,8 @@
     float _RefractionOpacity;
     float _RefractionChromaticAberattion;
     float _RefractionEnabled;
+    uint _SourceBlend, _DestinationBlend;
+
     UNITY_DECLARE_TEX2D_NOSAMPLER(_RefractionOpacityMask); float4 _RefractionOpacityMask_ST;
     
     inline float4 Refraction(float indexOfRefraction, float chromaticAberration)
@@ -45,7 +47,8 @@
         {
             refraction = tex2Dproj(_PoiGrab, poiCam.grabPos);
         }
-        finalColor.rgb = lerp(refraction * finalColor, finalColor, finalColor.a * alphaMask);
+        finalColor.a *= alphaMask;
+        finalColor = poiBlend(_SourceBlend, finalColor, _DestinationBlend, float4(refraction,1));
         finalColor.a = 1;
     }
     

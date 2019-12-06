@@ -3,7 +3,7 @@ Shader ".poiyomi/Toon/Default/Cutout"
     Properties
     {
         [HideInInspector] shader_is_using_thry_editor ("", Float) = 0
-        [HideInInspector] shader_master_label ("<color=#ff0000ff>❤</color> <color=#000000ff>Poiyomi Toon Shader V4.5</color> <color=#ff0000ff>❤</color>", Float) = 0
+        [HideInInspector] shader_master_label ("<color=#ff0000ff>❤</color> <color=#000000ff>Poiyomi Toon Shader V4.6</color> <color=#ff0000ff>❤</color>", Float) = 0
         [HideInInspector] shader_presets ("poiToonPresets", Float) = 0
         [HideInInspector] shader_properties_label_file ("PoiLabels", Float) = 0
         
@@ -79,7 +79,7 @@ Shader ".poiyomi/Toon/Default/Cutout"
         [Toggle(_NORMALMAP)]_EnableLighting ("Enable Lighting", Float) = 1
         [Enum(Natural, 0, Controlled, 1, Standardish, 2)] _LightingType ("Lighting Type", Int) = 1
         [Gradient]_ToonRamp ("Lighting Ramp", 2D) = "white" { }
-        _LightingShadowMask ("Shadow Mask (R)", 2D) = "white" { }
+        _LightingShadowMask ("Shadow Mask (RGBA)", 2D) = "white" { }
         _ShadowStrength ("Shadow Strength", Range(0, 1)) = .2
         _ShadowOffset ("Shadow Offset", Range(-1, 1)) = 0
         _AOMap ("AO Map", 2D) = "white" { }
@@ -98,6 +98,13 @@ Shader ".poiyomi/Toon/Default/Cutout"
         [HideInInspector] m_end_lightingAdvanced ("Advanced", Float) = 0
         [HideInInspector] m_start_lightingBeta ("Beta", Float) = 0
         [Toggle(_)]_LightingStandardControlsToon ("Standard Lighting Controls Toon Ramp", Float) = 0
+        [IntRange]_LightingNumRamps("Num Ramps", Range(1, 3)) = 1
+        [Gradient]_ToonRamp1 ("Lighting Ramp 2", 2D) = "white" { }
+        _LightingShadowStrength1 ("Shadow Strength 2", Range(0, 1)) = 1
+        _ShadowOffset1 ("Shadow Offset 2", Range(-1, 1)) = 0
+        [Gradient]_ToonRamp2 ("Lighting Ramp 3", 2D) = "white" { }
+        _LightingShadowStrength2 ("Shadow Strength 3", Range(0, 1)) = 1
+        _ShadowOffset2 ("Shadow Offset 3", Range(-1, 1)) = 0
         [HideInInspector] m_end_lightingBeta ("Beta", Float) = 0
         [HideInInspector] m_end_Lighting ("Light and Shadow", Float) = 0
         
@@ -309,6 +316,7 @@ Shader ".poiyomi/Toon/Default/Cutout"
 
         [HideInInspector] m_start_flipBook ("Flipbook", Float) = 0
         [Toggle(_FLIPBOOK_BLENDING)]_EnableFlipbook ("Enable Flipbook", Float) = 0
+        [Toggle(_)]_FlipbookAlphaControlsFinalAlpha ("Flipbook Controls Alpha?", Float) = 0
         [Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3)] _FlipbookUV ("Flipbook UV#", Int) = 0
         _FlipbookTexArray ("Texture Array", 2DArray) = "" { }
         _FlipbookColor ("Color & alpha", Color) = (1, 1, 1, 1)
@@ -367,6 +375,22 @@ Shader ".poiyomi/Toon/Default/Cutout"
         [Toggle(_)]_PanoCubeMapToggle ("Use Cubemap", Float) = 0
         [TextureNoSO]_PanoCubeMap ("CubeMap", Cube) = "" { }
         [HideInInspector] m_end_panosphereOptions ("Panosphere / Cubemaps", Float) = 0
+        
+        [HideInInspector] m_start_glitter ("Glitter / Sparkle", Float) = 0
+        [Toggle(_SUNDISK_SIMPLE)]_GlitterEnable ("Enable Glitter?", Float) = 0
+        [HDR]_GlitterColor ("Color", Color) = (1, 1, 1)
+        _GlitterColorMap ("Glitter Color Map", 2D) = "white" { }
+        _GlitterMask ("Glitter Mask", 2D) = "white" { }
+        _GlitterFrequency ("Glitter Density", Float) = 300.0
+        _GlitterJitter ("Glitter Jitter", Range(0,1)) = 1.0
+        _GlitterSpeed ("Glitter Wobble Speed", Float) = 10.0
+        _GlitterSize ("Glitter Size", Range(0,1)) = .3
+        _GlitterContrast ("Glitter Contrast", Range(1,1000)) = 300
+        _GlitterAngleRange ("Glitter Angle Range", Range(0,90)) = 90
+        _GlitterMinBrightness ("Glitter Min Brightness", Range(0,1)) = 0
+        _GlitterBrightness ("Glitter Max Brightness", Range(0,40)) = 3
+        _GlitterBias ("Glitter Bias", Range(0,1)) = .8
+        [HideInInspector] m_end_glitter ("Glitter / Sparkle", Float) = 0
         
         [HideInInspector] m_start_mirrorOptions ("Mirror", Float) = 0
         [Toggle(_REQUIRE_UV2)]_EnableMirrorOptions ("Enable Mirror Options", Float) = 0
@@ -500,6 +524,8 @@ Shader ".poiyomi/Toon/Default/Cutout"
             #pragma shader_feature _TERRAIN_NORMAL_MAP
             // Debug
             #pragma shader_feature _COLOROVERLAY_ON
+            // Glitter
+            #pragma shader_feature _SUNDISK_SIMPLE
             #pragma shader_feature _EMISSION
             // Clear Coat
             #pragma shader_feature _COLORCOLOR_ON
@@ -640,6 +666,8 @@ Shader ".poiyomi/Toon/Default/Cutout"
             #pragma shader_feature _TERRAIN_NORMAL_MAP
             // Debug
             #pragma shader_feature _COLOROVERLAY_ON
+            // Glitter
+            #pragma shader_feature _SUNDISK_SIMPLE
             #pragma shader_feature _EMISSION
             // Clear Coat
             #pragma shader_feature _COLORCOLOR_ON
