@@ -1,0 +1,130 @@
+//:=<size=12></size>
+
+// Main
+m_mainOptions:=<size=12>Main</size>--{button_right:{text:Tutorial,action:{type:URL,data:https://youtu.be/FX3Uvcj35Rk},hover:YouTube}}
+_BumpMap:=Normal Map--{reference_properties:[_MainNormalPan]}
+_VertexManipulationHeightMask:=Height Map--{reference_properties:[_VertexManipulationHeightPan]}
+_DetailTex:=Detail Texture--{reference_properties:[_DetailTexturePan]}
+_DetailNormalMap:=Detail Normal--{reference_properties:[_MainDetailNormalPan]}
+_BackFaceTexture:= Texture--{reference_properties:[_BackFacePanning, _BackFaceTextureUV]}
+m_start_DetailOptions:=<size=12>Details</size>
+m_start_vertexManipulation:=<size=12>Vertex Options</size>
+m_start_Alpha:=<size=12>Alpha Options</size>
+m_start_backFace:=<size=12>Back Face</size>
+
+// Lighting
+m_lightingOptions:=<size=12>Lighting</size>
+m_start_Lighting:=<size=12>Light & Shadow</size>--{button_right:{text:Tutorial,action:{type:URL,data:https://youtu.be/2B-EJutVjs8},hover:YouTube}}
+m_start_lightingBeta:=<size=12>Beta</size>
+_ToonRamp:=Lighting Ramp--{texture:{width:512,height:4,filterMode:Bilinear,wrapMode:Clamp},force_texture_options:true}
+_ToonRamp1:=Lighting Ramp 2--{texture:{width:512,height:4,filterMode:Bilinear,wrapMode:Clamp},force_texture_options:true}
+_ToonRamp2:=Lighting Ramp 3--{texture:{width:512,height:4,filterMode:Bilinear,wrapMode:Clamp},force_texture_options:true}
+_ToonRamp3:=Lighting Ramp 4--{texture:{width:512,height:4,filterMode:Bilinear,wrapMode:Clamp},force_texture_options:true}
+m_start_lightingStandard:=<size=12>Standardish Settings</size>
+m_start_lightingAdvanced:=<size=12>Additive Lighting (Point & Spot Light)</size>
+m_start_subsurface:=<size=12>Subsurface Scattering</size>--{button_right:{text:Tutorial,action:{type:URL,data:https://youtu.be/hs1bnnPmDFc},hover:YouTube}}
+m_start_rimLightOptions:=<size=12>Rim Lighting</size>--{button_right:{text:Tutorial,action:{type:URL,data:https://youtu.be/JNxzcRY_BZ8},hover:YouTube}}
+// Environmental Rim Lighting
+m_start_reflectionRim:=<size=12>Environmental Rim Lighting </size>
+_RimTex:=Rim Texture--{reference_properties:[_RimTexPanSpeed]}
+_RimWidthNoiseTexture:=Rim Width Noise--{reference_properties:[_RimWidthNoisePan]}
+m_start_bakedLighting:=<size=12>Baked Lighting</size>
+
+m_reflectionOptions:=<size=12>Reflections</size>
+m_start_Metallic:=<size=12>Metallics</size>--{button_right:{text:Tutorial,action:{type:URL,data:https://youtu.be/DyluMaFn64M},hover:YouTube}}
+m_start_clearCoat:=<size=12>Clear Coat</size>
+m_start_matcap:=<size=12>Matcap</size>--{button_right:{text:Tutorial,action:{type:URL,data:https://youtu.be/DFo87kuO1OI},hover:YouTube}}
+m_start_Matcap2:=<size=12>Matcap 2</size>--{button_right:{text:Tutorial,action:{type:URL,data:https://youtu.be/DFo87kuO1OI},hover:YouTube}}
+m_start_specular:=<size=12>Specular Reflections</size>--{button_right:{text:Tutorial,action:{type:URL,data:https://youtu.be/YFFe8IrXVnc},hover:YouTube}}
+m_start_SpecularToon:=<size=12>Toon Specular</size>
+m_start_Anisotropic:=<size=12>Anisotropic</size>
+m_outlineOptions:=<size=12>Outlines</size>
+m_start_outlineAdvanced:=<size=12>Advanced</size>
+
+// Special Effects
+m_Special_Effects:=<size=12>Special Effects</size>
+
+// Emission
+m_start_emissionOptions:=<size=12>Emission / Glow</size>--{button_right:{text:Tutorial,action:{type:URL,data:https://youtu.be/iqk23gtwkz0},hover:YouTube}}
+_EmissionMap:=Emission Map--{texture:{width:1224,height:4,filterMode:Bilinear,wrapMode:Repeat},reference_properties:[_EmissionMapPan], force_texture_options:true}
+_EmissionMask:=Emission Mask--{reference_properties:[_EmissionMaskPan]}
+_EmissionMap1:=Emission Map--{texture:{width:1224,height:4,filterMode:Bilinear,wrapMode:Repeat},reference_properties:[_EmissionMapPan1], force_texture_options:true}
+_EmissionMask1:=Emission Mask--{reference_properties:[_EmissionMaskPan1]}
+m_start_CenterOutEmission:=<size=12>Center Out Emission</size>
+m_start_glowInDarkEmissionOptions:=<size=12>Glow In The Dark Emission (Requires Lighting Enabled)</size>
+m_start_blinkingEmissionOptions:=<size=12>Blinking Emission</size>
+m_start_scrollingEmissionOptions:=<size=12>Scrolling Emission</size>
+m_start_emission1Options:=<size=12>Emission / Glow 2 (Requires Emission 1 Enabled)</size>
+m_start_CenterOutEmission1:=<size=12>Center Out Emission</size>
+m_start_glowInDarkEmissionOptions1:=<size=12>Glow In The Dark Emission (Requires Lighting Enabled)</size>
+m_start_blinkingEmissionOptions1:=<size=12>Blinking Emission</size>
+m_start_scrollingEmissionOptions1:=<size=12>Scrolling Emission</size>
+
+// Flipbook
+m_start_flipBook:=<size=12>Flipbook</size>--{button_right:{text:Tutorial,action:{type:URL,data:https://youtu.be/NrA18CITEVs},hover:YouTube}}
+m_start_manualFlipbookControl:=<size=12>Manual Frame Control</size>
+
+// Dissolve
+m_start_dissolve:=<size=12>Dissolve</size>--{button_right:{text:Tutorial,action:{type:URL,data:https://youtu.be/abTejmV4yGU},hover:YouTube}}
+m_start_pointToPoint:=<size=12>Point to Point</size>
+_DissolveToTexture:=Dissolved Texture--{reference_properties:[_DissolveToPanning]}
+_DissolveNoiseTexture:=Dissolve Noise--{reference_properties:[_DissolveNoisePan]}
+_DissolveDetailNoise:=Dissolve Detail Noise--{reference_properties:[_DissolveDetailPan]}
+
+// Panosphere
+m_start_panosphereOptions:=<size=12>Panosphere / Cubemaps</size>--{button_right:{text:Tutorial,action:{type:URL,data:https://youtu.be/wyCY6qE0_Vg},hover:YouTube}}
+
+// Glitter
+m_start_glitter:=<size=12>Glitter / Sparkle</size>
+_GlitterColorMap:=Color Map--{reference_properties:[_GlitterPan]}
+
+// MSDF
+m_start_Text:=<size=12>Text Overlay</size>
+m_start_TextFPS:=<size=12>FPS</size>
+m_start_TextPosition:=<size=12>Position</size>
+m_start_TextInstanceTime:=<size=12>Instance Time</size>
+
+// Mirror Options
+m_start_mirrorOptions:=<size=12>Mirror (VRChat)</size>--{button_right:{text:Tutorial,action:{type:URL,data:https://youtu.be/ptnVKyuijO4},hover:YouTube}}
+
+// Distance Fade
+m_start_distanceFade:=<size=12>Distance Fade</size>
+
+// Angular Fade
+m_start_angularFade:=<size=12>Angular Fade</size>
+
+// Optimization
+m_optimization:=<size=12>Optimization </size>
+
+//Distance Dithering
+m_start_distanceDithering:=<size=12>Distance Dither </size>
+
+m_parallaxMap:=<size=12>Parallax</size>
+m_start_parallaxHeightmap:=<size=12>Heightmap</size>
+m_start_parallaxInternal:=<size=12>Internal Parallax</size>
+m_start_parallaxAdvanced:=<size=12>Advanced</size>
+
+m_renderingOptions:=<size=12>Rendering Options</size>--{button_right:{text:Tutorial,action:{type:URL,data:https://youtu.be/P5KlE9rk9pg},hover:YouTube}}
+m_start_StencilPassOptions:=<size=12>Stencil</size>--{button_right:{text:Tutorial,action:{type:URL,data:https://youtu.be/uniOEpw88jk},hover:YouTube}}
+m_start_OutlineStencil:=O<size=12>utline Stencil</size>
+m_start_debugOptions:=<size=12>Debug</size>
+
+
+// Patreon
+m_Patreon:=<size=12>Patreon</size>
+m_start_Video:=<size=12>Video</size>
+m_start_VideoSettings:=<size=12>Video Texture Settings</size>
+m_start_VideoDebug:=<size=12>Video Debug</size>
+m_start_TouchOptions:=<size=12>Touch FX</size>
+m_start_Bulge:=<size=12>Bulge</size>
+m_start_TouchGlow:=<size=12>Touch Color</size>
+m_start_Hologram:=<size=12>Hologram Alpha</size>
+m_start_FresnelAlpha:=<size=12>Fresnel Alpha</size>
+_HoloAlphaMap:=Alpha Maptexture--{width:1024,height:4,filterMode:Bilinear,wrapMode:Repeat},force_texture_options:true}
+
+// Footer
+footer_youtube:={texture:{name:icon-youtube,height:32},action:{type:URL,data:https://www.youtube.com/poiyomi},hover:YOUTUBE}
+footer_twitter:={texture:{name:icon-twitter,height:32},action:{type:URL,data:https://twitter.com/poiyomi},hover:TWITTER}
+footer_patreon:={texture:{name:icon-patreon,height:32},action:{type:URL,data:https://www.patreon.com/poiyomi},hover:PATREON}
+footer_discord:={texture:{name:icon-discord,height:32},action:{type:URL,data:https://discord.gg/Ays52PY},hover:DISCORD}
+footer_github:={texture:{name:icon-github,height:32},action:{type:URL,data:https://github.com/poiyomi/PoiyomiToonShader},hover:GITHUB}

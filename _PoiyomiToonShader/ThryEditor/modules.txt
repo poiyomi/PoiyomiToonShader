@@ -1,1 +1,0 @@
-[{name:Do not install,version:0.2,description:Enables Discord rich presence for unity,classname:Thry.DRP_Settings,settings_file_name:DRP_Settings,url:https://raw.githubusercontent.com/Thryrallo/unity_rich_presence/master/thry_module_drp.txt}]
