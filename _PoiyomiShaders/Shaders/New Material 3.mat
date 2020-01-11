@@ -7,7 +7,7 @@ Material:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_Name: New Material 3
-  m_Shader: {fileID: 4800000, guid: cab8901092ce7cc4bafb2df36656c35d, type: 3}
+  m_Shader: {fileID: 4800000, guid: 3ea1f79935b9bd049a40bf60dcf574ae, type: 3}
   m_ShaderKeywords: DEPTH_OF_FIELD LOD_FADE_CROSSFADE
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -286,6 +286,7 @@ Material:
     - _ClearCoatNormalToUse: 0
     - _ClearCoatSampleWorld: 0
     - _ClearCoatSmoothness: 0
+    - _Clip: 0.5
     - _ContinuousDissolve: 0
     - _Cull: 2
     - _DebugCameraData: 0
@@ -314,6 +315,7 @@ Material:
     - _DitheringDistanceEnabled: 0
     - _DitheringDistanceMaxAlpha: 0.501
     - _DitheringDistanceMinAlpha: 0
+    - _DitheringEnabled: 0
     - _DitheringInvisibleRange: 30
     - _DitheringOpaqueRange: 20
     - _EmissionCenterOutEnabled: 0
@@ -370,6 +372,7 @@ Material:
     - _FlipbookTiled: 0
     - _FlipbookTotalFrames: 1
     - _FlipbookUV: 0
+    - _ForceOpaque: 0
     - _GIEmissionMultiplier: 1
     - _GITDEMaxEmissionMultiplier: 0
     - _GITDEMaxEmissionMultiplier1: 0
@@ -409,9 +412,12 @@ Material:
     - _LightingStandardControlsToon: 0
     - _LightingStandardSmoothness: 0
     - _LightingType: 1
+    - _MainAlphaToCoverage: 1
     - _MainEmissionStrength: 0
     - _MainHueShift: 0
     - _MainMinAlpha: 0
+    - _MainMipScale: 0.25
+    - _MainShadowClipMod: 0
     - _MainVertexColoring: 0
     - _Matcap2Add: 0
     - _Matcap2Border: 0.43
@@ -526,6 +532,7 @@ Material:
     - footer_youtube: 0
     - m_Patreon: 1
     - m_Special_Effects: 0
+    - m_end_Alpha: 0
     - m_end_Anisotropic: 0
     - m_end_Bulge: 0
     - m_end_CenterOutEmission: 0
@@ -559,6 +566,7 @@ Material:
     - m_end_debugOptions: 0
     - m_end_dissolve: 0
     - m_end_distanceDithering: 0
+    - m_end_distanceFade: 0
     - m_end_emission1Options: 0
     - m_end_emissionOptions: 0
     - m_end_flipBook: 0
@@ -589,6 +597,7 @@ Material:
     - m_parallaxMap: 0
     - m_reflectionOptions: 0
     - m_renderingOptions: 0
+    - m_start_Alpha: 0
     - m_start_Anisotropic: 0
     - m_start_Bulge: 0
     - m_start_CenterOutEmission: 0

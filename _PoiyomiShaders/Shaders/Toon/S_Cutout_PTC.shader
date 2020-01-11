@@ -473,15 +473,6 @@ Shader ".poiyomi/Toon/Advanced/Cutout"
         _DitheringDistanceMinAlpha ("Dither Min Dissolve", Range(0, 1.001)) = 0
         _DitheringDistanceMaxAlpha ("Dither Max Dissolve", Range(0, 1.001)) = 0.501
         [HideInInspector] m_end_distanceDithering ("Distance Dither", Float) = 0
-        
-        [HideInInspector] m_start_TouchOptions ("Touch FX", Float) = 0
-        [HideInInspector] m_start_Bulge ("Bulge", Float) = 0
-        [Toggle(BLOOM_LOW)] _EnableBulge ("Bulge", Float) = 0
-        _BulgeMask ("Bulge Mask", 2D) = "white" { }
-        _BuldgeFadeLength ("Touch Distance", Float) = 0.02
-        _BuldgeHeight ("Bulge Height", Range(0, 0.2)) = 0.02
-        [HideInInspector] m_end_Bulge ("Bulge", Float) = 0
-        [HideInInspector] m_end_TouchOptions ("Touch FX", Float) = 0
         // End Special Effects
         
 

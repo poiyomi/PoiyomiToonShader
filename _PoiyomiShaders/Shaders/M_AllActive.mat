@@ -7,7 +7,7 @@ Material:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_Name: M_AllActive
-  m_Shader: {fileID: 4800000, guid: d23f33aa6442ce747ab99601b5be63bd, type: 3}
+  m_Shader: {fileID: 4800000, guid: 3ea1f79935b9bd049a40bf60dcf574ae, type: 3}
   m_ShaderKeywords: BLOOM BLOOM_LOW DEPTH_OF_FIELD EFFECT_BUMP GRAIN LOD_FADE_CROSSFADE
     _ALPHABLEND_ON _COLORADDSUBDIFF_ON _COLORCOLOR_ON _DETAIL_MULX2 _EMISSION _FLIPBOOK_BLENDING
     _GLOSSYREFLECTIONS_OFF _MAPPING_6_FRAMES_LAYOUT _METALLICGLOSSMAP _NORMALMAP _PARALLAXMAP
@@ -490,6 +490,7 @@ Material:
     - _MainHueShift: 0
     - _MainMinAlpha: 0
     - _MainMipScale: 0.25
+    - _MainShadowClipMod: 0
     - _MainVertexColoring: 0
     - _Matcap2Add: 0
     - _Matcap2Border: 0.43
