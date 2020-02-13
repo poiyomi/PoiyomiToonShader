@@ -60,16 +60,32 @@ namespace Thry
             }
             if (options.condition_show.Test())
             {
-                if (content == null)
-                    content = this.content;
-                DrawInternal(content, rect);
-                Helper.testAltClick(DrawingData.lastGuiObjectHeaderRect, this);
+                PerformDraw(content, rect);
             }
             if (options.condition_enable != null && is_enabled)
             {
                 DrawingData.is_enabled = true;
                 EditorGUI.EndDisabledGroup();
             }
+        }
+
+        private void PerformDraw(GUIContent content, CRect rect)
+        {
+            if (content == null)
+                content = this.content;
+            EditorGUI.BeginChangeCheck();
+            DrawInternal(content, rect);
+            if (EditorGUI.EndChangeCheck())
+            {
+                if (options.on_value_actions != null)
+                {
+                    foreach (PropertyValueAction action in options.on_value_actions)
+                    {
+                        action.Execute(materialProperty);
+                    }
+                }
+            }
+            Helper.testAltClick(DrawingData.lastGuiObjectHeaderRect, this);
         }
     }
 

@@ -12,6 +12,11 @@ namespace Thry
 {
     public class UnityHelper
     {
+        /// <summary>
+        /// return null if not found
+        /// </summary>
+        /// <param name="filename"></param>
+        /// <returns></returns>
         public static string FindPathOfAssetWithExtension(string filename)
         {
             string[] guids = AssetDatabase.FindAssets(filename.RemoveFileExtension());
@@ -21,7 +26,7 @@ namespace Thry
                 if (path.EndsWith(filename))
                     return path;
             }
-            return filename;
+            return null;
         }
 
         public static List<string> FindAssetOfFilesWithExtension(string filename)

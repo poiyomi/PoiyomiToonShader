@@ -18,6 +18,8 @@
             normal = rotate_with_quaternion(normal, _VertexManipulationLocalRotation);
             tangent.xyz = rotate_with_quaternion(tangent.xyz, _VertexManipulationLocalRotation);
             vertex = transform(vertex, _VertexManipulationLocalTranslation, _VertexManipulationLocalRotation, _VertexManipulationLocalScale);
+            
+            //vertex = float4(vertex.x + sin(_Time.y*1.5 + vertex.y * 50) * .75 * smoothstep( .3, -1, vertex.y), vertex.y, vertex.z + cos(_Time.y*1.5 + vertex.y * 50) * .75 * smoothstep( .3, -1, vertex.y), 1);
         #endif
     }
     
@@ -30,4 +32,4 @@
         #endif
     }
 #endif
-//
+//vv

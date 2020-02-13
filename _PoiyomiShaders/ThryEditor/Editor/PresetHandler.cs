@@ -299,48 +299,7 @@ namespace Thry
             {
                 foreach (string[] set in sets)
                 {
-                    MaterialProperty p = ThryEditor.FindProperty(props, set[0]);
-                    if (p != null)
-                    {
-                        if (p.type == MaterialProperty.PropType.Texture)
-                        {
-                            Texture tex = AssetDatabase.LoadAssetAtPath<Texture>(set[1]);
-                            if(tex!=null)
-                                foreach (Material m in materials) m.SetTexture(Shader.PropertyToID(set[0]), tex);
-                        }
-                        else if (p.type == MaterialProperty.PropType.Float || p.type == MaterialProperty.PropType.Range)
-                        {
-                            float value;
-                            //if (float.TryParse(set[1], out value)) foreach (Material m in materials) m.SetFloat(Shader.PropertyToID(set[0]), value);
-                            if (float.TryParse(set[1], out value))
-                            {
-                                p.floatValue = value;
-                                string[] drawer = ShaderHelper.GetDrawer(p);
-                                if (drawer != null && drawer.Length > 1 && drawer[0] == "Toggle" && drawer[1] != "__")
-                                    MaterialHelper.ToggleKeyword(p, drawer[1], value == 1);
-                            }
-                        }
-                        else if (p.type == MaterialProperty.PropType.Vector)
-                        {
-                            string[] xyzw = set[1].Split(",".ToCharArray());
-                            Vector4 vector = new Vector4(float.Parse(xyzw[0]), float.Parse(xyzw[1]), float.Parse(xyzw[2]), float.Parse(xyzw[3]));
-                            foreach (Material m in materials) m.SetVector(Shader.PropertyToID(set[0]), vector);
-                        }
-                        else if (p.type == MaterialProperty.PropType.Color)
-                        {
-                            Color col = Converter.stringToColor(set[1]);
-                            foreach (Material m in materials) m.SetColor(Shader.PropertyToID(set[0]), col);
-                        }
-                    }
-                    else if (set[0] == "render_queue")
-                    {
-                        int q = 0;
-                        Debug.Log(set[0] + "," + set[1]);
-                        if (int.TryParse(set[1], out q))
-                        {
-                            foreach (Material m in materials) m.renderQueue = q;
-                        }
-                    }
+                    MaterialHelper.SetMaterialValue(set[0], set[1]);
                 }
             }
             ThryEditor.loadValuesFromMaterial();

@@ -3,7 +3,7 @@ Shader ".poiyomi/Toon/Advanced/Outlines Cutout"
     Properties
     {
         [HideInInspector] shader_is_using_thry_editor ("", Float) = 0
-        [HideInInspector] shader_master_label ("<color=#ff0000ff>❤</color> <color=#000000ff>Poiyomi Toon V5.0</color> <color=#ff0000ff>❤</color>", Float) = 0
+        [HideInInspector] shader_master_label ("<color=#ff0000ff>❤</color> <color=#000000ff>Poiyomi Toon V5.1</color> <color=#ff0000ff>❤</color>", Float) = 0
         [HideInInspector] shader_presets ("poiToonPresets", Float) = 0
         [HideInInspector] shader_properties_label_file ("PoiLabels", Float) = 0
         
@@ -19,9 +19,10 @@ Shader ".poiyomi/Toon/Advanced/Outlines Cutout"
         _MainVertexColoring ("Use Vertex Color", Range(0, 1)) = 0
         _MainEmissionStrength ("Basic Emission", Range(0, 20)) = 0
         _MainTex ("Texture", 2D) = "white" { }
+        [Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)] _MainTextureUV ("Tex UV#", Int) = 0
         _MainHueShift ("HueShift", Range(0, 1)) = 0
         [Normal]_BumpMap ("Normal Map", 2D) = "bump" { }
-        [Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3)] _BumpMapUV ("Normal UV#", Int) = 0
+        [Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)] _BumpMapUV ("Normal UV#", Int) = 0
         [HideInInspector][Vector2]_MainNormalPan ("Panning", Vector) = (0, 0, 0, 0)
         _BumpScale ("Normal Intensity", Range(0, 10)) = 1
         _AlphaMask ("Alpha Mask", 2D) = "white" { }
@@ -31,12 +32,12 @@ Shader ".poiyomi/Toon/Advanced/Outlines Cutout"
         _DetailMask ("Detail Mask (R:Texture, G:Normal)", 2D) = "white" { }
         _DetailTex ("Detail Texture", 2D) = "gray" { }
         [HideInInspector][Vector2]_DetailTexturePan ("Panning", Vector) = (0, 0, 0, 0)
-        [Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3)] _DetailTexUV ("Detail Tex UV#", Int) = 0
+        [Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)] _DetailTexUV ("Detail Tex UV#", Int) = 0
         _DetailTexIntensity ("Detail Tex Intensity", Range(0, 10)) = 1
         _DetailBrightness ("Detail Brightness:", Range(0, 2)) = 1
         _DetailTint ("Detail Tint", Color) = (1, 1, 1)
         [Normal]_DetailNormalMap ("Detail Normal", 2D) = "bump" { }
-        [Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3)] _DetailNormalUV ("Detail Normal UV#", Int) = 0
+        [Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)] _DetailNormalUV ("Detail Normal UV#", Int) = 0
         _DetailNormalMapScale ("Detail Normal Intensity", Range(0, 10)) = 1
         [HideInInspector][Vector2]_MainDetailNormalPan ("Panning", Vector) = (0, 0, 0, 0)
         [HideInInspector] m_end_DetailOptions ("Details", Float) = 0
@@ -63,7 +64,7 @@ Shader ".poiyomi/Toon/Advanced/Outlines Cutout"
         
         [HideInInspector] m_start_backFace ("Back Face", Float) = 0
         [Toggle(_)]_BackFaceEnabled ("Enable Back Face Options", Float) = 0
-        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3)]_BackFaceTextureUV ("UV#", Int) = 0
+        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)]_BackFaceTextureUV ("UV#", Int) = 0
         _BackFaceTexture ("Texture", 2D) = "white" { }
         [HideInInspector][Vector2]_BackFacePanning ("Panning", Vector) = (0, 0, 0, 0)
         _BackFaceDetailIntensity ("Detail Intensity", Range(0, 5)) = 1
@@ -80,7 +81,7 @@ Shader ".poiyomi/Toon/Advanced/Outlines Cutout"
         _ShadowStrength ("Shadow Strength", Range(0, 1)) = .2
         _ShadowOffset ("Shadow Offset", Range(-1, 1)) = 0
         _AOMap ("AO Map", 2D) = "white" { }
-        [Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3)] _LightingAOUV ("AO Map UV#", Int) = 0
+        [Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)] _LightingAOUV ("AO Map UV#", Int) = 0
         _AoIndirectStrength ("AO Indirect Strength", Range(0, 1)) = 1
         _AOStrength ("AO Direct Strength", Range(0, 1)) = 0
         _LightingMinLightBrightness ("Min Brightness", Range(0, 1)) = 0
@@ -191,6 +192,7 @@ Shader ".poiyomi/Toon/Advanced/Outlines Cutout"
         [TextureNoSO]_Matcap ("Matcap", 2D) = "white" { }
         _MatcapBorder ("Border", Range(0, .5)) = 0.43
         _MatcapMask ("Mask", 2D) = "white" { }
+        _MatcapEmissionStrength ("Emission Strength", Range(0,20)) = 0
         _MatcapIntensity ("Intensity", Range(0, 5)) = 1
         _MatcapLightMask ("Hide in Shadow", Range(0, 1)) = 0
         _MatcapReplace ("Replace With Matcap", Range(0, 1)) = 1
@@ -204,6 +206,7 @@ Shader ".poiyomi/Toon/Advanced/Outlines Cutout"
         [TextureNoSO]_Matcap2 ("Matcap", 2D) = "white" { }
         _Matcap2Border ("Border", Range(0, .5)) = 0.43
         _Matcap2Mask ("Mask", 2D) = "white" { }
+        _Matcap2EmissionStrength ("Emission Strength", Range(0,20)) = 0
         _Matcap2Intensity ("Intensity", Range(0, 5)) = 1
         _Matcap2LightMask ("Hide in Shadow", Range(0, 1)) = 0
         _Matcap2Replace ("Replace With Matcap", Range(0, 1)) = 0
@@ -263,7 +266,8 @@ Shader ".poiyomi/Toon/Advanced/Outlines Cutout"
         [HideInInspector] m_Special_Effects ("Special Effects", Float) = 0
         [HideInInspector] m_start_emissionOptions ("Emission / Glow", Float) = 0
         [Toggle(_EMISSION)]_EnableEmission ("Enable Emission", Float) = 0
-        [Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3)] _EmissionUV ("Emission UV#", Int) = 0
+        [Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)] _EmissionMaskUV ("Emission Mask UV", Int) = 0
+        [Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)] _EmissionMapUV ("Emission Map UV", Int) = 0
         [HDR]_EmissionColor ("Emission Color", Color) = (1, 1, 1, 1)
         [Gradient]_EmissionMap ("Emission Map", 2D) = "white" { }
         _EmissionMask ("Emission Mask", 2D) = "white" { }
@@ -304,7 +308,8 @@ Shader ".poiyomi/Toon/Advanced/Outlines Cutout"
         
         [HideInInspector] m_start_emission1Options ("Emission / Glow 2 (Requires Emission 1 Enabled)", Float) = 0
         [Toggle(_)]_EnableEmission1 ("Enable Emission 2", Float) = 0
-        [Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3)] _EmissionUV1 ("Emission UV#", Int) = 0
+        [Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)] _EmissionMaskUV1("Emission Mask UV", Int) = 0
+        [Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)] _EmissionMapUV1 ("Emission UV#", Int) = 0
         [HDR]_EmissionColor1 ("Emission Color", Color) = (1, 1, 1, 1)
         [Gradient]_EmissionMap1 ("Emission Map", 2D) = "white" { }
         _EmissionMask1 ("Emission Mask", 2D) = "white" { }
@@ -342,7 +347,7 @@ Shader ".poiyomi/Toon/Advanced/Outlines Cutout"
         [HideInInspector] m_start_flipBook ("Flipbook", Float) = 0
         [Toggle(_SUNDISK_HIGH_QUALITY)]_EnableFlipbook ("Enable Flipbook", Float) = 0
         [Toggle(_)]_FlipbookAlphaControlsFinalAlpha ("Flipbook Controls Alpha?", Float) = 0
-        [Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3)] _FlipbookUV ("Flipbook UV#", Int) = 0
+        [Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)] _FlipbookUV ("Flipbook UV#", Int) = 0
         _FlipbookTexArray ("Texture Array", 2DArray) = "" { }
         _FlipbookColor ("Color & alpha", Color) = (1, 1, 1, 1)
         _FlipbookTotalFrames ("Total Frames", Int) = 1
@@ -451,7 +456,7 @@ Shader ".poiyomi/Toon/Advanced/Outlines Cutout"
         _TextTimeEmissionStrength ("Emission Strength", Range(0, 20)) = 0
         [Vector2]_TextTimeOffset ("Offset", Vector) = (0, 0, 0, 0)
         _TextTimeRotation ("Rotation", Range(0, 360)) = 0
-        [Vector2]_TextTimeScale ("Scale", Vector) = (1, 0, 1, 1)
+        [Vector2]_TextTimeScale ("Scale", Vector) = (1,1, 1, 1)
         _TextTimePadding ("Padding Reduction", Vector) = (0, 0, 0, 0)
         [HideInInspector] m_end_TextInstanceTime ("Instance Time", Float) = 0
         [HideInInspector] m_end_Text ("MSDF Text Overlay", Float) = 0
@@ -487,7 +492,17 @@ Shader ".poiyomi/Toon/Advanced/Outlines Cutout"
         _DitheringDistanceMinAlpha ("Dither Min Dissolve", Range(0, 1.001)) = 0
         _DitheringDistanceMaxAlpha ("Dither Max Dissolve", Range(0, 1.001)) = 0.501
         [HideInInspector] m_end_distanceDithering ("Distance Dither", Float) = 0
+        
 
+        [HideInInspector] m_start_distortionFlow ("UV Distortion", Float) = 0
+        [Toggle(USER_LUT)] _EnableDistortion ("Enabled?", Float) = 0
+        _DistortionFlowTexture ("Distortion Texture 1", 2D) = "black" { }
+        _DistortionFlowTexture1 ("Distortion Texture 2", 2D) = "black" { }
+        _DistortionStrength ("Strength1", Float) = 0.5
+        _DistortionStrength1 ("Strength2", Float) = 0.5
+        [Vector2]_DistortionSpeed ("Speed1", Vector) = (0.5, 0.5, 0, 0)
+        [Vector2]_DistortionSpeed1 ("Speed2", Vector) = (0.5, 0.5, 0, 0)
+        [HideInInspector] m_end_distortionFlow ("UV Distortion", Float) = 0
         // End Special Effects
         
 
@@ -585,6 +600,8 @@ Shader ".poiyomi/Toon/Advanced/Outlines Cutout"
             #pragma target 4.0
             #define FORWARD_BASE_PASS
             #define CUTOUT
+            // UV Distortion
+            #pragma shader_feature USER_LUT
             #pragma shader_feature _PARALLAXMAP
             // Mirror
             #pragma shader_feature _REQUIRE_UV2
@@ -651,6 +668,8 @@ Shader ".poiyomi/Toon/Advanced/Outlines Cutout"
             #pragma target 4.0
             #define FORWARD_ADD_PASS
             #define CUTOUT
+            // UV Distortion
+            #pragma shader_feature USER_LUT
             #pragma shader_feature _PARALLAX_MAP
             // Mirror
             #pragma shader_feature _REQUIRE_UV2
@@ -708,6 +727,8 @@ Shader ".poiyomi/Toon/Advanced/Outlines Cutout"
             #pragma target 4.0
             #define FORWARD_BASE_PASS
             #define OUTLINE
+            // UV Distortion
+            #pragma shader_feature USER_LUT
             #pragma multi_compile_fwdbase
             // Mirror
             #pragma shader_feature _REQUIRE_UV2
@@ -747,6 +768,8 @@ Shader ".poiyomi/Toon/Advanced/Outlines Cutout"
             #pragma target 4.0
             #define CUTOUT
             #define POI_SHADOW
+            // UV Distortion
+            #pragma shader_feature USER_LUT
             // Flipbook
             #pragma shader_feature _SUNDISK_HIGH_QUALITY
             // Mirror
@@ -770,7 +793,8 @@ Shader ".poiyomi/Toon/Advanced/Outlines Cutout"
             CGPROGRAM
             
             #define POI_META_PASS
-            
+            // UV Distortion
+            #pragma shader_feature USER_LUT
             #pragma shader_feature _PARALLAXMAP
             // Mirror
             #pragma shader_feature _REQUIRE_UV2

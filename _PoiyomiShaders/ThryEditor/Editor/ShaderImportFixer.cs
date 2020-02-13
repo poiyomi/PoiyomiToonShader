@@ -112,6 +112,8 @@ namespace Thry
         {
             string guid = UnityHelper.GetGUID(m);
             string backedup_shader_name = FileHelper.LoadValueFromFile(guid, PATH.MATERIALS_BACKUP_FILE);
+            if (m == null)
+                return;
             if (MaterialShaderBroken(m))
                 return;
             if (backedup_shader_name == m.shader.name)

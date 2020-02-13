@@ -4,11 +4,12 @@
 Material:
   serializedVersion: 6
   m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
   m_Name: M_Dev
   m_Shader: {fileID: 4800000, guid: 3ea1f79935b9bd049a40bf60dcf574ae, type: 3}
-  m_ShaderKeywords: LOD_FADE_CROSSFADE _NORMALMAP _SUNDISK_NONE
+  m_ShaderKeywords: _NORMALMAP _SUNDISK_NONE
   m_LightmapFlags: 1
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -102,14 +103,6 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _EmissionScrollingCurve:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _EmissionScrollingCurve1:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
     - _FlipbookTexArray:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -131,7 +124,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: a6d6984545cde4a4f9317b17d6dca225, type: 3}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Matcap:
@@ -218,10 +211,6 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _TextGlyphs:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
     - _ToonRamp:
         m_Texture: {fileID: 2800000, guid: 61bd594533da4fc42bd46ef93ba5a4f6, type: 3}
         m_Scale: {x: 1, y: 1}
@@ -240,7 +229,6 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Floats:
     - DSGI: 0
-    - Instancing: 0
     - LightmapFlags: 0
     - _AOStrength: 1
     - _AdditiveOffset: 0
@@ -251,7 +239,6 @@ Material:
     - _AnisoSpec1Alpha: 1
     - _AnisoSpec2Alpha: 1
     - _AnisoUseTangentMap: 0
-    - _AoIndirectStrength: 1
     - _AttenuationMultiplier: 0
     - _BackFaceDetailIntensity: 1
     - _BackFaceEmissionStrength: 0
@@ -293,18 +280,11 @@ Material:
     - _DissolveP2PWorldLocal: 0
     - _DissolveToEmissionStrength: 0
     - _DissolveType: 1
-    - _DitheringDistanceEnabled: 0
-    - _DitheringDistanceMaxAlpha: 0.501
-    - _DitheringDistanceMinAlpha: 0
     - _DitheringEnabled: 1
-    - _DitheringInvisibleRange: 30
-    - _DitheringOpaqueRange: 20
     - _EmissionCenterOutEnabled: 0
     - _EmissionCenterOutEnabled1: 0
     - _EmissionCenterOutSpeed: 5
     - _EmissionCenterOutSpeed1: 5
-    - _EmissionScrollingUseCurve: 0
-    - _EmissionScrollingUseCurve1: 0
     - _EmissionStrength: 0
     - _EmissionStrength1: 0
     - _EmissionUV: 0
@@ -388,7 +368,6 @@ Material:
     - _MainHueShift: 0
     - _MainMinAlpha: 0
     - _MainMipScale: 0.25
-    - _MainShadowClipMod: 0
     - _MainVertexColoring: 0
     - _Matcap2Add: 0
     - _Matcap2Border: 0.43
@@ -440,7 +419,6 @@ Material:
     - _ParallaxStrength: 0
     - _RimBrighten: 0
     - _RimEnviroBlur: 0.7
-    - _RimEnviroIntensity: 1
     - _RimEnviroMinBrightness: 0
     - _RimEnviroSharpness: 0
     - _RimEnviroWidth: 0.45
@@ -480,17 +458,6 @@ Material:
     - _StencilPassOp: 0
     - _StencilRef: 0
     - _StencilZFailOp: 0
-    - _TextEnabled: 0
-    - _TextFPSEmissionStrength: 0
-    - _TextFPSEnabled: 0
-    - _TextFPSRotation: 0
-    - _TextPixelRange: 4
-    - _TextPositionEmissionStrength: 0
-    - _TextPositionEnabled: 0
-    - _TextPositionRotation: 0
-    - _TextTimeEmissionStrength: 0
-    - _TextTimeEnabled: 0
-    - _TextTimeRotation: 0
     - _VertexManipulationHeight: 0
     - _VertexManipulationHeightBias: 0
     - _ZBias: 0
@@ -501,7 +468,7 @@ Material:
     - footer_patreon: 0
     - footer_twitter: 0
     - footer_youtube: 0
-    - m_Special_Effects: 0
+    - m_Special_Effects: 1
     - m_end_Alpha: 0
     - m_end_Anisotropic: 0
     - m_end_CenterOutEmission: 0
@@ -515,10 +482,6 @@ Material:
     - m_end_ShadowMix: 0
     - m_end_SpecularToon: 0
     - m_end_StencilPassOptions: 0
-    - m_end_Text: 0
-    - m_end_TextFPS: 0
-    - m_end_TextInstanceTime: 0
-    - m_end_TextPosition: 0
     - m_end_angularFade: 0
     - m_end_backFace: 0
     - m_end_bakedLighting: 0
@@ -527,7 +490,6 @@ Material:
     - m_end_clearCoat: 0
     - m_end_debugOptions: 0
     - m_end_dissolve: 0
-    - m_end_distanceDithering: 0
     - m_end_distanceFade: 0
     - m_end_emission1Options: 0
     - m_end_emissionOptions: 0
@@ -573,10 +535,6 @@ Material:
     - m_start_ShadowMix: 0
     - m_start_SpecularToon: 0
     - m_start_StencilPassOptions: 0
-    - m_start_Text: 0
-    - m_start_TextFPS: 0
-    - m_start_TextInstanceTime: 0
-    - m_start_TextPosition: 0
     - m_start_angularFade: 0
     - m_start_backFace: 0
     - m_start_bakedLighting: 0
@@ -585,7 +543,6 @@ Material:
     - m_start_clearCoat: 0
     - m_start_debugOptions: 0
     - m_start_dissolve: 1
-    - m_start_distanceDithering: 0
     - m_start_distanceFade: 0
     - m_start_emission1Options: 0
     - m_start_emissionOptions: 1
@@ -642,7 +599,6 @@ Material:
     - _FlipbookColor: {r: 1, g: 1, b: 1, a: 1}
     - _FlipbookScaleOffset: {r: 1, g: 1, b: 0, a: 0}
     - _GlitterColor: {r: 1, g: 1, b: 1, a: 1}
-    - _GlitterPan: {r: 0, g: 0, b: 0, a: 0}
     - _GlobalPanSpeed: {r: 0, g: 0, b: 0, a: 0}
     - _LineColor: {r: 1, g: 1, b: 1, a: 1}
     - _MainDetailNormalPan: {r: 0, g: 0, b: 0, a: 0}
@@ -667,18 +623,6 @@ Material:
     - _SSSColor: {r: 1, g: 1, b: 1, a: 1}
     - _SpecularTint: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
     - _SpecularToonInnerOuter: {r: 0.25, g: 0.3, b: 0, a: 1}
-    - _TextFPSColor: {r: 1, g: 1, b: 1, a: 1}
-    - _TextFPSOffset: {r: 0, g: 0, b: 0, a: 0}
-    - _TextFPSPadding: {r: 0, g: 0, b: 0, a: 0}
-    - _TextFPSScale: {r: 1, g: 1, b: 1, a: 1}
-    - _TextPositionColor: {r: 1, g: 0, b: 1, a: 1}
-    - _TextPositionOffset: {r: 0, g: 0, b: 0, a: 0}
-    - _TextPositionPadding: {r: 0, g: 0, b: 0, a: 0}
-    - _TextPositionScale: {r: 1, g: 1, b: 1, a: 1}
-    - _TextTimeColor: {r: 1, g: 0, b: 1, a: 1}
-    - _TextTimeOffset: {r: 0, g: 0, b: 0, a: 0}
-    - _TextTimePadding: {r: 0, g: 0, b: 0, a: 0}
-    - _TextTimeScale: {r: 1, g: 0, b: 1, a: 1}
     - _VertexManipulationHeightPan: {r: 0, g: 0, b: 0, a: 0}
     - _VertexManipulationLocalRotation: {r: 0, g: 0, b: 0, a: 1}
     - _VertexManipulationLocalScale: {r: 1, g: 1, b: 1, a: 1}

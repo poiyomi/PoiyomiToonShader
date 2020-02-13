@@ -50,6 +50,13 @@
         poiMesh.uv[1] = i.uv0.zw;
         poiMesh.uv[2] = i.uv1.xy;
         poiMesh.uv[3] = i.uv1.zw;
+
+        #ifdef POI_UV_DISTORTION
+            poiMesh.uv[4] = calculateDistortionUV(i.uv0.xy);
+            #else
+            poiMesh.uv[4] = poiMesh.uv[0];
+        #endif
+
         poiMesh.vertexColor = i.vertexColor;
         #if defined(LIGHTMAP_ON) || defined(DYNAMICLIGHTMAP_ON)
             poiMesh.lightmapUV = i.lightmapUV;

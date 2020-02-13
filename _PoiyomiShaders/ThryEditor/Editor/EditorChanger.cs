@@ -77,7 +77,7 @@ namespace Thry
                 if (init)
                 {
                     EditorUtility.DisplayProgressBar("Load all shaders...", "", (float)p / paths.Count);
-                    setEditor[p] = (new Material(shaders[p])).HasProperty(ThryEditor.PROPERTY_NAME_USING_THRY_EDITOR);
+                    setEditor[p] = ShaderHelper.IsShaderUsingThryEditor(shaders[p]);
                     wasEditor[p] = setEditor[p];
                 }
                 setEditor[p] = GUILayout.Toggle(setEditor[p], shaders[p].name);

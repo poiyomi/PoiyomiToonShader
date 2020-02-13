@@ -57,6 +57,10 @@ ShaderImporter:
   - _MirrorTexture: {instanceID: 0}
   - _MainFadeTexture: {instanceID: 0}
   - _BulgeMask: {instanceID: 0}
+  - _DistortionFlowTexture: {fileID: 2800000, guid: 07f0a54a3a4e7754eabc8ced70d7b30c,
+      type: 3}
+  - _DistortionFlowTexture1: {fileID: 2800000, guid: 07f0a54a3a4e7754eabc8ced70d7b30c,
+      type: 3}
   - _ParallaxHeightMap: {instanceID: 0}
   - _ParallaxInternalMap: {instanceID: 0}
   userData: 

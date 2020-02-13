@@ -2,6 +2,7 @@
     #define POI_MSDF
     
     sampler2D _TextGlyphs; float4 _TextGlyphs_ST; float4 _TextGlyphs_TexelSize;
+    uint _TextFPSUV, _TextTimeUV, _TextPositionUV;
     float _TextPixelRange;
     
     float _TextFPSEnabled, _TextPositionEnabled, _TextTimeEnabled;
@@ -99,7 +100,7 @@
         _TextPositionPadding *= 1 / totalCharacters;
         uv = remapClamped(uv, startUV, endUV, float2(glyphPos.x + _TextPositionPadding.x, glyphPos.y - glyphWidth + _TextPositionPadding.y), float2(glyphPos.x + glyphWidth - _TextPositionPadding.z, glyphPos.y - _TextPositionPadding.w));
                 
-        if (uv.x > glyphPos.x + glyphWidth - _TextPositionPadding.z - .0005 || uv.x < glyphPos.x + _TextPositionPadding.x + .0005 || uv.y > glyphPos.y - _TextPositionPadding.w - .0005 || uv.y < glyphPos.y - glyphWidth + _TextPositionPadding.y + .0005)
+        if (uv.x > glyphPos.x + glyphWidth - _TextPositionPadding.z - .001 || uv.x < glyphPos.x + _TextPositionPadding.x + .001 || uv.y > glyphPos.y - _TextPositionPadding.w - .001 || uv.y < glyphPos.y - glyphWidth + _TextPositionPadding.y + .001)
         {
             return;
         }
@@ -145,7 +146,7 @@
         _TextTimePadding *= 1 / totalCharacters;
         uv = remapClamped(uv, float2(startUV, 0), float2(endUV, 1), float2(glyphPos.x + _TextTimePadding.x, glyphPos.y - glyphWidth + _TextTimePadding.y), float2(glyphPos.x + glyphWidth - _TextTimePadding.z, glyphPos.y - _TextTimePadding.w));
         
-        if (uv.x > glyphPos.x + glyphWidth - _TextTimePadding.z - .0005 || uv.x < glyphPos.x + _TextTimePadding.x + .0005 || uv.y > glyphPos.y - _TextTimePadding.w - .0005 || uv.y < glyphPos.y - glyphWidth + _TextTimePadding.y + .0005)
+        if (uv.x > glyphPos.x + glyphWidth - _TextTimePadding.z - .001 || uv.x < glyphPos.x + _TextTimePadding.x + .001 || uv.y > glyphPos.y - _TextTimePadding.w - .001 || uv.y < glyphPos.y - glyphWidth + _TextTimePadding.y + .001)
         {
             return;
         }
@@ -187,7 +188,7 @@
         _TextFPSPadding *= 1 / totalCharacters;
         uv = remapClamped(uv, float2(startUV, 0), float2(endUV, 1), float2(glyphPos.x + _TextFPSPadding.x, glyphPos.y - glyphWidth + _TextFPSPadding.y), float2(glyphPos.x + glyphWidth - _TextFPSPadding.z, glyphPos.y - _TextFPSPadding.w));
         
-        if (uv.x > glyphPos.x + glyphWidth - _TextFPSPadding.z - .0005 || uv.x < glyphPos.x + _TextFPSPadding.x + .0005 || uv.y > glyphPos.y - _TextFPSPadding.w - .0005 || uv.y < glyphPos.y - glyphWidth + _TextFPSPadding.y + .0005)
+        if (uv.x > glyphPos.x + glyphWidth - _TextFPSPadding.z - .001 || uv.x < glyphPos.x + _TextFPSPadding.x + .001 || uv.y > glyphPos.y - _TextFPSPadding.w - .001 || uv.y < glyphPos.y - glyphWidth + _TextFPSPadding.y + .001)
         {
             return;
         }
@@ -201,7 +202,7 @@
         globalTextEmission += _TextFPSColor.rgb * opacity * _TextFPSEmissionStrength;
     }
     
-    void ApplyTextOverlayColor(inout float4 albedo, float2 uv)
+    void ApplyTextOverlayColor(inout float4 albedo)
     {
         globalTextEmission = 0;
         half positionalOpacity = 0;
@@ -209,17 +210,17 @@
             UNITY_BRANCH
             if(_TextFPSEnabled)
             {
-                ApplyFPSText(albedo, uv);
+                ApplyFPSText(albedo, poiMesh.uv[_TextFPSUV]);
             }
             UNITY_BRANCH
             if(_TextPositionEnabled)
             {
-                ApplyPositionText(albedo, uv);
+                ApplyPositionText(albedo, poiMesh.uv[_TextPositionUV]);
             }
             UNITY_BRANCH
             if(_TextTimeEnabled)
             {
-                ApplyTimeText(albedo, uv);
+                ApplyTimeText(albedo, poiMesh.uv[_TextTimeUV]);
             }
         #endif
     }

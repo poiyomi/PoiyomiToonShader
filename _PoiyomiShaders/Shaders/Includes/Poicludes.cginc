@@ -4,7 +4,7 @@
     #define POICLUDES
     
     UNITY_DECLARE_TEX2D(_MainTex); float4 _MainTex_ST; float4 _MainTex_TexelSize;
-    
+    sampler2D _PoiGrab;
     float _Clip;
     
     //Structs
@@ -84,7 +84,7 @@
         float3 worldPos;
         float3 modelPos;
         float3 tangentSpaceNormal;
-        float2 uv[4];
+        float2 uv[5];
         float4 vertexColor;
         #if defined(LIGHTMAP_ON) || defined(DYNAMICLIGHTMAP_ON)
             float4 lightmapUV;
@@ -128,6 +128,5 @@
     float3 finalEmission;
     float4 mainTexture;
     float4 albedo;
-    
     
 #endif

@@ -328,28 +328,29 @@ namespace Thry
             return array;
         }
 
-        public static Texture2D CurveToTexture(AnimationCurve curve, int width, int height, char color_channel)
+        public static Texture2D CurveToTexture(AnimationCurve curve, TextureData texture_settings)
         {
-            Texture2D texture = new Texture2D(width, height);
-            for(int i = 0; i < width;i++)
+            Texture2D texture = new Texture2D(texture_settings.width, texture_settings.height);
+            for(int i = 0; i < texture_settings.width; i++)
             {
                 Color color = new Color();
-                float value = curve.Evaluate((float)i / width);
+                float value = curve.Evaluate((float)i / texture_settings.width);
                 value = Mathf.Clamp01(value);
-                if (color_channel == 'r')
+                if (texture_settings.channel == 'r')
                     color.r = value;
-                else if (color_channel == 'g')
+                else if (texture_settings.channel == 'g')
                     color.g = value;
-                else if (color_channel == 'b')
+                else if (texture_settings.channel == 'b')
                     color.b = value;
-                else if (color_channel == 'a')
+                else if (texture_settings.channel == 'a')
                     color.a = value;
-                if (color_channel != 'a')
+                if (texture_settings.channel != 'a')
                     color.a = 1;
-                    for (int y = 0; y < height; y++)
+                    for (int y = 0; y < texture_settings.height; y++)
                     texture.SetPixel(i, y, color);
             }
             texture.Apply();
+            texture_settings.ApplyModes(texture);
             return texture;
         }
     }

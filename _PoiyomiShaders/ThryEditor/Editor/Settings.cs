@@ -95,10 +95,9 @@ namespace Thry
                 if (obj.GetType() == typeof(Shader))
                 {
                     Shader shader = (Shader)obj;
-                    Material m = new Material(shader);
-                    if (m.HasProperty(Shader.PropertyToID(ThryEditor.PROPERTY_NAME_USING_THRY_EDITOR)))
+                    if (ShaderHelper.IsShaderUsingThryEditor(shader))
                     {
-                        Mediator.SetActiveShader(shader,m);
+                        Mediator.SetActiveShader(shader, new Material(shader));
                     }
                 }
             }
@@ -365,40 +364,80 @@ namespace Thry
             if (ModuleHandler.GetModules().Count > 0)
                 GUILayout.Label(Locale.editor.Get("header_modules"), EditorStyles.boldLabel);
             bool disabled = false;
-            foreach (ModuleHeader module in ModuleHandler.GetModules())
+            foreach (Module module in ModuleHandler.GetModules())
                 if (module.is_being_installed_or_removed)
                     disabled = true;
             EditorGUI.BeginDisabledGroup(disabled);
-            foreach (ModuleHeader module in ModuleHandler.GetModules())
+            foreach (Module module in ModuleHandler.GetModules())
             {
-                EditorGUILayout.BeginHorizontal();
-                EditorGUI.BeginDisabledGroup(!module.available_requirement_fullfilled);
-                EditorGUI.BeginChangeCheck();
-                bool is_installed = Helper.ClassExists(module.available_module.classname);
-                bool update_available = is_installed;
-                if (module.installed_module != null)
-                    update_available = Helper.compareVersions(module.installed_module.version, module.available_module.version) == 1;
-                string displayName = module.available_module.name;
-                if (module.installed_module != null)
-                    displayName += " v" + module.installed_module.version;
-
-                bool install = GUILayout.Toggle(is_installed, new GUIContent(displayName, module.available_module.description), GUILayout.ExpandWidth(false));
-                if (EditorGUI.EndChangeCheck())
-                    ModuleHandler.InstallRemoveModule(module,install);
-                if(update_available)
-                    if (GUILayout.Button("update to v"+module.available_module.version, GUILayout.ExpandWidth(false)))
-                        ModuleHandler.UpdateModule(module);
-                EditorGUI.EndDisabledGroup();
-                if (module.available_module.requirement != null && (update_available || !is_installed))
-                {
-                    if(module.available_requirement_fullfilled)
-                        GUILayout.Label(Locale.editor.Get("requirements") +": " + module.available_module.requirement.ToString(), Styles.greenStyle);
-                    else
-                        GUILayout.Label(Locale.editor.Get("requirements") + ": " + module.available_module.requirement.ToString(), Styles.redStyle);
-                }
-                EditorGUILayout.EndHorizontal();
+                ModuleUI(module);
+            }
+            GUILayout.Label(Locale.editor.Get("header_thrird_party"), EditorStyles.boldLabel);
+            foreach (Module module in ModuleHandler.GetThirdPartyModules())
+            {
+                ModuleUI(module);
             }
             EditorGUI.EndDisabledGroup();
+        }
+
+        private void ModuleUI(Module module)
+        {
+            string text = "    " + module.available_module.name;
+            if (module.update_available)
+                text = "              " + text;
+            module.ui_expanded = Foldout(text, module.ui_expanded);
+            Rect rect = GUILayoutUtility.GetLastRect();
+            rect.x += 20;
+            rect.y += 2;
+            rect.width = 20;
+
+            bool is_installed = module.installed_module != null;
+
+            EditorGUI.BeginDisabledGroup(!module.available_requirement_fullfilled);
+            EditorGUI.BeginChangeCheck();
+            bool install = GUI.Toggle(rect, is_installed, "");
+            if(EditorGUI.EndChangeCheck()){
+                ModuleHandler.InstallRemoveModule(module, install);
+            }
+            if (module.update_available)
+            {
+                rect.x += 20;
+                rect.width = 47;
+                GUIStyle style = new GUIStyle(EditorStyles.miniButton);
+                style.fixedHeight = 17;
+                if (GUI.Button(rect, "Update",style))
+                    ModuleHandler.UpdateModule(module);
+            }
+            //add update notification
+            if (module.ui_expanded)
+            {
+                ModuleUIDetails(module);
+            }
+
+            EditorGUI.EndDisabledGroup();
+        }
+
+        private void ModuleUIDetails(Module module)
+        {
+            float prev_label_width = EditorGUIUtility.labelWidth;
+            EditorGUIUtility.labelWidth = 130;
+
+            EditorGUILayout.HelpBox(module.available_module.description, MessageType.Info);
+            if (module.installed_module != null)
+                EditorGUILayout.LabelField("Installed Version: ", module.installed_module.version);
+            EditorGUILayout.LabelField("Available Version: ", module.available_module.version);
+            if (module.available_module.requirement != null)
+            {
+                if (module.available_requirement_fullfilled)
+                    EditorGUILayout.LabelField(Locale.editor.Get("requirements") + ": ", module.available_module.requirement.ToString(), Styles.greenStyle);
+                else
+                    EditorGUILayout.LabelField(Locale.editor.Get("requirements") + ": ", module.available_module.requirement.ToString(), Styles.redStyle);
+            }
+            EditorGUILayout.LabelField("Url: ", module.url);
+            if (module.author != null)
+                EditorGUILayout.LabelField("Author: ", module.author);
+
+            EditorGUIUtility.labelWidth = prev_label_width;
         }
 
         private static void Text(string configField, bool createHorizontal = true)
@@ -536,12 +575,13 @@ namespace Thry
         private static bool Foldout(GUIContent content, bool expanded)
         {
             var rect = GUILayoutUtility.GetRect(16f + 20f, 22f, Styles.dropDownHeader);
+            rect = EditorGUI.IndentedRect(rect);
             GUI.Box(rect, content, Styles.dropDownHeader);
             var toggleRect = new Rect(rect.x + 4f, rect.y + 2f, 13f, 13f);
             Event e = Event.current;
             if (e.type == EventType.Repaint)
                 EditorStyles.foldout.Draw(toggleRect, false, false, expanded, false);
-            if (e.type == EventType.MouseDown && rect.Contains(e.mousePosition) && !e.alt)
+            if (e.type == EventType.MouseDown && toggleRect.Contains(e.mousePosition) && !e.alt)
             {
                 expanded = !expanded;
                 e.Use();

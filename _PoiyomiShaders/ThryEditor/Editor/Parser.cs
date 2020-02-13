@@ -91,7 +91,7 @@ namespace Thry
                 return true;
             else if (input.ToLower() == "false")
                 return false;
-            else if (input == "null")
+            else if (input == "null" || input=="NULL" || input == "Null")
                 return null;
             else
             {
@@ -130,6 +130,7 @@ namespace Thry
 
         private static object ParsedToObject(object parsed,Type objtype)
         {
+            if (parsed == null) return null;
             if (Helper.IsPrimitive(objtype)) return PrimitiveToObject(parsed,objtype);
             if (parsed.GetType() == typeof(Dictionary<string, object>)) return DictionaryToObject(parsed, objtype);
             if (parsed.GetType() == typeof(List<object>))

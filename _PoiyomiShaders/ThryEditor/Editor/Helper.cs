@@ -242,6 +242,12 @@ namespace Thry
             return SaveDictionaryToFile(path, textFileData[path]);
         }
 
+        public static void RemoveValueFromFile(string key, string path)
+        {
+            if (!textFileData.ContainsKey(path)) ReadFileIntoTextFileData(path);
+            if (textFileData[path].ContainsKey(key)) textFileData[path].Remove(key);
+        }
+
         public static bool SaveDictionaryToFile(string path, Dictionary<string,string> dictionary)
         {
             textFileData[path] = dictionary;
@@ -528,6 +534,61 @@ namespace Thry
         {
             foreach (UnityEngine.Object o in p.targets)
                 ToggleKeyword((Material)o, keyword, on);
+        }
+
+        /// <summary>
+        /// Set Material Property value or Renderqueue of current Editor.
+        /// </summary>
+        /// <param name="key">Property Name or "render_queue"</param>
+        /// <param name="value"></param>
+        public static void SetMaterialValue(string key, string value)
+        {
+            MaterialProperty p = ThryEditor.FindProperty(ThryEditor.currentlyDrawing.properties, key);
+            Material[] materials = ThryEditor.currentlyDrawing.materials;
+            if (p != null)
+            {
+                MaterialHelper.SetMaterialPropertyValue(p, materials, value);
+            }
+            else if (key == "render_queue")
+            {
+                int q = 0;
+                if (int.TryParse(value, out q))
+                {
+                    foreach (Material m in materials) m.renderQueue = q;
+                }
+            }
+        }
+
+        public static void SetMaterialPropertyValue(MaterialProperty p, Material[] materials, string value)
+        {
+            if (p.type == MaterialProperty.PropType.Texture)
+            {
+                Texture tex = AssetDatabase.LoadAssetAtPath<Texture>(value);
+                if (tex != null)
+                    foreach (Material m in materials) m.SetTexture(p.name, tex);
+            }
+            else if (p.type == MaterialProperty.PropType.Float || p.type == MaterialProperty.PropType.Range)
+            {
+                float f_value;
+                if (float.TryParse(value, out f_value))
+                {
+                    p.floatValue = f_value;
+                    string[] drawer = ShaderHelper.GetDrawer(p);
+                    if (drawer != null && drawer.Length > 1 && drawer[0] == "Toggle" && drawer[1] != "__")
+                        MaterialHelper.ToggleKeyword(p, drawer[1], f_value == 1);
+                }
+            }
+            else if (p.type == MaterialProperty.PropType.Vector)
+            {
+                string[] xyzw = value.Split(",".ToCharArray());
+                Vector4 vector = new Vector4(float.Parse(xyzw[0]), float.Parse(xyzw[1]), float.Parse(xyzw[2]), float.Parse(xyzw[3]));
+                foreach (Material m in materials) m.SetVector(p.name, vector);
+            }
+            else if (p.type == MaterialProperty.PropType.Color)
+            {
+                Color col = Converter.stringToColor(value);
+                foreach (Material m in materials) m.SetColor(p.name, col);
+            }
         }
 
         public static void CopyPropertyValueFromMaterial(MaterialProperty p, Material source)

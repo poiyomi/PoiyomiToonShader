@@ -24,6 +24,7 @@ namespace Thry
 
         public const string GRADIENT_INFO_FILE = "Thry/gradients";
         public const string TEXT_INFO_FILE = "Thry/text_textures";
+        public const string MODULES_LOCATION__DATA = "Thry/modules_location_data";
 
         public const string LINKED_MATERIALS_FILE = "Thry/linked_materials.json";
 
@@ -32,7 +33,7 @@ namespace Thry
 
     public class URL
     {
-        public const string PUBLIC_MODULES_COLLECTION = "https://raw.githubusercontent.com/Thryrallo/ThryEditor/master/modules.json";
+        public const string MODULE_COLLECTION = "https://thryeditor.thryrallo.de/files/modules.json";
         public const string SETTINGS_MESSAGE_URL = "http://thryeditor.thryrallo.de/message.json";
 
         public const string DATA_SHARE_SEND = "http://thryeditor.thryrallo.de/send_analytics.php";
@@ -86,15 +87,17 @@ namespace Thry
         public Gradient gradient;
     }
 
+    //--------------Shader Data Structs--------------------
+
     public class PropertyOptions
     {
         public int offset = 0;
         public string tooltip = "";
-        public DefinableAction altClick;
+        public DefineableAction altClick;
         public DefineableCondition condition_show = new DefineableCondition();
         public DefineableCondition condition_enable = null;
+        public PropertyValueAction[] on_value_actions;
         public ButtonData button_right;
-        public ImageData image;
         public TextureData texture;
         public string[] reference_properties;
         public string reference_property;
@@ -103,18 +106,11 @@ namespace Thry
         public string file_name;
     }
 
-    public class ImageData
-    {
-        public int width = 128;
-        public int height = 8;
-        public char channel = 'r';
-    }
-
     public class ButtonData
     {
         public string text = "";
         public TextureData texture = null;
-        public DefinableAction action = new DefinableAction();
+        public DefineableAction action = new DefineableAction();
         public string hover = "";
         public DefineableCondition condition_show = new DefineableCondition();
     }
@@ -125,6 +121,8 @@ namespace Thry
 
         public int width = 128;
         public int height = 128;
+
+        public char channel = 'r';
 
         public int ansioLevel = 1;
         public FilterMode filterMode = FilterMode.Bilinear;
@@ -160,25 +158,60 @@ namespace Thry
         }
     }
 
-    public class DefinableAction
+    public class PropertyValueAction
     {
-        public DefinableActionType type = DefinableActionType.NONE;
+        public string value;
+        public DefineableAction[] actions;
+
+        public bool Execute(MaterialProperty p)
+        {
+            if((p.floatValue.ToString()==value) 
+                || ( p.colorValue.ToString() == value) 
+                || ( p.vectorValue.ToString() == value )
+                || (p.textureValue != null && p.textureValue.ToString() == value))
+            {
+                foreach (DefineableAction a in actions)
+                    a.Perform();
+                return true;
+            }
+            return false;
+        }
+    }
+
+    public class DefineableAction
+    {
+        public DefineableActionType type = DefineableActionType.NONE;
         public string data = "";
         public void Perform()
         {
             switch (type)
             {
-                case DefinableActionType.URL:
+                case DefineableActionType.URL:
                     Application.OpenURL(data);
+                    break;
+                case DefineableActionType.SET_PROPERTY:
+                    string[] set = Regex.Split(data, @"=");
+                    if (set.Length > 1)
+                        MaterialHelper.SetMaterialValue(set[0], set[1]);
+                    break;
+                case DefineableActionType.SET_SHADER:
+                    Shader shader = Shader.Find(data);
+                    if (shader != null)
+                    {
+                        foreach (Material m in ThryEditor.currentlyDrawing.materials)
+                            m.shader = shader;
+                    }
                     break;
             }
         }
     }
 
-    public enum DefinableActionType
+    public enum DefineableActionType
     {
         NONE,
-        URL
+        URL,
+        SET_PROPERTY,
+        SET_SHADER
     }
 
     public class DefineableCondition
@@ -302,14 +335,19 @@ namespace Thry
         OR
     }
 
-    public class ModuleHeader
+    public class Module
     {
+        public string id;
         public string url = "";
+        public string author;
         public string path;
         public bool is_being_installed_or_removed = false;
         public bool available_requirement_fullfilled = true;
+        public bool update_available = false;
+        public ModuleLocationData location_data;
         public ModuleInfo available_module = null;
         public ModuleInfo installed_module = null;
+        public bool ui_expanded = false;
     }
 
     public class ModuleInfo
@@ -318,9 +356,15 @@ namespace Thry
         public string version = "0";
         public string description = "";
         public string classname = "";
-        public string settings_file_name = "";
         public DefineableCondition requirement;
         public List<string> files;
+    }
+
+    public class ModuleLocationData
+    {
+        public string guid;
+        public string classname;
+        public string[] files;
     }
 
     public enum TextureDisplayType

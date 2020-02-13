@@ -5,12 +5,13 @@
     UNITY_DECLARE_TEX2D_NOSAMPLER(_MatcapMask); float4 _MatcapMask_ST;
     float _MatcapBorder;
     float4 _MatcapColor;
-    float  _MatcapIntensity;
+    float _MatcapIntensity;
     float _MatcapReplace;
     float _MatcapMultiply;
     float _MatcapAdd;
     float _MatcapEnable;
     float _MatcapLightMask;
+    float _MatcapEmissionStrength;
     uint _MatcapNormal;
     
     UNITY_DECLARE_TEX2D_NOSAMPLER(_Matcap2);
@@ -23,13 +24,14 @@
     float _Matcap2Add;
     float _Matcap2Enable;
     float _Matcap2LightMask;
+    float _Matcap2EmissionStrength;
     uint _Matcap2Normal;
     
+    // globals
     float3 matcap;
     float matcapMask;
     float3 matcap2;
     float matcap2Mask;
-    
     
     
     void calculateMatcap()
@@ -79,6 +81,16 @@
             finalColor.rgb = lerp(finalColor, matcap2, _Matcap2Replace * matcap2Mask);
             finalColor.rgb *= lerp(1, matcap2, _Matcap2Multiply * matcap2Mask);
             finalColor.rgb += matcap2 * _Matcap2Add * matcap2Mask;
+        }
+    }
+    
+    void applyMatcapEmission(inout float3 finalEmission)
+    {
+        finalEmission += matcap * _MatcapEmissionStrength * matcapMask;
+        
+        if(_Matcap2Enable)
+        {
+            finalEmission += matcap2 * _Matcap2EmissionStrength * matcap2Mask;
         }
     }
 #endif

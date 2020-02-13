@@ -39,8 +39,7 @@ namespace Thry
                 foreach (string g in shaderGuids)
                 {
                     Shader shader = AssetDatabase.LoadAssetAtPath<Shader>(AssetDatabase.GUIDToAssetPath(g));
-                    Material m = new Material(shader);
-                    if (m.HasProperty(Shader.PropertyToID(ThryEditor.PROPERTY_NAME_USING_THRY_EDITOR)))
+                    if (ShaderHelper.IsShaderUsingThryEditor(shader))
                     {
                         string defaultShaderName = ShaderHelper.getDefaultShaderName(shader.name);
                         if (!poiShaders.Contains(defaultShaderName)) poiShaders.Add(defaultShaderName);

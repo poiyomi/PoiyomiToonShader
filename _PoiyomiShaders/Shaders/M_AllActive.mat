@@ -7,12 +7,12 @@ Material:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_Name: M_AllActive
-  m_Shader: {fileID: 4800000, guid: 3ea1f79935b9bd049a40bf60dcf574ae, type: 3}
+  m_Shader: {fileID: 4800000, guid: 45429b755005c8245b20248fbc150a0a, type: 3}
   m_ShaderKeywords: BLOOM BLOOM_LOW DEPTH_OF_FIELD EFFECT_BUMP GRAIN LOD_FADE_CROSSFADE
-    _ALPHABLEND_ON _COLORADDSUBDIFF_ON _COLORCOLOR_ON _DETAIL_MULX2 _EMISSION _FLIPBOOK_BLENDING
-    _GLOSSYREFLECTIONS_OFF _MAPPING_6_FRAMES_LAYOUT _METALLICGLOSSMAP _NORMALMAP _PARALLAXMAP
-    _REQUIRE_UV2 _SPECGLOSSMAP _SUNDISK_HIGH_QUALITY _SUNDISK_NONE _SUNDISK_SIMPLE
-    _TERRAIN_NORMAL_MAP
+    USER_LUT _ALPHABLEND_ON _COLORADDSUBDIFF_ON _COLORCOLOR_ON _DETAIL_MULX2 _EMISSION
+    _FLIPBOOK_BLENDING _GLOSSYREFLECTIONS_OFF _MAPPING_6_FRAMES_LAYOUT _METALLICGLOSSMAP
+    _NORMALMAP _PARALLAXMAP _REQUIRE_UV2 _SPECGLOSSMAP _SUNDISK_HIGH_QUALITY _SUNDISK_NONE
+    _SUNDISK_SIMPLE _TERRAIN_NORMAL_MAP
   m_LightmapFlags: 1
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -100,6 +100,14 @@ Material:
         m_Offset: {x: 0, y: 0}
     - _DissolveToTexture:
         m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DistortionFlowTexture:
+        m_Texture: {fileID: 2800000, guid: 07f0a54a3a4e7754eabc8ced70d7b30c, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DistortionFlowTexture1:
+        m_Texture: {fileID: 2800000, guid: 07f0a54a3a4e7754eabc8ced70d7b30c, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _EmissionMap:
@@ -367,6 +375,8 @@ Material:
     - _DissolveP2PWorldLocal: 0
     - _DissolveToEmissionStrength: 0
     - _DissolveType: 1
+    - _DistortionStrength: 0.5
+    - _DistortionStrength1: 0.5
     - _DitheringDistanceEnabled: 1
     - _DitheringDistanceMaxAlpha: 0.501
     - _DitheringDistanceMinAlpha: 0
@@ -377,6 +387,10 @@ Material:
     - _EmissionCenterOutEnabled1: 0
     - _EmissionCenterOutSpeed: 5
     - _EmissionCenterOutSpeed1: 5
+    - _EmissionMapUV: 0
+    - _EmissionMapUV1: 0
+    - _EmissionMaskUV: 0
+    - _EmissionMaskUV1: 0
     - _EmissionScrollingUseCurve: 0
     - _EmissionScrollingUseCurve1: 0
     - _EmissionStrength: 0
@@ -398,6 +412,7 @@ Material:
     - _EnableBulge: 1
     - _EnableClearCoat: 1
     - _EnableDissolve: 1
+    - _EnableDistortion: 1
     - _EnableEmission: 1
     - _EnableEmission1: 1
     - _EnableEnvironmentalRim: 1
@@ -491,9 +506,11 @@ Material:
     - _MainMinAlpha: 0
     - _MainMipScale: 0.25
     - _MainShadowClipMod: 0
+    - _MainTextureUV: 0
     - _MainVertexColoring: 0
     - _Matcap2Add: 0
     - _Matcap2Border: 0.43
+    - _Matcap2EmissionStrength: 0
     - _Matcap2Enable: 1
     - _Matcap2Intensity: 1
     - _Matcap2LightMask: 0
@@ -503,6 +520,7 @@ Material:
     - _MatcapAdd: 0
     - _MatcapBorder: 0.43
     - _MatcapBrightness: 1
+    - _MatcapEmissionStrength: 0
     - _MatcapEnable: 1
     - _MatcapIntensity: 1
     - _MatcapLightMask: 0
@@ -623,7 +641,7 @@ Material:
     - footer_youtube: 0
     - m_Patreon: 1
     - m_SpecialEffects: 0
-    - m_Special_Effects: 0
+    - m_Special_Effects: 1
     - m_StencilPassOptions: 0
     - m_emissionOptions: 0
     - m_end_Alpha: 0
@@ -662,6 +680,7 @@ Material:
     - m_end_dissolve: 0
     - m_end_distanceDithering: 0
     - m_end_distanceFade: 0
+    - m_end_distortionFlow: 0
     - m_end_emission1Options: 0
     - m_end_emissionOptions: 0
     - m_end_flipBook: 0
@@ -741,6 +760,7 @@ Material:
     - m_start_dissolve: 0
     - m_start_distanceDithering: 0
     - m_start_distanceFade: 0
+    - m_start_distortionFlow: 1
     - m_start_emission1Options: 0
     - m_start_emissionOptions: 0
     - m_start_flipBook: 0
@@ -789,6 +809,8 @@ Material:
     - _DissolveStartPoint: {r: 0, g: -1, b: 0, a: 0}
     - _DissolveTextureColor: {r: 1, g: 1, b: 1, a: 1}
     - _DissolveToPanning: {r: 0, g: 0, b: 0, a: 0}
+    - _DistortionSpeed: {r: 0.5, g: 0.5, b: 0, a: 0}
+    - _DistortionSpeed1: {r: 0.5, g: 0.5, b: 0, a: 0}
     - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor1: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionMapPan: {r: 0, g: 0, b: 0, a: 0}

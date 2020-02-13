@@ -130,14 +130,36 @@ namespace Thry
         }
 
         private static List<ThryEditorShader> shaders;
+        private static Dictionary<string, ThryEditorShader> dictionary;
         public static List<ThryEditorShader> thry_editor_shaders
         {
             get
             {
-                if (shaders == null)
-                    LoadThryEditorShaders();
+                Init();
                 return shaders;
             }
+        }
+
+        private static void Init()
+        {
+            if (shaders == null)
+                LoadThryEditorShaders();
+        }
+
+        private static void Add(ThryEditorShader s)
+        {
+            Init();
+            if (!dictionary.ContainsKey(s.name))
+            {
+                dictionary.Add(s.name, s);
+                shaders.Add(s);
+            }
+        }
+
+        private static void RemoveAt(int i)
+        {
+            dictionary.Remove(shaders[i].name);
+            shaders.RemoveAt(i--);
         }
 
         public static string[] GetThryEditorShaderNames()
@@ -148,15 +170,37 @@ namespace Thry
             return r;
         }
 
+        public static bool IsShaderUsingThryEditor(Shader shader)
+        {
+            Init();
+            return dictionary.ContainsKey(shader.name);
+        }
+
 
         private static void LoadThryEditorShaders()
         {
             string data = FileHelper.ReadFileIntoString(PATH.THRY_EDITOR_SHADERS);
             if (data != "")
+            {
                 shaders = Parser.ParseToObject<List<ThryEditorShader>>(data);
+                InitDictionary();
+            }
             else
+            {
+                dictionary = new Dictionary<string, ThryEditorShader>();
                 SearchAllShadersForThryEditorUsage();
+            }
             DeleteNull();
+        }
+
+        private static void InitDictionary()
+        {
+            dictionary = new Dictionary<string, ThryEditorShader>();
+            foreach (ThryEditorShader s in shaders)
+            {
+                if(!dictionary.ContainsKey(s.name))
+                    dictionary.Add(s.name, s);
+            }
         }
 
         public static void SearchAllShadersForThryEditorUsage()
@@ -174,12 +218,12 @@ namespace Thry
         private static void DeleteNull()
         {
             bool save = false;
-            int length = thry_editor_shaders.Count;
+            int length = shaders.Count;
             for (int i = 0; i < length; i++)
             {
-                if (thry_editor_shaders[i] == null)
+                if (shaders[i] == null)
                 {
-                    thry_editor_shaders.RemoveAt(i--);
+                    RemoveAt(i--);
                     length--;
                     save = true;
                 }
@@ -190,7 +234,7 @@ namespace Thry
 
         private static void Save()
         {
-            FileHelper.WriteStringToFile(Parser.ObjectToString(thry_editor_shaders), PATH.THRY_EDITOR_SHADERS);
+            FileHelper.WriteStringToFile(Parser.ObjectToString(shaders), PATH.THRY_EDITOR_SHADERS);
         }
 
         private static string GetActiveCustomEditorParagraph(string code)
@@ -225,7 +269,7 @@ namespace Thry
                 if (name_match.Success) shader.name = name_match.Value.TrimStart(new char[] { ' ', '"' });
                 Match master_label_match = Regex.Match(code, @"\[HideInInspector\]\s*shader_master_label\s*\(\s*\""[^\""]*(?=\"")");
                 if (master_label_match.Success) shader.version = GetVersionFromMasterLabel(master_label_match.Value);
-                thry_editor_shaders.Add(shader);
+                Add(shader);
                 return true;
             }
             return false;
@@ -267,7 +311,7 @@ namespace Thry
                 {
                     if (thry_editor_shaders[i].path == path)
                     {
-                        thry_editor_shaders.RemoveAt(i--);
+                        RemoveAt(i--);
                         length--;
                         save = true;
                     }

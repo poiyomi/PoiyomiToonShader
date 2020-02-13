@@ -24,6 +24,8 @@ USED---------------------------------------------
 "BLOOM_LOW",
 "GRAIN",
 "DEPTH_OF_FIELD",
+"USER_LUT",
+"CHROMATIC_ABERRATION_LOW",
 
 UNUSED-------------------------------------------
 "EFFECT_BUMP",
@@ -67,7 +69,6 @@ UNUSED-------------------------------------------
 "BLOOM_LENS_DIRT",
 "COLOR_GRADING",
 "COLOR_GRADING_LOG_VIEW",
-"USER_LUT",
 "VIGNETTE_CLASSIC",
 "VIGNETTE_MASKED",
 "FXAA",
@@ -79,7 +80,6 @@ UNUSED-------------------------------------------
 "TONEMAPPING_CUSTOM",
 "APPLY_FORWARD_FOG",
 "DISTORT",
-"CHROMATIC_ABERRATION_LOW",
 "VIGNETTE",
 "FINALPASS",
 "COLOR_GRADING_HDR_3D",
@@ -133,7 +133,10 @@ TODO: _ALPHAMODULATE_ON
         #include "PoiParallax.cginc"
     #endif
     
-    
+    #ifdef USER_LUT
+        #include "CGI_PoiUVDistortion.cginc"
+    #endif
+
     #include "PoiData.cginc"
     
     
@@ -197,7 +200,7 @@ TODO: _ALPHAMODULATE_ON
     
     #ifdef POI_GRABS_ASS
         #include "PoiBlending.cginc"
-        #include "PoiRefraction.cginc"
+        #include "CGI_PoiGrab.cginc"
     #endif
     
     #ifdef _SUNDISK_SIMPLE

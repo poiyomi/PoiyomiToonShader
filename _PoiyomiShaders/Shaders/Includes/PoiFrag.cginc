@@ -29,7 +29,7 @@
         #endif
         
         #ifdef POI_MSDF
-            ApplyTextOverlayColor(albedo, poiMesh.uv[0]);
+            ApplyTextOverlayColor(albedo);
         #endif
         
         #ifdef POI_LIGHTING
@@ -101,7 +101,7 @@
         #ifdef POI_DEPTH_COLOR
             applyDepthColor(finalColor, finalEmission, poiCam.screenPos, poiCam.clipPos);
         #endif
-
+        
         float4 finalColorBeforeLighting = finalColor;
         
         #ifdef POI_LIGHTING
@@ -165,7 +165,9 @@
                     ApplyTextOverlayEmission(finalEmission);
                 }
             #endif
-            
+            #ifdef MATCAP
+                applyMatcapEmission(finalEmission);
+            #endif
         #endif
         
         #ifdef POI_LIGHTING
@@ -235,13 +237,17 @@
         
         finalColor.rgb += finalEmission;
         
-        #ifdef POI_REFRACTION
-            applyRefraction(finalColor);
+        #ifdef POI_GRAB
+            applyGrabEffects(finalColor);
+        #endif
+
+        #ifdef POI_BLUR
+            ApplyBlurToGrabPass(finalColor);
         #endif
         
         #ifdef FORWARD_BASE_PASS
             UNITY_BRANCH
-            if(_IgnoreFog == 0)
+            if (_IgnoreFog == 0)
             {
                 UNITY_APPLY_FOG(i.fogCoord, finalColor);
             }

@@ -38,12 +38,6 @@
                     <th>Example</th>
                 </tr>
                 <tr>
-                    <td>shader_is_using_thry_editor</td>
-                    <td>Tell Thry Editor you are using it</td>
-                    <td>Yes</td>
-                    <td>[HideInInspector] shader_is_using_thry_editor ("", Float) = 0</td>
-                </tr>
-                <tr>
                     <td>shader_master_label</td>
                     <td>Display name customizes the gui header</td>
                     <td>No</td>
@@ -125,6 +119,21 @@
                     <td>ends a group that has been started with g_start_&lt;string></td>
                     <td>No</td>
                     <td>[HideInInspector] g_start_blending ("", Float) = 0</td>
+                </tr>
+            </table>
+            <h3>Suggestions:</h3>
+            <table>
+                <tr>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Example</th>
+                </tr>
+                <tr>
+                    <td>Variant Selector</td>
+                    <td>Use a commbination of Enum and on_value_actions to create a varian selector</td>
+                    <td>
+                        [Enum(Cutout,0,Transparent,1)]variant_selector("Variant--{on_value_actions:[{value:0,actions:[{type:SET_PROPERTY,data:_ZWrite=1},{type:SET_SHADER,data:Thry/Example 1}]},{value:1,actions:[{type:SET_PROPERTY,data:_ZWrite=0},{type:SET_SHADER,data:Thry/Example 2}]}]}",Float) = 0
+                    </td>
                 </tr>
             </table>
             <h2>Drawers</h2>
@@ -289,6 +298,15 @@
                     <td>_Tex("Texture--{condition_enable:{type:PROPERTY_BOOL,data:_ForceOpaque==1}}",2D) = "white" { }</td>
                 </tr>
                 <tr>
+                    <td>on_value_actions</td>
+                    <td>PropertyValueAction[]</td>
+                    <td>let's you define a actions that happen if this property is set to a specfiic value.</td>
+                    <td>No</td>
+                    <td>
+                        [Enum(Cutout,0,Transparent,1)]variant_selector("Variant--{on_value_actions:[{value:0,actions:[{type:SET_PROPERTY,data:_ZWrite=1},{type:SET_SHADER,data:Thry/Example 1}]},{value:1,actions:[{type:SET_PROPERTY,data:_ZWrite=0},{type:SET_SHADER,data:Thry/Example 2}]}]}",Float) = 0
+                    </td>
+                </tr>
+                <tr>
                     <td>button_right</td>
                     <td>Button</td>
                     <td>let's you define a button that is shown on the side of a dropdown header</td>
@@ -296,18 +314,11 @@
                     <td>_Tex("Texture--{button_right:{text:Test Button,action:{type:URL,data:https://github.com/Thryrallo/thryeditor},hover:hover text,condition_show:{type:PROPERTY_BOOL,data:_ShowButtonOnMenus}}}",2D) = "white" { }</td>
                 </tr>
                 <tr>
-                    <td>image</td>
-                    <td>ImageData</td>
-                    <td>Defines the create image size and to which channel the curve is written.</td>
-                    <td>[Curve]</td>
-                    <td>[Curve]_MainTex ("Texture --{image:{width:256,height:16,channel:b}}", 2D) = "white" { }</td>
-                </tr>
-                <tr>
                     <td>texture</td>
                     <td>TextureData</td>
                     <td>Defines the texture settings for created gradients.</td>
-                    <td>[Gradient]</td>
-                    <td>[Gradient]_ColorRamp ("Gradient --{texture:{width:256,height:16,filterMode:Point,wrapMode:Clamp}}", 2D) = "white" { }</td>
+                    <td>[Gradient],[Curve]</td>
+                    <td>[Gradient]_ColorRamp ("Gradient --{texture:{width:256,height:16,filterMode:Point,wrapMode:Clamp}}", 2D) = "white" { }<br />[Curve]_MainTex ("Texture --{image:{width:256,height:16,channel:b}}", 2D) = "white" { }</td>
                 </tr>
                 <tr>
                     <td>force_texture_options</td>
@@ -333,9 +344,9 @@
                 <tr>
                     <td>reference_property</td>
                     <td>string</td>
-                    <td>Specifies a property by it's name. If defined the TextureArray Creator will fill this property with the texture array depth after creating an array from a gif or multiple images.</td>
+                    <td>Specifies a property by it's name. If defined on a menu header, it will create a toggle linked with the referenced property. If defined the TextureArray Creator will fill this property with the texture array depth after creating an array from a gif or multiple images.</td>
                     <td>[TextureArray]</td>
-                    <td>[TextureArray]_Texture("Animated Texture --{reference_property:_FrameCount}", 2DArray) = { }</td>
+                    <td>Light and Shadow--{reference_property:_EnableLighting}<br />[TextureArray]_Texture("Animated Texture --{reference_property:_FrameCount}", 2DArray) = { }</td>
                 </tr>
             </table>
 
@@ -383,6 +394,25 @@
                 </table>
             </div>
             <div>
+                <h3>PropertyValueAction</h3>
+                Variables:
+                <table>
+                    <tr>
+                        <th>Name</th>
+                        <th>Value Type</th>
+                        <th>required</th>
+                    </tr>
+                    <tr>
+                        <td>value</td>
+                        <td>string</td>
+                        <td>Yes</td>
+                    </tr>
+                    <tr>
+                        <td>actions</td>
+                        <td>Action[]</td>
+                        <td>Yes</td>
+                    </tr>
+                </table>
                 <h3>Action</h3>
                 Variables:
                 <table>
@@ -446,6 +476,12 @@
                         <td>no</td>
                         <td>128</td>
                         <td></td>
+                    </tr>
+                    <tr>
+                        <td>channel</td>
+                        <td>char</td>
+                        <td>no</td>
+                        <td>r</td>
                     </tr>
                     <tr>
                         <td>ansioLevel</td>
@@ -567,36 +603,6 @@
                     <tr>
                         <td>VRC_SDK_VERSION</td>
                         <td>checks agains the version number of the VRC SDK</td>
-                    </tr>
-                </table>
-            </div>
-            <div>
-                <h3>Image Data</h3>
-                Variables:
-                <table>
-                    <tr>
-                        <th>Name</th>
-                        <th>Value Type</th>
-                        <th>required</th>
-                        <th>default</th>
-                    </tr>
-                    <tr>
-                        <td>width</td>
-                        <td>int</td>
-                        <td>No</td>
-                        <td>128</td>
-                    </tr>
-                    <tr>
-                        <td>height</td>
-                        <td>int</td>
-                        <td>no</td>
-                        <td>8</td>
-                    </tr>
-                    <tr>
-                        <td>channel</td>
-                        <td>char</td>
-                        <td>no</td>
-                        <td>r</td>
                     </tr>
                 </table>
             </div>

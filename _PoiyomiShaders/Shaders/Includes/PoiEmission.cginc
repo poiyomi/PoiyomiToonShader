@@ -22,7 +22,7 @@
     float _GITDEMinLight;
     float _GITDEMaxLight;
     uint _GITDEWorldOrMesh;
-    uint _EmissionUV;
+    uint _EmissionMapUV, _EmissionMaskUV;
     float _EmissionCenterOutEnabled;
     float _EmissionCenterOutSpeed;
     
@@ -47,7 +47,7 @@
     float _GITDEMinLight1;
     float _GITDEMaxLight1;
     uint _GITDEWorldOrMesh1;
-    uint _EmissionUV1;
+    uint _EmissionMapUV1, _EmissionMaskUV1;
     float _EmissionCenterOutEnabled1;
     float _EmissionCenterOutSpeed1;
     
@@ -72,7 +72,7 @@
         UNITY_BRANCH
         if(!_EmissionCenterOutEnabled)
         {
-            float4 _Emissive_Tex_var = UNITY_SAMPLE_TEX2D_SAMPLER(_EmissionMap, _MainTex, TRANSFORM_TEX(poiMesh.uv[_EmissionUV], _EmissionMap) + _Time.y * _EmissionMapPan);
+            float4 _Emissive_Tex_var = UNITY_SAMPLE_TEX2D_SAMPLER(_EmissionMap, _MainTex, TRANSFORM_TEX(poiMesh.uv[_EmissionMapUV], _EmissionMap) + _Time.y * _EmissionMapPan);
             emission = _Emissive_Tex_var * _EmissionColor * _EmissionStrength;
         }
         
@@ -89,7 +89,7 @@
             UNITY_BRANCH
             if(_EmissionScrollingUseCurve)
             {
-                phase = UNITY_SAMPLE_TEX2D_SAMPLER(_EmissionScrollingCurve, _MainTex, TRANSFORM_TEX(poiMesh.uv[_EmissionUV], _EmissionScrollingCurve) + (dot(poiMesh.localPos, _EmissiveScroll_Direction) * _EmissiveScroll_Interval) + _Time.x * _EmissiveScroll_Velocity);
+                phase = UNITY_SAMPLE_TEX2D_SAMPLER(_EmissionScrollingCurve, _MainTex, TRANSFORM_TEX(poiMesh.uv[_EmissionMapUV], _EmissionScrollingCurve) + (dot(poiMesh.localPos, _EmissiveScroll_Direction) * _EmissiveScroll_Interval) + _Time.x * _EmissiveScroll_Velocity);
             }
             else
             {
@@ -110,7 +110,7 @@
             emission *= emissiveBlink;
         #endif
         
-        float _Emission_mask_var = UNITY_SAMPLE_TEX2D_SAMPLER(_EmissionMask, _MainTex, TRANSFORM_TEX(poiMesh.uv[_EmissionUV], _EmissionMask) + _Time.x * _EmissionMaskPan);
+        float _Emission_mask_var = UNITY_SAMPLE_TEX2D_SAMPLER(_EmissionMask, _MainTex, TRANSFORM_TEX(poiMesh.uv[_EmissionMaskUV], _EmissionMask) + _Time.x * _EmissionMaskPan);
         return emission * _Emission_mask_var;
     }
     
@@ -130,7 +130,7 @@
         UNITY_BRANCH
         if(!_EmissionCenterOutEnabled1)
         {
-            float4 _Emissive_Tex_var1 = UNITY_SAMPLE_TEX2D_SAMPLER(_EmissionMap1, _MainTex, TRANSFORM_TEX(poiMesh.uv[_EmissionUV1], _EmissionMap1) + _Time.y * _EmissionMapPan1);
+            float4 _Emissive_Tex_var1 = UNITY_SAMPLE_TEX2D_SAMPLER(_EmissionMap1, _MainTex, TRANSFORM_TEX(poiMesh.uv[_EmissionMapUV1], _EmissionMap1) + _Time.y * _EmissionMapPan1);
             emission = _Emissive_Tex_var1 * _EmissionColor1 * _EmissionStrength1;
         }
         
@@ -159,7 +159,7 @@
         emission *= emissiveBlink;
         
         
-        float _Emission_mask_var = UNITY_SAMPLE_TEX2D_SAMPLER(_EmissionMask1, _MainTex, TRANSFORM_TEX(poiMesh.uv[_EmissionUV1], _EmissionMask1) + _Time.x * _EmissionMaskPan1);
+        float _Emission_mask_var = UNITY_SAMPLE_TEX2D_SAMPLER(_EmissionMask1, _MainTex, TRANSFORM_TEX(poiMesh.uv[_EmissionMaskUV1], _EmissionMask1) + _Time.x * _EmissionMaskPan1);
         return emission * _Emission_mask_var;
     }
     

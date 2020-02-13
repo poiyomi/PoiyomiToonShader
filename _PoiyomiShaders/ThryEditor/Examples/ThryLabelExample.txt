@@ -1,14 +1,6 @@
-_MainTex0:=Tex Default--hover=hover text example--altClick=url:http://github.com/thryrallo/thryeditor
-_MainTex01:=Tex Default No Scale/Offset--hover=hover text example--altClick=url:http://github.com/thryrallo/thryeditor
-_MainTex1:=Tex Small--hover=hover text example--altClick=url:http://github.com/thryrallo/thryeditor
-_MainTex2:=Tex Big--hover=hover text example--altClick=url:http://github.com/thryrallo/thryeditor
-_MainTex3:=Tex Small No scale/offset--hover=hover text example--altClick=url:http://github.com/thryrallo/thryeditor
-_MainTex4:=Tex Big No scale/offset--hover=hover text example--altClick=url:http://github.com/thryrallo/thryeditor
-_MainTex5:=Tex Gradient--hover=hover text example--altClick=url:http://github.com/thryrallo/thryeditor
+m_start_Lighting:=Light and Shadow--{reference_property:_EnableLighting,button_right:{text:Tutorial,action:{type:URL,data:https://youtu.be/2B-EJutVjs8},hover:YouTube}}
+_EnableLighting:=Enable Lighting--{hide_in_inspector:true}
+g_start_l:=--{condition_enable:{type:PROPERTY_BOOL,data:_EnableLighting}}
 
-_ToggleSmth:=Toggle--hover=hover text example--altClick=url:http://github.com/thryrallo/thryeditor
-
-m_start_special:=Special --hover=This is a sub menu
-m_already_shown_stuff:=Already demonstrated in other stuff
-m_end_special:=Advanced
-m_other_stuff:=Other stuff
+footer_website:={texture:{name:thry_settings_icon,height:32},action:{type:URL,data:https://www.thryeditor.thryrallo.de},hover:Website}
+footer_github:={text:Github,action:{type:URL,data:https://github.com/thryrallo/thryeditor}}

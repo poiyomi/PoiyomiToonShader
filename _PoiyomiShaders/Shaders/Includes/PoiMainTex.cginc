@@ -28,7 +28,7 @@
     float alphaMask;
     half3 diffColor;
     uint _BumpMapUV;
-    
+    uint _MainTextureUV;
     #include "PoiBackFace.cginc"
     
     inline FragmentCommonData SpecularSetup(float4 i_tex)
@@ -64,7 +64,7 @@
     
     void initTextureData()
     {
-        mainTexture = UNITY_SAMPLE_TEX2D(_MainTex, TRANSFORM_TEX(poiMesh.uv[0], _MainTex));
+        mainTexture = UNITY_SAMPLE_TEX2D(_MainTex, TRANSFORM_TEX(poiMesh.uv[_MainTextureUV], _MainTex));
         
         #if (defined(FORWARD_BASE_PASS) || defined(FORWARD_ADD_PASS))
             #ifdef POI_MIRROR

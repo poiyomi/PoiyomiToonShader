@@ -57,7 +57,7 @@ namespace Thry
         public EditorWindow window;
         public Texture2D texture;
         public bool saved = true;
-        public ImageData imageData;
+        public TextureData imageData;
 
         public CurveDrawer()
         {
@@ -68,10 +68,10 @@ namespace Thry
         {
             if (imageData == null)
             {
-                if (ThryEditor.currentlyDrawing.currentProperty.options.image == null)
-                    imageData = new ImageData();
+                if (ThryEditor.currentlyDrawing.currentProperty.options.texture == null)
+                    imageData = new TextureData();
                 else
-                    imageData = ThryEditor.currentlyDrawing.currentProperty.options.image;
+                    imageData = ThryEditor.currentlyDrawing.currentProperty.options.texture;
             }
         }
 
@@ -94,7 +94,7 @@ namespace Thry
 
         private void UpdateCurveTexture(MaterialProperty prop)
         {
-            texture = Converter.CurveToTexture(curve, imageData.width, imageData.height, imageData.channel);
+            texture = Converter.CurveToTexture(curve, imageData);
             prop.textureValue = texture;
             saved = false;
         }

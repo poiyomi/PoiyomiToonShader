@@ -13,7 +13,6 @@ public class ThryEditor : ShaderGUI
     public const string EXTRA_OPTIONS_PREFIX = "--";
     public const float MATERIAL_NOT_RESET = 69.12f;
 
-    public const string PROPERTY_NAME_USING_THRY_EDITOR = "shader_is_using_thry_editor";
     public const string PROPERTY_NAME_MASTER_LABEL = "shader_master_label";
     public const string PROPERTY_NAME_PRESETS_FILE = "shader_presets";
     public const string PROPERTY_NAME_LABEL_FILE = "shader_properties_label_file";
@@ -273,7 +272,7 @@ public class ThryEditor : ShaderGUI
             UpdateRenderQueueInstance();
         }
 
-        foreach (MaterialProperty p in current.properties) if (p.name == PROPERTY_NAME_USING_THRY_EDITOR) p.floatValue = MATERIAL_NOT_RESET;
+        current.materials[0].SetInt("thry_has_not_been_reset", 69);
 
         firstOnGUICall = false;
     }
@@ -379,14 +378,12 @@ public class ThryEditor : ShaderGUI
         //test if material has been reset
         if (wasUsed && e.type == EventType.Repaint)
         {
-            foreach (MaterialProperty p in props)
-                if (p.name == PROPERTY_NAME_USING_THRY_EDITOR && p.floatValue != MATERIAL_NOT_RESET)
-                {
-                    reloadNextDraw = true;
-                    HandleReset();
-                    break;
-                }
-            wasUsed = false;
+            if (!current.materials[0].HasProperty("thry_has_not_been_reset"))
+            {
+                reloadNextDraw = true;
+                HandleReset();
+                wasUsed = true;
+            }
         }
 
         if (e.type == EventType.Used) wasUsed = true;
