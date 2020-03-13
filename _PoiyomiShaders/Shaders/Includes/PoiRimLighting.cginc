@@ -13,8 +13,7 @@
     float _ShadowMixWidthMod;
     float _EnableRimLighting;
     float _RimBrighten;
-    
-
+    uint _RimLightNormal;
     
     UNITY_DECLARE_TEX2D_NOSAMPLER(_RimTex); float4 _RimTex_ST;
     UNITY_DECLARE_TEX2D_NOSAMPLER(_RimMask); float4 _RimMask_ST;
@@ -31,16 +30,18 @@
         _RimWidthNoiseTexture_ST.zw += _Time.y * _RimWidthNoisePan.xy;
         float rimNoise = UNITY_SAMPLE_TEX2D_SAMPLER(_RimWidthNoiseTexture, _MainTex, TRANSFORM_TEX(poiMesh.uv[0], _RimWidthNoiseTexture));
         rimNoise = (rimNoise - .5) * _RimWidthNoiseStrength;
+
+        float viewDotNormal = abs(dot(poiCam.viewDir, poiMesh.normals[_RimLightNormal]));
         UNITY_BRANCH
         if (_RimLightingInvert)
         {
-            poiCam.viewDotNormal = 1 - poiCam.viewDotNormal;
+            viewDotNormal = 1 - poiCam.viewDotNormal;
         }
         _RimWidth -= rimNoise;
         float rimMask = UNITY_SAMPLE_TEX2D_SAMPLER(_RimMask, _MainTex, TRANSFORM_TEX(poiMesh.uv[0], _RimMask));
         rimColor = UNITY_SAMPLE_TEX2D_SAMPLER(_RimTex, _MainTex, TRANSFORM_TEX(poiMesh.uv[0], _RimTex) + _Time.y * _RimTexPanSpeed.xy) * _RimLightColor;
         _RimWidth = lerp(_RimWidth, _RimWidth * lerp(0, 1, poiLight.lightMap - _ShadowMixThreshold) * _ShadowMixWidthMod, _ShadowMix);
-        rim = 1 - smoothstep(min(_RimSharpness, _RimWidth), _RimWidth, poiCam.viewDotNormal);
+        rim = 1 - smoothstep(min(_RimSharpness, _RimWidth), _RimWidth, viewDotNormal);
         rim *= _RimLightColor.a * rimColor.a * rimMask;
     }
     

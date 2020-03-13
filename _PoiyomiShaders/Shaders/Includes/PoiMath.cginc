@@ -66,12 +66,13 @@
     
     float4 transform(float4 input, float4 pos, float4 rotation, float4 scale)
     {
-        return float4(
+        input.rgb *= (scale.xyz * scale.w);
+        input = float4(
             rotate_with_quaternion(input.xyz, rotation.xyz * rotation.w)
-        * (scale.xyz * scale.w)
         + (pos.xyz * pos.w),
         input.w
         );
+        return input;
     }
     
 #endif

@@ -31,6 +31,8 @@
     uint _MainTextureUV;
     #include "PoiBackFace.cginc"
     
+    float3 wireframeEmission;
+    
     inline FragmentCommonData SpecularSetup(float4 i_tex)
     {
         half4 specGloss = 0;
@@ -75,7 +77,7 @@
         #ifdef _ALPHABLEND_ON
             calculateDissolve();
         #endif
-
+        
         #ifndef SIMPLE
             alphaMask = UNITY_SAMPLE_TEX2D_SAMPLER(_AlphaMask, _MainTex, TRANSFORM_TEX(poiMesh.uv[0], _AlphaMask));
         #else
@@ -83,9 +85,19 @@
         #endif
         
         mainTexture *= alphaMask;
-
+        
         #ifndef POI_SHADOW
             albedo = float4(lerp(mainTexture.rgb, dot(mainTexture.rgb, float3(0.3, 0.59, 0.11)), -_Saturation) * _Color.rgb * lerp(1, poiMesh.vertexColor.rgb, _MainVertexColoring), mainTexture.a * _Color.a);
+            
+            #ifdef POI_RGBMask
+                albedo.rgb = calculateRGBMask(albedo.rgb);
+            #endif
+
+            wireframeEmission = 0;
+            #ifdef POI_WIREFRAME
+                applyWireframe(wireframeEmission, albedo);
+            #endif
+            
             applyBackFaceTexture();
             
             UNITY_BRANCH

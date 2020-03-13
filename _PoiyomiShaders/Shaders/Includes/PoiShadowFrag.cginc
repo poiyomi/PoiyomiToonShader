@@ -15,7 +15,7 @@
                 i.uv, i.uv1, i.uv2, i.uv3,
             };
             
-            #ifdef MIRROR
+            #ifdef POI_MIRROR
                 applyMirrorRenderFrag();
             #endif
             

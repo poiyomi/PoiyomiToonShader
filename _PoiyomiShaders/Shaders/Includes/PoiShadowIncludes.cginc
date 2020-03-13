@@ -32,6 +32,7 @@
             float3 localPos: TEXCOORD7;
             float3 angleAlpha: TEXCOORD8;
             float4 grabPos: TEXCOORD9;
+            fixed3 barycentricCoordinates: TEXCOORD10;
         };
     #endif
     

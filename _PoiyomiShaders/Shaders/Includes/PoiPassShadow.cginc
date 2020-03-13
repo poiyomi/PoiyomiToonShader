@@ -9,6 +9,10 @@
     #include "PoiHelpers.cginc"
     #include "poiMirror.cginc"
     
+    #ifdef WIREFRAME
+        #include "CGI_PoiWireframe.cginc"
+    #endif
+
     #ifdef _SUNDISK_HIGH_QUALITY
         #include "PoiFlipbook.cginc"
     #endif
@@ -18,6 +22,7 @@
     #endif
     #include "PoiDithering.cginc"
     #include "PoiDissolve.cginc"
+    #include "PoiVertexManipulations.cginc"
     #include "PoiShadowVert.cginc"
     #include "PoiShadowFrag.cginc"
     

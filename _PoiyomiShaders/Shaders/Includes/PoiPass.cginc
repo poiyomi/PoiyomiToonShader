@@ -26,6 +26,7 @@ USED---------------------------------------------
 "DEPTH_OF_FIELD",
 "USER_LUT",
 "CHROMATIC_ABERRATION_LOW",
+"FXAA",
 
 UNUSED-------------------------------------------
 "EFFECT_BUMP",
@@ -44,7 +45,6 @@ UNUSED-------------------------------------------
 "GEOM_TYPE_MESH",
 "LOD_FADE_CROSSFADE",
 "PIXELSNAP_ON",
-"SOFTPARTICLES_ON",
 "STEREO_INSTANCING_ON",
 "STEREO_MULTIVIEW_ON",
 "UNITY_HDR_ON",
@@ -71,7 +71,7 @@ UNUSED-------------------------------------------
 "COLOR_GRADING_LOG_VIEW",
 "VIGNETTE_CLASSIC",
 "VIGNETTE_MASKED",
-"FXAA",
+"",
 "FXAA_LOW",
 "FXAA_KEEP_ALPHA",
 "STEREO_INSTANCING_ENABLED",
@@ -92,7 +92,7 @@ TODO: _ALPHAMODULATE_ON
 
 #ifndef POI_PASS
     #define POI_PASS
-
+    
     #include "UnityCG.cginc"
     #include "Lighting.cginc"
     #include "UnityPBSLighting.cginc"
@@ -104,27 +104,27 @@ TODO: _ALPHAMODULATE_ON
     
     #include "Poicludes.cginc"
     #include "PoiHelpers.cginc"
-
+    
     #ifdef _SUNDISK_NONE
         #include "PoiRandom.cginc"
     #endif
-
+    
     #ifdef _REQUIRE_UV2
         #include "PoiMirror.cginc"
     #endif
     #include "PoiVertexManipulations.cginc"
-
+    
     #include "CGI_PoiV2F.cginc"
-
-    #ifdef BLOOM_LOW 
+    
+    #ifdef BLOOM_LOW
         #include "CGI_PoiBulge.cginc"
     #endif
-
+    
     #include "PoiVert.cginc"
-
+    
     
     #include "CGI_PoiDistanceDithering.cginc"
-
+    
     #ifdef CUTOUT
         #include "PoiDithering.cginc"
     #endif
@@ -136,10 +136,13 @@ TODO: _ALPHAMODULATE_ON
     #ifdef USER_LUT
         #include "CGI_PoiUVDistortion.cginc"
     #endif
-
+    
     #include "PoiData.cginc"
     
-    
+    #ifdef WIREFRAME
+        #include "CGI_PoiWireframe.cginc"
+    #endif
+
     #ifdef _ALPHABLEND_ON
         #include "PoiDissolve.cginc"
     #endif
@@ -147,7 +150,11 @@ TODO: _ALPHAMODULATE_ON
     #ifdef DEPTH_OF_FIELD
         #include "CGI_PoiHologram.cginc"
     #endif
-
+    
+    #ifdef FXAA
+        #include "CGI_PoiRGBMask.cginc"
+    #endif
+    
     #include "PoiMainTex.cginc"
     
     #ifdef _DETAIL_MULX2
@@ -157,11 +164,11 @@ TODO: _ALPHAMODULATE_ON
     #ifdef EFFECT_BUMP
         #include "CGI_PoiMSDF.cginc"
     #endif
-
+    
     #ifdef GRAIN
         #include "CGI_PoiDepthColor.cginc"
     #endif
-
+    
     #ifdef LOD_FADE_CROSSFADE
         #include "PoiLighting.cginc"
     #endif
@@ -173,7 +180,7 @@ TODO: _ALPHAMODULATE_ON
     #ifdef _GLOSSYREFLECTIONS_OFF
         #include "PoiRimlighting.cginc"
     #endif
-
+    
     #ifdef _MAPPING_6_FRAMES_LAYOUT
         #include "CGI_PoiEnvironmentalRimLighting.cginc"
     #endif
@@ -193,7 +200,7 @@ TODO: _ALPHAMODULATE_ON
     #ifdef BLOOM
         #include "PoiVideo.cginc"
     #endif
-
+    
     #ifdef _TERRAIN_NORMAL_MAP
         #include "PoiSubsurfaceScattering.cginc"
     #endif
@@ -206,7 +213,7 @@ TODO: _ALPHAMODULATE_ON
     #ifdef _SUNDISK_SIMPLE
         #include "CGI_PoiGlitter.cginc"
     #endif
-
+    
     #ifdef _EMISSION
         #include "PoiEmission.cginc"
     #endif

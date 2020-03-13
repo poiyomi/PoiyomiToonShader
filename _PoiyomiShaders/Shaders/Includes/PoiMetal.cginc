@@ -27,8 +27,8 @@
         }
         smoothnessMap *= _Smoothness;
         roughness = 1 - smoothnessMap;
-        
-        lighty_boy_uwu_var = 0;
+        //roughness *= 1.7 - 0.7 * roughness;
+        lighty_boy_uwu_var = 1-metalicMap;
         
         float4 envSample = UNITY_SAMPLE_TEXCUBE_LOD(unity_SpecCube0, poiCam.reflectionDir, roughness * UNITY_SPECCUBE_LOD_STEPS);
         bool no_probe = unity_SpecCube0_HDR.a == 0 && envSample.a == 0;
@@ -75,7 +75,7 @@
         }
     }
     
-    void applyReflections(inout float4 finalColor, float4 finalColorBeforeLighting)
+    void applyReflections(inout float4 finalColor, float4 finalColorBeforeLighting, inout fixed lightingAlpha)
     {
         #ifdef FORWARD_BASE_PASS
             finalreflections = reflection.rgb * finalColorBeforeLighting.rgb * _MetalReflectionTint;
@@ -85,7 +85,7 @@
             #else
                 finalColor.rgb += (finalreflections * ((1 - roughness + metalicMap) / 2));
             #endif
-            
+            lightingAlpha = lighty_boy_uwu_var;
         #endif
     }
     

@@ -240,7 +240,7 @@
     
     float3 calculateRealisticLighting(float4 colorToLight)
     {
-        return UNITY_BRDF_PBS(colorToLight, 0, 0, _LightingStandardSmoothness,
+        return UNITY_BRDF_PBS(1, 0, 0, _LightingStandardSmoothness,
         poiMesh.normals[1], poiCam.viewDir, CreateLight(poiMesh.normals[1]), CreateIndirectLight(poiMesh.normals[1]));
     }
     
@@ -315,7 +315,7 @@
         }
     }
     
-    void calculateLighting()
+    float3 calculateLighting()
     {
         #ifdef FORWARD_BASE_PASS
             calculateBasePassLighting();
@@ -329,22 +329,19 @@
                 #endif
             #endif
         #endif
-    }
-    
-    void applyLighting(inout float4 finalColor)
-    {
+        
         #ifdef FORWARD_BASE_PASS
             UNITY_BRANCH
             if(_LightingType == 2)
             {
-                finalColor.rgb = calculateRealisticLighting(finalColor);
+                return calculateRealisticLighting(finalColor).rgb;
             }
             else
             {
-                finalColor.rgb *= max(poiLight.finalLighting, _LightingMinLightBrightness);
+                return max(poiLight.finalLighting, _LightingMinLightBrightness);
             }
         #else
-            finalColor.rgb *= max(poiLight.finalLighting, _LightingMinLightBrightness);
+            return max(poiLight.finalLighting, _LightingMinLightBrightness);
         #endif
     }
 #endif

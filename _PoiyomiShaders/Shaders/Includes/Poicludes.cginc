@@ -86,6 +86,7 @@
         float3 tangentSpaceNormal;
         float2 uv[5];
         float4 vertexColor;
+        fixed3 barycentricCoordinates;
         #if defined(LIGHTMAP_ON) || defined(DYNAMICLIGHTMAP_ON)
             float4 lightmapUV;
         #endif

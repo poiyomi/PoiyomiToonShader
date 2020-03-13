@@ -35,7 +35,6 @@
             }
             
             #ifdef POI_LIGHTING
-                // Lighting
                 if (_DebugLightingData == 1)
                 {
                     finalColor.rgb = poiLight.attenuation;

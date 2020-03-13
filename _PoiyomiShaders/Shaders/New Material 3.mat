@@ -7,8 +7,8 @@ Material:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_Name: New Material 3
-  m_Shader: {fileID: 4800000, guid: 45429b755005c8245b20248fbc150a0a, type: 3}
-  m_ShaderKeywords: LOD_FADE_CROSSFADE USER_LUT
+  m_Shader: {fileID: 4800000, guid: 8ad4dda5ca5ead24bafeae082e501ca4, type: 3}
+  m_ShaderKeywords: LOD_FADE_CROSSFADE
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -151,7 +151,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: faaad765f99ebf042892806a43c5acee, type: 3}
+        m_Texture: {fileID: 2800000, guid: a6d6984545cde4a4f9317b17d6dca225, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Matcap:
@@ -364,7 +364,7 @@ Material:
     - _EnableBulge: 0
     - _EnableClearCoat: 0
     - _EnableDissolve: 0
-    - _EnableDistortion: 1
+    - _EnableDistortion: 0
     - _EnableEmission: 0
     - _EnableEmission1: 0
     - _EnableEnvironmentalRim: 0
@@ -441,7 +441,7 @@ Material:
     - _MainMinAlpha: 0
     - _MainMipScale: 0.25
     - _MainShadowClipMod: 0
-    - _MainTextureUV: 4
+    - _MainTextureUV: 0
     - _MainVertexColoring: 0
     - _Matcap2Add: 0
     - _Matcap2Border: 0.43
@@ -607,7 +607,6 @@ Material:
     - m_end_debugOptions: 0
     - m_end_dissolve: 0
     - m_end_distanceDithering: 0
-    - m_end_distanceFade: 0
     - m_end_distortionFlow: 0
     - m_end_emission1Options: 0
     - m_end_emissionOptions: 0
@@ -677,7 +676,7 @@ Material:
     - m_start_dissolve: 0
     - m_start_distanceDithering: 0
     - m_start_distanceFade: 0
-    - m_start_distortionFlow: 1
+    - m_start_distortionFlow: 0
     - m_start_emission1Options: 0
     - m_start_emissionOptions: 0
     - m_start_flipBook: 0

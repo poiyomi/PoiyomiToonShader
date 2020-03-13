@@ -4,6 +4,7 @@
     UNITY_DECLARE_TEX2D_NOSAMPLER(_ParallaxHeightMap); float4 _ParallaxHeightMap_ST;
     float _ParallaxStrength;
     float _ParallaxHeightMapEnabled;
+    uint _ParallaxUV;
     
     //Internal
     float _ParallaxInternalMapEnabled;
@@ -19,7 +20,6 @@
     float4 _ParallaxInternalPanDepthSpeed;
     float _ParallaxInternalHeightmapMode;
     float _ParallaxInternalHeightFromAlpha;
-    
     float GetParallaxHeight(float2 uv)
     {
         return clamp(UNITY_SAMPLE_TEX2D_SAMPLER(_ParallaxHeightMap, _MainTex, TRANSFORM_TEX(uv, _ParallaxHeightMap)).g, 0, .99999);
@@ -40,7 +40,7 @@
         float2 uvDelta = viewDir * (stepSize * _ParallaxStrength);
         
         float stepHeight = 1;
-        float surfaceHeight = GetParallaxHeight(poiMesh.uv[0]);
+        float surfaceHeight = GetParallaxHeight(poiMesh.uv[_ParallaxUV]);
         
         float2 prevUVOffset = uvOffset;
         float prevStepHeight = stepHeight;
@@ -54,7 +54,7 @@
             
             uvOffset -= uvDelta;
             stepHeight -= stepSize;
-            surfaceHeight = GetParallaxHeight(poiMesh.uv[0] + uvOffset);
+            surfaceHeight = GetParallaxHeight(poiMesh.uv[_ParallaxUV] + uvOffset);
         }
         
         float prevDifference = prevStepHeight - prevSurfaceHeight;
@@ -70,7 +70,27 @@
         UNITY_BRANCH
         if (_ParallaxHeightMapEnabled)
         {
-            poiMesh.uv[0] += ParallaxRaymarching(poiCam.tangentViewDir.xy);
+            float2 parallaxOffset = ParallaxRaymarching(poiCam.tangentViewDir.xy);
+            UNITY_BRANCH
+            if(_ParallaxUV == 0)
+            {
+                poiMesh.uv[0] += parallaxOffset;
+            }
+            UNITY_BRANCH
+            if(_ParallaxUV == 1)
+            {
+                poiMesh.uv[1] += parallaxOffset;
+            }
+            UNITY_BRANCH
+            if(_ParallaxUV == 2)
+            {
+                poiMesh.uv[2] += parallaxOffset;
+            }
+            UNITY_BRANCH
+            if(_ParallaxUV == 3)
+            {
+                poiMesh.uv[3] += parallaxOffset;
+            }
         }
     }
     

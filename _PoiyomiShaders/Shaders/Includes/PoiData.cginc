@@ -46,6 +46,7 @@
         poiMesh.tangent = i.tangent.xyz;
         poiMesh.worldPos = i.worldPos;
         poiMesh.localPos = i.localPos;
+        poiMesh.barycentricCoordinates = i.barycentricCoordinates;
         poiMesh.uv[0] = i.uv0.xy;
         poiMesh.uv[1] = i.uv0.zw;
         poiMesh.uv[2] = i.uv1.xy;

@@ -1,6 +1,8 @@
 #ifndef POI_VERT
     #define POI_VERT
     
+    uint vertexManipulationUV;
+    
     void ComputeVertexLightColor(inout v2f i)
     {
         #if defined(VERTEXLIGHT_ON)
@@ -40,7 +42,29 @@
         //o.localPos.x *= -1;
         //o.localPos.xz += sin(o.localPos.y * 100 + _Time.y * 5) * .0025;
         
-        applyWorldVertexTransformation(o.worldPos, o.localPos, o.normal, v.uv0.xy);
+        float2 uvToUse;
+        UNITY_BRANCH
+        if (vertexManipulationUV == 0)
+        {
+            uvToUse = v.uv0.xy;
+        }
+        UNITY_BRANCH
+        if(vertexManipulationUV == 1)
+        {
+            uvToUse = v.uv1.xy;
+        }
+        UNITY_BRANCH
+        if(vertexManipulationUV == 2)
+        {
+            uvToUse = v.uv2.xy;
+        }
+        UNITY_BRANCH
+        if(vertexManipulationUV == 3)
+        {
+            uvToUse = v.uv3.xy;
+        }
+        
+        applyWorldVertexTransformation(o.worldPos, o.localPos, o.normal, uvToUse);
         o.pos = UnityObjectToClipPos(o.localPos);
         o.grabPos = ComputeGrabScreenPos(o.pos);
         o.uv0.xy = v.uv0.xy;

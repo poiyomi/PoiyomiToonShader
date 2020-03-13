@@ -17,6 +17,7 @@
     float _FlipbookReplace;
     float _FlipbookMultiply;
     float _FlipbookAdd;
+    UNITY_DECLARE_TEX2D_NOSAMPLER(_FlipbookMask); float4 _FlipbookMask_ST;
     
     // anim
     uint _FlipbookMovementType;
@@ -26,11 +27,13 @@
     // Global
     float4 flipBookPixel;
     float4 flipBookPixelMultiply;
-    
+    float flipBookMask;
+
     #ifndef POI_SHADOW
         
         void calculateFlipbook()
         {
+            flipBookMask = UNITY_SAMPLE_TEX2D_SAMPLER(_FlipbookMask, _MainTex, TRANSFORM_TEX(poiMesh.uv[_FlipbookUV], _FlipbookMask)).r;
             _FlipbookScaleOffset.xy = 1 - _FlipbookScaleOffset.xy;
             float2 uv = poiMesh.uv[_FlipbookUV];
             float theta = radians(_FlipbookRotation);
@@ -63,19 +66,19 @@
         }
         void applyFlipbook(inout float4 finalColor)
         {
-            finalColor.rgb = lerp(finalColor, flipBookPixel.rgb * _FlipbookColor.rgb, flipBookPixel.a * _FlipbookColor.a * _FlipbookReplace);
-            finalColor.rgb = finalColor + flipBookPixel.rgb * _FlipbookColor.rgb * _FlipbookAdd;
-            finalColor.rgb = finalColor * lerp(1, flipBookPixelMultiply.rgb * _FlipbookColor.rgb, _FlipbookMultiply * flipBookPixelMultiply.a * _FlipbookColor.a);
+            finalColor.rgb = lerp(finalColor, flipBookPixel.rgb * _FlipbookColor.rgb, flipBookPixel.a * _FlipbookColor.a * _FlipbookReplace * flipBookMask);
+            finalColor.rgb = finalColor + flipBookPixel.rgb * _FlipbookColor.rgb * _FlipbookAdd * flipBookMask;
+            finalColor.rgb = finalColor * lerp(1, flipBookPixelMultiply.rgb * _FlipbookColor.rgb, _FlipbookMultiply * flipBookPixelMultiply.a * _FlipbookColor.a * flipBookMask);
             
             UNITY_BRANCH
             if(_FlipbookAlphaControlsFinalAlpha)
             {
-                finalColor.a = flipBookPixel.a * _FlipbookColor.a;
+                finalColor.a = lerp(finalColor.a, flipBookPixel.a * _FlipbookColor.a, flipBookMask);
             }
         }
         void applyFlipbookEmission(inout float3 finalEmission)
         {
-            finalEmission += lerp(0, flipBookPixel.rgb * _FlipbookColor.rgb * _FlipbookEmissionStrength, flipBookPixel.a * _FlipbookColor.a);
+            finalEmission += lerp(0, flipBookPixel.rgb * _FlipbookColor.rgb * _FlipbookEmissionStrength, flipBookPixel.a * _FlipbookColor.a * flipBookMask);
         }
         
     #else

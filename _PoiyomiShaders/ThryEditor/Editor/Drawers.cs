@@ -23,34 +23,6 @@ namespace Thry
         }
     }
 
-    public class BigTextureDrawer : MaterialPropertyDrawer
-    {
-        public override void OnGUI(Rect position, MaterialProperty prop, GUIContent label, MaterialEditor editor)
-        {
-            GuiHelper.drawBigTextureProperty(position, prop, label, editor, ((TextureProperty)ThryEditor.currentlyDrawing.currentProperty).hasScaleOffset);
-        }
-
-        public override float GetPropertyHeight(MaterialProperty prop, string label, MaterialEditor editor)
-        {
-            DrawingData.lastPropertyUsedCustomDrawer = true;
-            return base.GetPropertyHeight(prop, label, editor);
-        }
-    }
-
-    public class StylizedBigTextureDrawer : MaterialPropertyDrawer
-    {
-        public override void OnGUI(Rect position, MaterialProperty prop, GUIContent label, MaterialEditor editor)
-        {
-            GuiHelper.drawStylizedBigTextureProperty(position, prop, label, editor, ((TextureProperty)ThryEditor.currentlyDrawing.currentProperty).hasScaleOffset);
-        }
-
-        public override float GetPropertyHeight(MaterialProperty prop, string label, MaterialEditor editor)
-        {
-            DrawingData.lastPropertyUsedCustomDrawer = true;
-            return base.GetPropertyHeight(prop, label, editor);
-        }
-    }
-
     public class CurveDrawer : MaterialPropertyDrawer
     {
         public AnimationCurve curve;

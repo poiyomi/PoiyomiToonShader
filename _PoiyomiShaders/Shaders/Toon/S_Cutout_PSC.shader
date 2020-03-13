@@ -3,7 +3,7 @@ Shader ".poiyomi/Toon/Simple/Cutout"
     Properties
     {
         [HideInInspector] shader_is_using_thry_editor ("", Float) = 0
-        [HideInInspector] shader_master_label ("<color=#ff0000ff>❤</color> <color=#000000ff>Poiyomi Simple V5.1</color> <color=#ff0000ff>❤</color>", Float) = 0
+        [HideInInspector] shader_master_label ("<color=#ff0000ff>❤</color> <color=#000000ff>Poiyomi Simple V5.3</color> <color=#ff0000ff>❤</color>", Float) = 0
         [HideInInspector] shader_presets ("poiToonPresets", Float) = 0
         [HideInInspector] shader_properties_label_file ("PoiLabels", Float) = 0
         
@@ -23,7 +23,7 @@ Shader ".poiyomi/Toon/Simple/Cutout"
         _MainHueShift ("HueShift", Range(0, 1)) = 0
         [Normal]_BumpMap ("Normal Map", 2D) = "bump" { }
         //[HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)] _BumpMapUV ("Normal UV#", Int) = 0
-        //[HideInInspector][Vector2]_MainNormalPan ("Panning", Vector) = (0, 0, 0, 0)
+        [HideInInspector][Vector2]_MainNormalPan ("Panning", Vector) = (0, 0, 0, 0)
         _BumpScale ("Normal Intensity", Range(0, 10)) = 1
         //[HideInInspector][Vector2]_GlobalPanSpeed ("Global Pan Speed", Vector) = (0, 0, 0, 0)
         
@@ -84,15 +84,18 @@ Shader ".poiyomi/Toon/Simple/Cutout"
         [HideInInspector] m_start_subsurface ("Subsurface Scattering", Float) = 0
         [Toggle(_TERRAIN_NORMAL_MAP)]_EnableSSS ("Enable Subsurface Scattering", Float) = 0
         _SSSColor ("Subsurface Color", Color) = (1, 0, 0, 1)
+        _SSSColorMap ("Color Map", 2D) = "white" { }
         _SSSThicknessMap ("Thickness Map", 2D) = "black" { }
         _SSSThicknessMod ("Thickness mod", Range(-1, 1)) = 0
-        _SSSSCale ("Light Strength", Range(0, 1)) = 0.25
-        _SSSPower ("Light Spread", Range(1, 100)) = 5
+        _SSSAttenuation ("Attenuation", Range(0, 1)) = 0.25
+        _SSSPower ("Light Spread", Range(1, 20)) = 6
         _SSSDistortion ("Light Distortion", Range(0, 1)) = 1
+        [Enum(vertex, 0, pixel, 1)] _SSSNormal ("Normal Select", Int) = 1
         [HideInInspector] m_end_subsurface ("Subsurface Scattering", Float) = 0
         
         [HideInInspector] m_start_rimLightOptions ("Rim Lighting", Float) = 0
         [Toggle(_GLOSSYREFLECTIONS_OFF)]_EnableRimLighting ("Enable Rim Lighting", Float) = 0
+        [Enum(vertex, 0, pixel, 1)] _RimLightNormal ("Normal Select", Int) = 0
         [Toggle(_)]_RimLightingInvert ("Invert Rim Lighting", Float) = 0
         _RimLightColor ("Rim Color", Color) = (1, 1, 1, 1)
         _RimWidth ("Rim Width", Range(0, 1)) = 0.8
@@ -216,7 +219,35 @@ Shader ".poiyomi/Toon/Simple/Cutout"
         //_ShiftTexture ("Shift Texture", 2D) = "black" { }
         [HideInInspector] m_end_Anisotropic ("Anisotropic", Float) = 0
         [HideInInspector] m_end_specular ("Specular Reflections", Float) = 0
-        */
+
+        [HideInInspector] m_start_specular1 ("Specular Reflections 2", Float) = 0
+        [Toggle(_)]_EnableSpecular1 ("Enable Specular", Float) = 0
+        [Enum(Realistic, 1, Toon, 2, Anisotropic, 3)] _SpecularType1 ("Specular Type", Int) = 1
+        _SpecularMinLightBrightness1 ("Min Light Brightness", Range(0, 1)) = 0
+        _SpecularTint1 ("Specular Tint", Color) = (.2, .2, .2, 1)
+        _SpecularMixAlbedoIntoTint1 ("Mix Material Color Into Tint", Range(0, 1)) = 0
+        _SpecularSmoothness1 ("Smoothness", Range(-2, 1)) = .75
+        _SpecularMap1 ("Specular Map", 2D) = "white" { }
+        [Toggle(_)]_SpecularInvertSmoothness1 ("Invert Smoothness", Float) = 0
+        _SpecularMask1 ("Specular Mask", 2D) = "white" { }
+        [Enum(Alpha, 0, Grayscale, 1)] _SmoothnessFrom1 ("Smoothness From", Int) = 1
+        [HideInInspector] m_start_SpecularToon1 ("Toon", Float) = 0
+        [MultiSlider]_SpecularToonInnerOuter1 ("Inner/Outer Edge", Vector) = (0.25, 0.3, 0, 1)
+        [HideInInspector] m_end_SpecularToon1 ("Toon", Float) = 0
+        [HideInInspector] m_start_Anisotropic1 ("Anisotropic", Float) = 0
+        [Enum(Tangent, 0, Bitangent, 1)] _SpecWhatTangent1 ("(Bi)Tangent?", Int) = 0
+        _AnisoSpec1Alpha1 ("Spec1 Alpha", Range(0, 1)) = 1
+        _AnisoSpec2Alpha1 ("Spec2 Alpha", Range(0, 1)) = 1
+        //_Spec1Offset ("Spec1 Offset", Float) = 0
+        //_Spec1JitterStrength ("Spec1 Jitter Strength", Float) = 1.0
+        _Spec2Smoothness1 ("Spec2 Smoothness", Range(0, 1)) = 0
+        //_Spec2Offset ("Spec2 Offset", Float) = 0
+        //_Spec2JitterStrength ("Spec2 Jitter Strength", Float) = 1.0
+        [Toggle(_)]_AnisoUseTangentMap1 ("Use Directional Map?", Float) = 0
+        _AnisoTangentMap1 ("Anisotropic Directional Map", 2D) = "bump" { }
+        //_ShiftTexture ("Shift Texture", 2D) = "black" { }
+        [HideInInspector] m_end_Anisotropic1 ("Anisotropic", Float) = 0
+        [HideInInspector] m_end_specular1 ("Specular Reflections", Float) = 0        */
         [HideInInspector] m_outlineOptions ("Outlines", Float) = 1
         //[Enum(Basic, 0, Tint, 1, Rim Light, 2, Directional, 3, DropShadow, 4)]_OutlineMode ("Mode", Int) = 0
         //[Toggle(_)]_OutlineUseVertexColors ("V Color as Normal", Float) = 0
@@ -325,7 +356,8 @@ Shader ".poiyomi/Toon/Simple/Cutout"
         [Toggle(_SUNDISK_HIGH_QUALITY)]_EnableFlipbook ("Enable Flipbook", Float) = 0
         [Toggle(_)]_FlipbookAlphaControlsFinalAlpha ("Flipbook Controls Alpha?", Float) = 0
         [Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)] _FlipbookUV ("Flipbook UV#", Int) = 0
-        _FlipbookTexArray ("Texture Array", 2DArray) = "" { }
+        [TextureArray]_FlipbookTexArray ("Texture Array", 2DArray) = "" { }
+        _FlipbookMask ("Mask", 2D) = "white" { }
         _FlipbookColor ("Color & alpha", Color) = (1, 1, 1, 1)
         _FlipbookTotalFrames ("Total Frames", Int) = 1
         _FlipbookFPS ("FPS", Float) = 30.0
@@ -471,24 +503,16 @@ Shader ".poiyomi/Toon/Simple/Cutout"
         [HideInInspector] m_end_distanceDithering ("Distance Dither", Float) = 0
         
 
-        [HideInInspector] m_start_distortionFlow ("UV Distortion", Float) = 0
-        [Toggle(USER_LUT)] _EnableDistortion ("Enabled?", Float) = 0
-        _DistortionFlowTexture ("Distortion Texture 1", 2D) = "black" { }
-        _DistortionFlowTexture1 ("Distortion Texture 2", 2D) = "black" { }
-        _DistortionStrength ("Strength1", Float) = 0.5
-        _DistortionStrength1 ("Strength2", Float) = 0.5
-        [Vector2]_DistortionSpeed ("Speed1", Vector) = (0.5, 0.5, 0, 0)
-        [Vector2]_DistortionSpeed1 ("Speed2", Vector) = (0.5, 0.5, 0, 0)
-        [HideInInspector] m_end_distortionFlow ("UV Distortion", Float) = 0
         // End Special Effects
         
 
         
-        [HideInInspector] m_parallaxMap ("Parallax", Float) = 0
+        [HideInInspector] m_ParallaxMap ("Parallax", Float) = 0
         [Toggle(_PARALLAXMAP)]_ParallaxMap ("Enable Parallax FX", Float) = 0
         [Toggle(_)]_ParallaxHeightMapEnabled ("Enable Parallax Height", Float) = 0
         [Toggle(_)]_ParallaxInternalMapEnabled ("Enable Parallax Internal", Float) = 0
-        [HideInInspector] m_start_parallaxHeightmap ("Heightmap", Float) = 0
+                [HideInInspector] m_start_parallaxHeightmap ("Heightmap", Float) = 0
+        [Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3)] _ParallaxUV ("Parallax UV", Int) = 0
         _ParallaxHeightMap ("Height Map", 2D) = "black" { }
         _ParallaxStrength ("Parallax Strength", Range(0, 1)) = 0
         [HideInInspector] m_end_parallaxHeightmap ("Heightmap", Float) = 0

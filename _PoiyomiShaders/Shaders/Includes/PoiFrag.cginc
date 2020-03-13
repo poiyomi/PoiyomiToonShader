@@ -8,6 +8,19 @@
     
     float4 frag(v2f i, float facing: VFACE): SV_Target
     {
+        #ifndef POI_LIGHTING
+            #ifdef FORWARD_ADD_PASS
+                return 0;
+            #endif
+        #endif
+        
+        float3 finalLighting = 1;
+        float3 finalSpecular0 = 0;
+        float3 finalSpecular1 = 0;
+        float3 finalEnvironmentalRim = 0;
+        float3 finalSSS = 0;
+        fixed lightingAlpha = 1;
+        
         finalEmission = 0;
         poiMesh.isFrontFace = facing;
         i.uv0.xy += _GlobalPanSpeed.xy * _Time.x;
@@ -28,12 +41,16 @@
             initTextureData();
         #endif
         
+        
         #ifdef POI_MSDF
             ApplyTextOverlayColor(albedo);
         #endif
-        
         #ifdef POI_LIGHTING
-            calculateLighting();
+            finalLighting = calculateLighting();
+        #endif
+        
+        #ifdef POI_ENVIRONMENTAL_RIM
+            finalEnvironmentalRim = calculateEnvironmentalRimLighting();
         #endif
         
         #if defined(POI_METAL) || defined(POI_CLEARCOAT)
@@ -67,7 +84,7 @@
         
         #ifdef POI_LIGHTING
             #ifdef SUBSURFACE
-                calculateSubsurfaceScattering();
+                finalSSS = max(0, getSubsurfaceLighting());
             #endif
         #endif
         
@@ -80,7 +97,6 @@
         #endif
         
         finalColor = albedo;
-        
         
         #ifdef POI_RIM
             applyRimColor(finalColor);
@@ -104,20 +120,14 @@
         
         float4 finalColorBeforeLighting = finalColor;
         
-        #ifdef POI_LIGHTING
-            applyLighting(finalColor);
-        #endif
-        
-        #ifdef POI_ENVIRONMENTAL_RIM
-            applyEnviroRim(finalColor);
-        #endif
         
         #ifdef POI_METAL
-            applyReflections(finalColor, finalColorBeforeLighting);
+            applyReflections(finalColor, finalColorBeforeLighting, lightingAlpha);
         #endif
         
         #ifdef POI_SPECULAR
-            calculateSpecular(finalColorBeforeLighting);
+            finalSpecular0 = calculateSpecular0(finalColorBeforeLighting);
+            finalSpecular1 = calculateSpecular1(finalColorBeforeLighting);
         #endif
         
         #ifdef POI_PARALLAX
@@ -128,13 +138,18 @@
             #ifdef POI_LIGHTING
                 #ifdef POI_SPECULAR
                     //applyLightingToSpecular();
-                    applySpecular(finalColor);
+                    //applySpecular(finalColor);
                 #endif
             #endif
         #endif
         #if defined(FORWARD_BASE_PASS) || defined(POI_META_PASS)
             finalEmission += finalColorBeforeLighting.rgb * _MainEmissionStrength * albedo.a;
-            finalEmission += BackFaceColor * _BackFaceEmissionStrength;
+            finalEmission += wireframeEmission;
+            UNITY_BRANCH
+            if (_BackFaceEnabled)
+            {
+                finalEmission += BackFaceColor * _BackFaceEmissionStrength;
+            }
             
             #ifdef PANOSPHERE
                 applyPanosphereEmission(finalEmission);
@@ -171,13 +186,9 @@
         #endif
         
         #ifdef POI_LIGHTING
-            #if (defined(POINT) || defined(SPOT))
+            #if(defined(POINT) || defined(SPOT))
                 #ifdef POI_METAL
                     applyAdditiveReflectiveLighting(finalColor);
-                #endif
-                
-                #ifdef POI_SPECULAR
-                    applySpecular(finalColor);
                 #endif
             #endif
         #endif
@@ -188,7 +199,8 @@
         
         #ifdef POI_LIGHTING
             #ifdef SUBSURFACE
-                applySubsurfaceScattering(finalColor);
+                //applySubsurfaceScattering(finalColor);
+                //finalSSS = max(0,getSubsurfaceLighting());
             #endif
         #endif
         
@@ -205,6 +217,8 @@
         #ifdef CUTOUT
             applyDithering(finalColor);
         #endif
+        
+        finalColor.rgb = finalColor.rgb * lerp(1, finalLighting, lightingAlpha) + finalSpecular0 + finalSpecular1 + finalEnvironmentalRim + finalSSS;
         
         #ifdef FORWARD_BASE_PASS
             #ifdef POI_CLEARCOAT
@@ -240,7 +254,7 @@
         #ifdef POI_GRAB
             applyGrabEffects(finalColor);
         #endif
-
+        
         #ifdef POI_BLUR
             ApplyBlurToGrabPass(finalColor);
         #endif

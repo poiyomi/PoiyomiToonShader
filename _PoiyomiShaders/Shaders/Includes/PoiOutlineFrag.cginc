@@ -58,7 +58,7 @@ float4 frag(v2f i): COLOR
         UNITY_BRANCH
         if(_OutlineLit)
         {
-            applyLighting(finalColor);
+            finalColor.rgb *= calculateLighting();
         }
     #endif
     
