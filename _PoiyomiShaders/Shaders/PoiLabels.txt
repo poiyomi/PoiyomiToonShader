@@ -187,10 +187,10 @@ m_start_Gameboy:=Gradient Options
 m_start_TouchOptions:=Touch FX (Requires DepthGet Prefab)
 
 m_start_Bulge:=Bulge--{reference_property:_EnableBulge}
-_EnableBulge:=Bulge--{hide_in_inspector:true}
+_EnableBulge:=Bulge  --{hide_in_inspector:true}
 
 m_start_TouchGlow:=Touch Color--{reference_property:_EnableTouchGlow}
-_EnableTouchGlow:=Touch Color--{hide_in_inspector:true}
+_EnableTouchGlow:=Touch Color   --{hide_in_inspector:true}
 
 m_start_Hologram:=Hologram Alpha--{reference_property:_EnableHolo}
 _EnableHolo:=Hologram Alpha--{hide_in_inspector:true}

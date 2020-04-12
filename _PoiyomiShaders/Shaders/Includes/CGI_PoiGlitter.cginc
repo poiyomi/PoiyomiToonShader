@@ -14,6 +14,10 @@
     half _GlitterAngleRange;
     half _GlitterMinBrightness;
     half _GlitterBias;
+    float _GlitterRandomColors;
+    float2 _GlitterMinMaxSaturation;
+    float2 _GlitterMinMaxBrightness;
+    fixed _GlitterUseSurfaceColor;
     //1/7
     #define K 0.142857142857
     //3/7
@@ -33,82 +37,6 @@
     {
         return mod((34.0 * x + 1.0) * x, 289.0);
     }
-    
-    /*
-    
-    float fBm_F1_F0_Poi(float2 p)
-    {
-        float2 F = inoise(p * _GlitterFrequency, _GlitterJitter) * .7;
-        return F.y - F.x;
-    }
-    
-    float fBm_F1_F0(float2 p, int octaves)
-    {
-        float freq = _GlitterFrequency, amp = 0.5;
-        float sum = 0;
-        for (int i = 0; i < octaves; i ++)
-        {
-            float2 F = inoise(p * freq, _GlitterJitter) * amp;
-            
-            sum += 0.1 + sqrt(F[1]) - sqrt(F[0]);
-        }
-        return sum;
-    }
-    
-    void Unity_NormalFromHeight_World(float In, out float3 Out)
-    {
-        float3 worldDirivativeX = ddx(float3(poiMesh.localPos.xyz) * 100);
-        float3 worldDirivativeY = ddy(float3(poiMesh.localPos.xyz) * 100);
-        float3 crossX = cross(poiTData.tangentTransform[2].xyz, worldDirivativeX);
-        float3 crossY = cross(poiTData.tangentTransform[2].xyz, worldDirivativeY);
-        float3 d = abs(dot(crossY, worldDirivativeX));
-        float3 inToNormal = ((((In + ddx(In)) - In) * crossY) + (((In + ddy(In)) - In) * crossX)) * sign(d);
-        inToNormal.y *= -1.0;
-        Out = normalize((d * poiTData.tangentTransform[2].xyz) - inToNormal);
-    }
-    
-    void Unity_NormalFromHeight_Tangent(float In, out float3 Out)
-    {
-        float3 worldDirivativeX = ddx(float3(poiMesh.uv[0], 0) * 100);
-        float3 worldDirivativeY = ddy(float3(poiMesh.uv[0], 0) * 100);
-        float3 crossX = cross(poiTData.tangentTransform[2].xyz, worldDirivativeX);
-        float3 crossY = cross(poiTData.tangentTransform[2].xyz, worldDirivativeY);
-        float3 d = abs(dot(crossY, worldDirivativeX));
-        float3 inToNormal = ((((In + ddx(In)) - In) * crossY) + (((In + ddy(In)) - In) * crossX)) * sign(d);
-        inToNormal.y *= -1.0;
-        Out = ((d * poiTData.tangentTransform[2].xyz) - inToNormal);
-        Out = mul(poiTData.tangentToWorld, Out).xyz;
-    }
-    
-    void poiMathMagic(float In, out float3 Out)
-    {
-        float worldDirivativeX = ddx(In * _GlitterSpeed);
-        float worldDirivativeY = ddy(In * _GlitterSpeed);
-        float thing = sqrt(1 - worldDirivativeX * worldDirivativeX - worldDirivativeY * worldDirivativeY);
-        Out = normalize(float3(worldDirivativeX, worldDirivativeY, thing)) * 16;
-    }
-    
-    float3 HeightToNormal(float height, float3 normal, float3 pos)
-    {
-        float3 worldDirivativeX = ddx(pos);
-        float3 worldDirivativeY = ddy(pos);
-        float3 crossX = cross(normal, worldDirivativeX);
-        float3 crossY = cross(normal, worldDirivativeY);
-        float3 d = abs(dot(crossY, worldDirivativeX));
-        float3 inToNormal = ((((height + ddx(height)) - height) * crossY) + (((height + ddy(height)) - height) * crossX)) * sign(d);
-        inToNormal.y *= -1.0;
-        return normalize((d * normal) - inToNormal);
-    }
-    
-    float3 WorldToTangentNormalfloattor(float3 normal)
-    {
-        float3 t2w0 = UnityObjectToWorldNormal(float3(1, 0, 0));
-        float3 t2w1 = UnityObjectToWorldNormal(float3(0, 1, 0));
-        float3 t2w2 = UnityObjectToWorldNormal(float3(0, 0, 1));
-        float3x3 t2w = float3x3(t2w0, t2w1, t2w2);
-        return normalize(mul(t2w, normal));
-    }
-    */
     float3 randomFloat3(float2 Seed, float maximum)
     {
         return(.5 + float3(
@@ -147,6 +75,16 @@
     float2 random2(float2 p)
     {
         return frac(sin(float2(dot(p, float2(127.1, 311.7)), dot(p, float2(269.5, 183.3)))) * 43758.5453);
+    }
+    
+    
+    float3 RandomColorFromPoint(float2 rando)
+    {
+        fixed hue = random2(rando.x + rando.y).x;
+        fixed saturation = lerp(_GlitterMinMaxSaturation.x, _GlitterMinMaxSaturation.y, rando.x);
+        fixed value = lerp(_GlitterMinMaxBrightness.x, _GlitterMinMaxBrightness.y, rando.y);
+        float3 hsv = float3(hue, saturation, value);
+        return HSVtoRGB(hsv);
     }
     
     void applyGlitter(inout float3 finalEmission, inout float4 finalColor)
@@ -212,8 +150,17 @@
         
         float3 glitterReflectionDirection = normalize(lerp(-poiCam.viewDir, mul(poiRotationMatrixFromAngles(randomRotation), norm), glitterAlpha));
         float3 finalGlitter = lerp(0, _GlitterMinBrightness, glitterAlpha) + max(pow(dot(lerp(glitterReflectionDirection, poiCam.viewDir, _GlitterBias), poiCam.viewDir), _GlitterContrast) * _GlitterBrightness, 0);
+        _GlitterColor *= lerp(1, finalColor, _GlitterUseSurfaceColor);
         _GlitterColor *= UNITY_SAMPLE_TEX2D_SAMPLER(_GlitterColorMap, _MainTex, TRANSFORM_TEX(poiMesh.uv[0], _GlitterColorMap) + _GlitterPan * _Time.x);
         _GlitterColor *= UNITY_SAMPLE_TEX2D_SAMPLER(_GlitterMask, _MainTex, TRANSFORM_TEX(poiMesh.uv[0], _GlitterMask));
+        
+        
+        if(_GlitterRandomColors)
+        {
+            _GlitterColor *= RandomColorFromPoint(random2(randoPoint.x + randoPoint.y));
+        }
+        
+        
         finalEmission += finalGlitter * _GlitterColor;
         // Draw grid
         //color.r += step(.98, f_st.x) + step(.98, f_st.y);

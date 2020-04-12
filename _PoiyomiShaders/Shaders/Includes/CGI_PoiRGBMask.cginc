@@ -1,5 +1,5 @@
-#ifndef POI_RGBMask
-    #define POI_RGBMask
+#ifndef POI_RGBMASK
+    #define POI_RGBMASK
     
     UNITY_DECLARE_TEX2D_NOSAMPLER(_RGBMask); float4 _RGBMask_ST;
     UNITY_DECLARE_TEX2D_NOSAMPLER(_RedTexure); float4 _RedTexure_ST;

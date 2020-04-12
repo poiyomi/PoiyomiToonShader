@@ -27,6 +27,7 @@ USED---------------------------------------------
 "USER_LUT",
 "CHROMATIC_ABERRATION_LOW",
 "FXAA",
+"BLOOM_LENS_DIRT",
 
 UNUSED-------------------------------------------
 "EFFECT_BUMP",
@@ -66,7 +67,6 @@ UNUSED-------------------------------------------
 "TONEMAPPING_FILMIC",
 "CHROMATIC_ABERRATION",
 "DEPTH_OF_FIELD_COC_VIEW",
-"BLOOM_LENS_DIRT",
 "COLOR_GRADING",
 "COLOR_GRADING_LOG_VIEW",
 "VIGNETTE_CLASSIC",
@@ -142,7 +142,7 @@ TODO: _ALPHAMODULATE_ON
     #ifdef WIREFRAME
         #include "CGI_PoiWireframe.cginc"
     #endif
-
+    
     #ifdef _ALPHABLEND_ON
         #include "PoiDissolve.cginc"
     #endif
@@ -155,8 +155,12 @@ TODO: _ALPHAMODULATE_ON
         #include "CGI_PoiRGBMask.cginc"
     #endif
     
+    #ifdef BLOOM_LENS_DIRT
+        #include "CGI_PoiIridescence.cginc"
+    #endif
     #include "PoiMainTex.cginc"
     
+
     #ifdef _DETAIL_MULX2
         #include "PoiPanosphere.cginc"
     #endif

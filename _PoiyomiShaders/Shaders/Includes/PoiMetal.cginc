@@ -17,7 +17,7 @@
     float roughness;
     float lighty_boy_uwu_var;
     
-    void CalculateEnvironmentalReflections()
+    void CalculateEnvironmentalReflections(inout float lightingAlpha, inout float bakedCubemap)
     {
         metalicMap = UNITY_SAMPLE_TEX2D_SAMPLER(_MetallicMask, _MainTex, TRANSFORM_TEX(poiMesh.uv[0], _MetallicMask)) * _Metallic;
         float smoothnessMap = (UNITY_SAMPLE_TEX2D_SAMPLER(_SmoothnessMask, _MainTex, TRANSFORM_TEX(poiMesh.uv[0], _SmoothnessMask)));
@@ -27,12 +27,12 @@
         }
         smoothnessMap *= _Smoothness;
         roughness = 1 - smoothnessMap;
-        //roughness *= 1.7 - 0.7 * roughness;
-        lighty_boy_uwu_var = 1-metalicMap;
+        
+        lighty_boy_uwu_var = 0;
         
         float4 envSample = UNITY_SAMPLE_TEXCUBE_LOD(unity_SpecCube0, poiCam.reflectionDir, roughness * UNITY_SPECCUBE_LOD_STEPS);
         bool no_probe = unity_SpecCube0_HDR.a == 0 && envSample.a == 0;
-        
+
         UNITY_BRANCH
         if(_SampleWorld == 0 && no_probe == 0)
         {
@@ -67,25 +67,26 @@
             {
                 reflection = probe0;
             }
+            bakedCubemap = 0;
         }
         else
         {
             lighty_boy_uwu_var = 1;
             reflection = texCUBElod(_CubeMap, float4(poiCam.reflectionDir, roughness * UNITY_SPECCUBE_LOD_STEPS));
+            bakedCubemap = 1;
         }
+            lightingAlpha = (1 - metalicMap);
     }
     
-    void applyReflections(inout float4 finalColor, float4 finalColorBeforeLighting, inout fixed lightingAlpha)
+    void applyReflections(inout float4 finalColor, float4 finalColorBeforeLighting)
     {
         #ifdef FORWARD_BASE_PASS
             finalreflections = reflection.rgb * finalColorBeforeLighting.rgb * _MetalReflectionTint;
-            finalColor.rgb = finalColor.rgb * (1 - metalicMap);
             #ifdef POI_LIGHTING
-                finalColor.rgb += (finalreflections * ((1 - roughness + metalicMap) / 2)) * lerp(1, poiLight.finalLighting, lighty_boy_uwu_var);
+                finalColor.rgb += (finalreflections * ((1 - roughness + metalicMap) / 2));
             #else
                 finalColor.rgb += (finalreflections * ((1 - roughness + metalicMap) / 2));
             #endif
-            lightingAlpha = lighty_boy_uwu_var;
         #endif
     }
     

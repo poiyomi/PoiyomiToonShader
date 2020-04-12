@@ -22,6 +22,7 @@
     fixed _LightingMinLightBrightness;
     fixed _LightingAdditiveIntensity;
     fixed _AoIndirectStrength;
+    float _LightingUseShadowRamp;
     UNITY_DECLARE_TEX2D(_ToonRamp);
     
     uint _LightingNumRamps;
@@ -322,8 +323,18 @@
         #else
             #if defined(POINT) || defined(SPOT)
                 #ifndef SIMPLE
-                    poiLight.finalLighting = poiLight.color * poiLight.attenuation * smoothstep(.5 - _AdditiveSoftness + _AdditiveOffset, .5 + _AdditiveSoftness + _AdditiveOffset, .5 * poiLight.nDotL + .5);
-                    poiLight.finalLighting *= _LightingAdditiveIntensity;
+                    UNITY_BRANCH
+                    if(_LightingUseShadowRamp)
+                    {
+                        float uv = poiLight.nDotL;
+                        float3 lighting = UNITY_SAMPLE_TEX2D_SAMPLER(_ToonRamp1, _ToonRamp, uv + _ShadowOffset1) * poiLight.color;
+                        poiLight.finalLighting *= lighting;
+                    }
+                    else
+                    {
+                        poiLight.finalLighting = poiLight.color * poiLight.attenuation * smoothstep(.5 - _AdditiveSoftness + _AdditiveOffset, .5 + _AdditiveSoftness + _AdditiveOffset, .5 * poiLight.nDotL + .5);
+                        poiLight.finalLighting *= _LightingAdditiveIntensity;
+                    }
                 #else
                     poiLight.finalLighting = poiLight.color * poiLight.attenuation;
                 #endif

@@ -41,7 +41,7 @@
     
     void InitializeMeshData(inout v2f i)
     {
-        poiMesh.normals[0] = i.normal;
+        poiMesh.normals[0] = normalize(i.normal);
         poiMesh.bitangent = CreateBinormal(i.normal, i.tangent.xyz, i.tangent.w);
         poiMesh.tangent = i.tangent.xyz;
         poiMesh.worldPos = i.worldPos;

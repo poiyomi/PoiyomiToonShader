@@ -7,7 +7,8 @@
     float4 _OutlinePersonaDirection;
     float4 _OutlineDropShadowOffset;
     float _OutlineUseVertexColors;
-    
+    float _OutlineFixedSize;
+
     sampler2D _OutlineMask; float4 _OutlineMask_ST;
     v2f vert(appdata v)
     {
@@ -35,16 +36,23 @@
         {
             o.normal = UnityObjectToWorldNormal(v.color);
         }
-        
-        float3 offset = o.normal * (_LineWidth / 100) * outlineMask;
-        
         half offsetMultiplier = 1;
+        half distanceOffset = 1;
+        UNITY_BRANCH
+        if(_OutlineFixedSize)
+        {
+            distanceOffset *= distance(_WorldSpaceCameraPos,mul(unity_ObjectToWorld, v.vertex).xyz);
+        }
+        
+        float3 offset = o.normal * (_LineWidth / 100) * outlineMask * distanceOffset;
+        
         UNITY_BRANCH
         if(_OutlineMode == 2)
         {
             float3 lightDirection = poiLight.direction = normalize(_WorldSpaceLightPos0 + unity_SHAr.xyz + unity_SHAg.xyz + unity_SHAb.xyz);
             offsetMultiplier = saturate(dot(lightDirection, o.normal));
             offset *= offsetMultiplier;
+            offset *= distanceOffset;
         }
         else if(_OutlineMode == 3)
         {
@@ -52,10 +60,12 @@
             offsetMultiplier = saturate(dot(viewNormal.xy, normalize(_OutlinePersonaDirection.xy)));
             
             offset *= offsetMultiplier;
+            offset *= distanceOffset;
         }
         else if(_OutlineMode == 4)
         {
             offset = mul((float3x3)transpose(UNITY_MATRIX_V), _OutlineDropShadowOffset);
+            offset *= distanceOffset;
         }
         
         o.worldPos = mul(unity_ObjectToWorld, v.vertex) + float4(offset, 0);

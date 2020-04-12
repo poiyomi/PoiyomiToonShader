@@ -3,7 +3,7 @@ Shader ".poiyomi/Toon/Advanced/Transparent"
     Properties
     {
         [HideInInspector] shader_is_using_thry_editor ("", Float) = 0
-        [HideInInspector] shader_master_label ("<color=#ff0000ff>❤</color> <color=#000000ff>Poiyomi Toon V5.3</color> <color=#ff0000ff>❤</color>", Float) = 0
+        [HideInInspector] shader_master_label ("<color=#ff0000ff>❤</color> <color=#000000ff>Poiyomi Toon V5.4</color> <color=#ff0000ff>❤</color>", Float) = 0
         [HideInInspector] shader_presets ("poiToonPresets", Float) = 0
         [HideInInspector] shader_properties_label_file ("PoiLabels", Float) = 0
         
@@ -71,6 +71,7 @@ Shader ".poiyomi/Toon/Advanced/Transparent"
         [HideInInspector] m_end_vertexManipulation ("Vertex Options", Float) = 0
         
         [HideInInspector] m_start_Alpha ("Alpha Options", Float) = 0
+        _AlphaMod ("Alpha Mod", Range(-1,1)) = 0.0 
         _Clip ("Alpha Cuttoff", Range(0, 1.001)) = 0.0
         [Toggle(_)]_DitheringEnabled ("Enable Dithering", Float) = 0
         [Toggle(_)]_ForceOpaque ("Force Opaque", Float) = 0
@@ -108,6 +109,7 @@ Shader ".poiyomi/Toon/Advanced/Transparent"
         _LightingStandardSmoothness ("Smoothness", Range(0, 1)) = 0
         [HideInInspector] m_end_lightingStandard ("Standardish Settings", Float) = 0
         [HideInInspector] m_start_lightingAdvanced ("Additive Lighting", Float) = 0
+        //[Toggle(_)] _LightingUseShadowRamp("Use Shadow Ramp", Float) = 0
         _AdditiveSoftness ("Additive Softness", Range(0, 0.5)) = 0.005
         _AdditiveOffset ("Additive Offset", Range(-0.5, 0.5)) = 0
         _LightingAdditiveIntensity ("Additive Intensity", Range(0, 1)) = 1
@@ -139,7 +141,7 @@ Shader ".poiyomi/Toon/Advanced/Transparent"
         
         [HideInInspector] m_start_rimLightOptions ("Rim Lighting", Float) = 0
         [Toggle(_GLOSSYREFLECTIONS_OFF)]_EnableRimLighting ("Enable Rim Lighting", Float) = 0
-        [Enum(vertex, 0, pixel, 1)] _RimLightNormal ("Normal Select", Int) = 0
+        [Enum(vertex, 0, pixel, 1)] _RimLightNormal ("Normal Select", Int) = 1
         [Toggle(_)]_RimLightingInvert ("Invert Rim Lighting", Float) = 0
         _RimLightColor ("Rim Color", Color) = (1, 1, 1, 1)
         _RimWidth ("Rim Width", Range(0, 1)) = 0.8
@@ -237,7 +239,9 @@ Shader ".poiyomi/Toon/Advanced/Transparent"
         [HideInInspector] m_start_specular ("Specular Reflections", Float) = 0
         [Toggle(_SPECGLOSSMAP)]_EnableSpecular ("Enable Specular", Float) = 0
         [Enum(Realistic, 1, Toon, 2, Anisotropic, 3)] _SpecularType ("Specular Type", Int) = 1
+        [Enum(vertex, 0, pixel, 1)] _SpecularNormal ("Normal Select", Int) = 1
         _SpecularMinLightBrightness ("Min Light Brightness", Range(0, 1)) = 0
+        _SpecularAttenuation("Attenuation Strength", Range(0,1)) = 1
         _SpecularTint ("Specular Tint", Color) = (.2, .2, .2, 1)
         _SpecularMixAlbedoIntoTint ("Mix Material Color Into Tint", Range(0, 1)) = 0
         _SpecularSmoothness ("Smoothness", Range(-2, 1)) = .75
@@ -266,7 +270,9 @@ Shader ".poiyomi/Toon/Advanced/Transparent"
         [HideInInspector] m_start_specular1 ("Specular Reflections 2", Float) = 0
         [Toggle(_)]_EnableSpecular1 ("Enable Specular", Float) = 0
         [Enum(Realistic, 1, Toon, 2, Anisotropic, 3)] _SpecularType1 ("Specular Type", Int) = 1
+        [Enum(vertex, 0, pixel, 1)] _SpecularNormal1 ("Normal Select", Int) = 1
         _SpecularMinLightBrightness1 ("Min Light Brightness", Range(0, 1)) = 0
+        _SpecularAttenuation1("Attenuation Strength", Range(0,1)) = 1
         _SpecularTint1 ("Specular Tint", Color) = (.2, .2, .2, 1)
         _SpecularMixAlbedoIntoTint1 ("Mix Material Color Into Tint", Range(0, 1)) = 0
         _SpecularSmoothness1 ("Smoothness", Range(-2, 1)) = .75
@@ -438,6 +444,7 @@ Shader ".poiyomi/Toon/Advanced/Transparent"
         [HideInInspector] m_start_glitter ("Glitter / Sparkle", Float) = 0
         [Toggle(_SUNDISK_SIMPLE)]_GlitterEnable ("Enable Glitter?", Float) = 0
         [HDR]_GlitterColor ("Color", Color) = (1, 1, 1)
+        _GlitterUseSurfaceColor ("Use Surface Color", Range(0,1)) = 0
         _GlitterColorMap ("Glitter Color Map", 2D) = "white" { }
         [HideInInspector][Vector2]_GlitterPan ("Panning", Vector) = (0, 0, 0, 0)
         _GlitterMask ("Glitter Mask", 2D) = "white" { }
@@ -450,6 +457,11 @@ Shader ".poiyomi/Toon/Advanced/Transparent"
         _GlitterMinBrightness ("Glitter Min Brightness", Range(0, 1)) = 0
         _GlitterBrightness ("Glitter Max Brightness", Range(0, 40)) = 3
         _GlitterBias ("Glitter Bias", Range(0, 1)) = .8
+        [HideInInspector] m_start_glitterRandom ("Random Colors", Float) = 0
+        [Toggle(_)]_GlitterRandomColors ("Enable", Float) = 0
+        [MultiSlider]_GlitterMinMaxSaturation ("Saturation Range", Vector) = (0.8, 1, 0, 1)
+        [MultiSlider]_GlitterMinMaxBrightness ("Brightness Range", Vector) = (.8, 1, 0, 1)
+        [HideInInspector] m_end_glitterRandom ("Random Colors", Float) = 0
         [HideInInspector] m_end_glitter ("Glitter / Sparkle", Float) = 0
         
         // MSDF OVERLAY

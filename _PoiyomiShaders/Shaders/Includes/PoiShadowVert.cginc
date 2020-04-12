@@ -10,7 +10,6 @@ out float4 opos: SV_POSITION)
     applyLocalVertexTransformation(v.normal, v.vertex);
     
     UNITY_INITIALIZE_OUTPUT(VertexOutputShadowCaster, o);
-    UNITY_TRANSFER_INSTANCE_ID(v, o);
     UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
     
     
@@ -22,7 +21,7 @@ out float4 opos: SV_POSITION)
     o.uv3 = v.uv3;
     
     
-    float2 uvToUse;
+    float2 uvToUse = 0;
     UNITY_BRANCH
     if (vertexManipulationUV == 0)
     {

@@ -5,6 +5,7 @@
     float _MainEmissionStrength;
     float _IgnoreFog;
     half _GIEmissionMultiplier;
+    uint _IridescenceTime;
     
     float4 frag(v2f i, float facing: VFACE): SV_Target
     {
@@ -20,6 +21,8 @@
         float3 finalEnvironmentalRim = 0;
         float3 finalSSS = 0;
         fixed lightingAlpha = 1;
+        float3 IridescenceEmission = 0;
+        float bakedCubemap = 0; // Whether or not metallic should run before or after lighting multiplication
         
         finalEmission = 0;
         poiMesh.isFrontFace = facing;
@@ -41,10 +44,18 @@
             initTextureData();
         #endif
         
+        #ifdef POI_IRIDESCENCE
+            UNITY_BRANCH
+            if (_IridescenceTime == 0)
+            {
+                IridescenceEmission = applyIridescence(albedo);
+            }
+        #endif
         
         #ifdef POI_MSDF
             ApplyTextOverlayColor(albedo);
         #endif
+        
         #ifdef POI_LIGHTING
             finalLighting = calculateLighting();
         #endif
@@ -59,7 +70,7 @@
         
         #ifdef POI_METAL
             //calculateReflections();
-            CalculateEnvironmentalReflections();
+            CalculateEnvironmentalReflections(lightingAlpha, bakedCubemap);
         #endif
         
         #ifdef POI_DATA
@@ -98,9 +109,6 @@
         
         finalColor = albedo;
         
-        #ifdef POI_RIM
-            applyRimColor(finalColor);
-        #endif
         
         #ifdef MATCAP
             applyMatcap(finalColor);
@@ -108,6 +116,10 @@
         
         #ifdef PANOSPHERE
             applyPanosphereColor(finalColor);
+        #endif
+        
+        #ifdef POI_RIM
+            applyRimColor(finalColor);
         #endif
         
         #ifdef POI_FLIPBOOK
@@ -118,12 +130,18 @@
             applyDepthColor(finalColor, finalEmission, poiCam.screenPos, poiCam.clipPos);
         #endif
         
+        #ifdef POI_IRIDESCENCE
+            UNITY_BRANCH
+            if (_IridescenceTime == 1)
+            {
+                IridescenceEmission = applyIridescence(finalColor);
+            }
+        #endif
+        
         float4 finalColorBeforeLighting = finalColor;
         
         
-        #ifdef POI_METAL
-            applyReflections(finalColor, finalColorBeforeLighting, lightingAlpha);
-        #endif
+        
         
         #ifdef POI_SPECULAR
             finalSpecular0 = calculateSpecular0(finalColorBeforeLighting);
@@ -145,6 +163,7 @@
         #if defined(FORWARD_BASE_PASS) || defined(POI_META_PASS)
             finalEmission += finalColorBeforeLighting.rgb * _MainEmissionStrength * albedo.a;
             finalEmission += wireframeEmission;
+            finalEmission += IridescenceEmission;
             UNITY_BRANCH
             if (_BackFaceEnabled)
             {
@@ -218,7 +237,27 @@
             applyDithering(finalColor);
         #endif
         
-        finalColor.rgb = finalColor.rgb * lerp(1, finalLighting, lightingAlpha) + finalSpecular0 + finalSpecular1 + finalEnvironmentalRim + finalSSS;
+        #ifdef POI_METAL
+            UNITY_BRANCH
+            if (bakedCubemap == 1)
+            {
+                finalColor.rgb *= lightingAlpha;
+                applyReflections(finalColor, finalColorBeforeLighting);
+            }
+        #endif
+        
+        finalColor.rgb = finalColor.rgb * finalLighting;
+        
+        #ifdef POI_METAL
+            UNITY_BRANCH
+            if(bakedCubemap == 0)
+            {
+                finalColor.rgb *= lightingAlpha;
+                applyReflections(finalColor, finalColorBeforeLighting);
+            }
+        #endif
+        
+        finalColor.rgb += finalSpecular0 + finalSpecular1 + finalEnvironmentalRim + finalSSS;
         
         #ifdef FORWARD_BASE_PASS
             #ifdef POI_CLEARCOAT
@@ -247,7 +286,6 @@
             #endif
             return UnityMetaFragment(meta);
         #endif
-        
         
         finalColor.rgb += finalEmission;
         

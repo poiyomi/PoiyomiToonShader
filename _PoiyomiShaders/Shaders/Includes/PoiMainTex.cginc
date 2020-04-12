@@ -24,6 +24,7 @@
     float _DetailBrightness;
     float2 _DetailTexturePan;
     float _MainHueShift;
+    float _AlphaMod;
     //globals
     float alphaMask;
     half3 diffColor;
@@ -89,9 +90,11 @@
         #ifndef POI_SHADOW
             albedo = float4(lerp(mainTexture.rgb, dot(mainTexture.rgb, float3(0.3, 0.59, 0.11)), -_Saturation) * _Color.rgb * lerp(1, poiMesh.vertexColor.rgb, _MainVertexColoring), mainTexture.a * _Color.a);
             
-            #ifdef POI_RGBMask
+            #ifdef POI_RGBMASK
                 albedo.rgb = calculateRGBMask(albedo.rgb);
             #endif
+
+            albedo.a = saturate(_AlphaMod + albedo.a);
 
             wireframeEmission = 0;
             #ifdef POI_WIREFRAME
