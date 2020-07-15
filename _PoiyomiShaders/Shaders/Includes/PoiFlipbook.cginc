@@ -13,6 +13,12 @@
     float _EnableFlipbook;
     uint _FlipbookUV;
     float _FlipbookAlphaControlsFinalAlpha;
+    float _FlipbookRotationSpeed;
+    float _FlipbookIntensityControlsAlpha;
+    float _FlipbookColorReplaces;
+    float2 _FlipbookTexturePan;
+    float2 _FlipbookMaskPan;
+
     // blending
     float _FlipbookReplace;
     float _FlipbookMultiply;
@@ -28,15 +34,15 @@
     float4 flipBookPixel;
     float4 flipBookPixelMultiply;
     float flipBookMask;
-
+    
     #ifndef POI_SHADOW
         
         void calculateFlipbook()
         {
-            flipBookMask = UNITY_SAMPLE_TEX2D_SAMPLER(_FlipbookMask, _MainTex, TRANSFORM_TEX(poiMesh.uv[_FlipbookUV], _FlipbookMask)).r;
+            flipBookMask = UNITY_SAMPLE_TEX2D_SAMPLER(_FlipbookMask, _MainTex, TRANSFORM_TEX(poiMesh.uv[_FlipbookUV] + _Time.x * _FlipbookMaskPan, _FlipbookMask)).r;
             _FlipbookScaleOffset.xy = 1 - _FlipbookScaleOffset.xy;
             float2 uv = poiMesh.uv[_FlipbookUV];
-            float theta = radians(_FlipbookRotation);
+            float theta = radians(_FlipbookRotation + _Time.z * _FlipbookRotationSpeed);
             float cs = cos(theta);
             float sn = sin(theta);
             float2 spriteCenter = _FlipbookScaleOffset.zw + .5;
@@ -51,7 +57,6 @@
                 if(max(newUV.x, newUV.y) > 1 || min(newUV.x, newUV.y) < 0)
                 {
                     flipBookPixel = 0;
-                    flipBookPixelMultiply = 1;
                     return;
                 }
             }
@@ -61,14 +66,27 @@
             {
                 currentFrame = (_Time.y / (1 / _FlipbookFPS)) % _FlipbookTotalFrames;
             }
-            flipBookPixel = UNITY_SAMPLE_TEX2DARRAY(_FlipbookTexArray, float3(TRANSFORM_TEX(newUV, _FlipbookTexArray), currentFrame));
-            flipBookPixelMultiply = flipBookPixel;
+            flipBookPixel = UNITY_SAMPLE_TEX2DARRAY(_FlipbookTexArray, float3(TRANSFORM_TEX(newUV, _FlipbookTexArray) + _Time.x * _FlipbookTexturePan, currentFrame));
+            UNITY_BRANCH
+            if(_FlipbookIntensityControlsAlpha)
+            {
+                flipBookPixel.a = poiMax(flipBookPixel.rgb);
+            }
+            UNITY_BRANCH
+            if(_FlipbookColorReplaces)
+            {
+                flipBookPixel.rgb = _FlipbookColor.rgb;
+            }
+            else
+            {
+                flipBookPixel.rgb *= _FlipbookColor.rgb;
+            }
         }
         void applyFlipbook(inout float4 finalColor)
         {
-            finalColor.rgb = lerp(finalColor, flipBookPixel.rgb * _FlipbookColor.rgb, flipBookPixel.a * _FlipbookColor.a * _FlipbookReplace * flipBookMask);
-            finalColor.rgb = finalColor + flipBookPixel.rgb * _FlipbookColor.rgb * _FlipbookAdd * flipBookMask;
-            finalColor.rgb = finalColor * lerp(1, flipBookPixelMultiply.rgb * _FlipbookColor.rgb, _FlipbookMultiply * flipBookPixelMultiply.a * _FlipbookColor.a * flipBookMask);
+            finalColor.rgb = lerp(finalColor, flipBookPixel.rgb, flipBookPixel.a * _FlipbookColor.a * _FlipbookReplace * flipBookMask);
+            finalColor.rgb = finalColor + flipBookPixel.rgb * _FlipbookAdd * flipBookMask;
+            finalColor.rgb = finalColor * lerp(1, flipBookPixel.rgb, flipBookPixel.a * _FlipbookColor.a * flipBookMask * _FlipbookMultiply);
             
             UNITY_BRANCH
             if(_FlipbookAlphaControlsFinalAlpha)
@@ -78,7 +96,7 @@
         }
         void applyFlipbookEmission(inout float3 finalEmission)
         {
-            finalEmission += lerp(0, flipBookPixel.rgb * _FlipbookColor.rgb * _FlipbookEmissionStrength, flipBookPixel.a * _FlipbookColor.a * flipBookMask);
+            finalEmission += lerp(0, flipBookPixel.rgb * _FlipbookEmissionStrength, flipBookPixel.a * _FlipbookColor.a * flipBookMask);
         }
         
     #else
@@ -99,14 +117,14 @@
                 uv = float2((uv.x - spriteCenter.x) * cs - (uv.y - spriteCenter.y) * sn + spriteCenter.x, (uv.x - spriteCenter.x) * sn + (uv.y - spriteCenter.y) * cs + spriteCenter.y);
                 
                 float2 newUV = remap(uv, float2(0, 0) + _FlipbookScaleOffset.xy / 2 + _FlipbookScaleOffset.zw, float2(1, 1) - _FlipbookScaleOffset.xy / 2 + _FlipbookScaleOffset.zw, float2(0, 0), float2(1, 1));
-
+                
                 
                 uint currentFrame = floor(_FlipbookCurrentFrame) % _FlipbookTotalFrames;
                 if(_FlipbookCurrentFrame < 0)
                 {
                     currentFrame = (_Time.y / (1 / _FlipbookFPS)) % _FlipbookTotalFrames;
                 }
-                flipbookShadowAlpha = UNITY_SAMPLE_TEX2DARRAY(_FlipbookTexArray, float3(TRANSFORM_TEX(newUV, _FlipbookTexArray), currentFrame)).a;
+                flipbookShadowAlpha = UNITY_SAMPLE_TEX2DARRAY(_FlipbookTexArray, float3(TRANSFORM_TEX(newUV, _FlipbookTexArray) + _Time.x * _FlipbookTexturePan, currentFrame)).a;
                 
                 UNITY_BRANCH
                 if(_FlipbookTiled == 0)

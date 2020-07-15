@@ -93,6 +93,11 @@ namespace Thry
             if (data == "" || data == null)
                 return false;
             m.location_data = Parser.ParseToObject<ModuleLocationData>(data);
+            if (AssetDatabase.GUIDToAssetPath(m.location_data.guid) == "")
+            {
+                m.location_data = null;
+                return false;
+            }
             return true;
         }
 
@@ -107,6 +112,7 @@ namespace Thry
 
         private static void CheckForUnregisteredInstall(Module module)
         {
+            Debug.Log(module.available_module.classname + ":" + Helper.ClassExists(module.available_module.classname));
             if (Helper.ClassExists(module.available_module.classname))
             {
                 module.path = ResolveFilesToDirectory(module.available_module.files.ToArray());

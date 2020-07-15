@@ -25,7 +25,6 @@ m_start_backFace:=Back Face--{reference_property:_BackFaceEnabled,button_right:{
 _BackFaceEnabled:=Back Face--{hide_in_inspector:true}
 
 m_lightingOptions:=Lighting
-_AOStrength:=Direct/Standardish AO
 m_start_Lighting:=Light & Shadow--{reference_property:_EnableLighting,button_right:{text:Tutorial,action:{type:URL,data:https://www.youtube.com/watch?v=upY6j8SDlpw},hover:YouTube}}
 _EnableLighting:=Light & Shadow--{hide_in_inspector:true}
 
@@ -205,6 +204,15 @@ _RefractionEnabled:=Refraction--{hide_in_inspector:true}
 
 m_start_Blur:=Blur--{reference_property:_EnableBlur}
 _EnableBlur:=Blur  --{hide_in_inspector:true}
+
+m_start_VertexGlitch:=Vertex Glitching--{reference_property:_EnableVertexGlitch}
+_EnableVertexGlitch:=Enable Glitching--{hide_in_inspector:true}
+
+m_start_Iridescence:=Iridescence--{reference_property:_EnableIridescence}
+_EnableIridescence:=Iridescence--{hide_in_inspector:true}
+
+m_start_ScifiSpawnIn:=Sci Fi--{reference_property:_EnableScifiSpawnIn}
+_EnableScifiSpawnIn:=Sci Fi  --{hide_in_inspector:true}
 
 // Footer
 footer_youtube:={texture:{name:icon-youtube,height:32},action:{type:URL,data:https://www.youtube.com/poiyomi},hover:YOUTUBE}

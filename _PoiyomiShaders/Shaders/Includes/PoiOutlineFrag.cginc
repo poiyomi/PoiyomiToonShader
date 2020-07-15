@@ -1,5 +1,7 @@
 float _OutlineRimLightBlend;
 float _OutlineLit;
+float _OutlineTintMix;
+
 float4 frag(v2f i): COLOR
 {
     
@@ -10,10 +12,10 @@ float4 frag(v2f i): COLOR
     #ifdef POI_MAINTEXTURE
         initTextureData();
     #endif
-    
     fixed4 col = mainTexture;
     float alphaMultiplier = smoothstep(_OutlineFadeDistance.x, _OutlineFadeDistance.y, distance(getCameraPosition(), i.worldPos));
-    clip(_LineWidth - 0.001);
+    float OutlineMask = tex2D(_OutlineMask, TRANSFORM_TEX(i.uv0.xy, _OutlineMask) + _Time.x * _OutlineTexturePan.zw).r;
+    clip(OutlineMask * _LineWidth - 0.001);
     #ifndef SIMPLE
         float _alphaMask_tex_var = UNITY_SAMPLE_TEX2D_SAMPLER(_AlphaMask, _MainTex, TRANSFORM_TEX(i.uv0.xy, _AlphaMask));
     #else
@@ -27,7 +29,14 @@ float4 frag(v2f i): COLOR
         col.a *= i.angleAlpha;
     #endif
     
-    clip(col.a * _alphaMask_tex_var - _Clip);
+    poiCam.screenUV = calcScreenUVs(i.grabPos);
+    col.a *= _alphaMask_tex_var * _LineColor.a;
+    applyDithering(col);
+    clip(col.a - _Clip);
+    
+    #ifdef POI_MIRROR
+        applyMirrorRenderFrag();
+    #endif
     
     UNITY_BRANCH
     if (_OutlineMode == 1)
@@ -41,8 +50,12 @@ float4 frag(v2f i): COLOR
     {
         col.rgb = lerp(col.rgb, poiLight.color, _OutlineRimLightBlend);
     }
-    col *= _LineColor;
+    col.rgb *= _LineColor.rgb;
     
+    if(_OutlineMode == 1)
+    {
+        col.rgb = lerp(col.rgb, mainTexture.rgb, _OutlineTintMix);
+    }
     
     #ifdef POI_LIGHTING
         UNITY_BRANCH
@@ -61,7 +74,6 @@ float4 frag(v2f i): COLOR
             finalColor.rgb *= calculateLighting();
         }
     #endif
-    
     finalColor.rgb += (col.rgb * _OutlineEmission);
     return finalColor;
 }

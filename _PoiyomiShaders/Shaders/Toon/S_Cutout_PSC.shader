@@ -3,7 +3,7 @@ Shader ".poiyomi/Toon/Simple/Cutout"
     Properties
     {
         [HideInInspector] shader_is_using_thry_editor ("", Float) = 0
-        [HideInInspector] shader_master_label ("<color=#ff0000ff>❤</color> <color=#000000ff>Poiyomi Simple V5.4</color> <color=#ff0000ff>❤</color>", Float) = 0
+        [HideInInspector] shader_master_label ("<color=#ff0000ff>❤</color> <color=#000000ff>Poiyomi Simple V5.6</color> <color=#ff0000ff>❤</color>", Float) = 0
         [HideInInspector] shader_presets ("poiToonPresets", Float) = 0
         [HideInInspector] shader_properties_label_file ("PoiLabels", Float) = 0
         
@@ -31,7 +31,7 @@ Shader ".poiyomi/Toon/Simple/Cutout"
         //[HideInInspector] m_end_vertexManipulation ("Vertex Options", Float) = 0
         
         //        [HideInInspector] m_start_Alpha ("Alpha Options", Float) = 0
-        _AlphaMod ("Alpha Mod", Range(-1,1)) = 0.0 
+        _AlphaMod ("Alpha Mod", Range(-1, 1)) = 0.0
         _Clip ("Alpha Cuttoff", Range(0, 1.001)) = 0.5
         [HideInInspector][Toggle(_)]_MainAlphaToCoverage ("Alpha To Coverage", Float) = 1
         [HideInInspector]_MainMipScale ("Mip Level Alpha Scale", Range(0, 1)) = 0.25
@@ -57,22 +57,30 @@ Shader ".poiyomi/Toon/Simple/Cutout"
         _ShadowOffset ("Shadow Offset", Range(-1, 1)) = 0
         _AOMap ("AO Map", 2D) = "white" { }
         [Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)] _LightingAOUV ("AO Map UV#", Int) = 0
-        _AoIndirectStrength ("AO Indirect Strength", Range(0, 1)) = 1
-        _AOStrength ("AO Direct Strength", Range(0, 1)) = 0
+        _AOStrength ("AO Strength", Range(0, 1)) = 0
         _LightingMinLightBrightness ("Min Brightness", Range(0, 1)) = 0
         _LightingIndirectContribution ("Indirect Contribution", Range(0, 1)) = .2
         _AttenuationMultiplier ("Recieve Casted Shadows?", Range(0, 1)) = 0
+        _LightingDetailTexture ("Detail Shadows", 2D) = "white" { }
+        _LightingDetailStrength ("Detail Strength", Range(0, 1)) = 1
         [HideInInspector] m_start_lightingStandard ("Standardish Settings", Float) = 0
         _LightingStandardSmoothness ("Smoothness", Range(0, 1)) = 0
         [HideInInspector] m_end_lightingStandard ("Standardish Settings", Float) = 0
         [HideInInspector] m_start_lightingAdvanced ("Additive Lighting", Float) = 0
-        //[Toggle(_)] _LightingUseShadowRamp("Use Shadow Ramp", Float) = 0
+        //[Toggle(_)] _LightingUseShadowRamp ("Use Shadow Ramp", Float) = 0
         _AdditiveSoftness ("Additive Softness", Range(0, 0.5)) = 0.005
         _AdditiveOffset ("Additive Offset", Range(-0.5, 0.5)) = 0
         _LightingAdditiveIntensity ("Additive Intensity", Range(0, 1)) = 1
         */
         /*
         [HideInInspector] m_end_lightingAdvanced ("Additive Lighting", Float) = 0
+        
+        [HideInInspector] m_start_LightingMathMode ("Math Mode", Float) = 0
+        _LightingGradientStart ("Gradient Start", Range(0, 1)) = 0
+        _LightingGradientEnd ("Gradient End", Range(0, 1)) = 1
+        _LightingStartColor ("Light Tint", Color) = (1, 1, 1)
+        _LightingEndColor ("Shadow Tint", Color) = (1, 1, 1)
+        [HideInInspector] m_end_LightingMathMode ("Math Mode", Float) = 0
         [HideInInspector] m_start_lightingBeta ("Beta", Float) = 0
         [Toggle(_)]_LightingStandardControlsToon ("Standard Lighting Controls Toon Ramp", Float) = 0
         [IntRange]_LightingNumRamps ("Num Ramps", Range(1, 3)) = 1
@@ -85,13 +93,15 @@ Shader ".poiyomi/Toon/Simple/Cutout"
         [HideInInspector] m_end_lightingBeta ("Beta", Float) = 0
         [HideInInspector] m_start_subsurface ("Subsurface Scattering", Float) = 0
         [Toggle(_TERRAIN_NORMAL_MAP)]_EnableSSS ("Enable Subsurface Scattering", Float) = 0
-        _SSSColor ("Subsurface Color", Color) = (1, 0, 0, 1)
-        _SSSColorMap ("Color Map", 2D) = "white" { }
-        _SSSThicknessMap ("Thickness Map", 2D) = "black" { }
-        _SSSThicknessMod ("Thickness mod", Range(-1, 1)) = 0
-        _SSSAttenuation ("Attenuation", Range(0, 1)) = 0.25
-        _SSSPower ("Light Spread", Range(1, 20)) = 6
-        _SSSDistortion ("Light Distortion", Range(0, 1)) = 1
+        _SSSLocalThickness ("Local Thickness", 2D) = "white" { }
+        [Toggle(_)]_SSSInvertThicknessMap ("Invert Thickness", Float) = 0
+        _SSSColorMap ("Internal Map", 2D) = "white" { }
+        _SSSScale ("Scale", Range(0, 10)) = 1
+        _SSSDistortion ("Distortion", Range(0, 1)) = 1
+        _SSSPower ("Power", Range(0.01, 10)) = 5
+        _SSSStrength ("Strength", Range(0, 1)) = 1
+        _SSSAttenuation ("Attenuation", Range(0, 1)) = 1
+        _SSSInternalColor ("Color", Color) = (1, 0, 0)
         [Enum(vertex, 0, pixel, 1)] _SSSNormal ("Normal Select", Int) = 1
         [HideInInspector] m_end_subsurface ("Subsurface Scattering", Float) = 0
         
@@ -128,7 +138,7 @@ Shader ".poiyomi/Toon/Simple/Cutout"
         _RimEnviroWidth ("Rim Width", Range(0, 1)) = 0.45
         _RimEnviroSharpness ("Rim Sharpness", Range(0, 1)) = 0
         _RimEnviroMinBrightness ("Min Brightness Threshold", Range(0, 2)) = 0
-        _RimEnviroIntensity("Intensity", Range(0,1)) = 1
+        _RimEnviroIntensity ("Intensity", Range(0,1)) = 1
         [HideInInspector] m_end_reflectionRim ("Environmental Rim", Float) = 0
         
         [HideInInspector] m_start_bakedLighting ("Baked Lighting", Float) = 0
@@ -198,7 +208,7 @@ Shader ".poiyomi/Toon/Simple/Cutout"
         [Enum(Realistic, 1, Toon, 2, Anisotropic, 3)] _SpecularType ("Specular Type", Int) = 1
         [Enum(vertex, 0, pixel, 1)] _SpecularNormal ("Normal Select", Int) = 1
         _SpecularMinLightBrightness ("Min Light Brightness", Range(0, 1)) = 0
-        _SpecularAttenuation("Attenuation Strength", Range(0,1)) = 1
+        _SpecularAttenuation ("Attenuation Strength", Range(0,1)) = 1
         _SpecularTint ("Specular Tint", Color) = (.2, .2, .2, 1)
         _SpecularMixAlbedoIntoTint ("Mix Material Color Into Tint", Range(0, 1)) = 0
         _SpecularSmoothness ("Smoothness", Range(-2, 1)) = .75
@@ -223,13 +233,13 @@ Shader ".poiyomi/Toon/Simple/Cutout"
         //_ShiftTexture ("Shift Texture", 2D) = "black" { }
         [HideInInspector] m_end_Anisotropic ("Anisotropic", Float) = 0
         [HideInInspector] m_end_specular ("Specular Reflections", Float) = 0
-
+        
         [HideInInspector] m_start_specular1 ("Specular Reflections 2", Float) = 0
         [Toggle(_)]_EnableSpecular1 ("Enable Specular", Float) = 0
         [Enum(Realistic, 1, Toon, 2, Anisotropic, 3)] _SpecularType1 ("Specular Type", Int) = 1
         [Enum(vertex, 0, pixel, 1)] _SpecularNormal1 ("Normal Select", Int) = 1
         _SpecularMinLightBrightness1 ("Min Light Brightness", Range(0, 1)) = 0
-        _SpecularAttenuation1("Attenuation Strength", Range(0,1)) = 1
+        _SpecularAttenuation1 ("Attenuation Strength", Range(0,1)) = 1
         _SpecularTint1 ("Specular Tint", Color) = (.2, .2, .2, 1)
         _SpecularMixAlbedoIntoTint1 ("Mix Material Color Into Tint", Range(0, 1)) = 0
         _SpecularSmoothness1 ("Smoothness", Range(-2, 1)) = .75
@@ -260,6 +270,7 @@ Shader ".poiyomi/Toon/Simple/Cutout"
         [Toggle(_)]_OutlineLit ("Enable Lighting", Float) = 0
         _LineWidth ("Width", Float) = 0
         _LineColor ("Color", Color) = (1, 1, 1, 1)
+        _OutlineTintMix ("Tint Mix", Range(0, 1)) = 1
         _OutlineEmission ("Outline Emission", Float) = 0
         _OutlineTexture ("Outline Texture", 2D) = "white" { }
         /*
@@ -311,7 +322,7 @@ Shader ".poiyomi/Toon/Simple/Cutout"
         
         [HideInInspector] m_start_scrollingEmissionOptions ("Scrolling Emission", Float) = 0
         [Toggle(_)] _ScrollingEmission ("Enable Scrolling Emission", Float) = 0
-        [Toggle(_)]_EmissionScrollingUseCurve("Use Curve", float) = 0
+        [Toggle(_)]_EmissionScrollingUseCurve ("Use Curve", float) = 0
         [Curve]_EmissionScrollingCurve ("Curve", 2D) = "white" { }
         _EmissiveScroll_Direction ("Emissive Scroll Direction", Vector) = (0, -10, 0, 0)
         _EmissiveScroll_Width ("Emissive Scroll Width", Float) = 10
@@ -319,10 +330,10 @@ Shader ".poiyomi/Toon/Simple/Cutout"
         _EmissiveScroll_Interval ("Emissive Scroll Interval", Float) = 20
         [HideInInspector] m_end_scrollingEmissionOptions ("Scrolling Emission", Float) = 0
         [HideInInspector] m_end_emissionOptions ("Emission / Glow", Float) = 0
-
+        
         [HideInInspector] m_start_emission1Options ("Emission / Glow 2 (Requires Emission 1 Enabled)", Float) = 0
         [Toggle(_)]_EnableEmission1 ("Enable Emission 2", Float) = 0
-        [Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)] _EmissionMaskUV1("Emission Mask UV", Int) = 0
+        [Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)] _EmissionMaskUV1 ("Emission Mask UV", Int) = 0
         [Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)] _EmissionMapUV1 ("Emission UV#", Int) = 0
         [HDR]_EmissionColor1 ("Emission Color", Color) = (1, 1, 1, 1)
         [Gradient]_EmissionMap1 ("Emission Map", 2D) = "white" { }
@@ -349,7 +360,7 @@ Shader ".poiyomi/Toon/Simple/Cutout"
         [HideInInspector] m_end_blinkingEmissionOptions1 ("Blinking Emission", Float) = 0
         [HideInInspector] m_start_scrollingEmissionOptions1 ("Scrolling Emission", Float) = 0
         [Toggle(_)] _ScrollingEmission1 ("Enable Scrolling Emission", Float) = 0
-        [Toggle(_)]_EmissionScrollingUseCurve1("Use Curve", float) = 0
+        [Toggle(_)]_EmissionScrollingUseCurve1 ("Use Curve", float) = 0
         [Curve]_EmissionScrollingCurve1 ("Curve", 2D) = "white" { }
         _EmissiveScroll_Direction1 ("Emissive Scroll Direction", Vector) = (0, -10, 0, 0)
         _EmissiveScroll_Width1 ("Emissive Scroll Width", Float) = 10
@@ -361,8 +372,12 @@ Shader ".poiyomi/Toon/Simple/Cutout"
         [HideInInspector] m_start_flipBook ("Flipbook", Float) = 0
         [Toggle(_SUNDISK_HIGH_QUALITY)]_EnableFlipbook ("Enable Flipbook", Float) = 0
         [Toggle(_)]_FlipbookAlphaControlsFinalAlpha ("Flipbook Controls Alpha?", Float) = 0
+        [Toggle(_)]_FlipbookIntensityControlsAlpha ("Intensity Controls Alpha?", Float) = 0
+        [Toggle(_)]_FlipbookColorReplaces ("Color Replaces Flipbook", Float) = 0
         [Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)] _FlipbookUV ("Flipbook UV#", Int) = 0
         [TextureArray]_FlipbookTexArray ("Texture Array", 2DArray) = "" { }
+        [Vector2]_FlipbookTexturePan ("Texture Panning", Vector) = (0, 0, 0, 0)
+        [Vector2]_FlipbookMaskPan ("Mask Panning", Vector) = (0, 0, 0, 0)
         _FlipbookMask ("Mask", 2D) = "white" { }
         _FlipbookColor ("Color & alpha", Color) = (1, 1, 1, 1)
         _FlipbookTotalFrames ("Total Frames", Int) = 1
@@ -371,6 +386,7 @@ Shader ".poiyomi/Toon/Simple/Cutout"
         [Toggle(_)]_FlipbookTiled ("Tiled?", Float) = 0
         _FlipbookEmissionStrength ("Emission Strength", Range(0, 20)) = 0
         _FlipbookRotation ("Rotation", Range(0, 360)) = 0
+        _FlipbookRotationSpeed ("Rotation Speed", Float) = 0
         _FlipbookReplace ("Replace", Range(0, 1)) = 1
         _FlipbookMultiply ("Multiply", Range(0, 1)) = 0
         _FlipbookAdd ("Add", Range(0, 1)) = 0
@@ -505,7 +521,7 @@ Shader ".poiyomi/Toon/Simple/Cutout"
         _ModelAngleMax ("Model Angle Max", Range(0, 180)) = 90
         _AngleMinAlpha ("Min Alpha", Range(0, 1)) = 0
         [HideInInspector] m_end_angularFade ("Angular Fade", Float) = 0
-
+        
         [HideInInspector] m_start_distanceDithering ("Distance Dither", Float) = 0
         [Toggle(_)]_DitheringDistanceEnabled ("Distance Dithering", Float) = 0
         _DitheringOpaqueRange ("Dither Opaque Range", Float) = 20
@@ -514,16 +530,16 @@ Shader ".poiyomi/Toon/Simple/Cutout"
         _DitheringDistanceMaxAlpha ("Dither Max Dissolve", Range(0, 1.001)) = 0.501
         [HideInInspector] m_end_distanceDithering ("Distance Dither", Float) = 0
         
-
+        
         // End Special Effects
         
-
+        
         
         [HideInInspector] m_ParallaxMap ("Parallax", Float) = 0
         [Toggle(_PARALLAXMAP)]_ParallaxMap ("Enable Parallax FX", Float) = 0
         [Toggle(_)]_ParallaxHeightMapEnabled ("Enable Parallax Height", Float) = 0
         [Toggle(_)]_ParallaxInternalMapEnabled ("Enable Parallax Internal", Float) = 0
-                [HideInInspector] m_start_parallaxHeightmap ("Heightmap", Float) = 0
+        [HideInInspector] m_start_parallaxHeightmap ("Heightmap", Float) = 0
         [Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3)] _ParallaxUV ("Parallax UV", Int) = 0
         _ParallaxHeightMap ("Height Map", 2D) = "black" { }
         _ParallaxStrength ("Parallax Strength", Range(0, 1)) = 0
@@ -580,7 +596,6 @@ Shader ".poiyomi/Toon/Simple/Cutout"
         [Toggle(_COLOROVERLAY_ON)]_DebugDisplayDebug ("Display Debug Info", Float) = 0
         [Enum(Off, 0, Vertex Normal, 1, Pixel Normal, 2, Tangent, 3, Binormal, 4)] _DebugMeshData ("Mesh Data", Int) = 0
         [Enum(Off, 0, Attenuation, 1, Direct Lighting, 2, Indirect Lighting, 3, light Map, 4, Ramped Light Map, 5, Final Lighting, 6)] _DebugLightingData ("Lighting Data", Int) = 0
-        [Enum(Off, 0, finalSpecular, 1, tangentDirectionMap, 2, shiftTexture, 3)] _DebugSpecularData ("Specular Data", Int) = 0
         [Enum(Off, 0, View Dir, 1, Tangent View Dir, 2, Forward Dir, 3, WorldPos, 4, View Dot Normal, 5)] _DebugCameraData ("Camera Data", Int) = 0
         [HideInInspector] m_end_debugOptions ("Debug", Float) = 0
         */
@@ -616,10 +631,10 @@ Shader ".poiyomi/Toon/Simple/Cutout"
             // Panosphere
             #pragma shader_feature _DETAIL_MULX2
             */
-
+            
             // Lighting
             #define LOD_FADE_CROSSFADE
-
+            
             /*
             // Flipbook
             #pragma shader_feature _SUNDISK_HIGH_QUALITY
@@ -640,9 +655,9 @@ Shader ".poiyomi/Toon/Simple/Cutout"
             // Glitter
             #pragma shader_feature _SUNDISK_SIMPLE
             */
-
+            
             #pragma shader_feature _EMISSION
-
+            
             /*
             // Clear Coat
             #pragma shader_feature _COLORCOLOR_ON
@@ -770,5 +785,5 @@ Shader ".poiyomi/Toon/Simple/Cutout"
             
         }
     }
-Fallback "Toon/Lit Cutout (Double)"
+    Fallback "Toon/Lit Cutout (Double)"
 }

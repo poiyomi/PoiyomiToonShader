@@ -4,7 +4,6 @@
     float _DebugDisplayDebug;
     uint _DebugMeshData;
     uint _DebugLightingData;
-    uint _DebugSpecularData;
     uint _DebugCameraData;
     
     void displayDebugInfo(inout float4 finalColor)
@@ -68,25 +67,6 @@
                 else if(_DebugLightingData == 7)
                 {
                     finalColor.rgb = poiLight.nDotL;
-                    return;
-                }
-            #endif
-            
-            #ifdef POI_SPECULAR
-                //specular
-                if (_DebugSpecularData == 1)
-                {
-                    finalColor.rgb = finalSpecular;
-                    return;
-                }
-                else if(_DebugSpecularData == 2)
-                {
-                    finalColor.rgb = tangentDirectionMap;
-                    return;
-                }
-                else if(_DebugSpecularData == 3)
-                {
-                    finalColor.rgb = shiftTexture;
                     return;
                 }
             #endif

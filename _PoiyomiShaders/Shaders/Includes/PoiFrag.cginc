@@ -23,7 +23,7 @@
         fixed lightingAlpha = 1;
         float3 IridescenceEmission = 0;
         float bakedCubemap = 0; // Whether or not metallic should run before or after lighting multiplication
-        
+        float3 spawnInEmission = 0;
         finalEmission = 0;
         poiMesh.isFrontFace = facing;
         i.uv0.xy += _GlobalPanSpeed.xy * _Time.x;
@@ -51,6 +51,7 @@
                 IridescenceEmission = applyIridescence(albedo);
             }
         #endif
+        
         
         #ifdef POI_MSDF
             ApplyTextOverlayColor(albedo);
@@ -81,6 +82,10 @@
             albedo.a *= i.angleAlpha;
         #endif
         
+        #ifdef CUTOUT_NO_ALPHA_TO_MASK
+            applyDithering(albedo);
+        #endif
+        
         #ifndef OPAQUE
             clip(albedo.a - _Clip);
         #endif
@@ -95,7 +100,7 @@
         
         #ifdef POI_LIGHTING
             #ifdef SUBSURFACE
-                finalSSS = max(0, getSubsurfaceLighting());
+                finalSSS = calculateSubsurfaceScattering();
             #endif
         #endif
         
@@ -109,6 +114,7 @@
         
         finalColor = albedo;
         
+        applySpawnIn(finalColor, spawnInEmission, poiMesh.uv[0], poiMesh.localPos);
         
         #ifdef MATCAP
             applyMatcap(finalColor);
@@ -118,12 +124,12 @@
             applyPanosphereColor(finalColor);
         #endif
         
-        #ifdef POI_RIM
-            applyRimColor(finalColor);
-        #endif
-        
         #ifdef POI_FLIPBOOK
             applyFlipbook(finalColor);
+        #endif
+        
+        #ifdef POI_RIM
+            applyRimColor(finalColor);
         #endif
         
         #ifdef POI_DEPTH_COLOR
@@ -164,6 +170,7 @@
             finalEmission += finalColorBeforeLighting.rgb * _MainEmissionStrength * albedo.a;
             finalEmission += wireframeEmission;
             finalEmission += IridescenceEmission;
+            finalEmission += spawnInEmission;
             UNITY_BRANCH
             if (_BackFaceEnabled)
             {
@@ -216,13 +223,6 @@
             finalColor.rgb *= finalColor.a;
         #endif
         
-        #ifdef POI_LIGHTING
-            #ifdef SUBSURFACE
-                //applySubsurfaceScattering(finalColor);
-                //finalSSS = max(0,getSubsurfaceLighting());
-            #endif
-        #endif
-        
         #ifdef POI_VIDEO
             applyScreenEffect(finalColor, finalColorBeforeLighting);
             finalEmission += globalVideoEmission;
@@ -233,13 +233,13 @@
             ApplyAlphaToCoverage(finalColor);
         #endif
         
-        #ifdef CUTOUT
+        #if defined(CUTOUT) && !defined(CUTOUT_NO_ALPHA_TO_MASK)
             applyDithering(finalColor);
         #endif
         
         #ifdef POI_METAL
             UNITY_BRANCH
-            if (bakedCubemap == 1)
+            if(bakedCubemap == 1)
             {
                 finalColor.rgb *= lightingAlpha;
                 applyReflections(finalColor, finalColorBeforeLighting);
@@ -304,7 +304,15 @@
                 UNITY_APPLY_FOG(i.fogCoord, finalColor);
             }
         #endif
-        
+        /*
+        finalColor.rgb = 1;
+        finalColor.rgb /= _MainEmissionStrength;
+        if(step(sin(_Time.x * 1000), 0))
+        {
+            //finalColor.rgb = 1 - saturate(finalColor.rgb);
+            finalColor.rgb *= -1;
+        }
+        */
         return finalColor;
     }
 #endif

@@ -44,7 +44,6 @@ namespace Thry
 
     public class DEFINE_SYMBOLS
     {
-        public const string VRC_SDK_INSTALLED = "VRC_SDK_EXISTS";
         public const string IMAGING_EXISTS = "IMAGING_DLL_EXISTS";
     }
 
@@ -97,6 +96,7 @@ namespace Thry
         public DefineableCondition condition_show = new DefineableCondition();
         public DefineableCondition condition_enable = null;
         public PropertyValueAction[] on_value_actions;
+        public DefineableAction[] actions;
         public ButtonData button_right;
         public TextureData texture;
         public string[] reference_properties;
@@ -254,6 +254,8 @@ namespace Thry
                     if (comparator == "<=") return c_ev == 1 || c_ev == 0;
                     break;
                 case DefineableConditionType.VRC_SDK_VERSION:
+                    if (VRCInterface.Get().sdk_is_installed == false)
+                        return false;
                     int c_vrc = Helper.compareVersions(VRCInterface.Get().installed_sdk_version, value);
                     if (comparator == "==") return c_vrc == 0;
                     if (comparator == "!=") return c_vrc != 0;
@@ -369,6 +371,6 @@ namespace Thry
 
     public enum TextureDisplayType
     {
-        small
+        small,big,stylized_big
     }
 }

@@ -71,7 +71,7 @@
         o.worldPos = mul(unity_ObjectToWorld, v.vertex) + float4(offset, 0);
         o.modelPos = mul(unity_ObjectToWorld, float4(0, 0, 0, 1));
         o.pos = UnityWorldToClipPos(o.worldPos);
-        
+        o.grabPos = ComputeGrabScreenPos(o.pos);
         o.angleAlpha = 1;
         #ifdef POI_RANDOM
             o.angleAlpha = ApplyAngleBasedRendering(o.modelPos, o.worldPos);

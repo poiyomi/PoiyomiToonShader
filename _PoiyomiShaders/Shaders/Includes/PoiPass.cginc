@@ -28,12 +28,12 @@ USED---------------------------------------------
 "CHROMATIC_ABERRATION_LOW",
 "FXAA",
 "BLOOM_LENS_DIRT",
+"_FADING_ON",
 
 UNUSED-------------------------------------------
 "EFFECT_BUMP",
 "_ALPHAPREMULTIPLY_ON",
 "_ALPHATEST_ON",
-"_FADING_ON",
 "_SMOOTHNESS_TEXTURE_ALBEDO_CHANNEL_A",
 "_SPECULARHIGHLIGHTS_OFF",
 "_SPECULARHIGHLIGHTS_OFF",
@@ -114,6 +114,8 @@ TODO: _ALPHAMODULATE_ON
     #endif
     #include "PoiVertexManipulations.cginc"
     
+    #include "CGI_PoiSpawnInVert.cginc"
+    
     #include "CGI_PoiV2F.cginc"
     
     #ifdef BLOOM_LOW
@@ -122,6 +124,9 @@ TODO: _ALPHAMODULATE_ON
     
     #include "PoiVert.cginc"
     
+    #ifdef TESSELATION
+        #include "CGI_PoiTessellation.cginc"
+    #endif
     
     #include "CGI_PoiDistanceDithering.cginc"
     
@@ -138,6 +143,8 @@ TODO: _ALPHAMODULATE_ON
     #endif
     
     #include "PoiData.cginc"
+    
+    #include "CGI_PoiSpawnInFrag.cginc"
     
     #ifdef WIREFRAME
         #include "CGI_PoiWireframe.cginc"
@@ -160,7 +167,7 @@ TODO: _ALPHAMODULATE_ON
     #endif
     #include "PoiMainTex.cginc"
     
-
+    
     #ifdef _DETAIL_MULX2
         #include "PoiPanosphere.cginc"
     #endif

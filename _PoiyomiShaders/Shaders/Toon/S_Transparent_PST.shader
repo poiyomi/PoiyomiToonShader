@@ -3,7 +3,7 @@ Shader ".poiyomi/Toon/Simple/Transparent"
     Properties
     {
         [HideInInspector] shader_is_using_thry_editor ("", Float) = 0
-        [HideInInspector] shader_master_label ("<color=#ff0000ff>❤</color> <color=#000000ff>Poiyomi Simple V5.4</color> <color=#ff0000ff>❤</color>", Float) = 0
+        [HideInInspector] shader_master_label ("<color=#ff0000ff>❤</color> <color=#000000ff>Poiyomi Simple V5.6</color> <color=#ff0000ff>❤</color>", Float) = 0
         [HideInInspector] shader_presets ("poiToonPresets", Float) = 0
         [HideInInspector] shader_properties_label_file ("PoiLabels", Float) = 0
         
@@ -57,11 +57,12 @@ Shader ".poiyomi/Toon/Simple/Transparent"
         _ShadowOffset ("Shadow Offset", Range(-1, 1)) = 0
         _AOMap ("AO Map", 2D) = "white" { }
         [Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)] _LightingAOUV ("AO Map UV#", Int) = 0
-        _AoIndirectStrength ("AO Indirect Strength", Range(0, 1)) = 1
-        _AOStrength ("AO Direct Strength", Range(0, 1)) = 0
+        _AOStrength ("AO Strength", Range(0, 1)) = 0
         _LightingMinLightBrightness ("Min Brightness", Range(0, 1)) = 0
         _LightingIndirectContribution ("Indirect Contribution", Range(0, 1)) = .2
         _AttenuationMultiplier ("Recieve Casted Shadows?", Range(0, 1)) = 0
+        _LightingDetailTexture ("Detail Shadows", 2D) = "white" { }
+        _LightingDetailStrength ("Detail Strength", Range(0, 1)) = 1
         [HideInInspector] m_start_lightingStandard ("Standardish Settings", Float) = 0
         _LightingStandardSmoothness ("Smoothness", Range(0, 1)) = 0
         [HideInInspector] m_end_lightingStandard ("Standardish Settings", Float) = 0
@@ -73,6 +74,13 @@ Shader ".poiyomi/Toon/Simple/Transparent"
         */
         /*
         [HideInInspector] m_end_lightingAdvanced ("Additive Lighting", Float) = 0
+        
+        [HideInInspector] m_start_LightingMathMode ("Math Mode", Float) = 0
+        _LightingGradientStart ("Gradient Start", Range(0, 1)) = 0
+        _LightingGradientEnd ("Gradient End", Range(0, 1)) = 1
+        _LightingStartColor ("Light Tint", Color) = (1, 1, 1)
+        _LightingEndColor ("Shadow Tint", Color) = (1, 1, 1)
+        [HideInInspector] m_end_LightingMathMode ("Math Mode", Float) = 0
         [HideInInspector] m_start_lightingBeta ("Beta", Float) = 0
         [Toggle(_)]_LightingStandardControlsToon ("Standard Lighting Controls Toon Ramp", Float) = 0
         [IntRange]_LightingNumRamps ("Num Ramps", Range(1, 3)) = 1
@@ -85,13 +93,15 @@ Shader ".poiyomi/Toon/Simple/Transparent"
         [HideInInspector] m_end_lightingBeta ("Beta", Float) = 0
         [HideInInspector] m_start_subsurface ("Subsurface Scattering", Float) = 0
         [Toggle(_TERRAIN_NORMAL_MAP)]_EnableSSS ("Enable Subsurface Scattering", Float) = 0
-        _SSSColor ("Subsurface Color", Color) = (1, 0, 0, 1)
-        _SSSColorMap ("Color Map", 2D) = "white" { }
-        _SSSThicknessMap ("Thickness Map", 2D) = "black" { }
-        _SSSThicknessMod ("Thickness mod", Range(-1, 1)) = 0
-        _SSSAttenuation ("Attenuation", Range(0, 1)) = 0.25
-        _SSSPower ("Light Spread", Range(1, 20)) = 6
-        _SSSDistortion ("Light Distortion", Range(0, 1)) = 1
+        _SSSLocalThickness ("Local Thickness", 2D) = "white" { }
+        [Toggle(_)]_SSSInvertThicknessMap("Invert Thickness", Float) = 0
+        _SSSColorMap ("Internal Map", 2D) = "white" { }
+        _SSSScale ("Scale", Range(0, 10)) = 1
+        _SSSDistortion ("Distortion", Range(0, 1)) = 1
+        _SSSPower ("Power", Range(0.01, 10)) = 5
+        _SSSStrength ("Strength", Range(0, 1)) = 1
+        _SSSAttenuation ("Attenuation", Range(0, 1)) = 1
+        _SSSInternalColor ("Color", Color) = (1, 0, 0)
         [Enum(vertex, 0, pixel, 1)] _SSSNormal ("Normal Select", Int) = 1
         [HideInInspector] m_end_subsurface ("Subsurface Scattering", Float) = 0
         
@@ -261,6 +271,7 @@ Shader ".poiyomi/Toon/Simple/Transparent"
         [Toggle(_)]_OutlineLit ("Enable Lighting", Float) = 0
         _LineWidth ("Width", Float) = 0
         _LineColor ("Color", Color) = (1, 1, 1, 1)
+        _OutlineTintMix ("Tint Mix", Range(0,1)) = 1
         _OutlineEmission ("Outline Emission", Float) = 0
         _OutlineTexture ("Outline Texture", 2D) = "white" { }
         */
@@ -363,8 +374,12 @@ Shader ".poiyomi/Toon/Simple/Transparent"
         [HideInInspector] m_start_flipBook ("Flipbook", Float) = 0
         [Toggle(_SUNDISK_HIGH_QUALITY)]_EnableFlipbook ("Enable Flipbook", Float) = 0
         [Toggle(_)]_FlipbookAlphaControlsFinalAlpha ("Flipbook Controls Alpha?", Float) = 0
+        [Toggle(_)]_FlipbookIntensityControlsAlpha ("Intensity Controls Alpha?", Float) = 0
+        [Toggle(_)]_FlipbookColorReplaces ("Color Replaces Flipbook", Float) = 0
         [Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)] _FlipbookUV ("Flipbook UV#", Int) = 0
         [TextureArray]_FlipbookTexArray ("Texture Array", 2DArray) = "" { }
+        [Vector2]_FlipbookTexturePan ("Texture Panning", Vector) = (0, 0, 0, 0)
+        [Vector2]_FlipbookMaskPan ("Mask Panning", Vector) = (0, 0, 0, 0)
         _FlipbookMask ("Mask", 2D) = "white" { }
         _FlipbookColor ("Color & alpha", Color) = (1, 1, 1, 1)
         _FlipbookTotalFrames ("Total Frames", Int) = 1
@@ -373,6 +388,7 @@ Shader ".poiyomi/Toon/Simple/Transparent"
         [Toggle(_)]_FlipbookTiled ("Tiled?", Float) = 0
         _FlipbookEmissionStrength ("Emission Strength", Range(0, 20)) = 0
         _FlipbookRotation ("Rotation", Range(0, 360)) = 0
+        _FlipbookRotationSpeed ("Rotation Speed", Float) = 0
         _FlipbookReplace ("Replace", Range(0, 1)) = 1
         _FlipbookMultiply ("Multiply", Range(0, 1)) = 0
         _FlipbookAdd ("Add", Range(0, 1)) = 0
@@ -582,7 +598,6 @@ Shader ".poiyomi/Toon/Simple/Transparent"
         [Toggle(_COLOROVERLAY_ON)]_DebugDisplayDebug ("Display Debug Info", Float) = 0
         [Enum(Off, 0, Vertex Normal, 1, Pixel Normal, 2, Tangent, 3, Binormal, 4)] _DebugMeshData ("Mesh Data", Int) = 0
         [Enum(Off, 0, Attenuation, 1, Direct Lighting, 2, Indirect Lighting, 3, light Map, 4, Ramped Light Map, 5, Final Lighting, 6)] _DebugLightingData ("Lighting Data", Int) = 0
-        [Enum(Off, 0, finalSpecular, 1, tangentDirectionMap, 2, shiftTexture, 3)] _DebugSpecularData ("Specular Data", Int) = 0
         [Enum(Off, 0, View Dir, 1, Tangent View Dir, 2, Forward Dir, 3, WorldPos, 4, View Dot Normal, 5)] _DebugCameraData ("Camera Data", Int) = 0
         [HideInInspector] m_end_debugOptions ("Debug", Float) = 0
         */

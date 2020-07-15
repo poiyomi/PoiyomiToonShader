@@ -28,9 +28,9 @@
     uint _Matcap2Normal;
     
     // globals
-    float3 matcap;
+    float4 matcap;
     float matcapMask;
-    float3 matcap2;
+    float4 matcap2;
     float matcap2Mask;
     
     
@@ -71,26 +71,26 @@
     
     void applyMatcap(inout float4 finalColor)
     {
-        finalColor.rgb = lerp(finalColor, matcap, _MatcapReplace * matcapMask);
-        finalColor.rgb *= lerp(1, matcap, _MatcapMultiply * matcapMask);
-        finalColor.rgb += matcap * _MatcapAdd * matcapMask;
+        finalColor.rgb = lerp(finalColor.rgb, matcap.rgb, _MatcapReplace * matcapMask * matcap.a);
+        finalColor.rgb *= lerp(1, matcap.rgb, _MatcapMultiply * matcapMask * matcap.a);
+        finalColor.rgb += matcap.rgb * _MatcapAdd * matcapMask * matcap.a;
         
         UNITY_BRANCH
         if(_Matcap2Enable)
         {
-            finalColor.rgb = lerp(finalColor, matcap2, _Matcap2Replace * matcap2Mask);
-            finalColor.rgb *= lerp(1, matcap2, _Matcap2Multiply * matcap2Mask);
-            finalColor.rgb += matcap2 * _Matcap2Add * matcap2Mask;
+            finalColor.rgb = lerp(finalColor.rgb, matcap2.rgb, _Matcap2Replace * matcap2Mask * matcap2.a);
+            finalColor.rgb *= lerp(1, matcap2.rgb, _Matcap2Multiply * matcap2Mask * matcap2.a);
+            finalColor.rgb += matcap2.rgb * _Matcap2Add * matcap2Mask * matcap2.a;
         }
     }
     
     void applyMatcapEmission(inout float3 finalEmission)
     {
-        finalEmission += matcap * _MatcapEmissionStrength * matcapMask;
+        finalEmission += matcap.rgb * _MatcapEmissionStrength * matcapMask * matcap.a;
         
         if(_Matcap2Enable)
         {
-            finalEmission += matcap2 * _Matcap2EmissionStrength * matcap2Mask;
+            finalEmission += matcap2.rgb * _Matcap2EmissionStrength * matcap2Mask * matcap2.a;
         }
     }
 #endif

@@ -72,7 +72,8 @@
         UNITY_BRANCH
         if(!_EmissionCenterOutEnabled)
         {
-            float4 _Emissive_Tex_var = UNITY_SAMPLE_TEX2D_SAMPLER(_EmissionMap, _MainTex, TRANSFORM_TEX(poiMesh.uv[_EmissionMapUV], _EmissionMap) + _Time.y * _EmissionMapPan);
+            float uvmultiplier = 1;
+            float4 _Emissive_Tex_var = UNITY_SAMPLE_TEX2D_SAMPLER(_EmissionMap, _MainTex, TRANSFORM_TEX(poiMesh.uv[_EmissionMapUV] * float2(uvmultiplier, 1), _EmissionMap) + _Time.y * _EmissionMapPan);
             emission = _Emissive_Tex_var * _EmissionColor * _EmissionStrength;
         }
         

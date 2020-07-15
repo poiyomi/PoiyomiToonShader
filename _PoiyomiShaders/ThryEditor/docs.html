@@ -59,7 +59,13 @@
                     <td>shader_properties_locale</td>
                     <td>Is used to specify a locale file and locale selector. Specify "locale::&lt;string>" anywhere to load a string from the locale file.</td>
                     <td>No</td>
-                    <td>shader_properties_locale ("locale::locale--{file_name:locale_file_name}", Float) = 0</td>
+                    <td>[HideInInspector] shader_properties_locale ("locale::locale--{file_name:locale_file_name}", Float) = 0</td>
+                </tr>
+                <tr>
+                    <td>shader_on_swap_to</td>
+                    <td>Is used to specify actions to be executed when the material is switched to this shader.</td>
+                    <td>No</td>
+                    <td>[HideInInspector] shader_on_swap_to ("--{actions:[{type:SET_PROPERTY,data:_ZWrite=1},{type:SET_PROPERTY,data:_CullBack=0}]}", Float) = 0</td>
                 </tr>
                 <tr>
                     <td>footer_&lt;string></td>
@@ -149,6 +155,18 @@
                     <td>Creates a texture field that will always be small</td>
                     <td></td>
                     <td>[SmallTexture]_MainTex("Main Texture",2D)= "white" { }</td>
+                </tr>
+                <tr>
+                    <td>[BigTexture]</td>
+                    <td>Creates a texture field that will always be big</td>
+                    <td></td>
+                    <td>[BigTexture]_MainTex("Main Texture",2D)= "white" { }</td>
+                </tr>
+                <tr>
+                    <td>[StylizedBigTexture]</td>
+                    <td>Creates a texture field that will always be big but stylized differently</td>
+                    <td></td>
+                    <td>[StylizedBigTexture]_MainTex("Main Texture",2D)= "white" { }</td>
                 </tr>
                 <tr>
                     <td>[Gradient]</td>
@@ -304,7 +322,7 @@
                 <tr>
                     <td>texture</td>
                     <td>TextureData</td>
-                    <td>Defines the texture settings for created gradients.</td>
+                    <td>Defines the texture settings for created textures.</td>
                     <td>[Gradient],[Curve]</td>
                     <td>[Gradient]_ColorRamp ("Gradient --{texture:{width:256,height:16,filterMode:Point,wrapMode:Clamp}}", 2D) = "white" { }<br />[Curve]_MainTex ("Texture --{image:{width:256,height:16,channel:b}}", 2D) = "white" { }</td>
                 </tr>
@@ -426,10 +444,22 @@
                     <tr>
                         <th>Value</th>
                         <th>Effect</th>
+                        <td>Example</td>
                     </tr>
                     <tr>
                         <td>URL</td>
                         <td>Opens the url in browser</td>
+                        <td>{type:URL,data:https://github.com/Thryrallo/thryeditor}</td>
+                    </tr>
+                    <tr>
+                        <td>SET_PROPERTY</td>
+                        <td>Sets the value of a specified property.</td>
+                        <td>{type:SET_PROPERTY,data:_ZWrite=1}</td>
+                    </tr>
+                    <tr>
+                        <td>SET_SHADER</td>
+                        <td>Changes the shader of the material.</td>
+                        <td>{type:SET_SHADER,data:Thry/Example 1}</td>
                     </tr>
                 </table>
             </div>

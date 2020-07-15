@@ -126,7 +126,7 @@
         float specIntensity = dot(finalSpecular.rgb, grayscale_for_light());
         finalSpecular.rgb = smoothstep(0.99, 1, specIntensity) * poiLight.color.rgb * max(_SpecularMinLightBrightness,lerp(1,poiLight.attenuation,_SpecularAttenuation));
         */
-        half3 finalSpecular = smoothstep(1 - specularToonInnerOuter.y, 1 - specularToonInnerOuter.x, dot(poiLight.halfDir, normal) * max(_SpecularMinLightBrightness,lerp(1,poiLight.attenuation,_SpecularAttenuation))) * specularLight;
+        half3 finalSpecular = smoothstep(1 - specularToonInnerOuter.y, 1 - specularToonInnerOuter.x, dot(poiLight.halfDir, normal) * max(_SpecularMinLightBrightness, lerp(1, poiLight.attenuation, _SpecularAttenuation))) * specularLight;
         UNITY_BRANCH
         if (smoothnessFrom == 0)
         {
@@ -186,18 +186,19 @@
         if (_SpecularType == 1) // Realistic
         {
             finalSpecular = calculateRealisticSpecular(albedo, poiMesh.uv[0], _SpecularTint, _SpecularSmoothness, _SpecularInvertSmoothness, _SpecularMixAlbedoIntoTint, specularMap, specularLight, poiMesh.normals[_SpecularNormal]);
-            finalSpecular *= max(_SpecularMinLightBrightness,lerp(1,poiLight.attenuation,_SpecularAttenuation));
+            finalSpecular *= max(_SpecularMinLightBrightness, lerp(1, poiLight.attenuation, _SpecularAttenuation));
         }
         UNITY_BRANCH
         if (_SpecularType == 2) // Toon
         {
             finalSpecular = calculateToonSpecular(albedo, poiMesh.uv[0], _SpecularToonInnerOuter, _SpecularMixAlbedoIntoTint, _SmoothnessFrom, specularMap, specularLight, poiMesh.normals[_SpecularNormal]);
+            finalSpecular *= max(_SpecularMinLightBrightness, lerp(1, poiLight.attenuation, _SpecularAttenuation));
         }
         UNITY_BRANCH
         if (_SpecularType == 3) // anisotropic
         {
             finalSpecular = AnisotropicSpecular(_SpecWhatTangent, _AnisoUseTangentMap, _SpecularSmoothness, _Spec2Smoothness, _AnisoSpec1Alpha, _AnisoSpec2Alpha, _SpecularTint, _SpecularMixAlbedoIntoTint, specularMap, specularLight);
-            finalSpecular *= max(_SpecularMinLightBrightness,lerp(1,poiLight.attenuation,_SpecularAttenuation));
+            finalSpecular *= max(_SpecularMinLightBrightness, lerp(1, poiLight.attenuation, _SpecularAttenuation));
         }
         
         half specularMask = UNITY_SAMPLE_TEX2D_SAMPLER(_SpecularMask, _MainTex, TRANSFORM_TEX(poiMesh.uv[0], _SpecularMask)).r;
@@ -242,18 +243,19 @@
             if(_SpecularType1 == 1) // Realistic
             {
                 finalSpecular = calculateRealisticSpecular(albedo, poiMesh.uv[0], _SpecularTint1, _SpecularSmoothness1, _SpecularInvertSmoothness1, _SpecularMixAlbedoIntoTint1, specularMap, specularLight, poiMesh.normals[_SpecularNormal1]);
-                finalSpecular *= max(_SpecularMinLightBrightness,lerp(1,poiLight.attenuation,_SpecularAttenuation1));
+                finalSpecular *= max(_SpecularMinLightBrightness, lerp(1, poiLight.attenuation, _SpecularAttenuation1));
             }
             UNITY_BRANCH
             if (_SpecularType1 == 2) // Toon
             {
                 finalSpecular = calculateToonSpecular(albedo, poiMesh.uv[0], _SpecularToonInnerOuter1, _SpecularMixAlbedoIntoTint1, _SmoothnessFrom1, specularMap, specularLight, poiMesh.normals[_SpecularNormal1]);
+                finalSpecular *= max(_SpecularMinLightBrightness, lerp(1, poiLight.attenuation, _SpecularAttenuation1));
             }
             UNITY_BRANCH
             if (_SpecularType1 == 3) // anisotropic
             {
                 finalSpecular = AnisotropicSpecular(_SpecWhatTangent1, _AnisoUseTangentMap1, _SpecularSmoothness1, _Spec2Smoothness1, _AnisoSpec1Alpha1, _AnisoSpec2Alpha1, _SpecularTint1, _SpecularMixAlbedoIntoTint1, specularMap, specularLight);
-                finalSpecular *= max(_SpecularMinLightBrightness,lerp(1,poiLight.attenuation,_SpecularAttenuation1));
+                finalSpecular *= max(_SpecularMinLightBrightness, lerp(1, poiLight.attenuation, _SpecularAttenuation1));
             }
             
             half specularMask = UNITY_SAMPLE_TEX2D_SAMPLER(_SpecularMask1, _MainTex, TRANSFORM_TEX(poiMesh.uv[0], _SpecularMask1)).r;

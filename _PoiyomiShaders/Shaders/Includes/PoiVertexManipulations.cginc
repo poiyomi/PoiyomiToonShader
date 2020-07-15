@@ -12,6 +12,19 @@
     float _VertexManipulationHeightBias;
     sampler2D _VertexManipulationHeightMask; float4 _VertexManipulationHeightMask_ST;
     float2 _VertexManipulationHeightPan;
+    
+    
+    //Vertex Glitching
+    float _EnableVertexGlitch;
+    sampler2D _VertexGlitchMap;     float4 _VertexGlitchMap_ST;
+    float _VertexGlitchThreshold;
+    float _VertexGlitchFrequency;
+    float _VertexGlitchStrength;
+    
+    // Rounding
+    float _VertexRoundingDivision;
+    float _VertexRoundingEnabled;
+
     void applyLocalVertexTransformation(inout float3 normal, inout float4 tangent, inout float4 vertex)
     {
         #ifndef SIMPLE
@@ -32,7 +45,7 @@
             //vertex = float4(vertex.x + sin(_Time.y*1.5 + vertex.y * 50) * .75 * smoothstep( .3, -1, vertex.y), vertex.y, vertex.z + cos(_Time.y*1.5 + vertex.y * 50) * .75 * smoothstep( .3, -1, vertex.y), 1);
         #endif
     }
-
+    
     void applyWorldVertexTransformation(inout float4 worldPos, inout float4 localPos, inout float3 worldNormal, float2 uv)
     {
         #ifndef SIMPLE
@@ -50,5 +63,40 @@
             localPos.xyz = mul(unity_WorldToObject, worldPos);
         #endif
     }
+    
+    void applyVertexRounding(inout float4 worldPos, inout float4 localPos)
+    {
+        UNITY_BRANCH
+        if (_VertexRoundingEnabled)
+        {
+            worldPos.xyz = ceil(worldPos * _VertexRoundingDivision) / _VertexRoundingDivision;
+            localPos = mul(unity_WorldToObject, worldPos);
+        }
+    }
+    
+    void applyVertexGlitching(inout float4 worldPos, inout float4 localPos)
+    {
+        UNITY_BRANCH
+        if(_EnableVertexGlitch)
+        {
+            float3 forward = getCameraPosition() - mul(unity_ObjectToWorld, float4(0, 0, 0, 1)).xyz;
+            forward.y = 0;
+            forward = normalize(forward);
+            float3 glitchDirection = normalize(cross(float3(0, 1, 0), forward));
+            float glitchAmount = frac(sin(dot(_Time.xy + worldPos.y, float2(12.9898, 78.233))) * 43758.5453123) * 2 - 1;
+            /*
+            float uvl = worldPos.y * _VertexGlitchDensity + _Time.x * _VertexGlitchMapPanSpeed;
+            float uvr = worldPos.y * _VertexGlitchDensity - _Time.x * _VertexGlitchMapPanSpeed;
+            float glitchAmountLeft = tex2Dlod(_VertexGlitchMap, float4(uvl, uvl, 0, 0)).r;
+            float glitchAmountRight = -tex2Dlod(_VertexGlitchMap, float4(uvr, uvr, 0, 0)).r;
+            float glitchAmount = glitchAmountLeft + glitchAmountRight;
+            */
+            float time = _Time.y * _VertexGlitchFrequency;
+            float randomGlitch = (sin(time) + sin(2.2 * time + 5.52) + sin(2.9 * time + 0.93) + sin(4.6 * time + 8.94)) / 4;
+            worldPos.xyz += glitchAmount * glitchDirection * (_VertexGlitchStrength * .01) * step(_VertexGlitchThreshold, randomGlitch);
+            localPos = mul(unity_WorldToObject, worldPos);
+        }
+    }
+    
 #endif
 //

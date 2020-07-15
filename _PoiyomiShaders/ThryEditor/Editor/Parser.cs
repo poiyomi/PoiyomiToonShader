@@ -16,24 +16,29 @@ namespace Thry
 
         public static object ParseJson(string input)
         {
-            input = Regex.Replace(input, @"^\s+|\s+$","");
+            //input = input.Replace("\\n", "\n");
+            return ParseJsonPart(input);
+        }
+
+        private static object ParseJsonPart(string input)
+        {
+            input = input.Trim();
             if (input.StartsWith("{"))
-                 return ParseObject(input);
+                return ParseObject(input);
             else if (input.StartsWith("["))
                 return ParseArray(input);
             else
                 return ParsePrimitive(input);
         }
 
-        private static Dictionary<string,object> ParseObject(string input)
+        private static Dictionary<string, object> ParseObject(string input)
         {
-            input = Regex.Replace(input, @"^\s+|\s+$", "");
             input = input.TrimStart(new char[] { '{' });
             int depth = 0;
             int variableStart = 0;
             bool isString = false;
             Dictionary<string, object> variables = new Dictionary<string, object>();
-            for(int i = 0; i < input.Length; i++)
+            for (int i = 0; i < input.Length; i++)
             {
                 bool escaped = i != 0 && input[i - 1] == '\\';
                 if (input[i] == '\"' && !escaped)
@@ -45,8 +50,8 @@ namespace Thry
                         string[] parts = input.Substring(variableStart, i - variableStart).Split(new char[] { ':' }, 2);
                         if (parts.Length < 2)
                             break;
-                        string key = ""+ParsePrimitive(parts[0]);
-                        object value = ParseJson(parts[1]);
+                        string key = "" + ParsePrimitive(parts[0].Trim());
+                        object value = ParseJsonPart(parts[1]);
                         variables.Add(key, value);
                         variableStart = i + 1;
                     }
@@ -55,7 +60,7 @@ namespace Thry
                     else if ((input[i] == '}' || input[i] == ']') && !escaped)
                         depth--;
                 }
-                
+
             }
             return variables;
         }
@@ -68,9 +73,9 @@ namespace Thry
             List<object> variables = new List<object>();
             for (int i = 1; i < input.Length; i++)
             {
-                if (i == input.Length-1 || (depth == 0 && input[i] == ',' && (i == 0 || input[i - 1] != '\\')))
+                if (i == input.Length - 1 || (depth == 0 && input[i] == ',' && (i == 0 || input[i - 1] != '\\')))
                 {
-                    variables.Add(ParseJson(input.Substring(variableStart, i - variableStart)));
+                    variables.Add(ParseJsonPart(input.Substring(variableStart, i - variableStart)));
                     variableStart = i + 1;
                 }
                 else if (input[i] == '{' || input[i] == '[')
@@ -83,15 +88,13 @@ namespace Thry
 
         private static object ParsePrimitive(string input)
         {
-            input = Regex.Replace(input, @"^\s+|\s+$", "");
-            input = input.Replace("\\n", "\n");
             if (input.StartsWith("\""))
-                return Regex.Replace(input, "^\\\"|\\\"$", "");
+                return input.Trim(new char[] { '"' });
             else if (input.ToLower() == "true")
                 return true;
             else if (input.ToLower() == "false")
                 return false;
-            else if (input == "null" || input=="NULL" || input == "Null")
+            else if (input == "null" || input == "NULL" || input == "Null")
                 return null;
             else
             {

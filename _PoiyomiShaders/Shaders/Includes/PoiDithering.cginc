@@ -1,6 +1,7 @@
 #ifndef POI_DITHERING
     #define POI_DITHERING
     fixed _DitheringEnabled;
+    fixed _DitherGradient;
     
     half calcDither(half2 grabPos)
     {
@@ -15,7 +16,7 @@
             if (_DitheringEnabled)
             {
                 half dither = calcDither(poiCam.screenUV.xy);
-                finalColor.a = finalColor.a - (dither * (1 - finalColor.a) * 0.15);
+                finalColor.a = finalColor.a - (dither * (1 - finalColor.a) * _DitherGradient);
             }
         }
     #else
@@ -25,7 +26,7 @@
             if(_DitheringEnabled)
             {
                 half dither = calcDither(screenUV);
-                alpha = alpha - (dither * (1 - alpha) * 0.15);
+                alpha = alpha - (dither * (1 - alpha) * _DitherGradient);
             }
         }
     #endif

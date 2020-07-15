@@ -22,10 +22,6 @@
         
         applyLocalVertexTransformation(v.normal, v.tangent, v.vertex);
         
-        #ifdef POI_META_PASS
-            v.vertex.xy = v.uv1 * unity_LightmapST.xy + unity_LightmapST.zw;
-            v.vertex.z = v.vertex.z > 0 ? 0.0001: 0;
-        #endif
         
         UNITY_INITIALIZE_OUTPUT(v2f, o);
         UNITY_TRANSFER_INSTANCE_ID(v, o);
@@ -42,7 +38,7 @@
         //o.localPos.x *= -1;
         //o.localPos.xz += sin(o.localPos.y * 100 + _Time.y * 5) * .0025;
         
-        float2 uvToUse;
+        float2 uvToUse = 0;
         UNITY_BRANCH
         if (vertexManipulationUV == 0)
         {
@@ -65,6 +61,9 @@
         }
         
         applyWorldVertexTransformation(o.worldPos, o.localPos, o.normal, uvToUse);
+        applyVertexGlitching(o.worldPos, o.localPos);
+        applySpawnInVert(o.worldPos, o.localPos, v.uv0.xy);
+        applyVertexRounding(o.worldPos, o.localPos);
         o.pos = UnityObjectToClipPos(o.localPos);
         o.grabPos = ComputeGrabScreenPos(o.pos);
         o.uv0.xy = v.uv0.xy;
@@ -110,6 +109,10 @@
             o.tangentViewDir = mul(objectToTangent, ObjSpaceViewDir(v.vertex));
         #endif
         
+        #ifdef POI_META_PASS
+            o.pos = UnityMetaVertexPosition(v.vertex, v.uv1.xy, v.uv2.xy, unity_LightmapST, unity_DynamicLightmapST);
+        #endif
+
         return o;
     }
 #endif

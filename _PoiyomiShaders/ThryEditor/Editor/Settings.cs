@@ -113,8 +113,6 @@ namespace Thry
         {
             is_changing_vrc_sdk = (FileHelper.LoadValueFromFile("delete_vrc_sdk", PATH.AFTER_COMPILE_DATA) == "true") || (FileHelper.LoadValueFromFile("update_vrc_sdk", PATH.AFTER_COMPILE_DATA) == "true");
 
-            CheckVRCSDK();
-
             List<Type> subclasses = typeof(ModuleSettings).Assembly.GetTypes().Where(type => type.IsSubclassOf(typeof(ModuleSettings))).ToList<Type>();
             moduleSettings = new ModuleSettings[subclasses.Count];
             int i = 0;
@@ -127,12 +125,6 @@ namespace Thry
 
             if (thry_message == null)
                 WebHelper.DownloadStringASync(Thry.URL.SETTINGS_MESSAGE_URL, delegate (string s) { thry_message = Parser.ParseToObject<ButtonData>(s); });
-        }
-
-        private static void CheckVRCSDK()
-        {
-            if (!Settings.is_changing_vrc_sdk)
-                UnityHelper.SetDefineSymbol(DEFINE_SYMBOLS.VRC_SDK_INSTALLED, VRCInterface.Get().sdk_is_installed);
         }
 
         //------------------Helpers----------------------------
@@ -209,7 +201,7 @@ namespace Thry
             if (VRCInterface.Get().sdk_is_installed)
             {
                 GUILayout.BeginHorizontal();
-                GUILayout.Label("VRC Sdk "+Locale.editor.Get("version")+": " + VRCInterface.Get().installed_sdk_version + (VRCInterface.Get().sdk_is_up_to_date ? " ("+ Locale.editor.Get("newest")+ " "+Locale.editor.Get("version")+")" : ""));
+                GUILayout.Label("VRC Sdk "+Locale.editor.Get("version")+": " + VRCInterface.Get().installed_sdk_version + (VRCInterface.Get().sdk_is_up_to_date ? " ("+ Locale.editor.Get("newest")+ " "+Locale.editor.Get("version")+ ")(not reliably reported in 2018)" : ""));
                 RemoveVRCSDKButton();
                 GUILayout.EndHorizontal();
                 if (!VRCInterface.Get().sdk_is_up_to_date)
@@ -232,11 +224,18 @@ namespace Thry
         private void InstallVRCSDKButton()
         {
             EditorGUI.BeginDisabledGroup(is_changing_vrc_sdk);
-            if (GUILayout.Button(Locale.editor.Get("button_install_vrc_sdk")))
+            GUILayout.BeginHorizontal();
+            if (GUILayout.Button(Locale.editor.Get("button_install_vrc_sdk") + "(v2)(Avatars)"))
             {
                 is_changing_vrc_sdk = true;
-                VRCInterface.DownloadAndInstallVRCSDK();
+                VRCInterface.DownloadAndInstallVRCSDK(VRCInterface.VRC_SDK_Type.SDK_2);
+
+            }if (GUILayout.Button(Locale.editor.Get("button_install_vrc_sdk")+"(v3)(Udon)"))
+            {
+                is_changing_vrc_sdk = true;
+                VRCInterface.DownloadAndInstallVRCSDK(VRCInterface.VRC_SDK_Type.SDK_3);
             }
+            GUILayout.EndHorizontal();
             EditorGUI.EndDisabledGroup();
         }
 
@@ -246,7 +245,7 @@ namespace Thry
             if (GUILayout.Button(Locale.editor.Get("button_remove_vrc_sdk"), GUILayout.ExpandWidth(false)))
             {
                 is_changing_vrc_sdk = true;
-                VRCInterface.Get().RemoveVRCSDK(true);
+                VRCInterface.RemoveVRCSDK();
             }
             EditorGUI.EndDisabledGroup();
         }
@@ -257,7 +256,7 @@ namespace Thry
             if (GUILayout.Button(Locale.editor.Get("button_update_vrc_sdk")))
             {
                 is_changing_vrc_sdk = true;
-                VRCInterface.Get().UpdateVRCSDK();
+                VRCInterface.UpdateVRCSDK();
             }
             EditorGUI.EndDisabledGroup();
         }

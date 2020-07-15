@@ -3,7 +3,7 @@ Shader ".poiyomi/Toon/Advanced/Opaque"
     Properties
     {
         [HideInInspector] shader_is_using_thry_editor ("", Float) = 0
-        [HideInInspector] shader_master_label ("<color=#ff0000ff>❤</color> <color=#000000ff>Poiyomi Toon V5.4</color> <color=#ff0000ff>❤</color>", Float) = 0
+        [HideInInspector] shader_master_label ("<color=#ff0000ff>❤</color> <color=#000000ff>Poiyomi Toon V5.6</color> <color=#ff0000ff>❤</color>", Float) = 0
         [HideInInspector] shader_presets ("poiToonPresets", Float) = 0
         [HideInInspector] shader_properties_label_file ("PoiLabels", Float) = 0
         
@@ -31,6 +31,7 @@ Shader ".poiyomi/Toon/Advanced/Opaque"
         
         [HideInInspector] m_start_RGBMask ("RGB Color Masking", Float) = 0
         [Toggle(FXAA)]_RGBMaskEnabled ("RGB Mask Enabled", Float) = 0
+        [Toggle(_)]_RGBBlendMultiplicative ("Multiplicative?", Float) = 0
         _RGBMask ("Mask", 2D) = "white" { }
         [Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)]_RGBMaskUV ("Mask UV", int) = 0
         _RedColor ("R Color", Color) = (1, 1, 1, 1)
@@ -68,12 +69,15 @@ Shader ".poiyomi/Toon/Advanced/Opaque"
         _VertexManipulationHeightMask ("Height Map", 2D) = "while" { }
         _VertexManipulationHeightBias ("Mask Bias", Range(0, 1)) = 0
         [HideInInspector][Vector2]_VertexManipulationHeightPan ("Panning", Vector) = (0, 0, 0, 0)
+        [Toggle(_)]_VertexRoundingEnabled("Rounding Enabled", Float) = 0
+        _VertexRoundingDivision("Division Amount", Float) = 500
         [HideInInspector] m_end_vertexManipulation ("Vertex Options", Float) = 0
         
         [HideInInspector] m_start_Alpha ("Alpha Options", Float) = 0
         _AlphaMod ("Alpha Mod", Range(-1,1)) = 0.0 
         _Clip ("Alpha Cuttoff", Range(0, 1.001)) = 0.5
         [Toggle(_)]_DitheringEnabled ("Enable Dithering", Float) = 0
+        _DitherGradient("Dither Gradient", Range(0,10)) = 1
         [Toggle(_)]_ForceOpaque ("Force Opaque", Float) = 0
         [Toggle(_)]_MainAlphaToCoverage ("Alpha To Coverage", Float) = 1
         _MainShadowClipMod ("Shadow Clip Mod", Range(-1,1)) = 0
@@ -93,18 +97,19 @@ Shader ".poiyomi/Toon/Advanced/Opaque"
         [HideInInspector] m_lightingOptions ("Lighting", Float) = 0
         [HideInInspector] m_start_Lighting ("Light and Shadow", Float) = 0
         [Toggle(LOD_FADE_CROSSFADE)]_EnableLighting ("Enable Lighting", Float) = 1
-        [Enum(Natural, 0, Controlled, 1, Standardish, 2)] _LightingType ("Lighting Type", Int) = 1
+        [Enum(Natural, 0, Controlled, 1, Standardish, 2, Math, 3)] _LightingType ("Lighting Type", Int) = 1
         [Gradient]_ToonRamp ("Lighting Ramp 1", 2D) = "white" { }
         _LightingShadowMask ("Shadow Mask (RGBA)", 2D) = "white" { }
         _ShadowStrength ("Shadow Strength", Range(0, 1)) = .2
         _ShadowOffset ("Shadow Offset", Range(-1, 1)) = 0
         _AOMap ("AO Map", 2D) = "white" { }
         [Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)] _LightingAOUV ("AO Map UV#", Int) = 0
-        _AoIndirectStrength ("AO Indirect Strength", Range(0, 1)) = 1
-        _AOStrength ("AO Direct Strength", Range(0, 1)) = 0
+        _AOStrength ("AO Strength", Range(0, 1)) = 0
         _LightingMinLightBrightness ("Min Brightness", Range(0, 1)) = 0
         _LightingIndirectContribution ("Indirect Contribution", Range(0, 1)) = .2
         _AttenuationMultiplier ("Recieve Casted Shadows?", Range(0, 1)) = 0
+        _LightingDetailTexture ("Detail Shadows", 2D) = "white" { }
+        _LightingDetailStrength ("Detail Strength", Range(0, 1)) = 1
         [HideInInspector] m_start_lightingStandard ("Standardish Settings", Float) = 0
         _LightingStandardSmoothness ("Smoothness", Range(0, 1)) = 0
         [HideInInspector] m_end_lightingStandard ("Standardish Settings", Float) = 0
@@ -115,6 +120,13 @@ Shader ".poiyomi/Toon/Advanced/Opaque"
         _LightingAdditiveIntensity ("Additive Intensity", Range(0, 1)) = 1
         
         [HideInInspector] m_end_lightingAdvanced ("Additive Lighting", Float) = 0
+        
+        [HideInInspector] m_start_LightingMathMode ("Math Mode", Float) = 0
+        _LightingGradientStart ("Gradient Start", Range(0, 1)) = 0
+        _LightingGradientEnd ("Gradient End", Range(0, 1)) = 1
+        _LightingStartColor ("Light Tint", Color) = (1, 1, 1)
+        _LightingEndColor ("Shadow Tint", Color) = (1, 1, 1)
+        [HideInInspector] m_end_LightingMathMode ("Math Mode", Float) = 0
         [HideInInspector] m_start_lightingBeta ("Beta", Float) = 0
         [Toggle(_)]_LightingStandardControlsToon ("Standard Lighting Controls Toon Ramp", Float) = 0
         [IntRange]_LightingNumRamps ("Num Ramps", Range(1, 3)) = 1
@@ -130,13 +142,11 @@ Shader ".poiyomi/Toon/Advanced/Opaque"
         [HideInInspector] m_start_subsurface ("Subsurface Scattering", Float) = 0
         [Toggle(_TERRAIN_NORMAL_MAP)]_EnableSSS ("Enable Subsurface Scattering", Float) = 0
         _SSSColor ("Subsurface Color", Color) = (1, 0, 0, 1)
-        _SSSColorMap ("Color Map", 2D) = "white" { }
         _SSSThicknessMap ("Thickness Map", 2D) = "black" { }
         _SSSThicknessMod ("Thickness mod", Range(-1, 1)) = 0
-        _SSSAttenuation ("Attenuation", Range(0, 1)) = 0.25
-        _SSSPower ("Light Spread", Range(1, 20)) = 6
+        _SSSSCale ("Light Strength", Range(0, 1)) = 0.25
+        _SSSPower ("Light Spread", Range(1, 100)) = 5
         _SSSDistortion ("Light Distortion", Range(0, 1)) = 1
-        [Enum(vertex, 0, pixel, 1)] _SSSNormal ("Normal Select", Int) = 1
         [HideInInspector] m_end_subsurface ("Subsurface Scattering", Float) = 0
         
         [HideInInspector] m_start_rimLightOptions ("Rim Lighting", Float) = 0
@@ -377,8 +387,12 @@ Shader ".poiyomi/Toon/Advanced/Opaque"
         [HideInInspector] m_start_flipBook ("Flipbook", Float) = 0
         [Toggle(_SUNDISK_HIGH_QUALITY)]_EnableFlipbook ("Enable Flipbook", Float) = 0
         [Toggle(_)]_FlipbookAlphaControlsFinalAlpha ("Flipbook Controls Alpha?", Float) = 0
+        [Toggle(_)]_FlipbookIntensityControlsAlpha ("Intensity Controls Alpha?", Float) = 0
+        [Toggle(_)]_FlipbookColorReplaces ("Color Replaces Flipbook", Float) = 0
         [Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)] _FlipbookUV ("Flipbook UV#", Int) = 0
         [TextureArray]_FlipbookTexArray ("Texture Array", 2DArray) = "" { }
+        [Vector2]_FlipbookTexturePan ("Texture Panning", Vector) = (0, 0, 0, 0)
+        [Vector2]_FlipbookMaskPan ("Mask Panning", Vector) = (0, 0, 0, 0)
         _FlipbookMask ("Mask", 2D) = "white" { }
         _FlipbookColor ("Color & alpha", Color) = (1, 1, 1, 1)
         _FlipbookTotalFrames ("Total Frames", Int) = 1
@@ -387,6 +401,7 @@ Shader ".poiyomi/Toon/Advanced/Opaque"
         [Toggle(_)]_FlipbookTiled ("Tiled?", Float) = 0
         _FlipbookEmissionStrength ("Emission Strength", Range(0, 20)) = 0
         _FlipbookRotation ("Rotation", Range(0, 360)) = 0
+        _FlipbookRotationSpeed ("Rotation Speed", Float) = 0
         _FlipbookReplace ("Replace", Range(0, 1)) = 1
         _FlipbookMultiply ("Multiply", Range(0, 1)) = 0
         _FlipbookAdd ("Add", Range(0, 1)) = 0
@@ -596,7 +611,6 @@ Shader ".poiyomi/Toon/Advanced/Opaque"
         [Toggle(_COLOROVERLAY_ON)]_DebugDisplayDebug ("Display Debug Info", Float) = 0
         [Enum(Off, 0, Vertex Normal, 1, Pixel Normal, 2, Tangent, 3, Binormal, 4)] _DebugMeshData ("Mesh Data", Int) = 0
         [Enum(Off, 0, Attenuation, 1, Direct Lighting, 2, Indirect Lighting, 3, light Map, 4, Ramped Light Map, 5, Final Lighting, 6)] _DebugLightingData ("Lighting Data", Int) = 0
-        [Enum(Off, 0, finalSpecular, 1, tangentDirectionMap, 2, shiftTexture, 3)] _DebugSpecularData ("Specular Data", Int) = 0
         [Enum(Off, 0, View Dir, 1, Tangent View Dir, 2, Forward Dir, 3, WorldPos, 4, View Dot Normal, 5)] _DebugCameraData ("Camera Data", Int) = 0
         [HideInInspector] m_end_debugOptions ("Debug", Float) = 0
     }
@@ -604,12 +618,11 @@ Shader ".poiyomi/Toon/Advanced/Opaque"
     CustomEditor "ThryEditor"
     SubShader
     {
-        Tags { "RenderType" = "Opaque" "Queue" = "Geometry" }
         
         Pass
         {
             Name "MainPass"
-            Tags { "LightMode" = "ForwardBase" }
+            Tags { "RenderType" = "Opaque" "Queue" = "Geometry" "LightMode" = "ForwardBase" }
             Stencil
             {
                 Ref [_StencilRef]
@@ -679,7 +692,7 @@ Shader ".poiyomi/Toon/Advanced/Opaque"
         Pass
         {
             Name "ForwardAddPass"
-            Tags { "LightMode" = "ForwardAdd" }
+            Tags { "RenderType" = "Opaque" "Queue" = "Geometry" "LightMode" = "ForwardAdd" }
             Stencil
             {
                 Ref [_StencilRef]
@@ -742,7 +755,7 @@ Shader ".poiyomi/Toon/Advanced/Opaque"
         Pass
         {
             Name "ShadowCasterPass"
-            Tags { "LightMode" = "ShadowCaster" }
+            Tags { "RenderType" = "Opaque" "Queue" = "Geometry" "LightMode" = "ShadowCaster" }
             Stencil
             {
                 Ref [_StencilRef]

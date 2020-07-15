@@ -8,11 +8,11 @@
     #include "PoiShadowIncludes.cginc"
     #include "PoiHelpers.cginc"
     #include "poiMirror.cginc"
-    
+    #include "CGI_PoiSpawnInFrag.cginc"
     #ifdef WIREFRAME
         #include "CGI_PoiWireframe.cginc"
     #endif
-
+    
     #ifdef _SUNDISK_HIGH_QUALITY
         #include "PoiFlipbook.cginc"
     #endif

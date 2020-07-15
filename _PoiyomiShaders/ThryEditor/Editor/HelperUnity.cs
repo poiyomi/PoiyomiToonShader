@@ -44,7 +44,7 @@ namespace Thry
 
         public static void SetDefineSymbol(string symbol, bool active)
         {
-            SetDefineSymbol(symbol, active, false);
+            SetDefineSymbol(symbol, active, true);
         }
 
         public static void SetDefineSymbol(string symbol, bool active, bool refresh_if_changed)
@@ -57,13 +57,15 @@ namespace Thry
                 {
                     PlayerSettings.SetScriptingDefineSymbolsForGroup(
                                   BuildTargetGroup.Standalone, symbols + ";" + symbol);
-                    AssetDatabase.Refresh();
+                    if(refresh_if_changed)
+                        AssetDatabase.Refresh();
                 }
                 else if (symbols.Contains(symbol) && !active)
                 {
                     PlayerSettings.SetScriptingDefineSymbolsForGroup(
                                   BuildTargetGroup.Standalone, Regex.Replace(symbols, @";?" + @symbol, ""));
-                    AssetDatabase.Refresh();
+                    if(refresh_if_changed)
+                        AssetDatabase.Refresh();
                 }
             }
             catch (Exception e)

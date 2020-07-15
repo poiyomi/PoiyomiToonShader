@@ -171,6 +171,7 @@ namespace Thry
                                         Texture texture = AssetDatabase.LoadAssetAtPath<Texture>(properties[i][1]);
 #pragma warning disable CS0618 // Type or member is obsolete
                                         texture = (Texture)EditorGUI.ObjectField(EditorGUILayout.GetControlRect(GUILayout.MaxWidth(100)), texture, typeof(Texture));
+                                        properties[i][1] = AssetDatabase.GetAssetPath(texture);
 #pragma warning restore CS0618 // Type or member is obsolete
                                         GUILayout.Label("(" + properties[i][1] + ")", GUILayout.MaxWidth(100));
                                         break;

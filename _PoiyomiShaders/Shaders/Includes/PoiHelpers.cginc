@@ -195,24 +195,30 @@ half2 calcScreenUVs(half4 grabPos)
     return uv;
 }
 
-void inverseLerp(float A, float B, float T, out float Out)
+float inverseLerp(float A, float B, float T)
 {
-    Out = (T - A) / (B - A);
+    return(T - A) / (B - A);
 }
 
-void inverseLerp(float2 A, float2 B, float2 T, out float2 Out)
+float inverseLerp2(float2 a, float2 b, float2 value)
 {
-    Out = (T - A) / (B - A);
+    float2 AB = b - a;
+    float2 AV = value - a;
+    return dot(AV, AB) / dot(AB, AB);
 }
 
-void inverseLerp(float3 A, float3 B, float3 T, out float3 Out)
+float inverseLerp3(float3 a, float3 b, float3 value)
 {
-    Out = (T - A) / (B - A);
+    float3 AB = b - a;
+    float3 AV = value - a;
+    return dot(AV, AB) / dot(AB, AB);
 }
 
-void inverseLerp(float4 A, float4 B, float4 T, out float4 Out)
+float inverseLerp4(float4 a, float4 b, float4 value)
 {
-    Out = (T - A) / (B - A);
+    float4 AB = b - a;
+    float4 AV = value - a;
+    return dot(AV, AB) / dot(AB, AB);
 }
 
 // Dithering
@@ -236,11 +242,11 @@ inline half Dither8x8Bayer(int x, int y)
 float2 TransformUV(half2 offset, half rotation, half2 scale, float2 uv)
 {
     float theta = radians(rotation);
-    scale = 1-scale;
+    scale = 1 - scale;
     float cs = cos(theta);
     float sn = sin(theta);
     float2 centerPoint = offset + .5;
     uv = float2((uv.x - centerPoint.x) * cs - (uv.y - centerPoint.y) * sn + centerPoint.x, (uv.x - centerPoint.x) * sn + (uv.y - centerPoint.y) * cs + centerPoint.y);
     
-    return remap(uv, float2(0, 0) + offset + (scale*.5), float2(1, 1) + offset - (scale*.5), float2(0, 0), float2(1, 1));
+    return remap(uv, float2(0, 0) + offset + (scale * .5), float2(1, 1) + offset - (scale * .5), float2(0, 0), float2(1, 1));
 }

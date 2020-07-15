@@ -6,7 +6,7 @@ using UnityEngine;
 namespace Thry {
     public class ThryFileCreator {
 
-        [MenuItem("Assets/Thry/Create Label Boiler", false)]
+        [MenuItem("Thry/Editor Tools/Create Label Boiler", false)]
         public static void CreateLabel()
         {
             string[] names = GetProperties();
@@ -18,13 +18,13 @@ namespace Thry {
             }
             Save(data, "_label");
         }
-        [MenuItem("Assets/Thry/Create Label Boiler", true)]
+        [MenuItem("Thry/Editor Tools/Create Label Boiler", true)]
         static bool CreateLabelVaildate()
         {
             return ValidateSelection();
         }
 
-        [MenuItem("Assets/Thry/Create Label Boiler + Locale Boiler", false)]
+        [MenuItem("Thry/Editor Tools/Create Label Boiler + Locale Boiler", false)]
         public static void CreateLabelLocale()
         {
             string[] names = GetProperties();
@@ -42,7 +42,7 @@ namespace Thry {
             Save(label_data, "_label");
             Save(locale_data, "_locale");
         }
-        [MenuItem("Assets/Thry/Create Label Boiler + Locale Boiler", true)]
+        [MenuItem("Thry/Editor Tools/Create Label Boiler + Locale Boiler", true)]
         static bool CreateLabelLocaleValidate()
         {
             return ValidateSelection();

@@ -87,14 +87,13 @@ namespace Thry
 
             foreach (GameObject o in prev_gameobjects)
             {
-                if(o != null)
+                if (o == null)
+                    continue;
+                Renderer renderer = o.GetComponent<Renderer>();
+                if (renderer != null)
                 {
-                    Renderer renderer = o.GetComponent<Renderer>();
-                    if (renderer != null)
-                    {
-                        Material[] materials = renderer.sharedMaterials;
-                        BackupMaterials(materials);
-                    }
+                    Material[] materials = renderer.sharedMaterials;
+                    BackupMaterials(materials);
                 }
             }
             BackupMaterials(prev_selected_materials);

@@ -232,6 +232,10 @@ namespace Thry
                     case MaterialProperty.PropType.Texture:
                         if (p.textureValue == null || p.textureValue.Equals(defaultValues.GetTexture(Shader.PropertyToID(set[0])))) empty = true;
                         else set[1] = "" + AssetDatabase.GetAssetPath(p.textureValue);
+                        /*Vector2 default_scale = defaultValues.GetTextureScale(Shader.PropertyToID(set[0]));
+                        Vector2 default_offset = defaultValues.GetTextureOffset(Shader.PropertyToID(set[0]));
+                        if (p.textureScaleAndOffset.x != default_scale.x || p.textureScaleAndOffset.y != default_scale.y || p.textureScaleAndOffset.z != default_offset.x || p.textureScaleAndOffset.w != default_offset.y)
+                            set[1]*/ 
                         break;
                     case MaterialProperty.PropType.Vector:
                         if (p.vectorValue.Equals(defaultValues.GetVector(Shader.PropertyToID(set[0])))) empty = true;

@@ -85,7 +85,7 @@
             alphaMask = 1;
         #endif
         
-        mainTexture *= alphaMask;
+        mainTexture.a *= alphaMask;
         
         #ifndef POI_SHADOW
             albedo = float4(lerp(mainTexture.rgb, dot(mainTexture.rgb, float3(0.3, 0.59, 0.11)), -_Saturation) * _Color.rgb * lerp(1, poiMesh.vertexColor.rgb, _MainVertexColoring), mainTexture.a * _Color.a);
@@ -123,8 +123,9 @@
             float3 detailMask = UNITY_SAMPLE_TEX2D_SAMPLER(_DetailMask, _MainTex, TRANSFORM_TEX(poiMesh.uv[0], _DetailMask));
             float3 detailNormal = UnpackScaleNormal(UNITY_SAMPLE_TEX2D_SAMPLER(_DetailNormalMap, _MainTex, TRANSFORM_TEX(poiMesh.uv[_DetailNormalUV], _DetailNormalMap) + _Time.x * _MainDetailNormalPan), _DetailNormalMapScale * detailMask.g);
             poiMesh.tangentSpaceNormal = BlendNormals(mainNormal, detailNormal);
-            
-            albedo.rgb *= lerp(1, UNITY_SAMPLE_TEX2D_SAMPLER(_DetailTex, _MainTex, TRANSFORM_TEX(poiMesh.uv[_DetailTexUV], _DetailTex) + _Time.x * _DetailTexturePan).rgb * _DetailBrightness * _DetailTint * unity_ColorSpaceDouble, detailMask.r * _DetailTexIntensity);
+
+            float4 detailTexture = UNITY_SAMPLE_TEX2D_SAMPLER(_DetailTex, _MainTex, TRANSFORM_TEX(poiMesh.uv[_DetailTexUV], _DetailTex) + _Time.x * _DetailTexturePan);
+            albedo.rgb *= lerp(1, detailTexture.rgb * _DetailBrightness * _DetailTint * unity_ColorSpaceDouble, detailMask.r * _DetailTexIntensity * detailTexture.a);
             albedo.rgb = saturate(albedo.rgb);
             poiMesh.normals[1] = normalize(
                 poiMesh.tangentSpaceNormal.x * poiMesh.tangent +

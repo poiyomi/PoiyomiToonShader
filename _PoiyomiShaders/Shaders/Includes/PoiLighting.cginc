@@ -21,7 +21,7 @@
     fixed _LightingStandardControlsToon;
     fixed _LightingMinLightBrightness;
     fixed _LightingAdditiveIntensity;
-    fixed _AoIndirectStrength;
+    fixed _LightingAdditivePassthrough;
     float _LightingUseShadowRamp;
     UNITY_DECLARE_TEX2D(_ToonRamp);
     
@@ -32,11 +32,19 @@
     half _LightingShadowStrength2;
     half _ShadowOffset1;
     half _ShadowOffset2;
+    
+    fixed _LightingGradientStart;
+    fixed _LightingGradientEnd;
+    float3 _LightingStartColor;
+    float3 _LightingEndColor;
+    
     /*
     UNITY_DECLARE_TEX2D_NOSAMPLER(_ToonRamp3);
     half _LightingShadowStrength3;
     half _ShadowOffset3;
     */
+    UNITY_DECLARE_TEX2D_NOSAMPLER(_LightingDetailTexture); float4 _LightingDetailTexture_ST;
+    fixed _LightingDetailStrength;
     
     UNITY_DECLARE_TEX2D_NOSAMPLER(_AOMap); float4 _AOMap_ST;
     UNITY_DECLARE_TEX2D_NOSAMPLER(_LightingShadowMask); float4 _LightingShadowMask_ST;
@@ -249,13 +257,22 @@
     {
         #ifdef SIMPLE
             _LightingType = 1;
+            _LightingIndirectContribution = 0.2;
         #endif
         UNITY_BRANCH
-        if (_LightingType == 0 || _LightingType == 1)
+        if (_LightingType == 0 || _LightingType == 1 || _LightingType == 3)
         {
             float AOMap = 1;
+            float3 lightColor = poiLight.color;
             #ifndef OUTLINE
                 AOMap = UNITY_SAMPLE_TEX2D_SAMPLER(_AOMap, _MainTex, TRANSFORM_TEX(poiMesh.uv[_LightingAOUV], _AOMap));
+                
+                #ifdef FORWARD_BASE_PASS
+                    //poiLight.color = saturate(_LightColor0.rgb) + saturate(ShadeSH9(normalize(unity_SHAr + unity_SHAg + unity_SHAb)));
+                    float3 magic = saturate(ShadeSH9(normalize(unity_SHAr + unity_SHAg + unity_SHAb)));
+                    float3 normalLight = saturate(_LightColor0.rgb);
+                    lightColor = saturate(magic * lerp(1, AOMap, _AOStrength) + normalLight);
+                #endif
             #endif
             
             
@@ -263,7 +280,7 @@
             float3 grayscale_vector = float3(.33333, .33333, .33333);
             float3 ShadeSH9Plus = GetSHLength();
             float3 ShadeSH9Minus = ShadeSH9(float4(0, 0, 0, 1));
-            poiLight.directLighting = saturate(lerp(ShadeSH9Plus, poiLight.color, 1 - _LightingIndirectContribution));
+            poiLight.directLighting = saturate(lerp(ShadeSH9Plus, lightColor, 1 - _LightingIndirectContribution));
             poiLight.indirectLighting = saturate(ShadeSH9Minus);
             
             half4 shadowStrength = 1;
@@ -276,16 +293,19 @@
                 shadowStrength = _OutlineShadowStrength;
             #endif
             
-            float bw_lightColor = dot(poiLight.color, grayscale_vector);
+            float bw_lightColor = dot(lightColor, grayscale_vector);
             float bw_directLighting = (((poiLight.nDotL * 0.5 + 0.5) * bw_lightColor * lerp(1, poiLight.attenuation, _AttenuationMultiplier)) + dot(ShadeSH9Normal(poiMesh.normals[1]), grayscale_vector));
             float bw_bottomIndirectLighting = dot(ShadeSH9Minus, grayscale_vector);
             float bw_topIndirectLighting = dot(ShadeSH9Plus, grayscale_vector);
             float lightDifference = ((bw_topIndirectLighting + bw_lightColor) - bw_bottomIndirectLighting);
-            poiLight.lightMap = smoothstep(0, lightDifference, bw_directLighting - bw_bottomIndirectLighting) * lerp(1, AOMap, _AOStrength);
+            
+            fixed detailShadow = lerp(1, UNITY_SAMPLE_TEX2D_SAMPLER(_LightingDetailTexture, _MainTex, TRANSFORM_TEX(poiMesh.uv[0], _LightingDetailTexture)), _LightingDetailStrength).r;
+            poiLight.lightMap = smoothstep(0, lightDifference, bw_directLighting - bw_bottomIndirectLighting);
+            poiLight.lightMap *= detailShadow;
             poiLight.rampedLightMap = lerp(1, UNITY_SAMPLE_TEX2D(_ToonRamp, poiLight.lightMap + _ShadowOffset), shadowStrength.r);
             
             UNITY_BRANCH
-            if(_LightingNumRamps >= 2)
+            if (_LightingNumRamps >= 2)
             {
                 poiLight.rampedLightMap *= lerp(1, UNITY_SAMPLE_TEX2D_SAMPLER(_ToonRamp1, _ToonRamp, poiLight.lightMap + _ShadowOffset1), shadowStrength.g);
             }
@@ -306,12 +326,17 @@
             UNITY_BRANCH
             if(_LightingType == 0)
             {
-                poiLight.finalLighting = lerp(poiLight.indirectLighting * lerp(1, AOMap, _AoIndirectStrength), poiLight.directLighting, poiLight.rampedLightMap);
+                poiLight.finalLighting = lerp(poiLight.indirectLighting * lerp(1, AOMap, _AOStrength), poiLight.directLighting, poiLight.rampedLightMap);
             }
             UNITY_BRANCH
             if(_LightingType == 1)
             {
-                poiLight.finalLighting = poiLight.rampedLightMap * poiLight.directLighting;
+                poiLight.finalLighting = lerp(poiLight.rampedLightMap * poiLight.directLighting * lerp(1, AOMap, _AOStrength), poiLight.directLighting, poiLight.rampedLightMap);
+            }
+            UNITY_BRANCH
+            if(_LightingType == 3)
+            {
+                poiLight.finalLighting = lerp(saturate(poiLight.indirectLighting * _LightingEndColor * lerp(1, AOMap, _AOStrength)), saturate(poiLight.directLighting * _LightingStartColor), smoothstep(_LightingGradientStart, _LightingGradientEnd, poiLight.lightMap));
             }
         }
     }
@@ -332,7 +357,7 @@
                     }
                     else
                     {
-                        poiLight.finalLighting = poiLight.color * poiLight.attenuation * smoothstep(.5 - _AdditiveSoftness + _AdditiveOffset, .5 + _AdditiveSoftness + _AdditiveOffset, .5 * poiLight.nDotL + .5);
+                        poiLight.finalLighting = poiLight.color * poiLight.attenuation * max(smoothstep(.5 - _AdditiveSoftness + _AdditiveOffset, .5 + _AdditiveSoftness + _AdditiveOffset, .5 * poiLight.nDotL + .5), _LightingAdditivePassthrough);
                         poiLight.finalLighting *= _LightingAdditiveIntensity;
                     }
                 #else

@@ -32,7 +32,7 @@ namespace Thry
             if (renderQueue == 1000) replacementQueue = "Background";
             else if (renderQueue < 1000) replacementQueue = "Background-" + (1000 - renderQueue);
             shaderCode = Regex.Replace(shaderCode, pattern, "\"Queue\" = \"" + replacementQueue + "\"");
-            pattern = @"Shader *""(\w|\/|\.)+";
+            pattern = @"Shader\s+""(\w|\s|\/|\.)+";
             string ogShaderName = Regex.Match(shaderCode, pattern).Value;
             ogShaderName = Regex.Replace(ogShaderName, @"Shader *""", "");
             string newerShaderName = ".differentQueues/" + ogShaderName + "-queue" + renderQueue;

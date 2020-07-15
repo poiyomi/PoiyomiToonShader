@@ -51,6 +51,38 @@ namespace Thry
             ).FirstOrDefault();
         }
 
+        public static string GetFinalRedirect(string url)
+        {
+            if (string.IsNullOrEmpty(url))
+                return url;
+            try
+            {
+                UnityWebRequest request = new UnityWebRequest(url);
+                request.method = UnityWebRequest.kHttpVerbHEAD;
+                DownloadHandlerBuffer response = new DownloadHandlerBuffer();
+                request.downloadHandler = response;
+                request.SendWebRequest();
+                bool fetching = true;
+                while (fetching)
+                {
+                    if (request.isHttpError || request.isNetworkError)
+                    {
+                        fetching = false;
+                        Debug.Log(request.error);
+                    }
+                    if (request.isDone)
+                    {
+                        fetching = false;
+                    }
+                }
+                return request.url;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
         //-------------------Downloaders-----------------------------
 
         [InitializeOnLoad]
@@ -76,7 +108,7 @@ namespace Thry
                 CallData data = new CallData();
                 data.action = action;
                 data.arguments = args;
-                if (args.Length == 0 || args[0] == null)
+                if (args == null || args.Length == 0 || args[0] == null)
                     data.arguments = new object[] { "" };
                 else
                     data.arguments = args;
@@ -211,9 +243,19 @@ namespace Thry
             Coroutines.AddRoutine(downloader.DownloadStringCorroutine());
         }
 
+        public static void DownloadFileASync(string url, string path, Action<string> callback)
+        {
+            Downloader downloader = new Downloader();
+            downloader.url = url;
+            downloader.path = path;
+            downloader.callback = callback;
+            Coroutines.AddRoutine(downloader.DownloadFileCorroutine());
+        }
+
         public class Downloader{
 
             public Action<string> callback;
+            public string path;
             public string url;
 
             public IEnumerator<float> DownloadStringCorroutine()
@@ -236,6 +278,32 @@ namespace Thry
                     {
                         fetching = false;
                         callback(response.text);
+                    }
+                }
+            }
+
+            public IEnumerator<float> DownloadFileCorroutine()
+            {
+                UnityWebRequest request = new UnityWebRequest(url);
+                request.method = UnityWebRequest.kHttpVerbGET;
+                DownloadHandlerBuffer response = new DownloadHandlerBuffer();
+                request.downloadHandler = response;
+                request.SendWebRequest();
+                bool fetching = true;
+                while (fetching)
+                {
+                    yield return 0.3f;
+                    if (request.isHttpError || request.isNetworkError)
+                    {
+                        fetching = false;
+                        Debug.Log(request.error);
+                    }
+                    if (request.isDone)
+                    {
+                        fetching = false;
+                        FileHelper.writeBytesToFile(response.data, path);
+                        if(callback!=null)
+                            callback(null);
                     }
                 }
             }
