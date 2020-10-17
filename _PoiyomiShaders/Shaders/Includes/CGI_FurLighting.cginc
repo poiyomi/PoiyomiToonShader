@@ -16,7 +16,7 @@
     float _AttenuationMultiplier;
     float _EnableLighting;
     float _LightingControlledUseLightColor;
-    uint _LightingAOUV;
+    uint _LightingAOTexUV;
     fixed _LightingStandardSmoothness;
     fixed _LightingStandardControlsToon;
     fixed _LightingMinLightBrightness;
@@ -24,7 +24,7 @@
     fixed _AoIndirectStrength;
     UNITY_DECLARE_TEX2D(_ToonRamp);
     
-    sampler2D _AOMap; float4 _AOMap_ST;
+    sampler2D _LightingAOTex; float4 _LightingAOTex_ST;
     sampler2D _LightingShadowMask; float4 _LightingShadowMask_ST;
     float _AOStrength;
     
@@ -94,10 +94,6 @@
         UnityIndirect indirectLight;
         indirectLight.diffuse = 0;
         indirectLight.specular = 0;
-        
-        #if defined(VERTEXLIGHT_ON)
-            indirectLight.diffuse = vertexLightColor;
-        #endif
         
         #if defined(FORWARD_BASE_PASS)
             #if defined(LIGHTMAP_ON)
@@ -188,7 +184,7 @@
                 indirectLight.specular = probe0;
             #endif
             
-            float occlusion = lerp(1, tex2D(_AOMap, TRANSFORM_TEX(uv, _AOMap)), _AOStrength);
+            float occlusion = lerp(1, tex2D(_LightingAOTex, TRANSFORM_TEX(uv, _LightingAOTex)), _AOStrength);
             
             indirectLight.diffuse *= occlusion;
             indirectLight.diffuse = max(indirectLight.diffuse, _LightingMinLightBrightness);
@@ -255,7 +251,7 @@
             float DirectAO = 1;
             float IndirectAO = 1;
             #ifndef OUTLINE
-                AOMap = tex2D(_AOMap, TRANSFORM_TEX(uv, _AOMap));
+                AOMap = tex2D(_LightingAOTex, TRANSFORM_TEX(uv, _LightingAOTex));
                 DirectAO = lerp(1, AOMap, _AOStrength);
                 IndirectAO = lerp(1, AOMap, _AoIndirectStrength);
             #endif

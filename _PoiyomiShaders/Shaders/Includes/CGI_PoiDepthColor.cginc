@@ -10,6 +10,8 @@
     float4 _DepthGlowColor;
     float _DepthGlowEmission;
     float _FadeLength;
+    float _DepthAlphaMin;
+    float _DepthAlphaMax;
     UNITY_DECLARE_TEX2D_NOSAMPLER(_DepthGradient); float4 _DepthGradient_ST;
     UNITY_DECLARE_TEX2D_NOSAMPLER(_DepthMask); float4 _DepthMask_ST;
     
@@ -28,11 +30,12 @@
                 {
                     intersect = clamp(1 - smoothstep(0, _ProjectionParams.w * _FadeLength, diff), 0, 1);
                 }
-                half3 depthGradient = UNITY_SAMPLE_TEX2D_SAMPLER(_DepthGradient, _MainTex, intersect).rgb;
+                half4 depthGradient = UNITY_SAMPLE_TEX2D_SAMPLER(_DepthGradient, _MainTex, intersect);
                 half3 depthMask = UNITY_SAMPLE_TEX2D_SAMPLER(_DepthMask, _MainTex, poiMesh.uv[0]);
-                half3 depthColor = depthGradient * _DepthGlowColor.rgb;
+                half3 depthColor = depthGradient.rgb * _DepthGlowColor.rgb;
                 finalEmission += depthColor * _DepthGlowEmission * intersect * depthMask;
                 finalColor.rgb = lerp(finalColor.rgb, depthColor, intersect * depthMask);
+                finalColor.a *= lerp(_DepthAlphaMax, _DepthAlphaMin, intersect);
             }
         }
     }

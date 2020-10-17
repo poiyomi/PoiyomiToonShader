@@ -3,7 +3,7 @@
     
     //enviro rim
     float _EnableEnvironmentalRim;
-    UNITY_DECLARE_TEX2D_NOSAMPLER(_RimEnviroMask); float4 _RimEnviroMask_ST;
+    POI_TEXTURE_NOSAMPLER(_RimEnviroMask); 
     float _RimEnviroBlur;
     float _RimEnviroMinBrightness;
     float _RimEnviroWidth;
@@ -36,7 +36,7 @@
             enviroRimColor = DecodeHDR(reflectionData, unity_SpecCube0_HDR);
         }
         
-        half enviroMask = poiMax(UNITY_SAMPLE_TEX2D_SAMPLER(_RimEnviroMask, _MainTex, TRANSFORM_TEX(poiMesh.uv[0], _RimEnviroMask)).rgb);
+        half enviroMask = poiMax(POI2D_SAMPLER_PAN(_RimEnviroMask, _MainTex, poiMesh.uv[_RimEnviroMaskUV], _RimEnviroMaskPan).rgb);
         return lerp(0, max(0, (enviroRimColor - _RimEnviroMinBrightness) * albedo.rgb), enviroRimAlpha).rgb * enviroMask * _RimEnviroIntensity;
     }
     

@@ -2,9 +2,9 @@
     #define POI_GLITTER
     
     half3 _GlitterColor;
-    UNITY_DECLARE_TEX2D_NOSAMPLER(_GlitterMask); float4 _GlitterMask_ST;
+    POI_TEXTURE_NOSAMPLER(_GlitterMask);
     float2 _GlitterPan;
-    UNITY_DECLARE_TEX2D_NOSAMPLER(_GlitterColorMap); float4 _GlitterColorMap_ST;
+    POI_TEXTURE_NOSAMPLER(_GlitterColorMap);
     half _GlitterSpeed;
     half _GlitterBrightness;
     float _GlitterFrequency;
@@ -18,25 +18,8 @@
     float2 _GlitterMinMaxSaturation;
     float2 _GlitterMinMaxBrightness;
     fixed _GlitterUseSurfaceColor;
-    //1/7
-    #define K 0.142857142857
-    //3/7
-    #define Ko 0.428571428571
+    uint _GlitterBlendType;
     
-    float3 mod(float3 x, float y)
-    {
-        return x - y * floor(x / y);
-    }
-    float2 mod(float2 x, float y)
-    {
-        return x - y * floor(x / y);
-    }
-    
-    // Permutation polynomial: (34x^2 + x) mod 289
-    float3 Permutation(float3 x)
-    {
-        return mod((34.0 * x + 1.0) * x, 289.0);
-    }
     float3 randomFloat3(float2 Seed, float maximum)
     {
         return(.5 + float3(
@@ -71,12 +54,6 @@
         float randomno = frac(sin(dot(Seed, float2(12.9898, 78.233))) * 43758.5453);
         Out = lerp(Min, Max, randomno);
     }
-    
-    float2 random2(float2 p)
-    {
-        return frac(sin(float2(dot(p, float2(127.1, 311.7)), dot(p, float2(269.5, 183.3)))) * 43758.5453);
-    }
-    
     
     float3 RandomColorFromPoint(float2 rando)
     {
@@ -143,25 +120,37 @@
             randomRotation = randomFloat3Range(randoPoint, _GlitterAngleRange);
         }
         float3 norm = poiMesh.normals[0];
-        if(poiMesh.isFrontFace != 1)
-        {
-            norm *= -1;
-        }
         
         float3 glitterReflectionDirection = normalize(lerp(-poiCam.viewDir, mul(poiRotationMatrixFromAngles(randomRotation), norm), glitterAlpha));
         float3 finalGlitter = lerp(0, _GlitterMinBrightness, glitterAlpha) + max(pow(dot(lerp(glitterReflectionDirection, poiCam.viewDir, _GlitterBias), poiCam.viewDir), _GlitterContrast) * _GlitterBrightness, 0);
         _GlitterColor *= lerp(1, finalColor, _GlitterUseSurfaceColor);
-        _GlitterColor *= UNITY_SAMPLE_TEX2D_SAMPLER(_GlitterColorMap, _MainTex, TRANSFORM_TEX(poiMesh.uv[0], _GlitterColorMap) + _GlitterPan * _Time.x);
-        _GlitterColor *= UNITY_SAMPLE_TEX2D_SAMPLER(_GlitterMask, _MainTex, TRANSFORM_TEX(poiMesh.uv[0], _GlitterMask));
+        _GlitterColor *= POI2D_SAMPLER_PAN(_GlitterColorMap, _MainTex, poiMesh.uv[_GlitterColorMapUV], _GlitterColorMapPan);
         
+        float glitterMask = POI2D_SAMPLER_PAN(_GlitterMask, _MainTex, poiMesh.uv[_GlitterMaskUV], _GlitterMaskPan);
+        
+        #ifdef POI_BLACKLIGHT
+            if(_BlackLightMaskGlitter != 4)
+            {
+                glitterMask *= blackLightMask[_BlackLightMaskGlitter];
+            }
+        #endif
+        
+        _GlitterColor *= glitterMask;
         
         if(_GlitterRandomColors)
         {
             _GlitterColor *= RandomColorFromPoint(random2(randoPoint.x + randoPoint.y));
         }
         
-        
-        finalEmission += finalGlitter * _GlitterColor;
+        UNITY_BRANCH
+        if(_GlitterBlendType == 0)
+        {
+            finalEmission += finalGlitter * _GlitterColor;
+        }
+        else
+        {
+            finalColor.rgb = lerp(finalColor.rgb, finalGlitter * _GlitterColor, finalGlitter);
+        }
         // Draw grid
         //color.r += step(.98, f_st.x) + step(.98, f_st.y);
     }
@@ -182,7 +171,7 @@ normal = WorldToTangentNormalfloattor(normal);
 
 test = normalize(
     test.x * poiMesh.tangent +
-    test.y * poiMesh.bitangent +
+    test.y * poiMesh.binormal +
     test.z * poiMesh.normals[0]
 );
 

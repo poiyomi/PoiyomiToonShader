@@ -98,7 +98,7 @@
         }
         
         [maxvertexcount(3)]
-        void wireframeGeom(triangle VertexOutputShadowCaster IN[3], inout TriangleStream < VertexOutputShadowCaster > tristream)
+        void wireframeGeom(triangle V2FShadow IN[3], inout TriangleStream < V2FShadow > tristream)
         {
             IN[0].barycentricCoordinates = fixed3(1, 0, 0);
             IN[1].barycentricCoordinates = fixed3(0, 1, 0);

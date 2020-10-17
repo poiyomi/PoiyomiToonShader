@@ -21,9 +21,6 @@
         #endif
         float3 modelPos: TEXCOORD11;
         float angleAlpha: TEXCOORD12;
-        #if defined(VERTEXLIGHT_ON)
-            float3 vertexLightColor: TEXCOORD13;
-        #endif
         float4 vertexColor: TEXCOORD14;
         UNITY_SHADOW_COORDS(15)
         UNITY_FOG_COORDS(16)

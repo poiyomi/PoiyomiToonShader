@@ -9,6 +9,12 @@
     float4 _RedColor;
     float4 _GreenColor;
     float4 _BlueColor;
+    
+    float4 _RGBMaskPanning;
+    float4 _RGBRedPanning;
+    float4 _RGBGreenPanning;
+    float4 _RGBBluePanning;
+    
     float _RGBBlendMultiplicative;
     
     uint _RGBMaskUV;
@@ -18,10 +24,10 @@
     
     float3 calculateRGBMask(float3 baseColor)
     {
-        float3 rgbMask = UNITY_SAMPLE_TEX2D_SAMPLER(_RGBMask, _MainTex, TRANSFORM_TEX(poiMesh.uv[_RGBMaskUV], _RGBMask)).rgb;
-        float4 red = UNITY_SAMPLE_TEX2D_SAMPLER(_RedTexure, _MainTex, TRANSFORM_TEX(poiMesh.uv[_RGBRed_UV], _RedTexure));
-        float4 green = UNITY_SAMPLE_TEX2D_SAMPLER(_GreenTexture, _MainTex, TRANSFORM_TEX(poiMesh.uv[_RGBGreen_UV], _GreenTexture));
-        float4 blue = UNITY_SAMPLE_TEX2D_SAMPLER(_BlueTexture, _MainTex, TRANSFORM_TEX(poiMesh.uv[_RGBBlue_UV], _BlueTexture));
+        float3 rgbMask = POI2D_SAMPLER_PAN(_RGBMask, _MainTex, poiMesh.uv[_RGBMaskUV], _RGBMaskPanning).rgb;
+        float4 red = POI2D_SAMPLER_PAN(_RedTexure, _MainTex, poiMesh.uv[_RGBRed_UV], _RGBRedPanning);
+        float4 green = POI2D_SAMPLER_PAN(_GreenTexture, _MainTex, poiMesh.uv[_RGBGreen_UV], _RGBGreenPanning);
+        float4 blue = POI2D_SAMPLER_PAN(_BlueTexture, _MainTex, poiMesh.uv[_RGBBlue_UV], _RGBBluePanning);
         
         UNITY_BRANCH
         if (_RGBBlendMultiplicative)
