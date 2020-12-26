@@ -8,7 +8,7 @@
     float4 _OutlineDropShadowOffset;
     float _OutlineUseVertexColors;
     float _OutlineFixedSize;
-
+    
     sampler2D _OutlineMask; float4 _OutlineMask_ST;
     v2f vert(appdata v)
     {
@@ -17,6 +17,11 @@
         UNITY_INITIALIZE_OUTPUT(v2f, o);
         UNITY_TRANSFER_INSTANCE_ID(v, o);
         UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
+        
+        o.uv0.xy = v.uv0.xy;
+        o.uv0.zw = v.uv1.xy;
+        o.uv1.xy = v.uv2.xy;
+        o.uv1.zw = v.uv3.xy;
         
         #ifdef POI_MIRROR
             applyMirrorRenderVert(v.vertex);
@@ -41,7 +46,7 @@
         UNITY_BRANCH
         if(_OutlineFixedSize)
         {
-            distanceOffset *= distance(_WorldSpaceCameraPos,mul(unity_ObjectToWorld, v.vertex).xyz);
+            distanceOffset *= distance(_WorldSpaceCameraPos, mul(unity_ObjectToWorld, v.vertex).xyz);
         }
         
         float3 offset = o.normal * (_LineWidth / 100) * outlineMask * distanceOffset;

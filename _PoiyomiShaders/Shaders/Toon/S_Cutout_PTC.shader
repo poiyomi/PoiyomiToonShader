@@ -1,9 +1,9 @@
-Shader ".poiyomi/Toon/Advanced/Cutout"
+Shader ".poiyomi/Toon/Cutout"
 {
     Properties
     {
         [HideInInspector] shader_is_using_thry_editor ("", Float) = 0
-        [HideInInspector] shader_master_label ("<color=#ff0000ff>❤</color> <color=#000000ff>Poiyomi Toon V6.0</color> <color=#ff0000ff>❤</color>", Float) = 0
+        [HideInInspector] shader_master_label ("<color=#ff0000ff>❤</color> <color=#000000ff>Poiyomi Toon V6.1</color> <color=#ff0000ff>❤</color>", Float) = 0
         [HideInInspector] shader_presets ("poiToonPresets", Float) = 0
         [HideInInspector] shader_properties_label_file ("PoiLabels", Float) = 0
         
@@ -26,7 +26,7 @@ Shader ".poiyomi/Toon/Advanced/Cutout"
         [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)] _BumpMapUV ("UV", Int) = 0
         [HideInInspector][Vector2]_BumpMapPan ("Panning", Vector) = (0, 0, 0, 0)
         _BumpScale ("Normal Intensity", Range(0, 10)) = 1
-        _AlphaMask ("Alpha Mask", 2D) = "white" { }
+        _AlphaMask ("Alpha Map", 2D) = "white" { }
         [HideInInspector][Vector2]_AlphaMaskPan ("Panning", Vector) = (0, 0, 0, 0)
         [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)] _AlphaMaskUV ("UV", Int) = 0
         
@@ -43,7 +43,7 @@ Shader ".poiyomi/Toon/Advanced/Cutout"
         
         // RGB Masking
         [HideInInspector] m_start_RGBMask ("RGB Color Masking", Float) = 0
-        [Toggle(FXAA)]_RGBMaskEnabled ("RGB Mask Enabled", Float) = 0
+        [HideInInspector][Toggle(FXAA)]_RGBMaskEnabled ("RGB Mask Enabled", Float) = 0
         [ToggleUI]_RGBBlendMultiplicative ("Multiplicative?", Float) = 0
         _RGBMask ("Mask", 2D) = "white" { }
         [HideInInspector][Vector2]_RGBMaskPanning ("Panning", Vector) = (0, 0, 0, 0)
@@ -102,8 +102,9 @@ Shader ".poiyomi/Toon/Advanced/Cutout"
         _DitherGradient ("Dither Gradient", Range(0, 1)) = .1
         [ToggleUI]_ForceOpaque ("Force Opaque", Float) = 0
         _MainShadowClipMod ("Shadow Clip Mod", Range(-1, 1)) = 0
-        [ToggleUI]_MainAlphaToCoverage ("Alpha To Coverage", Float) = 0
-        _MainMipScale ("Mip Level Alpha Scale", Range(0, 1)) = 0.25
+        [Enum(Off, 0, On, 1)] _AlphaToMask ("Alpha To Coverage", Float) = 0
+        [ToggleUI]_MainAlphaToCoverage ("Sharpenned A2C--{condition_show:{type:PROPERTY_BOOL,data:_AlphaToMask==1}}", Float) = 0
+        _MainMipScale ("Mip Level Alpha Scale--{condition_show:{type:PROPERTY_BOOL,data:_AlphaToMask==1}}", Range(0, 1)) = 0.25
         [HideInInspector] m_end_Alpha ("Alpha Options", Float) = 0
         
         // Decal Texture
@@ -143,45 +144,31 @@ Shader ".poiyomi/Toon/Advanced/Cutout"
         [Toggle(LOD_FADE_CROSSFADE)]_EnableLighting ("Enable Lighting", Float) = 1
         [Enum(Natural, 0, Controlled, 1, Standardish, 2, Math, 3)] _LightingType ("Lighting Type", Int) = 1
         [ToggleUI]_LightingMonochromatic ("Monochromatic?", Float) = 0
-        [Gradient]_ToonRamp ("Lighting Ramp", 2D) = "white" { }
-        _LightingShadowMask ("Shadow Mask (RGBA)", 2D) = "white" { }
+        _LightingGradientStart ("Gradient Start--{condition_show:{type:PROPERTY_BOOL,data:_LightingType==3}}", Range(0, 1)) = 0
+        _LightingGradientEnd ("Gradient End--{condition_show:{type:PROPERTY_BOOL,data:_LightingType==3}}", Range(0, 1)) = .5
+        _LightingStartColor ("Light Tint--{condition_show:{type:PROPERTY_BOOL,data:_LightingType==3}}", Color) = (1, 1, 1)
+        _LightingEndColor ("Shadow Tint--{condition_show:{type:PROPERTY_BOOL,data:_LightingType==3}}", Color) = (1, 1, 1)
+        [Gradient]_ToonRamp ("Lighting Ramp--{texture:{width:512,height:4,filterMode:Bilinear,wrapMode:Clamp},force_texture_options:true,condition_show:{type:OR,condition1:{type:PROPERTY_BOOL,data:_LightingType==0},condition2:{type:PROPERTY_BOOL,data:_LightingType==1}}}", 2D) = "white" { }
+        _LightingShadowMask ("Shadow Mask (RGBA)--{reference_properties:[_LightingShadowMaskPan, _LightingShadowMaskUV],condition_show:{type:PROPERTY_BOOL,data:_LightingType!=2}}", 2D) = "white" { }
         [HideInInspector][Vector2]_LightingShadowMaskPan ("Panning", Vector) = (0, 0, 0, 0)
         [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)] _LightingShadowMaskUV ("UV", Int) = 0
-        _ShadowStrength ("Shadow Strength", Range(0, 1)) = .2
-        _ShadowOffset ("Shadow Offset", Range(-1, 1)) = 0
+        _ShadowStrength ("Shadow Strength--{condition_show:{type:OR,condition1:{type:PROPERTY_BOOL,data:_LightingType==0},condition2:{type:PROPERTY_BOOL,data:_LightingType==1}}}", Range(0, 1)) = .2
+        _ShadowOffset ("Shadow Offset--{condition_show:{type:OR,condition1:{type:PROPERTY_BOOL,data:_LightingType==0},condition2:{type:PROPERTY_BOOL,data:_LightingType==1}}}", Range(-1, 1)) = 0
         _LightingAOTex ("AO Map", 2D) = "white" { }
         [HideInInspector][Vector2]_LightingAOTexPan ("Panning", Vector) = (0, 0, 0, 0)
         [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)] _LightingAOTexUV ("UV", Int) = 0
         _AOStrength ("AO Strength", Range(0, 1)) = 0
-        _LightingMinLightBrightness ("Min Brightness", Range(0, 1)) = 0
-        _LightingIndirectContribution ("Indirect Contribution", Range(0, 1)) = .2
+        _LightingMinLightBrightness ("Min Brightness--{condition_show:{type:PROPERTY_BOOL,data:_LightingType!=2}}", Range(0, 1)) = 0
+        _LightingIndirectContribution ("Indirect Contribution--{condition_show:{type:PROPERTY_BOOL,data:_LightingType!=2}}", Range(0, 1)) = .2
         _AttenuationMultiplier ("Recieve Casted Shadows?", Range(0, 1)) = 0
-        _LightingDetailShadows ("Detail Shadows", 2D) = "white" { }
+        _LightingDetailShadows ("Detail Shadows--{reference_properties:[_LightingDetailShadowsPan, _LightingDetailShadowsUV],condition_show:{type:PROPERTY_BOOL,data:_LightingType!=2}}", 2D) = "white" { }
         [HideInInspector][Vector2]_LightingDetailShadowsPan ("Panning", Vector) = (0, 0, 0, 0)
         [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)] _LightingDetailShadowsUV ("UV", Int) = 0
-        _LightingDetailStrength ("Detail Strength", Range(0, 1)) = 1
-        [HideInInspector] m_start_lightingStandard ("Standardish Settings", Float) = 0
-        _LightingStandardSmoothness ("Smoothness", Range(0, 1)) = 0
-        [HideInInspector] m_end_lightingStandard ("Standardish Settings", Float) = 0
-
-        // Math Lighting
-        [HideInInspector] m_start_LightingMathMode ("Math Mode", Float) = 0
-        _LightingGradientStart ("Gradient Start", Range(0, 1)) = 0
-        _LightingGradientEnd ("Gradient End", Range(0, 1)) = .5
-        _LightingStartColor ("Light Tint", Color) = (1, 1, 1)
-        _LightingEndColor ("Shadow Tint", Color) = (1, 1, 1)
-        [HideInInspector] m_end_LightingMathMode ("Math Mode", Float) = 0
-
-        // point/spot Light Settings
-        [HideInInspector] m_start_lightingAdvanced ("Additive Lighting", Float) = 0
-        [Enum(Standard, 0, Controlled, 1)] _LightingAdditiveType ("Lighting Type", Int) = 1
-        _LightingAdditiveGradientStart ("Gradient Start", Range(0, 1)) = 0
-        _LightingAdditiveGradientEnd ("Gradient End", Range(0, 1)) = .5
-        _LightingAdditivePassthrough ("Point Light Passthrough", Range(0, 1)) = .5
-        [HideInInspector] m_end_lightingAdvanced ("Additive Lighting", Float) = 0
+        _LightingDetailStrength ("Detail Strength--{condition_show:{type:PROPERTY_BOOL,data:_LightingType!=2}}", Range(0, 1)) = 1
+        _LightingStandardSmoothness ("Smoothness--{condition_show:{type:PROPERTY_BOOL,data:_LightingType==2}}", Range(0, 1)) = 0
         
         // Lighting Beta Options
-        [HideInInspector] m_start_lightingBeta ("Beta", Float) = 0
+        [HideInInspector] m_start_lightingBeta ("Extra Ramps--{condition_show:{type:OR,condition1:{type:PROPERTY_BOOL,data:_LightingType==0},condition2:{type:PROPERTY_BOOL,data:_LightingType==1}}}", Float) = 0
         _LightingNoIndirectThreshold ("Absent Indirect Threshold", Range(0, 1)) = 0.01
         _LightingNoIndirectMultiplier ("Absent Indirect Multiplier", Range(0, 1)) = 0.5
         [ToggleUI]_LightingStandardControlsToon ("Standard Lighting Controls Toon Ramp", Float) = 0
@@ -192,7 +179,16 @@ Shader ".poiyomi/Toon/Advanced/Cutout"
         [Gradient]_ToonRamp2 ("Lighting Ramp 3", 2D) = "white" { }
         _LightingShadowStrength2 ("Shadow Strength 3", Range(0, 1)) = 1
         _ShadowOffset2 ("Shadow Offset 3", Range(-1, 1)) = 0
-        [HideInInspector] m_end_lightingBeta ("Beta", Float) = 0
+        [HideInInspector] m_end_lightingBeta ("Extra Ramps", Float) = 0
+        
+        // point/spot Light Settings
+        [HideInInspector] m_start_lightingAdvanced ("Additive Lighting", Float) = 0
+        [Enum(Standard, 0, Controlled, 1)] _LightingAdditiveType ("Lighting Type", Int) = 1
+        _LightingAdditiveGradientStart ("Gradient Start", Range(0, 1)) = 0
+        _LightingAdditiveGradientEnd ("Gradient End", Range(0, 1)) = .5
+        _LightingAdditivePassthrough ("Point Light Passthrough", Range(0, 1)) = .5
+        _LightingAdditiveDetailStrength ("Detail Shadow Strength", Range(0, 1)) = 1
+        [HideInInspector] m_end_lightingAdvanced ("Additive Lighting", Float) = 0
         [HideInInspector] m_end_Lighting ("Light and Shadow", Float) = 0
         
         // Subsurface Scattering
@@ -225,16 +221,15 @@ Shader ".poiyomi/Toon/Advanced/Cutout"
         _RimMask ("Rim Mask", 2D) = "white" { }
         [HideInInspector][Vector2]_RimMaskPan ("Panning", Vector) = (0, 0, 0, 0)
         [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)] _RimMaskUV ("UV", Int) = 0
-
+        
         // Rim Noise
         [HideInInspector] m_start_rimWidthNoise ("Width Noise", Float) = 0
         _RimWidthNoiseTexture ("Rim Width Noise", 2D) = "black" { }
         [HideInInspector][Vector2]_RimWidthNoiseTexturePan ("Panning", Vector) = (0, 0, 0, 0)
         [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)] _RimWidthNoiseTextureUV ("UV", Int) = 0
         _RimWidthNoiseStrength ("Intensity", Range(0, 1)) = 0.1
-        [HideInInspector][Vector2]_RimWidthNoisePan ("Panning", Vector) = (0, 0, 0, 0)
         [HideInInspector] m_end_rimWidthNoise ("Width Noise", Float) = 0
-
+        
         // Rim Shadow Mix
         [HideInInspector] m_start_ShadowMix ("Shadow Mix", Float) = 0
         _ShadowMix ("Shadow Mix In", Range(0, 1)) = 0
@@ -264,12 +259,14 @@ Shader ".poiyomi/Toon/Advanced/Cutout"
         [HideInInspector] m_end_bakedLighting ("Baked Lighting", Float) = 0
         
         // Metallics
-        [HideInInspector] m_reflectionOptions ("Reflections", Float) = 0
         [HideInInspector] m_start_Metallic ("Metallics", Float) = 0
         [Toggle(_METALLICGLOSSMAP)]_EnableMetallic ("Enable Metallics", Float) = 0
         _CubeMap ("Baked CubeMap", Cube) = "" { }
         [ToggleUI]_SampleWorld ("Force Baked Cubemap", Range(0, 1)) = 0
         _MetalReflectionTint ("Reflection Tint", Color) = (1, 1, 1)
+        _MetallicTintMap ("Tint Map", 2D) = "white" { }
+        [HideInInspector][Vector2]_MetallicTintMapPan ("Panning", Vector) = (0, 0, 0, 0)
+        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)] _MetallicTintMapUV ("UV", Int) = 0
         _MetallicMask ("Metallic Mask", 2D) = "white" { }
         [HideInInspector][Vector2]_MetallicMaskPan ("Panning", Vector) = (0, 0, 0, 0)
         [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)] _MetallicMaskUV ("UV", Int) = 0
@@ -317,7 +314,7 @@ Shader ".poiyomi/Toon/Advanced/Cutout"
         _MatcapAdd ("Add Matcap", Range(0, 1)) = 0
         [Enum(Vertex, 0, Pixel, 1)] _MatcapNormal ("Normal to use", Int) = 1
         [HideInInspector] m_end_matcap ("Matcap", Float) = 0
-
+        
         // Second Matcap
         [HideInInspector] m_start_Matcap2 ("Matcap 2", Float) = 0
         [ToggleUI]_Matcap2Enable ("Enable Matcap 2", Float) = 0
@@ -364,8 +361,8 @@ Shader ".poiyomi/Toon/Advanced/Cutout"
         [HideInInspector][Vector2]_AnisoTangentMapPan ("Panning", Vector) = (0, 0, 0, 0)
         [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)] _AnisoTangentMapUV ("UV", Int) = 0
         //toon aniso
-        _SpecularToonStart ("Spec Toon Start--{condition_show:{type:PROPERTY_BOOL,data:_SpecularType==4}}", Range(0, 1)) = .9
-        _SpecularToonEnd ("Spec Toon End--{condition_show:{type:PROPERTY_BOOL,data:_SpecularType==4}}", Range(0, 2)) = .85
+        _SpecularToonStart ("Spec Toon Start--{condition_show:{type:PROPERTY_BOOL,data:_SpecularType==4}}", Range(0, 1)) = .95
+        _SpecularToonEnd ("Spec Toon End--{condition_show:{type:PROPERTY_BOOL,data:_SpecularType==4}}", Range(0, 2)) = 1
         //[ToggleUI]_CenterOutSpecColor ("Center Out SpecMap--{condition_show:{type:PROPERTY_BOOL,data:_SpecularType==4}}", Float) = 0
         [ToggleUI]_SpecularAnisoJitterMirrored ("Mirrored?--{condition_show:{type:PROPERTY_BOOL,data:_SpecularType==4}}", Float) = 0
         [Curve]_SpecularAnisoJitterMicro ("Micro Shift--{reference_properties:[_SpecularAnisoJitterMicroPan, _SpecularAnisoJitterMicroUV], condition_show:{type:OR,condition1:{type:PROPERTY_BOOL,data:_SpecularType==3},condition2:{type:PROPERTY_BOOL,data:_SpecularType==4}}}", 2D) = "black" { }
@@ -408,10 +405,10 @@ Shader ".poiyomi/Toon/Advanced/Cutout"
         [HideInInspector][Vector2]_AnisoTangentMap1Pan ("Panning", Vector) = (0, 0, 0, 0)
         [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)] _AnisoTangentMap1UV ("UV", Int) = 0
         // Second toon aniso
-        _SpecularToonStart1 ("Spec Toon Start--{condition_show:{type:PROPERTY_BOOL,data:_SpecularType1==4}}", Range(0, 1)) = .9
-        _SpecularToonEnd1 ("Spec Toon End--{condition_show:{type:PROPERTY_BOOL,data:_SpecularType1==4}}", Range(0, 2)) = .85
+        _SpecularToonStart1 ("Spec Toon Start--{condition_show:{type:PROPERTY_BOOL,data:_SpecularType1==4}}", Range(0, 1)) = .95
+        _SpecularToonEnd1 ("Spec Toon End--{condition_show:{type:PROPERTY_BOOL,data:_SpecularType1==4}}", Range(0, 2)) = 1
         //[ToggleUI]_CenterOutSpecColor1 ("Center Out SpecMap--{condition_show:{type:PROPERTY_BOOL,data:_SpecularType1==4}}", Float) = 0
-        [ToggleUI]_SpecularAnisoJitterMirrored1("Mirrored?--{condition_show:{type:PROPERTY_BOOL,data:_SpecularType1==4}}", Float) = 0
+        [ToggleUI]_SpecularAnisoJitterMirrored1 ("Mirrored?--{condition_show:{type:PROPERTY_BOOL,data:_SpecularType1==4}}", Float) = 0
         [Curve]_SpecularAnisoJitterMicro1 ("Micro Shift--{reference_properties:[_SpecularAnisoJitterMicro1Pan, _SpecularAnisoJitterMicro1UV], condition_show:{type:OR,condition1:{type:PROPERTY_BOOL,data:_SpecularType1==3},condition2:{type:PROPERTY_BOOL,data:_SpecularType1==4}}}", 2D) = "black" { }
         _SpecularAnisoJitterMicroMultiplier1 ("Micro Multiplier--{condition_show:{type:OR,condition1:{type:PROPERTY_BOOL,data:_SpecularType1==3},condition2:{type:PROPERTY_BOOL,data:_SpecularType1==4}}}", Range(0, 10)) = 0
         [HideInInspector][Vector2]_SpecularAnisoJitterMicro1Pan ("Panning", Vector) = (0, 0, 0, 0)
@@ -440,13 +437,13 @@ Shader ".poiyomi/Toon/Advanced/Cutout"
         _EmissionStrength ("Emission Strength", Range(0, 20)) = 0
         [ToggleUI]_EmissionHueShiftEnabled ("Enable Hue Shift", Float) = 0
         _EmissionHueShift ("Hue Shift", Range(0, 1)) = 0
-
+        
         // Center out emission
         [HideInInspector] m_start_CenterOutEmission ("Center Out Emission", Float) = 0
         [ToggleUI]_EmissionCenterOutEnabled ("Enable Center Out", Float) = 0
         _EmissionCenterOutSpeed ("Flow Speed", Float) = 5
         [HideInInspector] m_end_CenterOutEmission ("inward out emission", Float) = 0
-
+        
         // Glow in the dark Emission
         [HideInInspector] m_start_glowInDarkEmissionOptions ("Glow In The Dark Emission (Requires Lighting Enabled)", Float) = 0
         [ToggleUI]_EnableGITDEmission ("Enable Glow In The Dark", Float) = 0
@@ -492,13 +489,13 @@ Shader ".poiyomi/Toon/Advanced/Cutout"
         _EmissionStrength1 ("Emission Strength", Range(0, 20)) = 0
         [ToggleUI]_EmissionHueShiftEnabled1 ("Enable Hue Shift", Float) = 0
         _EmissionHueShift1 ("Hue Shift", Range(0, 1)) = 0
-
+        
         // Second Center Out Enission
         [HideInInspector] m_start_CenterOutEmission1 ("Center Out Emission", Float) = 0
         [ToggleUI]_EmissionCenterOutEnabled1 ("Enable Center Out", Float) = 0
         _EmissionCenterOutSpeed1 ("Flow Speed", Float) = 5
         [HideInInspector] m_end_CenterOutEmission1 ("inward out emission", Float) = 0
-
+        
         // Second Glow In The Dark Emission
         [HideInInspector] m_start_glowInDarkEmissionOptions1 ("Glow In The Dark Emission (Requires Lighting Enabled)", Float) = 0
         [ToggleUI]_EnableGITDEmission1 ("Enable Glow In The Dark", Float) = 0
@@ -508,7 +505,7 @@ Shader ".poiyomi/Toon/Advanced/Cutout"
         _GITDEMinLight1 ("Min Lighting", Range(0, 1)) = 0
         _GITDEMaxLight1 ("Max Lighting", Range(0, 1)) = 1
         [HideInInspector] m_end_glowInDarkEmissionOptions1 ("Glow In The Dark Emission (Requires Lighting Enabled)", Float) = 0
-
+        
         // Second Blinking Emission
         [HideInInspector] m_start_blinkingEmissionOptions1 ("Blinking Emission", Float) = 0
         _EmissiveBlink_Min1 ("Emissive Blink Min", Float) = 1
@@ -516,7 +513,7 @@ Shader ".poiyomi/Toon/Advanced/Cutout"
         _EmissiveBlink_Velocity1 ("Emissive Blink Velocity", Float) = 4
         _EmissionBlinkingOffset1 ("Offset", Float) = 0
         [HideInInspector] m_end_blinkingEmissionOptions1 ("Blinking Emission", Float) = 0
-
+        
         // Scrolling Scrolling Emission
         [HideInInspector] m_start_scrollingEmissionOptions1 ("Scrolling Emission", Float) = 0
         [ToggleUI] _ScrollingEmission1 ("Enable Scrolling Emission", Float) = 0
@@ -553,7 +550,7 @@ Shader ".poiyomi/Toon/Advanced/Cutout"
         _FlipbookReplace ("Replace", Range(0, 1)) = 1
         _FlipbookMultiply ("Multiply", Range(0, 1)) = 0
         _FlipbookAdd ("Add", Range(0, 1)) = 0
-
+        
         // Flipbook Manual Control
         [HideInInspector] m_start_manualFlipbookControl ("Manual Control", Float) = 0
         _FlipbookCurrentFrame ("Current Frame", Float) = -1
@@ -593,7 +590,7 @@ Shader ".poiyomi/Toon/Advanced/Cutout"
         [Enum(Undissolved, 0, Dissolved, 1)] _DissolveEmissionSide ("Emission 1", Int) = 0
         [Enum(Undissolved, 0, Dissolved, 1)] _DissolveEmission1Side ("Emission 2", Int) = 0
         [HideInInspector] m_end_dissolveMasking ("Effect Masking", Float) = 0
-
+        
         // Point to Point Dissolve
         [HideInInspector] m_start_pointToPoint ("point to point", Float) = 0
         [Enum(Local, 0, World, 1)] _DissolveP2PWorldLocal ("World/Local", Int) = 0
@@ -641,7 +638,7 @@ Shader ".poiyomi/Toon/Advanced/Cutout"
         _GlitterMinBrightness ("Glitter Min Brightness", Range(0, 1)) = 0
         _GlitterBrightness ("Glitter Max Brightness", Range(0, 40)) = 3
         _GlitterBias ("Glitter Bias", Range(0, 1)) = .8
-
+        
         // Glitter Random Colors
         [HideInInspector] m_start_glitterRandom ("Random Colors", Float) = 0
         [ToggleUI]_GlitterRandomColors ("Enable", Float) = 0
@@ -655,7 +652,7 @@ Shader ".poiyomi/Toon/Advanced/Cutout"
         _TextGlyphs ("Font Array", 2D) = "black" { }
         _TextPixelRange ("Pixel Range", Float) = 4.0
         [Toggle(EFFECT_BUMP)]_TextEnabled ("Text?", Float) = 0
-
+        
         // FPS
         [HideInInspector] m_start_TextFPS ("FPS", Float) = 0
         [ToggleUI]_TextFPSEnabled ("FPS Text?", Float) = 0
@@ -667,7 +664,7 @@ Shader ".poiyomi/Toon/Advanced/Cutout"
         [Vector2]_TextFPSScale ("Scale", Vector) = (1, 1, 1, 1)
         _TextFPSPadding ("Padding Reduction", Vector) = (0, 0, 0, 0)
         [HideInInspector] m_end_TextFPS ("FPS", Float) = 0
-
+        
         // POSITION
         [HideInInspector] m_start_TextPosition ("Position", Float) = 0
         [ToggleUI]_TextPositionEnabled ("Position Text?", Float) = 0
@@ -680,7 +677,7 @@ Shader ".poiyomi/Toon/Advanced/Cutout"
         [Vector2]_TextPositionScale ("Scale", Vector) = (1, 1, 1, 1)
         _TextPositionPadding ("Padding Reduction", Vector) = (0, 0, 0, 0)
         [HideInInspector] m_end_TextPosition ("Position", Float) = 0
-
+        
         // INSTANCE TIME
         [HideInInspector] m_start_TextInstanceTime ("Instance Time", Float) = 0
         [ToggleUI]_TextTimeEnabled ("Time Text?", Float) = 0
@@ -725,7 +722,7 @@ Shader ".poiyomi/Toon/Advanced/Cutout"
         _ModelAngleMax ("Model Angle Max", Range(0, 180)) = 90
         _AngleMinAlpha ("Min Alpha", Range(0, 1)) = 0
         [HideInInspector] m_end_angularFade ("Angular Fade", Float) = 0
-
+        
         // UV Distortion
         [HideInInspector] m_start_distortionFlow ("UV Distortion", Float) = 0
         [Toggle(USER_LUT)] _EnableDistortion ("Enabled?", Float) = 0
@@ -775,7 +772,6 @@ Shader ".poiyomi/Toon/Advanced/Cutout"
         // Rendering Options
         [HideInInspector] m_renderingOptions ("Rendering Options", Float) = 0
         [Enum(UnityEngine.Rendering.CullMode)] _Cull ("Cull", Float) = 2
-        [Enum(Off, 0, On, 1)] _AlphaToMask ("Alpha To Mask", Float) = 0
         [Enum(UnityEngine.Rendering.CompareFunction)] _ZTest ("ZTest", Float) = 4
         [Enum(UnityEngine.Rendering.BlendMode)] _SourceBlend ("Source Blend", Float) = 5
         [Enum(UnityEngine.Rendering.BlendMode)] _DestinationBlend ("Destination Blend", Float) = 10
@@ -797,7 +793,7 @@ Shader ".poiyomi/Toon/Advanced/Cutout"
         
         // Debug Options
         [HideInInspector] m_start_debugOptions ("Debug", Float) = 0
-        [Toggle(_COLOROVERLAY_ON)]_DebugEnabled ("Display Debug Info", Float) = 0
+        [HideInInspector][Toggle(_COLOROVERLAY_ON)]_DebugEnabled ("Display Debug Info", Float) = 0
         _VertexUnwrap ("Unwrap", Range(0, 1)) = 0
         [Enum(Off, 0, Vertex Normal, 1, Pixel Normal, 2, Tangent, 3, Binormal, 4)] _DebugMeshData ("Mesh Data", Int) = 0
         [Enum(Off, 0, Attenuation, 1, Direct Lighting, 2, Indirect Lighting, 3, light Map, 4, Ramped Light Map, 5, Final Lighting, 6)] _DebugLightingData ("Lighting Data", Int) = 0
@@ -805,7 +801,7 @@ Shader ".poiyomi/Toon/Advanced/Cutout"
         [HideInInspector] m_end_debugOptions ("Debug", Float) = 0
     }
     
-    CustomEditor "ThryEditor"
+    CustomEditor "Thry.ShaderEditor"
     SubShader
     {
         Tags { "RenderType" = "TransparentCutout" "Queue" = "AlphaTest" }

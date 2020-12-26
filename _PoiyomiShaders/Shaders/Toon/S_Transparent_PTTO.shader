@@ -1,9 +1,9 @@
-Shader ".poiyomi/Toon/Advanced/Outlines Transparent"
+Shader ".poiyomi/Toon/Outlines Transparent"
 {
     Properties
     {
         [HideInInspector] shader_is_using_thry_editor ("", Float) = 0
-        [HideInInspector] shader_master_label ("<color=#ff0000ff>❤</color> <color=#000000ff>Poiyomi Toon V6.0</color> <color=#ff0000ff>❤</color>", Float) = 0
+        [HideInInspector] shader_master_label ("<color=#ff0000ff>❤</color> <color=#000000ff>Poiyomi Toon V6.1</color> <color=#ff0000ff>❤</color>", Float) = 0
         [HideInInspector] shader_presets ("poiToonPresets", Float) = 0
         [HideInInspector] shader_properties_label_file ("PoiLabels", Float) = 0
         
@@ -26,7 +26,7 @@ Shader ".poiyomi/Toon/Advanced/Outlines Transparent"
         [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)] _BumpMapUV ("UV", Int) = 0
         [HideInInspector][Vector2]_BumpMapPan ("Panning", Vector) = (0, 0, 0, 0)
         _BumpScale ("Normal Intensity", Range(0, 10)) = 1
-        _AlphaMask ("Alpha Mask", 2D) = "white" { }
+        _AlphaMask ("Alpha Map", 2D) = "white" { }
         [HideInInspector][Vector2]_AlphaMaskPan ("Panning", Vector) = (0, 0, 0, 0)
         [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)] _AlphaMaskUV ("UV", Int) = 0
         
@@ -43,7 +43,7 @@ Shader ".poiyomi/Toon/Advanced/Outlines Transparent"
         
         // RGB Masking
         [HideInInspector] m_start_RGBMask ("RGB Color Masking", Float) = 0
-        [Toggle(FXAA)]_RGBMaskEnabled ("RGB Mask Enabled", Float) = 0
+        [HideInInspector][Toggle(FXAA)]_RGBMaskEnabled ("RGB Mask Enabled", Float) = 0
         [ToggleUI]_RGBBlendMultiplicative ("Multiplicative?", Float) = 0
         _RGBMask ("Mask", 2D) = "white" { }
         [HideInInspector][Vector2]_RGBMaskPanning ("Panning", Vector) = (0, 0, 0, 0)
@@ -102,8 +102,6 @@ Shader ".poiyomi/Toon/Advanced/Outlines Transparent"
         _DitherGradient ("Dither Gradient", Range(0, 1)) = .1
         [ToggleUI]_ForceOpaque ("Force Opaque", Float) = 0
         _MainShadowClipMod ("Shadow Clip Mod", Range(-1, 1)) = 0
-        [ToggleUI]_MainAlphaToCoverage ("Alpha To Coverage", Float) = 0
-        _MainMipScale ("Mip Level Alpha Scale", Range(0, 1)) = 0.25
         [HideInInspector] m_end_Alpha ("Alpha Options", Float) = 0
         
         // Decal Texture
@@ -143,45 +141,31 @@ Shader ".poiyomi/Toon/Advanced/Outlines Transparent"
         [Toggle(LOD_FADE_CROSSFADE)]_EnableLighting ("Enable Lighting", Float) = 1
         [Enum(Natural, 0, Controlled, 1, Standardish, 2, Math, 3)] _LightingType ("Lighting Type", Int) = 1
         [ToggleUI]_LightingMonochromatic ("Monochromatic?", Float) = 0
-        [Gradient]_ToonRamp ("Lighting Ramp", 2D) = "white" { }
-        _LightingShadowMask ("Shadow Mask (RGBA)", 2D) = "white" { }
+        _LightingGradientStart ("Gradient Start--{condition_show:{type:PROPERTY_BOOL,data:_LightingType==3}}", Range(0, 1)) = 0
+        _LightingGradientEnd ("Gradient End--{condition_show:{type:PROPERTY_BOOL,data:_LightingType==3}}", Range(0, 1)) = .5
+        _LightingStartColor ("Light Tint--{condition_show:{type:PROPERTY_BOOL,data:_LightingType==3}}", Color) = (1, 1, 1)
+        _LightingEndColor ("Shadow Tint--{condition_show:{type:PROPERTY_BOOL,data:_LightingType==3}}", Color) = (1, 1, 1)
+        [Gradient]_ToonRamp ("Lighting Ramp--{texture:{width:512,height:4,filterMode:Bilinear,wrapMode:Clamp},force_texture_options:true,condition_show:{type:OR,condition1:{type:PROPERTY_BOOL,data:_LightingType==0},condition2:{type:PROPERTY_BOOL,data:_LightingType==1}}}", 2D) = "white" { }
+        _LightingShadowMask ("Shadow Mask (RGBA)--{reference_properties:[_LightingShadowMaskPan, _LightingShadowMaskUV],condition_show:{type:PROPERTY_BOOL,data:_LightingType!=2}}", 2D) = "white" { }
         [HideInInspector][Vector2]_LightingShadowMaskPan ("Panning", Vector) = (0, 0, 0, 0)
         [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)] _LightingShadowMaskUV ("UV", Int) = 0
-        _ShadowStrength ("Shadow Strength", Range(0, 1)) = .2
-        _ShadowOffset ("Shadow Offset", Range(-1, 1)) = 0
+        _ShadowStrength ("Shadow Strength--{condition_show:{type:OR,condition1:{type:PROPERTY_BOOL,data:_LightingType==0},condition2:{type:PROPERTY_BOOL,data:_LightingType==1}}}", Range(0, 1)) = .2
+        _ShadowOffset ("Shadow Offset--{condition_show:{type:OR,condition1:{type:PROPERTY_BOOL,data:_LightingType==0},condition2:{type:PROPERTY_BOOL,data:_LightingType==1}}}", Range(-1, 1)) = 0
         _LightingAOTex ("AO Map", 2D) = "white" { }
         [HideInInspector][Vector2]_LightingAOTexPan ("Panning", Vector) = (0, 0, 0, 0)
         [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)] _LightingAOTexUV ("UV", Int) = 0
         _AOStrength ("AO Strength", Range(0, 1)) = 0
-        _LightingMinLightBrightness ("Min Brightness", Range(0, 1)) = 0
-        _LightingIndirectContribution ("Indirect Contribution", Range(0, 1)) = .2
+        _LightingMinLightBrightness ("Min Brightness--{condition_show:{type:PROPERTY_BOOL,data:_LightingType!=2}}", Range(0, 1)) = 0
+        _LightingIndirectContribution ("Indirect Contribution--{condition_show:{type:PROPERTY_BOOL,data:_LightingType!=2}}", Range(0, 1)) = .2
         _AttenuationMultiplier ("Recieve Casted Shadows?", Range(0, 1)) = 0
-        _LightingDetailShadows ("Detail Shadows", 2D) = "white" { }
+        _LightingDetailShadows ("Detail Shadows--{reference_properties:[_LightingDetailShadowsPan, _LightingDetailShadowsUV],condition_show:{type:PROPERTY_BOOL,data:_LightingType!=2}}", 2D) = "white" { }
         [HideInInspector][Vector2]_LightingDetailShadowsPan ("Panning", Vector) = (0, 0, 0, 0)
         [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)] _LightingDetailShadowsUV ("UV", Int) = 0
-        _LightingDetailStrength ("Detail Strength", Range(0, 1)) = 1
-        [HideInInspector] m_start_lightingStandard ("Standardish Settings", Float) = 0
-        _LightingStandardSmoothness ("Smoothness", Range(0, 1)) = 0
-        [HideInInspector] m_end_lightingStandard ("Standardish Settings", Float) = 0
-        
-        // Math Lighting
-        [HideInInspector] m_start_LightingMathMode ("Math Mode", Float) = 0
-        _LightingGradientStart ("Gradient Start", Range(0, 1)) = 0
-        _LightingGradientEnd ("Gradient End", Range(0, 1)) = .5
-        _LightingStartColor ("Light Tint", Color) = (1, 1, 1)
-        _LightingEndColor ("Shadow Tint", Color) = (1, 1, 1)
-        [HideInInspector] m_end_LightingMathMode ("Math Mode", Float) = 0
-        
-        // point/spot Light Settings
-        [HideInInspector] m_start_lightingAdvanced ("Additive Lighting", Float) = 0
-        [Enum(Standard, 0, Controlled, 1)] _LightingAdditiveType ("Lighting Type", Int) = 1
-        _LightingAdditiveGradientStart ("Gradient Start", Range(0, 1)) = 0
-        _LightingAdditiveGradientEnd ("Gradient End", Range(0, 1)) = .5
-        _LightingAdditivePassthrough ("Point Light Passthrough", Range(0, 1)) = .5
-        [HideInInspector] m_end_lightingAdvanced ("Additive Lighting", Float) = 0
+        _LightingDetailStrength ("Detail Strength--{condition_show:{type:PROPERTY_BOOL,data:_LightingType!=2}}", Range(0, 1)) = 1
+        _LightingStandardSmoothness ("Smoothness--{condition_show:{type:PROPERTY_BOOL,data:_LightingType==2}}", Range(0, 1)) = 0
         
         // Lighting Beta Options
-        [HideInInspector] m_start_lightingBeta ("Beta", Float) = 0
+        [HideInInspector] m_start_lightingBeta ("Extra Ramps--{condition_show:{type:OR,condition1:{type:PROPERTY_BOOL,data:_LightingType==0},condition2:{type:PROPERTY_BOOL,data:_LightingType==1}}}", Float) = 0
         _LightingNoIndirectThreshold ("Absent Indirect Threshold", Range(0, 1)) = 0.01
         _LightingNoIndirectMultiplier ("Absent Indirect Multiplier", Range(0, 1)) = 0.5
         [ToggleUI]_LightingStandardControlsToon ("Standard Lighting Controls Toon Ramp", Float) = 0
@@ -192,9 +176,18 @@ Shader ".poiyomi/Toon/Advanced/Outlines Transparent"
         [Gradient]_ToonRamp2 ("Lighting Ramp 3", 2D) = "white" { }
         _LightingShadowStrength2 ("Shadow Strength 3", Range(0, 1)) = 1
         _ShadowOffset2 ("Shadow Offset 3", Range(-1, 1)) = 0
-        [HideInInspector] m_end_lightingBeta ("Beta", Float) = 0
-        [HideInInspector] m_end_Lighting ("Light and Shadow", Float) = 0
+        [HideInInspector] m_end_lightingBeta ("Extra Ramps", Float) = 0
         
+        // point/spot Light Settings
+        [HideInInspector] m_start_lightingAdvanced ("Additive Lighting", Float) = 0
+        [Enum(Standard, 0, Controlled, 1)] _LightingAdditiveType ("Lighting Type", Int) = 1
+        _LightingAdditiveGradientStart ("Gradient Start", Range(0, 1)) = 0
+        _LightingAdditiveGradientEnd ("Gradient End", Range(0, 1)) = .5
+        _LightingAdditivePassthrough ("Point Light Passthrough", Range(0, 1)) = .5
+        _LightingAdditiveDetailStrength ("Detail Shadow Strength", Range(0, 1)) = 1
+        [HideInInspector] m_end_lightingAdvanced ("Additive Lighting", Float) = 0
+        [HideInInspector] m_end_Lighting ("Light and Shadow", Float) = 0
+
         // Subsurface Scattering
         [HideInInspector] m_start_subsurface ("Subsurface Scattering", Float) = 0
         [Toggle(_TERRAIN_NORMAL_MAP)]_EnableSSS ("Enable Subsurface Scattering", Float) = 0
@@ -232,7 +225,6 @@ Shader ".poiyomi/Toon/Advanced/Outlines Transparent"
         [HideInInspector][Vector2]_RimWidthNoiseTexturePan ("Panning", Vector) = (0, 0, 0, 0)
         [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)] _RimWidthNoiseTextureUV ("UV", Int) = 0
         _RimWidthNoiseStrength ("Intensity", Range(0, 1)) = 0.1
-        [HideInInspector][Vector2]_RimWidthNoisePan ("Panning", Vector) = (0, 0, 0, 0)
         [HideInInspector] m_end_rimWidthNoise ("Width Noise", Float) = 0
         
         // Rim Shadow Mix
@@ -264,12 +256,14 @@ Shader ".poiyomi/Toon/Advanced/Outlines Transparent"
         [HideInInspector] m_end_bakedLighting ("Baked Lighting", Float) = 0
         
         // Metallics
-        [HideInInspector] m_reflectionOptions ("Reflections", Float) = 0
         [HideInInspector] m_start_Metallic ("Metallics", Float) = 0
         [Toggle(_METALLICGLOSSMAP)]_EnableMetallic ("Enable Metallics", Float) = 0
         _CubeMap ("Baked CubeMap", Cube) = "" { }
         [ToggleUI]_SampleWorld ("Force Baked Cubemap", Range(0, 1)) = 0
         _MetalReflectionTint ("Reflection Tint", Color) = (1, 1, 1)
+        _MetallicTintMap ("Tint Map", 2D) = "white" { }
+        [HideInInspector][Vector2]_MetallicTintMapPan ("Panning", Vector) = (0, 0, 0, 0)
+        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)] _MetallicTintMapUV ("UV", Int) = 0
         _MetallicMask ("Metallic Mask", 2D) = "white" { }
         [HideInInspector][Vector2]_MetallicMaskPan ("Panning", Vector) = (0, 0, 0, 0)
         [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)] _MetallicMaskUV ("UV", Int) = 0
@@ -364,8 +358,8 @@ Shader ".poiyomi/Toon/Advanced/Outlines Transparent"
         [HideInInspector][Vector2]_AnisoTangentMapPan ("Panning", Vector) = (0, 0, 0, 0)
         [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)] _AnisoTangentMapUV ("UV", Int) = 0
         //toon aniso
-        _SpecularToonStart ("Spec Toon Start--{condition_show:{type:PROPERTY_BOOL,data:_SpecularType==4}}", Range(0, 1)) = .9
-        _SpecularToonEnd ("Spec Toon End--{condition_show:{type:PROPERTY_BOOL,data:_SpecularType==4}}", Range(0, 2)) = .85
+        _SpecularToonStart ("Spec Toon Start--{condition_show:{type:PROPERTY_BOOL,data:_SpecularType==4}}", Range(0, 1)) = .95
+        _SpecularToonEnd ("Spec Toon End--{condition_show:{type:PROPERTY_BOOL,data:_SpecularType==4}}", Range(0, 2)) = 1
         //[ToggleUI]_CenterOutSpecColor ("Center Out SpecMap--{condition_show:{type:PROPERTY_BOOL,data:_SpecularType==4}}", Float) = 0
         [ToggleUI]_SpecularAnisoJitterMirrored ("Mirrored?--{condition_show:{type:PROPERTY_BOOL,data:_SpecularType==4}}", Float) = 0
         [Curve]_SpecularAnisoJitterMicro ("Micro Shift--{reference_properties:[_SpecularAnisoJitterMicroPan, _SpecularAnisoJitterMicroUV], condition_show:{type:OR,condition1:{type:PROPERTY_BOOL,data:_SpecularType==3},condition2:{type:PROPERTY_BOOL,data:_SpecularType==4}}}", 2D) = "black" { }
@@ -408,8 +402,8 @@ Shader ".poiyomi/Toon/Advanced/Outlines Transparent"
         [HideInInspector][Vector2]_AnisoTangentMap1Pan ("Panning", Vector) = (0, 0, 0, 0)
         [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)] _AnisoTangentMap1UV ("UV", Int) = 0
         // Second toon aniso
-        _SpecularToonStart1 ("Spec Toon Start--{condition_show:{type:PROPERTY_BOOL,data:_SpecularType1==4}}", Range(0, 1)) = .9
-        _SpecularToonEnd1 ("Spec Toon End--{condition_show:{type:PROPERTY_BOOL,data:_SpecularType1==4}}", Range(0, 2)) = .85
+        _SpecularToonStart1 ("Spec Toon Start--{condition_show:{type:PROPERTY_BOOL,data:_SpecularType1==4}}", Range(0, 1)) = .95
+        _SpecularToonEnd1 ("Spec Toon End--{condition_show:{type:PROPERTY_BOOL,data:_SpecularType1==4}}", Range(0, 2)) = 1
         //[ToggleUI]_CenterOutSpecColor1 ("Center Out SpecMap--{condition_show:{type:PROPERTY_BOOL,data:_SpecularType1==4}}", Float) = 0
         [ToggleUI]_SpecularAnisoJitterMirrored1("Mirrored?--{condition_show:{type:PROPERTY_BOOL,data:_SpecularType1==4}}", Float) = 0
         [Curve]_SpecularAnisoJitterMicro1 ("Micro Shift--{reference_properties:[_SpecularAnisoJitterMicro1Pan, _SpecularAnisoJitterMicro1UV], condition_show:{type:OR,condition1:{type:PROPERTY_BOOL,data:_SpecularType1==3},condition2:{type:PROPERTY_BOOL,data:_SpecularType1==4}}}", 2D) = "black" { }
@@ -838,7 +832,7 @@ Shader ".poiyomi/Toon/Advanced/Outlines Transparent"
     }
     
     //originalEditorCustomEditor "PoiToon"
-    CustomEditor "ThryEditor"
+    CustomEditor "Thry.ShaderEditor"
     SubShader
     {
         //Blend SrcAlpha OneMinusSrcAlpha

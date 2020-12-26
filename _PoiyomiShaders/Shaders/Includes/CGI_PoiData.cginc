@@ -7,7 +7,7 @@
     {
         #if defined(POINT) || defined(SPOT)
             POI_LIGHT_ATTENUATION(attenuation, shadow, i, i.worldPos.xyz)
-            poiLight.additiveShadow = shadow;
+                poiLight.additiveShadow = shadow;
         #else
             UNITY_LIGHT_ATTENUATION(attenuation, i, i.worldPos.xyz)
         #endif
@@ -109,12 +109,14 @@
         poiMesh.binormal = CreateBinormal(i.normal, i.tangent.xyz, i.tangent.w);
         poiMesh.tangent = i.tangent.xyz;
         
-        if (!facing)
-        {
-            poiMesh.normals[0] *= -1;
-            poiMesh.tangent *= -1;
-            poiMesh.binormal *= -1;
-        }
+        #ifndef OUTLINE
+            if (!facing)
+            {
+                poiMesh.normals[0] *= -1;
+                poiMesh.tangent *= -1;
+                poiMesh.binormal *= -1;
+            }
+        #endif
         
         poiMesh.worldPos = i.worldPos;
         poiMesh.localPos = i.localPos;
@@ -135,6 +137,10 @@
             poiMesh.lightmapUV = i.lightmapUV;
         #endif
         poiMesh.modelPos = i.modelPos;
+        
+        #ifdef FUR
+            poiMesh.furAlpha = i.furAlpha;
+        #endif
     }
     
     void initializeCamera(v2f i)

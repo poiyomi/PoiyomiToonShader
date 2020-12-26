@@ -6,6 +6,7 @@
     UNITY_DECLARE_TEX2D(_MainTex); float4 _MainTex_ST; float4 _MainTex_TexelSize;
     sampler2D _PoiGrab;
     float _Clip;
+    float _AlphaMod;
     
     //Structs
     struct appdata
@@ -123,6 +124,9 @@
             float4 lightmapUV;
         #endif
         float isFrontFace;
+        #ifdef FUR
+            float furAlpha;
+        #endif
     };
     
     struct PoiTangentData

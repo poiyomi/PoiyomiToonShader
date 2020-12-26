@@ -336,6 +336,7 @@
             float4 packedTangentMap = POI2D_SAMPLER_PAN(_AnisoTangentMap, _MainTex, poiMesh.uv[_AnisoTangentMapUV], _AnisoTangentMapPan);
             
             finalSpecular += toonAnisoSpecular(_SpecWhatTangent, _AnisoUseTangentMap, poiLight.direction, poiLight.halfDir, specularMap, poiLight.nDotL, _SpecularToonStart, _SpecularToonEnd, _SpecularTint, albedo, _SpecularMetallic, jitter, _SpecularAnisoJitterMirrored, packedTangentMap);
+            finalSpecular *= lerp(1, poiLight.attenuation, _SpecularAttenuation);
         }
         
         #ifdef FORWARD_BASE_PASS
@@ -359,6 +360,7 @@
                 
                 finalSpecular += AnisotropicSpecular(_SpecWhatTangent, _AnisoUseTangentMap, _SpecularSmoothness, _Spec2Smoothness, _AnisoSpec1Alpha, _AnisoSpec2Alpha, _SpecularTint, _SpecularMetallic, specularMap, poiLight.color, poiLight.direction, poiLight.halfDir, poiLight.nDotL, jitter, packedTangentMap);
                 finalSpecular *= _SpecularTint;
+                finalSpecular *= lerp(1, poiLight.attenuation, _SpecularAttenuation);
             }
         #endif
         
@@ -425,6 +427,7 @@
                 float4 packedTangentMap = POI2D_SAMPLER_PAN(_AnisoTangentMap1, _MainTex, poiMesh.uv[_AnisoTangentMap1UV], _AnisoTangentMap1Pan);
                 
                 finalSpecular1 += toonAnisoSpecular(_SpecWhatTangent1, _AnisoUseTangentMap1, poiLight.direction, poiLight.halfDir, specularMap1, poiLight.nDotL, _SpecularToonStart1, _SpecularToonEnd1, _SpecularTint1, albedo, _SpecularMetallic1, jitter, _SpecularAnisoJitterMirrored1, packedTangentMap);
+                finalSpecular1 *= lerp(1, poiLight.attenuation, _SpecularAttenuation1);
             }
             
             UNITY_BRANCH
@@ -447,6 +450,7 @@
                 
                 finalSpecular1 = AnisotropicSpecular(_SpecWhatTangent1, _AnisoUseTangentMap1, _SpecularSmoothness1, _Spec2Smoothness1, _AnisoSpec1Alpha1, _AnisoSpec2Alpha1, _SpecularTint1, _SpecularMetallic1, specularMap1, poiLight.color, poiLight.direction, poiLight.halfDir, poiLight.nDotL, jitter, packedTangentMap);
                 finalSpecular1 *= _SpecularTint1;
+                finalSpecular1 *= lerp(1, poiLight.attenuation, _SpecularAttenuation1);
             }
             
             #ifdef FORWARD_BASE_PASS

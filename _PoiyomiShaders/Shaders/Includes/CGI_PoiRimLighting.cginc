@@ -19,14 +19,12 @@
     POI_TEXTURE_NOSAMPLER(_RimWidthNoiseTexture);
 
     float _RimWidthNoiseStrength;
-    float4 _RimWidthNoisePan;
     
     float4 rimColor = float4(0, 0, 0, 0);
     float rim = 0;
     
     void calculateRimLighting()
     {
-        _RimWidthNoiseTexture_ST.zw += _Time.y * _RimWidthNoisePan.xy;
         float rimNoise = POI2D_SAMPLER_PAN(_RimWidthNoiseTexture, _MainTex, poiMesh.uv[_RimWidthNoiseTextureUV], _RimWidthNoiseTexturePan);
         rimNoise = (rimNoise - .5) * _RimWidthNoiseStrength;
 
@@ -34,7 +32,7 @@
         UNITY_BRANCH
         if (_RimLightingInvert)
         {
-            viewDotNormal = 1 - poiCam.viewDotNormal;
+            viewDotNormal = 1 - abs(dot(poiCam.viewDir, poiMesh.normals[_RimLightNormal]));
         }
         _RimWidth -= rimNoise;
         float rimMask = POI2D_SAMPLER_PAN(_RimMask, _MainTex, poiMesh.uv[_RimMaskUV], _RimMaskPan);

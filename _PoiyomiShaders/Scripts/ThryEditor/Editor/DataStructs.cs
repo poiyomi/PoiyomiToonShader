@@ -59,13 +59,14 @@ namespace Thry
         public const string SEARCH_ICON = "thry_magnifying_glass_icon";
         public const string PRESETS_ICON = "thry_presets_icon";
         public const string TEXTURE_ARROW = "thry_arrow";
+        public const string TEXTURE_ANIMTED = "thry_animated_icon";
     }
 
     public struct EditorData
     {
         public MaterialEditor editor;
         public MaterialProperty[] properties;
-        public ThryEditor gui;
+        public ShaderEditor gui;
         public Material[] materials;
         public Shader shader;
         public Shader defaultShader;
@@ -74,6 +75,8 @@ namespace Thry
         public List<ShaderPart> shaderParts;
         public List<ShaderProperty> textureArrayProperties;
         public bool firstCall;
+        public bool show_HeaderHider;
+        public bool use_ShaderOptimizer;
     }
 
     public class DrawingData
@@ -109,7 +112,7 @@ namespace Thry
         public bool force_texture_options = false;
         public bool hide_in_inspector = false;
         public bool is_hideable = false;
-        public bool is_hidden_default = false;
+        public bool is_visible_simple = false;
         public string file_name;
     }
 
@@ -205,7 +208,7 @@ namespace Thry
                     Shader shader = Shader.Find(data);
                     if (shader != null)
                     {
-                        foreach (Material m in ThryEditor.currentlyDrawing.materials)
+                        foreach (Material m in ShaderEditor.currentlyDrawing.materials)
                             m.shader = shader;
                     }
                     break;
@@ -245,7 +248,7 @@ namespace Thry
             switch (type)
             {
                 case DefineableConditionType.PROPERTY_BOOL:
-                    ShaderProperty prop = ThryEditor.currentlyDrawing.propertyDictionary[obj];
+                    ShaderProperty prop = ShaderEditor.currentlyDrawing.propertyDictionary[obj];
                     if (prop == null) return false;
                     if (comparator == "##") return prop.materialProperty.floatValue == 1;
                     if (comparator == "==") return "" + prop.materialProperty.floatValue == parts[1];
@@ -272,11 +275,11 @@ namespace Thry
                     if (comparator == "<=") return c_vrc == 1 || c_vrc == 0;
                     break;
                 case DefineableConditionType.TEXTURE_SET:
-                    ShaderProperty shaderProperty = ThryEditor.currentlyDrawing.propertyDictionary[data];
+                    ShaderProperty shaderProperty = ShaderEditor.currentlyDrawing.propertyDictionary[data];
                     if (shaderProperty == null) return false;
                     return shaderProperty.materialProperty.textureValue != null;
                 case DefineableConditionType.DROPDOWN:
-                    ShaderProperty dropdownProperty = ThryEditor.currentlyDrawing.propertyDictionary[obj];
+                    ShaderProperty dropdownProperty = ShaderEditor.currentlyDrawing.propertyDictionary[obj];
                     if (dropdownProperty == null) return false;
                     if (comparator == "##") return dropdownProperty.materialProperty.floatValue == 1;
                     if (comparator == "==") return "" + dropdownProperty.materialProperty.floatValue == parts[1];

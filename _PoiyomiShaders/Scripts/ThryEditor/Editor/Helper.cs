@@ -136,7 +136,7 @@ namespace Thry
 
         public static void testAltClick(Rect rect, ShaderPart property)
         {
-            if (ThryEditor.input.HadMouseDownRepaint && ThryEditor.input.is_alt_down && rect.Contains(ThryEditor.input.mouse_position))
+            if (ShaderEditor.input.HadMouseDownRepaint && ShaderEditor.input.is_alt_down && rect.Contains(ShaderEditor.input.mouse_position))
             {
                 if (property.options.altClick != null)
                     property.options.altClick.Perform();
@@ -559,8 +559,8 @@ namespace Thry
         /// <param name="value"></param>
         public static void SetMaterialValue(string key, string value)
         {
-            MaterialProperty p = ThryEditor.FindProperty(ThryEditor.currentlyDrawing.properties, key);
-            Material[] materials = ThryEditor.currentlyDrawing.materials;
+            MaterialProperty p = ShaderEditor.FindProperty(ShaderEditor.currentlyDrawing.properties, key);
+            Material[] materials = ShaderEditor.currentlyDrawing.materials;
             if (p != null)
             {
                 MaterialHelper.SetMaterialPropertyValue(p, materials, value);

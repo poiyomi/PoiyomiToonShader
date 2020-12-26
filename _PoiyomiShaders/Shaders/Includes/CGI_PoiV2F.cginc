@@ -22,8 +22,11 @@
         float3 modelPos: TEXCOORD11;
         float angleAlpha: TEXCOORD12;
         float4 vertexColor: TEXCOORD14;
-        UNITY_SHADOW_COORDS(15)
-        UNITY_FOG_COORDS(16)
+        #ifdef FUR
+            float furAlpha: TEXCOORD15;
+        #endif
+        UNITY_SHADOW_COORDS(16)
+        UNITY_FOG_COORDS(17)
         UNITY_VERTEX_INPUT_INSTANCE_ID
         UNITY_VERTEX_OUTPUT_STEREO
     };

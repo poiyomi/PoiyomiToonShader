@@ -85,11 +85,11 @@ namespace Thry
         {
             if (restoring_in_progress) return;
 
-            foreach (GameObject o in prev_gameobjects)
+            for(int i=0;i< prev_gameobjects.Length;i++)
             {
-                if (o == null)
+                if (prev_gameobjects[i] == null)
                     continue;
-                Renderer renderer = o.GetComponent<Renderer>();
+                Renderer renderer = prev_gameobjects[i].GetComponent<Renderer>();
                 if (renderer != null)
                 {
                     Material[] materials = renderer.sharedMaterials;

@@ -7,12 +7,14 @@ V2FShadow vertShadowCaster(VertexInputShadow v)
     UNITY_SETUP_INSTANCE_ID(v);
     
     applyLocalVertexTransformation(v.normal, v.vertex);
+    
     UNITY_INITIALIZE_OUTPUT(V2FShadow, o);
     UNITY_TRANSFER_INSTANCE_ID(v, o);
     UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
     
+    o.localPos = v.vertex;
+    o.worldPos = mul(unity_ObjectToWorld, o.localPos);
     
-    TRANSFER_SHADOW_CASTER_NOPOS(o, o.pos)
     o.modelPos = mul(unity_ObjectToWorld, float4(0, 0, 0, 1));
     o.uv = v.uv0;
     o.uv1 = v.uv1;
@@ -41,28 +43,31 @@ V2FShadow vertShadowCaster(VertexInputShadow v)
     {
         uvToUse = v.uv3.xy;
     }
-    float4 worldPos = float4(o.worldPos, 1);
-    float4 localPos = float4(o.localPos, 1);
-    applyWorldVertexTransformationShadow(worldPos, localPos, v.normal, uvToUse);
-    o.worldPos = worldPos;
-    o.localPos = localPos;
+    
+    applyWorldVertexTransformation(o.worldPos, o.localPos, v.normal, uvToUse);
+    applyVertexGlitching(o.worldPos, o.localPos);
+    applySpawnInVert(o.worldPos, o.localPos, v.uv0.xy);
+    applyVertexRounding(o.worldPos, o.localPos);
+    o.pos = UnityObjectToClipPos(o.localPos);
+    o.grabPos = ComputeGrabScreenPos(o.pos);
+    o.modelPos = mul(unity_ObjectToWorld, float4(0, 0, 0, 1));
     
     UNITY_BRANCH
     if(_EnableTouchGlow || _EnableBulge)
     {
         o.pos = UnityObjectToClipPos(float3(0, 0, -5));
-        o.localPos = float3(0, 0, -5);
+        o.localPos.xyz = float3(0, 0, -5);
         o.worldPos = mul(unity_ObjectToWorld, o.localPos);
     }
-    else
-    {
-        o.localPos = v.vertex;
-        o.worldPos = mul(unity_ObjectToWorld, o.localPos);
-        o.grabPos = ComputeGrabScreenPos(UnityObjectToClipPos(o.localPos));
-    }
+
     o.angleAlpha = 1;
     #ifdef POI_RANDOM
         o.angleAlpha = ApplyAngleBasedRendering(o.modelPos, o.worldPos);
     #endif
+    
+    
+    o.pos = UnityClipSpaceShadowCasterPos(o.localPos, v.normal);
+    o.pos = UnityApplyLinearShadowBias(o.pos);
+    
     return o;
 }

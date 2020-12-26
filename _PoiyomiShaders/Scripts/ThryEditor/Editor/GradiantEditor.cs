@@ -192,7 +192,7 @@ namespace Thry
             prop.textureValue = privious_preview_texture;
             SetGradient(TextureHelper.GetGradient(privious_preview_texture));
             gradient_has_been_edited = false;
-            ThryEditor.repaint();
+            ShaderEditor.repaint();
         }
 
         private void TextureSettingsGUI()
@@ -214,14 +214,14 @@ namespace Thry
             textureSettings.ApplyModes(data.preview_texture);
             prop.textureValue = data.preview_texture;
             gradient_has_been_edited = true;
-            ThryEditor.repaint();
+            ShaderEditor.repaint();
         }
 
         private void UpdatePreviewTexture(Texture texture)
         {
             data.preview_texture = texture;
             prop.textureValue = texture;
-            ThryEditor.repaint();
+            ShaderEditor.repaint();
         }
 
         private void OverrideGradientTexture(Rect position)

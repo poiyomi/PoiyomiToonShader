@@ -38,7 +38,7 @@ namespace Thry
             editor.TexturePropertyMiniThumbnail(thumbnailPos, prop, label.text, (hasFoldoutProperties ? "Click here for extra properties" : "") + (label.tooltip != "" ? " | " : "") + label.tooltip);
             if (DrawingData.currentTexProperty.reference_property_exists)
             {
-                ShaderProperty property = ThryEditor.currentlyDrawing.propertyDictionary[DrawingData.currentTexProperty.options.reference_property];
+                ShaderProperty property = ShaderEditor.currentlyDrawing.propertyDictionary[DrawingData.currentTexProperty.options.reference_property];
                 Rect r = position;
                 r.x += EditorGUIUtility.labelWidth - CurrentIndentWidth();
                 r.width -= EditorGUIUtility.labelWidth - CurrentIndentWidth();
@@ -48,6 +48,8 @@ namespace Thry
             {
                 //draw dropdown triangle
                 thumbnailPos.x += DrawingData.currentTexProperty.xOffset * 15;
+                //This is an invisible button with zero functionality. But it needs to be here so that the triangle click reacts fast
+                if (GUI.Button(thumbnailPos, "", Styles.none));
                 if (Event.current.type == EventType.Repaint)
                     EditorStyles.foldout.Draw(thumbnailPos, false, false, DrawingData.currentTexProperty.showFoldoutProperties, false);
 
@@ -58,21 +60,21 @@ namespace Thry
                     {
                         EditorGUI.indentLevel += 2;
                         if (DrawingData.currentTexProperty.hasScaleOffset)
-                            ThryEditor.currentlyDrawing.editor.TextureScaleOffsetProperty(prop);
+                            ShaderEditor.currentlyDrawing.editor.TextureScaleOffsetProperty(prop);
 
                         PropertyOptions options = DrawingData.currentTexProperty.options;
                         if (options.reference_properties != null)
                             foreach (string r_property in options.reference_properties)
                             {
-                                ShaderProperty property = ThryEditor.currentlyDrawing.propertyDictionary[r_property];
+                                ShaderProperty property = ShaderEditor.currentlyDrawing.propertyDictionary[r_property];
                                 property.Draw(useEditorIndent: true);
                             }
                         EditorGUI.indentLevel -= 2;
                     }
-                    if (ThryEditor.input.MouseClick && position.Contains(Event.current.mousePosition))
+                    if (ShaderEditor.input.MouseLeftClick && position.Contains(Event.current.mousePosition))
                     {
+                        ShaderEditor.input.Use();
                         DrawingData.currentTexProperty.showFoldoutProperties = !DrawingData.currentTexProperty.showFoldoutProperties;
-                        editor.Repaint();
                     }
                 }
             }
@@ -116,12 +118,12 @@ namespace Thry
                 border.height += 8;
                 foreach (string r_property in DrawingData.currentTexProperty.options.reference_properties)
                 {
-                    border.height += editor.GetPropertyHeight(ThryEditor.currentlyDrawing.propertyDictionary[r_property].materialProperty);
+                    border.height += editor.GetPropertyHeight(ShaderEditor.currentlyDrawing.propertyDictionary[r_property].materialProperty);
                 }
             }
             if (DrawingData.currentTexProperty.reference_property_exists)
             {
-                border.height += editor.GetPropertyHeight(ThryEditor.currentlyDrawing.propertyDictionary[DrawingData.currentTexProperty.options.reference_property].materialProperty);
+                border.height += editor.GetPropertyHeight(ShaderEditor.currentlyDrawing.propertyDictionary[DrawingData.currentTexProperty.options.reference_property].materialProperty);
             }
 
 
@@ -166,10 +168,10 @@ namespace Thry
             Rect select_rect = new Rect(preview_rect);
             select_rect.height = 12;
             select_rect.y += preview_rect.height - 12;
-            if (Event.current.commandName == "ObjectSelectorUpdated" && EditorGUIUtility.GetObjectPickerControlID() == texturePickerWindow && texturePickerWindowProperty == prop)
+            if (Event.current.commandName == "ObjectSelectorUpdated" && EditorGUIUtility.GetObjectPickerControlID() == texturePickerWindow && texturePickerWindowProperty.name == prop.name)
             {
                 prop.textureValue = (Texture)EditorGUIUtility.GetObjectPickerObject();
-                ThryEditor.repaint();
+                ShaderEditor.repaint();
             }
             if (Event.current.commandName == "ObjectSelectorClosed" && EditorGUIUtility.GetObjectPickerControlID() == texturePickerWindow)
             {
@@ -188,10 +190,10 @@ namespace Thry
             }
 
             if (!skip_drag_and_drop_handling)
-                if ((ThryEditor.input.is_drag_drop_event) && preview_rect.Contains(ThryEditor.input.mouse_position) && DragAndDrop.objectReferences[0] is Texture)
+                if ((ShaderEditor.input.is_drag_drop_event) && preview_rect.Contains(ShaderEditor.input.mouse_position) && DragAndDrop.objectReferences[0] is Texture)
                 {
                     DragAndDrop.visualMode = DragAndDropVisualMode.Copy;
-                    if (ThryEditor.input.is_drop_event)
+                    if (ShaderEditor.input.is_drop_event)
                     {
                         DragAndDrop.AcceptDrag();
                         prop.textureValue = (Texture)DragAndDrop.objectReferences[0];
@@ -218,14 +220,14 @@ namespace Thry
                 PropertyOptions options = DrawingData.currentTexProperty.options;
                 if (options.reference_property != null)
                 {
-                    ShaderProperty property = ThryEditor.currentlyDrawing.propertyDictionary[options.reference_property];
-                    ThryEditor.currentlyDrawing.editor.ShaderProperty(property.materialProperty, property.content);
+                    ShaderProperty property = ShaderEditor.currentlyDrawing.propertyDictionary[options.reference_property];
+                    ShaderEditor.currentlyDrawing.editor.ShaderProperty(property.materialProperty, property.content);
                 }
                 if (options.reference_properties != null)
                     foreach (string r_property in options.reference_properties)
                     {
-                        ShaderProperty property = ThryEditor.currentlyDrawing.propertyDictionary[r_property];
-                        ThryEditor.currentlyDrawing.editor.ShaderProperty(property.materialProperty, property.content);
+                        ShaderProperty property = ShaderEditor.currentlyDrawing.propertyDictionary[r_property];
+                        ShaderEditor.currentlyDrawing.editor.ShaderProperty(property.materialProperty, property.content);
                     }
                 EditorGUIUtility.labelWidth = oldLabelWidth;
                 EditorGUI.indentLevel -= 2;
@@ -399,7 +401,7 @@ namespace Thry
         public static int drawRenderQueueSelector(Shader defaultShader, int customQueueFieldInput)
         {
             EditorGUILayout.BeginHorizontal();
-            if (customQueueFieldInput == -1) customQueueFieldInput = ThryEditor.currentlyDrawing.materials[0].renderQueue;
+            if (customQueueFieldInput == -1) customQueueFieldInput = ShaderEditor.currentlyDrawing.materials[0].renderQueue;
             int[] queueOptionsQueues = new int[] { defaultShader.renderQueue, 2000, 2450, 3000, customQueueFieldInput };
             string[] queueOptions = new string[] { "From Shader", "Geometry", "Alpha Test", "Transparency" };
             int queueSelection = 4;
@@ -421,9 +423,9 @@ namespace Thry
             int newCustomQueueFieldInput = EditorGUILayout.DelayedIntField(customQueueFieldInput, GUILayout.MaxWidth(65));
             bool isInput = customQueueFieldInput != newCustomQueueFieldInput || queueSelection != newQueueSelection;
             customQueueFieldInput = newCustomQueueFieldInput;
-            foreach (Material m in ThryEditor.currentlyDrawing.materials)
+            foreach (Material m in ShaderEditor.currentlyDrawing.materials)
                 if (customQueueFieldInput != m.renderQueue && isInput) m.renderQueue = customQueueFieldInput;
-            if (customQueueFieldInput != ThryEditor.currentlyDrawing.materials[0].renderQueue && !isInput) customQueueFieldInput = ThryEditor.currentlyDrawing.materials[0].renderQueue;
+            if (customQueueFieldInput != ShaderEditor.currentlyDrawing.materials[0].renderQueue && !isInput) customQueueFieldInput = ShaderEditor.currentlyDrawing.materials[0].renderQueue;
             EditorGUILayout.EndHorizontal();
             return customQueueFieldInput;
         }
@@ -449,8 +451,8 @@ namespace Thry
             selected = EditorGUILayout.Popup(label.text, selected, locales);
             if (EditorGUI.EndChangeCheck())
             {
-                ThryEditor.currentlyDrawing.propertyDictionary[ThryEditor.PROPERTY_NAME_LOCALE].materialProperty.floatValue = selected;
-                ThryEditor.reload();
+                ShaderEditor.currentlyDrawing.propertyDictionary[ShaderEditor.PROPERTY_NAME_LOCALE].materialProperty.floatValue = selected;
+                ShaderEditor.reload();
             }
         }
 
@@ -532,7 +534,15 @@ namespace Thry
 
     public class HeaderHider{
 
+        public enum HeaderHidingType
+        {
+            simple = 1,
+            show_all = 2,
+            custom=3
+        }
+
         private static Dictionary<string,bool> headerHiddenSaved;
+        public static HeaderHidingType state { get; private set; }
         private static void LoadHiddenHeaderNames()
         {
             string data = PersistentData.Get("HiddenHeaderNames");
@@ -540,6 +550,11 @@ namespace Thry
                 headerHiddenSaved = new Dictionary<string, bool>();
             else
                 headerHiddenSaved = Parser.Deserialize<Dictionary<string, bool>>(data);
+            data = PersistentData.Get("HeaderHiderState");
+            if (data == null)
+                state = HeaderHidingType.simple;
+            else
+                state = (HeaderHidingType)Enum.Parse(typeof(HeaderHidingType),data);
         }
 
         public static bool InitHidden(ShaderHeader header)
@@ -548,9 +563,11 @@ namespace Thry
                 LoadHiddenHeaderNames();
             if (header.options.is_hideable == false)
                 return false;
-            bool is_hidden = header.options.is_hidden_default;
+            bool is_hidden = false;
             if (headerHiddenSaved.ContainsKey(header.materialProperty.name))
                 is_hidden =  headerHiddenSaved[header.materialProperty.name];
+            else
+                headerHiddenSaved[header.materialProperty.name] = is_hidden;
             header.is_hidden = is_hidden;
             return is_hidden;
         }
@@ -565,6 +582,7 @@ namespace Thry
                 if(save)
                     PersistentData.Set("HiddenHeaderNames", Parser.Serialize(headerHiddenSaved));
             }
+            UpdateValues();
         }
         public static void SetHidden(List<ShaderPart> parts, bool set_hidden)
         {
@@ -576,6 +594,48 @@ namespace Thry
                 }
             }
             PersistentData.Set("HiddenHeaderNames", Parser.Serialize(headerHiddenSaved));
+            UpdateValues();
+        }
+
+        private static void UpdateValues()
+        {
+            foreach (ShaderPart part in ShaderEditor.currentlyDrawing.shaderParts)
+            {
+                if (part.options.is_hideable == false)
+                    continue;
+                bool is_hidden = part.is_hidden;
+            }
+        }
+
+        private static void SetType(HeaderHidingType newstate)
+        {
+            state = newstate;
+            PersistentData.Set("HeaderHiderState", state.ToString());
+        }
+
+        public static bool IsHeaderHidden(ShaderPart header)
+        {
+            return header.options.is_hideable && ((header.is_hidden && state == HeaderHidingType.custom) || (state == HeaderHidingType.simple && !header.options.is_visible_simple));
+        }
+
+        public static void HeaderHiderGUI(EditorData editorData)
+        {
+            EditorGUILayout.BeginHorizontal(Styles.style_toolbar);
+            if (GUILayout.Button("Simple", Styles.style_toolbar_toggle(state == HeaderHidingType.simple)))
+                SetType(HeaderHidingType.simple);
+            if (GUILayout.Button("Advanced", Styles.style_toolbar_toggle(state == HeaderHidingType.show_all)))
+                SetType(HeaderHidingType.show_all);
+            Rect right = GUILayoutUtility.GetRect(10, 20);
+            Rect arrow = new Rect(right.x + right.width - 20, right.y, 20, 20);
+            if (GUI.Button(arrow, Styles.dropdown_settings_icon, EditorStyles.largeLabel))
+                DrawHeaderHiderMenu(arrow, editorData.shaderParts);
+            if (GUI.Button(right, "Custom", Styles.style_toolbar_toggle(state == HeaderHidingType.custom)))
+                SetType(HeaderHidingType.custom);
+
+            GUI.Button(arrow, Styles.dropdown_settings_icon, EditorStyles.largeLabel);
+
+            EditorGUILayout.EndHorizontal();
+            EditorGUILayout.Space();
         }
 
         public static void DrawHeaderHiderMenu(Rect position, List<ShaderPart> shaderParts)

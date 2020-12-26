@@ -13,7 +13,7 @@ namespace Thry
     {
         public override void OnGUI(Rect position, MaterialProperty prop, GUIContent label, MaterialEditor editor)
         {
-            GuiHelper.drawSmallTextureProperty(position, prop, label, editor, ((TextureProperty)ThryEditor.currentlyDrawing.currentProperty).hasScaleOffset);
+            GuiHelper.drawSmallTextureProperty(position, prop, label, editor, ((TextureProperty)ShaderEditor.currentlyDrawing.currentProperty).hasScaleOffset);
         }
 
         public override float GetPropertyHeight(MaterialProperty prop, string label, MaterialEditor editor)
@@ -27,7 +27,7 @@ namespace Thry
     {
         public override void OnGUI(Rect position, MaterialProperty prop, GUIContent label, MaterialEditor editor)
         {
-            GuiHelper.drawBigTextureProperty(position, prop, label, editor, ((TextureProperty)ThryEditor.currentlyDrawing.currentProperty).hasScaleOffset);
+            GuiHelper.drawBigTextureProperty(position, prop, label, editor, ((TextureProperty)ShaderEditor.currentlyDrawing.currentProperty).hasScaleOffset);
         }
 
         public override float GetPropertyHeight(MaterialProperty prop, string label, MaterialEditor editor)
@@ -41,7 +41,7 @@ namespace Thry
     {
         public override void OnGUI(Rect position, MaterialProperty prop, GUIContent label, MaterialEditor editor)
         {
-            GuiHelper.drawStylizedBigTextureProperty(position, prop, label, editor, ((TextureProperty)ThryEditor.currentlyDrawing.currentProperty).hasScaleOffset);
+            GuiHelper.drawStylizedBigTextureProperty(position, prop, label, editor, ((TextureProperty)ShaderEditor.currentlyDrawing.currentProperty).hasScaleOffset);
         }
 
         public override float GetPropertyHeight(MaterialProperty prop, string label, MaterialEditor editor)
@@ -68,10 +68,10 @@ namespace Thry
         {
             if (imageData == null)
             {
-                if (ThryEditor.currentlyDrawing.currentProperty.options.texture == null)
+                if (ShaderEditor.currentlyDrawing.currentProperty.options.texture == null)
                     imageData = new TextureData();
                 else
-                    imageData = ThryEditor.currentlyDrawing.currentProperty.options.texture;
+                    imageData = ShaderEditor.currentlyDrawing.currentProperty.options.texture;
             }
         }
 
@@ -148,18 +148,20 @@ namespace Thry
                 Init(prop);
 
             EditorGUI.BeginChangeCheck();
-            GuiHelper.drawSmallTextureProperty(position, prop, label, editor, DrawingData.currentTexProperty.hasFoldoutProperties);
             if (EditorGUI.EndChangeCheck())
                 Init(prop);
 
             UpdateRects(position);
-            GradientField();
-
-            if (Event.current.type == EventType.MouseDown && border_position.Contains(Event.current.mousePosition))
+            if (ShaderEditor.input.MouseClick && border_position.Contains(Event.current.mousePosition))
             {
-                PropertyOptions options = ThryEditor.currentlyDrawing.currentProperty.options;
+                ShaderEditor.input.Use();
+                PropertyOptions options = ShaderEditor.currentlyDrawing.currentProperty.options;
                 GradientEditor.Open(data, prop, options.texture, options.force_texture_options, !options.force_texture_options);
             }
+
+            GuiHelper.drawSmallTextureProperty(position, prop, label, editor, DrawingData.currentTexProperty.hasFoldoutProperties);
+
+            GradientField();
         }
 
         private void UpdateRects(Rect position)
@@ -279,17 +281,17 @@ namespace Thry
 
             string n = "";
             if (prop.textureValue != null) n = prop.textureValue.name;
-            if ((ThryEditor.input.is_drag_drop_event) && DrawingData.lastGuiObjectRect.Contains(ThryEditor.input.mouse_position))
+            if ((ShaderEditor.input.is_drag_drop_event) && DrawingData.lastGuiObjectRect.Contains(ShaderEditor.input.mouse_position))
             {
                 DragAndDrop.visualMode = DragAndDropVisualMode.Copy;
-                if (ThryEditor.input.is_drop_event)
+                if (ShaderEditor.input.is_drop_event)
                 {
                     DragAndDrop.AcceptDrag();
                     HanldeDropEvent(prop);
                 }
             }
-            if (ThryEditor.currentlyDrawing.firstCall)
-                ThryEditor.currentlyDrawing.textureArrayProperties.Add((ShaderProperty)ThryEditor.currentlyDrawing.currentProperty);
+            if (ShaderEditor.currentlyDrawing.firstCall)
+                ShaderEditor.currentlyDrawing.textureArrayProperties.Add((ShaderProperty)ShaderEditor.currentlyDrawing.currentProperty);
         }
 
         public void HanldeDropEvent(MaterialProperty prop)
@@ -299,10 +301,10 @@ namespace Thry
             {
                 Texture2DArray tex = Converter.PathsToTexture2DArray(paths);
                 MaterialHelper.UpdateTargetsValue(prop, tex);
-                if (ThryEditor.currentlyDrawing.currentProperty.options.reference_property != null)
+                if (ShaderEditor.currentlyDrawing.currentProperty.options.reference_property != null)
                 {
                     ShaderProperty p;
-                    ThryEditor.currentlyDrawing.propertyDictionary.TryGetValue(ThryEditor.currentlyDrawing.currentProperty.options.reference_property, out p);
+                    ShaderEditor.currentlyDrawing.propertyDictionary.TryGetValue(ShaderEditor.currentlyDrawing.currentProperty.options.reference_property, out p);
                     if (p != null)
                         MaterialHelper.UpdateFloatValue(p.materialProperty, tex.depth);
                 }

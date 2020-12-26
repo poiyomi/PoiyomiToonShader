@@ -169,6 +169,13 @@ TODO: _ALPHAMODULATE_ON
     #ifdef BLOOM_LENS_DIRT
         #include "CGI_PoiIridescence.cginc"
     #endif
+    
+    
+    #ifdef FUR
+        #include "CGI_PoiFur.cginc"
+        #include "CGI_PoiGeomFur.cginc"
+    #endif
+    
     #include "CGI_PoiMainTex.cginc"
     
     #ifdef GEOM_TYPE_BRANCH

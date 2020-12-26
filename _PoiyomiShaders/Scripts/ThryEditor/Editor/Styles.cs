@@ -1,6 +1,7 @@
 ﻿// Material/Shader Inspector for Unity 2017/2018
 // Copyright (C) 2019 Thryrallo
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
@@ -52,7 +53,19 @@ namespace Thry
         public static GUIStyle made_by_style { get; private set; } = CreateStyle(fontSize: 10);
         public static GUIStyle notification_style { get; private set; } = CreateStyle(Color.red, fontSize: 12, worldWrap: true, baseStyle: GUI.skin.box);
 
-        private static GUIStyle CreateStyle(System.Nullable<Color> color = null, int fontSize = -1 , RectOffset padding = null, TextAnchor alignment = TextAnchor.MiddleLeft,
+        public static GUIStyle none { get; private set; } = CreateStyle();
+
+        public static GUIStyle style_toolbar { get; private set; } = CreateStyle(baseStyle: Styles.dropDownHeader);
+        public static GUIStyle style_toolbar_toggle_active { get; private set; } = CreateStyle(backgroundTexture: MultiplyTextureWithColor(Styles.dropDownHeader.normal.background, new Color(1,1,1,1)), color: Color.white, contentOffset: new Vector2(0, -2) ,alignment: TextAnchor.MiddleCenter, baseStyle: Styles.dropDownHeader);
+        public static GUIStyle style_toolbar_toggle_unactive { get; private set; } = CreateStyle(contentOffset: new Vector2(0, -2), alignment: TextAnchor.MiddleCenter, baseStyle: Styles.dropDownHeader);
+        public static GUIStyle style_toolbar_toggle(bool active)
+        {
+            if (active)
+                return style_toolbar_toggle_active;
+            return style_toolbar_toggle_unactive;
+        }
+
+        private static GUIStyle CreateStyle(Color? color = null, int fontSize = -1 , RectOffset padding = null, RectOffset border = null, Vector2? contentOffset = null, TextAnchor alignment = TextAnchor.MiddleLeft,
             Texture2D backgroundTexture = null, bool worldWrap = true, GUIStyle baseStyle = null)
         {
             GUIStyle style = null;
@@ -60,15 +73,37 @@ namespace Thry
                 style = new GUIStyle();
             else
                 style = new GUIStyle(baseStyle);
-            if(color!=null)
+            if (color != null)
+            {
                 style.normal.textColor = color.Value;
+                style.active.textColor = color.Value;
+                style.hover.textColor = color.Value;
+                style.focused.textColor = color.Value;
+                style.onActive.textColor = color.Value;
+                style.onFocused.textColor = color.Value;
+                style.onActive.textColor = color.Value;
+                style.onNormal.textColor = color.Value;
+            }
             style.alignment = alignment;
             if(fontSize != -1)
                 style.fontSize = fontSize;
             if (padding != null)
                 style.padding = padding;
-            if(backgroundTexture!=null)
+            if (border != null)
+                style.border = border;
+            if (contentOffset != null)
+                style.contentOffset = contentOffset.Value;
+            if (backgroundTexture != null)
+            {
                 style.normal.background = backgroundTexture;
+                style.active.background = backgroundTexture;
+                style.hover.background = backgroundTexture;
+                style.focused.background = backgroundTexture;
+                style.onActive.background = backgroundTexture;
+                style.onFocused.background = backgroundTexture;
+                style.onHover.background = backgroundTexture;
+                style.onNormal.background = backgroundTexture;
+            }
             style.wordWrap = worldWrap;
             return style;
         }
@@ -82,6 +117,7 @@ namespace Thry
         public static Texture2D search_icon { get; private set; } = LoadTextureByFileName(RESOURCE_NAME.SEARCH_ICON);
         public static Texture2D presets_icon { get; private set; } = LoadTextureByFileName(RESOURCE_NAME.PRESETS_ICON);
         public static Texture2D t_arrow { get; private set; } = LoadTextureByFileName(RESOURCE_NAME.TEXTURE_ARROW);
+        public static Texture2D texture_animated { get; private set; } = LoadTextureByFileName(RESOURCE_NAME.TEXTURE_ANIMTED);
 
 
         private static Texture2D LoadTextureByNameAndEditorType(string normalName, string proName)
@@ -99,6 +135,29 @@ namespace Thry
                 tex = Texture2D.whiteTexture;
             else
                 tex = AssetDatabase.LoadAssetAtPath<Texture2D>(AssetDatabase.GUIDToAssetPath(guids[0]));
+            return tex;
+        }
+
+        private static Texture2D CreateColorTexture(Color color)
+        {
+            Texture2D tex = new Texture2D(1, 1);
+            tex.SetPixel(0, 0, color);
+            tex.Apply();
+            return tex;
+        }
+
+        private static Texture2D MultiplyTextureWithColor(Texture2D ogtex, Color color)
+        {
+            Texture2D tex = TextureHelper.GetReadableTexture(ogtex);
+            for(int x = 0; x < tex.width; x++)
+            {
+                for (int y = 0; y < tex.height; y++)
+                {
+                    Color oColor = tex.GetPixel(x, y);
+                    tex.SetPixel(x, y, oColor * color);
+                }
+            }
+            tex.Apply();
             return tex;
         }
     }

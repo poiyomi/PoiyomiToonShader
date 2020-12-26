@@ -12,7 +12,7 @@ using UnityEngine;
 namespace Thry
 {
 
-    public class ThryEditorHeader
+    public class ShaderEditorHeader
     {
         private MaterialProperty property;
 
@@ -20,7 +20,7 @@ namespace Thry
 
         //private string DATA_KEY;
 
-        public ThryEditorHeader(MaterialProperty prop)
+        public ShaderEditorHeader(MaterialProperty prop)
         {
             //DATA_KEY = "Header_" + prop.name + "_State";
             //this.expanded = PersistentData.Get(DATA_KEY) == "expanded";
@@ -39,7 +39,7 @@ namespace Thry
         public void Toggle()
         {
             expanded = !expanded;
-            if (!ThryEditor.AnimationIsRecording)
+            if (!ShaderEditor.AnimationIsRecording)
             {
                 if (expanded)
                     property.floatValue = 1;
@@ -48,9 +48,9 @@ namespace Thry
             }
         }
 
-        public void Foldout(int xOffset, GUIContent content, ThryEditor gui)
+        public void Foldout(int xOffset, GUIContent content, ShaderEditor gui)
         {
-            PropertyOptions options = ThryEditor.currentlyDrawing.currentProperty.options;
+            PropertyOptions options = ShaderEditor.currentlyDrawing.currentProperty.options;
             Event e = Event.current;
             GUIStyle style = new GUIStyle(Styles.dropDownHeader);
             style.margin.left = 15 * xOffset + 15;
@@ -79,7 +79,7 @@ namespace Thry
                 togglePropertyRect.width = GUI.skin.font.fontSize*3;
                 float fieldWidth = EditorGUIUtility.fieldWidth;
                 EditorGUIUtility.fieldWidth = 20;
-                ShaderProperty prop = ThryEditor.currentlyDrawing.propertyDictionary[options.reference_property];
+                ShaderProperty prop = ShaderEditor.currentlyDrawing.propertyDictionary[options.reference_property];
 
                 int xOffset = prop.xOffset;
                 prop.xOffset = 0;
@@ -125,7 +125,7 @@ namespace Thry
         }
 
         /// <summary>
-        /// Draws the icons for ThryEditor features like linking and copying
+        /// Draws the icons for ShaderEditor features like linking and copying
         /// </summary>
         /// <param name="rect"></param>
         /// <param name="e"></param>
@@ -152,7 +152,7 @@ namespace Thry
                 float maxY = GUIUtility.ScreenToGUIPoint(new Vector2(0, EditorWindow.focusedWindow.position.y + Screen.height)).y - 2.5f*buttonRect.height;
                 buttonRect.y = Mathf.Min(buttonRect.y- buttonRect.height/2, maxY);
 
-                ShowHeaderContextMenu(buttonRect, ThryEditor.currentlyDrawing.currentProperty, ThryEditor.currentlyDrawing.materials[0]);
+                ShowHeaderContextMenu(buttonRect, ShaderEditor.currentlyDrawing.currentProperty, ShaderEditor.currentlyDrawing.materials[0]);
             }
         }
 
@@ -163,13 +163,13 @@ namespace Thry
             buttonRect.x += rect.width - 45;
             buttonRect.y += 1;
             buttonRect.height -= 4;
-            List<Material> linked_materials = MaterialLinker.GetLinked(ThryEditor.currentlyDrawing.currentProperty.materialProperty);
+            List<Material> linked_materials = MaterialLinker.GetLinked(ShaderEditor.currentlyDrawing.currentProperty.materialProperty);
             Texture2D icon = Styles.inactive_link_icon;
             if (linked_materials!=null)
                 icon = Styles.active_link_icon;
             if (GUI.Button(buttonRect, icon, EditorStyles.largeLabel))
             {
-                MaterialLinker.Popup(buttonRect,linked_materials, ThryEditor.currentlyDrawing.currentProperty.materialProperty);
+                MaterialLinker.Popup(buttonRect,linked_materials, ShaderEditor.currentlyDrawing.currentProperty.materialProperty);
                 e.Use();
             }
         }

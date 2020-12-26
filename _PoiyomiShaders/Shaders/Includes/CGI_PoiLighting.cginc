@@ -35,9 +35,10 @@
     float3 _LightingEndColor;
     float _AOStrength;
     fixed _LightingDetailStrength;
+    fixed _LightingAdditiveDetailStrength;
     fixed _LightingNoIndirectMultiplier;
     fixed _LightingNoIndirectThreshold;
-
+    
     uint _LightingAdditiveType;
     fixed _LightingAdditiveGradientStart;
     fixed _LightingAdditiveGradientEnd;
@@ -276,9 +277,12 @@
         poiLight.directLighting = saturate(lerp(ShadeSH9Plus, lightColor, 1 - _LightingIndirectContribution));
         poiLight.indirectLighting = saturate(ShadeSH9Minus);
         
-        if (max(max(poiLight.indirectLighting.x, poiLight.indirectLighting.y), poiLight.indirectLighting.z) <= _LightingNoIndirectThreshold && max(max(poiLight.directLighting.x, poiLight.directLighting.y), poiLight.directLighting.z) >= 0)
+        float3 directLighting = lerp(poiLight.directLighting, dot(poiLight.directLighting, float3(0.299, 0.587, 0.114)), _LightingMonochromatic);
+        float3 indirectLighting = lerp(poiLight.indirectLighting, dot(poiLight.indirectLighting, float3(0.299, 0.587, 0.114)), _LightingMonochromatic);
+
+        if (max(max(indirectLighting.x, indirectLighting.y), indirectLighting.z) <= _LightingNoIndirectThreshold && max(max(directLighting.x, directLighting.y), directLighting.z) >= 0)
         {
-            poiLight.indirectLighting = poiLight.directLighting * _LightingNoIndirectMultiplier;
+            indirectLighting = directLighting * _LightingNoIndirectMultiplier;
         }
         
         half4 shadowStrength = 1;
@@ -316,25 +320,25 @@
         UNITY_BRANCH
         if(_LightingStandardControlsToon)
         {
-            float3 RealisticLighting = calculateRealisticLighting(1);
-            poiLight.rampedLightMap = UNITY_SAMPLE_TEX2D(_ToonRamp, (.5 + dot(RealisticLighting, float3(.33333, .33333, .33333)) * .5) + _ShadowOffset);
+            float3 realisticLighting = calculateRealisticLighting(1);
+            poiLight.rampedLightMap = UNITY_SAMPLE_TEX2D(_ToonRamp, (.5 + dot(realisticLighting, float3(.33333, .33333, .33333)) * .5) + _ShadowOffset);
             return;
         }
         
         UNITY_BRANCH
         if(_LightingType == 0)
         {
-            poiLight.finalLighting = lerp(poiLight.indirectLighting * lerp(1, AOMap, _AOStrength), poiLight.directLighting, poiLight.rampedLightMap);
+            poiLight.finalLighting = lerp(indirectLighting * lerp(1, AOMap, _AOStrength), directLighting, poiLight.rampedLightMap);
         }
         UNITY_BRANCH
         if(_LightingType == 1)
         {
-            poiLight.finalLighting = lerp(poiLight.rampedLightMap * poiLight.directLighting * lerp(1, AOMap, _AOStrength), poiLight.directLighting, poiLight.rampedLightMap);
+            poiLight.finalLighting = lerp(poiLight.rampedLightMap * directLighting * lerp(1, AOMap, _AOStrength), directLighting, poiLight.rampedLightMap);
         }
         UNITY_BRANCH
         if(_LightingType == 3)
         {
-            poiLight.finalLighting = lerp(saturate(poiLight.directLighting * _LightingStartColor), saturate(poiLight.indirectLighting * _LightingEndColor * lerp(1, AOMap, _AOStrength)), smoothstep(_LightingGradientStart, _LightingGradientEnd, 1 - poiLight.lightMap));
+            poiLight.finalLighting = lerp(saturate(directLighting * _LightingStartColor), saturate(indirectLighting * _LightingEndColor * lerp(1, AOMap, _AOStrength)), smoothstep(_LightingGradientStart, _LightingGradientEnd, 1 - poiLight.lightMap));
         }
     }
     
@@ -347,7 +351,8 @@
         }
         else
         {
-            return lerp(lightColor * attenuation, lightColor * _LightingAdditivePassthrough * attenuation, smoothstep(_LightingAdditiveGradientStart, _LightingAdditiveGradientEnd, dotNL));
+            fixed detailShadow = lerp(1, POI2D_SAMPLER_PAN(_LightingDetailShadows, _MainTex, poiMesh.uv[_LightingDetailShadowsUV], _LightingDetailShadowsPan), _LightingAdditiveDetailStrength).r;
+            return lerp(lightColor * attenuation, lightColor * _LightingAdditivePassthrough * attenuation, smoothstep(_LightingAdditiveGradientStart, _LightingAdditiveGradientEnd, dotNL)) * detailShadow;
         }
     }
     
@@ -358,7 +363,7 @@
         #endif
         #ifdef FORWARD_BASE_PASS
             calculateBasePassLighting();
-            
+
             #ifdef VERTEXLIGHT_ON
                 poiLight.vFinalLighting = 0;
                 
@@ -370,25 +375,15 @@
         #else
             #if defined(POINT) || defined(SPOT)
                 #ifndef SIMPLE
+                    fixed detailShadow = lerp(1, POI2D_SAMPLER_PAN(_LightingDetailShadows, _MainTex, poiMesh.uv[_LightingDetailShadowsUV], _LightingDetailShadowsPan), _LightingAdditiveDetailStrength).r;
                     UNITY_BRANCH
-                    if(_LightingUseShadowRamp)
+                    if(_LightingAdditiveType == 0)
                     {
-                        float uv = poiLight.nDotL;
-                        float3 lighting = UNITY_SAMPLE_TEX2D_SAMPLER(_ToonRamp1, _ToonRamp, uv + _ShadowOffset1) * poiLight.color;
-                        poiLight.finalLighting *= lighting;
+                        return poiLight.color * poiLight.attenuation * max(0, poiLight.nDotL) * detailShadow;
                     }
                     else
                     {
-                        UNITY_BRANCH
-                        if(_LightingAdditiveType == 0)
-                        {
-                            return poiLight.color * poiLight.attenuation * max(0, poiLight.nDotL);
-                        }
-                        else
-                        {
-
-                            return lerp(poiLight.color * max(poiLight.additiveShadow, _LightingAdditivePassthrough), poiLight.color * _LightingAdditivePassthrough, smoothstep(_LightingAdditiveGradientStart, _LightingAdditiveGradientEnd, 1 - (.5 * poiLight.nDotL + .5))) * poiLight.attenuation;
-                        }
+                        return lerp(poiLight.color * max(poiLight.additiveShadow, _LightingAdditivePassthrough), poiLight.color * _LightingAdditivePassthrough, smoothstep(_LightingAdditiveGradientStart, _LightingAdditiveGradientEnd, 1 - (.5 * poiLight.nDotL + .5))) * poiLight.attenuation * detailShadow;
                     }
                 #else
                     poiLight.finalLighting = poiLight.color * poiLight.attenuation;
@@ -400,7 +395,8 @@
             UNITY_BRANCH
             if(_LightingType == 2)
             {
-                return calculateRealisticLighting(finalColor).rgb;
+                float3 realisticLighting = calculateRealisticLighting(finalColor).rgb;
+                return lerp(realisticLighting, dot(realisticLighting, float3(0.299, 0.587, 0.114)), _LightingMonochromatic);
             }
             else
             {

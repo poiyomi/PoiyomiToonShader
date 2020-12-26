@@ -61,7 +61,7 @@ namespace Thry
         {
             if (shaders == null)
             {
-                this.shaders = ShaderHelper.GetThryEditorShaderNames();
+                this.shaders = ShaderHelper.GetShaderEditorShaderNames();
                 if(Mediator.active_shader != null)
                     for(int i= 0;i < shaders.Length;i++)
                         if (shaders[i] == Mediator.active_shader.name) selectedShaderIndex = i;

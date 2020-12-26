@@ -97,7 +97,6 @@
         
         #ifdef POI_LIGHTING
             finalLighting = calculateLighting(albedo.rgb);
-            finalLighting = lerp(finalLighting, dot(finalLighting, float3(0.299, 0.587, 0.114)), _LightingMonochromatic);
         #endif
         
         #ifdef POI_ENVIRONMENTAL_RIM
@@ -186,7 +185,7 @@
         
         #ifdef POI_SPECULAR
             finalSpecular0 = calculateSpecular(finalColorBeforeLighting);
-
+            
             //return float4(finalSpecular0, 1);
         #endif
         
@@ -355,7 +354,7 @@
         #ifdef FORWARD_ADD_PASS
             finalColor.rgb *= finalColor.a;
         #endif
-
+        
         return finalColor;
     }
 #endif

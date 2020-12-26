@@ -24,6 +24,7 @@
     #include "CGI_PoiDithering.cginc"
     #include "CGI_PoiDissolve.cginc"
     #include "CGI_PoiVertexManipulations.cginc"
+    #include "CGI_PoiSpawnInVert.cginc"
     #include "CGI_PoiShadowVert.cginc"
     #include "CGI_PoiShadowFrag.cginc"
     

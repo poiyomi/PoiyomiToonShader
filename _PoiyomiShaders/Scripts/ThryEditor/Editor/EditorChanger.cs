@@ -77,7 +77,7 @@ namespace Thry
                 if (init)
                 {
                     EditorUtility.DisplayProgressBar("Load all shaders...", "", (float)p / paths.Count);
-                    setEditor[p] = ShaderHelper.IsShaderUsingThryEditor(shaders[p]);
+                    setEditor[p] = ShaderHelper.IsShaderUsingShaderEditor(shaders[p]);
                     wasEditor[p] = setEditor[p];
                 }
                 setEditor[p] = GUILayout.Toggle(setEditor[p], shaders[p].name);
@@ -94,8 +94,8 @@ namespace Thry
                     {
                         string path = paths[i];
                         ShaderImportFixer.scriptImportedAssetPaths.Add(path);
-                        if (setEditor[i]) addThryEditor(path);
-                        else removeThryEditor(path);
+                        if (setEditor[i]) addShaderEditor(path);
+                        else removeShaderEditor(path);
 
                         List<string> differentQueueShaderPaths;
                         this.differentQueueShaderPaths.TryGetValue(shaders[i].name, out differentQueueShaderPaths);
@@ -103,21 +103,21 @@ namespace Thry
                             foreach (string queueShaderPath in differentQueueShaderPaths)
                             {
                                 ShaderImportFixer.scriptImportedAssetPaths.Add(queueShaderPath);
-                                if (setEditor[i]) addThryEditor(queueShaderPath);
-                                else removeThryEditor(queueShaderPath);
+                                if (setEditor[i]) addShaderEditor(queueShaderPath);
+                                else removeShaderEditor(queueShaderPath);
                             }
                     }
 
                     wasEditor[i] = setEditor[i];
                 }
                 AssetDatabase.Refresh();
-                ThryEditor.repaint();
+                ShaderEditor.repaint();
             }
         }
 
-        private void addThryEditor(string path)
+        private void addShaderEditor(string path)
         {
-            replaceEditorInShader(path, "ThryEditor");
+            replaceEditorInShader(path, "ShaderEditor");
             AddThryProperty(path);
         }
 
@@ -132,7 +132,7 @@ namespace Thry
             addProperty(path, "[HideInInspector] shader_is_using_thry_editor(\"\", Float)", "0");
         }
 
-        private void removeThryEditor(string path)
+        private void removeShaderEditor(string path)
         {
             revertEditor(path);
             RemoveThryProperty(path);

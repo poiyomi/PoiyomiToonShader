@@ -390,7 +390,7 @@
 					[HideInInspector] m_end_debugOptions("Debug", Float) = 0
 	}
 
-		CustomEditor "ThryEditor"
+		CustomEditor "ShaderEditor"
 		SubShader{
 		Tags { "RenderType" = "Transparent" "Queue"="Transparent" }
 		LOD 200

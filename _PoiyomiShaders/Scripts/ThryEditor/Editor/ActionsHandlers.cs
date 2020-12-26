@@ -15,7 +15,7 @@ namespace Thry
         static OnCompileHandler()
         {
             //Init Editor Variables with paths
-            ThryEditor.GetThryEditorDirectoryPath();
+            ShaderEditor.GetShaderEditorDirectoryPath();
 
             VRCInterface.OnCompile();
             Config.OnCompile();
@@ -59,7 +59,7 @@ namespace Thry
             UnityFixer.OnAssetDeleteCheckDrawingDLL(assets);
             if (CheckForEditorRemove(assets))
             {
-                Debug.Log("ThryEditor is being deleted.");
+                Debug.Log("ShaderEditor is being deleted.");
                 Config.Get().verion = "0";
                 Config.Get().save();
                 ModuleHandler.OnEditorRemove();
@@ -69,7 +69,7 @@ namespace Thry
 
         private static bool CheckForEditorRemove(string[] assets)
         {
-            string test_for = ThryEditor.GetThryEditorDirectoryPath() + "/Editor/ThryEditor.cs";
+            string test_for = ShaderEditor.GetShaderEditorDirectoryPath() + "/Editor/ShaderEditor.cs";
             foreach (string p in assets)
             {
                 if (p== test_for)

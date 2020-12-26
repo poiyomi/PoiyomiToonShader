@@ -95,7 +95,7 @@ namespace Thry
                 if (obj.GetType() == typeof(Shader))
                 {
                     Shader shader = (Shader)obj;
-                    if (ShaderHelper.IsShaderUsingThryEditor(shader))
+                    if (ShaderHelper.IsShaderUsingShaderEditor(shader))
                     {
                         Mediator.SetActiveShader(shader, new Material(shader));
                     }
@@ -140,7 +140,7 @@ namespace Thry
         void OnGUI()
         {
             if (!is_init || moduleSettings==null) InitVariables();
-            GUILayout.Label("ThryEditor v" + Config.Get().verion);
+            GUILayout.Label("ShaderEditor v" + Config.Get().verion);
 
             GUINotification();
             drawLine();
@@ -502,7 +502,7 @@ namespace Thry
                 {
                     field.SetValue(config, !value);
                     config.save();
-                    ThryEditor.repaint();
+                    ShaderEditor.repaint();
                 }
             }
         }
@@ -534,7 +534,7 @@ namespace Thry
                 {
                     field.SetValue(config, value);
                     config.save();
-                    ThryEditor.repaint();
+                    ShaderEditor.repaint();
                 }
             }
         }
@@ -552,8 +552,8 @@ namespace Thry
             {
                 Config.Get().locale = Locale.editor.available_locales[Locale.editor.selected_locale_index];
                 Config.Get().save();
-                ThryEditor.reload();
-                ThryEditor.repaint();
+                ShaderEditor.reload();
+                ShaderEditor.repaint();
             }
         }
 

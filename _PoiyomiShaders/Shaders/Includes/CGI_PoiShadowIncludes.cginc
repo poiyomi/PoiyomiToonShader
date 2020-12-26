@@ -29,8 +29,8 @@
             float2 uv2: TEXCOORD3;
             float2 uv3: TEXCOORD4;
             float3 modelPos: TEXCOORD5;
-            float3 worldPos: TEXCOORD6;
-            float3 localPos: TEXCOORD7;
+            float4 worldPos: TEXCOORD6;
+            float4 localPos: TEXCOORD7;
             float3 angleAlpha: TEXCOORD8;
             float4 grabPos: TEXCOORD9;
             fixed3 barycentricCoordinates: TEXCOORD10;

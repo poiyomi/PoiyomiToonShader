@@ -23,7 +23,6 @@
     float _MainHueShiftToggle;
     float _MainHueShift;
     float _MainHueShiftSpeed;
-    float _AlphaMod;
     float _MainHueShiftReplace;
     //globals
     float alphaMask;
@@ -84,7 +83,7 @@
         mainTexture.a *= alphaMask;
         
         #ifndef POI_SHADOW
-            albedo = float4(lerp(mainTexture.rgb, dot(mainTexture.rgb, float3(0.3, 0.59, 0.11)), -_Saturation) * _Color.rgb * lerp(1, poiMesh.vertexColor.rgb, _MainVertexColoring), mainTexture.a * _Color.a);
+            albedo = float4(lerp(mainTexture.rgb, dot(mainTexture.rgb, float3(0.3, 0.59, 0.11)), -_Saturation) * _Color.rgb * lerp(1, GammaToLinearSpace(poiMesh.vertexColor.rgb), _MainVertexColoring), mainTexture.a * _Color.a);
             
             #ifdef POI_RGBMASK
                 albedo.rgb = calculateRGBMask(albedo.rgb);
@@ -98,6 +97,10 @@
             #endif
             
             applyBackFaceTexture();
+            
+            #ifdef POI_FUR
+                calculateFur();
+            #endif
             
             UNITY_BRANCH
             if(_MainHueShiftToggle)
@@ -140,7 +143,7 @@
         #endif
         
         #ifdef DISTORT
-            calculateDissolve(albedo);
+            calculateDissolve();
         #endif
     }
     

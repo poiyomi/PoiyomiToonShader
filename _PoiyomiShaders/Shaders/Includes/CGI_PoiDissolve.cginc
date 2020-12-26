@@ -47,7 +47,7 @@
     float4 dissolveToTexture;
     //Globals
     #ifndef POI_SHADOW
-        void calculateDissolve(inout float4 albedo)
+        void calculateDissolve()
         {
             float dissolveMask = POI2D_SAMPLER_PAN(_DissolveMask, _MainTex, poiMesh.uv[_DissolveMaskUV], _DissolveMaskPan).r;
             dissolveToTexture = POI2D_SAMPLER_PAN(_DissolveToTexture, _MainTex, poiMesh.uv[_DissolveToTextureUV], _DissolveToTexturePan) * _DissolveTextureColor;

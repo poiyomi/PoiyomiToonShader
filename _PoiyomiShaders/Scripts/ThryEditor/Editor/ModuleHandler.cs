@@ -282,7 +282,7 @@ namespace Thry
 
         private static string GetThryModulesDirectoryPath()
         {
-            string editor_path = ThryEditor.GetThryEditorDirectoryPath();
+            string editor_path = ShaderEditor.GetShaderEditorDirectoryPath();
             if (editor_path == null)
                 editor_path = "Assets";
             return editor_path+ "/thry_modules";
@@ -350,7 +350,7 @@ namespace Thry
 
         public static void OnEditorRemove()
         {
-            string dir_path = ThryEditor.GetThryEditorDirectoryPath() + "/thry_modules";
+            string dir_path = ShaderEditor.GetShaderEditorDirectoryPath() + "/thry_modules";
             if (Directory.Exists(dir_path))
                 TrashHandler.MoveDirectoryToTrash(dir_path);
         }

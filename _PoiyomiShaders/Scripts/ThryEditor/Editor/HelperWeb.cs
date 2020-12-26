@@ -32,7 +32,7 @@ namespace Thry
             if (Config.Get().share_used_shaders)
             {
                 url_values_postfix += "&shaders=[";
-                foreach (ShaderHelper.ThryEditorShader s in ShaderHelper.thry_editor_shaders)
+                foreach (ShaderHelper.ShaderEditorShader s in ShaderHelper.thry_editor_shaders)
                 {
                     url_values_postfix += "{\"name\":\"" + s.name + "\",\"version\":\"";
                     if (s.version != null && s.version != "null") url_values_postfix += s.version;

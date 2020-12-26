@@ -107,11 +107,11 @@
         UNITY_BRANCH
         if (!_EmissionCenterOutEnabled)
         {
-            emissionColor0 = POI2D_SAMPLER_PAN(_EmissionMap, _MainTex, poiMesh.uv[_EmissionMapUV], _EmissionMapPan) * lerp(1, baseColor, _EmissionBaseColorAsMap).rgb * _EmissionColor;
+            emissionColor0 = POI2D_SAMPLER_PAN(_EmissionMap, _MainTex, poiMesh.uv[_EmissionMapUV], _EmissionMapPan) * lerp(1, baseColor, _EmissionBaseColorAsMap).rgb * _EmissionColor.rgb;
         }
         else
         {
-            emissionColor0 = UNITY_SAMPLE_TEX2D_SAMPLER(_EmissionMap, _MainTex, ((.5 + poiLight.nDotV * .5) * _EmissionMap_ST.xy) + _Time.x * _EmissionCenterOutSpeed) * lerp(1, baseColor, _EmissionBaseColorAsMap) * _EmissionColor;
+            emissionColor0 = UNITY_SAMPLE_TEX2D_SAMPLER(_EmissionMap, _MainTex, ((.5 + poiLight.nDotV * .5) * _EmissionMap_ST.xy) + _Time.x * _EmissionCenterOutSpeed) * lerp(1, baseColor, _EmissionBaseColorAsMap).rgb * _EmissionColor.rgb;
         }
         
         UNITY_BRANCH
@@ -156,11 +156,11 @@
             UNITY_BRANCH
             if(!_EmissionCenterOutEnabled1)
             {
-                emissionColor1 = POI2D_SAMPLER_PAN(_EmissionMap1, _MainTex, poiMesh.uv[_EmissionMap1UV], _EmissionMap1Pan) * lerp(1, baseColor, _EmissionBaseColorAsMap1).rgb * _EmissionColor1;
+                emissionColor1 = POI2D_SAMPLER_PAN(_EmissionMap1, _MainTex, poiMesh.uv[_EmissionMap1UV], _EmissionMap1Pan) * lerp(1, baseColor, _EmissionBaseColorAsMap1).rgb * _EmissionColor1.rgb;
             }
             else
             {
-                emissionColor1 = UNITY_SAMPLE_TEX2D_SAMPLER(_EmissionMap1, _MainTex, ((.5 + poiLight.nDotV * .5) * _EmissionMap_ST.xy) + _Time.x * _EmissionCenterOutSpeed1) * lerp(1, baseColor, _EmissionBaseColorAsMap1) * _EmissionColor1;
+                emissionColor1 = UNITY_SAMPLE_TEX2D_SAMPLER(_EmissionMap1, _MainTex, ((.5 + poiLight.nDotV * .5) * _EmissionMap_ST.xy) + _Time.x * _EmissionCenterOutSpeed1).rgb * lerp(1, baseColor, _EmissionBaseColorAsMap1).rgb * _EmissionColor1.rgb;
             }
             
             UNITY_BRANCH
@@ -190,7 +190,7 @@
             #endif
         }
         
-        finalColor.rgb = lerp(finalColor.rgb, saturate(emissionColor0 + emissionColor1), saturate(emissionStrength0 + emissionStrength1) * _EmissionReplace);
+        finalColor.rgb = lerp(finalColor.rgb, saturate(emissionColor0 + emissionColor1), saturate(emissionStrength0 + emissionStrength1) * _EmissionReplace * poiMax(emission0 + emission1));
         
         return emission0 + emission1;
     }

@@ -47,7 +47,7 @@ namespace Thry
         //test if the path to the presets has changed
         public void testPresetsChanged(MaterialProperty[] props)
         {
-            MaterialProperty presetsProperty = ThryEditor.FindProperty(props, ThryEditor.PROPERTY_NAME_PRESETS_FILE);
+            MaterialProperty presetsProperty = ShaderEditor.FindProperty(props, ShaderEditor.PROPERTY_NAME_PRESETS_FILE);
             loadProperties(props);
             if (presetsProperty != null)
             {
@@ -209,7 +209,7 @@ namespace Thry
             removeFromPresetOptions(presetName);
             presets.Remove(presetName);
             savePresets();
-            ThryEditor.repaint();
+            ShaderEditor.repaint();
         }
 
         public void addNewPreset(string presetName)
@@ -305,7 +305,7 @@ namespace Thry
 
         public void applyPreset(string presetName, MaterialProperty[] props, Material[] materials)
         {
-            ThryEditor.addUndo(Locale.editor.Get("apply_preset") +": " + presetName);
+            ShaderEditor.addUndo(Locale.editor.Get("apply_preset") +": " + presetName);
             List<string[]> sets;
             if (presets.TryGetValue(presetName, out sets))
             {
@@ -314,8 +314,8 @@ namespace Thry
                     MaterialHelper.SetMaterialValue(set[0], set[1]);
                 }
             }
-            ThryEditor.loadValuesFromMaterial();
-            ThryEditor.repaint();
+            ShaderEditor.loadValuesFromMaterial();
+            ShaderEditor.repaint();
         }
 
         private static PresetPopup window;

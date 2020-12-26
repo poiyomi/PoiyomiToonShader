@@ -40,7 +40,7 @@
         {
             flipBookMask = POI2D_SAMPLER_PAN(_FlipbookMask, _MainTex, poiMesh.uv[_FlipbookMaskUV], _FlipbookMaskPan).r;
             _FlipbookScaleOffset.xy = 1 - _FlipbookScaleOffset.xy;
-            float2 uv = poiMesh.uv[_FlipbookTexArrayUV];
+            float2 uv = frac(poiMesh.uv[_FlipbookTexArrayUV]);
             float theta = radians(_FlipbookRotation + _Time.z * _FlipbookRotationSpeed);
             float cs = cos(theta);
             float sn = sin(theta);

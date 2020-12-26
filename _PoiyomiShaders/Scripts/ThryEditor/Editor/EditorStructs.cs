@@ -14,11 +14,12 @@ namespace Thry
         }
     }
 
-    public struct InputEvent
+    public class InputEvent
     {
         public bool HadMouseDownRepaint;
         public bool HadMouseDown;
         public bool MouseClick;
+        public bool MouseLeftClick;
 
         public bool is_alt_down;
 
@@ -26,6 +27,14 @@ namespace Thry
         public bool is_drop_event;
 
         public Vector2 mouse_position;
+
+        public void Use()
+        {
+            HadMouseDownRepaint = false;
+            HadMouseDown = false;
+            MouseClick = false;
+            MouseLeftClick = false;
+        }
     }
 
     public abstract class ShaderPart
@@ -38,6 +47,9 @@ namespace Thry
         public bool reference_properties_exist = false;
         public bool reference_property_exists = false;
         public bool is_hidden = false;
+        public bool is_animated = false;
+        public bool is_animatable = false;
+        public MaterialProperty kaj_isAnimatedProperty;
 
         public ShaderPart(MaterialProperty prop, int xOffset, string displayName, PropertyOptions options)
         {
@@ -47,6 +59,12 @@ namespace Thry
             this.content = new GUIContent(displayName, options.tooltip);
             this.reference_properties_exist = options.reference_properties != null && options.reference_properties.Length > 0;
             this.reference_property_exists = options.reference_property != null;
+
+            if (prop == null)
+                return;
+            this.kaj_isAnimatedProperty = ShaderEditor.FindProperty(ShaderEditor.currentlyDrawing.properties, prop.name + "Animated");
+            this.is_animatable = kaj_isAnimatedProperty != null;
+            this.is_animated = is_animatable && kaj_isAnimatedProperty.floatValue == 1;
         }
 
         public abstract void DrawInternal(GUIContent content, CRect rect = null, bool useEditorIndent = false);
@@ -55,7 +73,7 @@ namespace Thry
 
         public void Draw(CRect rect = null, GUIContent content = null, bool useEditorIndent = false)
         {
-            if (options.is_hideable && is_hidden)
+            if (HeaderHider.IsHeaderHidden(this))
                 return;
             bool is_enabled = DrawingData.is_enabled;
             if (options.condition_enable != null && is_enabled)
@@ -66,11 +84,27 @@ namespace Thry
             if (options.condition_show.Test())
             {
                 PerformDraw(content, rect, useEditorIndent);
+                HandleKajAnimatable();
             }
             if (options.condition_enable != null && is_enabled)
             {
                 DrawingData.is_enabled = true;
                 EditorGUI.EndDisabledGroup();
+            }
+        }
+
+        private void HandleKajAnimatable()
+        {
+            Rect lastRect = GUILayoutUtility.GetLastRect();
+            if (Event.current.isMouse && Event.current.button == 1 && lastRect.Contains(Event.current.mousePosition)){
+                is_animated = !is_animated;
+                kaj_isAnimatedProperty.floatValue = is_animated?1:0;
+                GUIUtility.ExitGUI();
+            }
+            if (is_animated)
+            {
+                Rect r = new Rect(0, lastRect.y + 2, 18, 18);
+                GUI.DrawTexture(r, Styles.texture_animated, ScaleMode.StretchToFill, true);
             }
         }
 
@@ -121,7 +155,7 @@ namespace Thry
         public override void CopyFromMaterial(Material m)
         {
             if (options.reference_property != null)
-                ThryEditor.currentlyDrawing.propertyDictionary[options.reference_property].CopyFromMaterial(m);
+                ShaderEditor.currentlyDrawing.propertyDictionary[options.reference_property].CopyFromMaterial(m);
             foreach (ShaderPart p in parts)
                 p.CopyFromMaterial(m);
         }
@@ -129,7 +163,7 @@ namespace Thry
         public override void CopyToMaterial(Material m)
         {
             if (options.reference_property != null)
-                ThryEditor.currentlyDrawing.propertyDictionary[options.reference_property].CopyToMaterial(m);
+                ShaderEditor.currentlyDrawing.propertyDictionary[options.reference_property].CopyToMaterial(m);
             foreach (ShaderPart p in parts)
                 p.CopyToMaterial(m);
         }
@@ -145,7 +179,7 @@ namespace Thry
 
     public class ShaderHeader : ShaderGroup
     {
-        public ThryEditorHeader guiElement;
+        public ShaderEditorHeader guiElement;
 
         public ShaderHeader() : base()
         {
@@ -154,14 +188,14 @@ namespace Thry
 
         public ShaderHeader(MaterialProperty prop, MaterialEditor materialEditor, string displayName, int xOffset, PropertyOptions options) : base(prop, materialEditor, displayName, xOffset, options)
         {
-            this.guiElement = new ThryEditorHeader(prop);
+            this.guiElement = new ShaderEditorHeader(prop);
         }
 
         public override void DrawInternal(GUIContent content, CRect rect = null, bool useEditorIndent = false)
         {
-            ThryEditor.currentlyDrawing.currentProperty = this;
+            ShaderEditor.currentlyDrawing.currentProperty = this;
             EditorGUI.BeginChangeCheck();
-            guiElement.Foldout(xOffset, content, ThryEditor.currentlyDrawing.gui);
+            guiElement.Foldout(xOffset, content, ShaderEditor.currentlyDrawing.gui);
             Rect headerRect = DrawingData.lastGuiObjectHeaderRect;
             if (guiElement.is_expanded)
             {
@@ -202,7 +236,7 @@ namespace Thry
             drawDefault = false;
             this.forceOneLine = forceOneLine;
 
-            property_index = System.Array.IndexOf(ThryEditor.currentlyDrawing.properties, materialProperty);
+            property_index = System.Array.IndexOf(ShaderEditor.currentlyDrawing.properties, materialProperty);
         }
 
         public override void CopyFromMaterial(Material m)
@@ -218,8 +252,8 @@ namespace Thry
         public override void DrawInternal(GUIContent content, CRect rect = null, bool useEditorIndent = false)
         {
             PreDraw();
-            ThryEditor.currentlyDrawing.currentProperty = this;
-            this.materialProperty = ThryEditor.currentlyDrawing.properties[property_index];
+            ShaderEditor.currentlyDrawing.currentProperty = this;
+            this.materialProperty = ShaderEditor.currentlyDrawing.properties[property_index];
             if (rect != null)
                 DrawingData.lastGuiObjectHeaderRect = rect.r;
             else
@@ -232,14 +266,14 @@ namespace Thry
                 DrawDefault();
             else
             {
-                ThryEditor.currentlyDrawing.gui.BeginAnimatedCheck(materialProperty);
+                ShaderEditor.currentlyDrawing.gui.BeginAnimatedCheck(materialProperty);
                 if (forceOneLine)
-                    ThryEditor.currentlyDrawing.editor.ShaderProperty(GUILayoutUtility.GetRect(content, Styles.vectorPropertyStyle), this.materialProperty, content);
+                    ShaderEditor.currentlyDrawing.editor.ShaderProperty(GUILayoutUtility.GetRect(content, Styles.vectorPropertyStyle), this.materialProperty, content);
                 else if (rect != null)
-                    ThryEditor.currentlyDrawing.editor.ShaderProperty(rect.r, this.materialProperty, content);
+                    ShaderEditor.currentlyDrawing.editor.ShaderProperty(rect.r, this.materialProperty, content);
                 else
-                    ThryEditor.currentlyDrawing.editor.ShaderProperty(this.materialProperty, content);
-                ThryEditor.currentlyDrawing.gui.EndAnimatedCheck();
+                    ShaderEditor.currentlyDrawing.editor.ShaderProperty(this.materialProperty, content);
+                ShaderEditor.currentlyDrawing.gui.EndAnimatedCheck();
             }
 
             EditorGUI.indentLevel = oldIndentLevel;
@@ -272,7 +306,7 @@ namespace Thry
         public override void DrawDefault()
         {
             Rect pos = GUILayoutUtility.GetRect(content, Styles.vectorPropertyStyle);
-            GuiHelper.drawConfigTextureProperty(pos, materialProperty, content, ThryEditor.currentlyDrawing.editor, hasFoldoutProperties);
+            GuiHelper.drawConfigTextureProperty(pos, materialProperty, content, ShaderEditor.currentlyDrawing.editor, hasFoldoutProperties);
             DrawingData.lastGuiObjectHeaderRect = pos;
         }
 
@@ -293,7 +327,7 @@ namespace Thry
             if (options.reference_properties != null)
                 foreach (string r_property in options.reference_properties)
                 {
-                    ShaderProperty property = ThryEditor.currentlyDrawing.propertyDictionary[r_property];
+                    ShaderProperty property = ShaderEditor.currentlyDrawing.propertyDictionary[r_property];
                     MaterialHelper.CopyPropertyValueToMaterial(property.materialProperty, target);
                 }
         }
@@ -303,7 +337,7 @@ namespace Thry
             if (options.reference_properties != null)
                 foreach (string r_property in options.reference_properties)
                 {
-                    ShaderProperty property = ThryEditor.currentlyDrawing.propertyDictionary[r_property];
+                    ShaderProperty property = ShaderEditor.currentlyDrawing.propertyDictionary[r_property];
                     MaterialHelper.CopyPropertyValueFromMaterial(property.materialProperty, source);
                 }
         }
@@ -318,7 +352,7 @@ namespace Thry
 
         public override void DrawDefault()
         {
-            ThryEditor.currentlyDrawing.editor.EnableInstancingField();
+            ShaderEditor.currentlyDrawing.editor.EnableInstancingField();
         }
     }
     public class GIProperty : ShaderProperty
@@ -330,7 +364,7 @@ namespace Thry
 
         public override void DrawDefault()
         {
-            ThryEditor.currentlyDrawing.editor.LightmapEmissionFlagsProperty(xOffset, true);
+            ShaderEditor.currentlyDrawing.editor.LightmapEmissionFlagsProperty(xOffset, true);
         }
     }
     public class DSGIProperty : ShaderProperty
@@ -342,7 +376,7 @@ namespace Thry
 
         public override void DrawDefault()
         {
-            ThryEditor.currentlyDrawing.editor.DoubleSidedGIField();
+            ShaderEditor.currentlyDrawing.editor.DoubleSidedGIField();
         }
     }
     public class LocaleProperty : ShaderProperty
@@ -354,7 +388,7 @@ namespace Thry
 
         public override void DrawDefault()
         {
-            GuiHelper.DrawLocaleSelection(this.content, ThryEditor.currentlyDrawing.gui.locale.available_locales, ThryEditor.currentlyDrawing.gui.locale.selected_locale_index);
+            GuiHelper.DrawLocaleSelection(this.content, ShaderEditor.currentlyDrawing.gui.locale.available_locales, ShaderEditor.currentlyDrawing.gui.locale.selected_locale_index);
         }
     }
 }

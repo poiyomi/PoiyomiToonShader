@@ -49,6 +49,11 @@
                 alpha *= _Color.a;
                 alpha += _AlphaMod;
                 alpha = saturate(alpha);
+                
+                #ifdef OPAQUE
+                    alpha = 1;
+                #endif
+                
                 clip(alpha - 0.01);
                 
                 #if defined(CUTOUT)
