@@ -9,13 +9,11 @@ namespace Thry
 
         private static Shader activeShader = null;
         private static Material activeShaderMaterial = null;
-        private static PresetHandler activeShaderPresetHandler = null;
 
-        public static void SetActiveShader(Shader shader, Material material = null, PresetHandler presetHandler = null)
+        public static void SetActiveShader(Shader shader, Material material = null)
         {
             activeShader = shader;
             activeShaderMaterial = material;
-            activeShaderPresetHandler = presetHandler;
         }
 
         public static Shader active_shader
@@ -32,15 +30,6 @@ namespace Thry
                 if (activeShaderMaterial == null)
                     activeShaderMaterial = new Material(activeShader);
                 return activeShaderMaterial;
-            }
-        }
-        public static PresetHandler active_shader_preset_handler
-        {
-            get
-            {
-                if (activeShaderPresetHandler == null)
-                    activeShaderPresetHandler = new PresetHandler(activeShader);
-                return activeShaderPresetHandler;
             }
         }
 

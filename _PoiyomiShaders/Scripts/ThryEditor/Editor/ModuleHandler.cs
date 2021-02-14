@@ -11,10 +11,15 @@ using UnityEngine;
 
 namespace Thry
 {
+    public abstract class ModuleSettings
+    {
+        public const string MODULES_CONFIG = "Thry/modules_config";
+
+        public abstract void Draw();
+    }
+
     public class ModuleHandler
     {
-        
-
         private static List<Module> modules;
         private static List<Module> third_party_modules;
         private static bool modules_are_being_loaded = false;
@@ -177,7 +182,7 @@ namespace Thry
                 string[] refernces = ResolveFilesToDirectoryFindAllReferneces(file);
                 foreach(string p in refernces)
                 {
-                    string found_dir = p.Replace(file, "").RemoveOneDirectory();
+                    string found_dir = Directory.GetParent(Path.GetDirectoryName(p)).FullName;
                     if (path_refernces.ContainsKey(found_dir))
                         path_refernces[found_dir] = path_refernces[found_dir] + 1;
                     else
@@ -200,7 +205,7 @@ namespace Thry
         private static string[] ResolveFilesToDirectoryFindAllReferneces(string file_sub_path)
         {
             List<string> valid_paths = new List<string>();
-            string[] found_paths = UnityHelper.FindAssetOfFilesWithExtension(file_sub_path.RemovePath()).ToArray();
+            string[] found_paths = UnityHelper.FindAssetOfFilesWithExtension(Path.GetFileName(file_sub_path)).ToArray();
             foreach (string p in found_paths)
             {
                 if (p.EndsWith(file_sub_path))
@@ -214,7 +219,7 @@ namespace Thry
             string module_path = null;
             int likelyness = -1;
             foreach(string f in Directory.GetFiles(directory_path)){
-                string file_name = f.RemovePath();
+                string file_name = Path.GetFileName(f);
                 int l = 0;
                 if (file_name.Contains("module")) l++;
                 if (file_name.Contains("thry")) l++;
@@ -291,11 +296,11 @@ namespace Thry
         private static void InstallModuleDownloadFiles(Module module, string temp_path)
         {
             EditorUtility.DisplayProgressBar(module.available_module.name+ " download progress", "", 0);
-            string base_url = module.url.RemoveFileName();
+            string base_url = Path.GetDirectoryName(module.url);
             int i = 0;
             foreach (string file_path in module.available_module.files)
             {
-                WebHelper.DownloadFileASync(base_url + file_path, temp_path + "/" + file_path, delegate (string data)
+                WebHelper.DownloadFileASync(base_url + "/"+ file_path, temp_path + "/" + file_path, delegate (string data)
                 {
                     i++;
                     EditorUtility.DisplayProgressBar("Downloading files for " + module.available_module, "Downloaded " + base_url + file_path, (float)i / module.available_module.files.Count);
@@ -321,11 +326,11 @@ namespace Thry
             FileHelper.WriteStringToFile(Parser.ObjectToString(module.available_module), temp_dir + "/module.json");
             foreach(string d in Directory.GetDirectories(temp_dir))
             {
-                Directory.Move(d, install_path + "/" + d.RemovePath());
+                Directory.Move(d, install_path + "/" + Path.GetFileName(d));
             }
             foreach (string f in Directory.GetFiles(temp_dir))
             {
-                File.Move(f, install_path + "/" + f.RemovePath());
+                File.Move(f, install_path + "/" + Path.GetFileName(f));
             }
             Directory.Delete(temp_dir);
             AssetDatabase.Refresh();

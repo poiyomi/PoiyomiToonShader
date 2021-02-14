@@ -1,6 +1,4 @@
 #ifndef POICLUDES
-    // Upgrade NOTE: excluded shader from DX11 because it uses wrong array syntax (type[size] name)
-    #pragma exclude_renderers d3d11
     #define POICLUDES
     
     UNITY_DECLARE_TEX2D(_MainTex); float4 _MainTex_ST; float4 _MainTex_TexelSize;

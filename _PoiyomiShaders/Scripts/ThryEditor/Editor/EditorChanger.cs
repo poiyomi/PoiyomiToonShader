@@ -27,7 +27,6 @@ namespace Thry
 
         List<string> paths = null;
         List<Shader> shaders = null;
-        Dictionary<string, List<string>> differentQueueShaderPaths = null;
 
         void OnGUI()
         {
@@ -39,29 +38,14 @@ namespace Thry
             {
                 paths = new List<string>();
                 shaders = new List<Shader>();
-                differentQueueShaderPaths = new Dictionary<string, List<string>>();
                 string[] shaderGuids = AssetDatabase.FindAssets("t:shader");
 
                 for (int sguid = 0; sguid < shaderGuids.Length; sguid++)
                 {
                     string path = AssetDatabase.GUIDToAssetPath(shaderGuids[sguid]);
                     Shader shader = AssetDatabase.LoadAssetAtPath<Shader>(path);
-                    if (!path.Contains("_differentQueues/"))
-                    {
-                        paths.Add(path);
-                        shaders.Add(shader);
-                    }
-                    else
-                    {
-                        List<string> differentQueueShaderPaths;
-                        this.differentQueueShaderPaths.TryGetValue(ShaderHelper.getDefaultShaderName(shader.name), out differentQueueShaderPaths);
-                        if (differentQueueShaderPaths == null)
-                        {
-                            differentQueueShaderPaths = new List<string>();
-                            this.differentQueueShaderPaths.Add(ShaderHelper.getDefaultShaderName(shader.name), differentQueueShaderPaths);
-                        }
-                        differentQueueShaderPaths.Add(path);
-                    }
+                    paths.Add(path);
+                    shaders.Add(shader);
                 }
 
                 if (setEditor == null || setEditor.Length != shaderGuids.Length)
@@ -93,19 +77,8 @@ namespace Thry
                     if (wasEditor[i] != setEditor[i])
                     {
                         string path = paths[i];
-                        ShaderImportFixer.scriptImportedAssetPaths.Add(path);
                         if (setEditor[i]) addShaderEditor(path);
                         else removeShaderEditor(path);
-
-                        List<string> differentQueueShaderPaths;
-                        this.differentQueueShaderPaths.TryGetValue(shaders[i].name, out differentQueueShaderPaths);
-                        if (differentQueueShaderPaths != null)
-                            foreach (string queueShaderPath in differentQueueShaderPaths)
-                            {
-                                ShaderImportFixer.scriptImportedAssetPaths.Add(queueShaderPath);
-                                if (setEditor[i]) addShaderEditor(queueShaderPath);
-                                else removeShaderEditor(queueShaderPath);
-                            }
                     }
 
                     wasEditor[i] = setEditor[i];

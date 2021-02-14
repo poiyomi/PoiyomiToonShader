@@ -331,7 +331,7 @@ namespace Thry
 
         public static void CreateFileWithDirectories(string path)
         {
-            string dir_path = path.GetDirectoryPath();
+            string dir_path = Path.GetDirectoryName(path);
             if (dir_path != "")
                 Directory.CreateDirectory(dir_path);
             File.Create(path).Close();
@@ -350,7 +350,7 @@ namespace Thry
 
         public static void MoveDirectoryToTrash(string path)
         {
-            string name = path.RemovePath();
+            string name = Path.GetFileName(path);
             if (!Directory.Exists(PATH.DELETING_DIR))
                 Directory.CreateDirectory(PATH.DELETING_DIR);
             int i = 0;
@@ -488,16 +488,6 @@ namespace Thry
 
     public class MaterialHelper
     {
-        public static void UpdateRenderQueue(Material material, Shader defaultShader)
-        {
-            if (material.shader.renderQueue != material.renderQueue)
-            {
-                Shader renderQueueShader = defaultShader;
-                if (material.renderQueue != renderQueueShader.renderQueue) renderQueueShader = ShaderHelper.createRenderQueueShaderIfNotExists(defaultShader, material.renderQueue, true);
-                material.shader = renderQueueShader;
-            }
-        }
-
         public static void UpdateTargetsValue(MaterialProperty p, System.Object value)
         {
             if (p.type == MaterialProperty.PropType.Texture)
@@ -572,6 +562,9 @@ namespace Thry
                 {
                     foreach (Material m in materials) m.renderQueue = q;
                 }
+            }else if (key == "render_type")
+            {
+                foreach (Material m in materials) m.SetOverrideTag("RenderType", value);
             }
         }
 
@@ -586,7 +579,7 @@ namespace Thry
             else if (p.type == MaterialProperty.PropType.Float || p.type == MaterialProperty.PropType.Range)
             {
                 float f_value;
-                if (float.TryParse(value, out f_value))
+                if (float.TryParse(Parser.GlobalizationFloat(value), out f_value))
                 {
                     p.floatValue = f_value;
                     string[] drawer = ShaderHelper.GetDrawer(p);
@@ -683,6 +676,870 @@ namespace Thry
         public static float ColorDifference(Color col1, Color col2)
         {
             return Math.Abs(col1.r - col2.r) + Math.Abs(col1.g - col2.g) + Math.Abs(col1.b - col2.b) + Math.Abs(col1.a - col2.a);
+        }
+    }
+
+    public class Converter
+    {
+
+        public static Color stringToColor(string s)
+        {
+            s = s.Trim(new char[] { '(', ')' });
+            string[] split = s.Split(",".ToCharArray());
+            float[] rgba = new float[4] { 1, 1, 1, 1 };
+            for (int i = 0; i < split.Length; i++) if (split[i].Replace(" ", "") != "") rgba[i] = float.Parse(split[i]);
+            return new Color(rgba[0], rgba[1], rgba[2], rgba[3]);
+
+        }
+
+        public static Vector4 stringToVector(string s)
+        {
+            s = s.Trim(new char[] { '(', ')' });
+            string[] split = s.Split(",".ToCharArray());
+            float[] xyzw = new float[4];
+            for (int i = 0; i < 4; i++) if (i < split.Length && split[i].Replace(" ", "") != "") xyzw[i] = float.Parse(split[i]); else xyzw[i] = 0;
+            return new Vector4(xyzw[0], xyzw[1], xyzw[2], xyzw[3]);
+        }
+
+        public static string MaterialsToString(Material[] materials)
+        {
+            string s = "";
+            foreach (Material m in materials)
+                s += "\"" + m.name + "\"" + ",";
+            s = s.TrimEnd(',');
+            return s;
+        }
+
+        public static string ArrayToString(object[] a)
+        {
+            string ret = "";
+            foreach (object o in a)
+                ret += o.ToString() + ",";
+            return ret.TrimEnd(new char[] { ',' });
+        }
+
+        public static string ArrayToString(Array a)
+        {
+            string ret = "";
+            foreach (object o in a)
+                ret += o.ToString() + ",";
+            return ret.TrimEnd(new char[] { ',' });
+        }
+
+        //--Start--Gradient
+        public static Gradient TextureToGradient(Texture2D texture)
+        {
+            texture = Gradient_Resize(texture);
+            Color[] values = Gradient_Sample(texture);
+            //values = Gradient_Smooth(values);
+            Color[] delta = CalcDelta(values);
+            delta[0] = delta[1];
+            Color[] delta_delta = CalcDelta(delta);
+            //PrintColorArray(delta_delta);
+            List<Color[]> changes = DeltaDeltaToChanges(delta_delta, values);
+            changes = RemoveChangesUnderDistanceThreshold(changes);
+            SortChanges(changes);
+            //PrintColorList(changes);
+            return ConstructGradient(changes, values);
+        }
+
+        private static Texture2D Gradient_Resize(Texture2D texture)
+        {
+            return TextureHelper.Resize(texture, 512, 512);
+        }
+
+        private static Color[] Gradient_Sample(Texture2D texture)
+        {
+            texture.wrapMode = TextureWrapMode.Clamp;
+            int length = texture.width;
+            Color[] ar = new Color[length];
+            for (int i = 0; i < length; i++)
+            {
+                ar[i] = texture.GetPixel(i, i);
+            }
+            return ar;
+        }
+
+        private static Color[] Gradient_Smooth(Color[] values)
+        {
+            Color[] ar = new Color[values.Length];
+            ar[0] = values[0];
+            ar[ar.Length - 1] = values[ar.Length - 1];
+            for (int i = 1; i < values.Length - 1; i++)
+            {
+                ar[i] = new Color();
+                ar[i].r = (values[i - 1].r + values[i].r + values[i + 1].r) / 3;
+                ar[i].g = (values[i - 1].g + values[i].g + values[i + 1].g) / 3;
+                ar[i].b = (values[i - 1].b + values[i].b + values[i + 1].b) / 3;
+            }
+            return ar;
+        }
+
+        private static Color[] CalcDelta(Color[] values)
+        {
+            Color[] delta = new Color[values.Length];
+            delta[0] = new Color(0, 0, 0);
+            for (int i = 1; i < values.Length; i++)
+            {
+                delta[i] = ColorSubtract(values[i - 1], values[i]);
+            }
+            return delta;
+        }
+
+        private static List<Color[]> DeltaDeltaToChanges(Color[] deltadelta, Color[] values)
+        {
+            List<Color[]> changes = new List<Color[]>();
+            for (int i = 0; i < deltadelta.Length; i++)
+            {
+                if (deltadelta[i].r != 0 || deltadelta[i].g != 0 || deltadelta[i].b != 0)
+                {
+                    deltadelta[i].a = i / 512.0f;
+                    Color[] new_change = new Color[2];
+                    new_change[0] = deltadelta[i];
+                    new_change[1] = values[i];
+                    changes.Add(new_change);
+                }
+            }
+            return changes;
+        }
+
+        const float GRADIENT_DISTANCE_THRESHOLD = 0.05f;
+        private static List<Color[]> RemoveChangesUnderDistanceThreshold(List<Color[]> changes)
+        {
+            List<Color[]> new_changes = new List<Color[]>();
+            new_changes.Add(changes[0]);
+            for (int i = 1; i < changes.Count; i++)
+            {
+
+                if (changes[i][0].a - new_changes[new_changes.Count - 1][0].a < GRADIENT_DISTANCE_THRESHOLD)
+                {
+                    if (ColorValueForDelta(new_changes[new_changes.Count - 1][0]) < ColorValueForDelta(changes[i][0]))
+                    {
+                        new_changes.RemoveAt(new_changes.Count - 1);
+                        new_changes.Add(changes[i]);
+                    }
+                }
+                else
+                {
+                    new_changes.Add(changes[i]);
+                }
+            }
+            return new_changes;
+        }
+
+        private static void SortChanges(List<Color[]> changes)
+        {
+            changes.Sort(delegate (Color[] x, Color[] y)
+            {
+                float sizeX = ColorValueForDelta(x[0]);
+                float sizeY = ColorValueForDelta(y[0]);
+                if (sizeX < sizeY) return 1;
+                else if (sizeY < sizeX) return -1;
+                return 0;
+            });
+        }
+
+        private static Gradient ConstructGradient(List<Color[]> changes, Color[] values)
+        {
+            List<GradientAlphaKey> alphas = new List<GradientAlphaKey>();
+            List<GradientColorKey> colors = new List<GradientColorKey>();
+            for (int i = 0; i < 6 && i < changes.Count; i++)
+            {
+                colors.Add(new GradientColorKey(changes[i][1], changes[i][0].a));
+                //Debug.Log("key " + changes[i][0].a);
+            }
+            colors.Add(new GradientColorKey(values[0], 0));
+            colors.Add(new GradientColorKey(values[values.Length - 1], 1));
+            alphas.Add(new GradientAlphaKey(1, 0));
+            alphas.Add(new GradientAlphaKey(1, 1));
+            Gradient gradient = new Gradient();
+            gradient.SetKeys(colors.ToArray(), alphas.ToArray());
+            return gradient;
+        }
+
+        private static void PrintColorArray(Color[] ar)
+        {
+            foreach (Color c in ar)
+                Debug.Log(c.ToString());
+        }
+        private static void PrintColorList(List<Color[]> ar)
+        {
+            foreach (Color[] x in ar)
+                Debug.Log(ColorValueForDelta(x[0]) + ":" + x[0].ToString());
+        }
+
+        private static float ColorValueForDelta(Color col)
+        {
+            return Mathf.Abs(col.r) + Mathf.Abs(col.g) + Mathf.Abs(col.b);
+        }
+
+        private static Color ColorAdd(Color col1, Color col2)
+        {
+            return new Color(col1.r + col2.r, col1.g + col2.g, col1.b + col2.b);
+        }
+        private static Color ColorSubtract(Color col1, Color col2)
+        {
+            return new Color(col1.r - col2.r, col1.g - col2.g, col1.b - col2.b);
+        }
+
+        public static Texture2D GradientToTexture(Gradient gradient, int width, int height)
+        {
+            Texture2D texture = new Texture2D(width, height);
+            for (int x = 0; x < width; x++)
+            {
+                Color col = gradient.Evaluate((float)x / width);
+                for (int y = 0; y < height; y++) texture.SetPixel(x, y, col);
+            }
+            texture.Apply();
+            return texture;
+        }
+
+        //--End--Gradient
+
+        public static Texture2D CurveToTexture(AnimationCurve curve, TextureData texture_settings)
+        {
+            Texture2D texture = new Texture2D(texture_settings.width, texture_settings.height);
+            for (int i = 0; i < texture_settings.width; i++)
+            {
+                Color color = new Color();
+                float value = curve.Evaluate((float)i / texture_settings.width);
+                value = Mathf.Clamp01(value);
+                if (texture_settings.channel == 'r')
+                    color.r = value;
+                else if (texture_settings.channel == 'g')
+                    color.g = value;
+                else if (texture_settings.channel == 'b')
+                    color.b = value;
+                else if (texture_settings.channel == 'a')
+                    color.a = value;
+                if (texture_settings.channel != 'a')
+                    color.a = 1;
+                for (int y = 0; y < texture_settings.height; y++)
+                    texture.SetPixel(i, y, color);
+            }
+            texture.Apply();
+            texture_settings.ApplyModes(texture);
+            return texture;
+        }
+
+        //==============Texture Array=================
+
+        [MenuItem("Assets/Thry/Flipbooks/Images 2 TextureArray",false, 303)]
+        static void SelectionImagesToTextureArray()
+        {
+            string[] paths = Selection.assetGUIDs.Select(g => AssetDatabase.GUIDToAssetPath(g)).ToArray();
+            PathsToTexture2DArray(paths);
+        }
+
+        [MenuItem("Assets/Thry/Flipbooks/Images 2 TextureArray", true)]
+        static bool SelectionImagesToTextureArrayValidator()
+        {
+            if (Selection.assetGUIDs != null && Selection.assetGUIDs.Length > 0)
+            {
+                return Selection.assetGUIDs.All(g => Regex.IsMatch(AssetDatabase.GUIDToAssetPath(g), @".*\.(png)|(jpg)"));
+            }
+            return false;
+        }
+
+        public static Texture2DArray PathsToTexture2DArray(string[] paths)
+        {
+            if (paths.Length == 0)
+                return null;
+            if (paths[0].EndsWith(".gif"))
+            {
+                return Converter.GifToTextureArray(paths[0]);
+            }
+            else
+            {
+#if SYSTEM_DRAWING
+                Texture2D[] wew = paths.Where(p=> AssetDatabase.GetMainAssetTypeAtPath(p).IsAssignableFrom(typeof(Texture2D))).Select(p => AssetDatabase.LoadAssetAtPath<Texture2D>(p)).ToArray();
+                Array.Sort(wew, (UnityEngine.Object one, UnityEngine.Object two) => one.name.CompareTo(two.name));
+                Selection.objects = wew;
+                Texture2DArray texture2DArray = new Texture2DArray(wew[0].width, wew[0].height, wew.Length, wew[0].format, true);
+
+                string assetPath = AssetDatabase.GetAssetPath(wew[0]);
+                assetPath = assetPath.Remove(assetPath.LastIndexOf('/')) + "/Texture2DArray.asset";
+
+                for (int i = 0; i < wew.Length; i++)
+                {
+                    for (int m = 0; m < wew[i].mipmapCount; m++)
+                    {
+                        Graphics.CopyTexture(wew[i], 0, m, texture2DArray, i, m);
+                    }
+                }
+
+                texture2DArray.anisoLevel = wew[0].anisoLevel;
+                texture2DArray.wrapModeU = wew[0].wrapModeU;
+                texture2DArray.wrapModeV = wew[0].wrapModeV;
+                texture2DArray.Apply(false, true);
+
+                AssetDatabase.CreateAsset(texture2DArray, assetPath);
+                AssetDatabase.SaveAssets();
+
+                Selection.activeObject = texture2DArray;
+                return texture2DArray;
+#endif
+            }
+            return null;
+        }
+
+        [MenuItem("Assets/Thry/Flipbooks/Gif 2 TextureArray",false, 303)]
+        static void SelectionGifToTextureArray()
+        {
+            GifToTextureArray(AssetDatabase.GUIDToAssetPath(Selection.assetGUIDs[0]));
+        }
+
+        [MenuItem("Assets/Thry/Flipbooks/Gif 2 TextureArray", true)]
+        static bool SelectionGifToTextureArrayValidator()
+        {
+            if (Selection.assetGUIDs != null && Selection.assetGUIDs.Length > 0)
+            {
+                return AssetDatabase.GUIDToAssetPath(Selection.assetGUIDs[0]).EndsWith(".gif");
+            }
+            return false;
+        }
+
+        public static Texture2DArray GifToTextureArray(string path)
+        {
+            List<Texture2D> array = GetGifFrames(path);
+            if (array == null) return null;
+            if (array.Count == 0)
+            {
+                Debug.LogError("Gif is empty or System.Drawing is not working. Try right clicking and reimporting the \"Thry Editor\" Folder!");
+                return null;
+            }
+            Texture2DArray arrayTexture = Textre2DArrayToAsset(array.ToArray());
+            AssetDatabase.CreateAsset(arrayTexture, path.Replace(".gif", ".asset"));
+            AssetDatabase.SaveAssets();
+            return arrayTexture;
+        }
+
+        public static List<Texture2D> GetGifFrames(string path)
+        {
+            List<Texture2D> gifFrames = new List<Texture2D>();
+#if SYSTEM_DRAWING
+            var gifImage = System.Drawing.Image.FromFile(path);
+            var dimension = new System.Drawing.Imaging.FrameDimension(gifImage.FrameDimensionsList[0]);
+
+            int width = Mathf.ClosestPowerOfTwo(gifImage.Width - 1);
+            int height = Mathf.ClosestPowerOfTwo(gifImage.Height - 1);
+
+            bool hasAlpha = false;
+
+            int frameCount = gifImage.GetFrameCount(dimension);
+
+            float totalProgress = frameCount * width;
+            for (int i = 0; i < frameCount; i++)
+            {
+                gifImage.SelectActiveFrame(dimension, i);
+                var ogframe = new System.Drawing.Bitmap(gifImage.Width, gifImage.Height);
+                System.Drawing.Graphics.FromImage(ogframe).DrawImage(gifImage, System.Drawing.Point.Empty);
+                var frame = ResizeBitmap(ogframe, width, height);
+
+                Texture2D frameTexture = new Texture2D(frame.Width, frame.Height);
+
+                float doneProgress = i * width;
+                for (int x = 0; x < frame.Width; x++)
+                {
+                    if (x % 20 == 0)
+                        if (EditorUtility.DisplayCancelableProgressBar("From GIF", "Frame " + i + ": " + (int)((float)x / width * 100) + "%", (doneProgress + x + 1) / totalProgress))
+                        {
+                            EditorUtility.ClearProgressBar();
+                            return null;
+                        }
+
+                    for (int y = 0; y < frame.Height; y++)
+                    {
+                        System.Drawing.Color sourceColor = frame.GetPixel(x, y);
+                        frameTexture.SetPixel(x, frame.Height - 1 - y, new UnityEngine.Color32(sourceColor.R, sourceColor.G, sourceColor.B, sourceColor.A));
+                        if (sourceColor.A < 255.0f)
+                        {
+                            hasAlpha = true;
+                        }
+                    }
+                }
+
+                frameTexture.Apply();
+                gifFrames.Add(frameTexture);
+            }
+            EditorUtility.ClearProgressBar();
+            //Debug.Log("has alpha? " + hasAlpha);
+            for (int i = 0; i < frameCount; i++)
+            {
+                EditorUtility.CompressTexture(gifFrames[i], hasAlpha ? TextureFormat.DXT5 : TextureFormat.DXT1, UnityEditor.TextureCompressionQuality.Normal);
+                gifFrames[i].Apply(true, false);
+            }
+#endif
+            return gifFrames;
+        }
+
+#if SYSTEM_DRAWING
+        public static System.Drawing.Bitmap ResizeBitmap(System.Drawing.Image image, int width, int height)
+        {
+            var destRect = new System.Drawing.Rectangle(0, 0, width, height);
+            var destImage = new System.Drawing.Bitmap(width, height);
+
+            destImage.SetResolution(image.HorizontalResolution, image.VerticalResolution);
+
+            using (var graphics = System.Drawing.Graphics.FromImage(destImage))
+            {
+                graphics.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceCopy;
+                graphics.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.HighQuality;
+                graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+                graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
+                graphics.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
+
+                using (var wrapMode = new System.Drawing.Imaging.ImageAttributes())
+                {
+                    wrapMode.SetWrapMode(System.Drawing.Drawing2D.WrapMode.TileFlipXY);
+                    graphics.DrawImage(image, destRect, 0, 0, image.Width, image.Height, System.Drawing.GraphicsUnit.Pixel, wrapMode);
+                }
+            }
+
+            return destImage;
+        }
+#endif
+
+        private static Texture2DArray Textre2DArrayToAsset(Texture2D[] array)
+        {
+            Texture2DArray texture2DArray = new Texture2DArray(array[0].width, array[0].height, array.Length, array[0].format, true);
+
+#if SYSTEM_DRAWING
+            for (int i = 0; i < array.Length; i++)
+            {
+                for (int m = 0; m < array[i].mipmapCount; m++)
+                {
+                    UnityEngine.Graphics.CopyTexture(array[i], 0, m, texture2DArray, i, m);
+                }
+            }
+#endif
+
+            texture2DArray.anisoLevel = array[0].anisoLevel;
+            texture2DArray.wrapModeU = array[0].wrapModeU;
+            texture2DArray.wrapModeV = array[0].wrapModeV;
+
+            texture2DArray.Apply(false, true);
+
+            return texture2DArray;
+        }
+    }
+
+    public class ShaderHelper
+    {
+
+        private static Dictionary<Shader, Dictionary<string, string[]>> shader_property_drawers = new Dictionary<Shader, Dictionary<string, string[]>>();
+        public static string[] GetDrawer(MaterialProperty property)
+        {
+            Shader shader = ((Material)property.targets[0]).shader;
+
+            if (!shader_property_drawers.ContainsKey(shader))
+                LoadShaderPropertyDrawers(shader);
+
+            Dictionary<string, string[]> property_drawers = shader_property_drawers[shader];
+            if (property_drawers.ContainsKey(property.name))
+                return property_drawers[property.name];
+            return null;
+        }
+
+        public static void LoadShaderPropertyDrawers(Shader shader)
+        {
+            string path = AssetDatabase.GetAssetPath(shader);
+            string code = FileHelper.ReadFileIntoString(path);
+            code = Helper.GetStringBetweenBracketsAndAfterId(code, "Properties", new char[] { '{', '}' });
+            MatchCollection matchCollection = Regex.Matches(code, @"\[.*\].*(?=\()");
+            Dictionary<string, string[]> property_drawers = new Dictionary<string, string[]>();
+            foreach (Match match in matchCollection)
+            {
+                string[] drawers_or_flag_code = GetDrawersFlagsCode(match.Value);
+                string drawer_code = GetNonFlagDrawer(drawers_or_flag_code);
+                if (drawer_code == null)
+                    continue;
+
+                string property_name = Regex.Match(match.Value, @"(?<=\])[^\[]*$").Value.Trim();
+
+                List<string> drawer_and_parameters = new List<string>();
+                drawer_and_parameters.Add(Regex.Split(drawer_code, @"\(")[0]);
+
+                GetDrawerParameters(drawer_code, drawer_and_parameters);
+
+                property_drawers[property_name] = drawer_and_parameters.ToArray();
+            }
+            shader_property_drawers[shader] = property_drawers;
+        }
+
+        private static void GetDrawerParameters(string code, List<string> list)
+        {
+            MatchCollection matchCollection = Regex.Matches(code, @"(?<=\(|,).*?(?=\)|,)");
+            foreach (Match m in matchCollection)
+                list.Add(m.Value);
+        }
+
+        private static string GetNonFlagDrawer(string[] codes)
+        {
+            foreach (string c in codes)
+                if (!DrawerIsFlag(c))
+                    return c;
+            return null;
+        }
+
+        private static bool DrawerIsFlag(string code)
+        {
+            return (code == "HideInInspector" || code == "NoScaleOffset" || code == "Normal" || code == "HDR" || code == "Gamma" || code == "PerRendererData");
+        }
+
+        private static string[] GetDrawersFlagsCode(string line)
+        {
+            MatchCollection matchCollection = Regex.Matches(line, @"(?<=\[).*?(?=\])");
+            string[] codes = new string[matchCollection.Count];
+            int i = 0;
+            foreach (Match m in matchCollection)
+                codes[i++] = m.Value;
+            return codes;
+        }
+        //------------Track ShaderEditor shaders-------------------
+
+        public class ShaderEditorShader
+        {
+            public string path;
+            public string name;
+            public string version;
+        }
+
+        private static List<ShaderEditorShader> shaders;
+        private static Dictionary<string, ShaderEditorShader> dictionary;
+        public static List<ShaderEditorShader> thry_editor_shaders
+        {
+            get
+            {
+                Init();
+                return shaders;
+            }
+        }
+
+        private static void Init()
+        {
+            if (shaders == null)
+                LoadShaderEditorShaders();
+        }
+
+        private static void Add(ShaderEditorShader s)
+        {
+            Init();
+            if (!dictionary.ContainsKey(s.name))
+            {
+                dictionary.Add(s.name, s);
+                shaders.Add(s);
+            }
+        }
+
+        private static void RemoveAt(int i)
+        {
+            dictionary.Remove(shaders[i].name);
+            shaders.RemoveAt(i--);
+        }
+
+        public static string[] GetShaderEditorShaderNames()
+        {
+            string[] r = new string[thry_editor_shaders.Count];
+            for (int i = 0; i < r.Length; i++)
+                r[i] = thry_editor_shaders[i].name;
+            return r;
+        }
+
+        public static bool IsShaderUsingShaderEditor(Shader shader)
+        {
+            Init();
+            return dictionary.ContainsKey(shader.name);
+        }
+
+
+        private static void LoadShaderEditorShaders()
+        {
+            string data = FileHelper.ReadFileIntoString(PATH.THRY_EDITOR_SHADERS);
+            if (data != "")
+            {
+                shaders = Parser.ParseToObject<List<ShaderEditorShader>>(data);
+                InitDictionary();
+            }
+            else
+            {
+                dictionary = new Dictionary<string, ShaderEditorShader>();
+                SearchAllShadersForShaderEditorUsage();
+            }
+            DeleteNull();
+        }
+
+        private static void InitDictionary()
+        {
+            dictionary = new Dictionary<string, ShaderEditorShader>();
+            foreach (ShaderEditorShader s in shaders)
+            {
+                if (s.name != null && !dictionary.ContainsKey(s.name))
+                    dictionary.Add(s.name, s);
+            }
+        }
+
+        public static void SearchAllShadersForShaderEditorUsage()
+        {
+            shaders = new List<ShaderEditorShader>();
+            string[] guids = AssetDatabase.FindAssets("t:shader");
+            foreach (string g in guids)
+            {
+                string path = AssetDatabase.GUIDToAssetPath(g);
+                TestShaderForShaderEditor(path);
+            }
+            Save();
+        }
+
+        private static void DeleteNull()
+        {
+            bool save = false;
+            int length = shaders.Count;
+            for (int i = 0; i < length; i++)
+            {
+                if (shaders[i] == null)
+                {
+                    RemoveAt(i--);
+                    length--;
+                    save = true;
+                }
+            }
+            if (save)
+                Save();
+        }
+
+        private static void Save()
+        {
+            FileHelper.WriteStringToFile(Parser.ObjectToString(shaders), PATH.THRY_EDITOR_SHADERS);
+        }
+
+        private static string GetActiveCustomEditorParagraph(string code)
+        {
+            Match match = Regex.Match(code, @"(^|\*\/)((.|\n)(?!(\/\*)))*CustomEditor\s*\""(\w|\d)*\""((.|\n)(?!(\/\*)))*");
+            if (match.Success) return match.Value;
+            return null;
+        }
+
+        private static bool ParagraphContainsActiveShaderEditorDefinition(string code)
+        {
+            Match match = Regex.Match(code, @"\n\s+CustomEditor\s+\""ShaderEditor\""");
+            return match.Success;
+        }
+
+        private static bool ShaderUsesShaderEditor(string code)
+        {
+            string activeCustomEditorParagraph = GetActiveCustomEditorParagraph(code);
+            if (activeCustomEditorParagraph == null)
+                return false;
+            return ParagraphContainsActiveShaderEditorDefinition(activeCustomEditorParagraph);
+        }
+
+        private static bool TestShaderForShaderEditor(string path)
+        {
+            string code = FileHelper.ReadFileIntoString(path);
+            if (ShaderUsesShaderEditor(code))
+            {
+                ShaderEditorShader shader = new ShaderEditorShader();
+                shader.path = path;
+                Match name_match = Regex.Match(code, @"(?<=[Ss]hader)\s*\""[^\""]+(?=\""\s*{)");
+                if (name_match.Success) shader.name = name_match.Value.TrimStart(new char[] { ' ', '"' });
+                Match master_label_match = Regex.Match(code, @"\[HideInInspector\]\s*shader_master_label\s*\(\s*\""[^\""]*(?=\"")");
+                if (master_label_match.Success) shader.version = GetVersionFromMasterLabel(master_label_match.Value);
+                Add(shader);
+                return true;
+            }
+            return false;
+        }
+
+        private static string GetVersionFromMasterLabel(string label)
+        {
+            Match match = Regex.Match(label, @"(?<=v|V)\d+(\.\d+)*");
+            if (!match.Success)
+                match = Regex.Match(label, @"\d+(\.\d+)+");
+            if (match.Success)
+                return match.Value;
+            return null;
+        }
+
+        public static void AssetsImported(string[] paths)
+        {
+            bool save = false;
+            foreach (string path in paths)
+            {
+                if (!path.EndsWith(".shader"))
+                    continue;
+                if (TestShaderForShaderEditor(path))
+                    save = true;
+            }
+            if (save)
+                Save();
+        }
+
+        public static void AssetsDeleted(string[] paths)
+        {
+            bool save = false;
+            foreach (string path in paths)
+            {
+                if (!path.EndsWith(".shader"))
+                    continue;
+                int length = thry_editor_shaders.Count;
+                for (int i = 0; i < length; i++)
+                {
+                    if (thry_editor_shaders[i] != null && thry_editor_shaders[i].path == path)
+                    {
+                        RemoveAt(i--);
+                        length--;
+                        save = true;
+                    }
+                }
+            }
+            if (save)
+                Save();
+        }
+
+        public static void AssetsMoved(string[] old_paths, string[] paths)
+        {
+            bool save = false;
+            for (int i = 0; i < paths.Length; i++)
+            {
+                if (!paths[i].EndsWith(".shader"))
+                    continue;
+                foreach (ShaderEditorShader s in thry_editor_shaders)
+                {
+                    if (s == null) continue;
+                    if (s.path == old_paths[i])
+                    {
+                        s.path = paths[i];
+                        save = true;
+                    }
+                }
+            }
+            if (save)
+                Save();
+        }
+
+    }
+
+    public class StringHelper
+    {
+        public static string GetBetween(string value, string prefix, string postfix)
+        {
+            return GetBetween(value, prefix, postfix, value);
+        }
+
+        public static string GetBetween(string value, string prefix, string postfix, string fallback)
+        {
+            string pattern = @"(?<=" + prefix + ").*?(?=" + postfix + ")";
+            Match m = Regex.Match(value, pattern);
+            if (m.Success)
+                return m.Value;
+            return fallback;
+        }
+
+        //returns data for name:{data} even if data containss brakets
+        public static string GetBracket(string data, string bracketName)
+        {
+            Match m = Regex.Match(data, bracketName + ":");
+            if (m.Success)
+            {
+                int startIndex = m.Index + bracketName.Length + 2;
+                int i = startIndex;
+                int depth = 0;
+                while (++i < data.Length)
+                {
+                    if (data[i] == '{')
+                        depth++;
+                    else if (data[i] == '}')
+                    {
+                        if (depth == 0)
+                            break;
+                        depth--;
+                    }
+                }
+                return data.Substring(startIndex, i - startIndex);
+            }
+            return data;
+        }
+    }
+
+    public class VRCInterface
+    {
+        private static VRCInterface instance;
+        public static VRCInterface Get()
+        {
+            if (instance == null) instance = new VRCInterface();
+            return instance;
+        }
+        public static void Update()
+        {
+            instance = new VRCInterface();
+        }
+
+        public SDK_Information sdk_information;
+
+        public class SDK_Information
+        {
+            public VRC_SDK_Type type;
+            public string installed_version = "0";
+        }
+
+        public enum VRC_SDK_Type
+        {
+            NONE = 0,
+            SDK_2 = 1,
+            SDK_3_Avatar = 2,
+            SDK_3_World = 3
+        }
+
+        private VRCInterface()
+        {
+            sdk_information = new SDK_Information();
+            sdk_information.type = GetInstalledSDKType();
+            InitInstalledSDKVersionAndPaths();
+        }
+
+        private void InitInstalledSDKVersionAndPaths()
+        {
+            string[] guids = AssetDatabase.FindAssets("version");
+            string path = null;
+            string u_path = null;
+            foreach (string guid in guids)
+            {
+                string p = AssetDatabase.GUIDToAssetPath(guid);
+                if (p.Contains("VRCSDK/version"))
+                    path = p;
+            }
+            if (path == null || !File.Exists(path))
+                return;
+            string persistent = PersistentData.Get("vrc_sdk_version");
+            if (persistent != null)
+                sdk_information.installed_version = persistent;
+            else
+                sdk_information.installed_version = Regex.Replace(FileHelper.ReadFileIntoString(path), @"\n?\r", "");
+        }
+
+        public VRC_SDK_Type GetInstalledSDKType()
+        {
+#if VRC_SDK_VRCSDK3 && UDON
+            return VRC_SDK_Type.SDK_3_World;
+#elif VRC_SDK_VRCSDK3
+            return VRC_SDK_Type.SDK_3_Avatar;
+#endif
+#if VRC_SDK_VRCSDK2
+            return VRC_SDK_Type.SDK_2;
+#endif
+            return VRC_SDK_Type.NONE;
+        }
+
+        private static bool IsVRCSDKInstalled()
+        {
+#if VRC_SDK_VRCSDK3
+            return true;
+#endif
+#if VRC_SDK_VRCSDK2
+            return true;
+#endif
+            return false;
         }
     }
 }

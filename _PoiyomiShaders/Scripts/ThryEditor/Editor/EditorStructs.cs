@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using UnityEditor;
 using UnityEngine;
 
@@ -49,6 +50,7 @@ namespace Thry
         public bool is_hidden = false;
         public bool is_animated = false;
         public bool is_animatable = false;
+        public bool is_renaming = false;
         public MaterialProperty kaj_isAnimatedProperty;
 
         public ShaderPart(MaterialProperty prop, int xOffset, string displayName, PropertyOptions options)
@@ -62,9 +64,10 @@ namespace Thry
 
             if (prop == null)
                 return;
-            this.kaj_isAnimatedProperty = ShaderEditor.FindProperty(ShaderEditor.currentlyDrawing.properties, prop.name + "Animated");
+            this.kaj_isAnimatedProperty = ShaderEditor.FindProperty(ShaderEditor.currentlyDrawing.properties, Regex.Replace(prop.name, "_"+ShaderEditor.currentlyDrawing.animPropertySuffix+@"$","") + "Animated");
             this.is_animatable = kaj_isAnimatedProperty != null;
-            this.is_animated = is_animatable && kaj_isAnimatedProperty.floatValue == 1;
+            this.is_animated = is_animatable && kaj_isAnimatedProperty.floatValue > 0;
+            this.is_renaming = is_animatable && kaj_isAnimatedProperty.floatValue == 2;
         }
 
         public abstract void DrawInternal(GUIContent content, CRect rect = null, bool useEditorIndent = false);
@@ -75,8 +78,8 @@ namespace Thry
         {
             if (HeaderHider.IsHeaderHidden(this))
                 return;
-            bool is_enabled = DrawingData.is_enabled;
-            if (options.condition_enable != null && is_enabled)
+            bool addDisableGroup = options.condition_enable != null && DrawingData.is_enabled;
+            if (addDisableGroup)
             {
                 DrawingData.is_enabled = options.condition_enable.Test();
                 EditorGUI.BeginDisabledGroup(!DrawingData.is_enabled);
@@ -84,27 +87,43 @@ namespace Thry
             if (options.condition_show.Test())
             {
                 PerformDraw(content, rect, useEditorIndent);
-                HandleKajAnimatable();
             }
-            if (options.condition_enable != null && is_enabled)
+            if (addDisableGroup)
             {
                 DrawingData.is_enabled = true;
                 EditorGUI.EndDisabledGroup();
             }
         }
 
-        private void HandleKajAnimatable()
+        public void HandleKajAnimatable()
         {
             Rect lastRect = GUILayoutUtility.GetLastRect();
-            if (Event.current.isMouse && Event.current.button == 1 && lastRect.Contains(Event.current.mousePosition)){
-                is_animated = !is_animated;
-                kaj_isAnimatedProperty.floatValue = is_animated?1:0;
+            if (Event.current.isMouse && Event.current.button == 1 && lastRect.Contains(Event.current.mousePosition))
+            {
+                if (Event.current.control && Config.Get().renameAnimatedProps)
+                {
+                    if (!is_animated)
+                    {
+                        is_animated = true;
+                    }
+
+                    if (is_animated)
+                    {
+                        is_renaming = !is_renaming;
+                    }
+                }
+                else
+                {
+                    is_animated = !is_animated;
+                }
+
+                kaj_isAnimatedProperty.floatValue = is_animated ? (is_renaming ? 2 : 1) : 0;
                 GUIUtility.ExitGUI();
             }
             if (is_animated)
             {
-                Rect r = new Rect(0, lastRect.y + 2, 18, 18);
-                GUI.DrawTexture(r, Styles.texture_animated, ScaleMode.StretchToFill, true);
+                Rect r = new Rect(8, lastRect.y + 2, 16, 16);
+                GUI.DrawTexture(r, is_renaming ? Styles.texture_animated_renamed : Styles.texture_animated, ScaleMode.StretchToFill, true);
             }
         }
 
@@ -242,11 +261,17 @@ namespace Thry
         public override void CopyFromMaterial(Material m)
         {
             MaterialHelper.CopyPropertyValueFromMaterial(materialProperty, m);
+            if(is_animatable)
+                MaterialHelper.CopyPropertyValueFromMaterial(kaj_isAnimatedProperty, m);
+            this.is_animated = is_animatable && kaj_isAnimatedProperty.floatValue > 0;
+            this.is_renaming = is_animatable && kaj_isAnimatedProperty.floatValue == 2;
         }
 
         public override void CopyToMaterial(Material m)
         {
             MaterialHelper.CopyPropertyValueToMaterial(materialProperty, m);
+            if (is_animatable)
+                MaterialHelper.CopyPropertyValueToMaterial(kaj_isAnimatedProperty, m);
         }
 
         public override void DrawInternal(GUIContent content, CRect rect = null, bool useEditorIndent = false)
@@ -254,12 +279,14 @@ namespace Thry
             PreDraw();
             ShaderEditor.currentlyDrawing.currentProperty = this;
             this.materialProperty = ShaderEditor.currentlyDrawing.properties[property_index];
+            if (ShaderEditor.currentlyDrawing.isLockedMaterial)
+                EditorGUI.BeginDisabledGroup(ShaderEditor.currentlyDrawing.isLockedMaterial && !(is_animatable && (is_animated || is_renaming)));
             if (rect != null)
                 DrawingData.lastGuiObjectHeaderRect = rect.r;
             else
                 DrawingData.lastGuiObjectHeaderRect = new Rect(-1, -1, -1, -1);
             int oldIndentLevel = EditorGUI.indentLevel;
-            if(!useEditorIndent)
+            if (!useEditorIndent)
                 EditorGUI.indentLevel = xOffset + 1;
 
             if (drawDefault)
@@ -278,6 +305,10 @@ namespace Thry
 
             EditorGUI.indentLevel = oldIndentLevel;
             if (DrawingData.lastGuiObjectHeaderRect.x == -1) DrawingData.lastGuiObjectHeaderRect = GUILayoutUtility.GetLastRect();
+            if (this is TextureProperty == false && is_animatable)
+                HandleKajAnimatable();
+            if (ShaderEditor.currentlyDrawing.isLockedMaterial)
+                EditorGUI.EndDisabledGroup();
         }
 
         public virtual void PreDraw() { }

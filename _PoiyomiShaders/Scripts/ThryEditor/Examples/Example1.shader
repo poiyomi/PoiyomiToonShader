@@ -1,7 +1,8 @@
-﻿Shader "Thry/Example 1"
+Shader "Thry/Example 1"
 {
-	Properties
-	{
+	Properties 
+  { 
+      [HideInInspector] shader_is_using_thry_editor("", Float)=0
 		[HideInInspector] shader_master_label("<color=#ff0000ff>Example 1</color>", Float) = 0
 		[HideInInspector] shader_presets("ThryPresetsExample", Float) = 0
 		[HideInInspector] shader_properties_label_file("ThryLabelExample", Float) = 0
@@ -12,6 +13,11 @@
 
 		shader_properties_locale("locale::locale--{file_name:thry_locale_example}", Float) = 0
 		[Enum(Cutout,0,Transparent,1)]variant_selector("Variant--{on_value_actions:[{value:0,actions:[{type:SET_PROPERTY,data:_ZWrite=1},{type:SET_SHADER,data:Thry/Example 1}]},{value:1,actions:[{type:SET_PROPERTY,data:_ZWrite=0},{type:SET_SHADER,data:Thry/Example 2}]}]}",Float) = 0
+
+		[ThryWideEnum(Opaque, 0, Cutout, 1, Fade, 2, Transparent, 3, Additive, 4, Soft Additive, 5, Multiplicative, 6, 2x Multiplicative, 7, Multiplicative Grab Pass, 8)]_Mode("Rendering Preset--{on_value:''
+			0,render_queue = 2000,render_type = Opaque,_BlendOp = 0,_BlendOpAlpha = 0,_Cutoff = 0,_SrcBlend = 1,_DstBlend = 0,_AlphaToMask = 0,_ZWrite = 1,_ZTest = 4,_AlphaPremultiply = 0;
+			1,render_queue = 2460,render_type = TransparentCutout,_BlendOp = 0,_BlendOpAlpha = 0,_Cutoff = 0.5,_SrcBlend = 1,_DstBlend = 0,_AlphaToMask = 1,_ZWrite = 1,_ZTest = 4,_AlphaPremultiply = 0
+			'' }", Int) = 0
 
 		[HideInInspector] m_mainOptions("Main", Float) = 0
 		_Color("Color & Alpha", Color) = (1, 1, 1, 1)
@@ -390,7 +396,7 @@
 					[HideInInspector] m_end_debugOptions("Debug", Float) = 0
 	}
 
-		CustomEditor "ShaderEditor"
+		CustomEditor "Thry.ShaderEditor"
 		SubShader{
 		Tags { "RenderType" = "Opaque" }
 		LOD 200

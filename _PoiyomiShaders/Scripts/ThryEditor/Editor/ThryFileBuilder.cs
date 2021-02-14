@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEditor;
 using UnityEngine;
 
@@ -77,7 +78,7 @@ namespace Thry {
         private static void Save(string data, string add_string)
         {
             string path = AssetDatabase.GetAssetPath(Selection.activeObject);
-            path = path.RemoveFileName() + path.RemovePath().RemoveFileExtension() + add_string;
+            path = Path.GetDirectoryName(path)+ "/"+ Path.GetFileNameWithoutExtension(path) + add_string;
             Debug.Log(path);
             FileHelper.WriteStringToFile(data, path);
             AssetDatabase.Refresh();

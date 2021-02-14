@@ -9,6 +9,7 @@ using UnityEngine;
 using Thry;
 using System;
 using System.Reflection;
+using System.Linq;
 
 namespace Thry
 {
@@ -28,7 +29,6 @@ namespace Thry
 
         // UI Instance Variables
         private int customRenderQueueFieldInput = -1;
-        private PresetHandler presetHandler;
 
         private bool show_search_bar;
         private string header_search_term = "";
@@ -81,13 +81,25 @@ namespace Thry
 
         private PropertyOptions ExtractExtraOptionsFromDisplayName(ref string displayName)
         {
-            if (displayName.Contains("--"))
+            if (displayName.Contains(EXTRA_OPTIONS_PREFIX))
             {
                 string[] parts = displayName.Split(new string[] { EXTRA_OPTIONS_PREFIX }, 2, System.StringSplitOptions.None);
                 displayName = parts[0];
                 PropertyOptions options = Parser.ParseToObject<PropertyOptions>(parts[1]);
                 if (options != null)
+                {
+                    if (options.condition_showS != null)
+                    {
+                        options.condition_show = DefineableCondition.Parse(options.condition_showS);
+                        //Debug.Log(options.condition_show.ToString());
+                    }
+                    if(options.on_value != null)
+                    {
+                        options.on_value_actions = PropertyValueAction.ParseToArray(options.on_value);
+                        //Debug.Log(Parser.Serialize(options.on_value_actions));
+                    }
                     return options;
+                }
             }
             return new PropertyOptions();
         }
@@ -307,15 +319,6 @@ namespace Thry
                            element => element.name == name);
         }
 
-        //-------------Functions------------------
-
-        public void UpdateRenderQueueInstance()
-        {
-            if (editorData.materials != null) foreach (Material m in editorData.materials)
-                    if (m.shader.renderQueue != m.renderQueue)
-                        Thry.MaterialHelper.UpdateRenderQueue(m, editorData.defaultShader);
-        }
-
         //-------------Draw Functions----------------
 
         public void OnOpen()
@@ -332,21 +335,16 @@ namespace Thry
             editorData.materials = new Material[targets.Length];
             for (int i = 0; i < targets.Length; i++) editorData.materials[i] = targets[i] as Material;
 
-            presetHandler = new PresetHandler(editorData.properties);
-
             editorData.shader = editorData.materials[0].shader;
             string defaultShaderName = editorData.materials[0].shader.name.Split(new string[] { "-queue" }, System.StringSplitOptions.None)[0].Replace(".differentQueues/", "");
             editorData.defaultShader = Shader.Find(defaultShaderName);
+            
+            editorData.animPropertySuffix = new string(editorData.materials[0].name.Trim().ToLower().Where(char.IsLetter).ToArray());
+
+            currentlyDrawing = editorData;
 
             //collect shader properties
             CollectAllProperties();
-
-            //update render queue if render queue selection is deactivated
-            if (!config.renderQueueShaders && !config.showRenderQueue)
-            {
-                editorData.materials[0].renderQueue = editorData.defaultShader.renderQueue;
-                UpdateRenderQueueInstance();
-            }
 
             AddResetProperty();
 
@@ -415,7 +413,7 @@ namespace Thry
             //sync shader and get preset handler
             Config config = Config.Get();
             if (editorData.materials != null)
-                Mediator.SetActiveShader(editorData.materials[0].shader, presetHandler: presetHandler);
+                Mediator.SetActiveShader(editorData.materials[0].shader);
 
 
             //TOP Bar
@@ -434,10 +432,8 @@ namespace Thry
             //draw master label if exists
             if (masterLabelText != null) GuiHelper.DrawMasterLabel(masterLabelText, mainHeaderRect);
 
-            //draw presets if exists
-            presetHandler.drawPresets(editorData.properties, editorData.materials);
-            EditorGUIUtility.AddCursorRect(GUILayoutUtility.GetLastRect(), MouseCursor.Link);
-
+            //GUILayout.Label("Thryrallo",GUILayout.ExpandWidth(true));
+            GUILayout.Label("@UI by Thryrallo", Styles.made_by_style,GUILayout.Height(25), GUILayout.MaxWidth(100));
             EditorGUILayout.EndHorizontal();
 
             if (show_search_bar)
@@ -451,9 +447,10 @@ namespace Thry
 
             bool isMaterialLocked = editorData.use_ShaderOptimizer && editorData.propertyDictionary["_ShaderOptimizerEnabled"].materialProperty.floatValue == 1;
             if (editorData.use_ShaderOptimizer)
+            {
                 editorData.propertyDictionary["_ShaderOptimizerEnabled"].Draw();
+            }
 
-            EditorGUI.BeginDisabledGroup(isMaterialLocked);
             //PROPERTIES
             if (header_search_term == "" || show_search_bar == false)
             {
@@ -466,22 +463,10 @@ namespace Thry
                     if (IsSearchedFor(part, header_search_term))
                         part.Draw();
             }
-            EditorGUI.EndDisabledGroup();
 
             //Render Queue selection
             if (config.showRenderQueue)
-            {
-                if (config.renderQueueShaders)
-                {
-                    customRenderQueueFieldInput = GuiHelper.drawRenderQueueSelector(editorData.defaultShader, customRenderQueueFieldInput);
-                    EditorGUILayout.LabelField("Default: " + editorData.defaultShader.name);
-                    EditorGUILayout.LabelField("Shader: " + editorData.shader.name);
-                }
-                else
-                {
                     materialEditor.RenderQueueField();
-                }
-            }
 
             //footer
             GuiHelper.drawFooters(footer);
@@ -516,7 +501,6 @@ namespace Thry
             }
 
             if (e.type == EventType.Used) wasUsed = true;
-            if (config.showRenderQueue && config.renderQueueShaders) UpdateRenderQueueInstance();
             if (input.HadMouseDownRepaint) input.HadMouseDown = false;
             input.HadMouseDownRepaint = false;
             editorData.firstCall = false;
@@ -630,7 +614,7 @@ namespace Thry
                     string p = AssetDatabase.GUIDToAssetPath(g);
                     if (p.EndsWith("/ShaderEditor.cs"))
                     {
-                        edtior_directory_path = p.GetDirectoryPath().RemoveOneDirectory();
+                        edtior_directory_path = Directory.GetParent(Path.GetDirectoryName(p)).FullName;
                         break;
                     }
                 }

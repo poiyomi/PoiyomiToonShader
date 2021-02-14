@@ -1,7 +1,8 @@
-﻿Shader "Thry/Example 2"
+Shader "Thry/Example 2"
 {
-	Properties
-	{
+	Properties 
+  { 
+      [HideInInspector] shader_is_using_thry_editor("", Float)=0
 		[HideInInspector] shader_master_label("<color=#ff0000ff>Example 2</color>", Float) = 0
 		[HideInInspector] shader_presets("ThryPresetsExample", Float) = 0
 		[HideInInspector] shader_properties_label_file("ThryLabelExample", Float) = 0
@@ -390,7 +391,7 @@
 					[HideInInspector] m_end_debugOptions("Debug", Float) = 0
 	}
 
-		CustomEditor "ShaderEditor"
+		CustomEditor "Thry.ShaderEditor"
 		SubShader{
 		Tags { "RenderType" = "Transparent" "Queue"="Transparent" }
 		LOD 200

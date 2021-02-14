@@ -1,0 +1,293 @@
+--{reference_property:REFERENCEA,button_right:{text:Tutorial,action:{type:URL,data:URLSTRING},hover:YouTube}}
+THINGASD:=NAMESD--{hide_in_inspector:true}
+
+reference_property:REFERENCEA,
+
+--{reference_property:REFERENCEA}
+:=--{reference_property:REFERENCEA}
+
+--{button_right:{text:Tutorial,action:{type:URL,data:URLSTRING},hover:YouTube}}
+
+--{hide_in_inspector:true}
+
+// Main
+m_mainOptions:=Main--{button_right:{text:Tutorial,action:{type:URL,data:https://www.youtube.com/watch?v=5yxREJE8DPA&list=PL4_Gy3VRJSmbXfQSldzUiChgABQsoBlLw},hover:YouTube},is_visible_simple:true}
+_MainTex:=Main Texture--{reference_properties:[_MainTexPan, _MainTextureUV]}
+_BumpMap:=Normal Map--{reference_properties:[_BumpMapPan, _BumpMapUV]}
+_AlphaMask:=Alpha Map--{reference_properties:[_AlphaMaskPan, _AlphaMaskUV]}
+_VertexManipulationHeightMask:=Height Map--{reference_properties:[_VertexManipulationHeightPan, _VertexManipulationHeightUV]}
+_BackFaceTexture:= Texture--{reference_properties:[_BackFacePanning, _BackFaceTextureUV]}
+
+m_start_MainVertexColors:=Vertex Colors--{is_hideable:true}
+
+// RGB Mask
+m_start_RGBMask:=RGB Mask--{button_right:{text:Tutorial,action:{type:URL,data:https://www.youtube.com/watch?v=VVJ9Ac1_fXk&list=PL4_Gy3VRJSmbXfQSldzUiChgABQsoBlLw},hover:YouTube},reference_property:_RGBMaskEnabled,is_hideable:true}
+_RGBMask:=RGB Mask--{reference_properties:[_RGBMaskPanning, _RGBMaskUV]}
+_RedTexure:=R Texture--{reference_properties:[_RGBRedPanning, _RGBRed_UV]}
+_GreenTexture:=G Texture--{reference_properties:[_RGBGreenPanning, _RGBGreen_UV]}
+_BlueTexture:=B Texture--{reference_properties:[_RGBBluePanning, _RGBBlue_UV]}
+
+// Hue Shift
+m_start_MainHueShift:=Hue Shift--{button_right:{text:Tutorial,action:{type:URL,data:https://www.youtube.com/watch?v=Asj7u0Wd5T4&list=PL4_Gy3VRJSmbXfQSldzUiChgABQsoBlLw},hover:YouTube},reference_property:_MainHueShiftToggle,is_hideable:true}
+_MainHueShiftMask:=Mask--{reference_properties:[_MainHueShiftMaskPan, _MainHueShiftMaskUV]}
+
+// Decal 
+m_start_DecalSection:=Decal--{button_right:{text:Tutorial,action:{type:URL,data:https://www.youtube.com/watch?v=xHoQVN_F7JE&list=PL4_Gy3VRJSmbXfQSldzUiChgABQsoBlLw},hover:YouTube},reference_property:_DecalEnabled,is_hideable:true}
+_DecalTexture:=Decal--{reference_properties:[_DecalTexturePan, _DecalTextureUV]}
+_DecalMask:=Mask--{reference_properties:[_DecalMaskPan, _DecalMaskUV]}
+
+// Details
+_DetailMask:=Detail Mask--{reference_properties:[_DetailMaskPan, _DetailMaskUV]}
+_DetailTex:=Detail Texture--{reference_properties:[_DetailTexPan, _DetailTexUV]}
+_DetailNormalMap:=Detail Normal--{reference_properties:[_DetailNormalMapPan, _DetailNormalMapUV]}
+
+// Alpha Options
+m_start_Alpha:=Alpha Options--{button_right:{text:Tutorial,action:{type:URL,data:https://www.youtube.com/watch?v=kP4KFOd6P6o&list=PL4_Gy3VRJSmbXfQSldzUiChgABQsoBlLw},hover:YouTube},is_hideable:true}
+
+// Backface
+m_start_backFace:=Back Face--{reference_property:_BackFaceEnabled,button_right:{text:Tutorial,action:{type:URL,data:https://www.youtube.com/watch?v=uZnNpiCvsDg&list=PL4_Gy3VRJSmbXfQSldzUiChgABQsoBlLw},hover:YouTube},is_hideable:true}
+_BackFaceEnabled:=Back Face--{hide_in_inspector:true}
+_BackFaceTexture:=Backface Texture--{reference_properties:[_BackFacePanning, _BackFaceTextureUV]}
+
+// Lighting
+m_lightingOptions:=Lighting & Reflections--{is_hideable:true,is_visible_simple:true}
+m_start_Lighting:=Light & Shadow--{reference_property:_EnableLighting,button_right:{text:Tutorial,action:{type:URL,data:https://www.youtube.com/watch?v=TxVmCYkH8CM&list=PL4_Gy3VRJSmbXfQSldzUiChgABQsoBlLw&index=11&t=0s},hover:YouTube},is_hideable:true,is_visible_simple:true}
+_EnableLighting:=Light & Shadow--{hide_in_inspector:true}
+_LightingAOTex:=AO Map--{reference_properties:[_LightingAOTexPan, _LightingAOTexUV]}
+
+// Subsurface Scattering
+m_start_subsurface:=Subsurface Scattering--{reference_property:_EnableSSS,button_right:{text:Tutorial,action:{type:URL,data:https://www.youtube.com/watch?v=WZ1fmFMVk0U&list=PL4_Gy3VRJSmbXfQSldzUiChgABQsoBlLw},hover:YouTube},is_hideable:true}
+_EnableSSS:=Subsurface Scattering--{hide_in_inspector:true}
+_SSSThicknessMap:=Thickness Map--{reference_properties:[_SSSThicknessMapPan, _SSSThicknessMapUV]}
+
+_ToonRamp1:=Lighting Ramp 2--{texture:{width:512,height:4,filterMode:Bilinear,wrapMode:Clamp},force_texture_options:true}
+_ToonRamp2:=Lighting Ramp 3--{texture:{width:512,height:4,filterMode:Bilinear,wrapMode:Clamp},force_texture_options:true}
+_ToonRamp3:=Lighting Ramp 4--{texture:{width:512,height:4,filterMode:Bilinear,wrapMode:Clamp},force_texture_options:true}
+
+m_start_lightingStandard:=Standardish Settings
+
+// Rim Lighting
+m_start_rimLightOptions:=Rim Lighting--{reference_property:_EnableRimLighting,button_right:{text:Tutorial,action:{type:URL,data:https://www.youtube.com/watch?v=RE2eWlpdTm8&list=PL4_Gy3VRJSmbXfQSldzUiChgABQsoBlLw},hover:YouTube},is_hideable:true}
+_EnableRimLighting:=Rim Lighting--{hide_in_inspector:true}
+_RimTex:=Rim Texture--{reference_properties:[_RimTexPan]}
+_RimTex:=Rim Texture--{reference_properties:[_RimTexPan, _RimTexUV]}
+_RimMask:=Rim Mask--{reference_properties:[_RimMaskPan, _RimMaskUV]}
+_RimWidthNoiseTexture:=Width Noise--{reference_properties:[_RimWidthNoiseTexturePan, _RimWidthNoiseTextureUV]}
+
+// Environmental Rim Lighting 
+m_start_reflectionRim:=Environmental Rim Lighting--{button_right:{text:Tutorial,action:{type:URL,data:https://www.youtube.com/watch?v=R1LTIjzk-WM&list=PL4_Gy3VRJSmbXfQSldzUiChgABQsoBlLw},hover:YouTube},reference_property:_EnableEnvironmentalRim,is_hideable:true}
+_EnableEnvironmentalRim:=Environmental Rim Lighting--{hide_in_inspector:true}
+_RimEnviroMask:=Mask--{reference_properties:[_RimEnviroMaskPan, _RimEnviroMaskUV]}
+
+m_start_bakedLighting:=Baked Lighting--{is_hideable:true}
+
+// Reflections
+m_reflectionOptions:=Reflections--{is_hideable:true,is_visible_simple:true}
+// Metal
+m_start_Metallic:=Metallics--{reference_property:_EnableMetallic,button_right:{text:Tutorial,action:{type:URL,data:https://www.youtube.com/watch?v=uSoj9eEFhPY&list=PL4_Gy3VRJSmbXfQSldzUiChgABQsoBlLw},hover:YouTube},is_hideable:true,is_visible_simple:true}
+_EnableMetallic:=Metallics--{hide_in_inspector:true}
+_MetallicMask:=Metallic Map--{reference_properties:[_MetallicMaskPan, _MetallicMaskUV]}
+_MetallicTintMap:=RGB Tint A Mask--{reference_properties:[_MetallicTintMapPan, _MetallicTintMapUV]}
+_SmoothnessMask:=Smoothness Map--{reference_properties:[_SmoothnessMaskPan, _SmoothnessMaskUV]}
+
+// Clear Coat 
+m_start_clearCoat:=Clear Coat--{reference_property:_EnableClearCoat,button_right:{text:Tutorial,action:{type:URL,data:https://www.youtube.com/watch?v=HtbLCfgzFlg&list=PL4_Gy3VRJSmbXfQSldzUiChgABQsoBlLw},hover:YouTube},is_hideable:true}
+_EnableClearCoat:=Clear Coat--{hide_in_inspector:true}
+_ClearCoatMask:=Mask--{reference_properties:[_ClearCoatMaskPan, _ClearCoatMaskUV]}
+_ClearCoatSmoothnessMap:=Smoothness Map--{reference_properties:[_ClearCoatSmoothnessMapPan, _ClearCoatSmoothnessMapUV]}
+
+// Matcap
+m_start_matcap:=Matcap--{reference_property:_MatcapEnable,button_right:{text:Tutorial,action:{type:URL,data:https://youtu.be/DFo87kuO1OI},hover:YouTube},is_hideable:true,is_visible_simple:true}
+_MatcapEnable:=Matcap--{hide_in_inspector:true}
+m_start_Matcap2:=Matcap 2--{reference_property:_Matcap2Enable,button_right:{text:Tutorial,action:{type:URL,data:https://youtu.be/DFo87kuO1OI},hover:YouTube},is_hideable:true}
+_Matcap2Enable:=Matcap 2--{hide_in_inspector:true}
+
+// Specular
+m_start_specular:=Specular Reflections--{reference_property:_EnableSpecular,button_right:{text:Tutorial,action:{type:URL,data:https://youtu.be/YFFe8IrXVnc},hover:YouTube},is_hideable:true,is_visible_simple:true}
+_EnableSpecular:=Specular Reflections--{hide_in_inspector:true}
+_SpecularMap:=Spec Map--{reference_properties:[_SpecularMapPan, _SpecularMapUV]}
+_SpecularMask:=Spec Mask--{reference_properties:[_SpecularMaskPan, _SpecularMaskUV]}
+
+// Specular 2
+m_start_specular1:=Specular Reflections 2--{reference_property:_EnableSpecular1,button_right:{text:Tutorial,action:{type:URL,data:https://youtu.be/YFFe8IrXVnc},hover:YouTube},is_hideable:true}
+_EnableSpecular1:=Specular Reflections 2--{hide_in_inspector:true}
+_SpecularMap1:=Spec Map--{reference_properties:[_SpecularMap1Pan, _SpecularMap1UV]}
+_SpecularMask1:=Spec Mask--{reference_properties:[_SpecularMask1Pan, _SpecularMask1UV]}
+m_start_SpecularToon1:=Toon Specular
+m_start_Anisotropic1:=Anisotropic
+
+m_outlineOptions:=Outlines--{reference_property:_commentIfZero_EnableOutlinePass,is_hideable:true}
+_commentIfZero_EnableOutlinePass:=Enable Outlines--{hide_in_inspector:true}
+
+m_start_outlineAdvanced:=Advanced--{is_hideable:true,is_visible_simple:true}
+
+// Special Effects
+m_Special_Effects:=Special Effects--{is_hideable:true,is_visible_simple:true}
+
+// Emission
+m_emissionOptions:=   Emission--{reference_property:_EnableEmission,button_right:{text:Tutorial,action:{type:URL,data:https://youtu.be/iqk23gtwkz0},hover:YouTube},is_hideable:true}
+m_start_emissionOptions:=Emission--{reference_property:_EnableEmission,button_right:{text:Tutorial,action:{type:URL,data:https://youtu.be/iqk23gtwkz0},hover:YouTube},is_hideable:true,is_visible_simple:true}
+_EnableEmission:=Emission--{hide_in_inspector:true}
+_EmissionMap:=Emission Map--{texture:{width:1224,height:4,filterMode:Bilinear,wrapMode:Repeat},reference_properties:[_EmissionMapPan, _EmissionMapUV], force_texture_options:true}
+_EmissionMask:=Emission Mask--{reference_properties:[_EmissionMaskPan, _EmissionMaskUV]}
+_EmissionMap1:=Emission Map--{texture:{width:1224,height:4,filterMode:Bilinear,wrapMode:Repeat},reference_properties:[_EmissionMap1Pan, _EmissionMap1UV], force_texture_options:true}
+_EmissionMask1:=Emission Mask--{reference_properties:[_EmissionMask1Pan, _EmissionMask1UV]}
+m_start_CenterOutEmission:=Center Out Emission--{reference_property:_EmissionCenterOutEnabled}
+m_start_glowInDarkEmissionOptions:=Glow In The Dark Emission (Requires Lighting Enabled)--{reference_property:_EnableGITDEmission}
+m_start_blinkingEmissionOptions:=Blinking Emission--{reference_property:_EmissionBlinkingEnabled}
+m_start_scrollingEmissionOptions:=Scrolling Emission--{reference_property:_ScrollingEmission}
+
+
+m_start_emission1Options:=Emission 2(Requires Emission 1 Enabled)--{reference_property:_EnableEmission1,is_hideable:true}
+_EnableEmission1:=Emission 2(Requires Emission 1 Enabled)--{hide_in_inspector:true}
+m_start_CenterOutEmission1:=Center Out Emission--{reference_property:_EmissionCenterOutEnabled1}
+m_start_glowInDarkEmissionOptions1:=Glow In The Dark Emission (Requires Lighting Enabled)--{reference_property:_EnableGITDEmission1}
+m_start_blinkingEmissionOptions1:=Blinking Emission--{reference_property:_EmissionBlinkingEnabled1}
+m_start_scrollingEmissionOptions1:=Scrolling Emission--{reference_property:_ScrollingEmission1}
+
+// Flipbook
+m_start_flipBook:=Flipbook--{reference_property:_EnableFlipbook,button_right:{reference_property:_EnableFlipbook,text:Tutorial,action:{type:URL,data:https://youtu.be/NrA18CITEVs},hover:YouTube},is_hideable:true}
+_EnableFlipbook:=Flipbook--{hide_in_inspector:true}
+m_start_manualFlipbookControl:=Manual Frame Control
+_FlipbookTexArray:=Texture Array--{reference_properties:[_FlipbookTexArrayPan, _FlipbookTexArrayUV]}
+_FlipbookMask:=Mask--{reference_properties:[_FlipbookMaskPan, _FlipbookMaskUV]}
+
+// Dissolve
+m_start_dissolve:=Dissolve--{reference_property:_EnableDissolve,button_right:{reference_property:_EnableDissolve,text:Tutorial,action:{type:URL,data:https://youtu.be/abTejmV4yGU},hover:YouTube},is_hideable:true}
+_EnableDissolve:=Dissolve--{hide_in_inspector:true}
+m_start_pointToPoint:=Point to Point
+_DissolveToTexture:=Dissolved Texture--{reference_properties:[_DissolveToTexturePan, _DissolveToTextureUV]}
+_DissolveNoiseTexture:=Dissolve Noise--{reference_properties:[_DissolveNoiseTexturePan, _DissolveNoiseTextureUV, _DissolveInvertNoise]}
+_DissolveDetailNoise:=Dissolve Detail Noise--{reference_properties:[_DissolveDetailNoisePan, _DissolveDetailNoiseUV, _DissolveInvertDetailNoise]}
+_DissolveMask:=Mask--{reference_properties:[_DissolveMaskPan, _DissolveMaskUV, _DissolveMaskInvert]}
+
+// Panosphere
+m_start_panosphereOptions:=Panosphere--{reference_property:_PanoToggle,button_right:{text:Tutorial,action:{type:URL,data:https://youtu.be/wyCY6qE0_Vg},hover:YouTube},is_hideable:true}
+_PanoToggle:=Panosphere--{hide_in_inspector:true}
+_PanoMask:=Mask--{reference_properties:[_PanoMaskPan, _PanoMaskUV]}
+
+// Glitter
+m_start_glitter:=Glitter--{reference_property:_GlitterEnable,is_hideable:true}
+_GlitterEnable:=Glitter--{hide_in_inspector:true}
+_GlitterColorMap:=Color Map--{reference_properties:[_GlitterColorMapPan, _GlitterColorMapUV]}
+_GlitterMask:=Mask--{reference_properties:[_GlitterMaskPan, _GlitterMaskUV]}
+
+// MSDF
+m_start_Text:=Text Overlay--{reference_property:_TextEnabled,is_hideable:true}
+_TextEnabled:=Text Overlay--{hide_in_inspector:true}
+m_start_TextFPS:=FPS--{reference_property:_TextFPSEnabled}
+_TextFPSEnabled:=FPS  --{hide_in_inspector:true}
+m_start_TextPosition:=Position--{reference_property:_TextPositionEnabled}
+_TextPositionEnabled:=Position--{hide_in_inspector:true}
+m_start_TextInstanceTime:=Instance Time--{reference_property:_TextTimeEnabled}
+_TextTimeEnabled:=Instance Time--{hide_in_inspector:true}
+
+// Mirror Options
+m_start_mirrorOptions:=Mirror (VRChat)--{reference_property:_EnableMirrorOptions,button_right:{text:Tutorial,action:{type:URL,data:https://youtu.be/ptnVKyuijO4},hover:YouTube},is_hideable:true}
+_EnableMirrorOptions:=Mirror (VRChat)--{hide_in_inspector:true}
+_MirrorTexture:=Mirror Texture--{reference_properties:[_MirrorTexturePan, _MirrorTextureUV]}
+
+// Distance Fade
+m_start_distanceFade:=Distance Fade--{is_hideable:true}
+
+// Angular Fade
+m_start_angularFade:=Angular Fade--{reference_property:_EnableRandom,is_hideable:true}
+_EnableRandom:=Angular Fade--{hide_in_inspector:true}
+// Optimization
+m_optimization:=Optimization 
+
+m_ParallaxMap:=Parallax--{reference_property:_ParallaxMap,is_hideable:true}
+_ParallaxMap:=Parallax--{hide_in_inspector:true}
+
+_ParallaxHeightMap:=Height Map--{reference_properties:[_ParallaxHeightMapPan]}
+
+m_start_parallaxHeightmap:=Heightmap--{reference_property:_ParallaxHeightMapEnabled}
+_ParallaxHeightMapEnabled:=Heightmap--{hide_in_inspector:true}
+
+m_start_parallaxInternal:=Internal Parallax--{reference_property:_ParallaxInternalMapEnabled}
+_ParallaxInternalMapEnabled:=Internal Parallax--{hide_in_inspector:true}
+
+_ParallaxHeightMapMask:=Mask--{reference_properties:[_ParallaxHeightMapMaskPan, _ParallaxHeightMapMaskUV]}
+_ParallaxInternalMapMask:=Mask--{reference_properties:[_ParallaxInternalMapMaskPan, _ParallaxInternalMapMaskUV]}
+
+m_start_parallaxAdvanced:=Advanced
+
+
+m_start_distortionFlow:=UV Distortion--{reference_property:_EnableDistortion,button_right:{text:Tutorial,action:{type:URL,data:https://www.youtube.com/watch?v=J17a3glPMYI&t=1s},hover:YouTube},is_hideable:true}
+_EnableDistortion:=UV Distortion--{hide_in_inspector:true}
+
+// Patreon
+m_Patreon:=Patreon--{is_hideable:true}
+
+// Video Settings
+m_start_Video:=Video--{reference_property:_EnableVideo,is_hideable:true}
+_EnableVideo:=Video--{hide_in_inspector:true}
+m_start_VideoSettings:=Video Texture Settings
+m_start_VideoDebug:=Video Debug
+m_start_CRT:=CRT Options
+m_start_Gameboy:=Gradient Options
+
+// Touch
+m_start_TouchOptions:=Touch FX--(Requires DepthGet Prefab,is_hideable:true)
+
+// Bulge
+m_start_Bulge:=Bulge--{reference_property:_EnableBulge,is_hideable:true}
+_EnableBulge:=Bulge  --{hide_in_inspector:true}
+
+
+// Hologram
+m_start_Hologram:=Hologram Alpha--{reference_property:_EnableHolo, is_hideable:true}
+_EnableHolo:=Hologram Alpha--{hide_in_inspector:true}
+
+m_start_FresnelAlpha:=Fresnel Alpha
+_HoloAlphaMap:=Alpha Maptexture--{width:1024,height:4,filterMode:Bilinear,wrapMode:Repeat},force_texture_options:true}
+
+// m_start_GrabPass
+m_start_GrabPass:=Grab Pass--{reference_property:_commentIfZero_EnableGrabpass, is_hideable:true}
+_commentIfZero_EnableGrabpass:=Enable Grab Pass--{hide_in_inspector:true}
+
+// Refraction
+m_start_Refraction:=Refraction--{reference_property:_RefractionEnabled, is_hideable:true}
+_RefractionEnabled:=Refraction--{hide_in_inspector:true}
+
+// Blur
+m_start_Blur:=Blur--{reference_property:_EnableBlur, is_hideable:true}
+_EnableBlur:=Blur  --{hide_in_inspector:true}
+
+// Vertex Glitching
+m_start_VertexGlitch:=Vertex Glitching--{reference_property:_EnableVertexGlitch, is_hideable:true}
+_EnableVertexGlitch:=Enable Glitching--{hide_in_inspector:true}
+
+// Iridescence
+m_start_Iridescence:=Iridescence--{reference_property:_EnableIridescence, is_hideable:true}
+_EnableIridescence:=Iridescence--{hide_in_inspector:true}
+
+// scifi spawn in
+m_start_ScifiSpawnIn:=Sci Fi--{reference_property:_EnableScifiSpawnIn, is_hideable:true}
+_EnableScifiSpawnIn:=Sci Fi  --{hide_in_inspector:true}
+
+// Black Light
+m_start_BlackLight:=Black Light Mask--{reference_property:_BlackLightMaskEnabled, is_hideable:true}
+
+// Voronoi
+m_start_Voronoi:=Voronoi--{reference_property:_EnableVoronoi, is_hideable:true}
+_EnableVoronoi:=Voronoi--{hide_in_inspector:true}
+m_start_voronoiRandom:=Random Cell Color--{reference_property:_VoronoiEnableRandomCellColor}
+_VoronoiEnableRandomCellColor:=Random Cell Color--{hide_in_inspector:true}
+_VoronoiMask:=Mask--{reference_properties:[_VoronoiMaskPan, _VoronoiMaskUV]}
+_VoronoiNoise:=Edge Noise--{reference_properties:[_VoronoiNoisePan, _VoronoiNoiseUV]}
+
+m_renderingOptions:=Rendering Options--{button_right:{text:Tutorial,action:{type:URL,data:https://youtu.be/P5KlE9rk9pg},hover:YouTube}, is_hideable:true,is_visible_simple:true}
+m_start_StencilPassOptions:=Stencil--{button_right:{text:Tutorial,action:{type:URL,data:https://youtu.be/uniOEpw88jk},hover:YouTube}, is_hideable:true}
+
+
+m_start_debugOptions:=Debug--{reference_property:_DebugEnabled,is_hideable:true}
+
+m_animationToggles:=Animation Support Toggles--{is_hideable:true}
+
+// Footer
+footer_youtube:={texture:{name:icon-youtube,height:32},action:{type:URL,data:https://www.youtube.com/poiyomi},hover:YOUTUBE}
+footer_twitter:={texture:{name:icon-twitter,height:32},action:{type:URL,data:https://twitter.com/poiyomi},hover:TWITTER}
+footer_patreon:={texture:{name:icon-patreon,height:32},action:{type:URL,data:https://www.patreon.com/poiyomi},hover:PATREON}
+footer_discord:={texture:{name:icon-discord,height:32},action:{type:URL,data:https://discord.gg/Ays52PY},hover:DISCORD}
+footer_github:={texture:{name:icon-github,height:32},action:{type:URL,data:https://github.com/poiyomi/PoiyomiToonShader},hover:GITHUB}

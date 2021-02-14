@@ -1,8 +1,4 @@
-// Upgrade NOTE: replaced 'defined POI_BLACKLIGHT' with 'defined (POI_BLACKLIGHT)'
-
 #ifndef POI_DISSOLVE
-    // Upgrade NOTE: excluded shader from DX11, OpenGL ES 2.0 because it uses unsized arrays
-    #pragma exclude_renderers d3d11 gles
     #define POI_DISSOLVE
     
     uint _DissolveType;

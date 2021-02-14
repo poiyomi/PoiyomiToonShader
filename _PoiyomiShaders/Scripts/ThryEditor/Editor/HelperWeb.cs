@@ -21,34 +21,10 @@ namespace Thry
         {
             if (!url.StartsWith("http"))
                 url = "http://" + url;
+            url = url.Replace("\\","/");
+            if (System.Text.RegularExpressions.Regex.IsMatch(url, @"^https?:\/[^\/].*"))
+                url = url.Replace(":/", "://");
             return url;
-        }
-
-        public static void SendAnalytics()
-        {
-            string url_values_postfix = "?hash=" + GetMacAddress().GetHashCode();
-            if (Config.Get().share_installed_editor_version) url_values_postfix += "&editor=" + Config.Get().verion;
-            if (Config.Get().share_installed_unity_version) url_values_postfix += "&unity=" + Application.unityVersion;
-            if (Config.Get().share_used_shaders)
-            {
-                url_values_postfix += "&shaders=[";
-                foreach (ShaderHelper.ShaderEditorShader s in ShaderHelper.thry_editor_shaders)
-                {
-                    url_values_postfix += "{\"name\":\"" + s.name + "\",\"version\":\"";
-                    if (s.version != null && s.version != "null") url_values_postfix += s.version;
-                    url_values_postfix += "\"},";
-                }
-                url_values_postfix = url_values_postfix.TrimEnd(new char[] { ',' }) + "]";
-            }
-            DownloadStringASync(URL.DATA_SHARE_SEND + url_values_postfix, null);
-        }
-
-        public static string GetMacAddress()
-        {
-            return (from nic in System.Net.NetworkInformation.NetworkInterface.GetAllNetworkInterfaces()
-                    where nic.OperationalStatus == System.Net.NetworkInformation.OperationalStatus.Up
-                    select nic.GetPhysicalAddress().ToString()
-            ).FirstOrDefault();
         }
 
         public static string GetFinalRedirect(string url)
@@ -79,6 +55,7 @@ namespace Thry
             }
             catch (Exception ex)
             {
+                ex.ToString();
                 return null;
             }
         }
@@ -227,6 +204,7 @@ namespace Thry
             using (var wc = new System.Net.WebClient())
             {
                 wc.DownloadDataCompleted += new DownloadDataCompletedEventHandler(callback);
+                url = FixUrl(url);
                 wc.DownloadDataAsync(new Uri(url));
             }
         }

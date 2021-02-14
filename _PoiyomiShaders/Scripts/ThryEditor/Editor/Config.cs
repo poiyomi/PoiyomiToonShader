@@ -13,7 +13,7 @@ namespace Thry
     {
         // consts
         private const string PATH_CONFIG_FILE = "Thry/Config.json";
-        private const string VERSION = "1.9.5";
+        private const string VERSION = "2.3.5";
 
         // static
         private static Config config;
@@ -64,19 +64,13 @@ namespace Thry
         //actual config class
         public TextureDisplayType default_texture_type = TextureDisplayType.small;
         public bool showRenderQueue = true;
-        public bool renderQueueShaders = false;
+        public bool renameAnimatedProps = true;
 
         public string locale = "English";
 
         public string gradient_name = "gradient_<hash>.png";
 
-        public bool restore_materials = true;
         public string verion = VERSION;
-
-        public bool share_user_data = false;
-        public bool share_installed_unity_version = true;
-        public bool share_installed_editor_version = true;
-        public bool share_used_shaders = true;
 
         public void save()
         {
@@ -87,7 +81,7 @@ namespace Thry
         {
             if (Helper.compareVersions(oldVersion, "1.4.0") < 1)
             {
-                renderQueueShaders = false;
+                //renderQueueShaders = false;
                 save();
             }
         }

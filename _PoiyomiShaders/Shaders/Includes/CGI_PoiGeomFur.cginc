@@ -2,7 +2,7 @@ float _FurLength;
 float _FurGravityStrength;
 
 [instance(4)]
-[maxvertexcount(20)]
+[maxvertexcount(16)]
 void geomFur(triangle v2f IN[3], inout TriangleStream < v2f > tristream, uint InstanceID : SV_GSInstanceID)
 {
 	float4 fur_worldPos[3];

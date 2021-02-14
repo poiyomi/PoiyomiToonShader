@@ -29,7 +29,6 @@ namespace Thry
         {
             Settings window = (Settings)EditorWindow.GetWindow(typeof(Settings));
             window.isFirstPopop = true;
-            window.is_data_share_expanded = true;
             window.Show();
         }
 
@@ -61,8 +60,6 @@ namespace Thry
 
         public void OnDestroy()
         {
-            if ((isFirstPopop|| updatedVersion!=0) && Config.Get().share_user_data)
-                WebHelper.SendAnalytics();
             if (!EditorPrefs.GetBool("thry_has_counted_user", false))
             {
                 WebHelper.DownloadStringASync(URL.COUNT_USER, delegate (string s)
@@ -145,13 +142,8 @@ namespace Thry
             GUINotification();
             drawLine();
             GUIMessage();
-            GUIVRC();
             LocaleDropdown();
             GUIEditor();
-            drawLine();
-            GUIExtras();
-            drawLine();
-            GUIShareData();
             drawLine();
             foreach(ModuleSettings s in moduleSettings)
             {
@@ -196,78 +188,6 @@ namespace Thry
             }
         }
 
-        private void GUIVRC()
-        {
-            if (VRCInterface.Get().sdk_information.type != VRCInterface.VRC_SDK_Type.NONE)
-            {
-                GUILayout.BeginHorizontal();
-                string sdkUptodateString = (VRCInterface.Get().sdk_information.is_sdk_up_to_date ? " (" + Locale.editor.Get("newest") + " " + Locale.editor.Get("version") + ")" : "");
-                GUILayout.Label("VRC Sdk "+Locale.editor.Get("version")+": " + VRCInterface.Get().sdk_information.installed_version + sdkUptodateString);
-                RemoveVRCSDKButton();
-                GUILayout.EndHorizontal();
-                if (!VRCInterface.Get().sdk_information.is_sdk_up_to_date)
-                {
-                    GUILayout.Label(Locale.editor.Get("newest") +" VRC SDK "+ Locale.editor.Get("version") +": " + VRCInterface.Get().sdk_information.available_version);
-                    UpdateVRCSDKButton();
-                }
-                if (VRCInterface.Get().sdk_information.is_user_logged_in)
-                {
-                    GUILayout.Label("VRChat "+ Locale.editor.Get("user")+": " + EditorPrefs.GetString("sdk#username"));
-                }
-            }
-            else
-            {
-                InstallVRCSDKButton();
-            }
-            drawLine();
-        }
-
-        private void InstallVRCSDKButton()
-        {
-            EditorGUI.BeginDisabledGroup(is_changing_vrc_sdk);
-            GUILayout.BeginHorizontal();
-            if (GUILayout.Button(Locale.editor.Get("button_install_vrc_sdk") + "(v2)(Avatars)"))
-            {
-                is_changing_vrc_sdk = true;
-                VRCInterface.DownloadAndInstallVRCSDK(VRCInterface.VRC_SDK_Type.SDK_2);
-
-            }
-            if (GUILayout.Button(Locale.editor.Get("button_install_vrc_sdk") + "(v3)(Avatars)"))
-            {
-                is_changing_vrc_sdk = true;
-                VRCInterface.DownloadAndInstallVRCSDK(VRCInterface.VRC_SDK_Type.SDK_3_Avatar);
-            }
-            if (GUILayout.Button(Locale.editor.Get("button_install_vrc_sdk")+"(v3)(Udon)"))
-            {
-                is_changing_vrc_sdk = true;
-                VRCInterface.DownloadAndInstallVRCSDK(VRCInterface.VRC_SDK_Type.SDK_3_World);
-            }
-            GUILayout.EndHorizontal();
-            EditorGUI.EndDisabledGroup();
-        }
-
-        private void RemoveVRCSDKButton()
-        {
-            EditorGUI.BeginDisabledGroup(is_changing_vrc_sdk);
-            if (GUILayout.Button(Locale.editor.Get("button_remove_vrc_sdk"), GUILayout.ExpandWidth(false)))
-            {
-                is_changing_vrc_sdk = true;
-                VRCInterface.RemoveVRCSDK();
-            }
-            EditorGUI.EndDisabledGroup();
-        }
-
-        private void UpdateVRCSDKButton()
-        {
-            EditorGUI.BeginDisabledGroup(is_changing_vrc_sdk);
-            if (GUILayout.Button(Locale.editor.Get("button_update_vrc_sdk")))
-            {
-                is_changing_vrc_sdk = true;
-                VRCInterface.UpdateVRCSDK();
-            }
-            EditorGUI.EndDisabledGroup();
-        }
-
         bool is_editor_expanded = true;
         private void GUIEditor()
         {
@@ -277,8 +197,7 @@ namespace Thry
                 EditorGUI.indentLevel += 2;
                 Dropdown("default_texture_type");
                 Toggle("showRenderQueue");
-                if (Config.Get().showRenderQueue)
-                    Toggle("renderQueueShaders");
+                Toggle("renameAnimatedProps");
                 GUIGradients();
                 EditorGUI.indentLevel -= 2;
             }
@@ -301,50 +220,6 @@ namespace Thry
             else
                 GUILayout.Label(Locale.editor.Get("gradient_add_material_or_prop"), Styles.redStyle, GUILayout.ExpandWidth(false));
             GUILayout.EndHorizontal();
-        }
-
-        bool is_extras_expanded = false;
-        private void GUIExtras()
-        {
-            is_extras_expanded = Foldout(Locale.editor.Get("header_extras"), is_extras_expanded);
-            if (is_extras_expanded)
-            {
-                EditorGUI.indentLevel += 2;
-                Toggle("restore_materials");
-                EditorGUI.indentLevel -= 2;
-            }
-        }
-
-        bool is_data_share_expanded = false;
-        private void GUIShareData()
-        {
-            is_data_share_expanded = Foldout(Locale.editor.Get("header_user_data_collection"), is_data_share_expanded);
-            if (is_data_share_expanded)
-            {
-                EditorGUI.indentLevel += 2;
-                Toggle("share_user_data", EditorStyles.boldLabel);
-                EditorGUILayout.LabelField(Locale.editor.Get("share_data_info_message"));
-                if (Config.Get().share_user_data)
-                {
-                    Toggle("share_installed_unity_version");
-                    Toggle("share_installed_editor_version");
-                    Toggle("share_used_shaders");
-                    GUILayout.BeginHorizontal();
-                    GUILayout.Space(EditorGUI.indentLevel * 15);
-                    if (GUILayout.Button(Locale.editor.Get("button_get_my_data"), GUILayout.ExpandWidth(false)))
-                    {
-                        WebHelper2.DownloadStringASync(URL.DATA_SHARE_GET_MY_DATA+"?hash="+WebHelper.GetMacAddress().GetHashCode(), delegate(string s){
-                            TextPopup popup = ScriptableObject.CreateInstance<TextPopup>();
-                            popup.position = new Rect(Screen.width / 2, Screen.height / 2, 512, 480);
-                            popup.titleContent = new GUIContent(Locale.editor.Get("your_data"));
-                            popup.text = s;
-                            popup.ShowUtility();
-                        });
-                    }
-                    GUILayout.EndHorizontal();
-                }
-                EditorGUI.indentLevel -= 2;
-            }
         }
 
         private class TextPopup : EditorWindow

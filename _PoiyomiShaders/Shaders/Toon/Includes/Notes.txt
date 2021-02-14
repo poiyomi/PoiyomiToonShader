@@ -1,0 +1,7 @@
+// Transforms 2D UV by scale/bias property
+#define TRANSFORM_TEX(tex,name) (tex.xy * name##_ST.xy + name##_ST.zw)
+
+[HideInInspector][Vector2]Pan ("Panning", Vector) = (0, 0, 0, 0)
+        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)] UV ("UV", Int) = 0
+
+:=--{reference_properties:[Pan, UV]}

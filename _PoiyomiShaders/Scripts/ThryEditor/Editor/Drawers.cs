@@ -1,8 +1,11 @@
 ﻿// Material/Shader Inspector for Unity 2017/2018
 // Copyright (C) 2019 Thryrallo
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using UnityEditor;
 using UnityEngine;
@@ -277,38 +280,49 @@ namespace Thry
     {
         public override void OnGUI(Rect position, MaterialProperty prop, GUIContent label, MaterialEditor editor)
         {
+            ShaderProperty shaderProperty = (ShaderProperty)ShaderEditor.currentlyDrawing.currentProperty;
             GuiHelper.drawConfigTextureProperty(position, prop, label, editor, true, true);
 
             string n = "";
             if (prop.textureValue != null) n = prop.textureValue.name;
-            if ((ShaderEditor.input.is_drag_drop_event) && DrawingData.lastGuiObjectRect.Contains(ShaderEditor.input.mouse_position))
+            if ((ShaderEditor.input.is_drag_drop_event) && position.Contains(ShaderEditor.input.mouse_position))
             {
                 DragAndDrop.visualMode = DragAndDropVisualMode.Copy;
                 if (ShaderEditor.input.is_drop_event)
                 {
                     DragAndDrop.AcceptDrag();
-                    HanldeDropEvent(prop);
+                    HanldeDropEvent(prop, shaderProperty);
                 }
             }
             if (ShaderEditor.currentlyDrawing.firstCall)
-                ShaderEditor.currentlyDrawing.textureArrayProperties.Add((ShaderProperty)ShaderEditor.currentlyDrawing.currentProperty);
+                ShaderEditor.currentlyDrawing.textureArrayProperties.Add(shaderProperty);
         }
 
-        public void HanldeDropEvent(MaterialProperty prop)
+        public void HanldeDropEvent(MaterialProperty prop, ShaderProperty shaderProperty)
         {
             string[] paths = DragAndDrop.paths;
             if (AssetDatabase.GetMainAssetTypeAtPath(paths[0]) != typeof(Texture2DArray))
             {
                 Texture2DArray tex = Converter.PathsToTexture2DArray(paths);
                 MaterialHelper.UpdateTargetsValue(prop, tex);
-                if (ShaderEditor.currentlyDrawing.currentProperty.options.reference_property != null)
+                if (shaderProperty.options.reference_property != null)
                 {
                     ShaderProperty p;
-                    ShaderEditor.currentlyDrawing.propertyDictionary.TryGetValue(ShaderEditor.currentlyDrawing.currentProperty.options.reference_property, out p);
-                    if (p != null)
+                    if(ShaderEditor.currentlyDrawing.propertyDictionary.TryGetValue(shaderProperty.options.reference_property, out p))
                         MaterialHelper.UpdateFloatValue(p.materialProperty, tex.depth);
                 }
                 prop.textureValue = tex;
+            }
+            else
+            {
+                Texture2DArray tex = AssetDatabase.LoadAssetAtPath<Texture2DArray>(paths[0]);
+                prop.textureValue = tex;
+                if (shaderProperty.options.reference_property != null)
+                {
+                    ShaderProperty p;
+                    if(ShaderEditor.currentlyDrawing.propertyDictionary.TryGetValue(shaderProperty.options.reference_property, out p))
+                        MaterialHelper.UpdateFloatValue(p.materialProperty, tex.depth);
+                }
             }
         }
 
@@ -321,15 +335,310 @@ namespace Thry
 
     public class HelpboxDrawer : MaterialPropertyDrawer
     {
+        readonly MessageType type;
+
+        public HelpboxDrawer()
+        {
+            type = MessageType.Info;
+        }
+
+        public HelpboxDrawer(float f)
+        {
+            type = (MessageType)(int)f;
+        }
+
         public override void OnGUI(Rect position, MaterialProperty prop, GUIContent label, MaterialEditor editor)
         {
-            EditorGUILayout.HelpBox(label.text, MessageType.Info);
+            EditorGUILayout.HelpBox(label.text, type);
         }
 
         public override float GetPropertyHeight(MaterialProperty prop, string label, MaterialEditor editor)
         {
             DrawingData.lastPropertyUsedCustomDrawer = true;
             return 0;
+        }
+    }
+
+    public class ThryHeaderDecorator : MaterialPropertyDrawer
+    {
+        readonly string text;
+
+        public ThryHeaderDecorator(string text)
+        {
+            this.text = text;
+        }
+
+        public override float GetPropertyHeight(MaterialProperty prop, string label, MaterialEditor editor)
+        {
+            return 16f;
+        }
+
+        public override void OnGUI(Rect position, MaterialProperty prop, string label, MaterialEditor editor)
+        {
+            position = EditorGUI.IndentedRect(position);
+            GUI.Label(position, text, EditorStyles.boldLabel);
+        }
+    }
+
+    public class ThryHeader2Drawer : MaterialPropertyDrawer
+    {
+        public override float GetPropertyHeight(MaterialProperty prop, string label, MaterialEditor editor)
+        {
+            return 16f;
+        }
+
+        public override void OnGUI(Rect position, MaterialProperty prop, string label, MaterialEditor editor)
+        {
+            position = EditorGUI.IndentedRect(position);
+            GUI.Label(position, label, EditorStyles.boldLabel);
+        }
+    }
+
+    public enum ColorMask
+    {
+        None,
+        Alpha,
+        Blue,
+        BA,
+        Green,
+        GA,
+        GB,
+        GBA,
+        Red,
+        RA,
+        RB,
+        RBA,
+        RG,
+        RGA,
+        RGB,
+        RGBA
+    }
+
+    // DX11 only blend operations
+    public enum BlendOp
+    {
+        Add,
+        Subtract,
+        ReverseSubtract,
+        Min,
+        Max,
+        LogicalClear,
+        LogicalSet,
+        LogicalCopy,
+        LogicalCopyInverted,
+        LogicalNoop,
+        LogicalInvert,
+        LogicalAnd,
+        LogicalNand,
+        LogicalOr,
+        LogicalNor,
+        LogicalXor,
+        LogicalEquivalence,
+        LogicalAndReverse,
+        LogicalAndInverted,
+        LogicalOrReverse,
+        LogicalOrInverted
+    }
+
+    //Original Code from https://github.com/DarthShader/Kaj-Unity-Shaders
+    /**MIT License
+
+    Copyright (c) 2020 DarthShader
+
+    Permission is hereby granted, free of charge, to any person obtaining a copy
+    of this software and associated documentation files (the "Software"), to deal
+    in the Software without restriction, including without limitation the rights
+    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+    copies of the Software, and to permit persons to whom the Software is
+    furnished to do so, subject to the following conditions:
+
+    The above copyright notice and this permission notice shall be included in all
+    copies or substantial portions of the Software.
+
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+    SOFTWARE.**/
+    public class ThryShaderOptimizerLockButtonDrawer : MaterialPropertyDrawer
+    {
+        public override void OnGUI(Rect position, MaterialProperty shaderOptimizer, string label, MaterialEditor materialEditor)
+        {
+            // Theoretically this shouldn't ever happen since locked in materials have different shaders.
+            // But in a case where the material property says its locked in but the material really isn't, this
+            // will display and allow users to fix the property/lock in
+            ShaderEditor.currentlyDrawing.isLockedMaterial = shaderOptimizer.floatValue == 1;
+            if (shaderOptimizer.hasMixedValue)
+            {
+                EditorGUI.BeginChangeCheck();
+                GUILayout.Button("Lock in Optimized Shaders (" + materialEditor.targets.Length + " materials)");
+                if (EditorGUI.EndChangeCheck())
+                    foreach (Material m in materialEditor.targets)
+                    {
+                        m.SetFloat(shaderOptimizer.name, 1);
+                        MaterialProperty[] props = MaterialEditor.GetMaterialProperties(new UnityEngine.Object[] { m });
+                        if (!ShaderOptimizer.Lock(m, props)) // Error locking shader, revert property
+                            m.SetFloat(shaderOptimizer.name, 0);
+                    }
+            }
+            else
+            {
+                EditorGUI.BeginChangeCheck();
+                if (shaderOptimizer.floatValue == 0)
+                {
+                    if (materialEditor.targets.Length == 1)
+                        GUILayout.Button("Lock In Optimized Shader");
+                    else GUILayout.Button("Lock in Optimized Shaders (" + materialEditor.targets.Length + " materials)");
+                }
+                else GUILayout.Button("Unlock Shader");
+                if (EditorGUI.EndChangeCheck())
+                {
+                    shaderOptimizer.floatValue = shaderOptimizer.floatValue == 1 ? 0 : 1;
+                    if (shaderOptimizer.floatValue == 1)
+                    {
+                        foreach (Material m in materialEditor.targets)
+                        {
+                            MaterialProperty[] props = MaterialEditor.GetMaterialProperties(new UnityEngine.Object[] { m });
+                            if (!ShaderOptimizer.Lock(m, props))
+                                m.SetFloat(shaderOptimizer.name, 0);
+                        }
+                    }
+                    else
+                    {
+                        foreach (Material m in materialEditor.targets)
+                            if (!ShaderOptimizer.Unlock(m))
+                                m.SetFloat(shaderOptimizer.name, 1);
+                    }
+                }
+            }
+            if (ShaderEditor.input.MouseClick)
+            {
+                if (GUILayoutUtility.GetLastRect().Contains(Event.current.mousePosition))
+                {
+                    foreach (Material m in materialEditor.targets)
+                    {
+                        ShaderOptimizer.Unlock(m);
+                        m.SetFloat(shaderOptimizer.name, 0);
+                    }
+                }
+            }
+        }
+
+        public override float GetPropertyHeight(MaterialProperty prop, string label, MaterialEditor editor)
+        {
+            DrawingData.lastPropertyUsedCustomDrawer = true;
+            return -2;
+        }
+    }
+
+    // Enum with normal editor width, rather than MaterialEditor Default GUI widths
+    // Would be nice if Decorators could access Drawers too so this wouldn't be necessary for something to trivial
+    // Adapted from Unity interal MaterialEnumDrawer https://github.com/Unity-Technologies/UnityCsReference/
+    public class ThryWideEnumDrawer : MaterialPropertyDrawer
+    {
+        private readonly GUIContent[] names;
+        private readonly float[] values;
+
+        // internal Unity AssemblyHelper can't be accessed
+        private Type[] TypesFromAssembly(Assembly a)
+        {
+            if (a == null)
+                return new Type[0];
+            try
+            {
+                return a.GetTypes();
+            }
+            catch (ReflectionTypeLoadException)
+            {
+                return new Type[0];
+            }
+        }
+        public ThryWideEnumDrawer(string enumName,int j)
+        {
+            var types = AppDomain.CurrentDomain.GetAssemblies().SelectMany(
+                x => TypesFromAssembly(x)).ToArray();
+            try
+            {
+                var enumType = types.FirstOrDefault(
+                    x => x.IsEnum && (x.Name == enumName || x.FullName == enumName)
+                );
+                var enumNames = Enum.GetNames(enumType);
+                names = new GUIContent[enumNames.Length];
+                for (int i = 0; i < enumNames.Length; ++i)
+                    names[i] = new GUIContent(enumNames[i]);
+
+                var enumVals = Enum.GetValues(enumType);
+                values = new float[enumVals.Length];
+                for (int i = 0; i < enumVals.Length; ++i)
+                    values[i] = (int)enumVals.GetValue(i);
+            }
+            catch (Exception)
+            {
+                Debug.LogWarningFormat("Failed to create  WideEnum, enum {0} not found", enumName);
+                throw;
+            }
+
+        }
+
+        public ThryWideEnumDrawer(string n1, float v1) : this(new[] { n1 }, new[] { v1 }) { }
+        public ThryWideEnumDrawer(string n1, float v1, string n2, float v2) : this(new[] { n1, n2 }, new[] { v1, v2 }) { }
+        public ThryWideEnumDrawer(string n1, float v1, string n2, float v2, string n3, float v3) : this(new[] { n1, n2, n3 }, new[] { v1, v2, v3 }) { }
+        public ThryWideEnumDrawer(string n1, float v1, string n2, float v2, string n3, float v3, string n4, float v4) : this(new[] { n1, n2, n3, n4 }, new[] { v1, v2, v3, v4 }) { }
+        public ThryWideEnumDrawer(string n1, float v1, string n2, float v2, string n3, float v3, string n4, float v4, string n5, float v5) : this(new[] { n1, n2, n3, n4, n5 }, new[] { v1, v2, v3, v4, v5 }) { }
+        public ThryWideEnumDrawer(string n1, float v1, string n2, float v2, string n3, float v3, string n4, float v4, string n5, float v5, string n6, float v6) : this(new[] { n1, n2, n3, n4, n5, n6 }, new[] { v1, v2, v3, v4, v5, v6 }) { }
+        public ThryWideEnumDrawer(string n1, float v1, string n2, float v2, string n3, float v3, string n4, float v4, string n5, float v5, string n6, float v6, string n7, float v7) : this(new[] { n1, n2, n3, n4, n5, n6, n7 }, new[] { v1, v2, v3, v4, v5, v6, v7 }) { }
+        public ThryWideEnumDrawer(string n1, float v1, string n2, float v2, string n3, float v3, string n4, float v4, string n5, float v5, string n6, float v6, string n7, float v7, string n8, float v8) : this(new[] { n1, n2, n3, n4, n5, n6, n7, n8}, new[] { v1, v2, v3, v4, v5, v6, v7, v8}) { }
+        public ThryWideEnumDrawer(string n1, float v1, string n2, float v2, string n3, float v3, string n4, float v4, string n5, float v5, string n6, float v6, string n7, float v7, string n8, float v8, string n9, float v9) : this(new[] { n1, n2, n3, n4, n5, n6, n7, n8, n9}, new[] { v1, v2, v3, v4, v5, v6, v7, v8, v9}) { }
+        public ThryWideEnumDrawer(string n1, float v1, string n2, float v2, string n3, float v3, string n4, float v4, string n5, float v5, string n6, float v6, string n7, float v7, string n8, float v8, string n9, float v9, string n10, float v10) : this(new[] { n1, n2, n3, n4, n5, n6, n7, n8, n9, n10 }, new[] { v1, v2, v3, v4, v5, v6, v7, v8, v9, v10 }) { }
+        public ThryWideEnumDrawer(string n1, float v1, string n2, float v2, string n3, float v3, string n4, float v4, string n5, float v5, string n6, float v6, string n7, float v7, string n8, float v8, string n9, float v9, string n10, float v10, string n11, float v11) : this(new[] { n1, n2, n3, n4, n5, n6, n7, n8, n9, n10, n11 }, new[] { v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11 }) { }
+        public ThryWideEnumDrawer(string n1, float v1, string n2, float v2, string n3, float v3, string n4, float v4, string n5, float v5, string n6, float v6, string n7, float v7, string n8, float v8, string n9, float v9, string n10, float v10, string n11, float v11, string n12, float v12) : this(new[] { n1, n2, n3, n4, n5, n6, n7, n8, n9, n10, n11, n12 }, new[] { v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12 }) { }
+        public ThryWideEnumDrawer(string n1, float v1, string n2, float v2, string n3, float v3, string n4, float v4, string n5, float v5, string n6, float v6, string n7, float v7, string n8, float v8, string n9, float v9, string n10, float v10, string n11, float v11, string n12, float v12, string n13, float v13) : this(new[] { n1, n2, n3, n4, n5, n6, n7, n8, n9, n10, n11, n12, n13 }, new[] { v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13 }) { }
+        public ThryWideEnumDrawer(string n1, float v1, string n2, float v2, string n3, float v3, string n4, float v4, string n5, float v5, string n6, float v6, string n7, float v7, string n8, float v8, string n9, float v9, string n10, float v10, string n11, float v11, string n12, float v12, string n13, float v13, string n14, float v14) : this(new[] { n1, n2, n3, n4, n5, n6, n7, n8, n9, n10, n11, n12, n13, n14 }, new[] { v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14 }) { }
+        public ThryWideEnumDrawer(string n1, float v1, string n2, float v2, string n3, float v3, string n4, float v4, string n5, float v5, string n6, float v6, string n7, float v7, string n8, float v8, string n9, float v9, string n10, float v10, string n11, float v11, string n12, float v12, string n13, float v13, string n14, float v14, string n15, float v15) : this(new[] { n1, n2, n3, n4, n5, n6, n7, n8, n9, n10, n11, n12, n13, n14, n15 }, new[] { v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15 }) { }
+        public ThryWideEnumDrawer(string n1, float v1, string n2, float v2, string n3, float v3, string n4, float v4, string n5, float v5, string n6, float v6, string n7, float v7, string n8, float v8, string n9, float v9, string n10, float v10, string n11, float v11, string n12, float v12, string n13, float v13, string n14, float v14, string n15, float v15, string n16, float v16) : this(new[] { n1, n2, n3, n4, n5, n6, n7, n8, n9, n10, n11, n12, n13, n14, n15, n16 }, new[] { v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16 }) { }
+        public ThryWideEnumDrawer(string n1, float v1, string n2, float v2, string n3, float v3, string n4, float v4, string n5, float v5, string n6, float v6, string n7, float v7, string n8, float v8, string n9, float v9, string n10, float v10, string n11, float v11, string n12, float v12, string n13, float v13, string n14, float v14, string n15, float v15, string n16, float v16, string n17, float v17) : this(new[] { n1, n2, n3, n4, n5, n6, n7, n8, n9, n10, n11, n12, n13, n14, n15, n16, n17 }, new[] { v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16, v17 }) { }
+        public ThryWideEnumDrawer(string n1, float v1, string n2, float v2, string n3, float v3, string n4, float v4, string n5, float v5, string n6, float v6, string n7, float v7, string n8, float v8, string n9, float v9, string n10, float v10, string n11, float v11, string n12, float v12, string n13, float v13, string n14, float v14, string n15, float v15, string n16, float v16, string n17, float v17, string n18, float v18) : this(new[] { n1, n2, n3, n4, n5, n6, n7, n8, n9, n10, n11, n12, n13, n14, n15, n16, n17, n18 }, new[] { v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16, v17, v18 }) { }
+        public ThryWideEnumDrawer(string n1, float v1, string n2, float v2, string n3, float v3, string n4, float v4, string n5, float v5, string n6, float v6, string n7, float v7, string n8, float v8, string n9, float v9, string n10, float v10, string n11, float v11, string n12, float v12, string n13, float v13, string n14, float v14, string n15, float v15, string n16, float v16, string n17, float v17, string n18, float v18, string n19, float v19) : this(new[] { n1, n2, n3, n4, n5, n6, n7, n8, n9, n10, n11, n12, n13, n14, n15, n16, n17, n18, n19 }, new[] { v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16, v17, v18, v19 }) { }
+        public ThryWideEnumDrawer(string n1, float v1, string n2, float v2, string n3, float v3, string n4, float v4, string n5, float v5, string n6, float v6, string n7, float v7, string n8, float v8, string n9, float v9, string n10, float v10, string n11, float v11, string n12, float v12, string n13, float v13, string n14, float v14, string n15, float v15, string n16, float v16, string n17, float v17, string n18, float v18, string n19, float v19, string n20, float v20) : this(new[] { n1, n2, n3, n4, n5, n6, n7, n8, n9, n10, n11, n12, n13, n14, n15, n16, n17, n18, n19, n20 }, new[] { v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16, v17, v18, v19, v20 }) { }
+        public ThryWideEnumDrawer(string[] enumNames, float[] vals)
+        {
+            names = new GUIContent[enumNames.Length];
+            for (int i = 0; i < enumNames.Length; ++i)
+                names[i] = new GUIContent(enumNames[i]);
+
+            values = new float[vals.Length];
+            for (int i = 0; i < vals.Length; ++i)
+                values[i] = vals[i];
+        }
+
+        public override void OnGUI(Rect position, MaterialProperty prop, GUIContent label, MaterialEditor editor)
+        {
+            EditorGUI.showMixedValue = prop.hasMixedValue;
+            EditorGUI.BeginChangeCheck();
+            var value = prop.floatValue;
+            int selectedIndex = -1;
+            for (int i = 0; i < values.Length; i++)
+                if (values[i] == value)
+                {
+                    selectedIndex = i;
+                    break;
+                }
+
+            float labelWidth = EditorGUIUtility.labelWidth;
+            EditorGUIUtility.labelWidth = 0f;
+            var selIndex = EditorGUI.Popup(position, label, selectedIndex, names);
+            EditorGUI.showMixedValue = false;
+            if (EditorGUI.EndChangeCheck())
+                prop.floatValue = values[selIndex];
+            EditorGUIUtility.labelWidth = labelWidth;
+        }
+
+        public override float GetPropertyHeight(MaterialProperty prop, string label, MaterialEditor editor)
+        {
+            DrawingData.lastPropertyUsedCustomDrawer = true;
+            return base.GetPropertyHeight(prop, label, editor);
         }
     }
 }
