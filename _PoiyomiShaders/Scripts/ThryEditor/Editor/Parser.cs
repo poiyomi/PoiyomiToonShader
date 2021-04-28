@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using UnityEditor;
 using UnityEngine;
 
 namespace Thry
@@ -87,7 +88,7 @@ namespace Thry
                     isString = !isString;
                 if (!isString)
                 {
-                    if (i == input.Length - 1 || (depth == 0 && input[i] == ',' && !escaped))
+                    if (i == input.Length - 1 || (depth == 0 && input[i] == ',' && !escaped) || (!escaped && depth == 0 && input[i] == '}'))
                     {
                         string[] parts = input.Substring(variableStart, i - variableStart).Split(new char[] { ':' }, 2);
                         if (parts.Length < 2)
@@ -321,6 +322,83 @@ namespace Thry
             if (obj.GetType() == typeof(string))
                 return "\"" + obj + "\"";
             return obj.ToString().Replace(",", "."); ;
+        }
+    }
+
+    public class AnimationParser
+    {
+        public class Animation
+        {
+            public PPtrCurve[] pPtrCurves;
+        }
+
+        public class PPtrCurve
+        {
+            public PPtrType curveType;
+            public PPtrKeyframe[] keyframes;
+        }
+
+        public enum PPtrType
+        {
+            None,Material
+        }
+
+        public class PPtrKeyframe
+        {
+            public float time;
+            public string guid;
+            public int type;
+        }
+
+        public static Animation Parse(AnimationClip clip)
+        {
+            return Parse(AssetDatabase.GetAssetPath(clip));
+        }
+
+        public static Animation Parse(string path)
+        {
+            string data = FileHelper.ReadFileIntoString(path);
+
+            List<PPtrCurve> pPtrCurves = new List<PPtrCurve>();
+            int pptrIndex;
+            int lastIndex = 0;
+            while ((pptrIndex = data.IndexOf("m_PPtrCurves", lastIndex)) != -1)
+            {
+                lastIndex = pptrIndex + 1;
+                int pptrEndIndex = data.IndexOf("  m_", pptrIndex);
+
+                int curveIndex;
+                int lastCurveIndex = pptrIndex;
+                //find all curves
+                while((curveIndex = data.IndexOf("  - curve:", lastCurveIndex, pptrEndIndex- lastCurveIndex)) != -1)
+                {
+                    lastCurveIndex = curveIndex + 1;
+                    int curveEndIndex = data.IndexOf("    script: ", curveIndex);
+
+                    PPtrCurve curve = new PPtrCurve();
+                    List<PPtrKeyframe> keyframes = new List<PPtrKeyframe>();
+
+                    int keyFrameIndex;
+                    int lastKeyFrameIndex = curveIndex;
+                    while((keyFrameIndex = data.IndexOf("    - time:", lastKeyFrameIndex, curveEndIndex - lastKeyFrameIndex)) != -1)
+                    {
+                        lastKeyFrameIndex = keyFrameIndex + 1;
+                        int keyFrameEndIndex = data.IndexOf("}", keyFrameIndex);
+
+                        PPtrKeyframe keyframe = new PPtrKeyframe();
+                        keyframe.time = float.Parse(data.Substring(keyFrameIndex, data.IndexOf("\n", keyFrameIndex, keyFrameEndIndex)));
+                        keyframes.Add(keyframe);
+                    }
+
+                    curve.curveType = data.IndexOf("    attribute: m_Materials", lastKeyFrameIndex, curveEndIndex - lastKeyFrameIndex) != -1 ? PPtrType.Material : PPtrType.None;
+                    curve.keyframes = keyframes.ToArray();
+                    pPtrCurves.Add(curve);
+                }
+            }
+            Animation animation = new Animation();
+            animation.pPtrCurves = pPtrCurves.ToArray();
+            Debug.Log(Parser.Serialize(animation));
+            return animation;
         }
     }
 }

@@ -36,6 +36,11 @@ namespace Thry
             return dictionary[key][selected_locale_index];
         }
 
+        public bool Constains(string key)
+        {
+            return dictionary.ContainsKey(key) && string.IsNullOrEmpty(dictionary[key][selected_locale_index]) == false;
+        }
+
         public string[] available_locales
         {
             get
@@ -100,6 +105,7 @@ namespace Thry
                         value[i] = line[i + 1];
                     else
                         value[i] = value[0];
+                    value[i] = value[i].Replace("\\n", "\n");
                 }
                 dictionary.Add(key, value);
             }

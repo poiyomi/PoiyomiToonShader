@@ -1,10 +1,7 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEditor;
 using UnityEngine;
 
@@ -14,7 +11,20 @@ namespace Poi
     public class BakeToVertexColorsEditor : EditorWindow
     {
         //Window
-        static readonly Vector2 MIN_WINDOW_SIZE = new Vector2(316, 200);
+        static readonly Vector2 MIN_WINDOW_SIZE = new Vector2(316, 210);
+
+        // Version
+        Version version = new Version(1, 2);
+        string SubTitle
+        {
+            get
+            {
+                if(string.IsNullOrWhiteSpace(_subTitle))
+                    _subTitle = "by Pumkin - v" + version.ToString();
+                return _subTitle;
+            }
+        }
+
 
         //Strings
         const string log_prefix = "<color=blue>Poi:</color> "; //color is hex or name
@@ -23,6 +33,7 @@ namespace Poi
         const string bakedSuffix_position = "baked_position";
 
         const string bakesFolderName = "Baked";
+        const string defaultUnityAssetBakesFolder = "Default Unity Resources";
 
         const string hint_bakeAverageNormals = "Use this if you want seamless outlines";
         const string hint_bakeVertexPositions = "Use this if you want scrolling emission";
@@ -40,7 +51,7 @@ namespace Poi
             set => _selection = value;
         }
 
-        [MenuItem("Poi/Tools/Bake Vertex Colors")]
+        [MenuItem("Poi/Tools/Vertex Color Baker", priority = 11)]
         public static void ShowWindow()
         {
             //Show existing window instance. If one doesn't exist, make one.
@@ -54,7 +65,10 @@ namespace Poi
 
         void OnGUI()
         {
-            GUILayout.Space(18f);
+            EditorGUILayout.LabelField("Poi Vertex Color Baker", PoiStyles.TitleLabel);
+            EditorGUILayout.LabelField(SubTitle);
+
+            PoiHelpers.DrawLine();
 
             EditorGUI.BeginChangeCheck();
             GameObject obj = EditorGUILayout.ObjectField("Avatar", Selection, typeof(GameObject), true) as GameObject;
@@ -93,31 +107,40 @@ namespace Poi
         /// Saves a mesh in the same folder as the original asset
         /// </summary>
         /// <param name="mesh"></param>
-        /// <param name="nameSuffix">Suffix to add to the end of the asset name</param>
+        /// <param name="newName">The new name of the mesh</param>
         /// <returns>Returns the newly created mesh asset</returns>
-        static Mesh SaveMeshAsset(Mesh mesh, string nameSuffix = "baked")
+        static Mesh SaveMeshAsset(Mesh mesh, string newName)
         {
             string assetPath = AssetDatabase.GetAssetPath(mesh);
+
             if(string.IsNullOrWhiteSpace(assetPath))
+            {
+                Debug.LogWarning(log_prefix + "Invalid asset path for " + mesh.name);
                 return null;
+            }
 
             //Figure out folder name
             string bakesDir = $"{Path.GetDirectoryName(assetPath)}";
+
+            //Handle default assets
+            if(bakesDir.StartsWith("Library"))
+                bakesDir = $"Assets\\{defaultUnityAssetBakesFolder}";
+
             if(!bakesDir.EndsWith(bakesFolderName))
-                bakesDir += $"/{bakesFolderName}";
+                bakesDir += $"\\{bakesFolderName}";
+
+            if(!assetPath.Contains('.'))
+                assetPath += '\\';
+
             PoiHelpers.EnsurePathExistsInAssets(bakesDir);
 
-            //Figure out mesh name
-            string fileName = PoiHelpers.RemoveSuffix(Path.GetFileNameWithoutExtension(assetPath), "baked", bakedSuffix_normals, bakedSuffix_position);
-            fileName = PoiHelpers.AddSuffix(fileName, nameSuffix);
+            //Generate path
+            string pathNoExt = Path.Combine(bakesDir, newName);
+            string newPath = AssetDatabase.GenerateUniqueAssetPath($"{pathNoExt}.mesh");
 
-            string pathNoExt = Path.Combine(bakesDir, fileName);
-            string newPath = AssetDatabase.GenerateUniqueAssetPath(pathNoExt) + ".mesh";
-
-            //Save mesh, load it back, assign to renderer then clean up
+            //Save mesh, load it back, assign to renderer
             Mesh newMesh = Instantiate(mesh);
             AssetDatabase.CreateAsset(newMesh, newPath);
-            PoiHelpers.DestroyAppropriate(newMesh);
 
             newMesh = AssetDatabase.LoadAssetAtPath<Mesh>(newPath);
 
@@ -200,6 +223,7 @@ namespace Poi
 
         static void BakePositionsToColors(MeshInfo[] meshInfos)
         {
+            var queue = new Dictionary<MeshInfo, Mesh>();
             try
             {
                 AssetDatabase.StartAssetEditing();
@@ -214,9 +238,11 @@ namespace Poi
                         colors[i] = new Color(verts[i].x, verts[i].y, verts[i].z);
                     meshInfo.sharedMesh.colors = colors;
 
-                    Mesh newMesh = null;
-                    if(newMesh = SaveMeshAsset(meshInfo.sharedMesh, bakedSuffix_position))
-                        SetRendererSharedMesh(meshInfo.ownerRenderer, newMesh);
+                    //Create new mesh asset and add it to queue
+                    string name = PoiHelpers.AddSuffix(meshInfo.ownerRenderer.gameObject.name, bakedSuffix_position);
+                    Mesh newMesh = SaveMeshAsset(meshInfo.sharedMesh, name);
+                    if(newMesh)
+                        queue.Add(meshInfo, newMesh);
                 }
             }
             catch(Exception ex)
@@ -227,10 +253,17 @@ namespace Poi
             {
                 AssetDatabase.StopAssetEditing();
             }
+
+            //After all meshes are imported assign the meshes
+            foreach(var kv in queue)
+            {
+                SetRendererSharedMesh(kv.Key.ownerRenderer, kv.Value);
+            }
         }
 
         static void BakeAveragedNormalsToColors(params MeshInfo[] infos)
         {
+            var queue = new Dictionary<MeshInfo, Mesh>();
             try
             {
                 AssetDatabase.StartAssetEditing();
@@ -285,9 +318,10 @@ namespace Poi
                     }
                     meshInfo.sharedMesh.colors = colors;
 
-                    Mesh newMesh = null;
-                    if(newMesh = SaveMeshAsset(meshInfo.sharedMesh, bakedSuffix_normals))
-                        SetRendererSharedMesh(meshInfo.ownerRenderer, newMesh);
+                    string name = PoiHelpers.AddSuffix(meshInfo.ownerRenderer.gameObject.name, bakedSuffix_normals);
+                    Mesh newMesh = SaveMeshAsset(meshInfo.sharedMesh, name);
+                    if(newMesh)
+                        queue.Add(meshInfo, newMesh);
                 }
             }
             catch(Exception ex)
@@ -298,6 +332,10 @@ namespace Poi
             {
                 AssetDatabase.StopAssetEditing();
             }
+
+            //Assign all new meshes to their renderers
+            foreach(var kv in queue)
+                SetRendererSharedMesh(kv.Key.ownerRenderer, kv.Value);
         }
 
         struct MeshInfo
@@ -317,5 +355,6 @@ namespace Poi
         }
 
         static GameObject _selection;
+        private string _subTitle;
     }
 }

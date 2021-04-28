@@ -55,11 +55,23 @@ namespace Poi
         /// Adds a suffix to the end of the string then returns it
         /// </summary>
         /// <param name="str"></param>
-        /// <param name="suffix"></param>
+        /// <param name="suffixes"></param>
         /// <returns></returns>
-        public static string AddSuffix(string str, string suffix)
+        public static string AddSuffix(string str, params string[] suffixes)
         {
-            return str + suffixSeparator + suffix;
+            bool ignoreSeparatorOnce = string.IsNullOrWhiteSpace(str);
+            StringBuilder sb = new StringBuilder(str);
+            foreach(var suff in suffixes)
+            {
+                if(ignoreSeparatorOnce)
+                {
+                    sb.Append(suff);
+                    ignoreSeparatorOnce = false;
+                    continue;
+                }
+                sb.Append(suffixSeparator + suff);
+            }
+            return sb.ToString();
         }
 
         /// <summary>
@@ -68,18 +80,22 @@ namespace Poi
         /// <param name="str"></param>
         /// <param name="suffixes">Each to be removed in order</param>
         /// <returns></returns>
-        public static string RemoveSuffix(string str, params string[] suffixes)
+        public static string RemoveSuffix(string str, string[] suffixes)
         {
-            foreach(string sfx in suffixes)
-            {
-                string s = suffixSeparator + sfx;
-                if(!str.EndsWith(sfx))
-                    continue;
+            var suffixList = suffixes.ToList();
+            suffixList.Remove(str);
 
-                int idx = str.LastIndexOf(s);
-                if(idx != -1)
-                    str = str.Remove(idx, s.Length);
-            }
+            while(suffixList.Any(str.EndsWith))
+                foreach(string sfx in suffixList)
+                {
+                    string s = suffixSeparator + sfx;
+                    if(!str.EndsWith(sfx))
+                        continue;
+
+                    int idx = str.LastIndexOf(s, StringComparison.Ordinal);
+                    if(idx != -1)
+                        str = str.Remove(idx, s.Length);
+                }
             return str;
         }
 
@@ -189,10 +205,115 @@ namespace Poi
             int maxH = sizes.Max(wh => wh.y);
             return new Vector2Int(maxW, maxH);
         }
+
+        internal static Texture2D PackTextures(Vector2Int resolution, Texture2D red, Texture2D green, Texture2D blue, Texture2D alpha, bool invertRed, bool invertGreen, bool invertBlue, bool invertAlpha)
+        {
+            // Setup Material
+            var mat = new Material(PoiExtensions.PackerShader);
+
+            mat.SetTexture("_Red", red);
+            mat.SetTexture("_Green", green);
+            mat.SetTexture("_Blue", blue);
+            mat.SetTexture("_Alpha", alpha);
+
+            mat.SetInt("_Invert_Red", Convert.ToInt32(invertRed));
+            mat.SetInt("_Invert_Green", Convert.ToInt32(invertGreen));
+            mat.SetInt("_Invert_Blue", Convert.ToInt32(invertBlue));
+            mat.SetInt("_Invert_Alpha", Convert.ToInt32(invertAlpha));
+
+            // Create texture and render to it
+            var tex = new Texture2D(resolution.x, resolution.y);
+            tex.BakeMaterialToTexture(mat);
+
+            // Cleanup
+            DestroyAppropriate(mat);
+
+            return tex;
+        }
+
+        internal static Dictionary<string, Texture2D> UnpackTextureToChannels(Texture2D packedTexture, bool invert, Vector2Int resolution)
+        {
+            var channels = new Dictionary<string, Texture2D>
+            {
+                {PoiExtensions.PoiTextureChannel.Red.ToString().ToLower(),
+                    new Texture2D(resolution.x, resolution.y, TextureFormat.RGB24, true)},
+                {PoiExtensions.PoiTextureChannel.Green.ToString().ToLower(),
+                    new Texture2D(resolution.x, resolution.y, TextureFormat.RGB24, true)},
+                {PoiExtensions.PoiTextureChannel.Blue.ToString().ToLower(),
+                    new Texture2D(resolution.x, resolution.y, TextureFormat.RGB24, true)},
+                {PoiExtensions.PoiTextureChannel.Alpha.ToString().ToLower(),
+                    new Texture2D(resolution.x, resolution.y, TextureFormat.RGB24, true)}
+            };
+
+            var mat = new Material(PoiExtensions.UnpackerShader);
+            mat.SetTexture("_MainTex", packedTexture);
+            mat.SetInt("_Invert", Convert.ToInt32(invert));
+
+            for(int i = 0; i < 4; i++)
+            {
+                mat.SetFloat("_Mode", i);
+                channels.ElementAt(i).Value.BakeMaterialToTexture(mat);
+            }
+
+            return channels;
+        }
+
+        internal static void DrawWithLabelWidth(float width, Action action)
+        {
+            if(action == null)
+                return;
+            float old = EditorGUIUtility.labelWidth;
+            action.Invoke();
+            EditorGUIUtility.labelWidth = old;
+        }
+
+        internal static PoiExtensions.PoiTextureChannel DrawChannelSelector(PoiExtensions.PoiTextureChannel currentSelection, params string[] labels)
+        {
+            if(labels == null)
+                return PoiExtensions.PoiTextureChannel.RGBA;
+            return (PoiExtensions.PoiTextureChannel)GUILayout.SelectionGrid((int)currentSelection, labels, labels.Length);
+        }
     }
 
     internal static class PoiExtensions
     {
+        public enum PoiTextureChannel { RGBA, Red, Green, Blue, Alpha }
+        public static Shader PackerShader
+        {
+            get
+            {
+                return Shader.Find("Hidden/Poi/TexturePacker");
+            }
+        }
+        public static Shader UnpackerShader
+        {
+            get
+            {
+                return Shader.Find("Hidden/Poi/TextureUnpacker");
+            }
+        }
+
+        internal static Texture2D GetChannelAsTexture(this Texture2D tex, PoiTextureChannel chan, bool invert = false, Vector2Int sizeOverride = default)
+        {
+            if(chan == PoiTextureChannel.RGBA)
+                return tex;
+
+            if(sizeOverride == default)
+                sizeOverride = new Vector2Int(tex.width, tex.height);
+
+            Material mat = new Material(UnpackerShader);
+            mat.SetFloat("_Mode", (int)chan - 1);
+            mat.SetInt("_Invert", Convert.ToInt32(invert));
+            mat.SetTexture("_MainTex", tex);
+
+            var newTex = new Texture2D(sizeOverride.x, sizeOverride.y, TextureFormat.RGB24, true);
+            newTex.name = chan.ToString();
+            newTex.BakeMaterialToTexture(mat);
+            newTex.Apply(false, false);
+
+            return newTex;
+        }
+
         /// <summary>
         /// Extension method that bakes a material to <paramref name="tex"/>
         /// </summary>
@@ -208,6 +329,7 @@ namespace Poi
             //transfer image from rendertexture to texture
             RenderTexture.active = renderTexture;
             tex.ReadPixels(new Rect(Vector2.zero, res), 0, 0);
+            tex.Apply(false, false);
 
             //clean up variables
             RenderTexture.active = null;
@@ -261,11 +383,9 @@ namespace Poi
             if(ceiling != null)
             {
                 int ceil = Mathf.ClosestPowerOfTwo((int) ceiling);
-                int oneBelowCeil = (int)Math.Sqrt(ceil);
 
-                // If above ceiling, root down to a lower power of two
-                x = x > ceil ? oneBelowCeil : x;
-                y = y > ceil ? oneBelowCeil : y;
+                x = Mathf.Clamp(x, x, ceil);
+                y = Mathf.Clamp(y, y, ceil);
             }
 
             return new Vector2Int(x, y);

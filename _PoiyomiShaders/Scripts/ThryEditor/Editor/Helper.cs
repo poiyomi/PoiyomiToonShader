@@ -19,6 +19,18 @@ using UnityEngine.Networking;
 
 namespace Thry
 {
+    static class StringExtensions
+    {
+        public static string ReplaceVariables(this string s, params object[] values)
+        {
+            int i = 0;
+            foreach(object o in values)
+            {
+                s = s.Replace("{" + (i++) + "}", o.ToString());
+            }
+            return s;
+        }
+    }
 
     public class Helper
     {
@@ -194,6 +206,20 @@ namespace Thry
         public static void Set(string key, string value)
         {
             FileHelper.SaveValueToFile(key, value, PATH.PERSISTENT_DATA);
+        }
+
+        public static T Get<T>(string key, T defaultValue)
+        {
+            string s = FileHelper.LoadValueFromFile(key, PATH.PERSISTENT_DATA);
+            if (string.IsNullOrEmpty(s)) return defaultValue;
+            T obj = Parser.Deserialize<T>(s);
+            if (obj == null) return defaultValue;
+            return obj;
+        }
+
+        public static void Set(string key, object value)
+        {
+            FileHelper.SaveValueToFile(key, Parser.Serialize(value), PATH.PERSISTENT_DATA);
         }
     }
 
@@ -549,8 +575,8 @@ namespace Thry
         /// <param name="value"></param>
         public static void SetMaterialValue(string key, string value)
         {
-            MaterialProperty p = ShaderEditor.FindProperty(ShaderEditor.currentlyDrawing.properties, key);
             Material[] materials = ShaderEditor.currentlyDrawing.materials;
+            MaterialProperty p = ShaderEditor.active.GetMaterialProperty(key);
             if (p != null)
             {
                 MaterialHelper.SetMaterialPropertyValue(p, materials, value);
@@ -626,6 +652,39 @@ namespace Thry
                     Vector2 scale = source.GetTextureScale(p.name);
                     p.textureValue = t;
                     p.textureScaleAndOffset = new Vector4(scale.x, scale.y, offset.x, offset.y);
+                    break;
+            }
+        }
+
+        public static void CopyMaterialTagFromMaterial(Material[] targets, Material source, string tag, string defaultValue)
+        {
+            string val = source.GetTag(tag, false, defaultValue);
+            foreach(Material m in targets)
+            {
+                m.SetOverrideTag(tag, val);
+            }
+        }
+
+        public static void CopyMaterialValueFromProperty(MaterialProperty target, MaterialProperty source)
+        {
+            switch (target.type)
+            {
+                case MaterialProperty.PropType.Float:
+                case MaterialProperty.PropType.Range:
+                    target.floatValue = source.floatValue;
+                    string[] drawer = ShaderHelper.GetDrawer(target);
+                    if (drawer != null && drawer.Length > 1 && drawer[0] == "Toggle" && drawer[1] != "__")
+                        ToggleKeyword(target, drawer[1], source.floatValue == 1);
+                    break;
+                case MaterialProperty.PropType.Color:
+                    target.colorValue = source.colorValue;
+                    break;
+                case MaterialProperty.PropType.Vector:
+                    target.vectorValue = source.vectorValue;
+                    break;
+                case MaterialProperty.PropType.Texture:
+                    target.textureValue = source.textureValue;
+                    target.textureScaleAndOffset = source.textureScaleAndOffset;
                     break;
             }
         }
@@ -1234,8 +1293,11 @@ namespace Thry
 
         private static void RemoveAt(int i)
         {
-            dictionary.Remove(shaders[i].name);
-            shaders.RemoveAt(i--);
+            if (dictionary.ContainsKey(shaders[i].name))
+            {
+                dictionary.Remove(shaders[i].name);
+                shaders.RemoveAt(i--);
+            }
         }
 
         public static string[] GetShaderEditorShaderNames()
@@ -1274,7 +1336,7 @@ namespace Thry
             dictionary = new Dictionary<string, ShaderEditorShader>();
             foreach (ShaderEditorShader s in shaders)
             {
-                if (s.name != null && !dictionary.ContainsKey(s.name))
+                if (s != null && s.name != null && dictionary.ContainsKey(s.name) == false)
                     dictionary.Add(s.name, s);
             }
         }

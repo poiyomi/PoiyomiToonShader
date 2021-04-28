@@ -82,25 +82,6 @@ namespace Thry
 
         //---------------------Stuff checkers and fixers-------------------
 
-        //checks if slected shaders is using editor
-        private void OnSelectionChange()
-        {
-            string[] selectedAssets = Selection.assetGUIDs;
-            if (selectedAssets.Length == 1)
-            {
-                UnityEngine.Object obj = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(AssetDatabase.GUIDToAssetPath(selectedAssets[0]));
-                if (obj.GetType() == typeof(Shader))
-                {
-                    Shader shader = (Shader)obj;
-                    if (ShaderHelper.IsShaderUsingShaderEditor(shader))
-                    {
-                        Mediator.SetActiveShader(shader, new Material(shader));
-                    }
-                }
-            }
-            this.Repaint();
-        }
-
         public void Awake()
         {
             InitVariables();
@@ -137,7 +118,7 @@ namespace Thry
         void OnGUI()
         {
             if (!is_init || moduleSettings==null) InitVariables();
-            GUILayout.Label("ShaderEditor v" + Config.Get().verion);
+            GUILayout.Label("ShaderEditor v" + Config.Singleton.verion);
 
             GUINotification();
             drawLine();
@@ -207,7 +188,7 @@ namespace Thry
         {
             GUILayout.BeginHorizontal(GUILayout.ExpandWidth(false));
             Text("gradient_name", false);
-            string gradient_name = Config.Get().gradient_name;
+            string gradient_name = Config.Singleton.gradient_name;
             if (gradient_name.Contains("<hash>"))
                 GUILayout.Label(Locale.editor.Get("gradient_good_naming"), Styles.greenStyle, GUILayout.ExpandWidth(false));
             else if (gradient_name.Contains("<material>"))
@@ -335,7 +316,7 @@ namespace Thry
 
         private static void Text(string configField, string text, string tooltip, bool createHorizontal)
         {
-            Config config = Config.Get();
+            Config config = Config.Singleton;
             System.Reflection.FieldInfo field = typeof(Config).GetField(configField);
             if (field != null)
             {
@@ -368,7 +349,7 @@ namespace Thry
 
         private static void Toggle(string configField, string label, string hover, GUIStyle label_style = null)
         {
-            Config config = Config.Get();
+            Config config = Config.Singleton;
             System.Reflection.FieldInfo field = typeof(Config).GetField(configField);
             if (field != null)
             {
@@ -394,7 +375,7 @@ namespace Thry
 
         private static void Dropdown(string configField, string label, string hover, GUIStyle label_style = null)
         {
-            Config config = Config.Get();
+            Config config = Config.Singleton;
             System.Reflection.FieldInfo field = typeof(Config).GetField(configField);
             if (field != null)
             {
@@ -425,8 +406,8 @@ namespace Thry
             EditorGUILayout.EndHorizontal();
             if(EditorGUI.EndChangeCheck())
             {
-                Config.Get().locale = Locale.editor.available_locales[Locale.editor.selected_locale_index];
-                Config.Get().save();
+                Config.Singleton.locale = Locale.editor.available_locales[Locale.editor.selected_locale_index];
+                Config.Singleton.save();
                 ShaderEditor.reload();
                 ShaderEditor.repaint();
             }

@@ -54,6 +54,121 @@ namespace Thry
         }
     }
 
+    public class ThryToggleUIDrawer : MaterialPropertyDrawer
+    {
+        public string keyword;
+        private bool isFirstGUICall = true;
+        public ThryToggleUIDrawer()
+        {
+        }
+
+        public ThryToggleUIDrawer(string keyword)
+        {
+        }
+
+        protected virtual void SetKeyword(MaterialProperty prop, bool on)
+        {
+        }
+
+        protected virtual void CheckKeyword(MaterialProperty prop)
+        {
+        }
+
+        static bool IsPropertyTypeSuitable(MaterialProperty prop)
+        {
+            return prop.type == MaterialProperty.PropType.Float || prop.type == MaterialProperty.PropType.Range;
+        }
+
+        public override float GetPropertyHeight(MaterialProperty prop, string label, MaterialEditor editor)
+        {
+            if (!IsPropertyTypeSuitable(prop))
+            {
+                return EditorGUIUtility.singleLineHeight * 2.5f;
+            }
+            return base.GetPropertyHeight(prop, label, editor);
+        }
+
+        public override void OnGUI(Rect position, MaterialProperty prop, GUIContent label, MaterialEditor editor)
+        {
+            if (!IsPropertyTypeSuitable(prop))
+            {
+                return;
+            }
+            if (isFirstGUICall)
+            {
+                CheckKeyword(prop);
+                isFirstGUICall = false;
+            }
+            //why is this not inFirstGUICall ? cause it seems drawers are kept between different openings of the shader editor, so this needs to be set again every time the shader editor is reopened for that material
+            (ShaderEditor.currentlyDrawing.propertyDictionary[prop.name] as ShaderProperty).keyword = keyword;
+
+            EditorGUI.BeginChangeCheck();
+
+            bool value = (Math.Abs(prop.floatValue) > 0.001f);
+            EditorGUI.showMixedValue = prop.hasMixedValue;
+            value = EditorGUI.Toggle(position, label, value);
+            EditorGUI.showMixedValue = false;
+            if (EditorGUI.EndChangeCheck())
+            {
+                prop.floatValue = value ? 1.0f : 0.0f;
+                SetKeyword(prop, value);
+            }
+        }
+
+        public override void Apply(MaterialProperty prop)
+        {
+            base.Apply(prop);
+            if (!IsPropertyTypeSuitable(prop))
+                return;
+
+            if (prop.hasMixedValue)
+                return;
+
+            SetKeyword(prop, (Math.Abs(prop.floatValue) > 0.001f));
+        }
+    }
+
+    public class ThryToggleDrawer : ThryToggleUIDrawer
+    {
+        public ThryToggleDrawer()
+        {
+        }
+
+        public ThryToggleDrawer(string keyword)
+        {
+            this.keyword = keyword;
+        }
+
+        protected override void SetKeyword(MaterialProperty prop, bool on)
+        {
+            SetKeywordInternal(prop, on, "_ON");
+        }
+
+        protected virtual void CheckKeyword(MaterialProperty prop)
+        {
+            foreach (Material m in prop.targets)
+            {
+                if (m.GetFloat(prop.name) == 1)
+                    m.EnableKeyword((string)keyword);
+                else
+                    m.DisableKeyword((string)keyword);
+            }
+        }
+
+        protected void SetKeywordInternal(MaterialProperty prop, bool on, string defaultKeywordSuffix)
+        {
+            // if no keyword is provided, use <uppercase property name> + defaultKeywordSuffix
+            string kw = string.IsNullOrEmpty(keyword) ? prop.name.ToUpperInvariant() + defaultKeywordSuffix : keyword;
+            // set or clear the keyword
+            foreach (Material material in prop.targets)
+            {
+                if (on)
+                    material.EnableKeyword(kw);
+                else
+                    material.DisableKeyword(kw);
+            }
+        }
+    }
     public class CurveDrawer : MaterialPropertyDrawer
     {
         public AnimationCurve curve;

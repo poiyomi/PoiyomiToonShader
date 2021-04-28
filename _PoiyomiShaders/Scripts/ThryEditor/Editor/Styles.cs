@@ -64,8 +64,7 @@ namespace Thry
             if (active)
             {
                 if (style_toolbar_toggle_active.normal.background == null)
-                    Debug.Log("Texture be bye bye. what why why ??");
-                //style_toolbar_toggle_active = CreateStyle(backgroundTexture: MultiplyTextureWithColor(Styles.dropDownHeader.normal.background, new Color(1, 1, 1, 1)), color: Color.white, contentOffset: new Vector2(0, -2), alignment: TextAnchor.MiddleCenter, baseStyle: Styles.dropDownHeader);
+                    style_toolbar_toggle_active = CreateStyle(backgroundTexture: MultiplyTextureWithColor(Styles.dropDownHeader.normal.background, new Color(1, 1, 1, 1)), color: Color.white, contentOffset: new Vector2(0, -2), alignment: TextAnchor.MiddleCenter, baseStyle: Styles.dropDownHeader);
                 return style_toolbar_toggle_active;
             }
             return style_toolbar_toggle_unactive;
@@ -124,7 +123,14 @@ namespace Thry
         public static Texture2D presets_icon { get; private set; } = LoadTextureByFileName(RESOURCE_NAME.PRESETS_ICON);
         public static Texture2D t_arrow { get; private set; } = LoadTextureByFileName(RESOURCE_NAME.TEXTURE_ARROW);
         public static Texture2D texture_animated { get; private set; } = LoadTextureByFileName(RESOURCE_NAME.TEXTURE_ANIMTED);
-        public static Texture2D texture_animated_renamed { get; private set; } = OverrideTextureWithColor(LoadTextureByFileName(RESOURCE_NAME.TEXTURE_ANIMTED), Color.red);
+        private static Texture2D t_texture_animated_renamed;
+        public static Texture2D texture_animated_renamed { 
+            get { 
+                if(t_texture_animated_renamed == null)
+                    t_texture_animated_renamed = OverrideTextureWithColor(LoadTextureByFileName(RESOURCE_NAME.TEXTURE_ANIMTED), Color.red);
+                return t_texture_animated_renamed;
+            } 
+        } 
 
 
         private static Texture2D LoadTextureByNameAndEditorType(string normalName, string proName)

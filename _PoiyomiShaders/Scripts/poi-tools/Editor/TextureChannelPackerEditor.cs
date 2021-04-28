@@ -4,17 +4,62 @@ using System.Drawing;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
+using TextureChannel = Poi.PoiExtensions.PoiTextureChannel;
 
 namespace Poi
 {
     public class TextureChannelPackerEditor : EditorWindow
     {
-        const string log_prefix = "<color=blue>Poi:</color> "; //color is hex or name
-
-        static readonly Vector2 MIN_WINDOW_SIZE = new Vector2(316, 420);
-
+        const string LOG_PREFIX = "<color=blue>Poi:</color> "; //color is hex or name
+        static readonly Vector2 MIN_WINDOW_SIZE = new Vector2(350, 500);
         const int AUTO_SELECT_CEILING = 2048;
-        int[] SizePresets { get; } = { 128, 256, 512, 1024, 2048, 4096 };
+
+        const string INVERT_LABEL = "Invert";
+        const string PACKED_TEXTURE_LABEL = "Texture";
+        const string RED_TEXTURE_LABEL = "Red";
+        const string GREEN_TEXTURE_LABEL = "Green";
+        const string BLUE_TEXTURE_LABEL = "Blue";
+        const string ALPHA_TEXTURE_LABEL = "Alpha";
+
+        float InvertToggleWidth
+        {
+            get
+            {
+                if(_invertLabelWidth == default)
+                    _invertLabelWidth = EditorStyles.toggle.CalcSize(new GUIContent(INVERT_LABEL)).x;
+                return _invertLabelWidth;
+            }
+        }
+
+        // Default values
+        string savePath = "Assets/_ChannelPacker";
+        string packedName = "packed";
+        string unpackedName = "unpacked";
+
+        // Version
+        Version version = new Version(1, 2);
+        string SubTitle
+        {
+            get
+            {
+                if(string.IsNullOrWhiteSpace(_subTitle))
+                    _subTitle = "by Pumkin - v" + version.ToString();
+                return _subTitle;
+            }
+        }
+
+        static EditorWindow Window
+        {
+            get
+            {
+                if(!_window)
+                    _window = GetWindow<TextureChannelPackerEditor>();
+                return _window;
+            }
+        }
+
+        // Texture stuff
+        static int[] SizePresets { get; } = { 128, 256, 512, 1024, 2048, 4096 };
         string[] SizePresetNames
         {
             get
@@ -34,28 +79,35 @@ namespace Poi
         bool packSizeAutoSelect = true;
         bool unpackSizeAutoSelect = true;
 
-        Texture2D packRed, packGreen, packBlue, packAlpha;
-        Texture2D unpackSource;
+        bool showChannelPicker = false;
 
-        Shader PackerShader
+        TextureChannel redTexChan, blueTexChan, greenTexChan, alphaTexChan, unpackChan;
+
+        Texture2D packRed, packGreen, packBlue, packAlpha, unpackSource;
+
+        bool redInvert, greenInvert, blueInvert, alphaInvert, unpackInvert;
+
+        string[] ChannelLabels { get; } = { "All", "Red", "Green", "Blue", "Alpha" };
+
+        bool PackerShadersExist
         {
             get
             {
-                return Shader.Find("Hidden/Poi/TexturePacker");
-                //if(!_packerShader)
-                //    _packerShader = Shader.Find("Hidden/Poi/TexturePacker");
-                //return _packerShader;
-            }
-        }
+                bool everythingIsAlwaysFine = true;
 
-        Shader UnpackerShader
-        {
-            get
-            {
-                return Shader.Find("Hidden/Poi/TextureUnpacker");
-                //if(!_packerShader)
-                //    _packerShader = Shader.Find("Hidden/Poi/TextureUnpacker");
-                //return _packerShader;
+                if(!PoiExtensions.UnpackerShader)
+                {
+                    Debug.LogWarning(LOG_PREFIX + "Unpacker shader is missing or invalid. Can't unpack textures.");
+                    everythingIsAlwaysFine = false;
+                }
+
+                if(!PoiExtensions.PackerShader)
+                {
+                    Debug.LogWarning(LOG_PREFIX + "Packer shader is missing or invalid. Can't pack textures.");
+                    everythingIsAlwaysFine = false;
+                }
+
+                return everythingIsAlwaysFine;
             }
         }
 
@@ -72,29 +124,28 @@ namespace Poi
             }
         }
 
-        string savePath = "Assets/_ChannelPacker";
-        string packedName = "packed";
-        string unpackedName = "unpacked";
 
-
-
-        [MenuItem("Poi/Tools/Texture Packer")]
+        [MenuItem("Poi/Tools/Texture Packer", priority = 0)]
         public static void ShowWindow()
         {
             //Show existing window instance. If one doesn't exist, make one.
-            EditorWindow editorWindow = GetWindow(typeof(TextureChannelPackerEditor));
-            editorWindow.autoRepaintOnSceneChange = true;
-            editorWindow.minSize = MIN_WINDOW_SIZE;
+            Window.autoRepaintOnSceneChange = true;
+            Window.minSize = MIN_WINDOW_SIZE;
 
-            editorWindow.Show();
-            editorWindow.titleContent = new GUIContent("Texture Packer");
+            Window.Show();
+            Window.titleContent = new GUIContent("Texture Packer");
         }
+
+        #region Drawing GUI
 
         void OnGUI()
         {
+            EditorGUILayout.LabelField("Poi Texture Packer", PoiStyles.TitleLabel);
+            EditorGUILayout.LabelField(SubTitle);
+
             PoiHelpers.DrawLine();
+
             selectedTab = GUILayout.Toolbar(selectedTab, TabNames);
-            PoiHelpers.DrawLine();
 
             if(selectedTab == (int)Tab.Pack)
                 DrawPackUI();
@@ -104,158 +155,219 @@ namespace Poi
 
         void DrawPackUI()
         {
-            EditorGUI.BeginChangeCheck();
+            _scroll = EditorGUILayout.BeginScrollView(_scroll);
             {
-                packRed = EditorGUILayout.ObjectField("Red", packRed, typeof(Texture2D), true) as Texture2D;
-                packGreen = EditorGUILayout.ObjectField("Green", packGreen, typeof(Texture2D), true) as Texture2D;
-                packBlue = EditorGUILayout.ObjectField("Blue", packBlue, typeof(Texture2D), true) as Texture2D;
-                packAlpha = EditorGUILayout.ObjectField("Alpha", packAlpha, typeof(Texture2D), true) as Texture2D;
+                EditorGUI.BeginChangeCheck();
+                {
+                    DrawTextureSelector(RED_TEXTURE_LABEL, ref packRed, ref redTexChan, ref redInvert);
+                    DrawTextureSelector(GREEN_TEXTURE_LABEL, ref packGreen, ref greenTexChan, ref greenInvert);
+                    DrawTextureSelector(BLUE_TEXTURE_LABEL, ref packBlue, ref blueTexChan, ref blueInvert);
+                    DrawTextureSelector(ALPHA_TEXTURE_LABEL, ref packAlpha, ref alphaTexChan, ref alphaInvert);
+                }
+                if(EditorGUI.EndChangeCheck() && packSizeAutoSelect)
+                {
+                    // Get biggest texture size from selections and make a selection in our sizes list
+                    var tempSize = PoiHelpers.GetMaxSizeFromTextures(packRed, packGreen, packBlue, packAlpha);
+                    if(tempSize != default)
+                        PackSize = tempSize.ClosestPowerOfTwo(AUTO_SELECT_CEILING);
+                }
             }
-            if(EditorGUI.EndChangeCheck() && packSizeAutoSelect)
-            {
-                // Get biggest texture size from selections and make a selection in our sizes list
-                var tempSize = PoiHelpers.GetMaxSizeFromTextures(packRed, packGreen, packBlue, packAlpha);
-                if(tempSize != default)
-                    PackSize = tempSize.ClosestPowerOfTwo(AUTO_SELECT_CEILING);
-            }
+            EditorGUILayout.EndScrollView();
 
-            PoiHelpers.DrawLine();
+            DrawShowChannelPicker(ref showChannelPicker);
 
             bool disabled = new bool[] { packRed, packGreen, packBlue, packAlpha }.Count(b => b) < 2;
             EditorGUI.BeginDisabledGroup(disabled);
             {
-                packedName = EditorGUILayout.TextField("File name", packedName);
+                PackSize = DrawTextureSizeSettings(PackSize, ref packedName, ref packSizeIsLinked, ref packSizeAutoSelect);
+
+                if(GUILayout.Button("Pack", PoiStyles.BigButton))
+                    DoPack();
 
                 EditorGUILayout.Space();
-
-                PackSize = PoiHelpers.DrawResolutionPicker(PackSize, ref packSizeIsLinked, ref packSizeAutoSelect, SizePresets, SizePresetNames);
-
-                EditorGUILayout.Space();
-                PoiHelpers.DrawLine();
-
-                if(GUILayout.Button("Pack"))
-                {
-                    var packResult = PackTexture(PackSize, packRed, packGreen, packBlue, packAlpha);
-                    if(packResult)
-                    {
-                        string path = $"{savePath}/Packed/{packedName}.png";
-                        packResult.SaveTextureAsset(path, true);
-                        Debug.Log(log_prefix + "Finished packing texture at " + path);
-                        PoiHelpers.PingAssetAtPath(path);
-                    }
-                }
             }
-            PoiHelpers.DrawLine();
+            EditorGUI.EndDisabledGroup();
+        }
+
+        private void DrawShowChannelPicker(ref bool pickerValue)
+        {
+            EditorGUILayout.BeginHorizontal(EditorStyles.helpBox);
+            pickerValue = EditorGUILayout.ToggleLeft("Pick source channel", pickerValue);
+            EditorGUILayout.EndHorizontal();
         }
 
         void DrawUnpackUI()
         {
-            EditorGUI.BeginChangeCheck();
+            _scroll = EditorGUILayout.BeginScrollView(_scroll);
             {
-                unpackSource =
-                    EditorGUILayout.ObjectField("Packed Texture", unpackSource, typeof(Texture2D), true) as Texture2D;
-            }
-            if(EditorGUI.EndChangeCheck() && unpackSizeAutoSelect)
-            {
-                // Get biggest texture size from selections and make a selection in our sizes list
-                var tempSize = PoiHelpers.GetMaxSizeFromTextures(unpackSource);
-                if(tempSize != default)
-                    UnpackSize = tempSize.ClosestPowerOfTwo(AUTO_SELECT_CEILING);
-            }
+                EditorGUI.BeginChangeCheck();
+                {
+                    DrawTextureSelector(PACKED_TEXTURE_LABEL, ref unpackSource, ref unpackChan, ref unpackInvert);
+                }
+                if(EditorGUI.EndChangeCheck() && unpackSizeAutoSelect)
+                {
+                    // Get biggest texture size from selections and make a selection in our sizes list
+                    var tempSize = PoiHelpers.GetMaxSizeFromTextures(unpackSource);
+                    if(tempSize != default)
+                        UnpackSize = tempSize.ClosestPowerOfTwo(AUTO_SELECT_CEILING);
+                }
 
-            PoiHelpers.DrawLine();
+                DrawShowChannelPicker(ref showChannelPicker);
+            }
+            EditorGUILayout.EndScrollView();
 
             EditorGUI.BeginDisabledGroup(!unpackSource);
             {
-                unpackedName = EditorGUILayout.TextField("File name", unpackedName);
+                UnpackSize = DrawTextureSizeSettings(UnpackSize, ref unpackedName, ref unpackSizeIsLinked, ref unpackSizeAutoSelect);
 
-                EditorGUILayout.Space();
-
-                UnpackSize = PoiHelpers.DrawResolutionPicker(UnpackSize, ref unpackSizeIsLinked, ref unpackSizeAutoSelect, SizePresets,
-                    SizePresetNames);
-
-                PoiHelpers.DrawLine();
-
-                if(GUILayout.Button("Unpack"))
-                {
-                    var output = UnpackTextureToChannels(unpackSource, UnpackSize);
-                    string pingPath = null;
-                    try
-                    {
-                        AssetDatabase.StartAssetEditing();
-                        foreach(var kv in output)
-                        {
-                            if(string.IsNullOrWhiteSpace(pingPath))
-                                pingPath = $"{savePath}/Unpacked/{unpackedName}_{kv.Key}.png";
-                            kv.Value?.SaveTextureAsset($"{savePath}/Unpacked/{unpackedName}_{kv.Key}.png", true);
-                        }
-                    }
-                    catch {}
-                    finally
-                    {
-                        AssetDatabase.StopAssetEditing();
-                    }
-
-                    Debug.Log(log_prefix + "Finished unpacking texture at " + pingPath);
-                    PoiHelpers.PingAssetAtPath(pingPath);
-                }
+                if(GUILayout.Button("Unpack", PoiStyles.BigButton))
+                    DoUnpack(unpackChan);
             }
             EditorGUI.EndDisabledGroup();
 
-            PoiHelpers.DrawLine();
+            EditorGUILayout.Space();
         }
 
-        Texture2D PackTexture(Vector2Int resolution, Texture2D red, Texture2D green, Texture2D blue, Texture2D alpha)
+        #endregion
+
+        #region Packing and Unpacking
+
+        void DoPack()
         {
-            if(!PackerShader)
+            if(!PackerShadersExist)
+                return;
+
+            Texture2D red = packRed;
+            Texture2D green = packGreen;
+            Texture2D blue = packBlue;
+            Texture2D alpha = packAlpha;
+
+            if(showChannelPicker)
             {
-                Debug.LogWarning(log_prefix + "Packer shader is missing or invalid. Can't pack textures.");
-                return null;
+                red = packRed.GetChannelAsTexture(redTexChan, unpackInvert);
+                green = packGreen.GetChannelAsTexture(greenTexChan, unpackInvert);
+                blue = packBlue.GetChannelAsTexture(blueTexChan, unpackInvert);
+                alpha = packAlpha.GetChannelAsTexture(alphaTexChan, unpackInvert);
             }
 
-            // Setup Material
-            var mat = new Material(PackerShader);
-
-            mat.SetTexture("_Red", red);
-            mat.SetTexture("_Green", green);
-            mat.SetTexture("_Blue", blue);
-            mat.SetTexture("_Alpha", alpha);
-
-            // Create texture and render to it
-            var tex = new Texture2D(resolution.x, resolution.y);
-            tex.BakeMaterialToTexture(mat);
-
-            // Cleanup
-            PoiHelpers.DestroyAppropriate(mat);
-
-            return tex;
-        }
-
-        Dictionary<string, Texture2D> UnpackTextureToChannels(Texture2D packedTexture, Vector2Int resolution)
-        {
-            var channels = new Dictionary<string, Texture2D>
+            Texture2D packResult = PoiHelpers.PackTextures(PackSize, red, green, blue, alpha, redInvert, greenInvert, blueInvert, alphaInvert);
+            if(packResult)
             {
-                {"red", new Texture2D(resolution.x, resolution.y, TextureFormat.RGB24, true)},
-                {"green", new Texture2D(resolution.x, resolution.y, TextureFormat.RGB24, true)},
-                {"blue", new Texture2D(resolution.x, resolution.y, TextureFormat.RGB24, true)},
-                {"alpha", new Texture2D(resolution.x, resolution.y, TextureFormat.RGB24, true)}
-            };
-
-            var mat = new Material(UnpackerShader);
-            mat.SetTexture("_Packed", packedTexture);
-
-            for(int i = 0; i < 4; i++)
-            {
-                mat.SetFloat("_Mode", i);
-                channels.ElementAt(i).Value.BakeMaterialToTexture(mat);
+                string path = $"{savePath}/Packed/{packedName}.png";
+                packResult.SaveTextureAsset(path, true);
+                Debug.Log(LOG_PREFIX + "Finished packing texture at " + path);
+                PoiHelpers.PingAssetAtPath(path);
             }
 
-            return channels;
         }
+
+        void DoUnpack(TextureChannel singleChannel = TextureChannel.RGBA)
+        {
+            if(!PackerShadersExist)
+                return;
+
+            var channelTextures = new Dictionary<string, Texture2D>();
+            if(singleChannel == TextureChannel.RGBA)
+                channelTextures = PoiHelpers.UnpackTextureToChannels(unpackSource, unpackInvert, UnpackSize);
+            else
+                channelTextures[singleChannel.ToString().ToLower()] = unpackSource.GetChannelAsTexture(singleChannel, unpackInvert, UnpackSize);
+
+
+            string pingPath = null;
+            pingPath = SaveTextures(channelTextures, pingPath);
+
+            Debug.Log(LOG_PREFIX + "Finished unpacking texture at " + pingPath);
+            PoiHelpers.PingAssetAtPath(pingPath);
+        }
+
+        #endregion
+
+        #region Helpers
+
+        string SaveTextures(Dictionary<string, Texture2D> output, string pingPath)
+        {
+            try
+            {
+                AssetDatabase.StartAssetEditing();
+                foreach(var kv in output)
+                {
+                    if(string.IsNullOrWhiteSpace(pingPath))
+                        pingPath = $"{savePath}/Unpacked/{unpackedName}_{kv.Key}.png";
+                    kv.Value?.SaveTextureAsset($"{savePath}/Unpacked/{unpackedName}_{kv.Key}.png", true);
+                }
+            }
+            catch { }
+            finally
+            {
+                AssetDatabase.StopAssetEditing();
+            }
+
+            return pingPath;
+        }
+
+        void DrawTextureSelector(string label, ref Texture2D tex)
+        {
+            EditorGUILayout.BeginVertical(EditorStyles.helpBox);
+            {
+                tex = EditorGUILayout.ObjectField(label, tex, typeof(Texture2D), true, GUILayout.ExpandHeight(true)) as Texture2D;
+            }
+            EditorGUILayout.EndHorizontal();
+        }
+
+        void DrawTextureSelector(string label, ref Texture2D tex, ref TextureChannel selectedChannel, ref bool invert)
+        {
+            EditorGUILayout.BeginVertical(EditorStyles.helpBox);
+            {
+                EditorGUILayout.BeginHorizontal();
+                {
+                    EditorGUILayout.BeginVertical();
+                    {
+                        var labelContent = new GUIContent(label);
+                        var size = EditorStyles.boldLabel.CalcSize(labelContent);
+
+                        EditorGUILayout.LabelField(labelContent, EditorStyles.boldLabel, GUILayout.MaxWidth(size.x));
+
+                        GUILayout.Space(15 * EditorGUIUtility.pixelsPerPoint);
+
+                        GUILayout.FlexibleSpace();
+
+                        invert = EditorGUILayout.ToggleLeft(INVERT_LABEL, invert, GUILayout.MaxWidth(InvertToggleWidth));
+                    }
+                    EditorGUILayout.EndVertical();
+
+                    tex = EditorGUILayout.ObjectField(GUIContent.none, tex, typeof(Texture2D), true, GUILayout.ExpandHeight(true)) as Texture2D;
+                }
+                EditorGUILayout.EndHorizontal();
+
+                if(showChannelPicker)
+                {
+                    EditorGUI.BeginDisabledGroup(!tex);
+                    selectedChannel = PoiHelpers.DrawChannelSelector(selectedChannel, ChannelLabels);
+                    EditorGUI.EndDisabledGroup();
+                }
+            }
+            EditorGUILayout.EndVertical();
+        }
+
+        Vector2Int DrawTextureSizeSettings(Vector2Int size, ref string fileName, ref bool sizeIsLinked, ref bool sizeAutoSelect)
+        {
+            EditorGUILayout.BeginVertical(EditorStyles.helpBox);
+            {
+                fileName = EditorGUILayout.TextField("File name", fileName);
+                EditorGUILayout.Space();
+                size = PoiHelpers.DrawResolutionPicker(size, ref sizeIsLinked, ref sizeAutoSelect, SizePresets, SizePresetNames);
+            }
+            EditorGUILayout.EndVertical();
+            return size;
+        }
+
+        #endregion
 
         string[] _tabNames;
-        Shader _packerShader;
-        Shader _unpackerShader;
         string[] _sizeNames;
+        static EditorWindow _window;
+        string _subTitle;
+        Vector2 _scroll;
+        float _invertLabelWidth;
     }
 }

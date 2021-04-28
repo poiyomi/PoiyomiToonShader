@@ -102,7 +102,7 @@ namespace Thry
 
         private string GradientFileName(string hash, string material_name)
         {
-            Config config = Config.Get();
+            Config config = Config.Singleton;
             string ret = config.gradient_name;
             ret = Regex.Replace(ret, "<hash>", hash);
             ret = Regex.Replace(ret, "<material>", material_name);

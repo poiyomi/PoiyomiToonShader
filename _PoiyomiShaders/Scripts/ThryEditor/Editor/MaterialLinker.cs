@@ -29,7 +29,8 @@ namespace Thry
                                 materials.Add(m);
                         }
                         foreach (Material m in materials)
-                            linked_materials.Add(GetKey(m, material_cloud[0]), materials);
+                            if(linked_materials.ContainsKey(GetKey(m, material_cloud[0])) == false)
+                                linked_materials.Add(GetKey(m, material_cloud[0]), materials);
                     }
             }
         }
@@ -240,10 +241,12 @@ namespace Thry
 
             public void HanldeDropEvent()
             {
-                string[] paths = DragAndDrop.paths;
-                if (AssetDatabase.GetMainAssetTypeAtPath(paths[0]) == typeof(Material))
+                foreach (string path in DragAndDrop.paths)
                 {
-                    linked_materials.Add(AssetDatabase.LoadAssetAtPath<Material>(paths[0]));
+                    if (AssetDatabase.GetMainAssetTypeAtPath(path) == typeof(Material))
+                    {
+                        linked_materials.Add(AssetDatabase.LoadAssetAtPath<Material>(path));
+                    }
                 }
             }
 

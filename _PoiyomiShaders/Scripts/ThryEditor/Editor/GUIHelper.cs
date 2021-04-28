@@ -13,7 +13,7 @@ namespace Thry
 
         public static void drawConfigTextureProperty(Rect position, MaterialProperty prop, GUIContent label, MaterialEditor editor, bool hasFoldoutProperties, bool skip_drag_and_drop_handling = false)
         {
-            switch (Config.Get().default_texture_type)
+            switch (Config.Singleton.default_texture_type)
             {
                 case TextureDisplayType.small:
                     drawSmallTextureProperty(position, prop, label, editor, hasFoldoutProperties);
@@ -127,6 +127,7 @@ namespace Thry
             }
             if (DrawingData.currentTexProperty.reference_property_exists)
             {
+                border.height += 8;
                 border.height += editor.GetPropertyHeight(ShaderEditor.currentlyDrawing.propertyDictionary[DrawingData.currentTexProperty.options.reference_property].materialProperty);
             }
 
@@ -206,7 +207,7 @@ namespace Thry
 
             //scale offset rect
 
-            if (hasFoldoutProperties)
+            if (hasFoldoutProperties || DrawingData.currentTexProperty.options.reference_property != null)
             {
                 EditorGUI.indentLevel += 2;
 
@@ -405,54 +406,6 @@ namespace Thry
             return changed;
         }
 
-        //draw the render queue selector
-        public static int drawRenderQueueSelector(Shader defaultShader, int customQueueFieldInput)
-        {
-            EditorGUILayout.BeginHorizontal();
-            if (customQueueFieldInput == -1) customQueueFieldInput = ShaderEditor.currentlyDrawing.materials[0].renderQueue;
-            int[] queueOptionsQueues = new int[] { defaultShader.renderQueue, 2000, 2450, 3000, customQueueFieldInput };
-            string[] queueOptions = new string[] { "From Shader", "Geometry", "Alpha Test", "Transparency" };
-            int queueSelection = 4;
-            if (defaultShader.renderQueue == customQueueFieldInput) queueSelection = 0;
-            else
-            {
-                string customOption = null;
-                int q = customQueueFieldInput;
-                if (q < 2000) customOption = queueOptions[1] + "-" + (2000 - q);
-                else if (q < 2450) { if (q > 2000) customOption = queueOptions[1] + "+" + (q - 2000); else queueSelection = 1; }
-                else if (q < 3000) { if (q > 2450) customOption = queueOptions[2] + "+" + (q - 2450); else queueSelection = 2; }
-                else if (q < 5001) { if (q > 3000) customOption = queueOptions[3] + "+" + (q - 3000); else queueSelection = 3; }
-                if (customOption != null) queueOptions = new string[] { "From Shader", "Geometry", "Alpha Test", "Transparency", customOption };
-            }
-            EditorGUILayout.LabelField("Render Queue", GUILayout.ExpandWidth(true));
-            int newQueueSelection = EditorGUILayout.Popup(queueSelection, queueOptions, GUILayout.MaxWidth(100));
-            int newQueue = queueOptionsQueues[newQueueSelection];
-            if (queueSelection != newQueueSelection) customQueueFieldInput = newQueue;
-            int newCustomQueueFieldInput = EditorGUILayout.DelayedIntField(customQueueFieldInput, GUILayout.MaxWidth(65));
-            bool isInput = customQueueFieldInput != newCustomQueueFieldInput || queueSelection != newQueueSelection;
-            customQueueFieldInput = newCustomQueueFieldInput;
-            foreach (Material m in ShaderEditor.currentlyDrawing.materials)
-                if (customQueueFieldInput != m.renderQueue && isInput) m.renderQueue = customQueueFieldInput;
-            if (customQueueFieldInput != ShaderEditor.currentlyDrawing.materials[0].renderQueue && !isInput) customQueueFieldInput = ShaderEditor.currentlyDrawing.materials[0].renderQueue;
-            EditorGUILayout.EndHorizontal();
-            return customQueueFieldInput;
-        }
-
-        //draw all collected footers
-        public static void drawFooters(List<ButtonData> footers)
-        {
-            EditorGUILayout.BeginHorizontal();
-            GUILayout.FlexibleSpace();
-            GUILayout.Space(2);
-            foreach (ButtonData foot in footers)
-            {
-                drawFooter(foot);
-                GUILayout.Space(2);
-            }
-            GUILayout.FlexibleSpace();
-            EditorGUILayout.EndHorizontal();
-        }
-
         public static void DrawLocaleSelection(GUIContent label, string[] locales, int selected)
         {
             EditorGUI.BeginChangeCheck();
@@ -461,53 +414,6 @@ namespace Thry
             {
                 ShaderEditor.currentlyDrawing.propertyDictionary[ShaderEditor.PROPERTY_NAME_LOCALE].materialProperty.floatValue = selected;
                 ShaderEditor.reload();
-            }
-        }
-
-        //draw single footer
-        private static void drawFooter(ButtonData data)
-        {
-            Button(data, 20);
-        }
-
-        public static void Button(ButtonData button)
-        {
-            Button(button, -1);
-        }
-
-        public static void Button(ButtonData button, int default_height)
-        {
-            GUIContent content;
-            Rect cursorRect;
-            if (button != null)
-            {
-                if (button.texture == null)
-                {
-                    content = new GUIContent(button.text, button.hover);
-                    if (default_height != -1)
-                    {
-                        if (GUILayout.Button(content, GUILayout.ExpandWidth(false), GUILayout.Height(default_height)))
-                            button.action.Perform();
-                    }
-                    else
-                    {
-                        if (GUILayout.Button(content, GUILayout.ExpandWidth(false)))
-                            button.action.Perform();
-                    }
-                    cursorRect = GUILayoutUtility.GetLastRect();
-                }
-                else
-                {
-                    GUILayout.Space(4);
-                    content = new GUIContent(button.texture.GetTextureFromName(), button.hover);
-                    int height = (button.texture.height == 128 && default_height != -1) ? default_height : button.texture.height;
-                    int width = (int)((float)button.texture.loaded_texture.width / button.texture.loaded_texture.height * height);
-                    if (GUILayout.Button(new GUIContent(button.texture.loaded_texture, button.hover), new GUIStyle(), GUILayout.MaxWidth(width), GUILayout.Height(height)))
-                        button.action.Perform();
-                    cursorRect = GUILayoutUtility.GetLastRect();
-                    GUILayout.Space(4);
-                }
-                EditorGUIUtility.AddCursorRect(cursorRect, MouseCursor.Link);
             }
         }
 
@@ -540,6 +446,72 @@ namespace Thry
         }
     }
 
+    public class FooterButton
+    {
+        private GUIContent content;
+        private bool isTextureContent;
+        const int texture_height = 40;
+        int texture_width;
+        private ButtonData data;
+
+        public FooterButton(ButtonData data)
+        {
+            this.data = data;
+            if (data != null)
+            {
+                if (data.texture == null)
+                {
+                    content = new GUIContent(data.text, data.hover);
+                    isTextureContent = false;
+                }
+                else
+                {
+                    texture_width = (int)((float)data.texture.loaded_texture.width / data.texture.loaded_texture.height * texture_height);
+                    content = new GUIContent(data.texture.loaded_texture, data.hover);
+                    isTextureContent = true;
+                }
+            }
+            else
+            {
+                content = new GUIContent();
+            }
+        }
+
+        public void Draw()
+        {
+            Rect cursorRect;
+            if (isTextureContent)
+            {
+                if(GUILayout.Button(content, new GUIStyle(), GUILayout.MaxWidth(texture_width), GUILayout.Height(texture_height))){
+                    data.action.Perform();
+                }
+                cursorRect = GUILayoutUtility.GetLastRect();
+                GUILayout.Space(8);
+            }
+            else
+            {
+                if (GUILayout.Button(content, GUILayout.ExpandWidth(false), GUILayout.Height(texture_height)))
+                    data.action.Perform();
+                cursorRect = GUILayoutUtility.GetLastRect();
+                GUILayout.Space(2);
+            }
+            EditorGUIUtility.AddCursorRect(cursorRect, MouseCursor.Link);
+        }
+
+        public static void DrawList(List<FooterButton> list)
+        {
+            EditorGUILayout.BeginHorizontal();
+            GUILayout.FlexibleSpace();
+            GUILayout.Space(2);
+            foreach (FooterButton b in list)
+            {
+                b.Draw();
+            }
+            GUILayout.FlexibleSpace();
+            EditorGUILayout.EndHorizontal();
+        }
+    }
+
     public class ShaderEditorHeader
     {
         private MaterialProperty property;
@@ -567,7 +539,7 @@ namespace Thry
         public void Toggle()
         {
             expanded = !expanded;
-            if (!ShaderEditor.AnimationIsRecording)
+            if (!AnimationMode.InAnimationMode())
             {
                 if (expanded)
                     property.floatValue = 1;
@@ -611,7 +583,7 @@ namespace Thry
 
                 int xOffset = prop.xOffset;
                 prop.xOffset = 0;
-                prop.Draw(new CRect(togglePropertyRect), new GUIContent());
+                prop.Draw(new CRect(togglePropertyRect), new GUIContent(), isInHeader: true);
                 prop.xOffset = xOffset;
                 EditorGUIUtility.fieldWidth = fieldWidth;
             }
@@ -716,12 +688,13 @@ namespace Thry
             menu.AddItem(new GUIContent("Copy"), false, delegate ()
             {
                 Mediator.copy_material = new Material(material);
+                Mediator.transfer_group = property;
             });
             menu.AddItem(new GUIContent("Paste"), false, delegate ()
             {
-                if (Mediator.copy_material != null)
+                if (Mediator.copy_material != null || Mediator.transfer_group != null)
                 {
-                    property.CopyFromMaterial(Mediator.copy_material);
+                    property.TransferFromMaterialAndGroup(Mediator.copy_material, Mediator.transfer_group);
                     List<Material> linked_materials = MaterialLinker.GetLinked(property.materialProperty);
                     if (linked_materials != null)
                         foreach (Material m in linked_materials)
