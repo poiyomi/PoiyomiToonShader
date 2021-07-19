@@ -18,9 +18,6 @@
     
     //Vertex Glitching
     float _EnableVertexGlitch;
-    #if defined(PROP_VERTEXGLITCHMAP) || !defined(OPTIMIZER_ENABLED)
-        //sampler2D _VertexGlitchMap;     float4 _VertexGlitchMap_ST;
-    #endif
     float _VertexGlitchThreshold;
     float _VertexGlitchFrequency;
     float _VertexGlitchStrength;
@@ -30,8 +27,8 @@
     
     void applyLocalVertexTransformation(inout float3 normal, inout float4 tangent, inout float4 vertex)
     {
-        normal = rotate_with_quaternion(normal, _VertexManipulationLocalRotation);
-        tangent.xyz = rotate_with_quaternion(tangent.xyz, _VertexManipulationLocalRotation);
+        normal = rotate_with_quaternion(normal, _VertexManipulationLocalRotation.xyz);
+        tangent.xyz = rotate_with_quaternion(tangent.xyz, _VertexManipulationLocalRotation.xyz);
         vertex = transform(vertex, _VertexManipulationLocalTranslation, _VertexManipulationLocalRotation, _VertexManipulationLocalScale);
         
         //vertex = float4(vertex.x + sin(_Time.y*1.5 + vertex.y * 50) * .75 * smoothstep( .3, -1, vertex.y), vertex.y, vertex.z + cos(_Time.y*1.5 + vertex.y * 50) * .75 * smoothstep( .3, -1, vertex.y), 1);
@@ -39,7 +36,7 @@
     
     void applyLocalVertexTransformation(inout float3 normal, inout float4 vertex)
     {
-        normal = rotate_with_quaternion(normal, _VertexManipulationLocalRotation);
+        normal = rotate_with_quaternion(normal, _VertexManipulationLocalRotation.xyz);
         vertex = transform(vertex, _VertexManipulationLocalTranslation, _VertexManipulationLocalRotation, _VertexManipulationLocalScale);
         
         //vertex = float4(vertex.x + sin(_Time.y*1.5 + vertex.y * 50) * .75 * smoothstep( .3, -1, vertex.y), vertex.y, vertex.z + cos(_Time.y*1.5 + vertex.y * 50) * .75 * smoothstep( .3, -1, vertex.y), 1);
@@ -52,8 +49,8 @@
         #else
             float3 heightOffset = _VertexManipulationHeight * worldNormal;
         #endif
-        worldPos.rgb += _VertexManipulationWorldTranslation.xyz * _VertexManipulationWorldTranslation.w + heightOffset;
-        localPos.xyz = mul(unity_WorldToObject, worldPos);
+        worldPos.rgb += _VertexManipulationWorldTranslation.xyz/* * _VertexManipulationWorldTranslation.w*/ + heightOffset;
+        localPos.xyz = mul(unity_WorldToObject, worldPos).xyz;
     }
     
     void applyWorldVertexTransformationShadow(inout float4 worldPos, inout float4 localPos, float3 worldNormal, float2 uv)
@@ -63,8 +60,8 @@
         #else
             float3 heightOffset = _VertexManipulationHeight * worldNormal;
         #endif
-        worldPos.rgb += _VertexManipulationWorldTranslation.xyz * _VertexManipulationWorldTranslation.w + heightOffset;
-        localPos.xyz = mul(unity_WorldToObject, worldPos);
+        worldPos.rgb += _VertexManipulationWorldTranslation.xyz/* * _VertexManipulationWorldTranslation.w*/ + heightOffset;
+        localPos.xyz = mul(unity_WorldToObject, worldPos).xyz;
     }
     
     void applyVertexRounding(inout float4 worldPos, inout float4 localPos)
@@ -72,7 +69,7 @@
         UNITY_BRANCH
         if (_VertexRoundingEnabled)
         {
-            worldPos.xyz = (ceil(worldPos * _VertexRoundingDivision) / _VertexRoundingDivision) - 1 / _VertexRoundingDivision * .5;
+            worldPos.xyz = (ceil(worldPos.xyz * _VertexRoundingDivision) / _VertexRoundingDivision) - 1 / _VertexRoundingDivision * .5;
             localPos = mul(unity_WorldToObject, worldPos);
         }
     }

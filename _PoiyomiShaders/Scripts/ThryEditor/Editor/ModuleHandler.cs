@@ -5,6 +5,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
 using UnityEditor;
 using UnityEngine;
@@ -78,11 +79,14 @@ namespace Thry
                 new_module.author = info.author;
                 new_module.id = info.id;
                 new_module.available_module = Parser.ParseToObject<ModuleInfo>(data);
+                new_module.available_module.version = new_module.available_module.version.Replace(",", ".");
                 bool module_installed = LoadModuleLocationData(new_module);
                 if (module_installed)
                     InitInstalledModule(new_module);
-                else if (Helper.ClassExists(new_module.available_module.classname))
+                else if (Helper.ClassWithNamespaceExists(new_module.available_module.classname))
                     CheckForUnregisteredInstall(new_module);
+                if(new_module.installed_module != null)
+                    new_module.installed_module.version = new_module.installed_module.version.Replace(",", ".");
                 if (new_module.available_module.requirement != null)
                     new_module.available_requirement_fullfilled = new_module.available_module.requirement.Test();
                 if (new_module.available_requirement_fullfilled && new_module.installed_module != null && Helper.compareVersions(new_module.installed_module.version, new_module.available_module.version) == 1)
@@ -95,8 +99,10 @@ namespace Thry
         private static bool LoadModuleLocationData(Module m)
         {
             string data = FileHelper.LoadValueFromFile(m.id,PATH.MODULES_LOCATION__DATA);
-            if (data == "" || data == null)
+            if (string.IsNullOrEmpty(data))
+            {
                 return false;
+            }
             m.location_data = Parser.ParseToObject<ModuleLocationData>(data);
             if (AssetDatabase.GUIDToAssetPath(m.location_data.guid) == "")
             {
@@ -117,13 +123,14 @@ namespace Thry
 
         private static void CheckForUnregisteredInstall(Module module)
         {
-            Debug.Log(module.available_module.classname + ":" + Helper.ClassExists(module.available_module.classname));
-            if (Helper.ClassExists(module.available_module.classname))
+            //Debug.Log(module.available_module.classname + ":" + Helper.ClassWithNamespaceExists(module.available_module.classname));
+            if (Helper.ClassWithNamespaceExists(module.available_module.classname))
             {
                 module.path = ResolveFilesToDirectory(module.available_module.files.ToArray());
-                if (module.path != null)
+                if (string.IsNullOrEmpty(module.path) == false)
                 {
                     module.installed_module = Parser.ParseToObject<ModuleInfo>(FileHelper.ReadFileIntoString(FindModuleFilePath(module.path)));
+                    Debug.Log(module.path);
                     SaveModuleLocationData(module,AssetDatabase.AssetPathToGUID(module.path));
                 }
             }
@@ -136,12 +143,14 @@ namespace Thry
         private static void InitInstalledModule(Module m)
         {
             bool remove = false;
-            if (Helper.ClassExists(m.location_data.classname))
+            if (Helper.ClassWithNamespaceExists(m.location_data.classname))
             {
                 m.path = GetModuleDirectory(m);
-                if (m.path != null)
+                if (string.IsNullOrEmpty(m.path) == false)
                 {
+                    Debug.Log(m.path);
                     m.installed_module = Parser.ParseToObject<ModuleInfo>(FileHelper.ReadFileIntoString(FindModuleFilePath(m.path)));
+                    Debug.Log(m.path);
                     string calced_guid = AssetDatabase.AssetPathToGUID(m.path);
                     if (m.location_data.guid != calced_guid)
                         SaveModuleLocationData(m, calced_guid);
@@ -182,7 +191,7 @@ namespace Thry
                 string[] refernces = ResolveFilesToDirectoryFindAllReferneces(file);
                 foreach(string p in refernces)
                 {
-                    string found_dir = Directory.GetParent(Path.GetDirectoryName(p)).FullName;
+                    string found_dir = p.Replace(file, "");
                     if (path_refernces.ContainsKey(found_dir))
                         path_refernces[found_dir] = path_refernces[found_dir] + 1;
                     else
@@ -303,7 +312,7 @@ namespace Thry
                 WebHelper.DownloadFileASync(base_url + "/"+ file_path, temp_path + "/" + file_path, delegate (string data)
                 {
                     i++;
-                    EditorUtility.DisplayProgressBar("Downloading files for " + module.available_module, "Downloaded " + base_url + file_path, (float)i / module.available_module.files.Count);
+                    EditorUtility.DisplayProgressBar("Downloading files for " + module.available_module.name, "Downloaded " + base_url + file_path, (float)i / module.available_module.files.Count);
                     if (i == module.available_module.files.Count)
                     {
                         EditorUtility.ClearProgressBar();

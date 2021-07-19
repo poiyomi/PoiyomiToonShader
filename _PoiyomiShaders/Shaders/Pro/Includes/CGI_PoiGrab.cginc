@@ -46,7 +46,7 @@
     {
         float4 refractionColor;
         float3 worldViewDir = normalize(UnityWorldSpaceViewDir(poiMesh.worldPos));
-        float3 refractionOffset = ((((indexOfRefraction - 1.0) * mul(UNITY_MATRIX_V, float4(poiMesh.normals[1], 0.0))) * (1.0 / (poiCam.grabPos.z + 1.0))) * (1.0 - dot(poiMesh.normals[1], worldViewDir)));
+        float3 refractionOffset = ((((indexOfRefraction - 1.0) * mul(UNITY_MATRIX_V, float4(poiMesh.normals[1], 0.0)).xyz) * (1.0 / (poiCam.grabPos.z + 1.0))) * (1.0 - dot(poiMesh.normals[1], worldViewDir)));
         float2 cameraRefraction = float2(refractionOffset.x, - (refractionOffset.y * _ProjectionParams.x));
         
         UNITY_BRANCH
@@ -83,7 +83,7 @@
             #ifdef CHROMATIC_ABERRATION_LOW
                 refraction = blur(projectedGrabPos);
             #else
-                refraction = tex2Dproj(_PoiGrab, poiCam.grabPos);
+                refraction = tex2Dproj(_PoiGrab, poiCam.grabPos).rgb;
             #endif
         }
         

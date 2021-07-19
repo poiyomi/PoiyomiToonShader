@@ -9,18 +9,19 @@
         float3 normal: TEXCOORD2;
         float3 tangentViewDir: TEXCOORD3;
         float4 tangent: TEXCOORD4;
-        float4 worldPos: TEXCOORD5;
-        float4 localPos: TEXCOORD6;
-        float4 grabPos: TEXCOORD7;
-        float3 barycentricCoordinates: TEXCOORD8;
+        float4 binormal: TEXCOORD5;
+        float4 worldPos: TEXCOORD6;
+        float4 localPos: TEXCOORD7;
+        float4 grabPos: TEXCOORD8;
+        float3 barycentricCoordinates: TEXCOORD9;
         #if defined(GRAIN)
-            float4 worldDirection: TEXCOORD9;
+            float4 worldDirection: TEXCOORD10;
         #endif
         #if defined(LIGHTMAP_ON) || defined(DYNAMICLIGHTMAP_ON)
-            float4 lightmapUV: TEXCOORD10;
+            float4 lightmapUV: TEXCOORD11;
         #endif
-        float3 modelPos: TEXCOORD11;
-        float angleAlpha: TEXCOORD12;
+        float3 modelPos: TEXCOORD12;
+        float angleAlpha: TEXCOORD13;
         float4 vertexColor: TEXCOORD14;
         #ifdef FUR
             float furAlpha: TEXCOORD15;

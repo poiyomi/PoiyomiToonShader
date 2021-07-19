@@ -84,7 +84,7 @@ namespace Thry
                     wasEditor[i] = setEditor[i];
                 }
                 AssetDatabase.Refresh();
-                ShaderEditor.repaint();
+                ShaderEditor.Repaint();
             }
         }
 

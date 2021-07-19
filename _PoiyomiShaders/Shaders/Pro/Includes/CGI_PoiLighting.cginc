@@ -224,9 +224,9 @@ half3 BetterSH9(half4 normal)
 {
     float3 indirect;
     float3 L0 = float3(unity_SHAr.w, unity_SHAg.w, unity_SHAb.w) + float3(unity_SHBr.z, unity_SHBg.z, unity_SHBb.z) / 3.0;
-    indirect.r = shEvaluateDiffuseL1Geomerics_local(L0.r, unity_SHAr.xyz, normal);
-    indirect.g = shEvaluateDiffuseL1Geomerics_local(L0.g, unity_SHAg.xyz, normal);
-    indirect.b = shEvaluateDiffuseL1Geomerics_local(L0.b, unity_SHAb.xyz, normal);
+    indirect.r = shEvaluateDiffuseL1Geomerics_local(L0.r, unity_SHAr.xyz, normal.xyz);
+    indirect.g = shEvaluateDiffuseL1Geomerics_local(L0.g, unity_SHAg.xyz, normal.xyz);
+    indirect.b = shEvaluateDiffuseL1Geomerics_local(L0.b, unity_SHAb.xyz, normal.xyz);
     indirect = max(0, indirect);
     indirect += SHEvalLinearL2(normal);
     return indirect;
@@ -355,7 +355,7 @@ UnityIndirect CreateIndirectLight(float3 normal)
         envData.reflUVW = BoxProjection(
             reflectionDir, poiMesh.worldPos.xyz,
             unity_SpecCube0_ProbePosition,
-            unity_SpecCube0_BoxMin, unity_SpecCube0_BoxMax
+            unity_SpecCube0_BoxMin.xyz, unity_SpecCube0_BoxMax.xyz
         );
         float3 probe0 = Unity_GlossyEnvironment(
             UNITY_PASS_TEXCUBE(unity_SpecCube0), unity_SpecCube0_HDR, envData
@@ -363,7 +363,7 @@ UnityIndirect CreateIndirectLight(float3 normal)
         envData.reflUVW = BoxProjection(
             reflectionDir, poiMesh.worldPos.xyz,
             unity_SpecCube1_ProbePosition,
-            unity_SpecCube1_BoxMin, unity_SpecCube1_BoxMax
+            unity_SpecCube1_BoxMin.xyz, unity_SpecCube1_BoxMax.xyz
         );
         #if UNITY_SPECCUBE_BLENDING
             float interpolator = unity_SpecCube0_BoxMin.w;
@@ -387,7 +387,7 @@ UnityIndirect CreateIndirectLight(float3 normal)
         UNITY_BRANCH
         if (_LightingEnableAO)
         {
-            occlusion = lerp(1, POI2D_SAMPLER_PAN(_LightingAOTex, _MainTex, poiMesh.uv[_LightingAOTexUV], _LightingAOTexPan), _AOStrength);
+            occlusion = lerp(1, POI2D_SAMPLER_PAN(_LightingAOTex, _MainTex, poiMesh.uv[_LightingAOTexUV], _LightingAOTexPan).r, _AOStrength);
         }
         
         indirectLight.diffuse *= occlusion;
@@ -457,14 +457,14 @@ float3 GetSHDirectionL1_()
 // brightest intensity.
 half3 GetSHMaxL1()
 {
-    float4 maxDirection = float4(GetSHDirectionL1(), 1.0);
+    float3 maxDirection = GetSHDirectionL1();
     return ShadeSH9_wrapped(maxDirection, 0);
 }
 
 
 float3 calculateRealisticLighting(float4 colorToLight, fixed detailShadowMap)
 {
-    return UNITY_BRDF_PBS(1, 0, 0, _LightingStandardSmoothness, poiMesh.normals[1], poiCam.viewDir, CreateLight(poiMesh.normals[1], detailShadowMap), CreateIndirectLight(poiMesh.normals[1]));
+    return UNITY_BRDF_PBS(1, 0, 0, _LightingStandardSmoothness, poiMesh.normals[1], poiCam.viewDir, CreateLight(poiMesh.normals[1], detailShadowMap), CreateIndirectLight(poiMesh.normals[1])).xyz;
 }
 
 void calculateBasePassLightMaps()
@@ -478,7 +478,7 @@ void calculateBasePassLightMaps()
         */
         
         bool lightExists = false;
-        if (all(_LightColor0.rgb >= 0.002))
+        if (any(_LightColor0.rgb >= 0.002))
         {
             lightExists = true;
         }
@@ -486,7 +486,7 @@ void calculateBasePassLightMaps()
             UNITY_BRANCH
             if (_LightingEnableAO)
             {
-                AOMap = POI2D_SAMPLER_PAN(_LightingAOTex, _MainTex, poiMesh.uv[_LightingAOTexUV], _LightingAOTexPan);
+                AOMap = POI2D_SAMPLER_PAN(_LightingAOTex, _MainTex, poiMesh.uv[_LightingAOTexUV], _LightingAOTexPan).r;
                 AOStrength = _AOStrength;
                 poiLight.occlusion = lerp(1, AOMap, AOStrength);
             }
@@ -498,7 +498,7 @@ void calculateBasePassLightMaps()
                 }
                 else
                 {
-                    lightColor = max(BetterSH9(normalize(unity_SHAr + unity_SHAg + unity_SHAb)), 0);
+                    lightColor = BetterSH9(normalize(unity_SHAr + unity_SHAg + unity_SHAb));
                 }
                 
                 //lightColor = magic * magiratio + normalLight * normaRatio;
@@ -562,6 +562,7 @@ void calculateBasePassLightMaps()
         poiLight.directLighting = lightColor;
         poiLight.indirectLighting = indirectLighting;
         
+
         UNITY_BRANCH
         if (_LightingDirectColorMode == 0)
         {
@@ -576,7 +577,7 @@ void calculateBasePassLightMaps()
             float normaRatio = normaLumi / maginormalumi;
             
             float target = calculateluminance(magic * magiratio + normalLight * normaRatio);
-            float3 properLightColor = magic * AOMap + normalLight;
+            float3 properLightColor = magic * poiLight.occlusion + normalLight;
             float properLuminance = calculateluminance(magic + normalLight);
             directLighting = properLightColor * max(0.0001, (target / properLuminance));
         }
@@ -584,7 +585,7 @@ void calculateBasePassLightMaps()
         {
             if (lightExists)
             {
-                directLighting = _LightColor0.rgb + BetterSH9(float4(0, 0, 0, 1)) * AOMap;
+                directLighting = _LightColor0.rgb + BetterSH9(float4(0, 0, 0, 1)) * poiLight.occlusion;
             }
             else
             {
@@ -604,10 +605,12 @@ void calculateBasePassLightMaps()
         directLighting = lerp(directLighting, dot(directLighting, float3(0.299, 0.587, 0.114)), _LightingMonochromatic);
         indirectLighting = lerp(indirectLighting, dot(indirectLighting, float3(0.299, 0.587, 0.114)), _LightingMonochromatic);
         
+        
         if (max(max(indirectLighting.x, indirectLighting.y), indirectLighting.z) <= _LightingNoIndirectThreshold && max(max(directLighting.x, directLighting.y), directLighting.z) >= 0)
         {
             indirectLighting = directLighting * _LightingNoIndirectMultiplier;
         }
+
         
         UNITY_BRANCH
         if (_LightingMinShadowBrightnessRatio)
@@ -624,10 +627,13 @@ void calculateBasePassLightMaps()
                 indirectLighting = indirectLighting / max(0.0001, indirectluminance / targetluminance);
             }
         }
-        
+
         poiLight.rampedLightMap = 1 - smoothstep(0, .5, 1 - poiLight.lightMap);
         poiLight.finalLighting = directLighting;
         
+        indirectLighting = max(indirectLighting,0);
+        directLighting = max(directLighting,0);
+
         /*
         * Create Gradiant Maps
         */
@@ -636,15 +642,16 @@ void calculateBasePassLightMaps()
             case 0: // Ramp Texture
 
             {
-                poiLight.rampedLightMap = lerp(1, UNITY_SAMPLE_TEX2D(_ToonRamp, poiLight.lightMap + _ShadowOffset), shadowStrength.r);
+                poiLight.rampedLightMap = lerp(1, UNITY_SAMPLE_TEX2D(_ToonRamp, poiLight.lightMap + _ShadowOffset).rgb, shadowStrength.r);
                 UNITY_BRANCH
                 if (_LightingIgnoreAmbientColor)
                 {
-                    poiLight.finalLighting = lerp(poiLight.rampedLightMap * directLighting * lerp(1, AOMap, AOStrength), directLighting, poiLight.rampedLightMap);
+                    poiLight.finalLighting = lerp(poiLight.rampedLightMap * directLighting * poiLight.occlusion, directLighting, poiLight.rampedLightMap);
                 }
                 else
                 {
-                    poiLight.finalLighting = lerp(indirectLighting * lerp(1, AOMap, AOStrength), directLighting, poiLight.rampedLightMap);
+                    poiLight.finalLighting = lerp(indirectLighting * poiLight.occlusion, directLighting, poiLight.rampedLightMap);
+
                 }
             }
             break;
@@ -661,11 +668,11 @@ void calculateBasePassLightMaps()
                 UNITY_BRANCH
                 if (_LightingIgnoreAmbientColor)
                 {
-                    poiLight.finalLighting = lerp((directLighting * shadowColor * lerp(1, AOMap, AOStrength)), (directLighting), saturate(poiLight.rampedLightMap + 1 - _ShadowStrength));
+                    poiLight.finalLighting = lerp((directLighting * shadowColor * poiLight.occlusion), (directLighting), saturate(poiLight.rampedLightMap + 1 - _ShadowStrength));
                 }
                 else
                 {
-                    poiLight.finalLighting = lerp((indirectLighting * shadowColor * lerp(1, AOMap, AOStrength)), (directLighting), saturate(poiLight.rampedLightMap + 1 - _ShadowStrength));
+                    poiLight.finalLighting = lerp((indirectLighting * shadowColor * poiLight.occlusion), (directLighting), saturate(poiLight.rampedLightMap + 1 - _ShadowStrength));
                 }
             }
             break;
@@ -696,11 +703,12 @@ void calculateBasePassLightMaps()
                     //     surfnormals = poiMesh.normals[0];
                     // }
                     float3 envlight = ShadeSH9_wrapped(poiMesh.normals[normalsindex], wrap);
-                    envlight *= lerp(1, AOMap, AOStrength);
+                    envlight *= poiLight.occlusion;
                     
                     poiLight.directLighting = directcolor * detailShadow * directatten;
                     poiLight.indirectLighting = envlight;
                     
+
                     float3 ShadeSH9Plus_2 = GetSHMaxL1();
                     float bw_topDirectLighting_2 = dot(_LightColor0.rgb, grayscale_vector);
                     float bw_directLighting = dot(poiLight.directLighting, grayscale_vector);
@@ -715,7 +723,7 @@ void calculateBasePassLightMaps()
                     if (_LightingRampType == 0) // Ramp Texture
 
                     {
-                        poiLight.rampedLightMap = lerp(1, UNITY_SAMPLE_TEX2D(_ToonRamp, poiLight.lightMap + _ShadowOffset), shadowStrength.r);
+                        poiLight.rampedLightMap = lerp(1, UNITY_SAMPLE_TEX2D(_ToonRamp, poiLight.lightMap + _ShadowOffset).rgb, shadowStrength.r);
                     }
                     else if (_LightingRampType == 1) // Math Gradient
 
@@ -758,7 +766,6 @@ void calculateBasePassLightMaps()
             if (_LightingAdditiveType == 0)
             {
                 return lightColor * attenuationDotNL * detailShadow; // Realistic
-
             }
             else if (_LightingAdditiveType == 1) // Toon
 
@@ -795,7 +802,6 @@ void calculateBasePassLightMaps()
                     float4 firstShadeMap = float4(1, 1, 1, 1);
                 #endif
                 firstShadeMap = lerp(firstShadeMap, albedo, _Use_BaseAs1st);
-                firstShadeMap.rgb *= _1st_ShadeColor.rgb; //* lighColor
                 
                 #if defined(PROP_2ND_SHADEMAP) || !defined(OPTIMIZER_ENABLED)
                     float4 secondShadeMap = POI2D_SAMPLER_PAN(_2nd_ShadeMap, _MainTex, poiMesh.uv[_2nd_ShadeMapUV], _2nd_ShadeMapPan);
@@ -803,8 +809,9 @@ void calculateBasePassLightMaps()
                     float4 secondShadeMap = float4(1, 1, 1, 1);
                 #endif
                 secondShadeMap = lerp(secondShadeMap, firstShadeMap, _Use_1stAs2nd);
-                secondShadeMap.rgb *= _2nd_ShadeColor.rgb; //* LightColor;
                 
+                firstShadeMap.rgb *= _1st_ShadeColor.rgb; //* lighColor
+                secondShadeMap.rgb *= _2nd_ShadeColor.rgb; //* LightColor;
                 
                 float shadowMask = 1;
                 shadowMask *= _Use_1stShadeMapAlpha_As_ShadowMask ?(_1stShadeMapMask_Inverse ?(1.0 - firstShadeMap.a): firstShadeMap.a): 1;
@@ -814,14 +821,14 @@ void calculateBasePassLightMaps()
                 float firstSecondShadowMask = saturate(1 - ((poiLight.lightMap) - firstColorFeatherStep) / (_ShadeColor_Step - firstColorFeatherStep) * (shadowMask));
                 
                 #if defined(PROP_LIGHTINGSHADOWMASK) || !defined(OPTIMIZER_ENABLED)
-                    float removeShadow = POI2D_SAMPLER_PAN(_LightingShadowMask, _MainTex, poiMesh.uv[_LightingShadowMaskUV], _LightingShadowMaskPan);
+                    float removeShadow = POI2D_SAMPLER_PAN(_LightingShadowMask, _MainTex, poiMesh.uv[_LightingShadowMaskUV], _LightingShadowMaskPan).r;
                 #else
                     float removeShadow = 1;
                 #endif
                 mainShadowMask *= removeShadow;
                 firstSecondShadowMask *= removeShadow;
                 
-                albedo.rgb = lerp(albedo.rgb, lerp(firstShadeMap, secondShadeMap, firstSecondShadowMask), mainShadowMask);
+                albedo.rgb = lerp(albedo.rgb, lerp(firstShadeMap.rgb, secondShadeMap.rgb, firstSecondShadowMask), mainShadowMask);
             }
         }
         
@@ -840,7 +847,7 @@ void calculateBasePassLightMaps()
                 if (_LightingAdditiveType == 0) // Realistic
 
                 {
-                    finalLighting = poiLight.color * poiLight.attenuation * max(0, poiLight.nDotL) * detailShadow;
+                    finalLighting = poiLight.color * poiLight.attenuation * max(0, poiLight.nDotL) * detailShadow * poiLight.additiveShadow;
                 }
                 else if (_LightingAdditiveType == 1) // Toon
 
@@ -900,6 +907,7 @@ void calculateBasePassLightMaps()
                             poiLight.finalLighting = max(0.001, poiLight.finalLighting);
                             float finalluminance = calculateluminance(poiLight.finalLighting);
                             finalLighting = max(poiLight.finalLighting, poiLight.finalLighting / max(0.0001, (finalluminance / _LightingMinLightBrightness)));
+                            poiLight.finalLighting = finalLighting;
                         }
                         else
                         {
@@ -925,7 +933,7 @@ void calculateBasePassLightMaps()
 
                     {
                         float subsurfaceShadowWeight = 0.0h;
-                        float ambientNormalWorld = poiMesh.normals[1];//aTangentToWorld(s, s.blurredNormalTangent);
+                        float3 ambientNormalWorld = poiMesh.normals[1];//aTangentToWorld(s, s.blurredNormalTangent);
                         
                         // Scattering mask.
                         float subsurface = 1;
@@ -934,7 +942,7 @@ void calculateBasePassLightMaps()
                         
                         // Skin subsurface depth absorption tint.
                         // cf http://www.crytek.com/download/2014_03_25_CRYENGINE_GDC_Schultz.pdf pg 35
-                        half3 absorption = exp((1.0h - subsurface) * _SssTransmissionAbsorption);
+                        half3 absorption = exp((1.0h - subsurface) * _SssTransmissionAbsorption.rgb);
                         
                         // Albedo scale for absorption assumes ~0.5 luminance for Caucasian skin.
                         absorption *= saturate(finalColor.rgb * unity_ColorSpaceDouble.rgb);

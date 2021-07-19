@@ -51,8 +51,6 @@ namespace Thry
         private int updatedVersion = 0;
 
         private bool is_init = false;
-
-        public static bool is_changing_vrc_sdk = false;
         
         public static ButtonData thry_message = null;
 
@@ -89,11 +87,10 @@ namespace Thry
 
         private void InitVariables()
         {
-            is_changing_vrc_sdk = (FileHelper.LoadValueFromFile("delete_vrc_sdk", PATH.AFTER_COMPILE_DATA) == "true") || (FileHelper.LoadValueFromFile("update_vrc_sdk", PATH.AFTER_COMPILE_DATA) == "true");
-
-            List<Type> subclasses = typeof(ModuleSettings).Assembly.GetTypes().Where(type => type.IsSubclassOf(typeof(ModuleSettings))).ToList<Type>();
+            List<Type> subclasses = AppDomain.CurrentDomain.GetAssemblies().SelectMany(a => a.GetTypes()).Where(type => type.IsSubclassOf(typeof(ModuleSettings))).ToList();
             moduleSettings = new ModuleSettings[subclasses.Count];
             int i = 0;
+            Debug.Log("Classes: " + subclasses.Count);
             foreach(Type classtype in subclasses)
             {
                 moduleSettings[i++] = (ModuleSettings)Activator.CreateInstance(classtype);
@@ -179,6 +176,7 @@ namespace Thry
                 Dropdown("default_texture_type");
                 Toggle("showRenderQueue");
                 Toggle("renameAnimatedProps");
+                Toggle("showManualReloadButton");
                 GUIGradients();
                 EditorGUI.indentLevel -= 2;
             }
@@ -244,14 +242,15 @@ namespace Thry
 
         private void ModuleUI(Module module)
         {
-            string text = "    " + module.available_module.name;
+            string text = "      " + module.available_module.name;
             if (module.update_available)
-                text = "              " + text;
+                text = "                  " + text;
             module.ui_expanded = Foldout(text, module.ui_expanded);
             Rect rect = GUILayoutUtility.GetLastRect();
             rect.x += 20;
-            rect.y += 2;
+            rect.y += 1;
             rect.width = 20;
+            rect.height -= 4;
 
             bool is_installed = module.installed_module != null;
 
@@ -264,7 +263,7 @@ namespace Thry
             if (module.update_available)
             {
                 rect.x += 20;
-                rect.width = 47;
+                rect.width = 55;
                 GUIStyle style = new GUIStyle(EditorStyles.miniButton);
                 style.fixedHeight = 17;
                 if (GUI.Button(rect, "Update",style))
@@ -358,7 +357,7 @@ namespace Thry
                 {
                     field.SetValue(config, !value);
                     config.save();
-                    ShaderEditor.repaint();
+                    ShaderEditor.Repaint();
                 }
             }
         }
@@ -390,7 +389,7 @@ namespace Thry
                 {
                     field.SetValue(config, value);
                     config.save();
-                    ShaderEditor.repaint();
+                    ShaderEditor.Repaint();
                 }
             }
         }
@@ -409,7 +408,7 @@ namespace Thry
                 Config.Singleton.locale = Locale.editor.available_locales[Locale.editor.selected_locale_index];
                 Config.Singleton.save();
                 ShaderEditor.reload();
-                ShaderEditor.repaint();
+                ShaderEditor.Repaint();
             }
         }
 

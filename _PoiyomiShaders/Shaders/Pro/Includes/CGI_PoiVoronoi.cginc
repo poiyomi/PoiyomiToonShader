@@ -298,11 +298,11 @@
             UNITY_BRANCH
             if(_VoronoiEffectsMaterialAlpha)
             {
-                finalColor.rgba = lerp(finalColor, voronoiColor, mask);
+                finalColor.rgba = lerp(finalColor, voronoiColor, min(mask, 0.99999));
             }
             else
             {
-                finalColor.rgb = lerp(finalColor.rgb, voronoiColor.rgb, mask * voronoiColor.a);
+                finalColor.rgb = lerp(finalColor.rgb, voronoiColor.rgb, min(mask * voronoiColor.a, 0.99999));
             }
         }
         float4 voronoiEmissionColor = lerp(_VoronoiColor0 * _VoronoiEmission0, voronoiColor1 * _VoronoiEmission1, ramp);

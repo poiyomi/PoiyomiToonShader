@@ -206,8 +206,10 @@ namespace Thry
 
         private static object ConvertToObject(object parsed, Type objtype)
         {
-            object returnObject = Activator.CreateInstance(objtype);
+            if (parsed.GetType() == typeof(string) && objtype.GetMethod("ParseForThryParser", BindingFlags.Static | BindingFlags.NonPublic) != null)
+                return objtype.GetMethod("ParseForThryParser", BindingFlags.Static | BindingFlags.NonPublic).Invoke(null, new object[] { parsed });
             if (parsed.GetType() != typeof(Dictionary<object, object>)) return null;
+            object returnObject = Activator.CreateInstance(objtype);
             Dictionary<object, object> dict = (Dictionary<object, object>)parsed;
             foreach (FieldInfo field in objtype.GetFields())
             {
@@ -238,6 +240,8 @@ namespace Thry
 
         private static object ConvertToArray(object parsed, Type objtype)
         {
+            if (parsed.GetType() == typeof(string) && objtype.GetMethod("ParseToArrayForThryParser", BindingFlags.Static | BindingFlags.NonPublic) != null)
+                return objtype.GetMethod("ParseToArrayForThryParser", BindingFlags.Static | BindingFlags.NonPublic).Invoke(null, new object[] { parsed });
             if (parsed == null || (parsed is string && (string)parsed == ""))
                 return null;
             Type array_obj_type = objtype.GetElementType();

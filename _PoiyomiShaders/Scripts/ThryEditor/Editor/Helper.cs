@@ -47,9 +47,12 @@ namespace Thry
             return GetCurrentUnixTimestampMillis() - (long)EditorApplication.timeSinceStartup * 1000;
         }
 
-        public static bool ClassExists(string classname)
+        public static bool ClassWithNamespaceExists(string classname)
         {
-            return System.Type.GetType(classname) != null;
+            return (from assembly in AppDomain.CurrentDomain.GetAssemblies()
+                    from type in assembly.GetTypes()
+                    where type.FullName == classname
+                    select type).Count() > 0;
         }
 
         public static bool NameSpaceExists(string namespace_name)
@@ -81,6 +84,8 @@ namespace Thry
         public static int compareVersions(string v1, string v2)
         {
             //fix the string
+            v1 = v1.Replace(",", ".");
+            v2 = v2.Replace(",", ".");
             Match v1_match = Regex.Match(v1, @"(a|b)?\d+((\.|a|b)\d+)*(a|b)?");
             Match v2_match = Regex.Match(v2, @"(a|b)?\d+((\.|a|b)\d+)*(a|b)?");
             if (!v1_match.Success && !v2_match.Success) return 0;
@@ -575,7 +580,7 @@ namespace Thry
         /// <param name="value"></param>
         public static void SetMaterialValue(string key, string value)
         {
-            Material[] materials = ShaderEditor.currentlyDrawing.materials;
+            Material[] materials = ShaderEditor.active.materials;
             MaterialProperty p = ShaderEditor.active.GetMaterialProperty(key);
             if (p != null)
             {
@@ -1037,9 +1042,10 @@ namespace Thry
 
                 Selection.activeObject = texture2DArray;
                 return texture2DArray;
+#else
+                return null;
 #endif
             }
-            return null;
         }
 
         [MenuItem("Assets/Thry/Flipbooks/Gif 2 TextureArray",false, 303)]
@@ -1284,6 +1290,7 @@ namespace Thry
         private static void Add(ShaderEditorShader s)
         {
             Init();
+            if (dictionary == null || s == null) return;
             if (!dictionary.ContainsKey(s.name))
             {
                 dictionary.Add(s.name, s);
@@ -1293,6 +1300,8 @@ namespace Thry
 
         private static void RemoveAt(int i)
         {
+            Init();
+            if (dictionary == null || i >= shaders.Count() || shaders[i] == null) return;
             if (dictionary.ContainsKey(shaders[i].name))
             {
                 dictionary.Remove(shaders[i].name);
@@ -1564,7 +1573,6 @@ namespace Thry
         {
             string[] guids = AssetDatabase.FindAssets("version");
             string path = null;
-            string u_path = null;
             foreach (string guid in guids)
             {
                 string p = AssetDatabase.GUIDToAssetPath(guid);
@@ -1586,22 +1594,22 @@ namespace Thry
             return VRC_SDK_Type.SDK_3_World;
 #elif VRC_SDK_VRCSDK3
             return VRC_SDK_Type.SDK_3_Avatar;
-#endif
-#if VRC_SDK_VRCSDK2
+#elif VRC_SDK_VRCSDK2
             return VRC_SDK_Type.SDK_2;
-#endif
+#else
             return VRC_SDK_Type.NONE;
+#endif
         }
 
         private static bool IsVRCSDKInstalled()
         {
 #if VRC_SDK_VRCSDK3
             return true;
-#endif
-#if VRC_SDK_VRCSDK2
+#elif VRC_SDK_VRCSDK2
             return true;
-#endif
+#else
             return false;
+#endif
         }
     }
 }

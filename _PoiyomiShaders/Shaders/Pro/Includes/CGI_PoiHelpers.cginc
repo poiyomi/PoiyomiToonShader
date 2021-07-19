@@ -58,7 +58,7 @@
             {
                 float3 factors = ((direction > 0 ? boxMax: boxMin) - position) / direction;
                 float scalar = min(min(factors.x, factors.y), factors.z);
-                direction = direction * scalar + (position - cubemapPosition);
+                direction = direction * scalar + (position - cubemapPosition.xyz);
             }
         #endif
         return direction;
@@ -79,8 +79,8 @@
             float3 p1 = mul(unity_StereoCameraToWorld[0], float4(0, 0, 1, 1));
             float3 p2 = mul(unity_StereoCameraToWorld[0], float4(0, 0, 0, 1));
         #else
-            float3 p1 = mul(unity_CameraToWorld, float4(0, 0, 1, 1));
-            float3 p2 = mul(unity_CameraToWorld, float4(0, 0, 0, 1));
+            float3 p1 = mul(unity_CameraToWorld, float4(0, 0, 1, 1)).xyz;
+            float3 p2 = mul(unity_CameraToWorld, float4(0, 0, 0, 1)).xyz;
         #endif
         return normalize(p2 - p1);
     }
@@ -227,7 +227,7 @@
 
 half2 calcScreenUVs(half4 grabPos)
 {
-    half2 uv = grabPos / (grabPos.w + 0.0000000001);
+    half2 uv = grabPos.xy / (grabPos.w + 0.0000000001);
     #if UNITY_SINGLE_PASS_STEREO
         uv.xy *= half2(_ScreenParams.x * 2, _ScreenParams.y);
     #else
@@ -330,7 +330,7 @@ bool isPanorama()
     return unity_CameraProjection[1][1] == 1 && _ScreenParams.x == 1075 && _ScreenParams.y == 1025;
 }
 
-float3 calculateluminance(float3 color)
+float calculateluminance(float3 color)
 {
     return color.r * 0.299 + color.g * 0.587 + color.b * 0.114;
 }

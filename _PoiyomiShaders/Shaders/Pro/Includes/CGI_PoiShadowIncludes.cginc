@@ -37,6 +37,7 @@
             fixed3 barycentricCoordinates: TEXCOORD10;
             float4 vertexColor: TEXCOORD11;
             UNITY_VERTEX_INPUT_INSTANCE_ID
+            UNITY_VERTEX_OUTPUT_STEREO
         };
     #endif
     

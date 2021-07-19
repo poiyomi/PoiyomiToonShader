@@ -49,36 +49,17 @@ namespace Thry
 
     public class RESOURCE_NAME
     {
-        public const string DROPDOWN_SETTINGS_TEXTURE = "thry_settings_dropdown";
         public const string SETTINGS_ICON_TEXTURE = "thry_settings_icon";
         public const string WHITE_RECT = "thry_white_rect";
         public const string DARK_RECT = "thry_dark_rect";
-        public const string ACTICE_LINK_ICON = "thry_link_icon_active";
-        public const string INACTICE_LINK_ICON = "thry_link_icon_inactive";
         public const string VISIVILITY_ICON = "thry_visiblity_icon";
         public const string SEARCH_ICON = "thry_magnifying_glass_icon";
         public const string PRESETS_ICON = "thry_presets_icon";
         public const string TEXTURE_ARROW = "thry_arrow";
         public const string TEXTURE_ANIMTED = "thry_animated_icon";
-    }
-
-    public struct EditorData
-    {
-        public MaterialEditor editor;
-        public MaterialProperty[] properties;
-        public ShaderEditor gui;
-        public Material[] materials;
-        public Shader shader;
-        public Shader defaultShader;
-        public ShaderPart currentProperty;
-        public Dictionary<string, ShaderProperty> propertyDictionary;
-        public List<ShaderPart> shaderParts;
-        public List<ShaderProperty> textureArrayProperties;
-        public bool firstCall;
-        public bool show_HeaderHider;
-        public bool use_ShaderOptimizer;
-        public bool isLockedMaterial;
-        public string animPropertySuffix;
+        public const string ICON_NAME_MENU = "thryEditor_menu";
+        public const string ICON_NAME_HELP = "thryEditor_help";
+        public const string ICON_NAME_LINK = "thryEditor_link";
     }
 
     public class DrawingData
@@ -86,8 +67,25 @@ namespace Thry
         public static TextureProperty currentTexProperty;
         public static Rect lastGuiObjectRect;
         public static Rect lastGuiObjectHeaderRect;
+        public static Rect tooltipCheckRect;
         public static bool lastPropertyUsedCustomDrawer;
+        public static DrawerType lastPropertyDrawerType;
+        public static MaterialPropertyDrawer lastPropertyDrawer;
         public static bool is_enabled = true;
+
+        public static ShaderPart lastInitiatedPart;
+
+        public static void ResetLastDrawerData()
+        {
+            lastPropertyUsedCustomDrawer = false;
+            lastPropertyDrawer = null;
+            lastPropertyDrawerType = DrawerType.None;
+        }
+    }
+
+    public enum DrawerType
+    {
+        None, Header
     }
 
     public class GradientData
@@ -109,7 +107,7 @@ namespace Thry
         public PropertyValueAction[] on_value_actions;
         public string on_value;
         public DefineableAction[] actions;
-        public ButtonData button_right;
+        public ButtonData button_help;
         public TextureData texture;
         public string[] reference_properties;
         public string reference_property;
@@ -182,18 +180,27 @@ namespace Thry
 
         public bool Execute(MaterialProperty p)
         {
-            if((p.floatValue.ToString()==value) 
-                || ( p.colorValue.ToString() == value) 
-                || ( p.vectorValue.ToString() == value )
-                || (p.textureValue != null && p.textureValue.ToString() == value))
-            {
+            if(
+                (p.type == MaterialProperty.PropType.Float   && p.floatValue.ToString()   ==  value)          ||
+                (p.type == MaterialProperty.PropType.Range   && p.floatValue.ToString()   ==  value)          ||
+                (p.type == MaterialProperty.PropType.Color   && p.colorValue.ToString()   ==  value)          ||
+                (p.type == MaterialProperty.PropType.Vector  && p.vectorValue.ToString()  ==  value)          ||
+                (p.type == MaterialProperty.PropType.Texture && ((p.textureValue == null) == (value == "0"))) ||
+                (p.type == MaterialProperty.PropType.Texture && ((p.textureValue != null) == (value == "1"))) ||
+                (p.type == MaterialProperty.PropType.Texture && (p.textureValue != null && p.textureValue.name == value)) 
+            )
+                {
                 foreach (DefineableAction a in actions)
                     a.Perform();
                 return true;
             }
             return false;
         }
-
+        
+        private static PropertyValueAction ParseForThryParser(string s)
+        {
+            return Parse(s);
+        }
         // value,property1=value1,property2=value2
         public static PropertyValueAction Parse(string s)
         {
@@ -214,6 +221,10 @@ namespace Thry
             return null;
         }
 
+        private static PropertyValueAction[] ParseToArrayForThryParser(string s)
+        {
+            return ParseToArray(s);
+        }
         public static PropertyValueAction[] ParseToArray(string s)
         {
             //s = v,p1=v1,p2=v2;v3
@@ -247,20 +258,24 @@ namespace Thry
                     break;
                 case DefineableActionType.SET_TAG:
                     string[] keyValue = Regex.Split(data, @"=");
-                    foreach (Material m in ShaderEditor.currentlyDrawing.materials)
+                    foreach (Material m in ShaderEditor.active.materials)
                         m.SetOverrideTag(keyValue[0].Trim(), keyValue[1].Trim());
                     break;
                 case DefineableActionType.SET_SHADER:
                     Shader shader = Shader.Find(data);
                     if (shader != null)
                     {
-                        foreach (Material m in ShaderEditor.currentlyDrawing.materials)
+                        foreach (Material m in ShaderEditor.active.materials)
                             m.shader = shader;
                     }
                     break;
             }
         }
 
+        private static DefineableAction ParseForThryParser(string s)
+        {
+            return Parse(s);
+        }
         public static DefineableAction Parse(string s)
         {
             s = s.Trim();
@@ -284,6 +299,18 @@ namespace Thry
             {
                 action.type = DefineableActionType.SET_PROPERTY;
                 action.data = s;
+            }
+            return action;
+        }
+
+        public static DefineableAction ParseDrawerParameter(string s)
+        {
+            s = s.Trim();
+            DefineableAction action = new DefineableAction();
+            if (s.StartsWith("youtube#"))
+            {
+                action.type = DefineableActionType.URL;
+                action.data = "https://www.youtube.com/watch?v="+s.Substring(8);
             }
             return action;
         }
@@ -322,7 +349,7 @@ namespace Thry
             switch (type)
             {
                 case DefineableConditionType.PROPERTY_BOOL:
-                    ShaderProperty prop = ShaderEditor.currentlyDrawing.propertyDictionary[obj];
+                    ShaderProperty prop = ShaderEditor.active.propertyDictionary[obj];
                     if (prop == null) return false;
                     if (comparator == "##") return prop.materialProperty.floatValue == 1;
                     float f = Parser.ParseFloat(parts[1]);
@@ -354,11 +381,11 @@ namespace Thry
                     if (comparator == "<=") return c_vrc == 1 || c_vrc == 0;
                     break;
                 case DefineableConditionType.TEXTURE_SET:
-                    ShaderProperty shaderProperty = ShaderEditor.currentlyDrawing.propertyDictionary[data];
+                    ShaderProperty shaderProperty = ShaderEditor.active.propertyDictionary[data];
                     if (shaderProperty == null) return false;
                     return shaderProperty.materialProperty.textureValue != null;
                 case DefineableConditionType.DROPDOWN:
-                    ShaderProperty dropdownProperty = ShaderEditor.currentlyDrawing.propertyDictionary[obj];
+                    ShaderProperty dropdownProperty = ShaderEditor.active.propertyDictionary[obj];
                     if (dropdownProperty == null) return false;
                     if (comparator == "##") return dropdownProperty.materialProperty.floatValue == 1;
                     if (comparator == "==") return "" + dropdownProperty.materialProperty.floatValue == parts[1];
@@ -411,6 +438,10 @@ namespace Thry
             return "";
         }
 
+        private static DefineableCondition ParseForThryParser(string s)
+        {
+            return Parse(s);
+        }
         public static DefineableCondition Parse(string s)
         {
             s = Strip(s);

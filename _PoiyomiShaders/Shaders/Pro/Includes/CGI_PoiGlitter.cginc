@@ -26,6 +26,7 @@
     float _GlitterTextureRotation;
     float4 _GlitterMinMaxSize;
     float _GlitterRandomSize;
+    float2 _GlitterUVPanning;
     
     float _GlitterHueShiftEnabled;
     float _GlitterHueShiftSpeed;
@@ -91,7 +92,7 @@
         
         
         // Scale
-        float2 st = poiMesh.uv[0] * _GlitterFrequency;
+        float2 st = frac(poiMesh.uv[0] + _GlitterUVPanning.xy * _Time.x) * _GlitterFrequency;
         
         // Tile the space
         float2 i_st = floor(st);

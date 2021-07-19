@@ -117,7 +117,7 @@
         {
             float3 factors = ((direction > 0 ? boxMax: boxMin) - position) / direction;
             float scalar = min(min(factors.x, factors.y), factors.z);
-            direction = direction * scalar + (position - cubemapPosition);
+            direction = direction * scalar + (position - cubemapPosition.xyz);
         }
         // #endif
         return direction;
@@ -154,7 +154,7 @@
             envData.reflUVW = getBoxProjection(
                 reflDir, worldPos,
                 unity_SpecCube0_ProbePosition,
-                unity_SpecCube0_BoxMin, unity_SpecCube0_BoxMax
+                unity_SpecCube0_BoxMin.xyz, unity_SpecCube0_BoxMax.xyz
             );
             float3 probe0 = Unity_GlossyEnvironment(UNITY_PASS_TEXCUBE(unity_SpecCube0), unity_SpecCube0_HDR, envData);
             float interpolator = unity_SpecCube0_BoxMin.w;
@@ -164,7 +164,7 @@
                 envData.reflUVW = getBoxProjection(
                     reflDir, worldPos,
                     unity_SpecCube1_ProbePosition,
-                    unity_SpecCube1_BoxMin, unity_SpecCube1_BoxMax
+                    unity_SpecCube1_BoxMin.xyz, unity_SpecCube1_BoxMax.xyz
                 );
                 float3 probe1 = Unity_GlossyEnvironment(UNITY_PASS_TEXCUBE_SAMPLER(unity_SpecCube1, unity_SpecCube0), unity_SpecCube0_HDR, envData);
                 indirectSpecular = lerp(probe1, probe0, interpolator);
@@ -176,7 +176,7 @@
             
             if(!DoesReflectionProbeExist())
             {
-                indirectSpecular = texCUBElod(_BRDFFallback, float4(envData.reflUVW, roughness * UNITY_SPECCUBE_LOD_STEPS)) * poiLight.finalLighting;
+                indirectSpecular = texCUBElod(_BRDFFallback, float4(reflDir, roughness * UNITY_SPECCUBE_LOD_STEPS)).rgb * poiLight.finalLighting;
             }
             
             float horizon = min(1 + dot(reflDir, normal), 1);
@@ -220,20 +220,20 @@
         float roughness = max(1 - (_BRDFGlossiness * metallicGlossMap.a), getGeometricSpecularAA(poiMesh.normals[1]));
         finalColor.rgb *= lerp(1, 1 - metallic, _BRDFReflectionsEnabled);
         
-        float3 reflViewDir = getAnisotropicReflectionVector(poiCam.viewDir, poiMesh.binormal, poiMesh.tangent, poiMesh.normals[1], roughness, _BRDFAnisotropy);
+        float3 reflViewDir = getAnisotropicReflectionVector(poiCam.viewDir, poiMesh.binormal, poiMesh.tangent.xyz, poiMesh.normals[1], roughness, _BRDFAnisotropy);
         float3 reflLightDir = reflect(poiLight.direction, poiMesh.normals[1]);
         
         #if defined(FORWARD_BASE_PASS) || defined(POI_META_PASS)
-            float attenuation = poiLight.rampedLightMap;
+            float attenuation = poiMax(poiLight.rampedLightMap);
         #endif
         #ifdef FORWARD_ADD_PASS
             float attenuation = saturate(poiLight.nDotL);
         #endif
         
         
-        float3 f0 = 0.16 * reflectance * reflectance * (1.0 - metallic) + finalColorBeforeLighting * metallic;
+        float3 f0 = 0.16 * reflectance * reflectance * (1.0 - metallic) + finalColorBeforeLighting.rgb * metallic;
         float3 fresnel = lerp(F_Schlick(poiLight.nDotV, f0), f0, metallic); //Kill fresnel on metallics, it looks bad.
-        float3 directSpecular = getDirectSpecular(roughness, saturate(poiLight.nDotH), max(poiLight.nDotV, 0.000001), attenuation, saturate(poiLight.lDotH), f0, poiLight.halfDir, poiMesh.tangent, poiMesh.binormal, _BRDFAnisotropy) * poiLight.attenuation * attenuation * poiLight.color;
+        float3 directSpecular = getDirectSpecular(roughness, saturate(poiLight.nDotH), max(poiLight.nDotV, 0.000001), attenuation, saturate(poiLight.lDotH), f0, poiLight.halfDir, poiMesh.tangent.xyz, poiMesh.binormal, _BRDFAnisotropy) * poiLight.attenuation * attenuation * poiLight.color;
         directSpecular = min(directSpecular, poiLight.color);
         
         float3 vDirectSpecular = 0;
@@ -245,7 +245,7 @@
             }
         #endif
         
-        float3 indirectSpecular = getIndirectSpecular(metallic, roughness, reflViewDir, poiMesh.worldPos, /*directDiffuse*/ finalColor, poiMesh.normals[1]) * lerp(fresnel, f0, roughness);
+        float3 indirectSpecular = getIndirectSpecular(metallic, roughness, reflViewDir, poiMesh.worldPos, /*directDiffuse*/ finalColor.rgb, poiMesh.normals[1]) * lerp(fresnel, f0, roughness);
         float3 specular = indirectSpecular * _BRDFReflectionsEnabled * metallicTintMask.a * metallicTintMask.rgb * poiLight.occlusion + (directSpecular + vDirectSpecular) * _BRDFSpecularEnabled * spcularTintMask.a * spcularTintMask.rgb;
         finalColor.rgb += specular;
     }

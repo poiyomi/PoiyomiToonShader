@@ -3,7 +3,7 @@
     Properties
     {
         [HideInInspector] shader_is_using_thry_editor ("", Float) = 0
-        [HideInInspector] shader_master_label ("<color=#000000ff>Poiyomi Toon V7.1.53</color>", Float) = 0
+        [HideInInspector] shader_master_label ("<color=#E75898ff>Poiyomi Toon V7.2.41</color>", Float) = 0
         [HideInInspector] shader_presets ("poiToonPresets", Float) = 0
         [HideInInspector] shader_properties_label_file ("7PlusLabels", Float) = 0
         
@@ -35,20 +35,20 @@
         _Color ("Color & Alpha", Color) = (1, 1, 1, 1)
         _MainTex ("Texture", 2D) = "white" { }
         [HideInInspector][Vector2]_MainTexPan ("Panning", Vector) = (0, 0, 0, 0)
-        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)] _MainTextureUV ("UV", Int) = 0
+        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, distorteduv0, 4)] _MainTextureUV ("UV", Int) = 0
         _MainEmissionStrength ("Basic Emission", Range(0, 20)) = 0
         [Normal]_BumpMap ("Normal Map", 2D) = "bump" { }
-        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)] _BumpMapUV ("UV", Int) = 0
+        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, distorteduv0, 4)] _BumpMapUV ("UV", Int) = 0
         [HideInInspector][Vector2]_BumpMapPan ("Panning", Vector) = (0, 0, 0, 0)
         _BumpScale ("Normal Intensity", Range(0, 10)) = 1
         _ClippingMask ("Alpha Map--{reference_properties:[_ClippingMaskPan, _ClippingMaskUV, _Inverse_Clipping]}", 2D) = "white" { }
         [HideInInspector][Vector2]_ClippingMaskPan ("Panning", Vector) = (0, 0, 0, 0)
-        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)] _ClippingMaskUV ("UV", Int) = 0
+        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, distorteduv0, 4)] _ClippingMaskUV ("UV", Int) = 0
         [ToggleUI]_Inverse_Clipping ("Invert", Float) = 0
         
         //Hue Shifting
         [HideInInspector] m_start_MainHueShift ("Color Adjust", Float) = 0
-        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)] _MainColorAdjustTextureUV ("UV", Int) = 0
+        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, distorteduv0, 4)] _MainColorAdjustTextureUV ("UV", Int) = 0
         [ToggleUI]_MainHueShiftReplace ("Hue Replace?", Float) = 1
         _MainHueShift ("Hue Shift", Range(0, 1)) = 0
         _MainHueShiftSpeed ("Hue Shift Speed", Float) = 0
@@ -59,74 +59,83 @@
         [HideInInspector][Vector2]_MainColorAdjustTexturePan ("Panning", Vector) = (0, 0, 0, 0)
         [HideInInspector] m_end_MainHueShift ("Hue Shift", Float) = 0
         
-        // RGB Masking
-        [HideInInspector] m_start_RGBMask ("RGB Color Masking", Float) = 0
+        // RGBA Masking
+        [HideInInspector] m_start_RGBMask ("RGBA Color Masking", Float) = 0
         [HideInInspector][ThryToggle(VIGNETTE)]_RGBMaskEnabled ("RGB Mask Enabled", Float) = 0
         [ToggleUI]_RGBUseVertexColors ("Use Vertex Colors", Float) = 0
         [ToggleUI]_RGBBlendMultiplicative ("Multiplicative?", Float) = 0
         _RGBMask ("Mask", 2D) = "white" { }
         [HideInInspector][Vector2]_RGBMaskPanning ("Panning", Vector) = (0, 0, 0, 0)
-        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)]_RGBMaskUV ("UV", int) = 0
+        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, distorteduv0, 4)]_RGBMaskUV ("UV", int) = 0
         _RedColor ("R Color", Color) = (1, 1, 1, 1)
         _RedTexure ("R Texture", 2D) = "white" { }
         [HideInInspector][Vector2]_RGBRedPanning ("Panning", Vector) = (0, 0, 0, 0)
-        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)]_RGBRed_UV ("UV", int) = 0
+        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, distorteduv0, 4)]_RGBRed_UV ("UV", int) = 0
         _GreenColor ("G Color", Color) = (1, 1, 1, 1)
         _GreenTexture ("G Texture", 2D) = "white" { }
         [HideInInspector][Vector2]_RGBGreenPanning ("Panning", Vector) = (0, 0, 0, 0)
-        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)]_RGBGreen_UV ("UV", int) = 0
+        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, distorteduv0, 4)]_RGBGreen_UV ("UV", int) = 0
         _BlueColor ("B Color", Color) = (1, 1, 1, 1)
         _BlueTexture ("B Texture", 2D) = "white" { }
         [HideInInspector][Vector2]_RGBBluePanning ("Panning", Vector) = (0, 0, 0, 0)
-        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)]_RGBBlue_UV ("UV", int) = 0
+        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, distorteduv0, 4)]_RGBBlue_UV ("UV", int) = 0
+        _AlphaColor ("A Color", Color) = (1, 1, 1, 1)
+        _AlphaTexture ("A Texture", 2D) = "white" { }
+        [HideInInspector][Vector2]_RGBAlphaPanning ("Panning", Vector) = (0, 0, 0, 0)
+        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, distorteduv0, 4)]_RGBAlpha_UV ("UV", int) = 0
         
         // RGB MASKED NORMALS
         [ThryToggle(GEOM_TYPE_MESH)]_RgbNormalsEnabled ("Enable Normals", Float) = 0
         [ToggleUI]_RGBNormalBlend ("Blend with Base--{condition_show:{type:PROPERTY_BOOL,data:_RgbNormalsEnabled==1}}", Float) = 0
         [Normal]_RgbNormalR ("R Normal--{reference_properties:[_RgbNormalRPan, _RgbNormalRUV],condition_show:{type:PROPERTY_BOOL,data:_RgbNormalsEnabled==1}}", 2D) = "bump" { }
-        [HideInInspector]_RgbNormalRPan ("Pan", Vector) = (0, 0, 0, 0)
-        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)]_RgbNormalRUV ("UV", int) = 0
+        [HideInInspector][Vector2]_RgbNormalRPan ("Pan", Vector) = (0, 0, 0, 0)
+        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, distorteduv0, 4)]_RgbNormalRUV ("UV", int) = 0
         _RgbNormalRScale ("Intensity--{condition_show:{type:PROPERTY_BOOL,data:_RgbNormalsEnabled==1}}", Range(0,10)) = 0 
         [Normal]_RgbNormalG ("G Normal--{reference_properties:[_RgbNormalGPan, _RgbNormalGUV],condition_show:{type:PROPERTY_BOOL,data:_RgbNormalsEnabled==1}}", 2D) = "bump" { }
-        [HideInInspector]_RgbNormalGPan ("Pan", Vector) = (0, 0, 0, 0)
-        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)]_RgbNormalGUV ("UV", int) = 0
+        [HideInInspector][Vector2]_RgbNormalGPan ("Pan", Vector) = (0, 0, 0, 0)
+        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, distorteduv0, 4)]_RgbNormalGUV ("UV", int) = 0
         _RgbNormalGScale ("Intensity--{condition_show:{type:PROPERTY_BOOL,data:_RgbNormalsEnabled==1}}", Range(0,10)) = 0 
         [Normal]_RgbNormalB ("B Normal--{reference_properties:[_RgbNormalBPan, _RgbNormalBUV],condition_show:{type:PROPERTY_BOOL,data:_RgbNormalsEnabled==1}}", 2D) = "bump" { }
-        [HideInInspector]_RgbNormalBPan ("Pan", Vector) = (0, 0, 0, 0)
-        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)]_RgbNormalBUV ("UV", int) = 0
+        [HideInInspector][Vector2]_RgbNormalBPan ("Pan", Vector) = (0, 0, 0, 0)
+        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, distorteduv0, 4)]_RgbNormalBUV ("UV", int) = 0
         _RgbNormalBScale ("Intensity--{condition_show:{type:PROPERTY_BOOL,data:_RgbNormalsEnabled==1}}", Range(0,10)) = 0 
+        [Normal]_RgbNormalA ("A Normal--{reference_properties:[_RgbNormalAPan, _RgbNormalAUV],condition_show:{type:PROPERTY_BOOL,data:_RgbNormalsEnabled==1}}", 2D) = "bump" { }
+        [HideInInspector][Vector2]_RgbNormalAPan ("Pan", Vector) = (0, 0, 0, 0)
+        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, distorteduv0, 4)]_RgbNormalAUV ("UV", int) = 0
+        _RgbNormalAScale ("Intensity--{condition_show:{type:PROPERTY_BOOL,data:_RgbNormalsEnabled==1}}", Range(0,10)) = 0 
         [HideInInspector] m_end_RGBMask ("RGB Color Masking", Float) = 0
         
         // Detail Options
-        [HideInInspector] m_start_DetailOptions ("Details--{reference_property:_DetailEnabled, button_right:{text:Tutorial,action:{type:URL,data:https://www.youtube.com/watch?v=9oIcQln9of4&list=PL4_Gy3VRJSmbXfQSldzUiChgABQsoBlLw},hover:YouTube},is_hideable:true}", Float) = 0
+        [HideInInspector] m_start_DetailOptions ("Details--{reference_property:_DetailEnabled, button_help:{text:Tutorial,action:{type:URL,data:https://www.youtube.com/watch?v=9oIcQln9of4&list=PL4_Gy3VRJSmbXfQSldzUiChgABQsoBlLw},hover:YouTube}}", Float) = 0
         [HideInInspector][ThryToggle(FINALPASS)]_DetailEnabled ("Enable", Float) = 0
         _DetailMask ("Detail Mask (R:Texture, G:Normal)", 2D) = "white" { }
         [HideInInspector][Vector2]_DetailMaskPan ("Panning", Vector) = (0, 0, 0, 0)
-        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)] _DetailMaskUV ("UV", Int) = 0
+        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, distorteduv0, 4)] _DetailMaskUV ("UV", Int) = 0
         _DetailTint ("Detail Texture Tint", Color) = (1, 1, 1)
         _DetailTex ("Detail Texture", 2D) = "gray" { }
         [HideInInspector][Vector2]_DetailTexPan ("Panning", Vector) = (0, 0, 0, 0)
-        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)] _DetailTexUV ("UV", Int) = 0
+        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, distorteduv0, 4)] _DetailTexUV ("UV", Int) = 0
         _DetailTexIntensity ("Detail Tex Intensity", Range(0, 10)) = 1
         _DetailBrightness ("Detail Brightness:", Range(0, 2)) = 1
         [Normal]_DetailNormalMap ("Detail Normal", 2D) = "bump" { }
         _DetailNormalMapScale ("Detail Normal Intensity", Range(0, 10)) = 1
         [HideInInspector][Vector2]_DetailNormalMapPan ("Panning", Vector) = (0, 0, 0, 0)
-        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)] _DetailNormalMapUV ("UV", Int) = 0
+        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, distorteduv0, 4)] _DetailNormalMapUV ("UV", Int) = 0
         [HideInInspector] m_end_DetailOptions ("Details", Float) = 0
         
         // Vertex Colors
         [HideInInspector] m_start_MainVertexColors ("Vertex Colors", Float) = 0
+        [ToggleUI]_MainVertexColoringLinearSpace("Linear Colors", Float) = 1
         _MainVertexColoring ("Use Vertex Color", Range(0, 1)) = 0
         _MainUseVertexColorAlpha ("Use Vertex Color Alpha", Range(0, 1)) = 0
         [HideInInspector] m_end_MainVertexColors ("Vertex Colors", Float) = 0
         
         //Vertex Manipulations
-        [HideInInspector] m_start_vertexManipulation ("Vertex Offset--{reference_property:_VertexManipulationsEnabled, button_right:{text:Tutorial,action:{type:URL,data:https://www.youtube.com/watch?v=x728WN50JeA&list=PL4_Gy3VRJSmbXfQSldzUiChgABQsoBlLw},hover:YouTube},is_hideable:true}", Float) = 0
+        [HideInInspector] m_start_vertexManipulation ("Vertex Offset--{reference_property:_VertexManipulationsEnabled, button_help:{text:Tutorial,action:{type:URL,data:https://www.youtube.com/watch?v=x728WN50JeA&list=PL4_Gy3VRJSmbXfQSldzUiChgABQsoBlLw},hover:YouTube}}", Float) = 0
         [HideInInspector][ThryToggle(AUTO_EXPOSURE)]_VertexManipulationsEnabled ("Enabled", Float) = 0
         [Vector3]_VertexManipulationLocalTranslation ("Local Translation", Vector) = (0, 0, 0, 1)
         [Vector3]_VertexManipulationLocalRotation ("Local Rotation", Vector) = (0, 0, 0, 1)
-        [Vector3]_VertexManipulationLocalScale ("Local Scale", Vector) = (1, 1, 1, 1)
+        _VertexManipulationLocalScale ("Local Scale", Vector) = (1, 1, 1, 1)
         [Vector3]_VertexManipulationWorldTranslation ("World Translation", Vector) = (0, 0, 0, 1)
         _VertexManipulationHeight ("Vertex Height", Float) = 0
         _VertexManipulationHeightMask ("Height Map", 2D) = "white" { }
@@ -152,10 +161,10 @@
         [HideInInspector] m_end_Alpha ("Alpha Options", Float) = 0
         
         // Decal Texture
-        [HideInInspector] m_start_DecalSection ("Decals--{button_right:{text:Tutorial,action:{type:URL,data:https://www.youtube.com/watch?v=xHoQVN_F7JE&list=PL4_Gy3VRJSmbXfQSldzUiChgABQsoBlLw},hover:YouTube},reference_property:_DecalEnabled,is_hideable:true}", Float) = 0
+        [HideInInspector] m_start_DecalSection ("Decals--{button_help:{text:Tutorial,action:{type:URL,data:https://www.youtube.com/watch?v=xHoQVN_F7JE&list=PL4_Gy3VRJSmbXfQSldzUiChgABQsoBlLw},hover:YouTube},reference_property:_DecalEnabled}", Float) = 0
         _DecalMask ("Decal RGBA Mask--{reference_properties:[_DecalMaskPan, _DecalMaskUV]}", 2D) = "white" { }
         [HideInInspector][Vector2]_DecalMaskPan ("Panning", Vector) = (0, 0, 0, 0)
-        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)] _DecalMaskUV ("UV", Int) = 0
+        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, distorteduv0, 4)] _DecalMaskUV ("UV", Int) = 0
         // Decal 0
         [HideInInspector] m_start_Decal0 ("Decal 0", Float) = 0
         [HideInInspector][ThryToggle(GEOM_TYPE_BRANCH)]_DecalEnabled ("Enable", Float) = 0
@@ -163,8 +172,9 @@
         _DecalEmissionStrength ("Emission Strength", Range(0, 20)) = 0
         _DecalTexture ("Decal--{reference_properties:[_DecalTexturePan, _DecalTextureUV]}", 2D) = "white" { }
         [HideInInspector][Vector2]_DecalTexturePan ("Panning", Vector) = (0, 0, 0, 0)
-        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)] _DecalTextureUV ("UV", Int) = 0
+        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, distorteduv0, 4)] _DecalTextureUV ("UV", Int) = 0
         [ToggleUI]_DecalTiled ("Tiled?", Float) = 0
+        _Decal0Depth ("Depth", Float) = 0
         [Vector2]_DecalScale ("Scale", Vector) = (1, 1, 0, 0)
         [Vector2]_DecalPosition ("Position", Vector) = (.5, .5, 0, 0)
         _DecalRotation ("Rotation", Range(0, 360)) = 0
@@ -174,6 +184,17 @@
         [ToggleUI]_DecalHueShiftEnabled ("Hue Shift Enabled", Float) = 0
         _DecalHueShiftSpeed ("Shift Speed", Float) = 0
         _DecalHueShift ("Hue Shift", Range(0,1)) = 0
+        // Decal 0 Audio Link
+        [HideInInspector] m_start_Decal0AudioLink ("Audio Link ♫--{ condition_showS:_EnableAudioLink==1}", Float) = 0
+        [Enum(Bass, 0, Low Mid, 1, High Mid, 2, Treble, 3)] _AudioLinkDecal0ScaleBand ("Scale Band", Int) = 0
+        _AudioLinkDecal0Scale("Scale Mod", Vector) = (0,0,0,0)
+        [Enum(Bass, 0, Low Mid, 1, High Mid, 2, Treble, 3)] _AudioLinkDecal0RotationBand ("Rotation Band", Int) = 0
+        [Vector2]_AudioLinkDecal0Rotation("Rotation Mod", Vector) = (0,0,0,0)
+        [Enum(Bass, 0, Low Mid, 1, High Mid, 2, Treble, 3)] _AudioLinkDecal0AlphaBand ("Alpha Band", Int) = 0
+        [Vector2]_AudioLinkDecal0Alpha("Alpha Mod", Vector) = (0,0,0,0)
+        [Enum(Bass, 0, Low Mid, 1, High Mid, 2, Treble, 3)] _AudioLinkDecal0EmissionBand ("Emission Band", Int) = 0
+        [Vector2]_AudioLinkDecal0Emission("Emission Mod", Vector) = (0,0,0,0)
+        [HideInInspector] m_end_Decal0AudioLink ("Audio Link", Float) = 0
         [HideInInspector] m_end_Decal0 ("Decal 0", Float) = 0
         // Decal 1
         //"GEOM_TYPE_FROND"
@@ -184,8 +205,9 @@
         _DecalEmissionStrength1 ("Emission Strength", Range(0, 20)) = 0
         _DecalTexture1 ("Decal--{reference_properties:[_DecalTexture1Pan, _DecalTexture1UV]}", 2D) = "white" { }
         [HideInInspector][Vector2]_DecalTexture1Pan ("Panning", Vector) = (0, 0, 0, 0)
-        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)] _DecalTexture1UV ("UV", Int) = 0
+        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, distorteduv0, 4)] _DecalTexture1UV ("UV", Int) = 0
         [ToggleUI]_DecalTiled1 ("Tiled?", Float) = 0
+        _Decal1Depth ("Depth", Float) = 0
         [Vector2]_DecalScale1 ("Scale", Vector) = (1, 1, 0, 0)
         [Vector2]_DecalPosition1 ("Position", Vector) = (.5, .5, 0, 0)
         _DecalRotation1 ("Rotation", Range(0, 360)) = 0
@@ -195,6 +217,17 @@
         [ToggleUI]_DecalHueShiftEnabled1 ("Hue Shift Enabled", Float) = 0
         _DecalHueShiftSpeed1 ("Shift Speed", Float) = 0
         _DecalHueShift1 ("Hue Shift", Range(0,1)) = 0
+        // Decal 1 Audio Link
+        [HideInInspector] m_start_Decal1AudioLink ("Audio Link ♫--{ condition_showS:_EnableAudioLink==1}", Float) = 0
+        [Enum(Bass, 0, Low Mid, 1, High Mid, 2, Treble, 3)] _AudioLinkDecal1ScaleBand ("Scale Band", Int) = 0
+        _AudioLinkDecal1Scale("Scale Mod", Vector) = (0,0,0,0)
+        [Enum(Bass, 0, Low Mid, 1, High Mid, 2, Treble, 3)] _AudioLinkDecal1RotationBand ("Rotation Band", Int) = 0
+        [Vector2]_AudioLinkDecal1Rotation("Rotation Mod", Vector) = (0,0,0,0)
+        [Enum(Bass, 0, Low Mid, 1, High Mid, 2, Treble, 3)] _AudioLinkDecal1AlphaBand ("Alpha Band", Int) = 0
+        [Vector2]_AudioLinkDecal1Alpha("Alpha Mod", Vector) = (0,0,0,0)
+        [Enum(Bass, 0, Low Mid, 1, High Mid, 2, Treble, 3)] _AudioLinkDecal1EmissionBand ("Emission Band", Int) = 0
+        [Vector2]_AudioLinkDecal1Emission("Emission Mod", Vector) = (0,0,0,0)
+        [HideInInspector] m_end_Decal1AudioLink ("Audio Link", Float) = 0
         [HideInInspector] m_end_Decal1 ("Decal 0", Float) = 0
         // Decal 2
         [HideInInspector] m_start_Decal2 ("Decal 2--{reference_property:_DecalEnabled2}", Float) = 0
@@ -203,8 +236,9 @@
         _DecalEmissionStrength2 ("Emission Strength", Range(0, 20)) = 0
         _DecalTexture2 ("Decal--{reference_properties:[_DecalTexture2Pan, _DecalTexture2UV]}", 2D) = "white" { }
         [HideInInspector][Vector2]_DecalTexture2Pan ("Panning", Vector) = (0, 0, 0, 0)
-        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)] _DecalTexture2UV ("UV", Int) = 0
+        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, distorteduv0, 4)] _DecalTexture2UV ("UV", Int) = 0
         [ToggleUI]_DecalTiled2 ("Tiled?", Float) = 0
+        _Decal2Depth ("Depth", Float) = 0
         [Vector2]_DecalScale2 ("Scale", Vector) = (1, 1, 0, 0)
         [Vector2]_DecalPosition2 ("Position", Vector) = (.5, .5, 0, 0)
         _DecalRotation2 ("Rotation", Range(0, 360)) = 0
@@ -214,6 +248,17 @@
         [ToggleUI]_DecalHueShiftEnabled2 ("Hue Shift Enabled", Float) = 0
         _DecalHueShiftSpeed2 ("Shift Speed", Float) = 0
         _DecalHueShift2 ("Hue Shift", Range(0,1)) = 0
+        // Decal 2 Audio Link
+        [HideInInspector] m_start_Decal2AudioLink ("Audio Link ♫--{ condition_showS:_EnableAudioLink==1}", Float) = 0
+        [Enum(Bass, 0, Low Mid, 1, High Mid, 2, Treble, 3)] _AudioLinkDecal2ScaleBand ("Scale Band", Int) = 0
+        _AudioLinkDecal2Scale("Scale Mod", Vector) = (0,0,0,0)
+        [Enum(Bass, 0, Low Mid, 1, High Mid, 2, Treble, 3)] _AudioLinkDecal2RotationBand ("Rotation Band", Int) = 0
+        [Vector2]_AudioLinkDecal2Rotation("Rotation Mod", Vector) = (0,0,0,0)
+        [Enum(Bass, 0, Low Mid, 1, High Mid, 2, Treble, 3)] _AudioLinkDecal2AlphaBand ("Alpha Band", Int) = 0
+        [Vector2]_AudioLinkDecal2Alpha("Alpha Mod", Vector) = (0,0,0,0)
+        [Enum(Bass, 0, Low Mid, 1, High Mid, 2, Treble, 3)] _AudioLinkDecal2EmissionBand ("Emission Band", Int) = 0
+        [Vector2]_AudioLinkDecal2Emission("Emission Mod", Vector) = (0,0,0,0)
+        [HideInInspector] m_end_Decal2AudioLink ("Audio Link", Float) = 0
         [HideInInspector] m_end_Decal2 ("Decal 0", Float) = 0
         // Decal 3
         [HideInInspector] m_start_Decal3 ("Decal 3--{reference_property:_DecalEnabled3}", Float) = 0
@@ -222,8 +267,9 @@
         _DecalEmissionStrength3 ("Emission Strength", Range(0, 20)) = 0
         _DecalTexture3 ("Decal--{reference_properties:[_DecalTexture3Pan, _DecalTexture3UV]}", 2D) = "white" { }
         [HideInInspector][Vector2]_DecalTexture3Pan ("Panning", Vector) = (0, 0, 0, 0)
-        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)] _DecalTexture3UV ("UV", Int) = 0
+        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, distorteduv0, 4)] _DecalTexture3UV ("UV", Int) = 0
         [ToggleUI]_DecalTiled3 ("Tiled?", Float) = 0
+        _Decal3Depth ("Depth", Float) = 0
         [Vector2]_DecalScale3 ("Scale", Vector) = (1, 1, 0, 0)
         [Vector2]_DecalPosition3 ("Position", Vector) = (.5, .5, 0, 0)
         _DecalRotation3 ("Rotation", Range(0, 360)) = 0
@@ -233,6 +279,17 @@
         [ToggleUI]_DecalHueShiftEnabled3 ("Hue Shift Enabled", Float) = 0
         _DecalHueShiftSpeed3 ("Shift Speed", Float) = 0
         _DecalHueShift3 ("Hue Shift", Range(0,1)) = 0
+        // Decal 3 Audio Link
+        [HideInInspector] m_start_Decal3AudioLink ("Audio Link ♫--{ condition_showS:_EnableAudioLink==1}", Float) = 0
+        [Enum(Bass, 0, Low Mid, 1, High Mid, 2, Treble, 3)] _AudioLinkDecal3ScaleBand ("Scale Band", Int) = 0
+        _AudioLinkDecal3Scale("Scale Mod", Vector) = (0,0,0,0)
+        [Enum(Bass, 0, Low Mid, 1, High Mid, 2, Treble, 3)] _AudioLinkDecal3RotationBand ("Rotation Band", Int) = 0
+        [Vector2]_AudioLinkDecal3Rotation("Rotation Mod", Vector) = (0,0,0,0)
+        [Enum(Bass, 0, Low Mid, 1, High Mid, 2, Treble, 3)] _AudioLinkDecal3AlphaBand ("Alpha Band", Int) = 0
+        [Vector2]_AudioLinkDecal3Alpha("Alpha Mod", Vector) = (0,0,0,0)
+        [Enum(Bass, 0, Low Mid, 1, High Mid, 2, Treble, 3)] _AudioLinkDecal3EmissionBand ("Emission Band", Int) = 0
+        [Vector2]_AudioLinkDecal3Emission("Emission Mod", Vector) = (0,0,0,0)
+        [HideInInspector] m_end_Decal3AudioLink ("Audio Link", Float) = 0
         [HideInInspector] m_end_Decal3 ("Decal 0", Float) = 0
         [HideInInspector] m_end_DecalSection ("Decal", Float) = 0
         
@@ -241,8 +298,9 @@
         [ToggleUI]_BackFaceEnabled ("Enable Back Face Options", Float) = 0
         _BackFaceColor ("Color", Color) = (1, 1, 1, 1)
         _BackFaceTexture ("Texture", 2D) = "white" { }
+        [ToggleUI]_BackFaceReplaceAlpha ("Replace Alpha", Float) = 0
         [HideInInspector][Vector2]_BackFacePanning ("Panning", Vector) = (0, 0, 0, 0)
-        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)]_BackFaceTextureUV ("UV#", Int) = 0
+        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, distorteduv0, 4)]_BackFaceTextureUV ("UV#", Int) = 0
         _BackFaceDetailIntensity ("Detail Intensity", Range(0, 5)) = 1
         _BackFaceHueShift ("Hue Shift", Range(0, 1)) = 0
         _BackFaceEmissionStrength ("Emission Strength", Range(0, 20)) = 0
@@ -252,7 +310,7 @@
         [HideInInspector] m_lightingOptions ("Lighting", Float) = 0
         [HideInInspector] m_start_Lighting ("Light and Shadow", Float) = 0
         [Toggle(VIGNETTE_MASKED)]_EnableLighting ("Enable Lighting", Float) = 1
-        [Enum(Toon, 0, Realistic, 1, Flat, 4)] _LightingMode ("Lighting Type", Int) = 4
+        [Enum(Toon, 0, Realistic, 1, Wrapped (Beta), 2, Skin (Beta), 3, Flat, 4)] _LightingMode ("Lighting Type", Int) = 4
         _LightingStandardSmoothness ("Smoothness--{condition_show:{type:PROPERTY_BOOL,data:_LightingMode==1}}", Range(0, 1)) = 0
         _LightingWrappedWrap ("Wrap--{condition_show:{type:PROPERTY_BOOL,data:_LightingMode==2}}", Range(0, 2)) = 0
         _LightingWrappedNormalization ("Normalization--{condition_show:{type:PROPERTY_BOOL,data:_LightingMode==2}}", Range(0, 1)) = 0
@@ -262,14 +320,14 @@
         _1st_ShadeColor ("1st ShadeColor--{condition_show:{type:AND,condition1:{type:PROPERTY_BOOL,data:_LightingMode==0},condition2:{type:PROPERTY_BOOL,data:_LightingRampType==2}}}", Color) = (1,1,1,1)
         _1st_ShadeMap ("1st ShadeMap--{reference_properties:[_1st_ShadeMapPan, _1st_ShadeMapUV, _Use_1stShadeMapAlpha_As_ShadowMask, _1stShadeMapMask_Inverse],condition_show:{type:AND,condition1:{type:PROPERTY_BOOL,data:_LightingMode==0},condition2:{type:PROPERTY_BOOL,data:_LightingRampType==2}}}", 2D) = "white" {}
         [HideInInspector][Vector2]_1st_ShadeMapPan ("Panning", Vector) = (0, 0, 0, 0)
-        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)] _1st_ShadeMapUV ("UV", Int) = 0
+        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, distorteduv0, 4)] _1st_ShadeMapUV ("UV", Int) = 0
         [HideInInspector][ToggleUI]_Use_1stShadeMapAlpha_As_ShadowMask("1st ShadeMap.a As ShadowMask", Float ) = 0
         [HideInInspector][ToggleUI]_1stShadeMapMask_Inverse("1st ShadeMapMask Inverse", Float ) = 0
         [ToggleUI] _Use_BaseAs1st ("Use BaseMap as 1st ShadeMap--{condition_show:{type:AND,condition1:{type:PROPERTY_BOOL,data:_LightingMode==0},condition2:{type:PROPERTY_BOOL,data:_LightingRampType==2}}}}", Float ) = 0
         _2nd_ShadeColor ("2nd ShadeColor--{condition_show:{type:AND,condition1:{type:PROPERTY_BOOL,data:_LightingMode==0},condition2:{type:PROPERTY_BOOL,data:_LightingRampType==2}}}", Color) = (1,1,1,1)
         _2nd_ShadeMap ("2nd ShadeMap--{reference_properties:[_2nd_ShadeMapPan, _2nd_ShadeMapUV, _Use_2ndShadeMapAlpha_As_ShadowMask, _2ndShadeMapMask_Inverse],condition_show:{type:AND,condition1:{type:PROPERTY_BOOL,data:_LightingMode==0},condition2:{type:PROPERTY_BOOL,data:_LightingRampType==2}}}", 2D) = "white" {}
         [HideInInspector][Vector2]_2nd_ShadeMapPan ("Panning", Vector) = (0, 0, 0, 0)
-        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)] _2nd_ShadeMapUV ("UV", Int) = 0
+        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, distorteduv0, 4)] _2nd_ShadeMapUV ("UV", Int) = 0
         [HideInInspector][ToggleUI]_Use_2ndShadeMapAlpha_As_ShadowMask("2nd ShadeMap.a As ShadowMask", Float ) = 0
         [HideInInspector][ToggleUI]_2ndShadeMapMask_Inverse("2nd ShadeMapMask Inverse", Float ) = 0
         [ToggleUI] _Use_1stAs2nd ("Use 1st ShadeMap as 2nd_ShadeMap--{condition_show:{type:AND,condition1:{type:PROPERTY_BOOL,data:_LightingMode==0},condition2:{type:PROPERTY_BOOL,data:_LightingRampType==2}}}", Float ) = 0
@@ -282,27 +340,27 @@
         [Gradient]_ToonRamp ("Lighting Ramp--{texture:{width:512,height:4,filterMode:Bilinear,wrapMode:Clamp},force_texture_options:true,condition_show:{type:AND,condition1:{type:OR,condition1:{type:PROPERTY_BOOL,data:_LightingMode==0},condition2:{type:PROPERTY_BOOL,data:_LightingMode==2}},condition2:{type:PROPERTY_BOOL,data:_LightingRampType==0}}}", 2D) = "white" { }
         _LightingShadowMask ("Ramp Mask--{reference_properties:[_LightingShadowMaskPan, _LightingShadowMaskUV],condition_show:{type:OR,condition1:{type:PROPERTY_BOOL,data:_LightingMode==0},condition2:{type:PROPERTY_BOOL,data:_LightingMode==2}}}", 2D) = "white" { }
         [HideInInspector][Vector2]_LightingShadowMaskPan ("Panning", Vector) = (0, 0, 0, 0)
-        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)] _LightingShadowMaskUV ("UV", Int) = 0
+        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, distorteduv0, 4)] _LightingShadowMaskUV ("UV", Int) = 0
         _ShadowOffset ("Ramp Offset--{condition_show:{type:AND,condition1:{type:OR,condition1:{type:PROPERTY_BOOL,data:_LightingMode==0},condition2:{type:PROPERTY_BOOL,data:_LightingMode==2}},condition2:{type:PROPERTY_BOOL,data:_LightingRampType==0}}}}", Range(-1, 1)) = 0
         //Math
         _LightingGradientStart ("Gradient Start--{condition_show:{type:AND,condition1:{type:OR,condition1:{type:PROPERTY_BOOL,data:_LightingMode==0},condition2:{type:PROPERTY_BOOL,data:_LightingMode==2}},condition2:{type:PROPERTY_BOOL,data:_LightingRampType==1}}}", Range(0, 1)) = 0
         _LightingGradientEnd ("Gradient End--{condition_show:{type:AND,condition1:{type:OR,condition1:{type:PROPERTY_BOOL,data:_LightingMode==0},condition2:{type:PROPERTY_BOOL,data:_LightingMode==2}},condition2:{type:PROPERTY_BOOL,data:_LightingRampType==1}}}", Range(0, 1)) = .5
         // Skin
         _SkinLUT ("LUT--{condition_show:{type:PROPERTY_BOOL,data:_LightingMode==3}}", 2D) = "white" {}
-        _SssWeight ("Weight--{condition_show:{type:PROPERTY_BOOL,data:_LightingMode==3}}", Range(0,1)) = 1
         //_SssMaskCutoff ("Mask Cutoff--{condition_show:{type:PROPERTY_BOOL,data:_LightingMode==3}}", Range(0.01,1)) = 0.1
-        _SssBias ("Bias--{condition_show:{type:PROPERTY_BOOL,data:_LightingMode==3}}", Range(0,1)) = 0
+        //_SssBias ("Bias--{condition_show:{type:PROPERTY_BOOL,data:_LightingMode==3}}", Range(0,1)) = 0
         _SssScale ("Scale--{condition_show:{type:PROPERTY_BOOL,data:_LightingMode==3}}", Range(0,1)) = 1
-        _SssBumpBlur ("Bump Blur--{condition_show:{type:PROPERTY_BOOL,data:_LightingMode==3}}", Range(0,1)) = 0.7
-        [Vector3]_SssTransmissionAbsorption ("Absorption--{condition_show:{type:PROPERTY_BOOL,data:_LightingMode==3}}", Vector) = (-8,-40,-64,0)
-        [Vector3]_SssColorBleedAoWeights ("AO Color Bleed--{condition_show:{type:PROPERTY_BOOL,data:_LightingMode==3}}", Vector) = (0.4,0.15,0.13,0)
+        [HideInInspector]_SssBumpBlur ("Bump Blur--{condition_show:{type:PROPERTY_BOOL,data:_LightingMode==3}}", Range(0,1)) = 0.7
+        [HideInInspector][Vector3]_SssTransmissionAbsorption ("Absorption--{condition_show:{type:PROPERTY_BOOL,data:_LightingMode==3}}", Vector) = (-8,-40,-64,0)
+        [HideInInspector][Vector3]_SssColorBleedAoWeights ("AO Color Bleed--{condition_show:{type:PROPERTY_BOOL,data:_LightingMode==3}}", Vector) = (0.4,0.15,0.13,0)
         _LightingShadowColor ("Shadow Tint--{reference_property:_LightingDetailShadowsEnabled, condition_showS:(_LightingMode==0&&_LightingRampType!=2)||_LightingMode==2||_LightingMode==3}", Color) = (1, 1, 1, 1)
-        _ShadowStrength ("Shadow Strength--{condition_showS:(_LightingMode==0&&_LightingRampType!=2)||_LightingMode==2||_LightingMode==3}", Range(0, 1)) = 1 
-        _AttenuationMultiplier ("Unity Shadows--{condition_show:{type:PROPERTY_BOOL,data:_LightingMode!=4}}", Range(0, 1)) = 0
+        _ShadowStrength ("Shadow Strength--{condition_showS:(_LightingMode==0&&_LightingRampType!=2)||_LightingMode==2}", Range(0, 1)) = 1 
+        _AttenuationMultiplier ("Receive Casted Shadows--{condition_show:{type:PROPERTY_BOOL,data:_LightingMode!=4}}", Range(0, 1)) = 0
         [ToggleUI]_LightingIgnoreAmbientColor ("Ignore Ambient Color--{condition_show:{type:AND,condition1:{type:PROPERTY_BOOL,data:_LightingMode!=4},condition2:{type:PROPERTY_BOOL,data:_LightingMode!=1}}}", Float) = 0
+
         //_LightingShadowMap ("Shadow Color(RGB) and wrap(A)--{reference_properties:[_LightingShadowMapPan, _LightingShadowMapUV],condition_show:{type:PROPERTY_BOOL,data:_LightingMode==2}}}", 2D) = "white" { }
         //[HideInInspector][Vector2]_LightingShadowMapPan ("Panning", Vector) = (0, 0, 0, 0)
-        //[HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)] _LightingShadowMapUV ("UV", Int) = 0
+        //[HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, distorteduv0, 4)] _LightingShadowMapUV ("UV", Int) = 0
         
         [HideInInspector] m_start_lightingModifiers ("Lighting Modifiers", Float) = 0
         [Enum(Poi Custom, 0, Correct, 1)] _LightingDirectColorMode ("Direct Light Color", Int) = 0
@@ -318,7 +376,7 @@
         [HideInInspector][ToggleUI]_LightingDetailShadowsEnabled ("Enabled Detail Shadows?", Float) = 0
         _LightingDetailShadows ("Detail Shadows--{reference_properties:[_LightingDetailShadowsPan, _LightingDetailShadowsUV]}", 2D) = "white" { }
         [HideInInspector][Vector2]_LightingDetailShadowsPan ("Panning", Vector) = (0, 0, 0, 0)
-        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)] _LightingDetailShadowsUV ("UV", Int) = 0
+        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, distorteduv0, 4)] _LightingDetailShadowsUV ("UV", Int) = 0
         _LightingDetailStrength ("Detail Strength", Range(0, 1)) = 1
         [HideInInspector] m_end_detailShadows ("Detail Shadows", Float) = 0
         
@@ -326,7 +384,7 @@
         [HideInInspector][ToggleUI]_LightingEnableAO ("Enable AO", Float) = 0
         _LightingAOTex ("AO Map", 2D) = "white" { }
         [HideInInspector][Vector2]_LightingAOTexPan ("Panning", Vector) = (0, 0, 0, 0)
-        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)] _LightingAOTexUV ("UV", Int) = 0
+        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, distorteduv0, 4)] _LightingAOTexUV ("UV", Int) = 0
         _AOStrength ("AO Strength", Range(0, 1)) = 1
         [HideInInspector] m_end_ambientOcclusion ("Ambient Occlusion", Float) = 0
         
@@ -340,8 +398,8 @@
         [HideInInspector] m_end_lightingHSL ("HSL Lighting", Float) = 0
         
         // point/spot Light Settings
-        [HideInInspector] m_start_lightingAdvanced ("Additive Lighting (Point/Spot)--{reference_property:_commentIfZero_LightingAdditiveEnable,button_right:{text:Tutorial,action:{type:URL,data:https://www.youtube.com/watch?v=at3p5yRRVU0&list=PL4_Gy3VRJSmbXfQSldzUiChgABQsoBlLw&index=12},hover:YouTube}}", Float) = 0
-        [HideInInspector][ToggleUI]_commentIfZero_LightingAdditiveEnable ("Enable Additive", Float) = 1
+        [HideInInspector] m_start_lightingAdvanced ("Additive Lighting (Point/Spot)--{reference_property:_LightingAdditiveEnable,button_help:{text:Tutorial,action:{type:URL,data:https://www.youtube.com/watch?v=at3p5yRRVU0&list=PL4_Gy3VRJSmbXfQSldzUiChgABQsoBlLw&index=12},hover:YouTube}}", Float) = 0
+        [HideInInspector][ToggleUI]_LightingAdditiveEnable ("Enable Additive", Float) = 1
         [Enum(Realistic, 0, Toon, 1, Wrapped, 2)] _LightingAdditiveType ("Lighting Type", Int) = 1
         _LightingAdditiveGradientStart ("Gradient Start", Range(0, 1)) = 0
         _LightingAdditiveGradientEnd ("Gradient End", Range(0, 1)) = .5
@@ -349,7 +407,6 @@
         _LightingAdditiveDetailStrength ("Detail Shadow Strength", Range(0, 1)) = 1
         [ToggleUI]_LightingAdditiveLimitIntensity ("Limit Intensity", Float) = 0
         _LightingAdditiveMaxIntensity ("Max Intensity--{condition_show:{type:PROPERTY_BOOL,data:_LightingAdditiveLimitIntensity==1}}", Range(0, 3)) = 1
-        [Toggle(_SMOOTHNESS_TEXTURE_ALBEDO_CHANNEL_A)]_DisableDirectionalInAdd ("No Directional", Float) = 1
         [ThryToggle(_SMOOTHNESS_TEXTURE_ALBEDO_CHANNEL_A)]_DisableDirectionalInAdd ("No Directional", Float) = 1
         [HideInInspector] m_end_lightingAdvanced ("Additive Lighting", Float) = 0
         [HideInInspector] m_end_Lighting ("Light and Shadow", Float) = 0
@@ -358,9 +415,9 @@
         [HideInInspector] m_start_subsurface ("Subsurface Scattering", Float) = 0
         [ThryToggle(_TERRAIN_NORMAL_MAP)]_EnableSSS ("Enable Subsurface Scattering", Float) = 0
         _SSSColor ("Subsurface Color", Color) = (1, 0, 0, 1)
-        _SSSThicknessMap ("Thickness Map", 2D) = "black" { }
+        _SSSThicknessMap ("Thickness Map--{reference_properties:[_SSSThicknessMapPan, _SSSThicknessMapUV]}", 2D) = "black" { }
         [HideInInspector][Vector2]_SSSThicknessMapPan ("Panning", Vector) = (0, 0, 0, 0)
-        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)] _SSSThicknessMapUV ("UV", Int) = 0
+        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, distorteduv0, 4)] _SSSThicknessMapUV ("UV", Int) = 0
         _SSSThicknessMod ("Thickness mod", Range(-1, 1)) = 0
         _SSSSCale ("Light Strength", Range(0, 1)) = 0.25
         _SSSPower ("Light Spread", Range(1, 100)) = 5
@@ -377,9 +434,9 @@
         _SSSExponent ("Spot Exponent", Range(2, 100)) = 30
         _SSSNormalOffset ("Scattering", Range(0, .3)) = 0.05
         _SSSPointLightDirectionality ("Point Light Directionality", Range(0, 1)) = .7
-        _SSSThicknessMap ("Thickness Map--{reference_properties:[_SSSThicknessMapPan, _SSSThicknessMapUV, _SSSThickness]}", 2D) = "black" { }
+        _SSSThicknessMap ("Thickness Map--{reference_properties:[_SSSThicknessMapPan, _SSSThicknessMapUV]}", 2D) = "black" { }
         [HideInInspector][Vector2]_SSSThicknessMapPan ("Panning", Vector) = (0, 0, 0, 0)
-        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)] _SSSThicknessMapUV ("UV", Int) = 0
+        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, distorteduv0, 4)] _SSSThicknessMapUV ("UV", Int) = 0
         [HideInInspector]_SSSThickness ("Strength", Range(0, 1)) = 1
         [HideInInspector] m_end_subsurface ("Subsurface Scattering", Float) = 0
         */
@@ -398,10 +455,10 @@
         _RimLightColorBias ("Rim Color Bias", Range(0, 1)) = 1
         _RimTex ("Rim Texture", 2D) = "white" { }
         [HideInInspector][Vector2]_RimTexPan ("Panning", Vector) = (0, 0, 0, 0)
-        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)] _RimTexUV ("UV", Int) = 0
+        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, distorteduv0, 4)] _RimTexUV ("UV", Int) = 0
         _RimMask ("Rim Mask", 2D) = "white" { }
         [HideInInspector][Vector2]_RimMaskPan ("Panning", Vector) = (0, 0, 0, 0)
-        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)] _RimMaskUV ("UV", Int) = 0
+        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, distorteduv0, 4)] _RimMaskUV ("UV", Int) = 0
         
         [HideInInspector] m_start_rimHueShift ("Hue Shift", Float) = 0
         [ToggleUI]_RimHueShiftEnabled ("Enabled", Float) = 0
@@ -413,7 +470,7 @@
         [HideInInspector] m_start_rimWidthNoise ("Width Noise", Float) = 0
         _RimWidthNoiseTexture ("Rim Width Noise", 2D) = "black" { }
         [HideInInspector][Vector2]_RimWidthNoiseTexturePan ("Panning", Vector) = (0, 0, 0, 0)
-        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)] _RimWidthNoiseTextureUV ("UV", Int) = 0
+        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, distorteduv0, 4)] _RimWidthNoiseTextureUV ("UV", Int) = 0
         _RimWidthNoiseStrength ("Intensity", Range(0, 1)) = 0.1
         [HideInInspector] m_end_rimWidthNoise ("Width Noise", Float) = 0
         
@@ -423,6 +480,16 @@
         _ShadowMixThreshold ("Shadow Mix Threshold", Range(0, 1)) = .5
         _ShadowMixWidthMod ("Shadow Mix Width Mod", Range(0, 10)) = .5
         [HideInInspector] m_end_ShadowMix ("Shadow Mix", Float) = 0
+
+        // Rim Shadow Mix
+        [HideInInspector] m_start_RimAudioLink ("Audio Link ♫--{ condition_showS:_EnableAudioLink==1}", Float) = 0
+        [Enum(Bass, 0, Low Mid, 1, High Mid, 2, Treble, 3)] _AudioLinkRimWidthBand ("Width Add Band", Int) = 0
+        [Vector2] _AudioLinkRimWidthAdd ("Width Add (XMin, YMax)", Vector) = (0,0,0,0)
+        [Enum(Bass, 0, Low Mid, 1, High Mid, 2, Treble, 3)] _AudioLinkRimEmissionBand ("Emission Add Band", Int) = 0
+        [Vector2] _AudioLinkRimEmissionAdd ("Emission Add (XMin, YMax)", Vector) = (0,0,0,0)
+        [Enum(Bass, 0, Low Mid, 1, High Mid, 2, Treble, 3)] _AudioLinkRimBrightnessBand ("Brightness Band", Int) = 0
+        [Vector2] _AudioLinkRimBrightnessAdd ("Brightness Add (XMin, YMax)", Vector) = (0,0,0,0)
+        [HideInInspector] m_end_RimAudioLink ("Audio Link", Float) = 0
         [HideInInspector] m_end_rimLightOptions ("Rim Lighting", Float) = 0
         
         // Environmental Rim Lighting
@@ -430,7 +497,7 @@
         [ThryToggle(_MAPPING_6_FRAMES_LAYOUT)]_EnableEnvironmentalRim ("Enable Environmental Rim", Float) = 0
         _RimEnviroMask ("Mask", 2D) = "white" { }
         [HideInInspector][Vector2]_RimEnviroMaskPan ("Panning", Vector) = (0, 0, 0, 0)
-        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)] _RimEnviroMaskUV ("UV", Int) = 0
+        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, distorteduv0, 4)] _RimEnviroMaskUV ("UV", Int) = 0
         _RimEnviroBlur ("Blur", Range(0, 1)) = 0.7
         _RimEnviroWidth ("Rim Width", Range(0, 1)) = 0.45
         _RimEnviroSharpness ("Rim Sharpness", Range(0, 1)) = 0
@@ -456,15 +523,15 @@
         [HideInInspector][Helpbox(1)] _BRDFMetallicGlossMapToolTip ("R = Metallic, G = Reflectance, A = Glossiness/Smoothness/Inverse Roughness", Int) = 0
         [HideInInspector][ToggleUI]_BRDFInvertGlossiness ("Invert Glossiness", Float) = 0
         [HideInInspector][Vector2]_BRDFMetallicGlossMapPan ("Panning", Vector) = (0, 0, 0, 0)
-        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)] _BRDFMetallicGlossMapUV ("UV", Int) = 0
+        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, distorteduv0, 4)] _BRDFMetallicGlossMapUV ("UV", Int) = 0
         _BRDFSpecularMap ("Specular Tint/Mask--{reference_properties:[_BRDFSpecularMapPan, _BRDFSpecularMapUV, _BRDFSpecularMapToolTip]}", 2D) = "white" { }
         [HideInInspector][Helpbox(1)] _BRDFSpecularMapToolTip ("RGB = Color, A = Mask", Int) = 0
         [HideInInspector][Vector2]_BRDFSpecularMapPan ("Panning", Vector) = (0, 0, 0, 0)
-        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)] _BRDFSpecularMapUV ("UV", Int) = 0
+        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, distorteduv0, 4)] _BRDFSpecularMapUV ("UV", Int) = 0
         _BRDFMetallicMap ("Metallic Tint/Mask--{reference_properties:[_BRDFMetallicMapPan, _BRDFMetallicMapUV, _BRDFMetallicMapToolTip]}", 2D) = "white" { }
         [HideInInspector][Helpbox(1)] _BRDFMetallicMapToolTip ("RGB = Color, A = Mask", Int) = 0
         [HideInInspector][Vector2]_BRDFMetallicMapPan ("Panning", Vector) = (0, 0, 0, 0)
-        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)] _BRDFMetallicMapUV ("UV", Int) = 0
+        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, distorteduv0, 4)] _BRDFMetallicMapUV ("UV", Int) = 0
         _BRDFMetallic ("Metallic", Range(0,1)) = 0
         _BRDFGlossiness ("Glossiness", Range(0,1)) = 0
         _BRDFReflectance ("Reflectance", Range(0,1)) = .5
@@ -483,14 +550,14 @@
         _MetalReflectionTint ("Reflection Tint", Color) = (1, 1, 1)
         _MetallicTintMap ("Tint Map", 2D) = "white" { }
         [HideInInspector][Vector2]_MetallicTintMapPan ("Panning", Vector) = (0, 0, 0, 0)
-        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)] _MetallicTintMapUV ("UV", Int) = 0
+        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, distorteduv0, 4)] _MetallicTintMapUV ("UV", Int) = 0
         _MetallicMask ("Metallic Mask", 2D) = "white" { }
         [HideInInspector][Vector2]_MetallicMaskPan ("Panning", Vector) = (0, 0, 0, 0)
-        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)] _MetallicMaskUV ("UV", Int) = 0
+        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, distorteduv0, 4)] _MetallicMaskUV ("UV", Int) = 0
         _Metallic ("Metallic", Range(0, 1)) = 0
         _SmoothnessMask ("Smoothness Map", 2D) = "white" { }
         [HideInInspector][Vector2]_SmoothnessMaskPan ("Panning", Vector) = (0, 0, 0, 0)
-        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)] _SmoothnessMaskUV ("UV", Int) = 0
+        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, distorteduv0, 4)] _SmoothnessMaskUV ("UV", Int) = 0
         [ToggleUI]_InvertSmoothness ("Invert Smoothness Map", Range(0, 1)) = 0
         _Smoothness ("Smoothness", Range(0, 1)) = 0
         [HideInInspector] m_end_Metallic ("Metallics", Float) = 0
@@ -503,7 +570,7 @@
         _ClearcoatMap ("Clear Coat Map--{reference_properties:[_ClearcoatMapPan, _ClearcoatMapUV, _ClearcoatInvertSmoothness, _ClearcoatHelpBox]}", 2D) = "white" { }
         [HideInInspector][Helpbox(1)] _ClearcoatHelpBox ("R = Clear Coat Map, G = Specular Mask, B = Reflection Mask, A = Glossiness/Smoothness/Inverse Roughness", Int) = 0
         [HideInInspector][Vector2]_ClearcoatMapPan ("Panning", Vector) = (0, 0, 0, 0)
-        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)] _ClearcoatMapUV ("UV", Int) = 0
+        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, distorteduv0, 4)] _ClearcoatMapUV ("UV", Int) = 0
         [HideInInspector][ToggleUI]_ClearcoatInvertSmoothness ("Invert Smoothness", Range(0, 1)) = 0
         _Clearcoat ("Clear Coat", Range(0, 1)) = 1
         _ClearcoatGlossiness ("Smoothness", Range(0, 1)) = 0
@@ -522,7 +589,7 @@
         _MatcapBorder ("Border", Range(0, .5)) = 0.43
         _MatcapMask ("Mask--{reference_properties:[_MatcapMaskPan, _MatcapMaskUV, _MatcapMaskInvert]}", 2D) = "white" { }
         [HideInInspector][Vector2]_MatcapMaskPan ("Panning", Vector) = (0, 0, 0, 0)
-        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)] _MatcapMaskUV ("UV", Int) = 0
+        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, distorteduv0, 4)] _MatcapMaskUV ("UV", Int) = 0
         [HideInInspector][ToggleUI]_MatcapMaskInvert("Invert", Float) = 0 
         _MatcapEmissionStrength ("Emission Strength", Range(0, 20)) = 0
         _MatcapIntensity ("Intensity", Range(0, 5)) = 1
@@ -546,7 +613,7 @@
         _Matcap2Border ("Border", Range(0, .5)) = 0.43
         _Matcap2Mask ("Mask--{reference_properties:[_Matcap2MaskPan, _Matcap2MaskUV, _Matcap2MaskInvert]}", 2D) = "white" { }
         [HideInInspector][Vector2]_Matcap2MaskPan ("Panning", Vector) = (0, 0, 0, 0)
-        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)] _Matcap2MaskUV ("UV", Int) = 0
+        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, distorteduv0, 4)] _Matcap2MaskUV ("UV", Int) = 0
         [HideInInspector][ToggleUI]_Matcap2MaskInvert("Invert", Float) = 0 
         _Matcap2EmissionStrength ("Emission Strength", Range(0, 20)) = 0
         _Matcap2Intensity ("Intensity", Range(0, 5)) = 1
@@ -569,17 +636,18 @@
         [Enum(vertex, 0, pixel, 1)] _SpecularNormal ("Normal Select", Int) = 1
         _SpecularTint ("Specular Tint", Color) = (1, 1, 1, 1)
         _SpecularMetallic ("Metallic", Range(0, 1)) = 0
+        _SpecularMaxBrightness("Max Light Brightness", Float) = 0
         [Gradient]_SpecularMetallicMap ("Metallic Map--{reference_properties:[_SpecularMetallicMapPan, _SpecularMetallicMapUV]}", 2D) = "white" { }
         [HideInInspector][Vector2]_SpecularMetallicMapPan ("Panning", Vector) = (0, 0, 0, 0)
-        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)] _SpecularMetallicMapUV ("UV", Int) = 0
+        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, distorteduv0, 4)] _SpecularMetallicMapUV ("UV", Int) = 0
         _SpecularSmoothness ("Smoothness--{condition_show:{type:OR,condition1:{type:PROPERTY_BOOL,data:_SpecularType==1},condition2:{type:PROPERTY_BOOL,data:_SpecularType==3}}}", Range(0, 1)) = 1
         [Gradient]_SpecularMap ("Specular Map", 2D) = "white" { }
         [HideInInspector][Vector2]_SpecularMapPan ("Panning", Vector) = (0, 0, 0, 0)
-        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)] _SpecularMapUV ("UV", Int) = 0
+        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, distorteduv0, 4)] _SpecularMapUV ("UV", Int) = 0
         [ToggleUI]_SpecularInvertSmoothness ("Invert Smoothness", Float) = 0
         _SpecularMask ("Specular Mask", 2D) = "white" { }
         [HideInInspector][Vector2]_SpecularMaskPan ("Panning", Vector) = (0, 0, 0, 0)
-        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)] _SpecularMaskUV ("UV", Int) = 0
+        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, distorteduv0, 4)] _SpecularMaskUV ("UV", Int) = 0
         [Enum(Alpha, 0, Grayscale, 1)] _SmoothnessFrom ("Smoothness From", Int) = 1
         // Anisotropic Specular
         [Enum(Tangent, 0, binormal, 1)] _SpecWhatTangent ("(Bi)Tangent?--{condition_show:{type:OR,condition1:{type:PROPERTY_BOOL,data:_SpecularType==3},condition2:{type:PROPERTY_BOOL,data:_SpecularType==4}}}", Int) = 0
@@ -590,7 +658,7 @@
         [ToggleUI]_AnisoUseTangentMap ("Use Directional Map?--{condition_show:{type:OR,condition1:{type:PROPERTY_BOOL,data:_SpecularType==3},condition2:{type:PROPERTY_BOOL,data:_SpecularType==4}}}", Float) = 0
         _AnisoTangentMap ("Anisotropic Directional Map--{reference_properties:[_AnisoTangentMapPan, _AnisoTangentMapUV], condition_show:{type:OR,condition1:{type:PROPERTY_BOOL,data:_SpecularType==3},condition2:{type:PROPERTY_BOOL,data:_SpecularType==4}}}", 2D) = "bump" { }
         [HideInInspector][Vector2]_AnisoTangentMapPan ("Panning", Vector) = (0, 0, 0, 0)
-        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)] _AnisoTangentMapUV ("UV", Int) = 0
+        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, distorteduv0, 4)] _AnisoTangentMapUV ("UV", Int) = 0
         //toon aniso
         _SpecularToonStart ("Spec Toon Start--{condition_show:{type:PROPERTY_BOOL,data:_SpecularType==4}}", Range(0, 1)) = .95
         _SpecularToonEnd ("Spec Toon End--{condition_show:{type:PROPERTY_BOOL,data:_SpecularType==4}}", Range(0, 2)) = 1
@@ -599,11 +667,11 @@
         [Curve]_SpecularAnisoJitterMicro ("Micro Shift--{reference_properties:[_SpecularAnisoJitterMicroPan, _SpecularAnisoJitterMicroUV], condition_show:{type:OR,condition1:{type:PROPERTY_BOOL,data:_SpecularType==3},condition2:{type:PROPERTY_BOOL,data:_SpecularType==4}}}", 2D) = "black" { }
         _SpecularAnisoJitterMicroMultiplier ("Micro Multiplier--{condition_show:{type:OR,condition1:{type:PROPERTY_BOOL,data:_SpecularType==3},condition2:{type:PROPERTY_BOOL,data:_SpecularType==4}}}", Range(0, 10)) = 0
         [HideInInspector][Vector2]_SpecularAnisoJitterMicroPan ("Panning", Vector) = (0, 0, 0, 0)
-        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)] _SpecularAnisoJitterMicroUV ("UV", Int) = 0
+        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, distorteduv0, 4)] _SpecularAnisoJitterMicroUV ("UV", Int) = 0
         [Curve]_SpecularAnisoJitterMacro ("Macro Shift--{reference_properties:[_SpecularAnisoJitterMacroPan, _SpecularAnisoJitterMacroUV], condition_show:{type:OR,condition1:{type:PROPERTY_BOOL,data:_SpecularType==3},condition2:{type:PROPERTY_BOOL,data:_SpecularType==4}}}", 2D) = "black" { }
         _SpecularAnisoJitterMacroMultiplier ("Macro Multiplier--{condition_show:{type:OR,condition1:{type:PROPERTY_BOOL,data:_SpecularType==3},condition2:{type:PROPERTY_BOOL,data:_SpecularType==4}}}", Range(0, 10)) = 0
         [HideInInspector][Vector2]_SpecularAnisoJitterMacroPan ("Panning", Vector) = (0, 0, 0, 0)
-        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)] _SpecularAnisoJitterMacroUV ("UV", Int) = 0
+        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, distorteduv0, 4)] _SpecularAnisoJitterMacroUV ("UV", Int) = 0
         // Toon Specular
         [MultiSlider]_SpecularToonInnerOuter ("Inner/Outer Edge--{condition_show:{type:PROPERTY_BOOL,data:_SpecularType==2}}", Vector) = (0.25, 0.3, 0, 1)
         [HideInInspector] m_end_specular ("Specular Reflections", Float) = 0
@@ -615,17 +683,18 @@
         [Enum(vertex, 0, pixel, 1)] _SpecularNormal1 ("Normal Select", Int) = 1
         _SpecularTint1 ("Specular Tint", Color) = (1, 1, 1, 1)
         _SpecularMetallic1 ("Metallic", Range(0, 1)) = 0
+        _SpecularMaxBrightness1("Max Light Brightness", Float) = 0
         [Gradient]_SpecularMetallicMap1 ("Metallic Map--{reference_properties:[_SpecularMetallicMapPan, _SpecularMetallicMapUV]}", 2D) = "white" { }
         [HideInInspector][Vector2]_SpecularMetallicMap1Pan ("Panning", Vector) = (0, 0, 0, 0)
-        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)] _SpecularMetallicMap1UV ("UV", Int) = 0
+        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, distorteduv0, 4)] _SpecularMetallicMap1UV ("UV", Int) = 0
         _SpecularSmoothness1 ("Smoothness--{condition_show:{type:OR,condition1:{type:PROPERTY_BOOL,data:_SpecularType1==1},condition2:{type:PROPERTY_BOOL,data:_SpecularType1==3}}}", Range(-2, 1)) = .75
         _SpecularMap1 ("Specular Map", 2D) = "white" { }
         [HideInInspector][Vector2]_SpecularMap1Pan ("Panning", Vector) = (0, 0, 0, 0)
-        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)] _SpecularMap1UV ("UV", Int) = 0
+        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, distorteduv0, 4)] _SpecularMap1UV ("UV", Int) = 0
         [ToggleUI]_SpecularInvertSmoothness1 ("Invert Smoothness", Float) = 0
         _SpecularMask1 ("Specular Mask", 2D) = "white" { }
         [HideInInspector][Vector2]_SpecularMask1Pan ("Panning", Vector) = (0, 0, 0, 0)
-        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)] _SpecularMask1UV ("UV", Int) = 0
+        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, distorteduv0, 4)] _SpecularMask1UV ("UV", Int) = 0
         [Enum(Alpha, 0, Grayscale, 1)] _SmoothnessFrom1 ("Smoothness From", Int) = 1
         // Second Anisotropic Specular
         [Enum(Tangent, 0, binormal, 1)] _SpecWhatTangent1 ("(Bi)Tangent?--{condition_show:{type:OR,condition1:{type:PROPERTY_BOOL,data:_SpecularType1==3},condition2:{type:PROPERTY_BOOL,data:_SpecularType1==4}}}", Int) = 0
@@ -636,7 +705,7 @@
         [ToggleUI]_AnisoUseTangentMap1 ("Use Directional Map?--{condition_show:{type:OR,condition1:{type:PROPERTY_BOOL,data:_SpecularType1==3},condition2:{type:PROPERTY_BOOL,data:_SpecularType1==4}}}", Float) = 0
         _AnisoTangentMap1 ("Anisotropic Directional Map--{reference_properties:[_AnisoTangentMap1Pan, _AnisoTangentMap1UV], condition_show:{type:OR,condition1:{type:PROPERTY_BOOL,data:_SpecularType1==3},condition2:{type:PROPERTY_BOOL,data:_SpecularType1==4}}}", 2D) = "bump" { }
         [HideInInspector][Vector2]_AnisoTangentMap1Pan ("Panning", Vector) = (0, 0, 0, 0)
-        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)] _AnisoTangentMap1UV ("UV", Int) = 0
+        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, distorteduv0, 4)] _AnisoTangentMap1UV ("UV", Int) = 0
         // Second toon aniso
         _SpecularToonStart1 ("Spec Toon Start--{condition_show:{type:PROPERTY_BOOL,data:_SpecularType1==4}}", Range(0, 1)) = .95
         _SpecularToonEnd1 ("Spec Toon End--{condition_show:{type:PROPERTY_BOOL,data:_SpecularType1==4}}", Range(0, 2)) = 1
@@ -645,11 +714,11 @@
         [Curve]_SpecularAnisoJitterMicro1 ("Micro Shift--{reference_properties:[_SpecularAnisoJitterMicro1Pan, _SpecularAnisoJitterMicro1UV], condition_show:{type:OR,condition1:{type:PROPERTY_BOOL,data:_SpecularType1==3},condition2:{type:PROPERTY_BOOL,data:_SpecularType1==4}}}", 2D) = "black" { }
         _SpecularAnisoJitterMicroMultiplier1 ("Micro Multiplier--{condition_show:{type:OR,condition1:{type:PROPERTY_BOOL,data:_SpecularType1==3},condition2:{type:PROPERTY_BOOL,data:_SpecularType1==4}}}", Range(0, 10)) = 0
         [HideInInspector][Vector2]_SpecularAnisoJitterMicro1Pan ("Panning", Vector) = (0, 0, 0, 0)
-        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)] _SpecularAnisoJitterMicro1UV ("UV", Int) = 0
+        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, distorteduv0, 4)] _SpecularAnisoJitterMicro1UV ("UV", Int) = 0
         [Curve]_SpecularAnisoJitterMacro1 ("Macro Shift--{reference_properties:[_SpecularAnisoJitterMacro1Pan, _SpecularAnisoJitterMacro1UV], condition_show:{type:OR,condition1:{type:PROPERTY_BOOL,data:_SpecularType1==3},condition2:{type:PROPERTY_BOOL,data:_SpecularType1==4}}}", 2D) = "black" { }
         _SpecularAnisoJitterMacroMultiplier1 ("Macro Multiplier--{condition_show:{type:OR,condition1:{type:PROPERTY_BOOL,data:_SpecularType1==3},condition2:{type:PROPERTY_BOOL,data:_SpecularType1==4}}}", Range(0, 10)) = 0
         [HideInInspector][Vector2]_SpecularAnisoJitterMacro1Pan ("Panning", Vector) = (0, 0, 0, 0)
-        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)] _SpecularAnisoJitterMacro1UV ("UV", Int) = 0
+        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, distorteduv0, 4)] _SpecularAnisoJitterMacro1UV ("UV", Int) = 0
         // Second Toon Specular
         [MultiSlider]_SpecularToonInnerOuter1 ("Inner/Outer Edge--{condition_show:{type:PROPERTY_BOOL,data:_SpecularType1==2}}", Vector) = (0.25, 0.3, 0, 1)
         [HideInInspector] m_end_specular1 ("Specular Reflections", Float) = 0
@@ -663,13 +732,14 @@
         [Gradient]_EmissionMap ("Emission Map", 2D) = "white" { }
         [ToggleUI]_EmissionBaseColorAsMap ("Base Color as Map?", Float) = 0
         [HideInInspector][Vector2]_EmissionMapPan ("Panning", Vector) = (0, 0, 0, 0)
-        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)] _EmissionMapUV ("UV", Int) = 0
+        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, distorteduv0, 4)] _EmissionMapUV ("UV", Int) = 0
         _EmissionMask ("Emission Mask", 2D) = "white" { }
         [HideInInspector][Vector2]_EmissionMaskPan ("Panning", Vector) = (0, 0, 0, 0)
-        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)] _EmissionMaskUV ("UV", Int) = 0
+        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, distorteduv0, 4)] _EmissionMaskUV ("UV", Int) = 0
         _EmissionStrength ("Emission Strength", Range(0, 20)) = 0
         [ToggleUI]_EmissionHueShiftEnabled ("Enable Hue Shift", Float) = 0
         _EmissionHueShift ("Hue Shift", Range(0, 1)) = 0
+        _EmissionHueShiftSpeed ("Hue Shift Speed", Float) = 0
         
         // Center out emission
         [HideInInspector] m_start_CenterOutEmission ("Center Out Emission", Float) = 0
@@ -708,8 +778,22 @@
         _EmissiveScroll_Interval ("Interval", Float) = 20
         _EmissionScrollingOffset ("Offset", Float) = 0
         [HideInInspector] m_end_scrollingEmissionOptions ("Scrolling Emission", Float) = 0
-        [HideInInspector] m_end_emissionOptions ("Emission / Glow", Float) = 0
         
+        // Emission Audio Link
+        [HideInInspector] m_start_EmissionAudioLink ("Audio Link ♫--{ condition_showS:_EnableAudioLink==1}", Float) = 0
+        [ToggleUI] _EnableEmissionStrengthAudioLink ("multiply Emission Strength", Float) = 0
+        [Enum(Bass, 0, Low Mid, 1, High Mid, 2, Treble, 3)] _AudioLinkEmissionStrengthBand ("Emission Strength Band", Int) = 0
+        [ToggleUI] _EnableEmissionCenterOutAudioLink ("Center Out multipy", Float) = 0
+        _EmissionCenterOutAudioLinkWidth("C Out Mul Duration", Range(0,1)) = 1
+        [Enum(Bass, 0, Low Mid, 1, High Mid, 2, Treble, 3)] _AudioLinkEmissionCenterOutBand ("Center Out M Band", Int) = 0
+        [Vector2] _EmissionCenterOutAddAudioLink ("Center Out Add", Vector) = (0,0,0,0)
+        _EmissionCenterOutAddAudioLinkwidth("C Out Add Duration", Range(0,1)) = 1
+        [Enum(Bass, 0, Low Mid, 1, High Mid, 2, Treble, 3)] _AudioLinkEmissionCenterOutAddBand ("Center Out A Band", Int) = 0
+        [Vector2]_AudioLinkAddEmission ("Emission Strength Add", Vector) = (0, 0, 0, 0)
+        [Enum(Bass, 0, Low Mid, 1, High Mid, 2, Treble, 3)] _AudioLinkAddEmissionBand ("Emission Add Band", Int) = 0
+        [HideInInspector] m_end_EmissionAudioLink ("Audio Link", Float) = 0
+        [HideInInspector] m_end_emissionOptions ("Emission / Glow", Float) = 0
+
         // Second Enission
         [HideInInspector] m_start_emission1Options ("Emission / Glow 2 (Requires Emission 1 Enabled)", Float) = 0
         [ThryToggle(EFFECT_HUE_VARIATION)]_EnableEmission1 ("Enable Emission 2", Float) = 0
@@ -717,13 +801,15 @@
         [Gradient]_EmissionMap1 ("Emission Map", 2D) = "white" { }
         [ToggleUI]_EmissionBaseColorAsMap1 ("Base Color as Map?", Float) = 0
         [HideInInspector][Vector2]_EmissionMap1Pan ("Panning", Vector) = (0, 0, 0, 0)
-        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)] _EmissionMap1UV ("UV", Int) = 0
+        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, distorteduv0, 4)] _EmissionMap1UV ("UV", Int) = 0
         _EmissionMask1 ("Emission Mask", 2D) = "white" { }
         [HideInInspector][Vector2]_EmissionMask1Pan ("Panning", Vector) = (0, 0, 0, 0)
-        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)] _EmissionMask1UV ("UV", Int) = 0
+        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, distorteduv0, 4)] _EmissionMask1UV ("UV", Int) = 0
         _EmissionStrength1 ("Emission Strength", Range(0, 20)) = 0
         [ToggleUI]_EmissionHueShiftEnabled1 ("Enable Hue Shift", Float) = 0
         _EmissionHueShift1 ("Hue Shift", Range(0, 1)) = 0
+        _EmissionHueShiftSpeed1 ("Hue Shift Speed", Float) = 0
+
         
         // Second Center Out Enission
         [HideInInspector] m_start_CenterOutEmission1 ("Center Out Emission", Float) = 0
@@ -762,8 +848,22 @@
         _EmissiveScroll_Interval1 ("Interval", Float) = 20
         _EmissionScrollingOffset1 ("Offset", Float) = 0
         [HideInInspector] m_end_scrollingEmission1Options ("Scrolling Emission", Float) = 0
+
+        // Emission Audio Link
+        [HideInInspector] m_start_Emission1AudioLink ("Audio Link ♫--{ condition_showS:_EnableAudioLink==1}", Float) = 0
+        [ToggleUI] _EnableEmission1StrengthAudioLink ("Emission Strength", Float) = 0
+        [Enum(Bass, 0, Low Mid, 1, High Mid, 2, Treble, 3)] _AudioLinkEmission1StrengthBand ("Emission Strength Band", Int) = 0
+        [ToggleUI] _EnableEmission1CenterOutAudioLink ("Center Out multipy", Float) = 0
+        _Emission1CenterOutAudioLinkWidth("C Out Mul Duration", Range(0,1)) = 1
+        [Enum(Bass, 0, Low Mid, 1, High Mid, 2, Treble, 3)] _AudioLinkEmission1CenterOutBand ("Center Out Band", Int) = 0
+        [Vector2] _EmissionCenterOutAddAudioLink1 ("Center Out Add", Vector) = (0,0,0,0)
+        _Emission1CenterOutAddAudioLinkwidth("C Out Add Duration", Range(0,1)) = 1
+        [Enum(Bass, 0, Low Mid, 1, High Mid, 2, Treble, 3)] _AudioLinkEmission1CenterOutAddBand ("Center Out A Band", Int) = 0
+        [Vector2]_AudioLinkAddEmission1 ("Emission Strength Add", Vector) = (0, 0, 0, 0)
+        [Enum(Bass, 0, Low Mid, 1, High Mid, 2, Treble, 3)] _AudioLinkAddEmission1Band ("Emission Add Band", Int) = 0
+        [HideInInspector] m_end_Emission1AudioLink ("Audio Link", Float) = 0
         [HideInInspector] m_end_emission1Options ("Emission / Glow 2", Float) = 0
-        
+
         // Flipbook
         [HideInInspector] m_start_flipBook ("Flipbook", Float) = 0
         [ThryToggle(_SUNDISK_HIGH_QUALITY)]_EnableFlipbook ("Enable Flipbook", Float) = 0
@@ -771,10 +871,10 @@
         [ToggleUI]_FlipbookIntensityControlsAlpha ("Intensity Controls Alpha?", Float) = 0
         [ToggleUI]_FlipbookColorReplaces ("Color Replaces Flipbook", Float) = 0
         [TextureArray]_FlipbookTexArray ("Texture Array", 2DArray) = "" { }
-        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)] _FlipbookTexArrayUV ("UV", Int) = 0
+        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, distorteduv0, 4)] _FlipbookTexArrayUV ("UV", Int) = 0
         [HideInInspector][Vector2]_FlipbookTexArrayPan ("Panning", Vector) = (0, 0, 0, 0)
         _FlipbookMask ("Mask", 2D) = "white" { }
-        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)] _FlipbookMaskUV ("UV", Int) = 0
+        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, distorteduv0, 4)] _FlipbookMaskUV ("UV", Int) = 0
         [HideInInspector][Vector2]_FlipbookMaskPan ("Panning", Vector) = (0, 0, 0, 0)
         _FlipbookColor ("Color & alpha", Color) = (1, 1, 1, 1)
         _FlipbookTotalFrames ("Total Frames", Float) = 1
@@ -787,6 +887,18 @@
         _FlipbookReplace ("Replace", Range(0, 1)) = 1
         _FlipbookMultiply ("Multiply", Range(0, 1)) = 0
         _FlipbookAdd ("Add", Range(0, 1)) = 0
+
+        //Flipbook audio link
+        [HideInInspector] m_start_FlipbookAudioLink ("Audio Link ♫--{ condition_showS:_EnableAudioLink==1}", Float) = 0
+        [Enum(Bass, 0, Low Mid, 1, High Mid, 2, Treble, 3)] _AudioLinkFlipbookScaleBand ("Scale Band", Int) = 0
+        _AudioLinkFlipbookScale("Scale Mod", Vector) = (0,0,0,0)
+        [Enum(Bass, 0, Low Mid, 1, High Mid, 2, Treble, 3)] _AudioLinkFlipbookAlphaBand ("Alpha Band", Int) = 0
+        [Vector2]_AudioLinkFlipbookAlpha("Alpha Mod", Vector) = (1,1,0,0)
+        [Enum(Bass, 0, Low Mid, 1, High Mid, 2, Treble, 3)] _AudioLinkFlipbookEmissionBand ("Emission Band", Int) = 0
+        [Vector2]_AudioLinkFlipbookEmission("Emission Mod", Vector) = (0,0,0,0)
+        [Enum(Bass, 0, Low Mid, 1, High Mid, 2, Treble, 3)] _AudioLinkFlipbookFrameBand ("Frame Band", Int) = 0
+        [Vector2]_AudioLinkFlipbookFrame("Frame control", Vector) = (0,0,0,0)
+        [HideInInspector] m_end_FlipbookAudioLink ("Audio Link", Float) = 0
         
         // Flipbook Manual Control
         [HideInInspector] m_start_manualFlipbookControl ("Manual Control", Float) = 0
@@ -817,22 +929,22 @@
         _DissolveTextureColor ("Dissolved Color", Color) = (1, 1, 1, 1)
         _DissolveToTexture ("Dissolved Texture", 2D) = "white" { }
         [HideInInspector][Vector2]_DissolveToTexturePan ("Panning", Vector) = (0, 0, 0, 0)
-        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)] _DissolveToTextureUV ("UV", Int) = 0
+        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, distorteduv0, 4)] _DissolveToTextureUV ("UV", Int) = 0
         _DissolveToEmissionStrength ("Dissolved Emission Strength", Range(0, 20)) = 0
-        _DissolveNoiseTexture ("Dissolve Noise", 2D) = "white" { }
+        _DissolveNoiseTexture ("Dissolve Gradient", 2D) = "white" { }
         [HideInInspector][Vector2]_DissolveNoiseTexturePan ("Panning", Vector) = (0, 0, 0, 0)
-        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)] _DissolveNoiseTextureUV ("UV", Int) = 0
+        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, distorteduv0, 4)] _DissolveNoiseTextureUV ("UV", Int) = 0
         [HideInInspector][ToggleUI]_DissolveInvertNoise ("Invert?", Float) = 0
-        _DissolveDetailNoise ("Dissolve Detail Noise", 2D) = "black" { }
+        _DissolveDetailNoise ("Dissolve Noise", 2D) = "black" { }
         [HideInInspector][Vector2]_DissolveDetailNoisePan ("Panning", Vector) = (0, 0, 0, 0)
-        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)] _DissolveDetailNoiseUV ("UV", Int) = 0
+        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, distorteduv0, 4)] _DissolveDetailNoiseUV ("UV", Int) = 0
         [HideInInspector][ToggleUI]_DissolveInvertDetailNoise ("Invert?", Float) = 0
         _DissolveDetailStrength ("Dissolve Detail Strength", Range(0, 1)) = 0.1
         _DissolveAlpha ("Dissolve Alpha", Range(0, 1)) = 0
         _DissolveMask ("Dissolve Mask", 2D) = "white" { }
         [ToggleUI]_DissolveUseVertexColors ("VertexColor.g Mask", Float) = 0
         [HideInInspector][Vector2]_DissolveMaskPan ("Panning", Vector) = (0, 0, 0, 0)
-        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)] _DissolveMaskUV ("UV", Int) = 0
+        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, distorteduv0, 4)] _DissolveMaskUV ("UV", Int) = 0
         [HideInInspector][ToggleUI]_DissolveMaskInvert ("Invert?", Float) = 0
         _ContinuousDissolve ("Continuous Dissolve Speed", Float) = 0
         [HideInInspector] m_start_dissolveMasking ("Effect Masking", Float) = 0
@@ -870,6 +982,14 @@
         _DissolveAlpha8 ("Dissolve Alpha 8", Range(-1, 1)) = 0
         _DissolveAlpha9 ("Dissolve Alpha 9", Range(-1, 1)) = 0
         [HideInInspector] m_end_BonusSliders ("Locked In Sliders", Float) = 0
+
+        [HideInInspector] m_start_dissolveAudioLink ("Audio Link ♫--{reference_property:_EnableDissolveAudioLink, condition_showS:_EnableAudioLink==1}", Float) = 0
+        [HideInInspector][ToggleUI] _EnableDissolveAudioLink ("Enabled?", Float) = 0
+        [Enum(Bass, 0, Low Mid, 1, High Mid, 2, Treble, 3)] _AudioLinkDissolveAlphaBand ("Dissolve Alpha Band", Int) = 0
+        [Vector2]_AudioLinkDissolveAlpha ("Dissolve Alpha Mod", Vector) = (0, 0, 0, 0)
+        [Enum(Bass, 0, Low Mid, 1, High Mid, 2, Treble, 3)] _AudioLinkDissolveDetailBand ("Dissolve Detail Band", Int) = 0
+        [Vector2]_AudioLinkDissolveDetail ("Dissolve Detail Mod", Vector) = (0, 0, 0, 0)
+        [HideInInspector] m_end_dissolveAudioLink ("Audio Link", Float) = 0
         [HideInInspector] m_end_dissolve ("Dissolve", Float) = 0
         
         // Panosphere
@@ -880,7 +1000,7 @@
         _PanosphereTexture ("Texture", 2D) = "white" { }
         _PanoMask ("Mask", 2D) = "white" { }
         [HideInInspector][Vector2]_PanoMaskPan ("Panning", Vector) = (0, 0, 0, 0)
-        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)] _PanoMaskUV ("UV", Int) = 0
+        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, distorteduv0, 4)] _PanoMaskUV ("UV", Int) = 0
         _PanoEmission ("Emission Strength", Range(0, 10)) = 0
         _PanoBlend ("Alpha", Range(0, 1)) = 0
         [Vector3]_PanospherePan ("Pan Speed", Vector) = (0, 0, 0, 0)
@@ -898,13 +1018,14 @@
         _GlitterUseSurfaceColor ("Use Surface Color", Range(0, 1)) = 0
         _GlitterColorMap ("Glitter Color Map", 2D) = "white" { }
         [HideInInspector][Vector2]_GlitterColorMapPan ("Panning", Vector) = (0, 0, 0, 0)
-        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)] _GlitterColorMapUV ("UV", Int) = 0
+        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, distorteduv0, 4)] _GlitterColorMapUV ("UV", Int) = 0
         [HideInInspector][Vector2]_GlitterPan ("Panning", Vector) = (0, 0, 0, 0)
         _GlitterMask ("Glitter Mask", 2D) = "white" { }
         [HideInInspector][Vector2]_GlitterMaskPan ("Panning", Vector) = (0, 0, 0, 0)
-        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)] _GlitterMaskUV ("UV", Int) = 0
+        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, distorteduv0, 4)] _GlitterMaskUV ("UV", Int) = 0
         _GlitterTexture ("Glitter Texture--{reference_properties:[_GlitterTexturePan]}", 2D) = "white" { }
         [HideInInspector][Vector2]_GlitterTexturePan ("Panning", Vector) = (0, 0, 0, 0)
+        [Vector2]_GlitterUVPanning ("Panning Speed", Vector) = (0,0,0,0)
         _GlitterTextureRotation ("Rotation Speed", Float) = 0
         _GlitterFrequency ("Glitter Density", Float) = 300.0
         _GlitterJitter ("Glitter Jitter", Range(0, 1)) = 1.0
@@ -946,7 +1067,7 @@
         // FPS
         [HideInInspector] m_start_TextFPS ("FPS", Float) = 0
         [ToggleUI]_TextFPSEnabled ("FPS Text?", Float) = 0
-        [Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)] _TextFPSUV ("FPS UV", Int) = 0
+        [Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, distorteduv0, 4)] _TextFPSUV ("FPS UV", Int) = 0
         _TextFPSColor ("Color", Color) = (1, 1, 1, 1)
         _TextFPSEmissionStrength ("Emission Strength", Range(0, 20)) = 0
         [Vector2]_TextFPSOffset ("Offset", Vector) = (0, 0, 0, 0)
@@ -958,7 +1079,7 @@
         // POSITION
         [HideInInspector] m_start_TextPosition ("Position", Float) = 0
         [ToggleUI]_TextPositionEnabled ("Position Text?", Float) = 0
-        [Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)] _TextPositionUV ("Position UV", Int) = 0
+        [Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, distorteduv0, 4)] _TextPositionUV ("Position UV", Int) = 0
         //[ToggleUI]_TextPositionVertical ("Vertical?", Float) = 0
         _TextPositionColor ("Color", Color) = (1, 0, 1, 1)
         _TextPositionEmissionStrength ("Emission Strength", Range(0, 20)) = 0
@@ -971,7 +1092,7 @@
         // INSTANCE TIME
         [HideInInspector] m_start_TextInstanceTime ("Instance Time", Float) = 0
         [ToggleUI]_TextTimeEnabled ("Time Text?", Float) = 0
-        [Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)] _TextTimeUV ("Time UV", Int) = 0
+        [Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, distorteduv0, 4)] _TextTimeUV ("Time UV", Int) = 0
         _TextTimeColor ("Color", Color) = (1, 0, 1, 1)
         _TextTimeEmissionStrength ("Emission Strength", Range(0, 20)) = 0
         [Vector2]_TextTimeOffset ("Offset", Vector) = (0, 0, 0, 0)
@@ -988,16 +1109,19 @@
         [ToggleUI]_EnableMirrorTexture ("Enable Mirror Texture", Float) = 0
         _MirrorTexture ("Mirror Tex", 2D) = "white" { }
         [HideInInspector][Vector2]_MirrorTexturePan ("Panning", Vector) = (0, 0, 0, 0)
-        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)] _MirrorTextureUV ("UV", Int) = 0
+        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, distorteduv0, 4)] _MirrorTextureUV ("UV", Int) = 0
         [HideInInspector] m_end_mirrorOptions ("Mirror", Float) = 0
         
         // Distance Fade
         [HideInInspector] m_start_distanceFade ("Distance Fade", Float) = 0
-        _MainMinAlpha ("Minimum Alpha", Range(0, 1)) = 0
         _MainFadeTexture ("Fade Mask", 2D) = "white" { }
         [HideInInspector][Vector2]_MainFadeTexturePan ("Panning", Vector) = (0, 0, 0, 0)
-        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)] _MainFadeTextureUV ("UV", Int) = 0
-        [Vector2]_MainDistanceFade ("Distance Fade X to Y", Vector) = (0, 0, 0, 0)
+        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, distorteduv0, 4)] _MainFadeTextureUV ("UV", Int) = 0
+        [Enum(Object Position, 0, Pixel Position, 1)] _MainFadeType ("Pos To Use", Int) = 1
+        _MainMinAlpha ("Minimum Alpha", Range(0, 1)) = 0
+        _MainMaxAlpha ("Maximum Alpha", Range(0, 1)) = 1
+        _MainDistanceFadeMin ("Distance Min", Float) = 0
+        _MainDistanceFadeMax ("Distance Max", Float) = 0
         [HideInInspector] m_end_distanceFade ("Distance Fade", Float) = 0
         
         // Angular Fade
@@ -1015,20 +1139,48 @@
         
         // UV Distortion
         [HideInInspector] m_start_distortionFlow ("UV Distortion", Float) = 0
-        [ThryToggle(USER_LUT)] _EnableDistortion ("Enabled?", Float) = 0
-        _DistortionMask ("Mask--{reference_properties:[_DistortionMaskPan, _DistortionMaskUV]}", 2D) = "white" { }
-        [HideInInspector][Vector2]_DistortionMaskPan ("Panning", Vector) = (0, 0, 0, 0)
-        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3)] _DistortionMaskUV ("UV", Int) = 0
-        _DistortionFlowTexture ("Distortion Texture 1", 2D) = "black" { }
-        _DistortionFlowTexture1 ("Distortion Texture 2", 2D) = "black" { }
-        _DistortionStrength ("Strength1", Float) = 0.5
-        _DistortionStrength1 ("Strength2", Float) = 0.5
-        [Vector2]_DistortionSpeed ("Speed1", Vector) = (0.5, 0.5, 0, 0)
-        [Vector2]_DistortionSpeed1 ("Speed2", Vector) = (0.5, 0.5, 0, 0)
+            [ThryToggle(USER_LUT)] _EnableDistortion ("Enabled?", Float) = 0
+            _DistortionMask ("Mask--{reference_properties:[_DistortionMaskPan, _DistortionMaskUV]}", 2D) = "white" { }
+            [HideInInspector][Vector2]_DistortionMaskPan ("Panning", Vector) = (0, 0, 0, 0)
+            [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3)] _DistortionMaskUV ("UV", Int) = 0
+            _DistortionFlowTexture ("Distortion Texture 1", 2D) = "black" { }
+            _DistortionFlowTexture1 ("Distortion Texture 2", 2D) = "black" { }
+            _DistortionStrength ("Strength1", Float) = 0.5
+            _DistortionStrength1 ("Strength2", Float) = 0.5
+            [Vector2]_DistortionSpeed ("Speed1", Vector) = (0.5, 0.5, 0, 0)
+            [Vector2]_DistortionSpeed1 ("Speed2", Vector) = (0.5, 0.5, 0, 0)
+
+            [HideInInspector] m_start_DistortionAudioLink ("Audio Link ♫--{reference_property:_EnableDistortionAudioLink, condition_showS:_EnableAudioLink==1}", Float) = 0
+                [HideInInspector][ToggleUI] _EnableDistortionAudioLink ("Enabled?", Float) = 0
+                [Enum(Bass, 0, Low Mid, 1, High Mid, 2, Treble, 3)] _DistortionStrengthAudioLinkBand ("Strength 1 Band", Int) = 0
+                [Vector2]_DistortionStrengthAudioLink ("Strength 1 Offset Range", Vector) = (0, 0, 0, 0)
+                [Enum(Bass, 0, Low Mid, 1, High Mid, 2, Treble, 3)] _DistortionStrength1AudioLinkBand ("Strength 2 Band", Int) = 0
+                [Vector2]_DistortionStrength1AudioLink ("Strength 2 Offset Range", Vector) = (0, 0, 0, 0)
+            [HideInInspector] m_end_DistortionAudioLink ("Audio Link", Float) = 0
         [HideInInspector] m_end_distortionFlow ("UV Distortion", Float) = 0
+
+        // Audio link
+        [HideInInspector] m_start_audioLink ("Audio Link--{reference_property:_EnableAudioLink}", Float) = 0
+        [HideInInspector][ThryToggle(COLOR_GRADING_LOG_VIEW)] _EnableAudioLink ("Enabled?", Float) = 0
+        [Helpbox(1)] _AudioLinkHelp ("This section houses the global controls for audio link. Controls for individual features are in their respective sections. (Emission, Dissolve, etc...)", Int) = 0
+        [ToggleUI] _AudioLinkAnimToggle ("Anim Toggle", Float) = 1
+        _AudioLinkDelay ("Delay", Range(0,1)) = 0
+        [ToggleUI]_AudioLinkAveraging ("Enable averaging", Float) = 0
+        _AudioLinkAverageRange ("Average Sampling Range", Range(0,1)) = .5
+        // Debug
+        [HideInInspector] m_start_audioLinkDebug ("Debug--{reference_property:_EnableAudioLinkDebug}", Float) = 0
+        [HideInInspector][ToggleUI] _EnableAudioLinkDebug("Enable?", Float) = 0
+        _AudioLinkDebugTreble ("Treble", Range(0,1)) = 0
+        _AudioLinkDebugHighMid ("High Mid", Range(0,1)) = 0
+        _AudioLinkDebugLowMid ("Low Mid", Range(0,1)) = 0
+        _AudioLinkDebugBass ("Bass", Range(0,1)) = 0
+        [ToggleUI] _AudioLinkDebugAnimate ("Debug Animate", Float) = 0
+        [ToggleUI]_AudioLinkTextureVisualization("Visualize Texture", Float) = 0
+        [HideInInspector] m_end_audioLinkDebug ("Debug", Float) = 0
+        [HideInInspector] m_end_audioLink ("Audio Link", Float) = 0
         
         // Start Patreon
-        [HideInInspector] m_Patreon ("Patreon (Pro Only)--{is_hideable:true}", Float) = 0
+        [HideInInspector] m_Patreon ("Patreon (Pro Only)", Float) = 0
         [Helpbox(1)] _PatreonHelpBox("This section is included to let people know what's included in the pro shader. Nothing here can be used in toon. Feel free to hide this section with the custom UI dropdown at the top of the material.", Int) = 0
         // Video Options
         [HideInInspector] m_start_Video ("Video", Float) = 0
@@ -1098,6 +1250,7 @@
         _OutlinePersonaDirection ("directional Offset XY--{condition_show:{type:PROPERTY_BOOL,data:_OutlineMode==3}}", Vector) = (1, 0, 0, 0)
         _OutlineDropShadowOffset ("Drop Direction XY--{condition_show:{type:PROPERTY_BOOL,data:_OutlineMode==4}}", Vector) = (1, 0, 0, 0)
         [ToggleUI]_OutlineFixedSize ("Fixed Size?", Float) = 0
+        _OutlinesMaxDistance ("Fixed Size Max Distance", Float) = 9999
         [Enum(Off, 0, Normals, 1, Mask VC.r, 2)]_OutlineUseVertexColors ("Vertex Color", Float) = 0
         [ToggleUI]_OutlineLit ("Enable Lighting", Float) = 1
         _LineWidth ("Width", Float) = 0
@@ -1105,11 +1258,15 @@
         _OutlineEmission ("Outline Emission", Float) = 0
         _OutlineTexture ("Outline Texture--{reference_properties:[_OutlineTexturePan, _OutlineTextureUV]}", 2D) = "white" { }
         [HideInInspector][Vector2]_OutlineTexturePan ("Outline Texture Pan", Vector) = (0, 0, 0, 0)
-        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)] _OutlineTextureUV ("UV", Int) = 0
+        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, distorteduv0, 4)] _OutlineTextureUV ("UV", Int) = 0
         _OutlineMask ("Outline Mask--{reference_properties:[_OutlineMaskPan, _OutlineMaskUV]}", 2D) = "white" { }
         [HideInInspector][Vector2]_OutlineMaskPan ("Panning", Vector) = (0, 0, 0, 0)
-        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)] _OutlineMaskUV ("UV", Int) = 0
+        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3)] _OutlineMaskUV ("UV", Int) = 0
         _OutlineShadowStrength ("Shadow Strength", Range(0, 1)) = 1
+        [Header(Hue Shift)]
+        [ToggleUI]_OutlineHueShift ("Hue Shift?", Float) = 0
+        _OutlineHueOffset ("Shift", Range(0, 1)) = 0
+        _OutlineHueOffsetSpeed ("Shift Speed", Float) = 0
         [HideInInspector] m_start_outlineAdvanced ("Advanced", Float) = 0
         [Vector2]_OutlineFadeDistance ("Outline distance Fade", Vector) = (0, 0, 0, 0)
         [Enum(UnityEngine.Rendering.CullMode)] _OutlineCull ("Cull", Float) = 1
@@ -1128,7 +1285,7 @@
         _ParallaxHeightMap ("Height Map", 2D) = "black" { }
         _ParallaxHeightMapMask ("Mask", 2D) = "white" { }
         [HideInInspector][Vector2]_ParallaxHeightMapMaskPan ("Panning", Vector) = (0, 0, 0, 0)
-        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)] _ParallaxHeightMapMaskUV ("UV", Int) = 0
+        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, distorteduv0, 4)] _ParallaxHeightMapMaskUV ("UV", Int) = 0
         _ParallaxStrength ("Parallax Strength", Range(0, 1)) = 0
         [HideInInspector] m_end_parallaxHeightmap ("Heightmap", Float) = 0
         [HideInInspector] m_start_parallaxInternal ("Internal", Float) = 0
@@ -1137,7 +1294,7 @@
         _ParallaxInternalMap ("Internal Map", 2D) = "black" { }
         _ParallaxInternalMapMask ("Mask", 2D) = "white" { }
         [HideInInspector][Vector2]_ParallaxInternalMapMaskPan ("Panning", Vector) = (0, 0, 0, 0)
-        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)] _ParallaxInternalMapMaskUV ("UV", Int) = 0
+        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, distorteduv0, 4)] _ParallaxInternalMapMaskUV ("UV", Int) = 0
         _ParallaxInternalIterations ("Parallax Internal Iterations", Range(1, 50)) = 1
         _ParallaxInternalMinDepth ("Min Depth", Float) = 0
         _ParallaxInternalMaxDepth ("Max Depth", Float) = 1
@@ -1151,6 +1308,11 @@
         [HideInInspector] m_start_parallaxAdvanced ("Advanced", Float) = 0
         _ParallaxBias ("Parallax Bias (0.42)", Float) = 0.42
         [HideInInspector] m_end_parallaxAdvanced ("Advanced", Float) = 0
+
+        [HideInInspector] m_PostProcessing ("Post Processing", Float) = 0
+        [Helpbox(1)] _PPHelp ("This section is designed for you to make adjustments to your final look in game through animations not to permentantly change settings before uploading.", Int) = 0
+        _PPLightingMultiplier ("Lighting Mulitplier", Float) = 1
+        _PPEmissionMultiplier ("Emission Multiplier", Float) = 1
 
         // Rendering Options
         [HideInInspector] m_renderingOptions ("Rendering Options", Float) = 0
@@ -1183,7 +1345,7 @@
         [HideInInspector] m_end_StencilPassOptions ("Stencil", Float) = 0
         
         // Outline Stencil
-        [HideInInspector] m_start_OutlineStencil ("Outline Stencil--{is_hideable:true, condition_show:{type:PROPERTY_BOOL,data:_commentIfZero_EnableOutlinePass==1}}", Float) = 0
+        [HideInInspector] m_start_OutlineStencil ("Outline Stencil--{ condition_show:{type:PROPERTY_BOOL,data:_commentIfZero_EnableOutlinePass==1}}", Float) = 0
         [IntRange] _OutlineStencilRef ("Stencil Reference Value", Range(0, 255)) = 0
         [IntRange] _OutlineStencilReadMask ("Stencil ReadMask Value", Range(0, 255)) = 255
         [IntRange] _OutlineStencilWriteMask ("Stencil WriteMask Value", Range(0, 255)) = 255
@@ -1208,11 +1370,10 @@
     CustomEditor "Thry.ShaderEditor"
     SubShader
     {
-        Tags { "RenderType" = "Opaque" "Queue" = "Geometry" }
+        Tags { "RenderType" = "Opaque" "Queue" = "Geometry+10" }
 
         Pass
         {
-            Name "MainPass"
             Tags { "LightMode" = "ForwardBase" }
             
             Stencil
@@ -1259,6 +1420,8 @@
             #pragma shader_feature AUTO_EXPOSURE
             // Bulge
             #pragma shader_feature BLOOM_LOW
+            //Audio Link
+            #pragma shader_feature COLOR_GRADING_LOG_VIEW
             // Hologram Alpha
             #pragma shader_feature DEPTH_OF_FIELD
             //Grab Pass Blur
@@ -1331,7 +1494,6 @@
             
         }
         
-        //LightingAdditiveEnable
         Pass
         {
             Name "ForwardAddPass"
@@ -1374,6 +1536,8 @@
             #pragma shader_feature AUTO_EXPOSURE
             // Bulge
             #pragma shader_feature BLOOM_LOW
+            //Audio Link
+            #pragma shader_feature COLOR_GRADING_LOG_VIEW
             #pragma shader_feature _PARALLAX_MAP
             // Mirror
             #pragma shader_feature _REQUIRE_UV2
@@ -1431,7 +1595,6 @@
             ENDCG
             
         }
-        //LightingAdditiveEnable
         
         //EnableOutlinePass
         Pass
@@ -1480,6 +1643,8 @@
             #pragma shader_feature DISTORT
             // Lighting
             #pragma shader_feature VIGNETTE_MASKED
+            // Debug
+            #pragma shader_feature _COLOROVERLAY_ON
             #pragma multi_compile_fwdbase
             #pragma fragmentoption ARB_precision_hint_fastest
             #pragma multi_compile_fog

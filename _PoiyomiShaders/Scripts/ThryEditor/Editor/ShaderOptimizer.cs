@@ -108,8 +108,8 @@ namespace Thry
         // the lightmode name as a suffix (e.g. group_toggle_GeometryShadowCaster)
         // Geometry and Tessellation shaders are REMOVED by default, but if the main gorups
         // are enabled certain pass types are assumed to be ENABLED
-        public static readonly string GeometryShaderEnabledPropertyName = "group_toggle_Geometry";
-        public static readonly string TessellationEnabledPropertyName = "group_toggle_Tessellation";
+        public static readonly string GeometryShaderEnabledPropertyName = "GeometryShader_Enabled";
+        public static readonly string TessellationEnabledPropertyName = "Tessellation_Enabled";
         private static bool UseGeometry = false;
         private static bool UseGeometryForwardBase = true;
         private static bool UseGeometryForwardAdd = true;
@@ -319,14 +319,14 @@ namespace Thry
             return m.GetTag(prop + AnimatedTagSuffix, false, "");
         }
 
-        public static bool Lock(Material material, MaterialProperty[] props, bool applyShaderLater = false)
+        private static bool Lock(Material material, MaterialProperty[] props, bool applyShaderLater = false)
         {
             // File filepaths and names
             Shader shader = material.shader;
             string shaderFilePath = AssetDatabase.GetAssetPath(shader);
             string materialFilePath = AssetDatabase.GetAssetPath(material);
             string materialFolder = Path.GetDirectoryName(materialFilePath);
-            string smallguid = Guid.NewGuid().ToString().Split('-')[0];
+            string smallguid = material.name;
             string newShaderName = "Hidden/" + shader.name + "/" + material.name + "-" + smallguid;
             //string newShaderDirectory = materialFolder + "/OptimizedShaders/" + material.name + "-" + smallguid + "/";
             string newShaderDirectory = materialFolder + "/OptimizedShaders/" + smallguid + "/";
@@ -425,7 +425,7 @@ namespace Thry
                 }
 
                 string animateTag = material.GetTag(prop.name + AnimatedTagSuffix, false, "");
-                if(animateTag != "")
+                if(string.IsNullOrEmpty(animateTag) == false)
                 {
                     // check if we're renaming the property as well
                     if (animateTag == "2")
@@ -733,6 +733,7 @@ namespace Thry
 
             if (applyShaderLater)
             {
+                //Debug.Log("Apply later: "+applyStructsLater.Count+ ", "+material.name);
                 applyStructsLater.Add(material, applyStruct);
                 return true;
             }
@@ -775,10 +776,6 @@ namespace Thry
             // Write the new shader folder name in an override tag so it will be deleted 
             material.SetOverrideTag("OptimizedShaderFolder", smallguid);
 
-            // Remove ALL keywords
-            foreach (string keyword in material.shaderKeywords)
-                material.DisableKeyword(keyword);
-
             // For some reason when shaders are swapped on a material the RenderType override tag gets completely deleted and render queue set back to -1
             // So these are saved as temp values and reassigned after switching shaders
             string renderType = material.GetTag("RenderType", false, "");
@@ -795,6 +792,10 @@ namespace Thry
             ShaderEditor.reload();
             material.SetOverrideTag("RenderType", renderType);
             material.renderQueue = renderQueue;
+
+            // Remove ALL keywords
+            foreach (string keyword in material.shaderKeywords)
+                material.DisableKeyword(keyword);
 
             foreach (var animProp in animatedPropsToRename)
             {
@@ -1323,21 +1324,50 @@ namespace Thry
             }
         }
 
-        public static bool Unlock (Material material)
+        public enum UnlockSuccess { hasNoSavedShader, wasNotLocked, couldNotFindOriginalShader, couldNotDeleteLockedShader,
+            success}
+        private static void Unlock(Material material, MaterialProperty shaderOptimizer = null)
+        {
+            //if unlock success set floats. not done for locking cause the sucess is checked later when applying the shaders
+            UnlockSuccess success = ShaderOptimizer.UnlockConcrete(material);
+            if (success == UnlockSuccess.success || success == UnlockSuccess.wasNotLocked
+                || success == UnlockSuccess.couldNotDeleteLockedShader)
+            {
+                if (shaderOptimizer != null) shaderOptimizer.floatValue = 0;
+                else material.SetFloat(GetOptimizerPropertyName(material.shader), 0);
+            }
+        }
+        private static UnlockSuccess UnlockConcrete (Material material)
         {
             // Revert to original shader
             string originalShaderName = material.GetTag("OriginalShader", false, "");
             if (originalShaderName == "")
             {
-                Debug.LogError("[Kaj Shader Optimizer] Original shader not saved to material, could not unlock shader");
-                return material.shader.name.StartsWith("Hidden/") == false;
+                if (material.shader.name.StartsWith("Hidden/"))
+                {
+                    Debug.LogError("[Kaj Shader Optimizer] Original shader not saved to material, could not unlock shader");
+                    return UnlockSuccess.hasNoSavedShader;
+                }
+                else
+                {
+                    Debug.LogWarning("[Kaj Shader Optimizer] Original shader not saved to material, but material also doesnt seem to be locked.");
+                    return UnlockSuccess.wasNotLocked;
+                }
 
             }
             Shader orignalShader = Shader.Find(originalShaderName);
             if (orignalShader == null)
             {
-                Debug.LogError("[Kaj Shader Optimizer] Original shader " + originalShaderName + " could not be found");
-                return false;
+                if (material.shader.name.StartsWith("Hidden/"))
+                {
+                    Debug.LogError("[Kaj Shader Optimizer] Original shader " + originalShaderName + " could not be found");
+                    return UnlockSuccess.couldNotFindOriginalShader;
+                }
+                else
+                {
+                    Debug.LogWarning("[Kaj Shader Optimizer] Original shader not saved to material, but material also doesnt seem to be locked.");
+                    return UnlockSuccess.wasNotLocked;
+                }
             }
 
             // For some reason when shaders are swapped on a material the RenderType override tag gets completely deleted and render queue set back to -1
@@ -1345,7 +1375,6 @@ namespace Thry
             string renderType = material.GetTag("RenderType", false, "");
             int renderQueue = material.renderQueue;
             material.shader = orignalShader;
-            ShaderEditor.reload();
             material.SetOverrideTag("RenderType", renderType);
             material.renderQueue = renderQueue;
 
@@ -1354,7 +1383,7 @@ namespace Thry
             if (shaderDirectory == "")
             {
                 Debug.LogError("[Kaj Shader Optimizer] Optimized shader folder could not be found, not deleting anything");
-                return false;
+                return UnlockSuccess.couldNotDeleteLockedShader;
             }
             string materialFilePath = AssetDatabase.GetAssetPath(material);
             string materialFolder = Path.GetDirectoryName(materialFilePath);
@@ -1366,7 +1395,29 @@ namespace Thry
             FileUtil.DeleteFileOrDirectory(newShaderDirectory + ".meta");
             //AssetDatabase.Refresh();
 
-            return true;
+            return UnlockSuccess.success;
+        }
+
+        public static void DeleteTags(Material[] materials)
+        {
+            foreach(Material m in materials)
+            {
+                var it = new SerializedObject(m).GetIterator();
+                while (it.Next(true))
+                {
+                    if (it.name == "stringTagMap")
+                    {
+                        for (int i = 0; i < it.arraySize; i++)
+                        {
+                            string tagName = it.GetArrayElementAtIndex(i).displayName;
+                            if (tagName.EndsWith(AnimatedTagSuffix))
+                            {
+                                m.SetOverrideTag(tagName, "");
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         #region Upgrade
@@ -1385,30 +1436,38 @@ namespace Thry
                 string.IsNullOrEmpty(AssetDatabase.GetAssetPath(m)) == false && string.IsNullOrEmpty(AssetDatabase.GetAssetPath(m.shader)) == false
                 && IsShaderUsingThryOptimizer(m.shader)).Distinct().OrderBy(m => m.shader.name);
 
-            MaterialProperty[] props = new MaterialProperty[] { };
-            string shaderName = null;
+            int i = 0;
             foreach (Material m in materialsToChange)
             {
-                if(m.shader.name != shaderName)
+                if(EditorUtility.DisplayCancelableProgressBar("Upgrading Materials", "Upgrading animated tags of " + m.name, (float)i / materialsToChange.Count()))
                 {
-                    props = MaterialEditor.GetMaterialProperties(new UnityEngine.Object[] { m }).Where(p => p.name.EndsWith(AnimatedPropertySuffix) == false).ToArray();
+                    break;
                 }
-                foreach (MaterialProperty prop in props)
-                {
-                    try
-                    {
-                        float value = m.GetFloat(prop.name + AnimatedPropertySuffix);
-                        if (value != 0)
-                        {
-                            m.SetOverrideTag(prop.name + AnimatedTagSuffix, "" + value);
-                        }
-                    }catch(Exception e)
-                    {
 
+                string path = AssetDatabase.GetAssetPath(m);
+                StreamReader reader = new StreamReader(path);
+                string line;
+                while((line = reader.ReadLine()) != null)
+                {
+                    if (line.Contains(AnimatedPropertySuffix) && line.Length > 6)
+                    {
+                        string[] parts = line.Substring(6, line.Length - 6).Split(':');
+                        float f;
+                        if (float.TryParse(parts[1], out f))
+                        {
+                            if( f != 0)
+                            {
+                                string name = parts[0].Substring(0, parts[0].Length - AnimatedPropertySuffix.Length);
+                                m.SetOverrideTag(name + AnimatedTagSuffix, "" + f);
+                            }
+                        }
                     }
                 }
+                reader.Close();
+                i++;
             }
-            ClearConsole();
+
+            EditorUtility.ClearProgressBar();
         }
 
         static void ClearConsole()
@@ -1548,7 +1607,7 @@ namespace Thry
                     IEnumerable<AnimationClip> clips = descriptor.baseAnimationLayers.Select(l => l.animatorController).Where(a => a != null).SelectMany(a => a.animationClips).Distinct();
                     foreach (AnimationClip clip in clips)
                     {
-                        IEnumerable<Material> clipMaterials = AnimationUtility.GetObjectReferenceCurveBindings(clip).Where(b => b.isPPtrCurve && b.type == typeof(SkinnedMeshRenderer) && b.propertyName.StartsWith("m_Materials"))
+                        IEnumerable<Material> clipMaterials = AnimationUtility.GetObjectReferenceCurveBindings(clip).Where(b => b.isPPtrCurve && b.type == typeof(Renderer) && b.propertyName.StartsWith("m_Materials"))
                             .SelectMany(b => AnimationUtility.GetObjectReferenceCurve(clip, b)).Select(r => r.value as Material);
                         materials.AddRange(clipMaterials);
                     }
@@ -1568,12 +1627,12 @@ namespace Thry
             return SetLockedForAllMaterials(materials, lockState, showProgressbar, showDialog);
         }
 
-        public static bool SetLockedForAllMaterials(IEnumerable<Material> materials, int lockState, bool showProgressbar = false, bool showDialog = false, bool allowCancel = true)
+        public static bool SetLockedForAllMaterials(IEnumerable<Material> materials, int lockState, bool showProgressbar = false, bool showDialog = false, bool allowCancel = true, MaterialProperty shaderOptimizer = null)
         {
             //first the shaders are created. compiling is suppressed with start asset editing
-
             AssetDatabase.StartAssetEditing();
 
+            //Get cleaned materia list
             IEnumerable<Material> materialsToChangeLock = materials.Where(m => m != null &&
                 string.IsNullOrEmpty(AssetDatabase.GetAssetPath(m)) == false && string.IsNullOrEmpty(AssetDatabase.GetAssetPath(m.shader)) == false
                 && IsShaderUsingThryOptimizer(m.shader) && m.GetFloat(GetOptimizerPropertyName(m.shader)) != lockState).Distinct();
@@ -1581,7 +1640,8 @@ namespace Thry
             float i = 0;
             float length = materialsToChangeLock.Count();
 
-            if(showDialog && length > 0)
+            //show popup dialog if defined
+            if (showDialog && length > 0)
             {
                 if(EditorUtility.DisplayDialog("Locking Materials", Locale.editor.Get("auto_lock_dialog").ReplaceVariables(length), "More information","OK"))
                 {
@@ -1589,9 +1649,10 @@ namespace Thry
                 }
                 PersistentData.Set("ShowLockInDialog", false);
             }
+            //Create shader assets
             foreach (Material m in materialsToChangeLock)
             {
-                //dont give it a progress bar if it is called by lockin police, else it breaks everything. why ? cause unity ...
+                //do progress bar
                 if (showProgressbar)
                 {
                     if (allowCancel)
@@ -1603,6 +1664,7 @@ namespace Thry
                         EditorUtility.DisplayProgressBar((lockState == 1) ? "Locking Materials" : "Unlocking Materials", m.name, i / length);
                     }
                 }
+                //create the assets
                 try
                 {
                     if (lockState == 1)
@@ -1611,11 +1673,7 @@ namespace Thry
                     }
                     else if (lockState == 0)
                     {
-                        //if unlock success set floats. not done for locking cause the sucess is checked later when applying the shaders
-                        if (ShaderOptimizer.Unlock(m))
-                        {
-                            m.SetFloat(GetOptimizerPropertyName(m.shader), lockState);
-                        }
+                        ShaderOptimizer.Unlock(m, shaderOptimizer);
                     }
                 }
                 catch (Exception e)
@@ -1638,7 +1696,9 @@ namespace Thry
                     bool success = ShaderOptimizer.LockApplyShader(m);
                     if (success)
                     {
-                        m.SetFloat(GetOptimizerPropertyName(m.shader), lockState);
+                        if (shaderOptimizer != null) m.SetFloat(shaderOptimizer.name, 1);
+                        else m.SetFloat(GetOptimizerPropertyName(m.shader), 1);
+                        if(ShaderEditor.active != null) ShaderEditor.active.isLockedMaterial = true;
                     }
                 }
             }

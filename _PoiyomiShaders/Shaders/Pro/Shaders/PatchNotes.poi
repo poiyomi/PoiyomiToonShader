@@ -1,0 +1,20 @@
+
+**[7.3.024]**
+**[Bug Fix]** grab pass blur additive bug https://discordapp.com/channels/550477546958094348/550477704617787422/865476315951136779
+**[UI Change]** remove simple/advanced mode
+**[UI Update]** Changed a bunch of ui things to work better in 2019
+
+
+// to do
+Hue shift for outline going white at .5 https://discordapp.com/channels/550477546958094348/550477704617787422/865060339828785154
+audio link average volume
+
+8.0 new features
+Light Based glitter
+Merge iridescence with matcap
+Audio Link Glitter more than normal integration
+SDF
+Special FX master shader
+
+// Videos to make
+RGBA what does it mean
