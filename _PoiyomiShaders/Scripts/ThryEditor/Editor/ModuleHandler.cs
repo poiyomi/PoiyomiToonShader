@@ -130,7 +130,6 @@ namespace Thry
                 if (string.IsNullOrEmpty(module.path) == false)
                 {
                     module.installed_module = Parser.ParseToObject<ModuleInfo>(FileHelper.ReadFileIntoString(FindModuleFilePath(module.path)));
-                    Debug.Log(module.path);
                     SaveModuleLocationData(module,AssetDatabase.AssetPathToGUID(module.path));
                 }
             }

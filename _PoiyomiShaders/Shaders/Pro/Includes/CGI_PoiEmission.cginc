@@ -108,15 +108,15 @@ float _EmissionScrollingUseCurve1;
     fixed _Emission1CenterOutAddAudioLinkwidth;
 #endif
 
-float calculateGlowInTheDark(in float minLight, in float maxLight, in float minEmissionMultiplier, in float maxEmissionMultiplier, in float enabled)
+float calculateGlowInTheDark(in float minLight, in float maxLight, in float minEmissionMultiplier, in float maxEmissionMultiplier, in float enabled, in float worldOrMesh)
 {
     float glowInTheDarkMultiplier = 1;
     UNITY_BRANCH
     if (enabled)
     {
         #ifdef POI_LIGHTING
-            float3 lightValue = _GITDEWorldOrMesh ? poiLight.finalLighting.rgb: poiLight.directLighting.rgb;
-            float gitdeAlpha = (clamp(poiMax(lightValue), minLight, maxLight) - minLight) / (maxLight - minLight);
+            float3 lightValue = worldOrMesh ? calculateluminance(poiLight.finalLighting.rgb): calculateluminance(poiLight.directLighting.rgb);
+            float gitdeAlpha = saturate(inverseLerp(minLight, maxLight, lightValue));
             glowInTheDarkMultiplier = lerp(minEmissionMultiplier, maxEmissionMultiplier, gitdeAlpha);
         #endif
     }
@@ -168,7 +168,7 @@ float3 calculateEmissionNew(in float3 baseColor, inout float4 finalColor)
         }
     #endif
     
-    float glowInTheDarkMultiplier0 = calculateGlowInTheDark(_GITDEMinLight, _GITDEMaxLight, _GITDEMinEmissionMultiplier, _GITDEMaxEmissionMultiplier, _EnableGITDEmission);
+    float glowInTheDarkMultiplier0 = calculateGlowInTheDark(_GITDEMinLight, _GITDEMaxLight, _GITDEMinEmissionMultiplier, _GITDEMaxEmissionMultiplier, _EnableGITDEmission, _GITDEWorldOrMesh);
     
     #if defined(PROP_EMISSIONMAP) || !defined(OPTIMIZER_ENABLED)
         UNITY_BRANCH
@@ -267,7 +267,7 @@ float3 calculateEmissionNew(in float3 baseColor, inout float4 finalColor)
             }
         #endif
 
-        float glowInTheDarkMultiplier1 = calculateGlowInTheDark(_GITDEMinLight1, _GITDEMaxLight1, _GITDEMinEmissionMultiplier1, _GITDEMaxEmissionMultiplier1, _EnableGITDEmission1);
+        float glowInTheDarkMultiplier1 = calculateGlowInTheDark(_GITDEMinLight1, _GITDEMaxLight1, _GITDEMinEmissionMultiplier1, _GITDEMaxEmissionMultiplier1, _EnableGITDEmission1, _GITDEWorldOrMesh1);
         #if defined(PROP_EMISSIONMAP1) || !defined(OPTIMIZER_ENABLED)
             
             UNITY_BRANCH

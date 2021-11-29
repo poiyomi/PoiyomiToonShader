@@ -33,7 +33,9 @@ namespace Thry
 
         public string Get(string key)
         {
-            return dictionary[key][selected_locale_index];
+            if(dictionary.ContainsKey(key)) return dictionary[key][selected_locale_index];
+            Debug.LogError("Locale[key] could not be found.");
+            return "[Error] Missing locale index [Error]";
         }
 
         public bool Constains(string key)

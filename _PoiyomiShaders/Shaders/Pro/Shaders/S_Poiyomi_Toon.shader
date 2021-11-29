@@ -3,7 +3,7 @@
     Properties
     {
         [HideInInspector] shader_is_using_thry_editor ("", Float) = 0
-        [HideInInspector] shader_master_label ("<color=#E75898ff>Poiyomi Toon V7.2.41</color>", Float) = 0
+        [HideInInspector] shader_master_label ("<color=#E75898ff>Poiyomi Toon V7.3.046</color>", Float) = 0
         [HideInInspector] shader_presets ("poiToonPresets", Float) = 0
         [HideInInspector] shader_properties_label_file ("7PlusLabels", Float) = 0
         
@@ -25,7 +25,7 @@
             {value:2,actions:[{type:SET_PROPERTY,data:render_queue=3000}, {type:SET_PROPERTY,data:render_type=Transparent},       {type:SET_PROPERTY,data:_BlendOp=0}, {type:SET_PROPERTY,data:_BlendOpAlpha=0}, {type:SET_PROPERTY,data:_Cutoff=0},  {type:SET_PROPERTY,data:_SrcBlend=5}, {type:SET_PROPERTY,data:_DstBlend=10}, {type:SET_PROPERTY,data:_AlphaToMask=0},  {type:SET_PROPERTY,data:_ZWrite=0}, {type:SET_PROPERTY,data:_ZTest=4},   {type:SET_PROPERTY,data:_AlphaPremultiply=0}]},
             {value:3,actions:[{type:SET_PROPERTY,data:render_queue=3000}, {type:SET_PROPERTY,data:render_type=Transparent},       {type:SET_PROPERTY,data:_BlendOp=0}, {type:SET_PROPERTY,data:_BlendOpAlpha=0}, {type:SET_PROPERTY,data:_Cutoff=0},  {type:SET_PROPERTY,data:_SrcBlend=1}, {type:SET_PROPERTY,data:_DstBlend=10}, {type:SET_PROPERTY,data:_AlphaToMask=0},  {type:SET_PROPERTY,data:_ZWrite=0}, {type:SET_PROPERTY,data:_ZTest=4},   {type:SET_PROPERTY,data:_AlphaPremultiply=1}]},
             {value:4,actions:[{type:SET_PROPERTY,data:render_queue=3000}, {type:SET_PROPERTY,data:render_type=Transparent},       {type:SET_PROPERTY,data:_BlendOp=0}, {type:SET_PROPERTY,data:_BlendOpAlpha=0}, {type:SET_PROPERTY,data:_Cutoff=0},  {type:SET_PROPERTY,data:_SrcBlend=1}, {type:SET_PROPERTY,data:_DstBlend=1},  {type:SET_PROPERTY,data:_AlphaToMask=0},  {type:SET_PROPERTY,data:_ZWrite=0}, {type:SET_PROPERTY,data:_ZTest=4},   {type:SET_PROPERTY,data:_AlphaPremultiply=0}]},
-            {value:5,actions:[{type:SET_PROPERTY,data:render_queue=3000}, {type:SET_PROPERTY,data:RenderType=Transparent},        {type:SET_PROPERTY,data:_BlendOp=0}, {type:SET_PROPERTY,data:_BlendOpAlpha=0}, {type:SET_PROPERTY,data:_Cutoff=0},  {type:SET_PROPERTY,data:_SrcBlend=4}, {type:SET_PROPERTY,data:_DstBlend=1},  {type:SET_PROPERTY,data:_AlphaToMask=0},  {type:SET_PROPERTY,data:_ZWrite=0}, {type:SET_PROPERTY,data:_ZTest=4},   {type:SET_PROPERTY,data:_AlphaPremultiply=0}]},
+            {value:5,actions:[{type:SET_PROPERTY,data:render_queue=3000}, {type:SET_PROPERTY,data:render_type=Transparent},        {type:SET_PROPERTY,data:_BlendOp=0}, {type:SET_PROPERTY,data:_BlendOpAlpha=0}, {type:SET_PROPERTY,data:_Cutoff=0},  {type:SET_PROPERTY,data:_SrcBlend=4}, {type:SET_PROPERTY,data:_DstBlend=1},  {type:SET_PROPERTY,data:_AlphaToMask=0},  {type:SET_PROPERTY,data:_ZWrite=0}, {type:SET_PROPERTY,data:_ZTest=4},   {type:SET_PROPERTY,data:_AlphaPremultiply=0}]},
             {value:6,actions:[{type:SET_PROPERTY,data:render_queue=3000}, {type:SET_PROPERTY,data:render_type=Transparent},       {type:SET_PROPERTY,data:_BlendOp=0}, {type:SET_PROPERTY,data:_BlendOpAlpha=0}, {type:SET_PROPERTY,data:_Cutoff=0},  {type:SET_PROPERTY,data:_SrcBlend=2}, {type:SET_PROPERTY,data:_DstBlend=0},  {type:SET_PROPERTY,data:_AlphaToMask=0},  {type:SET_PROPERTY,data:_ZWrite=0}, {type:SET_PROPERTY,data:_ZTest=4},   {type:SET_PROPERTY,data:_AlphaPremultiply=0}]},
             {value:7,actions:[{type:SET_PROPERTY,data:render_queue=3000}, {type:SET_PROPERTY,data:render_type=Transparent},       {type:SET_PROPERTY,data:_BlendOp=0}, {type:SET_PROPERTY,data:_BlendOpAlpha=0}, {type:SET_PROPERTY,data:_Cutoff=0},  {type:SET_PROPERTY,data:_SrcBlend=2}, {type:SET_PROPERTY,data:_DstBlend=3},  {type:SET_PROPERTY,data:_AlphaToMask=0},  {type:SET_PROPERTY,data:_ZWrite=0}, {type:SET_PROPERTY,data:_ZTest=4},   {type:SET_PROPERTY,data:_AlphaPremultiply=0}]}
         }]}]}", Int) = 0
@@ -536,6 +536,7 @@
         _BRDFGlossiness ("Glossiness", Range(0,1)) = 0
         _BRDFReflectance ("Reflectance", Range(0,1)) = .5
         _BRDFAnisotropy ("Anisotropy", Range(-1,1)) = 0
+        _BRDFMetallicSpecIgnoresBaseColor("Spec Ignores Base Color", Range(0,1)) = 0
         [ToggleUI]_BRDFReflectionsEnabled ("Enable Reflections", Float) = 1
         [ToggleUI]_BRDFSpecularEnabled ("Enable Specular", Float) = 1
         _BRDFFallback ("Fallback Reflection", Cube) = "" { }
@@ -863,6 +864,59 @@
         [Enum(Bass, 0, Low Mid, 1, High Mid, 2, Treble, 3)] _AudioLinkAddEmission1Band ("Emission Add Band", Int) = 0
         [HideInInspector] m_end_Emission1AudioLink ("Audio Link", Float) = 0
         [HideInInspector] m_end_emission1Options ("Emission / Glow 2", Float) = 0
+
+        // Poiyomi Pathing
+        [HideInInspector] m_start_pathing ("Pathing--{reference_property: _EnablePathing}", Float) = 0
+        [HideInInspector][ThryToggle(TONEMAPPING_CUSTOM)] _EnablePathing ("Enable Pathing", Float) = 0
+        _PathingMap ("RGB Path Map | A Mask--{reference_properties:[_PathingMapPan, _PathingMapUV]}", 2D) = "white" { }
+        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, distorteduv0, 4)] _PathingMapUV ("UV", Int) = 0
+        [HideInInspector][Vector2]_PathingMapPan ("Panning", Vector) = (0, 0, 0, 0)
+        _PathingColorMap ("RGB Color | A Mask--{reference_properties:[_PathingColorMapPan, _PathingColorMapUV]}", 2D) = "white" { }
+        [HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, distorteduv0, 4)] _PathingColorMapUV ("UV", Int) = 0
+        [HideInInspector][Vector2]_PathingColorMapPan ("Panning", Vector) = (0, 0, 0, 0)
+        [Enum(Fill, 0, Path, 1, Loop, 2)]_PathTypeR ("R Path Type", Float) = 0
+        [Enum(Fill, 0, Path, 1, Loop, 2)]_PathTypeG ("G Path Type", Float) = 0
+        [Enum(Fill, 0, Path, 1, Loop, 2)]_PathTypeB ("B Path Type", Float) = 0
+        [HDR]_PathColorR ("R Color", Color) = (1, 1, 1)
+        [HDR]_PathColorG ("G Color", Color) = (1, 1, 1)
+        [HDR]_PathColorB ("B Color", Color) = (1, 1, 1)
+        [Vector3]_PathEmissionStrength ("Emission Strength", Vector) = (0.0, 0.0, 0.0, 1)
+        [Vector3]_PathSoftness ("Softness", Vector) = (1, 1, 1, 1)
+        [Vector3]_PathSpeed ("Speed", Vector) = (1.0, 1.0, 1.0, 1)
+        [Vector3]_PathWidth ("Length", Vector) = (0.03, 0.03, 0.03, 1)
+        [Header(Timing Options)]
+        [Vector3]_PathTime ("Manual Timing", Vector) = (-999.0, -999.0, -999.0, 1)
+        [Vector3]_PathOffset ("Timing Offset", Vector) = (0.0, 0.0, 0.0, 1)
+        [Vector3]_PathSegments ("Path Segments", Vector) = (0.0, 0.0, 0.0, 1)
+        [HideInInspector] m_start_PathAudioLink ("Audio Link ♫--{ condition_showS:_EnableAudioLink==1}", Float) = 0
+        // Time Offsets
+        [Header(Time Offset)]
+        [Enum(Bass, 0, Low Mid, 1, High Mid, 2, Treble, 3)] _AudioLinkPathTimeOffsetBandR ("Band	R", Int) = 0
+        [Vector2]_AudioLinkPathTimeOffsetR ("Offset	R", Vector) = (0, 0, 0)
+        [Enum(Bass, 0, Low Mid, 1, High Mid, 2, Treble, 3)] _AudioLinkPathTimeOffsetBandG ("Band	G", Int) = 0
+        [Vector2]_AudioLinkPathTimeOffsetG ("Offset	G", Vector) = (0, 0, 0)
+        [Enum(Bass, 0, Low Mid, 1, High Mid, 2, Treble, 3)] _AudioLinkPathTimeOffsetBandB ("Band	B", Int) = 0
+        [Vector2]_AudioLinkPathTimeOffsetB ("Offset	B", Vector) = (0, 0, 0)
+
+        // Emission Offsets
+        [Header(Emission Offset)]
+        [Enum(Bass, 0, Low Mid, 1, High Mid, 2, Treble, 3)] _AudioLinkPathEmissionAddBandR ("Band	R", Int) = 0
+        [Vector2]_AudioLinkPathEmissionAddR ("Emission	R", Vector) = (0, 0, 0, 0)
+        [Enum(Bass, 0, Low Mid, 1, High Mid, 2, Treble, 3)] _AudioLinkPathEmissionAddBandG ("Band	G", Int) = 0
+        [Vector2]_AudioLinkPathEmissionAddG ("Emission	G", Vector) = (0, 0, 0, 0)
+        [Enum(Bass, 0, Low Mid, 1, High Mid, 2, Treble, 3)] _AudioLinkPathEmissionAddBandB ("Band	B", Int) = 0
+        [Vector2]_AudioLinkPathEmissionAddB ("Emission	B", Vector) = (0, 0, 0, 0)
+
+        // Length Offsets
+        [Header(Length Offset)]
+        [Enum(Bass, 0, Low Mid, 1, High Mid, 2, Treble, 3)] _AudioLinkPathWidthOffsetBandR ("Band	R", Int) = 0
+        [Vector2]_AudioLinkPathWidthOffsetR ("Offset	R", Vector) = (0, 0, 0, 0)
+        [Enum(Bass, 0, Low Mid, 1, High Mid, 2, Treble, 3)] _AudioLinkPathWidthOffsetBandG ("Band	G", Int) = 0
+        [Vector2]_AudioLinkPathWidthOffsetG ("Offset	G", Vector) = (0, 0, 0, 0)
+        [Enum(Bass, 0, Low Mid, 1, High Mid, 2, Treble, 3)] _AudioLinkPathWidthOffsetBandB ("Band	B", Int) = 0
+        [Vector2]_AudioLinkPathWidthOffsetB ("Offset	B", Vector) = (0, 0, 0, 0)
+        [HideInInspector] m_end_PathAudioLink ("Audio Link", Float) = 0
+        [HideInInspector] m_end_pathing ("Pathing", Float) = 0
 
         // Flipbook
         [HideInInspector] m_start_flipBook ("Flipbook", Float) = 0
@@ -1409,6 +1463,8 @@
             #pragma shader_feature GEOM_TYPE_FROND
             #pragma shader_feature DEPTH_OF_FIELD_COC_VIEW
             #pragma multi_compile _ VERTEXLIGHT_ON
+            // Pathing
+            #pragma shader_feature TONEMAPPING_CUSTOM
             // patreon Base
             // Black Light Mask
             #pragma shader_feature _SPECULARHIGHLIGHTS_OFF
@@ -1525,6 +1581,8 @@
             #pragma shader_feature GEOM_TYPE_BRANCH_DETAIL
             #pragma shader_feature GEOM_TYPE_FROND
             #pragma shader_feature DEPTH_OF_FIELD_COC_VIEW
+            // Pathing
+            #pragma shader_feature TONEMAPPING_CUSTOM
             // patreon Additive
             // Black Light Mask
             #pragma shader_feature _SPECULARHIGHLIGHTS_OFF

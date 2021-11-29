@@ -12,6 +12,20 @@ using UnityEngine;
 
 namespace Thry
 {
+    public class ThryTextureDrawer : MaterialPropertyDrawer
+    {
+        public override void OnGUI(Rect position, MaterialProperty prop, GUIContent label, MaterialEditor editor)
+        {
+            GuiHelper.drawConfigTextureProperty(position, prop, label, editor, ((TextureProperty)ShaderEditor.active.currentProperty).hasScaleOffset);
+        }
+
+        public override float GetPropertyHeight(MaterialProperty prop, string label, MaterialEditor editor)
+        {
+            DrawingData.lastPropertyUsedCustomDrawer = true;
+            return base.GetPropertyHeight(prop, label, editor);
+        }
+    }
+
     public class SmallTextureDrawer : MaterialPropertyDrawer
     {
         public override void OnGUI(Rect position, MaterialProperty prop, GUIContent label, MaterialEditor editor)
@@ -54,24 +68,47 @@ namespace Thry
         }
     }
 
-    public class ThryToggleUIDrawer : MaterialPropertyDrawer
+    public class ThryToggleDrawer : MaterialPropertyDrawer
     {
         public string keyword;
         private bool isFirstGUICall = true;
-        public ThryToggleUIDrawer()
+        public bool left = false;
+        private bool hasKeyword = false;
+
+        public ThryToggleDrawer()
         {
         }
 
-        public ThryToggleUIDrawer(string keyword)
+        //the reason for weird string thing here is that you cant have bools as params for drawers
+        public ThryToggleDrawer(string keywordLeft)
         {
+            if (keywordLeft == "true") left = true;
+            else if (keywordLeft == "false") left = false;
+            else keyword = keywordLeft;
+            hasKeyword = keyword != null;
         }
 
-        protected virtual void SetKeyword(MaterialProperty prop, bool on)
+        public ThryToggleDrawer(string keyword, string left)
         {
+            this.keyword = keyword;
+            this.left = left == "true";
+            hasKeyword = keyword != null;
         }
 
-        protected virtual void CheckKeyword(MaterialProperty prop)
+        protected void SetKeyword(MaterialProperty prop, bool on)
         {
+            SetKeywordInternal(prop, on, "_ON");
+        }
+
+        protected void CheckKeyword(MaterialProperty prop)
+        {
+            foreach (Material m in prop.targets)
+            {
+                if (prop.floatValue == 1)
+                    m.EnableKeyword(keyword);
+                else
+                    m.DisableKeyword(keyword);
+            }
         }
 
         static bool IsPropertyTypeSuitable(MaterialProperty prop)
@@ -96,7 +133,7 @@ namespace Thry
             }
             if (isFirstGUICall && !ShaderEditor.active.isLockedMaterial)
             {
-                CheckKeyword(prop);
+                if(hasKeyword) CheckKeyword(prop);
                 isFirstGUICall = false;
             }
             //why is this not inFirstGUICall ? cause it seems drawers are kept between different openings of the shader editor, so this needs to be set again every time the shader editor is reopened for that material
@@ -106,12 +143,13 @@ namespace Thry
 
             bool value = (Math.Abs(prop.floatValue) > 0.001f);
             EditorGUI.showMixedValue = prop.hasMixedValue;
-            value = EditorGUI.Toggle(position, label, value);
+            if(left) value = EditorGUI.ToggleLeft(position, label, value, Styles.style_toggle_left_richtext);
+            else     value = EditorGUI.Toggle(position, label, value);
             EditorGUI.showMixedValue = false;
             if (EditorGUI.EndChangeCheck())
             {
                 prop.floatValue = value ? 1.0f : 0.0f;
-                SetKeyword(prop, value);
+                if(hasKeyword) SetKeyword(prop, value);
             }
         }
 
@@ -124,35 +162,7 @@ namespace Thry
             if (prop.hasMixedValue)
                 return;
 
-            SetKeyword(prop, (Math.Abs(prop.floatValue) > 0.001f));
-        }
-    }
-
-    public class ThryToggleDrawer : ThryToggleUIDrawer
-    {
-        public ThryToggleDrawer()
-        {
-        }
-
-        public ThryToggleDrawer(string keyword)
-        {
-            this.keyword = keyword;
-        }
-
-        protected override void SetKeyword(MaterialProperty prop, bool on)
-        {
-            SetKeywordInternal(prop, on, "_ON");
-        }
-
-        protected override void CheckKeyword(MaterialProperty prop)
-        {
-            foreach (Material m in prop.targets)
-            {
-                if (m.GetFloat(prop.name) == 1)
-                    m.EnableKeyword((string)keyword);
-                else
-                    m.DisableKeyword((string)keyword);
-            }
+            if(hasKeyword) SetKeyword(prop, (Math.Abs(prop.floatValue) > 0.001f));
         }
 
         protected void SetKeywordInternal(MaterialProperty prop, bool on, string defaultKeywordSuffix)
@@ -169,6 +179,29 @@ namespace Thry
             }
         }
     }
+
+    //This class only exists for backward compatibility
+    public class ThryToggleUIDrawer: ThryToggleDrawer
+    {
+        public ThryToggleUIDrawer()
+        {
+        }
+
+        //the reason for weird string thing here is that you cant have bools as params for drawers
+        public ThryToggleUIDrawer(string keywordLeft)
+        {
+            if (keywordLeft == "true") left = true;
+            else if (keywordLeft == "false") left = false;
+            else keyword = keywordLeft;
+        }
+
+        public ThryToggleUIDrawer(string keyword, string left)
+        {
+            this.keyword = keyword;
+            this.left = left == "true";
+        }
+    }
+
     public class CurveDrawer : MaterialPropertyDrawer
     {
         public AnimationCurve curve;
@@ -508,21 +541,30 @@ namespace Thry
     public class ThryHeaderLabelDecorator : MaterialPropertyDrawer
     {
         readonly string text;
+        readonly int size;
+        GUIStyle style;
 
-        public ThryHeaderLabelDecorator(string text)
+        public ThryHeaderLabelDecorator(string text) : this(text, EditorStyles.standardFont.fontSize)
+        {
+        }
+        public ThryHeaderLabelDecorator(string text, float size)
         {
             this.text = text;
+            this.size = (int)size;
+            style = new GUIStyle(EditorStyles.boldLabel);
+            style.fontSize = this.size;
         }
+
 
         public override float GetPropertyHeight(MaterialProperty prop, string label, MaterialEditor editor)
         {
-            return 16f;
+            return size + 6f;
         }
 
         public override void OnGUI(Rect position, MaterialProperty prop, string label, MaterialEditor editor)
         {
             position = EditorGUI.IndentedRect(position);
-            GUI.Label(position, text, EditorStyles.boldLabel);
+            GUI.Label(position, text, style);
         }
     }
 
@@ -766,6 +808,7 @@ namespace Thry
         public override float GetPropertyHeight(MaterialProperty prop, string label, MaterialEditor editor)
         {
             DrawingData.lastPropertyUsedCustomDrawer = true;
+            ShaderEditor.active.use_ShaderOptimizer = true;
             return -2;
         }
     }

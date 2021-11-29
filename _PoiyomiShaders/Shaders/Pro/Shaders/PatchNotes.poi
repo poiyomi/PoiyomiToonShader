@@ -1,20 +1,21 @@
 
-**[7.3.024]**
-**[Bug Fix]** grab pass blur additive bug https://discordapp.com/channels/550477546958094348/550477704617787422/865476315951136779
-**[UI Change]** remove simple/advanced mode
-**[UI Update]** Changed a bunch of ui things to work better in 2019
+**[7.3.028]**
+**[Bug Fix]** Glow in the dark mesh or world was being shared between emission 1 and 2
+**[Bug Fix]** Fixed a weird glow in the dark bug that changed the color of emission in specific cases @Lupsoris#0001 
 
 
 // to do
-Hue shift for outline going white at .5 https://discordapp.com/channels/550477546958094348/550477704617787422/865060339828785154
+panosphere UV
+Hue shift for outline not changing emission color https://discordapp.com/channels/550477546958094348/550477704617787422/865060339828785154
 audio link average volume
-
-8.0 new features
+Grab pass nan explosions in 2019
+audio link features
 Light Based glitter
 Merge iridescence with matcap
 Audio Link Glitter more than normal integration
 SDF
 Special FX master shader
-
+audio link matcap emission strength
+Vertex Color color for outline
 // Videos to make
 RGBA what does it mean

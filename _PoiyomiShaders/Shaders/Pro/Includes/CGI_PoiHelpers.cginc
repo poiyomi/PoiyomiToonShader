@@ -1,228 +1,228 @@
 #ifndef POI_HELPER
-    #define POI_HELPER
-    
-    #ifndef pi
-        #define pi float(3.14159265359)
-    #endif
-    
-    float linearSin(float x)
-    {
-        return pow(min(cos(pi * x / 2.0), 1.0 - abs(x)), 1.0); 
-    }
+#define POI_HELPER
 
-    float random(float2 p)
-    {
-        return frac(sin(dot(p, float2(12.9898, 78.2383))) * 43758.5453123);
-    }
+#ifndef pi
+    #define pi float(3.14159265359)
+#endif
+
+float linearSin(float x)
+{
+    return pow(min(cos(pi * x / 2.0), 1.0 - abs(x)), 1.0);
+}
+
+float random(float2 p)
+{
+    return frac(sin(dot(p, float2(12.9898, 78.2383))) * 43758.5453123);
+}
+
+float2 random2(float2 p)
+{
+    return frac(sin(float2(dot(p, float2(127.1, 311.7)), dot(p, float2(269.5, 183.3)))) * 43758.5453);
+}
+
+float3 random3(float3 p)
+{
+    return frac(sin(float3(dot(p, float3(127.1, 311.7, 248.6)), dot(p, float3(269.5, 183.3, 423.3)), dot(p, float3(248.3, 315.9, 184.2)))) * 43758.5453);
+}
+
+float3 mod(float3 x, float y)
+{
+    return x - y * floor(x / y);
+}
+float2 mod(float2 x, float y)
+{
+    return x - y * floor(x / y);
+}
+
+//1/7
+#define K 0.142857142857
+//3/7
+#define Ko 0.428571428571
+
+// Permutation polynomial: (34x^2 + x) mod 289
+float3 Permutation(float3 x)
+{
+    return mod((34.0 * x + 1.0) * x, 289.0);
+}
+
+bool IsInMirror()
+{
+    return unity_CameraProjection[2][0] != 0.f || unity_CameraProjection[2][1] != 0.f;
+}
+
+float3 BoxProjection(float3 direction, float3 position, float4 cubemapPosition, float3 boxMin, float3 boxMax)
+{
+    #if UNITY_SPECCUBE_BOX_PROJECTION
+        UNITY_BRANCH
+        if (cubemapPosition.w > 0)
+        {
+            float3 factors = ((direction > 0 ? boxMax : boxMin) - position) / direction;
+            float scalar = min(min(factors.x, factors.y), factors.z);
+            direction = direction * scalar + (position - cubemapPosition.xyz);
+        }
+    #endif
+    return direction;
+}
+
+// Camera
+float3 getCameraPosition()
+{
+    #ifdef USING_STEREO_MATRICES
+        return lerp(unity_StereoWorldSpaceCameraPos[0], unity_StereoWorldSpaceCameraPos[1], 0.5);
+    #endif
+    return _WorldSpaceCameraPos;
+}
+
+float3 getCameraForward()
+{
+    #if UNITY_SINGLE_PASS_STEREO
+        float3 p1 = mul(unity_StereoCameraToWorld[0], float4(0, 0, 1, 1));
+        float3 p2 = mul(unity_StereoCameraToWorld[0], float4(0, 0, 0, 1));
+    #else
+        float3 p1 = mul(unity_CameraToWorld, float4(0, 0, 1, 1)).xyz;
+        float3 p2 = mul(unity_CameraToWorld, float4(0, 0, 0, 1)).xyz;
+    #endif
+    return normalize(p2 - p1);
+}
+
+float3 grayscale_vector_node()
+{
+    return float3(0, 0.3823529, 0.01845836);
+}
+
+float3 grayscale_for_light()
+{
+    return float3(0.298912, 0.586611, 0.114478);
+}
+
+//Math Operators
+
+float remap(float x, float minOld, float maxOld, float minNew, float maxNew)
+{
+    return minNew + (x - minOld) * (maxNew - minNew) / (maxOld - minOld);
+}
+
+float2 remap(float2 x, float2 minOld, float2 maxOld, float2 minNew, float2 maxNew)
+{
+    return minNew + (x - minOld) * (maxNew - minNew) / (maxOld - minOld);
+}
+
+float3 remap(float3 x, float3 minOld, float3 maxOld, float3 minNew, float3 maxNew)
+{
+    return minNew + (x - minOld) * (maxNew - minNew) / (maxOld - minOld);
+}
+
+float4 remap(float4 x, float4 minOld, float4 maxOld, float4 minNew, float4 maxNew)
+{
+    return minNew + (x - minOld) * (maxNew - minNew) / (maxOld - minOld);
+}
+
+float remapClamped(float x, float minOld, float maxOld, float minNew, float maxNew)
+{
+    return clamp(minNew + (x - minOld) * (maxNew - minNew) / (maxOld - minOld), minNew, maxNew);
+}
+
+float2 remapClamped(float2 x, float2 minOld, float2 maxOld, float2 minNew, float2 maxNew)
+{
+    return clamp(minNew + (x - minOld) * (maxNew - minNew) / (maxOld - minOld), minNew, maxNew);
+}
+
+float3 remapClamped(float3 x, float3 minOld, float3 maxOld, float3 minNew, float3 maxNew)
+{
+    return clamp(minNew + (x - minOld) * (maxNew - minNew) / (maxOld - minOld), minNew, maxNew);
+}
+
+float4 remapClamped(float4 x, float4 minOld, float4 maxOld, float4 minNew, float4 maxNew)
+{
+    return clamp(minNew + (x - minOld) * (maxNew - minNew) / (maxOld - minOld), minNew, maxNew);
+}
+
+float poiMax(float2 i)
+{
+    return max(i.x, i.y);
+}
+
+float poiMax(float3 i)
+{
+    return max(max(i.x, i.y), i.z);
+}
+
+float poiMax(float4 i)
+{
+    return max(max(max(i.x, i.y), i.z), i.w);
+}
+
+float4x4 poiAngleAxisRotationMatrix(float angle, float3 axis)
+{
+    axis = normalize(axis);
+    float s = sin(angle);
+    float c = cos(angle);
+    float oc = 1.0 - c;
     
-    float2 random2(float2 p)
-    {
-        return frac(sin(float2(dot(p, float2(127.1, 311.7)), dot(p, float2(269.5, 183.3)))) * 43758.5453);
-    }
+    return float4x4(oc * axis.x * axis.x + c, oc * axis.x * axis.y - axis.z * s, oc * axis.z * axis.x + axis.y * s, 0.0,
+    oc * axis.x * axis.y + axis.z * s, oc * axis.y * axis.y + c, oc * axis.y * axis.z - axis.x * s, 0.0,
+    oc * axis.z * axis.x - axis.y * s, oc * axis.y * axis.z + axis.x * s, oc * axis.z * axis.z + c, 0.0,
+    0.0, 0.0, 0.0, 1.0);
+}
+
+float4x4 poiRotationMatrixFromAngles(float x, float y, float z)
+{
+    float angleX = radians(x);
+    float c = cos(angleX);
+    float s = sin(angleX);
+    float4x4 rotateXMatrix = float4x4(1, 0, 0, 0,
+    0, c, -s, 0,
+    0, s, c, 0,
+    0, 0, 0, 1);
     
-    float3 random3(float3 p)
-    {
-        return frac(sin(float3(dot(p, float3(127.1, 311.7, 248.6)), dot(p, float3(269.5, 183.3, 423.3)), dot(p, float3(248.3, 315.9, 184.2)))) * 43758.5453);
-    }
+    float angleY = radians(y);
+    c = cos(angleY);
+    s = sin(angleY);
+    float4x4 rotateYMatrix = float4x4(c, 0, s, 0,
+    0, 1, 0, 0,
+    - s, 0, c, 0,
+    0, 0, 0, 1);
     
-    float3 mod(float3 x, float y)
-    {
-        return x - y * floor(x / y);
-    }
-    float2 mod(float2 x, float y)
-    {
-        return x - y * floor(x / y);
-    }
+    float angleZ = radians(z);
+    c = cos(angleZ);
+    s = sin(angleZ);
+    float4x4 rotateZMatrix = float4x4(c, -s, 0, 0,
+    s, c, 0, 0,
+    0, 0, 1, 0,
+    0, 0, 0, 1);
     
-    //1/7
-    #define K 0.142857142857
-    //3/7
-    #define Ko 0.428571428571
+    return mul(mul(rotateXMatrix, rotateYMatrix), rotateZMatrix);
+}
+
+float4x4 poiRotationMatrixFromAngles(float3 angles)
+{
+    float angleX = radians(angles.x);
+    float c = cos(angleX);
+    float s = sin(angleX);
+    float4x4 rotateXMatrix = float4x4(1, 0, 0, 0,
+    0, c, -s, 0,
+    0, s, c, 0,
+    0, 0, 0, 1);
     
-    // Permutation polynomial: (34x^2 + x) mod 289
-    float3 Permutation(float3 x)
-    {
-        return mod((34.0 * x + 1.0) * x, 289.0);
-    }
+    float angleY = radians(angles.y);
+    c = cos(angleY);
+    s = sin(angleY);
+    float4x4 rotateYMatrix = float4x4(c, 0, s, 0,
+    0, 1, 0, 0,
+    - s, 0, c, 0,
+    0, 0, 0, 1);
     
-    bool IsInMirror()
-    {
-        return unity_CameraProjection[2][0] != 0.f || unity_CameraProjection[2][1] != 0.f;
-    }
+    float angleZ = radians(angles.z);
+    c = cos(angleZ);
+    s = sin(angleZ);
+    float4x4 rotateZMatrix = float4x4(c, -s, 0, 0,
+    s, c, 0, 0,
+    0, 0, 1, 0,
+    0, 0, 0, 1);
     
-    float3 BoxProjection(float3 direction, float3 position, float4 cubemapPosition, float3 boxMin, float3 boxMax)
-    {
-        #if UNITY_SPECCUBE_BOX_PROJECTION
-            UNITY_BRANCH
-            if (cubemapPosition.w > 0)
-            {
-                float3 factors = ((direction > 0 ? boxMax: boxMin) - position) / direction;
-                float scalar = min(min(factors.x, factors.y), factors.z);
-                direction = direction * scalar + (position - cubemapPosition.xyz);
-            }
-        #endif
-        return direction;
-    }
-    
-    // Camera
-    float3 getCameraPosition()
-    {
-        #ifdef USING_STEREO_MATRICES
-            return lerp(unity_StereoWorldSpaceCameraPos[0], unity_StereoWorldSpaceCameraPos[1], 0.5);
-        #endif
-        return _WorldSpaceCameraPos;
-    }
-    
-    float3 getCameraForward()
-    {
-        #if UNITY_SINGLE_PASS_STEREO
-            float3 p1 = mul(unity_StereoCameraToWorld[0], float4(0, 0, 1, 1));
-            float3 p2 = mul(unity_StereoCameraToWorld[0], float4(0, 0, 0, 1));
-        #else
-            float3 p1 = mul(unity_CameraToWorld, float4(0, 0, 1, 1)).xyz;
-            float3 p2 = mul(unity_CameraToWorld, float4(0, 0, 0, 1)).xyz;
-        #endif
-        return normalize(p2 - p1);
-    }
-    
-    float3 grayscale_vector_node()
-    {
-        return float3(0, 0.3823529, 0.01845836);
-    }
-    
-    float3 grayscale_for_light()
-    {
-        return float3(0.298912, 0.586611, 0.114478);
-    }
-    
-    //Math Operators
-    
-    float remap(float x, float minOld, float maxOld, float minNew, float maxNew)
-    {
-        return minNew + (x - minOld) * (maxNew - minNew) / (maxOld - minOld);
-    }
-    
-    float2 remap(float2 x, float2 minOld, float2 maxOld, float2 minNew, float2 maxNew)
-    {
-        return minNew + (x - minOld) * (maxNew - minNew) / (maxOld - minOld);
-    }
-    
-    float3 remap(float3 x, float3 minOld, float3 maxOld, float3 minNew, float3 maxNew)
-    {
-        return minNew + (x - minOld) * (maxNew - minNew) / (maxOld - minOld);
-    }
-    
-    float4 remap(float4 x, float4 minOld, float4 maxOld, float4 minNew, float4 maxNew)
-    {
-        return minNew + (x - minOld) * (maxNew - minNew) / (maxOld - minOld);
-    }
-    
-    float remapClamped(float x, float minOld, float maxOld, float minNew, float maxNew)
-    {
-        return clamp(minNew + (x - minOld) * (maxNew - minNew) / (maxOld - minOld), minNew, maxNew);
-    }
-    
-    float2 remapClamped(float2 x, float2 minOld, float2 maxOld, float2 minNew, float2 maxNew)
-    {
-        return clamp(minNew + (x - minOld) * (maxNew - minNew) / (maxOld - minOld), minNew, maxNew);
-    }
-    
-    float3 remapClamped(float3 x, float3 minOld, float3 maxOld, float3 minNew, float3 maxNew)
-    {
-        return clamp(minNew + (x - minOld) * (maxNew - minNew) / (maxOld - minOld), minNew, maxNew);
-    }
-    
-    float4 remapClamped(float4 x, float4 minOld, float4 maxOld, float4 minNew, float4 maxNew)
-    {
-        return clamp(minNew + (x - minOld) * (maxNew - minNew) / (maxOld - minOld), minNew, maxNew);
-    }
-    
-    float poiMax(float2 i)
-    {
-        return max(i.x, i.y);
-    }
-    
-    float poiMax(float3 i)
-    {
-        return max(max(i.x, i.y), i.z);
-    }
-    
-    float poiMax(float4 i)
-    {
-        return max(max(max(i.x, i.y), i.z), i.w);
-    }
-    
-    float4x4 poiAngleAxisRotationMatrix(float angle, float3 axis)
-    {
-        axis = normalize(axis);
-        float s = sin(angle);
-        float c = cos(angle);
-        float oc = 1.0 - c;
-        
-        return float4x4(oc * axis.x * axis.x + c, oc * axis.x * axis.y - axis.z * s, oc * axis.z * axis.x + axis.y * s, 0.0,
-        oc * axis.x * axis.y + axis.z * s, oc * axis.y * axis.y + c, oc * axis.y * axis.z - axis.x * s, 0.0,
-        oc * axis.z * axis.x - axis.y * s, oc * axis.y * axis.z + axis.x * s, oc * axis.z * axis.z + c, 0.0,
-        0.0, 0.0, 0.0, 1.0);
-    }
-    
-    float4x4 poiRotationMatrixFromAngles(float x, float y, float z)
-    {
-        float angleX = radians(x);
-        float c = cos(angleX);
-        float s = sin(angleX);
-        float4x4 rotateXMatrix = float4x4(1, 0, 0, 0,
-        0, c, -s, 0,
-        0, s, c, 0,
-        0, 0, 0, 1);
-        
-        float angleY = radians(y);
-        c = cos(angleY);
-        s = sin(angleY);
-        float4x4 rotateYMatrix = float4x4(c, 0, s, 0,
-        0, 1, 0, 0,
-        - s, 0, c, 0,
-        0, 0, 0, 1);
-        
-        float angleZ = radians(z);
-        c = cos(angleZ);
-        s = sin(angleZ);
-        float4x4 rotateZMatrix = float4x4(c, -s, 0, 0,
-        s, c, 0, 0,
-        0, 0, 1, 0,
-        0, 0, 0, 1);
-        
-        return mul(mul(rotateXMatrix, rotateYMatrix), rotateZMatrix);
-    }
-    
-    float4x4 poiRotationMatrixFromAngles(float3 angles)
-    {
-        float angleX = radians(angles.x);
-        float c = cos(angleX);
-        float s = sin(angleX);
-        float4x4 rotateXMatrix = float4x4(1, 0, 0, 0,
-        0, c, -s, 0,
-        0, s, c, 0,
-        0, 0, 0, 1);
-        
-        float angleY = radians(angles.y);
-        c = cos(angleY);
-        s = sin(angleY);
-        float4x4 rotateYMatrix = float4x4(c, 0, s, 0,
-        0, 1, 0, 0,
-        - s, 0, c, 0,
-        0, 0, 0, 1);
-        
-        float angleZ = radians(angles.z);
-        c = cos(angleZ);
-        s = sin(angleZ);
-        float4x4 rotateZMatrix = float4x4(c, -s, 0, 0,
-        s, c, 0, 0,
-        0, 0, 1, 0,
-        0, 0, 0, 1);
-        
-        return mul(mul(rotateXMatrix, rotateYMatrix), rotateZMatrix);
-    }
-    
+    return mul(mul(rotateXMatrix, rotateYMatrix), rotateZMatrix);
+}
+
 #endif
 
 half2 calcScreenUVs(half4 grabPos)

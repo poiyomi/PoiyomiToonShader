@@ -76,7 +76,7 @@ void applyPathing(inout float4 albedo, inout float3 pathEmission)
 		half pathAudioLinkPathTimeOffsetBand[3] = {_AudioLinkPathTimeOffsetBandR, _AudioLinkPathTimeOffsetBandG, _AudioLinkPathTimeOffsetBandB};
 		half2 pathAudioLinkTimeOffset[3] = {_AudioLinkPathTimeOffsetR.xy, _AudioLinkPathTimeOffsetG.xy, _AudioLinkPathTimeOffsetB.xy};
 		half pathAudioLinkPathWidthOffsetBand[3] = {_AudioLinkPathWidthOffsetBandR, _AudioLinkPathWidthOffsetBandG, _AudioLinkPathWidthOffsetBandB};
-		half2 pathAudioLinkWidthOffset[3] = {_AudioLinkPathWidthOffsetR.xy, _AudioLinkPathWidthOffsetG.xy, _AudioLinkPathWidthOffsetR.xy};
+		half2 pathAudioLinkWidthOffset[3] = {_AudioLinkPathWidthOffsetR.xy, _AudioLinkPathWidthOffsetG.xy, _AudioLinkPathWidthOffsetB.xy};
 
 		UNITY_BRANCH
 		if (poiMods.audioLinkTextureExists)

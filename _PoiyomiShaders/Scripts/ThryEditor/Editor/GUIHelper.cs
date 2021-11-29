@@ -35,6 +35,7 @@ namespace Thry
         public static void drawSmallTextureProperty(Rect position, MaterialProperty prop, GUIContent label, MaterialEditor editor, bool hasFoldoutProperties)
         {
             Rect thumbnailPos = position;
+            Rect foloutClickCheck = position;
             thumbnailPos.x += hasFoldoutProperties ? 20 : 0;
             editor.TexturePropertyMiniThumbnail(thumbnailPos, prop, label.text, label.tooltip);
             DrawingData.currentTexProperty.tooltip.ConditionalDraw(thumbnailPos);
@@ -44,6 +45,7 @@ namespace Thry
                 Rect r = position;
                 r.x += EditorGUIUtility.labelWidth - CurrentIndentWidth();
                 r.width -= EditorGUIUtility.labelWidth - CurrentIndentWidth();
+                foloutClickCheck.width -= r.width;
                 property.Draw(new CRect(r), new GUIContent());
                 property.tooltip.ConditionalDraw(r);
             }
@@ -78,7 +80,7 @@ namespace Thry
                             }
                         EditorGUI.indentLevel -= 2;
                     }
-                    if (ShaderEditor.input.MouseLeftClick && position.Contains(Event.current.mousePosition))
+                    if (ShaderEditor.input.MouseLeftClick && foloutClickCheck.Contains(Event.current.mousePosition))
                     {
                         ShaderEditor.input.Use();
                         DrawingData.currentTexProperty.showFoldoutProperties = !DrawingData.currentTexProperty.showFoldoutProperties;
@@ -543,7 +545,7 @@ namespace Thry
 
             public void Draw()
             {
-                EditorGUI.DrawRect(containerRect, Styles.backgroundColor);
+                EditorGUI.DrawRect(containerRect, Styles.COLOR_BG);
                 EditorGUI.LabelField(contentRect, content);
                 isSelected = false;
             }
@@ -661,7 +663,9 @@ namespace Thry
         
         public ThryHeaderDrawer(string end, string keyword, string buttonText, string buttonHover, string buttonAction) : this(end, keyword, buttonText, buttonHover, buttonAction, 0          ) { }
         public ThryHeaderDrawer(string end, string keyword, float isHideable) :                                           this(end, keyword, null,       null,        null,         isHideable ) { }
+        public ThryHeaderDrawer(string end, string keyword, string buttonAction) :                                        this(end, keyword, null,       null,        buttonAction, 0          ) { }
         public ThryHeaderDrawer(string end, string keyword) :                                                             this(end, keyword, null,       null,        null,         0          ) { }
+        public ThryHeaderDrawer(string end) :                                                                             this(end, null   , null,       null,        null,         0          ) { }
 
         public ThryHeaderDrawer(float isHideable) :                                                                       this(null,null,    null,       null,        null,         isHideable ) { }
         public ThryHeaderDrawer(float isHideable, string end) :                                                           this(end, null,    null,       null,        null,         isHideable ) { }

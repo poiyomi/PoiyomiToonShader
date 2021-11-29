@@ -121,13 +121,8 @@ void calculateLightingData(in v2f i)
 	
 	poiLight.halfDir = normalize(poiLight.direction + poiCam.viewDir);
 	
-	#ifdef POI_VAR_DOTNH
-		poiLight.dotNH = saturate(dot(poiMesh.normals[1], poiLight.halfDir));
-	#endif
-	
-	#ifdef POI_VAR_DOTLH
-		poiLight.dotLH = saturate(dot(poiLight.direction, poiLight.halfDir));
-	#endif
+	poiLight.dotNH = saturate(dot(poiMesh.normals[1], poiLight.halfDir));
+	poiLight.dotLH = saturate(dot(poiLight.direction, poiLight.halfDir));
 	
 	poiLight.nDotV = dot(poiMesh.normals[1], poiCam.viewDir);
 	poiLight.N0DotV = dot(poiMesh.normals[0], poiCam.viewDir);
@@ -149,8 +144,8 @@ void initPoiMods()
 void InitializeMeshData(inout v2f i, uint facing)
 {
 	poiMesh.isFrontFace = facing;
-	poiMesh.normals[0] = normalize(i.normal);
-	poiMesh.binormal.rgb = normalize(i.binormal);
+	poiMesh.normals[0] = i.normal;
+	poiMesh.binormal.rgb = i.binormal;
 	poiMesh.tangent = i.tangent;
 	
 	#ifndef OUTLINE

@@ -90,7 +90,7 @@ namespace Thry
 
         private void addShaderEditor(string path)
         {
-            replaceEditorInShader(path, "ShaderEditor");
+            replaceEditorInShader(path, "Thry.ShaderEditor");
             AddThryProperty(path);
         }
 

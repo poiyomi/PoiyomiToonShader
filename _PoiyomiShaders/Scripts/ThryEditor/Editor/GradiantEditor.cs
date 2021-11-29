@@ -84,7 +84,7 @@ namespace Thry
                     string file_name = GradientFileName(data.gradient, prop.targets[0].name);
                     Texture saved = TextureHelper.SaveTextureAsPNG((Texture2D)data.preview_texture, PATH.TEXTURES_DIR+"/Gradients/" + file_name, textureSettings);
                     file_name = Regex.Replace(file_name, @"\.((png)|(jpg))$", "");
-                    FileHelper.SaveValueToFile(file_name, Parser.ObjectToString(data.gradient), PATH.GRADIENT_INFO_FILE);
+                    FileHelper.SaveValueToFile(AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(saved)), Parser.ObjectToString(data.gradient), PATH.GRADIENT_INFO_FILE);
                     prop.textureValue = saved;
                 }
             }

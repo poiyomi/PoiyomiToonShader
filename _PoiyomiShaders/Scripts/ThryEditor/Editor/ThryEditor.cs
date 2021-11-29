@@ -20,10 +20,10 @@ namespace Thry
         public const float MATERIAL_NOT_RESET = 69.12f;
 
         public const string PROPERTY_NAME_MASTER_LABEL = "shader_master_label";
-        public const string PROPERTY_NAME_PRESETS_FILE = "shader_presets";
         public const string PROPERTY_NAME_LABEL_FILE = "shader_properties_label_file";
         public const string PROPERTY_NAME_LOCALE = "shader_properties_locale";
         public const string PROPERTY_NAME_ON_SWAP_TO_ACTIONS = "shader_on_swap_to";
+        public const string PROPERTY_NAME_SHADER_VERSION = "shader_version";
 
         // Stores the different shader properties
         private ShaderHeader mainHeader;
@@ -64,11 +64,20 @@ namespace Thry
         public bool isLockedMaterial;
         public string animPropertySuffix;
 
+        //Shader Versioning
+        private Version shaderVersionLocal;
+        private Version shaderVersionRemote;
+        private bool hasShaderUpdateUrl = false;
+        private bool isShaderUpToDate = true;
+        private string shaderUpdateUrl = null;
+
         //other
         ShaderProperty ShaderOptimizerProperty { get; set; }
 
         private DefineableAction[] on_swap_to_actions = null;
         private bool swapped_to_shader = false;
+
+        public bool _isDrawing { get; private set; } = false;
 
         //-------------Init functions--------------------
 
@@ -127,7 +136,7 @@ namespace Thry
 
         private enum ThryPropertyType
         {
-            none, property, master_label, footer, header, headerWithEnd, legacy_header, legacy_header_end, legacy_header_start, group_start, group_end, instancing, dsgi, lightmap_flags, locale, on_swap_to, space, shader_optimizer
+            none, property, master_label, footer, header, headerWithEnd, legacy_header, legacy_header_end, legacy_header_start, group_start, group_end, instancing, dsgi, lightmap_flags, locale, on_swap_to, space, shader_version
         }
 
         private ThryPropertyType GetPropertyType(MaterialProperty p, PropertyOptions options)
@@ -142,8 +151,8 @@ namespace Thry
                 return ThryPropertyType.master_label;
             if (name == PROPERTY_NAME_ON_SWAP_TO_ACTIONS)
                 return ThryPropertyType.on_swap_to;
-            if (name == "_ShaderOptimizerEnabled")
-                return ThryPropertyType.shader_optimizer;
+            if (name == PROPERTY_NAME_SHADER_VERSION)
+                return ThryPropertyType.shader_version;
 
             if (flags == MaterialProperty.PropFlags.HideInInspector)
             {
@@ -322,9 +331,12 @@ namespace Thry
                     case ThryPropertyType.locale:
                         NewProperty = new LocaleProperty(this, props[i], displayName, offset, options, false);
                         break;
-                    case ThryPropertyType.shader_optimizer:
-                        use_ShaderOptimizer = true;
-                        NewProperty = new ShaderProperty(this, props[i], displayName, offset, options, false);
+                    case ThryPropertyType.shader_version:
+                        shaderVersionRemote = new Version(WebHelper.GetCachedString(options.remote_version_url));
+                        shaderVersionLocal = new Version(displayName);
+                        isShaderUpToDate = shaderVersionLocal >= shaderVersionRemote;
+                        shaderUpdateUrl = options.generic_string;
+                        hasShaderUpdateUrl = shaderUpdateUrl != null;
                         break;
                 }
                 if (NewProperty != null)
@@ -334,7 +346,7 @@ namespace Thry
                         continue;
                     propertyDictionary.Add(props[i].name, NewProperty);
                     //Debug.Log(NewProperty.materialProperty.name + ":" + headerStack.Count);
-                    if (type != ThryPropertyType.none && type != ThryPropertyType.shader_optimizer)
+                    if (type != ThryPropertyType.none)
                         headerStack.Peek().addPart(NewProperty);
                 }
                 //if new header is at end property
@@ -498,6 +510,7 @@ namespace Thry
 
         public override void OnGUI(MaterialEditor materialEditor, MaterialProperty[] props)
         {
+            _isDrawing = true;
             //Init
             bool reloadUI = firstOnGUICall || (reloadNextDraw && Event.current.type == EventType.Layout) || (materialEditor.target as Material).shader != shader;
             if (reloadUI) 
@@ -515,12 +528,14 @@ namespace Thry
             active = this;
 
             GUIManualReloadButton();
+            GUIShaderVersioning();
 
             GUITopBar();
             GUISearchBar();
             GUIComplexity();
 
-            ShaderOptimizerProperty?.Draw();
+            //Optimizer is now drawn wherever the property is. might change back later
+            //ShaderOptimizerProperty?.Draw();
 
             //PROPERTIES
             foreach (ShaderPart part in mainHeader.parts)
@@ -536,6 +551,8 @@ namespace Thry
             GUIFooters();
 
             HandleEvents();
+
+            _isDrawing = false;
         }
 
         private void GUIManualReloadButton()
@@ -549,20 +566,30 @@ namespace Thry
             }
         }
 
+        private void GUIShaderVersioning()
+        {
+            if (!isShaderUpToDate)
+            {
+                Rect r = EditorGUILayout.GetControlRect(false, hasShaderUpdateUrl ? 30 : 15);
+                EditorGUI.LabelField(r, $"[New Shader Version available] {shaderVersionLocal} -> {shaderVersionRemote}" + (hasShaderUpdateUrl ? "\n    Click here to download." : ""), Styles.redStyle);
+                if(input.HadMouseDownRepaint && hasShaderUpdateUrl && GUILayoutUtility.GetLastRect().Contains(input.mouse_position)) Application.OpenURL(shaderUpdateUrl);
+            }
+        }
+
         private void GUITopBar()
         {
             //if header is texture, draw it first so other ui elements can be positions below
             if (shaderHeader != null && shaderHeader.options.texture != null) shaderHeader.Draw();
             Rect mainHeaderRect = EditorGUILayout.BeginHorizontal();
             //draw editor settings button
-            if (GUILayout.Button(new GUIContent("", Styles.settings_icon), EditorStyles.largeLabel, GUILayout.MaxHeight(20), GUILayout.MaxWidth(20)))
+            if (GUILayout.Button(new GUIContent("", Styles.icon_settings), EditorStyles.largeLabel, GUILayout.MaxHeight(20), GUILayout.MaxWidth(20)))
             {
                 Thry.Settings window = Thry.Settings.getInstance();
                 window.Show();
                 window.Focus();
             }
             EditorGUIUtility.AddCursorRect(GUILayoutUtility.GetLastRect(), MouseCursor.Link);
-            if (GUILayout.Button(Styles.search_icon, EditorStyles.largeLabel, GUILayout.MaxHeight(20)))
+            if (GUILayout.Button(Styles.icon_search, EditorStyles.largeLabel, GUILayout.MaxHeight(20)))
                 show_search_bar = !show_search_bar;
 
             //draw master label text after ui elements, so it can be positioned between

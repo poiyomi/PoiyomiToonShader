@@ -419,7 +419,11 @@ namespace Thry
         {
             if (texture != null)
             {
-                string gradient_data_string = FileHelper.LoadValueFromFile(texture.name, PATH.GRADIENT_INFO_FILE);
+                string path = AssetDatabase.GetAssetPath(texture);
+                string gradient_data_string = null;
+                if(path != null) gradient_data_string = FileHelper.LoadValueFromFile(AssetDatabase.AssetPathToGUID(path), PATH.GRADIENT_INFO_FILE);
+                //For Backwards compatibility check old id (name) if guid cant be found
+                if(gradient_data_string == null) gradient_data_string  = FileHelper.LoadValueFromFile(texture.name, PATH.GRADIENT_INFO_FILE);
                 if (gradient_data_string != null)
                 {
                     Debug.Log(texture.name + " Gradient loaded from file.");

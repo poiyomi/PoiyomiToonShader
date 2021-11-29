@@ -90,7 +90,6 @@ namespace Thry
             List<Type> subclasses = AppDomain.CurrentDomain.GetAssemblies().SelectMany(a => a.GetTypes()).Where(type => type.IsSubclassOf(typeof(ModuleSettings))).ToList();
             moduleSettings = new ModuleSettings[subclasses.Count];
             int i = 0;
-            Debug.Log("Classes: " + subclasses.Count);
             foreach(Type classtype in subclasses)
             {
                 moduleSettings[i++] = (ModuleSettings)Activator.CreateInstance(classtype);
@@ -147,7 +146,7 @@ namespace Thry
             else if (updatedVersion == -1)
                 GUILayout.Label(" " + Locale.editor.Get("update_message"), Styles.greenStyle);
             else if (updatedVersion == 1)
-                GUILayout.Label(" " + Locale.editor.Get("downgrade_message"), Styles.yellowStyle);
+                GUILayout.Label(" " + Locale.editor.Get("downgrade_message"), Styles.orangeStyle);
         }
 
         private void GUIMessage()
@@ -193,9 +192,9 @@ namespace Thry
                 if (gradient_name.Contains("<prop>"))
                     GUILayout.Label(Locale.editor.Get("gradient_good_naming"), Styles.greenStyle, GUILayout.ExpandWidth(false));
                 else
-                    GUILayout.Label(Locale.editor.Get("gradient_add_hash_or_prop"), Styles.yellowStyle, GUILayout.ExpandWidth(false));
+                    GUILayout.Label(Locale.editor.Get("gradient_add_hash_or_prop"), Styles.orangeStyle, GUILayout.ExpandWidth(false));
             else if (gradient_name.Contains("<prop>"))
-                GUILayout.Label(Locale.editor.Get("gradient_add_material"), Styles.yellowStyle, GUILayout.ExpandWidth(false));
+                GUILayout.Label(Locale.editor.Get("gradient_add_material"), Styles.orangeStyle, GUILayout.ExpandWidth(false));
             else
                 GUILayout.Label(Locale.editor.Get("gradient_add_material_or_prop"), Styles.redStyle, GUILayout.ExpandWidth(false));
             GUILayout.EndHorizontal();

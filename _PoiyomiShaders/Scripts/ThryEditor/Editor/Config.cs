@@ -16,7 +16,7 @@ namespace Thry
     {
         // consts
         private const string PATH_CONFIG_FILE = "Thry/Config.json";
-        private const string VERSION = "2.16.1";
+        private const string VERSION = "2.18.14";
 
         // static
         private static Config config;
@@ -49,7 +49,7 @@ namespace Thry
             }
         }
 
-        //load the config from file
+        // load the config from file
         private static Config LoadConfig()
         {
             if (File.Exists(PATH_CONFIG_FILE))
@@ -103,6 +103,7 @@ namespace Thry
 
         public Version(string s)
         {
+            if (string.IsNullOrEmpty(s)) s = "0";
             this.value = s;
         }
 
@@ -171,6 +172,11 @@ namespace Thry
             if (o is Version) return this == (o as Version);
             if (o is string) return this == (o as string);
             return false;
+        }
+
+        public override string ToString()
+        {
+            return value;
         }
 
         public override int GetHashCode()

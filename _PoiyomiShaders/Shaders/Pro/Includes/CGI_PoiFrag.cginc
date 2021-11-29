@@ -417,6 +417,6 @@ float4 frag(v2f i, uint facing: SV_IsFrontFace): SV_Target
 	#endif
 	
 	//finalColor.rgb = frac(finalColor.rgb);
-	return finalColor + albedo * 0.00001;
+	return finalColor + mainTexture * 0.00001;
 }
 #endif
