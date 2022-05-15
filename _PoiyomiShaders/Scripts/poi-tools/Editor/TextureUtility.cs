@@ -102,7 +102,7 @@ namespace Poi.TextureUtility
         }
         #endregion
 
-        [MenuItem("Tools/Poi/Texture Utility")]
+        [MenuItem("Poi/Texture Utility")]
         private static void showWindow()
         {
             EditorWindow w = GetWindow<TextureUtility>(false, "Texture Utility", true);

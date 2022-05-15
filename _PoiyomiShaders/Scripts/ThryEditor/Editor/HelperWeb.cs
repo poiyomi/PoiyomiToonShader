@@ -107,7 +107,9 @@ namespace Thry
                     {
                         queue[0].action.DynamicInvoke(queue[0].arguments);
                     }
-                    catch { }
+                    catch(Exception e) {
+                        Debug.LogWarning("[Thry] Error during WebRequest: " + e.ToString());
+                    }
                     queue.RemoveAt(0);
                 }
             }
@@ -126,7 +128,7 @@ namespace Thry
                     MainThreader.Call(callback, null);
                 else
                 {
-                    FileHelper.writeBytesToFile(a.Result, path);
+                    FileHelper.WriteBytesToFile(a.Result, path);
                     MainThreader.Call(callback, path);
                 }
             });

@@ -26,113 +26,67 @@ namespace Thry
         public static Color COLOR_FG { get; private set; } = (EditorGUIUtility.isProSkin) ? new Color(0.8f, 0.8f, 0.8f) : Color.black;
 
         private static Color COLOR_ICON_FONT = GUI.skin.label.normal.textColor;
-        private static Color COLOR_ICON_GRAY = EditorGUIUtility.isProSkin? COLOR_ICON_FONT: new Color(0.4f, 0.4f, 0.4f);
-        private static Color COLOR_ICON_ACTIVE_CYAN = Color.cyan;
+        private static Color COLOR_ICON_GRAY = EditorGUIUtility.isProSkin ? COLOR_ICON_FONT : new Color(0.4f, 0.4f, 0.4f);
+        public static Color COLOR_ICON_ACTIVE_CYAN = Color.cyan;
         private static Color COLOR_ICON_ACTIVE_RED = Color.red;
-        private static Color COLOR_BACKGROUND_1 = EditorGUIUtility.isProSkin ? new Color(0.27f, 0.27f, 0.27f) : new Color(0.65f, 0.65f, 0.65f);
-        private static Color COLOR_BACKGROUND_2 = EditorGUIUtility.isProSkin ? new Color(0.5f, 0.5f, 0.5f) : new Color(0.85f, 0.85f, 0.85f);
+        public static Color COLOR_BACKGROUND_1 = EditorGUIUtility.isProSkin ? new Color(0.27f, 0.27f, 0.27f) : new Color(0.65f, 0.65f, 0.65f);
+        public static Color COLOR_BACKGROUND_2 = EditorGUIUtility.isProSkin ? new Color(0.5f, 0.5f, 0.5f) : new Color(0.85f, 0.85f, 0.85f);
 
-        public static GUIStyle dropDownHeaderLabel { get; private set; } = new GUIStyle(EditorStyles.boldLabel) { alignment= TextAnchor.MiddleCenter };
+        public static GUIStyle dropDownHeaderLabel { get; private set; } = new GUIStyle(EditorStyles.boldLabel) { alignment = TextAnchor.MiddleCenter };
         public static GUIStyle dropDownHeaderButton { get; private set; } = new GUIStyle(EditorStyles.toolbarButton);
-        public static GUIStyle bigTextureStyle { get; private set; } = new GUIStyle() { fontSize= 48 };
+        public static GUIStyle bigTextureStyle { get; private set; } = new GUIStyle() { fontSize = 48 };
         public static GUIStyle vectorPropertyStyle { get; private set; } = new GUIStyle() { padding = new RectOffset(0, 0, 2, 2) };
         public static GUIStyle greenStyle { get; private set; } = new GUIStyle() { normal = new GUIStyleState() { textColor = new Color(0, 0.5f, 0) } };
+        public static GUIStyle animatedIndicatorStyle { get; private set; } = new GUIStyle() { normal = new GUIStyleState() { textColor = new Color(0.3f, 1, 0.3f) }, alignment = TextAnchor.MiddleRight };
         public static GUIStyle orangeStyle { get; private set; } = new GUIStyle() { normal = new GUIStyleState() { textColor = new Color(0.9f, 0.5f, 0) } };
+        public static GUIStyle cyanStyle { get; private set; } = new GUIStyle() { normal = new GUIStyleState() { textColor = COLOR_ICON_ACTIVE_CYAN } };
         public static GUIStyle redStyle { get; private set; } = new GUIStyle() { normal = new GUIStyleState() { textColor = Color.red } };
         public static GUIStyle made_by_style { get; private set; } = new GUIStyle(EditorStyles.label) { fontSize = 10 };
         public static GUIStyle notification_style { get; private set; } = new GUIStyle(GUI.skin.box) { fontSize = 12, wordWrap = true, normal = new GUIStyleState() { textColor = Color.red } };
-        
-        public static GUIStyle style_toggle_left_richtext  { get; private set; } = new GUIStyle(EditorStyles.label ) { richText= true };
 
-        public static GUIStyle none { get; private set; } = new GUIStyle();
+        public static GUIStyle style_toggle_left_richtext { get; private set; } = new GUIStyle(EditorStyles.label) { richText = true };
 
-        public static GUIStyle style_toolbar { get; private set; } = new GUIStyle(Styles.dropDownHeader) { };
-        public static GUIStyle style_toolbar_toggle_active { get; private set; } = new GUIStyle(Styles.dropDownHeader) { normal = new GUIStyleState() {
-            background = OverrideTextureWithColor(Styles.dropDownHeader.normal.background, COLOR_BACKGROUND_2)
-        }, contentOffset = new Vector2(0, -2), alignment = TextAnchor.MiddleCenter};
-        public static GUIStyle style_toolbar_toggle_unactive { get; private set; } = new GUIStyle(Styles.dropDownHeader) { alignment = TextAnchor.MiddleCenter, contentOffset = new Vector2(0, -2) };
-        public static GUIStyle style_toolbar_toggle(bool active)
+        public static GUIStyle icon_style_help = CreateIconStyle(EditorGUIUtility.IconContent("_Help"));
+        public static GUIStyle icon_style_menu = CreateIconStyle(EditorGUIUtility.IconContent("_Menu"));
+        public static GUIStyle icon_style_settings = CreateIconStyle(EditorGUIUtility.IconContent("_Popup"));
+        public static GUIStyle icon_style_search = CreateIconStyle(EditorGUIUtility.IconContent("Search Icon"));
+        public static GUIStyle icon_style_presets = CreateIconStyle(EditorGUIUtility.IconContent("Preset.Context"));
+        public static GUIStyle icon_style_add = CreateIconStyle(EditorGUIUtility.IconContent("PrefabOverlayAdded Icon"));
+        public static GUIStyle icon_style_remove = CreateIconStyle(EditorGUIUtility.IconContent("PrefabOverlayRemoved Icon"));
+        public static GUIStyle icon_style_refresh = CreateIconStyle(EditorGUIUtility.IconContent("d_Refresh"));
+        public static GUIStyle icon_style_shaders = CreateIconStyle(EditorGUIUtility.IconContent("d_ShaderVariantCollection Icon"));
+        public static GUIStyle icon_style_linked = CreateIconStyle(LoadTextureByFileName(RESOURCE_NAME.ICON_NAME_LINK));
+        public static GUIStyle icon_style_thryIcon = CreateIconStyle(LoadTextureByFileName(RESOURCE_NAME.ICON_NAME_THRY));
+
+        public static Texture texture_icon_shaders = EditorGUIUtility.IconContent("d_ShaderVariantCollection Icon").image;
+
+        static GUIStyle CreateIconStyle(GUIContent content)
         {
-            //hack fix. for some people bg texture seems to dissapear, i cant figure out why, so ill just check here and set it if it's gone
-            if (active)
+            return CreateIconStyle(content.image as Texture2D);
+        }
+        static GUIStyle CreateIconStyle(Texture2D texture)
+        {
+            return new GUIStyle()
             {
-                if (style_toolbar_toggle_active.normal.background == null)
+                stretchWidth = true,
+                stretchHeight = true,
+                fixedHeight = 0,
+                fixedWidth = 0,
+                normal = new GUIStyleState()
                 {
-                    style_toolbar_toggle_active = new GUIStyle(Styles.dropDownHeader)
-                    {
-                        contentOffset = new Vector2(0, -2),
-                        alignment = TextAnchor.MiddleCenter,
-                        normal = new GUIStyleState()
-                        {
-                            textColor = Color.white,
-                            background = OverrideTextureWithColor(Styles.dropDownHeader.normal.background, COLOR_BACKGROUND_2)
-                        }
-                    };
+                    background = texture
                 }
-                return style_toolbar_toggle_active;
-            }
-            return style_toolbar_toggle_unactive;
+            };
         }
 
-        public static Texture2D t_arrow { get; private set; } = LoadTextureByFileName(RESOURCE_NAME.TEXTURE_ARROW);
-
-        public static Texture2D rounded_texture          { get { return GetTextureOverwrittinWithColor(2,  RESOURCE_NAME.RECT          , COLOR_BACKGROUND_1     ); } }
-
-        public static Texture2D icon_settings            { get { return GetTextureOverwrittinWithColor(3,  RESOURCE_NAME.ICON_SETTINGS , COLOR_ICON_GRAY             ); } }
-        public static Texture2D icon_menu                { get { return GetTextureOverwrittinWithColor(4,  RESOURCE_NAME.ICON_NAME_MENU, COLOR_ICON_FONT             ); } }
-        public static Texture2D icon_help                { get { return GetTextureOverwrittinWithColor(5,  RESOURCE_NAME.ICON_NAME_HELP, COLOR_ICON_FONT             ); } }
-        public static Texture2D icon_search              { get { return GetTextureOverwrittinWithColor(6,  RESOURCE_NAME.ICON_SEARCH   , COLOR_ICON_GRAY             ); } }
-        public static Texture2D icon_link_inactive       { get { return GetTextureOverwrittinWithColor(7,  RESOURCE_NAME.ICON_NAME_LINK, COLOR_ICON_FONT             ); } }
-        public static Texture2D icon_link_active         { get { return GetTextureOverwrittinWithColor(8,  RESOURCE_NAME.ICON_NAME_LINK, COLOR_ICON_ACTIVE_CYAN ); } }
-
-        public static Texture2D texture_animated         { get { return GetTextureOverwrittinWithColor(9,  RESOURCE_NAME.TEXTURE_ANIMTED, COLOR_ICON_FONT            ); } }
-        public static Texture2D texture_animated_renamed { get { return GetTextureOverwrittinWithColor(10, RESOURCE_NAME.TEXTURE_ANIMTED, COLOR_ICON_ACTIVE_RED ); } }
-
-        private static Texture2D[] _colorsWithTextures = new Texture2D[0];
-        private static Texture2D GetTextureOverwrittinWithColor(int id, string textureName, Color c)
-        {
-            if(id >= _colorsWithTextures.Length)
-            {
-                Texture2D[] temp = new Texture2D[id + 1];
-                Array.Copy(_colorsWithTextures, temp, _colorsWithTextures.Length);
-                _colorsWithTextures = temp;
-            }
-            if(_colorsWithTextures[id] == null) _colorsWithTextures[id] = OverrideTextureWithColor(LoadTextureByFileName(textureName), c);
-            return _colorsWithTextures[id];
-        }
+        public static Texture2D rounded_texture { get; private set; } = LoadTextureByFileName(RESOURCE_NAME.RECT);
 
         private static Texture2D LoadTextureByFileName(string search_name)
         {
-            Texture2D tex;
             string[] guids = AssetDatabase.FindAssets(search_name + " t:texture");
             if (guids.Length == 0)
-                tex = Texture2D.whiteTexture;
-            else
-                tex = AssetDatabase.LoadAssetAtPath<Texture2D>(AssetDatabase.GUIDToAssetPath(guids[0]));
-            return tex;
-        }
-
-        private static Texture2D CreateColorTexture(Color color)
-        {
-            Texture2D tex = new Texture2D(1, 1);
-            tex.SetPixel(0, 0, color);
-            tex.Apply();
-            return tex;
-        }
-
-        private static Texture2D OverrideTextureWithColor(Texture2D ogtex, Color color)
-        {
-            Texture2D tex = TextureHelper.GetReadableTexture(ogtex);
-            for (int x = 0; x < tex.width; x++)
-            {
-                for (int y = 0; y < tex.height; y++)
-                {
-                    color.a = tex.GetPixel(x, y).a;
-                    tex.SetPixel(x, y, color);
-                }
-            }
-            tex.Apply();
-            return tex;
+                return Texture2D.whiteTexture;
+            return AssetDatabase.LoadAssetAtPath<Texture2D>(AssetDatabase.GUIDToAssetPath(guids[0]));
         }
     }
 }

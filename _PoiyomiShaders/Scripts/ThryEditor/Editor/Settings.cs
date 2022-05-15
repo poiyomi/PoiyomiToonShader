@@ -14,16 +14,6 @@ namespace Thry
 {
     public class Settings : EditorWindow
     {
-        //this is dope: this.ShowNotification(new GUIContent(s));
-
-        // Add menu named "My Window" to the Window menu
-        [MenuItem("Thry/Settings")]
-        static void Init()
-        {
-            // Get existing open window or if none, make a new one:
-            Settings window = (Settings)EditorWindow.GetWindow(typeof(Settings));
-            window.Show();
-        }
 
         public static void firstTimePopup()
         {
@@ -54,30 +44,6 @@ namespace Thry
         
         public static ButtonData thry_message = null;
 
-        //------------------Message Calls-------------------------
-
-        public void OnDestroy()
-        {
-            if (!EditorPrefs.GetBool("thry_has_counted_user", false))
-            {
-                WebHelper.DownloadStringASync(URL.COUNT_USER, delegate (string s)
-                {
-                    if (s == "true")
-                        EditorPrefs.SetBool("thry_has_counted_user", true);
-                });
-            }
-            
-            string projectPrefix = PlayerSettings.companyName + "." +PlayerSettings.productName;
-            if (!EditorPrefs.GetBool(projectPrefix+"_thry_has_counted_project", false))
-            {
-                WebHelper.DownloadStringASync(URL.COUNT_PROJECT, delegate (string s)
-                {
-                    if (s == "true")
-                        EditorPrefs.SetBool(projectPrefix+"_thry_has_counted_project", true);
-                });
-            }
-        }
-
         //---------------------Stuff checkers and fixers-------------------
 
         public void Awake()
@@ -101,20 +67,11 @@ namespace Thry
                 WebHelper.DownloadStringASync(Thry.URL.SETTINGS_MESSAGE_URL, delegate (string s) { thry_message = Parser.ParseToObject<ButtonData>(s); });
         }
 
-        //------------------Helpers----------------------------
-
-        public static Settings getInstance()
-        {
-            Settings instance = (Settings)UnityHelper.FindEditorWindow(typeof(Settings));
-            if (instance == null) instance = ScriptableObject.CreateInstance<Settings>();
-            return instance;
-        }
-
         //------------------Main GUI
         void OnGUI()
         {
             if (!is_init || moduleSettings==null) InitVariables();
-            GUILayout.Label("ShaderEditor v" + Config.Singleton.verion);
+            GUILayout.Label("ShaderUI v" + Config.Singleton.verion);
 
             GUINotification();
             drawLine();
@@ -174,9 +131,18 @@ namespace Thry
                 EditorGUI.indentLevel += 2;
                 Dropdown("default_texture_type");
                 Toggle("showRenderQueue");
-                Toggle("renameAnimatedProps");
                 Toggle("showManualReloadButton");
+
+                EditorGUILayout.Space();
+                Toggle("autoMarkPropertiesAnimated");
+                Toggle("allowCustomLockingRenaming");
                 GUIGradients();
+                EditorGUILayout.Space();
+
+                Toggle("autoSetAnchorOverride");
+                Dropdown("humanBoneAnchor");
+                Text("anchorOverrideObjectName");
+                
                 EditorGUI.indentLevel -= 2;
             }
         }
@@ -218,16 +184,19 @@ namespace Thry
 
         private void GUIModulesInstalation()
         {
-            if (ModuleHandler.GetModules() == null)
+            if (ModuleHandler.GetFirstPartyModules() == null)
                 return;
-            if (ModuleHandler.GetModules().Count > 0)
+            if (ModuleHandler.GetFirstPartyModules().Count > 0) {
+                EditorGUILayout.BeginHorizontal();
                 GUILayout.Label(Locale.editor.Get("header_modules"), EditorStyles.boldLabel);
-            bool disabled = false;
-            foreach (Module module in ModuleHandler.GetModules())
-                if (module.is_being_installed_or_removed)
-                    disabled = true;
+                if (GUILayout.Button("Reload"))
+                    ModuleHandler.ForceReloadModules();
+                EditorGUILayout.EndHorizontal();
+            }
+            bool disabled = ModuleHandler.GetFirstPartyModules().Any(m => m.is_being_installed_or_removed);
+            disabled |= ModuleHandler.GetThirdPartyModules().Any(m => m.is_being_installed_or_removed);
             EditorGUI.BeginDisabledGroup(disabled);
-            foreach (Module module in ModuleHandler.GetModules())
+            foreach (Module module in ModuleHandler.GetFirstPartyModules())
             {
                 ModuleUI(module);
             }
@@ -328,7 +297,7 @@ namespace Thry
                 if (EditorGUI.EndChangeCheck())
                 {
                     field.SetValue(config, value);
-                    config.save();
+                    config.Save();
                 }
                 if (createHorizontal)
                     GUILayout.EndHorizontal();
@@ -355,8 +324,8 @@ namespace Thry
                 if (Toggle(value, label, hover, label_style) != value)
                 {
                     field.SetValue(config, !value);
-                    config.save();
-                    ShaderEditor.Repaint();
+                    config.Save();
+                    ShaderEditor.RepaintActive();
                 }
             }
         }
@@ -387,8 +356,8 @@ namespace Thry
                 if(EditorGUI.EndChangeCheck())
                 {
                     field.SetValue(config, value);
-                    config.save();
-                    ShaderEditor.Repaint();
+                    config.Save();
+                    ShaderEditor.RepaintActive();
                 }
             }
         }
@@ -405,9 +374,8 @@ namespace Thry
             if(EditorGUI.EndChangeCheck())
             {
                 Config.Singleton.locale = Locale.editor.available_locales[Locale.editor.selected_locale_index];
-                Config.Singleton.save();
-                ShaderEditor.reload();
-                ShaderEditor.Repaint();
+                Config.Singleton.Save();
+                ShaderEditor.ReloadActive();
             }
         }
 

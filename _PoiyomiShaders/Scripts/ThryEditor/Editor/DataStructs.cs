@@ -10,6 +10,7 @@ using UnityEngine.Rendering;
 
 namespace Thry
 {
+    #region Constants
     public class PATH
     {
         public const string TEXTURES_DIR = "Assets/textures";
@@ -50,34 +51,31 @@ namespace Thry
     public class RESOURCE_NAME
     {
         public const string RECT = "thry_rect";
-        public const string TEXTURE_ARROW = "thry_arrow";
-        public const string TEXTURE_ANIMTED = "thry_animated_icon";
-
-        public const string ICON_SETTINGS = "thryEditor_settings";
-        public const string ICON_SEARCH = "thryEditor_search";
-        public const string ICON_NAME_MENU = "thryEditor_menu";
-        public const string ICON_NAME_HELP = "thryEditor_help";
         public const string ICON_NAME_LINK = "thryEditor_link";
+        public const string ICON_NAME_THRY = "thryEditor_iconThry";
     }
+    #endregion
 
     public class DrawingData
     {
-        public static TextureProperty currentTexProperty;
-        public static Rect lastGuiObjectRect;
-        public static Rect lastGuiObjectHeaderRect;
-        public static Rect tooltipCheckRect;
-        public static bool lastPropertyUsedCustomDrawer;
-        public static DrawerType lastPropertyDrawerType;
-        public static MaterialPropertyDrawer lastPropertyDrawer;
-        public static bool is_enabled = true;
+        public static TextureProperty CurrentTextureProperty;
+        public static Rect LastGuiObjectRect;
+        public static Rect LastGuiObjectHeaderRect;
+        public static Rect TooltipCheckRect;
+        public static bool LastPropertyUsedCustomDrawer;
+        public static bool LastPropertyDoesntAllowAnimation;
+        public static DrawerType LastPropertyDrawerType;
+        public static MaterialPropertyDrawer LastPropertyDrawer;
+        public static bool IsEnabled = true;
 
-        public static ShaderPart lastInitiatedPart;
+        public static ShaderPart LastInitiatedPart;
 
         public static void ResetLastDrawerData()
         {
-            lastPropertyUsedCustomDrawer = false;
-            lastPropertyDrawer = null;
-            lastPropertyDrawerType = DrawerType.None;
+            LastPropertyUsedCustomDrawer = false;
+            LastPropertyDoesntAllowAnimation = false;
+            LastPropertyDrawer = null;
+            LastPropertyDrawerType = DrawerType.None;
         }
     }
 
@@ -88,17 +86,24 @@ namespace Thry
 
     public class GradientData
     {
-        public Texture preview_texture;
-        public Gradient gradient;
+        public Texture PreviewTexture;
+        public Gradient Gradient;
+    }
+
+    public enum TextureDisplayType
+    {
+        small, big, stylized_big
     }
 
     //--------------Shader Data Structs--------------------
 
+    #region In Shader Data
     public class PropertyOptions
     {
         public int offset = 0;
         public string tooltip = "";
         public DefineableAction altClick;
+        public DefineableAction onClick;
         public DefineableCondition condition_show = new DefineableCondition();
         public string condition_showS;
         public DefineableCondition condition_enable = null;
@@ -111,7 +116,6 @@ namespace Thry
         public string reference_property;
         public bool force_texture_options = false;
         public bool hide_in_inspector = false;
-        public bool is_hideable = false;
         public bool is_visible_simple = false;
         public string file_name;
         public string remote_version_url;
@@ -258,14 +262,14 @@ namespace Thry
                     break;
                 case DefineableActionType.SET_TAG:
                     string[] keyValue = Regex.Split(data, @"=");
-                    foreach (Material m in ShaderEditor.active.materials)
+                    foreach (Material m in ShaderEditor.Active.Materials)
                         m.SetOverrideTag(keyValue[0].Trim(), keyValue[1].Trim());
                     break;
                 case DefineableActionType.SET_SHADER:
                     Shader shader = Shader.Find(data);
                     if (shader != null)
                     {
-                        foreach (Material m in ShaderEditor.active.materials)
+                        foreach (Material m in ShaderEditor.Active.Materials)
                             m.shader = shader;
                     }
                     break;
@@ -314,6 +318,11 @@ namespace Thry
             }
             return action;
         }
+
+        public override string ToString()
+        {
+            return $"{{{type},{data}}}";
+        }
     }
 
     public enum DefineableActionType
@@ -331,65 +340,98 @@ namespace Thry
         public string data = "";
         public DefineableCondition condition1;
         public DefineableCondition condition2;
+
+        CompareType _compareType;
+        string _obj;
+        ShaderProperty _propertyObj;
+
+        string _value;
+        float _floatValue;
+
+        bool _hasConstantValue;
+        bool _constantValue;
+
+        bool _isInit = false;
+        public void Init()
+        {
+            if (_isInit) return;
+            _hasConstantValue = true;
+            if (type == DefineableConditionType.NONE) { _constantValue = true; }
+            else if (type == DefineableConditionType.TRUE) { _constantValue = true; }
+            else if (type == DefineableConditionType.FALSE) { _constantValue = false; }
+            else
+            {
+                var (compareType, compareString) = GetComparetor();
+                _compareType = compareType;
+
+                string[] parts = Regex.Split(data, compareString);
+                _obj = parts[0];
+                _value = parts[parts.Length - 1];
+
+                _floatValue = Parser.ParseFloat(_value);
+                if (ShaderEditor.Active != null && ShaderEditor.Active.PropertyDictionary.ContainsKey(_obj))
+                    _propertyObj = ShaderEditor.Active.PropertyDictionary[_obj];
+
+                if (type == DefineableConditionType.EDITOR_VERSION) InitEditorVersion();
+                else if (type == DefineableConditionType.VRC_SDK_VERSION) InitVRCSDKVersion();
+                else _hasConstantValue = false;
+            }
+            
+            _isInit = true;
+        }
+
+        void InitEditorVersion()
+        {
+            int c_ev = Helper.CompareVersions(Config.Singleton.verion, _value);
+            if (_compareType == CompareType.EQUAL) _constantValue = c_ev == 0;
+            if (_compareType == CompareType.NOT_EQUAL) _constantValue = c_ev != 0;
+            if (_compareType == CompareType.SMALLER) _constantValue = c_ev == 1;
+            if (_compareType == CompareType.BIGGER) _constantValue = c_ev == -1;
+            if (_compareType == CompareType.BIGGER_EQ) _constantValue = c_ev == -1 || c_ev == 0;
+            if (_compareType == CompareType.SMALLER_EQ) _constantValue = c_ev == 1 || c_ev == 0;
+        }
+
+        void InitVRCSDKVersion()
+        {
+            if (VRCInterface.Get().Sdk_information.type == VRCInterface.VRC_SDK_Type.NONE)
+            {
+                _constantValue = false;
+                return;
+            }
+            int c_vrc = Helper.CompareVersions(VRCInterface.Get().Sdk_information.installed_version, _value);
+            if (_compareType == CompareType.EQUAL) _constantValue = c_vrc == 0;
+            if (_compareType == CompareType.NOT_EQUAL) _constantValue = c_vrc != 0;
+            if (_compareType == CompareType.SMALLER) _constantValue = c_vrc == 1;
+            if (_compareType == CompareType.BIGGER) _constantValue = c_vrc == -1;
+            if (_compareType == CompareType.BIGGER_EQ) _constantValue = c_vrc == -1 || c_vrc == 0;
+            if (_compareType == CompareType.SMALLER_EQ) _constantValue = c_vrc == 1 || c_vrc == 0;
+        }
+
         public bool Test()
         {
-            switch (type)
-            {
-                case DefineableConditionType.NONE:
-                    return true;
-                case DefineableConditionType.TRUE:
-                    return true;
-                case DefineableConditionType.FALSE:
-                    return false;
-            }
-            string comparator = GetComparetor();
-            string[] parts = Regex.Split(data, comparator);
-            string obj = parts[0];
-            string value = parts[parts.Length-1];
+            Init();
+            if (_hasConstantValue) return _constantValue;
+            
             switch (type)
             {
                 case DefineableConditionType.PROPERTY_BOOL:
-                    ShaderProperty prop = ShaderEditor.active.propertyDictionary[obj];
-                    if (prop == null) return false;
-                    if (comparator == "##") return prop.materialProperty.floatValue == 1;
-                    float f = Parser.ParseFloat(parts[1]);
-                    if (comparator == "==") return prop.materialProperty.floatValue == f;
-                    if (comparator == "!=") return prop.materialProperty.floatValue != f;
-                    if (comparator == "<") return prop.materialProperty.floatValue < f;
-                    if (comparator == ">") return prop.materialProperty.floatValue > f;
-                    if (comparator == ">=") return prop.materialProperty.floatValue >= f;
-                    if (comparator == "<=") return prop.materialProperty.floatValue <= f;
-                    break;
-                case DefineableConditionType.EDITOR_VERSION:
-                    int c_ev = Helper.compareVersions(Config.Singleton.verion, value);
-                    if (comparator == "==") return c_ev == 0;
-                    if (comparator == "!=") return c_ev != 0;
-                    if (comparator == "<") return c_ev == 1;
-                    if (comparator == ">") return c_ev == -1;
-                    if (comparator == ">=") return c_ev == -1 || c_ev == 0;
-                    if (comparator == "<=") return c_ev == 1 || c_ev == 0;
-                    break;
-                case DefineableConditionType.VRC_SDK_VERSION:
-                    if (VRCInterface.Get().sdk_information.type == VRCInterface.VRC_SDK_Type.NONE)
-                        return false;
-                    int c_vrc = Helper.compareVersions(VRCInterface.Get().sdk_information.installed_version, value);
-                    if (comparator == "==") return c_vrc == 0;
-                    if (comparator == "!=") return c_vrc != 0;
-                    if (comparator == "<") return c_vrc == 1;
-                    if (comparator == ">") return c_vrc == -1;
-                    if (comparator == ">=") return c_vrc == -1 || c_vrc == 0;
-                    if (comparator == "<=") return c_vrc == 1 || c_vrc == 0;
+                    if (_propertyObj == null) return false;
+                    if (_compareType == CompareType.NONE) return _propertyObj.materialProperty.floatValue == 1;
+                    if (_compareType == CompareType.EQUAL) return _propertyObj.materialProperty.floatValue == _floatValue;
+                    if (_compareType == CompareType.NOT_EQUAL) return _propertyObj.materialProperty.floatValue != _floatValue;
+                    if (_compareType == CompareType.SMALLER) return _propertyObj.materialProperty.floatValue < _floatValue;
+                    if (_compareType == CompareType.BIGGER) return _propertyObj.materialProperty.floatValue > _floatValue;
+                    if (_compareType == CompareType.BIGGER_EQ) return _propertyObj.materialProperty.floatValue >= _floatValue;
+                    if (_compareType == CompareType.SMALLER_EQ) return _propertyObj.materialProperty.floatValue <= _floatValue;
                     break;
                 case DefineableConditionType.TEXTURE_SET:
-                    ShaderProperty shaderProperty = ShaderEditor.active.propertyDictionary[data];
-                    if (shaderProperty == null) return false;
-                    return shaderProperty.materialProperty.textureValue != null;
+                    if (_propertyObj == null) return false;
+                    return _propertyObj.materialProperty.textureValue != null;
                 case DefineableConditionType.DROPDOWN:
-                    ShaderProperty dropdownProperty = ShaderEditor.active.propertyDictionary[obj];
-                    if (dropdownProperty == null) return false;
-                    if (comparator == "##") return dropdownProperty.materialProperty.floatValue == 1;
-                    if (comparator == "==") return "" + dropdownProperty.materialProperty.floatValue == parts[1];
-                    if (comparator == "!=") return "" + dropdownProperty.materialProperty.floatValue != parts[1];
+                    if (_propertyObj == null) return false;
+                    if (_compareType == CompareType.NONE) return _propertyObj.materialProperty.floatValue == 1;
+                    if (_compareType == CompareType.EQUAL) return "" + _propertyObj.materialProperty.floatValue == _value;
+                    if (_compareType == CompareType.NOT_EQUAL) return "" + _propertyObj.materialProperty.floatValue != _value;
                     break;
                 case DefineableConditionType.AND:
                     if(condition1!=null&&condition2!=null) return condition1.Test() && condition2.Test();
@@ -401,21 +443,21 @@ namespace Thry
             
             return true;
         }
-        private string GetComparetor()
+        private (CompareType,string) GetComparetor()
         {
             if (data.Contains("=="))
-                return "==";
+                return (CompareType.EQUAL,"==");
             if (data.Contains("!="))
-                return "!=";
+                return (CompareType.NOT_EQUAL,"!=");
             if (data.Contains(">="))
-                return ">=";
+                return (CompareType.BIGGER_EQ,">=");
             if (data.Contains("<="))
-                return "<=";
+                return (CompareType.SMALLER_EQ,"<=");
             if (data.Contains(">"))
-                return ">";
+                return (CompareType.BIGGER,">");
             if (data.Contains("<"))
-                return "<";
-            return "##";
+                return (CompareType.SMALLER,"<");
+            return (CompareType.NONE,"##");
         }
 
         public override string ToString()
@@ -532,6 +574,8 @@ namespace Thry
         }
     }
 
+    enum CompareType { NONE,BIGGER,SMALLER,EQUAL,NOT_EQUAL,BIGGER_EQ,SMALLER_EQ }
+
     public enum DefineableConditionType
     {
         NONE,
@@ -545,6 +589,10 @@ namespace Thry
         AND,
         OR
     }
+
+    #endregion
+
+    #region Module Data
 
     public class Module
     {
@@ -578,8 +626,5 @@ namespace Thry
         public string[] files;
     }
 
-    public enum TextureDisplayType
-    {
-        small,big,stylized_big
-    }
+    #endregion
 }

@@ -58,7 +58,7 @@ namespace Thry
 
         public void LoadCSV(string file_name)
         {
-            List<string> files = UnityHelper.FindAssetOfFilesWithExtension(file_name + ".csv");
+            List<string> files = UnityHelper.FindAssetsWithFilename(file_name + ".csv");
             if (files.Count > 0)
                 ParseCSV(FileHelper.ReadFileIntoString(files[0]));
             else

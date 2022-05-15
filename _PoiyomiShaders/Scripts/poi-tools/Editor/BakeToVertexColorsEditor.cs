@@ -51,7 +51,7 @@ namespace Poi
             set => _selection = value;
         }
 
-        [MenuItem("Tools/Poi/Vertex Color Baker", priority = 11)]
+        [MenuItem("Poi/Vertex Color Baker", priority = 11)]
         public static void ShowWindow()
         {
             //Show existing window instance. If one doesn't exist, make one.

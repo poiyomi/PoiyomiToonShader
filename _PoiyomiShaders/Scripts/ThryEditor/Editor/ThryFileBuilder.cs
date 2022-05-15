@@ -1,49 +1,39 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
 namespace Thry {
     public class ThryFileCreator {
 
-        [MenuItem("Thry/Editor Tools/Create Label Boiler", false)]
+        [MenuItem("Thry/ShaderUI Creator Helper/Create Label Boiler", false, priority = 40)]
         public static void CreateLabel()
         {
             string[] names = GetProperties();
-            string data = "";
-            foreach (string n in names)
-            {
-                data += n + ":=" + n + "--{tooltip:}";
-                data += "\n";
-            }
-            Save(data, "_label");
+            string data = names.Aggregate("", (n1, n2) => n1 + n2 + ":=" + n2 + "--{tooltip:}\n");
+            Save(data, "_label.txt");
         }
-        [MenuItem("Thry/Editor Tools/Create Label Boiler", true)]
+        [MenuItem("Thry/ShaderUI Creator Helper/Create Label Boiler", true, priority = 40)]
         static bool CreateLabelVaildate()
         {
             return ValidateSelection();
         }
 
-        [MenuItem("Thry/Editor Tools/Create Label Boiler + Locale Boiler", false)]
+        [MenuItem("Thry/ShaderUI Creator Helper/Create Label Boiler + Locale Boiler", false, priority = 40)]
         public static void CreateLabelLocale()
         {
             string[] names = GetProperties();
-            string label_data = "";
-            string locale_data = ",English\n";
-            foreach (string n in names)
-            {
-                label_data += n + ":=locale::" + n + "_text--{tooltip:locale::"+n+"_tooltip}";
-                label_data += "\n";
-                locale_data += n + "_text," + n;
-                locale_data += "\n";
-                locale_data += n + "_tooltip,";
-                locale_data += "\n";
-            }
-            Save(label_data, "_label");
-            Save(locale_data, "_locale");
+            string label_data = names.Aggregate("", (n1, n2) => n1 + 
+            n2 + ":=locale::" + n2 + "_text--{tooltip:locale::" + n2 + "_tooltip}\n");
+            string locale_data = names.Aggregate(",English\n", (n1, n2) => n1 +
+            n2 + "_text," + n2 + "\n"+
+            n2 + "_tooltip,\n");
+            Save(label_data, "_label.txt");
+            Save(locale_data, "_locale.txt");
         }
-        [MenuItem("Thry/Editor Tools/Create Label Boiler + Locale Boiler", true)]
+        [MenuItem("Thry/ShaderUI Creator Helper/Create Label Boiler + Locale Boiler", true, priority = 40)]
         static bool CreateLabelLocaleValidate()
         {
             return ValidateSelection();
@@ -60,28 +50,16 @@ namespace Thry {
         private static string[] GetProperties()
         {
             Shader shader = (Shader)Selection.activeObject;
-            int count = ShaderUtil.GetPropertyCount(shader);
-            List<string> menus = new List<string>();
-            List<string> props = new List<string>();
-            for (int i = 0; i < count; i++)
-            {
-                string n = ShaderUtil.GetPropertyName(shader, i);
-                if (n.StartsWith("m_") || n.StartsWith("g_"))
-                    menus.Add(n);
-                else
-                    props.Add(n);
-            }
-            menus.AddRange(props);
-            return menus.ToArray();
+            return MaterialEditor.GetMaterialProperties(new Material[] { new Material(shader) }).Select(p => p.name).ToArray();
         }
 
         private static void Save(string data, string add_string)
         {
             string path = AssetDatabase.GetAssetPath(Selection.activeObject);
             path = Path.GetDirectoryName(path)+ "/"+ Path.GetFileNameWithoutExtension(path) + add_string;
-            Debug.Log(path);
             FileHelper.WriteStringToFile(data, path);
             AssetDatabase.Refresh();
+            EditorGUIUtility.PingObject(AssetDatabase.LoadMainAssetAtPath(path));
         }
     }
 }

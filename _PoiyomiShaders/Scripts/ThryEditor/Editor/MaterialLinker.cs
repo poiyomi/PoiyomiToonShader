@@ -53,6 +53,12 @@ namespace Thry
             FileHelper.WriteStringToFile(Parser.ObjectToString(save_structre),PATH.LINKED_MATERIALS_FILE);
         }
 
+        public static bool IsLinked(MaterialProperty p)
+        {
+            Load();
+            return linked_materials.ContainsKey(((Material)p.targets[0], p.name));
+        }
+
         public static List<Material> GetLinked(MaterialProperty p)
         {
             return GetLinked((Material)p.targets[0], p);

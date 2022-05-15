@@ -11,15 +11,6 @@ namespace Thry
 {
     public class EditorChanger : EditorWindow
     {
-        // Add menu named "My Window" to the Window menu
-        [MenuItem("Thry/Editor Tools/Use Thry Editor for other shaders")]
-        static void Init()
-        {
-            // Get existing open window or if none, make a new one:
-            EditorChanger window = (EditorChanger)EditorWindow.GetWindow(typeof(EditorChanger));
-            window.Show();
-        }
-
         Vector2 scrollPos;
 
         bool[] setEditor;
@@ -84,7 +75,7 @@ namespace Thry
                     wasEditor[i] = setEditor[i];
                 }
                 AssetDatabase.Refresh();
-                ShaderEditor.Repaint();
+                ShaderEditor.RepaintActive();
             }
         }
 

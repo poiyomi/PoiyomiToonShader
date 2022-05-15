@@ -5,10 +5,12 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Security;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
@@ -23,10 +25,9 @@ namespace Thry
     {
         public static string ReplaceVariables(this string s, params object[] values)
         {
-            int i = 0;
-            foreach(object o in values)
+            for(int i = 0; i < values.Length;i++)
             {
-                s = s.Replace("{" + (i++) + "}", o.ToString());
+                s = s.Replace("{" + i + "}", values[i].ToString());
             }
             return s;
         }
@@ -34,18 +35,7 @@ namespace Thry
 
     public class Helper
     {
-
-        private static readonly DateTime UnixEpoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
-
-        public static long GetCurrentUnixTimestampMillis()
-        {
-            return (long)(DateTime.UtcNow - UnixEpoch).TotalMilliseconds;
-        }
-
-        public static long GetUnityStartUpTimeStamp()
-        {
-            return GetCurrentUnixTimestampMillis() - (long)EditorApplication.timeSinceStartup * 1000;
-        }
+        static bool s_didTryRegsiterThisSession = false;
 
         public static bool ClassWithNamespaceExists(string classname)
         {
@@ -55,33 +45,50 @@ namespace Thry
                     select type).Count() > 0;
         }
 
-        public static bool NameSpaceExists(string namespace_name)
+        private static readonly DateTime UnixEpoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+
+        public static long GetCurrentUnixTimestampMillis()
         {
-            bool namespaceFound = (from assembly in AppDomain.CurrentDomain.GetAssemblies()
-                                   from type in assembly.GetTypes()
-                                   where type.Namespace == namespace_name
-                                   select type).Any();
-            return namespaceFound;
+            return (long)(DateTime.UtcNow - UnixEpoch).TotalMilliseconds;
         }
 
-        public static valuetype GetValueFromDictionary<keytype, valuetype>(Dictionary<keytype, valuetype> dictionary, keytype key)
+        public static long DatetimeToUnixSeconds(DateTime time)
         {
-            valuetype value = default(valuetype);
-            if (dictionary.ContainsKey(key)) dictionary.TryGetValue(key, out value);
-            return value;
+            return (long)(time - UnixEpoch).TotalSeconds;
         }
 
-        public static valuetype GetValueFromDictionary<keytype, valuetype>(Dictionary<keytype, valuetype> dictionary, keytype key, valuetype defaultValue)
+        public static long GetUnityStartUpTimeStamp()
         {
-            valuetype value = default(valuetype);
-            if (dictionary.ContainsKey(key)) dictionary.TryGetValue(key, out value);
-            else return defaultValue;
-            return value;
+            return GetCurrentUnixTimestampMillis() - (long)EditorApplication.timeSinceStartup * 1000;
+        }
+
+        public static void RegisterEditorUse()
+        {
+            if (s_didTryRegsiterThisSession) return;
+            if (!EditorPrefs.GetBool("thry_has_counted_user", false))
+            {
+                WebHelper.DownloadStringASync(URL.COUNT_USER, delegate (string s)
+                {
+                    if (s == "true")
+                        EditorPrefs.SetBool("thry_has_counted_user", true);
+                });
+            }
+
+            string projectPrefix = PlayerSettings.companyName + "." + PlayerSettings.productName;
+            if (!EditorPrefs.GetBool(projectPrefix + "_thry_has_counted_project", false))
+            {
+                WebHelper.DownloadStringASync(URL.COUNT_PROJECT, delegate (string s)
+                {
+                    if (s == "true")
+                        EditorPrefs.SetBool(projectPrefix + "_thry_has_counted_project", true);
+                });
+            }
+            s_didTryRegsiterThisSession = true;
         }
 
         //-------------------Comparetors----------------------
 
-        public static int compareVersions(string v1, string v2)
+        public static int CompareVersions(string v1, string v2)
         {
             //fix the string
             v1 = v1.Replace(",", ".");
@@ -101,7 +108,8 @@ namespace Thry
             while (index_v1 < v1.Length || index_v2 < v2.Length)
             {
                 //get a chunk of the strings
-                if (index_v1 < v1.Length){
+                if (index_v1 < v1.Length)
+                {
                     chunk_v1 = "";
                     if (v1[index_v1] == 'a')
                         chunk_v1 = "-2";
@@ -115,7 +123,8 @@ namespace Thry
                             index_v1--;
                     }
                     index_v1++;
-                }else
+                }
+                else
                     chunk_v1 = "0";
 
                 if (index_v2 < v2.Length)
@@ -149,15 +158,6 @@ namespace Thry
         public static bool IsPrimitive(Type t)
         {
             return t.IsPrimitive || t == typeof(Decimal) || t == typeof(String);
-        }
-
-        public static void testAltClick(Rect rect, ShaderPart property)
-        {
-            if (ShaderEditor.input.HadMouseDownRepaint && ShaderEditor.input.is_alt_down && rect.Contains(ShaderEditor.input.mouse_position))
-            {
-                if (property.options.altClick != null)
-                    property.options.altClick.Perform();
-            }
         }
 
         public static string GetStringBetweenBracketsAndAfterId(string input, string id, char[] brackets)
@@ -199,6 +199,15 @@ namespace Thry
             }
             return input;
         }
+
+        public static float SolveMath(string exp, float parameter)
+        {
+            exp = exp.Replace("x", parameter.ToString(CultureInfo.InvariantCulture));
+            exp = exp.Replace(" ", "");
+            float f;
+            if (ExpressionEvaluator.Evaluate<float>(exp, out f)) return f;
+            return 0;
+        }
     }
 
     public class PersistentData
@@ -230,12 +239,7 @@ namespace Thry
 
     public class FileHelper
     {
-        public static string FindFile(string name)
-        {
-            return FindFile(name, null);
-        }
-
-        public static string FindFile(string name, string type)
+        public static string FindFile(string name, string type=null)
         {
             string[] guids;
             if (type != null)
@@ -249,20 +253,14 @@ namespace Thry
 
         //-----------------------Value To File Saver----------------------
 
-        private static Dictionary<string, Dictionary<string,string>> textFileData = new Dictionary<string, Dictionary<string, string>>();
+        private static Dictionary<string, Dictionary<string,string>> s_textFileData = new Dictionary<string, Dictionary<string, string>>();
 
         public static string LoadValueFromFile(string key, string path)
         {
-            if (!textFileData.ContainsKey(path)) ReadFileIntoTextFileData(path);
-            if (textFileData[path].ContainsKey(key))
-                return textFileData[path][key];
+            if (!s_textFileData.ContainsKey(path)) ReadFileIntoTextFileData(path);
+            if (s_textFileData[path].ContainsKey(key))
+                return s_textFileData[path][key];
             return null;
-        }
-
-        public static Dictionary<string,string> LoadDictionaryFromFile(string path)
-        {
-            if (!textFileData.ContainsKey(path)) ReadFileIntoTextFileData(path);
-            return textFileData[path];
         }
 
         private static void ReadFileIntoTextFileData(string path)
@@ -276,30 +274,26 @@ namespace Thry
                 if(keyvalue.Length>1)
                     dictionary[keyvalue[0]] = keyvalue[1];
             }
-            textFileData[path] = dictionary; 
+            s_textFileData[path] = dictionary; 
         }
 
         public static bool SaveValueToFile(string key, string value, string path)
         {
-            if (!textFileData.ContainsKey(path)) ReadFileIntoTextFileData(path);
-            textFileData[path][key] = value;
-            return SaveDictionaryToFile(path, textFileData[path]);
+            if (!s_textFileData.ContainsKey(path)) ReadFileIntoTextFileData(path);
+            s_textFileData[path][key] = value;
+            return SaveDictionaryToFile(path, s_textFileData[path]);
         }
 
         public static void RemoveValueFromFile(string key, string path)
         {
-            if (!textFileData.ContainsKey(path)) ReadFileIntoTextFileData(path);
-            if (textFileData[path].ContainsKey(key)) textFileData[path].Remove(key);
+            if (!s_textFileData.ContainsKey(path)) ReadFileIntoTextFileData(path);
+            if (s_textFileData[path].ContainsKey(key)) s_textFileData[path].Remove(key);
         }
 
-        public static bool SaveDictionaryToFile(string path, Dictionary<string,string> dictionary)
+        private static bool SaveDictionaryToFile(string path, Dictionary<string,string> dictionary)
         {
-            textFileData[path] = dictionary;
-            string data = "";
-            foreach (KeyValuePair<string, string> keyvalue in textFileData[path])
-            {
-                data += keyvalue.Key + ":=" + keyvalue.Value + "\n";
-            }
+            s_textFileData[path] = dictionary;
+            string data = s_textFileData[path].Aggregate("", (d1, d2) => d1 + d2.Key + ":=" + d2.Value + "\n");
             WriteStringToFile(data, path);
             return true;
         }
@@ -342,7 +336,7 @@ namespace Thry
             writer.Close();
         }
 
-        public static bool writeBytesToFile(byte[] bytes, string path)
+        public static bool WriteBytesToFile(byte[] bytes, string path)
         {
             if (!File.Exists(path)) CreateFileWithDirectories(path);
             try
@@ -465,13 +459,13 @@ namespace Thry
             return texture;
         }
 
-        public static Texture SaveTextureAsPNG(Texture2D texture, string path, TextureData settings)
+        public static Texture SaveTextureAsPNG(Texture2D texture, string path, TextureData settings = null)
         {
             if (!path.EndsWith(".png"))
                 path += ".png";
             byte[] encoding = texture.EncodeToPNG();
             Debug.Log("Texture saved at \"" + path + "\".");
-            FileHelper.writeBytesToFile(encoding, path);
+            FileHelper.WriteBytesToFile(encoding, path);
 
             AssetDatabase.ImportAsset(path);
             if (settings != null)
@@ -519,43 +513,89 @@ namespace Thry
             ret.Apply();
             return ret;
         }
+
+        //===============TGA Loader by aaro4130 https://forum.unity.com/threads/tga-loader-for-unity3d.172291/==============
+
+        public static Texture2D LoadTGA(string TGAFile)
+        {
+            using (BinaryReader r = new BinaryReader(File.Open(TGAFile, FileMode.Open)))
+            {
+                byte IDLength = r.ReadByte();
+                byte ColorMapType = r.ReadByte();
+                byte ImageType = r.ReadByte();
+                Int16 CMapStart = r.ReadInt16();
+                Int16 CMapLength = r.ReadInt16();
+                byte CMapDepth = r.ReadByte();
+                Int16 XOffset = r.ReadInt16();
+                Int16 YOffset = r.ReadInt16();
+                Int16 Width = r.ReadInt16();
+                Int16 Height = r.ReadInt16();
+                byte PixelDepth = r.ReadByte();
+                byte ImageDescriptor = r.ReadByte();
+                if (ImageType == 0)
+                {
+                    Debug.Log("Unsupported TGA file! No image data");
+                }
+                else if (ImageType == 3 | ImageType == 11)
+                {
+                    Debug.Log("Unsupported TGA file! Not truecolor");
+                }
+                else if (ImageType == 9 | ImageType == 10)
+                {
+                    Debug.Log("Unsupported TGA file! Colormapped");
+
+                }
+                //     MsgBox("Dimensions are "  Width  ","  Height)
+                Texture2D b = new Texture2D(Width, Height, TextureFormat.ARGB32, false);
+                for (int y = 0; y <= b.height - 1; y++)
+                {
+                    for (int x = 0; x <= b.width - 1; x++)
+                    {
+
+                        if (PixelDepth == 32)
+                        {
+
+                            float red = Convert.ToSingle(r.ReadByte());
+                            float green = Convert.ToSingle(r.ReadByte());
+                            float blue = Convert.ToSingle(r.ReadByte());
+                            float alpha = Convert.ToSingle(r.ReadByte());
+                            alpha /= 255;
+                            green /= 255;
+                            blue /= 255;
+                            red /= 255;
+                            Color cl = new Color(blue, green, red, alpha);
+                            b.SetPixel(x, y, cl);
+
+
+                        }
+                        else
+                        {
+
+                            float red = Convert.ToSingle(r.ReadByte());
+                            float green = Convert.ToSingle(r.ReadByte());
+                            float blue = Convert.ToSingle(r.ReadByte());
+
+
+                            green = Mathf.Pow(green / 255, 1 / 2.2f);
+                            blue = Mathf.Pow(blue / 255, 1 / 2.2f);
+                            red = Mathf.Pow(red / 255, 1 / 2.2f);
+                            Color cl = new Color(blue, green, red, 1);
+                            b.SetPixel(x, y, cl);
+
+
+                        }
+
+                    }
+                }
+                b.Apply();
+
+                return b;
+            }
+        }
     }
 
     public class MaterialHelper
     {
-        public static void UpdateTargetsValue(MaterialProperty p, System.Object value)
-        {
-            if (p.type == MaterialProperty.PropType.Texture)
-                foreach (UnityEngine.Object m in p.targets)
-                    ((Material)m).SetTexture(p.name, (Texture)value);
-            else if (p.type == MaterialProperty.PropType.Float)
-            {
-                foreach (UnityEngine.Object m in p.targets)
-                    if (value.GetType() == typeof(float))
-                        ((Material)m).SetFloat(p.name, (float)value);
-                    else if (value.GetType() == typeof(int))
-                        ((Material)m).SetFloat(p.name, (int)value);
-            }
-        }
-
-        public static void UpdateTextureValue(MaterialProperty prop, Texture texture)
-        {
-            foreach (UnityEngine.Object m in prop.targets)
-            {
-                ((Material)m).SetTexture(prop.name, texture);
-            }
-            prop.textureValue = texture;
-        }
-
-        public static void UpdateFloatValue(MaterialProperty prop, float f)
-        {
-            foreach (UnityEngine.Object m in prop.targets)
-            {
-                ((Material)m).SetFloat(prop.name, f);
-            }
-            prop.floatValue = f;
-        }
-
         public static void ToggleKeyword(Material material, string keyword, bool turn_on)
         {
             bool is_on = material.IsKeywordEnabled(keyword);
@@ -573,8 +613,7 @@ namespace Thry
 
         public static void ToggleKeyword(MaterialProperty p, string keyword, bool on)
         {
-            foreach (UnityEngine.Object o in p.targets)
-                ToggleKeyword((Material)o, keyword, on);
+            ToggleKeyword(p.targets as Material[], keyword, on);
         }
 
         /// <summary>
@@ -584,11 +623,11 @@ namespace Thry
         /// <param name="value"></param>
         public static void SetMaterialValue(string key, string value)
         {
-            Material[] materials = ShaderEditor.active.materials;
-            MaterialProperty p = ShaderEditor.active.GetMaterialProperty(key);
+            Material[] materials = ShaderEditor.Active.Materials;
+            MaterialProperty p = ShaderEditor.Active.GetMaterialProperty(key);
             if (p != null)
             {
-                MaterialHelper.SetMaterialPropertyValue(p, materials, value);
+                MaterialHelper.SetMaterialPropertyValue(p, value);
             }
             else if (key == "render_queue")
             {
@@ -603,129 +642,99 @@ namespace Thry
             }
         }
 
-        public static void SetMaterialPropertyValue(MaterialProperty p, Material[] materials, string value)
+        public static void SetMaterialPropertyValue(MaterialProperty p, string value)
         {
+            object prev = null;
             if (p.type == MaterialProperty.PropType.Texture)
             {
-                Texture tex = AssetDatabase.LoadAssetAtPath<Texture>(value);
-                if (tex != null)
-                    foreach (Material m in materials) m.SetTexture(p.name, tex);
+                prev = p.textureValue;
+                p.textureValue = AssetDatabase.LoadAssetAtPath<Texture>(value);
             }
             else if (p.type == MaterialProperty.PropType.Float || p.type == MaterialProperty.PropType.Range)
             {
                 float f_value;
                 if (float.TryParse(Parser.GlobalizationFloat(value), out f_value))
                 {
+                    prev = p.floatValue;
                     p.floatValue = f_value;
-                    string[] drawer = ShaderHelper.GetDrawer(p);
-                    if (drawer != null && drawer.Length > 1 && drawer[0] == "Toggle" && drawer[1] != "__")
-                        MaterialHelper.ToggleKeyword(p, drawer[1], f_value == 1);
+                    
                 }
             }
             else if (p.type == MaterialProperty.PropType.Vector)
             {
-                string[] xyzw = value.Split(",".ToCharArray());
-                Vector4 vector = new Vector4(float.Parse(xyzw[0]), float.Parse(xyzw[1]), float.Parse(xyzw[2]), float.Parse(xyzw[3]));
-                foreach (Material m in materials) m.SetVector(p.name, vector);
+                prev = p.vectorValue;
+                p.vectorValue = Converter.StringToVector(value);
             }
             else if (p.type == MaterialProperty.PropType.Color)
             {
-                Color col = Converter.stringToColor(value);
-                foreach (Material m in materials) m.SetColor(p.name, col);
+                prev = p.colorValue;
+                p.colorValue = Converter.StringToColor(value);
             }
+            if (p.applyPropertyCallback != null)
+                p.applyPropertyCallback.Invoke(p, 1, prev);
         }
 
         public static void CopyPropertyValueFromMaterial(MaterialProperty p, Material source)
         {
+            object prev = null;
             switch (p.type)
             {
                 case MaterialProperty.PropType.Float:
                 case MaterialProperty.PropType.Range:
-                    float f = source.GetFloat(p.name);
-                    p.floatValue = f;
-                    string[] drawer = ShaderHelper.GetDrawer(p);
-                    if (drawer != null && drawer.Length > 1 && drawer[0] == "Toggle" && drawer[1] != "__")
-                        ToggleKeyword(p, drawer[1], f == 1);
+                    prev = p.floatValue;
+                    p.floatValue = source.GetFloat(p.name);
                     break;
                 case MaterialProperty.PropType.Color:
-                    Color c = source.GetColor(p.name);
-                    p.colorValue = c;
+                    prev = p.colorValue;
+                    p.colorValue = source.GetColor(p.name);
                     break;
                 case MaterialProperty.PropType.Vector:
-                    Vector4 vector = source.GetVector(p.name);
-                    p.vectorValue = vector;
+                    prev = p.vectorValue;
+                    p.vectorValue = source.GetVector(p.name);
                     break;
                 case MaterialProperty.PropType.Texture:
-                    Texture t = source.GetTexture(p.name);
+                    prev = p.textureValue;
+                    p.textureValue = source.GetTexture(p.name);
                     Vector2 offset = source.GetTextureOffset(p.name);
                     Vector2 scale = source.GetTextureScale(p.name);
-                    p.textureValue = t;
                     p.textureScaleAndOffset = new Vector4(scale.x, scale.y, offset.x, offset.y);
                     break;
             }
-        }
-
-        public static void CopyMaterialTagFromMaterial(Material[] targets, Material source, string tag, string defaultValue)
-        {
-            string val = source.GetTag(tag, false, defaultValue);
-            foreach(Material m in targets)
-            {
-                m.SetOverrideTag(tag, val);
-            }
+            if (p.applyPropertyCallback != null)
+                p.applyPropertyCallback.Invoke(p, 1, prev);
         }
 
         public static void CopyMaterialValueFromProperty(MaterialProperty target, MaterialProperty source)
         {
+            object prev = null;
             switch (target.type)
             {
                 case MaterialProperty.PropType.Float:
                 case MaterialProperty.PropType.Range:
+                    prev = target.floatValue;
                     target.floatValue = source.floatValue;
-                    string[] drawer = ShaderHelper.GetDrawer(target);
-                    if (drawer != null && drawer.Length > 1 && drawer[0] == "Toggle" && drawer[1] != "__")
-                        ToggleKeyword(target, drawer[1], source.floatValue == 1);
                     break;
                 case MaterialProperty.PropType.Color:
+                    prev = target.colorValue;
                     target.colorValue = source.colorValue;
                     break;
                 case MaterialProperty.PropType.Vector:
+                    prev = target.vectorValue;
                     target.vectorValue = source.vectorValue;
                     break;
                 case MaterialProperty.PropType.Texture:
+                    prev = target.textureValue;
                     target.textureValue = source.textureValue;
                     target.textureScaleAndOffset = source.textureScaleAndOffset;
                     break;
             }
+            if (target.applyPropertyCallback != null)
+                target.applyPropertyCallback.Invoke(target, 1, prev);
         }
 
         public static void CopyPropertyValueToMaterial(MaterialProperty source, Material target)
         {
-            switch (source.type)
-            {
-                case MaterialProperty.PropType.Float:
-                case MaterialProperty.PropType.Range:
-                    float f = source.floatValue;
-                    target.SetFloat(source.name, f);
-                    string[] drawer = ShaderHelper.GetDrawer(source);
-                    if (drawer != null && drawer.Length > 1 && drawer[0] == "Toggle" && drawer[1] != "__")
-                        ToggleKeyword(target, drawer[1], f == 1);
-                    break;
-                case MaterialProperty.PropType.Color:
-                    Color c = source.colorValue;
-                    target.SetColor(source.name, c);
-                    break;
-                case MaterialProperty.PropType.Vector:
-                    Vector4 vector = source.vectorValue;
-                    target.SetVector(source.name, vector);
-                    break;
-                case MaterialProperty.PropType.Texture:
-                    Texture t = source.textureValue;
-                    Vector4 scaleoffset = source.textureScaleAndOffset;
-                    target.SetTexture(source.name, t);
-                    target.SetTextureOffset(source.name, new Vector2(scaleoffset.z,scaleoffset.w));
-                    target.SetTextureScale(source.name, new Vector2(scaleoffset.x,scaleoffset.y));
-                    break;
-            }
+            CopyMaterialValueFromProperty(MaterialEditor.GetMaterialProperty(new Material[] { target }, source.name), source);
         }
     }
 
@@ -750,32 +759,23 @@ namespace Thry
     public class Converter
     {
 
-        public static Color stringToColor(string s)
+        public static Color StringToColor(string s)
         {
             s = s.Trim(new char[] { '(', ')' });
             string[] split = s.Split(",".ToCharArray());
             float[] rgba = new float[4] { 1, 1, 1, 1 };
-            for (int i = 0; i < split.Length; i++) if (split[i].Replace(" ", "") != "") rgba[i] = float.Parse(split[i]);
+            for (int i = 0; i < split.Length; i++) if (string.IsNullOrWhiteSpace(split[i]) == false) rgba[i] = float.Parse(split[i]);
             return new Color(rgba[0], rgba[1], rgba[2], rgba[3]);
 
         }
 
-        public static Vector4 stringToVector(string s)
+        public static Vector4 StringToVector(string s)
         {
             s = s.Trim(new char[] { '(', ')' });
             string[] split = s.Split(",".ToCharArray());
             float[] xyzw = new float[4];
-            for (int i = 0; i < 4; i++) if (i < split.Length && split[i].Replace(" ", "") != "") xyzw[i] = float.Parse(split[i]); else xyzw[i] = 0;
+            for (int i = 0; i < 4 && i < split.Length; i++) if (string.IsNullOrWhiteSpace(split[i]) == false) xyzw[i] = float.Parse(split[i]); else xyzw[i] = 0;
             return new Vector4(xyzw[0], xyzw[1], xyzw[2], xyzw[3]);
-        }
-
-        public static string MaterialsToString(Material[] materials)
-        {
-            string s = "";
-            foreach (Material m in materials)
-                s += "\"" + m.name + "\"" + ",";
-            s = s.TrimEnd(',');
-            return s;
         }
 
         public static string ArrayToString(object[] a)
@@ -952,6 +952,8 @@ namespace Thry
 
         public static Texture2D GradientToTexture(Gradient gradient, int width, int height)
         {
+            width = Mathf.Max(0, Mathf.Min(8192, width));
+            height = Mathf.Max(0, Mathf.Min(8192, height));
             Texture2D texture = new Texture2D(width, height);
             for (int x = 0; x < width; x++)
             {
@@ -1272,6 +1274,7 @@ namespace Thry
             public string path;
             public string name;
             public string version;
+            public bool isUsingEditor;
         }
 
         private static List<ShaderEditorShader> shaders;
@@ -1493,6 +1496,63 @@ namespace Thry
                 Save();
         }
 
+        static Dictionary<Shader, bool> usingThryShaderEditor = new Dictionary<Shader, bool>();
+        public static bool IsShaderUsingThryShaderEditor(Shader shader)
+        {
+            if (usingThryShaderEditor.ContainsKey(shader)) return usingThryShaderEditor[shader];
+            usingThryShaderEditor[shader] = Enumerable.Range(0, shader.GetPropertyCount()).Any(i => shader.GetPropertyName(i) == ShaderEditor.PROPERTY_NAME_EDITOR_DETECT);
+            return usingThryShaderEditor[shader];
+        }
+
+        static MethodInfo getPropertyHandlerMethod;
+        static PropertyInfo drawerProperty;
+        static FieldInfo keyWordFieldUnityDefault;
+        static FieldInfo keyWordFieldThry;
+        static bool areKeywordDrawerMethodsInit = false;
+        private static void InitKeywordDrawerMethods()
+        {
+            if (areKeywordDrawerMethodsInit) return;
+            Type materialPropertyDrawerType = typeof(UnityEditor.Editor).Assembly.GetType("UnityEditor.MaterialPropertyHandler");
+            getPropertyHandlerMethod = materialPropertyDrawerType.GetMethod("GetShaderPropertyHandler", BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy);
+            drawerProperty = materialPropertyDrawerType.GetProperty("propertyDrawer");
+            Type materialToggleDrawerType = typeof(UnityEditor.Editor).Assembly.GetType("UnityEditor.MaterialToggleDrawer");
+            keyWordFieldUnityDefault = materialToggleDrawerType.GetField("keyword", BindingFlags.Instance | BindingFlags.NonPublic);
+            keyWordFieldThry = typeof(ThryToggleDrawer).GetField("keyword");
+            areKeywordDrawerMethodsInit = true;
+        }
+
+        public static void EnableDisableKeywordsBasedOnTheirFloatValue(IEnumerable<Material> targets, Shader shader, string propertyName)
+        {
+            InitKeywordDrawerMethods();
+            //Handle keywords
+            object propertyHandler = getPropertyHandlerMethod.Invoke(null, new object[] { shader, propertyName });
+            //if has custom drawer
+            if (propertyHandler != null)
+            {
+                object propertyDrawer = drawerProperty.GetValue(propertyHandler, null);
+                //if custom drawer exists
+                if (propertyDrawer != null)
+                {
+                    // if is keyword drawer make sure all materials have the keyworkd enabled / disabled depending on their value
+                    string keyword = null;
+                    if (propertyDrawer.GetType() == typeof(ThryToggleDrawer)){
+                        keyword = (string)keyWordFieldThry.GetValue(propertyDrawer);
+                    }else if (propertyDrawer.GetType().ToString() == "UnityEditor.MaterialToggleDrawer")
+                    {
+                        keyword = (string)keyWordFieldUnityDefault.GetValue(propertyDrawer);
+                    }                    if(keyword != null) {
+                        foreach (Material m in targets)
+                        {
+                            if (m.GetFloat(propertyName) == 1)
+                                m.EnableKeyword(keyword);
+                            else
+                                m.DisableKeyword(keyword);
+                        }
+                    }
+                }
+            }
+        }
+
     }
 
     public class StringHelper
@@ -1539,18 +1599,18 @@ namespace Thry
 
     public class VRCInterface
     {
-        private static VRCInterface instance;
+        private static VRCInterface _Instance;
         public static VRCInterface Get()
         {
-            if (instance == null) instance = new VRCInterface();
-            return instance;
+            if (_Instance == null) _Instance = new VRCInterface();
+            return _Instance;
         }
         public static void Update()
         {
-            instance = new VRCInterface();
+            _Instance = new VRCInterface();
         }
 
-        public SDK_Information sdk_information;
+        public SDK_Information Sdk_information;
 
         public class SDK_Information
         {
@@ -1568,8 +1628,8 @@ namespace Thry
 
         private VRCInterface()
         {
-            sdk_information = new SDK_Information();
-            sdk_information.type = GetInstalledSDKType();
+            Sdk_information = new SDK_Information();
+            Sdk_information.type = GetInstalledSDKType();
             InitInstalledSDKVersionAndPaths();
         }
 
@@ -1587,12 +1647,12 @@ namespace Thry
                 return;
             string persistent = PersistentData.Get("vrc_sdk_version");
             if (persistent != null)
-                sdk_information.installed_version = persistent;
+                Sdk_information.installed_version = persistent;
             else
-                sdk_information.installed_version = Regex.Replace(FileHelper.ReadFileIntoString(path), @"\n?\r", "");
+                Sdk_information.installed_version = Regex.Replace(FileHelper.ReadFileIntoString(path), @"\n?\r", "");
         }
 
-        public VRC_SDK_Type GetInstalledSDKType()
+        public static VRC_SDK_Type GetInstalledSDKType()
         {
 #if VRC_SDK_VRCSDK3 && UDON
             return VRC_SDK_Type.SDK_3_World;
@@ -1605,7 +1665,7 @@ namespace Thry
 #endif
         }
 
-        private static bool IsVRCSDKInstalled()
+        public static bool IsVRCSDKInstalled()
         {
 #if VRC_SDK_VRCSDK3
             return true;

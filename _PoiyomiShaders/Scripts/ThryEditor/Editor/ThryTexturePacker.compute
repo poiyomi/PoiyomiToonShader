@@ -1,0 +1,77 @@
+﻿#pragma kernel CSMain
+
+RWTexture2D<float4> Result;
+
+float Width;
+float Height;
+bool TakeRGBFromRTexture;
+
+//Config: has texture, billinearFiltering / fallback, channel, invert
+
+Texture2D<float4> R_Input;
+float4 R_Config;
+
+Texture2D<float4> G_Input;
+float4 G_Config;
+
+Texture2D<float4> B_Input;
+float4 B_Config;
+
+Texture2D<float4> A_Input;
+float4 A_Config;
+
+SamplerState linearClampSampler;
+SamplerState pointClampSampler;
+
+float SampleInput(Texture2D<float4> tex, float4 config, float2 uv) {
+	if (config.r == 0) {
+		return config.g;
+	}
+	float value = 0;
+	float4 pixelColor = float4(1,1,1,1);
+	if(config.g == 0) pixelColor = tex.SampleLevel(pointClampSampler, uv, 0);
+	else pixelColor = pixelColor = tex.SampleLevel(linearClampSampler, uv, 0);
+	if (config.b == 0) value = pixelColor.r;
+	else if (config.b == 1) value = pixelColor.g;
+	else if (config.b == 2) value = pixelColor.b;
+	else if (config.b == 3) value = pixelColor.a;
+	else value = max(pixelColor.r, max(pixelColor.g, pixelColor.b));
+	if (config.a == 1) value = 1 - value;
+	return value;
+}
+
+float3 SampleInputRGB(Texture2D<float4> tex, float4 config, float2 uv) {
+	if (config.r == 0) {
+		return float3(config.g, config.g, config.g);
+	}
+	float4 pixelColor = float4(1, 1, 1, 1);
+	if (config.g == 0) pixelColor = tex.SampleLevel(pointClampSampler, uv, 0);
+	else pixelColor = pixelColor = tex.SampleLevel(linearClampSampler, uv, 0);
+	if (config.a == 1) 
+	{
+		pixelColor.r = 1 - pixelColor.r;
+		pixelColor.g = 1 - pixelColor.g;
+		pixelColor.b = 1 - pixelColor.b;
+	}
+	return pixelColor;
+}
+
+[numthreads(8, 8, 1)]
+void CSMain(uint3 id : SV_DispatchThreadID)
+{
+	float2 uv = float2(id.x / Width, id.y / Height);
+	float4 pixel = float4(1, 1, 1, 1);
+	if (TakeRGBFromRTexture) 
+	{
+		pixel.rgb = SampleInputRGB(R_Input, R_Config, uv);
+		pixel.a = SampleInput(G_Input, G_Config, uv);
+	}
+	else 
+	{
+		pixel.r = SampleInput(R_Input, R_Config, uv);
+		pixel.g = SampleInput(G_Input, G_Config, uv);
+		pixel.b = SampleInput(B_Input, B_Config, uv);
+		pixel.a = SampleInput(A_Input, A_Config, uv);
+	}
+	Result[id.xy] = pixel;
+}
