@@ -2,7 +2,7 @@ Shader ".poiyomi/Poiyomi 8.0/Poiyomi World"
 {
 	Properties
 	{
-		[HideInInspector] shader_master_label ("<color=#E75898ff>Poiyomi 8.0.286</color>", Float) = 0
+		[HideInInspector] shader_master_label ("<color=#E75898ff>Poiyomi 8.0.294</color>", Float) = 0
 		[HideInInspector] shader_is_using_thry_editor ("", Float) = 0
 		[HideInInspector] footer_youtube ("{texture:{name:icon-youtube,height:32},action:{type:URL,data:https://www.youtube.com/poiyomi},hover:YOUTUBE}", Float) = 0
 		[HideInInspector] footer_twitter ("{texture:{name:icon-twitter,height:32},action:{type:URL,data:https://twitter.com/poiyomi},hover:TWITTER}", Float) = 0
@@ -571,8 +571,6 @@ Shader ".poiyomi/Poiyomi 8.0/Poiyomi World"
 		_1st2nd_Shades_Feather ("1st/2nd_Shades_Feather--{condition_showS:(_LightingMode==4)}", Range(0.0001, 1)) = 0.0001
 		[Enum(Replace, 0, Multiply, 1)]_ShadingShadeMapBlendType ("Blend Mode--{condition_showS:(_LightingMode==4)}", Int) = 0
 		
-		// Realistic
-		_LightingStandardSmoothness ("Smoothness--{condition_showS:(_LightingMode==6)}", Range(0, 1)) = 0
 		// Skin Shading
 		_SkinLUT ("LUT--{condition_showS:(_LightingMode==3)}", 2D) = "white" { }
 		_SssScale ("Scale--{condition_showS:(_LightingMode==3)}", Range(0, 1)) = 1
@@ -819,15 +817,14 @@ Shader ".poiyomi/Poiyomi 8.0/Poiyomi World"
 		[HideInInspector][ToggleUI]_MochieRoughnessMapInvert ("Invert Smoothness", Float) = 0
 		[HideInInspector][ToggleUI]_MochieReflectionMaskInvert ("Invert Reflection Mask", Float) = 0
 		[HideInInspector][ToggleUI]_MochieSpecularMaskInvert ("Invert Specular Mask", Float) = 0
-		
 		[ThryToggleUI(true)]_PBRSplitMaskSample ("<size=13><b>  Split Mask Sampling</b></size>", Float) = 0
 		_PBRMaskScaleTiling ("ScaleXY TileZW--{condition_showS:(_PBRSplitMaskSample==1)}", Vector) = (1, 1, 0, 0)
 		[ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos XZ, 5, Polar UV, 6, Distorted UV, 7)]_MochieMetallicMasksUV ("UV--{condition_showS:(_PBRSplitMaskSample==1)}", Int) = 0
 		[Vector2]_MochieMetallicMasksPan ("Panning--{condition_showS:(_PBRSplitMaskSample==1)}", Vector) = (0, 0, 0, 0)
-		
 		[ThryToggleUI(true)]_Specular2ndLayer ("<size=13><b>  2nd Specular</b></size>", Float) = 0
 		_MochieSpecularStrength2 ("Strength--{condition_showS:(_Specular2ndLayer==1)}", Range(0, 1)) = 1
 		_MochieRoughnessMultiplier2 ("Smoothness--{condition_showS:(_Specular2ndLayer==1)}", Range(0, 1)) = 1
+		[ToggleUI]_IgnoreCastedShadows ("Ignore Casted Shadows", Float) = 0
 		
 		[Space(8)]
 		[ThryTexture][NoScaleOffset]_MochieReflCube ("Fallback Cubemap", Cube) = "" { }
@@ -859,6 +856,7 @@ Shader ".poiyomi/Poiyomi 8.0/Poiyomi World"
 		[ThryTexture][NoScaleOffset]_ClearCoatFallback ("Fallback Cubemap", Cube) = "" { }
 		[ToggleUI]_ClearCoatForceFallback ("Force Fallback", Int) = 0
 		[ToggleUI]_ClearCoatLitFallback ("Lit Fallback", Float) = 0
+		[ToggleUI]_CCIgnoreCastedShadows ("Ignore Casted Shadows", Float) = 0
 		[ThryToggleUI(true)]_ClearCoatGSAAEnabled ("<size=13><b>  GSAA</b></size>", Float) = 1
 		_ClearCoatGSAAVariance ("GSAA Variance", Range(0, 1)) = 0.15
 		_ClearCoatGSAAThreshold ("GSAA Threshold", Range(0, 1)) = 0.1
@@ -894,6 +892,7 @@ Shader ".poiyomi/Poiyomi 8.0/Poiyomi World"
 		
 		_StylizedSpecularStrength ("Strength", Float) = 1
 		[ToggleUI] _UseLightColor ("Use Light Color", Float) = 1
+		[ToggleUI]_SSIgnoreCastedShadows ("Ignore Casted Shadows", Float) = 0
 		[Space(8)]
 		
 		[ThryHeaderLabel(Layer 1, 13)]
@@ -1231,6 +1230,7 @@ Shader ".poiyomi/Poiyomi 8.0/Poiyomi World"
 		_EmissiveScroll_Width2 ("Width--{condition_showS:(_ScrollingEmission2==1)}", Float) = 10
 		_EmissiveScroll_Velocity2 ("Velocity--{condition_showS:(_ScrollingEmission2==1)}", Float) = 10
 		_EmissiveScroll_Interval2 ("Interval--{condition_showS:(_ScrollingEmission2==1)}", Float) = 20
+		_EmissionScrollingOffset2 ("Offset--{condition_showS:(_ScrollingEmission2==1)}", Float) = 0
 		
 		[Space(4)]
 		[ThryToggleUI(true)] _EmissionAL2Enabled ("<size=13><b>  Audio Link</b></size>--{ condition_showS:_EnableAudioLink==1}", Float) = 0
@@ -1295,6 +1295,7 @@ Shader ".poiyomi/Poiyomi 8.0/Poiyomi World"
 		_EmissiveScroll_Width3 ("Width--{condition_showS:(_ScrollingEmission3==1)}", Float) = 10
 		_EmissiveScroll_Velocity3 ("Velocity--{condition_showS:(_ScrollingEmission3==1)}", Float) = 10
 		_EmissiveScroll_Interval3 ("Interval--{condition_showS:(_ScrollingEmission3==1)}", Float) = 20
+		_EmissionScrollingOffset3 ("Offset--{condition_showS:(_ScrollingEmission3==1)}", Float) = 0
 		
 		[Space(4)]
 		[ThryToggleUI(true)] _EmissionAL3Enabled ("<size=13><b>  Audio Link</b></size>--{ condition_showS:_EnableAudioLink==1}", Float) = 0
@@ -2237,6 +2238,7 @@ Shader ".poiyomi/Poiyomi 8.0/Poiyomi World"
 			float4 _Color;
 			float _ColorThemeIndex;
 			UNITY_DECLARE_TEX2D(_MainTex);
+			UNITY_DECLARE_DEPTH_TEXTURE(_CameraDepthTexture);
 			float4 _MainTex_ST;
 			float2 _MainTexPan;
 			float _MainTexUV;
@@ -2871,8 +2873,6 @@ Shader ".poiyomi/Poiyomi 8.0/Poiyomi World"
 			float _1st2nd_Shades_Feather;
 			float _ShadingShadeMapBlendType;
 			#endif
-			// Realistic Lighting
-			float _LightingStandardSmoothness;
 			// Skin
 			sampler2D _SkinLUT;
 			float _SssScale;
@@ -3632,7 +3632,7 @@ Shader ".poiyomi/Poiyomi 8.0/Poiyomi World"
 			float4 _MochieSpecularTint;
 			float4 _MochieReflectionTint;
 			float _MochieLitFallback;
-			
+			float _IgnoreCastedShadows;
 			float _PBRSplitMaskSample;
 			float4 _PBRMaskScaleTiling;
 			float _MochieMetallicMasksUV;
@@ -3673,6 +3673,7 @@ Shader ".poiyomi/Poiyomi 8.0/Poiyomi World"
 			samplerCUBE _ClearCoatFallback;
 			float _ClearCoatForceFallback;
 			float _ClearCoatLitFallback;
+			float _CCIgnoreCastedShadows;
 			float _ClearCoatGSAAEnabled;
 			float _ClearCoatGSAAVariance;
 			float _ClearCoatGSAAThreshold;
@@ -3736,7 +3737,7 @@ Shader ".poiyomi/Poiyomi 8.0/Poiyomi World"
 			float _Layer2Size;
 			float _StylizedSpecular2Feather;
 			float _Layer2Strength;
-			
+			float _SSIgnoreCastedShadows;
 			float _StylizedSpecularStrength;
 			float _UseSpecularOptMap2;
 			float _HighColorThemeIndex;
@@ -3864,10 +3865,6 @@ Shader ".poiyomi/Poiyomi 8.0/Poiyomi World"
 			float4 _MirrorTexture_ST;
 			float2 _MirrorTexturePan;
 			float _MirrorTextureUV;
-			#endif
-			
-			#ifdef GRAIN
-			UNITY_DECLARE_DEPTH_TEXTURE(_CameraDepthTexture);
 			#endif
 			
 			#if defined(PROP_DEPTHMASK) || !defined(OPTIMIZER_ENABLED)
@@ -6866,7 +6863,7 @@ Shader ".poiyomi/Poiyomi 8.0/Poiyomi World"
 				float invAlpha = 1.0 / roughness;
 				float cos2h = NoH * NoH;
 				float sin2h = max(1.0 - cos2h, 0.0078125); // 0.0078125 = 2^(-14/2), so sin2h^2 > 0 in fp16
-				return(2.0 + invAlpha) * pow(sin2h, invAlpha * 0.5) / (2.0 * UNITY_PI);
+				return (2.0 + invAlpha) * pow(sin2h, invAlpha * 0.5) / (2.0 * UNITY_PI);
 			}
 			
 			// https://github.com/google/filament/blob/main/shaders/src/brdf.fs#L136-L139
@@ -6976,7 +6973,7 @@ Shader ".poiyomi/Poiyomi 8.0/Poiyomi World"
 				float V = Visibility(roughness, NoV, NoL, cloth);
 				float3 F = Fresnel(f0, LoH);
 				
-				return(D * V) * F;
+				return (D * V) * F;
 			}
 			
 			float3 getBoxProjection(float3 direction, float3 position, float4 cubemapPosition, float3 boxMin, float3 boxMax)
@@ -7234,43 +7231,7 @@ Shader ".poiyomi/Poiyomi 8.0/Poiyomi World"
 				#endif
 				#endif
 				
-				float3 reflectionDir = reflect(-poiCam.viewDir, poiMesh.normals[1]);
-				Unity_GlossyEnvironmentData envData;
-				envData.roughness = 1 - _LightingStandardSmoothness;
-				envData.reflUVW = BoxProjection(
-				reflectionDir, poiMesh.worldPos.xyz,
-				unity_SpecCube0_ProbePosition,
-				unity_SpecCube0_BoxMin.xyz, unity_SpecCube0_BoxMax.xyz
-				);
-				float3 probe0 = Unity_GlossyEnvironment(
-				UNITY_PASS_TEXCUBE(unity_SpecCube0), unity_SpecCube0_HDR, envData
-				);
-				envData.reflUVW = BoxProjection(
-				reflectionDir, poiMesh.worldPos.xyz,
-				unity_SpecCube1_ProbePosition,
-				unity_SpecCube1_BoxMin.xyz, unity_SpecCube1_BoxMax.xyz
-				);
-				#if UNITY_SPECCUBE_BLENDING
-				float interpolator = unity_SpecCube0_BoxMin.w;
-				//UNITY_BRANCH
-				if (interpolator < 0.99999)
-				{
-					float3 probe1 = Unity_GlossyEnvironment(
-					UNITY_PASS_TEXCUBE_SAMPLER(unity_SpecCube1, unity_SpecCube0),
-					unity_SpecCube0_HDR, envData
-					);
-					indirectLight.specular = lerp(probe1, probe0, interpolator);
-				}
-				else
-				{
-					indirectLight.specular = probe0;
-				}
-				#else
-				indirectLight.specular = probe0;
-				#endif
-				
 				indirectLight.diffuse *= poiLight.occlusion;
-				indirectLight.specular *= poiLight.occlusion;
 				
 				return indirectLight;
 			}
@@ -7357,7 +7318,7 @@ Shader ".poiyomi/Poiyomi 8.0/Poiyomi World"
 				light.color = saturate(_LightColor0.rgb * lerp(1, poiLight.attenuation, poiLight.attenuationStrength) * poiLight.detailShadow);
 				light.ndotl = poiLight.nDotLSaturated;
 				poiLight.rampedLightMap = poiLight.nDotLSaturated;
-				poiLight.finalLighting = UNITY_BRDF_PBS(1, 0, 0, _LightingStandardSmoothness, poiMesh.normals[1], poiCam.viewDir, light, CreateIndirectLight(poiMesh, poiCam, poiLight)).xyz;
+				poiLight.finalLighting = max(UNITY_BRDF_PBS(1, 0, 0, 0, poiMesh.normals[1], poiCam.viewDir, light, CreateIndirectLight(poiMesh, poiCam, poiLight)).xyz, _LightingMinLightBrightness);
 				#endif
 				
 				#ifdef _LIGHTINGMODE_CLOTH
@@ -7882,7 +7843,7 @@ Shader ".poiyomi/Poiyomi 8.0/Poiyomi World"
 				{
 					cubeMap.rgb = hueShift(cubeMap.rgb, _CubeMapHueShift + _Time.x * _CubeMapHueShiftSpeed);
 				}
-				
+				CubeMapMask = min(CubeMapMask, lerp(1, poiLight.rampedLightMap, _CubeMapLightMask));
 				poiFragData.baseColor.rgb = lerp(poiFragData.baseColor.rgb, cubeMap.rgb, _CubeMapReplace * CubeMapMask * cubeMap.a);
 				poiFragData.baseColor.rgb *= lerp(1, cubeMap.rgb, _CubeMapMultiply * CubeMapMask * cubeMap.a);
 				poiFragData.baseColor.rgb += cubeMap.rgb * _CubeMapAdd * CubeMapMask * cubeMap.a;
@@ -9077,6 +9038,8 @@ Shader ".poiyomi/Poiyomi 8.0/Poiyomi World"
 				float3 reflections = 0;
 				float3 environment = 0;
 				
+				float attenuation = min(poiLight.nDotLSaturated, lerp(poiLight.attenuation, 1, _IgnoreCastedShadows));
+				
 				// Specular
 				// if (_SpecularMode == 0){
 				if (_MochieSpecularStrength > 0)
@@ -9084,7 +9047,7 @@ Shader ".poiyomi/Poiyomi 8.0/Poiyomi World"
 					float3 fresnelTerm = 1;
 					float3 specularTerm = 1;
 					GetSpecFresTerm(poiLight.nDotL, poiLight.nDotV, poiLight.nDotH, poiLight.lDotH, specularTerm, fresnelTerm, specCol, brdfRoughness);
-					specular = poiLight.directColor * specularTerm * fresnelTerm * specularMask * poiThemeColor(poiMods, _MochieSpecularTint, _MochieSpecularTintThemeIndex) * poiLight.occlusion * poiLight.attenuation * _MochieSpecularStrength;
+					specular = poiLight.directColor * specularTerm * fresnelTerm * specularMask * poiThemeColor(poiMods, _MochieSpecularTint, _MochieSpecularTintThemeIndex) * poiLight.occlusion * attenuation * _MochieSpecularStrength;
 					
 					#if defined(VERTEXLIGHT_ON) && defined(POI_VERTEXLIGHT_ON)
 					for (int index = 0; index < 4; index++)
@@ -9102,7 +9065,7 @@ Shader ".poiyomi/Poiyomi 8.0/Poiyomi World"
 					float3 fresnelTerm = 1;
 					float3 specularTerm = 1;
 					GetSpecFresTerm(poiLight.nDotL, poiLight.nDotV, poiLight.nDotH, poiLight.lDotH, specularTerm, fresnelTerm, specCol, brdfRoughness2);
-					specular2 = poiLight.directColor * specularTerm * fresnelTerm * specularMask * poiThemeColor(poiMods, _MochieSpecularTint, _MochieSpecularTintThemeIndex) * poiLight.occlusion * poiLight.attenuation * _MochieSpecularStrength2;
+					specular2 = poiLight.directColor * specularTerm * fresnelTerm * specularMask * poiThemeColor(poiMods, _MochieSpecularTint, _MochieSpecularTintThemeIndex) * poiLight.occlusion * attenuation * _MochieSpecularStrength2;
 					
 					#if defined(VERTEXLIGHT_ON) && defined(POI_VERTEXLIGHT_ON)
 					for (int index = 0; index < 4; index++)
@@ -9187,7 +9150,7 @@ Shader ".poiyomi/Poiyomi 8.0/Poiyomi World"
 				float3 vSpecular = 0;
 				float3 reflections = 0;
 				float3 environment = 0;
-				
+				float attenuation = min(poiLight.nDotLSaturated, lerp(poiLight.attenuation, 1, _CCIgnoreCastedShadows));
 				// Specular
 				// if (_SpecularMode == 0){
 				if (_ClearCoatSpecularStrength > 0)
@@ -9195,7 +9158,7 @@ Shader ".poiyomi/Poiyomi 8.0/Poiyomi World"
 					float3 fresnelTerm = 1;
 					float3 specularTerm = 1;
 					GetSpecFresTerm(poiLight.vertexNDotL, poiLight.vertexNDotV, poiLight.vertexNDotH, poiLight.lDotH, specularTerm, fresnelTerm, specCol, brdfRoughness);
-					specular = poiLight.directColor * specularTerm * fresnelTerm * specularMask * poiThemeColor(poiMods, _ClearCoatSpecularTint, _ClearCoatSpecularTintThemeIndex) * poiLight.occlusion * poiLight.attenuation * _ClearCoatSpecularStrength;
+					specular = poiLight.directColor * specularTerm * fresnelTerm * specularMask * poiThemeColor(poiMods, _ClearCoatSpecularTint, _ClearCoatSpecularTintThemeIndex) * poiLight.occlusion * attenuation * _ClearCoatSpecularStrength;
 					#if defined(VERTEXLIGHT_ON) && defined(POI_VERTEXLIGHT_ON)
 					for (int index = 0; index < 4; index++)
 					{
@@ -9300,14 +9263,14 @@ Shader ".poiyomi/Poiyomi 8.0/Poiyomi World"
 				specularMask = saturate(specularMask + _Tweak_HighColorMaskLevel);
 				
 				float specMask = saturate(specMask1 + specMask2) * specularMask * poiLight.rampedLightMap;
-				
+				float attenuation = min(poiLight.nDotLSaturated, lerp(poiLight.attenuation, 1, _SSIgnoreCastedShadows));
 				if (_Is_BlendAddToHiColor == 1)
 				{
-					poiLight.finalLightAdd += max(0, specularMap * poiThemeColor(poiMods, _HighColor, _HighColorThemeIndex) * lerp(1, poiLight.directColor, _UseLightColor) * specMask * poiLight.occlusion * poiLight.attenuation * _StylizedSpecularStrength);
+					poiLight.finalLightAdd += max(0, specularMap * poiThemeColor(poiMods, _HighColor, _HighColorThemeIndex) * lerp(1, poiLight.directColor, _UseLightColor) * specMask * poiLight.occlusion * attenuation * _StylizedSpecularStrength);
 				}
 				else
 				{
-					poiFragData.baseColor = lerp(poiFragData.baseColor, specularMap * poiThemeColor(poiMods, _HighColor, _HighColorThemeIndex) * lerp(1, poiLight.directColor, _UseLightColor), saturate(specMask * poiLight.occlusion * poiLight.attenuation * _StylizedSpecularStrength));
+					poiFragData.baseColor = lerp(poiFragData.baseColor, specularMap * poiThemeColor(poiMods, _HighColor, _HighColorThemeIndex) * lerp(1, poiLight.directColor, _UseLightColor), saturate(specMask * poiLight.occlusion * attenuation * _StylizedSpecularStrength));
 				}
 				//poiFragData.baseColor = _StylizedSpecularStrength;
 				
@@ -10345,7 +10308,7 @@ Shader ".poiyomi/Poiyomi 8.0/Poiyomi World"
 				poiLight.direction = normalize(_WorldSpaceLightPos0.xyz - i.worldPos.xyz);
 				
 				#ifdef POINT
-				poiLight.additiveShadow = UNITY_SHADOW_ATTENUATION(input, poiMesh.worldPos);
+				poiLight.additiveShadow = UNITY_SHADOW_ATTENUATION(i, poiMesh.worldPos);
 				unityShadowCoord3 lightCoord = mul(unity_WorldToLight, unityShadowCoord4(poiMesh.worldPos, 1)).xyz;
 				poiLight.attenuation = tex2D(_LightTexture0, dot(lightCoord, lightCoord).rr).r;
 				#endif
@@ -11132,6 +11095,7 @@ Shader ".poiyomi/Poiyomi 8.0/Poiyomi World"
 			float4 _Color;
 			float _ColorThemeIndex;
 			UNITY_DECLARE_TEX2D(_MainTex);
+			UNITY_DECLARE_DEPTH_TEXTURE(_CameraDepthTexture);
 			float4 _MainTex_ST;
 			float2 _MainTexPan;
 			float _MainTexUV;
@@ -11766,8 +11730,6 @@ Shader ".poiyomi/Poiyomi 8.0/Poiyomi World"
 			float _1st2nd_Shades_Feather;
 			float _ShadingShadeMapBlendType;
 			#endif
-			// Realistic Lighting
-			float _LightingStandardSmoothness;
 			// Skin
 			sampler2D _SkinLUT;
 			float _SssScale;
@@ -12283,7 +12245,7 @@ Shader ".poiyomi/Poiyomi 8.0/Poiyomi World"
 			float4 _MochieSpecularTint;
 			float4 _MochieReflectionTint;
 			float _MochieLitFallback;
-			
+			float _IgnoreCastedShadows;
 			float _PBRSplitMaskSample;
 			float4 _PBRMaskScaleTiling;
 			float _MochieMetallicMasksUV;
@@ -12324,6 +12286,7 @@ Shader ".poiyomi/Poiyomi 8.0/Poiyomi World"
 			samplerCUBE _ClearCoatFallback;
 			float _ClearCoatForceFallback;
 			float _ClearCoatLitFallback;
+			float _CCIgnoreCastedShadows;
 			float _ClearCoatGSAAEnabled;
 			float _ClearCoatGSAAVariance;
 			float _ClearCoatGSAAThreshold;
@@ -12387,7 +12350,7 @@ Shader ".poiyomi/Poiyomi 8.0/Poiyomi World"
 			float _Layer2Size;
 			float _StylizedSpecular2Feather;
 			float _Layer2Strength;
-			
+			float _SSIgnoreCastedShadows;
 			float _StylizedSpecularStrength;
 			float _UseSpecularOptMap2;
 			float _HighColorThemeIndex;
@@ -12515,10 +12478,6 @@ Shader ".poiyomi/Poiyomi 8.0/Poiyomi World"
 			float4 _MirrorTexture_ST;
 			float2 _MirrorTexturePan;
 			float _MirrorTextureUV;
-			#endif
-			
-			#ifdef GRAIN
-			UNITY_DECLARE_DEPTH_TEXTURE(_CameraDepthTexture);
 			#endif
 			
 			#if defined(PROP_DEPTHMASK) || !defined(OPTIMIZER_ENABLED)
@@ -15512,7 +15471,7 @@ Shader ".poiyomi/Poiyomi 8.0/Poiyomi World"
 				float invAlpha = 1.0 / roughness;
 				float cos2h = NoH * NoH;
 				float sin2h = max(1.0 - cos2h, 0.0078125); // 0.0078125 = 2^(-14/2), so sin2h^2 > 0 in fp16
-				return(2.0 + invAlpha) * pow(sin2h, invAlpha * 0.5) / (2.0 * UNITY_PI);
+				return (2.0 + invAlpha) * pow(sin2h, invAlpha * 0.5) / (2.0 * UNITY_PI);
 			}
 			
 			// https://github.com/google/filament/blob/main/shaders/src/brdf.fs#L136-L139
@@ -15622,7 +15581,7 @@ Shader ".poiyomi/Poiyomi 8.0/Poiyomi World"
 				float V = Visibility(roughness, NoV, NoL, cloth);
 				float3 F = Fresnel(f0, LoH);
 				
-				return(D * V) * F;
+				return (D * V) * F;
 			}
 			
 			float3 getBoxProjection(float3 direction, float3 position, float4 cubemapPosition, float3 boxMin, float3 boxMax)
@@ -15880,43 +15839,7 @@ Shader ".poiyomi/Poiyomi 8.0/Poiyomi World"
 				#endif
 				#endif
 				
-				float3 reflectionDir = reflect(-poiCam.viewDir, poiMesh.normals[1]);
-				Unity_GlossyEnvironmentData envData;
-				envData.roughness = 1 - _LightingStandardSmoothness;
-				envData.reflUVW = BoxProjection(
-				reflectionDir, poiMesh.worldPos.xyz,
-				unity_SpecCube0_ProbePosition,
-				unity_SpecCube0_BoxMin.xyz, unity_SpecCube0_BoxMax.xyz
-				);
-				float3 probe0 = Unity_GlossyEnvironment(
-				UNITY_PASS_TEXCUBE(unity_SpecCube0), unity_SpecCube0_HDR, envData
-				);
-				envData.reflUVW = BoxProjection(
-				reflectionDir, poiMesh.worldPos.xyz,
-				unity_SpecCube1_ProbePosition,
-				unity_SpecCube1_BoxMin.xyz, unity_SpecCube1_BoxMax.xyz
-				);
-				#if UNITY_SPECCUBE_BLENDING
-				float interpolator = unity_SpecCube0_BoxMin.w;
-				//UNITY_BRANCH
-				if (interpolator < 0.99999)
-				{
-					float3 probe1 = Unity_GlossyEnvironment(
-					UNITY_PASS_TEXCUBE_SAMPLER(unity_SpecCube1, unity_SpecCube0),
-					unity_SpecCube0_HDR, envData
-					);
-					indirectLight.specular = lerp(probe1, probe0, interpolator);
-				}
-				else
-				{
-					indirectLight.specular = probe0;
-				}
-				#else
-				indirectLight.specular = probe0;
-				#endif
-				
 				indirectLight.diffuse *= poiLight.occlusion;
-				indirectLight.specular *= poiLight.occlusion;
 				
 				return indirectLight;
 			}
@@ -16003,7 +15926,7 @@ Shader ".poiyomi/Poiyomi 8.0/Poiyomi World"
 				light.color = saturate(_LightColor0.rgb * lerp(1, poiLight.attenuation, poiLight.attenuationStrength) * poiLight.detailShadow);
 				light.ndotl = poiLight.nDotLSaturated;
 				poiLight.rampedLightMap = poiLight.nDotLSaturated;
-				poiLight.finalLighting = UNITY_BRDF_PBS(1, 0, 0, _LightingStandardSmoothness, poiMesh.normals[1], poiCam.viewDir, light, CreateIndirectLight(poiMesh, poiCam, poiLight)).xyz;
+				poiLight.finalLighting = max(UNITY_BRDF_PBS(1, 0, 0, 0, poiMesh.normals[1], poiCam.viewDir, light, CreateIndirectLight(poiMesh, poiCam, poiLight)).xyz, _LightingMinLightBrightness);
 				#endif
 				
 				#ifdef _LIGHTINGMODE_CLOTH
@@ -16528,7 +16451,7 @@ Shader ".poiyomi/Poiyomi 8.0/Poiyomi World"
 				{
 					cubeMap.rgb = hueShift(cubeMap.rgb, _CubeMapHueShift + _Time.x * _CubeMapHueShiftSpeed);
 				}
-				
+				CubeMapMask = min(CubeMapMask, lerp(1, poiLight.rampedLightMap, _CubeMapLightMask));
 				poiFragData.baseColor.rgb = lerp(poiFragData.baseColor.rgb, cubeMap.rgb, _CubeMapReplace * CubeMapMask * cubeMap.a);
 				poiFragData.baseColor.rgb *= lerp(1, cubeMap.rgb, _CubeMapMultiply * CubeMapMask * cubeMap.a);
 				poiFragData.baseColor.rgb += cubeMap.rgb * _CubeMapAdd * CubeMapMask * cubeMap.a;
@@ -17333,6 +17256,8 @@ Shader ".poiyomi/Poiyomi 8.0/Poiyomi World"
 				float3 reflections = 0;
 				float3 environment = 0;
 				
+				float attenuation = min(poiLight.nDotLSaturated, lerp(poiLight.attenuation, 1, _IgnoreCastedShadows));
+				
 				// Specular
 				// if (_SpecularMode == 0){
 				if (_MochieSpecularStrength > 0)
@@ -17340,7 +17265,7 @@ Shader ".poiyomi/Poiyomi 8.0/Poiyomi World"
 					float3 fresnelTerm = 1;
 					float3 specularTerm = 1;
 					GetSpecFresTerm(poiLight.nDotL, poiLight.nDotV, poiLight.nDotH, poiLight.lDotH, specularTerm, fresnelTerm, specCol, brdfRoughness);
-					specular = poiLight.directColor * specularTerm * fresnelTerm * specularMask * poiThemeColor(poiMods, _MochieSpecularTint, _MochieSpecularTintThemeIndex) * poiLight.occlusion * poiLight.attenuation * _MochieSpecularStrength;
+					specular = poiLight.directColor * specularTerm * fresnelTerm * specularMask * poiThemeColor(poiMods, _MochieSpecularTint, _MochieSpecularTintThemeIndex) * poiLight.occlusion * attenuation * _MochieSpecularStrength;
 					
 					#if defined(VERTEXLIGHT_ON) && defined(POI_VERTEXLIGHT_ON)
 					for (int index = 0; index < 4; index++)
@@ -17358,7 +17283,7 @@ Shader ".poiyomi/Poiyomi 8.0/Poiyomi World"
 					float3 fresnelTerm = 1;
 					float3 specularTerm = 1;
 					GetSpecFresTerm(poiLight.nDotL, poiLight.nDotV, poiLight.nDotH, poiLight.lDotH, specularTerm, fresnelTerm, specCol, brdfRoughness2);
-					specular2 = poiLight.directColor * specularTerm * fresnelTerm * specularMask * poiThemeColor(poiMods, _MochieSpecularTint, _MochieSpecularTintThemeIndex) * poiLight.occlusion * poiLight.attenuation * _MochieSpecularStrength2;
+					specular2 = poiLight.directColor * specularTerm * fresnelTerm * specularMask * poiThemeColor(poiMods, _MochieSpecularTint, _MochieSpecularTintThemeIndex) * poiLight.occlusion * attenuation * _MochieSpecularStrength2;
 					
 					#if defined(VERTEXLIGHT_ON) && defined(POI_VERTEXLIGHT_ON)
 					for (int index = 0; index < 4; index++)
@@ -17443,7 +17368,7 @@ Shader ".poiyomi/Poiyomi 8.0/Poiyomi World"
 				float3 vSpecular = 0;
 				float3 reflections = 0;
 				float3 environment = 0;
-				
+				float attenuation = min(poiLight.nDotLSaturated, lerp(poiLight.attenuation, 1, _CCIgnoreCastedShadows));
 				// Specular
 				// if (_SpecularMode == 0){
 				if (_ClearCoatSpecularStrength > 0)
@@ -17451,7 +17376,7 @@ Shader ".poiyomi/Poiyomi 8.0/Poiyomi World"
 					float3 fresnelTerm = 1;
 					float3 specularTerm = 1;
 					GetSpecFresTerm(poiLight.vertexNDotL, poiLight.vertexNDotV, poiLight.vertexNDotH, poiLight.lDotH, specularTerm, fresnelTerm, specCol, brdfRoughness);
-					specular = poiLight.directColor * specularTerm * fresnelTerm * specularMask * poiThemeColor(poiMods, _ClearCoatSpecularTint, _ClearCoatSpecularTintThemeIndex) * poiLight.occlusion * poiLight.attenuation * _ClearCoatSpecularStrength;
+					specular = poiLight.directColor * specularTerm * fresnelTerm * specularMask * poiThemeColor(poiMods, _ClearCoatSpecularTint, _ClearCoatSpecularTintThemeIndex) * poiLight.occlusion * attenuation * _ClearCoatSpecularStrength;
 					#if defined(VERTEXLIGHT_ON) && defined(POI_VERTEXLIGHT_ON)
 					for (int index = 0; index < 4; index++)
 					{
@@ -17556,14 +17481,14 @@ Shader ".poiyomi/Poiyomi 8.0/Poiyomi World"
 				specularMask = saturate(specularMask + _Tweak_HighColorMaskLevel);
 				
 				float specMask = saturate(specMask1 + specMask2) * specularMask * poiLight.rampedLightMap;
-				
+				float attenuation = min(poiLight.nDotLSaturated, lerp(poiLight.attenuation, 1, _SSIgnoreCastedShadows));
 				if (_Is_BlendAddToHiColor == 1)
 				{
-					poiLight.finalLightAdd += max(0, specularMap * poiThemeColor(poiMods, _HighColor, _HighColorThemeIndex) * lerp(1, poiLight.directColor, _UseLightColor) * specMask * poiLight.occlusion * poiLight.attenuation * _StylizedSpecularStrength);
+					poiLight.finalLightAdd += max(0, specularMap * poiThemeColor(poiMods, _HighColor, _HighColorThemeIndex) * lerp(1, poiLight.directColor, _UseLightColor) * specMask * poiLight.occlusion * attenuation * _StylizedSpecularStrength);
 				}
 				else
 				{
-					poiFragData.baseColor = lerp(poiFragData.baseColor, specularMap * poiThemeColor(poiMods, _HighColor, _HighColorThemeIndex) * lerp(1, poiLight.directColor, _UseLightColor), saturate(specMask * poiLight.occlusion * poiLight.attenuation * _StylizedSpecularStrength));
+					poiFragData.baseColor = lerp(poiFragData.baseColor, specularMap * poiThemeColor(poiMods, _HighColor, _HighColorThemeIndex) * lerp(1, poiLight.directColor, _UseLightColor), saturate(specMask * poiLight.occlusion * attenuation * _StylizedSpecularStrength));
 				}
 				//poiFragData.baseColor = _StylizedSpecularStrength;
 				
@@ -18596,7 +18521,7 @@ Shader ".poiyomi/Poiyomi 8.0/Poiyomi World"
 				poiLight.direction = normalize(_WorldSpaceLightPos0.xyz - i.worldPos.xyz);
 				
 				#ifdef POINT
-				poiLight.additiveShadow = UNITY_SHADOW_ATTENUATION(input, poiMesh.worldPos);
+				poiLight.additiveShadow = UNITY_SHADOW_ATTENUATION(i, poiMesh.worldPos);
 				unityShadowCoord3 lightCoord = mul(unity_WorldToLight, unityShadowCoord4(poiMesh.worldPos, 1)).xyz;
 				poiLight.attenuation = tex2D(_LightTexture0, dot(lightCoord, lightCoord).rr).r;
 				#endif
@@ -19287,6 +19212,7 @@ Shader ".poiyomi/Poiyomi 8.0/Poiyomi World"
 			float4 _Color;
 			float _ColorThemeIndex;
 			UNITY_DECLARE_TEX2D(_MainTex);
+			UNITY_DECLARE_DEPTH_TEXTURE(_CameraDepthTexture);
 			float4 _MainTex_ST;
 			float2 _MainTexPan;
 			float _MainTexUV;
@@ -19694,10 +19620,6 @@ Shader ".poiyomi/Poiyomi 8.0/Poiyomi World"
 			float4 _MirrorTexture_ST;
 			float2 _MirrorTexturePan;
 			float _MirrorTextureUV;
-			#endif
-			
-			#ifdef GRAIN
-			UNITY_DECLARE_DEPTH_TEXTURE(_CameraDepthTexture);
 			#endif
 			
 			#if defined(PROP_DEPTHMASK) || !defined(OPTIMIZER_ENABLED)
@@ -23021,6 +22943,7 @@ Shader ".poiyomi/Poiyomi 8.0/Poiyomi World"
 			float4 _Color;
 			float _ColorThemeIndex;
 			UNITY_DECLARE_TEX2D(_MainTex);
+			UNITY_DECLARE_DEPTH_TEXTURE(_CameraDepthTexture);
 			float4 _MainTex_ST;
 			float2 _MainTexPan;
 			float _MainTexUV;
