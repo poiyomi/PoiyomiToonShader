@@ -2,7 +2,7 @@ Shader ".poiyomi/Poiyomi 8.0/Poiyomi Outline"
 {
 	Properties
 	{
-		[HideInInspector] shader_master_label ("<color=#E75898ff>Poiyomi 8.0.294</color>", Float) = 0
+		[HideInInspector] shader_master_label ("<color=#E75898ff>Poiyomi 8.0.295</color>", Float) = 0
 		[HideInInspector] shader_is_using_thry_editor ("", Float) = 0
 		[HideInInspector] footer_youtube ("{texture:{name:icon-youtube,height:32},action:{type:URL,data:https://www.youtube.com/poiyomi},hover:YOUTUBE}", Float) = 0
 		[HideInInspector] footer_twitter ("{texture:{name:icon-twitter,height:32},action:{type:URL,data:https://twitter.com/poiyomi},hover:TWITTER}", Float) = 0
@@ -761,7 +761,6 @@ Shader ".poiyomi/Poiyomi 8.0/Poiyomi Outline"
 		[HideInInspector][Vector2]_RimMaskPan ("Panning", Vector) = (0, 0, 0, 0)
 		[HideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos XZ, 5, Polar UV, 6, Distorted UV, 7)] _RimMaskUV ("UV", Int) = 0
 		
-		_RimLightColor ("Color", Color) = (1, 1, 1, 1)
 		_Is_LightColor_RimLight ("Mix Light Color", Range(0, 1)) = 1
 		_RimLight_Power ("Rim Power", Range(0, 1)) = 0.1
 		_RimLight_InsideMask ("Inside Mask", Range(0.0001, 1)) = 0.0001
@@ -3506,9 +3505,9 @@ Shader ".poiyomi/Poiyomi 8.0/Poiyomi Outline"
 			
 			#ifdef _GLOSSYREFLECTIONS_OFF
 			float _Is_NormalMapToRimLight;
+			float4 _RimLightColor;
 			float _RimLightColorThemeIndex;
 			#ifdef _RIMSTYLE_POIYOMI
-			float4 _RimLightColor;
 			float _RimLightingInvert;
 			float _RimWidth;
 			float _RimStrength;
@@ -3553,7 +3552,6 @@ Shader ".poiyomi/Poiyomi 8.0/Poiyomi Outline"
 			
 			#ifdef _RIMSTYLE_UTS2
 			float _RimLight;
-			float4 _RimLightColor;
 			float _Is_LightColor_RimLight;
 			float _RimLight_Power;
 			float _RimLight_InsideMask;
@@ -16953,9 +16951,9 @@ Shader ".poiyomi/Poiyomi 8.0/Poiyomi Outline"
 			
 			#ifdef _GLOSSYREFLECTIONS_OFF
 			float _Is_NormalMapToRimLight;
+			float4 _RimLightColor;
 			float _RimLightColorThemeIndex;
 			#ifdef _RIMSTYLE_POIYOMI
-			float4 _RimLightColor;
 			float _RimLightingInvert;
 			float _RimWidth;
 			float _RimStrength;
@@ -17000,7 +16998,6 @@ Shader ".poiyomi/Poiyomi 8.0/Poiyomi Outline"
 			
 			#ifdef _RIMSTYLE_UTS2
 			float _RimLight;
-			float4 _RimLightColor;
 			float _Is_LightColor_RimLight;
 			float _RimLight_Power;
 			float _RimLight_InsideMask;
