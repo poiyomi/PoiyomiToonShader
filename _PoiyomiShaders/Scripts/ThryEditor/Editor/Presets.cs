@@ -91,7 +91,7 @@ namespace Thry.ThryEditor
             appliedPresets[shaderEditor.Materials[0]] = (preset, new Material(shaderEditor.Materials[0]));
             foreach (ShaderPart prop in shaderEditor.ShaderParts)
             {
-                if (IsPreset(preset, prop.materialProperty))
+                if (IsPreset(preset, prop))
                 {
                     prop.CopyFromMaterial(preset);
                 }
@@ -107,7 +107,7 @@ namespace Thry.ThryEditor
             Material prePreset = appliedPresets[key].Item2;
             foreach (ShaderPart prop in shaderEditor.ShaderParts)
             {
-                if (IsPreset(preset, prop.materialProperty))
+                if (IsPreset(preset, prop))
                 {
                     prop.CopyFromMaterial(prePreset);
                 }
@@ -125,7 +125,7 @@ namespace Thry.ThryEditor
             {
                 foreach (ShaderPart prop in shaderEditor.ShaderParts)
                 {
-                    if (IsPreset(preset, prop.materialProperty))
+                    if (IsPreset(preset, prop))
                     {
                         prop.CopyFromMaterial(preset);
                     }
@@ -135,15 +135,17 @@ namespace Thry.ThryEditor
             shaderEditor.Reload();
         }
 
-        public static void SetProperty(Material m, MaterialProperty prop, bool value)
+        public static void SetProperty(Material m, ShaderPart prop, bool value)
         {
-            m.SetOverrideTag(prop.name + TAG_POSTFIX_IS_PRESET, value?"true":"");
+            if (prop.MaterialProperty != null)   m.SetOverrideTag(prop.MaterialProperty.name + TAG_POSTFIX_IS_PRESET, value ? "true" : "");
+            if (prop.PropertyIdentifier != null) m.SetOverrideTag(prop.PropertyIdentifier    + TAG_POSTFIX_IS_PRESET, value ? "true" : "");
         }
 
-        public static bool IsPreset(Material m, MaterialProperty prop)
+        public static bool IsPreset(Material m, ShaderPart prop)
         {
-            if (prop == null) return false;
-            return m.GetTag(prop.name + TAG_POSTFIX_IS_PRESET, false, "") == "true";
+            if (prop.MaterialProperty != null)   return m.GetTag(prop.MaterialProperty.name + TAG_POSTFIX_IS_PRESET, false, "") == "true";
+            if (prop.PropertyIdentifier != null) return m.GetTag(prop.PropertyIdentifier    + TAG_POSTFIX_IS_PRESET, false, "") == "true";
+            return false;
         }
 
         public static bool ArePreset(Material[] mats)

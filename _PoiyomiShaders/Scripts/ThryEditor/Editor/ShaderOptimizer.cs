@@ -371,6 +371,7 @@ namespace Thry
             string materialFolder = Path.GetDirectoryName(materialFilePath);
             string guid = AssetDatabase.AssetPathToGUID(materialFilePath);
             string newShaderName = "Hidden/Locked/" + shader.name + "/" + guid;
+            string shaderOptimizerButtonDrawerName = $"[{nameof(ThryShaderOptimizerLockButtonDrawer).Replace("Drawer", "")}]";
             //string newShaderDirectory = materialFolder + "/OptimizedShaders/" + material.name + "-" + smallguid + "/";
             string newShaderDirectory = materialFolder + "/OptimizedShaders/" + material.name + "/";
 
@@ -513,6 +514,7 @@ namespace Thry
                         else if ((prop.flags & MaterialProperty.PropFlags.Gamma) != 0)
                             propData.value = prop.colorValue;
                         else propData.value = prop.colorValue.linear;
+                        if (PlayerSettings.colorSpace == ColorSpace.Gamma) propData.value = prop.colorValue;
                         constantProps.Add(propData);
                         break;
                     case MaterialProperty.PropType.Vector:
@@ -620,6 +622,9 @@ namespace Thry
                         {
                             string originalSgaderName = psf.lines[i].Split('\"')[1];
                             psf.lines[i] = psf.lines[i].Replace(originalSgaderName, newShaderName);
+                        }else if (trimmedLine.StartsWith(shaderOptimizerButtonDrawerName))
+                        {
+                            psf.lines[i] = Regex.Replace(psf.lines[i], @"\d+\w*$", "1");
                         }
                         else if (trimmedLine.StartsWith("//#pragmamulti_compile_LOD_FADE_CROSSFADE", StringComparison.Ordinal))
                         {
@@ -737,7 +742,7 @@ namespace Thry
                 }
                 catch (IOException e)
                 {
-                    Debug.LogError("[Kaj Shader Optimizer] Processed shader file " + newShaderDirectory + fileName + " could not be written.  " + e.ToString());
+                    Debug.LogError("[Shader Optimizer] Processed shader file " + newShaderDirectory + fileName + " could not be written.  " + e.ToString());
                     return false;
                 }
             }
@@ -811,7 +816,7 @@ namespace Thry
             Shader newShader = Shader.Find(newShaderName);
             if (newShader == null)
             {
-                Debug.LogError("[Kaj Shader Optimizer] Generated shader " + newShaderName + " could not be found");
+                Debug.LogError("[Shader Optimizer] Generated shader " + newShaderName + " could not be found");
                 return false;
             }
             material.shader = newShader;
@@ -926,12 +931,12 @@ namespace Thry
             }
             catch (FileNotFoundException e)
             {
-                Debug.LogError("[Kaj Shader Optimizer] Shader file " + filePath + " not found.  " + e.ToString());
+                Debug.LogError("[Shader Optimizer] Shader file " + filePath + " not found.  " + e.ToString());
                 return false;
             }
             catch (IOException e)
             {
-                Debug.LogError("[Kaj Shader Optimizer] Error reading shader file.  " + e.ToString());
+                Debug.LogError("[Shader Optimizer] Error reading shader file.  " + e.ToString());
                 return false;
             }
 
@@ -1486,36 +1491,59 @@ namespace Thry
                 else material.SetFloat(GetOptimizerPropertyName(material.shader), 0);
             }
         }
+        private static bool GuessShader(Shader locked, out Shader shader)
+        {
+            string name = locked.name;
+            name = Regex.Match(name.Substring(7), @".*(?=\/)").Value;
+            ShaderInfo[] allShaders = ShaderUtil.GetAllShaderInfo();
+            int closestDistance = int.MaxValue;
+            string closestShaderName = null;
+            foreach (ShaderInfo s in allShaders)
+            {
+                if (!s.supported) continue;
+                int d = Helper.LevenshteinDistance(s.name, name);
+                if(d < closestDistance)
+                {
+                    closestDistance = d;
+                    closestShaderName = s.name;
+                }
+            }
+            shader = Shader.Find(closestShaderName);
+            return shader != null && closestDistance < name.Length / 2;
+        }
         private static UnlockSuccess UnlockConcrete (Material material)
         {
             Shader lockedShader = material.shader;
             // Revert to original shader
             string originalShaderName = material.GetTag("OriginalShader", false, "");
-            if (originalShaderName == "")
+            Shader orignalShader = null;
+            if (originalShaderName == "" && !GuessShader(lockedShader, out orignalShader))
             {
                 if (material.shader.name.StartsWith("Hidden/"))
                 {
-                    Debug.LogError("[Kaj Shader Optimizer] Original shader not saved to material, could not unlock shader");
+                    if (EditorUtility.DisplayDialog("Unlock Material", $"The original shader for {material.name} could not be resolved.\nPlease select a shader manually.", "Ok")) { }
+                    Debug.LogError("[Shader Optimizer] Original shader not saved to material, could not unlock shader");
                     return UnlockSuccess.hasNoSavedShader;
                 }
                 else
                 {
-                    Debug.LogWarning("[Kaj Shader Optimizer] Original shader not saved to material, but material also doesnt seem to be locked.");
+                    Debug.LogWarning("[Shader Optimizer] Original shader not saved to material, but material also doesnt seem to be locked.");
                     return UnlockSuccess.wasNotLocked;
                 }
 
             }
-            Shader orignalShader = Shader.Find(originalShaderName);
-            if (orignalShader == null)
+            if(orignalShader == null) orignalShader = Shader.Find(originalShaderName);
+            if (orignalShader == null && !GuessShader(lockedShader, out orignalShader))
             {
                 if (material.shader.name.StartsWith("Hidden/"))
                 {
-                    Debug.LogError("[Kaj Shader Optimizer] Original shader " + originalShaderName + " could not be found");
+                    if (EditorUtility.DisplayDialog("Unlock Material", $"The original shader for {material.name} could not be resolved.\nPlease select a shader manually.", "Ok")) { }
+                    Debug.LogError("[Shader Optimizer] Original shader " + originalShaderName + " could not be found");
                     return UnlockSuccess.couldNotFindOriginalShader;
                 }
                 else
                 {
-                    Debug.LogWarning("[Kaj Shader Optimizer] Original shader not saved to material, but material also doesnt seem to be locked.");
+                    Debug.LogWarning("[Shader Optimizer] Original shader not saved to material, but material also doesnt seem to be locked.");
                     return UnlockSuccess.wasNotLocked;
                 }
             }
@@ -1921,7 +1949,7 @@ namespace Thry
                             ShaderOptimizer.Lock(m,
                                 MaterialEditor.GetMaterialProperties(new UnityEngine.Object[] { m }),
                                 applyShaderLater: true);
-                            s_shaderPropertyCombinations.Add(hash, m);
+                            s_shaderPropertyCombinations[hash] = m;
                         }
                     }
                     else if (lockState == 0)
@@ -1952,12 +1980,12 @@ namespace Thry
                         m.SetFloat(GetOptimizerPropertyName(m.shader), 1);
                     }
                 }
-                if(ShaderEditor.Active != null && ShaderEditor.Active.IsDrawing)
-                {
-                    GUIUtility.ExitGUI();
-                }
             }
             AssetDatabase.Refresh();
+            if (ShaderEditor.Active != null && ShaderEditor.Active.IsDrawing)
+            {
+                GUIUtility.ExitGUI();
+            }
             return true;
         }
 

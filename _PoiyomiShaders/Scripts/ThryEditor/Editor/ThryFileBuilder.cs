@@ -8,20 +8,20 @@ using UnityEngine;
 namespace Thry {
     public class ThryFileCreator {
 
-        [MenuItem("Thry/ShaderUI Creator Helper/Create Label Boiler", false, priority = 40)]
+        [MenuItem("Thry/ShaderUI/UI Creator Helper/Create Label Boiler", false, priority = 40)]
         public static void CreateLabel()
         {
             string[] names = GetProperties();
             string data = names.Aggregate("", (n1, n2) => n1 + n2 + ":=" + n2 + "--{tooltip:}\n");
             Save(data, "_label.txt");
         }
-        [MenuItem("Thry/ShaderUI Creator Helper/Create Label Boiler", true, priority = 40)]
+        [MenuItem("Thry/ShaderUI/UI Creator Helper/Create Label Boiler", true, priority = 40)]
         static bool CreateLabelVaildate()
         {
             return ValidateSelection();
         }
 
-        [MenuItem("Thry/ShaderUI Creator Helper/Create Label Boiler + Locale Boiler", false, priority = 40)]
+        [MenuItem("Thry/ShaderUI/UI Creator Helper/Create Label Boiler + Locale Boiler", false, priority = 40)]
         public static void CreateLabelLocale()
         {
             string[] names = GetProperties();

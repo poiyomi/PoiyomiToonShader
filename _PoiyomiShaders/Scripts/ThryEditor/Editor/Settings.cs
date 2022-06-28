@@ -117,7 +117,7 @@ namespace Thry
                 GUILayout.Label(new GUIContent(thry_message.text,thry_message.hover), style);
                 Rect r = GUILayoutUtility.GetLastRect();
                 if (Event.current.type == EventType.MouseDown && r.Contains(Event.current.mousePosition))
-                    thry_message.action.Perform();
+                    thry_message.action.Perform(ShaderEditor.Active?.Materials);
                 drawLine();
             }
         }

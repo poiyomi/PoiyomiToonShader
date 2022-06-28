@@ -1,4 +1,4 @@
-// Material/Shader Inspector for Unity 2017/2018
+﻿// Material/Shader Inspector for Unity 2017/2018
 // Copyright (C) 2019 Thryrallo
 
 using System.Collections.Generic;
@@ -33,7 +33,9 @@ namespace Thry
         public static ShaderEditor Active;
 
         // Stores the different shader properties
-        public ShaderGroup mainGroup;
+        public ShaderGroup MainGroup;
+        private RenderQueueProperty _renderQueueProperty;
+        private VRCFallbackProperty _vRCFallbackProperty;
 
         // UI Instance Variables
 
@@ -210,10 +212,10 @@ namespace Thry
 
             PropertyDictionary = new Dictionary<string, ShaderProperty>();
             ShaderParts = new List<ShaderPart>();
-            mainGroup = new ShaderGroup(this); //init top object that all Shader Objects are childs of
+            MainGroup = new ShaderGroup(this); //init top object that all Shader Objects are childs of
             Stack<ShaderGroup> headerStack = new Stack<ShaderGroup>(); //header stack. used to keep track if editorData header to parent new objects to
-            headerStack.Push(mainGroup); //add top object as top object to stack
-            headerStack.Push(mainGroup); //add top object a second time, because it get's popped with first actual header item
+            headerStack.Push(MainGroup); //add top object as top object to stack
+            headerStack.Push(MainGroup); //add top object a second time, because it get's popped with first actual header item
             _footers = new List<FooterButton>(); //init footer list
             int headerCount = 0;
 
@@ -375,8 +377,13 @@ namespace Thry
             if (ShaderOptimizer.IsShaderUsingThryOptimizer(Shader))
             {
                 ShaderOptimizerProperty = PropertyDictionary[ShaderOptimizer.GetOptimizerPropertyName(Shader)];
-                if(ShaderOptimizerProperty != null) ShaderOptimizerProperty.exempt_from_locked_disabling = true;
+                if(ShaderOptimizerProperty != null) ShaderOptimizerProperty.ExemptFromLockedDisabling = true;
             }
+
+            _renderQueueProperty = new RenderQueueProperty(this);
+            _vRCFallbackProperty = new VRCFallbackProperty(this);
+            ShaderParts.Add(_renderQueueProperty);
+            ShaderParts.Add(_vRCFallbackProperty);
 
             AddResetProperty();
 
@@ -462,14 +469,14 @@ namespace Thry
             ShaderTranslator.SuggestedTranslationButtonGUI(this);
 
             //PROPERTIES
-            foreach (ShaderPart part in mainGroup.parts)
+            foreach (ShaderPart part in MainGroup.parts)
             {
                 part.Draw();
             }
 
             //Render Queue selection
-            if(VRCInterface.IsVRCSDKInstalled()) GuiHelper.VRCFallbackSelector(this);
-            if (Config.Singleton.showRenderQueue) materialEditor.RenderQueueField();
+            if(VRCInterface.IsVRCSDKInstalled()) _vRCFallbackProperty.Draw();
+            if (Config.Singleton.showRenderQueue) _renderQueueProperty.Draw();
 
             BetterTooltips.DrawActive();
 
@@ -504,7 +511,7 @@ namespace Thry
         private void GUITopBar()
         {
             //if header is texture, draw it first so other ui elements can be positions below
-            if (_shaderHeader != null && _shaderHeader.options.texture != null) _shaderHeader.Draw();
+            if (_shaderHeader != null && _shaderHeader.Options.texture != null) _shaderHeader.Draw();
 
             bool drawAboveToolbar = EditorGUIUtility.wideMode == false;
             if(drawAboveToolbar) _shaderHeader.Draw(new CRect(EditorGUILayout.GetControlRect()));
@@ -526,6 +533,11 @@ namespace Thry
             if (_shaderHeader != null && !drawAboveToolbar) _shaderHeader.Draw(new CRect(mainHeaderRect));
 
             GUILayout.FlexibleSpace();
+            Rect popupPosition;
+            if (GuiHelper.ButtonWithCursor(Styles.icon_style_tools, "Tools", 25, 25, out popupPosition))
+            {
+                PopupTools(popupPosition);
+            }
             ShaderTranslator.TranslationSelectionGUI(this);
             if (GuiHelper.ButtonWithCursor(Styles.icon_style_thryIcon, "Thryrallo", 25, 25))
                 Application.OpenURL("https://www.twitter.com/thryrallo");
@@ -541,7 +553,7 @@ namespace Thry
                 if (EditorGUI.EndChangeCheck())
                 {
                     _appliedSearchTerm = _enteredSearchTerm.ToLower();
-                    UpdateSearch(mainGroup);
+                    UpdateSearch(MainGroup);
                 }
             }
         }
@@ -561,6 +573,82 @@ namespace Thry
             EditorGUIUtility.AddCursorRect(GUILayoutUtility.GetLastRect(), MouseCursor.Link);
         }
 
+        private void PopupTools(Rect position)
+        {
+            var menu = new GenericMenu();
+            int unboundTextures = MaterialCleaner.CountUnusedProperties(MaterialCleaner.CleanPropertyType.Texture, Materials);
+            int unboundProperties = MaterialCleaner.CountAllUnusedProperties(Materials);
+            List<string> unusedTextures = new List<string>();
+            MainGroup.FindUnusedTextures(unusedTextures, true);
+            if (unboundTextures > 0 && !IsLockedMaterial)
+            {
+                menu.AddItem(new GUIContent($"Unbound Textures: {unboundTextures}/List in console"), false, delegate ()
+                {
+                    MaterialCleaner.ListUnusedProperties(MaterialCleaner.CleanPropertyType.Texture, Materials);
+                });
+                menu.AddItem(new GUIContent($"Unbound Textures: {unboundTextures}/Remove"), false, delegate ()
+                {
+                    MaterialCleaner.RemoveUnusedProperties(MaterialCleaner.CleanPropertyType.Texture, Materials);
+                });
+            }
+            else
+            {
+                menu.AddDisabledItem(new GUIContent($"Unbound textures: 0"));
+            }
+            if (unusedTextures.Count > 0 && !IsLockedMaterial)
+            {
+                menu.AddItem(new GUIContent($"Unused Textures: {unusedTextures.Count}/List in console"), false, delegate ()
+                {
+                    Out("Unused textures", unusedTextures.Select(s => $"↳{s}"));
+                });
+                menu.AddItem(new GUIContent($"Unused Textures: {unusedTextures.Count}/Remove"), false, delegate ()
+                {
+                    foreach (string t in unusedTextures) if (PropertyDictionary.ContainsKey(t)) PropertyDictionary[t].MaterialProperty.textureValue = null;
+                });
+            }
+            else
+            {
+                menu.AddDisabledItem(new GUIContent($"Unused textures: 0"));
+            }
+            if (unboundProperties > 0 && !IsLockedMaterial)
+            {
+                menu.AddItem(new GUIContent($"Unbound properties: {unboundProperties}/List in console"), false, delegate ()
+                {
+                    MaterialCleaner.ListUnusedProperties(MaterialCleaner.CleanPropertyType.Texture, Materials);
+                    MaterialCleaner.ListUnusedProperties(MaterialCleaner.CleanPropertyType.Float, Materials);
+                    MaterialCleaner.ListUnusedProperties(MaterialCleaner.CleanPropertyType.Color, Materials);
+                });
+                menu.AddItem(new GUIContent($"Unbound properties: {unboundProperties}/Remove"), false, delegate ()
+                {
+                    MaterialCleaner.RemoveAllUnusedProperties(MaterialCleaner.CleanPropertyType.Texture, Materials);
+                });
+            }
+            else
+            {
+                menu.AddDisabledItem(new GUIContent($"Unbound properties: 0"));
+            }
+            menu.DropDown(position);
+        }
+
+        public static void Out(string s)
+        {
+            Debug.Log($"<color=#ff80ff>[Thry]</color> {s}");
+        }
+        public static void Out(string header, params string[] lines)
+        {
+            Debug.Log($"<color=#ff80ff>[Thry]</color> <b>{header}</b>\n{lines.Aggregate((s1, s2) => s1 + "\n" + s2)}");
+        }
+        public static void Out(string header, IEnumerable<string> lines)
+        {
+            if (lines.Count() == 0) Out(header);
+            else Debug.Log($"<color=#ff80ff>[Thry]</color> <b>{header}</b>\n{lines.Aggregate((s1, s2) => s1 + "\n" + s2)}");
+        }
+        public static void Out(string header, Color c, IEnumerable<string> lines)
+        {
+            if (lines.Count() == 0) Out(header);
+            else Debug.Log($"<color=#ff80ff>[Thry]</color> <b><color={ColorUtility.ToHtmlStringRGB(c)}>{header}</b></color> \n{lines.Aggregate((s1, s2) => s1 + "\n" + s2)}");
+        }
+
         private void HandleEvents()
         {
             Event e = Event.current;
@@ -576,7 +664,7 @@ namespace Thry
             if (_onSwapToActions != null && _didSwapToShader)
             {
                 foreach (DefineableAction a in _onSwapToActions)
-                    a.Perform();
+                    a.Perform(Materials);
                 _onSwapToActions = null;
                 _didSwapToShader = false;
             }
@@ -603,7 +691,7 @@ namespace Thry
         //if display part, display all parents parts
         private void UpdateSearch(ShaderPart part)
         {
-            part.has_not_searchedFor = part.content.text.ToLower().Contains(_appliedSearchTerm) == false;
+            part.has_not_searchedFor = part.Content.text.ToLower().Contains(_appliedSearchTerm) == false;
             if (part is ShaderGroup)
             {
                 foreach (ShaderPart p in (part as ShaderGroup).parts)
@@ -617,7 +705,7 @@ namespace Thry
         private void ClearSearch()
         {
             _appliedSearchTerm = "";
-            UpdateSearch(mainGroup);
+            UpdateSearch(MainGroup);
         }
 
         private void HandleReset()
@@ -672,7 +760,7 @@ namespace Thry
             return s_edtiorDirectoryPath;
         }
 
-        [MenuItem("Thry/Fix Keywords (Very Slow)")]
+        [MenuItem("Thry/Shader Tools/Fix Keywords (Very Slow)", priority = -20)]
         static void FixKeywords()
         {
             IEnumerable<Material> materials = AssetDatabase.FindAssets("t:material").Select(g => AssetDatabase.GUIDToAssetPath(g)).Where(p => string.IsNullOrEmpty(p) == false)
@@ -705,19 +793,19 @@ namespace Thry
             EditorWindow.GetWindow<Settings>(false, "Thry Settings", true);
         }
 
+        [MenuItem("Thry/Shader Optimizer/Upgraded Animated Properties", priority = -20)]
+        static void MenuUpgradeAnimatedPropertiesToTagsOnAllMaterials()
+        {
+            ShaderOptimizer.UpgradeAnimatedPropertiesToTagsOnAllMaterials();
+        }
+
         [MenuItem("Thry/ShaderUI/Use Thry Editor for other shaders", priority = 0)]
         static void MenuShaderUIAddToShaders()
         {
             EditorWindow.GetWindow<EditorChanger>(false, "UI Changer", true);
         }
 
-        [MenuItem("Thry/Shader Optimizer/Upgraded Animated Properties", priority = 40)]
-        static void MenuUpgradeAnimatedPropertiesToTagsOnAllMaterials()
-        {
-            ShaderOptimizer.UpgradeAnimatedPropertiesToTagsOnAllMaterials();
-        }
-
-        [MenuItem("Thry/Shader Optimizer/Unlocked Materials List", priority = 40)]
+        [MenuItem("Thry/Shader Optimizer/Unlocked Materials List", priority = 0)]
         static void MenuShaderOptUnlockedMaterials()
         {
             EditorWindow.GetWindow<UnlockedMaterialsList>(false, "Unlocked Materials", true);

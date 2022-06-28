@@ -40,7 +40,7 @@ namespace Thry.ThryEditor
                 if (editor.PropertyDictionary.ContainsKey(trans.Target))
                 {
                     SerializedProperty p;
-                    switch (editor.PropertyDictionary[trans.Target].materialProperty.type)
+                    switch (editor.PropertyDictionary[trans.Target].MaterialProperty.type)
                     {
                         case MaterialProperty.PropType.Float:
                         case MaterialProperty.PropType.Range:
@@ -49,27 +49,27 @@ namespace Thry.ThryEditor
                             {
                                 float f = p.FindPropertyRelative("second").floatValue;
                                 if (trans.Math.Length > 0) f = Helper.SolveMath(trans.Math, f);
-                                editor.PropertyDictionary[trans.Target].materialProperty.floatValue = f;
+                                editor.PropertyDictionary[trans.Target].MaterialProperty.floatValue = f;
                             }
                             break;
                         case MaterialProperty.PropType.Vector:
                             p = GetProperty(serializedMaterial, "m_SavedProperties.m_Colors", trans.Origin);
-                            if (p != null) editor.PropertyDictionary[trans.Target].materialProperty.vectorValue = p.FindPropertyRelative("second").vector4Value;
+                            if (p != null) editor.PropertyDictionary[trans.Target].MaterialProperty.vectorValue = p.FindPropertyRelative("second").vector4Value;
                             break;
                         case MaterialProperty.PropType.Color:
                             p = GetProperty(serializedMaterial, "m_SavedProperties.m_Colors", trans.Origin);
-                            if (p != null) editor.PropertyDictionary[trans.Target].materialProperty.colorValue = p.FindPropertyRelative("second").colorValue;
+                            if (p != null) editor.PropertyDictionary[trans.Target].MaterialProperty.colorValue = p.FindPropertyRelative("second").colorValue;
                             break;
                         case MaterialProperty.PropType.Texture:
                             p = GetProperty(serializedMaterial, "m_SavedProperties.m_TexEnvs", trans.Origin);
                             if (p != null)
                             {
                                 SerializedProperty values = p.FindPropertyRelative("second");
-                                editor.PropertyDictionary[trans.Target].materialProperty.textureValue = 
+                                editor.PropertyDictionary[trans.Target].MaterialProperty.textureValue = 
                                     values.FindPropertyRelative("m_Texture").objectReferenceValue as Texture;
                                 Vector2 scale = values.FindPropertyRelative("m_Scale").vector2Value;
                                 Vector2 offset = values.FindPropertyRelative("m_Offset").vector2Value;
-                                editor.PropertyDictionary[trans.Target].materialProperty.textureScaleAndOffset = 
+                                editor.PropertyDictionary[trans.Target].MaterialProperty.textureScaleAndOffset = 
                                     new Vector4(scale.x, scale.y , offset.x, offset.y);
                             }
                             break;

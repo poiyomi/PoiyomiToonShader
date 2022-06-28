@@ -20,7 +20,7 @@ namespace Thry
                     SmallTextureProperty(position, prop, label, editor, hasFoldoutProperties);
                     break;
                 case TextureDisplayType.big:
-                    if (DrawingData.CurrentTextureProperty.reference_properties_exist || DrawingData.CurrentTextureProperty.reference_property_exists)
+                    if (DrawingData.CurrentTextureProperty.DoReferencePropertiesExist || DrawingData.CurrentTextureProperty.DoesReferencePropertyExist)
                         StylizedBigTextureProperty(position, prop, label, editor, hasFoldoutProperties);
                     else
                         BigTextureProperty(position, prop, label, editor, DrawingData.CurrentTextureProperty.hasScaleOffset);
@@ -39,9 +39,9 @@ namespace Thry
             Rect tooltipRect = position;
             thumbnailPos.x += hasFoldoutProperties ? 20 : 0;
             editor.TexturePropertyMiniThumbnail(thumbnailPos, prop, label.text, label.tooltip);
-            if (DrawingData.CurrentTextureProperty.reference_property_exists)
+            if (DrawingData.CurrentTextureProperty.DoesReferencePropertyExist)
             {
-                ShaderProperty property = ShaderEditor.Active.PropertyDictionary[DrawingData.CurrentTextureProperty.options.reference_property];
+                ShaderProperty property = ShaderEditor.Active.PropertyDictionary[DrawingData.CurrentTextureProperty.Options.reference_property];
                 Rect r = position;
                 r.x += EditorGUIUtility.labelWidth - CurrentIndentWidth();
                 r.width -= EditorGUIUtility.labelWidth - CurrentIndentWidth();
@@ -52,7 +52,7 @@ namespace Thry
             if (hasFoldoutProperties && DrawingData.CurrentTextureProperty != null)
             {
                 //draw dropdown triangle
-                thumbnailPos.x += DrawingData.CurrentTextureProperty.xOffset * 15;
+                thumbnailPos.x += DrawingData.CurrentTextureProperty.XOffset * 15;
                 //This is an invisible button with zero functionality. But it needs to be here so that the triangle click reacts fast
                 if (GUI.Button(thumbnailPos, "", GUIStyle.none)) { }
                 if (Event.current.type == EventType.Repaint)
@@ -73,7 +73,7 @@ namespace Thry
                         //In case of locked material end disabled group here to allow editing of sub properties
                         if (ShaderEditor.Active.IsLockedMaterial) EditorGUI.EndDisabledGroup();
 
-                        PropertyOptions options = DrawingData.CurrentTextureProperty.options;
+                        PropertyOptions options = DrawingData.CurrentTextureProperty.Options;
                         if (options.reference_properties != null)
                             foreach (string r_property in options.reference_properties)
                             {
@@ -128,18 +128,18 @@ namespace Thry
             border.position = new Vector2(border.x, border.y - position.height);
             border.height += position.height;
 
-            if (DrawingData.CurrentTextureProperty.reference_properties_exist)
+            if (DrawingData.CurrentTextureProperty.DoReferencePropertiesExist)
             {
                 border.height += 8;
-                foreach (string r_property in DrawingData.CurrentTextureProperty.options.reference_properties)
+                foreach (string r_property in DrawingData.CurrentTextureProperty.Options.reference_properties)
                 {
-                    border.height += editor.GetPropertyHeight(ShaderEditor.Active.PropertyDictionary[r_property].materialProperty);
+                    border.height += editor.GetPropertyHeight(ShaderEditor.Active.PropertyDictionary[r_property].MaterialProperty);
                 }
             }
-            if (DrawingData.CurrentTextureProperty.reference_property_exists)
+            if (DrawingData.CurrentTextureProperty.DoesReferencePropertyExist)
             {
                 border.height += 8;
-                border.height += editor.GetPropertyHeight(ShaderEditor.Active.PropertyDictionary[DrawingData.CurrentTextureProperty.options.reference_property].materialProperty);
+                border.height += editor.GetPropertyHeight(ShaderEditor.Active.PropertyDictionary[DrawingData.CurrentTextureProperty.Options.reference_property].MaterialProperty);
             }
 
 
@@ -224,7 +224,7 @@ namespace Thry
 
             //scale offset rect
 
-            if (hasFoldoutProperties || DrawingData.CurrentTextureProperty.options.reference_property != null)
+            if (hasFoldoutProperties || DrawingData.CurrentTextureProperty.Options.reference_property != null)
             {
                 EditorGUI.indentLevel += 2;
 
@@ -243,7 +243,7 @@ namespace Thry
                 float oldLabelWidth = EditorGUIUtility.labelWidth;
                 EditorGUIUtility.labelWidth = 128;
 
-                PropertyOptions options = DrawingData.CurrentTextureProperty.options;
+                PropertyOptions options = DrawingData.CurrentTextureProperty.Options;
                 if (options.reference_property != null)
                 {
                     ShaderProperty property = ShaderEditor.Active.PropertyDictionary[options.reference_property];
@@ -283,24 +283,6 @@ namespace Thry
         public static void EndCustomIndentLevel()
         {
             EditorGUI.indentLevel = s_previousIndentLevels.Pop();
-        }
-
-        static string[] s_fallbackShaderTypes = { "Standard", "Toon", "Unlit", "VertexLit", "Particle", "Sprite", "Matcap", "MobileToon" };
-        static string[] s_fallbackRenderTypes = { "Opaque", "Cutout", "Transparent", "Fade" };
-        static string[] s_fallbackRenderTypesValues = { "", "Cutout", "Transparent", "Fade" };
-        static string[] s_fallbackCullTypes = { "OneSided", "DoubleSided" };
-        static string[] s_fallbackCullTypesValues = { "", "DoubleSided" };
-        static string[] s_fallbackNoTypes = { "None", "Hidden" };
-        static string[] s_fallbackNoTypesValues = { "", "Hidden" };
-        static string[] s_vRCFallbackOptionsPopup = s_fallbackNoTypes.Union(s_fallbackShaderTypes.SelectMany(s => s_fallbackRenderTypes.SelectMany(r => s_fallbackCullTypes.Select(c => r + "/" + c).Select(rc => s + "/" + rc)))).ToArray();
-        static string[] s_vRCFallbackOptionsValues = s_fallbackNoTypes.Union(s_fallbackShaderTypes.SelectMany(s => s_fallbackRenderTypesValues.SelectMany(r => s_fallbackCullTypesValues.Select(c => r + c).Select(rc => s + rc)))).ToArray();
-        public static void VRCFallbackSelector(ShaderEditor shaderEditor)
-        {
-            string current = shaderEditor.Materials[0].GetTag("VRCFallback", false, "None");
-            EditorGUI.BeginChangeCheck();
-            int selected = EditorGUILayout.Popup("VRChat Fallback Shader", s_vRCFallbackOptionsValues.Select((f, i) => (f, i)).FirstOrDefault(f => f.f == current).i , s_vRCFallbackOptionsPopup);
-            if (EditorGUI.EndChangeCheck())
-                shaderEditor.Materials[0].SetOverrideTag("VRCFallback", s_vRCFallbackOptionsValues[selected]);
         }
 
         public static void MinMaxSlider(Rect settingsRect, GUIContent content, MaterialProperty prop)
@@ -459,7 +441,7 @@ namespace Thry
             selected = EditorGUILayout.Popup(label.text, selected, locales);
             if (EditorGUI.EndChangeCheck())
             {
-                ShaderEditor.Active.PropertyDictionary[ShaderEditor.PROPERTY_NAME_LOCALE].materialProperty.floatValue = selected;
+                ShaderEditor.Active.PropertyDictionary[ShaderEditor.PROPERTY_NAME_LOCALE].MaterialProperty.floatValue = selected;
                 ShaderEditor.ReloadActive();
             }
         }
@@ -764,7 +746,7 @@ namespace Thry
             if (isTextureContent)
             {
                 if(GUILayout.Button(content, new GUIStyle(), GUILayout.MaxWidth(texture_width), GUILayout.Height(texture_height))){
-                    data.action.Perform();
+                    data.action.Perform(ShaderEditor.Active?.Materials);
                 }
                 cursorRect = GUILayoutUtility.GetLastRect();
                 GUILayout.Space(8);
@@ -772,7 +754,7 @@ namespace Thry
             else
             {
                 if (GUILayout.Button(content, GUILayout.ExpandWidth(false), GUILayout.Height(texture_height)))
-                    data.action.Perform();
+                    data.action.Perform(ShaderEditor.Active?.Materials);
                 cursorRect = GUILayoutUtility.GetLastRect();
                 GUILayout.Space(2);
             }
@@ -797,12 +779,11 @@ namespace Thry
     {
         private MaterialProperty property;
 
-        private bool expanded;
-
+        private bool _isExpanded;
         private string keyword;
         private string end;
 
-        public bool isHideable;
+        private bool _disableContentWhenKeywordOff;
 
         int p_xOffset;
         int p_xOffset_total;
@@ -817,31 +798,16 @@ namespace Thry
 
         private ButtonData button;
 
-        public ThryHeaderDrawer(string end, string keyword, string buttonText, string buttonHover, string buttonAction, float isHideable)
+        public ThryHeaderDrawer(string end, string keyword, float disableContentWhenKeywordOff)
         {
             this.end = end;
             this.keyword = keyword;
-
-            button = new ButtonData();
-            button.text = buttonText;
-            button.hover = buttonHover;
-            button.action = DefineableAction.ParseDrawerParameter(buttonAction);
-
-            this.isHideable = isHideable == 1;
+            this._disableContentWhenKeywordOff = disableContentWhenKeywordOff == 1;
         }
-        
-        public ThryHeaderDrawer(string end, string keyword, string buttonText, string buttonHover, string buttonAction) : this(end, keyword, buttonText, buttonHover, buttonAction, 0          ) { }
-        public ThryHeaderDrawer(string end, string keyword, float isHideable) :                                           this(end, keyword, null,       null,        null,         isHideable ) { }
-        public ThryHeaderDrawer(string end, string keyword, string buttonAction) :                                        this(end, keyword, null,       null,        buttonAction, 0          ) { }
-        public ThryHeaderDrawer(string end, string keyword) :                                                             this(end, keyword, null,       null,        null,         0          ) { }
-        public ThryHeaderDrawer(string end) :                                                                             this(end, null   , null,       null,        null,         0          ) { }
 
-        public ThryHeaderDrawer(float isHideable) :                                                                       this(null,null,    null,       null,        null,         isHideable ) { }
-        public ThryHeaderDrawer(float isHideable, string end) :                                                           this(end, null,    null,       null,        null,         isHideable ) { }
-        public ThryHeaderDrawer(float isHideable, string buttonText, string buttonHover, string buttonAction) :           this(null,null,    buttonText, buttonHover, buttonAction, 0          ) { }
-        public ThryHeaderDrawer(float isHideable, string end, string buttonText, string buttonHover, string buttonAction):this(end, null,    buttonText, buttonHover, buttonAction, isHideable ) { }
-
-        public ThryHeaderDrawer(){}
+        public ThryHeaderDrawer(string end, string keyword) : this(end, keyword, 0) { }
+        public ThryHeaderDrawer(string end) : this(end, null, 0) { }
+        public ThryHeaderDrawer() : this(null, null, 0) { }
 
         public string GetEndProperty()
         {
@@ -856,18 +822,26 @@ namespace Thry
             return base.GetPropertyHeight(prop, label, editor);
         }
 
-        public bool is_expanded
+        public bool IsExpanded
         {
             get
             {
-                return expanded;
+                return _isExpanded;
+            }
+        }
+
+        public bool DisableContent
+        {
+            get
+            {
+                return _disableContentWhenKeywordOff && !ShaderEditor.Active.Materials[0].IsKeywordEnabled(keyword);
             }
         }
 
         public void Toggle()
         {
-            expanded = !expanded;
-            foreach (Material m in ShaderEditor.Active.Materials) m.SetFloat(property.name, expanded ? 1 : 0);
+            _isExpanded = !_isExpanded;
+            foreach (Material m in ShaderEditor.Active.Materials) m.SetFloat(property.name, _isExpanded ? 1 : 0);
         }
 
         public override void OnGUI(Rect position, MaterialProperty prop, GUIContent label, MaterialEditor editor)
@@ -875,10 +849,10 @@ namespace Thry
             if (this.property == null)
             {
                 this.property = prop;
-                this.expanded = prop.floatValue == 1;
+                this._isExpanded = prop.floatValue == 1;
             }
 
-            PropertyOptions options = ShaderEditor.Active.CurrentProperty.options;
+            PropertyOptions options = ShaderEditor.Active.CurrentProperty.Options;
             Event e = Event.current;
 
             position.width -= p_xOffset_total - position.x;
@@ -908,10 +882,10 @@ namespace Thry
                 EditorGUIUtility.fieldWidth = 20;
                 ShaderProperty prop = ShaderEditor.Active.PropertyDictionary[options.reference_property];
 
-                int xOffset = prop.xOffset;
-                prop.xOffset = 0;
+                int xOffset = prop.XOffset;
+                prop.XOffset = 0;
                 prop.Draw(new CRect(togglePropertyRect), new GUIContent(), isInHeader: true);
-                prop.xOffset = xOffset;
+                prop.XOffset = xOffset;
                 EditorGUIUtility.fieldWidth = fieldWidth;
             }else if(keyword != null)
             {
@@ -966,7 +940,7 @@ namespace Thry
                 if (GuiHelper.Button(rect, Styles.icon_style_help))
                 {
                     ShaderEditor.Input.Use();
-                    if (button.action != null) button.action.Perform();
+                    if (button.action != null) button.action.Perform(ShaderEditor.Active?.Materials);
                 }
             }
         }
@@ -989,11 +963,11 @@ namespace Thry
 
         private void DrawLinkSettings(Rect rect, Event e)
         {
-            if (GuiHelper.Button(rect, Styles.icon_style_linked, Styles.COLOR_ICON_ACTIVE_CYAN, MaterialLinker.IsLinked(ShaderEditor.Active.CurrentProperty.materialProperty)))
+            if (GuiHelper.Button(rect, Styles.icon_style_linked, Styles.COLOR_ICON_ACTIVE_CYAN, MaterialLinker.IsLinked(ShaderEditor.Active.CurrentProperty.MaterialProperty)))
             {
                 ShaderEditor.Input.Use();
-                List<Material> linked_materials = MaterialLinker.GetLinked(ShaderEditor.Active.CurrentProperty.materialProperty);
-                MaterialLinker.Popup(rect, linked_materials, ShaderEditor.Active.CurrentProperty.materialProperty);
+                List<Material> linked_materials = MaterialLinker.GetLinked(ShaderEditor.Active.CurrentProperty.MaterialProperty);
+                MaterialLinker.Popup(rect, linked_materials, ShaderEditor.Active.CurrentProperty.MaterialProperty);
             }
         }
 
@@ -1003,7 +977,7 @@ namespace Thry
             menu.AddItem(new GUIContent("Reset"), false, delegate ()
             {
                 property.CopyFromMaterial(new Material(material.shader), true);
-                List<Material> linked_materials = MaterialLinker.GetLinked(property.materialProperty);
+                List<Material> linked_materials = MaterialLinker.GetLinked(property.MaterialProperty);
                 if (linked_materials != null)
                     foreach (Material m in linked_materials)
                         property.CopyToMaterial(m, true);
@@ -1018,7 +992,7 @@ namespace Thry
                 if (Mediator.copy_material != null || Mediator.transfer_group != null)
                 {
                     property.TransferFromMaterialAndGroup(Mediator.copy_material, Mediator.transfer_group, true);
-                    List<Material> linked_materials = MaterialLinker.GetLinked(property.materialProperty);
+                    List<Material> linked_materials = MaterialLinker.GetLinked(property.MaterialProperty);
                     if (linked_materials != null)
                         foreach (Material m in linked_materials)
                             property.CopyToMaterial(m, true);
@@ -1032,7 +1006,7 @@ namespace Thry
             if (e.type == EventType.Repaint)
             {
                 var toggleRect = new Rect(rect.x + 4f, rect.y + 2f, 13f, 13f);
-                EditorStyles.foldout.Draw(toggleRect, false, false, expanded, false);
+                EditorStyles.foldout.Draw(toggleRect, false, false, _isExpanded, false);
             }
         }
 
