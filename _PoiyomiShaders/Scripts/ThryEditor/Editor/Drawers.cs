@@ -865,7 +865,11 @@ namespace Thry
             {
                 return EditorGUIUtility.singleLineHeight * 2.5f;
             }
-            if (hasKeyword) CheckKeyword(prop);
+            if (hasKeyword)
+            {
+                CheckKeyword(prop);
+                DrawingData.LastPropertyDoesntAllowAnimation = true;
+            } 
             return base.GetPropertyHeight(prop, label, editor);
         }
 
@@ -1076,6 +1080,7 @@ namespace Thry
     public class ThryMultiFloatsDrawer : MaterialPropertyDrawer
     {
         string[] _otherProperties;
+        MaterialProperty[] _otherMaterialProps;
         bool _displayAsToggles;
 
         public ThryMultiFloatsDrawer(string displayAsToggles, string p1, string p2, string p3, string p4, string p5, string p6, string p7) : this(displayAsToggles, new string[] { p1, p2, p3, p4, p5, p6, p7 }) { }
@@ -1090,6 +1095,7 @@ namespace Thry
         {
             _displayAsToggles = displayAsToggles.ToLower() == "true" || displayAsToggles == "1";
             _otherProperties = extraProperties;
+            _otherMaterialProps = new MaterialProperty[extraProperties.Length];
         }
 
         public override void OnGUI(Rect position, MaterialProperty prop, GUIContent label, MaterialEditor editor)
@@ -1100,14 +1106,25 @@ namespace Thry
             contentR.width = (contentR.width - labelR.width) / (_otherProperties.Length + 1);
             contentR.x += labelR.width;
 
+            for (int i = 0; i < _otherProperties.Length; i++)
+                _otherMaterialProps[i] = ShaderEditor.Active.PropertyDictionary[_otherProperties[i]].MaterialProperty;
+            EditorGUI.BeginChangeCheck();
+
             EditorGUI.LabelField(labelR, label);
             int indentLevel = EditorGUI.indentLevel; //else it double indents
             EditorGUI.indentLevel = 0;
             PropGUI(prop, contentR, 0);
+            if(ShaderEditor.Active.IsInAnimationMode)
+                MaterialEditor.PrepareMaterialPropertiesForAnimationMode(_otherMaterialProps, true);
             for (int i = 0; i < _otherProperties.Length; i++)
-                PropGUI(ShaderEditor.Active.PropertyDictionary[_otherProperties[i]].MaterialProperty, contentR, i + 1);
+            {
+                PropGUI(_otherMaterialProps[i], contentR, i + 1);
+            }
             EditorGUI.indentLevel = indentLevel;
-
+            
+            //If edited in animation mode mark as animated (needed cause other properties isnt checked in draw)
+            if(EditorGUI.EndChangeCheck() && ShaderEditor.Active.IsInAnimationMode && !ShaderEditor.Active.CurrentProperty.IsAnimated)
+                ShaderEditor.Active.CurrentProperty.SetAnimated(true, false);
             //make sure all are animated together
             bool animated = ShaderEditor.Active.CurrentProperty.IsAnimated;
             bool renamed = ShaderEditor.Active.CurrentProperty.IsRenaming;

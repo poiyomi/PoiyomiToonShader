@@ -341,6 +341,11 @@ namespace Thry
             return m.GetTag(prop + AnimatedTagSuffix, false, "");
         }
 
+        public static bool IsAnimated(Material m, string prop)
+        {
+            return m.GetTag(prop + AnimatedTagSuffix, false, "0") != "0";
+        }
+
         public static string GetRenamedPropertySuffix(Material m)
         {
             string cleanedMaterialName = Regex.Replace(m.name.Trim(), @"[^0-9a-zA-Z_]+", string.Empty);
@@ -380,62 +385,31 @@ namespace Thry
 
             // Get collection of all properties to replace
             // Simultaneously build a string of #defines for each CGPROGRAM
-            StringBuilder definesSB = new StringBuilder();
+            List<(string name,string value)> defines = new List<(string,string)>();
             // Append convention OPTIMIZER_ENABLED keyword
-            definesSB.Append(Environment.NewLine);
-            definesSB.Append("#define ");
-            definesSB.Append(OptimizerEnabledKeyword);
-            definesSB.Append(Environment.NewLine);
+            defines.Add((OptimizerEnabledKeyword,""));
             // Append all keywords active on the material
             foreach (string keyword in material.shaderKeywords)
             {
                 if (keyword == "") continue; // idk why but null keywords exist if _ keyword is used and not removed by the editor at some point
-                definesSB.Append("#define ");
-                definesSB.Append(keyword);
-                definesSB.Append(Environment.NewLine);
+                defines.Add((keyword,""));
             }
 
             KeywordsUsedByPragmas.Clear();
 
-            Dictionary<string,bool> removeBetweenKeywords = new Dictionary<string,bool>();
             List<PropertyData> constantProps = new List<PropertyData>();
             List<RenamingProperty> animatedPropsToRename = new List<RenamingProperty>();
             List<RenamingProperty> animatedPropsToDuplicate = new List<RenamingProperty>();
             foreach (MaterialProperty prop in props)
             {
                 if (prop == null) continue;
-
-                if (prop.name.Contains("_commentIf"))
-                {
-                    if (Regex.IsMatch(prop.name, @".*_commentIfOne_(\d|\w)+") && prop.floatValue == 1)
-                    {
-                        string key = Regex.Match(prop.name, @"_commentIfOne_(\d|\w)+").Value.Replace("_commentIfOne_", "");
-                        removeBetweenKeywords.Add(key, false);
-                    }
-                    if (Regex.IsMatch(prop.name, @".*_commentIfZero_(\d|\w)+") && prop.floatValue == 0)
-                    {
-                        string key = Regex.Match(prop.name, @"_commentIfZero_(\d|\w)+").Value.Replace("_commentIfZero_", "");
-                        removeBetweenKeywords.Add(key, false);
-                    }
-                }
-
                 // Every property gets turned into a preprocessor variable
                 switch (prop.type)
                 {
-                    case MaterialProperty.PropType.Float:
-                    case MaterialProperty.PropType.Range:
-                        definesSB.Append("#define PROP");
-                        definesSB.Append(prop.name.ToUpperInvariant());
-                        definesSB.Append(' ');
-                        definesSB.Append(prop.floatValue.ToString(CultureInfo.InvariantCulture));
-                        definesSB.Append(Environment.NewLine);
-                        break;
                     case MaterialProperty.PropType.Texture:
                         if (prop.textureValue != null)
                         {
-                            definesSB.Append("#define PROP");
-                            definesSB.Append(prop.name.ToUpperInvariant());
-                            definesSB.Append(Environment.NewLine);
+                            defines.Add(($"PROP{prop.name.ToUpperInvariant()}", ""));
                         }
                         break;
                 }
@@ -552,7 +526,6 @@ namespace Thry
                         break;
                 }
             }
-            string optimizerDefines = definesSB.ToString();
 
             // Get list of lightmode passes to delete
             List<string> disabledLightModes = new List<string>();
@@ -569,8 +542,20 @@ namespace Thry
             // Parse shader and cginc files, also gets preprocessor macros
             List<ParsedShaderFile> shaderFiles = new List<ParsedShaderFile>();
             List<Macro> macros = new List<Macro>();
-            if (!ParseShaderFilesRecursive(shaderFiles, newShaderDirectory, shaderFilePath, macros, material, removeBetweenKeywords))
+            if (!ParseShaderFilesRecursive(shaderFiles, newShaderDirectory, shaderFilePath, macros, material))
                 return false;
+
+            // Remove all defines where name if not in shader files
+            List<(string,string)> definesToRemove = new List<(string,string)>();
+            foreach((string name,string) def in defines)
+            {
+                if (shaderFiles.Any(x => x.lines.Any(l => l.Contains(def.name)) == false))
+                    definesToRemove.Add(def);
+            }
+            defines.RemoveAll(x => definesToRemove.Contains(x));
+            string optimizerDefines = "";
+            if(defines.Count > 0)
+                optimizerDefines = defines.Select(m => $"\n #define {m.name} {m.value}").Aggregate((s1, s2) => s1 + s2);
 
             int commentKeywords = 0;
 
@@ -912,7 +897,7 @@ namespace Thry
         // Save each file as string[], parse each macro with //KSOEvaluateMacro
         // Only editing done is replacing #include "X" filepaths where necessary
         // most of these args could be private static members of the class
-        private static bool ParseShaderFilesRecursive(List<ParsedShaderFile> filesParsed, string newTopLevelDirectory, string filePath, List<Macro> macros, Material material, Dictionary<string,bool> removeBetweenKeywords)
+        private static bool ParseShaderFilesRecursive(List<ParsedShaderFile> filesParsed, string newTopLevelDirectory, string filePath, List<Macro> macros, Material material)
         {
             // Infinite recursion check
             if (filesParsed.Exists(x => x.filePath == filePath)) return true;
@@ -953,23 +938,50 @@ namespace Thry
 
             bool isCommentedOut = false;
 
-            int removedViaKeyword = 0;
+            int currentExcludeDepth = 0;
+            bool doExclude = false;
+            int excludeStartDepth = 0;
 
             for (int i=0; i<fileLines.Length; i++)
             {
                 string lineParsed = fileLines[i].TrimStart();
 
-                //Remove stuff between comment keywords
-                string trimmedForKeyword = lineParsed.TrimStart('/').TrimEnd();
-                if (removeBetweenKeywords.ContainsKey(trimmedForKeyword))
+                if(lineParsed.StartsWith("//", StringComparison.Ordinal))
                 {
-                    removeBetweenKeywords[trimmedForKeyword] = !removeBetweenKeywords[trimmedForKeyword];
-                    if (removeBetweenKeywords[trimmedForKeyword])
-                        removedViaKeyword++;
-                    else
-                        removedViaKeyword--;
+                    //Exclusion logic
+                    if(lineParsed.StartsWith("//ifex", StringComparison.Ordinal))
+                    {
+                        var condition = DefineableCondition.Parse(lineParsed.Substring(6), material);
+                        if(condition.Test())
+                        {
+                            doExclude = true;
+                            excludeStartDepth = currentExcludeDepth;
+                        }
+                        currentExcludeDepth++;
+                    }
+                    else if(lineParsed.StartsWith("//endex", StringComparison.Ordinal))
+                    {
+                        if(currentExcludeDepth == 0)
+                        {
+                            Debug.LogError("[Shader Optimizer] Number of 'endex' statements does not match number of 'ifex' statements."
+                                +$"\nError found in file '{filePath}' line {i+1}");
+                        }
+                        else
+                        {
+                            currentExcludeDepth--;
+                            if(currentExcludeDepth == excludeStartDepth)
+                            {
+                                doExclude = false;
+                            }
+                        }
+                        continue;
+                    }else
+                    {
+                        //Else is just a comment, ignore line
+                        continue;
+                    }
                 }
-                if (removedViaKeyword > 0) continue;
+                if (doExclude) continue;
 
                 //removes empty lines
                 if (lineParsed.Length == 0) continue;
@@ -982,10 +994,6 @@ namespace Thry
                 else if (lineParsed == "/*")
                 {
                     isCommentedOut = true;
-                    continue;
-                }
-                else if (lineParsed.StartsWith("//", StringComparison.Ordinal))
-                {
                     continue;
                 }
                 if (isCommentedOut) continue;
@@ -1080,7 +1088,7 @@ namespace Thry
                         {
                             includeFullpath = GetFullPath(includeFilename, Path.GetDirectoryName(filePath));
                         }
-                        if (!ParseShaderFilesRecursive(filesParsed, newTopLevelDirectory, includeFullpath, macros, material, removeBetweenKeywords))
+                        if (!ParseShaderFilesRecursive(filesParsed, newTopLevelDirectory, includeFullpath, macros, material))
                             return false;
                         //Change include to be be ralative to only one directory up, because all files are moved into the same folder
                         fileLines[i] = fileLines[i].Replace(includeFilename, "/"+includeFilename.Split('/').Last());
@@ -1788,7 +1796,8 @@ namespace Thry
                 }
                 
 #endif
-                SetLockedForAllMaterials(materials, 1, showProgressbar: true, showDialog: PersistentData.Get<bool>("ShowLockInDialog", true), allowCancel: false);
+                if(SetLockedForAllMaterials(materials, 1, showProgressbar: true, showDialog: PersistentData.Get<bool>("ShowLockInDialog", true), allowCancel: false) == false)
+                    return false;
                 //returning true all the time, because build process cant be stopped it seems
                 return true;
             }
@@ -1959,8 +1968,18 @@ namespace Thry
                 }
                 catch (Exception e)
                 {
-                    Debug.LogError("Could not un-/lock material " + m.name);
-                    Debug.LogError(e);
+                    string position = e.StackTrace.Split('\n').FirstOrDefault(l => l.Contains("ThryEditor"));
+                    if(position != null)
+                    {
+                        position = position.Split(new string[]{ "ThryEditor" }, StringSplitOptions.None).LastOrDefault();
+                        Debug.LogError("Could not un-/lock material " + m.name + " | Error thrown at " + position+ "\n"+e.StackTrace);
+                    }else
+                    {
+                        Debug.LogError("Could not un-/lock material " + m.name + "\n"+e.StackTrace);
+                    }
+                    EditorUtility.ClearProgressBar();
+                    AssetDatabase.StopAssetEditing();
+                    return false;
                 }
                 i++;
             }

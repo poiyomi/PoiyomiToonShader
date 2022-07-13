@@ -1,6 +1,7 @@
 ﻿// Material/Shader Inspector for Unity 2017/2018
 // Copyright (C) 2019 Thryrallo
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
@@ -300,17 +301,17 @@ namespace Thry
         {
             s = s.Trim();
             DefineableAction action = new DefineableAction();
-            if (s.StartsWith("http") || s.StartsWith("www"))
+            if (s.StartsWith("http", StringComparison.Ordinal) || s.StartsWith("www", StringComparison.Ordinal))
             {
                 action.type = DefineableActionType.URL;
                 action.data = s;
             }
-            else if (s.StartsWith("tag::"))
+            else if (s.StartsWith("tag::", StringComparison.Ordinal))
             {
                 action.type = DefineableActionType.SET_TAG;
                 action.data = s.Replace("tag::", "");
             }
-            else if (s.StartsWith("shader="))
+            else if (s.StartsWith("shader=", StringComparison.Ordinal))
             {
                 action.type = DefineableActionType.SET_SHADER;
                 action.data = s.Replace("shader=", "");
@@ -332,7 +333,7 @@ namespace Thry
         {
             s = s.Trim();
             DefineableAction action = new DefineableAction();
-            if (s.StartsWith("youtube#"))
+            if (s.StartsWith("youtube#", StringComparison.Ordinal))
             {
                 action.type = DefineableActionType.URL;
                 action.data = "https://www.youtube.com/watch?v="+s.Substring(8);
@@ -366,6 +367,7 @@ namespace Thry
         CompareType _compareType;
         string _obj;
         ShaderProperty _propertyObj;
+        Material _materialInsteadOfEditor;
 
         string _value;
         float _floatValue;
@@ -434,27 +436,35 @@ namespace Thry
             Init();
             if (_hasConstantValue) return _constantValue;
             
+            MaterialProperty materialProperty = null;
             switch (type)
             {
                 case DefineableConditionType.PROPERTY_BOOL:
-                    if (_propertyObj == null) return false;
-                    if (_compareType == CompareType.NONE) return _propertyObj.MaterialProperty.floatValue == 1;
-                    if (_compareType == CompareType.EQUAL) return _propertyObj.MaterialProperty.floatValue == _floatValue;
-                    if (_compareType == CompareType.NOT_EQUAL) return _propertyObj.MaterialProperty.floatValue != _floatValue;
-                    if (_compareType == CompareType.SMALLER) return _propertyObj.MaterialProperty.floatValue < _floatValue;
-                    if (_compareType == CompareType.BIGGER) return _propertyObj.MaterialProperty.floatValue > _floatValue;
-                    if (_compareType == CompareType.BIGGER_EQ) return _propertyObj.MaterialProperty.floatValue >= _floatValue;
-                    if (_compareType == CompareType.SMALLER_EQ) return _propertyObj.MaterialProperty.floatValue <= _floatValue;
+                    materialProperty = GetMaterialProperty();
+                    if (materialProperty == null) return false;
+                    if (_compareType == CompareType.NONE) return materialProperty.floatValue == 1;
+                    if (_compareType == CompareType.EQUAL) return materialProperty.floatValue == _floatValue;
+                    if (_compareType == CompareType.NOT_EQUAL) return materialProperty.floatValue != _floatValue;
+                    if (_compareType == CompareType.SMALLER) return materialProperty.floatValue < _floatValue;
+                    if (_compareType == CompareType.BIGGER) return materialProperty.floatValue > _floatValue;
+                    if (_compareType == CompareType.BIGGER_EQ) return materialProperty.floatValue >= _floatValue;
+                    if (_compareType == CompareType.SMALLER_EQ) return materialProperty.floatValue <= _floatValue;
                     break;
                 case DefineableConditionType.TEXTURE_SET:
-                    if (_propertyObj == null) return false;
-                    return _propertyObj.MaterialProperty.textureValue != null;
+                    materialProperty = GetMaterialProperty();
+                    if (materialProperty == null) return false;
+                    return materialProperty.textureValue != null;
                 case DefineableConditionType.DROPDOWN:
-                    if (_propertyObj == null) return false;
-                    if (_compareType == CompareType.NONE) return _propertyObj.MaterialProperty.floatValue == 1;
-                    if (_compareType == CompareType.EQUAL) return "" + _propertyObj.MaterialProperty.floatValue == _value;
-                    if (_compareType == CompareType.NOT_EQUAL) return "" + _propertyObj.MaterialProperty.floatValue != _value;
+                    materialProperty = GetMaterialProperty();
+                    if (materialProperty == null) return false;
+                    if (_compareType == CompareType.NONE) return materialProperty.floatValue == 1;
+                    if (_compareType == CompareType.EQUAL) return "" + materialProperty.floatValue == _value;
+                    if (_compareType == CompareType.NOT_EQUAL) return "" + materialProperty.floatValue != _value;
                     break;
+                case DefineableConditionType.PROPERTY_IS_ANIMATED:
+                    return ShaderOptimizer.IsAnimated(_materialInsteadOfEditor, _obj);
+                case DefineableConditionType.PROPERTY_IS_NOT_ANIMATED:
+                    return !ShaderOptimizer.IsAnimated(_materialInsteadOfEditor, _obj);
                 case DefineableConditionType.AND:
                     if(condition1!=null&&condition2!=null) return condition1.Test() && condition2.Test();
                     break;
@@ -464,6 +474,13 @@ namespace Thry
             }
             
             return true;
+        }
+
+        private MaterialProperty GetMaterialProperty()
+        {
+            if(_materialInsteadOfEditor) return MaterialEditor.GetMaterialProperty(new Material[]{_materialInsteadOfEditor}, _obj);
+            if(_propertyObj != null) return _propertyObj.MaterialProperty;
+            return null;
         }
         private (CompareType,string) GetComparetor()
         {
@@ -492,6 +509,14 @@ namespace Thry
                     return "EDITOR_VERSION" + data;
                 case DefineableConditionType.VRC_SDK_VERSION:
                     return "VRC_SDK_VERSION" + data;
+                case DefineableConditionType.TEXTURE_SET:
+                    return "TEXTURE_SET" + data;
+                case DefineableConditionType.DROPDOWN:
+                    return "DROPDOWN" + data;
+                case DefineableConditionType.PROPERTY_IS_ANIMATED:
+                    return $"isAnimated({data})";
+                case DefineableConditionType.PROPERTY_IS_NOT_ANIMATED:
+                    return $"isNotAnimated({data})";
                 case DefineableConditionType.AND:
                     if (condition1 != null && condition2 != null) return "("+condition1.ToString() + "&&" + condition2.ToString()+")";
                     break;
@@ -506,8 +531,13 @@ namespace Thry
         {
             return Parse(s);
         }
-        public static DefineableCondition Parse(string s)
+
+        private static readonly char[] ComparissionLiteralsToCheckFor = "*><=".ToCharArray();
+        public static DefineableCondition Parse(string s, Material useThisMaterialInsteadOfOpenEditor = null)
         {
+            DefineableCondition con = new DefineableCondition();
+            con._materialInsteadOfEditor = useThisMaterialInsteadOfOpenEditor;
+
             s = Strip(s);
 
             int depth = 0;
@@ -524,58 +554,55 @@ namespace Thry
                 {
                     if (c == '&' && cc == '&')
                     {
-                        DefineableCondition con = new DefineableCondition();
                         con.type = DefineableConditionType.AND;
-                        con.condition1 = Parse(s.Substring(0, i));
-                        con.condition2 = Parse(s.Substring(i + 2, s.Length - i - 2));
+                        con.condition1 = Parse(s.Substring(0, i), useThisMaterialInsteadOfOpenEditor);
+                        con.condition2 = Parse(s.Substring(i + 2, s.Length - i - 2), useThisMaterialInsteadOfOpenEditor);
                         return con;
                     }
                     if (c == '|' && cc == '|')
                     {
-                        DefineableCondition con = new DefineableCondition();
                         con.type = DefineableConditionType.OR;
-                        con.condition1 = Parse(s.Substring(0, i));
-                        con.condition2 = Parse(s.Substring(i + 2, s.Length - i - 2));
+                        con.condition1 = Parse(s.Substring(0, i), useThisMaterialInsteadOfOpenEditor);
+                        con.condition2 = Parse(s.Substring(i + 2, s.Length - i - 2), useThisMaterialInsteadOfOpenEditor);
                         return con;
                     }
                 }
             }
-            for (int i = 0; i < s.Length - 1; i++)
+            if(s.IndexOfAny(ComparissionLiteralsToCheckFor) != -1)
             {
-                char c = s[i];
-                char cc = s[i + 1];
-                if (c == '(')
-                    depth++;
-                else if (c == ')')
-                    depth--;
-
-                if (depth == 0)
+                //is a comparission
+                con.data = s;
+                con.type = DefineableConditionType.PROPERTY_BOOL;
+                if (s.StartsWith("VRCSDK", StringComparison.Ordinal))
                 {
-                    if (c == '>' || c=='<' || c=='=' || c == '!')
-                    {
-                        DefineableCondition con = new DefineableCondition();
-                        con.data = s;
-                        con.type = DefineableConditionType.PROPERTY_BOOL;
-                        if (s.StartsWith("VRCSDK"))
-                        {
-                            con.type = DefineableConditionType.VRC_SDK_VERSION;
-                            con.data = s.Replace("VRCSDK", "");
-                        }else if (s.StartsWith("ThryEditor"))
-                        {
-                            con.type = DefineableConditionType.VRC_SDK_VERSION;
-                            con.data = s.Replace("ThryEditor", "");
-                        }
-                        return con;
-                    }
+                    con.type = DefineableConditionType.VRC_SDK_VERSION;
+                    con.data = s.Replace("VRCSDK", "");
+                }else if (s.StartsWith("ThryEditor", StringComparison.Ordinal))
+                {
+                    con.type = DefineableConditionType.EDITOR_VERSION;
+                    con.data = s.Replace("ThryEditor", "");
                 }
+                return con;
             }
-            return new DefineableCondition();
+            if(s.StartsWith("isNotAnimated(", StringComparison.Ordinal))
+            {
+                con.type = DefineableConditionType.PROPERTY_IS_NOT_ANIMATED;
+                con.data = s.Replace("isNotAnimated(", "").TrimEnd(')');
+                return con;
+            }
+            if(s.StartsWith("isAnimated(", StringComparison.Ordinal))
+            {
+                con.type = DefineableConditionType.PROPERTY_IS_ANIMATED;
+                con.data = s.Replace("isAnimated(", "").TrimEnd(')');
+                return con;
+            }
+            return con;
         }
 
         private static string Strip(string s)
         {
             s = s.Trim();
-            if (s.StartsWith("(") == false)
+            if (s.StartsWith("(", StringComparison.Ordinal) == false)
                 return s;
             bool stripKlammer = true;
             int depth = 0;
@@ -604,6 +631,8 @@ namespace Thry
         TRUE,
         FALSE,
         PROPERTY_BOOL,
+        PROPERTY_IS_ANIMATED,
+        PROPERTY_IS_NOT_ANIMATED,
         EDITOR_VERSION,
         VRC_SDK_VERSION,
         TEXTURE_SET,
