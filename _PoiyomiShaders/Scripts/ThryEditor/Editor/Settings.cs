@@ -74,22 +74,22 @@ namespace Thry
             GUILayout.Label("ShaderUI v" + Config.Singleton.verion);
 
             GUINotification();
-            drawLine();
+            DrawHorizontalLine();
             GUIMessage();
             LocaleDropdown();
             GUIEditor();
-            drawLine();
+            DrawHorizontalLine();
             foreach(ModuleSettings s in moduleSettings)
             {
                 s.Draw();
-                drawLine();
+                DrawHorizontalLine();
             }
             GUIModulesInstalation();
         }
 
         //--------------------------GUI Helpers-----------------------------
 
-        private static void drawLine()
+        private static void DrawHorizontalLine()
         {
             Rect rect = EditorGUILayout.GetControlRect(false, 1);
             rect.height = 1;
@@ -108,17 +108,28 @@ namespace Thry
 
         private void GUIMessage()
         {
-            if(thry_message!=null && thry_message.text.Length > 0)
+            if(thry_message!=null)
             {
-                GUIStyle style = new GUIStyle();
-                style.richText = true;
-                style.margin = new RectOffset(7, 0, 0, 0);
-                style.wordWrap = true;
-                GUILayout.Label(new GUIContent(thry_message.text,thry_message.hover), style);
-                Rect r = GUILayoutUtility.GetLastRect();
-                if (Event.current.type == EventType.MouseDown && r.Contains(Event.current.mousePosition))
-                    thry_message.action.Perform(ShaderEditor.Active?.Materials);
-                drawLine();
+                bool doDrawLine = false;
+                if(thry_message.text.Length > 0)
+                {
+                    doDrawLine = true;
+                    GUILayout.Label(new GUIContent(thry_message.text,thry_message.hover), thry_message.center_position?Styles.richtext_center: Styles.richtext);
+                    Rect r = GUILayoutUtility.GetLastRect();
+                    if (Event.current.type == EventType.MouseDown && r.Contains(Event.current.mousePosition))
+                        thry_message.action.Perform(ShaderEditor.Active?.Materials);
+                }
+                if(thry_message.texture != null)
+                {
+                    doDrawLine = true;
+                    if(thry_message.center_position) GUILayout.Label(new GUIContent(thry_message.texture.loaded_texture, thry_message.hover), EditorStyles.centeredGreyMiniLabel, GUILayout.MaxHeight(thry_message.texture.height));
+                    else GUILayout.Label(new GUIContent(thry_message.texture.loaded_texture, thry_message.hover), GUILayout.MaxHeight(thry_message.texture.height));
+                    Rect r = GUILayoutUtility.GetLastRect();
+                    if (Event.current.type == EventType.MouseDown && r.Contains(Event.current.mousePosition))
+                        thry_message.action.Perform(ShaderEditor.Active?.Materials);
+                }
+                if(doDrawLine)
+                    DrawHorizontalLine();
             }
         }
 

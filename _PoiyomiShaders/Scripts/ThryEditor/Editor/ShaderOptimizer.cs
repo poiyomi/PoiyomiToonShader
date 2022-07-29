@@ -47,7 +47,6 @@ using static VRC.SDK3.Avatars.Components.VRCAvatarDescriptor;
 using VRC.SDK3.Avatars.Components;
 using System.Reflection;
 #endif
-// v9
 
 namespace Thry
 {
@@ -549,7 +548,7 @@ namespace Thry
             List<(string,string)> definesToRemove = new List<(string,string)>();
             foreach((string name,string) def in defines)
             {
-                if (shaderFiles.Any(x => x.lines.Any(l => l.Contains(def.name)) == false))
+                if (shaderFiles.All(x => x.lines.Any(l => l.Contains(def.name)) == false))
                     definesToRemove.Add(def);
             }
             defines.RemoveAll(x => definesToRemove.Contains(x));

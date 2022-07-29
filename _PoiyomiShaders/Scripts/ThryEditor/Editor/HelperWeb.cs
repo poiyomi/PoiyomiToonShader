@@ -74,7 +74,7 @@ namespace Thry
         {
             private struct CallData
             {
-                public Action<string> action;
+                public object action;
                 public object[] arguments;
             }
             static List<CallData> queue;
@@ -85,7 +85,7 @@ namespace Thry
                 EditorApplication.update += Update;
             }
 
-            public static void Call(Action<string> action, params object[] args)
+            public static void Call(object action, params object[] args)
             {
                 if (action == null)
                     return;
@@ -105,7 +105,8 @@ namespace Thry
                 {
                     try
                     {
-                        queue[0].action.DynamicInvoke(queue[0].arguments);
+                        if(queue[0].action is Action<string>) ((Action<string>)queue[0].action).DynamicInvoke(queue[0].arguments);
+                        if(queue[0].action is Action<byte[]>) ((Action<byte[]>)queue[0].action).DynamicInvoke(queue[0].arguments);
                     }
                     catch(Exception e) {
                         Debug.LogWarning("[Thry] Error during WebRequest: " + e.ToString());
@@ -142,6 +143,20 @@ namespace Thry
         public static void DownloadStringASync(string url, Action<string> callback)
         {
             DownloadAsStringASync(url, delegate (object o, DownloadStringCompletedEventArgs e)
+            {
+                if (e.Cancelled || e.Error != null)
+                {
+                    Debug.LogWarning(e.Error);
+                    MainThreader.Call(callback, null);
+                }
+                else
+                    MainThreader.Call(callback, e.Result);
+            });
+        }
+
+        public static void DownloadBytesASync(string url, Action<byte[]> callback)
+        {
+            DownloadAsBytesASync(url, delegate (object o, DownloadDataCompletedEventArgs e)
             {
                 if (e.Cancelled || e.Error != null)
                 {

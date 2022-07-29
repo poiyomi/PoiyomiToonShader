@@ -218,6 +218,7 @@ namespace Thry
             headerStack.Push(MainGroup); //add top object a second time, because it get's popped with first actual header item
             _footers = new List<FooterButton>(); //init footer list
             int headerCount = 0;
+            DrawingData.IsCollectingProperties = true;
 
             for (int i = 0; i < props.Length; i++)
             {
@@ -341,6 +342,8 @@ namespace Thry
                     ShaderParts.Add(newPart);
                 }
             }
+
+            DrawingData.IsCollectingProperties = false;
         }
 
 

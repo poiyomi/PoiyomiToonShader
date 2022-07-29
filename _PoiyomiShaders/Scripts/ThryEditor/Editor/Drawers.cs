@@ -98,7 +98,7 @@ namespace Thry
         public override void OnGUI(Rect position, MaterialProperty prop, GUIContent label, MaterialEditor editor)
         {
             Init();
-            Rect border_position = new Rect(position.x + EditorGUIUtility.labelWidth - 15, position.y, position.width - EditorGUIUtility.labelWidth - position.x + 15, position.height);
+            Rect border_position = new Rect(position.x + EditorGUIUtility.labelWidth - 15, position.y, position.width - EditorGUIUtility.labelWidth + 15 - GuiHelper.GetSmallTextureVRAMWidth(prop), position.height);
 
             EditorGUI.BeginChangeCheck();
             curve = EditorGUI.CurveField(border_position, curve);
@@ -608,7 +608,7 @@ namespace Thry
             if (EditorGUI.EndChangeCheck())
                 Init(prop);
 
-            UpdateRects(position);
+            UpdateRects(position, prop);
             if (ShaderEditor.Input.Click && border_position.Contains(Event.current.mousePosition))
             {
                 ShaderEditor.Input.Use();
@@ -621,9 +621,9 @@ namespace Thry
             GradientField();
         }
 
-        private void UpdateRects(Rect position)
+        private void UpdateRects(Rect position, MaterialProperty prop)
         {
-            border_position = new Rect(position.x + EditorGUIUtility.labelWidth, position.y, position.width - EditorGUIUtility.labelWidth - position.x, position.height);
+            border_position = new Rect(position.x + EditorGUIUtility.labelWidth, position.y, position.width - EditorGUIUtility.labelWidth - GuiHelper.GetSmallTextureVRAMWidth(prop), position.height);
             gradient_position = new Rect(border_position.x + 1, border_position.y + 1, border_position.width - 2, border_position.height - 2);
         }
 
@@ -758,6 +758,7 @@ namespace Thry
 
         public override float GetPropertyHeight(MaterialProperty prop, string label, MaterialEditor editor)
         {
+            DrawingData.RegisterDecorator(this);
             return size + 6;
         }
 
@@ -1213,18 +1214,82 @@ namespace Thry
         }
     }
 
-    public class sRGBWarningDrawer : MaterialPropertyDrawer
+    public class sRGBWarningDecorator : MaterialPropertyDrawer
     {
+        bool _isSRGB = true;
+
+        public sRGBWarningDecorator()
+        {
+            _isSRGB = false;
+        }
+
+		public sRGBWarningDecorator(string shouldHaveSRGB)
+		{
+			this._isSRGB = shouldHaveSRGB.ToLower() == "true";
+		}
+
+		public override void OnGUI(Rect position, MaterialProperty prop, GUIContent label, MaterialEditor editor)
+		{
+			GuiHelper.ColorspaceWarning(prop, _isSRGB);
+		}
+
+        public override float GetPropertyHeight(MaterialProperty prop, string label, MaterialEditor editor)
+        {
+            DrawingData.RegisterDecorator(this);
+            return 0;
+        }
+    }
+
+    public class LocalMessageDrawer : MaterialPropertyDrawer
+    {
+        protected ButtonData _buttonData;
+        protected bool _isInit;
+        protected virtual void Init(string s)
+        {
+            if(_isInit) return;
+            _buttonData = Parser.ParseToObject<ButtonData>(s);
+            _isInit = true;
+        }
+
         public override void OnGUI(Rect position, MaterialProperty prop, GUIContent label, MaterialEditor editor)
         {
-            GuiHelper.ConfigTextureProperty(position, prop, label, editor, ((TextureProperty)ShaderEditor.Active.CurrentProperty).hasScaleOffset);
-            GuiHelper.sRGBWarning(prop);
+            Init(prop.displayName);
+            if(_buttonData == null) return;
+            if(_buttonData.text.Length > 0)
+            {
+                GUILayout.Label(new GUIContent(_buttonData.text,_buttonData.hover), _buttonData.center_position?Styles.richtext_center: Styles.richtext);
+                Rect r = GUILayoutUtility.GetLastRect();
+                if (Event.current.type == EventType.MouseDown && r.Contains(Event.current.mousePosition))
+                    _buttonData.action.Perform(ShaderEditor.Active?.Materials);
+            }
+            if(_buttonData.texture != null)
+            {
+                if(_buttonData.center_position) GUILayout.Label(new GUIContent(_buttonData.texture.loaded_texture, _buttonData.hover), EditorStyles.centeredGreyMiniLabel, GUILayout.MaxHeight(_buttonData.texture.height));
+                else GUILayout.Label(new GUIContent(_buttonData.texture.loaded_texture, _buttonData.hover), GUILayout.MaxHeight(_buttonData.texture.height));
+                Rect r = GUILayoutUtility.GetLastRect();
+                if (Event.current.type == EventType.MouseDown && r.Contains(Event.current.mousePosition))
+                    _buttonData.action.Perform(ShaderEditor.Active?.Materials);
+            }
         }
 
         public override float GetPropertyHeight(MaterialProperty prop, string label, MaterialEditor editor)
         {
             DrawingData.LastPropertyUsedCustomDrawer = true;
-            return base.GetPropertyHeight(prop, label, editor);
+            return 0;
+        }
+    }
+
+    public class RemoteMessageDrawer : LocalMessageDrawer
+    {
+
+        protected override void Init(string s)
+        {
+            if(_isInit) return;
+            WebHelper.DownloadStringASync(s, (string data) =>
+            {
+                _buttonData = Parser.ParseToObject<ButtonData>(data);
+            });
+            _isInit = true;
         }
     }
 
@@ -1302,8 +1367,8 @@ namespace Thry
         {
             Material material = shaderOptimizer.targets[0] as Material;
             Shader shader = material.shader;
-            bool isLocked = shader.name.StartsWith("Hidden/") && 
-                (material.GetTag("OriginalShader",false,"") != "" || shader.GetPropertyDefaultFloatValue(shader.FindPropertyIndex(shaderOptimizer.name)) == 1);
+            bool isLocked = shader.name.StartsWith("Hidden/Locked/") || (shader.name.StartsWith("Hidden/") && 
+                (material.GetTag("OriginalShader",false,"") != "" && shader.GetPropertyDefaultFloatValue(shader.FindPropertyIndex(shaderOptimizer.name)) == 1));
             //this will make sure the button is unlocked if you manually swap to an unlocked shader
             //shaders that have the ability to be locked shouldnt really be hidden themself. at least it wouldnt make too much sense
             if (shaderOptimizer.hasMixedValue == false && shaderOptimizer.floatValue == 1 && isLocked == false)
