@@ -2,7 +2,7 @@ Shader ".poiyomi/Poiyomi 8.0/Poiyomi Toon"
 {
 	Properties
 	{
-		[HideInInspector] shader_master_label ("<color=#E75898ff>Poiyomi 8.0.425</color>", Float) = 0
+		[HideInInspector] shader_master_label ("<color=#E75898ff>Poiyomi 8.0.426</color>", Float) = 0
 		[HideInInspector] shader_is_using_thry_editor ("", Float) = 0
 		[HideInInspector] footer_youtube ("{texture:{name:icon-youtube,height:16},action:{type:URL,data:https://www.youtube.com/poiyomi},hover:YOUTUBE}", Float) = 0
 		[HideInInspector] footer_twitter ("{texture:{name:icon-twitter,height:16},action:{type:URL,data:https://twitter.com/poiyomi},hover:TWITTER}", Float) = 0
@@ -1162,6 +1162,39 @@ Shader ".poiyomi/Poiyomi 8.0/Poiyomi Toon"
 		_DissolveEdgeHueShift ("Edge Shift", Range(0, 1)) = 0
 		[HideInInspector] m_end_dissolveHueShift ("Hue Shift", Float) = 0
 		
+		[HideInInspector] m_start_UVTileDissolve ("UV Tile Dissolve--{reference_property:_UVTileDissolveEnabled}", Float) = 0
+		[HideInInspector][ToggleUI]_UVTileDissolveEnabled ("Enabled", Float) = 0
+		[ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3)]_UVTileDissolveUV ("UV Tile UV", Int) = 0
+		[ToggleUI]_UVTileDissolveDiscardAtMax ("Discard Tiles at Max", Float) = 1
+		[HideInInspector] m_start_UVTileDissolveRow3 ("Row 3 Alpha", Float) = 0
+		_UVTileDissolveAlpha_Row3_0 ("Row 3 Column 0", Range(-1, 1)) = 0
+		_UVTileDissolveAlpha_Row3_1 ("Row 3 Column 1", Range(-1, 1)) = 0
+		_UVTileDissolveAlpha_Row3_2 ("Row 3 Column 2", Range(-1, 1)) = 0
+		_UVTileDissolveAlpha_Row3_3 ("Row 3 Column 3", Range(-1, 1)) = 0
+		[HideInInspector] m_end_UVTileDissolveRow3 ("Row 3", Float) = 0
+		
+		[HideInInspector] m_start_UVTileDissolveRow2 ("Row 2 Alpha", Float) = 0
+		_UVTileDissolveAlpha_Row2_0 ("Row 2 Column 0", Range(-1, 1)) = 0
+		_UVTileDissolveAlpha_Row2_1 ("Row 2 Column 1", Range(-1, 1)) = 0
+		_UVTileDissolveAlpha_Row2_2 ("Row 2 Column 2", Range(-1, 1)) = 0
+		_UVTileDissolveAlpha_Row2_3 ("Row 2 Column 3", Range(-1, 1)) = 0
+		[HideInInspector] m_end_UVTileDissolveRow2 ("Row 2", Float) = 0
+		
+		[HideInInspector] m_start_UVTileDissolveRow1 ("Row 1 Alpha", Float) = 0
+		_UVTileDissolveAlpha_Row1_0 ("Row 1 Column 0", Range(-1, 1)) = 0
+		_UVTileDissolveAlpha_Row1_1 ("Row 1 Column 1", Range(-1, 1)) = 0
+		_UVTileDissolveAlpha_Row1_2 ("Row 1 Column 2", Range(-1, 1)) = 0
+		_UVTileDissolveAlpha_Row1_3 ("Row 1 Column 3", Range(-1, 1)) = 0
+		[HideInInspector] m_end_UVTileDissolveRow1 ("Row 1", Float) = 0
+		
+		[HideInInspector] m_start_UVTileDissolveRow0 ("Row 0 Alpha", Float) = 0
+		_UVTileDissolveAlpha_Row0_0 ("Row 0 Column 0", Range(-1, 1)) = 0
+		_UVTileDissolveAlpha_Row0_1 ("Row 0 Column 1", Range(-1, 1)) = 0
+		_UVTileDissolveAlpha_Row0_2 ("Row 0 Column 2", Range(-1, 1)) = 0
+		_UVTileDissolveAlpha_Row0_3 ("Row 0 Column 3", Range(-1, 1)) = 0
+		[HideInInspector] m_end_UVTileDissolveRow0 ("Row 0", Float) = 0
+		[HideInInspector] m_end_UVTileDissolve ("UV Tile Dissolve", Float) = 0
+		
 		// Locked in anim sldiers
 		[HideInInspector] m_start_BonusSliders ("Locked In Anim Sliders", Float) = 0
 		_DissolveAlpha0 ("Dissolve Alpha 0", Range(-1, 1)) = 0
@@ -2064,14 +2097,14 @@ Shader ".poiyomi/Poiyomi 8.0/Poiyomi Toon"
 				Ref [_StencilRef]
 				ReadMask [_StencilReadMask]
 				WriteMask [_StencilWriteMask]
-				//ifex _StencilType == 0
+				//ifex _StencilType == 1
 				Comp [_StencilCompareFunction]
 				Pass [_StencilPassOp]
 				Fail [_StencilFailOp]
 				ZFail [_StencilZFailOp]
 				//endex
 				
-				//ifex _StencilType == 1
+				//ifex _StencilType == 0
 				CompBack [_StencilBackCompareFunction]
 				PassBack [_StencilBackPassOp]
 				FailBack [_StencilBackFailOp]
@@ -3178,6 +3211,28 @@ Shader ".poiyomi/Poiyomi 8.0/Poiyomi Toon"
 			float _DissolveShapeScale;
 			float _DissolveInvertShape;
 			float _DissolveShapeEdgeLength;
+			
+			// UV Tile Dissolve
+			float _UVTileDissolveEnabled;
+			float _UVTileDissolveDiscardAtMax;
+			float _UVTileDissolveUV;
+			
+			float _UVTileDissolveAlpha_Row3_0;
+			float _UVTileDissolveAlpha_Row3_1;
+			float _UVTileDissolveAlpha_Row3_2;
+			float _UVTileDissolveAlpha_Row3_3;
+			float _UVTileDissolveAlpha_Row2_0;
+			float _UVTileDissolveAlpha_Row2_1;
+			float _UVTileDissolveAlpha_Row2_2;
+			float _UVTileDissolveAlpha_Row2_3;
+			float _UVTileDissolveAlpha_Row1_0;
+			float _UVTileDissolveAlpha_Row1_1;
+			float _UVTileDissolveAlpha_Row1_2;
+			float _UVTileDissolveAlpha_Row1_3;
+			float _UVTileDissolveAlpha_Row0_0;
+			float _UVTileDissolveAlpha_Row0_1;
+			float _UVTileDissolveAlpha_Row0_2;
+			float _UVTileDissolveAlpha_Row0_3;
 			
 			float _DissolveAlpha0;
 			float _DissolveAlpha1;
@@ -6261,6 +6316,40 @@ Shader ".poiyomi/Poiyomi 8.0/Poiyomi Toon"
 				#endif
 				//endex
 				
+				//ifex _EnableDissolve==0
+				#ifdef DISTORT
+				UNITY_BRANCH
+				if(_UVTileDissolveEnabled && _UVTileDissolveDiscardAtMax)
+				{
+					// Branchless (inspired by s-ilent)
+					float2 dissolveUdim = 0;
+					// Select UV
+					dissolveUdim += (v.uv0.xy * (_UVTileDissolveUV == 0));
+					dissolveUdim += (v.uv1.xy * (_UVTileDissolveUV == 1));
+					dissolveUdim += (v.uv2.xy * (_UVTileDissolveUV == 2));
+					dissolveUdim += (v.uv3.xy * (_UVTileDissolveUV == 3));
+					
+					float isDiscardedFromDissolve = 0;
+					float4 xMaskDissolve = float4(  (dissolveUdim.x >= 0 && dissolveUdim.x < 1),
+					(dissolveUdim.x >= 1 && dissolveUdim.x < 2),
+					(dissolveUdim.x >= 2 && dissolveUdim.x < 3),
+					(dissolveUdim.x >= 3 && dissolveUdim.x < 4));
+					
+					isDiscardedFromDissolve += (dissolveUdim.y >= 0 && dissolveUdim.y < 1) * dot(float4(_UVTileDissolveAlpha_Row0_0==1, _UVTileDissolveAlpha_Row0_1==1, _UVTileDissolveAlpha_Row0_2==1, _UVTileDissolveAlpha_Row0_3==1), xMaskDissolve);
+					isDiscardedFromDissolve += (dissolveUdim.y >= 1 && dissolveUdim.y < 2) * dot(float4(_UVTileDissolveAlpha_Row1_0==1, _UVTileDissolveAlpha_Row1_1==1, _UVTileDissolveAlpha_Row1_2==1, _UVTileDissolveAlpha_Row1_3==1), xMaskDissolve);
+					isDiscardedFromDissolve += (dissolveUdim.y >= 2 && dissolveUdim.y < 3) * dot(float4(_UVTileDissolveAlpha_Row2_0==1, _UVTileDissolveAlpha_Row2_1==1, _UVTileDissolveAlpha_Row2_2==1, _UVTileDissolveAlpha_Row2_3==1), xMaskDissolve);
+					isDiscardedFromDissolve += (dissolveUdim.y >= 3 && dissolveUdim.y < 4) * dot(float4(_UVTileDissolveAlpha_Row3_0==1, _UVTileDissolveAlpha_Row3_1==1, _UVTileDissolveAlpha_Row3_2==1, _UVTileDissolveAlpha_Row3_3==1), xMaskDissolve);
+					
+					isDiscardedFromDissolve *= any(float4(dissolveUdim.y >= 0, dissolveUdim.y < 4, dissolveUdim.x >= 0, dissolveUdim.x < 4)); // never discard outside 4x4 grid in pos coords
+					
+					if(isDiscardedFromDissolve) // Early Return skips rest of vertex shader
+					{
+						return (v2f)0;
+					}
+				}
+				#endif
+				//endex
+				
 				o.objectPos = mul(unity_ObjectToWorld, float4(0, 0, 0, 1)).xyz;
 				o.objNormal = v.normal;
 				o.normal = UnityObjectToWorldNormal(v.normal);
@@ -7277,6 +7366,21 @@ Shader ".poiyomi/Poiyomi 8.0/Poiyomi Toon"
 				+ _DissolveAlpha8
 				+ _DissolveAlpha9;
 				float dds = _DissolveDetailStrength;
+				
+				if(_UVTileDissolveEnabled)
+				{
+					float2 udim = floor(poiMesh.uv[(int)_UVTileDissolveUV]);
+					
+					float4 xMask = float4(  (udim.x >= 0 && udim.x < 1),
+					(udim.x >= 1 && udim.x < 2),
+					(udim.x >= 2 && udim.x < 3),
+					(udim.x >= 3 && udim.x < 4));
+					
+					da += (udim.y >= 0 && udim.y < 1) * dot(float4(_UVTileDissolveAlpha_Row0_0, _UVTileDissolveAlpha_Row0_1, _UVTileDissolveAlpha_Row0_2, _UVTileDissolveAlpha_Row0_3), xMask);
+					da += (udim.y >= 1 && udim.y < 2) * dot(float4(_UVTileDissolveAlpha_Row1_0, _UVTileDissolveAlpha_Row1_1, _UVTileDissolveAlpha_Row1_2, _UVTileDissolveAlpha_Row1_3), xMask);
+					da += (udim.y >= 2 && udim.y < 3) * dot(float4(_UVTileDissolveAlpha_Row2_0, _UVTileDissolveAlpha_Row2_1, _UVTileDissolveAlpha_Row2_2, _UVTileDissolveAlpha_Row2_3), xMask);
+					da += (udim.y >= 3 && udim.y < 4) * dot(float4(_UVTileDissolveAlpha_Row3_0, _UVTileDissolveAlpha_Row3_1, _UVTileDissolveAlpha_Row3_2, _UVTileDissolveAlpha_Row3_3), xMask);
+				}
 				
 				#ifdef POI_AUDIOLINK
 				UNITY_BRANCH
@@ -11868,14 +11972,14 @@ Shader ".poiyomi/Poiyomi 8.0/Poiyomi Toon"
 				Ref [_StencilRef]
 				ReadMask [_StencilReadMask]
 				WriteMask [_StencilWriteMask]
-				//ifex _StencilType == 0
+				//ifex _StencilType == 1
 				Comp [_StencilCompareFunction]
 				Pass [_StencilPassOp]
 				Fail [_StencilFailOp]
 				ZFail [_StencilZFailOp]
 				//endex
 				
-				//ifex _StencilType == 1
+				//ifex _StencilType == 0
 				CompBack [_StencilBackCompareFunction]
 				PassBack [_StencilBackPassOp]
 				FailBack [_StencilBackFailOp]
@@ -12981,6 +13085,28 @@ Shader ".poiyomi/Poiyomi 8.0/Poiyomi Toon"
 			float _DissolveShapeScale;
 			float _DissolveInvertShape;
 			float _DissolveShapeEdgeLength;
+			
+			// UV Tile Dissolve
+			float _UVTileDissolveEnabled;
+			float _UVTileDissolveDiscardAtMax;
+			float _UVTileDissolveUV;
+			
+			float _UVTileDissolveAlpha_Row3_0;
+			float _UVTileDissolveAlpha_Row3_1;
+			float _UVTileDissolveAlpha_Row3_2;
+			float _UVTileDissolveAlpha_Row3_3;
+			float _UVTileDissolveAlpha_Row2_0;
+			float _UVTileDissolveAlpha_Row2_1;
+			float _UVTileDissolveAlpha_Row2_2;
+			float _UVTileDissolveAlpha_Row2_3;
+			float _UVTileDissolveAlpha_Row1_0;
+			float _UVTileDissolveAlpha_Row1_1;
+			float _UVTileDissolveAlpha_Row1_2;
+			float _UVTileDissolveAlpha_Row1_3;
+			float _UVTileDissolveAlpha_Row0_0;
+			float _UVTileDissolveAlpha_Row0_1;
+			float _UVTileDissolveAlpha_Row0_2;
+			float _UVTileDissolveAlpha_Row0_3;
 			
 			float _DissolveAlpha0;
 			float _DissolveAlpha1;
@@ -15807,6 +15933,40 @@ Shader ".poiyomi/Poiyomi 8.0/Poiyomi Toon"
 				#endif
 				//endex
 				
+				//ifex _EnableDissolve==0
+				#ifdef DISTORT
+				UNITY_BRANCH
+				if(_UVTileDissolveEnabled && _UVTileDissolveDiscardAtMax)
+				{
+					// Branchless (inspired by s-ilent)
+					float2 dissolveUdim = 0;
+					// Select UV
+					dissolveUdim += (v.uv0.xy * (_UVTileDissolveUV == 0));
+					dissolveUdim += (v.uv1.xy * (_UVTileDissolveUV == 1));
+					dissolveUdim += (v.uv2.xy * (_UVTileDissolveUV == 2));
+					dissolveUdim += (v.uv3.xy * (_UVTileDissolveUV == 3));
+					
+					float isDiscardedFromDissolve = 0;
+					float4 xMaskDissolve = float4(  (dissolveUdim.x >= 0 && dissolveUdim.x < 1),
+					(dissolveUdim.x >= 1 && dissolveUdim.x < 2),
+					(dissolveUdim.x >= 2 && dissolveUdim.x < 3),
+					(dissolveUdim.x >= 3 && dissolveUdim.x < 4));
+					
+					isDiscardedFromDissolve += (dissolveUdim.y >= 0 && dissolveUdim.y < 1) * dot(float4(_UVTileDissolveAlpha_Row0_0==1, _UVTileDissolveAlpha_Row0_1==1, _UVTileDissolveAlpha_Row0_2==1, _UVTileDissolveAlpha_Row0_3==1), xMaskDissolve);
+					isDiscardedFromDissolve += (dissolveUdim.y >= 1 && dissolveUdim.y < 2) * dot(float4(_UVTileDissolveAlpha_Row1_0==1, _UVTileDissolveAlpha_Row1_1==1, _UVTileDissolveAlpha_Row1_2==1, _UVTileDissolveAlpha_Row1_3==1), xMaskDissolve);
+					isDiscardedFromDissolve += (dissolveUdim.y >= 2 && dissolveUdim.y < 3) * dot(float4(_UVTileDissolveAlpha_Row2_0==1, _UVTileDissolveAlpha_Row2_1==1, _UVTileDissolveAlpha_Row2_2==1, _UVTileDissolveAlpha_Row2_3==1), xMaskDissolve);
+					isDiscardedFromDissolve += (dissolveUdim.y >= 3 && dissolveUdim.y < 4) * dot(float4(_UVTileDissolveAlpha_Row3_0==1, _UVTileDissolveAlpha_Row3_1==1, _UVTileDissolveAlpha_Row3_2==1, _UVTileDissolveAlpha_Row3_3==1), xMaskDissolve);
+					
+					isDiscardedFromDissolve *= any(float4(dissolveUdim.y >= 0, dissolveUdim.y < 4, dissolveUdim.x >= 0, dissolveUdim.x < 4)); // never discard outside 4x4 grid in pos coords
+					
+					if(isDiscardedFromDissolve) // Early Return skips rest of vertex shader
+					{
+						return (v2f)0;
+					}
+				}
+				#endif
+				//endex
+				
 				o.objectPos = mul(unity_ObjectToWorld, float4(0, 0, 0, 1)).xyz;
 				o.objNormal = v.normal;
 				o.normal = UnityObjectToWorldNormal(v.normal);
@@ -16823,6 +16983,21 @@ Shader ".poiyomi/Poiyomi 8.0/Poiyomi Toon"
 				+ _DissolveAlpha8
 				+ _DissolveAlpha9;
 				float dds = _DissolveDetailStrength;
+				
+				if(_UVTileDissolveEnabled)
+				{
+					float2 udim = floor(poiMesh.uv[(int)_UVTileDissolveUV]);
+					
+					float4 xMask = float4(  (udim.x >= 0 && udim.x < 1),
+					(udim.x >= 1 && udim.x < 2),
+					(udim.x >= 2 && udim.x < 3),
+					(udim.x >= 3 && udim.x < 4));
+					
+					da += (udim.y >= 0 && udim.y < 1) * dot(float4(_UVTileDissolveAlpha_Row0_0, _UVTileDissolveAlpha_Row0_1, _UVTileDissolveAlpha_Row0_2, _UVTileDissolveAlpha_Row0_3), xMask);
+					da += (udim.y >= 1 && udim.y < 2) * dot(float4(_UVTileDissolveAlpha_Row1_0, _UVTileDissolveAlpha_Row1_1, _UVTileDissolveAlpha_Row1_2, _UVTileDissolveAlpha_Row1_3), xMask);
+					da += (udim.y >= 2 && udim.y < 3) * dot(float4(_UVTileDissolveAlpha_Row2_0, _UVTileDissolveAlpha_Row2_1, _UVTileDissolveAlpha_Row2_2, _UVTileDissolveAlpha_Row2_3), xMask);
+					da += (udim.y >= 3 && udim.y < 4) * dot(float4(_UVTileDissolveAlpha_Row3_0, _UVTileDissolveAlpha_Row3_1, _UVTileDissolveAlpha_Row3_2, _UVTileDissolveAlpha_Row3_3), xMask);
+				}
 				
 				#ifdef POI_AUDIOLINK
 				UNITY_BRANCH
@@ -20961,14 +21136,14 @@ Shader ".poiyomi/Poiyomi 8.0/Poiyomi Toon"
 				Ref [_StencilRef]
 				ReadMask [_StencilReadMask]
 				WriteMask [_StencilWriteMask]
-				//ifex _StencilType == 0
+				//ifex _StencilType == 1
 				Comp [_StencilCompareFunction]
 				Pass [_StencilPassOp]
 				Fail [_StencilFailOp]
 				ZFail [_StencilZFailOp]
 				//endex
 				
-				//ifex _StencilType == 1
+				//ifex _StencilType == 0
 				CompBack [_StencilBackCompareFunction]
 				PassBack [_StencilBackPassOp]
 				FailBack [_StencilBackFailOp]
@@ -21690,6 +21865,28 @@ Shader ".poiyomi/Poiyomi 8.0/Poiyomi Toon"
 			float _DissolveShapeScale;
 			float _DissolveInvertShape;
 			float _DissolveShapeEdgeLength;
+			
+			// UV Tile Dissolve
+			float _UVTileDissolveEnabled;
+			float _UVTileDissolveDiscardAtMax;
+			float _UVTileDissolveUV;
+			
+			float _UVTileDissolveAlpha_Row3_0;
+			float _UVTileDissolveAlpha_Row3_1;
+			float _UVTileDissolveAlpha_Row3_2;
+			float _UVTileDissolveAlpha_Row3_3;
+			float _UVTileDissolveAlpha_Row2_0;
+			float _UVTileDissolveAlpha_Row2_1;
+			float _UVTileDissolveAlpha_Row2_2;
+			float _UVTileDissolveAlpha_Row2_3;
+			float _UVTileDissolveAlpha_Row1_0;
+			float _UVTileDissolveAlpha_Row1_1;
+			float _UVTileDissolveAlpha_Row1_2;
+			float _UVTileDissolveAlpha_Row1_3;
+			float _UVTileDissolveAlpha_Row0_0;
+			float _UVTileDissolveAlpha_Row0_1;
+			float _UVTileDissolveAlpha_Row0_2;
+			float _UVTileDissolveAlpha_Row0_3;
 			
 			float _DissolveAlpha0;
 			float _DissolveAlpha1;
@@ -23562,6 +23759,40 @@ Shader ".poiyomi/Poiyomi 8.0/Poiyomi Toon"
 				#endif
 				//endex
 				
+				//ifex _EnableDissolve==0
+				#ifdef DISTORT
+				UNITY_BRANCH
+				if(_UVTileDissolveEnabled && _UVTileDissolveDiscardAtMax)
+				{
+					// Branchless (inspired by s-ilent)
+					float2 dissolveUdim = 0;
+					// Select UV
+					dissolveUdim += (v.uv0.xy * (_UVTileDissolveUV == 0));
+					dissolveUdim += (v.uv1.xy * (_UVTileDissolveUV == 1));
+					dissolveUdim += (v.uv2.xy * (_UVTileDissolveUV == 2));
+					dissolveUdim += (v.uv3.xy * (_UVTileDissolveUV == 3));
+					
+					float isDiscardedFromDissolve = 0;
+					float4 xMaskDissolve = float4(  (dissolveUdim.x >= 0 && dissolveUdim.x < 1),
+					(dissolveUdim.x >= 1 && dissolveUdim.x < 2),
+					(dissolveUdim.x >= 2 && dissolveUdim.x < 3),
+					(dissolveUdim.x >= 3 && dissolveUdim.x < 4));
+					
+					isDiscardedFromDissolve += (dissolveUdim.y >= 0 && dissolveUdim.y < 1) * dot(float4(_UVTileDissolveAlpha_Row0_0==1, _UVTileDissolveAlpha_Row0_1==1, _UVTileDissolveAlpha_Row0_2==1, _UVTileDissolveAlpha_Row0_3==1), xMaskDissolve);
+					isDiscardedFromDissolve += (dissolveUdim.y >= 1 && dissolveUdim.y < 2) * dot(float4(_UVTileDissolveAlpha_Row1_0==1, _UVTileDissolveAlpha_Row1_1==1, _UVTileDissolveAlpha_Row1_2==1, _UVTileDissolveAlpha_Row1_3==1), xMaskDissolve);
+					isDiscardedFromDissolve += (dissolveUdim.y >= 2 && dissolveUdim.y < 3) * dot(float4(_UVTileDissolveAlpha_Row2_0==1, _UVTileDissolveAlpha_Row2_1==1, _UVTileDissolveAlpha_Row2_2==1, _UVTileDissolveAlpha_Row2_3==1), xMaskDissolve);
+					isDiscardedFromDissolve += (dissolveUdim.y >= 3 && dissolveUdim.y < 4) * dot(float4(_UVTileDissolveAlpha_Row3_0==1, _UVTileDissolveAlpha_Row3_1==1, _UVTileDissolveAlpha_Row3_2==1, _UVTileDissolveAlpha_Row3_3==1), xMaskDissolve);
+					
+					isDiscardedFromDissolve *= any(float4(dissolveUdim.y >= 0, dissolveUdim.y < 4, dissolveUdim.x >= 0, dissolveUdim.x < 4)); // never discard outside 4x4 grid in pos coords
+					
+					if(isDiscardedFromDissolve) // Early Return skips rest of vertex shader
+					{
+						return (v2f)0;
+					}
+				}
+				#endif
+				//endex
+				
 				o.objectPos = mul(unity_ObjectToWorld, float4(0, 0, 0, 1)).xyz;
 				o.objNormal = v.normal;
 				o.normal = UnityObjectToWorldNormal(v.normal);
@@ -24111,6 +24342,21 @@ Shader ".poiyomi/Poiyomi 8.0/Poiyomi Toon"
 				+ _DissolveAlpha8
 				+ _DissolveAlpha9;
 				float dds = _DissolveDetailStrength;
+				
+				if(_UVTileDissolveEnabled)
+				{
+					float2 udim = floor(poiMesh.uv[(int)_UVTileDissolveUV]);
+					
+					float4 xMask = float4(  (udim.x >= 0 && udim.x < 1),
+					(udim.x >= 1 && udim.x < 2),
+					(udim.x >= 2 && udim.x < 3),
+					(udim.x >= 3 && udim.x < 4));
+					
+					da += (udim.y >= 0 && udim.y < 1) * dot(float4(_UVTileDissolveAlpha_Row0_0, _UVTileDissolveAlpha_Row0_1, _UVTileDissolveAlpha_Row0_2, _UVTileDissolveAlpha_Row0_3), xMask);
+					da += (udim.y >= 1 && udim.y < 2) * dot(float4(_UVTileDissolveAlpha_Row1_0, _UVTileDissolveAlpha_Row1_1, _UVTileDissolveAlpha_Row1_2, _UVTileDissolveAlpha_Row1_3), xMask);
+					da += (udim.y >= 2 && udim.y < 3) * dot(float4(_UVTileDissolveAlpha_Row2_0, _UVTileDissolveAlpha_Row2_1, _UVTileDissolveAlpha_Row2_2, _UVTileDissolveAlpha_Row2_3), xMask);
+					da += (udim.y >= 3 && udim.y < 4) * dot(float4(_UVTileDissolveAlpha_Row3_0, _UVTileDissolveAlpha_Row3_1, _UVTileDissolveAlpha_Row3_2, _UVTileDissolveAlpha_Row3_3), xMask);
+				}
 				
 				#ifdef POI_AUDIOLINK
 				UNITY_BRANCH

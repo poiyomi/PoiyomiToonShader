@@ -1,0 +1,10 @@
+How to setup a custom penetrator:
+1. Mesh Setup
+1.1 If your penetrator is rigged and should support dynamic bones it has to meet the following requirments:
+Local Position and rotation of the Armatur, Mesh and Bone object has to be zero.
+Scale of these objects should be 1
+1.2 The mesh, armature and root bone need to have their forward vector pointing towards the penetration direction
+1.3 The root position of the mesh should be where your penetrator should start being influenced
+
+Exporting a Penetrator correctly from blender is a fucking pain, cause blender fbx to unity export SUCKS ASS!
+I appended two pictures of armeture rotation in blender + export settings that worked for me.

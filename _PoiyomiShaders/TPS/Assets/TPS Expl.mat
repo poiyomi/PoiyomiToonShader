@@ -1,0 +1,157 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 6
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: TPS Expl
+  m_Shader: {fileID: 4800000, guid: 3a4e23b2b3b7b044d9b96d4bea5465e1, type: 3}
+  m_ShaderKeywords: TPS_Penetrator _TPS_PASSTHROUGH_ON _TPS_VERTEXCOLORS_ON
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _BumpMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailAlbedoMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailMask:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailNormalMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _EmissionMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MetallicGlossMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _OcclusionMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _ParallaxMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Floats:
+    - _BlurDirection: 0
+    - _BlurDistance: 0.2
+    - _BlurMode: 0
+    - _BlurSamples: 32
+    - _BumpScale: 1
+    - _Cutoff: 0.5
+    - _DetailNormalMapScale: 1
+    - _DstBlend: 0
+    - _GlossMapScale: 1
+    - _Glossiness: 0.5
+    - _GlossyReflections: 1
+    - _Metallic: 0
+    - _Mode: 0
+    - _OcclusionStrength: 1
+    - _Parallax: 0.02
+    - _SmoothnessTextureChannel: 0
+    - _SoftFadeBlur: 1
+    - _SpecularHighlights: 1
+    - _SrcBlend: 1
+    - _TPS2_BufferedDepth: 0
+    - _TPS2_BufferedStrength: 0
+    - _TPS2_Comp1: 0
+    - _TPS2_Comp2: 0
+    - _TPS2_Debug1: 0
+    - _TPS2_Debug2: 0
+    - _TPS2_Debug3: 0.54
+    - _TPS2_Debug4: 0
+    - _TPS2_Debug5: 0
+    - _TPS2_Depth: 0
+    - _TPS2_Distance_Hole: 0
+    - _TPS2_Distance_Ring: 0
+    - _TPS2_Distance_RootBack: 0
+    - _TPS2_Distance_RootFront: 0
+    - _TPS2_Distance_RootRight: 0
+    - _TPS2_Distance_RootRoot: 0
+    - _TPS2_Distance_RootUp: 0
+    - _TPS2_Enabled: 1
+    - _TPS2_Normal_RootBack: 0
+    - _TPS2_Normal_RootFront: 0
+    - _TPS2_Normal_RootRight: 0
+    - _TPS2_Normal_RootRoot: 0
+    - _TPS2_Normal_RootUp: 0
+    - _TPS2_Orifice_Type: 0
+    - _TPS2_PulloutCounteract: 0.1
+    - _TPSBezierHeader: 0
+    - _TPSBuldgeHeader: 0
+    - _TPSEnabled: 0
+    - _TPSHeader: 0
+    - _TPSHelpbox: 0
+    - _TPSIdleHeader: 0
+    - _TPSOrificesEnabled: 0
+    - _TPSPenetratorEnabled: 1
+    - _TPSPulsingHeader: 0
+    - _TPSSqueezeHeader: 0
+    - _TPS_BezierSmoothness: 0.17
+    - _TPS_BezierStart: 0
+    - _TPS_Buldge: 0
+    - _TPS_BuldgeDistance: 0.402
+    - _TPS_BuldgeFalloffDistance: 0.02
+    - _TPS_IdleGravity: 0
+    - _TPS_IdleMovementStrength: 0
+    - _TPS_IdleSkrink: 0.591
+    - _TPS_IdleSkrinkLength: 1
+    - _TPS_IdleSkrinkWidth: 1
+    - _TPS_Infobox: 0
+    - _TPS_MinimumOrifaceDistance: 1
+    - _TPS_MinimumOrificeDistance: 1
+    - _TPS_Passthrough: 1
+    - _TPS_PenetratorLength: 1.3161557
+    - _TPS_PumpingSpeed: 3.92
+    - _TPS_PumpingStrength: 0
+    - _TPS_PumpingWidth: 0.201
+    - _TPS_Squeeze: 0
+    - _TPS_SqueezeDistance: 0.326
+    - _TPS_VertexColors: 1
+    - _TPS_VertexColorsHelpbox: 0
+    - _TPS_Wetness: 0
+    - _UVSec: 0
+    - _VRBAd: 0
+    - _ZWrite: 1
+    - _isBlurActive: 1
+    - g_end_blursActive: 0
+    - g_start_blursActive: 0
+    - m_end_blur: 0
+    - m_end_pen_autoConfig: 0
+    - m_end_tps: 0
+    - m_end_tps_orifice: 0
+    - m_end_tps_penetrator: 0
+    - m_start_blur: 1
+    - m_start_pen_autoConfig: 0
+    - m_start_tps: 1
+    - m_start_tps_orifice: 1
+    - m_start_tps_penetrator: 1
+    - shader_is_using_thry_editor: 69
+    m_Colors:
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _TPS2_Distances: {r: 0, g: 0, b: 0, a: 0}
+    - _TPS_PenetratorScale: {r: 4, g: 4, b: 4, a: 0}
