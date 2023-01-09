@@ -576,23 +576,32 @@ namespace Thry
                 byte ImageDescriptor = r.ReadByte();
                 if (ImageType == 0)
                 {
-                    Debug.Log("Unsupported TGA file! No image data");
+                    EditorUtility.DisplayDialog("Error", "Unsupported TGA file! No image data", "OK");
+                    Debug.LogError("Unsupported TGA file! No image data");
                 }
                 else if (ImageType == 3 | ImageType == 11)
                 {
-                    Debug.Log("Unsupported TGA file! Not truecolor");
+                    EditorUtility.DisplayDialog("Error", "Unsupported TGA file! 8-bit grayscale images are not supported", "OK");
+                    Debug.LogError("Unsupported TGA file! Not truecolor");
                 }
                 else if (ImageType == 9 | ImageType == 10)
                 {
-                    Debug.Log("Unsupported TGA file! Colormapped");
+                    EditorUtility.DisplayDialog("Error", "Unsupported TGA file! Run-length encoded images are not supported", "OK");
+                    Debug.LogError("Unsupported TGA file! Colormapped");
 
                 }
+                bool startsAtTop = (ImageDescriptor & 1 << 5) >> 5 == 1;
+                bool startsAtRight = (ImageDescriptor & 1 << 4) >> 4 == 1;
                 //     MsgBox("Dimensions are "  Width  ","  Height)
                 Texture2D b = new Texture2D(Width, Height, TextureFormat.ARGB32, false);
-                for (int y = 0; y <= b.height - 1; y++)
+                for (int y = 0; y < b.height; y++)
                 {
-                    for (int x = 0; x <= b.width - 1; x++)
+                    for (int x = 0; x < b.width; x++)
                     {
+                        int texX = x;
+                        int texY = y;
+                        if(startsAtRight) texX = b.width - x - 1;
+                        if(startsAtTop) texY = b.height - y - 1;
 
                         if (PixelDepth == 32)
                         {
@@ -606,9 +615,7 @@ namespace Thry
                             blue /= 255;
                             red /= 255;
                             Color cl = new Color(blue, green, red, alpha);
-                            b.SetPixel(x, y, cl);
-
-
+                            b.SetPixel(texX, texY, cl);
                         }
                         else
                         {
@@ -622,9 +629,7 @@ namespace Thry
                             blue = Mathf.Pow(blue / 255, 1 / 2.2f);
                             red = Mathf.Pow(red / 255, 1 / 2.2f);
                             Color cl = new Color(blue, green, red, 1);
-                            b.SetPixel(x, y, cl);
-
-
+                            b.SetPixel(texX, texY, cl);
                         }
 
                     }
@@ -642,16 +647,13 @@ namespace Thry
         { TextureImporterFormat.BC7 , 8 },
         { TextureImporterFormat.DXT5 , 8 },
         { TextureImporterFormat.DXT5Crunched , 8 },
-        { TextureImporterFormat.RGBA64 , 64 },
         { TextureImporterFormat.RGBA32 , 32 },
         { TextureImporterFormat.RGBA16 , 16 },
         { TextureImporterFormat.DXT1 , 4 },
         { TextureImporterFormat.DXT1Crunched , 4 },
-        { TextureImporterFormat.RGB48 , 64 },
         { TextureImporterFormat.RGB24 , 32 },
         { TextureImporterFormat.RGB16 , 16 },
         { TextureImporterFormat.BC5 , 8 },
-        { TextureImporterFormat.RG32 , 32 },
         { TextureImporterFormat.BC4 , 4 },
         { TextureImporterFormat.R8 , 8 },
         { TextureImporterFormat.R16 , 16 },
@@ -666,7 +668,12 @@ namespace Thry
         { TextureImporterFormat.PVRTC_RGB2 , 2 },
         { TextureImporterFormat.PVRTC_RGB4 , 4 },
         { TextureImporterFormat.ARGB32 , 32 },
-        { TextureImporterFormat.ARGB16 , 16 }
+        { TextureImporterFormat.ARGB16 , 16 },
+        #if (UNITY_2020_1_OR_NEWER || UNITY_2019_4_23 || UNITY_2019_4_24 || UNITY_2019_4_25 || UNITY_2019_4_26 || UNITY_2019_4_27 || UNITY_2019_4_28 || UNITY_2019_4_29 || UNITY_2019_4_30 || UNITY_2019_4_31 || UNITY_2019_4_32 || UNITY_2019_4_33 || UNITY_2019_4_34 || UNITY_2019_4_35 || UNITY_2019_4_36 || UNITY_2019_4_37 || UNITY_2019_4_38 || UNITY_2019_4_39 || UNITY_2019_4_40)
+        { TextureImporterFormat.RGBA64 , 64 },
+        { TextureImporterFormat.RGB48 , 64 },
+        { TextureImporterFormat.RG32 , 32 },
+        #endif
     };
 
             static Dictionary<RenderTextureFormat, int> RT_BPP = new Dictionary<RenderTextureFormat, int>()
@@ -791,10 +798,10 @@ namespace Thry
         public static void SetMaterialValue(string key, string value)
         {
             Material[] materials = ShaderEditor.Active.Materials;
-            MaterialProperty p = ShaderEditor.Active.GetMaterialProperty(key);
-            if (p != null)
+            if (ShaderEditor.Active.PropertyDictionary.TryGetValue(key, out ShaderProperty p))
             {
-                MaterialHelper.SetMaterialPropertyValue(p, value);
+                MaterialHelper.SetMaterialPropertyValue(p.MaterialProperty, value);
+                p.UpdateKeywordFromValue();
             }
             else if (key == "render_queue")
             {

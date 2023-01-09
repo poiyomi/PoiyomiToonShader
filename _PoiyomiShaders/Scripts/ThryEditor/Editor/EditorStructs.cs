@@ -164,6 +164,9 @@ namespace Thry
 
             if (prop == null)
                 return;
+
+            this.ExemptFromLockedDisabling |= ShaderOptimizer.IsPropertyExcemptFromLocking(prop);
+            
             if (this is ShaderHeader == false)
             {
                 this.IsAnimatable = !DrawingData.LastPropertyDoesntAllowAnimation;
@@ -694,6 +697,11 @@ namespace Thry
             else m.DisableKeyword(keyword);
         }
 
+        public void UpdateKeywordFromValue()
+        {
+            if (keyword != null) SetKeyword(ActiveShaderEditor.Materials, MaterialProperty.floatValue == 1);
+        }
+
         public override void DrawInternal(GUIContent content, CRect rect = null, bool useEditorIndent = false, bool isInHeader = false)
         {
             PreDraw();
@@ -1115,7 +1123,7 @@ namespace Thry
 
         public override void DrawDefault()
         {
-            GuiHelper.DrawLocaleSelection(this.Content, ActiveShaderEditor.Locale.available_locales, ActiveShaderEditor.Locale.selected_locale_index);
+            ShaderEditor.Active.Locale.DrawDropdown();    
         }
     }
 }

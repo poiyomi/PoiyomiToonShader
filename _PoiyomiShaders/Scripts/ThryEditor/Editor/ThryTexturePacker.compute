@@ -4,56 +4,129 @@ RWTexture2D<float4> Result;
 
 float Width;
 float Height;
-bool TakeRGBFromRTexture;
 
-//Config: has texture, billinearFiltering / fallback, channel, invert
+Texture2D<float4> R_Input_0;
+Texture2D<float4> R_Input_1;
+Texture2D<float4> R_Input_2;
+Texture2D<float4> R_Input_3;
+int R_Channel_0;
+int R_Channel_1;
+int R_Channel_2;
+int R_Channel_3;
+bool R_IsBillinear_0;
+bool R_IsBillinear_1;
+bool R_IsBillinear_2;
+bool R_IsBillinear_3;
+int R_Count;
+int R_BlendMode;
+float R_Fallback;
+bool R_Invert;
 
-Texture2D<float4> R_Input;
-float4 R_Config;
+Texture2D<float4> G_Input_0;
+Texture2D<float4> G_Input_1;
+Texture2D<float4> G_Input_2;
+Texture2D<float4> G_Input_3;
+int G_Channel_0;
+int G_Channel_1;
+int G_Channel_2;
+int G_Channel_3;
+bool G_IsBillinear_0;
+bool G_IsBillinear_1;
+bool G_IsBillinear_2;
+bool G_IsBillinear_3;
+int G_Count;
+int G_BlendMode;
+float G_Fallback;
+bool G_Invert;
 
-Texture2D<float4> G_Input;
-float4 G_Config;
+Texture2D<float4> B_Input_0;
+Texture2D<float4> B_Input_1;
+Texture2D<float4> B_Input_2;
+Texture2D<float4> B_Input_3;
+int B_Channel_0;
+int B_Channel_1;
+int B_Channel_2;
+int B_Channel_3;
+bool B_IsBillinear_0;
+bool B_IsBillinear_1;
+bool B_IsBillinear_2;
+bool B_IsBillinear_3;
+int B_Count;
+int B_BlendMode;
+float B_Fallback;
+bool B_Invert;
 
-Texture2D<float4> B_Input;
-float4 B_Config;
+Texture2D<float4> A_Input_0;
+Texture2D<float4> A_Input_1;
+Texture2D<float4> A_Input_2;
+Texture2D<float4> A_Input_3;
+int A_Channel_0;
+int A_Channel_1;
+int A_Channel_2;
+int A_Channel_3;
+bool A_IsBillinear_0;
+bool A_IsBillinear_1;
+bool A_IsBillinear_2;
+bool A_IsBillinear_3;
+int A_Count;
+int A_BlendMode;
+float A_Fallback;
+bool A_Invert;
 
-Texture2D<float4> A_Input;
-float4 A_Config;
+// blendmodes
+// 0 = add
+// 1 = multiply
+// 3 = max
+// 4 = min
 
 SamplerState linearClampSampler;
 SamplerState pointClampSampler;
 
-float SampleInput(Texture2D<float4> tex, float4 config, float2 uv) {
-	if (config.r == 0) {
-		return config.g;
-	}
-	float value = 0;
-	float4 pixelColor = float4(1,1,1,1);
-	if(config.g == 0) pixelColor = tex.SampleLevel(pointClampSampler, uv, 0);
-	else pixelColor = pixelColor = tex.SampleLevel(linearClampSampler, uv, 0);
-	if (config.b == 0) value = pixelColor.r;
-	else if (config.b == 1) value = pixelColor.g;
-	else if (config.b == 2) value = pixelColor.b;
-	else if (config.b == 3) value = pixelColor.a;
-	else value = max(pixelColor.r, max(pixelColor.g, pixelColor.b));
-	if (config.a == 1) value = 1 - value;
+float SampleTexture(Texture2D<float4> tex, bool isBillinear, int channel, float2 uv)
+{
+	float4 pixelColor = float4(0, 0, 0, 0);
+	if(isBillinear) pixelColor = tex.SampleLevel(linearClampSampler, uv, 0);
+	else pixelColor = tex.SampleLevel(pointClampSampler, uv, 0);
+	if (channel == 0) return pixelColor.r;
+	else if (channel == 1) return pixelColor.g;
+	else if (channel == 2) return pixelColor.b;
+	else if (channel == 3) return pixelColor.a;
+	else return max(pixelColor.r, max(pixelColor.g, pixelColor.b));
+}
+
+float SampleAndBlendTexture(float value, Texture2D<float4> tex, bool isBillinear, int blendMode, int channel, float2 uv)
+{
+	float newValue = SampleTexture(tex, isBillinear, channel, uv);
+	if (blendMode == 0) return value + newValue;
+	else if (blendMode == 1) return value * newValue;
+	else if (blendMode == 2) return max(value, newValue);
+	else if (blendMode == 3) return min(value, newValue);
+	else return newValue;
+}
+
+float SampleAndBlendTextures(Texture2D<float4> tex1, Texture2D<float4> tex2, Texture2D<float4> tex3, Texture2D<float4> tex4, 
+	int channel1, int channel2, int channel3, int channel4,
+	bool isBillinear1, bool isBillinear2, bool isBillinear3, bool isBillinear4, 
+	int count, int blendMode, float2 uv)
+{
+	float value = SampleTexture(tex1, isBillinear1, channel1, uv);
+	if(count > 1) value = SampleAndBlendTexture(value, tex2, isBillinear2, blendMode, channel2, uv);
+	if(count > 2) value = SampleAndBlendTexture(value, tex3, isBillinear3, blendMode, channel3, uv);
+	if(count > 3) value = SampleAndBlendTexture(value, tex4, isBillinear4, blendMode, channel4, uv);
 	return value;
 }
 
-float3 SampleInputRGB(Texture2D<float4> tex, float4 config, float2 uv) {
-	if (config.r == 0) {
-		return float3(config.g, config.g, config.g);
-	}
-	float4 pixelColor = float4(1, 1, 1, 1);
-	if (config.g == 0) pixelColor = tex.SampleLevel(pointClampSampler, uv, 0);
-	else pixelColor = pixelColor = tex.SampleLevel(linearClampSampler, uv, 0);
-	if (config.a == 1) 
+float SampleInput(Texture2D<float4> tex1, Texture2D<float4> tex2, Texture2D<float4> tex3, Texture2D<float4> tex4,
+	int channel1, int channel2, int channel3, int channel4,
+	bool isBillinear1, bool isBillinear2, bool isBillinear3, bool isBillinear4,
+	int count, int blendMode, float fallback, bool doInvert, float2 uv) { 
+	float value = fallback;
+	if(count > 0)
 	{
-		pixelColor.r = 1 - pixelColor.r;
-		pixelColor.g = 1 - pixelColor.g;
-		pixelColor.b = 1 - pixelColor.b;
+		value = SampleAndBlendTextures(tex1, tex2, tex3, tex4, channel1, channel2, channel3, channel4, isBillinear1, isBillinear2, isBillinear3, isBillinear4, count, blendMode, uv);
+		if(doInvert) value = 1 - value;
 	}
-	return pixelColor;
+	return value;
 }
 
 [numthreads(8, 8, 1)]
@@ -61,17 +134,9 @@ void CSMain(uint3 id : SV_DispatchThreadID)
 {
 	float2 uv = float2(id.x / Width, id.y / Height);
 	float4 pixel = float4(1, 1, 1, 1);
-	if (TakeRGBFromRTexture) 
-	{
-		pixel.rgb = SampleInputRGB(R_Input, R_Config, uv);
-		pixel.a = SampleInput(G_Input, G_Config, uv);
-	}
-	else 
-	{
-		pixel.r = SampleInput(R_Input, R_Config, uv);
-		pixel.g = SampleInput(G_Input, G_Config, uv);
-		pixel.b = SampleInput(B_Input, B_Config, uv);
-		pixel.a = SampleInput(A_Input, A_Config, uv);
-	}
+	pixel.r = SampleInput(R_Input_0, R_Input_1, R_Input_2, R_Input_3, R_Channel_0, R_Channel_1, R_Channel_2, R_Channel_3, R_IsBillinear_0, R_IsBillinear_1, R_IsBillinear_2, R_IsBillinear_3, R_Count, R_BlendMode, R_Fallback, R_Invert, uv);
+	pixel.g = SampleInput(G_Input_0, G_Input_1, G_Input_2, G_Input_3, G_Channel_0, G_Channel_1, G_Channel_2, G_Channel_3, G_IsBillinear_0, G_IsBillinear_1, G_IsBillinear_2, G_IsBillinear_3, G_Count, G_BlendMode, G_Fallback, G_Invert, uv);
+	pixel.b = SampleInput(B_Input_0, B_Input_1, B_Input_2, B_Input_3, B_Channel_0, B_Channel_1, B_Channel_2, B_Channel_3, B_IsBillinear_0, B_IsBillinear_1, B_IsBillinear_2, B_IsBillinear_3, B_Count, B_BlendMode, B_Fallback, B_Invert, uv);
+	pixel.a = SampleInput(A_Input_0, A_Input_1, A_Input_2, A_Input_3, A_Channel_0, A_Channel_1, A_Channel_2, A_Channel_3, A_IsBillinear_0, A_IsBillinear_1, A_IsBillinear_2, A_IsBillinear_3, A_Count, A_BlendMode, A_Fallback, A_Invert, uv);
 	Result[id.xy] = pixel;
 }

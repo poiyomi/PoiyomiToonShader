@@ -240,8 +240,8 @@ namespace Thry
 
         private static object ConvertToArray(object parsed, Type objtype)
         {
-            if (parsed.GetType() == typeof(string) && objtype.GetMethod("ParseToArrayForThryParser", BindingFlags.Static | BindingFlags.NonPublic) != null)
-                return objtype.GetMethod("ParseToArrayForThryParser", BindingFlags.Static | BindingFlags.NonPublic).Invoke(null, new object[] { parsed });
+            if (objtype.BaseType == typeof(System.Array) && parsed.GetType() == typeof(string) && objtype.GetElementType().GetMethod("ParseToArrayForThryParser", BindingFlags.Static | BindingFlags.NonPublic) != null)
+                return objtype.GetElementType().GetMethod("ParseToArrayForThryParser", BindingFlags.Static | BindingFlags.NonPublic).Invoke(null, new object[] { parsed });
             if (parsed == null || (parsed is string && (string)parsed == ""))
                 return null;
             Type array_obj_type = objtype.GetElementType();

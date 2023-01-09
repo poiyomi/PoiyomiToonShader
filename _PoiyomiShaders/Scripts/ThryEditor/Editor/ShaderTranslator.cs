@@ -29,13 +29,23 @@ namespace Thry.ThryEditor
             public string Math;
         }
 
+        public List<PropertyTranslation> GetPropertyTranslations()
+        {
+            if (PropertyTranslations == null)
+            {
+                PropertyTranslations = new List<PropertyTranslation>();
+            }
+
+            return PropertyTranslations;
+        }
+
         public void Apply(ShaderEditor editor)
         {
             Shader originShader = Shader.Find(OriginShader);
             Shader targetShader = Shader.Find(TargetShader);
             SerializedObject serializedMaterial = new SerializedObject(editor.Materials[0]);
 
-            foreach(PropertyTranslation trans in PropertyTranslations)
+            foreach(PropertyTranslation trans in GetPropertyTranslations())
             {
                 if (editor.PropertyDictionary.ContainsKey(trans.Target))
                 {
@@ -203,7 +213,7 @@ namespace Thry.ThryEditor
                 GUILayout.Label("Math");
                 GUILayout.EndHorizontal();
                 List<PropertyTranslation> remove = new List<PropertyTranslation>();
-                foreach (PropertyTranslation trans in translator.PropertyTranslations)
+                foreach (PropertyTranslation trans in translator.GetPropertyTranslations())
                 {
                     Rect fullWidth = EditorGUILayout.GetControlRect();
                     Rect r = fullWidth;
@@ -223,12 +233,12 @@ namespace Thry.ThryEditor
                 }
 
                 foreach (PropertyTranslation r in remove)
-                    translator.PropertyTranslations.Remove(r);
+                    translator.GetPropertyTranslations().Remove(r);
 
                 Rect buttonRect = EditorGUILayout.GetControlRect();
                 buttonRect.x = buttonRect.width - 20;
                 buttonRect.width = 20;
-                if (GUI.Button(buttonRect, GUIContent.none, Styles.icon_style_add)) translator.PropertyTranslations.Add(new PropertyTranslation());
+                if (GUI.Button(buttonRect, GUIContent.none, Styles.icon_style_add)) translator.GetPropertyTranslations().Add(new PropertyTranslation());
             }
 
             serializedObject.Update();

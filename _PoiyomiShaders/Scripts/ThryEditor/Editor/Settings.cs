@@ -99,11 +99,11 @@ namespace Thry
         private void GUINotification()
         {
             if (isFirstPopop)
-                GUILayout.Label(" " + Locale.editor.Get("first_install_message"), Styles.greenStyle);
+                GUILayout.Label(" " + EditorLocale.editor.Get("first_install_message"), Styles.greenStyle);
             else if (updatedVersion == -1)
-                GUILayout.Label(" " + Locale.editor.Get("update_message"), Styles.greenStyle);
+                GUILayout.Label(" " + EditorLocale.editor.Get("update_message"), Styles.greenStyle);
             else if (updatedVersion == 1)
-                GUILayout.Label(" " + Locale.editor.Get("downgrade_message"), Styles.orangeStyle);
+                GUILayout.Label(" " + EditorLocale.editor.Get("downgrade_message"), Styles.orangeStyle);
         }
 
         private void GUIMessage()
@@ -136,7 +136,7 @@ namespace Thry
         bool is_editor_expanded = true;
         private void GUIEditor()
         {
-            is_editor_expanded = Foldout(Locale.editor.Get("header_editor"), is_editor_expanded);
+            is_editor_expanded = Foldout(EditorLocale.editor.Get("header_editor"), is_editor_expanded);
             if (is_editor_expanded)
             {
                 EditorGUI.indentLevel += 2;
@@ -164,16 +164,16 @@ namespace Thry
             Text("gradient_name", false);
             string gradient_name = Config.Singleton.gradient_name;
             if (gradient_name.Contains("<hash>"))
-                GUILayout.Label(Locale.editor.Get("gradient_good_naming"), Styles.greenStyle, GUILayout.ExpandWidth(false));
+                GUILayout.Label(EditorLocale.editor.Get("gradient_good_naming"), Styles.greenStyle, GUILayout.ExpandWidth(false));
             else if (gradient_name.Contains("<material>"))
                 if (gradient_name.Contains("<prop>"))
-                    GUILayout.Label(Locale.editor.Get("gradient_good_naming"), Styles.greenStyle, GUILayout.ExpandWidth(false));
+                    GUILayout.Label(EditorLocale.editor.Get("gradient_good_naming"), Styles.greenStyle, GUILayout.ExpandWidth(false));
                 else
-                    GUILayout.Label(Locale.editor.Get("gradient_add_hash_or_prop"), Styles.orangeStyle, GUILayout.ExpandWidth(false));
+                    GUILayout.Label(EditorLocale.editor.Get("gradient_add_hash_or_prop"), Styles.orangeStyle, GUILayout.ExpandWidth(false));
             else if (gradient_name.Contains("<prop>"))
-                GUILayout.Label(Locale.editor.Get("gradient_add_material"), Styles.orangeStyle, GUILayout.ExpandWidth(false));
+                GUILayout.Label(EditorLocale.editor.Get("gradient_add_material"), Styles.orangeStyle, GUILayout.ExpandWidth(false));
             else
-                GUILayout.Label(Locale.editor.Get("gradient_add_material_or_prop"), Styles.redStyle, GUILayout.ExpandWidth(false));
+                GUILayout.Label(EditorLocale.editor.Get("gradient_add_material_or_prop"), Styles.redStyle, GUILayout.ExpandWidth(false));
             GUILayout.EndHorizontal();
         }
 
@@ -183,7 +183,7 @@ namespace Thry
             private Vector2 scroll;
             void OnGUI()
             {
-                EditorGUILayout.SelectableLabel(Locale.editor.Get("my_data_header"), EditorStyles.boldLabel);
+                EditorGUILayout.SelectableLabel(EditorLocale.editor.Get("my_data_header"), EditorStyles.boldLabel);
                 Rect last = GUILayoutUtility.GetLastRect();
                 
                 Rect data_rect = new Rect(0, last.height, Screen.width, Screen.height - last.height);
@@ -199,7 +199,7 @@ namespace Thry
                 return;
             if (ModuleHandler.GetFirstPartyModules().Count > 0) {
                 EditorGUILayout.BeginHorizontal();
-                GUILayout.Label(Locale.editor.Get("header_modules"), EditorStyles.boldLabel);
+                GUILayout.Label(EditorLocale.editor.Get("header_modules"), EditorStyles.boldLabel);
                 if (GUILayout.Button("Reload"))
                     ModuleHandler.ForceReloadModules();
                 EditorGUILayout.EndHorizontal();
@@ -211,7 +211,7 @@ namespace Thry
             {
                 ModuleUI(module);
             }
-            GUILayout.Label(Locale.editor.Get("header_thrird_party"), EditorStyles.boldLabel);
+            GUILayout.Label(EditorLocale.editor.Get("header_thrird_party"), EditorStyles.boldLabel);
             foreach (Module module in ModuleHandler.GetThirdPartyModules())
             {
                 ModuleUI(module);
@@ -271,9 +271,9 @@ namespace Thry
             if (module.available_module.requirement != null)
             {
                 if (module.available_requirement_fullfilled)
-                    EditorGUILayout.LabelField(Locale.editor.Get("requirements") + ": ", module.available_module.requirement.ToString(), Styles.greenStyle);
+                    EditorGUILayout.LabelField(EditorLocale.editor.Get("requirements") + ": ", module.available_module.requirement.ToString(), Styles.greenStyle);
                 else
-                    EditorGUILayout.LabelField(Locale.editor.Get("requirements") + ": ", module.available_module.requirement.ToString(), Styles.redStyle);
+                    EditorGUILayout.LabelField(EditorLocale.editor.Get("requirements") + ": ", module.available_module.requirement.ToString(), Styles.redStyle);
             }
             EditorGUILayout.LabelField("Url: ", module.url);
             if (module.author != null)
@@ -284,7 +284,7 @@ namespace Thry
 
         private static void Text(string configField, bool createHorizontal = true)
         {
-            Text(configField, Locale.editor.Get(configField), Locale.editor.Get(configField + "_tooltip"), createHorizontal);
+            Text(configField, EditorLocale.editor.Get(configField), EditorLocale.editor.Get(configField + "_tooltip"), createHorizontal);
         }
 
         private static void Text(string configField, string[] content, bool createHorizontal=true)
@@ -317,7 +317,7 @@ namespace Thry
 
         private static void Toggle(string configField, GUIStyle label_style = null)
         {
-            Toggle(configField, Locale.editor.Get(configField), Locale.editor.Get(configField + "_tooltip"), label_style);
+            Toggle(configField, EditorLocale.editor.Get(configField), EditorLocale.editor.Get(configField + "_tooltip"), label_style);
         }
 
         private static void Toggle(string configField, string[] content, GUIStyle label_style = null)
@@ -343,7 +343,7 @@ namespace Thry
 
         private static void Dropdown(string configField)
         {
-            Dropdown(configField, Locale.editor.Get(configField),Locale.editor.Get(configField+"_tooltip"));
+            Dropdown(configField, EditorLocale.editor.Get(configField),EditorLocale.editor.Get(configField+"_tooltip"));
         }
 
         private static void Dropdown(string configField, string[] content)
@@ -377,14 +377,14 @@ namespace Thry
         {
             EditorGUI.BeginChangeCheck();
             EditorGUILayout.BeginHorizontal();
-            GUILayout.Label(new GUIContent(Locale.editor.Get("locale"), Locale.editor.Get("locale_tooltip")), GUILayout.ExpandWidth(false));
-            Locale.editor.selected_locale_index = EditorGUILayout.Popup(Locale.editor.selected_locale_index, Locale.editor.available_locales, GUILayout.ExpandWidth(false));
-            if(Locale.editor.Get("translator").Length>0)
-                GUILayout.Label(Locale.editor.Get("translation") +": "+Locale.editor.Get("translator"), GUILayout.ExpandWidth(false));
+            GUILayout.Label(new GUIContent(EditorLocale.editor.Get("locale"), EditorLocale.editor.Get("locale_tooltip")), GUILayout.ExpandWidth(false));
+            EditorLocale.editor.selected_locale_index = EditorGUILayout.Popup(EditorLocale.editor.selected_locale_index, EditorLocale.editor.available_locales, GUILayout.ExpandWidth(false));
+            if(EditorLocale.editor.Get("translator").Length>0)
+                GUILayout.Label(EditorLocale.editor.Get("translation") +": "+EditorLocale.editor.Get("translator"), GUILayout.ExpandWidth(false));
             EditorGUILayout.EndHorizontal();
             if(EditorGUI.EndChangeCheck())
             {
-                Config.Singleton.locale = Locale.editor.available_locales[Locale.editor.selected_locale_index];
+                Config.Singleton.locale = EditorLocale.editor.available_locales[EditorLocale.editor.selected_locale_index];
                 Config.Singleton.Save();
                 ShaderEditor.ReloadActive();
             }

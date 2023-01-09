@@ -21,7 +21,7 @@ namespace Thry
 
         public const string PROPERTY_NAME_MASTER_LABEL = "shader_master_label";
         public const string PROPERTY_NAME_LABEL_FILE = "shader_properties_label_file";
-        public const string PROPERTY_NAME_LOCALE = "shader_properties_locale";
+        public const string PROPERTY_NAME_LOCALE = "shader_locale";
         public const string PROPERTY_NAME_ON_SWAP_TO_ACTIONS = "shader_on_swap_to";
         public const string PROPERTY_NAME_SHADER_VERSION = "shader_version";
         public const string PROPERTY_NAME_EDITOR_DETECT = "shader_is_using_thry_editor";
@@ -68,7 +68,8 @@ namespace Thry
         public bool IsInAnimationMode;
         public Renderer ActiveRenderer;
         public string RenamedPropertySuffix;
-        public Locale Locale;
+        public bool HasCustomRenameSuffix;
+        public Localization Locale;
         public ShaderTranslator SuggestedTranslationDefinition;
 
         //Shader Versioning
@@ -112,7 +113,7 @@ namespace Thry
             return labels;
         }
 
-        private PropertyOptions ExtractExtraOptionsFromDisplayName(ref string displayName)
+        public static PropertyOptions ExtractExtraOptionsFromDisplayName(ref string displayName)
         {
             if (displayName.Contains(EXTRA_OPTIONS_PREFIX))
             {
@@ -195,11 +196,26 @@ namespace Thry
             Locale = null;
             if (locales_property != null)
             {
-                string displayName = locales_property.displayName;
-                PropertyOptions options = ExtractExtraOptionsFromDisplayName(ref displayName);
-                Locale = new Locale(options.file_name);
-                Locale.selected_locale_index = (int)locales_property.floatValue;
+                string guid = locales_property.displayName;
+                Locale = Localization.Load(guid);
+            }else
+            {
+                Locale = Localization.Create();
             }
+        }
+
+        public void FakePartialInitilizationForLocaleGathering(Shader s)
+        {
+            Material material = new Material(s);
+            Materials = new Material[] { material };
+            Editor = MaterialEditor.CreateEditor(new UnityEngine.Object[] { material }) as MaterialEditor;
+            Properties = MaterialEditor.GetMaterialProperties(Materials);
+            RenamedPropertySuffix = ShaderOptimizer.GetRenamedPropertySuffix(Materials[0]);
+            HasCustomRenameSuffix = ShaderOptimizer.HasCustomRenameSuffix(Materials[0]);
+            ShaderEditor.Active = this;
+            CollectAllProperties();
+            UnityEngine.Object.DestroyImmediate(Editor);
+            UnityEngine.Object.DestroyImmediate(material);
         }
 
         //finds all properties and headers and stores them in correct order
@@ -227,19 +243,10 @@ namespace Thry
                 //Load from label file
                 if (labels.ContainsKey(props[i].name)) displayName = labels[props[i].name];
 
-                //Check for locale
-                if (Locale != null)
-                {
-                    if (displayName.StartsWith("locale::", StringComparison.Ordinal))
-                    {
-                        if (Locale.Constains(displayName))
-                        {
-                            displayName = Locale.Get(displayName);
-                        }
-                    }
-                }
                 //extract json data from display name
                 PropertyOptions options = ExtractExtraOptionsFromDisplayName(ref displayName);
+
+                displayName = Locale.Get(props[i], displayName);
 
                 int offset = options.offset + headerCount;
 
@@ -371,6 +378,7 @@ namespace Thry
             Shader = Materials[0].shader;
 
             RenamedPropertySuffix = ShaderOptimizer.GetRenamedPropertySuffix(Materials[0]);
+            HasCustomRenameSuffix = ShaderOptimizer.HasCustomRenameSuffix(Materials[0]);
 
             IsPresetEditor = Materials.Length == 1 && Presets.ArePreset(Materials);
 
@@ -530,7 +538,10 @@ namespace Thry
                 DoShowSearchBar = !DoShowSearchBar;
                 if(!DoShowSearchBar) ClearSearch();
             }
-            Presets.PresetGUI(this);
+            if (GuiHelper.ButtonWithCursor(Styles.icon_style_presets, "Presets" , 25, 25))
+            {
+                Presets.OpenPresetsMenu(GUILayoutUtility.GetLastRect(), this);
+            }
 
             //draw master label text after ui elements, so it can be positioned between
             if (_shaderHeader != null && !drawAboveToolbar) _shaderHeader.Draw(new CRect(mainHeaderRect));
@@ -735,6 +746,8 @@ namespace Thry
             this._didSwapToShader = true;
             this._doReloadNextDraw = true;
             this.Repaint();
+            ThryWideEnumDrawer.Reload();
+            ThryRGBAPackerDrawer.Reload();
         }
 
         public static void ReloadActive()
@@ -808,10 +821,10 @@ namespace Thry
             EditorWindow.GetWindow<EditorChanger>(false, "UI Changer", true);
         }
 
-        [MenuItem("Thry/Shader Optimizer/Unlocked Materials List", priority = 0)]
+        [MenuItem("Thry/Shader Optimizer/Materials List", priority = 0)]
         static void MenuShaderOptUnlockedMaterials()
         {
-            EditorWindow.GetWindow<UnlockedMaterialsList>(false, "Unlocked Materials", true);
+            EditorWindow.GetWindow<UnlockedMaterialsList>(false, "Materials", true);
         }
     }
 }

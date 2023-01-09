@@ -118,7 +118,7 @@ namespace Thry
                     }
                 }
             }
-            
+
             Rect object_rect = new Rect(position);
             object_rect.height = GUILayoutUtility.GetLastRect().y - object_rect.y + GUILayoutUtility.GetLastRect().height;
             DrawingData.LastGuiObjectRect = object_rect;
@@ -128,7 +128,7 @@ namespace Thry
         public static void BigTextureProperty(Rect position, MaterialProperty prop, GUIContent label, MaterialEditor editor, bool scaleOffset)
         {
             string text = label.text;
-            if(DrawingData.CurrentTextureProperty.MaterialProperty.textureValue != null)
+            if (DrawingData.CurrentTextureProperty.MaterialProperty.textureValue != null)
                 text += $" ({DrawingData.CurrentTextureProperty.VRAMString})";
             Rect rect = GUILayoutUtility.GetRect(label, Styles.bigTextureStyle);
             float defaultLabelWidth = EditorGUIUtility.labelWidth;
@@ -169,7 +169,7 @@ namespace Thry
                 border.height += 8;
                 border.height += editor.GetPropertyHeight(ShaderEditor.Active.PropertyDictionary[DrawingData.CurrentTextureProperty.Options.reference_property].MaterialProperty);
             }
-            if(DrawingData.CurrentTextureProperty.MaterialProperty != null)
+            if (DrawingData.CurrentTextureProperty.MaterialProperty != null)
             {
                 border.height += 8;
                 border.height += EditorStyles.label.lineHeight;
@@ -215,7 +215,7 @@ namespace Thry
             }
             else if (prop.textureValue != null)
             {
-                GUI.DrawTexture(preview_rect, prop.textureValue);
+                EditorGUI.DrawPreviewTexture(preview_rect, prop.textureValue);
             }
             GUI.DrawTexture(preview_rect_border, Texture2D.whiteTexture, ScaleMode.StretchToFill, false, 0, Color.grey, 3, 5);
 
@@ -308,7 +308,7 @@ namespace Thry
             GUI.Label(label_rect, label);
 
             GUILayoutUtility.GetRect(0, 5);
-            
+
             DrawingData.LastGuiObjectRect = border;
             DrawingData.TooltipCheckRect = border;
         }
@@ -506,7 +506,7 @@ namespace Thry
             return EditorGUI.indentLevel * 15;
         }
         // Mimics the normal map import warning - written by Orels1
-        static bool TextureImportWarningBox(string message){
+        static bool TextureImportWarningBox(string message) {
             GUILayout.BeginVertical(new GUIStyle(EditorStyles.helpBox));
             GUILayout.Label(message, new GUIStyle(EditorStyles.label) {
                 fontSize = 10, wordWrap = true
@@ -525,20 +525,35 @@ namespace Thry
             return buttonPress;
         }
 
-        public static void ColorspaceWarning(MaterialProperty tex, bool shouldHaveSRGB){
-            if (tex.textureValue){
+        public static void ColorspaceWarning(MaterialProperty tex, bool shouldHaveSRGB) {
+            if (tex.textureValue) {
                 string texPath = AssetDatabase.GetAssetPath(tex.textureValue);
                 TextureImporter texImporter;
                 var importer = TextureImporter.GetAtPath(texPath) as TextureImporter;
-                if (importer != null){
+                if (importer != null) {
                     texImporter = (TextureImporter)importer;
-                    if (texImporter.sRGBTexture != shouldHaveSRGB){
-                        if (TextureImportWarningBox(shouldHaveSRGB?Locale.editor.Get("colorSpaceWarningSRGB"):Locale.editor.Get("colorSpaceWarningLinear"))){
+                    if (texImporter.sRGBTexture != shouldHaveSRGB) {
+                        if (TextureImportWarningBox(shouldHaveSRGB ? EditorLocale.editor.Get("colorSpaceWarningSRGB") : EditorLocale.editor.Get("colorSpaceWarningLinear"))) {
                             texImporter.sRGBTexture = shouldHaveSRGB;
                             texImporter.SaveAndReimport();
                         }
                     }
                 }
+            }
+        }
+
+        public class CustomGUIColor : IDisposable
+        {
+            Color _prev;
+            public CustomGUIColor(Color color)
+            {
+                _prev = GUI.color;
+                GUI.color = color;
+            }
+
+            public void Dispose()
+            {
+                GUI.color = _prev;
             }
         }
 

@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Thry
 {
-    public class Locale
+    public class EditorLocale
     {
         const string EDITOR_LOCALE_NAME = "thry_editor_locale";
 
@@ -13,12 +13,12 @@ namespace Thry
         public int selected_locale_index = 0;
         private Dictionary<string, string[]> dictionary;
 
-        public Locale(string file_name)
+        public EditorLocale(string file_name)
         {
             LoadCSV(file_name);
         }
 
-        public Locale(string file_name, string selected_name)
+        public EditorLocale(string file_name, string selected_name)
         {
             LoadCSV(file_name);
             SetSelectedLocale(selected_name);
@@ -65,13 +65,13 @@ namespace Thry
                 throw new System.Exception("CVS File with name \"" + file_name + "\" could not be found.");
         }
 
-        private static Locale p_editor;
-        public static Locale editor
+        private static EditorLocale p_editor;
+        public static EditorLocale editor
         {
             get
             {
                 if (p_editor == null)
-                    p_editor = new Locale(EDITOR_LOCALE_NAME);
+                    p_editor = new EditorLocale(EDITOR_LOCALE_NAME);
                 return p_editor;
             }
         }

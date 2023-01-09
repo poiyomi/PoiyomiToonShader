@@ -67,6 +67,47 @@ namespace Thry
             return fileCache[url];
         }
 
+        public static string Translate(string text, string targetLanguage)
+        {
+            string sourceLang = "auto";
+            string url = "https://translate.googleapis.com/translate_a/single?client=gtx&sl=" 
+                + sourceLang + "&tl=" + targetLanguage + "&dt=t&q=" + UnityWebRequest.EscapeURL(text);
+            string resp = DownloadAsString(url);
+
+            // parse response. it is a json array with the first elements being the translation. but not good json that my existing parser can parse
+            List<string> parts = new List<string>();
+            int indent = 0;
+            bool inString = false;
+            for(int i = 0; i< resp.Length; i++)
+            {
+                if (resp[i] == '[') indent++;
+                if (resp[i] == ']') indent--;
+                if (resp[i] == '"' && resp[i - 1] != '\\')
+                {
+                    inString = !inString;
+                    if(inString && indent == 3)
+                        parts.Add("");
+                    if(!inString && indent == 3 && resp[i+1] != ',')
+                        parts.RemoveAt(parts.Count - 1);
+                }else 
+                if (inString && indent == 3)
+                {
+                    parts[parts.Count - 1] += resp[i];
+                }
+            }
+            string result = "";
+            for(int i = 0; i< parts.Count; i++)
+            {
+                if (i % 2 == 0)
+                    result += parts[i];
+            }
+
+            // double unescape to fix some weird characters
+            result = System.Text.RegularExpressions.Regex.Unescape(result);
+            result = UnityWebRequest.UnEscapeURL(result, System.Text.Encoding.UTF8);
+            return result;
+        }
+
         //-------------------Downloaders-----------------------------
 
         [InitializeOnLoad]

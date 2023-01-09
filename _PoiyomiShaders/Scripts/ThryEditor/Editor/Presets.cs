@@ -21,40 +21,39 @@ namespace Thry.ThryEditor
             {
                 if (p_presetNames == null)
                 {
+                    // Get current time
+                    var time = System.DateTime.Now;
                     p_presetMaterials = AssetDatabase.FindAssets("t:material")
                         .Select(g => AssetDatabase.LoadAssetAtPath<Material>(AssetDatabase.GUIDToAssetPath(g)))
                         .Where(m => IsPreset(m)).ToArray();
                     p_presetNames = p_presetMaterials.Select(m => m.GetTag(TAG_PRESET_NAME,false,m.name)).Prepend("").ToArray();
+                    Debug.Log($"Presets: {p_presetNames.Length} presets found in {System.DateTime.Now - time}");
                 }
                 return p_presetNames;
             }
         }
 
         private static PresetsPopupGUI window;
-        public static void PresetGUI(ShaderEditor shaderEditor)
+        public static void OpenPresetsMenu(Rect r, ShaderEditor shaderEditor)
         {
-            if(GuiHelper.ButtonWithCursor(Styles.icon_style_presets, "Presets", 25, 25))
+            Event.current.Use();
+            if (Event.current.button == 0)
             {
-                Event.current.Use();
-                if (Event.current.button == 0)
-                {
-                    Vector2 pos = GUIUtility.GUIToScreenPoint(Event.current.mousePosition);
-                    pos.x = Mathf.Min(EditorWindow.focusedWindow.position.x + EditorWindow.focusedWindow.position.width - 250, pos.x);
-                    pos.y = Mathf.Min(EditorWindow.focusedWindow.position.y + EditorWindow.focusedWindow.position.height - 200, pos.y);
-
-                    if (window != null)
-                        window.Close();
-                    window = ScriptableObject.CreateInstance<PresetsPopupGUI>();
-                    window.position = new Rect(pos.x, pos.y, 250, 200);
-                    string[] names = presetNames;
-                    window.Init(names, p_presetMaterials, shaderEditor);
-                    window.titleContent = new GUIContent("Preset List");
-                    window.ShowUtility();
-                }
-                else
-                {
-                    EditorUtility.DisplayCustomMenu(GUILayoutUtility.GetLastRect(), presetNames.Select(s => new GUIContent(s)).ToArray(), 0, ApplyQuickPreset, shaderEditor);
-                }
+                Vector2 pos = GUIUtility.GUIToScreenPoint(Event.current.mousePosition);
+                pos.x = Mathf.Min(EditorWindow.focusedWindow.position.x + EditorWindow.focusedWindow.position.width - 250, pos.x);
+                pos.y = Mathf.Min(EditorWindow.focusedWindow.position.y + EditorWindow.focusedWindow.position.height - 200, pos.y);
+                if (window != null)
+                    window.Close();
+                window = ScriptableObject.CreateInstance<PresetsPopupGUI>();
+                window.position = new Rect(pos.x, pos.y, 250, 200);
+                string[] names = presetNames;
+                window.Init(names, p_presetMaterials, shaderEditor);
+                window.titleContent = new GUIContent("Preset List");
+                window.ShowUtility();
+            }
+            else
+            {
+                EditorUtility.DisplayCustomMenu(GUILayoutUtility.GetLastRect(), presetNames.Select(s => new GUIContent(s)).ToArray(), 0, ApplyQuickPreset, shaderEditor);
             }
         }
 
@@ -67,10 +66,10 @@ namespace Thry.ThryEditor
         {
             if (shaderEditor.IsPresetEditor)
             {
-                EditorGUILayout.LabelField(Locale.editor.Get("preset_material_notify"), Styles.greenStyle);
+                EditorGUILayout.LabelField(EditorLocale.editor.Get("preset_material_notify"), Styles.greenStyle);
                 string name = shaderEditor.Materials[0].GetTag(TAG_PRESET_NAME, false, "");
                 EditorGUI.BeginChangeCheck();
-                name = EditorGUILayout.TextField(Locale.editor.Get("preset_name"), name);
+                name = EditorGUILayout.TextField(EditorLocale.editor.Get("preset_name"), name);
                 if (EditorGUI.EndChangeCheck())
                 {
                     shaderEditor.Materials[0].SetOverrideTag(TAG_PRESET_NAME, name);
@@ -79,7 +78,7 @@ namespace Thry.ThryEditor
             }
             if (appliedPresets.ContainsKey(shaderEditor.Materials[0]))
             {
-                if(GUILayout.Button(Locale.editor.Get("preset_revert")+appliedPresets[shaderEditor.Materials[0]].Item1.name))
+                if(GUILayout.Button(EditorLocale.editor.Get("preset_revert")+appliedPresets[shaderEditor.Materials[0]].Item1.name))
                 {
                     Revert(shaderEditor);
                 }

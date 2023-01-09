@@ -7,7 +7,7 @@ using ABI.CCK.Components;
 using UnityEditor;
 using System.Linq;
 
-namespace Thry.ShaderEditor
+namespace Thry
 {
     public class AbiAutoLock
     {

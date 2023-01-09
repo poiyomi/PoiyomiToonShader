@@ -19,6 +19,7 @@ namespace Thry
             texture_settings_data = LoadTextureSettings(prop, predefinedTextureSettings, force_texture_options);
             data.Gradient = TextureHelper.GetGradient(prop.textureValue);
             GradientEditor window = (GradientEditor)EditorWindow.GetWindow(typeof(GradientEditor));
+            window.titleContent = new GUIContent("Gradient '" +prop.name +"' of '"+ prop.targets[0].name + "'");
             window.privious_preview_texture = prop.textureValue;
             window.prop = prop;
             window.data = data;

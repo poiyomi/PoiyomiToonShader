@@ -4,6 +4,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 using UnityEditor;
 using UnityEngine;
@@ -129,6 +130,7 @@ namespace Thry
         public string file_name;
         public string remote_version_url;
         public string generic_string;
+        public bool never_lock;
     }
 
     public class ButtonData
@@ -258,15 +260,18 @@ namespace Thry
         public static PropertyValueAction Parse(string s)
         {
             s = s.Trim();
-            string[] parts = s.Split(',');
-            if (parts.Length > 0)
+            string[] valueAndActions = s.Split(new string[]{"=>"}, System.StringSplitOptions.RemoveEmptyEntries);
+            if (valueAndActions.Length > 1)
             {
                 PropertyValueAction propaction = new PropertyValueAction();
-                propaction.value = parts[0];
+                propaction.value = valueAndActions[0];
                 List<DefineableAction> actions = new List<DefineableAction>();
-                for (int i = 1; i < parts.Length; i++)
+                string[] actionStrings = valueAndActions[1].Split(';');
+                for (int i = 0; i < actionStrings.Length; i++)
                 {
-                    actions.Add(DefineableAction.Parse(parts[i]));
+                    if(string.IsNullOrWhiteSpace(actionStrings[i]))
+                        continue;
+                    actions.Add(DefineableAction.Parse(actionStrings[i]));
                 }
                 propaction.actions = actions.ToArray();
                 return propaction;
@@ -281,10 +286,10 @@ namespace Thry
 
         public static PropertyValueAction[] ParseToArray(string s)
         {
-            //s = v,p1=v1,p2=v2;v3
+            //s := 0=>p1=v1;p2=v2;1=>p1=v3...
             List<PropertyValueAction> propactions = new List<PropertyValueAction>();
-            string[] parts = s.Split(';');
-            foreach (string p in parts)
+            string[] valueAndActionMatches = Regex.Matches(s, @"[^;]+=>.+?(?=(;[^;]+=>)|$)", RegexOptions.Multiline).Cast<Match>().Select(m => m.Value).ToArray();
+            foreach (string p in valueAndActionMatches)
             {
                 PropertyValueAction propertyValueAction = PropertyValueAction.Parse(p);
                 if (propertyValueAction != null)
@@ -438,8 +443,8 @@ namespace Thry
                 _compareType = compareType;
 
                 string[] parts = Regex.Split(data, compareString);
-                _obj = parts[0];
-                _value = parts[parts.Length - 1];
+                _obj = parts[0].Trim();
+                _value = parts[parts.Length - 1].Trim();
 
                 _floatValue = Parser.ParseFloat(_value);
                 if (ShaderEditor.Active != null && ShaderEditor.Active.PropertyDictionary.ContainsKey(_obj))
@@ -502,7 +507,7 @@ namespace Thry
                 case DefineableConditionType.TEXTURE_SET:
                     materialProperty = GetMaterialProperty();
                     if (materialProperty == null) return false;
-                    return materialProperty.textureValue != null;
+                    return (materialProperty.textureValue == null) == (_compareType == CompareType.EQUAL);
                 case DefineableConditionType.DROPDOWN:
                     materialProperty = GetMaterialProperty();
                     if (materialProperty == null) return false;
@@ -518,7 +523,10 @@ namespace Thry
                     if(condition1!=null&&condition2!=null) return condition1.Test() && condition2.Test();
                     break;
                 case DefineableConditionType.OR:
-                    if (condition1 != null && condition2 != null) return condition1.Test() || condition2.Test();
+                    if(condition1 != null && condition2 != null) return condition1.Test() || condition2.Test();
+                    break;
+                case DefineableConditionType.NOT:
+                    if(condition1 != null) return !condition1.Test();
                     break;
             }
             
@@ -589,6 +597,13 @@ namespace Thry
 
             s = Strip(s);
 
+            if(s.StartsWith("!"))
+            {
+                con.type = DefineableConditionType.NOT;
+                con.condition1 = Parse(s.Substring(1), useThisMaterialInsteadOfOpenEditor);
+                return con;
+            }
+
             int depth = 0;
             for (int i = 0; i < s.Length - 1; i++)
             {
@@ -630,6 +645,10 @@ namespace Thry
                 {
                     con.type = DefineableConditionType.EDITOR_VERSION;
                     con.data = s.Replace("ThryEditor", "");
+                }else if(IsTextureNullComparission(s, useThisMaterialInsteadOfOpenEditor))
+                {
+                    con.type = DefineableConditionType.TEXTURE_SET;
+                    con.data = s.Replace("TEXTURE_SET", "");
                 }
                 return con;
             }
@@ -646,6 +665,26 @@ namespace Thry
                 return con;
             }
             return con;
+        }
+
+        static bool IsTextureNullComparission(string data, Material useThisMaterialInsteadOfOpenEditor = null)
+        {
+            // Check if property is a texture property && is checking for null
+            Material m = GetReferencedMaterial(useThisMaterialInsteadOfOpenEditor);
+            if( m == null) return false;
+            if(data.Length < 7) return false;
+            if(data.EndsWith("null") == false) return false;
+            string propertyName = data.Substring(0, data.Length - 6);
+            if(m.HasProperty(propertyName) == false) return false;
+            MaterialProperty p = MaterialEditor.GetMaterialProperty(new Material[]{m}, propertyName);
+            return p.type == MaterialProperty.PropType.Texture;
+        }
+
+        static Material GetReferencedMaterial(Material useThisMaterialInsteadOfOpenEditor = null)
+        {
+            if( useThisMaterialInsteadOfOpenEditor != null ) return useThisMaterialInsteadOfOpenEditor;
+            if( ShaderEditor.Active != null ) return ShaderEditor.Active.Materials[0];
+            return null;
         }
 
         private static string Strip(string s)
@@ -687,7 +726,8 @@ namespace Thry
         TEXTURE_SET,
         DROPDOWN,
         AND,
-        OR
+        OR,
+        NOT
     }
 
     #endregion
