@@ -240,7 +240,7 @@ namespace Thry
 
     public class ThryRGBAPackerDrawer : MaterialPropertyDrawer
     {
-
+        // TODO : Load lacale by property name in the future: propname_r, propname_g, propname_b, propname_a
         class ThryRGBAPackerData
         {
             public Texture _previousTexture;
@@ -306,7 +306,10 @@ namespace Thry
             _defaultLabel2 = label2;
             _defaultLabel3 = label3;
             _defaultLabel4 = label4;
-            LoadLabels();
+            _label1 = label1;
+            _label2 = label2;
+            _label3 = label3;
+            _label4 = label4;
             _makeSRGB = sRGB == 1;
         }
 
@@ -923,11 +926,13 @@ namespace Thry
 
         protected void SetKeyword(MaterialProperty prop, bool on)
         {
+            if(ShaderOptimizer.IsMaterialLocked(prop.targets[0] as Material)) return;
             SetKeywordInternal(prop, on, "_ON");
         }
 
         protected void CheckKeyword(MaterialProperty prop)
         {
+            if(ShaderEditor.Active != null && ShaderOptimizer.IsMaterialLocked(prop.targets[0] as Material)) return;
             if (prop.hasMixedValue)
             {
                 foreach (Material m in prop.targets)
@@ -1655,10 +1660,11 @@ namespace Thry
     // Adapted from Unity interal MaterialEnumDrawer https://github.com/Unity-Technologies/UnityCsReference/
     public class ThryWideEnumDrawer : MaterialPropertyDrawer
     {
+        // TODO: Consider Load locale by property name in the future (maybe, could have drawbacks)
         private GUIContent[] names;
         private readonly string[] defaultNames;
         private readonly float[] values;
-        private int _reloadCount;
+        private int _reloadCount = -1;
         private static int _reloadCountStatic;
 
         // internal Unity AssemblyHelper can't be accessed
@@ -1725,7 +1731,11 @@ namespace Thry
         public ThryWideEnumDrawer(string[] enumNames, float[] vals)
         {
             defaultNames = enumNames;
-            LoadNames();
+
+            // Init without Locale to prevent errors
+            names = new GUIContent[enumNames.Length];
+            for (int i = 0; i < enumNames.Length; ++i)
+                names[i] = new GUIContent(enumNames[i]);
 
             values = new float[vals.Length];
             for (int i = 0; i < vals.Length; ++i)
@@ -1740,7 +1750,6 @@ namespace Thry
                 names[i] = new GUIContent(ShaderEditor.Active.Locale.Get(defaultNames[i], defaultNames[i]));
             }
         }
-
         public static void Reload()
         {
             _reloadCountStatic++;

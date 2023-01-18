@@ -176,6 +176,15 @@ namespace Thry{
             AssetDatabase.SaveAssets();
         }
 
+        void Clear()
+        {
+            _defaultKeys = new string[0];
+            _defaultValues = new string[0];
+            _keys = new string[0];
+            _values = new string[0];
+            Languages = new string[0];
+        }
+
         [MenuItem("Assets/Thry/Shaders/Create Locale File", false)]
         static void CreateLocale()
         {
@@ -221,6 +230,71 @@ namespace Thry{
             string _translateByValueIn = "";
             string _translateByValueOut = "";
             string _autoTranslateLanguageShortCode = "EN";
+
+            string ToCSVString(string s)
+            {
+                return "\"" + s.Replace("\"", "“") + "\"";
+            }
+
+            string FromCSVString(string s)
+            {
+                return s.Trim('"').Replace("“", "\"");
+            }
+
+            void ExportAsCSV(Localization locale)
+            {
+                string path = EditorUtility.SaveFilePanel("Export as CSV", "", locale.name, "csv");
+                if (string.IsNullOrEmpty(path) == false)
+                {
+                    System.Text.StringBuilder sb = new System.Text.StringBuilder();
+                    foreach (string language in locale.Languages)
+                    {
+                        sb.Append("," + ToCSVString(language));
+                    }
+                    sb.AppendLine();
+                    for(int i = 0;i < locale._keys.Length; i++)
+                    {
+                        sb.Append(ToCSVString(locale._keys[i]));
+                        for(int j = 0; j < locale.Languages.Length; j++)
+                        {
+                            sb.Append("," + ToCSVString(locale._values[i * locale.Languages.Length + j]));
+                        }
+                        sb.AppendLine();
+                    }
+                    File.WriteAllText(path, sb.ToString());
+                }
+            }
+
+            void LoadFromCSV(Localization locale)
+            {
+                string path = EditorUtility.OpenFilePanel("Load from CSV", "", "csv");
+                if (string.IsNullOrEmpty(path) == false)
+                {
+                    string[] lines = File.ReadAllLines(path);
+                    if (lines.Length > 0)
+                    {
+                        locale.Clear();
+                        string[] languages = lines[0].Split(',');
+                        for (int i = 1; i < languages.Length; i++)
+                        {
+                            locale.AddLanguage(FromCSVString(languages[i]));
+                        }
+                        for (int i = 1; i < lines.Length; i++)
+                        {
+                            string[] values = lines[i].Split(',');
+                            if (values.Length > 0)
+                            {
+                                string key = FromCSVString(values[0]);
+                                for (int j = 1; j < values.Length; j++)
+                                {
+                                    locale._values[(i - 1) * (languages.Length - 1) + j - 1] = FromCSVString(values[j]);
+                                }
+                            }
+                        }
+                        locale.Save();
+                    }
+                }
+            }
 
             void UpdateMissing(Localization locale)
             {
@@ -336,7 +410,15 @@ namespace Thry{
                     UpdateData(locale);
                 }
 
+                EditorGUILayout.Space(20);
+                EditorGUILayout.LabelField("Import / Export", EditorStyles.boldLabel);
+                if(GUILayout.Button("Import from CSV"))
+                    LoadFromCSV(locale);
+
                 if(locale.Languages.Length == 0) return;
+
+                if(GUILayout.Button("Export to CSV"))
+                    ExportAsCSV(locale);
 
                 EditorGUILayout.Space(20);
                 EditorGUILayout.LabelField("Missing Entries", EditorStyles.boldLabel);
@@ -376,6 +458,10 @@ namespace Thry{
                 EditorGUILayout.LabelField("Automatic Translation using Google", EditorStyles.boldLabel);
                 _autoTranslateLanguageShortCode = EditorGUILayout.TextField("Language Short Code", _autoTranslateLanguageShortCode);
                 EditorGUILayout.HelpBox("Short code must be valid short code. See https://cloud.google.com/translate/docs/languages for a list of valid short codes.", MessageType.Info);   
+                if(Event.current.type == EventType.MouseDown && GUILayoutUtility.GetLastRect().Contains(Event.current.mousePosition))
+                {
+                    Application.OpenURL("https://cloud.google.com/translate/docs/languages");
+                }
                 if(GUILayout.Button("Auto Translate"))
                 {
                     int _missingKeysCount = _missingKeys.Count;

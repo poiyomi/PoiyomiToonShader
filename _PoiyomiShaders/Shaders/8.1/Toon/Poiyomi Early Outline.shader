@@ -2,7 +2,7 @@ Shader ".poiyomi/Poiyomi 8.1/Poiyomi Toon Outline Early"
 {
 	Properties
 	{
-		[HideInInspector] shader_master_label ("<color=#E75898ff>Poiyomi 8.1.156</color>", Float) = 0
+		[HideInInspector] shader_master_label ("<color=#E75898ff>Poiyomi 8.1.160</color>", Float) = 0
 		[HideInInspector] shader_is_using_thry_editor ("", Float) = 0
 		[HideInInspector] shader_locale ("0db0b86376c3dca4b9a6828ef8615fe0", Float) = 0
 		[HideInInspector] footer_youtube ("{texture:{name:icon-youtube,height:16},action:{type:URL,data:https://www.youtube.com/poiyomi},hover:YOUTUBE}", Float) = 0
@@ -1340,10 +1340,11 @@ Shader ".poiyomi/Poiyomi 8.1/Poiyomi Toon Outline Early"
 		[HideInInspector][ThryToggle(POI_MATCAP0)]_MatcapEnable ("Enable Matcap", Float) = 0
 		[ThryWideEnum(UTS Style, 0, Top Pinch, 1, Double Sided, 2)] _MatcapUVMode ("UV Mode", Int) = 1
 		_MatcapColor ("Color--{reference_property:_MatcapColorThemeIndex}", Color) = (1, 1, 1, 1)
+		_MatcapBaseColorMix ("Base Color Mix", Range(0, 1)) = 0
 		[HideInInspector][ThryWideEnum(Off, 0, Theme Color 0, 1, Theme Color 1, 2, Theme Color 2, 3, Theme Color 3, 4, ColorChord 0, 5, ColorChord 1, 6, ColorChord 2, 7, ColorChord 3, 8, AL Theme 0, 9, AL Theme 1, 10, AL Theme 2, 11, AL Theme 3, 12)] _MatcapColorThemeIndex ("", Int) = 0
 		[sRGBWarning(true)][TextureNoSO]_Matcap ("Matcap", 2D) = "white" { }
 		_MatcapBorder ("Border", Range(0, .5)) = 0.43
-		[sRGBWarning]_MatcapMask ("Mask--{reference_properties:[_MatcapMaskPan, _MatcapMaskUV, _MatcapMaskChannel, _MatcapMaskInvert]}", 2D) = "white" { }
+		[sRGBWarning][ThryRGBAPacker(R Mask, G Nothing, B Nothing, A Smoothness)]_MatcapMask ("Mask--{reference_properties:[_MatcapMaskPan, _MatcapMaskUV, _MatcapMaskChannel, _MatcapMaskInvert]}", 2D) = "white" { }
 		[HideInInspector][Vector2]_MatcapMaskPan ("Panning", Vector) = (0, 0, 0, 0)
 		[HideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos XZ, 5, Polar UV, 6, Distorted UV, 7)] _MatcapMaskUV ("UV", Int) = 0
 		[HideInInspector][Enum(R, 0, G, 1, B, 2, A, 3)]_MatcapMaskChannel ("Channel", Float) = 0
@@ -1368,6 +1369,10 @@ Shader ".poiyomi/Poiyomi 8.1/Poiyomi Toon Outline Early"
 		[ThryToggleUI(true)] _MatcapHueShiftEnabled ("<size=13><b>  Hue Shift</b></size>", Float) = 0
 		_MatcapHueShiftSpeed ("Shift Speed--{condition_showS:(_MatcapHueShiftEnabled==1)}", Float) = 0
 		_MatcapHueShift ("Hue Shift--{condition_showS:(_MatcapHueShiftEnabled==1)}", Range(0, 1)) = 0
+		[ThryToggleUI(true)] _MatcapSmoothnessEnabled ("<size=13><b>  Blur</b></size>", Float) = 0
+		_MatcapSmoothness ("Smoothness--{condition_showS:(_MatcapSmoothnessEnabled==1)}", Range(0, 1)) = 1
+		[ToggleUI]_MatcapMaskSmoothnessApply ("Apply Mask for Smoothness--{condition_showS:(_MatcapSmoothnessEnabled==1)}", Float) = 0
+		[Enum(R, 0, G, 1, B, 2, A, 3)]_MatcapMaskSmoothnessChannel ("Mask Channel for Smoothness--{condition_showS:(_MatcapSmoothnessEnabled==1)}", Int) = 3
 		[HideInInspector] g_start_MatcapTPSMaskGroup ("--{condition_showS:(_TPSPenetratorEnabled==1)}", Float) = 0
 		[ThryToggleUI(true)] _MatcapTPSDepthEnabled ("<size=13><b>  TPS Depth Mask Enabled</b></size>", Float) = 0
 		_MatcapTPSMaskStrength ("TPS Mask Strength--{condition_showS:(_MatcapTPSDepthEnabled==1)}", Range(0, 1)) = 1
@@ -1381,10 +1386,11 @@ Shader ".poiyomi/Poiyomi 8.1/Poiyomi Toon Outline Early"
 		[HideInInspector][ThryToggle(COLOR_GRADING_HDR_3D)]_Matcap2Enable ("Enable Matcap 2", Float) = 0
 		[ThryWideEnum(UTS Style, 0, Top Pinch, 1, Double Sided, 2)] _Matcap2UVMode ("UV Mode", Int) = 1
 		_Matcap2Color ("Color--{reference_property:_Matcap2ColorThemeIndex}", Color) = (1, 1, 1, 1)
+		_Matcap2BaseColorMix ("Base Color Mix", Range(0, 1)) = 0
 		[HideInInspector][ThryWideEnum(Off, 0, Theme Color 0, 1, Theme Color 1, 2, Theme Color 2, 3, Theme Color 3, 4, ColorChord 0, 5, ColorChord 1, 6, ColorChord 2, 7, ColorChord 3, 8, AL Theme 0, 9, AL Theme 1, 10, AL Theme 2, 11, AL Theme 3, 12)] _Matcap2ColorThemeIndex ("", Int) = 0
 		[sRGBWarning(true)][TextureNoSO]_Matcap2 ("Matcap", 2D) = "white" { }
 		_Matcap2Border ("Border", Range(0, .5)) = 0.43
-		[sRGBWarning]_Matcap2Mask ("Mask--{reference_properties:[_Matcap2MaskPan, _Matcap2MaskUV, _Matcap2MaskChannel, _Matcap2MaskInvert]}", 2D) = "white" { }
+		[sRGBWarning][ThryRGBAPacker(R Mask, G Nothing, B Nothing, A Smoothness)]_Matcap2Mask ("Mask--{reference_properties:[_Matcap2MaskPan, _Matcap2MaskUV, _Matcap2MaskChannel, _Matcap2MaskInvert]}", 2D) = "white" { }
 		[HideInInspector][Vector2]_Matcap2MaskPan ("Panning", Vector) = (0, 0, 0, 0)
 		[HideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos XZ, 5, Polar UV, 6, Distorted UV, 7)] _Matcap2MaskUV ("UV", Int) = 0
 		[HideInInspector][Enum(R, 0, G, 1, B, 2, A, 3)]_Matcap2MaskChannel ("Channel", Float) = 0
@@ -1410,6 +1416,10 @@ Shader ".poiyomi/Poiyomi 8.1/Poiyomi Toon Outline Early"
 		[ThryToggleUI(true)] _Matcap2HueShiftEnabled ("<size=13><b>  Hue Shift</b></size>", Float) = 0
 		_Matcap2HueShiftSpeed ("Shift Speed--{condition_showS:(_Matcap2HueShiftEnabled==1)}", Float) = 0
 		_Matcap2HueShift ("Hue Shift--{condition_showS:(_Matcap2HueShiftEnabled==1)}", Range(0, 1)) = 0
+		[ThryToggleUI(true)] _Matcap2SmoothnessEnabled ("<size=13><b>  Blur</b></size>", Float) = 0
+		_Matcap2Smoothness ("Smoothness--{condition_showS:(_Matcap2SmoothnessEnabled==1)}", Range(0, 1)) = 1
+		[ToggleUI]_Matcap2MaskSmoothnessApply ("Apply Mask for Smoothness--{condition_showS:(_Matcap2SmoothnessEnabled==1)}", Float) = 0
+		[Enum(R, 0, G, 1, B, 2, A, 3)]_Matcap2MaskSmoothnessChannel ("Mask Channel for Smoothness--{condition_showS:(_Matcap2SmoothnessEnabled==1)}", Int) = 3
 		[HideInInspector] g_start_Matcap2TPSMaskGroup ("--{condition_showS:(_TPSPenetratorEnabled==1)}", Float) = 0
 		[ThryToggleUI(true)] _Matcap2TPSDepthEnabled ("<size=13><b>  TPS Depth Mask Enabled</b></size>", Float) = 0
 		_Matcap2TPSMaskStrength ("TPS Mask Strength--{condition_showS:(_Matcap2TPSDepthEnabled==1)}", Range(0, 1)) = 1
@@ -1423,10 +1433,11 @@ Shader ".poiyomi/Poiyomi 8.1/Poiyomi Toon Outline Early"
 		[HideInInspector][ThryToggle(POI_MATCAP2)]_Matcap3Enable ("Enable Matcap 2", Float) = 0
 		[ThryWideEnum(UTS Style, 0, Top Pinch, 1, Double Sided, 2)] _Matcap3UVMode ("UV Mode", Int) = 1
 		_Matcap3Color ("Color--{reference_property:_Matcap3ColorThemeIndex}", Color) = (1, 1, 1, 1)
+		_Matcap3BaseColorMix ("Base Color Mix", Range(0, 1)) = 0
 		[HideInInspector][ThryWideEnum(Off, 0, Theme Color 0, 1, Theme Color 1, 2, Theme Color 2, 3, Theme Color 3, 4, ColorChord 0, 5, ColorChord 1, 6, ColorChord 2, 7, ColorChord 3, 8, AL Theme 0, 9, AL Theme 1, 10, AL Theme 2, 11, AL Theme 3, 12)] _Matcap3ColorThemeIndex ("", Int) = 0
 		[sRGBWarning(true)][TextureNoSO]_Matcap3 ("Matcap", 2D) = "white" { }
 		_Matcap3Border ("Border", Range(0, .5)) = 0.43
-		[sRGBWarning]_Matcap3Mask ("Mask--{reference_properties:[_Matcap3MaskPan, _Matcap3MaskUV, _Matcap3MaskChannel, _Matcap3MaskInvert]}", 2D) = "white" { }
+		[sRGBWarning][ThryRGBAPacker(R Mask, G Nothing, B Nothing, A Smoothness)]_Matcap3Mask ("Mask--{reference_properties:[_Matcap3MaskPan, _Matcap3MaskUV, _Matcap3MaskChannel, _Matcap3MaskInvert]}", 2D) = "white" { }
 		[HideInInspector][Enum(R, 0, G, 1, B, 2, A, 3)]_Matcap3MaskChannel ("Channel", Float) = 0
 		[HideInInspector][Vector2]_Matcap3MaskPan ("Panning", Vector) = (0, 0, 0, 0)
 		[HideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos XZ, 5, Polar UV, 6, Distorted UV, 7)] _Matcap3MaskUV ("UV", Int) = 0
@@ -1452,6 +1463,10 @@ Shader ".poiyomi/Poiyomi 8.1/Poiyomi Toon Outline Early"
 		[ThryToggleUI(true)] _Matcap3HueShiftEnabled ("<size=13><b>  Hue Shift</b></size>", Float) = 0
 		_Matcap3HueShiftSpeed ("Shift Speed--{condition_showS:(_Matcap3HueShiftEnabled==1)}", Float) = 0
 		_Matcap3HueShift ("Hue Shift--{condition_showS:(_Matcap3HueShiftEnabled==1)}", Range(0, 1)) = 0
+		[ThryToggleUI(true)] _Matcap3SmoothnessEnabled ("<size=13><b>  Blur</b></size>", Float) = 0
+		_Matcap3Smoothness ("Smoothness--{condition_showS:(_Matcap3SmoothnessEnabled==1)}", Range(0, 1)) = 1
+		[ToggleUI]_Matcap3MaskSmoothnessApply ("Apply Mask for Smoothness--{condition_showS:(_Matcap3SmoothnessEnabled==1)}", Float) = 0
+		[Enum(R, 0, G, 1, B, 2, A, 3)]_Matcap3MaskSmoothnessChannel ("Mask Channel for Smoothness--{condition_showS:(_Matcap3SmoothnessEnabled==1)}", Int) = 3
 		[HideInInspector] g_start_Matcap3TPSMaskGroup ("--{condition_showS:(_TPSPenetratorEnabled==1)}", Float) = 0
 		[ThryToggleUI(true)] _Matcap3TPSDepthEnabled ("<size=13><b>  TPS Depth Mask Enabled</b></size>", Float) = 0
 		_Matcap3TPSMaskStrength ("TPS Mask Strength--{condition_showS:(_Matcap3TPSDepthEnabled==1)}", Range(0, 1)) = 1
@@ -1465,10 +1480,11 @@ Shader ".poiyomi/Poiyomi 8.1/Poiyomi Toon Outline Early"
 		[HideInInspector][ThryToggle(POI_MATCAP3)]_Matcap4Enable ("Enable Matcap 3", Float) = 0
 		[ThryWideEnum(UTS Style, 0, Top Pinch, 1, Double Sided, 2)] _Matcap4UVMode ("UV Mode", Int) = 1
 		_Matcap4Color ("Color--{reference_property:_Matcap4ColorThemeIndex}", Color) = (1, 1, 1, 1)
+		_Matcap4BaseColorMix ("Base Color Mix", Range(0, 1)) = 0
 		[HideInInspector][ThryWideEnum(Off, 0, Theme Color 0, 1, Theme Color 1, 2, Theme Color 2, 3, Theme Color 3, 4, ColorChord 0, 5, ColorChord 1, 6, ColorChord 2, 7, ColorChord 3, 8, AL Theme 0, 9, AL Theme 1, 10, AL Theme 2, 11, AL Theme 3, 12)] _Matcap4ColorThemeIndex ("", Int) = 0
 		[sRGBWarning(true)][TextureNoSO]_Matcap4 ("Matcap", 2D) = "white" { }
 		_Matcap4Border ("Border", Range(0, .5)) = 0.43
-		[sRGBWarning]_Matcap4Mask ("Mask--{reference_properties:[_Matcap4MaskPan, _Matcap4MaskUV, _Matcap4MaskChannel, _Matcap4MaskInvert]}", 2D) = "white" { }
+		[sRGBWarning][ThryRGBAPacker(R Mask, G Nothing, B Nothing, A Smoothness)]_Matcap4Mask ("Mask--{reference_properties:[_Matcap4MaskPan, _Matcap4MaskUV, _Matcap4MaskChannel, _Matcap4MaskInvert]}", 2D) = "white" { }
 		[HideInInspector][Vector2]_Matcap4MaskPan ("Panning", Vector) = (0, 0, 0, 0)
 		[HideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos XZ, 5, Polar UV, 6, Distorted UV, 7)] _Matcap4MaskUV ("UV", Int) = 0
 		[HideInInspector][Enum(R, 0, G, 1, B, 2, A, 3)]_Matcap4MaskChannel ("Channel", Float) = 0
@@ -1494,6 +1510,10 @@ Shader ".poiyomi/Poiyomi 8.1/Poiyomi Toon Outline Early"
 		[ThryToggleUI(true)] _Matcap4HueShiftEnabled ("<size=13><b>  Hue Shift</b></size>", Float) = 0
 		_Matcap4HueShiftSpeed ("Shift Speed--{condition_showS:(_Matcap4HueShiftEnabled==1)}", Float) = 0
 		_Matcap4HueShift ("Hue Shift--{condition_showS:(_Matcap4HueShiftEnabled==1)}", Range(0, 1)) = 0
+		[ThryToggleUI(true)] _Matcap4SmoothnessEnabled ("<size=13><b>  Blur</b></size>", Float) = 0
+		_Matcap4Smoothness ("Smoothness--{condition_showS:(_Matcap4SmoothnessEnabled==1)}", Range(0, 1)) = 1
+		[ToggleUI]_Matcap4MaskSmoothnessApply ("Apply Mask for Smoothness--{condition_showS:(_Matcap4SmoothnessEnabled==1)}", Float) = 0
+		[Enum(R, 0, G, 1, B, 2, A, 3)]_Matcap4MaskSmoothnessChannel ("Mask Channel for Smoothness--{condition_showS:(_Matcap4SmoothnessEnabled==1)}", Int) = 3
 		[HideInInspector] g_start_Matcap4TPSMaskGroup ("--{condition_showS:(_TPSPenetratorEnabled==1)}", Float) = 0
 		[ThryToggleUI(true)] _Matcap4TPSDepthEnabled ("<size=13><b>  TPS Depth Mask Enabled</b></size>", Float) = 0
 		_Matcap4TPSMaskStrength ("TPS Mask Strength--{condition_showS:(_Matcap4TPSDepthEnabled==1)}", Range(0, 1)) = 1
@@ -11609,6 +11629,7 @@ Shader ".poiyomi/Poiyomi 8.1/Poiyomi Toon Outline Early"
 			#if defined(PROP_MATCAP) || !defined(OPTIMIZER_ENABLED)
 			Texture2D _Matcap;
 			float4 _Matcap_ST;
+			float4 _Matcap_TexelSize;
 			float2 _MatcapPan;
 			float _MatcapUV;
 			#endif
@@ -11633,7 +11654,12 @@ Shader ".poiyomi/Poiyomi 8.1/Poiyomi Toon Outline Early"
 			float _MatcapMaskGlobalMask;
 			float _MatcapMaskGlobalMaskBlendType;
 			float _MatcapBorder;
+			float _MatcapSmoothnessEnabled;
+			float _MatcapSmoothness;
+			float _MatcapMaskSmoothnessChannel;
+			float _MatcapMaskSmoothnessApply;
 			float4 _MatcapColor;
+			float _MatcapBaseColorMix;
 			float _MatcapColorThemeIndex;
 			float _MatcapIntensity;
 			float _MatcapReplace;
@@ -11658,6 +11684,7 @@ Shader ".poiyomi/Poiyomi 8.1/Poiyomi Toon Outline Early"
 			#if defined(PROP_MATCAP2) || !defined(OPTIMIZER_ENABLED)
 			Texture2D _Matcap2;
 			float4 _Matcap2_ST;
+			float4 _Matcap2_TexelSize;
 			float2 _Matcap2Pan;
 			float _Matcap2UV;
 			#endif
@@ -11682,7 +11709,12 @@ Shader ".poiyomi/Poiyomi 8.1/Poiyomi Toon Outline Early"
 			float _Matcap2MaskGlobalMask;
 			float _Matcap2MaskGlobalMaskBlendType;
 			float _Matcap2Border;
+			float _Matcap2SmoothnessEnabled;
+			float _Matcap2Smoothness;
+			float _Matcap2MaskSmoothnessChannel;
+			float _Matcap2MaskSmoothnessApply;
 			float4 _Matcap2Color;
+			float _Matcap2BaseColorMix;
 			float _Matcap2ColorThemeIndex;
 			float _Matcap2Intensity;
 			float _Matcap2Replace;
@@ -11708,6 +11740,7 @@ Shader ".poiyomi/Poiyomi 8.1/Poiyomi Toon Outline Early"
 			#if defined(PROP_MATCAP3) || !defined(OPTIMIZER_ENABLED)
 			Texture2D _Matcap3;
 			float4 _Matcap3_ST;
+			float4 _Matcap3_TexelSize;
 			float2 _Matcap3Pan;
 			float _Matcap3UV;
 			#endif
@@ -11732,7 +11765,12 @@ Shader ".poiyomi/Poiyomi 8.1/Poiyomi Toon Outline Early"
 			float _Matcap3MaskGlobalMask;
 			float _Matcap3MaskGlobalMaskBlendType;
 			float _Matcap3Border;
+			float _Matcap3SmoothnessEnabled;
+			float _Matcap3Smoothness;
+			float _Matcap3MaskSmoothnessChannel;
+			float _Matcap3MaskSmoothnessApply;
 			float4 _Matcap3Color;
+			float _Matcap3BaseColorMix;
 			float _Matcap3ColorThemeIndex;
 			float _Matcap3Intensity;
 			float _Matcap3Replace;
@@ -11758,6 +11796,7 @@ Shader ".poiyomi/Poiyomi 8.1/Poiyomi Toon Outline Early"
 			#if defined(PROP_MATCAP4) || !defined(OPTIMIZER_ENABLED)
 			Texture2D _Matcap4;
 			float4 _Matcap4_ST;
+			float4 _Matcap4_TexelSize;
 			float2 _Matcap4Pan;
 			float _Matcap4UV;
 			#endif
@@ -11782,7 +11821,12 @@ Shader ".poiyomi/Poiyomi 8.1/Poiyomi Toon Outline Early"
 			float _Matcap4MaskGlobalMask;
 			float _Matcap4MaskGlobalMaskBlendType;
 			float _Matcap4Border;
+			float _Matcap4SmoothnessEnabled;
+			float _Matcap4Smoothness;
+			float _Matcap4MaskSmoothnessChannel;
+			float _Matcap4MaskSmoothnessApply;
 			float4 _Matcap4Color;
+			float _Matcap4BaseColorMix;
 			float _Matcap4ColorThemeIndex;
 			float _Matcap4Intensity;
 			float _Matcap4Replace;
@@ -18312,7 +18356,7 @@ Shader ".poiyomi/Poiyomi 8.1/Poiyomi Toon Outline Early"
 				}
 				if (globalMaskIndex > 0)
 				{
-					matcapMask = customBlend(matcapMask, poiMods.globalMask[globalMaskIndex-1], globalMaskBlendType);
+					matcapMask = customBlend(matcapMask, poiMods.globalMask[globalMaskIndex - 1], globalMaskBlendType);
 				}
 				
 				poiFragData.baseColor.rgb = lerp(poiFragData.baseColor.rgb, matcapColor.rgb, replace * matcapMask * matcapColor.a * .999999);
@@ -18383,13 +18427,47 @@ Shader ".poiyomi/Poiyomi 8.1/Poiyomi Toon Outline Early"
 					matcapUV.x = 1 - matcapUV.x;
 				}
 				
+				float matcapSmoothness;
+				float mipCount0 = 9;
+				if (_MatcapSmoothnessEnabled)
+				{
+					if (_Matcap_TexelSize.z == 8192) mipCount0 = 13;
+					if (_Matcap_TexelSize.z == 4096) mipCount0 = 12;
+					if (_Matcap_TexelSize.z == 2048) mipCount0 = 11;
+					if (_Matcap_TexelSize.z == 1024) mipCount0 = 10;
+					if (_Matcap_TexelSize.z == 512) mipCount0 = 9;
+					if (_Matcap_TexelSize.z == 256) mipCount0 = 8;
+					if (_Matcap_TexelSize.z == 128) mipCount0 = 7;
+					if (_Matcap_TexelSize.z == 64) mipCount0 = 6;
+					if (_Matcap_TexelSize.z == 32) mipCount0 = 5;
+					
+					matcapSmoothness = _MatcapSmoothness;
+					
+					if (_MatcapMaskSmoothnessApply)
+					{
+						#if defined(PROP_MATCAPMASK) || !defined(OPTIMIZER_ENABLED)
+						matcapSmoothness *= POI2D_SAMPLER_PAN(_MatcapMask, _MainTex, poiUV(poiMesh.uv[_MatcapMaskUV], _MatcapMask_ST), _MatcapMaskPan)[_MatcapMaskSmoothnessChannel];
+						#endif
+					}
+					matcapSmoothness = (1 - matcapSmoothness) * mipCount0;
+				}
+				
 				#if defined(PROP_MATCAP) || !defined(OPTIMIZER_ENABLED)
-				matcap = UNITY_SAMPLE_TEX2D_SAMPLER(_Matcap, _MainTex, TRANSFORM_TEX(matcapUV, _Matcap)) * float4(poiThemeColor(poiMods, _MatcapColor.rgb, _MatcapColorThemeIndex), _MatcapColor.a);
+				if (_MatcapSmoothnessEnabled)
+				{
+					matcap = UNITY_SAMPLE_TEX2D_SAMPLER_LOD(_Matcap, _MainTex, TRANSFORM_TEX(matcapUV, _Matcap), matcapSmoothness) * float4(poiThemeColor(poiMods, _MatcapColor.rgb, _MatcapColorThemeIndex), _MatcapColor.a);
+				}
+				else
+				{
+					matcap = UNITY_SAMPLE_TEX2D_SAMPLER(_Matcap, _MainTex, TRANSFORM_TEX(matcapUV, _Matcap)) * float4(poiThemeColor(poiMods, _MatcapColor.rgb, _MatcapColorThemeIndex), _MatcapColor.a);
+				}
 				#else
 				matcap = float4(poiThemeColor(poiMods, _MatcapColor.rgb, _MatcapColorThemeIndex), _MatcapColor.a);
 				#endif
 				
 				matcap.rgb *= _MatcapIntensity;
+				matcap.rgb = lerp(matcap.rgb, matcap.rgb * poiFragData.baseColor.rgb, _MatcapBaseColorMix);
+				
 				#if defined(PROP_MATCAPMASK) || !defined(OPTIMIZER_ENABLED)
 				matcapMask = POI2D_SAMPLER_PAN(_MatcapMask, _MainTex, poiUV(poiMesh.uv[_MatcapMaskUV], _MatcapMask_ST), _MatcapMaskPan)[_MatcapMaskChannel];
 				#else
@@ -18467,12 +18545,47 @@ Shader ".poiyomi/Poiyomi 8.1/Poiyomi Toon Outline Early"
 					matcapUV.x = 1 - matcapUV.x;
 				}
 				
+				float matcap2Smoothness;
+				float mipCount2 = 9;
+				if (_Matcap2SmoothnessEnabled)
+				{
+					if (_Matcap2_TexelSize.z == 8192) mipCount2 = 13;
+					if (_Matcap2_TexelSize.z == 4096) mipCount2 = 12;
+					if (_Matcap2_TexelSize.z == 2048) mipCount2 = 11;
+					if (_Matcap2_TexelSize.z == 1024) mipCount2 = 10;
+					if (_Matcap2_TexelSize.z == 512) mipCount2 = 9;
+					if (_Matcap2_TexelSize.z == 256) mipCount2 = 8;
+					if (_Matcap2_TexelSize.z == 128) mipCount2 = 7;
+					if (_Matcap2_TexelSize.z == 64) mipCount2 = 6;
+					if (_Matcap2_TexelSize.z == 32) mipCount2 = 5;
+					
+					matcap2Smoothness = _Matcap2Smoothness;
+					
+					if (_Matcap2MaskSmoothnessApply)
+					{
+						#if defined(PROP_MATCAP2MASK) || !defined(OPTIMIZER_ENABLED)
+						matcap2Smoothness *= POI2D_SAMPLER_PAN(_Matcap2Mask, _MainTex, poiUV(poiMesh.uv[_Matcap2MaskUV], _Matcap2Mask_ST), _Matcap2MaskPan)[_Matcap2MaskSmoothnessChannel];
+						#endif
+					}
+					matcap2Smoothness = (1 - matcap2Smoothness) * mipCount2;
+				}
+				
 				#if defined(PROP_MATCAP2) || !defined(OPTIMIZER_ENABLED)
-				matcap2 = UNITY_SAMPLE_TEX2D_SAMPLER(_Matcap2, _MainTex, TRANSFORM_TEX(matcapUV, _Matcap2)) * float4(poiThemeColor(poiMods, _Matcap2Color.rgb, _Matcap2ColorThemeIndex), _Matcap2Color.a);
+				if (_Matcap2SmoothnessEnabled)
+				{
+					matcap2 = UNITY_SAMPLE_TEX2D_SAMPLER_LOD(_Matcap2, _MainTex, TRANSFORM_TEX(matcapUV, _Matcap2), matcap2Smoothness) * float4(poiThemeColor(poiMods, _Matcap2Color.rgb, _Matcap2ColorThemeIndex), _Matcap2Color.a);
+				}
+				else
+				{
+					matcap2 = UNITY_SAMPLE_TEX2D_SAMPLER(_Matcap2, _MainTex, TRANSFORM_TEX(matcapUV, _Matcap2)) * float4(poiThemeColor(poiMods, _Matcap2Color.rgb, _Matcap2ColorThemeIndex), _Matcap2Color.a);
+				}
 				#else
 				matcap2 = float4(poiThemeColor(poiMods, _Matcap2Color.rgb, _Matcap2ColorThemeIndex), _Matcap2Color.a);
 				#endif
+				
 				matcap2.rgb *= _Matcap2Intensity;
+				matcap2.rgb = lerp(matcap2.rgb, matcap2.rgb * poiFragData.baseColor.rgb, _Matcap2BaseColorMix);
+				
 				#if defined(PROP_MATCAP2MASK) || !defined(OPTIMIZER_ENABLED)
 				matcap2Mask = POI2D_SAMPLER_PAN(_Matcap2Mask, _MainTex, poiUV(poiMesh.uv[_Matcap2MaskUV], _Matcap2Mask_ST), _Matcap2MaskPan)[_Matcap2MaskChannel];
 				#else
@@ -18549,12 +18662,47 @@ Shader ".poiyomi/Poiyomi 8.1/Poiyomi Toon Outline Early"
 					matcapUV.x = 1 - matcapUV.x;
 				}
 				
+				float matcap3Smoothness;
+				float mipCount3 = 9;
+				if (_Matcap3SmoothnessEnabled)
+				{
+					if (_Matcap3_TexelSize.z == 8192) mipCount3 = 13;
+					if (_Matcap3_TexelSize.z == 4096) mipCount3 = 12;
+					if (_Matcap3_TexelSize.z == 2048) mipCount3 = 11;
+					if (_Matcap3_TexelSize.z == 1024) mipCount3 = 10;
+					if (_Matcap3_TexelSize.z == 512) mipCount3 = 9;
+					if (_Matcap3_TexelSize.z == 256) mipCount3 = 8;
+					if (_Matcap3_TexelSize.z == 128) mipCount3 = 7;
+					if (_Matcap3_TexelSize.z == 64) mipCount3 = 6;
+					if (_Matcap3_TexelSize.z == 32) mipCount3 = 5;
+					
+					matcap3Smoothness = _Matcap3Smoothness;
+					
+					if (_Matcap3MaskSmoothnessApply)
+					{
+						#if defined(PROP_MATCAP3MASK) || !defined(OPTIMIZER_ENABLED)
+						matcap3Smoothness *= POI2D_SAMPLER_PAN(_Matcap3Mask, _MainTex, poiUV(poiMesh.uv[_Matcap3MaskUV], _Matcap3Mask_ST), _Matcap3MaskPan)[_Matcap3MaskSmoothnessChannel];
+						#endif
+					}
+					matcap3Smoothness = (1 - matcap3Smoothness) * mipCount3;
+				}
+				
 				#if defined(PROP_MATCAP3) || !defined(OPTIMIZER_ENABLED)
-				matcap3 = UNITY_SAMPLE_TEX2D_SAMPLER(_Matcap3, _MainTex, TRANSFORM_TEX(matcapUV, _Matcap3)) * float4(poiThemeColor(poiMods, _Matcap3Color.rgb, _Matcap3ColorThemeIndex), _Matcap3Color.a);
+				if (_Matcap3SmoothnessEnabled)
+				{
+					matcap3 = UNITY_SAMPLE_TEX2D_SAMPLER_LOD(_Matcap3, _MainTex, TRANSFORM_TEX(matcapUV, _Matcap3), matcap3Smoothness) * float4(poiThemeColor(poiMods, _Matcap3Color.rgb, _Matcap3ColorThemeIndex), _Matcap3Color.a);
+				}
+				else
+				{
+					matcap3 = UNITY_SAMPLE_TEX2D_SAMPLER(_Matcap3, _MainTex, TRANSFORM_TEX(matcapUV, _Matcap3)) * float4(poiThemeColor(poiMods, _Matcap3Color.rgb, _Matcap3ColorThemeIndex), _Matcap3Color.a);
+				}
 				#else
 				matcap3 = float4(poiThemeColor(poiMods, _Matcap3Color.rgb, _Matcap3ColorThemeIndex), _Matcap3Color.a);
 				#endif
+				
 				matcap3.rgb *= _Matcap3Intensity;
+				matcap3.rgb = lerp(matcap3.rgb, matcap3.rgb * poiFragData.baseColor.rgb, _Matcap3BaseColorMix);
+				
 				#if defined(PROP_MATCAP3MASK) || !defined(OPTIMIZER_ENABLED)
 				matcap3Mask = POI2D_SAMPLER_PAN(_Matcap3Mask, _MainTex, poiUV(poiMesh.uv[_Matcap3MaskUV], _Matcap3Mask_ST), _Matcap3MaskPan)[_Matcap3MaskChannel];
 				#else
@@ -18631,12 +18779,47 @@ Shader ".poiyomi/Poiyomi 8.1/Poiyomi Toon Outline Early"
 					matcapUV.x = 1 - matcapUV.x;
 				}
 				
+				float matcap4Smoothness;
+				float mipCount4 = 9;
+				if (_Matcap4SmoothnessEnabled)
+				{
+					if (_Matcap4_TexelSize.z == 8192) mipCount4 = 13;
+					if (_Matcap4_TexelSize.z == 4096) mipCount4 = 12;
+					if (_Matcap4_TexelSize.z == 2048) mipCount4 = 11;
+					if (_Matcap4_TexelSize.z == 1024) mipCount4 = 10;
+					if (_Matcap4_TexelSize.z == 512) mipCount4 = 9;
+					if (_Matcap4_TexelSize.z == 256) mipCount4 = 8;
+					if (_Matcap4_TexelSize.z == 128) mipCount4 = 7;
+					if (_Matcap4_TexelSize.z == 64) mipCount4 = 6;
+					if (_Matcap4_TexelSize.z == 32) mipCount4 = 5;
+					
+					matcap4Smoothness = _Matcap4Smoothness;
+					
+					if (_Matcap4MaskSmoothnessApply)
+					{
+						#if defined(PROP_MATCAP4MASK) || !defined(OPTIMIZER_ENABLED)
+						matcap4Smoothness *= POI2D_SAMPLER_PAN(_Matcap4Mask, _MainTex, poiUV(poiMesh.uv[_Matcap4MaskUV], _Matcap4Mask_ST), _Matcap4MaskPan)[_Matcap4MaskSmoothnessChannel];
+						#endif
+					}
+					matcap4Smoothness = (1 - matcap4Smoothness) * mipCount4;
+				}
+				
 				#if defined(PROP_MATCAP4) || !defined(OPTIMIZER_ENABLED)
-				matcap4 = UNITY_SAMPLE_TEX2D_SAMPLER(_Matcap4, _MainTex, TRANSFORM_TEX(matcapUV, _Matcap4)) * float4(poiThemeColor(poiMods, _Matcap4Color.rgb, _Matcap4ColorThemeIndex), _Matcap4Color.a);
+				if (_Matcap4SmoothnessEnabled)
+				{
+					matcap4 = UNITY_SAMPLE_TEX2D_SAMPLER_LOD(_Matcap4, _MainTex, TRANSFORM_TEX(matcapUV, _Matcap4), matcap4Smoothness) * float4(poiThemeColor(poiMods, _Matcap4Color.rgb, _Matcap4ColorThemeIndex), _Matcap4Color.a);
+				}
+				else
+				{
+					matcap4 = UNITY_SAMPLE_TEX2D_SAMPLER(_Matcap4, _MainTex, TRANSFORM_TEX(matcapUV, _Matcap4)) * float4(poiThemeColor(poiMods, _Matcap4Color.rgb, _Matcap4ColorThemeIndex), _Matcap4Color.a);
+				}
 				#else
 				matcap4 = float4(poiThemeColor(poiMods, _Matcap4Color.rgb, _Matcap4ColorThemeIndex), _Matcap4Color.a);
 				#endif
+				
 				matcap4.rgb *= _Matcap4Intensity;
+				matcap4.rgb = lerp(matcap4.rgb, matcap4.rgb * poiFragData.baseColor.rgb, _Matcap4BaseColorMix);
+				
 				#if defined(PROP_MATCAP4MASK) || !defined(OPTIMIZER_ENABLED)
 				matcap4Mask = POI2D_SAMPLER_PAN(_Matcap4Mask, _MainTex, poiUV(poiMesh.uv[_Matcap4MaskUV], _Matcap4Mask_ST), _Matcap4MaskPan)[_Matcap4MaskChannel];
 				#else
@@ -18666,6 +18849,7 @@ Shader ".poiyomi/Poiyomi 8.1/Poiyomi Toon Outline Early"
 				#endif
 				//endex
 				//ifex _MatcapEnable==0 && _Matcap2Enable==0 && _Matcap3Enable==0 && _Matcap4Enable==0
+				
 			}
 			#endif
 			//endex
@@ -24605,6 +24789,7 @@ Shader ".poiyomi/Poiyomi 8.1/Poiyomi Toon Outline Early"
 			#if defined(PROP_MATCAP) || !defined(OPTIMIZER_ENABLED)
 			Texture2D _Matcap;
 			float4 _Matcap_ST;
+			float4 _Matcap_TexelSize;
 			float2 _MatcapPan;
 			float _MatcapUV;
 			#endif
@@ -24629,7 +24814,12 @@ Shader ".poiyomi/Poiyomi 8.1/Poiyomi Toon Outline Early"
 			float _MatcapMaskGlobalMask;
 			float _MatcapMaskGlobalMaskBlendType;
 			float _MatcapBorder;
+			float _MatcapSmoothnessEnabled;
+			float _MatcapSmoothness;
+			float _MatcapMaskSmoothnessChannel;
+			float _MatcapMaskSmoothnessApply;
 			float4 _MatcapColor;
+			float _MatcapBaseColorMix;
 			float _MatcapColorThemeIndex;
 			float _MatcapIntensity;
 			float _MatcapReplace;
@@ -24654,6 +24844,7 @@ Shader ".poiyomi/Poiyomi 8.1/Poiyomi Toon Outline Early"
 			#if defined(PROP_MATCAP2) || !defined(OPTIMIZER_ENABLED)
 			Texture2D _Matcap2;
 			float4 _Matcap2_ST;
+			float4 _Matcap2_TexelSize;
 			float2 _Matcap2Pan;
 			float _Matcap2UV;
 			#endif
@@ -24678,7 +24869,12 @@ Shader ".poiyomi/Poiyomi 8.1/Poiyomi Toon Outline Early"
 			float _Matcap2MaskGlobalMask;
 			float _Matcap2MaskGlobalMaskBlendType;
 			float _Matcap2Border;
+			float _Matcap2SmoothnessEnabled;
+			float _Matcap2Smoothness;
+			float _Matcap2MaskSmoothnessChannel;
+			float _Matcap2MaskSmoothnessApply;
 			float4 _Matcap2Color;
+			float _Matcap2BaseColorMix;
 			float _Matcap2ColorThemeIndex;
 			float _Matcap2Intensity;
 			float _Matcap2Replace;
@@ -24704,6 +24900,7 @@ Shader ".poiyomi/Poiyomi 8.1/Poiyomi Toon Outline Early"
 			#if defined(PROP_MATCAP3) || !defined(OPTIMIZER_ENABLED)
 			Texture2D _Matcap3;
 			float4 _Matcap3_ST;
+			float4 _Matcap3_TexelSize;
 			float2 _Matcap3Pan;
 			float _Matcap3UV;
 			#endif
@@ -24728,7 +24925,12 @@ Shader ".poiyomi/Poiyomi 8.1/Poiyomi Toon Outline Early"
 			float _Matcap3MaskGlobalMask;
 			float _Matcap3MaskGlobalMaskBlendType;
 			float _Matcap3Border;
+			float _Matcap3SmoothnessEnabled;
+			float _Matcap3Smoothness;
+			float _Matcap3MaskSmoothnessChannel;
+			float _Matcap3MaskSmoothnessApply;
 			float4 _Matcap3Color;
+			float _Matcap3BaseColorMix;
 			float _Matcap3ColorThemeIndex;
 			float _Matcap3Intensity;
 			float _Matcap3Replace;
@@ -24754,6 +24956,7 @@ Shader ".poiyomi/Poiyomi 8.1/Poiyomi Toon Outline Early"
 			#if defined(PROP_MATCAP4) || !defined(OPTIMIZER_ENABLED)
 			Texture2D _Matcap4;
 			float4 _Matcap4_ST;
+			float4 _Matcap4_TexelSize;
 			float2 _Matcap4Pan;
 			float _Matcap4UV;
 			#endif
@@ -24778,7 +24981,12 @@ Shader ".poiyomi/Poiyomi 8.1/Poiyomi Toon Outline Early"
 			float _Matcap4MaskGlobalMask;
 			float _Matcap4MaskGlobalMaskBlendType;
 			float _Matcap4Border;
+			float _Matcap4SmoothnessEnabled;
+			float _Matcap4Smoothness;
+			float _Matcap4MaskSmoothnessChannel;
+			float _Matcap4MaskSmoothnessApply;
 			float4 _Matcap4Color;
+			float _Matcap4BaseColorMix;
 			float _Matcap4ColorThemeIndex;
 			float _Matcap4Intensity;
 			float _Matcap4Replace;
@@ -30999,7 +31207,7 @@ Shader ".poiyomi/Poiyomi 8.1/Poiyomi Toon Outline Early"
 				}
 				if (globalMaskIndex > 0)
 				{
-					matcapMask = customBlend(matcapMask, poiMods.globalMask[globalMaskIndex-1], globalMaskBlendType);
+					matcapMask = customBlend(matcapMask, poiMods.globalMask[globalMaskIndex - 1], globalMaskBlendType);
 				}
 				
 				poiFragData.baseColor.rgb = lerp(poiFragData.baseColor.rgb, matcapColor.rgb, replace * matcapMask * matcapColor.a * .999999);
@@ -31070,13 +31278,47 @@ Shader ".poiyomi/Poiyomi 8.1/Poiyomi Toon Outline Early"
 					matcapUV.x = 1 - matcapUV.x;
 				}
 				
+				float matcapSmoothness;
+				float mipCount0 = 9;
+				if (_MatcapSmoothnessEnabled)
+				{
+					if (_Matcap_TexelSize.z == 8192) mipCount0 = 13;
+					if (_Matcap_TexelSize.z == 4096) mipCount0 = 12;
+					if (_Matcap_TexelSize.z == 2048) mipCount0 = 11;
+					if (_Matcap_TexelSize.z == 1024) mipCount0 = 10;
+					if (_Matcap_TexelSize.z == 512) mipCount0 = 9;
+					if (_Matcap_TexelSize.z == 256) mipCount0 = 8;
+					if (_Matcap_TexelSize.z == 128) mipCount0 = 7;
+					if (_Matcap_TexelSize.z == 64) mipCount0 = 6;
+					if (_Matcap_TexelSize.z == 32) mipCount0 = 5;
+					
+					matcapSmoothness = _MatcapSmoothness;
+					
+					if (_MatcapMaskSmoothnessApply)
+					{
+						#if defined(PROP_MATCAPMASK) || !defined(OPTIMIZER_ENABLED)
+						matcapSmoothness *= POI2D_SAMPLER_PAN(_MatcapMask, _MainTex, poiUV(poiMesh.uv[_MatcapMaskUV], _MatcapMask_ST), _MatcapMaskPan)[_MatcapMaskSmoothnessChannel];
+						#endif
+					}
+					matcapSmoothness = (1 - matcapSmoothness) * mipCount0;
+				}
+				
 				#if defined(PROP_MATCAP) || !defined(OPTIMIZER_ENABLED)
-				matcap = UNITY_SAMPLE_TEX2D_SAMPLER(_Matcap, _MainTex, TRANSFORM_TEX(matcapUV, _Matcap)) * float4(poiThemeColor(poiMods, _MatcapColor.rgb, _MatcapColorThemeIndex), _MatcapColor.a);
+				if (_MatcapSmoothnessEnabled)
+				{
+					matcap = UNITY_SAMPLE_TEX2D_SAMPLER_LOD(_Matcap, _MainTex, TRANSFORM_TEX(matcapUV, _Matcap), matcapSmoothness) * float4(poiThemeColor(poiMods, _MatcapColor.rgb, _MatcapColorThemeIndex), _MatcapColor.a);
+				}
+				else
+				{
+					matcap = UNITY_SAMPLE_TEX2D_SAMPLER(_Matcap, _MainTex, TRANSFORM_TEX(matcapUV, _Matcap)) * float4(poiThemeColor(poiMods, _MatcapColor.rgb, _MatcapColorThemeIndex), _MatcapColor.a);
+				}
 				#else
 				matcap = float4(poiThemeColor(poiMods, _MatcapColor.rgb, _MatcapColorThemeIndex), _MatcapColor.a);
 				#endif
 				
 				matcap.rgb *= _MatcapIntensity;
+				matcap.rgb = lerp(matcap.rgb, matcap.rgb * poiFragData.baseColor.rgb, _MatcapBaseColorMix);
+				
 				#if defined(PROP_MATCAPMASK) || !defined(OPTIMIZER_ENABLED)
 				matcapMask = POI2D_SAMPLER_PAN(_MatcapMask, _MainTex, poiUV(poiMesh.uv[_MatcapMaskUV], _MatcapMask_ST), _MatcapMaskPan)[_MatcapMaskChannel];
 				#else
@@ -31154,12 +31396,47 @@ Shader ".poiyomi/Poiyomi 8.1/Poiyomi Toon Outline Early"
 					matcapUV.x = 1 - matcapUV.x;
 				}
 				
+				float matcap2Smoothness;
+				float mipCount2 = 9;
+				if (_Matcap2SmoothnessEnabled)
+				{
+					if (_Matcap2_TexelSize.z == 8192) mipCount2 = 13;
+					if (_Matcap2_TexelSize.z == 4096) mipCount2 = 12;
+					if (_Matcap2_TexelSize.z == 2048) mipCount2 = 11;
+					if (_Matcap2_TexelSize.z == 1024) mipCount2 = 10;
+					if (_Matcap2_TexelSize.z == 512) mipCount2 = 9;
+					if (_Matcap2_TexelSize.z == 256) mipCount2 = 8;
+					if (_Matcap2_TexelSize.z == 128) mipCount2 = 7;
+					if (_Matcap2_TexelSize.z == 64) mipCount2 = 6;
+					if (_Matcap2_TexelSize.z == 32) mipCount2 = 5;
+					
+					matcap2Smoothness = _Matcap2Smoothness;
+					
+					if (_Matcap2MaskSmoothnessApply)
+					{
+						#if defined(PROP_MATCAP2MASK) || !defined(OPTIMIZER_ENABLED)
+						matcap2Smoothness *= POI2D_SAMPLER_PAN(_Matcap2Mask, _MainTex, poiUV(poiMesh.uv[_Matcap2MaskUV], _Matcap2Mask_ST), _Matcap2MaskPan)[_Matcap2MaskSmoothnessChannel];
+						#endif
+					}
+					matcap2Smoothness = (1 - matcap2Smoothness) * mipCount2;
+				}
+				
 				#if defined(PROP_MATCAP2) || !defined(OPTIMIZER_ENABLED)
-				matcap2 = UNITY_SAMPLE_TEX2D_SAMPLER(_Matcap2, _MainTex, TRANSFORM_TEX(matcapUV, _Matcap2)) * float4(poiThemeColor(poiMods, _Matcap2Color.rgb, _Matcap2ColorThemeIndex), _Matcap2Color.a);
+				if (_Matcap2SmoothnessEnabled)
+				{
+					matcap2 = UNITY_SAMPLE_TEX2D_SAMPLER_LOD(_Matcap2, _MainTex, TRANSFORM_TEX(matcapUV, _Matcap2), matcap2Smoothness) * float4(poiThemeColor(poiMods, _Matcap2Color.rgb, _Matcap2ColorThemeIndex), _Matcap2Color.a);
+				}
+				else
+				{
+					matcap2 = UNITY_SAMPLE_TEX2D_SAMPLER(_Matcap2, _MainTex, TRANSFORM_TEX(matcapUV, _Matcap2)) * float4(poiThemeColor(poiMods, _Matcap2Color.rgb, _Matcap2ColorThemeIndex), _Matcap2Color.a);
+				}
 				#else
 				matcap2 = float4(poiThemeColor(poiMods, _Matcap2Color.rgb, _Matcap2ColorThemeIndex), _Matcap2Color.a);
 				#endif
+				
 				matcap2.rgb *= _Matcap2Intensity;
+				matcap2.rgb = lerp(matcap2.rgb, matcap2.rgb * poiFragData.baseColor.rgb, _Matcap2BaseColorMix);
+				
 				#if defined(PROP_MATCAP2MASK) || !defined(OPTIMIZER_ENABLED)
 				matcap2Mask = POI2D_SAMPLER_PAN(_Matcap2Mask, _MainTex, poiUV(poiMesh.uv[_Matcap2MaskUV], _Matcap2Mask_ST), _Matcap2MaskPan)[_Matcap2MaskChannel];
 				#else
@@ -31236,12 +31513,47 @@ Shader ".poiyomi/Poiyomi 8.1/Poiyomi Toon Outline Early"
 					matcapUV.x = 1 - matcapUV.x;
 				}
 				
+				float matcap3Smoothness;
+				float mipCount3 = 9;
+				if (_Matcap3SmoothnessEnabled)
+				{
+					if (_Matcap3_TexelSize.z == 8192) mipCount3 = 13;
+					if (_Matcap3_TexelSize.z == 4096) mipCount3 = 12;
+					if (_Matcap3_TexelSize.z == 2048) mipCount3 = 11;
+					if (_Matcap3_TexelSize.z == 1024) mipCount3 = 10;
+					if (_Matcap3_TexelSize.z == 512) mipCount3 = 9;
+					if (_Matcap3_TexelSize.z == 256) mipCount3 = 8;
+					if (_Matcap3_TexelSize.z == 128) mipCount3 = 7;
+					if (_Matcap3_TexelSize.z == 64) mipCount3 = 6;
+					if (_Matcap3_TexelSize.z == 32) mipCount3 = 5;
+					
+					matcap3Smoothness = _Matcap3Smoothness;
+					
+					if (_Matcap3MaskSmoothnessApply)
+					{
+						#if defined(PROP_MATCAP3MASK) || !defined(OPTIMIZER_ENABLED)
+						matcap3Smoothness *= POI2D_SAMPLER_PAN(_Matcap3Mask, _MainTex, poiUV(poiMesh.uv[_Matcap3MaskUV], _Matcap3Mask_ST), _Matcap3MaskPan)[_Matcap3MaskSmoothnessChannel];
+						#endif
+					}
+					matcap3Smoothness = (1 - matcap3Smoothness) * mipCount3;
+				}
+				
 				#if defined(PROP_MATCAP3) || !defined(OPTIMIZER_ENABLED)
-				matcap3 = UNITY_SAMPLE_TEX2D_SAMPLER(_Matcap3, _MainTex, TRANSFORM_TEX(matcapUV, _Matcap3)) * float4(poiThemeColor(poiMods, _Matcap3Color.rgb, _Matcap3ColorThemeIndex), _Matcap3Color.a);
+				if (_Matcap3SmoothnessEnabled)
+				{
+					matcap3 = UNITY_SAMPLE_TEX2D_SAMPLER_LOD(_Matcap3, _MainTex, TRANSFORM_TEX(matcapUV, _Matcap3), matcap3Smoothness) * float4(poiThemeColor(poiMods, _Matcap3Color.rgb, _Matcap3ColorThemeIndex), _Matcap3Color.a);
+				}
+				else
+				{
+					matcap3 = UNITY_SAMPLE_TEX2D_SAMPLER(_Matcap3, _MainTex, TRANSFORM_TEX(matcapUV, _Matcap3)) * float4(poiThemeColor(poiMods, _Matcap3Color.rgb, _Matcap3ColorThemeIndex), _Matcap3Color.a);
+				}
 				#else
 				matcap3 = float4(poiThemeColor(poiMods, _Matcap3Color.rgb, _Matcap3ColorThemeIndex), _Matcap3Color.a);
 				#endif
+				
 				matcap3.rgb *= _Matcap3Intensity;
+				matcap3.rgb = lerp(matcap3.rgb, matcap3.rgb * poiFragData.baseColor.rgb, _Matcap3BaseColorMix);
+				
 				#if defined(PROP_MATCAP3MASK) || !defined(OPTIMIZER_ENABLED)
 				matcap3Mask = POI2D_SAMPLER_PAN(_Matcap3Mask, _MainTex, poiUV(poiMesh.uv[_Matcap3MaskUV], _Matcap3Mask_ST), _Matcap3MaskPan)[_Matcap3MaskChannel];
 				#else
@@ -31318,12 +31630,47 @@ Shader ".poiyomi/Poiyomi 8.1/Poiyomi Toon Outline Early"
 					matcapUV.x = 1 - matcapUV.x;
 				}
 				
+				float matcap4Smoothness;
+				float mipCount4 = 9;
+				if (_Matcap4SmoothnessEnabled)
+				{
+					if (_Matcap4_TexelSize.z == 8192) mipCount4 = 13;
+					if (_Matcap4_TexelSize.z == 4096) mipCount4 = 12;
+					if (_Matcap4_TexelSize.z == 2048) mipCount4 = 11;
+					if (_Matcap4_TexelSize.z == 1024) mipCount4 = 10;
+					if (_Matcap4_TexelSize.z == 512) mipCount4 = 9;
+					if (_Matcap4_TexelSize.z == 256) mipCount4 = 8;
+					if (_Matcap4_TexelSize.z == 128) mipCount4 = 7;
+					if (_Matcap4_TexelSize.z == 64) mipCount4 = 6;
+					if (_Matcap4_TexelSize.z == 32) mipCount4 = 5;
+					
+					matcap4Smoothness = _Matcap4Smoothness;
+					
+					if (_Matcap4MaskSmoothnessApply)
+					{
+						#if defined(PROP_MATCAP4MASK) || !defined(OPTIMIZER_ENABLED)
+						matcap4Smoothness *= POI2D_SAMPLER_PAN(_Matcap4Mask, _MainTex, poiUV(poiMesh.uv[_Matcap4MaskUV], _Matcap4Mask_ST), _Matcap4MaskPan)[_Matcap4MaskSmoothnessChannel];
+						#endif
+					}
+					matcap4Smoothness = (1 - matcap4Smoothness) * mipCount4;
+				}
+				
 				#if defined(PROP_MATCAP4) || !defined(OPTIMIZER_ENABLED)
-				matcap4 = UNITY_SAMPLE_TEX2D_SAMPLER(_Matcap4, _MainTex, TRANSFORM_TEX(matcapUV, _Matcap4)) * float4(poiThemeColor(poiMods, _Matcap4Color.rgb, _Matcap4ColorThemeIndex), _Matcap4Color.a);
+				if (_Matcap4SmoothnessEnabled)
+				{
+					matcap4 = UNITY_SAMPLE_TEX2D_SAMPLER_LOD(_Matcap4, _MainTex, TRANSFORM_TEX(matcapUV, _Matcap4), matcap4Smoothness) * float4(poiThemeColor(poiMods, _Matcap4Color.rgb, _Matcap4ColorThemeIndex), _Matcap4Color.a);
+				}
+				else
+				{
+					matcap4 = UNITY_SAMPLE_TEX2D_SAMPLER(_Matcap4, _MainTex, TRANSFORM_TEX(matcapUV, _Matcap4)) * float4(poiThemeColor(poiMods, _Matcap4Color.rgb, _Matcap4ColorThemeIndex), _Matcap4Color.a);
+				}
 				#else
 				matcap4 = float4(poiThemeColor(poiMods, _Matcap4Color.rgb, _Matcap4ColorThemeIndex), _Matcap4Color.a);
 				#endif
+				
 				matcap4.rgb *= _Matcap4Intensity;
+				matcap4.rgb = lerp(matcap4.rgb, matcap4.rgb * poiFragData.baseColor.rgb, _Matcap4BaseColorMix);
+				
 				#if defined(PROP_MATCAP4MASK) || !defined(OPTIMIZER_ENABLED)
 				matcap4Mask = POI2D_SAMPLER_PAN(_Matcap4Mask, _MainTex, poiUV(poiMesh.uv[_Matcap4MaskUV], _Matcap4Mask_ST), _Matcap4MaskPan)[_Matcap4MaskChannel];
 				#else
@@ -31353,6 +31700,7 @@ Shader ".poiyomi/Poiyomi 8.1/Poiyomi Toon Outline Early"
 				#endif
 				//endex
 				//ifex _MatcapEnable==0 && _Matcap2Enable==0 && _Matcap3Enable==0 && _Matcap4Enable==0
+				
 			}
 			#endif
 			//endex
