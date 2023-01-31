@@ -47,11 +47,11 @@ namespace Thry
         public const string IMAGING_EXISTS = "IMAGING_DLL_EXISTS";
     }
 
-    public class RESOURCE_NAME
+    public class RESOURCE_GUID
     {
-        public const string RECT = "thry_rect";
-        public const string ICON_NAME_LINK = "thryEditor_link";
-        public const string ICON_NAME_THRY = "thryEditor_iconThry";
+        public const string RECT = "2329f8696fd09a743a5baf2a5f4986af";
+        public const string ICON_LINK = "e85fd0a0e4e4fea46bb3fdeab5c3fb07";
+        public const string ICON_THRY = "693aa4c2cdc578346a196469a06ddbba";
     }
     #endregion
 
@@ -91,7 +91,7 @@ namespace Thry
 
     public enum DrawerType
     {
-        None, Header
+        None
     }
 
     public class GradientData
@@ -110,7 +110,6 @@ namespace Thry
     #region In Shader Data
     public class PropertyOptions
     {
-        public int offset = 0;
         public string tooltip = "";
         public DefineableAction altClick;
         public DefineableAction onClick;
@@ -125,12 +124,31 @@ namespace Thry
         public string[] reference_properties;
         public string reference_property;
         public bool force_texture_options = false;
-        public bool hide_in_inspector = false;
         public bool is_visible_simple = false;
         public string file_name;
         public string remote_version_url;
         public string generic_string;
         public bool never_lock;
+
+        public static PropertyOptions Deserialize(string s)
+        {
+            if(s == null) return new PropertyOptions();
+            s = s.Replace("''", "\"");
+            PropertyOptions options = Parser.Deserialize<PropertyOptions>(s);
+            // The following could be removed since the parser can now handle it. leaving it in for now /shrug
+            if (options != null)
+            {
+                if (options.condition_showS != null)
+                {
+                    options.condition_show = DefineableCondition.Parse(options.condition_showS);
+                }
+                if (options.on_value != null)
+                {
+                    options.on_value_actions = PropertyValueAction.ParseToArray(options.on_value);
+                }
+            }
+            return options;
+        }
     }
 
     public class ButtonData
@@ -146,6 +164,7 @@ namespace Thry
     public class TextureData
     {
         public string name = null;
+        public string guid = null;
         public int width = 128;
         public int height = 128;
 
@@ -177,35 +196,47 @@ namespace Thry
         {
             get
             {
-                if(!s_loaded_textures.ContainsKey(name) || s_loaded_textures[name] == null)
+                if(guid != null)
                 {
-                    if(IsUrl())
+                    if(!s_loaded_textures.ContainsKey(guid) || s_loaded_textures[guid] == null)
                     {
-                        if(!_isLoading)
-                        {
-                            WebHelper.DownloadBytesASync(name, (byte[] b) =>
-                            {
-                                _isLoading = false;
-                                Texture2D tex = new Texture2D(1,1, TextureFormat.ARGB32, false);
-                                ImageConversion.LoadImage(tex, b, false);
-                                s_loaded_textures[name] = tex;
-                            });
-                            _isLoading = true;
-                        }
-                    }else
-                    {
-                        string path = FileHelper.FindFile(name, "texture");
+                        string path = AssetDatabase.GUIDToAssetPath(guid);
                         if (path != null)
-                            s_loaded_textures[name] = AssetDatabase.LoadAssetAtPath<Texture>(path);
+                            s_loaded_textures[guid] = AssetDatabase.LoadAssetAtPath<Texture>(path);
                         else
-                            s_loaded_textures[name] = new Texture2D(1, 1);
+                            s_loaded_textures[guid] = Texture2D.whiteTexture;
                     }
-                    if(!s_loaded_textures.ContainsKey(name))
+                    return s_loaded_textures[guid];
+                }else if(name != null)
+                {
+                    if(!s_loaded_textures.ContainsKey(name) || s_loaded_textures[name] == null)
                     {
-                        return null;
+                        if(IsUrl())
+                        {
+                            if(!_isLoading)
+                            {
+                                s_loaded_textures[name] = Texture2D.whiteTexture;
+                                WebHelper.DownloadBytesASync(name, (byte[] b) =>
+                                {
+                                    _isLoading = false;
+                                    Texture2D tex = new Texture2D(1,1, TextureFormat.ARGB32, false);
+                                    ImageConversion.LoadImage(tex, b, false);
+                                    s_loaded_textures[name] = tex;
+                                });
+                                _isLoading = true;
+                            }
+                        }else
+                        {
+                            string path = FileHelper.FindFile(name, "texture");
+                            if (path != null)
+                                s_loaded_textures[name] = AssetDatabase.LoadAssetAtPath<Texture>(path);
+                            else
+                                s_loaded_textures[name] = Texture2D.whiteTexture;
+                        }
                     }
+                    return s_loaded_textures[name];
                 }
-                return s_loaded_textures[name];
+                return Texture2D.whiteTexture;
             }
         }
 
@@ -218,7 +249,7 @@ namespace Thry
                     name = s
                 };
             }
-            return Parser.ParseToObject<TextureData>(s);
+            return Parser.Deserialize<TextureData>(s);
         }
 
         bool IsUrl()
@@ -243,7 +274,7 @@ namespace Thry
                 (p.type == MaterialProperty.PropType.Texture && ((p.textureValue != null) == (value == "1"))) ||
                 (p.type == MaterialProperty.PropType.Texture && (p.textureValue != null && p.textureValue.name == value)) 
             )
-                {
+                {;
                 foreach (DefineableAction a in actions)
                     a.Perform(targets);
                 return true;
@@ -580,6 +611,9 @@ namespace Thry
                 case DefineableConditionType.OR:
                     if (condition1 != null && condition2 != null) return "("+condition1.ToString()+"||"+condition2.ToString()+")";
                     break;
+                case DefineableConditionType.NOT:
+                    if (condition1 != null) return "!"+condition1.ToString();
+                    break;
             }
             return "";
         }
@@ -590,48 +624,104 @@ namespace Thry
         }
 
         private static readonly char[] ComparissionLiteralsToCheckFor = "*><=".ToCharArray();
-        public static DefineableCondition Parse(string s, Material useThisMaterialInsteadOfOpenEditor = null)
+        public static DefineableCondition Parse(string s, Material useThisMaterialInsteadOfOpenEditor = null, int start = 0, int end = -1)
         {
-            DefineableCondition con = new DefineableCondition();
-            con._materialInsteadOfEditor = useThisMaterialInsteadOfOpenEditor;
+            if(end == -1) end = s.Length;
+            DefineableCondition con;
 
-            s = Strip(s);
-
-            if(s.StartsWith("!"))
-            {
-                con.type = DefineableConditionType.NOT;
-                con.condition1 = Parse(s.Substring(1), useThisMaterialInsteadOfOpenEditor);
-                return con;
-            }
+            // Debug.Log("Parsing: " + s.Substring(start, end - start));
 
             int depth = 0;
-            for (int i = 0; i < s.Length - 1; i++)
+            int bracketStart = -1;
+            int bracketEnd = -1;
+            for(int i = start; i < end; i++)
             {
                 char c = s[i];
-                char cc = s[i + 1];
-                if (c == '(')
-                    depth++;
-                else if (c == ')')
-                    depth--;
-
-                if (depth == 0)
+                if(c == '(')
                 {
-                    if (c == '&' && cc == '&')
+                    depth += 1;
+                    if(depth == 1)
                     {
-                        con.type = DefineableConditionType.AND;
-                        con.condition1 = Parse(s.Substring(0, i), useThisMaterialInsteadOfOpenEditor);
-                        con.condition2 = Parse(s.Substring(i + 2, s.Length - i - 2), useThisMaterialInsteadOfOpenEditor);
-                        return con;
+                        bracketStart = i;
                     }
-                    if (c == '|' && cc == '|')
+                }else if(c == ')')
+                {
+                    if(depth == 1)
                     {
+                        bracketEnd = i;
+                    }
+                    depth -= 1;
+                }else if(depth == 0)
+                {
+                    if(c == '&')
+                    {
+                        con = new DefineableCondition();
+                        con._materialInsteadOfEditor = useThisMaterialInsteadOfOpenEditor;
+
+                        con.type = DefineableConditionType.AND;
+                        con.condition1 = Parse(s, useThisMaterialInsteadOfOpenEditor, start, i);
+                        con.condition2 = Parse(s, useThisMaterialInsteadOfOpenEditor, i + (s[i+1] == '&' ? 2 : 1), end);
+                        return con;
+                    }else if(c == '|')
+                    {
+                        
+                        con = new DefineableCondition();
+                        con._materialInsteadOfEditor = useThisMaterialInsteadOfOpenEditor;
+
                         con.type = DefineableConditionType.OR;
-                        con.condition1 = Parse(s.Substring(0, i), useThisMaterialInsteadOfOpenEditor);
-                        con.condition2 = Parse(s.Substring(i + 2, s.Length - i - 2), useThisMaterialInsteadOfOpenEditor);
+                        con.condition1 = Parse(s, useThisMaterialInsteadOfOpenEditor, start, i);
+                        con.condition2 = Parse(s, useThisMaterialInsteadOfOpenEditor, i + (s[i + 1] == '|' ? 2 : 1), end);
                         return con;
                     }
                 }
             }
+
+
+            bool isInverted = IsInverted(s, ref start);
+
+            // if no AND or OR was found, check for brackets
+            if(bracketStart != -1 && bracketEnd != -1)
+            {
+                con = Parse(s, useThisMaterialInsteadOfOpenEditor, bracketStart + 1, bracketEnd);
+            }else
+            {
+                con = ParseSingle(s.Substring(start, end - start), useThisMaterialInsteadOfOpenEditor);
+            }
+
+            if(isInverted)
+            {
+                DefineableCondition inverted = new DefineableCondition();
+                inverted._materialInsteadOfEditor = useThisMaterialInsteadOfOpenEditor;
+                inverted.type = DefineableConditionType.NOT;
+                inverted.condition1 = con;
+                return inverted;
+            }
+
+            return con;
+        }
+
+        static bool IsInverted(string s, ref int start)
+        {
+            for(int i = start; i < s.Length; i++)
+            {
+                if(s[i] == '!')
+                {
+                    start += 1;
+                    return true;
+                }
+                if(s[i] != ' ')
+                    return false;
+            }
+            return false;
+        }
+
+        static DefineableCondition ParseSingle(string s, Material useThisMaterialInsteadOfOpenEditor = null)
+        {
+            // Debug.Log("Parsing single: " + s);
+
+            DefineableCondition con = new DefineableCondition();
+            con._materialInsteadOfEditor = useThisMaterialInsteadOfOpenEditor;
+
             if(s.IndexOfAny(ComparissionLiteralsToCheckFor) != -1)
             {
                 //is a comparission
@@ -685,29 +775,6 @@ namespace Thry
             if( useThisMaterialInsteadOfOpenEditor != null ) return useThisMaterialInsteadOfOpenEditor;
             if( ShaderEditor.Active != null ) return ShaderEditor.Active.Materials[0];
             return null;
-        }
-
-        private static string Strip(string s)
-        {
-            s = s.Trim();
-            if (s.StartsWith("(", StringComparison.Ordinal) == false)
-                return s;
-            bool stripKlammer = true;
-            int depth = 0;
-            int i = 0;
-            foreach (char c in s)
-            {
-                if (c == '(')
-                    depth++;
-                else if (c == ')')
-                    depth--;
-                if (depth == 0 && i != 0 && i != s.Length - 1)
-                    stripKlammer = false;
-                i++;
-            }
-            if (stripKlammer)
-                return Strip(s.Substring(1, s.Length - 2));
-            return s;
         }
     }
 

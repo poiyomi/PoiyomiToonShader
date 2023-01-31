@@ -59,8 +59,8 @@ namespace Thry
         public static GUIStyle icon_style_refresh = CreateIconStyle(EditorGUIUtility.IconContent("d_Refresh"));
         public static GUIStyle icon_style_shaders = CreateIconStyle(EditorGUIUtility.IconContent("d_ShaderVariantCollection Icon"));
         public static GUIStyle icon_style_tools = CreateIconStyle(EditorGUIUtility.IconContent("d_SceneViewTools"));
-        public static GUIStyle icon_style_linked = CreateIconStyle(LoadTextureByFileName(RESOURCE_NAME.ICON_NAME_LINK));
-        public static GUIStyle icon_style_thryIcon = CreateIconStyle(LoadTextureByFileName(RESOURCE_NAME.ICON_NAME_THRY));
+        public static GUIStyle icon_style_linked = CreateIconStyle(LoadTextureByGUID(RESOURCE_GUID.ICON_LINK));
+        public static GUIStyle icon_style_thryIcon = CreateIconStyle(LoadTextureByGUID(RESOURCE_GUID.ICON_THRY));
 
         public static Texture texture_icon_shaders = EditorGUIUtility.IconContent("d_ShaderVariantCollection Icon").image;
 
@@ -83,14 +83,13 @@ namespace Thry
             };
         }
 
-        public static Texture2D rounded_texture { get; private set; } = LoadTextureByFileName(RESOURCE_NAME.RECT);
+        public static Texture2D rounded_texture { get; private set; } = LoadTextureByGUID(RESOURCE_GUID.RECT);
 
-        private static Texture2D LoadTextureByFileName(string search_name)
+        private static Texture2D LoadTextureByGUID(string guid)
         {
-            string[] guids = AssetDatabase.FindAssets(search_name + " t:texture");
-            if (guids.Length == 0)
-                return Texture2D.whiteTexture;
-            return AssetDatabase.LoadAssetAtPath<Texture2D>(AssetDatabase.GUIDToAssetPath(guids[0]));
+            string path = AssetDatabase.GUIDToAssetPath(guid);
+            if(path == null) return Texture2D.whiteTexture;
+            return AssetDatabase.LoadAssetAtPath<Texture2D>(path);
         }
     }
 }

@@ -22,8 +22,27 @@ namespace Thry
 
         public static T Deserialize<T>(string s)
         {
-            return ParseToObject<T>(s);
+            return DeserializeInternal<T>(s);
         }
+
+        // [MenuItem("Thry/Parser/Test")]
+        // public static void Test()
+        // {
+        //     string s = "{reference_properties:[_LightingShadowMasksPan, _LightingShadowMasksUV,_LightingShadowMaskStrengthR,_LightingShadowMaskStrengthG,_LightingShadowMaskStrengthB,_LightingShadowMaskStrengthA]}";
+        //     s = "{on_value_actions:["+
+		// "{value:0,actions:[{type:SET_PROPERTY,data:render_queue=2000}, {type:SET_PROPERTY,data:render_type=Opaque},            {type:SET_PROPERTY,data:_BlendOp=0}, {type:SET_PROPERTY,data:_BlendOpAlpha=0}, {type:SET_PROPERTY,data:_Cutoff=0},  {type:SET_PROPERTY,data:_SrcBlend=1}, {type:SET_PROPERTY,data:_DstBlend=0},  {type:SET_PROPERTY,data:_SrcBlendAlpha=1}, {type:SET_PROPERTY,data:_DstBlendAlpha=1},  {type:SET_PROPERTY,data:_AddSrcBlend=1}, {type:SET_PROPERTY,data:_AddDstBlend=1}, {type:SET_PROPERTY,data:_AddSrcBlendAlpha=0}, {type:SET_PROPERTY,data:_AddDstBlendAlpha=1}, {type:SET_PROPERTY,data:_AlphaToCoverage=0},  {type:SET_PROPERTY,data:_ZWrite=1}, {type:SET_PROPERTY,data:_ZTest=4},   {type:SET_PROPERTY,data:_AlphaPremultiply=0}, {type:SET_PROPERTY,data:_OutlineSrcBlend=1}, {type:SET_PROPERTY,data:_OutlineDstBlend=0},  {type:SET_PROPERTY,data:_OutlineSrcBlendAlpha=1}, {type:SET_PROPERTY,data:_OutlineDstBlendAlpha=0}, {type:SET_PROPERTY,data:_OutlineBlendOp=0}, {type:SET_PROPERTY,data:_OutlineBlendOpAlpha=0},]},"+
+		// "{value:1,actions:[{type:SET_PROPERTY,data:render_queue=2450}, {type:SET_PROPERTY,data:render_type=TransparentCutout}, {type:SET_PROPERTY,data:_BlendOp=0}, {type:SET_PROPERTY,data:_BlendOpAlpha=4}, {type:SET_PROPERTY,data:_Cutoff=.5}, {type:SET_PROPERTY,data:_SrcBlend=1}, {type:SET_PROPERTY,data:_DstBlend=0},  {type:SET_PROPERTY,data:_SrcBlendAlpha=1}, {type:SET_PROPERTY,data:_DstBlendAlpha=1},  {type:SET_PROPERTY,data:_AddSrcBlend=1}, {type:SET_PROPERTY,data:_AddDstBlend=1}, {type:SET_PROPERTY,data:_AddSrcBlendAlpha=0}, {type:SET_PROPERTY,data:_AddDstBlendAlpha=1}, {type:SET_PROPERTY,data:_AlphaToCoverage=0},  {type:SET_PROPERTY,data:_ZWrite=1}, {type:SET_PROPERTY,data:_ZTest=4},   {type:SET_PROPERTY,data:_AlphaPremultiply=0}, {type:SET_PROPERTY,data:_OutlineSrcBlend=1}, {type:SET_PROPERTY,data:_OutlineDstBlend=0},  {type:SET_PROPERTY,data:_OutlineSrcBlendAlpha=1}, {type:SET_PROPERTY,data:_OutlineDstBlendAlpha=1}, {type:SET_PROPERTY,data:_OutlineBlendOp=0}, {type:SET_PROPERTY,data:_OutlineBlendOpAlpha=4},]},"+
+		// "{value:9,actions:[{type:SET_PROPERTY,data:render_queue=2450}, {type:SET_PROPERTY,data:render_type=TransparentCutout}, {type:SET_PROPERTY,data:_BlendOp=0}, {type:SET_PROPERTY,data:_BlendOpAlpha=4}, {type:SET_PROPERTY,data:_Cutoff=0},  {type:SET_PROPERTY,data:_SrcBlend=5}, {type:SET_PROPERTY,data:_DstBlend=10}, {type:SET_PROPERTY,data:_SrcBlendAlpha=1}, {type:SET_PROPERTY,data:_DstBlendAlpha=1},  {type:SET_PROPERTY,data:_AddSrcBlend=5}, {type:SET_PROPERTY,data:_AddDstBlend=1}, {type:SET_PROPERTY,data:_AddSrcBlendAlpha=0}, {type:SET_PROPERTY,data:_AddDstBlendAlpha=1}, {type:SET_PROPERTY,data:_AlphaToCoverage=0},  {type:SET_PROPERTY,data:_ZWrite=1}, {type:SET_PROPERTY,data:_ZTest=4},   {type:SET_PROPERTY,data:_AlphaPremultiply=0}, {type:SET_PROPERTY,data:_OutlineSrcBlend=5}, {type:SET_PROPERTY,data:_OutlineDstBlend=10}, {type:SET_PROPERTY,data:_OutlineSrcBlendAlpha=1}, {type:SET_PROPERTY,data:_OutlineDstBlendAlpha=1}, {type:SET_PROPERTY,data:_OutlineBlendOp=0}, {type:SET_PROPERTY,data:_OutlineBlendOpAlpha=4},]},"+
+		// "{value:2,actions:[{type:SET_PROPERTY,data:render_queue=3000}, {type:SET_PROPERTY,data:render_type=Transparent},       {type:SET_PROPERTY,data:_BlendOp=0}, {type:SET_PROPERTY,data:_BlendOpAlpha=4}, {type:SET_PROPERTY,data:_Cutoff=0},  {type:SET_PROPERTY,data:_SrcBlend=5}, {type:SET_PROPERTY,data:_DstBlend=10}, {type:SET_PROPERTY,data:_SrcBlendAlpha=1}, {type:SET_PROPERTY,data:_DstBlendAlpha=1},  {type:SET_PROPERTY,data:_AddSrcBlend=5}, {type:SET_PROPERTY,data:_AddDstBlend=1}, {type:SET_PROPERTY,data:_AddSrcBlendAlpha=0}, {type:SET_PROPERTY,data:_AddDstBlendAlpha=1}, {type:SET_PROPERTY,data:_AlphaToCoverage=0},  {type:SET_PROPERTY,data:_ZWrite=0}, {type:SET_PROPERTY,data:_ZTest=4},   {type:SET_PROPERTY,data:_AlphaPremultiply=0}, {type:SET_PROPERTY,data:_OutlineSrcBlend=5}, {type:SET_PROPERTY,data:_OutlineDstBlend=10}, {type:SET_PROPERTY,data:_OutlineSrcBlendAlpha=1}, {type:SET_PROPERTY,data:_OutlineDstBlendAlpha=1}, {type:SET_PROPERTY,data:_OutlineBlendOp=0}, {type:SET_PROPERTY,data:_OutlineBlendOpAlpha=4},]},"+
+		// "{value:3,actions:[{type:SET_PROPERTY,data:render_queue=3000}, {type:SET_PROPERTY,data:render_type=Transparent},       {type:SET_PROPERTY,data:_BlendOp=0}, {type:SET_PROPERTY,data:_BlendOpAlpha=4}, {type:SET_PROPERTY,data:_Cutoff=0},  {type:SET_PROPERTY,data:_SrcBlend=1}, {type:SET_PROPERTY,data:_DstBlend=10}, {type:SET_PROPERTY,data:_SrcBlendAlpha=1}, {type:SET_PROPERTY,data:_DstBlendAlpha=1},  {type:SET_PROPERTY,data:_AddSrcBlend=1}, {type:SET_PROPERTY,data:_AddDstBlend=1}, {type:SET_PROPERTY,data:_AddSrcBlendAlpha=0}, {type:SET_PROPERTY,data:_AddDstBlendAlpha=1}, {type:SET_PROPERTY,data:_AlphaToCoverage=0},  {type:SET_PROPERTY,data:_ZWrite=0}, {type:SET_PROPERTY,data:_ZTest=4},   {type:SET_PROPERTY,data:_AlphaPremultiply=1}, {type:SET_PROPERTY,data:_OutlineSrcBlend=1}, {type:SET_PROPERTY,data:_OutlineDstBlend=10}, {type:SET_PROPERTY,data:_OutlineSrcBlendAlpha=1}, {type:SET_PROPERTY,data:_OutlineDstBlendAlpha=1}, {type:SET_PROPERTY,data:_OutlineBlendOp=0}, {type:SET_PROPERTY,data:_OutlineBlendOpAlpha=4},]},"+
+		// "{value:4,actions:[{type:SET_PROPERTY,data:render_queue=3000}, {type:SET_PROPERTY,data:render_type=Transparent},       {type:SET_PROPERTY,data:_BlendOp=0}, {type:SET_PROPERTY,data:_BlendOpAlpha=4}, {type:SET_PROPERTY,data:_Cutoff=0},  {type:SET_PROPERTY,data:_SrcBlend=1}, {type:SET_PROPERTY,data:_DstBlend=1},  {type:SET_PROPERTY,data:_SrcBlendAlpha=1}, {type:SET_PROPERTY,data:_DstBlendAlpha=1},  {type:SET_PROPERTY,data:_AddSrcBlend=1}, {type:SET_PROPERTY,data:_AddDstBlend=1}, {type:SET_PROPERTY,data:_AddSrcBlendAlpha=0}, {type:SET_PROPERTY,data:_AddDstBlendAlpha=1}, {type:SET_PROPERTY,data:_AlphaToCoverage=0},  {type:SET_PROPERTY,data:_ZWrite=0}, {type:SET_PROPERTY,data:_ZTest=4},   {type:SET_PROPERTY,data:_AlphaPremultiply=0}, {type:SET_PROPERTY,data:_OutlineSrcBlend=1}, {type:SET_PROPERTY,data:_OutlineDstBlend=1},  {type:SET_PROPERTY,data:_OutlineSrcBlendAlpha=1}, {type:SET_PROPERTY,data:_OutlineDstBlendAlpha=1}, {type:SET_PROPERTY,data:_OutlineBlendOp=0}, {type:SET_PROPERTY,data:_OutlineBlendOpAlpha=4},]},"+
+		// "{value:5,actions:[{type:SET_PROPERTY,data:render_queue=3000}, {type:SET_PROPERTY,data:render_type=Transparent},       {type:SET_PROPERTY,data:_BlendOp=0}, {type:SET_PROPERTY,data:_BlendOpAlpha=4}, {type:SET_PROPERTY,data:_Cutoff=0},  {type:SET_PROPERTY,data:_SrcBlend=4}, {type:SET_PROPERTY,data:_DstBlend=1},  {type:SET_PROPERTY,data:_SrcBlendAlpha=1}, {type:SET_PROPERTY,data:_DstBlendAlpha=1},  {type:SET_PROPERTY,data:_AddSrcBlend=4}, {type:SET_PROPERTY,data:_AddDstBlend=1}, {type:SET_PROPERTY,data:_AddSrcBlendAlpha=0}, {type:SET_PROPERTY,data:_AddDstBlendAlpha=1}, {type:SET_PROPERTY,data:_AlphaToCoverage=0},  {type:SET_PROPERTY,data:_ZWrite=0}, {type:SET_PROPERTY,data:_ZTest=4},   {type:SET_PROPERTY,data:_AlphaPremultiply=0}, {type:SET_PROPERTY,data:_OutlineSrcBlend=4}, {type:SET_PROPERTY,data:_OutlineDstBlend=1},  {type:SET_PROPERTY,data:_OutlineSrcBlendAlpha=1}, {type:SET_PROPERTY,data:_OutlineDstBlendAlpha=1}, {type:SET_PROPERTY,data:_OutlineBlendOp=0}, {type:SET_PROPERTY,data:_OutlineBlendOpAlpha=4},]},"+
+		// "{value:6,actions:[{type:SET_PROPERTY,data:render_queue=3000}, {type:SET_PROPERTY,data:render_type=Transparent},       {type:SET_PROPERTY,data:_BlendOp=0}, {type:SET_PROPERTY,data:_BlendOpAlpha=4}, {type:SET_PROPERTY,data:_Cutoff=0},  {type:SET_PROPERTY,data:_SrcBlend=2}, {type:SET_PROPERTY,data:_DstBlend=0},  {type:SET_PROPERTY,data:_SrcBlendAlpha=1}, {type:SET_PROPERTY,data:_DstBlendAlpha=1},  {type:SET_PROPERTY,data:_AddSrcBlend=2}, {type:SET_PROPERTY,data:_AddDstBlend=1}, {type:SET_PROPERTY,data:_AddSrcBlendAlpha=0}, {type:SET_PROPERTY,data:_AddDstBlendAlpha=1}, {type:SET_PROPERTY,data:_AlphaToCoverage=0},  {type:SET_PROPERTY,data:_ZWrite=0}, {type:SET_PROPERTY,data:_ZTest=4},   {type:SET_PROPERTY,data:_AlphaPremultiply=0}, {type:SET_PROPERTY,data:_OutlineSrcBlend=2}, {type:SET_PROPERTY,data:_OutlineDstBlend=0},  {type:SET_PROPERTY,data:_OutlineSrcBlendAlpha=1}, {type:SET_PROPERTY,data:_OutlineDstBlendAlpha=1}, {type:SET_PROPERTY,data:_OutlineBlendOp=0}, {type:SET_PROPERTY,data:_OutlineBlendOpAlpha=4},]},"+
+		// "{value:7,actions:[{type:SET_PROPERTY,data:render_queue=3000}, {type:SET_PROPERTY,data:render_type=Transparent},       {type:SET_PROPERTY,data:_BlendOp=0}, {type:SET_PROPERTY,data:_BlendOpAlpha=4}, {type:SET_PROPERTY,data:_Cutoff=0},  {type:SET_PROPERTY,data:_SrcBlend=2}, {type:SET_PROPERTY,data:_DstBlend=3},  {type:SET_PROPERTY,data:_SrcBlendAlpha=1}, {type:SET_PROPERTY,data:_DstBlendAlpha=1},  {type:SET_PROPERTY,data:_AddSrcBlend=2}, {type:SET_PROPERTY,data:_AddDstBlend=1}, {type:SET_PROPERTY,data:_AddSrcBlendAlpha=0}, {type:SET_PROPERTY,data:_AddDstBlendAlpha=1}, {type:SET_PROPERTY,data:_AlphaToCoverage=0},  {type:SET_PROPERTY,data:_ZWrite=0}, {type:SET_PROPERTY,data:_ZTest=4},   {type:SET_PROPERTY,data:_AlphaPremultiply=0}, {type:SET_PROPERTY,data:_OutlineSrcBlend=2}, {type:SET_PROPERTY,data:_OutlineDstBlend=3},  {type:SET_PROPERTY,data:_OutlineSrcBlendAlpha=1}, {type:SET_PROPERTY,data:_OutlineDstBlendAlpha=1}, {type:SET_PROPERTY,data:_OutlineBlendOp=0}, {type:SET_PROPERTY,data:_OutlineBlendOpAlpha=4},]}"+
+		// "}]}]}";
+        //     PropertyOptions p = Deserialize<PropertyOptions>(s);
+        //     Debug.Log(Serialize(p));
+        // }
 
         public static string ObjectToString(object obj)
         {
@@ -38,7 +57,7 @@ namespace Thry
             return "";
         }
 
-        public static T ParseToObject<T>(string s)
+        private static T DeserializeInternal<T>(string s)
         {
             object parsed = ParseJson(s);
             object ret = null;
@@ -59,42 +78,73 @@ namespace Thry
 
         public static object ParseJson(string input)
         {
-            //input = input.Replace("\\n", "\n");
-            return ParseJsonPart(input);
+            return ParseJsonPart(input, 0, input.Length);
         }
 
-        private static object ParseJsonPart(string input)
+        private static object ParseJsonPart(string input, int start, int end)
         {
-            input = input.Trim();
-            if (input.StartsWith("{"))
-                return ParseObject(input);
-            else if (input.StartsWith("["))
-                return ParseArray(input);
-            else
-                return ParsePrimitive(input);
+            int rawStart = start;
+            int rawEnd = end;
+
+            while (start < end && (input[start] == ' ' || input[start] == '\t' || input[start] == '\n' || input[start] == '\r'))
+                start++;
+            if (start == end)
+                return input; // empty string
+            if (input[start] == '{')
+            {
+                start++;
+                end--;
+                while (end > start && (input[end] == ' ' || input[end] == '\t' || input[end] == '\n' || input[end] == '\r'))
+                    end--;
+                if (input[end] == '}')
+                {
+                    return ParseObject(input, start, end);
+                }else
+                {
+                    Debug.LogWarning("Invalid json object: " + input);
+                    return null;
+                }
+            }
+            if (input[start] == '[')
+            {
+                start++;
+                end--;
+                while (end > start && (input[end] == ' ' || input[end] == '\t' || input[end] == '\n' || input[end] == '\r'))
+                    end--;
+                if (input[end] == ']')
+                {
+                    return ParseArray(input, start, end);
+                }
+                else
+                {
+                    Debug.LogWarning("Invalid json array: " + input);
+                    return null;
+                }
+            }
+            return ParsePrimitive(input.Substring(start, end - start));
         }
 
-        private static Dictionary<object, object> ParseObject(string input)
+        private static Dictionary<object, object> ParseObject(string input, int start, int end)
         {
-            input = input.TrimStart(new char[] { '{' });
+            // Debug.Log("Parse Object: "+ input.Substring(start, end - start));
             int depth = 0;
-            int variableStart = 0;
+            int variableStart = start;
             bool isString = false;
             Dictionary<object, object> variables = new Dictionary<object, object>();
-            for (int i = 0; i < input.Length; i++)
+            for (int i = start; i < end; i++)
             {
                 bool escaped = i != 0 && input[i - 1] == '\\';
                 if (input[i] == '\"' && !escaped)
                     isString = !isString;
                 if (!isString)
                 {
-                    if (i == input.Length - 1 || (depth == 0 && input[i] == ',' && !escaped) || (!escaped && depth == 0 && input[i] == '}'))
+                    if (i == end - 1 || (depth == 0 && input[i] == ',' && !escaped) || (!escaped && depth == 0 && input[i] == '}'))
                     {
-                        string[] parts = input.Substring(variableStart, i - variableStart).Split(new char[] { ':' }, 2);
-                        if (parts.Length < 2)
+                        int seperatorIndex = input.IndexOf(':', variableStart, i - variableStart);
+                        if (seperatorIndex == -1)
                             break;
-                        string key = "" + ParseJsonPart(parts[0].Trim());
-                        object value = ParseJsonPart(parts[1]);
+                        string key = "" + ParseJsonPart(input, variableStart, seperatorIndex);
+                        object value = ParseJsonPart(input, seperatorIndex + 1, i == end - 1 ? i + 1 : i);
                         variables.Add(key, value);
                         variableStart = i + 1;
                     }
@@ -108,17 +158,17 @@ namespace Thry
             return variables;
         }
 
-        private static List<object> ParseArray(string input)
+        private static List<object> ParseArray(string input, int start, int end)
         {
-            input = input.Trim(new char[] { ' ' });
+            // Debug.Log("Parse Array: " + input.Substring(start, end - start));
             int depth = 0;
-            int variableStart = 1;
+            int variableStart = start;
             List<object> variables = new List<object>();
-            for (int i = 1; i < input.Length; i++)
+            for (int i = start; i < end; i++)
             {
-                if (i == input.Length - 1 || (depth == 0 && input[i] == ',' && (i == 0 || input[i - 1] != '\\')))
+                if (i == end - 1 || (depth == 0 && input[i] == ',' && (i == 0 || input[i - 1] != '\\')))
                 {
-                    variables.Add(ParseJsonPart(input.Substring(variableStart, i - variableStart)));
+                    variables.Add(ParseJsonPart(input, variableStart, i == end - 1 ? i + 1 : i));
                     variableStart = i + 1;
                 }
                 else if (input[i] == '{' || input[i] == '[')
@@ -131,46 +181,44 @@ namespace Thry
 
         private static object ParsePrimitive(string input)
         {
+            // Debug.Log("Parse Primitive: " + input);
+            // string
             if (input.StartsWith("\""))
                 return input.Trim(new char[] { '"' });
-            else if (input.ToLower() == "true")
+
+            string input_lower = input.ToLower();
+            // boolean
+            if (input.ToLower() == "true")
                 return true;
-            else if (input.ToLower() == "false")
+            if (input.ToLower() == "false")
                 return false;
-            else if (input == "null" || input == "NULL" || input == "Null")
+            // null
+            if (input == "null" || input == "NULL" || input == "Null")
                 return null;
-            else
+
+            // number
+            float floatValue;
+            // parse float invariant
+            if(float.TryParse(input_lower, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out floatValue))
             {
-                string floatInput = input.Replace(",", ".");
-                if (System.Globalization.CultureInfo.CurrentCulture.NumberFormat.CurrencyDecimalSeparator == ",")
-                    floatInput = input.Replace(".", ",");
-                float floatValue;
-                if (float.TryParse(floatInput,  out floatValue))
-                {
-                    if ((int)floatValue == floatValue)
-                        return (int)floatValue;
-                    return floatValue;
-                }
+                if ((int)floatValue == floatValue)
+                    return (int)floatValue;
+                return floatValue;
             }
+
             return input;
         }
 
         //converter methods
 
-        public static string GlobalizationFloat(string s)
-        {
-            s = s.Replace(",", ".");
-            if (System.Globalization.CultureInfo.CurrentCulture.NumberFormat.CurrencyDecimalSeparator == ",")
-                s = s.Replace(".", ",");
-            return s;
-        }
-
         public static float ParseFloat(string s, float defaultF = 0)
         {
-            s = GlobalizationFloat(s);
-            float f = defaultF;
-            float.TryParse(s, out f);
-            return f;
+            float f;
+            if(float.TryParse(s, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out f))
+            {
+                return f;
+            }
+            return defaultF;
         }
 
         public static type ConvertParsedToObject<type>(object parsed)

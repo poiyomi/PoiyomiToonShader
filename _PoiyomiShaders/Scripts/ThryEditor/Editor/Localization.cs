@@ -27,13 +27,19 @@ namespace Thry{
         Dictionary<string,string> _defaultKeyValues = new Dictionary<string,string>();
         string[] _allLanguages;
         bool _isLoaded = false;
+        bool _couldNotLoad = false;
 
         // Use
         public static Localization Load(string guid)
         {
             string path = AssetDatabase.GUIDToAssetPath(guid);
             Localization l = AssetDatabase.LoadAssetAtPath<Localization>(path);
-            if(l == null) return ScriptableObject.CreateInstance<Localization>();
+            if(l == null)
+            {
+                l = ScriptableObject.CreateInstance<Localization>();
+                l._couldNotLoad = true;
+                return l;
+            }
             l.Load();
             return l;
         }
@@ -65,6 +71,11 @@ namespace Thry{
 
         public void DrawDropdown()
         {
+            if(_couldNotLoad)
+            {
+                EditorGUILayout.HelpBox("Could not load localization file", MessageType.Warning);
+                return;
+            }
             EditorGUI.BeginChangeCheck();
             SelectedLanguage = EditorGUILayout.Popup(SelectedLanguage + 1, _allLanguages) - 1;
             if(EditorGUI.EndChangeCheck())
@@ -137,15 +148,16 @@ namespace Thry{
             {
                 if(Languages.Length > 1)
                 {
-                    for (int i = index; i < Languages.Length; i++)
+                    for (int i = index; i < Languages.Length - 1; i++)
                     {
                         Languages[i] = Languages[i + 1];
                     }
                     System.Array.Resize(ref Languages, Languages.Length - 1);
-                    foreach (string key in _localizedStrings.Keys)
+                    string[] keys = _localizedStrings.Keys.ToArray();
+                    foreach (string key in keys)
                     {
                         string[] ar = _localizedStrings[key];
-                        for (int i = index; i < ar.Length; i++)
+                        for (int i = index; i < ar.Length - 1; i++)
                         {
                             ar[i] = ar[i + 1];
                         }
@@ -221,7 +233,7 @@ namespace Thry{
         [CustomEditor(typeof(Localization))]
         public class LocaleEditor : Editor
         {
-            List<(string key, string defaultValue)> _missingKeys = new List<(string key, string defaultValue)>();
+            List<(string key, string defaultValue, string newValue)> _missingKeys = new List<(string key, string defaultValue, string newValue)>();
             int _selectedLanguageIndex = 0;
             string _searchById = "";
             string _searchByTranslation = "";
@@ -303,7 +315,7 @@ namespace Thry{
                 {
                     if (string.IsNullOrEmpty(locale._localizedStrings[key][_selectedLanguageIndex]))
                     {
-                        _missingKeys.Add((key, locale._defaultKeyValues[key]));
+                        _missingKeys.Add((key, locale._defaultKeyValues[key], locale._defaultKeyValues[key]));
                     }
                 }
             }
@@ -422,17 +434,12 @@ namespace Thry{
 
                 EditorGUILayout.Space(20);
                 EditorGUILayout.LabelField("Missing Entries", EditorStyles.boldLabel);
-                int count = 0;
-                (string,string) kvToRemove = default;
-                foreach((string key, string defaultValue) kv in _missingKeys)
+                (string,string,string) kvToRemove = default;
+                for(int i = 0; i < _missingKeys.Count && i < 10; i++)
                 {
-                    if(count > 10)
-                    {
-                        EditorGUILayout.LabelField("...");
-                        break;
-                    }
+                    var kv = _missingKeys[i];
                     EditorGUILayout.BeginHorizontal();
-                    string value = EditorGUILayout.DelayedTextField(kv.key, kv.defaultValue);
+                    kv.newValue = EditorGUILayout.DelayedTextField(kv.key, kv.newValue);
                     if(GUILayout.Button("Skip", GUILayout.Width(50)))
                     {
                         kvToRemove = kv;
@@ -443,11 +450,15 @@ namespace Thry{
                         {
                             locale._localizedStrings.Add(kv.key, new string[locale.Languages.Length]);
                         }
-                        locale._localizedStrings[kv.key][_selectedLanguageIndex] = value;
+                        locale._localizedStrings[kv.key][_selectedLanguageIndex] = kv.newValue;
                         kvToRemove = kv;
                     }
+                    _missingKeys[i] = kv;
                     EditorGUILayout.EndHorizontal();
-                    count++;
+                }
+                if(_missingKeys.Count > 10)
+                {
+                    EditorGUILayout.LabelField("...");
                 }
                 if(kvToRemove != default)
                 {
@@ -466,7 +477,7 @@ namespace Thry{
                 {
                     int _missingKeysCount = _missingKeys.Count;
                     int i = 0;
-                    foreach((string key, string defaultValue) in _missingKeys)
+                    foreach((string key, string defaultValue, string newValue) in _missingKeys)
                     {
                         EditorUtility.DisplayProgressBar("Auto Translate", $"Translating {i}/{_missingKeysCount}", (float)i / _missingKeysCount);
                         try
@@ -526,7 +537,7 @@ namespace Thry{
                 EditorGUILayout.Space(5);
                 if(_searchById.Length > 0 || _searchByTranslation.Length > 0)
                 {
-                    count = 0;
+                    int count = 0;
                     foreach (string key in _searchResults)
                     {
                         if(count > 50)

@@ -826,13 +826,8 @@ namespace Thry
             }
             else if (p.type == MaterialProperty.PropType.Float || p.type == MaterialProperty.PropType.Range)
             {
-                float f_value;
-                if (float.TryParse(Parser.GlobalizationFloat(value), out f_value))
-                {
-                    prev = p.floatValue;
-                    p.floatValue = f_value;
-                    
-                }
+                prev = p.floatValue;
+                p.floatValue = Parser.ParseFloat(value, p.floatValue);
             }
             else if (p.type == MaterialProperty.PropType.Vector)
             {
@@ -850,6 +845,7 @@ namespace Thry
 
         public static void CopyPropertyValueFromMaterial(MaterialProperty p, Material source)
         {
+            if (!source.HasProperty(p.name)) return;
             object prev = null;
             switch (p.type)
             {
@@ -1510,7 +1506,7 @@ namespace Thry
             string data = FileHelper.ReadFileIntoString(PATH.THRY_EDITOR_SHADERS);
             if (data != "")
             {
-                shaders = Parser.ParseToObject<List<ShaderEditorShader>>(data);
+                shaders = Parser.Deserialize<List<ShaderEditorShader>>(data);
                 InitDictionary();
             }
             else

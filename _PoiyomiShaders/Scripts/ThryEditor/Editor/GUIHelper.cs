@@ -830,7 +830,7 @@ namespace Thry
         }
     }
 
-    public class ThryHeaderDrawer : MaterialPropertyDrawer
+    public class ThryHeaderHandler
     {
         private MaterialProperty property;
 
@@ -853,28 +853,20 @@ namespace Thry
 
         private ButtonData button;
 
-        public ThryHeaderDrawer(string end, string keyword, float disableContentWhenKeywordOff)
+        public ThryHeaderHandler(string end, string keyword, float disableContentWhenKeywordOff)
         {
             this.end = end;
             this.keyword = keyword;
             this._disableContentWhenKeywordOff = disableContentWhenKeywordOff == 1;
         }
 
-        public ThryHeaderDrawer(string end, string keyword) : this(end, keyword, 0) { }
-        public ThryHeaderDrawer(string end) : this(end, null, 0) { }
-        public ThryHeaderDrawer() : this(null, null, 0) { }
+        public ThryHeaderHandler(string end, string keyword) : this(end, keyword, 0) { }
+        public ThryHeaderHandler(string end) : this(end, null, 0) { }
+        public ThryHeaderHandler() : this(null, null, 0) { }
 
         public string GetEndProperty()
         {
             return end;
-        }
-
-        public override float GetPropertyHeight(MaterialProperty prop, string label, MaterialEditor editor)
-        {
-            DrawingData.LastPropertyUsedCustomDrawer = true;
-            DrawingData.LastPropertyDrawerType = DrawerType.Header;
-            DrawingData.LastPropertyDrawer = this;
-            return base.GetPropertyHeight(prop, label, editor);
         }
 
         public bool IsExpanded
@@ -899,7 +891,7 @@ namespace Thry
             foreach (Material m in ShaderEditor.Active.Materials) m.SetFloat(property.name, _isExpanded ? 1 : 0);
         }
 
-        public override void OnGUI(Rect position, MaterialProperty prop, GUIContent label, MaterialEditor editor)
+        public void OnGUI(Rect position, MaterialProperty prop, GUIContent label, MaterialEditor editor)
         {
             if (this.property == null)
             {

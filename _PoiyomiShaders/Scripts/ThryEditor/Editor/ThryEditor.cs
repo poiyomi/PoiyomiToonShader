@@ -113,42 +113,26 @@ namespace Thry
             return labels;
         }
 
-        public static PropertyOptions ExtractExtraOptionsFromDisplayName(ref string displayName)
+        public static string SplitOptionsFromDisplayName(ref string displayName)
         {
             if (displayName.Contains(EXTRA_OPTIONS_PREFIX))
             {
                 string[] parts = displayName.Split(new string[] { EXTRA_OPTIONS_PREFIX }, 2, System.StringSplitOptions.None);
                 displayName = parts[0];
-                parts[1] = parts[1].Replace("''", "\"");
-                PropertyOptions options = Parser.ParseToObject<PropertyOptions>(parts[1]);
-                if (options != null)
-                {
-                    if (options.condition_showS != null)
-                    {
-                        options.condition_show = DefineableCondition.Parse(options.condition_showS);
-                    }
-                    if (options.on_value != null)
-                    {
-                        options.on_value_actions = PropertyValueAction.ParseToArray(options.on_value);
-                    }
-                    return options;
-                }
+                return parts[1];
             }
-            return new PropertyOptions();
+            return null;
         }
 
         private enum ThryPropertyType
         {
-            none, property, master_label, footer, header, headerWithEnd, legacy_header, legacy_header_end, legacy_header_start, group_start, group_end, instancing, dsgi, lightmap_flags, locale, on_swap_to, space, shader_version
+            none, property, master_label, footer, legacy_header, legacy_header_end, legacy_header_start, group_start, group_end, instancing, dsgi, lightmap_flags, locale, on_swap_to, space, shader_version
         }
 
-        private ThryPropertyType GetPropertyType(MaterialProperty p, PropertyOptions options)
+        private ThryPropertyType GetPropertyType(MaterialProperty p)
         {
             string name = p.name;
             MaterialProperty.PropFlags flags = p.flags;
-
-            if (DrawingData.LastPropertyDrawerType == DrawerType.Header)
-                return (DrawingData.LastPropertyDrawer as ThryHeaderDrawer).GetEndProperty() != null ? ThryPropertyType.headerWithEnd : ThryPropertyType.header;
 
             if (flags == MaterialProperty.PropFlags.HideInInspector)
             {
@@ -184,8 +168,7 @@ namespace Thry
             }
             else if(flags.HasFlag(MaterialProperty.PropFlags.HideInInspector) == false)
             {
-                if (!options.hide_in_inspector)
-                    return ThryPropertyType.property;
+                return ThryPropertyType.property;
             }
             return ThryPropertyType.none;
         }
@@ -244,34 +227,29 @@ namespace Thry
                 if (labels.ContainsKey(props[i].name)) displayName = labels[props[i].name];
 
                 //extract json data from display name
-                PropertyOptions options = ExtractExtraOptionsFromDisplayName(ref displayName);
+                string optionsRaw = SplitOptionsFromDisplayName(ref displayName);
 
                 displayName = Locale.Get(props[i], displayName);
 
-                int offset = options.offset + headerCount;
+                int offset = headerCount;
 
                 DrawingData.ResetLastDrawerData();
-                Editor.GetPropertyHeight(props[i]);
 
-                ThryPropertyType type = GetPropertyType(props[i], options);
+                ThryPropertyType type = GetPropertyType(props[i]);
                 switch (type)
                 {
-                    case ThryPropertyType.header:
-                        headerStack.Pop();
-                        break;
                     case ThryPropertyType.legacy_header:
                         headerStack.Pop();
                         break;
-                    case ThryPropertyType.headerWithEnd:
                     case ThryPropertyType.legacy_header_start:
-                        offset = options.offset + ++headerCount;
+                        offset = ++headerCount;
                         break;
                     case ThryPropertyType.legacy_header_end:
                         headerStack.Pop();
                         headerCount--;
                         break;
                     case ThryPropertyType.on_swap_to:
-                        _onSwapToActions = options.actions;
+                        _onSwapToActions = PropertyOptions.Deserialize(optionsRaw).actions;
                         break;
                 }
                 ShaderProperty NewProperty = null;
@@ -279,22 +257,20 @@ namespace Thry
                 switch (type)
                 {
                     case ThryPropertyType.master_label:
-                        _shaderHeader = new ShaderHeaderProperty(this, props[i], displayName, 0, options, false);
+                        _shaderHeader = new ShaderHeaderProperty(this, props[i], displayName, 0, optionsRaw, false);
                         break;
                     case ThryPropertyType.footer:
-                        _footers.Add(new FooterButton(Parser.ParseToObject<ButtonData>(displayName)));
+                        _footers.Add(new FooterButton(Parser.Deserialize<ButtonData>(displayName)));
                         break;
-                    case ThryPropertyType.header:
-                    case ThryPropertyType.headerWithEnd:
                     case ThryPropertyType.legacy_header:
                     case ThryPropertyType.legacy_header_start:
-                        ShaderHeader newHeader = new ShaderHeader(this, props[i], Editor, displayName, offset, options);
+                        ShaderHeader newHeader = new ShaderHeader(this, props[i], Editor, displayName, offset, optionsRaw);
                         headerStack.Peek().addPart(newHeader);
                         headerStack.Push(newHeader);
                         newPart = newHeader;
                         break;
                     case ThryPropertyType.group_start:
-                        ShaderGroup new_group = new ShaderGroup(this, options);
+                        ShaderGroup new_group = new ShaderGroup(this, optionsRaw);
                         headerStack.Peek().addPart(new_group);
                         headerStack.Push(new_group);
                         newPart = new_group;
@@ -305,23 +281,24 @@ namespace Thry
                     case ThryPropertyType.none:
                     case ThryPropertyType.property:
                         if (props[i].type == MaterialProperty.PropType.Texture)
-                            NewProperty = new TextureProperty(this, props[i], displayName, offset, options, props[i].flags.HasFlag(MaterialProperty.PropFlags.NoScaleOffset) == false, !DrawingData.LastPropertyUsedCustomDrawer, i);
+                            NewProperty = new TextureProperty(this, props[i], displayName, offset, optionsRaw, props[i].flags.HasFlag(MaterialProperty.PropFlags.NoScaleOffset) == false, false, i);
                         else
-                            NewProperty = new ShaderProperty(this, props[i], displayName, offset, options, false, i);
+                            NewProperty = new ShaderProperty(this, props[i], displayName, offset, optionsRaw, false, i);
                         break;
                     case ThryPropertyType.lightmap_flags:
-                        NewProperty = new GIProperty(this, props[i], displayName, offset, options, false);
+                        NewProperty = new GIProperty(this, props[i], displayName, offset, optionsRaw, false);
                         break;
                     case ThryPropertyType.dsgi:
-                        NewProperty = new DSGIProperty(this, props[i], displayName, offset, options, false);
+                        NewProperty = new DSGIProperty(this, props[i], displayName, offset, optionsRaw, false);
                         break;
                     case ThryPropertyType.instancing:
-                        NewProperty = new InstancingProperty(this, props[i], displayName, offset, options, false);
+                        NewProperty = new InstancingProperty(this, props[i], displayName, offset, optionsRaw, false);
                         break;
                     case ThryPropertyType.locale:
-                        NewProperty = new LocaleProperty(this, props[i], displayName, offset, options, false);
+                        NewProperty = new LocaleProperty(this, props[i], displayName, offset, optionsRaw, false);
                         break;
                     case ThryPropertyType.shader_version:
+                        PropertyOptions options = PropertyOptions.Deserialize(optionsRaw);
                         _shaderVersionRemote = new Version(WebHelper.GetCachedString(options.remote_version_url));
                         _shaderVersionLocal = new Version(displayName);
                         _isShaderUpToDate = _shaderVersionLocal >= _shaderVersionRemote;

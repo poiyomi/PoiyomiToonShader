@@ -52,7 +52,7 @@ namespace Thry
                 return predefinedTextureSettings;
             string json_texture_settings = FileHelper.LoadValueFromFile("gradient_texture_options_"+prop.name, PATH.PERSISTENT_DATA);
             if (json_texture_settings != null)
-                return Parser.ParseToObject<TextureData>(json_texture_settings);
+                return Parser.Deserialize<TextureData>(json_texture_settings);
             else if (predefinedTextureSettings != null)
                 return predefinedTextureSettings;
             else

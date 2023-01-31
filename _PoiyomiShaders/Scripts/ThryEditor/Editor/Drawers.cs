@@ -1422,7 +1422,7 @@ namespace Thry
         protected virtual void Init(string s)
         {
             if(_isInit) return;
-            _buttonData = Parser.ParseToObject<ButtonData>(s);
+            _buttonData = Parser.Deserialize<ButtonData>(s);
             _isInit = true;
         }
 
@@ -1460,10 +1460,10 @@ namespace Thry
         protected override void Init(string s)
         {
             if(_isInit) return;
-            WebHelper.DownloadStringASync(s, (string data) =>
+            WebHelper.DownloadStringASync(s, (Action<string>)((string data) =>
             {
-                _buttonData = Parser.ParseToObject<ButtonData>(data);
-            });
+                _buttonData = Parser.Deserialize<ButtonData>(data);
+            }));
             _isInit = true;
         }
     }
@@ -1760,13 +1760,7 @@ namespace Thry
             EditorGUI.showMixedValue = prop.hasMixedValue;
             EditorGUI.BeginChangeCheck();
             var value = prop.floatValue;
-            int selectedIndex = -1;
-            for (int i = 0; i < values.Length; i++)
-                if (values[i] == value)
-                {
-                    selectedIndex = i;
-                    break;
-                }
+            int selectedIndex = Array.IndexOf(values, value);
 
             if(_reloadCount != _reloadCountStatic)
             {

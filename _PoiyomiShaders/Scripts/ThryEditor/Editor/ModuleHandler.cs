@@ -60,13 +60,13 @@ namespace Thry
         private static void LoadModules()
         {
             modules_are_being_loaded = true;
-            WebHelper.DownloadStringASync(URL.MODULE_COLLECTION, delegate (string s) {
+            WebHelper.DownloadStringASync(URL.MODULE_COLLECTION, (Action<string>)delegate (string s) {
                 first_party_modules = new List<Module>();
                 third_party_modules = new List<Module>();
-                ModuleCollection module_collection = Parser.ParseToObject<ModuleCollection>(s);
+                ModuleCollection module_collection = Parser.Deserialize<ModuleCollection>(s);
                 foreach(ModuleCollectionInfo info in module_collection.first_party)
                 {
-                    LoadModule(info,first_party_modules);
+                    LoadModule(info, first_party_modules);
                 }
                 foreach (ModuleCollectionInfo info in module_collection.third_party)
                 {
@@ -77,13 +77,13 @@ namespace Thry
 
         private static void LoadModule(ModuleCollectionInfo info, List<Module> modules)
         {
-            WebHelper.DownloadStringASync(info.url, delegate (string data)
+            WebHelper.DownloadStringASync(info.url, (Action<string>)delegate (string data)
             {
                 Module new_module = new Module();
                 new_module.url = info.url;
                 new_module.author = info.author;
                 new_module.id = info.id;
-                new_module.available_module = Parser.ParseToObject<ModuleInfo>(data);
+                new_module.available_module = Parser.Deserialize<ModuleInfo>(data);
                 new_module.available_module.version = new_module.available_module.version.Replace(",", ".");
                 bool module_installed = LoadModuleLocationData(new_module);
                 if (module_installed)
@@ -108,7 +108,7 @@ namespace Thry
             {
                 return false;
             }
-            m.location_data = Parser.ParseToObject<ModuleLocationData>(data);
+            m.location_data = Parser.Deserialize<ModuleLocationData>(data);
             if (AssetDatabase.GUIDToAssetPath(m.location_data.guid) == "")
             {
                 m.location_data = null;
@@ -134,7 +134,7 @@ namespace Thry
                 module.path = ResolveFilesToDirectory(module.available_module.files.ToArray());
                 if (string.IsNullOrEmpty(module.path) == false)
                 {
-                    module.installed_module = Parser.ParseToObject<ModuleInfo>(FileHelper.ReadFileIntoString(FindModuleFilePath(module.path)));
+                    module.installed_module = Parser.Deserialize<ModuleInfo>(FileHelper.ReadFileIntoString(FindModuleFilePath(module.path)));
                     SaveModuleLocationData(module,AssetDatabase.AssetPathToGUID(module.path));
                 }
             }
@@ -152,7 +152,7 @@ namespace Thry
                 m.path = GetModuleDirectory(m);
                 if (string.IsNullOrEmpty(m.path) == false)
                 {
-                    m.installed_module = Parser.ParseToObject<ModuleInfo>(FileHelper.ReadFileIntoString(FindModuleFilePath(m.path)));
+                    m.installed_module = Parser.Deserialize<ModuleInfo>(FileHelper.ReadFileIntoString(FindModuleFilePath(m.path)));
                     string calced_guid = AssetDatabase.AssetPathToGUID(m.path);
                     if (m.location_data.guid != calced_guid)
                         SaveModuleLocationData(m, calced_guid);
@@ -274,12 +274,12 @@ namespace Thry
 
         public static void InstallModule(string url, string id)
         {
-            WebHelper.DownloadStringASync(url, delegate (string data)
+            WebHelper.DownloadStringASync(url, (Action<string>)delegate (string data)
             {
                 Module new_module = new Module();
                 new_module.url = url;
                 new_module.id = id;
-                new_module.available_module = Parser.ParseToObject<ModuleInfo>(data);
+                new_module.available_module = Parser.Deserialize<ModuleInfo>(data);
                 InstallModule(new_module);
             });
         }

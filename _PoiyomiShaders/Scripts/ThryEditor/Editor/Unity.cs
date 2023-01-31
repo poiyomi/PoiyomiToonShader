@@ -14,6 +14,13 @@ namespace Thry
 {
     public class UnityHelper
     {
+        [MenuItem("Assets/Thry/Copy GUID")]
+        public static void CopyGUID()
+        {
+            string guid = AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(Selection.activeObject));
+            EditorGUIUtility.systemCopyBuffer = guid;
+        }
+
         public static List<string> FindAssetsWithFilename(string filename)
         {
             string[] guids = AssetDatabase.FindAssets(Path.GetFileNameWithoutExtension(filename));
