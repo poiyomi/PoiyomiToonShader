@@ -6,7 +6,7 @@ using System.IO;
 
 namespace Poi
 {
-    public class ThirdPartyIncluder : Editor
+    public class ThirdPartyIncluder : UnityEditor.Editor
     {
         private static List<ThirdPartyIncluderAsset> i_thirdPartyIncluders = new List<ThirdPartyIncluderAsset>();
         public static List<ThirdPartyIncluderAsset> thirdPartyIncluders
