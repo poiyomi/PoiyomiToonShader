@@ -27,7 +27,7 @@ namespace Poi
     }
 
     [CustomEditor(typeof(ThirdPartyIncluderAsset))]
-    public class ThirdPartyIncluderAssetEditor : Editor
+    public class ThirdPartyIncluderAssetEditor : UnityEditor.Editor
     {
         private ReorderableList list;
         private List<bool> listFoldouts = new List<bool>();
