@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 
 namespace Poi
 {
-    public class PoiExportPackage : Editor
+    public class PoiExportPackage : UnityEditor.Editor
     {
         static string pattern = @"\d+(\.\d+)+";
         static string[] filesToRemove = new[] {
