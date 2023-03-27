@@ -32,7 +32,7 @@
         return(sphereCoords + float4(0, 1 - unity_StereoEyeIndex, 1, 1.0).xy) * float4(0, 1 - unity_StereoEyeIndex, 1, 1.0).zw;
     }
     
-    void applyPanosphereColor(inout float4 albedo, inout float3 panosphereEmission)
+    void applyPanosphereColor(inout float4 albedo, inout float3 panosphereEmission, v2f i, float3 fresnelColour, float strength, float fresnelEnabled)
     {
         #if defined(PROP_PANOMASK) || !defined(OPTIMIZER_ENABLED)
             panoMask = POI2D_SAMPLER_PAN(_PanoMask, _MainTex, poiMesh.uv[_PanoMaskUV], _PanoMaskPan);
@@ -75,6 +75,17 @@
         }
         panosphereEmission = panoColor * _PanoBlend * panoMask * _PanoEmission;
         albedo.rgb = lerp(albedo.rgb, panoColor, _PanoBlend * .9999999 * panoMask);
+
+        //Here's the funky fresnel stuff
+		if(fresnelEnabled == 1) {
+			float fresnel = dot(i.normal, i.tangentViewDir);
+        	fresnel = saturate(1 - fresnel);
+        	fresnel = pow(fresnel, strength);
+
+        	float3 finalFresnel = fresnel * fresnelColour;
+        
+        	albedo.rgb += finalFresnel;
+		}
     }
     
 #endif

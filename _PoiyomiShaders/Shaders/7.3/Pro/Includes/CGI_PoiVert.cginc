@@ -1,3 +1,5 @@
+// Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
+
 #ifndef POI_VERT
 #define POI_VERT
 
@@ -126,7 +128,9 @@ v2f vert(appdata v)
 		cross(v.normal, v.tangent.xyz) * v.tangent.w,
 		v.normal
 	);
-	o.tangentViewDir = mul(objectToTangent, ObjSpaceViewDir(v.vertex));
+
+	//This is what I care about
+	o.tangentViewDir = normalize(WorldSpaceViewDir(v.vertex));
 	
 	#ifdef POI_META_PASS
 		o.pos = UnityMetaVertexPosition(v.vertex, v.uv1.xy, v.uv2.xy, unity_LightmapST, unity_DynamicLightmapST);

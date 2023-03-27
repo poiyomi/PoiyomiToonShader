@@ -1060,7 +1060,11 @@
         [Vector3]_PanospherePan ("Pan Speed", Vector) = (0, 0, 0, 0)
         [ToggleUI]_PanoCubeMapToggle ("Use Cubemap", Float) = 0
         [TextureNoSO]_PanoCubeMap ("CubeMap", Cube) = "" { }
+		[ToggleUI]_FresnelToggle ("Enable Fresnel", Float) = 0
+		_FresnelColour ("Fresnel Colour", Color) = (1, 1, 1, 1)
+		_FresnelStrength ("Fresnel Strength", Range(0, 10)) = 1.5
         [HideInInspector] m_end_panosphereOptions ("Panosphere / Cubemaps", Float) = 0
+		
         
         // Glitter
         [HideInInspector] m_start_glitter ("Glitter / Sparkle", Float) = 0

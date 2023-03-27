@@ -13,9 +13,14 @@ float2 _MainTexPan;
 float _MainTextureUV;
 float _LightingAdditiveEnable;
 
+float3 _FresnelColour;
+float _FresnelStrength;
+float _FresnelToggle;
+
 // Post Processing
 float _PPLightingMultiplier;
 float _PPEmissionMultiplier;
+
 
 float4 frag(v2f i, uint facing: SV_IsFrontFace): SV_Target
 {
@@ -153,7 +158,7 @@ float4 frag(v2f i, uint facing: SV_IsFrontFace): SV_Target
 	#endif
 	
 	#ifdef PANOSPHERE
-		applyPanosphereColor(albedo, panosphereEmission);
+		applyPanosphereColor(albedo, panosphereEmission, i, _FresnelColour, _FresnelStrength, _FresnelToggle); //float3(1.0, 0.6, 1.0)
 	#endif
 	
 	#ifdef POI_FLIPBOOK
