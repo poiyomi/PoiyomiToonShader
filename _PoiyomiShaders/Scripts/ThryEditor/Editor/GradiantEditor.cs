@@ -87,6 +87,20 @@ namespace Thry
                     file_name = Regex.Replace(file_name, @"\.((png)|(jpg))$", "");
                     FileHelper.SaveValueToFile(AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(saved)), Parser.ObjectToString(data.Gradient), PATH.GRADIENT_INFO_FILE);
                     prop.textureValue = saved;
+                    // change importer settings
+                    TextureImporter importer = (TextureImporter)TextureImporter.GetAtPath(AssetDatabase.GetAssetPath(saved));
+                     importer.textureCompression = TextureImporterCompression.CompressedHQ;
+                    if(Config.Singleton.gradientEditorCompressionOverwrite != TextureImporterFormat.Automatic)
+                    {
+                        importer.SetPlatformTextureSettings(new TextureImporterPlatformSettings()
+                        {
+                            name = "PC",
+                            overridden = true,
+                            maxTextureSize = 2048,
+                            format = Config.Singleton.gradientEditorCompressionOverwrite
+                        });
+                    }
+                    importer.SaveAndReimport();
                 }
             }
             else

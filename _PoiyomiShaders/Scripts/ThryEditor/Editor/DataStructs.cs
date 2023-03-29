@@ -21,22 +21,15 @@ namespace Thry
         public const string DELETING_DIR = "Thry/trash";
 
         public const string PERSISTENT_DATA = "Thry/persistent_data";
-        public const string AFTER_COMPILE_DATA = "Thry/after_compile_data";
-        public const string MATERIALS_BACKUP_FILE = "Thry/materialsBackup";
-        public const string THRY_EDITOR_SHADERS = "Thry/shaders";
 
         public const string GRADIENT_INFO_FILE = "Thry/gradients";
-        public const string TEXT_INFO_FILE = "Thry/text_textures";
-        public const string MODULES_LOCATION__DATA = "Thry/modules_location_data";
 
         public const string LINKED_MATERIALS_FILE = "Thry/linked_materials.json";
-
-        public const string TEMP_VRC_SDK_PACKAGE = "./vrc_sdk_package.unitypackage";
     }
 
     public class URL
     {
-        public const string MODULE_COLLECTION = "https://raw.githubusercontent.com/Thryrallo/ThryEditorStreamedResources/main/modules.json";
+        public const string MODULE_COLLECTION = "https://raw.githubusercontent.com/Thryrallo/ThryEditorStreamedResources/main/packages.json";
         public const string SETTINGS_MESSAGE_URL = "https://raw.githubusercontent.com/Thryrallo/ThryEditorStreamedResources/main/Messages/settingsWindow.json";
         public const string COUNT_PROJECT = "http://thryeditor.thryrallo.de/count_project.php";
         public const string COUNT_USER = "http://thryeditor.thryrallo.de/count_user.php";
@@ -102,7 +95,7 @@ namespace Thry
 
     public enum TextureDisplayType
     {
-        small, big, stylized_big
+        small, big, big_basic
     }
 
     //--------------Shader Data Structs--------------------
@@ -135,17 +128,15 @@ namespace Thry
             if(s == null) return new PropertyOptions();
             s = s.Replace("''", "\"");
             PropertyOptions options = Parser.Deserialize<PropertyOptions>(s);
+            if (options == null) return new PropertyOptions();
             // The following could be removed since the parser can now handle it. leaving it in for now /shrug
-            if (options != null)
+            if (options.condition_showS != null)
             {
-                if (options.condition_showS != null)
-                {
-                    options.condition_show = DefineableCondition.Parse(options.condition_showS);
-                }
-                if (options.on_value != null)
-                {
-                    options.on_value_actions = PropertyValueAction.ParseToArray(options.on_value);
-                }
+                options.condition_show = DefineableCondition.Parse(options.condition_showS);
+            }
+            if (options.on_value != null)
+            {
+                options.on_value_actions = PropertyValueAction.ParseToArray(options.on_value);
             }
             return options;
         }
@@ -795,42 +786,6 @@ namespace Thry
         AND,
         OR,
         NOT
-    }
-
-    #endregion
-
-    #region Module Data
-
-    public class Module
-    {
-        public string id;
-        public string url = "";
-        public string author;
-        public string path;
-        public bool is_being_installed_or_removed = false;
-        public bool available_requirement_fullfilled = true;
-        public bool update_available = false;
-        public ModuleLocationData location_data;
-        public ModuleInfo available_module = null;
-        public ModuleInfo installed_module = null;
-        public bool ui_expanded = false;
-    }
-
-    public class ModuleInfo
-    {
-        public string name = "";
-        public string version = "0";
-        public string description = "";
-        public string classname = "";
-        public DefineableCondition requirement;
-        public List<string> files;
-    }
-
-    public class ModuleLocationData
-    {
-        public string guid;
-        public string classname;
-        public string[] files;
     }
 
     #endregion

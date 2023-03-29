@@ -47,9 +47,9 @@
                 // sample the texture
                 fixed4 col = tex2D(_MainTex, i.uv);
                 if(_Channel == -1.0) return fixed4(col.r, col.g, col.b, col.a);
-                if(_Channel == 0.0) return fixed4(col.r * col.a, 0, 0, 1);
-                if(_Channel == 1.0) return fixed4(0, col.g * col.a, 0, 1);
-                if(_Channel == 2.0) return fixed4(0, 0, col.b * col.a, 1);
+                if(_Channel == 0.0) return fixed4(col.r, 0, 0, 1);
+                if(_Channel == 1.0) return fixed4(0, col.g, 0, 1);
+                if(_Channel == 2.0) return fixed4(0, 0, col.b, 1);
                 if(_Channel == 3.0) return fixed4(col.a, col.a, col.a, 1);
                 if(_Channel == 4.0)
                 {

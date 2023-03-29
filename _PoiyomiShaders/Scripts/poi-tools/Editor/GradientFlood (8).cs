@@ -11,7 +11,7 @@ using UnityEngine;
 //Gumroad: https://gumroad.com/dreadrith
 //Ko-fi: https://ko-fi.com/dreadrith
 
-namespace DreadScripts
+namespace Poi.Tools
 {
     public class GradientFlood : EditorWindow
     {

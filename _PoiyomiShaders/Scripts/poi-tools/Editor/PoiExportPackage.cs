@@ -3,9 +3,9 @@ using System.Linq;
 using System.IO;
 using System.Text.RegularExpressions;
 
-namespace Poi
+namespace Poi.Tools
 {
-    public class PoiExportPackage : Editor
+    public class PoiExportPackage : UnityEditor.Editor
     {
         static string pattern = @"\d+(\.\d+)+";
         static string[] filesToRemove = new[] {
@@ -22,17 +22,29 @@ namespace Poi
             string fileName = $"poi_pro_7.3.50_and_{version}.unitypackage";
             if (File.Exists(fileName))
             {
-                EditorUtility.DisplayDialog("Poi Export, File already exists", $"{fileName} already exists, did you forget to change the version number?", "Yes");
-                return;
+                bool result = EditorUtility.DisplayDialog("Poi Export, File already exists", $"{fileName} already exists, did you forget to change the version number.\nDo you want to override it?", "Yes", "No");
+                if (!result) return;
             }
-            var guids = AssetDatabase.FindAssets("t:Object", new[] {"Assets/_PoiyomiShaders"});
-            var filesToExport = guids.Select(x => AssetDatabase.GUIDToAssetPath(x)).ToList();
-            foreach (var fileToRemove in filesToRemove)
+            try
             {
-                filesToExport.RemoveAll(x => x.StartsWith(fileToRemove));
+                EditorUtility.DisplayProgressBar("Package Export", "Searching for assets", 1/4.0f);
+                var guids = AssetDatabase.FindAssets("t:Object", new[] {"Assets/_PoiyomiShaders"});
+                EditorUtility.DisplayProgressBar("Package Export", "Getting their paths", 2/4.0f);
+                var filesToExport = guids.Select(x => AssetDatabase.GUIDToAssetPath(x)).ToList();
+                EditorUtility.DisplayProgressBar("Package Export", "Removing denylisted files", 3/4.0f);
+                foreach (var fileToRemove in filesToRemove)
+                {
+                    filesToExport.RemoveAll(x => x.StartsWith(fileToRemove));
+                }
+                EditorUtility.DisplayProgressBar("Package Export", "Exporting Package!", 4/4.0f);
+                AssetDatabase.ExportPackage(filesToExport.ToArray(), fileName);
+                EditorUtility.ClearProgressBar();
+                EditorUtility.DisplayDialog("Poi Export, Package exported", $"Package exported to {Path.GetFullPath(fileName)}", "Continue");
             }
-            AssetDatabase.ExportPackage(filesToExport.ToArray(), fileName);
-            EditorUtility.DisplayDialog("Poi Export, Package exported", $"Package exported to {Path.GetFullPath(fileName)}", "Continue");
+            finally
+            {
+                EditorUtility.ClearProgressBar();
+            }
         }
     }
 }

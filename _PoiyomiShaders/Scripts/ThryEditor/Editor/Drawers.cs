@@ -41,20 +41,6 @@ namespace Thry
         }
     }
 
-    public class BigTextureDrawer : MaterialPropertyDrawer
-    {
-        public override void OnGUI(Rect position, MaterialProperty prop, GUIContent label, MaterialEditor editor)
-        {
-            GuiHelper.BigTextureProperty(position, prop, label, editor, ((TextureProperty)ShaderEditor.Active.CurrentProperty).hasScaleOffset);
-        }
-
-        public override float GetPropertyHeight(MaterialProperty prop, string label, MaterialEditor editor)
-        {
-            DrawingData.LastPropertyUsedCustomDrawer = true;
-            return base.GetPropertyHeight(prop, label, editor);
-        }
-    }
-
     public class StylizedBigTextureDrawer : MaterialPropertyDrawer
     {
         public override void OnGUI(Rect position, MaterialProperty prop, GUIContent label, MaterialEditor editor)
@@ -346,7 +332,7 @@ namespace Thry
             long lastEditTime = Helper.DatetimeToUnixSeconds(System.IO.File.GetLastWriteTime(path));
             bool hasBeenEdited = lastEditTime > _current._lastConfirmTime && lastEditTime != data.TextureSource.LastHandledTextureEditTime;
             data.TextureSource.LastHandledTextureEditTime = lastEditTime;
-            if (hasBeenEdited) data.TextureSource.DoReloadUncompressedTexture = true;
+            if (hasBeenEdited) TexturePacker.TextureSource.SetUncompressedTextureDirty(data.TextureSource.Texture);
             return hasBeenEdited;
         }
 
@@ -381,7 +367,7 @@ namespace Thry
             if (GUI.Button(buttonRect, "Revert")) Revert();
             EditorGUI.EndDisabledGroup();
             buttonRect.x += buttonRect.width;
-            if (GUI.Button(buttonRect, "Advanded")) OpenFullTexturePacker();
+            if (GUI.Button(buttonRect, "Advanced")) OpenFullTexturePacker();
         }
 
         InlinePackerChannelConfig TexturePackerSlotGUI(InlinePackerChannelConfig input, string label)
@@ -509,10 +495,20 @@ namespace Thry
         {
             // Build OutputConfig Array
             TexturePacker.OutputConfig[] outputConfigs = new TexturePacker.OutputConfig[4];
-            outputConfigs[0] = _current._input_r.ToOutputConfig();
-            outputConfigs[1] = _current._input_g.ToOutputConfig();
-            outputConfigs[2] = _current._input_b.ToOutputConfig();
-            outputConfigs[3] = _current._input_a.ToOutputConfig();
+            
+            if(_firstTextureIsRGB)
+            {
+                outputConfigs[0] = _current._input_r.ToOutputConfig();
+                outputConfigs[1] = _current._input_r.ToOutputConfig();
+                outputConfigs[2] = _current._input_r.ToOutputConfig();
+                outputConfigs[3] = _current._input_g.ToOutputConfig();
+            }else
+            {
+                outputConfigs[0] = _current._input_r.ToOutputConfig();
+                outputConfigs[1] = _current._input_g.ToOutputConfig();
+                outputConfigs[2] = _current._input_b.ToOutputConfig();
+                outputConfigs[3] = _current._input_a.ToOutputConfig();
+            }
             return outputConfigs;
         }
 
@@ -525,7 +521,7 @@ namespace Thry
                 connections[0] = TexturePacker.Connection.CreateFull(0, TexturePacker.TextureChannelIn.R, TexturePacker.TextureChannelOut.R);
                 connections[1] = TexturePacker.Connection.CreateFull(0, TexturePacker.TextureChannelIn.G, TexturePacker.TextureChannelOut.G);
                 connections[2] = TexturePacker.Connection.CreateFull(0, TexturePacker.TextureChannelIn.B, TexturePacker.TextureChannelOut.B);
-                connections[3] = TexturePacker.Connection.CreateFull(1, TexturePacker.TextureChannelIn.A, TexturePacker.TextureChannelOut.A);
+                connections[3] = TexturePacker.Connection.CreateFull(1, _current._input_g.Channel       , TexturePacker.TextureChannelOut.A);
             }else
             {
                 connections[0] = TexturePacker.Connection.CreateFull(0, _current._input_r.Channel, TexturePacker.TextureChannelOut.R);
@@ -593,6 +589,7 @@ namespace Thry
             importer.crunchedCompression = true;
             importer.sRGBTexture = _makeSRGB;
             importer.filterMode = GetFiltermode();
+            importer.alphaIsTransparency = _current._packedTexture.alphaIsTransparency;
             importer.SaveAndReimport();
 
             _current._hasConfigChanged = false;
@@ -671,17 +668,98 @@ namespace Thry
             if (EditorGUI.EndChangeCheck())
                 Init(prop, true);
 
-            UpdateRects(position, prop);
-            if (ShaderEditor.Input.Click && border_position.Contains(Event.current.mousePosition))
+            if(Config.Singleton.default_texture_type == TextureDisplayType.small)
             {
-                ShaderEditor.Input.Use();
-                PropertyOptions options = ShaderEditor.Active.CurrentProperty.Options;
-                GradientEditor.Open(data, prop, options.texture, options.force_texture_options, !options.force_texture_options);
+                UpdateRects(position, prop);
+                if (ShaderEditor.Input.Click && border_position.Contains(Event.current.mousePosition))
+                    Open(prop);
+                GuiHelper.SmallTextureProperty(position, prop, label, editor, DrawingData.CurrentTextureProperty.hasFoldoutProperties);
+                GradientField();
+            }else
+            {
+                position = new RectOffset(-30, 0, 0, 0).Add(position);
+                Rect top_bg_rect = new Rect(position);
+                Rect label_rect = new Rect(position);
+                Rect button_select = new Rect(position);
+                top_bg_rect = new RectOffset(0, 0, 0, 25).Add(top_bg_rect);
+                label_rect = new RectOffset(-5, 5, -3, 3).Add(label_rect);
+                button_select = new RectOffset((int)button_select.width - 120, 20, 2, 0).Remove(button_select);
+
+                GUILayoutUtility.GetRect(position.width, 30); // get space for gradient
+                border_position = new Rect(position.x, position.y + position.height, position.width, 30);
+                border_position = new RectOffset(3, 3, 0, 0).Remove(border_position);
+                gradient_position = new RectOffset(1, 1, 1, 1).Remove(border_position);
+                if (ShaderEditor.Input.Click && border_position.Contains(Event.current.mousePosition))
+                    Open(prop);
+
+                GUI.DrawTexture(top_bg_rect, Texture2D.whiteTexture, ScaleMode.StretchToFill, true, 0, Styles.COLOR_BACKGROUND_1, 3, 10);
+
+                if(DrawingData.CurrentTextureProperty.hasScaleOffset || DrawingData.CurrentTextureProperty.Options.reference_properties != null)
+                {
+                    Rect extraPropsBackground = EditorGUILayout.BeginVertical();
+                    extraPropsBackground.x = position.x;
+                    extraPropsBackground.width = position.width;
+                    extraPropsBackground.y = extraPropsBackground.y - 25;
+                    extraPropsBackground.height = extraPropsBackground.height + 25;
+                    float propertyX = extraPropsBackground.x + 15;
+                    float propertyWidth = extraPropsBackground.width - 30;
+                    GUI.DrawTexture(extraPropsBackground, Texture2D.whiteTexture, ScaleMode.StretchToFill, true, 0, Styles.COLOR_BACKGROUND_1, 3, 10);
+                    Rect r;
+                    if(DrawingData.CurrentTextureProperty.hasScaleOffset)
+                    {
+                        r = GUILayoutUtility.GetRect(propertyWidth, 48);
+                        r.x = propertyX;
+                        r.y -= 8;
+                        r.width = propertyWidth;
+                        editor.TextureScaleOffsetProperty(r, prop);
+                    }
+                    if(DrawingData.CurrentTextureProperty.Options.reference_properties != null)
+                    {
+                        float labelWidth = EditorGUIUtility.labelWidth;
+                        EditorGUIUtility.labelWidth = 100;
+                        propertyX -= 30;
+                        foreach(string pName in DrawingData.CurrentTextureProperty.Options.reference_properties)
+                        {
+                            ShaderProperty property = ShaderEditor.Active.PropertyDictionary[pName];
+                            if(property != null)
+                            {
+                                r = GUILayoutUtility.GetRect(propertyWidth, editor.GetPropertyHeight(property.MaterialProperty, property.Content.text) + 3);
+                                r.x = propertyX;
+                                r.width = propertyWidth;
+                                property.Draw(new CRect(r));
+                            }
+                        }
+                        EditorGUIUtility.labelWidth = labelWidth;
+                    }
+                    EditorGUILayout.EndVertical();
+                }else
+                {
+                    GUILayoutUtility.GetRect(0, 5);
+                    Rect backgroundBottom = new RectOffset(3,3,-5,10).Add(border_position);
+                    GUI.DrawTexture(backgroundBottom, Texture2D.whiteTexture, ScaleMode.StretchToFill, true, 0, Styles.COLOR_BACKGROUND_1, 3, 10);
+                }
+
+                bool changed = GuiHelper.HandleTexturePicker(prop);
+                changed |= GuiHelper.AcceptDragAndDrop(border_position, prop);
+                if(changed)
+                    Init(prop, true);
+                if(GUI.Button(button_select, "Select", EditorStyles.miniButton))
+                {
+                    GuiHelper.OpenTexturePicker(prop);
+                }
+
+                GradientField();
+                GUI.Label(label_rect, label);
+
+                GUILayoutUtility.GetRect(0, 5);
             }
+        }
 
-            GuiHelper.SmallTextureProperty(position, prop, label, editor, DrawingData.CurrentTextureProperty.hasFoldoutProperties);
-
-            GradientField();
+        private void Open(MaterialProperty prop)
+        {
+            ShaderEditor.Input.Use();
+            PropertyOptions options = ShaderEditor.Active.CurrentProperty.Options;
+            GradientEditor.Open(data, prop, options.texture, options.force_texture_options, !options.force_texture_options);
         }
 
         private void UpdateRects(Rect position, MaterialProperty prop)
@@ -1237,8 +1315,16 @@ namespace Thry
         {
             contentRect.x += contentRect.width * index;
             contentRect.width -= 5;
-            if (_displayAsToggles) prop.floatValue = EditorGUI.Toggle(contentRect, prop.floatValue == 1) ? 1 : 0;
-            else prop.floatValue = EditorGUI.FloatField(contentRect, prop.floatValue);
+
+            float val = prop.floatValue;
+            EditorGUI.showMixedValue = prop.hasMixedValue;
+            EditorGUI.BeginChangeCheck();
+            if (_displayAsToggles) val = EditorGUI.Toggle(contentRect, val == 1) ? 1 : 0;
+            else val = EditorGUI.FloatField(contentRect, val);
+            if (EditorGUI.EndChangeCheck())
+            {
+                prop.floatValue = val;
+            }
         }
 
         public override float GetPropertyHeight(MaterialProperty prop, string label, MaterialEditor editor)
@@ -1542,8 +1628,9 @@ namespace Thry
         {
             Material material = shaderOptimizer.targets[0] as Material;
             Shader shader = material.shader;
-            bool isLocked = shader.name.StartsWith("Hidden/Locked/") || (shader.name.StartsWith("Hidden/") && 
-                (material.GetTag("OriginalShader",false,"") != "" && shader.GetPropertyDefaultFloatValue(shader.FindPropertyIndex(shaderOptimizer.name)) == 1));
+            // The GetPropertyDefaultFloatValue is changed from 0 to 1 when the shader is locked in
+            bool isLocked = shader.name.StartsWith("Hidden/Locked/") || 
+                (shader.name.StartsWith("Hidden/") && material.GetTag("OriginalShader",false,"") != "" && shader.GetPropertyDefaultFloatValue(shader.FindPropertyIndex(shaderOptimizer.name)) == 1);
             //this will make sure the button is unlocked if you manually swap to an unlocked shader
             //shaders that have the ability to be locked shouldnt really be hidden themself. at least it wouldnt make too much sense
             if (shaderOptimizer.hasMixedValue == false && shaderOptimizer.floatValue == 1 && isLocked == false)
@@ -1595,6 +1682,7 @@ namespace Thry
             {
                 EditorGUI.BeginDisabledGroup(!Config.Singleton.allowCustomLockingRenaming || ShaderEditor.Active.IsLockedMaterial);
                 EditorGUI.BeginChangeCheck();
+                EditorGUI.showMixedValue = ShaderEditor.Active.HasMixedCustomPropertySuffix;
                 ShaderEditor.Active.RenamedPropertySuffix = EditorGUILayout.TextField("Locked property suffix: ", ShaderEditor.Active.RenamedPropertySuffix);
                 if (EditorGUI.EndChangeCheck())
                 {
@@ -1768,13 +1856,10 @@ namespace Thry
                 LoadNames();
             }
 
-            float labelWidth = EditorGUIUtility.labelWidth;
-            EditorGUIUtility.labelWidth = 0f;
             var selIndex = EditorGUI.Popup(position, label, selectedIndex, names);
             EditorGUI.showMixedValue = false;
             if (EditorGUI.EndChangeCheck())
                 prop.floatValue = values[selIndex];
-            EditorGUIUtility.labelWidth = labelWidth;
         }
 
         public override float GetPropertyHeight(MaterialProperty prop, string label, MaterialEditor editor)

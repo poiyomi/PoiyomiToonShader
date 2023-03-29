@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.IO;
 
-namespace Poi
+namespace Poi.Tools
 {
-    public class ThirdPartyIncluder : Editor
+    public class ThirdPartyIncluder : UnityEditor.Editor
     {
         private static List<ThirdPartyIncluderAsset> i_thirdPartyIncluders = new List<ThirdPartyIncluderAsset>();
         public static List<ThirdPartyIncluderAsset> thirdPartyIncluders
@@ -39,26 +39,43 @@ namespace Poi
                     .Select(AssetDatabase.LoadAssetAtPath<ThirdPartyIncluderAsset>)
                     .ToList();
         }
-        public static bool CopyIfGood(string sourcePath, string destinationPath)
+        public static string GetPathFromGUIDIfNoSource(string sourcePath, string sourceGUID)
+        {
+            if (!File.Exists(sourcePath))
+            {
+                if (!string.IsNullOrEmpty(sourceGUID))
+                {
+                    return AssetDatabase.GUIDToAssetPath(sourceGUID);
+                }
+                else
+                {
+                    return string.Empty;
+                }
+            }
+            return sourcePath;
+        }
+        public static bool CopyIfGood(string sourcePath, string sourceGUID, string destinationPath)
         {
             try
             {
+                sourcePath = GetPathFromGUIDIfNoSource(sourcePath, sourceGUID);
                 if (!File.Exists(sourcePath)) return false;
                 if (!File.Exists(destinationPath)) return false;
-                if (new System.IO.FileInfo(destinationPath).Length > 4) return false;
+                if (new System.IO.FileInfo(sourcePath).Length == new System.IO.FileInfo(destinationPath).Length) return false;
                 File.Copy(sourcePath, destinationPath, true);
                 return true;
             }
             catch (System.Exception e)
             {
-                Debug.LogError($"{sourcePath} or {destinationPath} are broken and threw exception: {e}");
+                Debug.LogError($"{sourcePath}, {sourceGUID} or {destinationPath} are broken and threw exception: {e}");
             }
             return false;
         }
-        public static bool WriteDefineIfExists(string sourcePath, string destinationPath, string defineName)
+        public static bool WriteDefineIfExists(string sourcePath, string sourceGUID, string destinationPath, string defineName)
         {
             try
             {
+                sourcePath = GetPathFromGUIDIfNoSource(sourcePath, sourceGUID);
                 if (!File.Exists(sourcePath)) return false;
                 if (!File.Exists(destinationPath)) return false;
                 if (new System.IO.FileInfo(destinationPath).Length > 4) return false;
@@ -67,7 +84,7 @@ namespace Poi
             }
             catch (System.Exception e)
             {
-                Debug.LogError($"{sourcePath} or {destinationPath} are broken and threw exception: {e}");
+                Debug.LogError($"{sourcePath}, {sourceGUID} or {destinationPath} are broken and threw exception: {e}");
             }
             return false;
         }
@@ -85,14 +102,14 @@ namespace Poi
                         string destinationPath = Path.Combine(projectPath, thirdPartyInclude.destinationPath);
                         if (thirdPartyInclude.type == ThirdPartyIncluderAsset.ThirdPartyIncludeType.FileCopy)
                         {
-                            if (CopyIfGood(sourcePath, destinationPath))
+                            if (CopyIfGood(sourcePath, thirdPartyInclude.sourceGUID, destinationPath))
                             {
                                 i++;
                             }
                         }
                         else if (thirdPartyInclude.type == ThirdPartyIncluderAsset.ThirdPartyIncludeType.DefineIfExists)
                         {
-                            if (WriteDefineIfExists(sourcePath, destinationPath, thirdPartyInclude.defineName))
+                            if (WriteDefineIfExists(sourcePath, thirdPartyInclude.sourceGUID, destinationPath, thirdPartyInclude.defineName))
                             {
                                 i++;
                             }
@@ -168,14 +185,14 @@ namespace Poi
                                 string destinationPath = Path.Combine(ThirdPartyIncluder.projectPath, thirdPartyInclude.destinationPath);
                                 if (thirdPartyInclude.type == ThirdPartyIncluderAsset.ThirdPartyIncludeType.FileCopy)
                                 {
-                                    if (ThirdPartyIncluder.CopyIfGood(sourcePath, destinationPath))
+                                    if (ThirdPartyIncluder.CopyIfGood(sourcePath, thirdPartyInclude.sourceGUID, destinationPath))
                                     {
                                         i++;
                                     }
                                 }
                                 else if (thirdPartyInclude.type == ThirdPartyIncluderAsset.ThirdPartyIncludeType.DefineIfExists)
                                 {
-                                    if (ThirdPartyIncluder.WriteDefineIfExists(sourcePath, destinationPath, thirdPartyInclude.defineName))
+                                    if (ThirdPartyIncluder.WriteDefineIfExists(sourcePath, thirdPartyInclude.sourceGUID, destinationPath, thirdPartyInclude.defineName))
                                     {
                                         i++;
                                     }

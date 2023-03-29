@@ -5,7 +5,7 @@ using System.Reflection;
 using UnityEditorInternal;
 using System.Collections.Generic;
 
-namespace Poi
+namespace Poi.Tools
 {
     [CreateAssetMenu(fileName = "ThirdPartyIncluderAsset", menuName = "Poi/ThirdPartyIncluderAsset", order = 2)]
     public class ThirdPartyIncluderAsset : ScriptableObject
@@ -20,6 +20,7 @@ namespace Poi
         {
             public ThirdPartyIncludeType type;
             public string sourcePath;
+            public string sourceGUID;
             public string destinationPath;
             public string defineName;
         }
@@ -27,13 +28,14 @@ namespace Poi
     }
 
     [CustomEditor(typeof(ThirdPartyIncluderAsset))]
-    public class ThirdPartyIncluderAssetEditor : Editor
+    public class ThirdPartyIncluderAssetEditor : UnityEditor.Editor
     {
         private ReorderableList list;
         private List<bool> listFoldouts = new List<bool>();
         GUIContent headerGC = new GUIContent("Third Party Includers");
         GUIContent typeGC = new GUIContent("Type");
         GUIContent sourcePathGC = new GUIContent("Source Path");
+        GUIContent sourceGUIDGC = new GUIContent("Source GUID");
         GUIContent destinationPathGC = new GUIContent("Destination Path");
         GUIContent filePathGC = new GUIContent("File Path");
         GUIContent defineNameGC = new GUIContent("Define Name");
@@ -91,8 +93,8 @@ namespace Poi
                     if (element.isExpanded)
                     {
                         var enumValue = element.FindPropertyRelative("type").enumValueIndex;
-                        if (CompareTypeEnum(enumValue, ThirdPartyIncluderAsset.ThirdPartyIncludeType.FileCopy)) return EditorGUIUtility.singleLineHeight * 1.1f * 4f;
-                        if (CompareTypeEnum(enumValue, ThirdPartyIncluderAsset.ThirdPartyIncludeType.DefineIfExists)) return EditorGUIUtility.singleLineHeight * 1.1f * 5f;
+                        if (CompareTypeEnum(enumValue, ThirdPartyIncluderAsset.ThirdPartyIncludeType.FileCopy)) return EditorGUIUtility.singleLineHeight * 1.1f * 5f;
+                        if (CompareTypeEnum(enumValue, ThirdPartyIncluderAsset.ThirdPartyIncludeType.DefineIfExists)) return EditorGUIUtility.singleLineHeight * 1.1f * 6f;
                         return EditorGUIUtility.singleLineHeight * 1.1f * 4f; // 4 for *now*
                     }
                     return EditorGUIUtility.singleLineHeight;
@@ -101,8 +103,14 @@ namespace Poi
                 list.drawElementCallback = (rect, index, isActive, isFocused) =>
                 {
                     SerializedProperty element = list.serializedProperty.GetArrayElementAtIndex(index);
-                    int indextoo = index;
-                    string name = indextoo.ToString();
+                    var typeElement = element.FindPropertyRelative(nameof(ThirdPartyIncluderAsset.ThirdPartyInclude.type));
+                    var destinationPathElement = element.FindPropertyRelative(nameof(ThirdPartyIncluderAsset.ThirdPartyInclude.destinationPath));
+                    string destFileName = "";
+                    if (!string.IsNullOrEmpty(destinationPathElement.stringValue))
+                    {
+                        destFileName = System.IO.Path.GetFileName(destinationPathElement.stringValue);
+                    }
+                    string name = $"{index.ToString()} ({typeElement.enumDisplayNames[typeElement.enumValueIndex]}) {destFileName}";
                     var nameGC = new GUIContent(name);
                     float nameWidth = GUI.skin.label.CalcSize(nameGC).x;
                     element.isExpanded = EditorGUI.Foldout(new Rect(rect.x + 10f, rect.y, nameWidth, EditorGUIUtility.singleLineHeight), element.isExpanded, nameGC, true);
@@ -113,24 +121,55 @@ namespace Poi
                         // Change label width to the biggest label
                         EditorGUIUtility.labelWidth = GUI.skin.label.CalcSize(destinationPathGC).x + 4f; // plus some padding
 
-                        var typeElement = element.FindPropertyRelative("type");
+                        var sourcePathElement = element.FindPropertyRelative(nameof(ThirdPartyIncluderAsset.ThirdPartyInclude.sourcePath));
+                        var sourceGUIDElement = element.FindPropertyRelative(nameof(ThirdPartyIncluderAsset.ThirdPartyInclude.sourceGUID));
+                        var defineNameElement = element.FindPropertyRelative(nameof(ThirdPartyIncluderAsset.ThirdPartyInclude.defineName));
+
                         EditorGUI.PropertyField(new Rect(rect.x, rect.y + EditorGUIUtility.singleLineHeight * 1.1f * 1f, rect.width, EditorGUIUtility.singleLineHeight),
                             typeElement, typeGC);
                         if (CompareTypeEnum(typeElement.enumValueIndex, ThirdPartyIncluderAsset.ThirdPartyIncludeType.FileCopy))
                         {
+                            EditorGUI.BeginChangeCheck();
                             EditorGUI.PropertyField(new Rect(rect.x, rect.y + EditorGUIUtility.singleLineHeight * 1.1f * 2f, rect.width, EditorGUIUtility.singleLineHeight),
-                                element.FindPropertyRelative("sourcePath"), sourcePathGC);
+                                sourcePathElement, sourcePathGC);
+                            if (EditorGUI.EndChangeCheck())
+                            {
+                                if (!string.IsNullOrEmpty(sourcePathElement.stringValue))
+                                {
+                                    string sourceGUID = AssetDatabase.AssetPathToGUID(sourcePathElement.stringValue);
+                                    if (!string.IsNullOrEmpty(sourceGUID))
+                                    {
+                                        sourceGUIDElement.stringValue = sourceGUID;
+                                    }
+                                }
+                            }
                             EditorGUI.PropertyField(new Rect(rect.x, rect.y + EditorGUIUtility.singleLineHeight * 1.1f * 3f, rect.width, EditorGUIUtility.singleLineHeight),
-                                element.FindPropertyRelative("destinationPath"), destinationPathGC);
+                                sourceGUIDElement, sourceGUIDGC);
+                            EditorGUI.PropertyField(new Rect(rect.x, rect.y + EditorGUIUtility.singleLineHeight * 1.1f * 4f, rect.width, EditorGUIUtility.singleLineHeight),
+                                destinationPathElement, destinationPathGC);
                         }
                         if (CompareTypeEnum(typeElement.enumValueIndex, ThirdPartyIncluderAsset.ThirdPartyIncludeType.DefineIfExists))
                         {
+                            EditorGUI.BeginChangeCheck();
                             EditorGUI.PropertyField(new Rect(rect.x, rect.y + EditorGUIUtility.singleLineHeight * 1.1f * 2f, rect.width, EditorGUIUtility.singleLineHeight),
-                                element.FindPropertyRelative("sourcePath"), filePathGC);
+                                sourcePathElement, sourcePathGC);
+                            if (EditorGUI.EndChangeCheck())
+                            {
+                                if (!string.IsNullOrEmpty(sourcePathElement.stringValue))
+                                {
+                                    string sourceGUID = AssetDatabase.AssetPathToGUID(sourcePathElement.stringValue);
+                                    if (!string.IsNullOrEmpty(sourceGUID))
+                                    {
+                                        sourceGUIDElement.stringValue = sourceGUID;
+                                    }
+                                }
+                            }
                             EditorGUI.PropertyField(new Rect(rect.x, rect.y + EditorGUIUtility.singleLineHeight * 1.1f * 3f, rect.width, EditorGUIUtility.singleLineHeight),
-                                element.FindPropertyRelative("destinationPath"), destinationPathGC);
+                                sourceGUIDElement, sourceGUIDGC);
                             EditorGUI.PropertyField(new Rect(rect.x, rect.y + EditorGUIUtility.singleLineHeight * 1.1f * 4f, rect.width, EditorGUIUtility.singleLineHeight),
-                                element.FindPropertyRelative("defineName"), defineNameGC);
+                                destinationPathElement, destinationPathGC);
+                            EditorGUI.PropertyField(new Rect(rect.x, rect.y + EditorGUIUtility.singleLineHeight * 1.1f * 5f, rect.width, EditorGUIUtility.singleLineHeight),
+                                defineNameElement, defineNameGC);
                         }
                         // Revert label width
                         EditorGUIUtility.labelWidth = oldLabelWidth;

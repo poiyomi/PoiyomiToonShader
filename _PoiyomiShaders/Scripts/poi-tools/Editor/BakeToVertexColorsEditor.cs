@@ -6,7 +6,7 @@ using UnityEditor;
 using UnityEngine;
 
 
-namespace Poi
+namespace Poi.Tools
 {
     public class BakeToVertexColorsEditor : EditorWindow
     {
@@ -79,15 +79,15 @@ namespace Poi
 
             EditorGUI.BeginDisabledGroup(!Selection);
             {
-                EditorGUILayout.HelpBox(hint_bakeAverageNormals, MessageType.Info);
-                if(GUILayout.Button(button_bakeAverageNormals))
-                {
-                    var meshes = GetAllMeshInfos(Selection);
-                    if(meshes == null || meshes.Length == 0)
-                        Debug.LogWarning(log_prefix + warning_noMeshesDetected);
-                    else
-                        BakeAveragedNormalsToColors(meshes);
-                }
+                // EditorGUILayout.HelpBox(hint_bakeAverageNormals, MessageType.Info);
+                // if(GUILayout.Button(button_bakeAverageNormals))
+                // {
+                //     var meshes = GetAllMeshInfos(Selection);
+                //     if(meshes == null || meshes.Length == 0)
+                //         Debug.LogWarning(log_prefix + warning_noMeshesDetected);
+                //     else
+                //         BakeAveragedNormalsToColors(meshes);
+                // }
 
                 PoiHelpers.DrawLine(true, false);
                 EditorGUILayout.HelpBox(hint_bakeVertexPositions, MessageType.Info);

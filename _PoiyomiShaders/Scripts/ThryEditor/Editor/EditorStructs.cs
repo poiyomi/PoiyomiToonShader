@@ -701,33 +701,30 @@ namespace Thry
             }
 
             // Animatable Stuff
-            if (this is ShaderHeader == false)
+            this.IsAnimatable = !DrawingData.LastPropertyDoesntAllowAnimation;
+            bool propHasDuplicate = ShaderEditor.Active.GetMaterialProperty(MaterialProperty.name + "_" + ShaderEditor.Active.RenamedPropertySuffix) != null;
+            string tag = null;
+            //If prop is og, but is duplicated (locked) dont have it animateable
+            if (propHasDuplicate)
             {
-                this.IsAnimatable = !DrawingData.LastPropertyDoesntAllowAnimation;
-                bool propHasDuplicate = ShaderEditor.Active.GetMaterialProperty(MaterialProperty.name + "_" + ShaderEditor.Active.RenamedPropertySuffix) != null;
-                string tag = null;
-                //If prop is og, but is duplicated (locked) dont have it animateable
-                if (propHasDuplicate)
+                this.IsAnimatable = false;
+            }
+            else
+            {
+                //if prop is a duplicated or renamed get og property to check for animted status
+                if (MaterialProperty.name.Contains(ShaderEditor.Active.RenamedPropertySuffix))
                 {
-                    this.IsAnimatable = false;
+                    string ogName = MaterialProperty.name.Substring(0, MaterialProperty.name.Length - ShaderEditor.Active.RenamedPropertySuffix.Length - 1);
+                    tag = ShaderOptimizer.GetAnimatedTag(MaterialProperty.targets[0] as Material, ogName);
                 }
                 else
                 {
-                    //if prop is a duplicated or renamed get og property to check for animted status
-                    if (MaterialProperty.name.Contains(ShaderEditor.Active.RenamedPropertySuffix))
-                    {
-                        string ogName = MaterialProperty.name.Substring(0, MaterialProperty.name.Length - ShaderEditor.Active.RenamedPropertySuffix.Length - 1);
-                        tag = ShaderOptimizer.GetAnimatedTag(MaterialProperty.targets[0] as Material, ogName);
-                    }
-                    else
-                    {
-                        tag = ShaderOptimizer.GetAnimatedTag(MaterialProperty);
-                    }
+                    tag = ShaderOptimizer.GetAnimatedTag(MaterialProperty);
                 }
-                
-                this.IsAnimated = IsAnimatable && tag != "";
-                this.IsRenaming = IsAnimatable && tag == "2";
             }
+            
+            this.IsAnimated = IsAnimatable && tag != "";
+            this.IsRenaming = IsAnimatable && tag == "2";
         }
 
         public override void DrawInternal(GUIContent content, CRect rect = null, bool useEditorIndent = false, bool isInHeader = false)
@@ -785,7 +782,14 @@ namespace Thry
             }
             else if (rect != null)
             {
-                ActiveShaderEditor.Editor.ShaderProperty(rect.r, this.MaterialProperty, content);
+                // Custom Drawing for Range, because it doesnt draw correctly if inside the big texture property
+                if(!_hasDrawer && MaterialProperty.type == MaterialProperty.PropType.Range)
+                {
+                    MaterialProperty.floatValue = EditorGUI.Slider(rect.r, content, MaterialProperty.floatValue, 0, MaterialProperty.rangeLimits.y);
+                }else
+                {
+                    ActiveShaderEditor.Editor.ShaderProperty(rect.r, this.MaterialProperty, content);
+                }
             }
             else
             {
@@ -849,6 +853,11 @@ namespace Thry
         {
             doCustomDrawLogic = forceThryUI;
             this.hasScaleOffset = hasScaleOffset;
+        }
+
+        protected override void InitOptions()
+        {
+            base.InitOptions();
             this.hasFoldoutProperties = hasScaleOffset || DoReferencePropertiesExist;
         }
 
@@ -857,7 +866,6 @@ namespace Thry
             if (MaterialProperty.textureValue != null)
             {
                 var details = TextureHelper.VRAM.CalcSize(MaterialProperty.textureValue);
-                //this.VRAMString = $"{TextureHelper.VRAM.ToByteString(details.size)} ({details.format})";
                 this.VRAMString = $"{TextureHelper.VRAM.ToByteString(details.size)}";
             }
             else
@@ -950,6 +958,20 @@ namespace Thry
     {
         public ShaderHeaderProperty(ShaderEditor shaderEditor, MaterialProperty materialProperty, string displayName, int xOffset, string optionsRaw, bool forceOneLine) : base(shaderEditor, materialProperty, xOffset, displayName, optionsRaw)
         {
+            // guid is defined as <guid:x*>
+            if(displayName.Contains("<guid="))
+            {
+                int start = displayName.IndexOf("<guid=");
+                int end = displayName.IndexOf(">", start);
+                string guid = displayName.Substring(start + 6, end - start - 6);
+                string path = AssetDatabase.GUIDToAssetPath(guid);
+                string replacement = "";
+                if (path != null && System.IO.File.Exists(path))
+                {
+                    replacement = System.IO.File.ReadAllText(path);
+                }
+                Content.text = displayName.Replace($"<guid={guid}>", replacement);
+            }
         }
 
         public override void HandleRightClickToggles(bool isInHeader)

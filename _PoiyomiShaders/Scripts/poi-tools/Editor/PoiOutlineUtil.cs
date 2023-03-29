@@ -7,7 +7,7 @@ using System.Text;
 using UnityEditor;
 using UnityEngine;
 
-namespace Poi
+namespace Poi.Tools
 {
     public class PoiOutlineUtilWindow : EditorWindow
     {

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using UnityEditor;
 using UnityEngine;
 
-namespace Poi
+namespace Poi.Tools
 {
     internal static class PoiPaths
     {

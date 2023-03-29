@@ -8,24 +8,32 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using UnityEditor;
+using UnityEditor.PackageManager;
 using UnityEngine;
 
 namespace Thry
 {
+    public abstract class ModuleSettings
+    {
+        public const string MODULES_CONFIG = "Thry/modules_config";
+
+        public abstract void Draw();
+    }
+
     public class Settings : EditorWindow
     {
 
         public static void firstTimePopup()
         {
             Settings window = (Settings)EditorWindow.GetWindow(typeof(Settings));
-            window.isFirstPopop = true;
+            window._isFirstPopop = true;
             window.Show();
         }
 
         public static void updatedPopup(int compare)
         {
             Settings window = (Settings)EditorWindow.GetWindow(typeof(Settings));
-            window.updatedVersion = compare;
+            window._updatedVersion = compare;
             window.Show();
         }
 
@@ -37,10 +45,12 @@ namespace Thry
 
         public ModuleSettings[] moduleSettings;
 
-        private bool isFirstPopop = false;
-        private int updatedVersion = 0;
+        private bool _isFirstPopop = false;
+        private int _updatedVersion = 0;
 
-        private bool is_init = false;
+        private bool _is_init = false;
+        private bool _isInstallingVAI = false;
+        Vector2 _scrollPosition;
         
         public static ButtonData thry_message = null;
 
@@ -61,7 +71,7 @@ namespace Thry
                 moduleSettings[i++] = (ModuleSettings)Activator.CreateInstance(classtype);
             }
 
-            is_init = true;
+            _is_init = true;
 
             if (thry_message == null)
                 WebHelper.DownloadStringASync(Thry.URL.SETTINGS_MESSAGE_URL, (Action<string>)delegate (string s) { thry_message = Parser.Deserialize<ButtonData>(s); });
@@ -70,9 +80,10 @@ namespace Thry
         //------------------Main GUI
         void OnGUI()
         {
-            if (!is_init || moduleSettings==null) InitVariables();
-            GUILayout.Label("ShaderUI v" + Config.Singleton.verion);
+            if (!_is_init || moduleSettings==null) InitVariables();
+            GUILayout.Label("ThryEditor v" + Config.Singleton.verion);
 
+            _scrollPosition = EditorGUILayout.BeginScrollView(_scrollPosition);
             GUINotification();
             DrawHorizontalLine();
             GUIMessage();
@@ -84,7 +95,8 @@ namespace Thry
                 s.Draw();
                 DrawHorizontalLine();
             }
-            GUIModulesInstalation();
+            GUIVRChatAssetInstaller();
+            EditorGUILayout.EndScrollView();
         }
 
         //--------------------------GUI Helpers-----------------------------
@@ -98,11 +110,11 @@ namespace Thry
 
         private void GUINotification()
         {
-            if (isFirstPopop)
+            if (_isFirstPopop)
                 GUILayout.Label(" " + EditorLocale.editor.Get("first_install_message"), Styles.greenStyle);
-            else if (updatedVersion == -1)
+            else if (_updatedVersion == -1)
                 GUILayout.Label(" " + EditorLocale.editor.Get("update_message"), Styles.greenStyle);
-            else if (updatedVersion == 1)
+            else if (_updatedVersion == 1)
                 GUILayout.Label(" " + EditorLocale.editor.Get("downgrade_message"), Styles.orangeStyle);
         }
 
@@ -133,29 +145,40 @@ namespace Thry
             }
         }
 
-        bool is_editor_expanded = true;
         private void GUIEditor()
         {
-            is_editor_expanded = Foldout(EditorLocale.editor.Get("header_editor"), is_editor_expanded);
-            if (is_editor_expanded)
-            {
-                EditorGUI.indentLevel += 2;
-                Dropdown("default_texture_type");
-                Toggle("showRenderQueue");
-                Toggle("showManualReloadButton");
+            EditorGUILayout.Space();
+            GUILayout.Label(EditorLocale.editor.Get("shader_ui_design_header"), EditorStyles.boldLabel);
+            Dropdown("default_texture_type");
+            Toggle("showRenderQueue");
 
-                EditorGUILayout.Space();
-                Toggle("autoMarkPropertiesAnimated");
-                Toggle("allowCustomLockingRenaming");
-                GUIGradients();
-                EditorGUILayout.Space();
+            EditorGUILayout.Space();
+            GUILayout.Label(EditorLocale.editor.Get("shader_ui_features_header"), EditorStyles.boldLabel);
+            EditorGUILayout.Space();
+            Toggle("autoMarkPropertiesAnimated");
+            Toggle("allowCustomLockingRenaming");
+            GUIGradients();
 
-                Toggle("autoSetAnchorOverride");
-                Dropdown("humanBoneAnchor");
-                Text("anchorOverrideObjectName");
-                
-                EditorGUI.indentLevel -= 2;
-            }
+            EditorGUILayout.Space();
+            GUILayout.Label(EditorLocale.editor.Get("avatar_fixes_header"), EditorStyles.boldLabel);
+            Toggle("autoSetAnchorOverride");
+            Dropdown("humanBoneAnchor");
+            Text("anchorOverrideObjectName");
+
+            EditorGUILayout.Space();
+            GUILayout.Label(EditorLocale.editor.Get("textures_header"), EditorStyles.boldLabel);
+            Dropdown("texturePackerCompressionWithAlphaOverwrite");
+            Dropdown("texturePackerCompressionNoAlphaOverwrite");
+            Dropdown("gradientEditorCompressionOverwrite");
+
+            EditorGUILayout.Space();
+            GUILayout.Label(EditorLocale.editor.Get("technical_header"), EditorStyles.boldLabel);
+            Toggle("forceAsyncCompilationPreview");
+
+            EditorGUILayout.Space();
+            GUILayout.Label(EditorLocale.editor.Get("developer_header"), EditorStyles.boldLabel);
+            Toggle("showManualReloadButton");
+            Toggle("enableDeveloperMode");
         }
 
         private static void GUIGradients()
@@ -193,93 +216,28 @@ namespace Thry
             }
         }
 
-        private void GUIModulesInstalation()
+        static Type s_vrchatAssetInstallerUIType {get; set;} = Helper.FindTypeByFullName("Thry.VRChatAssetInstaller.VAI_UI");
+
+        private void GUIVRChatAssetInstaller()
         {
-            if (ModuleHandler.GetFirstPartyModules() == null)
-                return;
-            if (ModuleHandler.GetFirstPartyModules().Count > 0) {
-                EditorGUILayout.BeginHorizontal();
-                GUILayout.Label(EditorLocale.editor.Get("header_modules"), EditorStyles.boldLabel);
-                if (GUILayout.Button("Reload"))
-                    ModuleHandler.ForceReloadModules();
-                EditorGUILayout.EndHorizontal();
-            }
-            bool disabled = ModuleHandler.GetFirstPartyModules().Any(m => m.is_being_installed_or_removed);
-            disabled |= ModuleHandler.GetThirdPartyModules().Any(m => m.is_being_installed_or_removed);
-            EditorGUI.BeginDisabledGroup(disabled);
-            foreach (Module module in ModuleHandler.GetFirstPartyModules())
+            // check if Thry.VRChatAssetInstaller.VAI_UI exists
+            if(s_vrchatAssetInstallerUIType != null)
             {
-                ModuleUI(module);
-            }
-            GUILayout.Label(EditorLocale.editor.Get("header_thrird_party"), EditorStyles.boldLabel);
-            foreach (Module module in ModuleHandler.GetThirdPartyModules())
+                if(GUILayout.Button("Open VRChat Asset Installer"))
+                {
+                    s_vrchatAssetInstallerUIType.GetMethod("ShowWindow").Invoke(null, null);
+                }
+            }else
             {
-                ModuleUI(module);
+                EditorGUILayout.HelpBox("VRChat Asset Installer is an external asset that allows you to easily find and install assets for VRChat into your project. It has various community prefabs and tools availabe for one click installation. It is not an alternative to VCC, but an addition as it uses unitypackages and UPM instead of VPM.", MessageType.Info);
+                EditorGUI.BeginDisabledGroup(_isInstallingVAI);
+                if(GUILayout.Button("Install VRChat Asset Installer"))
+                {
+                    _isInstallingVAI = true;
+                    Client.Add("https://github.com/Thryrallo/VRChat-Assets-Installer.git");
+                }
+                EditorGUI.EndDisabledGroup();
             }
-            EditorGUI.EndDisabledGroup();
-        }
-
-        private void ModuleUI(Module module)
-        {
-            string text = "      " + module.available_module.name;
-            if (module.update_available)
-                text = "                  " + text;
-            module.ui_expanded = Foldout(text, module.ui_expanded);
-            Rect rect = GUILayoutUtility.GetLastRect();
-            rect.x += 20;
-            rect.y += 1;
-            rect.width = 20;
-            rect.height -= 4;
-
-            bool is_installed = module.installed_module != null;
-
-            EditorGUI.BeginDisabledGroup(!module.available_requirement_fullfilled);
-            EditorGUI.BeginChangeCheck();
-            bool install = GUI.Toggle(rect, is_installed, "");
-            if(EditorGUI.EndChangeCheck()){
-                ModuleHandler.InstallRemoveModule(module, install);
-            }
-            if (module.update_available)
-            {
-                rect.x += 20;
-                rect.width = 55;
-                GUIStyle style = new GUIStyle(EditorStyles.miniButton);
-                style.fixedHeight = 17;
-                if (GUI.Button(rect, "Update",style))
-                    ModuleHandler.UpdateModule(module);
-            }
-            //add update notification
-            if (module.ui_expanded)
-            {
-                EditorGUI.indentLevel += 1;
-                ModuleUIDetails(module);
-                EditorGUI.indentLevel -= 1;
-            }
-
-            EditorGUI.EndDisabledGroup();
-        }
-
-        private void ModuleUIDetails(Module module)
-        {
-            float prev_label_width = EditorGUIUtility.labelWidth;
-            EditorGUIUtility.labelWidth = 130;
-
-            EditorGUILayout.HelpBox(module.available_module.description, MessageType.Info);
-            if (module.installed_module != null)
-                EditorGUILayout.LabelField("Installed Version: ", module.installed_module.version);
-            EditorGUILayout.LabelField("Available Version: ", module.available_module.version);
-            if (module.available_module.requirement != null)
-            {
-                if (module.available_requirement_fullfilled)
-                    EditorGUILayout.LabelField(EditorLocale.editor.Get("requirements") + ": ", module.available_module.requirement.ToString(), Styles.greenStyle);
-                else
-                    EditorGUILayout.LabelField(EditorLocale.editor.Get("requirements") + ": ", module.available_module.requirement.ToString(), Styles.redStyle);
-            }
-            EditorGUILayout.LabelField("Url: ", module.url);
-            if (module.author != null)
-                EditorGUILayout.LabelField("Author: ", module.author);
-
-            EditorGUIUtility.labelWidth = prev_label_width;
         }
 
         private static void Text(string configField, bool createHorizontal = true)

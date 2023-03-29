@@ -35,7 +35,6 @@ namespace Thry
         public static GUIStyle dropDownHeaderLabel { get; private set; } = new GUIStyle(EditorStyles.boldLabel) { alignment = TextAnchor.MiddleCenter };
         public static GUIStyle label_align_right { get; private set; } = new GUIStyle(EditorStyles.label) { alignment = TextAnchor.UpperRight };
         public static GUIStyle dropDownHeaderButton { get; private set; } = new GUIStyle(EditorStyles.toolbarButton);
-        public static GUIStyle bigTextureStyle { get; private set; } = new GUIStyle() { fontSize = 48 };
         public static GUIStyle vectorPropertyStyle { get; private set; } = new GUIStyle() { padding = new RectOffset(0, 0, 2, 2) };
         public static GUIStyle greenStyle { get; private set; } = new GUIStyle() { normal = new GUIStyleState() { textColor = new Color(0, 0.5f, 0) } };
         public static GUIStyle animatedIndicatorStyle { get; private set; } = new GUIStyle() { normal = new GUIStyleState() { textColor = new Color(0.3f, 1, 0.3f) }, alignment = TextAnchor.MiddleRight };
@@ -83,7 +82,6 @@ namespace Thry
             };
         }
 
-        public static Texture2D rounded_texture { get; private set; } = LoadTextureByGUID(RESOURCE_GUID.RECT);
 
         private static Texture2D LoadTextureByGUID(string guid)
         {
