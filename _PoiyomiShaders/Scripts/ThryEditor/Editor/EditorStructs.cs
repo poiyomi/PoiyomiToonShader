@@ -701,7 +701,6 @@ namespace Thry
             }
 
             // Animatable Stuff
-            this.IsAnimatable = !DrawingData.LastPropertyDoesntAllowAnimation;
             bool propHasDuplicate = ShaderEditor.Active.GetMaterialProperty(MaterialProperty.name + "_" + ShaderEditor.Active.RenamedPropertySuffix) != null;
             string tag = null;
             //If prop is og, but is duplicated (locked) dont have it animateable

@@ -398,17 +398,9 @@ namespace Thry
 
             AddResetProperty();
 
-            bool setForceAsyncCompilationPreview = SessionState.GetBool("ThrySetForceAsyncCompilationPreview", false);
-
-            if(Config.Singleton.forceAsyncCompilationPreview && !setForceAsyncCompilationPreview)
+            if(Config.Singleton.forceAsyncCompilationPreview)
             {
-                SessionState.SetBool("ThrySetForceAsyncCompilationPreview", true);
                 ShaderUtil.allowAsyncCompilation = true;
-            }
-            else if(setForceAsyncCompilationPreview)
-            {
-                SessionState.SetBool("ThrySetForceAsyncCompilationPreview", false);
-                ShaderUtil.allowAsyncCompilation = false;
             }
 
             _isFirstOnGUICall = false;

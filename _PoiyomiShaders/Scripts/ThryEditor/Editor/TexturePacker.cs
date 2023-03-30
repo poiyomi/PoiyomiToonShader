@@ -24,12 +24,6 @@ namespace Thry
             return packer;
         }
 
-        [MenuItem("Poi/Texture Packer", priority = 100)]
-        public static void ShowPoiWindow()
-        {
-            TexturePacker packer = ShowWindow();
-        }
-
         [MenuItem("Assets/Thry/Open in Texture Packer")]
         public static void OpenInTexturePacker()
         {
