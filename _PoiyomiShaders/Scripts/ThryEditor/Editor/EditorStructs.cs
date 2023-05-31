@@ -184,6 +184,7 @@ namespace Thry
             this.tooltip = new BetterTooltips.Tooltip(Options.tooltip);
             this.DoReferencePropertiesExist = Options.reference_properties != null && Options.reference_properties.Length > 0;
             this.DoesReferencePropertyExist = Options.reference_property != null;
+            this.XOffset += Options.offset;
         }
 
         public void SetReferenceProperty(string s)
@@ -500,9 +501,28 @@ namespace Thry
 
         public override void DrawInternal(GUIContent content, CRect rect = null, bool useEditorIndent = false, bool isInHeader = false)
         {
+            if(Options.draw_border)
+            {
+                bool has_header = string.IsNullOrWhiteSpace(this.Content.text) == false;
+                Rect border = EditorGUILayout.BeginVertical();
+                GUILayoutUtility.GetRect(0, 5 + (has_header ? 20 : 0));
+                border = new RectOffset(this.XOffset * -15 - 12, 3, -2, -2).Add(border);
+                Vector4 borderWidths = new Vector4(3, (has_header ? 22 : 3), 3, 3);
+                GUI.DrawTexture(border, Texture2D.whiteTexture, ScaleMode.StretchToFill, true, 0, Styles.COLOR_BACKGROUND_1, borderWidths, 10);
+                if(has_header)
+                {
+                    Rect header = new Rect(border.x + 16, border.y, border.width - 16, 22);
+                    GUI.Label(header, this.Content, EditorStyles.boldLabel);
+                }
+            }
             foreach (ShaderPart part in parts)
             {
                 part.Draw();
+            }
+            if (Options.draw_border)
+            {
+                GUILayoutUtility.GetRect(0, 5);
+                EditorGUILayout.EndVertical();
             }
         }
 

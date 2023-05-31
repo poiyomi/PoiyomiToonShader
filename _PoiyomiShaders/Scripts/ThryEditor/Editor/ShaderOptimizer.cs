@@ -414,7 +414,21 @@ namespace Thry
             string newShaderName = "Hidden/Locked/" + shader.name + "/" + guid;
             string shaderOptimizerButtonDrawerName = $"[{nameof(ThryShaderOptimizerLockButtonDrawer).Replace("Drawer", "")}]";
             //string newShaderDirectory = materialFolder + "/OptimizedShaders/" + material.name + "-" + smallguid + "/";
-            string newShaderDirectory = materialFolder + "/OptimizedShaders/" + material.name + "/";
+            // unity path stuff (https://docs.unity3d.com/Manual/SpecialFolders.html)
+            // ~ & . hides the folder in the editor and unity will not be able to find the shader
+            string subfoldername = material.name;
+            while(subfoldername.StartsWith("."))
+                subfoldername = subfoldername.Substring(1) + "_dot_";
+            while(subfoldername.EndsWith("~"))
+                subfoldername = subfoldername.Substring(0, subfoldername.Length - 1) + "_tilde_";
+            string newShaderDirectory = materialFolder + "/OptimizedShaders/" + subfoldername + "/";
+
+            // if directory already exists swap to using the guid
+            if (Directory.Exists(newShaderDirectory))
+            {
+                newShaderDirectory = materialFolder + "/OptimizedShaders/" + guid + "/";
+            }
+            
 
             // suffix for animated properties when renaming is enabled
             string animPropertySuffix = GetRenamedPropertySuffix(material);
@@ -1977,6 +1991,10 @@ namespace Thry
 
             public void OnProcessShader(Shader shader, UnityEditor.Rendering.ShaderSnippetData snippet, IList<UnityEditor.Rendering.ShaderCompilerData> data)
             {
+                // Don't strip if the user disabled it (developer mode only)
+                if(Config.Singleton.enableDeveloperMode && Config.Singleton.disableUnlockedShaderStrippingOnBuild)
+                    return;
+
                 // Strip if the shader should be optimized (has the optimizer property) but isn't (name doesn't start with Hidden/Locked/)
                 bool shouldStrip = shader.FindPropertyIndex("_ShaderOptimizerEnabled") >= 0 && !shader.name.StartsWith("Hidden/Locked/");
 
@@ -1985,7 +2003,11 @@ namespace Thry
                     // Try to warn the user if there's an unlocked shader
                     if (!SessionState.GetBool(DidStripUnlockedShadersSessionStateKey, false))
                     {
-                        EditorUtility.DisplayDialog("Shader Optimizer: Unlocked Shader", "An Unlocked shader was found, and will not be included in the build (this will cause pink materials).\nThis shouldn't happen. Make sure all lockable materials are Locked, and try again.\nIf it happens again, please report the issue via GitHub or Discord!", "OK");
+                        EditorUtility.DisplayDialog("Shader Optimizer: Unlocked Shader", 
+                            "An Unlocked shader was found, and will not be included in the build (this will cause pink materials).\n" + 
+                            "This shouldn't happen. Make sure all lockable materials are Locked, and try again.\n" +
+                            "If it happens again, please report the issue via GitHub or Discord!"
+                            , "OK");
                         SessionState.SetBool(DidStripUnlockedShadersSessionStateKey, true);
                     }
 
@@ -2084,7 +2106,7 @@ namespace Thry
             //first the shaders are created. compiling is suppressed with start asset editing
             AssetDatabase.StartAssetEditing();
 
-            bool seekedIsLocked = lockState == 1;
+            bool isLocking = lockState == 1;
 
             //Get cleaned materia list
             // The GetPropertyDefaultFloatValue is changed from 0 to 1 when the shader is locked in
@@ -2095,8 +2117,12 @@ namespace Thry
                 &&  (   m.shader.name.StartsWith("Hidden/Locked/")
                     || (m.shader.name.StartsWith("Hidden/") && m.GetTag("OriginalShader",false,"") != "" 
                         && m.shader.GetPropertyDefaultFloatValue(m.shader.FindPropertyIndex(GetOptimizerPropertyName(m.shader))) == 1)
-                    ) != seekedIsLocked)
+                    ) != isLocking)
                 .Distinct();
+
+            // Make sure keywords are set correctly for materials to be locked. If unlocking, do this after the shaders are unlocked
+            if(isLocking && Config.Singleton.fixKeywordsWhenLocking)
+                ShaderEditor.FixKeywords(materialsToChangeLock);
 
             float i = 0;
             float length = materialsToChangeLock.Count();
@@ -2119,17 +2145,17 @@ namespace Thry
                 {
                     if (allowCancel)
                     {
-                        if (EditorUtility.DisplayCancelableProgressBar((lockState == 1) ? "Locking Materials" : "Unlocking Materials", m.name, i / length)) break;
+                        if (EditorUtility.DisplayCancelableProgressBar(isLocking ? "Locking Materials" : "Unlocking Materials", m.name, i / length)) break;
                     }
                     else
                     {
-                        EditorUtility.DisplayProgressBar((lockState == 1) ? "Locking Materials" : "Unlocking Materials", m.name, i / length);
+                        EditorUtility.DisplayProgressBar(isLocking ? "Locking Materials" : "Unlocking Materials", m.name, i / length);
                     }
                 }
                 //create the assets
                 try
                 {
-                    if (lockState == 1)
+                    if (isLocking)
                     {
                         string hash = MaterialToShaderPropertyHash(m);
                         // Check that shader has already been created for this hash and still exists
@@ -2166,7 +2192,7 @@ namespace Thry
                         foreach (Material m2 in s_shaderPropertyCombinations[hash])
                             m2.SetOverrideTag(TAG_ALL_MATERIALS_GUIDS_USING_THIS_LOCKED_SHADER, tag);
                     }
-                    else if (lockState == 0)
+                    else if (!isLocking)
                     {
                         ShaderOptimizer.Unlock(m, shaderOptimizer);
                     }
@@ -2191,11 +2217,16 @@ namespace Thry
             }
 
             EditorUtility.ClearProgressBar();
+
+            // In case any keywords were messed up in the material following unlock, fix them now
+            if (!isLocking && Config.Singleton.fixKeywordsWhenLocking)
+                ShaderEditor.FixKeywords(materialsToChangeLock);
+
             AssetDatabase.StopAssetEditing();
             //unity now compiles all the shaders
 
             //now all new shaders are applied. this has to happen after unity compiled the shaders
-            if (lockState == 1)
+            if (isLocking)
             {
                 AssetDatabase.Refresh();
                 //Apply new shaders
@@ -2208,11 +2239,32 @@ namespace Thry
                 }
             }
             AssetDatabase.Refresh();
+
+            // Make sure things get saved after a cycle. This prevents thumbnails from getting stuck
+            if(Config.Singleton.saveAfterLockUnlock)
+                EditorApplication.update += QueueSaveAfterLockUnlock;
+
             if (ShaderEditor.Active != null && ShaderEditor.Active.IsDrawing)
             {
                 GUIUtility.ExitGUI();
             }
             return true;
+        }
+
+        // This is just a wrapper so that it waits a cycle before saving
+        static void QueueSaveAfterLockUnlock()
+        {
+            EditorApplication.update -= QueueSaveAfterLockUnlock;
+            EditorApplication.update += SaveAfterLockUnlock;
+        }
+
+        static void SaveAfterLockUnlock()
+        {
+            if (ShaderUtil.anythingCompiling)
+                return;
+
+            EditorApplication.update -= SaveAfterLockUnlock;
+            AssetDatabase.SaveAssets();
         }
 
         public static string GetOptimizerPropertyName(Shader shader)

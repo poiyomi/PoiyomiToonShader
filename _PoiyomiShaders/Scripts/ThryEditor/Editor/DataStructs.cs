@@ -103,6 +103,7 @@ namespace Thry
     #region In Shader Data
     public class PropertyOptions
     {
+        public int offset = 0;
         public string tooltip = "";
         public DefineableAction altClick;
         public DefineableAction onClick;
@@ -122,6 +123,7 @@ namespace Thry
         public string remote_version_url;
         public string generic_string;
         public bool never_lock;
+        public bool draw_border;
 
         public static PropertyOptions Deserialize(string s)
         {
@@ -202,6 +204,14 @@ namespace Thry
                 {
                     if(!s_loaded_textures.ContainsKey(name) || s_loaded_textures[name] == null)
                     {
+                        // Retrieve downloaded image from sessionstate (base64 encoded)
+                        if(SessionState.GetString(name, "") != "")
+                        {
+                            s_loaded_textures[name] = new Texture2D(1,1, TextureFormat.ARGB32, false);
+                            ImageConversion.LoadImage((Texture2D)s_loaded_textures[name], Convert.FromBase64String(SessionState.GetString(name, "")), false);
+                            return s_loaded_textures[name];
+                        }
+
                         if(IsUrl())
                         {
                             if(!_isLoading)
@@ -213,6 +223,7 @@ namespace Thry
                                     Texture2D tex = new Texture2D(1,1, TextureFormat.ARGB32, false);
                                     ImageConversion.LoadImage(tex, b, false);
                                     s_loaded_textures[name] = tex;
+                                    SessionState.SetString(name, Convert.ToBase64String(((Texture2D)s_loaded_textures[name]).EncodeToPNG()));
                                 });
                                 _isLoading = true;
                             }

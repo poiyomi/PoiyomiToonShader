@@ -41,7 +41,33 @@ namespace Thry
         }
     }
 
-    public class StylizedBigTextureDrawer : MaterialPropertyDrawer
+    // For backwards compatibility
+    public class BigTextureDrawer : SimpleLargeTextureDrawer
+    {
+        
+    }
+    
+    // For backwards compatibility
+    public class StylizedBigTextureDrawer : StylizedLargeTextureDrawer
+    {
+        
+    }
+
+    public class SimpleLargeTextureDrawer : MaterialPropertyDrawer
+    {
+        public override void OnGUI(Rect position, MaterialProperty prop, GUIContent label, MaterialEditor editor)
+        {
+            GuiHelper.BigTexturePropertyBasic(position, prop, label, editor, ((TextureProperty)ShaderEditor.Active.CurrentProperty).hasScaleOffset);
+        }
+
+        public override float GetPropertyHeight(MaterialProperty prop, string label, MaterialEditor editor)
+        {
+            DrawingData.LastPropertyUsedCustomDrawer = true;
+            return base.GetPropertyHeight(prop, label, editor);
+        }
+    }
+
+    public class StylizedLargeTextureDrawer : MaterialPropertyDrawer
     {
         public override void OnGUI(Rect position, MaterialProperty prop, GUIContent label, MaterialEditor editor)
         {
@@ -274,7 +300,7 @@ namespace Thry
 
         void LoadLabels()
         {
-            if(_reloadCount == _reloadCountStatic) return;
+            if (_reloadCount == _reloadCountStatic) return;
             // using the string itself as a key for reuse in other places. this might cause issues, if it does in the future 
             // we can add the class name as a prefix to the key
             _label1 = ShaderEditor.Active.Locale.Get(_defaultLabel1, _defaultLabel1);
@@ -302,9 +328,9 @@ namespace Thry
         public ThryRGBAPackerDrawer(string label1, string label2, float sRGB) : this(label1, label2, null, null, sRGB) { }
         public ThryRGBAPackerDrawer(string label1, string label2, string label3, float sRGB) : this(label1, label2, label3, null, sRGB) { }
 
-        public ThryRGBAPackerDrawer(string label1, string label2) : this(label1,label2,null, null, 0){}
-        public ThryRGBAPackerDrawer(string label1, string label2, string label3) : this(label1,label2,label3, null, 0){}
-        public ThryRGBAPackerDrawer(string label1, string label2, string label3, string label4) : this(label1,label2,label3,label4, 0){}
+        public ThryRGBAPackerDrawer(string label1, string label2) : this(label1, label2, null, null, 0) { }
+        public ThryRGBAPackerDrawer(string label1, string label2, string label3) : this(label1, label2, label3, null, 0) { }
+        public ThryRGBAPackerDrawer(string label1, string label2, string label3, string label4) : this(label1, label2, label3, label4, 0) { }
 
         public ThryRGBAPackerDrawer(float firstTextureIsRGB, string label1, string label2) : this(label1, label2, null, null, 0)
         {
@@ -350,7 +376,7 @@ namespace Thry
             changeCheck |= DidTextureGetEdit(_current._input_g);
             changeCheck |= DidTextureGetEdit(_current._input_b);
             changeCheck |= DidTextureGetEdit(_current._input_a);
-            if(changeCheck)
+            if (changeCheck)
             {
                 _current._hasConfigChanged = true;
                 Save();
@@ -384,7 +410,7 @@ namespace Thry
             r.width = 30;
             EditorGUI.BeginChangeCheck();
             Texture2D changed = EditorGUI.ObjectField(r, input.TextureSource.Texture, typeof(Texture2D), false) as Texture2D;
-            if(EditorGUI.EndChangeCheck())
+            if (EditorGUI.EndChangeCheck())
             {
                 input.TextureSource.SetTexture(changed);
             }
@@ -407,7 +433,7 @@ namespace Thry
             {
                 r.width = 50;
                 r.x = totalRect.x + totalRect.width - r.width;
-                if(!_firstTextureIsRGB || input != _current._input_r)
+                if (!_firstTextureIsRGB || input != _current._input_r)
                     input.Channel = (TexturePacker.TextureChannelIn)EditorGUI.EnumPopup(r, input.Channel);
 
                 r.width = 20;
@@ -442,9 +468,9 @@ namespace Thry
             SaveForChannel(_current._input_g, _prop.name, "g");
             SaveForChannel(_current._input_b, _prop.name, "b");
             SaveForChannel(_current._input_a, _prop.name, "a");
-            foreach(Material m in ShaderEditor.Active.Materials)
+            foreach (Material m in ShaderEditor.Active.Materials)
             {
-                m.SetOverrideTag(_prop.name + "_texPack_lastConfirmTime", "" +_current._lastConfirmTime);
+                m.SetOverrideTag(_prop.name + "_texPack_lastConfirmTime", "" + _current._lastConfirmTime);
             }
         }
 
@@ -487,7 +513,7 @@ namespace Thry
         TexturePacker.TextureSource[] GetTextureSources()
         {
             // build sources array
-            return new TexturePacker.TextureSource[4]{ 
+            return new TexturePacker.TextureSource[4]{
                 _current._input_r.TextureSource, _current._input_g.TextureSource, _current._input_b.TextureSource, _current._input_a.TextureSource };
         }
 
@@ -495,14 +521,15 @@ namespace Thry
         {
             // Build OutputConfig Array
             TexturePacker.OutputConfig[] outputConfigs = new TexturePacker.OutputConfig[4];
-            
-            if(_firstTextureIsRGB)
+
+            if (_firstTextureIsRGB)
             {
                 outputConfigs[0] = _current._input_r.ToOutputConfig();
                 outputConfigs[1] = _current._input_r.ToOutputConfig();
                 outputConfigs[2] = _current._input_r.ToOutputConfig();
                 outputConfigs[3] = _current._input_g.ToOutputConfig();
-            }else
+            }
+            else
             {
                 outputConfigs[0] = _current._input_r.ToOutputConfig();
                 outputConfigs[1] = _current._input_g.ToOutputConfig();
@@ -516,13 +543,14 @@ namespace Thry
         {
             // Build connections array
             TexturePacker.Connection[] connections = new TexturePacker.Connection[4];
-            if(_firstTextureIsRGB)
+            if (_firstTextureIsRGB)
             {
                 connections[0] = TexturePacker.Connection.CreateFull(0, TexturePacker.TextureChannelIn.R, TexturePacker.TextureChannelOut.R);
                 connections[1] = TexturePacker.Connection.CreateFull(0, TexturePacker.TextureChannelIn.G, TexturePacker.TextureChannelOut.G);
                 connections[2] = TexturePacker.Connection.CreateFull(0, TexturePacker.TextureChannelIn.B, TexturePacker.TextureChannelOut.B);
-                connections[3] = TexturePacker.Connection.CreateFull(1, _current._input_g.Channel       , TexturePacker.TextureChannelOut.A);
-            }else
+                connections[3] = TexturePacker.Connection.CreateFull(1, _current._input_g.Channel, TexturePacker.TextureChannelOut.A);
+            }
+            else
             {
                 connections[0] = TexturePacker.Connection.CreateFull(0, _current._input_r.Channel, TexturePacker.TextureChannelOut.R);
                 connections[1] = TexturePacker.Connection.CreateFull(1, _current._input_g.Channel, TexturePacker.TextureChannelOut.G);
@@ -650,7 +678,7 @@ namespace Thry
 
         private void Init(MaterialProperty prop, bool replace = false)
         {
-            if(!replace && _gradient_data.ContainsKey(prop.targets[0]))
+            if (!replace && _gradient_data.ContainsKey(prop.targets[0]))
             {
                 data = _gradient_data[prop.targets[0]];
                 return;
@@ -668,14 +696,15 @@ namespace Thry
             if (EditorGUI.EndChangeCheck())
                 Init(prop, true);
 
-            if(Config.Singleton.default_texture_type == TextureDisplayType.small)
+            if (Config.Singleton.default_texture_type == TextureDisplayType.small)
             {
                 UpdateRects(position, prop);
                 if (ShaderEditor.Input.Click && border_position.Contains(Event.current.mousePosition))
                     Open(prop);
                 GuiHelper.SmallTextureProperty(position, prop, label, editor, DrawingData.CurrentTextureProperty.hasFoldoutProperties);
                 GradientField();
-            }else
+            }
+            else
             {
                 position = new RectOffset(-30, 0, 0, 0).Add(position);
                 Rect top_bg_rect = new Rect(position);
@@ -694,7 +723,7 @@ namespace Thry
 
                 GUI.DrawTexture(top_bg_rect, Texture2D.whiteTexture, ScaleMode.StretchToFill, true, 0, Styles.COLOR_BACKGROUND_1, 3, 10);
 
-                if(DrawingData.CurrentTextureProperty.hasScaleOffset || DrawingData.CurrentTextureProperty.Options.reference_properties != null)
+                if (DrawingData.CurrentTextureProperty.hasScaleOffset || DrawingData.CurrentTextureProperty.Options.reference_properties != null)
                 {
                     Rect extraPropsBackground = EditorGUILayout.BeginVertical();
                     extraPropsBackground.x = position.x;
@@ -705,7 +734,7 @@ namespace Thry
                     float propertyWidth = extraPropsBackground.width - 30;
                     GUI.DrawTexture(extraPropsBackground, Texture2D.whiteTexture, ScaleMode.StretchToFill, true, 0, Styles.COLOR_BACKGROUND_1, 3, 10);
                     Rect r;
-                    if(DrawingData.CurrentTextureProperty.hasScaleOffset)
+                    if (DrawingData.CurrentTextureProperty.hasScaleOffset)
                     {
                         r = GUILayoutUtility.GetRect(propertyWidth, 48);
                         r.x = propertyX;
@@ -713,15 +742,15 @@ namespace Thry
                         r.width = propertyWidth;
                         editor.TextureScaleOffsetProperty(r, prop);
                     }
-                    if(DrawingData.CurrentTextureProperty.Options.reference_properties != null)
+                    if (DrawingData.CurrentTextureProperty.Options.reference_properties != null)
                     {
                         float labelWidth = EditorGUIUtility.labelWidth;
                         EditorGUIUtility.labelWidth = 100;
                         propertyX -= 30;
-                        foreach(string pName in DrawingData.CurrentTextureProperty.Options.reference_properties)
+                        foreach (string pName in DrawingData.CurrentTextureProperty.Options.reference_properties)
                         {
                             ShaderProperty property = ShaderEditor.Active.PropertyDictionary[pName];
-                            if(property != null)
+                            if (property != null)
                             {
                                 r = GUILayoutUtility.GetRect(propertyWidth, editor.GetPropertyHeight(property.MaterialProperty, property.Content.text) + 3);
                                 r.x = propertyX;
@@ -732,18 +761,19 @@ namespace Thry
                         EditorGUIUtility.labelWidth = labelWidth;
                     }
                     EditorGUILayout.EndVertical();
-                }else
+                }
+                else
                 {
                     GUILayoutUtility.GetRect(0, 5);
-                    Rect backgroundBottom = new RectOffset(3,3,-5,10).Add(border_position);
+                    Rect backgroundBottom = new RectOffset(3, 3, -5, 10).Add(border_position);
                     GUI.DrawTexture(backgroundBottom, Texture2D.whiteTexture, ScaleMode.StretchToFill, true, 0, Styles.COLOR_BACKGROUND_1, 3, 10);
                 }
 
                 bool changed = GuiHelper.HandleTexturePicker(prop);
                 changed |= GuiHelper.AcceptDragAndDrop(border_position, prop);
-                if(changed)
+                if (changed)
                     Init(prop, true);
-                if(GUI.Button(button_select, "Select", EditorStyles.miniButton))
+                if (GUI.Button(button_select, "Select", EditorStyles.miniButton))
                 {
                     GuiHelper.OpenTexturePicker(prop);
                 }
@@ -820,7 +850,7 @@ namespace Thry
     {
         private string framesProperty;
 
-        public TextureArrayDrawer(){}
+        public TextureArrayDrawer() { }
 
         public TextureArrayDrawer(string framesProperty)
         {
@@ -876,10 +906,11 @@ namespace Thry
             return base.GetPropertyHeight(prop, label, editor);
         }
     }
-#endregion
+    #endregion
 
     #region Decorators
-    public class NoAnimateDecorator : MaterialPropertyDrawer{
+    public class NoAnimateDecorator : MaterialPropertyDrawer
+    {
         public override void OnGUI(Rect position, MaterialProperty prop, GUIContent label, MaterialEditor editor)
         {
         }
@@ -890,7 +921,7 @@ namespace Thry
             return 0;
         }
     }
-    
+
     public class ThrySeperatorDecorator : MaterialPropertyDrawer
     {
         Color _color = Styles.COLOR_FG;
@@ -959,7 +990,7 @@ namespace Thry
             style.fontSize = this.size;
         }
 
-        public ThryRichLabelDrawer() : this(EditorStyles.standardFont.fontSize) {}
+        public ThryRichLabelDrawer() : this(EditorStyles.standardFont.fontSize) { }
 
         public override float GetPropertyHeight(MaterialProperty prop, string label, MaterialEditor editor)
         {
@@ -973,8 +1004,9 @@ namespace Thry
             GUI.Label(position, label, style);
         }
     }
-#endregion
+    #endregion
 
+    #region Vector Drawers
     public class ThryToggleDrawer : MaterialPropertyDrawer
     {
         public string keyword;
@@ -1004,13 +1036,13 @@ namespace Thry
 
         protected void SetKeyword(MaterialProperty prop, bool on)
         {
-            if(ShaderOptimizer.IsMaterialLocked(prop.targets[0] as Material)) return;
+            if (ShaderOptimizer.IsMaterialLocked(prop.targets[0] as Material)) return;
             SetKeywordInternal(prop, on, "_ON");
         }
 
         protected void CheckKeyword(MaterialProperty prop)
         {
-            if(ShaderEditor.Active != null && ShaderOptimizer.IsMaterialLocked(prop.targets[0] as Material)) return;
+            if (ShaderEditor.Active != null && ShaderOptimizer.IsMaterialLocked(prop.targets[0] as Material)) return;
             if (prop.hasMixedValue)
             {
                 foreach (Material m in prop.targets)
@@ -1048,7 +1080,7 @@ namespace Thry
             {
                 CheckKeyword(prop);
                 DrawingData.LastPropertyDoesntAllowAnimation = true;
-            } 
+            }
             return base.GetPropertyHeight(prop, label, editor);
         }
 
@@ -1060,23 +1092,23 @@ namespace Thry
             }
             if (isFirstGUICall && !ShaderEditor.Active.IsLockedMaterial)
             {
-                if(hasKeyword) CheckKeyword(prop);
+                if (hasKeyword) CheckKeyword(prop);
                 isFirstGUICall = false;
             }
             //why is this not inFirstGUICall ? cause it seems drawers are kept between different openings of the shader editor, so this needs to be set again every time the shader editor is reopened for that material
             (ShaderEditor.Active.PropertyDictionary[prop.name] as ShaderProperty).keyword = keyword;
 
             EditorGUI.BeginChangeCheck();
-            
+
             bool value = (Math.Abs(prop.floatValue) > 0.001f);
             EditorGUI.showMixedValue = prop.hasMixedValue;
-            if(left) value = EditorGUI.ToggleLeft(position, label, value, Styles.style_toggle_left_richtext);
-            else     value = EditorGUI.Toggle(position, label, value);
+            if (left) value = EditorGUI.ToggleLeft(position, label, value, Styles.style_toggle_left_richtext);
+            else value = EditorGUI.Toggle(position, label, value);
             EditorGUI.showMixedValue = false;
             if (EditorGUI.EndChangeCheck())
             {
                 prop.floatValue = value ? 1.0f : 0.0f;
-                if(hasKeyword) SetKeyword(prop, value);
+                if (hasKeyword) SetKeyword(prop, value);
             }
         }
 
@@ -1089,7 +1121,7 @@ namespace Thry
             if (prop.hasMixedValue)
                 return;
 
-            if(hasKeyword) SetKeyword(prop, (Math.Abs(prop.floatValue) > 0.001f));
+            if (hasKeyword) SetKeyword(prop, (Math.Abs(prop.floatValue) > 0.001f));
         }
 
         protected void SetKeywordInternal(MaterialProperty prop, bool on, string defaultKeywordSuffix)
@@ -1108,7 +1140,7 @@ namespace Thry
     }
 
     //This class only exists for backward compatibility
-    public class ThryToggleUIDrawer: ThryToggleDrawer
+    public class ThryToggleUIDrawer : ThryToggleDrawer
     {
         public ThryToggleUIDrawer()
         {
@@ -1174,14 +1206,18 @@ namespace Thry
             _twoMinMaxDrawers = twoMinMaxDrawers == 1;
         }
 
-        public VectorToSlidersDrawer(string label1, float min1, float max1, string label2, float min2, float max2, string label3, float min3, float max3, string label4, float min4, float max4) : 
-            this(new SliderConfig(label1, min1, max1), new SliderConfig(label2, min2, max2), new SliderConfig(label3, min3, max3), new SliderConfig(label4, min4, max4), 0) { }
+        public VectorToSlidersDrawer(string label1, float min1, float max1, string label2, float min2, float max2, string label3, float min3, float max3, string label4, float min4, float max4) :
+            this(new SliderConfig(label1, min1, max1), new SliderConfig(label2, min2, max2), new SliderConfig(label3, min3, max3), new SliderConfig(label4, min4, max4), 0)
+        { }
         public VectorToSlidersDrawer(string label1, float min1, float max1, string label2, float min2, float max2, string label3, float min3, float max3) :
-            this(new SliderConfig(label1, min1, max1), new SliderConfig(label2, min2, max2), new SliderConfig(label3, min3, max3), null, 0){ }
+            this(new SliderConfig(label1, min1, max1), new SliderConfig(label2, min2, max2), new SliderConfig(label3, min3, max3), null, 0)
+        { }
         public VectorToSlidersDrawer(string label1, float min1, float max1, string label2, float min2, float max2) :
-            this(new SliderConfig(label1, min1, max1), new SliderConfig(label2, min2, max2), null, null, 0){ }
+            this(new SliderConfig(label1, min1, max1), new SliderConfig(label2, min2, max2), null, null, 0)
+        { }
         public VectorToSlidersDrawer(float twoMinMaxDrawers, string label1, float min1, float max1, string label2, float min2, float max2) :
-            this(new SliderConfig(label1, min1, max1), new SliderConfig(label2, min2, max2), null, null, twoMinMaxDrawers){ }
+            this(new SliderConfig(label1, min1, max1), new SliderConfig(label2, min2, max2), null, null, twoMinMaxDrawers)
+        { }
 
         public override void OnGUI(Rect position, MaterialProperty prop, GUIContent label, MaterialEditor editor)
         {
@@ -1210,13 +1246,13 @@ namespace Thry
                     EditorGUI.showMixedValue = prop.hasMixedValue;
                     vector.z = EditorGUILayout.Slider(_slider3.Label, vector.z, _slider3.Min, _slider3.Max);
                 }
-                if(_slider4 != null)
+                if (_slider4 != null)
                 {
                     EditorGUI.showMixedValue = prop.hasMixedValue;
                     vector.w = EditorGUILayout.Slider(_slider4.Label, vector.w, _slider4.Min, _slider4.Max);
-                }    
+                }
             }
-            if(EditorGUI.EndChangeCheck())
+            if (EditorGUI.EndChangeCheck())
                 prop.vectorValue = vector;
         }
 
@@ -1293,16 +1329,16 @@ namespace Thry
             int indentLevel = EditorGUI.indentLevel; //else it double indents
             EditorGUI.indentLevel = 0;
             PropGUI(prop, contentR, 0);
-            if(ShaderEditor.Active.IsInAnimationMode)
+            if (ShaderEditor.Active.IsInAnimationMode)
                 MaterialEditor.PrepareMaterialPropertiesForAnimationMode(_otherMaterialProps, true);
             for (int i = 0; i < _otherProperties.Length; i++)
             {
                 PropGUI(_otherMaterialProps[i], contentR, i + 1);
             }
             EditorGUI.indentLevel = indentLevel;
-            
+
             //If edited in animation mode mark as animated (needed cause other properties isnt checked in draw)
-            if(EditorGUI.EndChangeCheck() && ShaderEditor.Active.IsInAnimationMode && !ShaderEditor.Active.CurrentProperty.IsAnimated)
+            if (EditorGUI.EndChangeCheck() && ShaderEditor.Active.IsInAnimationMode && !ShaderEditor.Active.CurrentProperty.IsAnimated)
                 ShaderEditor.Active.CurrentProperty.SetAnimated(true, false);
             //make sure all are animated together
             bool animated = ShaderEditor.Active.CurrentProperty.IsAnimated;
@@ -1376,7 +1412,7 @@ namespace Thry
 
     public class VectorLabelDrawer : MaterialPropertyDrawer
     {
-        string[] _labelStrings = new string[4] {"X", "Y", "Z", "W"};
+        string[] _labelStrings = new string[4] { "X", "Y", "Z", "W" };
         int vectorChannels = 0;
 
         public VectorLabelDrawer(string labelX, string labelY)
@@ -1408,8 +1444,8 @@ namespace Thry
             EditorGUI.BeginChangeCheck();
             EditorGUI.showMixedValue = prop.hasMixedValue;
 
-            Rect labelR     = new Rect(position.x,                position.y, position.width * 0.41f,        position.height);
-            Rect contentR   = new Rect(position.x + labelR.width, position.y, position.width - labelR.width, position.height);
+            Rect labelR = new Rect(position.x, position.y, position.width * 0.41f, position.height);
+            Rect contentR = new Rect(position.x + labelR.width, position.y, position.width - labelR.width, position.height);
 
             float[] values = new float[vectorChannels];
             GUIContent[] labels = new GUIContent[vectorChannels];
@@ -1425,7 +1461,7 @@ namespace Thry
 
             if (EditorGUI.EndChangeCheck())
             {
-                switch(vectorChannels)
+                switch (vectorChannels)
                 {
                     case 2:
                         prop.vectorValue = new Vector4(values[0], values[1], prop.vectorValue.z, prop.vectorValue.w);
@@ -1446,300 +1482,6 @@ namespace Thry
         {
             DrawingData.LastPropertyUsedCustomDrawer = true;
             return base.GetPropertyHeight(prop, label, editor);
-        }
-    }
-
-    public class HelpboxDrawer : MaterialPropertyDrawer
-    {
-        readonly MessageType type;
-
-        public HelpboxDrawer()
-        {
-            type = MessageType.Info;
-        }
-
-        public HelpboxDrawer(float f)
-        {
-            type = (MessageType)(int)f;
-        }
-
-        public override void OnGUI(Rect position, MaterialProperty prop, GUIContent label, MaterialEditor editor)
-        {
-            EditorGUILayout.HelpBox(label.text, type);
-        }
-
-        public override float GetPropertyHeight(MaterialProperty prop, string label, MaterialEditor editor)
-        {
-            DrawingData.LastPropertyUsedCustomDrawer = true;
-            return 0;
-        }
-    }
-
-    public class sRGBWarningDecorator : MaterialPropertyDrawer
-    {
-        bool _isSRGB = true;
-
-        public sRGBWarningDecorator()
-        {
-            _isSRGB = false;
-        }
-
-		public sRGBWarningDecorator(string shouldHaveSRGB)
-		{
-			this._isSRGB = shouldHaveSRGB.ToLower() == "true";
-		}
-
-		public override void OnGUI(Rect position, MaterialProperty prop, GUIContent label, MaterialEditor editor)
-		{
-			GuiHelper.ColorspaceWarning(prop, _isSRGB);
-		}
-
-        public override float GetPropertyHeight(MaterialProperty prop, string label, MaterialEditor editor)
-        {
-            DrawingData.RegisterDecorator(this);
-            return 0;
-        }
-    }
-
-    public class LocalMessageDrawer : MaterialPropertyDrawer
-    {
-        protected ButtonData _buttonData;
-        protected bool _isInit;
-        protected virtual void Init(string s)
-        {
-            if(_isInit) return;
-            _buttonData = Parser.Deserialize<ButtonData>(s);
-            _isInit = true;
-        }
-
-        public override void OnGUI(Rect position, MaterialProperty prop, GUIContent label, MaterialEditor editor)
-        {
-            Init(prop.displayName);
-            if(_buttonData == null) return;
-            if(_buttonData.text.Length > 0)
-            {
-                GUILayout.Label(new GUIContent(_buttonData.text,_buttonData.hover), _buttonData.center_position?Styles.richtext_center: Styles.richtext);
-                Rect r = GUILayoutUtility.GetLastRect();
-                if (Event.current.type == EventType.MouseDown && r.Contains(Event.current.mousePosition))
-                    _buttonData.action.Perform(ShaderEditor.Active?.Materials);
-            }
-            if(_buttonData.texture != null)
-            {
-                if(_buttonData.center_position) GUILayout.Label(new GUIContent(_buttonData.texture.loaded_texture, _buttonData.hover), EditorStyles.centeredGreyMiniLabel, GUILayout.MaxHeight(_buttonData.texture.height));
-                else GUILayout.Label(new GUIContent(_buttonData.texture.loaded_texture, _buttonData.hover), GUILayout.MaxHeight(_buttonData.texture.height));
-                Rect r = GUILayoutUtility.GetLastRect();
-                if (Event.current.type == EventType.MouseDown && r.Contains(Event.current.mousePosition))
-                    _buttonData.action.Perform(ShaderEditor.Active?.Materials);
-            }
-        }
-
-        public override float GetPropertyHeight(MaterialProperty prop, string label, MaterialEditor editor)
-        {
-            DrawingData.LastPropertyUsedCustomDrawer = true;
-            return 0;
-        }
-    }
-
-    public class RemoteMessageDrawer : LocalMessageDrawer
-    {
-
-        protected override void Init(string s)
-        {
-            if(_isInit) return;
-            WebHelper.DownloadStringASync(s, (Action<string>)((string data) =>
-            {
-                _buttonData = Parser.Deserialize<ButtonData>(data);
-            }));
-            _isInit = true;
-        }
-    }
-
-    public enum ColorMask
-    {
-        None,
-        Alpha,
-        Blue,
-        BA,
-        Green,
-        GA,
-        GB,
-        GBA,
-        Red,
-        RA,
-        RB,
-        RBA,
-        RG,
-        RGA,
-        RGB,
-        RGBA
-    }
-
-    // DX11 only blend operations
-    public enum BlendOp
-    {
-        Add,
-        Subtract,
-        ReverseSubtract,
-        Min,
-        Max,
-        LogicalClear,
-        LogicalSet,
-        LogicalCopy,
-        LogicalCopyInverted,
-        LogicalNoop,
-        LogicalInvert,
-        LogicalAnd,
-        LogicalNand,
-        LogicalOr,
-        LogicalNor,
-        LogicalXor,
-        LogicalEquivalence,
-        LogicalAndReverse,
-        LogicalAndInverted,
-        LogicalOrReverse,
-        LogicalOrInverted
-    }
-
-    //Original Code from https://github.com/DarthShader/Kaj-Unity-Shaders
-    /**MIT License
-
-    Copyright (c) 2020 DarthShader
-
-    Permission is hereby granted, free of charge, to any person obtaining a copy
-    of this software and associated documentation files (the "Software"), to deal
-    in the Software without restriction, including without limitation the rights
-    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-    copies of the Software, and to permit persons to whom the Software is
-    furnished to do so, subject to the following conditions:
-
-    The above copyright notice and this permission notice shall be included in all
-    copies or substantial portions of the Software.
-
-    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-    SOFTWARE.**/
-    public class ThryShaderOptimizerLockButtonDrawer : MaterialPropertyDrawer
-    {
-        public override void OnGUI(Rect position, MaterialProperty shaderOptimizer, string label, MaterialEditor materialEditor)
-        {
-            Material material = shaderOptimizer.targets[0] as Material;
-            Shader shader = material.shader;
-            // The GetPropertyDefaultFloatValue is changed from 0 to 1 when the shader is locked in
-            bool isLocked = shader.name.StartsWith("Hidden/Locked/") || 
-                (shader.name.StartsWith("Hidden/") && material.GetTag("OriginalShader",false,"") != "" && shader.GetPropertyDefaultFloatValue(shader.FindPropertyIndex(shaderOptimizer.name)) == 1);
-            //this will make sure the button is unlocked if you manually swap to an unlocked shader
-            //shaders that have the ability to be locked shouldnt really be hidden themself. at least it wouldnt make too much sense
-            if (shaderOptimizer.hasMixedValue == false && shaderOptimizer.floatValue == 1 && isLocked == false)
-            {
-                shaderOptimizer.floatValue = 0;
-            }else if(shaderOptimizer.hasMixedValue == false && shaderOptimizer.floatValue == 0 && isLocked)
-            {
-                shaderOptimizer.floatValue = 1;
-            }
-
-            // Theoretically this shouldn't ever happen since locked in materials have different shaders.
-            // But in a case where the material property says its locked in but the material really isn't, this
-            // will display and allow users to fix the property/lock in
-            ShaderEditor.Active.IsLockedMaterial = shaderOptimizer.floatValue == 1;
-            if (shaderOptimizer.hasMixedValue)
-            {
-                EditorGUI.BeginChangeCheck();
-                GUILayout.Button(EditorLocale.editor.Get("lockin_button_multi").ReplaceVariables(materialEditor.targets.Length));
-                if (EditorGUI.EndChangeCheck())
-                {
-                    SaveChangeStack();
-                    ShaderOptimizer.SetLockedForAllMaterials(shaderOptimizer.targets.Select(t => t as Material), shaderOptimizer.floatValue == 1 ? 0 : 1, true, false, false, shaderOptimizer);
-                    RestoreChangeStack();
-                }
-            }
-            else
-            {
-                EditorGUI.BeginChangeCheck();
-                if (shaderOptimizer.floatValue == 0)
-                {
-                    if (materialEditor.targets.Length == 1)
-                        GUILayout.Button(EditorLocale.editor.Get("lockin_button_single"));
-                    else GUILayout.Button(EditorLocale.editor.Get("lockin_button_multi").ReplaceVariables(materialEditor.targets.Length));
-                }
-                else
-                {
-                    if (materialEditor.targets.Length == 1)
-                        GUILayout.Button(EditorLocale.editor.Get("unlock_button_single"));
-                    else GUILayout.Button(EditorLocale.editor.Get("unlock_button_multi").ReplaceVariables(materialEditor.targets.Length));
-                }
-                if (EditorGUI.EndChangeCheck())
-                {
-                    SaveChangeStack();
-                    ShaderOptimizer.SetLockedForAllMaterials(shaderOptimizer.targets.Select(t => t as Material), shaderOptimizer.floatValue == 1 ? 0 : 1, true, false, false, shaderOptimizer);
-                    RestoreChangeStack();
-                }
-            }
-            if(Config.Singleton.allowCustomLockingRenaming || ShaderEditor.Active.HasCustomRenameSuffix)
-            {
-                EditorGUI.BeginDisabledGroup(!Config.Singleton.allowCustomLockingRenaming || ShaderEditor.Active.IsLockedMaterial);
-                EditorGUI.BeginChangeCheck();
-                EditorGUI.showMixedValue = ShaderEditor.Active.HasMixedCustomPropertySuffix;
-                ShaderEditor.Active.RenamedPropertySuffix = EditorGUILayout.TextField("Locked property suffix: ", ShaderEditor.Active.RenamedPropertySuffix);
-                if (EditorGUI.EndChangeCheck())
-                {
-                    // Make sure suffix that is saved is valid
-                    ShaderEditor.Active.RenamedPropertySuffix = ShaderOptimizer.CleanStringForPropertyNames(ShaderEditor.Active.RenamedPropertySuffix.Replace(" ","_"));
-                    foreach (Material m in ShaderEditor.Active.Materials)
-                        m.SetOverrideTag("thry_rename_suffix", ShaderEditor.Active.RenamedPropertySuffix);
-                    if (ShaderEditor.Active.RenamedPropertySuffix == "")
-                        ShaderEditor.Active.RenamedPropertySuffix = ShaderOptimizer.GetRenamedPropertySuffix(ShaderEditor.Active.Materials[0]);
-                    ShaderEditor.Active.HasCustomRenameSuffix = ShaderOptimizer.HasCustomRenameSuffix(ShaderEditor.Active.Materials[0]);
-                }
-                if(!Config.Singleton.allowCustomLockingRenaming)
-                {
-                    EditorGUILayout.HelpBox("This feature is disabled in the config file. You can enable it by setting allowCustomLockingRenaming to true.", MessageType.Info);
-                }
-                EditorGUI.EndDisabledGroup();
-            }
-        }
-
-        //This code purly exists cause Unity 2019 is a piece of shit that looses it's internal change stack on locking CAUSE FUCK IF I KNOW
-        static System.Reflection.FieldInfo changeStack = typeof(EditorGUI).GetField("s_ChangedStack", BindingFlags.Static | BindingFlags.NonPublic);
-        static int preLockStackSize = 0;
-        private static void SaveChangeStack()
-        {
-            if (changeStack != null)
-            {
-                Stack<bool> stack = (Stack<bool>)changeStack.GetValue(null);
-                if(stack != null)
-                {
-                    preLockStackSize = stack.Count();
-                }
-            }
-        }
-
-        private static void RestoreChangeStack()
-        {
-            if (changeStack != null)
-            {
-                Stack<bool> stack = (Stack<bool>)changeStack.GetValue(null);
-                if (stack != null)
-                {
-                    int postLockStackSize = stack.Count();
-                    //Restore change stack from before lock / unlocking
-                    for(int i=postLockStackSize; i < preLockStackSize; i++)
-                    {
-                        EditorGUI.BeginChangeCheck();
-                    }
-                }
-            }
-        }
-
-        public override float GetPropertyHeight(MaterialProperty prop, string label, MaterialEditor editor)
-        {
-            DrawingData.LastPropertyUsedCustomDrawer = true;
-            DrawingData.LastPropertyDoesntAllowAnimation = true;
-            ShaderEditor.Active.DoUseShaderOptimizer = true;
-            return -2;
         }
     }
 
@@ -1769,7 +1511,7 @@ namespace Thry
                 return new Type[0];
             }
         }
-        public ThryWideEnumDrawer(string enumName,int j)
+        public ThryWideEnumDrawer(string enumName, int j)
         {
             var types = AppDomain.CurrentDomain.GetAssemblies().SelectMany(
                 x => TypesFromAssembly(x)).ToArray();
@@ -1803,8 +1545,8 @@ namespace Thry
         public ThryWideEnumDrawer(string n1, float v1, string n2, float v2, string n3, float v3, string n4, float v4, string n5, float v5) : this(new[] { n1, n2, n3, n4, n5 }, new[] { v1, v2, v3, v4, v5 }) { }
         public ThryWideEnumDrawer(string n1, float v1, string n2, float v2, string n3, float v3, string n4, float v4, string n5, float v5, string n6, float v6) : this(new[] { n1, n2, n3, n4, n5, n6 }, new[] { v1, v2, v3, v4, v5, v6 }) { }
         public ThryWideEnumDrawer(string n1, float v1, string n2, float v2, string n3, float v3, string n4, float v4, string n5, float v5, string n6, float v6, string n7, float v7) : this(new[] { n1, n2, n3, n4, n5, n6, n7 }, new[] { v1, v2, v3, v4, v5, v6, v7 }) { }
-        public ThryWideEnumDrawer(string n1, float v1, string n2, float v2, string n3, float v3, string n4, float v4, string n5, float v5, string n6, float v6, string n7, float v7, string n8, float v8) : this(new[] { n1, n2, n3, n4, n5, n6, n7, n8}, new[] { v1, v2, v3, v4, v5, v6, v7, v8}) { }
-        public ThryWideEnumDrawer(string n1, float v1, string n2, float v2, string n3, float v3, string n4, float v4, string n5, float v5, string n6, float v6, string n7, float v7, string n8, float v8, string n9, float v9) : this(new[] { n1, n2, n3, n4, n5, n6, n7, n8, n9}, new[] { v1, v2, v3, v4, v5, v6, v7, v8, v9}) { }
+        public ThryWideEnumDrawer(string n1, float v1, string n2, float v2, string n3, float v3, string n4, float v4, string n5, float v5, string n6, float v6, string n7, float v7, string n8, float v8) : this(new[] { n1, n2, n3, n4, n5, n6, n7, n8 }, new[] { v1, v2, v3, v4, v5, v6, v7, v8 }) { }
+        public ThryWideEnumDrawer(string n1, float v1, string n2, float v2, string n3, float v3, string n4, float v4, string n5, float v5, string n6, float v6, string n7, float v7, string n8, float v8, string n9, float v9) : this(new[] { n1, n2, n3, n4, n5, n6, n7, n8, n9 }, new[] { v1, v2, v3, v4, v5, v6, v7, v8, v9 }) { }
         public ThryWideEnumDrawer(string n1, float v1, string n2, float v2, string n3, float v3, string n4, float v4, string n5, float v5, string n6, float v6, string n7, float v7, string n8, float v8, string n9, float v9, string n10, float v10) : this(new[] { n1, n2, n3, n4, n5, n6, n7, n8, n9, n10 }, new[] { v1, v2, v3, v4, v5, v6, v7, v8, v9, v10 }) { }
         public ThryWideEnumDrawer(string n1, float v1, string n2, float v2, string n3, float v3, string n4, float v4, string n5, float v5, string n6, float v6, string n7, float v7, string n8, float v8, string n9, float v9, string n10, float v10, string n11, float v11) : this(new[] { n1, n2, n3, n4, n5, n6, n7, n8, n9, n10, n11 }, new[] { v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11 }) { }
         public ThryWideEnumDrawer(string n1, float v1, string n2, float v2, string n3, float v3, string n4, float v4, string n5, float v5, string n6, float v6, string n7, float v7, string n8, float v8, string n9, float v9, string n10, float v10, string n11, float v11, string n12, float v12) : this(new[] { n1, n2, n3, n4, n5, n6, n7, n8, n9, n10, n11, n12 }, new[] { v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12 }) { }
@@ -1850,7 +1592,7 @@ namespace Thry
             var value = prop.floatValue;
             int selectedIndex = Array.IndexOf(values, value);
 
-            if(_reloadCount != _reloadCountStatic)
+            if (_reloadCount != _reloadCountStatic)
             {
                 _reloadCount = _reloadCountStatic;
                 LoadNames();
@@ -1866,6 +1608,417 @@ namespace Thry
         {
             DrawingData.LastPropertyUsedCustomDrawer = true;
             return base.GetPropertyHeight(prop, label, editor);
+        }
+    }
+
+    #endregion
+
+    #region UI Drawers
+    public class HelpboxDrawer : MaterialPropertyDrawer
+    {
+        readonly MessageType type;
+
+        public HelpboxDrawer()
+        {
+            type = MessageType.Info;
+        }
+
+        public HelpboxDrawer(float f)
+        {
+            type = (MessageType)(int)f;
+        }
+
+        public override void OnGUI(Rect position, MaterialProperty prop, GUIContent label, MaterialEditor editor)
+        {
+            EditorGUILayout.HelpBox(label.text, type);
+        }
+
+        public override float GetPropertyHeight(MaterialProperty prop, string label, MaterialEditor editor)
+        {
+            DrawingData.LastPropertyUsedCustomDrawer = true;
+            return 0;
+        }
+    }
+
+    public class sRGBWarningDecorator : MaterialPropertyDrawer
+    {
+        bool _isSRGB = true;
+
+        public sRGBWarningDecorator()
+        {
+            _isSRGB = false;
+        }
+
+        public sRGBWarningDecorator(string shouldHaveSRGB)
+        {
+            this._isSRGB = shouldHaveSRGB.ToLower() == "true";
+        }
+
+        public override void OnGUI(Rect position, MaterialProperty prop, GUIContent label, MaterialEditor editor)
+        {
+            GuiHelper.ColorspaceWarning(prop, _isSRGB);
+        }
+
+        public override float GetPropertyHeight(MaterialProperty prop, string label, MaterialEditor editor)
+        {
+            DrawingData.RegisterDecorator(this);
+            return 0;
+        }
+    }
+
+    public class LocalMessageDrawer : MaterialPropertyDrawer
+    {
+        protected ButtonData _buttonData;
+        protected bool _isInit;
+        protected virtual void Init(string s)
+        {
+            if (_isInit) return;
+            _buttonData = Parser.Deserialize<ButtonData>(s);
+            _isInit = true;
+        }
+
+        public override void OnGUI(Rect position, MaterialProperty prop, GUIContent label, MaterialEditor editor)
+        {
+            Init(prop.displayName);
+            if (_buttonData == null) return;
+            if (_buttonData.text.Length > 0)
+            {
+                GUILayout.Label(new GUIContent(_buttonData.text, _buttonData.hover), _buttonData.center_position ? Styles.richtext_center : Styles.richtext);
+                Rect r = GUILayoutUtility.GetLastRect();
+                if (Event.current.type == EventType.MouseDown && r.Contains(Event.current.mousePosition))
+                    _buttonData.action.Perform(ShaderEditor.Active?.Materials);
+            }
+            if (_buttonData.texture != null)
+            {
+                if (_buttonData.center_position) GUILayout.Label(new GUIContent(_buttonData.texture.loaded_texture, _buttonData.hover), EditorStyles.centeredGreyMiniLabel, GUILayout.MaxHeight(_buttonData.texture.height));
+                else GUILayout.Label(new GUIContent(_buttonData.texture.loaded_texture, _buttonData.hover), GUILayout.MaxHeight(_buttonData.texture.height));
+                Rect r = GUILayoutUtility.GetLastRect();
+                if (Event.current.type == EventType.MouseDown && r.Contains(Event.current.mousePosition))
+                    _buttonData.action.Perform(ShaderEditor.Active?.Materials);
+            }
+        }
+
+        public override float GetPropertyHeight(MaterialProperty prop, string label, MaterialEditor editor)
+        {
+            DrawingData.LastPropertyUsedCustomDrawer = true;
+            return 0;
+        }
+    }
+
+    public class RemoteMessageDrawer : LocalMessageDrawer
+    {
+
+        protected override void Init(string s)
+        {
+            if (_isInit) return;
+            WebHelper.DownloadStringASync(s, (Action<string>)((string data) =>
+            {
+                _buttonData = Parser.Deserialize<ButtonData>(data);
+            }));
+            _isInit = true;
+        }
+    }
+    #endregion
+
+    #region enums
+    public enum ColorMask
+    {
+        None,
+        Alpha,
+        Blue,
+        BA,
+        Green,
+        GA,
+        GB,
+        GBA,
+        Red,
+        RA,
+        RB,
+        RBA,
+        RG,
+        RGA,
+        RGB,
+        RGBA
+    }
+
+    // DX11 only blend operations
+    public enum BlendOp
+    {
+        Add,
+        Subtract,
+        ReverseSubtract,
+        Min,
+        Max,
+        LogicalClear,
+        LogicalSet,
+        LogicalCopy,
+        LogicalCopyInverted,
+        LogicalNoop,
+        LogicalInvert,
+        LogicalAnd,
+        LogicalNand,
+        LogicalOr,
+        LogicalNor,
+        LogicalXor,
+        LogicalEquivalence,
+        LogicalAndReverse,
+        LogicalAndInverted,
+        LogicalOrReverse,
+        LogicalOrInverted
+    }
+    #endregion
+
+    public class ThryShaderOptimizerLockButtonDrawer : MaterialPropertyDrawer
+    {
+        public override void OnGUI(Rect position, MaterialProperty shaderOptimizer, string label, MaterialEditor materialEditor)
+        {
+            Material material = shaderOptimizer.targets[0] as Material;
+            Shader shader = material.shader;
+            // The GetPropertyDefaultFloatValue is changed from 0 to 1 when the shader is locked in
+            bool isLocked = shader.name.StartsWith("Hidden/Locked/") ||
+                (shader.name.StartsWith("Hidden/") && material.GetTag("OriginalShader", false, "") != "" && shader.GetPropertyDefaultFloatValue(shader.FindPropertyIndex(shaderOptimizer.name)) == 1);
+            //this will make sure the button is unlocked if you manually swap to an unlocked shader
+            //shaders that have the ability to be locked shouldnt really be hidden themself. at least it wouldnt make too much sense
+            if (shaderOptimizer.hasMixedValue == false && shaderOptimizer.floatValue == 1 && isLocked == false)
+            {
+                shaderOptimizer.floatValue = 0;
+            }
+            else if (shaderOptimizer.hasMixedValue == false && shaderOptimizer.floatValue == 0 && isLocked)
+            {
+                shaderOptimizer.floatValue = 1;
+            }
+
+            // Theoretically this shouldn't ever happen since locked in materials have different shaders.
+            // But in a case where the material property says its locked in but the material really isn't, this
+            // will display and allow users to fix the property/lock in
+            ShaderEditor.Active.IsLockedMaterial = shaderOptimizer.floatValue == 1;
+            if (shaderOptimizer.hasMixedValue)
+            {
+                EditorGUI.BeginChangeCheck();
+                GUILayout.Button(EditorLocale.editor.Get("lockin_button_multi").ReplaceVariables(materialEditor.targets.Length));
+                if (EditorGUI.EndChangeCheck())
+                {
+                    SaveChangeStack();
+                    ShaderOptimizer.SetLockedForAllMaterials(shaderOptimizer.targets.Select(t => t as Material), shaderOptimizer.floatValue == 1 ? 0 : 1, true, false, false, shaderOptimizer);
+                    RestoreChangeStack();
+                }
+            }
+            else
+            {
+                EditorGUI.BeginChangeCheck();
+                if (shaderOptimizer.floatValue == 0)
+                {
+                    if (materialEditor.targets.Length == 1)
+                        GUILayout.Button(EditorLocale.editor.Get("lockin_button_single"));
+                    else GUILayout.Button(EditorLocale.editor.Get("lockin_button_multi").ReplaceVariables(materialEditor.targets.Length));
+                }
+                else
+                {
+                    if (materialEditor.targets.Length == 1)
+                        GUILayout.Button(EditorLocale.editor.Get("unlock_button_single"));
+                    else GUILayout.Button(EditorLocale.editor.Get("unlock_button_multi").ReplaceVariables(materialEditor.targets.Length));
+                }
+                if (EditorGUI.EndChangeCheck())
+                {
+                    SaveChangeStack();
+                    ShaderOptimizer.SetLockedForAllMaterials(shaderOptimizer.targets.Select(t => t as Material), shaderOptimizer.floatValue == 1 ? 0 : 1, true, false, false, shaderOptimizer);
+                    RestoreChangeStack();
+                }
+            }
+            if (Config.Singleton.allowCustomLockingRenaming || ShaderEditor.Active.HasCustomRenameSuffix)
+            {
+                EditorGUI.BeginDisabledGroup(!Config.Singleton.allowCustomLockingRenaming || ShaderEditor.Active.IsLockedMaterial);
+                EditorGUI.BeginChangeCheck();
+                EditorGUI.showMixedValue = ShaderEditor.Active.HasMixedCustomPropertySuffix;
+                ShaderEditor.Active.RenamedPropertySuffix = EditorGUILayout.TextField("Locked property suffix: ", ShaderEditor.Active.RenamedPropertySuffix);
+                if (EditorGUI.EndChangeCheck())
+                {
+                    // Make sure suffix that is saved is valid
+                    ShaderEditor.Active.RenamedPropertySuffix = ShaderOptimizer.CleanStringForPropertyNames(ShaderEditor.Active.RenamedPropertySuffix.Replace(" ", "_"));
+                    foreach (Material m in ShaderEditor.Active.Materials)
+                        m.SetOverrideTag("thry_rename_suffix", ShaderEditor.Active.RenamedPropertySuffix);
+                    if (ShaderEditor.Active.RenamedPropertySuffix == "")
+                        ShaderEditor.Active.RenamedPropertySuffix = ShaderOptimizer.GetRenamedPropertySuffix(ShaderEditor.Active.Materials[0]);
+                    ShaderEditor.Active.HasCustomRenameSuffix = ShaderOptimizer.HasCustomRenameSuffix(ShaderEditor.Active.Materials[0]);
+                }
+                if (!Config.Singleton.allowCustomLockingRenaming)
+                {
+                    EditorGUILayout.HelpBox("This feature is disabled in the config file. You can enable it by setting allowCustomLockingRenaming to true.", MessageType.Info);
+                }
+                EditorGUI.EndDisabledGroup();
+            }
+        }
+
+        //This code purly exists cause Unity 2019 is a piece of shit that looses it's internal change stack on locking CAUSE FUCK IF I KNOW
+        static System.Reflection.FieldInfo changeStack = typeof(EditorGUI).GetField("s_ChangedStack", BindingFlags.Static | BindingFlags.NonPublic);
+        static int preLockStackSize = 0;
+        private static void SaveChangeStack()
+        {
+            if (changeStack != null)
+            {
+                Stack<bool> stack = (Stack<bool>)changeStack.GetValue(null);
+                if (stack != null)
+                {
+                    preLockStackSize = stack.Count();
+                }
+            }
+        }
+
+        private static void RestoreChangeStack()
+        {
+            if (changeStack != null)
+            {
+                Stack<bool> stack = (Stack<bool>)changeStack.GetValue(null);
+                if (stack != null)
+                {
+                    int postLockStackSize = stack.Count();
+                    //Restore change stack from before lock / unlocking
+                    for (int i = postLockStackSize; i < preLockStackSize; i++)
+                    {
+                        EditorGUI.BeginChangeCheck();
+                    }
+                }
+            }
+        }
+
+        public override float GetPropertyHeight(MaterialProperty prop, string label, MaterialEditor editor)
+        {
+            DrawingData.LastPropertyUsedCustomDrawer = true;
+            DrawingData.LastPropertyDoesntAllowAnimation = true;
+            ShaderEditor.Active.DoUseShaderOptimizer = true;
+            return -2;
+        }
+    }
+
+    public class ThryDecalPositioningDecorator : MaterialPropertyDrawer
+    {
+        string _texturePropertyName;
+        string _uvIndexPropertyName;
+        string _positionPropertyName;
+        string _rotationPropertyName;
+        string _scalePropertyName;
+        string _offsetPropertyName;
+        DecalSceneTool _sceneTool;
+        DecalTool _tool;
+
+        public ThryDecalPositioningDecorator(string textureProp, string uvIndexPropertyName, string positionProp, string rotationProp, string scaleProp, string offsetProp)
+        {
+            _texturePropertyName = textureProp;
+            _uvIndexPropertyName = uvIndexPropertyName;
+            _positionPropertyName = positionProp;
+            _rotationPropertyName = rotationProp;
+            _offsetPropertyName = offsetProp;
+            _scalePropertyName = scaleProp;
+        }
+
+        void CreateSceneTool()
+        {
+            DiscardSceneTool();
+            _sceneTool = DecalSceneTool.Create(
+                Selection.activeTransform.GetComponent<Renderer>(),
+                ShaderEditor.Active.Materials[0],
+                (int)ShaderEditor.Active.PropertyDictionary[_uvIndexPropertyName].MaterialProperty.floatValue,
+                ShaderEditor.Active.PropertyDictionary[_positionPropertyName].MaterialProperty,
+                ShaderEditor.Active.PropertyDictionary[_rotationPropertyName].MaterialProperty,
+                ShaderEditor.Active.PropertyDictionary[_scalePropertyName].MaterialProperty,
+                ShaderEditor.Active.PropertyDictionary[_offsetPropertyName].MaterialProperty);
+        }
+
+        void DiscardSceneTool()
+        {
+            if(_sceneTool != null)
+            {
+                _sceneTool.Deactivate();
+                _sceneTool = null;
+            }
+        }
+
+        public override void OnGUI(Rect position, MaterialProperty prop, string label, MaterialEditor editor)
+        {
+            position = new RectOffset(0, 0, 0, 3).Remove(EditorGUI.IndentedRect(position));
+            bool isInScene = Selection.activeTransform != null && Selection.activeTransform.GetComponent<Renderer>() != null;
+            if(isInScene)
+            {
+                position.width /= 3;
+                ButtonGUI(position);
+                position.x += position.width;
+                ButtonRaycast(position);
+                position.x += position.width;
+                ButtonSceneTools(position);
+                if(_sceneTool != null)
+                {
+                    _sceneTool.SetMaterialProperties(
+                        ShaderEditor.Active.PropertyDictionary[_positionPropertyName].MaterialProperty,
+                        ShaderEditor.Active.PropertyDictionary[_rotationPropertyName].MaterialProperty,
+                        ShaderEditor.Active.PropertyDictionary[_scalePropertyName].MaterialProperty,
+                        ShaderEditor.Active.PropertyDictionary[_offsetPropertyName].MaterialProperty);
+                }
+            }else
+            {
+                ButtonGUI(position);
+            }
+        }
+
+        void ButtonGUI(Rect r)
+        {
+            if(GUI.Button(r, "Open Positioning Tool"))
+            {
+                _tool = DecalTool.OpenDecalTool(ShaderEditor.Active.Materials[0]);
+            }
+            // This is done because the tool didnt want to update if the data was changed from the outside
+            if(_tool != null)
+            {
+                _tool.SetMaterialProperties(
+                    ShaderEditor.Active.PropertyDictionary[_texturePropertyName].MaterialProperty,
+                    ShaderEditor.Active.PropertyDictionary[_uvIndexPropertyName].MaterialProperty,
+                    ShaderEditor.Active.PropertyDictionary[_positionPropertyName].MaterialProperty,
+                    ShaderEditor.Active.PropertyDictionary[_rotationPropertyName].MaterialProperty,
+                    ShaderEditor.Active.PropertyDictionary[_scalePropertyName].MaterialProperty,
+                    ShaderEditor.Active.PropertyDictionary[_offsetPropertyName].MaterialProperty);
+            }
+        }
+
+        void ButtonRaycast(Rect r)
+        {
+            if (GUI.Button(r, "Raycast"))
+            {
+                if(_sceneTool != null && _sceneTool.GetMode() == DecalSceneTool.Mode.Raycast)
+                {
+                    DiscardSceneTool();
+                }
+                else
+                {
+                    CreateSceneTool();
+                    _sceneTool.StartRaycastMode();
+                }
+            }
+            if(_sceneTool != null && _sceneTool.GetMode() == DecalSceneTool.Mode.Raycast)
+                GUI.DrawTexture(r, Texture2D.whiteTexture, ScaleMode.StretchToFill, true, 0, new Color(0.5f, 0.5f, 0.5f, 0.5f), 0, 3);
+        }
+
+        void ButtonSceneTools(Rect r)
+        {
+            if (GUI.Button(r, "Scene Tools"))
+            {
+                if(_sceneTool != null && _sceneTool.GetMode() == DecalSceneTool.Mode.Handles)
+                {
+                    DiscardSceneTool();
+                }
+                else
+                {
+                    CreateSceneTool();
+                    _sceneTool.StartHandleMode();
+                }
+            }
+            if(_sceneTool != null && _sceneTool.GetMode() == DecalSceneTool.Mode.Handles)
+                GUI.DrawTexture(r, Texture2D.whiteTexture, ScaleMode.StretchToFill, true, 0, new Color(0.5f, 0.5f, 0.5f, 0.5f), 0, 3);
+        }
+
+        public override float GetPropertyHeight(MaterialProperty prop, string label, MaterialEditor editor)
+        {
+            DrawingData.LastPropertyUsedCustomDrawer = true;
+            DrawingData.LastPropertyDoesntAllowAnimation = true;
+            return EditorGUIUtility.singleLineHeight + 6;
         }
     }
 }

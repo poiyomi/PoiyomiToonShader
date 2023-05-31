@@ -1,4 +1,4 @@
-﻿#if VRC_SDK_VRCSDK2 || VRC_SDK_VRCSDK3
+#if VRC_SDK_VRCSDK2 || VRC_SDK_VRCSDK3
 using System;
 using UnityEngine;
 using VRC.SDKBase.Editor.BuildPipeline;
@@ -13,7 +13,8 @@ namespace Pumkin.UploadCallbacks
         {
             try
             {
-                UploadAnchorOverrideSetter.SetAnchorOverrides(avatarGameObject);
+                if(!UploadAnchorOverrideSetter.ShouldSkipAvatar(avatarGameObject))
+                    UploadAnchorOverrideSetter.SetAnchorOverrides(avatarGameObject);
             }
             catch(Exception ex)
             {

@@ -1,13 +1,22 @@
-﻿using System;
+using System;
 using System.Linq;
 using Thry;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace Pumkin.UploadCallbacks
 {
     public static class UploadAnchorOverrideSetter
     {
+        const string SkipAvatarObjectName = "AutoAnchorDisabled";
+
+        static readonly Type[] RendererTypesToCheck =
+        {
+            typeof(SkinnedMeshRenderer),
+            typeof(MeshRenderer)
+        };
+
         static string DialogTitle => EditorLocale.editor.Get("autoAnchorDialog_Title");
         static string DialogMessage => EditorLocale.editor.Get("autoAnchorDialog_Text");
         static string DialogYes => $"{EditorLocale.editor.Get("yes")} ({EditorLocale.editor.Get("recommended")})";
@@ -29,12 +38,17 @@ namespace Pumkin.UploadCallbacks
         static HumanBodyBones HumanBoneAnchor => Config.Singleton.humanBoneAnchor;
         static string AnchorName => Config.Singleton.anchorOverrideObjectName;
 
+        public static bool ShouldSkipAvatar(GameObject avatar)
+        {
+            return avatar.GetComponentsInChildren<Transform>(true).Any(t => t.name == SkipAvatarObjectName);
+        }
+
         public static void SetAnchorOverrides(GameObject avatarGameObject)
         {
             Renderer[] renderersWithNoAnchors = null;
             if(!AskedOnce) // If we haven't already asked, only display dialog once a renderer with no anchors is found
             {
-                renderersWithNoAnchors = avatarGameObject.GetComponentsInChildren<Renderer>(true)?.Where(r => r.probeAnchor == null).ToArray();
+                renderersWithNoAnchors = avatarGameObject.GetComponentsInChildren<Renderer>(true)?.Where(ShouldCheckRenderer).ToArray();
 
                 if(renderersWithNoAnchors == null || renderersWithNoAnchors.Length == 0)
                     return;
@@ -48,7 +62,7 @@ namespace Pumkin.UploadCallbacks
                 return;
 
             if(renderersWithNoAnchors == null)
-                renderersWithNoAnchors = avatarGameObject.GetComponentsInChildren<Renderer>(true)?.Where(r => r.probeAnchor == null).ToArray();
+                renderersWithNoAnchors = avatarGameObject.GetComponentsInChildren<Renderer>(true)?.Where(ShouldCheckRenderer).ToArray();
 
             if(renderersWithNoAnchors == null || renderersWithNoAnchors.Length == 0)
                 return;
@@ -82,6 +96,15 @@ namespace Pumkin.UploadCallbacks
                 render.probeAnchor = anchorObject;
                 Debug.Log($"Thry: Setting Anchor Override for {render.name} to {anchorName}");
             }
+        }
+
+        static bool ShouldCheckRenderer(Renderer renderer)
+        {
+            if(renderer == null || !RendererTypesToCheck.Contains(renderer.GetType()))
+                return false;
+            if(renderer.reflectionProbeUsage == ReflectionProbeUsage.Off && renderer.lightProbeUsage == LightProbeUsage.Off)
+                return false;
+            return renderer.probeAnchor == null;
         }
     }
 }

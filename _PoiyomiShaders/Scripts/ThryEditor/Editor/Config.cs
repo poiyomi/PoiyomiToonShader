@@ -16,7 +16,7 @@ namespace Thry
     {
         // consts
         private const string PATH_CONFIG_FILE = "Thry/Config.json";
-        private const string VERSION = "2.39.5";
+        private const string VERSION = "2.42.1";
 
         // static
         private static Config config;
@@ -83,7 +83,10 @@ namespace Thry
         public string anchorOverrideObjectName = "AutoAnchorObject";
         public bool autoSetAnchorAskedOnce = false;
         public bool enableDeveloperMode = false;
+        public bool disableUnlockedShaderStrippingOnBuild = false;
         public bool forceAsyncCompilationPreview = true;
+        public bool fixKeywordsWhenLocking = true;
+        public bool saveAfterLockUnlock = true;
 
         public string verion = VERSION;
 

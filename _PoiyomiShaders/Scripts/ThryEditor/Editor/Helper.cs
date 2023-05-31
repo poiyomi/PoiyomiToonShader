@@ -218,6 +218,11 @@ namespace Thry
             return 0;
         }
 
+        public static float Mod(float a, float b)
+        {
+            return a - b * Mathf.Floor(a / b);
+        }
+
         // This code is an implementation of the pseudocode from the Wikipedia,
         // showing a naive implementation.
         // You should research an algorithm with better space complexity.
@@ -1582,74 +1587,99 @@ namespace Thry
             return (gui != null) && gui.GetType() == typeof(ShaderEditor);
         }
 
-        static MethodInfo getPropertyHandlerMethod;
-        static PropertyInfo drawerProperty;
-        static FieldInfo keyWordFieldUnityDefault;
-        static FieldInfo keyWordFieldThry;
-        static bool areKeywordDrawerMethodsInit = false;
-        private static void InitKeywordDrawerMethods()
+        internal static List<(string prop, List<string> keywords)> GetPropertyKeywordsForShader(Shader s)
         {
-            if (areKeywordDrawerMethodsInit) return;
-            Type materialPropertyDrawerType = typeof(UnityEditor.Editor).Assembly.GetType("UnityEditor.MaterialPropertyHandler");
-            getPropertyHandlerMethod = materialPropertyDrawerType.GetMethod("GetShaderPropertyHandler", BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy);
-            drawerProperty = materialPropertyDrawerType.GetProperty("propertyDrawer");
-            Type materialToggleDrawerType = typeof(UnityEditor.Editor).Assembly.GetType("UnityEditor.MaterialToggleDrawer");
-            keyWordFieldUnityDefault = materialToggleDrawerType.GetField("keyword", BindingFlags.Instance | BindingFlags.NonPublic);
-            keyWordFieldThry = typeof(ThryToggleDrawer).GetField("keyword");
-            areKeywordDrawerMethodsInit = true;
-        }
+            List<(string prop, List<string> keywords)> list = new List<(string prop, List<string> keywords)>();
 
-        public static void EnableDisableKeywordsBasedOnTheirFloatValue(IEnumerable<Material> targets, Shader shader, string propertyName)
-        {
-            string keyword = null;
-            object propertyDrawer = GetTogglePropertyDrawer(shader, propertyName, out keyword);    
-            if(string.IsNullOrWhiteSpace(keyword) == false)
+            for (int i = 0; i < s.GetPropertyCount(); i++)
             {
-                foreach (Material m in targets)
+                if (s.GetPropertyType(i) == UnityEngine.Rendering.ShaderPropertyType.Float)
                 {
-                    if (m.GetFloat(propertyName) == 1)
-                        m.EnableKeyword(keyword);
+                    string prop = s.GetPropertyName(i);
+                    List<string> keywords = null;
+                    keywords = GetKeywordsFromShaderProperty(s, prop);
+
+                    if(keywords.Count == 0)
+                        continue;
                     else
-                        m.DisableKeyword(keyword);
+                        list.Add((prop, keywords));
                 }
             }
+
+            return list;
         }
 
-        public static object GetTogglePropertyDrawer(Shader shader, string propertyName, out string keyword)
+        // Logic Adapted from unity's reference implementation
+        /// <summary> Returns a list of keywords for a given shader property. </summary>
+        internal static List<string> GetKeywordsFromShaderProperty(Shader shader, string propertyName)
         {
-            object propertyDrawer = GetMaterialPropertyDrawer(shader, propertyName);
-            if (propertyDrawer != null)
+            List<string> keywords = new List<string>();
+            if (string.IsNullOrEmpty(propertyName)) 
+                return keywords;
+            
+            int propertyIndex = shader.FindPropertyIndex(propertyName);
+            if (propertyIndex < 0) 
+                return keywords;
+
+            string[] attributes = shader.GetPropertyAttributes(propertyIndex);
+            if (attributes.Length == 0 || attributes == null) 
+                return keywords;
+
+            foreach (string attribute in attributes)
             {
-                // distinguish between thry and unity default toggle drawer
-                if (propertyDrawer.GetType() == typeof(ThryToggleDrawer))
+                string args = "";
+                // Regex based on Unity's reference implementation: Match a string of the form Keyword(Argument) and capture its components
+                //   (\w+)    - Match a word (keyword name)
+                //   \s*\(\s* - Match an opening parenthesis, allowing whitespace before and after
+                //   ([^)]*)  - Match any number of characters that are not a closing parenthesis, and capture them into a group
+                //   \s*\)    - Match a closing parenthesis, allowing whitespace before and after
+                const string propertyDrawerRegex = @"(\w+)\s*\(\s*([^)]*)\s*\)";
+
+                Match regexMatch = Regex.Match(attribute, propertyDrawerRegex);
+                if (regexMatch.Success)
                 {
-                    keyword = (string)keyWordFieldThry.GetValue(propertyDrawer);
-                    return propertyDrawer;
-                }
-                else if (propertyDrawer.GetType().ToString() == "UnityEditor.MaterialToggleDrawer")
-                {
-                    keyword = (string)keyWordFieldUnityDefault.GetValue(propertyDrawer);
-                    return propertyDrawer;
+                    string className = regexMatch.Groups[1].Value;
+                    args = regexMatch.Groups[2].Value.Trim();
+
+                    // Note that we don't handle ToggleOff as it would require extra logic to differentiate
+                    if(className == "Toggle") // Unity Toggle drawer, toggles a keyword directly if provided as [Toggle(KEYWORD)] and toggles PropertyName
+                    {
+                        if(string.IsNullOrEmpty(args))
+                            keywords.Add(GetUnityKeywordName(propertyName, "ON"));
+                        else
+                            keywords.Add(args);
+                        break;
+                    }
+                    else if(className == "ThryToggle") // Thry Toggle drawer, toggles a keyword directly if provided as [Toggle(KEYWORD)]
+                    {
+                        // We only care about the first argument, the second is for UI
+                        if(args.Contains(","))
+                            args = args.Split(',')[0];
+
+                        // Ignore ThryToggle's bools, since otherwise we get keywords that have the same name as HLSL language keywords
+                        if(args != "false" && args != "true")
+                            keywords.Add(args);
+
+                        break;
+                    }
+                    else if(className == "KeywordEnum") // Keyword enum, enables one keyword out of a list of keywords provided as [KeywordEnum(KEYWORD1,KEYWORD2,KEYWORD3)]
+                    {
+                        string[] enumArgs = args.Split(',');
+                        foreach(var enumArg in enumArgs)
+                        {
+                            keywords.Add(GetUnityKeywordName(propertyName, enumArg.Trim()));
+                        }
+
+                        break;
+                    }
                 }
             }
-            keyword = null;
-            return null;
+            return keywords;
         }
 
-        public static object GetMaterialPropertyDrawer(Shader shader, string propertyName)
-        {
-            InitKeywordDrawerMethods();
-            object propertyHandler = getPropertyHandlerMethod.Invoke(null, new object[] { shader, propertyName });
-            if (propertyHandler != null)
-            {
-                object propertyDrawer = drawerProperty.GetValue(propertyHandler, null);
-                if (propertyDrawer != null)
-                {
-                    return propertyDrawer;
-                }
-            }
-            return null;
-        }
+        // Logic from Unity defaults
+        /// <summary> Gets a formatted Keyword name from a shader property name and a keyword name. </summary>
+        private static string GetUnityKeywordName(string propertyName, string keywordName) => $"{propertyName}_{keywordName}".Replace(' ', '_').ToUpperInvariant();
     }
 
     public class StringHelper

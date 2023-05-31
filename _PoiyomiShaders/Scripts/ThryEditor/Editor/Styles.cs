@@ -47,6 +47,8 @@ namespace Thry
         public static GUIStyle style_toggle_left_richtext { get; private set; } = new GUIStyle(EditorStyles.label) { richText = true };
         public static GUIStyle richtext { get; private set; } = new GUIStyle(EditorStyles.label) { richText = true, wordWrap = true };
         public static GUIStyle richtext_center { get; private set; } = new GUIStyle(EditorStyles.label) { richText = true, wordWrap = true, alignment = TextAnchor.MiddleCenter };
+        
+        public static GUIStyle ButtonGreenText { get; private set; } = new GUIStyle(GUI.skin.button) { normal = new GUIStyleState() { textColor = new Color(0, 0.5f, 0) } };
 
         public static GUIStyle icon_style_help = CreateIconStyle(EditorGUIUtility.IconContent("_Help"));
         public static GUIStyle icon_style_menu = CreateIconStyle(EditorGUIUtility.IconContent("_Menu"));

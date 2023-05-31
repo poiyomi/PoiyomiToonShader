@@ -128,6 +128,8 @@ namespace Thry
                     doDrawLine = true;
                     GUILayout.Label(new GUIContent(thry_message.text,thry_message.hover), thry_message.center_position?Styles.richtext_center: Styles.richtext);
                     Rect r = GUILayoutUtility.GetLastRect();
+                    if(thry_message.action.type != DefineableActionType.NONE)
+                        EditorGUIUtility.AddCursorRect(r, MouseCursor.Link);
                     if (Event.current.type == EventType.MouseDown && r.Contains(Event.current.mousePosition))
                         thry_message.action.Perform(ShaderEditor.Active?.Materials);
                 }
@@ -137,6 +139,8 @@ namespace Thry
                     if(thry_message.center_position) GUILayout.Label(new GUIContent(thry_message.texture.loaded_texture, thry_message.hover), EditorStyles.centeredGreyMiniLabel, GUILayout.MaxHeight(thry_message.texture.height));
                     else GUILayout.Label(new GUIContent(thry_message.texture.loaded_texture, thry_message.hover), GUILayout.MaxHeight(thry_message.texture.height));
                     Rect r = GUILayoutUtility.GetLastRect();
+                    if(thry_message.action.type != DefineableActionType.NONE)
+                        EditorGUIUtility.AddCursorRect(r, MouseCursor.Link);
                     if (Event.current.type == EventType.MouseDown && r.Contains(Event.current.mousePosition))
                         thry_message.action.Perform(ShaderEditor.Active?.Materials);
                 }
@@ -174,11 +178,17 @@ namespace Thry
             EditorGUILayout.Space();
             GUILayout.Label(EditorLocale.editor.Get("technical_header"), EditorStyles.boldLabel);
             Toggle("forceAsyncCompilationPreview");
+            Toggle("saveAfterLockUnlock");
+            Toggle("fixKeywordsWhenLocking");
 
             EditorGUILayout.Space();
             GUILayout.Label(EditorLocale.editor.Get("developer_header"), EditorStyles.boldLabel);
             Toggle("showManualReloadButton");
             Toggle("enableDeveloperMode");
+            if(Config.Singleton.enableDeveloperMode)
+            {
+                Toggle("disableUnlockedShaderStrippingOnBuild");
+            }
         }
 
         private static void GUIGradients()

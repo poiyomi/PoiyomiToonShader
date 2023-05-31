@@ -205,7 +205,14 @@ namespace Thry
             }
             else if (prop.textureValue != null)
             {
-                EditorGUI.DrawPreviewTexture(previewRect, prop.textureValue);
+                if(prop.textureValue is Cubemap)
+                {
+                    editor.TextureProperty(previewRect, prop, "", false);
+                }
+                else
+                {
+                    GUI.DrawTexture(previewRect, prop.textureValue);
+                }
             }
             GUI.DrawTexture(previewRectBorder, Texture2D.whiteTexture, ScaleMode.StretchToFill, false, 0, Styles.COLOR_BACKGROUND_1, 3, 10);
 
@@ -294,7 +301,7 @@ namespace Thry
             {
                 text += "   (VRAM: " + DrawingData.CurrentTextureProperty.VRAMString + ")";
             }
-            GUILayoutUtility.GetRect(0, editor.GetPropertyHeight(prop) - EditorGUIUtility.singleLineHeight - 5);
+            GUILayoutUtility.GetRect(0, EditorGUIUtility.singleLineHeight * 3 - 5);
             editor.TextureProperty(position, prop, text);
             DrawingData.LastGuiObjectRect = position;
             DrawingData.TooltipCheckRect = position;

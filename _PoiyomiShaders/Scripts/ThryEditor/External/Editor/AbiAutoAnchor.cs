@@ -1,4 +1,4 @@
-﻿#if CVR_CCK_EXISTS
+#if CVR_CCK_EXISTS
 using System;
 using UnityEngine;
 using UnityEditor;
@@ -18,7 +18,8 @@ namespace Pumkin.UploadCallbacks
         {
             try
             {
-                UploadAnchorOverrideSetter.SetAnchorOverrides(uploadedObject);
+                if(!UploadAnchorOverrideSetter.ShouldSkipAvatar(uploadedObject))
+                    UploadAnchorOverrideSetter.SetAnchorOverrides(uploadedObject);
             }
             catch(Exception ex)
             {
