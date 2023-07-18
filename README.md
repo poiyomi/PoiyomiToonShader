@@ -21,9 +21,6 @@
 <br>
 <div align=center>
 
-Grab the VPM here: [Poiyomi Toon VPM](https://poiyomi.github.io/vpm/)
-
-
   **Poiyomi Shaders** are feature-rich shaders for Unity's Built-In Rendering Pipeline, intended for use with **VRChat.** They support multiple shading modes and robust light handling, and are designed to be easy-to-use and performant. They're also **free** and **open-source**!
 
 </div>
@@ -32,6 +29,7 @@ Grab the VPM here: [Poiyomi Toon VPM](https://poiyomi.github.io/vpm/)
 
 <div align=center>
 
+# [📦 Grab the VPM for VCC!](https://poiyomi.github.io/vpm/)
 # [📦 Download the latest Unity Package!](https://github.com/poiyomi/PoiyomiToonShader/releases/latest)
 
 </div>
