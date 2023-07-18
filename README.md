@@ -110,7 +110,7 @@ The shaders can be used for games outside of VRChat, but may not be ideal due to
 
 Active development happens on the Pro shader in a private repository, with free releases happening periodically. If you'd like to contribute code to the shader, join the [Discord](https://discord.gg/poiyomi) and inquire. For the Editor code side, you can contribute to [ThryEditor](https://github.com/Thryrallo/ThryEditor), as it's MIT-licensed and accepts pull requests.
 
-We're always looking for help with [documentation](https://poiyomi.com/). If you'd like to contribute, you can do so by [in the docs repository](https://github.com/poiyomi/) - we accept pull requests! Docs are written in Markdown, and are built using [Docusaurus](https://docusaurus.io/).
+We're always looking for help with [documentation](https://poiyomi.com/). If you'd like to contribute, you can do so by [in the docs repository](https://github.com/poiyomi/PoiyomiDocs) - we accept pull requests! Docs are written in Markdown, and are built using [Docusaurus](https://docusaurus.io/).
 
 To report a bug or request a feature, you can do so either by [opening an issue](https://github.com/poiyomi/PoiyomiToonShader/issues) or by joining the [Discord](https://discord.gg/poiyomi) and asking. Please make sure to include as much information as possible, including screenshots and/or videos if applicable. Ensure you're using the latest version of the shader, and that the issue is not already reported.
 
