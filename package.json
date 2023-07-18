@@ -2,7 +2,7 @@
   "name": "io.github.poiyomi.poiyomitoonshader",
   "displayName": "Poiyomi Toon Shader",
   "version": "8.1.166",
-  "description": "Feature-rich shaders for Unity's Built-In Rendering Pipeline, intended for use with VRChat. ",
+  "description": "Feature-rich shaders for Unity and VRChat.",
   "url": "https://github.com/poiyomi/PoiyomiToonShader",
   "author": {
     "name": "Poiyomi"
