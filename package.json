@@ -9,7 +9,9 @@
   },
   "gitDependencies": {},
   "vpmDependencies": {},
-  "legacyFolders": {},
+  "legacyFolders": {
+    "Assets\\_PoiyomiShaders": "2fcadee009b41d847ac672dd72e80430"
+  },
   "legacyFiles": {},
   "hideInEditor": false,
   "license": "MIT",
