@@ -54,6 +54,7 @@ namespace Thry
         public static Rect LastGuiObjectRect;
         public static Rect LastGuiObjectHeaderRect;
         public static Rect TooltipCheckRect;
+        public static float IconsPositioningHeight;
         public static bool LastPropertyUsedCustomDrawer;
         public static bool LastPropertyDoesntAllowAnimation;
         public static DrawerType LastPropertyDrawerType;
@@ -108,6 +109,7 @@ namespace Thry
         public DefineableAction altClick;
         public DefineableAction onClick;
         public DefineableCondition condition_show = new DefineableCondition();
+        public DefineableCondition condition_expand = new DefineableCondition();
         public string condition_showS;
         public DefineableCondition condition_enable = null;
         public PropertyValueAction[] on_value_actions;
@@ -124,6 +126,7 @@ namespace Thry
         public string generic_string;
         public bool never_lock;
         public bool draw_border;
+        public float margin_top = 0;
 
         public static PropertyOptions Deserialize(string s)
         {

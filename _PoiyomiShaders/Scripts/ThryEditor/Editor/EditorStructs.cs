@@ -393,7 +393,11 @@ namespace Thry
             EditorGUI.BeginChangeCheck();
             DrawInternal(content, rect, useEditorIndent, isInHeader);
 
-            if(this is TextureProperty == false) DrawingData.TooltipCheckRect = DrawingData.LastGuiObjectRect;
+            if(this is TextureProperty == false)
+            {
+                DrawingData.TooltipCheckRect = DrawingData.LastGuiObjectRect;
+                DrawingData.IconsPositioningHeight = DrawingData.LastGuiObjectRect.y + DrawingData.LastGuiObjectRect.height - 14;
+            } 
             DrawingData.TooltipCheckRect.width = EditorGUIUtility.labelWidth;
 
             HandleRightClickToggles(isInHeader);
@@ -432,7 +436,7 @@ namespace Thry
 
         private void DrawLockedAnimated()
         {
-            Rect r = new Rect(14, DrawingData.TooltipCheckRect.y + 2, 16, 16);
+            Rect r = new Rect(14, DrawingData.IconsPositioningHeight, 16, 16);
             //GUI.DrawTexture(r, is_renaming ? Styles.texture_animated_renamed : Styles.texture_animated, ScaleMode.StretchToFill, true);
             if (IsRenaming) GUI.Label(r, "RA", Styles.animatedIndicatorStyle);
             else GUI.Label(r, "A", Styles.animatedIndicatorStyle);
@@ -440,9 +444,9 @@ namespace Thry
 
         private void DrawPresetProperty()
         {
-            Rect r = new Rect(2, DrawingData.TooltipCheckRect.y + 2, 8, 16);
+            Rect r = new Rect(3, DrawingData.IconsPositioningHeight, 8, 16);
             //GUI.DrawTexture(r, Styles.texture_preset, ScaleMode.StretchToFill, true);
-            GUI.Label(r, "P", Styles.cyanStyle);
+            GUI.Label(r, "P", Styles.presetIndicatorStyle);
         }
 
         protected void ExecuteOnValueActions(Material[] targets)
@@ -501,23 +505,49 @@ namespace Thry
 
         public override void DrawInternal(GUIContent content, CRect rect = null, bool useEditorIndent = false, bool isInHeader = false)
         {
+            if(Options.margin_top > 0)
+            {
+                GUILayoutUtility.GetRect(0, Options.margin_top);
+            }
+
+            bool doExpand = Options.condition_expand.Test();
             if(Options.draw_border)
             {
                 bool has_header = string.IsNullOrWhiteSpace(this.Content.text) == false;
+                int headerXOffset = 0;
+                ShaderProperty reference = Options.reference_property != null ? ActiveShaderEditor.PropertyDictionary[Options.reference_property] : null;
+
                 Rect border = EditorGUILayout.BeginVertical();
                 GUILayoutUtility.GetRect(0, 5 + (has_header ? 20 : 0));
                 border = new RectOffset(this.XOffset * -15 - 12, 3, -2, -2).Add(border);
-                Vector4 borderWidths = new Vector4(3, (has_header ? 22 : 3), 3, 3);
-                GUI.DrawTexture(border, Texture2D.whiteTexture, ScaleMode.StretchToFill, true, 0, Styles.COLOR_BACKGROUND_1, borderWidths, 10);
+                if(doExpand)
+                {
+                    // Draw as border line
+                    Vector4 borderWidths = new Vector4(3, (has_header ? 22 : 3), 3, 3);
+                    GUI.DrawTexture(border, Texture2D.whiteTexture, ScaleMode.StretchToFill, true, 0, Styles.COLOR_BACKGROUND_1, borderWidths, 10);
+                }else
+                {
+                    // Draw as solid
+                    GUI.DrawTexture(border, Texture2D.whiteTexture, ScaleMode.StretchToFill, true, 0, Styles.COLOR_BACKGROUND_1, Vector4.zero, 10);
+                }
+                if(reference != null)
+                {
+                    Rect referenceRect = new Rect(border.x + 16, border.y + 2, 20, 20);
+                    reference.Draw(new CRect(referenceRect), new GUIContent(), isInHeader: true, useEditorIndent: true);
+                    headerXOffset = 16;
+                }
                 if(has_header)
                 {
-                    Rect header = new Rect(border.x + 16, border.y, border.width - 16, 22);
+                    Rect header = new Rect(border.x + 16 + headerXOffset, border.y, border.width - 16, 22);
                     GUI.Label(header, this.Content, EditorStyles.boldLabel);
                 }
             }
-            foreach (ShaderPart part in parts)
+            if(doExpand)
             {
-                part.Draw();
+                foreach (ShaderPart part in parts)
+                {
+                    part.Draw();
+                }
             }
             if (Options.draw_border)
             {
@@ -704,6 +734,7 @@ namespace Thry
         void InitializeDrawers()
         {
             DrawingData.ResetLastDrawerData();
+            DrawingData.IsCollectingProperties = true;
             ShaderEditor.Active.Editor.GetPropertyHeight(MaterialProperty, MaterialProperty.displayName);
 
             this.IsAnimatable = !DrawingData.LastPropertyDoesntAllowAnimation;
@@ -744,6 +775,8 @@ namespace Thry
             
             this.IsAnimated = IsAnimatable && tag != "";
             this.IsRenaming = IsAnimatable && tag == "2";
+
+            DrawingData.IsCollectingProperties = false;
         }
 
         public override void DrawInternal(GUIContent content, CRect rect = null, bool useEditorIndent = false, bool isInHeader = false)

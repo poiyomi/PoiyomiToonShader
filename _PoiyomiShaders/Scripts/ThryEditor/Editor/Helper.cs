@@ -906,9 +906,18 @@ namespace Thry
                 {
                     foreach (Material m in materials) m.renderQueue = q;
                 }
-            }else if (key == "render_type")
+            }
+            else if (key == "render_type")
             {
                 foreach (Material m in materials) m.SetOverrideTag("RenderType", value);
+            }
+            else if (key == "preview_type")
+            {
+                foreach (Material m in materials) m.SetOverrideTag("PreviewType", value);
+            }
+            else if (key == "ignore_projector")
+            {
+                foreach (Material m in materials) m.SetOverrideTag("IgnoreProjector", value);
             }
         }
 

@@ -67,7 +67,7 @@ namespace Poi.Tools
 
                 list.onAddCallback = _list =>
                 {
-                    int index = _list.index == -1 ? _list.count - 1 : _list.index;
+                    int index = _list.index == -1 ? Mathf.Max(_list.count - 1, 0) : _list.index;
                     _list.serializedProperty.InsertArrayElementAtIndex(index);
                     _list.index = Mathf.Min(index + 1, _list.count - 1);
                     _list.serializedProperty.GetArrayElementAtIndex(_list.index).isExpanded = true;

@@ -38,6 +38,7 @@ namespace Thry
         public static GUIStyle vectorPropertyStyle { get; private set; } = new GUIStyle() { padding = new RectOffset(0, 0, 2, 2) };
         public static GUIStyle greenStyle { get; private set; } = new GUIStyle() { normal = new GUIStyleState() { textColor = new Color(0, 0.5f, 0) } };
         public static GUIStyle animatedIndicatorStyle { get; private set; } = new GUIStyle() { normal = new GUIStyleState() { textColor = new Color(0.3f, 1, 0.3f) }, alignment = TextAnchor.MiddleRight };
+        public static GUIStyle presetIndicatorStyle { get; private set; } = new GUIStyle() { normal = new GUIStyleState() { textColor = Color.cyan }, alignment = TextAnchor.MiddleRight };
         public static GUIStyle orangeStyle { get; private set; } = new GUIStyle() { normal = new GUIStyleState() { textColor = new Color(0.9f, 0.5f, 0) } };
         public static GUIStyle cyanStyle { get; private set; } = new GUIStyle() { normal = new GUIStyleState() { textColor = COLOR_ICON_ACTIVE_CYAN } };
         public static GUIStyle redStyle { get; private set; } = new GUIStyle() { normal = new GUIStyleState() { textColor = Color.red } };

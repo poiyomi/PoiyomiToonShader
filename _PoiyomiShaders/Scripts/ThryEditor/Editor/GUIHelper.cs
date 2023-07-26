@@ -58,6 +58,7 @@ namespace Thry
                 thumbnailPos.width -= 20;
             }
             editor.TexturePropertyMiniThumbnail(thumbnailPos, prop, label.text, label.tooltip);
+            float iconsPositioningHeight = thumbnailPos.y;
             //VRAM
             Rect vramPos = Rect.zero;
             if (DrawingData.CurrentTextureProperty.MaterialProperty.textureValue != null)
@@ -102,7 +103,9 @@ namespace Thry
                         {
                             EditorGUI.showMixedValue = ShaderEditor.Active.Materials.Select(m => m.GetTextureScale(prop.name)).Distinct().Count() > 1 || ShaderEditor.Active.Materials.Select(m => m.GetTextureOffset(prop.name)).Distinct().Count() > 1;
                             ShaderEditor.Active.Editor.TextureScaleOffsetProperty(prop);
-                            tooltipRect.height += GUILayoutUtility.GetLastRect().height;
+                            Rect lastRect = GUILayoutUtility.GetLastRect();
+                            tooltipRect.height = (lastRect.y - tooltipRect.y) + lastRect.height;
+                            iconsPositioningHeight = lastRect.y;
                         }
                         //In case of locked material end disabled group here to allow editing of sub properties
                         if (ShaderEditor.Active.IsLockedMaterial) EditorGUI.EndDisabledGroup();
@@ -131,7 +134,8 @@ namespace Thry
             Rect object_rect = new Rect(position);
             object_rect.height = GUILayoutUtility.GetLastRect().y - object_rect.y + GUILayoutUtility.GetLastRect().height;
             DrawingData.LastGuiObjectRect = object_rect;
-            DrawingData.TooltipCheckRect = tooltipRect;
+            DrawingData.TooltipCheckRect = tooltipRect;            
+            DrawingData.IconsPositioningHeight = iconsPositioningHeight;
 
             // Border Code start
             if(isFoldedOut)
@@ -237,12 +241,13 @@ namespace Thry
             
 
             //scale offset rect + foldout properties
+            Rect scale_offset_rect = new Rect();
+            scale_offset_rect = new RectOffset(30, 5, 37, 0).Remove(optionsSide);
+            scale_offset_rect.height = position.height;
             if (hasFoldoutProperties || DrawingData.CurrentTextureProperty.Options.reference_property != null)
             {
                 if (DrawingData.CurrentTextureProperty.hasScaleOffset)
                 {
-                    Rect scale_offset_rect = new RectOffset(30, 5, 37, 0).Remove(optionsSide);
-                    scale_offset_rect.height = position.height;
                     EditorGUI.showMixedValue = ShaderEditor.Active.Materials.Select(m => m.GetTextureScale(prop.name)).Distinct().Count() > 1 || ShaderEditor.Active.Materials.Select(m => m.GetTextureOffset(prop.name)).Distinct().Count() > 1;
                     editor.TextureScaleOffsetProperty(scale_offset_rect, prop);
                 }
@@ -290,7 +295,8 @@ namespace Thry
             GUI.Label(label_rect, label);
 
             DrawingData.LastGuiObjectRect = border;
-            DrawingData.TooltipCheckRect = border;
+            DrawingData.TooltipCheckRect = Rect.MinMaxRect(position.x, position.y, scale_offset_rect.xMax, scale_offset_rect.yMax);
+            DrawingData.IconsPositioningHeight = scale_offset_rect.y;
         }
 
         public static void BigTexturePropertyBasic(Rect position, MaterialProperty prop, GUIContent label, MaterialEditor editor, bool hasFoldoutProperties, bool skip_drag_and_drop_handling = false)
@@ -303,8 +309,14 @@ namespace Thry
             }
             GUILayoutUtility.GetRect(0, EditorGUIUtility.singleLineHeight * 3 - 5);
             editor.TextureProperty(position, prop, text);
-            DrawingData.LastGuiObjectRect = position;
-            DrawingData.TooltipCheckRect = position;
+
+            Rect tooltipCheckRect =  position;
+            tooltipCheckRect.height += EditorGUIUtility.singleLineHeight * 3 - 5;
+
+            float iconsPositioningHeight = position.y;
+            if(DrawingData.CurrentTextureProperty.hasScaleOffset)
+                iconsPositioningHeight += position.height + EditorGUIUtility.singleLineHeight - 5;
+            
             
             // Reference properties
             EditorGUI.indentLevel += 1;
@@ -321,6 +333,10 @@ namespace Thry
                     property.Draw(useEditorIndent: true);
                 }
             EditorGUI.indentLevel -= 1;
+
+            DrawingData.LastGuiObjectRect = position;
+            DrawingData.TooltipCheckRect = tooltipCheckRect;
+            DrawingData.IconsPositioningHeight = iconsPositioningHeight;
         }
 
         public static void OpenTexturePicker(MaterialProperty prop)

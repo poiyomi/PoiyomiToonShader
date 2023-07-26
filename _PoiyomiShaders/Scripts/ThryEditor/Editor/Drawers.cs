@@ -1613,6 +1613,26 @@ namespace Thry
 
     #endregion
 
+    #region Float Drawers
+    public class ThryIntRangeDrawer: MaterialPropertyDrawer
+    {
+        public override void OnGUI(Rect position, MaterialProperty prop, GUIContent label, MaterialEditor editor)
+        {
+            var range = prop.rangeLimits;
+            EditorGUI.BeginChangeCheck();
+            var value = EditorGUI.IntSlider(position, label, (int)prop.floatValue, (int)range.x, (int)range.y);
+            if (EditorGUI.EndChangeCheck())
+                prop.floatValue = value;
+        }
+
+        public override float GetPropertyHeight(MaterialProperty prop, string label, MaterialEditor editor)
+        {
+            DrawingData.LastPropertyUsedCustomDrawer = true;
+            return base.GetPropertyHeight(prop, label, editor);
+        }
+    }
+    #endregion
+
     #region UI Drawers
     public class HelpboxDrawer : MaterialPropertyDrawer
     {
@@ -2017,7 +2037,7 @@ namespace Thry
         public override float GetPropertyHeight(MaterialProperty prop, string label, MaterialEditor editor)
         {
             DrawingData.LastPropertyUsedCustomDrawer = true;
-            DrawingData.LastPropertyDoesntAllowAnimation = true;
+            DrawingData.LastPropertyDoesntAllowAnimation = false;
             return EditorGUIUtility.singleLineHeight + 6;
         }
     }

@@ -1995,8 +1995,11 @@ namespace Thry
                 if(Config.Singleton.enableDeveloperMode && Config.Singleton.disableUnlockedShaderStrippingOnBuild)
                     return;
 
-                // Strip if the shader should be optimized (has the optimizer property) but isn't (name doesn't start with Hidden/Locked/)
-                bool shouldStrip = shader.FindPropertyIndex("_ShaderOptimizerEnabled") >= 0 && !shader.name.StartsWith("Hidden/Locked/");
+                // Strip shaders from the build under the following conditions:
+                // - Has the property "shader_is_using_thry_editor", which should be present on all shaders using ThryEditor (even if it's not using the optimizer)
+                // - Has the property "_ShaderOptimizerEnabled", indicating the shader is using the optimizer
+                // - Doesn't have a name starting with "Hidden/Locked/", indicating the shader is unlocked
+                bool shouldStrip = shader.FindPropertyIndex("shader_is_using_thry_editor") >= 0 && shader.FindPropertyIndex("_ShaderOptimizerEnabled") >= 0 && !shader.name.StartsWith("Hidden/Locked/");
 
                 if (shouldStrip)
                 {
