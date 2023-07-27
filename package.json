@@ -1,5 +1,5 @@
 {
-  "name": "io.github.poiyomi.poiyomitoonshader",
+  "name": "com.poiyomi.toon",
   "displayName": "Poiyomi Toon Shader",
   "version": "8.1.167",
   "description": "Feature-rich shaders for Unity and VRChat.",
@@ -17,5 +17,5 @@
   "license": "MIT",
   "unity": "2019.4",
   "type": "Shader",
-  "localPath": ".\\Packages\\io.github.poiyomi.poiyomitoonshader"
+  "localPath": ".\\Packages\\com.poiyomi.toon"
 }
