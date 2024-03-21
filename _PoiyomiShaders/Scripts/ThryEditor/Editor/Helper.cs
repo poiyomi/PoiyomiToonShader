@@ -2,22 +2,15 @@
 // Copyright (C) 2019 Thryrallo
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Net;
-using System.Net.Security;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
 using System.Text.RegularExpressions;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.Networking;
 using UnityEngine.Profiling;
 
 namespace Thry
@@ -934,6 +927,13 @@ namespace Thry
                 prev = p.floatValue;
                 p.floatValue = Parser.ParseFloat(value, p.floatValue);
             }
+#if UNITY_2022_1_OR_NEWER
+            else if (p.type == MaterialProperty.PropType.Int)
+            {
+                prev = p.intValue;
+                p.intValue = (int)Parser.ParseFloat(value, p.intValue);
+            }
+#endif
             else if (p.type == MaterialProperty.PropType.Vector)
             {
                 prev = p.vectorValue;
@@ -957,8 +957,14 @@ namespace Thry
                 case MaterialProperty.PropType.Float:
                 case MaterialProperty.PropType.Range:
                     prev = p.floatValue;
-                    p.floatValue = source.GetFloat(p.name);
+                    p.floatValue = source.GetNumber(p);
                     break;
+#if UNITY_2022_1_OR_NEWER
+                case MaterialProperty.PropType.Int:
+                    prev = p.intValue;
+                    p.intValue = source.GetInt(p.name);
+                    break;
+#endif
                 case MaterialProperty.PropType.Color:
                     prev = p.colorValue;
                     p.colorValue = source.GetColor(p.name);
@@ -989,6 +995,12 @@ namespace Thry
                     prev = target.floatValue;
                     target.floatValue = source.floatValue;
                     break;
+#if UNITY_2022_1_OR_NEWER
+                case MaterialProperty.PropType.Int:
+                    prev = target.intValue;
+                    target.intValue = source.intValue;
+                    break;
+#endif
                 case MaterialProperty.PropType.Color:
                     prev = target.colorValue;
                     target.colorValue = source.colorValue;

@@ -1,4 +1,4 @@
-Shader ".poiyomi/Poiyomi 8.1/Poiyomi World"
+Shader ".poiyomi/Old Versions/8.1/Poiyomi World"
 {
 	Properties
 	{
@@ -76,7 +76,7 @@ Shader ".poiyomi/Poiyomi 8.1/Poiyomi World"
 		//ifex _MainColorAdjustToggle==0
 		[HideInInspector] m_start_MainHueShift ("Color Adjust--{reference_property:_MainColorAdjustToggle,button_help:{text:Tutorial,action:{type:URL,data:https://www.poiyomi.com/color-and-normals/color-adjust},hover:Documentation}}", Float) = 0
 		[HideInInspector][ThryToggle(COLOR_GRADING_HDR)] _MainColorAdjustToggle ("Adjust Colors", Float) = 0
-		[sRGBWarning][ThryRGBAPacker(R Hue Mask, G Brightness Mask, B Saturation Mask)]_MainColorAdjustTexture ("Mask (Expand)--{reference_properties:[_MainColorAdjustTexturePan, _MainColorAdjustTextureUV]}", 2D) = "white" { }
+		[sRGBWarning]_MainColorAdjustTexture ("Mask (Expand)--{reference_properties:[_MainColorAdjustTexturePan, _MainColorAdjustTextureUV]}", 2D) = "white" { }
 		[HideInInspector][Vector2]_MainColorAdjustTexturePan ("Panning", Vector) = (0, 0, 0, 0)
 		[HideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7)] _MainColorAdjustTextureUV ("UV", Int) = 0
 		_Saturation ("Saturation", Range(-1, 10)) = 0
@@ -175,7 +175,7 @@ Shader ".poiyomi/Poiyomi 8.1/Poiyomi World"
 		//ifex _DetailEnabled==0
 		[HideInInspector] m_start_DetailOptions ("Details--{reference_property:_DetailEnabled,button_help:{text:Tutorial,action:{type:URL,data:https://www.poiyomi.com/color-and-normals/details},hover:Documentation}}", Float) = 0
 		[HideInInspector][ThryToggle(FINALPASS)]_DetailEnabled ("Enable", Float) = 0
-		[sRGBWarning][ThryRGBAPacker(R Texture Mask, G Normal Mask, B Nothing, A Nothing)]_DetailMask ("Detail Mask (Expand)--{reference_properties:[_DetailMaskPan, _DetailMaskUV, _DetailMaskStochastic]}", 2D) = "white" { }
+		[sRGBWarning]_DetailMask ("Detail Mask (Expand)--{reference_properties:[_DetailMaskPan, _DetailMaskUV, _DetailMaskStochastic]}", 2D) = "white" { }
 		[HideInInspector][Vector2]_DetailMaskPan ("Panning", Vector) = (0, 0, 0, 0)
 		[HideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7)] _DetailMaskUV ("UV", Int) = 0
 		_DetailTint ("Detail Texture Tint--{reference_property:_DetailTintThemeIndex}", Color) = (1, 1, 1)
@@ -274,7 +274,7 @@ Shader ".poiyomi/Poiyomi 8.1/Poiyomi World"
 		// _VertexGlitchMap ("Glitch Map", 2D) = "white" { }
 		[ThryToggle(POI_VERTEX_GLITCHING_TEXTURE, true)]_VertexGlitchingUseTexture ("<size=13><b>  Use Texture</b></size>", Float) = 0
 		// [ThryToggleUI(true)]_VertexGlitchingUseTexture ("Use Texture", Float) = 0
-		[sRGBWarning][ThryRGBAPacker(R Both, G Right, B Left, A unused)]_VertexGlitchMap ("Glitch Map [Expand]--{condition_showS:(_VertexGlitchingUseTexture==1)}", 2D) = "white" { }
+		[sRGBWarning]_VertexGlitchMap ("Glitch Map [Expand]--{condition_showS:(_VertexGlitchingUseTexture==1)}", 2D) = "white" { }
 		_VertexGlitchDensity ("Glitch Density--{condition_showS:(_VertexGlitchingUseTexture==1)}", Range(0, 50)) = 10
 		_VertexGlitchMapPanSpeed ("Glitch Map Pan Speed--{condition_showS:(_VertexGlitchingUseTexture==1)}", Range(0, 100)) = 10
 		[Space(10)]
@@ -330,7 +330,7 @@ Shader ".poiyomi/Poiyomi 8.1/Poiyomi World"
 		[HideInInspector][ThryToggle(VIGNETTE)]_RGBMaskEnabled ("RGB Mask Enabled", Float) = 0
 		[ToggleUI]_RGBUseVertexColors ("Use Vertex Colors", Float) = 0
 		[ToggleUI]_RGBBlendMultiplicative ("Multiplicative", Float) = 0
-		[sRGBWarning][ThryRGBAPacker(R Mask,G Mask,B Mask,A Mask)]_RGBMask ("Mask--{reference_properties:[_RGBMaskPan, _RGBMaskUV]}", 2D) = "white" { }
+		[sRGBWarning]_RGBMask ("Mask--{reference_properties:[_RGBMaskPan, _RGBMaskUV]}", 2D) = "white" { }
 		[HideInInspector][Vector2]_RGBMaskPan ("Panning", Vector) = (0, 0, 0, 0)
 		[HideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7)]_RGBMaskUV ("UV", int) = 0
 		
@@ -428,7 +428,7 @@ Shader ".poiyomi/Poiyomi 8.1/Poiyomi World"
 		
 		// Decal Texture
 		[HideInInspector] m_start_DecalSection ("Decals--{button_help:{text:Tutorial,action:{type:URL,data:https://www.poiyomi.com/color-and-normals/decals},hover:YouTube}}", Float) = 0
-		[sRGBWarning][ThryRGBAPacker(Decal 0 Mask, Decal 1 Mask, Decal 2 Mask, Decal 3 Mask)]_DecalMask ("Decal RGBA Mask--{reference_properties:[_DecalMaskPan, _DecalMaskUV]}", 2D) = "white" { }
+		[sRGBWarning]_DecalMask ("Decal RGBA Mask--{reference_properties:[_DecalMaskPan, _DecalMaskUV]}", 2D) = "white" { }
 		[HideInInspector][Vector2]_DecalMaskPan ("Panning", Vector) = (0, 0, 0, 0)
 		[HideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7)] _DecalMaskUV ("UV", Int) = 0
 		
@@ -750,7 +750,7 @@ Shader ".poiyomi/Poiyomi 8.1/Poiyomi World"
 		[HideInInspector] m_start_GlobalMaskTextures ("Textures--{reference_property:_GlobalMaskTexturesEnable}", Float) = 0
 		[HideInInspector][ThryToggle(POI_GLOBALMASK_TEXTURES)] _GlobalMaskTexturesEnable ("Global Mask Textures Enable", Float) = 0
 		
-		[sRGBWarning][ThryRGBAPacker(R, G, B, A, 0)]_GlobalMaskTexture0 ("Global Mask Texture 1--{reference_properties:[_GlobalMaskTexture0Pan, _GlobalMaskTexture0SplitTilingOffset_G, _GlobalMaskTexture0SplitPan_G, _GlobalMaskTexture0SplitTilingOffset_B, _GlobalMaskTexture0SplitPan_B, _GlobalMaskTexture0SplitTilingOffset_A, _GlobalMaskTexture0SplitPan_A, _GlobalMaskTexture0Split, _GlobalMaskTexture0UV]}", 2D) = "white" { }
+		[sRGBWarning]_GlobalMaskTexture0 ("Global Mask Texture 1--{reference_properties:[_GlobalMaskTexture0Pan, _GlobalMaskTexture0SplitTilingOffset_G, _GlobalMaskTexture0SplitPan_G, _GlobalMaskTexture0SplitTilingOffset_B, _GlobalMaskTexture0SplitPan_B, _GlobalMaskTexture0SplitTilingOffset_A, _GlobalMaskTexture0SplitPan_A, _GlobalMaskTexture0Split, _GlobalMaskTexture0UV]}", 2D) = "white" { }
 		[HideInInspector][Vector2]_GlobalMaskTexture0Pan ("Panning", Vector) = (0, 0, 0, 0)
 		[ThryHeaderLabel(G Channel)]
 		[HideInInspector][VectorLabel(tX, tY, oX, oY)]_GlobalMaskTexture0SplitTilingOffset_G ("Tiling/Offset--{condition_showS:(_GlobalMaskTexture0Split==1)}", Vector) = (1, 1, 0, 0)
@@ -764,7 +764,7 @@ Shader ".poiyomi/Poiyomi 8.1/Poiyomi World"
 		[HideInInspector][ToggleUI] _GlobalMaskTexture0Split ("Split Sampling", Int) = 0
 		[HideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7)]_GlobalMaskTexture0UV ("UV", Int) = 0
 		
-		[sRGBWarning][ThryRGBAPacker(R, G, B, A, 0)]_GlobalMaskTexture1 ("Global Mask Texture 2--{reference_properties:[_GlobalMaskTexture1Pan, _GlobalMaskTexture1SplitTilingOffset_G, _GlobalMaskTexture1SplitPan_G, _GlobalMaskTexture1SplitTilingOffset_B, _GlobalMaskTexture1SplitPan_B, _GlobalMaskTexture1SplitTilingOffset_A, _GlobalMaskTexture1SplitPan_A, _GlobalMaskTexture1Split, _GlobalMaskTexture1UV]}", 2D) = "white" { }
+		[sRGBWarning]_GlobalMaskTexture1 ("Global Mask Texture 2--{reference_properties:[_GlobalMaskTexture1Pan, _GlobalMaskTexture1SplitTilingOffset_G, _GlobalMaskTexture1SplitPan_G, _GlobalMaskTexture1SplitTilingOffset_B, _GlobalMaskTexture1SplitPan_B, _GlobalMaskTexture1SplitTilingOffset_A, _GlobalMaskTexture1SplitPan_A, _GlobalMaskTexture1Split, _GlobalMaskTexture1UV]}", 2D) = "white" { }
 		[HideInInspector][Vector2]_GlobalMaskTexture1Pan ("Panning", Vector) = (0, 0, 0, 0)
 		[ThryHeaderLabel(G Channel)]
 		[HideInInspector][VectorLabel(tX, tY, oX, oY)]_GlobalMaskTexture1SplitTilingOffset_G ("Tiling/Offset--{condition_showS:(_GlobalMaskTexture1Split==1)}", Vector) = (1, 1, 0, 0)
@@ -778,7 +778,7 @@ Shader ".poiyomi/Poiyomi 8.1/Poiyomi World"
 		[HideInInspector][ToggleUI] _GlobalMaskTexture1Split ("Split Sampling", Int) = 0
 		[HideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7)]_GlobalMaskTexture1UV ("UV", Int) = 0
 		
-		[sRGBWarning][ThryRGBAPacker(R, G, B, A, 0)]_GlobalMaskTexture2 ("Global Mask Texture 3--{reference_properties:[_GlobalMaskTexture2Pan, _GlobalMaskTexture2SplitTilingOffset_G, _GlobalMaskTexture2SplitPan_G, _GlobalMaskTexture2SplitTilingOffset_B, _GlobalMaskTexture2SplitPan_B, _GlobalMaskTexture2SplitTilingOffset_A, _GlobalMaskTexture2SplitPan_A, _GlobalMaskTexture2Split, _GlobalMaskTexture2UV]}", 2D) = "white" { }
+		[sRGBWarning]_GlobalMaskTexture2 ("Global Mask Texture 3--{reference_properties:[_GlobalMaskTexture2Pan, _GlobalMaskTexture2SplitTilingOffset_G, _GlobalMaskTexture2SplitPan_G, _GlobalMaskTexture2SplitTilingOffset_B, _GlobalMaskTexture2SplitPan_B, _GlobalMaskTexture2SplitTilingOffset_A, _GlobalMaskTexture2SplitPan_A, _GlobalMaskTexture2Split, _GlobalMaskTexture2UV]}", 2D) = "white" { }
 		[HideInInspector][Vector2]_GlobalMaskTexture2Pan ("Panning", Vector) = (0, 0, 0, 0)
 		[ThryHeaderLabel(G Channel)]
 		[HideInInspector][VectorLabel(tX, tY, oX, oY)]_GlobalMaskTexture2SplitTilingOffset_G ("Tiling/Offset--{condition_showS:(_GlobalMaskTexture2Split==1)}", Vector) = (1, 1, 0, 0)
@@ -792,7 +792,7 @@ Shader ".poiyomi/Poiyomi 8.1/Poiyomi World"
 		[HideInInspector][ToggleUI] _GlobalMaskTexture2Split ("Split Sampling", Int) = 0
 		[HideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7)]_GlobalMaskTexture2UV ("UV", Int) = 0
 		
-		[sRGBWarning][ThryRGBAPacker(R, G, B, A, 0)]_GlobalMaskTexture3 ("Global Mask Texture 4--{reference_properties:[_GlobalMaskTexture3Pan, _GlobalMaskTexture3SplitTilingOffset_G, _GlobalMaskTexture3SplitPan_G, _GlobalMaskTexture3SplitTilingOffset_B, _GlobalMaskTexture3SplitPan_B, _GlobalMaskTexture3SplitTilingOffset_A, _GlobalMaskTexture3SplitPan_A, _GlobalMaskTexture3Split, _GlobalMaskTexture3UV]}", 2D) = "white" { }
+		[sRGBWarning]_GlobalMaskTexture3 ("Global Mask Texture 4--{reference_properties:[_GlobalMaskTexture3Pan, _GlobalMaskTexture3SplitTilingOffset_G, _GlobalMaskTexture3SplitPan_G, _GlobalMaskTexture3SplitTilingOffset_B, _GlobalMaskTexture3SplitPan_B, _GlobalMaskTexture3SplitTilingOffset_A, _GlobalMaskTexture3SplitPan_A, _GlobalMaskTexture3Split, _GlobalMaskTexture3UV]}", 2D) = "white" { }
 		[HideInInspector][Vector2]_GlobalMaskTexture3Pan ("Panning", Vector) = (0, 0, 0, 0)
 		[ThryHeaderLabel(G Channel)]
 		[HideInInspector][VectorLabel(tX, tY, oX, oY)]_GlobalMaskTexture3SplitTilingOffset_G ("Tiling/Offset--{condition_showS:(_GlobalMaskTexture3Split==1)}", Vector) = (1, 1, 0, 0)
@@ -1364,7 +1364,7 @@ Shader ".poiyomi/Poiyomi 8.1/Poiyomi World"
 		//ifex _LightingMode!=7
 		// Cloth
 		[NonModifiableTextureData] [NoScaleOffset] _ClothDFG ("MultiScatter Cloth DFG--{condition_showS:(_LightingMode==7)}", 2D) = "black" { }
-		[sRGBWarning][ThryRGBAPacker(Metallic Map, Cloth Mask, Reflectance, Smoothness)]_ClothMetallicSmoothnessMap ("Maps (Expand)--{reference_properties:[_ClothMetallicSmoothnessMapPan, _ClothMetallicSmoothnessMapUV, _ClothMetallicSmoothnessMapInvert],condition_showS:(_LightingMode==7)}", 2D) = "white" { }
+		[sRGBWarning]_ClothMetallicSmoothnessMap ("Maps (Expand)--{reference_properties:[_ClothMetallicSmoothnessMapPan, _ClothMetallicSmoothnessMapUV, _ClothMetallicSmoothnessMapInvert],condition_showS:(_LightingMode==7)}", 2D) = "white" { }
 		[HideInInspector][Vector2] _ClothMetallicSmoothnessMapPan ("Panning", Vector) = (0, 0, 0, 0)
 		[HideInInspector][ToggleUI] _ClothMetallicSmoothnessMapInvert ("Invert Smoothness", Float) = 0
 		[HideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7)] _ClothMetallicSmoothnessMapUV ("UV", Int) = 0
@@ -1404,7 +1404,7 @@ Shader ".poiyomi/Poiyomi 8.1/Poiyomi World"
 		
 		[HideInInspector] m_start_Aniso (" Anisotropics--{reference_property:_EnableAniso}", Float) = 0
 		[HideInInspector][ThryToggle(POI_ANISOTROPICS)]_EnableAniso ("Enable Aniso", Float) = 0
-		[sRGBWarning(true)][ThryRGBAPacker(1, RGB Color, A Offset, 1)]_AnisoColorMap ("Color & Offset--{reference_properties:[_AnisoColorMapPan, _AnisoColorMapUV]}", 2D) = "white" { }
+		[sRGBWarning(true)]_AnisoColorMap ("Color & Offset--{reference_properties:[_AnisoColorMapPan, _AnisoColorMapUV]}", 2D) = "white" { }
 		[HideInInspector][Vector2]_AnisoColorMapPan ("Panning", Vector) = (0, 0, 0, 0)
 		[HideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7)] _AnisoColorMapUV ("UV", Int) = 0
 		/*
@@ -1464,7 +1464,7 @@ Shader ".poiyomi/Poiyomi 8.1/Poiyomi World"
 		[HideInInspector][VectorToSliders(Blend UV X, 0.0, 1.0, Blend UV Y, 0.0, 1.0)]_MatCapBlendUV1 ("UV Blend", Vector) = (0, 0, 0, 0)
 		_MatcapBorder ("Border", Range(0, 5)) = 0.43
 		_MatcapRotation ("Rotation", Range(-1, 1)) = 0
-		[sRGBWarning][ThryRGBAPacker(R Mask, G Nothing, B Nothing, A Smoothness)]_MatcapMask ("Mask--{reference_properties:[_MatcapMaskPan, _MatcapMaskUV, _MatcapMaskChannel, _MatcapMaskInvert]}", 2D) = "white" { }
+		[sRGBWarning]_MatcapMask ("Mask--{reference_properties:[_MatcapMaskPan, _MatcapMaskUV, _MatcapMaskChannel, _MatcapMaskInvert]}", 2D) = "white" { }
 		[HideInInspector][Vector2]_MatcapMaskPan ("Panning", Vector) = (0, 0, 0, 0)
 		[HideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7)] _MatcapMaskUV ("UV", Int) = 0
 		[HideInInspector][Enum(R, 0, G, 1, B, 2, A, 3)]_MatcapMaskChannel ("Channel", Float) = 0
@@ -1514,7 +1514,7 @@ Shader ".poiyomi/Poiyomi 8.1/Poiyomi World"
 		[HideInInspector][VectorToSliders(Blend UV X, 0.0, 1.0, Blend UV Y, 0.0, 1.0)]_MatCap2ndBlendUV1 ("UV Blend", Vector) = (0, 0, 0, 0)
 		_Matcap2Border ("Border", Range(0, 5)) = 0.43
 		_Matcap2Rotation ("Rotation", Range(-1, 1)) = 0
-		[sRGBWarning][ThryRGBAPacker(R Mask, G Nothing, B Nothing, A Smoothness)]_Matcap2Mask ("Mask--{reference_properties:[_Matcap2MaskPan, _Matcap2MaskUV, _Matcap2MaskChannel, _Matcap2MaskInvert]}", 2D) = "white" { }
+		[sRGBWarning]_Matcap2Mask ("Mask--{reference_properties:[_Matcap2MaskPan, _Matcap2MaskUV, _Matcap2MaskChannel, _Matcap2MaskInvert]}", 2D) = "white" { }
 		[HideInInspector][Vector2]_Matcap2MaskPan ("Panning", Vector) = (0, 0, 0, 0)
 		[HideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7)] _Matcap2MaskUV ("UV", Int) = 0
 		[HideInInspector][Enum(R, 0, G, 1, B, 2, A, 3)]_Matcap2MaskChannel ("Channel", Float) = 0
@@ -1564,7 +1564,7 @@ Shader ".poiyomi/Poiyomi 8.1/Poiyomi World"
 		[HideInInspector][VectorToSliders(Blend UV X, 0.0, 1.0, Blend UV Y, 0.0, 1.0)]_MatCap3rdBlendUV1 ("UV Blend", Vector) = (0, 0, 0, 0)
 		_Matcap3Border ("Border", Range(0, 5)) = 0.43
 		_Matcap3Rotation ("Rotation", Range(-1, 1)) = 0
-		[sRGBWarning][ThryRGBAPacker(R Mask, G Nothing, B Nothing, A Smoothness)]_Matcap3Mask ("Mask--{reference_properties:[_Matcap3MaskPan, _Matcap3MaskUV, _Matcap3MaskChannel, _Matcap3MaskInvert]}", 2D) = "white" { }
+		[sRGBWarning]_Matcap3Mask ("Mask--{reference_properties:[_Matcap3MaskPan, _Matcap3MaskUV, _Matcap3MaskChannel, _Matcap3MaskInvert]}", 2D) = "white" { }
 		[HideInInspector][Enum(R, 0, G, 1, B, 2, A, 3)]_Matcap3MaskChannel ("Channel", Float) = 0
 		[HideInInspector][Vector2]_Matcap3MaskPan ("Panning", Vector) = (0, 0, 0, 0)
 		[HideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7)] _Matcap3MaskUV ("UV", Int) = 0
@@ -1614,7 +1614,7 @@ Shader ".poiyomi/Poiyomi 8.1/Poiyomi World"
 		[HideInInspector][VectorToSliders(Blend UV X, 0.0, 1.0, Blend UV Y, 0.0, 1.0)]_MatCap4thBlendUV1 ("UV Blend", Vector) = (0, 0, 0, 0)
 		_Matcap4Border ("Border", Range(0, .5)) = 0.43
 		_Matcap4Rotation ("Rotation", Range(-1, 1)) = 0
-		[sRGBWarning][ThryRGBAPacker(R Mask, G Nothing, B Nothing, A Smoothness)]_Matcap4Mask ("Mask--{reference_properties:[_Matcap4MaskPan, _Matcap4MaskUV, _Matcap4MaskChannel, _Matcap4MaskInvert]}", 2D) = "white" { }
+		[sRGBWarning]_Matcap4Mask ("Mask--{reference_properties:[_Matcap4MaskPan, _Matcap4MaskUV, _Matcap4MaskChannel, _Matcap4MaskInvert]}", 2D) = "white" { }
 		[HideInInspector][Vector2]_Matcap4MaskPan ("Panning", Vector) = (0, 0, 0, 0)
 		[HideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7)] _Matcap4MaskUV ("UV", Int) = 0
 		[HideInInspector][Enum(R, 0, G, 1, B, 2, A, 3)]_Matcap4MaskChannel ("Channel", Float) = 0
@@ -1693,7 +1693,7 @@ Shader ".poiyomi/Poiyomi 8.1/Poiyomi World"
 		[HideInInspector][Vector2]_RimTexPan ("Panning", Vector) = (0, 0, 0, 0)
 		[HideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7)] _RimTexUV ("UV", Int) = 0
 		
-		[sRGBWarning][ThryRGBAPacker(1, Mask, Bias, 1)]_RimMask ("Mask & Bias--{reference_properties:[_RimMaskPan, _RimMaskUV, _RimMaskChannel, _RimMaskInvert, _RimBiasIntensity], condition_showS:_RimStyle==0}", 2D) = "white" { }
+		[sRGBWarning]_RimMask ("Mask & Bias--{reference_properties:[_RimMaskPan, _RimMaskUV, _RimMaskChannel, _RimMaskInvert, _RimBiasIntensity], condition_showS:_RimStyle==0}", 2D) = "white" { }
 		[HideInInspector][Vector2]_RimMaskPan ("Panning", Vector) = (0, 0, 0, 0)
 		[HideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7)] _RimMaskUV ("UV", Int) = 0
 		[HideInInspector][ToggleUI]_RimMaskInvert("Invert Mask", Float) = 0
@@ -1795,7 +1795,7 @@ Shader ".poiyomi/Poiyomi 8.1/Poiyomi World"
 		[sRGBWarning(true)]_Rim2Tex ("Rim Texture--{reference_properties:[_Rim2TexPan, _Rim2TexUV], condition_showS:_Rim2Style==0}", 2D) = "white" { }
 		[HideInInspector][Vector2]_Rim2TexPan ("Panning", Vector) = (0, 0, 0, 0)
 		[HideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7)] _Rim2TexUV ("UV", Int) = 0
-		[sRGBWarning][ThryRGBAPacker(1, Mask, Bias, 1)]_Rim2Mask ("Mask & Bias--{reference_properties:[_Rim2MaskPan, _Rim2MaskUV, _Rim2MaskChannel, _Rim2MaskInvert, _Rim2BiasIntensity], condition_showS:_Rim2Style==0}", 2D) = "white" { }
+		[sRGBWarning]_Rim2Mask ("Mask & Bias--{reference_properties:[_Rim2MaskPan, _Rim2MaskUV, _Rim2MaskChannel, _Rim2MaskInvert, _Rim2BiasIntensity], condition_showS:_Rim2Style==0}", 2D) = "white" { }
 		[HideInInspector][Vector2]_Rim2MaskPan ("Panning", Vector) = (0, 0, 0, 0)
 		[HideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7)] _Rim2MaskUV ("UV", Int) = 0
 		[HideInInspector][ToggleUI]_Rim2MaskInvert("Invert Mask", Float) = 0
@@ -1941,7 +1941,7 @@ Shader ".poiyomi/Poiyomi 8.1/Poiyomi World"
 		_MochieSpecularTint ("Specular Tint--{reference_property:_MochieSpecularTintThemeIndex}", Color) = (1, 1, 1, 1)
 		[HideInInspector][ThryWideEnum(Off, 0, Theme Color 0, 1, Theme Color 1, 2, Theme Color 2, 3, Theme Color 3, 4, ColorChord 0, 5, ColorChord 1, 6, ColorChord 2, 7, ColorChord 3, 8, AL Theme 0, 9, AL Theme 1, 10, AL Theme 2, 11, AL Theme 3, 12)] _MochieSpecularTintThemeIndex ("", Int) = 0
 		[Space(8)]
-		[sRGBWarning][ThryRGBAPacker(R Metallic Map, G Smoothness Map, B Reflection Mask, A Specular Mask)]_MochieMetallicMaps ("Packed Maps [Expand]--{reference_properties:[_MochieMetallicMapsPan, _MochieMetallicMapsUV, _MochieMetallicMapsStochastic, _MochieMetallicMapsMetallicChannel, _MochieMetallicMapsRoughnessChannel, _MochieMetallicMapsReflectionMaskChannel, _MochieMetallicMapsSpecularMaskChannel, _MochieMetallicMapInvert, _MochieRoughnessMapInvert, _MochieReflectionMaskInvert, _MochieSpecularMaskInvert]}", 2D) = "white" { }
+		[sRGBWarning]_MochieMetallicMaps ("Packed Maps [Expand]--{reference_properties:[_MochieMetallicMapsPan, _MochieMetallicMapsUV, _MochieMetallicMapsStochastic, _MochieMetallicMapsMetallicChannel, _MochieMetallicMapsRoughnessChannel, _MochieMetallicMapsReflectionMaskChannel, _MochieMetallicMapsSpecularMaskChannel, _MochieMetallicMapInvert, _MochieRoughnessMapInvert, _MochieReflectionMaskInvert, _MochieSpecularMaskInvert]}", 2D) = "white" { }
 		[HideInInspector][Vector2]_MochieMetallicMapsPan ("Panning", Vector) = (0, 0, 0, 0)
 		[HideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7)]_MochieMetallicMapsUV ("UV", Int) = 0
 		[HideInInspector][ToggleUI]_MochieMetallicMapsStochastic ("Stochastic Sampling", Float) = 0
@@ -2006,7 +2006,7 @@ Shader ".poiyomi/Poiyomi 8.1/Poiyomi World"
 		_ClearCoatSpecularTint ("Specular Tint--{reference_property:_ClearCoatSpecularTintThemeIndex}", Color) = (1, 1, 1, 1)
 		[HideInInspector][ThryWideEnum(Off, 0, Theme Color 0, 1, Theme Color 1, 2, Theme Color 2, 3, Theme Color 3, 4, ColorChord 0, 5, ColorChord 1, 6, ColorChord 2, 7, ColorChord 3, 8, AL Theme 0, 9, AL Theme 1, 10, AL Theme 2, 11, AL Theme 3, 12)] _ClearCoatSpecularTintThemeIndex ("", Int) = 0
 		[Space(8)]
-		[sRGBWarning][ThryRGBAPacker(ClearCoat Mask, Smoothness Map, Reflection Mask, Specular Mask)]_ClearCoatMaps ("Packed Maps [Expand]--{reference_properties:[_ClearCoatMapsPan, _ClearCoatMapsUV, _ClearCoatMapsStochastic, _ClearCoatMapsClearCoatMaskChannel, _ClearCoatMapsRoughnessChannel, _ClearCoatMapsReflectionMaskChannel, _ClearCoatMapsSpecularMaskChannel, _ClearCoatMaskInvert, _ClearCoatSmoothnessMapInvert, _ClearCoatReflectionMaskInvert, _ClearCoatSpecularMaskInvert]}", 2D) = "white" { }
+		[sRGBWarning]_ClearCoatMaps ("Packed Maps [Expand]--{reference_properties:[_ClearCoatMapsPan, _ClearCoatMapsUV, _ClearCoatMapsStochastic, _ClearCoatMapsClearCoatMaskChannel, _ClearCoatMapsRoughnessChannel, _ClearCoatMapsReflectionMaskChannel, _ClearCoatMapsSpecularMaskChannel, _ClearCoatMaskInvert, _ClearCoatSmoothnessMapInvert, _ClearCoatReflectionMaskInvert, _ClearCoatSpecularMaskInvert]}", 2D) = "white" { }
 		[HideInInspector][Vector2]_ClearCoatMapsPan ("Panning", Vector) = (0, 0, 0, 0)
 		[HideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7)]_ClearCoatMapsUV ("UV", Int) = 0
 		[HideInInspector][ToggleUI]_ClearCoatMapsStochastic ("Stochastic Sampling", Float) = 0
@@ -2715,10 +2715,10 @@ Shader ".poiyomi/Poiyomi 8.1/Poiyomi World"
 		[Enum(Split Channels, 0, Merged Channels, 1)]_PathGradientType ("Gradient Type", Float) = 0
 		[ToggleUI]_PathingOverrideAlpha ("Override alpha", Float) = 0
 		//[ThryExternalTextureToolDrawer(Flood Tool, DreadScripts.GradientFlood)]
-		[sRGBWarning][ThryRGBAPacker(R Path, G Path, B Path, A Path)]_PathingMap ("RGBA Path Map--{reference_properties:[_PathingMapPan, _PathingMapUV]}", 2D) = "white" { }
+		[sRGBWarning]_PathingMap ("RGBA Path Map--{reference_properties:[_PathingMapPan, _PathingMapUV]}", 2D) = "white" { }
 		[HideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7)]_PathingMapUV ("UV", Int) = 0
 		[HideInInspector][Vector2]_PathingMapPan ("Panning", Vector) = (0, 0, 0, 0)
-		[sRGBWarning(true)][ThryRGBAPacker(1, RGB Color, A Mask, 1)]_PathingColorMap ("Color & Mask (Expand)--{reference_properties:[_PathingColorMapPan, _PathingColorMapUV]}", 2D) = "white" { }
+		[sRGBWarning(true)]_PathingColorMap ("Color & Mask (Expand)--{reference_properties:[_PathingColorMapPan, _PathingColorMapUV]}", 2D) = "white" { }
 		[HideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7)]_PathingColorMapUV ("UV", Int) = 0
 		[HideInInspector][Vector2]_PathingColorMapPan ("Panning", Vector) = (0, 0, 0, 0)
 		
@@ -3134,7 +3134,7 @@ Shader ".poiyomi/Poiyomi 8.1/Poiyomi World"
 		
 		[Space][ThryHeaderLabel(Colors and Blending, 13)]
 		[Space(4)]
-		[sRGBWarning(true)][ThryRGBAPacker(1, RGB Color, A Mask, 1)]_ALDecalColorMask ("Color & Mask--{reference_properties:[_ALDecalColorMaskPan, _ALDecalColorMaskUV]}", 2D) = "white" { }
+		[sRGBWarning(true)]_ALDecalColorMask ("Color & Mask--{reference_properties:[_ALDecalColorMaskPan, _ALDecalColorMaskUV]}", 2D) = "white" { }
 		[HideInInspector][Vector2]_ALDecalColorMaskPan ("Panning", Vector) = (0, 0, 0, 0)
 		[HideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7)] _ALDecalColorMaskUV ("UV", Int) = 0
 		[Enum(UVX, 0, UVY, 1, Volume, 2)] _ALDecalVolumeColorSource ("Source", Int) = 1
@@ -3740,9 +3740,6 @@ Shader ".poiyomi/Poiyomi 8.1/Poiyomi World"
 			[HideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos XZ, 5, Polar UV, 6, Distorted UV, 7 )]
 			*/
 			
-			#define POI_DECLARETEX_ST_UV(tex) float4 tex##_ST; float tex##UV;
-			#define POI_DECLARETEX_ST_UV_PAN(tex) float4 tex##_ST; float2 tex##Pan; float tex##UV;
-			#define POI_DECLARETEX_ST_UV_PAN_STOCHASTIC(tex) float4 tex##_ST; float2 tex##Pan; float tex##UV; float tex##Stochastic;
 			//ifex _EnableAudioLink==0
 			// Map of where features in AudioLink are.
 			#define ALPASS_DFT                      uint2(0,4)   //Size: 128, 2
@@ -6487,7 +6484,7 @@ Shader ".poiyomi/Poiyomi 8.1/Poiyomi World"
 			Texture2D _MochieMetallicMaps;
 			float _PBRMapsStochastic;
 			#endif
-			POI_DECLARETEX_ST_UV_PAN_STOCHASTIC(_MochieMetallicMaps);
+			float4 _MochieMetallicMaps_ST; float2 _MochieMetallicMapsPan; float _MochieMetallicMapsUV; float _MochieMetallicMapsStochastic;
 			float _MochieMetallicMapInvert;
 			float _MochieRoughnessMapInvert;
 			float _MochieReflectionMaskInvert;
@@ -17412,9 +17409,6 @@ Shader ".poiyomi/Poiyomi 8.1/Poiyomi World"
 			[HideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos XZ, 5, Polar UV, 6, Distorted UV, 7 )]
 			*/
 			
-			#define POI_DECLARETEX_ST_UV(tex) float4 tex##_ST; float tex##UV;
-			#define POI_DECLARETEX_ST_UV_PAN(tex) float4 tex##_ST; float2 tex##Pan; float tex##UV;
-			#define POI_DECLARETEX_ST_UV_PAN_STOCHASTIC(tex) float4 tex##_ST; float2 tex##Pan; float tex##UV; float tex##Stochastic;
 			//ifex _EnableAudioLink==0
 			// Map of where features in AudioLink are.
 			#define ALPASS_DFT                      uint2(0,4)   //Size: 128, 2
@@ -19891,7 +19885,7 @@ Shader ".poiyomi/Poiyomi 8.1/Poiyomi World"
 			Texture2D _MochieMetallicMaps;
 			float _PBRMapsStochastic;
 			#endif
-			POI_DECLARETEX_ST_UV_PAN_STOCHASTIC(_MochieMetallicMaps);
+			float4 _MochieMetallicMaps_ST; float2 _MochieMetallicMapsPan; float _MochieMetallicMapsUV; float _MochieMetallicMapsStochastic;
 			float _MochieMetallicMapInvert;
 			float _MochieRoughnessMapInvert;
 			float _MochieReflectionMaskInvert;
@@ -30190,9 +30184,6 @@ Shader ".poiyomi/Poiyomi 8.1/Poiyomi World"
 			[HideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos XZ, 5, Polar UV, 6, Distorted UV, 7 )]
 			*/
 			
-			#define POI_DECLARETEX_ST_UV(tex) float4 tex##_ST; float tex##UV;
-			#define POI_DECLARETEX_ST_UV_PAN(tex) float4 tex##_ST; float2 tex##Pan; float tex##UV;
-			#define POI_DECLARETEX_ST_UV_PAN_STOCHASTIC(tex) float4 tex##_ST; float2 tex##Pan; float tex##UV; float tex##Stochastic;
 			//ifex _EnableAudioLink==0
 			// Map of where features in AudioLink are.
 			#define ALPASS_DFT                      uint2(0,4)   //Size: 128, 2
@@ -36277,9 +36268,6 @@ Shader ".poiyomi/Poiyomi 8.1/Poiyomi World"
 			[HideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos XZ, 5, Polar UV, 6, Distorted UV, 7 )]
 			*/
 			
-			#define POI_DECLARETEX_ST_UV(tex) float4 tex##_ST; float tex##UV;
-			#define POI_DECLARETEX_ST_UV_PAN(tex) float4 tex##_ST; float2 tex##Pan; float tex##UV;
-			#define POI_DECLARETEX_ST_UV_PAN_STOCHASTIC(tex) float4 tex##_ST; float2 tex##Pan; float tex##UV; float tex##Stochastic;
 			//ifex _EnableAudioLink==0
 			// Map of where features in AudioLink are.
 			#define ALPASS_DFT                      uint2(0,4)   //Size: 128, 2

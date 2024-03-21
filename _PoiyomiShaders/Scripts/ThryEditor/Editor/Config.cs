@@ -1,11 +1,6 @@
 ﻿// Material/Shader Inspector for Unity 2017/2018
 // Copyright (C) 2019 Thryrallo
 
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Globalization;
 using System.IO;
 using UnityEditor;
 using UnityEngine;
@@ -16,7 +11,7 @@ namespace Thry
     {
         // consts
         private const string PATH_CONFIG_FILE = "Thry/Config.json";
-        private const string VERSION = "2.43.3";
+        private const string VERSION = "2.51.6";
 
         // static
         private static Config config;

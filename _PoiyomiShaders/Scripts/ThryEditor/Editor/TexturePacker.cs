@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -304,6 +303,8 @@ namespace Thry
         string _saveName;
         SaveType _saveType = SaveType.PNG;
         float _saveQuality = 1;
+        bool _showTransparency = true;
+        bool _alphaIsTransparency = true;
 
         KernelPreset _kernelPreset = KernelPreset.None;
         bool _kernelEditHorizontal = true;
@@ -352,7 +353,7 @@ namespace Thry
         Rect[] _rectsChannelIn = new Rect[20];
         Rect[] _rectsChannelOut = new Rect[4];
 
-        public void InitilizeWithData(TextureSource[] sources, OutputConfig[] configs, IEnumerable<Connection> connections, FilterMode filterMode, ColorSpace colorSpace)
+        public void InitilizeWithData(TextureSource[] sources, OutputConfig[] configs, IEnumerable<Connection> connections, FilterMode filterMode, ColorSpace colorSpace, bool alphaIsTransparency)
         {
             _textureSources = new TextureSource[]
             {
@@ -366,6 +367,7 @@ namespace Thry
             _connections = connections.ToList();
             _filterMode = filterMode;
             _colorSpace = colorSpace;
+            _alphaIsTransparency = alphaIsTransparency;
             // Reset Color Adjust
             _imageAdjust = new ImageAdjust();
             DeterminePathAndFileNameIfEmpty(true);
@@ -715,7 +717,7 @@ namespace Thry
 
             Rect r = EditorGUILayout.BeginHorizontal();
 
-            Rect background = new Rect(r.x + r.width / 2 - 400, r.y - 5, 800, 77);
+            Rect background = new Rect(r.x + r.width / 2 - 400, r.y - 5, 800, 97);
             GUI.DrawTexture(background, Texture2D.whiteTexture, ScaleMode.StretchToFill, true, 0, Styles.COLOR_BACKGROUND_1, 0, 10);
 
             GUILayout.FlexibleSpace();
@@ -724,6 +726,12 @@ namespace Thry
             GUILayout.Label(_saveFolder + "\\");
             _saveName = GUILayout.TextField(_saveName, GUILayout.MinWidth(50));
             _saveType = (SaveType)EditorGUILayout.EnumPopup(_saveType, GUILayout.Width(70));
+            GUILayout.FlexibleSpace();
+            EditorGUILayout.EndHorizontal();
+
+            EditorGUILayout.BeginHorizontal();
+            GUILayout.FlexibleSpace();
+            _alphaIsTransparency = EditorGUILayout.Toggle("Alpha is Transparency", _alphaIsTransparency);
             GUILayout.FlexibleSpace();
             EditorGUILayout.EndHorizontal();
 
@@ -843,10 +851,18 @@ namespace Thry
             Rect buttonA = new Rect(rectA.x - buttonWidth - 5, rectA.y + rectA.height / 2 - buttonHeight / 2, buttonWidth, buttonHeight);
 
             // Draw background
-            Rect background = new Rect(buttonR.x + 10, rect.y - 5, (rect.x + rect.width + 5) - (buttonR.x + 10), rect.height + 10);
+            Rect background = new Rect(buttonR.x + 10, rect.y - 20, (rect.x + rect.width + 5) - (buttonR.x + 10), rect.height + 25);
             GUI.DrawTexture(background, Texture2D.whiteTexture, ScaleMode.StretchToFill, true, 1, Styles.COLOR_BACKGROUND_1, 0, 10);
 
-            EditorGUI.DrawTextureTransparent(rect, texture != null ? texture : Texture2D.blackTexture, ScaleMode.ScaleToFit, 1);
+            if(_showTransparency)
+                EditorGUI.DrawTextureTransparent(rect, texture != null ? texture : Texture2D.blackTexture, ScaleMode.ScaleToFit, 1);
+            else 
+                EditorGUI.DrawPreviewTexture(rect, texture != null ? texture : Texture2D.blackTexture, null, ScaleMode.ScaleToFit);
+
+            // Show transparency toggle
+            Rect rectTransparency = new Rect(rect.x + 8, rect.y - 20, rect.width, 20);
+            _showTransparency = EditorGUI.Toggle(rectTransparency, "Show Transparency", _showTransparency);
+
            // draw 4 channl boxes on the left side
             if (texture != null)
             {
@@ -1084,7 +1100,7 @@ namespace Thry
                 }
             }
 
-            _outputTexture = Pack(_textureSources, _outputConfigs, _connections, _filterMode, _colorSpace, _imageAdjust, _kernel_x, _kernel_y, _kernel_loops, _kernel_strength, _kernel_twoPass, _kernel_grayScale, _kernel_channels);
+            _outputTexture = Pack(_textureSources, _outputConfigs, _connections, _filterMode, _colorSpace, _imageAdjust, _kernel_x, _kernel_y, _kernel_loops, _kernel_strength, _kernel_twoPass, _kernel_grayScale, _kernel_channels, _alphaIsTransparency);
             if(OnChange != null) OnChange(_outputTexture, _textureSources, _outputConfigs, _connections.ToArray());
         }
 
@@ -1106,7 +1122,7 @@ namespace Thry
         }
 
         public static Texture2D Pack(TextureSource[] sources, OutputConfig[] outputConfigs, IEnumerable<Connection> connections, FilterMode targetFilterMode, ColorSpace targetColorSpace, ImageAdjust colorAdjust = null,
-            float[] kernelX = null, float[] kernelY = null, int kernelLoops = 1, float kernelStrength = 1, bool kernelTwoPass = false, bool kernelGrayscale = false, bool[] kernelChannels = null)
+            float[] kernelX = null, float[] kernelY = null, int kernelLoops = 1, float kernelStrength = 1, bool kernelTwoPass = false, bool kernelGrayscale = false, bool[] kernelChannels = null, bool alphaIsTransparency = false)
         {
             if(colorAdjust == null)
             {
@@ -1140,8 +1156,6 @@ namespace Thry
             int gCons = SetComputeValues(sources, connections, outputConfigs[1], TextureChannelOut.G, repeatTextures);
             int bCons = SetComputeValues(sources, connections, outputConfigs[2], TextureChannelOut.B, repeatTextures);
             int aCons = SetComputeValues(sources, connections, outputConfigs[3], TextureChannelOut.A, repeatTextures);
-
-            bool hasTransparency = aCons > 0 || outputConfigs[3].Fallback < 1; 
 
             ComputeShader.Dispatch(0, width / 8 + 1, height / 8 + 1, 1);
 
@@ -1182,7 +1196,7 @@ namespace Thry
             atlas.ReadPixels(new Rect(0, 0, width, height), 0, 0);
             atlas.filterMode = targetFilterMode;
             atlas.wrapMode = TextureWrapMode.Clamp;
-            atlas.alphaIsTransparency = hasTransparency;
+            atlas.alphaIsTransparency = alphaIsTransparency;
             atlas.Apply();
 
             return atlas;
@@ -1342,7 +1356,7 @@ namespace Thry
             importer.streamingMipmaps = true;
             importer.sRGBTexture = _colorSpace == ColorSpace.Gamma;
             importer.filterMode = _filterMode;
-            importer.alphaIsTransparency = _outputTexture.alphaIsTransparency;
+            importer.alphaIsTransparency = _alphaIsTransparency;
             importer.textureCompression = TextureImporterCompression.Compressed;
             TextureImporterFormat overwriteFormat = importer.DoesSourceTextureHaveAlpha() ? 
                 Config.Singleton.texturePackerCompressionWithAlphaOverwrite : Config.Singleton.texturePackerCompressionNoAlphaOverwrite;

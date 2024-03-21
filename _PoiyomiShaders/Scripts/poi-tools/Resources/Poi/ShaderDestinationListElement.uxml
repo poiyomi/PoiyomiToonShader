@@ -1,0 +1,18 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="True">
+    <Style src="project://database/Assets/_PoiyomiShaders/Scripts/poi-tools/Resources/Poi/ModularShadersGeneratorStyle.uss?fileID=7433441132597879392&amp;guid=a77a12c151c44847b8de5c6c7be71d8e&amp;type=3#ModularShadersGeneratorStyle" />
+    <ui:VisualElement style="flex-direction: row; flex-grow: 1; margin-top: 2px;">
+        <ui:VisualElement style="justify-content: center; display: flex;">
+            <ui:Toggle name="enabledToggle" />
+        </ui:VisualElement>
+        <ui:VisualElement style="flex-grow: 1;">
+            <ui:VisualElement style="flex-grow: 1; flex-direction: row; align-items: flex-end;">
+                <ui:TextField picking-mode="Ignore" label="Destination" readonly="true" name="folderPath" class="readonly-text-field" style="flex-shrink: 1; flex-grow: 1;" />
+                <ui:Button text="Browse" parse-escape-sequences="true" display-tooltip-when-elided="true" name="browseButton" />
+            </ui:VisualElement>
+            <ui:VisualElement style="flex-grow: 1; flex-direction: row; align-items: center;">
+                <ui:TextField picking-mode="Ignore" label="Shader Name Match" name="nameMatch" style="flex-shrink: 1; flex-grow: 1;" />
+                <ui:EnumField type="Poi.Tools.ShaderDestinationManager+ShaderDestination+MatchType, Poi.Tools" name="matchType" style="flex-shrink: 1; max-width: 110px;" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

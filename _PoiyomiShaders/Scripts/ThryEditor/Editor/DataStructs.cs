@@ -2,13 +2,11 @@
 // Copyright (C) 2019 Thryrallo
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.Rendering;
 
 namespace Thry
 {
@@ -109,9 +107,9 @@ namespace Thry
         public DefineableAction altClick;
         public DefineableAction onClick;
         public DefineableCondition condition_show = new DefineableCondition();
-        public DefineableCondition condition_expand = new DefineableCondition();
         public string condition_showS;
         public DefineableCondition condition_enable = null;
+        public DefineableCondition condition_enable_children = null;
         public PropertyValueAction[] on_value_actions;
         public string on_value;
         public DefineableAction[] actions;
@@ -125,8 +123,11 @@ namespace Thry
         public string remote_version_url;
         public string generic_string;
         public bool never_lock;
-        public bool draw_border;
         public float margin_top = 0;
+        public string[] alts;
+        public bool persistent_expand = true;
+        public bool default_expand = false;
+        public bool ref_float_toggles_expand = true;
 
         public static PropertyOptions Deserialize(string s)
         {
@@ -272,6 +273,9 @@ namespace Thry
         {
             if(
                 (p.type == MaterialProperty.PropType.Float   && p.floatValue.ToString()   ==  value)          ||
+#if UNITY_2022_1_OR_NEWER
+                (p.type == MaterialProperty.PropType.Int     && p.intValue.ToString()     ==  value)          ||
+#endif
                 (p.type == MaterialProperty.PropType.Range   && p.floatValue.ToString()   ==  value)          ||
                 (p.type == MaterialProperty.PropType.Color   && p.colorValue.ToString()   ==  value)          ||
                 (p.type == MaterialProperty.PropType.Vector  && p.vectorValue.ToString()  ==  value)          ||
@@ -532,13 +536,13 @@ namespace Thry
                 case DefineableConditionType.PROPERTY_BOOL:
                     materialProperty = GetMaterialProperty();
                     if (materialProperty == null) return false;
-                    if (_compareType == CompareType.NONE) return materialProperty.floatValue == 1;
-                    if (_compareType == CompareType.EQUAL) return materialProperty.floatValue == _floatValue;
-                    if (_compareType == CompareType.NOT_EQUAL) return materialProperty.floatValue != _floatValue;
-                    if (_compareType == CompareType.SMALLER) return materialProperty.floatValue < _floatValue;
-                    if (_compareType == CompareType.BIGGER) return materialProperty.floatValue > _floatValue;
-                    if (_compareType == CompareType.BIGGER_EQ) return materialProperty.floatValue >= _floatValue;
-                    if (_compareType == CompareType.SMALLER_EQ) return materialProperty.floatValue <= _floatValue;
+                    if (_compareType == CompareType.NONE) return materialProperty.GetNumber() == 1;
+                    if (_compareType == CompareType.EQUAL) return materialProperty.GetNumber() == _floatValue;
+                    if (_compareType == CompareType.NOT_EQUAL) return materialProperty.GetNumber() != _floatValue;
+                    if (_compareType == CompareType.SMALLER) return materialProperty.GetNumber() < _floatValue;
+                    if (_compareType == CompareType.BIGGER) return materialProperty.GetNumber() > _floatValue;
+                    if (_compareType == CompareType.BIGGER_EQ) return materialProperty.GetNumber() >= _floatValue;
+                    if (_compareType == CompareType.SMALLER_EQ) return materialProperty.GetNumber() <= _floatValue;
                     break;
                 case DefineableConditionType.TEXTURE_SET:
                     materialProperty = GetMaterialProperty();
@@ -547,9 +551,9 @@ namespace Thry
                 case DefineableConditionType.DROPDOWN:
                     materialProperty = GetMaterialProperty();
                     if (materialProperty == null) return false;
-                    if (_compareType == CompareType.NONE) return materialProperty.floatValue == 1;
-                    if (_compareType == CompareType.EQUAL) return "" + materialProperty.floatValue == _value;
-                    if (_compareType == CompareType.NOT_EQUAL) return "" + materialProperty.floatValue != _value;
+                    if (_compareType == CompareType.NONE) return materialProperty.GetNumber() == 1;
+                    if (_compareType == CompareType.EQUAL) return "" + materialProperty.GetNumber() == _value;
+                    if (_compareType == CompareType.NOT_EQUAL) return "" + materialProperty.GetNumber() != _value;
                     break;
                 case DefineableConditionType.PROPERTY_IS_ANIMATED:
                     return ShaderOptimizer.IsAnimated(_materialInsteadOfEditor, _obj);
@@ -724,10 +728,12 @@ namespace Thry
         {
             // Debug.Log("Parsing single: " + s);
 
-            DefineableCondition con = new DefineableCondition();
-            con._materialInsteadOfEditor = useThisMaterialInsteadOfOpenEditor;
+            DefineableCondition con = new DefineableCondition
+            {
+                _materialInsteadOfEditor = useThisMaterialInsteadOfOpenEditor
+            };
 
-            if(s.IndexOfAny(ComparissionLiteralsToCheckFor) != -1)
+            if (s.IndexOfAny(ComparissionLiteralsToCheckFor) != -1)
             {
                 //is a comparission
                 con.data = s;
@@ -757,6 +763,16 @@ namespace Thry
             {
                 con.type = DefineableConditionType.PROPERTY_IS_ANIMATED;
                 con.data = s.Replace("isAnimated(", "").TrimEnd(')');
+                return con;
+            }
+            if(s.Equals("true", StringComparison.OrdinalIgnoreCase))
+            {
+                con.type = DefineableConditionType.TRUE;
+                return con;
+            }
+            if(s.Equals("false", StringComparison.OrdinalIgnoreCase))
+            {
+                con.type = DefineableConditionType.FALSE;
                 return con;
             }
             return con;

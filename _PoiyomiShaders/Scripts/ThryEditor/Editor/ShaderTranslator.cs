@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using UnityEditor;
@@ -58,10 +56,23 @@ namespace Thry.ThryEditor
                             if (p != null)
                             {
                                 float f = p.FindPropertyRelative("second").floatValue;
-                                if (trans.Math.Length > 0) f = Helper.SolveMath(trans.Math, f);
+                                if (string.IsNullOrWhiteSpace(trans.Math) == false) 
+                                    f = Helper.SolveMath(trans.Math, f);
                                 editor.PropertyDictionary[trans.Target].MaterialProperty.floatValue = f;
                             }
                             break;
+#if UNITY_2022_1_OR_NEWER
+                        case MaterialProperty.PropType.Int:
+                            p = GetProperty(serializedMaterial, "m_SavedProperties.m_Ints", trans.Origin);
+                            if (p != null)
+                            {
+                                float f = p.FindPropertyRelative("second").intValue;
+                                if (string.IsNullOrWhiteSpace(trans.Math) == false) 
+                                    f = Helper.SolveMath(trans.Math, f);
+                                editor.PropertyDictionary[trans.Target].MaterialProperty.intValue = (int)f;
+                            }
+                            break;
+#endif
                         case MaterialProperty.PropType.Vector:
                             p = GetProperty(serializedMaterial, "m_SavedProperties.m_Colors", trans.Origin);
                             if (p != null) editor.PropertyDictionary[trans.Target].MaterialProperty.vectorValue = p.FindPropertyRelative("second").vector4Value;
@@ -124,10 +135,16 @@ namespace Thry.ThryEditor
         {
             if(editor.SuggestedTranslationDefinition != null)
             {
-                if(GUILayout.Button("Apply " + editor.SuggestedTranslationDefinition.Name + " shader translation."))
+                GUILayoutUtility.GetRect(0, 5);
+                Color backup = GUI.backgroundColor;
+                GUI.backgroundColor = Color.green;
+                if(GUILayout.Button($"Apply {editor.SuggestedTranslationDefinition.Name}"))
                 {
                     editor.SuggestedTranslationDefinition.Apply(editor);
+                    editor.SuggestedTranslationDefinition = null;
                 }
+                GUI.backgroundColor = backup;
+                GUILayoutUtility.GetRect(0, 5);
             }
         }
 

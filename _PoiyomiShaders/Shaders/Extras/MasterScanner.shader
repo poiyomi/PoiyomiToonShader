@@ -1,4 +1,4 @@
-Shader ".poiyomi/Extras/MasterScanner"
+Shader ".poiyomi/Old Versions/Extras/MasterScanner"
 {
     properties
     {

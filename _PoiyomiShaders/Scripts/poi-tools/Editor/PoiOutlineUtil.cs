@@ -1,4 +1,5 @@
 #if UNITY_EDITOR
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -195,13 +196,13 @@ namespace Poi.Tools
                 return;
             }
 
-            if(normals == null && normals.Length < 2)
+            if(normals == null || normals.Length < 2)
             {
                 EditorGUILayout.HelpBox(TEXT_WARN_MESH_HAS_NO_NORM[lang], MessageType.Error);
                 return;
             }
 
-            if(tangents == null && tangents.Length < 2)
+            if(tangents == null || tangents.Length < 2)
             {
                 EditorGUILayout.HelpBox(TEXT_WARN_MESH_HAS_NO_TANJ[lang], MessageType.Error);
                 return;
@@ -488,8 +489,8 @@ namespace Poi.Tools
             Vector4[] tangents = sharedMesh.tangents;
 
             if(vertices == null || vertices.Length < 2 ||
-               normals == null && normals.Length < 2 ||
-               tangents == null && tangents.Length < 2)
+               normals == null || normals.Length < 2 ||
+               tangents == null || tangents.Length < 2)
             {
                 return;
             }
@@ -501,8 +502,19 @@ namespace Poi.Tools
             {
                 if(!meshSettings[id][mi].isBakeTarget) continue;
                 int[] sharedIndices = GetOptIndices(sharedMesh, mi);
-                BakeNormalAverage(ref outColors, sharedIndices, meshSettings[id][mi], vertices, normals, tangents);
-                EditorUtility.ClearProgressBar();
+                try
+                {
+                    BakeNormalAverage(ref outColors, sharedIndices, meshSettings[id][mi], vertices, normals, tangents);
+                }
+                catch(Exception ex)
+                {
+                    Debug.LogException(ex);
+                    isCancelled = true;
+                }
+                finally
+                {
+                    EditorUtility.ClearProgressBar();
+                }
                 if(isCancelled) return;
             }
 

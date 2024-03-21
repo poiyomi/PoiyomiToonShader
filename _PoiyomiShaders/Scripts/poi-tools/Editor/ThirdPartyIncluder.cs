@@ -169,44 +169,44 @@ namespace Poi.Tools
         static void OnPostprocessAllAssets(string[] importedAssets, string[] deletedAssets, string[] movedAssets, string[] movedFromAssetPaths)
 #endif
         {
-            try
+            List<ThirdPartyIncluderAsset.ThirdPartyInclude> found = new List<ThirdPartyIncluderAsset.ThirdPartyInclude>();
+            foreach (var thirdPartyIncluder in ThirdPartyIncluder.thirdPartyIncluders)
             {
-                AssetDatabase.StartAssetEditing();
-                foreach (var thirdPartyIncluder in ThirdPartyIncluder.thirdPartyIncluders)
+                foreach (var thirdPartyInclude in thirdPartyIncluder.ThirdPartyIncludes)
                 {
-                    int i = 0;
-                    foreach (var thirdPartyInclude in thirdPartyIncluder.ThirdPartyIncludes)
+                    foreach (string importedAsset in importedAssets)
                     {
-                        foreach (string importedAsset in importedAssets)
+                        if (thirdPartyInclude.sourcePath.Replace("\\", "/") == importedAsset)
                         {
-                            if (thirdPartyInclude.sourcePath.Replace("\\", "/") == importedAsset)
-                            {
-                                string sourcePath = Path.Combine(ThirdPartyIncluder.projectPath, importedAsset);
-                                string destinationPath = Path.Combine(ThirdPartyIncluder.projectPath, thirdPartyInclude.destinationPath);
-                                if (thirdPartyInclude.type == ThirdPartyIncluderAsset.ThirdPartyIncludeType.FileCopy)
-                                {
-                                    if (ThirdPartyIncluder.CopyIfGood(sourcePath, thirdPartyInclude.sourceGUID, destinationPath))
-                                    {
-                                        i++;
-                                    }
-                                }
-                                else if (thirdPartyInclude.type == ThirdPartyIncluderAsset.ThirdPartyIncludeType.DefineIfExists)
-                                {
-                                    if (ThirdPartyIncluder.WriteDefineIfExists(sourcePath, thirdPartyInclude.sourceGUID, destinationPath, thirdPartyInclude.defineName))
-                                    {
-                                        i++;
-                                    }
-                                }
-                            }
+                            found.Add(thirdPartyInclude);
                         }
                     }
-                    if (i > 0) Debug.Log($"[ThirdPartyIncluder] Found {thirdPartyIncluder.name} and did {i}/{thirdPartyIncluder.ThirdPartyIncludes.Length} actions", thirdPartyIncluder);
                 }
             }
-            finally
+            if (found.Count > 0)
             {
-                AssetDatabase.StopAssetEditing();
-                AssetDatabase.Refresh();
+                try
+                {
+                    AssetDatabase.StartAssetEditing();
+                    foreach (var thirdPartyInclude in found)
+                    {
+                        string sourcePath = Path.Combine(ThirdPartyIncluder.projectPath, thirdPartyInclude.sourcePath);
+                        string destinationPath = Path.Combine(ThirdPartyIncluder.projectPath, thirdPartyInclude.destinationPath);
+                        if (thirdPartyInclude.type == ThirdPartyIncluderAsset.ThirdPartyIncludeType.FileCopy)
+                        {
+                            ThirdPartyIncluder.CopyIfGood(sourcePath, thirdPartyInclude.sourceGUID, destinationPath);
+                        }
+                        else if (thirdPartyInclude.type == ThirdPartyIncluderAsset.ThirdPartyIncludeType.DefineIfExists)
+                        {
+                            ThirdPartyIncluder.WriteDefineIfExists(sourcePath, thirdPartyInclude.sourceGUID, destinationPath, thirdPartyInclude.defineName);
+                        }
+                    }
+                }
+                finally
+                {
+                    AssetDatabase.StopAssetEditing();
+                    AssetDatabase.Refresh();
+                }
             }
         }
     }

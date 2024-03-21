@@ -48,7 +48,7 @@ namespace Thry
             _gizmoMaterial.SetVector("_Scale", _propScale.vectorValue);
             _gizmoMaterial.SetFloat("_Rotation", _propRotation.floatValue);
             _gizmoMaterial.SetVector("_Offset", _propOffset.vectorValue);
-            _gizmoMaterial.SetFloat("_UVChannel", _propUVChannel.floatValue);
+            _gizmoMaterial.SetNumber("_UVChannel", _propUVChannel.GetNumber());
             EditorGUI.DrawPreviewTexture(new Rect(0, 0, position.width, position.height), Texture2D.whiteTexture, _gizmoMaterial);
         }
 

@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
 using UnityEditor;
 using UnityEngine;
 
@@ -154,9 +152,9 @@ namespace Thry
             // add some padding at the top
             position.y += 5;
 
-            position.x += (EditorGUI.indentLevel) * 15;
-            position.width -= (EditorGUI.indentLevel) * 15;
             Rect border = new Rect(position);
+            border.x += (EditorGUI.indentLevel) * 15;
+            border.width -= (EditorGUI.indentLevel) * 15;
             border.height = 80; // for texture & offset
 
             Rect[] additionRects = new Rect[(DrawingData.CurrentTextureProperty.DoesReferencePropertyExist ? 1 : 0) +
@@ -168,17 +166,17 @@ namespace Thry
                 foreach (string r_property in DrawingData.CurrentTextureProperty.Options.reference_properties)
                 {
                     float height = editor.GetPropertyHeight(ShaderEditor.Active.PropertyDictionary[r_property].MaterialProperty);
-                    additionRects[i++] = new Rect(border.x + 15, border.y + border.height - 8, border.width - 15, height);
+                    additionRects[i++] = new Rect(position.x + 30, border.y + border.height - 8, border.width , height);
                     border.height += height + 3; // add a little padding
                 }
             }
             if (DrawingData.CurrentTextureProperty.DoesReferencePropertyExist)
             {
                 float height = editor.GetPropertyHeight(ShaderEditor.Active.PropertyDictionary[DrawingData.CurrentTextureProperty.Options.reference_property].MaterialProperty);
-                additionRects[i++] = new Rect(border.x + 15, border.y + border.height, border.width - 15, height);
+                additionRects[i++] = new Rect(position.x + 30, border.y + border.height, border.width , height);
                 border.height += height + 3; // add a little padding
             }
-            Rect vramRect = new Rect(border.x + 30, border.y + border.height - 6, border.width - 15, EditorStyles.label.lineHeight);
+            Rect vramRect = new Rect(border.x + 30, border.y + border.height - 6, border.width , EditorStyles.label.lineHeight);
             border.height += EditorStyles.label.lineHeight;
 
             // Reserve space
@@ -256,11 +254,13 @@ namespace Thry
                 if (ShaderEditor.Active.IsLockedMaterial) EditorGUI.EndDisabledGroup();
 
                 PropertyOptions options = DrawingData.CurrentTextureProperty.Options;
+                float labelWith = EditorGUIUtility.labelWidth;
+                EditorGUIUtility.labelWidth = EditorGUI.indentLevel * 15 + 35;
                 if (options.reference_property != null)
                 {
                     ShaderProperty property = ShaderEditor.Active.PropertyDictionary[options.reference_property];
                     Rect r = additionRects[additionRects.Length - 1];
-                    r.width = optionsSide.width - 20;
+                    r.width = optionsSide.width;
                     property.Draw(new CRect(r));
                 }
                 if (options.reference_properties != null)
@@ -270,10 +270,11 @@ namespace Thry
                     {
                         ShaderProperty property = ShaderEditor.Active.PropertyDictionary[r_property];
                         Rect r = additionRects[i++];
-                        r.width = optionsSide.width - 20;
+                        r.width = optionsSide.width;
                         property.Draw(new CRect(r));
                     }
                 }
+                EditorGUIUtility.labelWidth = labelWith;
 
                 //readd disabled group
                 if (ShaderEditor.Active.IsLockedMaterial) EditorGUI.BeginDisabledGroup(false);
@@ -291,11 +292,12 @@ namespace Thry
             EditorGUI.indentLevel -= 2;
             EditorGUIUtility.labelWidth = oldLabelWidth;
 
-            Rect label_rect = new RectOffset(-5, 0, -2, 0).Add(position);
+            Rect label_rect = new RectOffset(-5, 0, -2, 0).Add(border);
+            label_rect.height = EditorGUIUtility.singleLineHeight;
             GUI.Label(label_rect, label);
 
             DrawingData.LastGuiObjectRect = border;
-            DrawingData.TooltipCheckRect = Rect.MinMaxRect(position.x, position.y, scale_offset_rect.xMax, scale_offset_rect.yMax);
+            DrawingData.TooltipCheckRect = Rect.MinMaxRect(border.x, border.y, scale_offset_rect.xMax, scale_offset_rect.yMax);
             DrawingData.IconsPositioningHeight = scale_offset_rect.y;
         }
 
@@ -545,7 +547,7 @@ namespace Thry
             selected = EditorGUILayout.Popup(label.text, selected, locales);
             if (EditorGUI.EndChangeCheck())
             {
-                ShaderEditor.Active.PropertyDictionary[ShaderEditor.PROPERTY_NAME_LOCALE].MaterialProperty.floatValue = selected;
+                ShaderEditor.Active.PropertyDictionary[ShaderEditor.PROPERTY_NAME_LOCALE].MaterialProperty.SetNumber(selected);
                 ShaderEditor.ReloadActive();
             }
         }
@@ -891,244 +893,6 @@ namespace Thry
             }
             GUILayout.FlexibleSpace();
             EditorGUILayout.EndHorizontal();
-        }
-    }
-
-    public class ThryHeaderHandler
-    {
-        private MaterialProperty property;
-
-        private bool _isExpanded;
-        private string keyword;
-        private string end;
-
-        private bool _disableContentWhenKeywordOff;
-
-        int p_xOffset;
-        int p_xOffset_total;
-        public int xOffset
-        {
-            set
-            {
-                p_xOffset = value;
-                p_xOffset_total = value * 15 + 15;
-            }
-        }
-
-        private ButtonData button;
-
-        public ThryHeaderHandler(string end, string keyword, float disableContentWhenKeywordOff)
-        {
-            this.end = end;
-            this.keyword = keyword;
-            this._disableContentWhenKeywordOff = disableContentWhenKeywordOff == 1;
-        }
-
-        public ThryHeaderHandler(string end, string keyword) : this(end, keyword, 0) { }
-        public ThryHeaderHandler(string end) : this(end, null, 0) { }
-        public ThryHeaderHandler() : this(null, null, 0) { }
-
-        public string GetEndProperty()
-        {
-            return end;
-        }
-
-        public bool IsExpanded
-        {
-            get
-            {
-                return _isExpanded;
-            }
-        }
-
-        public bool DisableContent
-        {
-            get
-            {
-                return _disableContentWhenKeywordOff && !ShaderEditor.Active.Materials[0].IsKeywordEnabled(keyword);
-            }
-        }
-
-        public void Toggle()
-        {
-            _isExpanded = !_isExpanded;
-            foreach (Material m in ShaderEditor.Active.Materials) m.SetFloat(property.name, _isExpanded ? 1 : 0);
-        }
-
-        public void OnGUI(Rect position, MaterialProperty prop, GUIContent label, MaterialEditor editor)
-        {
-            if (this.property == null)
-            {
-                this.property = prop;
-                this._isExpanded = prop.floatValue == 1;
-            }
-
-            PropertyOptions options = ShaderEditor.Active.CurrentProperty.Options;
-            Event e = Event.current;
-
-            position.width -= p_xOffset_total - position.x;
-            position.x = p_xOffset_total;
-
-            DrawingData.LastGuiObjectHeaderRect = position;
-
-            DrawBoxAndContent(position, e, label, options);
-
-            DrawSmallArrow(position, e);
-            HandleToggleInput(position);
-        }
-
-        private void DrawBoxAndContent(Rect rect, Event e, GUIContent content, PropertyOptions options)
-        {
-            if (options.reference_property != null && ShaderEditor.Active.PropertyDictionary.ContainsKey(options.reference_property))
-            {
-                GUI.Box(rect, new GUIContent("     " + content.text, content.tooltip), Styles.dropDownHeader);
-                DrawIcons(rect, options, e);
-
-                Rect togglePropertyRect = new Rect(rect);
-                togglePropertyRect.x += 5;
-                togglePropertyRect.y += 1;
-                togglePropertyRect.height -= 4;
-                togglePropertyRect.width = GUI.skin.font.fontSize * 3;
-                float fieldWidth = EditorGUIUtility.fieldWidth;
-                EditorGUIUtility.fieldWidth = 20;
-                ShaderProperty prop = ShaderEditor.Active.PropertyDictionary[options.reference_property];
-
-                int xOffset = prop.XOffset;
-                prop.XOffset = 0;
-                prop.Draw(new CRect(togglePropertyRect), new GUIContent(), isInHeader: true);
-                prop.XOffset = xOffset;
-                EditorGUIUtility.fieldWidth = fieldWidth;
-            }else if(keyword != null)
-            {
-                GUI.Box(rect, "     " + content.text, Styles.dropDownHeader);
-                DrawIcons(rect, options, e);
-
-                Rect togglePropertyRect = new Rect(rect);
-                togglePropertyRect.x += 20;
-                togglePropertyRect.width = 20;
-
-                EditorGUI.BeginChangeCheck();
-                bool keywordOn = EditorGUI.Toggle(togglePropertyRect, "", ShaderEditor.Active.Materials[0].IsKeywordEnabled(keyword));
-                if (EditorGUI.EndChangeCheck())
-                {
-                    MaterialHelper.ToggleKeyword(ShaderEditor.Active.Materials, keyword, keywordOn);
-                }
-            }
-            else
-            {
-                GUI.Box(rect, content, Styles.dropDownHeader);
-                DrawIcons(rect, options, e);
-            }
-
-        }
-
-        /// <summary>
-        /// Draws the icons for ShaderEditor features like linking and copying
-        /// </summary>
-        /// <param name="rect"></param>
-        /// <param name="e"></param>
-        private void DrawIcons(Rect rect, PropertyOptions options, Event e)
-        {
-            Rect buttonRect = new Rect(rect);
-            buttonRect.y += 1;
-            buttonRect.height -= 4;
-            buttonRect.width = buttonRect.height;
-
-            float right = rect.x + rect.width;
-            buttonRect.x = right - 56;
-            DrawHelpButton(buttonRect, options, e);
-            buttonRect.x = right - 38;
-            DrawLinkSettings(buttonRect, e);
-            buttonRect.x = right - 20;
-            DrawDowdownSettings(buttonRect, e);
-        }
-
-        private void DrawHelpButton(Rect rect, PropertyOptions options, Event e)
-        {
-            ButtonData button = this.button != null ? this.button : options.button_help;
-            if (button != null && button.condition_show.Test())
-            {
-                if (GuiHelper.Button(rect, Styles.icon_style_help))
-                {
-                    ShaderEditor.Input.Use();
-                    if (button.action != null) button.action.Perform(ShaderEditor.Active?.Materials);
-                }
-            }
-        }
-
-        private void DrawDowdownSettings(Rect rect, Event e)
-        {
-            if (GuiHelper.Button(rect, Styles.icon_style_menu))
-            {
-                ShaderEditor.Input.Use();
-                Rect buttonRect = new Rect(rect);
-                buttonRect.width = 150;
-                buttonRect.x = Mathf.Min(Screen.width - buttonRect.width, buttonRect.x);
-                buttonRect.height = 60;
-                float maxY = GUIUtility.ScreenToGUIPoint(new Vector2(0, EditorWindow.focusedWindow.position.y + Screen.height)).y - 2.5f * buttonRect.height;
-                buttonRect.y = Mathf.Min(buttonRect.y - buttonRect.height / 2, maxY);
-
-                ShowHeaderContextMenu(buttonRect, ShaderEditor.Active.CurrentProperty, ShaderEditor.Active.Materials[0]);
-            }
-        }
-
-        private void DrawLinkSettings(Rect rect, Event e)
-        {
-            if (GuiHelper.Button(rect, Styles.icon_style_linked, Styles.COLOR_ICON_ACTIVE_CYAN, MaterialLinker.IsLinked(ShaderEditor.Active.CurrentProperty.MaterialProperty)))
-            {
-                ShaderEditor.Input.Use();
-                List<Material> linked_materials = MaterialLinker.GetLinked(ShaderEditor.Active.CurrentProperty.MaterialProperty);
-                MaterialLinker.Popup(rect, linked_materials, ShaderEditor.Active.CurrentProperty.MaterialProperty);
-            }
-        }
-
-        void ShowHeaderContextMenu(Rect position, ShaderPart property, Material material)
-        {
-            var menu = new GenericMenu();
-            menu.AddItem(new GUIContent("Reset"), false, delegate ()
-            {
-                property.CopyFromMaterial(new Material(material.shader), true);
-                List<Material> linked_materials = MaterialLinker.GetLinked(property.MaterialProperty);
-                if (linked_materials != null)
-                    foreach (Material m in linked_materials)
-                        property.CopyToMaterial(m, true);
-            });
-            menu.AddItem(new GUIContent("Copy"), false, delegate ()
-            {
-                Mediator.copy_material = new Material(material);
-                Mediator.transfer_group = property;
-            });
-            menu.AddItem(new GUIContent("Paste"), false, delegate ()
-            {
-                if (Mediator.copy_material != null || Mediator.transfer_group != null)
-                {
-                    property.TransferFromMaterialAndGroup(Mediator.copy_material, Mediator.transfer_group, true);
-                    List<Material> linked_materials = MaterialLinker.GetLinked(property.MaterialProperty);
-                    if (linked_materials != null)
-                        foreach (Material m in linked_materials)
-                            property.CopyToMaterial(m, true);
-                }
-            });
-            menu.DropDown(position);
-        }
-
-        private void DrawSmallArrow(Rect rect, Event e)
-        {
-            if (e.type == EventType.Repaint)
-            {
-                var toggleRect = new Rect(rect.x + 4f, rect.y + 2f, 13f, 13f);
-                EditorStyles.foldout.Draw(toggleRect, false, false, _isExpanded, false);
-            }
-        }
-
-        private void HandleToggleInput(Rect rect)
-        {
-            //Ignore unity uses is cause disabled will use the event to prevent toggling
-            if (ShaderEditor.Input.LeftClick_IgnoreLocked && rect.Contains(ShaderEditor.Input.mouse_position) && !ShaderEditor.Input.is_alt_down)
-            {
-                this.Toggle();
-                ShaderEditor.Input.Use();
-            }
         }
     }
 }

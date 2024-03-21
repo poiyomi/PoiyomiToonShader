@@ -1,4 +1,4 @@
-Shader ".poiyomi/Extras/StencilInvis"
+Shader ".poiyomi/Old Versions/Extras/StencilInvis"
 {
     properties
     {

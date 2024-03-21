@@ -1,9 +1,6 @@
 ﻿// Material/Shader Inspector for Unity 2017/2018
 // Copyright (C) 2019 Thryrallo
 
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
@@ -63,6 +60,15 @@ namespace Thry
         public static GUIStyle icon_style_tools = CreateIconStyle(EditorGUIUtility.IconContent("d_SceneViewTools"));
         public static GUIStyle icon_style_linked = CreateIconStyle(LoadTextureByGUID(RESOURCE_GUID.ICON_LINK));
         public static GUIStyle icon_style_thryIcon = CreateIconStyle(LoadTextureByGUID(RESOURCE_GUID.ICON_THRY));
+
+        public static readonly GUIContent revertContent = EditorGUIUtility.TrTextContent("Revert");
+        public static readonly GUIContent revertAllContent = EditorGUIUtility.TrTextContent("Revert all Overrides");
+        public static readonly GUIContent lockContent = EditorGUIUtility.TrTextContent("Lock in children");
+        public static readonly GUIContent lockOriginContent = EditorGUIUtility.TrTextContent("See lock origin");
+        public static string revertMultiText = L10n.Tr("Revert on {0} Material(s)");
+        public static string applyToMaterialText = L10n.Tr("Apply to Material '{0}'");
+        public static string applyToVariantText = L10n.Tr("Apply as Override in Variant '{0}'");
+        public static readonly GUIContent resetContent = EditorGUIUtility.TrTextContent("Reset");
 
         public static Texture texture_icon_shaders = EditorGUIUtility.IconContent("d_ShaderVariantCollection Icon").image;
 

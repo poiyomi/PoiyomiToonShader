@@ -2,11 +2,9 @@
 // Copyright (C) 2019 Thryrallo
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text.RegularExpressions;
 using UnityEditor;
 using UnityEngine;
 
@@ -282,7 +280,8 @@ namespace Thry
         string _label3;
         string _label4;
         bool _firstTextureIsRGB;
-        bool _makeSRGB = true;
+        ColorSpace _colorSpace = ColorSpace.Gamma;
+        bool _alphaIsTransparency = true;
 
         // for locale changing
         // i tried using an array to save the default labels, but the data just got lost somewhere. not sure why
@@ -312,33 +311,23 @@ namespace Thry
 
         // end locale changing
 
-        public ThryRGBAPackerDrawer(string label1, string label2, string label3, string label4, float sRGB)
+        public ThryRGBAPackerDrawer(string label1, string label2, string label3, string label4, string colorspace, string alphaIsTransparency)
         {
-            _defaultLabel1 = label1;
-            _defaultLabel2 = label2;
-            _defaultLabel3 = label3;
-            _defaultLabel4 = label4;
-            _label1 = label1;
-            _label2 = label2;
-            _label3 = label3;
-            _label4 = label4;
-            _makeSRGB = sRGB == 1;
+            _label1 = string.IsNullOrWhiteSpace(label1) ? null : label1;
+            _label2 = string.IsNullOrWhiteSpace(label2) ? null : label2;
+            _label3 = string.IsNullOrWhiteSpace(label3) ? null : label3;
+            _label4 = string.IsNullOrWhiteSpace(label4) ? null : label4;
+            _defaultLabel1 = _label1;
+            _defaultLabel2 = _label2;
+            _defaultLabel3 = _label3;
+            _defaultLabel4 = _label4;
+            _colorSpace = (colorspace == "linear" || colorspace == "Linear") ? ColorSpace.Linear : ColorSpace.Gamma;
+            _alphaIsTransparency = alphaIsTransparency == "true" || alphaIsTransparency == "True";
         }
 
-        public ThryRGBAPackerDrawer(string label1, string label2, float sRGB) : this(label1, label2, null, null, sRGB) { }
-        public ThryRGBAPackerDrawer(string label1, string label2, string label3, float sRGB) : this(label1, label2, label3, null, sRGB) { }
-
-        public ThryRGBAPackerDrawer(string label1, string label2) : this(label1, label2, null, null, 0) { }
-        public ThryRGBAPackerDrawer(string label1, string label2, string label3) : this(label1, label2, label3, null, 0) { }
-        public ThryRGBAPackerDrawer(string label1, string label2, string label3, string label4) : this(label1, label2, label3, label4, 0) { }
-
-        public ThryRGBAPackerDrawer(float firstTextureIsRGB, string label1, string label2) : this(label1, label2, null, null, 0)
+        public ThryRGBAPackerDrawer(string label1, string label2, string colorspace, string alphaIsTransparency) : this(label1, label2, null, null, colorspace, alphaIsTransparency)
         {
-            _firstTextureIsRGB = firstTextureIsRGB == 1;
-        }
-        public ThryRGBAPackerDrawer(float firstTextureIsRGB, string label1, string label2, float sRGB) : this(label1, label2, null, null, sRGB)
-        {
-            _firstTextureIsRGB = firstTextureIsRGB == 1;
+            _firstTextureIsRGB = true;
         }
 
         public override void OnGUI(Rect position, MaterialProperty prop, GUIContent label, MaterialEditor editor)
@@ -504,7 +493,7 @@ namespace Thry
 
         void Pack()
         {
-            _current._packedTexture = TexturePacker.Pack(GetTextureSources(), GetOutputConfigs(), GetConnections(), GetFiltermode(), _makeSRGB ? ColorSpace.Gamma : ColorSpace.Linear);
+            _current._packedTexture = TexturePacker.Pack(GetTextureSources(), GetOutputConfigs(), GetConnections(), GetFiltermode(), _colorSpace, alphaIsTransparency: _alphaIsTransparency);
             _prop.textureValue = _current._packedTexture;
 
             _current._hasTextureChanged = true;
@@ -563,7 +552,7 @@ namespace Thry
         void OpenFullTexturePacker()
         {
             TexturePacker packer = TexturePacker.ShowWindow();
-            packer.InitilizeWithData(GetTextureSources(), GetOutputConfigs(), GetConnections(), GetFiltermode(), _makeSRGB ? ColorSpace.Gamma : ColorSpace.Linear);
+            packer.InitilizeWithData(GetTextureSources(), GetOutputConfigs(), GetConnections(), GetFiltermode(), _colorSpace, _alphaIsTransparency);
             packer.OnChange += FullTexturePackerOnChange;
             packer.OnSave += FullTexturePackerOnSave;
         }
@@ -615,7 +604,7 @@ namespace Thry
             TextureImporter importer = AssetImporter.GetAtPath(path) as TextureImporter;
             importer.streamingMipmaps = true;
             importer.crunchedCompression = true;
-            importer.sRGBTexture = _makeSRGB;
+            importer.sRGBTexture = _colorSpace == ColorSpace.Gamma;
             importer.filterMode = GetFiltermode();
             importer.alphaIsTransparency = _current._packedTexture.alphaIsTransparency;
             importer.SaveAndReimport();
@@ -896,7 +885,7 @@ namespace Thry
             if (framesProperty != null)
             {
                 if (ShaderEditor.Active.PropertyDictionary.ContainsKey(framesProperty))
-                    ShaderEditor.Active.PropertyDictionary[framesProperty].MaterialProperty.floatValue = tex.depth;
+                    ShaderEditor.Active.PropertyDictionary[framesProperty].MaterialProperty.SetNumber(tex.depth);
             }
         }
 
@@ -947,61 +936,71 @@ namespace Thry
 
     public class ThryHeaderLabelDecorator : MaterialPropertyDrawer
     {
-        readonly string text;
-        readonly int size;
-        GUIStyle style;
+        readonly string _text;
+        readonly int _size;
+        GUIStyle _style;
 
         public ThryHeaderLabelDecorator(string text) : this(text, EditorStyles.standardFont.fontSize)
         {
         }
         public ThryHeaderLabelDecorator(string text, float size)
         {
-            this.text = text;
-            this.size = (int)size;
-            style = new GUIStyle(EditorStyles.boldLabel);
-            style.fontSize = this.size;
+            this._text = text;
+            this._size = (int)size;
         }
 
 
         public override float GetPropertyHeight(MaterialProperty prop, string label, MaterialEditor editor)
         {
             DrawingData.RegisterDecorator(this);
-            return size + 6;
+            return _size + 6;
         }
 
         public override void OnGUI(Rect position, MaterialProperty prop, string label, MaterialEditor editor)
         {
+            // Done here instead of constructor because else unity throws warnings
+            if(_style == null)
+            {
+                _style = new GUIStyle(EditorStyles.boldLabel);
+                _style.fontSize = this._size;
+            }
+
             float offst = position.height;
             position = EditorGUI.IndentedRect(position);
-            GUI.Label(position, text, style);
+            GUI.Label(position, _text, _style);
         }
     }
 
     public class ThryRichLabelDrawer : MaterialPropertyDrawer
     {
-        readonly int size;
-        GUIStyle style;
+        readonly int _size;
+        GUIStyle _style;
 
         public ThryRichLabelDrawer(float size)
         {
-            this.size = (int)size;
-            style = new GUIStyle(EditorStyles.boldLabel);
-            style.richText = true;
-            style.fontSize = this.size;
+            this._size = (int)size;
         }
 
         public ThryRichLabelDrawer() : this(EditorStyles.standardFont.fontSize) { }
 
         public override float GetPropertyHeight(MaterialProperty prop, string label, MaterialEditor editor)
         {
-            return size + 4;
+            return _size + 4;
         }
 
         public override void OnGUI(Rect position, MaterialProperty prop, string label, MaterialEditor editor)
         {
+            // Done here instead of constructor because else unity throws warnings
+            if(_style == null)
+            {
+                _style = new GUIStyle(EditorStyles.boldLabel);
+                _style.richText = true;
+                _style.fontSize = this._size;
+            }
+
             float offst = position.height;
             position = EditorGUI.IndentedRect(position);
-            GUI.Label(position, label, style);
+            GUI.Label(position, label, _style);
         }
     }
     #endregion
@@ -1047,7 +1046,7 @@ namespace Thry
             {
                 foreach (Material m in prop.targets)
                 {
-                    if (m.GetFloat(prop.name) == 1)
+                    if (m.GetNumber(prop) == 1)
                         m.EnableKeyword(keyword);
                     else
                         m.DisableKeyword(keyword);
@@ -1057,7 +1056,7 @@ namespace Thry
             {
                 foreach (Material m in prop.targets)
                 {
-                    if (prop.floatValue == 1)
+                    if (prop.GetNumber() == 1)
                         m.EnableKeyword(keyword);
                     else
                         m.DisableKeyword(keyword);
@@ -1067,7 +1066,12 @@ namespace Thry
 
         static bool IsPropertyTypeSuitable(MaterialProperty prop)
         {
-            return prop.type == MaterialProperty.PropType.Float || prop.type == MaterialProperty.PropType.Range;
+            return prop.type == MaterialProperty.PropType.Float
+                   || prop.type == MaterialProperty.PropType.Range
+#if UNITY_2022_1_OR_NEWER
+                   || prop.type == MaterialProperty.PropType.Int;
+#endif
+                    ;
         }
 
         public override float GetPropertyHeight(MaterialProperty prop, string label, MaterialEditor editor)
@@ -1096,18 +1100,18 @@ namespace Thry
                 isFirstGUICall = false;
             }
             //why is this not inFirstGUICall ? cause it seems drawers are kept between different openings of the shader editor, so this needs to be set again every time the shader editor is reopened for that material
-            (ShaderEditor.Active.PropertyDictionary[prop.name] as ShaderProperty).keyword = keyword;
+            (ShaderEditor.Active.PropertyDictionary[prop.name] as ShaderProperty).Keyword = keyword;
 
             EditorGUI.BeginChangeCheck();
 
-            bool value = (Math.Abs(prop.floatValue) > 0.001f);
+            bool value = (Math.Abs(prop.GetNumber()) > 0.001f);
             EditorGUI.showMixedValue = prop.hasMixedValue;
             if (left) value = EditorGUI.ToggleLeft(position, label, value, Styles.style_toggle_left_richtext);
             else value = EditorGUI.Toggle(position, label, value);
             EditorGUI.showMixedValue = false;
             if (EditorGUI.EndChangeCheck())
             {
-                prop.floatValue = value ? 1.0f : 0.0f;
+                prop.SetNumber(value ? 1.0f : 0.0f);
                 if (hasKeyword) SetKeyword(prop, value);
             }
         }
@@ -1121,7 +1125,7 @@ namespace Thry
             if (prop.hasMixedValue)
                 return;
 
-            if (hasKeyword) SetKeyword(prop, (Math.Abs(prop.floatValue) > 0.001f));
+            if (hasKeyword) SetKeyword(prop, (Math.Abs(prop.GetNumber()) > 0.001f));
         }
 
         protected void SetKeywordInternal(MaterialProperty prop, bool on, string defaultKeywordSuffix)
@@ -1183,11 +1187,25 @@ namespace Thry
             public float Min;
             public float Max;
 
+            public SliderConfig(string l, string min, string max)
+            {
+                Label = l;
+                Min = Parse(min);
+                Max = Parse(max);
+            }
+
             public SliderConfig(string l, float min, float max)
             {
                 Label = l;
                 Min = min;
                 Max = max;
+            }
+
+            private float Parse(string s)
+            {
+                if(s.StartsWith("n", StringComparison.Ordinal))
+                    return -float.Parse(s.Substring(1), System.Globalization.CultureInfo.InvariantCulture);
+                return float.Parse(s.Substring(1), System.Globalization.CultureInfo.InvariantCulture);
             }
         }
 
@@ -1205,6 +1223,19 @@ namespace Thry
             _slider4 = slider4;
             _twoMinMaxDrawers = twoMinMaxDrawers == 1;
         }
+
+        public VectorToSlidersDrawer(string label1, string min1, string max1, string label2, string min2, string max2, string label3, string min3, string max3, string label4, string min4, string max4) :
+            this(new SliderConfig(label1, min1, max1), new SliderConfig(label2, min2, max2), new SliderConfig(label3, min3, max3), new SliderConfig(label4, min4, max4), 0)
+        { }
+        public VectorToSlidersDrawer(string label1, string min1, string max1, string label2, string min2, string max2, string label3, string min3, string max3) :
+            this(new SliderConfig(label1, min1, max1), new SliderConfig(label2, min2, max2), new SliderConfig(label3, min3, max3), null, 0)
+        { }
+        public VectorToSlidersDrawer(string label1, string min1, string max1, string label2, string min2, string max2) :
+            this(new SliderConfig(label1, min1, max1), new SliderConfig(label2, min2, max2), null, null, 0)
+        { }
+        public VectorToSlidersDrawer(float twoMinMaxDrawers, string label1, string min1, string max1, string label2, string min2, string max2) :
+            this(new SliderConfig(label1, min1, max1), new SliderConfig(label2, min2, max2), null, null, twoMinMaxDrawers)
+        { }
 
         public VectorToSlidersDrawer(string label1, float min1, float max1, string label2, float min2, float max2, string label3, float min3, float max3, string label4, float min4, float max4) :
             this(new SliderConfig(label1, min1, max1), new SliderConfig(label2, min2, max2), new SliderConfig(label3, min3, max3), new SliderConfig(label4, min4, max4), 0)
@@ -1588,8 +1619,7 @@ namespace Thry
         public override void OnGUI(Rect position, MaterialProperty prop, GUIContent label, MaterialEditor editor)
         {
             EditorGUI.showMixedValue = prop.hasMixedValue;
-            EditorGUI.BeginChangeCheck();
-            var value = prop.floatValue;
+            float value = prop.GetNumber();
             int selectedIndex = Array.IndexOf(values, value);
 
             if (_reloadCount != _reloadCountStatic)
@@ -1598,10 +1628,16 @@ namespace Thry
                 LoadNames();
             }
 
-            var selIndex = EditorGUI.Popup(position, label, selectedIndex, names);
+            // Custom Change Check, so it triggers on reselect too
+            bool wasClickEvent = Event.current.type == EventType.ExecuteCommand;
+            int selIndex = EditorGUI.Popup(position, label, selectedIndex, names);
             EditorGUI.showMixedValue = false;
-            if (EditorGUI.EndChangeCheck())
-                prop.floatValue = values[selIndex];
+            if (wasClickEvent && Event.current.type == EventType.Used)
+            {
+                // Set GUI.changed to true, so it triggers a change event, even on reselection
+                GUI.changed = true;
+                prop.SetNumber(values[selIndex]);
+            } 
         }
 
         public override float GetPropertyHeight(MaterialProperty prop, string label, MaterialEditor editor)
@@ -1620,9 +1656,9 @@ namespace Thry
         {
             var range = prop.rangeLimits;
             EditorGUI.BeginChangeCheck();
-            var value = EditorGUI.IntSlider(position, label, (int)prop.floatValue, (int)range.x, (int)range.y);
+            var value = EditorGUI.IntSlider(position, label, (int)prop.GetNumber(), (int)range.x, (int)range.y);
             if (EditorGUI.EndChangeCheck())
-                prop.floatValue = value;
+                prop.SetNumber(value);
         }
 
         public override float GetPropertyHeight(MaterialProperty prop, string label, MaterialEditor editor)
@@ -1738,6 +1774,33 @@ namespace Thry
             _isInit = true;
         }
     }
+
+    public class ThryCustomGUIDrawer : MaterialPropertyDrawer
+    {
+        private MethodInfo _method;
+        public ThryCustomGUIDrawer(string type, string namespaceName,string method)
+        {
+            Type t = Type.GetType(type + ", " + namespaceName);
+            if(t != null)
+            {
+                _method = t.GetMethod(method);
+            }
+        }
+
+        public override void OnGUI(Rect position, MaterialProperty prop, GUIContent label, MaterialEditor editor)
+        {
+            if (_method != null)
+            {
+                _method.Invoke(null, new object[] { position, prop, label, editor, ShaderEditor.Active });
+            }
+        }
+
+        public override float GetPropertyHeight(MaterialProperty prop, string label, MaterialEditor editor)
+        {
+            DrawingData.LastPropertyUsedCustomDrawer = true;
+            return 0;
+        }
+    }
     #endregion
 
     #region enums
@@ -1799,19 +1862,25 @@ namespace Thry
                 (shader.name.StartsWith("Hidden/") && material.GetTag("OriginalShader", false, "") != "" && shader.GetPropertyDefaultFloatValue(shader.FindPropertyIndex(shaderOptimizer.name)) == 1);
             //this will make sure the button is unlocked if you manually swap to an unlocked shader
             //shaders that have the ability to be locked shouldnt really be hidden themself. at least it wouldnt make too much sense
-            if (shaderOptimizer.hasMixedValue == false && shaderOptimizer.floatValue == 1 && isLocked == false)
+            if (shaderOptimizer.hasMixedValue == false && shaderOptimizer.GetNumber() == 1 && isLocked == false)
             {
-                shaderOptimizer.floatValue = 0;
+                shaderOptimizer.SetNumber(0);
             }
-            else if (shaderOptimizer.hasMixedValue == false && shaderOptimizer.floatValue == 0 && isLocked)
+            else if (shaderOptimizer.hasMixedValue == false && shaderOptimizer.GetNumber() == 0 && isLocked)
             {
-                shaderOptimizer.floatValue = 1;
+                shaderOptimizer.SetNumber(1);
             }
+
+            bool disabled = false;
+#if UNITY_2022_1_OR_NEWER
+            disabled |= ShaderEditor.Active.Materials[0].isVariant;
+#endif
+            EditorGUI.BeginDisabledGroup(disabled); // for variant materials
 
             // Theoretically this shouldn't ever happen since locked in materials have different shaders.
             // But in a case where the material property says its locked in but the material really isn't, this
             // will display and allow users to fix the property/lock in
-            ShaderEditor.Active.IsLockedMaterial = shaderOptimizer.floatValue == 1;
+            ShaderEditor.Active.IsLockedMaterial = shaderOptimizer.GetNumber() == 1;
             if (shaderOptimizer.hasMixedValue)
             {
                 EditorGUI.BeginChangeCheck();
@@ -1826,7 +1895,7 @@ namespace Thry
             else
             {
                 EditorGUI.BeginChangeCheck();
-                if (shaderOptimizer.floatValue == 0)
+                if (shaderOptimizer.GetNumber() == 0)
                 {
                     if (materialEditor.targets.Length == 1)
                         GUILayout.Button(EditorLocale.editor.Get("lockin_button_single"));
@@ -1841,7 +1910,7 @@ namespace Thry
                 if (EditorGUI.EndChangeCheck())
                 {
                     SaveChangeStack();
-                    ShaderOptimizer.SetLockedForAllMaterials(shaderOptimizer.targets.Select(t => t as Material), shaderOptimizer.floatValue == 1 ? 0 : 1, true, false, false, shaderOptimizer);
+                    ShaderOptimizer.SetLockedForAllMaterials(shaderOptimizer.targets.Select(t => t as Material), shaderOptimizer.GetNumber() == 1 ? 0 : 1, true, false, false, shaderOptimizer);
                     RestoreChangeStack();
                 }
             }
@@ -1867,6 +1936,8 @@ namespace Thry
                 }
                 EditorGUI.EndDisabledGroup();
             }
+
+            EditorGUI.EndDisabledGroup(); // for variant materials
         }
 
         //This code purly exists cause Unity 2019 is a piece of shit that looses it's internal change stack on locking CAUSE FUCK IF I KNOW
@@ -1937,7 +2008,7 @@ namespace Thry
             _sceneTool = DecalSceneTool.Create(
                 Selection.activeTransform.GetComponent<Renderer>(),
                 ShaderEditor.Active.Materials[0],
-                (int)ShaderEditor.Active.PropertyDictionary[_uvIndexPropertyName].MaterialProperty.floatValue,
+                (int)ShaderEditor.Active.PropertyDictionary[_uvIndexPropertyName].MaterialProperty.GetNumber(),
                 ShaderEditor.Active.PropertyDictionary[_positionPropertyName].MaterialProperty,
                 ShaderEditor.Active.PropertyDictionary[_rotationPropertyName].MaterialProperty,
                 ShaderEditor.Active.PropertyDictionary[_scalePropertyName].MaterialProperty,
