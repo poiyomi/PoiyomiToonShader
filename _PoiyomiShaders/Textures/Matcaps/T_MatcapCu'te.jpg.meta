@@ -22,7 +22,7 @@ TextureImporter:
     normalMapFilter: 0
     flipGreenChannel: 0
   isReadable: 0
-  streamingMipmaps: 0
+  streamingMipmaps: 1
   streamingMipmapsPriority: 0
   vTOnly: 0
   ignoreMipmapLimit: 0

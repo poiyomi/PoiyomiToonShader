@@ -2,7 +2,7 @@ Shader ".poiyomi/Poiyomi Toon"
 {
 	Properties
 	{
-		[HideInInspector] shader_master_label ("<color=#E75898ff>Poiyomi 9.0.48</color>", Float) = 0
+		[HideInInspector] shader_master_label ("<color=#E75898ff>Poiyomi 9.0.52</color>", Float) = 0
 		[HideInInspector] shader_is_using_thry_editor ("", Float) = 0
 		[HideInInspector] shader_locale ("0db0b86376c3dca4b9a6828ef8615fe0", Float) = 0
 		[HideInInspector] footer_youtube ("{texture:{name:icon-youtube,height:16},action:{type:URL,data:https://www.youtube.com/poiyomi},hover:YOUTUBE}", Float) = 0
@@ -3489,13 +3489,13 @@ Shader ".poiyomi/Poiyomi Toon"
 		[HideInInspector] m_start_GlobalMaskVertexColors ("Vertex Colors", Int) = 0
 		[ToggleUI] _GlobalMaskVertexColorLinearSpace ("Linear Colors", Float) = 1
 		[ThryWideEnum(Off, 0, 1R, 1, 1G, 2, 1B, 3, 1A, 4, 2R, 5, 2G, 6, 2B, 7, 2A, 8, 3R, 9, 3G, 10, 3B, 11, 3A, 12, 4R, 13, 4G, 14, 4B, 15, 4A, 16)] _GlobalMaskVertexColorRed ("Red--{reference_property:_GlobalMaskVertexColorRedBlendType}", Int) = 0
-		[HideInInspector][ThryWideEnum(Add, 7, Subtract, 1, Multiply, 2, Divide, 3, Min, 4, Max, 5, Average, 6 , Replace, 0)] _GlobalMaskVertexColorRedBlendType ("Blending", Int) = 2
+		[HideInInspector][ThryWideEnum(Add, 7, Subtract, 1, Multiply, 2, Divide, 3, Min, 4, Max, 5, Average, 6, Replace, 0)] _GlobalMaskVertexColorRedBlendType ("Blending", Int) = 2
 		[ThryWideEnum(Off, 0, 1R, 1, 1G, 2, 1B, 3, 1A, 4, 2R, 5, 2G, 6, 2B, 7, 2A, 8, 3R, 9, 3G, 10, 3B, 11, 3A, 12, 4R, 13, 4G, 14, 4B, 15, 4A, 16)] _GlobalMaskVertexColorGreen ("Green--{reference_property:_GlobalMaskVertexColorGreenBlendType}", Int) = 0
-		[HideInInspector][ThryWideEnum(Add, 7, Subtract, 1, Multiply, 2, Divide, 3, Min, 4, Max, 5, Average, 6 , Replace, 0)] _GlobalMaskVertexColorGreenBlendType ("Blending", Int) = 2
+		[HideInInspector][ThryWideEnum(Add, 7, Subtract, 1, Multiply, 2, Divide, 3, Min, 4, Max, 5, Average, 6, Replace, 0)] _GlobalMaskVertexColorGreenBlendType ("Blending", Int) = 2
 		[ThryWideEnum(Off, 0, 1R, 1, 1G, 2, 1B, 3, 1A, 4, 2R, 5, 2G, 6, 2B, 7, 2A, 8, 3R, 9, 3G, 10, 3B, 11, 3A, 12, 4R, 13, 4G, 14, 4B, 15, 4A, 16)] _GlobalMaskVertexColorBlue ("Blue--{reference_property:_GlobalMaskVertexColorBlueBlendType}", Int) = 0
-		[HideInInspector][ThryWideEnum(Add, 7, Subtract, 1, Multiply, 2, Divide, 3, Min, 4, Max, 5, Average, 6 , Replace, 0)] _GlobalMaskVertexColorBlueBlendType ("Blending", Int) = 2
+		[HideInInspector][ThryWideEnum(Add, 7, Subtract, 1, Multiply, 2, Divide, 3, Min, 4, Max, 5, Average, 6, Replace, 0)] _GlobalMaskVertexColorBlueBlendType ("Blending", Int) = 2
 		[ThryWideEnum(Off, 0, 1R, 1, 1G, 2, 1B, 3, 1A, 4, 2R, 5, 2G, 6, 2B, 7, 2A, 8, 3R, 9, 3G, 10, 3B, 11, 3A, 12, 4R, 13, 4G, 14, 4B, 15, 4A, 16)] _GlobalMaskVertexColorAlpha ("Alpha--{reference_property:_GlobalMaskVertexColorAlphaBlendType}", Int) = 0
-		[HideInInspector][ThryWideEnum(Add, 7, Subtract, 1, Multiply, 2, Divide, 3, Min, 4, Max, 5, Average, 6 , Replace, 0)] _GlobalMaskVertexColorAlphaBlendType ("Blending", Int) = 2
+		[HideInInspector][ThryWideEnum(Add, 7, Subtract, 1, Multiply, 2, Divide, 3, Min, 4, Max, 5, Average, 6, Replace, 0)] _GlobalMaskVertexColorAlphaBlendType ("Blending", Int) = 2
 		[HideInInspector] m_end_GlobalMaskVertexColors ("Vertex Colors", Int) = 0
 		//endex
 		
@@ -3504,16 +3504,16 @@ Shader ".poiyomi/Poiyomi Toon"
 		//ifex _GlobalMaskModifiersBackfaceEnable==0
 		[HideInInspector] m_start_GlobalMaskModifiersBackface ("Backface Masking--{reference_property:_GlobalMaskModifiersBackfaceEnable}", Float) = 0
 		[HideInInspector][NoAnimate][ThryToggleUI(true)] _GlobalMaskModifiersBackfaceEnable ("Global Mask Backface Enable", Float) = 0
-		[Enum(Both, 0, Back Only, 1, Front Only, 2)] _GlobalMaskBackface_0  ("1R", Int) = 0
-		[Enum(Both, 0, Back Only, 1, Front Only, 2)] _GlobalMaskBackface_1  ("1G", Int) = 0
-		[Enum(Both, 0, Back Only, 1, Front Only, 2)] _GlobalMaskBackface_2  ("1B", Int) = 0
-		[Enum(Both, 0, Back Only, 1, Front Only, 2)] _GlobalMaskBackface_3  ("1A", Int) = 0
-		[Enum(Both, 0, Back Only, 1, Front Only, 2)] _GlobalMaskBackface_4  ("2R", Int) = 0
-		[Enum(Both, 0, Back Only, 1, Front Only, 2)] _GlobalMaskBackface_5  ("2G", Int) = 0
-		[Enum(Both, 0, Back Only, 1, Front Only, 2)] _GlobalMaskBackface_6  ("2B", Int) = 0
-		[Enum(Both, 0, Back Only, 1, Front Only, 2)] _GlobalMaskBackface_7  ("2A", Int) = 0
-		[Enum(Both, 0, Back Only, 1, Front Only, 2)] _GlobalMaskBackface_8  ("3R", Int) = 0
-		[Enum(Both, 0, Back Only, 1, Front Only, 2)] _GlobalMaskBackface_9  ("3G", Int) = 0
+		[Enum(Both, 0, Back Only, 1, Front Only, 2)] _GlobalMaskBackface_0 ("1R", Int) = 0
+		[Enum(Both, 0, Back Only, 1, Front Only, 2)] _GlobalMaskBackface_1 ("1G", Int) = 0
+		[Enum(Both, 0, Back Only, 1, Front Only, 2)] _GlobalMaskBackface_2 ("1B", Int) = 0
+		[Enum(Both, 0, Back Only, 1, Front Only, 2)] _GlobalMaskBackface_3 ("1A", Int) = 0
+		[Enum(Both, 0, Back Only, 1, Front Only, 2)] _GlobalMaskBackface_4 ("2R", Int) = 0
+		[Enum(Both, 0, Back Only, 1, Front Only, 2)] _GlobalMaskBackface_5 ("2G", Int) = 0
+		[Enum(Both, 0, Back Only, 1, Front Only, 2)] _GlobalMaskBackface_6 ("2B", Int) = 0
+		[Enum(Both, 0, Back Only, 1, Front Only, 2)] _GlobalMaskBackface_7 ("2A", Int) = 0
+		[Enum(Both, 0, Back Only, 1, Front Only, 2)] _GlobalMaskBackface_8 ("3R", Int) = 0
+		[Enum(Both, 0, Back Only, 1, Front Only, 2)] _GlobalMaskBackface_9 ("3G", Int) = 0
 		[Enum(Both, 0, Back Only, 1, Front Only, 2)] _GlobalMaskBackface_10 ("3B", Int) = 0
 		[Enum(Both, 0, Back Only, 1, Front Only, 2)] _GlobalMaskBackface_11 ("3A", Int) = 0
 		[Enum(Both, 0, Back Only, 1, Front Only, 2)] _GlobalMaskBackface_12 ("4R", Int) = 0
@@ -3527,16 +3527,16 @@ Shader ".poiyomi/Poiyomi Toon"
 		[HideInInspector] m_start_GlobalMaskModifiersMirror ("Mirror Masking--{reference_property:_GlobalMaskModifiersMirrorEnable}", Float) = 0
 		[HideInInspector][NoAnimate][ThryToggleUI(true)] _GlobalMaskModifiersMirrorEnable ("Global Mask Mirror Enable", Float) = 0
 		[Enum(Generic, 0, VRC, 1)] _GlobalMaskMirrorVisibilityMode ("Mirror Detection Mode", Int) = 1
-		[Enum(Both, 0, Only Outside Mirror, 1, Only In Mirror, 2)] _GlobalMaskMirror_0  ("1R", Int) = 0
-		[Enum(Both, 0, Only Outside Mirror, 1, Only In Mirror, 2)] _GlobalMaskMirror_1  ("1G", Int) = 0
-		[Enum(Both, 0, Only Outside Mirror, 1, Only In Mirror, 2)] _GlobalMaskMirror_2  ("1B", Int) = 0
-		[Enum(Both, 0, Only Outside Mirror, 1, Only In Mirror, 2)] _GlobalMaskMirror_3  ("1A", Int) = 0
-		[Enum(Both, 0, Only Outside Mirror, 1, Only In Mirror, 2)] _GlobalMaskMirror_4  ("2R", Int) = 0
-		[Enum(Both, 0, Only Outside Mirror, 1, Only In Mirror, 2)] _GlobalMaskMirror_5  ("2G", Int) = 0
-		[Enum(Both, 0, Only Outside Mirror, 1, Only In Mirror, 2)] _GlobalMaskMirror_6  ("2B", Int) = 0
-		[Enum(Both, 0, Only Outside Mirror, 1, Only In Mirror, 2)] _GlobalMaskMirror_7  ("2A", Int) = 0
-		[Enum(Both, 0, Only Outside Mirror, 1, Only In Mirror, 2)] _GlobalMaskMirror_8  ("3R", Int) = 0
-		[Enum(Both, 0, Only Outside Mirror, 1, Only In Mirror, 2)] _GlobalMaskMirror_9  ("3G", Int) = 0
+		[Enum(Both, 0, Only Outside Mirror, 1, Only In Mirror, 2)] _GlobalMaskMirror_0 ("1R", Int) = 0
+		[Enum(Both, 0, Only Outside Mirror, 1, Only In Mirror, 2)] _GlobalMaskMirror_1 ("1G", Int) = 0
+		[Enum(Both, 0, Only Outside Mirror, 1, Only In Mirror, 2)] _GlobalMaskMirror_2 ("1B", Int) = 0
+		[Enum(Both, 0, Only Outside Mirror, 1, Only In Mirror, 2)] _GlobalMaskMirror_3 ("1A", Int) = 0
+		[Enum(Both, 0, Only Outside Mirror, 1, Only In Mirror, 2)] _GlobalMaskMirror_4 ("2R", Int) = 0
+		[Enum(Both, 0, Only Outside Mirror, 1, Only In Mirror, 2)] _GlobalMaskMirror_5 ("2G", Int) = 0
+		[Enum(Both, 0, Only Outside Mirror, 1, Only In Mirror, 2)] _GlobalMaskMirror_6 ("2B", Int) = 0
+		[Enum(Both, 0, Only Outside Mirror, 1, Only In Mirror, 2)] _GlobalMaskMirror_7 ("2A", Int) = 0
+		[Enum(Both, 0, Only Outside Mirror, 1, Only In Mirror, 2)] _GlobalMaskMirror_8 ("3R", Int) = 0
+		[Enum(Both, 0, Only Outside Mirror, 1, Only In Mirror, 2)] _GlobalMaskMirror_9 ("3G", Int) = 0
 		[Enum(Both, 0, Only Outside Mirror, 1, Only In Mirror, 2)] _GlobalMaskMirror_10 ("3B", Int) = 0
 		[Enum(Both, 0, Only Outside Mirror, 1, Only In Mirror, 2)] _GlobalMaskMirror_11 ("3A", Int) = 0
 		[Enum(Both, 0, Only Outside Mirror, 1, Only In Mirror, 2)] _GlobalMaskMirror_12 ("4R", Int) = 0
@@ -3550,16 +3550,16 @@ Shader ".poiyomi/Poiyomi Toon"
 		[HideInInspector] m_start_GlobalMaskModifiersCamera ("Camera Masking--{reference_property:_GlobalMaskModifiersCameraEnable}", Float) = 0
 		[HideInInspector][NoAnimate][ThryToggleUI(true)] _GlobalMaskModifiersCameraEnable ("Global Mask Camera Enable", Float) = 0
 		[Helpbox(1)] _GlobalMaskModifiersCameraInfo ("Camera Masking only works in VRChat.", Int) = 0
-		[Enum(Both, 0, Only Outside Camera, 1, Only In Camera, 2)] _GlobalMaskCamera_0  ("1R", Int) = 0
-		[Enum(Both, 0, Only Outside Camera, 1, Only In Camera, 2)] _GlobalMaskCamera_1  ("1G", Int) = 0
-		[Enum(Both, 0, Only Outside Camera, 1, Only In Camera, 2)] _GlobalMaskCamera_2  ("1B", Int) = 0
-		[Enum(Both, 0, Only Outside Camera, 1, Only In Camera, 2)] _GlobalMaskCamera_3  ("1A", Int) = 0
-		[Enum(Both, 0, Only Outside Camera, 1, Only In Camera, 2)] _GlobalMaskCamera_4  ("2R", Int) = 0
-		[Enum(Both, 0, Only Outside Camera, 1, Only In Camera, 2)] _GlobalMaskCamera_5  ("2G", Int) = 0
-		[Enum(Both, 0, Only Outside Camera, 1, Only In Camera, 2)] _GlobalMaskCamera_6  ("2B", Int) = 0
-		[Enum(Both, 0, Only Outside Camera, 1, Only In Camera, 2)] _GlobalMaskCamera_7  ("2A", Int) = 0
-		[Enum(Both, 0, Only Outside Camera, 1, Only In Camera, 2)] _GlobalMaskCamera_8  ("3R", Int) = 0
-		[Enum(Both, 0, Only Outside Camera, 1, Only In Camera, 2)] _GlobalMaskCamera_9  ("3G", Int) = 0
+		[Enum(Both, 0, Only Outside Camera, 1, Only In Camera, 2)] _GlobalMaskCamera_0 ("1R", Int) = 0
+		[Enum(Both, 0, Only Outside Camera, 1, Only In Camera, 2)] _GlobalMaskCamera_1 ("1G", Int) = 0
+		[Enum(Both, 0, Only Outside Camera, 1, Only In Camera, 2)] _GlobalMaskCamera_2 ("1B", Int) = 0
+		[Enum(Both, 0, Only Outside Camera, 1, Only In Camera, 2)] _GlobalMaskCamera_3 ("1A", Int) = 0
+		[Enum(Both, 0, Only Outside Camera, 1, Only In Camera, 2)] _GlobalMaskCamera_4 ("2R", Int) = 0
+		[Enum(Both, 0, Only Outside Camera, 1, Only In Camera, 2)] _GlobalMaskCamera_5 ("2G", Int) = 0
+		[Enum(Both, 0, Only Outside Camera, 1, Only In Camera, 2)] _GlobalMaskCamera_6 ("2B", Int) = 0
+		[Enum(Both, 0, Only Outside Camera, 1, Only In Camera, 2)] _GlobalMaskCamera_7 ("2A", Int) = 0
+		[Enum(Both, 0, Only Outside Camera, 1, Only In Camera, 2)] _GlobalMaskCamera_8 ("3R", Int) = 0
+		[Enum(Both, 0, Only Outside Camera, 1, Only In Camera, 2)] _GlobalMaskCamera_9 ("3G", Int) = 0
 		[Enum(Both, 0, Only Outside Camera, 1, Only In Camera, 2)] _GlobalMaskCamera_10 ("3B", Int) = 0
 		[Enum(Both, 0, Only Outside Camera, 1, Only In Camera, 2)] _GlobalMaskCamera_11 ("3A", Int) = 0
 		[Enum(Both, 0, Only Outside Camera, 1, Only In Camera, 2)] _GlobalMaskCamera_12 ("4R", Int) = 0
@@ -3777,16 +3777,16 @@ Shader ".poiyomi/Poiyomi Toon"
 		
 		//ifex _GlobalMaskOptionsType!=0
 		[HideInInspector] s_start_GlobalMaskOptionsSliders ("Options--{persistent_expand:true,default_expand:false,condition_showS:_GlobalMaskOptionsType==0}", Int) = 0
-		_GlobalMaskSlider_0  ("1R", Range(-1, 1)) = 0
-		_GlobalMaskSlider_1  ("1G", Range(-1, 1)) = 0
-		_GlobalMaskSlider_2  ("1B", Range(-1, 1)) = 0
-		_GlobalMaskSlider_3  ("1A", Range(-1, 1)) = 0
-		_GlobalMaskSlider_4  ("2R", Range(-1, 1)) = 0
-		_GlobalMaskSlider_5  ("2G", Range(-1, 1)) = 0
-		_GlobalMaskSlider_6  ("2B", Range(-1, 1)) = 0
-		_GlobalMaskSlider_7  ("2A", Range(-1, 1)) = 0
-		_GlobalMaskSlider_8  ("3R", Range(-1, 1)) = 0
-		_GlobalMaskSlider_9  ("3G", Range(-1, 1)) = 0
+		_GlobalMaskSlider_0 ("1R", Range(-1, 1)) = 0
+		_GlobalMaskSlider_1 ("1G", Range(-1, 1)) = 0
+		_GlobalMaskSlider_2 ("1B", Range(-1, 1)) = 0
+		_GlobalMaskSlider_3 ("1A", Range(-1, 1)) = 0
+		_GlobalMaskSlider_4 ("2R", Range(-1, 1)) = 0
+		_GlobalMaskSlider_5 ("2G", Range(-1, 1)) = 0
+		_GlobalMaskSlider_6 ("2B", Range(-1, 1)) = 0
+		_GlobalMaskSlider_7 ("2A", Range(-1, 1)) = 0
+		_GlobalMaskSlider_8 ("3R", Range(-1, 1)) = 0
+		_GlobalMaskSlider_9 ("3G", Range(-1, 1)) = 0
 		_GlobalMaskSlider_10 ("3B", Range(-1, 1)) = 0
 		_GlobalMaskSlider_11 ("3A", Range(-1, 1)) = 0
 		_GlobalMaskSlider_12 ("4R", Range(-1, 1)) = 0
@@ -3798,16 +3798,16 @@ Shader ".poiyomi/Poiyomi Toon"
 		
 		//ifex _GlobalMaskOptionsType!=1
 		[HideInInspector] s_start_GlobalMaskOptionsMinMaxSliders ("Options--{persistent_expand:true,default_expand:false,condition_showS:_GlobalMaskOptionsType==1}", Int) = 0
-		[MultiSlider] _GlobalMaskMinMaxSlider_0  ("1R", Vector) = (0, 1, 0, 1)
-		[MultiSlider] _GlobalMaskMinMaxSlider_1  ("1G", Vector) = (0, 1, 0, 1)
-		[MultiSlider] _GlobalMaskMinMaxSlider_2  ("1B", Vector) = (0, 1, 0, 1)
-		[MultiSlider] _GlobalMaskMinMaxSlider_3  ("1A", Vector) = (0, 1, 0, 1)
-		[MultiSlider] _GlobalMaskMinMaxSlider_4  ("2R", Vector) = (0, 1, 0, 1)
-		[MultiSlider] _GlobalMaskMinMaxSlider_5  ("2G", Vector) = (0, 1, 0, 1)
-		[MultiSlider] _GlobalMaskMinMaxSlider_6  ("2B", Vector) = (0, 1, 0, 1)
-		[MultiSlider] _GlobalMaskMinMaxSlider_7  ("2A", Vector) = (0, 1, 0, 1)
-		[MultiSlider] _GlobalMaskMinMaxSlider_8  ("3R", Vector) = (0, 1, 0, 1)
-		[MultiSlider] _GlobalMaskMinMaxSlider_9  ("3G", Vector) = (0, 1, 0, 1)
+		[MultiSlider] _GlobalMaskMinMaxSlider_0 ("1R", Vector) = (0, 1, 0, 1)
+		[MultiSlider] _GlobalMaskMinMaxSlider_1 ("1G", Vector) = (0, 1, 0, 1)
+		[MultiSlider] _GlobalMaskMinMaxSlider_2 ("1B", Vector) = (0, 1, 0, 1)
+		[MultiSlider] _GlobalMaskMinMaxSlider_3 ("1A", Vector) = (0, 1, 0, 1)
+		[MultiSlider] _GlobalMaskMinMaxSlider_4 ("2R", Vector) = (0, 1, 0, 1)
+		[MultiSlider] _GlobalMaskMinMaxSlider_5 ("2G", Vector) = (0, 1, 0, 1)
+		[MultiSlider] _GlobalMaskMinMaxSlider_6 ("2B", Vector) = (0, 1, 0, 1)
+		[MultiSlider] _GlobalMaskMinMaxSlider_7 ("2A", Vector) = (0, 1, 0, 1)
+		[MultiSlider] _GlobalMaskMinMaxSlider_8 ("3R", Vector) = (0, 1, 0, 1)
+		[MultiSlider] _GlobalMaskMinMaxSlider_9 ("3G", Vector) = (0, 1, 0, 1)
 		[MultiSlider] _GlobalMaskMinMaxSlider_10 ("3B", Vector) = (0, 1, 0, 1)
 		[MultiSlider] _GlobalMaskMinMaxSlider_11 ("3A", Vector) = (0, 1, 0, 1)
 		[MultiSlider] _GlobalMaskMinMaxSlider_12 ("4R", Vector) = (0, 1, 0, 1)
@@ -3820,34 +3820,34 @@ Shader ".poiyomi/Poiyomi Toon"
 		//ifex _GlobalMaskOptionsType!=2
 		[HideInInspector] s_start_GlobalMaskOptionsForceToggles ("Options--{persistent_expand:true,default_expand:false,condition_showS:_GlobalMaskOptionsType==2}", Int) = 0
 		[ThryHeaderLabel(Force On)]
-		[ToggleUI] _GlobalMaskToggleOn_0   ("1R", Int) = 0
-		[ToggleUI] _GlobalMaskToggleOn_1   ("1G", Int) = 0
-		[ToggleUI] _GlobalMaskToggleOn_2   ("1B", Int) = 0
-		[ToggleUI] _GlobalMaskToggleOn_3   ("1A", Int) = 0
-		[ToggleUI] _GlobalMaskToggleOn_4   ("2R", Int) = 0
-		[ToggleUI] _GlobalMaskToggleOn_5   ("2G", Int) = 0
-		[ToggleUI] _GlobalMaskToggleOn_6   ("2B", Int) = 0
-		[ToggleUI] _GlobalMaskToggleOn_7   ("2A", Int) = 0
-		[ToggleUI] _GlobalMaskToggleOn_8   ("3R", Int) = 0
-		[ToggleUI] _GlobalMaskToggleOn_9   ("3G", Int) = 0
-		[ToggleUI] _GlobalMaskToggleOn_10  ("3B", Int) = 0
-		[ToggleUI] _GlobalMaskToggleOn_11  ("3A", Int) = 0
-		[ToggleUI] _GlobalMaskToggleOn_12  ("4R", Int) = 0
-		[ToggleUI] _GlobalMaskToggleOn_13  ("4G", Int) = 0
-		[ToggleUI] _GlobalMaskToggleOn_14  ("4B", Int) = 0
-		[ToggleUI] _GlobalMaskToggleOn_15  ("4A", Int) = 0
+		[ToggleUI] _GlobalMaskToggleOn_0 ("1R", Int) = 0
+		[ToggleUI] _GlobalMaskToggleOn_1 ("1G", Int) = 0
+		[ToggleUI] _GlobalMaskToggleOn_2 ("1B", Int) = 0
+		[ToggleUI] _GlobalMaskToggleOn_3 ("1A", Int) = 0
+		[ToggleUI] _GlobalMaskToggleOn_4 ("2R", Int) = 0
+		[ToggleUI] _GlobalMaskToggleOn_5 ("2G", Int) = 0
+		[ToggleUI] _GlobalMaskToggleOn_6 ("2B", Int) = 0
+		[ToggleUI] _GlobalMaskToggleOn_7 ("2A", Int) = 0
+		[ToggleUI] _GlobalMaskToggleOn_8 ("3R", Int) = 0
+		[ToggleUI] _GlobalMaskToggleOn_9 ("3G", Int) = 0
+		[ToggleUI] _GlobalMaskToggleOn_10 ("3B", Int) = 0
+		[ToggleUI] _GlobalMaskToggleOn_11 ("3A", Int) = 0
+		[ToggleUI] _GlobalMaskToggleOn_12 ("4R", Int) = 0
+		[ToggleUI] _GlobalMaskToggleOn_13 ("4G", Int) = 0
+		[ToggleUI] _GlobalMaskToggleOn_14 ("4B", Int) = 0
+		[ToggleUI] _GlobalMaskToggleOn_15 ("4A", Int) = 0
 		[Space(8)]
 		[ThryHeaderLabel(Force Off)]
-		[ToggleUI] _GlobalMaskToggleOff_0  ("1R", Int) = 0
-		[ToggleUI] _GlobalMaskToggleOff_1  ("1G", Int) = 0
-		[ToggleUI] _GlobalMaskToggleOff_2  ("1B", Int) = 0
-		[ToggleUI] _GlobalMaskToggleOff_3  ("1A", Int) = 0
-		[ToggleUI] _GlobalMaskToggleOff_4  ("2R", Int) = 0
-		[ToggleUI] _GlobalMaskToggleOff_5  ("2G", Int) = 0
-		[ToggleUI] _GlobalMaskToggleOff_6  ("2B", Int) = 0
-		[ToggleUI] _GlobalMaskToggleOff_7  ("2A", Int) = 0
-		[ToggleUI] _GlobalMaskToggleOff_8  ("3R", Int) = 0
-		[ToggleUI] _GlobalMaskToggleOff_9  ("3G", Int) = 0
+		[ToggleUI] _GlobalMaskToggleOff_0 ("1R", Int) = 0
+		[ToggleUI] _GlobalMaskToggleOff_1 ("1G", Int) = 0
+		[ToggleUI] _GlobalMaskToggleOff_2 ("1B", Int) = 0
+		[ToggleUI] _GlobalMaskToggleOff_3 ("1A", Int) = 0
+		[ToggleUI] _GlobalMaskToggleOff_4 ("2R", Int) = 0
+		[ToggleUI] _GlobalMaskToggleOff_5 ("2G", Int) = 0
+		[ToggleUI] _GlobalMaskToggleOff_6 ("2B", Int) = 0
+		[ToggleUI] _GlobalMaskToggleOff_7 ("2A", Int) = 0
+		[ToggleUI] _GlobalMaskToggleOff_8 ("3R", Int) = 0
+		[ToggleUI] _GlobalMaskToggleOff_9 ("3G", Int) = 0
 		[ToggleUI] _GlobalMaskToggleOff_10 ("3B", Int) = 0
 		[ToggleUI] _GlobalMaskToggleOff_11 ("3A", Int) = 0
 		[ToggleUI] _GlobalMaskToggleOff_12 ("4R", Int) = 0
@@ -4411,6 +4411,7 @@ Shader ".poiyomi/Poiyomi Toon"
 			
 			#define DielectricSpec float4(0.04, 0.04, 0.04, 1.0 - 0.04)
 			#define PI float(3.14159265359)
+			#define Epsilon float(1e-10)
 			
 			#define POI2D_SAMPLE_TEX2D_SAMPLERGRAD(tex, samplertex, coord, dx, dy) tex.SampleGrad(sampler##samplertex, coord, dx, dy)
 			#define POI2D_SAMPLE_TEX2D_SAMPLERGRADD(tex, samp, uv, pan, dx, dy) tex.SampleGrad(samp, POI_PAN_UV(uv, pan), dx, dy)
@@ -4731,37 +4732,37 @@ Shader ".poiyomi/Poiyomi Toon"
 			//endex
 			
 			//ifex _GlobalMaskOptionsType!=2
-			int  _GlobalMaskToggleOn_0;
+			int _GlobalMaskToggleOn_0;
 			int _GlobalMaskToggleOff_0;
-			int  _GlobalMaskToggleOn_1;
+			int _GlobalMaskToggleOn_1;
 			int _GlobalMaskToggleOff_1;
-			int  _GlobalMaskToggleOn_2;
+			int _GlobalMaskToggleOn_2;
 			int _GlobalMaskToggleOff_2;
-			int  _GlobalMaskToggleOn_3;
+			int _GlobalMaskToggleOn_3;
 			int _GlobalMaskToggleOff_3;
-			int  _GlobalMaskToggleOn_4;
+			int _GlobalMaskToggleOn_4;
 			int _GlobalMaskToggleOff_4;
-			int  _GlobalMaskToggleOn_5;
+			int _GlobalMaskToggleOn_5;
 			int _GlobalMaskToggleOff_5;
-			int  _GlobalMaskToggleOn_6;
+			int _GlobalMaskToggleOn_6;
 			int _GlobalMaskToggleOff_6;
-			int  _GlobalMaskToggleOn_7;
+			int _GlobalMaskToggleOn_7;
 			int _GlobalMaskToggleOff_7;
-			int  _GlobalMaskToggleOn_8;
+			int _GlobalMaskToggleOn_8;
 			int _GlobalMaskToggleOff_8;
-			int  _GlobalMaskToggleOn_9;
+			int _GlobalMaskToggleOn_9;
 			int _GlobalMaskToggleOff_9;
-			int  _GlobalMaskToggleOn_10;
+			int _GlobalMaskToggleOn_10;
 			int _GlobalMaskToggleOff_10;
-			int  _GlobalMaskToggleOn_11;
+			int _GlobalMaskToggleOn_11;
 			int _GlobalMaskToggleOff_11;
-			int  _GlobalMaskToggleOn_12;
+			int _GlobalMaskToggleOn_12;
 			int _GlobalMaskToggleOff_12;
-			int  _GlobalMaskToggleOn_13;
+			int _GlobalMaskToggleOn_13;
 			int _GlobalMaskToggleOff_13;
-			int  _GlobalMaskToggleOn_14;
+			int _GlobalMaskToggleOn_14;
 			int _GlobalMaskToggleOff_14;
-			int  _GlobalMaskToggleOn_15;
+			int _GlobalMaskToggleOn_15;
 			int _GlobalMaskToggleOff_15;
 			//endex
 			//endex
@@ -6207,8 +6208,6 @@ Shader ".poiyomi/Poiyomi Toon"
 				uint index = (uint(uv.x) % 4) * 4 + uint(uv.y) % 4;
 				Out = In - DITHER_THRESHOLDS[index];
 			}
-			
-			static const float Epsilon = 1e-10;
 			// The weights of RGB contributions to luminance.
 			// Should sum to unity.
 			static const float3 HCYwts = float3(0.299, 0.587, 0.114);
@@ -7032,8 +7031,6 @@ Shader ".poiyomi/Poiyomi Toon"
 			{
 				return (toggle == 0 ? value : 1 - value);
 			}
-			
-			// OKLAB
 			
 			float3 PoiBlendNormal(float3 dstNormal, float3 srcNormal)
 			{
@@ -7893,7 +7890,9 @@ Shader ".poiyomi/Poiyomi Toon"
 					poiMods.globalMask[1] = POI2D_SAMPLER_PAN(_GlobalMaskTexture0, _MainTex, poiUV(poiMesh.uv[_GlobalMaskTexture0UV], _GlobalMaskTexture0SplitTilingOffset_G), _GlobalMaskTexture0SplitPan_G).g;
 					poiMods.globalMask[2] = POI2D_SAMPLER_PAN(_GlobalMaskTexture0, _MainTex, poiUV(poiMesh.uv[_GlobalMaskTexture0UV], _GlobalMaskTexture0SplitTilingOffset_B), _GlobalMaskTexture0SplitPan_B).b;
 					poiMods.globalMask[3] = POI2D_SAMPLER_PAN(_GlobalMaskTexture0, _MainTex, poiUV(poiMesh.uv[_GlobalMaskTexture0UV], _GlobalMaskTexture0SplitTilingOffset_A), _GlobalMaskTexture0SplitPan_A).a;
-				} else {
+				}
+				else
+				{
 					poiMods.globalMask[0] = gmcol0[0];
 					poiMods.globalMask[1] = gmcol0[1];
 					poiMods.globalMask[2] = gmcol0[2];
@@ -7909,7 +7908,9 @@ Shader ".poiyomi/Poiyomi Toon"
 					poiMods.globalMask[5] = POI2D_SAMPLER_PAN(_GlobalMaskTexture1, _MainTex, poiUV(poiMesh.uv[_GlobalMaskTexture1UV], _GlobalMaskTexture1SplitTilingOffset_G), _GlobalMaskTexture1SplitPan_G).g;
 					poiMods.globalMask[6] = POI2D_SAMPLER_PAN(_GlobalMaskTexture1, _MainTex, poiUV(poiMesh.uv[_GlobalMaskTexture1UV], _GlobalMaskTexture1SplitTilingOffset_B), _GlobalMaskTexture1SplitPan_B).b;
 					poiMods.globalMask[7] = POI2D_SAMPLER_PAN(_GlobalMaskTexture1, _MainTex, poiUV(poiMesh.uv[_GlobalMaskTexture1UV], _GlobalMaskTexture1SplitTilingOffset_A), _GlobalMaskTexture1SplitPan_A).a;
-				} else {
+				}
+				else
+				{
 					poiMods.globalMask[4] = gmcol1[0];
 					poiMods.globalMask[5] = gmcol1[1];
 					poiMods.globalMask[6] = gmcol1[2];
@@ -7925,7 +7926,9 @@ Shader ".poiyomi/Poiyomi Toon"
 					poiMods.globalMask[9] = POI2D_SAMPLER_PAN(_GlobalMaskTexture2, _MainTex, poiUV(poiMesh.uv[_GlobalMaskTexture2UV], _GlobalMaskTexture2SplitTilingOffset_G), _GlobalMaskTexture2SplitPan_G).g;
 					poiMods.globalMask[10] = POI2D_SAMPLER_PAN(_GlobalMaskTexture2, _MainTex, poiUV(poiMesh.uv[_GlobalMaskTexture2UV], _GlobalMaskTexture2SplitTilingOffset_B), _GlobalMaskTexture2SplitPan_B).b;
 					poiMods.globalMask[11] = POI2D_SAMPLER_PAN(_GlobalMaskTexture2, _MainTex, poiUV(poiMesh.uv[_GlobalMaskTexture2UV], _GlobalMaskTexture2SplitTilingOffset_A), _GlobalMaskTexture2SplitPan_A).a;
-				} else {
+				}
+				else
+				{
 					poiMods.globalMask[8] = gmcol2[0];
 					poiMods.globalMask[9] = gmcol2[1];
 					poiMods.globalMask[10] = gmcol2[2];
@@ -7941,7 +7944,9 @@ Shader ".poiyomi/Poiyomi Toon"
 					poiMods.globalMask[13] = POI2D_SAMPLER_PAN(_GlobalMaskTexture3, _MainTex, poiUV(poiMesh.uv[_GlobalMaskTexture3UV], _GlobalMaskTexture3SplitTilingOffset_G), _GlobalMaskTexture3SplitPan_G).g;
 					poiMods.globalMask[14] = POI2D_SAMPLER_PAN(_GlobalMaskTexture3, _MainTex, poiUV(poiMesh.uv[_GlobalMaskTexture3UV], _GlobalMaskTexture3SplitTilingOffset_B), _GlobalMaskTexture3SplitPan_B).b;
 					poiMods.globalMask[15] = POI2D_SAMPLER_PAN(_GlobalMaskTexture3, _MainTex, poiUV(poiMesh.uv[_GlobalMaskTexture3UV], _GlobalMaskTexture3SplitTilingOffset_A), _GlobalMaskTexture3SplitPan_A).a;
-				} else {
+				}
+				else
+				{
 					poiMods.globalMask[12] = gmcol3[0];
 					poiMods.globalMask[13] = gmcol3[1];
 					poiMods.globalMask[14] = gmcol3[2];
@@ -7957,16 +7962,16 @@ Shader ".poiyomi/Poiyomi Toon"
 				//ifex _GlobalMaskOptionsType!=0
 				if (_GlobalMaskOptionsType == 0)
 				{
-					poiMods.globalMask[0]  = saturate(poiMods.globalMask[0]  + _GlobalMaskSlider_0);
-					poiMods.globalMask[1]  = saturate(poiMods.globalMask[1]  + _GlobalMaskSlider_1);
-					poiMods.globalMask[2]  = saturate(poiMods.globalMask[2]  + _GlobalMaskSlider_2);
-					poiMods.globalMask[3]  = saturate(poiMods.globalMask[3]  + _GlobalMaskSlider_3);
-					poiMods.globalMask[4]  = saturate(poiMods.globalMask[4]  + _GlobalMaskSlider_4);
-					poiMods.globalMask[5]  = saturate(poiMods.globalMask[5]  + _GlobalMaskSlider_5);
-					poiMods.globalMask[6]  = saturate(poiMods.globalMask[6]  + _GlobalMaskSlider_6);
-					poiMods.globalMask[7]  = saturate(poiMods.globalMask[7]  + _GlobalMaskSlider_7);
-					poiMods.globalMask[8]  = saturate(poiMods.globalMask[8]  + _GlobalMaskSlider_8);
-					poiMods.globalMask[9]  = saturate(poiMods.globalMask[9]  + _GlobalMaskSlider_9);
+					poiMods.globalMask[0] = saturate(poiMods.globalMask[0] + _GlobalMaskSlider_0);
+					poiMods.globalMask[1] = saturate(poiMods.globalMask[1] + _GlobalMaskSlider_1);
+					poiMods.globalMask[2] = saturate(poiMods.globalMask[2] + _GlobalMaskSlider_2);
+					poiMods.globalMask[3] = saturate(poiMods.globalMask[3] + _GlobalMaskSlider_3);
+					poiMods.globalMask[4] = saturate(poiMods.globalMask[4] + _GlobalMaskSlider_4);
+					poiMods.globalMask[5] = saturate(poiMods.globalMask[5] + _GlobalMaskSlider_5);
+					poiMods.globalMask[6] = saturate(poiMods.globalMask[6] + _GlobalMaskSlider_6);
+					poiMods.globalMask[7] = saturate(poiMods.globalMask[7] + _GlobalMaskSlider_7);
+					poiMods.globalMask[8] = saturate(poiMods.globalMask[8] + _GlobalMaskSlider_8);
+					poiMods.globalMask[9] = saturate(poiMods.globalMask[9] + _GlobalMaskSlider_9);
 					poiMods.globalMask[10] = saturate(poiMods.globalMask[10] + _GlobalMaskSlider_10);
 					poiMods.globalMask[11] = saturate(poiMods.globalMask[11] + _GlobalMaskSlider_11);
 					poiMods.globalMask[12] = saturate(poiMods.globalMask[12] + _GlobalMaskSlider_12);
@@ -7978,16 +7983,16 @@ Shader ".poiyomi/Poiyomi Toon"
 				//ifex _GlobalMaskOptionsType!=1
 				if (_GlobalMaskOptionsType == 1)
 				{
-					poiMods.globalMask[0]  = lerp(_GlobalMaskMinMaxSlider_0.x,  _GlobalMaskMinMaxSlider_0.y,  poiMods.globalMask[0]);
-					poiMods.globalMask[1]  = lerp(_GlobalMaskMinMaxSlider_1.x,  _GlobalMaskMinMaxSlider_1.y,  poiMods.globalMask[1]);
-					poiMods.globalMask[2]  = lerp(_GlobalMaskMinMaxSlider_2.x,  _GlobalMaskMinMaxSlider_2.y,  poiMods.globalMask[2]);
-					poiMods.globalMask[3]  = lerp(_GlobalMaskMinMaxSlider_3.x,  _GlobalMaskMinMaxSlider_3.y,  poiMods.globalMask[3]);
-					poiMods.globalMask[4]  = lerp(_GlobalMaskMinMaxSlider_4.x,  _GlobalMaskMinMaxSlider_4.y,  poiMods.globalMask[4]);
-					poiMods.globalMask[5]  = lerp(_GlobalMaskMinMaxSlider_5.x,  _GlobalMaskMinMaxSlider_5.y,  poiMods.globalMask[5]);
-					poiMods.globalMask[6]  = lerp(_GlobalMaskMinMaxSlider_6.x,  _GlobalMaskMinMaxSlider_6.y,  poiMods.globalMask[6]);
-					poiMods.globalMask[7]  = lerp(_GlobalMaskMinMaxSlider_7.x,  _GlobalMaskMinMaxSlider_7.y,  poiMods.globalMask[7]);
-					poiMods.globalMask[8]  = lerp(_GlobalMaskMinMaxSlider_8.x,  _GlobalMaskMinMaxSlider_8.y,  poiMods.globalMask[8]);
-					poiMods.globalMask[9]  = lerp(_GlobalMaskMinMaxSlider_9.x,  _GlobalMaskMinMaxSlider_9.y,  poiMods.globalMask[9]);
+					poiMods.globalMask[0] = lerp(_GlobalMaskMinMaxSlider_0.x, _GlobalMaskMinMaxSlider_0.y, poiMods.globalMask[0]);
+					poiMods.globalMask[1] = lerp(_GlobalMaskMinMaxSlider_1.x, _GlobalMaskMinMaxSlider_1.y, poiMods.globalMask[1]);
+					poiMods.globalMask[2] = lerp(_GlobalMaskMinMaxSlider_2.x, _GlobalMaskMinMaxSlider_2.y, poiMods.globalMask[2]);
+					poiMods.globalMask[3] = lerp(_GlobalMaskMinMaxSlider_3.x, _GlobalMaskMinMaxSlider_3.y, poiMods.globalMask[3]);
+					poiMods.globalMask[4] = lerp(_GlobalMaskMinMaxSlider_4.x, _GlobalMaskMinMaxSlider_4.y, poiMods.globalMask[4]);
+					poiMods.globalMask[5] = lerp(_GlobalMaskMinMaxSlider_5.x, _GlobalMaskMinMaxSlider_5.y, poiMods.globalMask[5]);
+					poiMods.globalMask[6] = lerp(_GlobalMaskMinMaxSlider_6.x, _GlobalMaskMinMaxSlider_6.y, poiMods.globalMask[6]);
+					poiMods.globalMask[7] = lerp(_GlobalMaskMinMaxSlider_7.x, _GlobalMaskMinMaxSlider_7.y, poiMods.globalMask[7]);
+					poiMods.globalMask[8] = lerp(_GlobalMaskMinMaxSlider_8.x, _GlobalMaskMinMaxSlider_8.y, poiMods.globalMask[8]);
+					poiMods.globalMask[9] = lerp(_GlobalMaskMinMaxSlider_9.x, _GlobalMaskMinMaxSlider_9.y, poiMods.globalMask[9]);
 					poiMods.globalMask[10] = lerp(_GlobalMaskMinMaxSlider_10.x, _GlobalMaskMinMaxSlider_10.y, poiMods.globalMask[10]);
 					poiMods.globalMask[11] = lerp(_GlobalMaskMinMaxSlider_11.x, _GlobalMaskMinMaxSlider_11.y, poiMods.globalMask[11]);
 					poiMods.globalMask[12] = lerp(_GlobalMaskMinMaxSlider_12.x, _GlobalMaskMinMaxSlider_12.y, poiMods.globalMask[12]);
@@ -7999,16 +8004,16 @@ Shader ".poiyomi/Poiyomi Toon"
 				//ifex _GlobalMaskOptionsType!=2
 				if (_GlobalMaskOptionsType == 2)
 				{
-					if (_GlobalMaskToggleOn_0)  poiMods.globalMask[0]  = 1;
-					if (_GlobalMaskToggleOn_1)  poiMods.globalMask[1]  = 1;
-					if (_GlobalMaskToggleOn_2)  poiMods.globalMask[2]  = 1;
-					if (_GlobalMaskToggleOn_3)  poiMods.globalMask[3]  = 1;
-					if (_GlobalMaskToggleOn_4)  poiMods.globalMask[4]  = 1;
-					if (_GlobalMaskToggleOn_5)  poiMods.globalMask[5]  = 1;
-					if (_GlobalMaskToggleOn_6)  poiMods.globalMask[6]  = 1;
-					if (_GlobalMaskToggleOn_7)  poiMods.globalMask[7]  = 1;
-					if (_GlobalMaskToggleOn_8)  poiMods.globalMask[8]  = 1;
-					if (_GlobalMaskToggleOn_9)  poiMods.globalMask[9]  = 1;
+					if (_GlobalMaskToggleOn_0)  poiMods.globalMask[0] = 1;
+					if (_GlobalMaskToggleOn_1)  poiMods.globalMask[1] = 1;
+					if (_GlobalMaskToggleOn_2)  poiMods.globalMask[2] = 1;
+					if (_GlobalMaskToggleOn_3)  poiMods.globalMask[3] = 1;
+					if (_GlobalMaskToggleOn_4)  poiMods.globalMask[4] = 1;
+					if (_GlobalMaskToggleOn_5)  poiMods.globalMask[5] = 1;
+					if (_GlobalMaskToggleOn_6)  poiMods.globalMask[6] = 1;
+					if (_GlobalMaskToggleOn_7)  poiMods.globalMask[7] = 1;
+					if (_GlobalMaskToggleOn_8)  poiMods.globalMask[8] = 1;
+					if (_GlobalMaskToggleOn_9)  poiMods.globalMask[9] = 1;
 					if (_GlobalMaskToggleOn_10) poiMods.globalMask[10] = 1;
 					if (_GlobalMaskToggleOn_11) poiMods.globalMask[11] = 1;
 					if (_GlobalMaskToggleOn_12) poiMods.globalMask[12] = 1;
@@ -8016,24 +8021,25 @@ Shader ".poiyomi/Poiyomi Toon"
 					if (_GlobalMaskToggleOn_14) poiMods.globalMask[14] = 1;
 					if (_GlobalMaskToggleOn_15) poiMods.globalMask[15] = 1;
 					
-					poiMods.globalMask[0]  *= (1-_GlobalMaskToggleOff_0);
-					poiMods.globalMask[1]  *= (1-_GlobalMaskToggleOff_1);
-					poiMods.globalMask[2]  *= (1-_GlobalMaskToggleOff_2);
-					poiMods.globalMask[3]  *= (1-_GlobalMaskToggleOff_3);
-					poiMods.globalMask[4]  *= (1-_GlobalMaskToggleOff_4);
-					poiMods.globalMask[5]  *= (1-_GlobalMaskToggleOff_5);
-					poiMods.globalMask[6]  *= (1-_GlobalMaskToggleOff_6);
-					poiMods.globalMask[7]  *= (1-_GlobalMaskToggleOff_7);
-					poiMods.globalMask[8]  *= (1-_GlobalMaskToggleOff_8);
-					poiMods.globalMask[9]  *= (1-_GlobalMaskToggleOff_9);
-					poiMods.globalMask[10] *= (1-_GlobalMaskToggleOff_10);
-					poiMods.globalMask[11] *= (1-_GlobalMaskToggleOff_11);
-					poiMods.globalMask[12] *= (1-_GlobalMaskToggleOff_12);
-					poiMods.globalMask[13] *= (1-_GlobalMaskToggleOff_13);
-					poiMods.globalMask[14] *= (1-_GlobalMaskToggleOff_14);
-					poiMods.globalMask[15] *= (1-_GlobalMaskToggleOff_15);
+					poiMods.globalMask[0] *= (1 - _GlobalMaskToggleOff_0);
+					poiMods.globalMask[1] *= (1 - _GlobalMaskToggleOff_1);
+					poiMods.globalMask[2] *= (1 - _GlobalMaskToggleOff_2);
+					poiMods.globalMask[3] *= (1 - _GlobalMaskToggleOff_3);
+					poiMods.globalMask[4] *= (1 - _GlobalMaskToggleOff_4);
+					poiMods.globalMask[5] *= (1 - _GlobalMaskToggleOff_5);
+					poiMods.globalMask[6] *= (1 - _GlobalMaskToggleOff_6);
+					poiMods.globalMask[7] *= (1 - _GlobalMaskToggleOff_7);
+					poiMods.globalMask[8] *= (1 - _GlobalMaskToggleOff_8);
+					poiMods.globalMask[9] *= (1 - _GlobalMaskToggleOff_9);
+					poiMods.globalMask[10] *= (1 - _GlobalMaskToggleOff_10);
+					poiMods.globalMask[11] *= (1 - _GlobalMaskToggleOff_11);
+					poiMods.globalMask[12] *= (1 - _GlobalMaskToggleOff_12);
+					poiMods.globalMask[13] *= (1 - _GlobalMaskToggleOff_13);
+					poiMods.globalMask[14] *= (1 - _GlobalMaskToggleOff_14);
+					poiMods.globalMask[15] *= (1 - _GlobalMaskToggleOff_15);
 				}
 				//endex
+				
 			}
 			//endex
 			
@@ -8047,23 +8053,33 @@ Shader ".poiyomi/Poiyomi Toon"
 				}
 			}
 			
+			void handleGlobalMaskDistance(int index, bool enable, bool type, float minAlpha, float maxAlpha, float min, float max, int blendType, in PoiMesh poiMesh, inout PoiMods poiMods)
+			{
+				if (enable)
+				{
+					float3 position = type ? poiMesh.worldPos : poiMesh.objectPosition;
+					float val = lerp(minAlpha, maxAlpha, smoothstep(min, max, distance(position, _WorldSpaceCameraPos)));
+					poiMods.globalMask[index] = saturate(customDistanceBlend(poiMods.globalMask[index], val, blendType));
+				}
+			}
+			
 			void ApplyGlobalMaskModifiers(in PoiMesh poiMesh, inout PoiMods poiMods, in PoiCam poiCam)
 			{
 				//ifex _GlobalMaskModifiersBackfaceEnable==0
-				if(_GlobalMaskModifiersBackfaceEnable)
+				if (_GlobalMaskModifiersBackfaceEnable)
 				{
 					float facingMode = saturate(poiMesh.isFrontFace) + 1;
 					// _GlobalMaskBackface is 0 for ignore, 1 for back only, 2 for front only
-					poiMods.globalMask[0]  *= _GlobalMaskBackface_0  == 0 ? 1 : (facingMode == (_GlobalMaskBackface_0 ));
-					poiMods.globalMask[1]  *= _GlobalMaskBackface_1  == 0 ? 1 : (facingMode == (_GlobalMaskBackface_1 ));
-					poiMods.globalMask[2]  *= _GlobalMaskBackface_2  == 0 ? 1 : (facingMode == (_GlobalMaskBackface_2 ));
-					poiMods.globalMask[3]  *= _GlobalMaskBackface_3  == 0 ? 1 : (facingMode == (_GlobalMaskBackface_3 ));
-					poiMods.globalMask[4]  *= _GlobalMaskBackface_4  == 0 ? 1 : (facingMode == (_GlobalMaskBackface_4 ));
-					poiMods.globalMask[5]  *= _GlobalMaskBackface_5  == 0 ? 1 : (facingMode == (_GlobalMaskBackface_5 ));
-					poiMods.globalMask[6]  *= _GlobalMaskBackface_6  == 0 ? 1 : (facingMode == (_GlobalMaskBackface_6 ));
-					poiMods.globalMask[7]  *= _GlobalMaskBackface_7  == 0 ? 1 : (facingMode == (_GlobalMaskBackface_7 ));
-					poiMods.globalMask[8]  *= _GlobalMaskBackface_8  == 0 ? 1 : (facingMode == (_GlobalMaskBackface_8 ));
-					poiMods.globalMask[9]  *= _GlobalMaskBackface_9  == 0 ? 1 : (facingMode == (_GlobalMaskBackface_9 ));
+					poiMods.globalMask[0] *= _GlobalMaskBackface_0 == 0 ? 1 : (facingMode == (_GlobalMaskBackface_0));
+					poiMods.globalMask[1] *= _GlobalMaskBackface_1 == 0 ? 1 : (facingMode == (_GlobalMaskBackface_1));
+					poiMods.globalMask[2] *= _GlobalMaskBackface_2 == 0 ? 1 : (facingMode == (_GlobalMaskBackface_2));
+					poiMods.globalMask[3] *= _GlobalMaskBackface_3 == 0 ? 1 : (facingMode == (_GlobalMaskBackface_3));
+					poiMods.globalMask[4] *= _GlobalMaskBackface_4 == 0 ? 1 : (facingMode == (_GlobalMaskBackface_4));
+					poiMods.globalMask[5] *= _GlobalMaskBackface_5 == 0 ? 1 : (facingMode == (_GlobalMaskBackface_5));
+					poiMods.globalMask[6] *= _GlobalMaskBackface_6 == 0 ? 1 : (facingMode == (_GlobalMaskBackface_6));
+					poiMods.globalMask[7] *= _GlobalMaskBackface_7 == 0 ? 1 : (facingMode == (_GlobalMaskBackface_7));
+					poiMods.globalMask[8] *= _GlobalMaskBackface_8 == 0 ? 1 : (facingMode == (_GlobalMaskBackface_8));
+					poiMods.globalMask[9] *= _GlobalMaskBackface_9 == 0 ? 1 : (facingMode == (_GlobalMaskBackface_9));
 					poiMods.globalMask[10] *= _GlobalMaskBackface_10 == 0 ? 1 : (facingMode == (_GlobalMaskBackface_10));
 					poiMods.globalMask[11] *= _GlobalMaskBackface_11 == 0 ? 1 : (facingMode == (_GlobalMaskBackface_11));
 					poiMods.globalMask[12] *= _GlobalMaskBackface_12 == 0 ? 1 : (facingMode == (_GlobalMaskBackface_12));
@@ -8074,7 +8090,7 @@ Shader ".poiyomi/Poiyomi Toon"
 				//endex
 				
 				//ifex _GlobalMaskModifiersMirrorEnable==0
-				if(_GlobalMaskModifiersMirrorEnable)
+				if (_GlobalMaskModifiersMirrorEnable)
 				{
 					float mirrorMode = 0;
 					if (_GlobalMaskMirrorVisibilityMode == 1) // VRC
@@ -8084,16 +8100,16 @@ Shader ".poiyomi/Poiyomi Toon"
 					
 					mirrorMode += 1;
 					// _GlobalMaskMirror is 0 for ignore, 1 for outside mirror only, 2 for in mirror only
-					poiMods.globalMask[0]  *= _GlobalMaskMirror_0  == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_0 ));
-					poiMods.globalMask[1]  *= _GlobalMaskMirror_1  == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_1 ));
-					poiMods.globalMask[2]  *= _GlobalMaskMirror_2  == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_2 ));
-					poiMods.globalMask[3]  *= _GlobalMaskMirror_3  == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_3 ));
-					poiMods.globalMask[4]  *= _GlobalMaskMirror_4  == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_4 ));
-					poiMods.globalMask[5]  *= _GlobalMaskMirror_5  == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_5 ));
-					poiMods.globalMask[6]  *= _GlobalMaskMirror_6  == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_6 ));
-					poiMods.globalMask[7]  *= _GlobalMaskMirror_7  == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_7 ));
-					poiMods.globalMask[8]  *= _GlobalMaskMirror_8  == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_8 ));
-					poiMods.globalMask[9]  *= _GlobalMaskMirror_9  == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_9 ));
+					poiMods.globalMask[0] *= _GlobalMaskMirror_0 == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_0));
+					poiMods.globalMask[1] *= _GlobalMaskMirror_1 == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_1));
+					poiMods.globalMask[2] *= _GlobalMaskMirror_2 == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_2));
+					poiMods.globalMask[3] *= _GlobalMaskMirror_3 == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_3));
+					poiMods.globalMask[4] *= _GlobalMaskMirror_4 == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_4));
+					poiMods.globalMask[5] *= _GlobalMaskMirror_5 == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_5));
+					poiMods.globalMask[6] *= _GlobalMaskMirror_6 == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_6));
+					poiMods.globalMask[7] *= _GlobalMaskMirror_7 == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_7));
+					poiMods.globalMask[8] *= _GlobalMaskMirror_8 == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_8));
+					poiMods.globalMask[9] *= _GlobalMaskMirror_9 == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_9));
 					poiMods.globalMask[10] *= _GlobalMaskMirror_10 == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_10));
 					poiMods.globalMask[11] *= _GlobalMaskMirror_11 == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_11));
 					poiMods.globalMask[12] *= _GlobalMaskMirror_12 == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_12));
@@ -8104,21 +8120,21 @@ Shader ".poiyomi/Poiyomi Toon"
 				//endex
 				
 				//ifex _GlobalMaskModifiersCameraEnable==0
-				if(_GlobalMaskModifiersCameraEnable)
+				if (_GlobalMaskModifiersCameraEnable)
 				{
 					float isCamera = VRCCameraMode() > 0;
 					isCamera += 1;
 					// _GlobalMaskCamera is 0 for ignore, 1 for outside camera only, 2 for in camera only
-					poiMods.globalMask[0]  *= _GlobalMaskCamera_0  == 0 ? 1 : (isCamera == (_GlobalMaskCamera_0 ));
-					poiMods.globalMask[1]  *= _GlobalMaskCamera_1  == 0 ? 1 : (isCamera == (_GlobalMaskCamera_1 ));
-					poiMods.globalMask[2]  *= _GlobalMaskCamera_2  == 0 ? 1 : (isCamera == (_GlobalMaskCamera_2 ));
-					poiMods.globalMask[3]  *= _GlobalMaskCamera_3  == 0 ? 1 : (isCamera == (_GlobalMaskCamera_3 ));
-					poiMods.globalMask[4]  *= _GlobalMaskCamera_4  == 0 ? 1 : (isCamera == (_GlobalMaskCamera_4 ));
-					poiMods.globalMask[5]  *= _GlobalMaskCamera_5  == 0 ? 1 : (isCamera == (_GlobalMaskCamera_5 ));
-					poiMods.globalMask[6]  *= _GlobalMaskCamera_6  == 0 ? 1 : (isCamera == (_GlobalMaskCamera_6 ));
-					poiMods.globalMask[7]  *= _GlobalMaskCamera_7  == 0 ? 1 : (isCamera == (_GlobalMaskCamera_7 ));
-					poiMods.globalMask[8]  *= _GlobalMaskCamera_8  == 0 ? 1 : (isCamera == (_GlobalMaskCamera_8 ));
-					poiMods.globalMask[9]  *= _GlobalMaskCamera_9  == 0 ? 1 : (isCamera == (_GlobalMaskCamera_9 ));
+					poiMods.globalMask[0] *= _GlobalMaskCamera_0 == 0 ? 1 : (isCamera == (_GlobalMaskCamera_0));
+					poiMods.globalMask[1] *= _GlobalMaskCamera_1 == 0 ? 1 : (isCamera == (_GlobalMaskCamera_1));
+					poiMods.globalMask[2] *= _GlobalMaskCamera_2 == 0 ? 1 : (isCamera == (_GlobalMaskCamera_2));
+					poiMods.globalMask[3] *= _GlobalMaskCamera_3 == 0 ? 1 : (isCamera == (_GlobalMaskCamera_3));
+					poiMods.globalMask[4] *= _GlobalMaskCamera_4 == 0 ? 1 : (isCamera == (_GlobalMaskCamera_4));
+					poiMods.globalMask[5] *= _GlobalMaskCamera_5 == 0 ? 1 : (isCamera == (_GlobalMaskCamera_5));
+					poiMods.globalMask[6] *= _GlobalMaskCamera_6 == 0 ? 1 : (isCamera == (_GlobalMaskCamera_6));
+					poiMods.globalMask[7] *= _GlobalMaskCamera_7 == 0 ? 1 : (isCamera == (_GlobalMaskCamera_7));
+					poiMods.globalMask[8] *= _GlobalMaskCamera_8 == 0 ? 1 : (isCamera == (_GlobalMaskCamera_8));
+					poiMods.globalMask[9] *= _GlobalMaskCamera_9 == 0 ? 1 : (isCamera == (_GlobalMaskCamera_9));
 					poiMods.globalMask[10] *= _GlobalMaskCamera_10 == 0 ? 1 : (isCamera == (_GlobalMaskCamera_10));
 					poiMods.globalMask[11] *= _GlobalMaskCamera_11 == 0 ? 1 : (isCamera == (_GlobalMaskCamera_11));
 					poiMods.globalMask[12] *= _GlobalMaskCamera_12 == 0 ? 1 : (isCamera == (_GlobalMaskCamera_12));
@@ -8131,135 +8147,57 @@ Shader ".poiyomi/Poiyomi Toon"
 				if (_GlobalMaskModifiersDistanceEnable)
 				{
 					//ifex _GlobalMaskDistanceEnable_0==0
-					if (_GlobalMaskDistanceEnable_0)
-					{
-						float3 position = _GlobalMaskDistanceType_0 ? poiMesh.worldPos : poiMesh.objectPosition;
-						float val = lerp(_GlobalMaskDistanceMinAlpha_0, _GlobalMaskDistanceMaxAlpha_0, smoothstep(_GlobalMaskDistanceMin_0, _GlobalMaskDistanceMax_0, distance(position, poiCam.worldPos)));
-						poiMods.globalMask[0] = saturate(customDistanceBlend(poiMods.globalMask[0], val, _GlobalMaskDistanceBlendType_0));
-					}
+					handleGlobalMaskDistance(0, _GlobalMaskDistanceEnable_0, _GlobalMaskDistanceType_0, _GlobalMaskDistanceMinAlpha_0, _GlobalMaskDistanceMaxAlpha_0, _GlobalMaskDistanceMin_0, _GlobalMaskDistanceMax_0, _GlobalMaskDistanceBlendType_0, poiMesh, poiMods);
 					//endex
 					//ifex _GlobalMaskDistanceEnable_1==0
-					if (_GlobalMaskDistanceEnable_1)
-					{
-						float3 position = _GlobalMaskDistanceType_1 ? poiMesh.worldPos : poiMesh.objectPosition;
-						float val = lerp(_GlobalMaskDistanceMinAlpha_1, _GlobalMaskDistanceMaxAlpha_1, smoothstep(_GlobalMaskDistanceMin_1, _GlobalMaskDistanceMax_1, distance(position, poiCam.worldPos)));
-						poiMods.globalMask[1] = saturate(customDistanceBlend(poiMods.globalMask[1], val, _GlobalMaskDistanceBlendType_1));
-					}
+					handleGlobalMaskDistance(1, _GlobalMaskDistanceEnable_1, _GlobalMaskDistanceType_1, _GlobalMaskDistanceMinAlpha_1, _GlobalMaskDistanceMaxAlpha_1, _GlobalMaskDistanceMin_1, _GlobalMaskDistanceMax_1, _GlobalMaskDistanceBlendType_1, poiMesh, poiMods);
 					//endex
 					//ifex _GlobalMaskDistanceEnable_2==0
-					if (_GlobalMaskDistanceEnable_2)
-					{
-						float3 position = _GlobalMaskDistanceType_2 ? poiMesh.worldPos : poiMesh.objectPosition;
-						float val = lerp(_GlobalMaskDistanceMinAlpha_2, _GlobalMaskDistanceMaxAlpha_2, smoothstep(_GlobalMaskDistanceMin_2, _GlobalMaskDistanceMax_2, distance(position, poiCam.worldPos)));
-						poiMods.globalMask[2] = saturate(customDistanceBlend(poiMods.globalMask[2], val, _GlobalMaskDistanceBlendType_2));
-					}
+					handleGlobalMaskDistance(2, _GlobalMaskDistanceEnable_2, _GlobalMaskDistanceType_2, _GlobalMaskDistanceMinAlpha_2, _GlobalMaskDistanceMaxAlpha_2, _GlobalMaskDistanceMin_2, _GlobalMaskDistanceMax_2, _GlobalMaskDistanceBlendType_2, poiMesh, poiMods);
 					//endex
 					//ifex _GlobalMaskDistanceEnable_3==0
-					if (_GlobalMaskDistanceEnable_3)
-					{
-						float3 position = _GlobalMaskDistanceType_3 ? poiMesh.worldPos : poiMesh.objectPosition;
-						float val = lerp(_GlobalMaskDistanceMinAlpha_3, _GlobalMaskDistanceMaxAlpha_3, smoothstep(_GlobalMaskDistanceMin_3, _GlobalMaskDistanceMax_3, distance(position, poiCam.worldPos)));
-						poiMods.globalMask[3] = saturate(customDistanceBlend(poiMods.globalMask[3], val, _GlobalMaskDistanceBlendType_3));
-					}
+					handleGlobalMaskDistance(3, _GlobalMaskDistanceEnable_3, _GlobalMaskDistanceType_3, _GlobalMaskDistanceMinAlpha_3, _GlobalMaskDistanceMaxAlpha_3, _GlobalMaskDistanceMin_3, _GlobalMaskDistanceMax_3, _GlobalMaskDistanceBlendType_3, poiMesh, poiMods);
 					//endex
 					//ifex _GlobalMaskDistanceEnable_4==0
-					if (_GlobalMaskDistanceEnable_4)
-					{
-						float3 position = _GlobalMaskDistanceType_4 ? poiMesh.worldPos : poiMesh.objectPosition;
-						float val = lerp(_GlobalMaskDistanceMinAlpha_4, _GlobalMaskDistanceMaxAlpha_4, smoothstep(_GlobalMaskDistanceMin_4, _GlobalMaskDistanceMax_4, distance(position, poiCam.worldPos)));
-						poiMods.globalMask[4] = saturate(customDistanceBlend(poiMods.globalMask[4], val, _GlobalMaskDistanceBlendType_4));
-					}
+					handleGlobalMaskDistance(4, _GlobalMaskDistanceEnable_4, _GlobalMaskDistanceType_4, _GlobalMaskDistanceMinAlpha_4, _GlobalMaskDistanceMaxAlpha_4, _GlobalMaskDistanceMin_4, _GlobalMaskDistanceMax_4, _GlobalMaskDistanceBlendType_4, poiMesh, poiMods);
 					//endex
 					//ifex _GlobalMaskDistanceEnable_5==0
-					if (_GlobalMaskDistanceEnable_5)
-					{
-						float3 position = _GlobalMaskDistanceType_5 ? poiMesh.worldPos : poiMesh.objectPosition;
-						float val = lerp(_GlobalMaskDistanceMinAlpha_5, _GlobalMaskDistanceMaxAlpha_5, smoothstep(_GlobalMaskDistanceMin_5, _GlobalMaskDistanceMax_5, distance(position, poiCam.worldPos)));
-						poiMods.globalMask[5] = saturate(customDistanceBlend(poiMods.globalMask[5], val, _GlobalMaskDistanceBlendType_5));
-					}
+					handleGlobalMaskDistance(5, _GlobalMaskDistanceEnable_5, _GlobalMaskDistanceType_5, _GlobalMaskDistanceMinAlpha_5, _GlobalMaskDistanceMaxAlpha_5, _GlobalMaskDistanceMin_5, _GlobalMaskDistanceMax_5, _GlobalMaskDistanceBlendType_5, poiMesh, poiMods);
 					//endex
 					//ifex _GlobalMaskDistanceEnable_6==0
-					if (_GlobalMaskDistanceEnable_6)
-					{
-						float3 position = _GlobalMaskDistanceType_6 ? poiMesh.worldPos : poiMesh.objectPosition;
-						float val = lerp(_GlobalMaskDistanceMinAlpha_6, _GlobalMaskDistanceMaxAlpha_6, smoothstep(_GlobalMaskDistanceMin_6, _GlobalMaskDistanceMax_6, distance(position, poiCam.worldPos)));
-						poiMods.globalMask[6] = saturate(customDistanceBlend(poiMods.globalMask[6], val, _GlobalMaskDistanceBlendType_6));
-					}
+					handleGlobalMaskDistance(6, _GlobalMaskDistanceEnable_6, _GlobalMaskDistanceType_6, _GlobalMaskDistanceMinAlpha_6, _GlobalMaskDistanceMaxAlpha_6, _GlobalMaskDistanceMin_6, _GlobalMaskDistanceMax_6, _GlobalMaskDistanceBlendType_6, poiMesh, poiMods);
 					//endex
 					//ifex _GlobalMaskDistanceEnable_7==0
-					if (_GlobalMaskDistanceEnable_7)
-					{
-						float3 position = _GlobalMaskDistanceType_7 ? poiMesh.worldPos : poiMesh.objectPosition;
-						float val = lerp(_GlobalMaskDistanceMinAlpha_7, _GlobalMaskDistanceMaxAlpha_7, smoothstep(_GlobalMaskDistanceMin_7, _GlobalMaskDistanceMax_7, distance(position, poiCam.worldPos)));
-						poiMods.globalMask[7] = saturate(customDistanceBlend(poiMods.globalMask[7], val, _GlobalMaskDistanceBlendType_7));
-					}
+					handleGlobalMaskDistance(7, _GlobalMaskDistanceEnable_7, _GlobalMaskDistanceType_7, _GlobalMaskDistanceMinAlpha_7, _GlobalMaskDistanceMaxAlpha_7, _GlobalMaskDistanceMin_7, _GlobalMaskDistanceMax_7, _GlobalMaskDistanceBlendType_7, poiMesh, poiMods);
 					//endex
 					//ifex _GlobalMaskDistanceEnable_8==0
-					if (_GlobalMaskDistanceEnable_8)
-					{
-						float3 position = _GlobalMaskDistanceType_8 ? poiMesh.worldPos : poiMesh.objectPosition;
-						float val = lerp(_GlobalMaskDistanceMinAlpha_8, _GlobalMaskDistanceMaxAlpha_8, smoothstep(_GlobalMaskDistanceMin_8, _GlobalMaskDistanceMax_8, distance(position, poiCam.worldPos)));
-						poiMods.globalMask[8] = saturate(customDistanceBlend(poiMods.globalMask[8], val, _GlobalMaskDistanceBlendType_8));
-					}
+					handleGlobalMaskDistance(8, _GlobalMaskDistanceEnable_8, _GlobalMaskDistanceType_8, _GlobalMaskDistanceMinAlpha_8, _GlobalMaskDistanceMaxAlpha_8, _GlobalMaskDistanceMin_8, _GlobalMaskDistanceMax_8, _GlobalMaskDistanceBlendType_8, poiMesh, poiMods);
 					//endex
 					//ifex _GlobalMaskDistanceEnable_9==0
-					if (_GlobalMaskDistanceEnable_9)
-					{
-						float3 position = _GlobalMaskDistanceType_9 ? poiMesh.worldPos : poiMesh.objectPosition;
-						float val = lerp(_GlobalMaskDistanceMinAlpha_9, _GlobalMaskDistanceMaxAlpha_9, smoothstep(_GlobalMaskDistanceMin_9, _GlobalMaskDistanceMax_9, distance(position, poiCam.worldPos)));
-						poiMods.globalMask[9] = saturate(customDistanceBlend(poiMods.globalMask[9], val, _GlobalMaskDistanceBlendType_9));
-					}
+					handleGlobalMaskDistance(9, _GlobalMaskDistanceEnable_9, _GlobalMaskDistanceType_9, _GlobalMaskDistanceMinAlpha_9, _GlobalMaskDistanceMaxAlpha_9, _GlobalMaskDistanceMin_9, _GlobalMaskDistanceMax_9, _GlobalMaskDistanceBlendType_9, poiMesh, poiMods);
 					//endex
 					//ifex _GlobalMaskDistanceEnable_10==0
-					if (_GlobalMaskDistanceEnable_10)
-					{
-						float3 position = _GlobalMaskDistanceType_10 ? poiMesh.worldPos : poiMesh.objectPosition;
-						float val = lerp(_GlobalMaskDistanceMinAlpha_10, _GlobalMaskDistanceMaxAlpha_10, smoothstep(_GlobalMaskDistanceMin_10, _GlobalMaskDistanceMax_10, distance(position, poiCam.worldPos)));
-						poiMods.globalMask[10] = saturate(customDistanceBlend(poiMods.globalMask[10], val, _GlobalMaskDistanceBlendType_10));
-					}
+					handleGlobalMaskDistance(10, _GlobalMaskDistanceEnable_10, _GlobalMaskDistanceType_10, _GlobalMaskDistanceMinAlpha_10, _GlobalMaskDistanceMaxAlpha_10, _GlobalMaskDistanceMin_10, _GlobalMaskDistanceMax_10, _GlobalMaskDistanceBlendType_10, poiMesh, poiMods);
 					//endex
 					//ifex _GlobalMaskDistanceEnable_11==0
-					if (_GlobalMaskDistanceEnable_11)
-					{
-						float3 position = _GlobalMaskDistanceType_11 ? poiMesh.worldPos : poiMesh.objectPosition;
-						float val = lerp(_GlobalMaskDistanceMinAlpha_11, _GlobalMaskDistanceMaxAlpha_11, smoothstep(_GlobalMaskDistanceMin_11, _GlobalMaskDistanceMax_11, distance(position, poiCam.worldPos)));
-						poiMods.globalMask[11] = saturate(customDistanceBlend(poiMods.globalMask[11], val, _GlobalMaskDistanceBlendType_11));
-					}
+					handleGlobalMaskDistance(11, _GlobalMaskDistanceEnable_11, _GlobalMaskDistanceType_11, _GlobalMaskDistanceMinAlpha_11, _GlobalMaskDistanceMaxAlpha_11, _GlobalMaskDistanceMin_11, _GlobalMaskDistanceMax_11, _GlobalMaskDistanceBlendType_11, poiMesh, poiMods);
 					//endex
 					//ifex _GlobalMaskDistanceEnable_12==0
-					if (_GlobalMaskDistanceEnable_12)
-					{
-						float3 position = _GlobalMaskDistanceType_12 ? poiMesh.worldPos : poiMesh.objectPosition;
-						float val = lerp(_GlobalMaskDistanceMinAlpha_12, _GlobalMaskDistanceMaxAlpha_12, smoothstep(_GlobalMaskDistanceMin_12, _GlobalMaskDistanceMax_12, distance(position, poiCam.worldPos)));
-						poiMods.globalMask[12] = saturate(customDistanceBlend(poiMods.globalMask[12], val, _GlobalMaskDistanceBlendType_12));
-					}
+					handleGlobalMaskDistance(12, _GlobalMaskDistanceEnable_12, _GlobalMaskDistanceType_12, _GlobalMaskDistanceMinAlpha_12, _GlobalMaskDistanceMaxAlpha_12, _GlobalMaskDistanceMin_12, _GlobalMaskDistanceMax_12, _GlobalMaskDistanceBlendType_12, poiMesh, poiMods);
 					//endex
 					//ifex _GlobalMaskDistanceEnable_13==0
-					if (_GlobalMaskDistanceEnable_13)
-					{
-						float3 position = _GlobalMaskDistanceType_13 ? poiMesh.worldPos : poiMesh.objectPosition;
-						float val = lerp(_GlobalMaskDistanceMinAlpha_13, _GlobalMaskDistanceMaxAlpha_13, smoothstep(_GlobalMaskDistanceMin_13, _GlobalMaskDistanceMax_13, distance(position, poiCam.worldPos)));
-						poiMods.globalMask[13] = saturate(customDistanceBlend(poiMods.globalMask[13], val, _GlobalMaskDistanceBlendType_13));
-					}
+					handleGlobalMaskDistance(13, _GlobalMaskDistanceEnable_13, _GlobalMaskDistanceType_13, _GlobalMaskDistanceMinAlpha_13, _GlobalMaskDistanceMaxAlpha_13, _GlobalMaskDistanceMin_13, _GlobalMaskDistanceMax_13, _GlobalMaskDistanceBlendType_13, poiMesh, poiMods);
 					//endex
 					//ifex _GlobalMaskDistanceEnable_14==0
-					if (_GlobalMaskDistanceEnable_14)
-					{
-						float3 position = _GlobalMaskDistanceType_14 ? poiMesh.worldPos : poiMesh.objectPosition;
-						float val = lerp(_GlobalMaskDistanceMinAlpha_14, _GlobalMaskDistanceMaxAlpha_14, smoothstep(_GlobalMaskDistanceMin_14, _GlobalMaskDistanceMax_14, distance(position, poiCam.worldPos)));
-						poiMods.globalMask[14] = saturate(customDistanceBlend(poiMods.globalMask[14], val, _GlobalMaskDistanceBlendType_14));
-					}
+					handleGlobalMaskDistance(14, _GlobalMaskDistanceEnable_14, _GlobalMaskDistanceType_14, _GlobalMaskDistanceMinAlpha_14, _GlobalMaskDistanceMaxAlpha_14, _GlobalMaskDistanceMin_14, _GlobalMaskDistanceMax_14, _GlobalMaskDistanceBlendType_14, poiMesh, poiMods);
 					//endex
 					//ifex _GlobalMaskDistanceEnable_15==0
-					if (_GlobalMaskDistanceEnable_15)
-					{
-						float3 position = _GlobalMaskDistanceType_15 ? poiMesh.worldPos : poiMesh.objectPosition;
-						float val = lerp(_GlobalMaskDistanceMinAlpha_15, _GlobalMaskDistanceMaxAlpha_15, smoothstep(_GlobalMaskDistanceMin_15, _GlobalMaskDistanceMax_15, distance(position, poiCam.worldPos)));
-						poiMods.globalMask[15] = saturate(customDistanceBlend(poiMods.globalMask[15], val, _GlobalMaskDistanceBlendType_15));
-					}
+					handleGlobalMaskDistance(15, _GlobalMaskDistanceEnable_15, _GlobalMaskDistanceType_15, _GlobalMaskDistanceMinAlpha_15, _GlobalMaskDistanceMaxAlpha_15, _GlobalMaskDistanceMin_15, _GlobalMaskDistanceMax_15, _GlobalMaskDistanceBlendType_15, poiMesh, poiMods);
 					//endex
+					
 				}
 				//endex
+				
 			}
 			
 			//ifex _GlobalMaskVertexColorRed==0 && _GlobalMaskVertexColorGreen==0 && _GlobalMaskVertexColorBlue==0 && _GlobalMaskVertexColorAlpha==0
@@ -8272,19 +8210,19 @@ Shader ".poiyomi/Poiyomi Toon"
 				}
 				if (_GlobalMaskVertexColorRed > 0)
 				{
-					applyToGlobalMask(poiMods, _GlobalMaskVertexColorRed-1, _GlobalMaskVertexColorRedBlendType, vcol.r);
+					applyToGlobalMask(poiMods, _GlobalMaskVertexColorRed - 1, _GlobalMaskVertexColorRedBlendType, vcol.r);
 				}
 				if (_GlobalMaskVertexColorGreen > 0)
 				{
-					applyToGlobalMask(poiMods, _GlobalMaskVertexColorGreen-1, _GlobalMaskVertexColorGreenBlendType, vcol.g);
+					applyToGlobalMask(poiMods, _GlobalMaskVertexColorGreen - 1, _GlobalMaskVertexColorGreenBlendType, vcol.g);
 				}
 				if (_GlobalMaskVertexColorBlue > 0)
 				{
-					applyToGlobalMask(poiMods, _GlobalMaskVertexColorBlue-1, _GlobalMaskVertexColorBlueBlendType, vcol.b);
+					applyToGlobalMask(poiMods, _GlobalMaskVertexColorBlue - 1, _GlobalMaskVertexColorBlueBlendType, vcol.b);
 				}
 				if (_GlobalMaskVertexColorAlpha > 0)
 				{
-					applyToGlobalMask(poiMods, _GlobalMaskVertexColorAlpha-1, _GlobalMaskVertexColorAlphaBlendType, vcol.a);
+					applyToGlobalMask(poiMods, _GlobalMaskVertexColorAlpha - 1, _GlobalMaskVertexColorAlphaBlendType, vcol.a);
 				}
 			}
 			//endex
@@ -8672,6 +8610,7 @@ Shader ".poiyomi/Poiyomi Toon"
 			
 			#define DielectricSpec float4(0.04, 0.04, 0.04, 1.0 - 0.04)
 			#define PI float(3.14159265359)
+			#define Epsilon float(1e-10)
 			
 			#define POI2D_SAMPLE_TEX2D_SAMPLERGRAD(tex, samplertex, coord, dx, dy) tex.SampleGrad(sampler##samplertex, coord, dx, dy)
 			#define POI2D_SAMPLE_TEX2D_SAMPLERGRADD(tex, samp, uv, pan, dx, dy) tex.SampleGrad(samp, POI_PAN_UV(uv, pan), dx, dy)
@@ -9154,37 +9093,37 @@ Shader ".poiyomi/Poiyomi Toon"
 			//endex
 			
 			//ifex _GlobalMaskOptionsType!=2
-			int  _GlobalMaskToggleOn_0;
+			int _GlobalMaskToggleOn_0;
 			int _GlobalMaskToggleOff_0;
-			int  _GlobalMaskToggleOn_1;
+			int _GlobalMaskToggleOn_1;
 			int _GlobalMaskToggleOff_1;
-			int  _GlobalMaskToggleOn_2;
+			int _GlobalMaskToggleOn_2;
 			int _GlobalMaskToggleOff_2;
-			int  _GlobalMaskToggleOn_3;
+			int _GlobalMaskToggleOn_3;
 			int _GlobalMaskToggleOff_3;
-			int  _GlobalMaskToggleOn_4;
+			int _GlobalMaskToggleOn_4;
 			int _GlobalMaskToggleOff_4;
-			int  _GlobalMaskToggleOn_5;
+			int _GlobalMaskToggleOn_5;
 			int _GlobalMaskToggleOff_5;
-			int  _GlobalMaskToggleOn_6;
+			int _GlobalMaskToggleOn_6;
 			int _GlobalMaskToggleOff_6;
-			int  _GlobalMaskToggleOn_7;
+			int _GlobalMaskToggleOn_7;
 			int _GlobalMaskToggleOff_7;
-			int  _GlobalMaskToggleOn_8;
+			int _GlobalMaskToggleOn_8;
 			int _GlobalMaskToggleOff_8;
-			int  _GlobalMaskToggleOn_9;
+			int _GlobalMaskToggleOn_9;
 			int _GlobalMaskToggleOff_9;
-			int  _GlobalMaskToggleOn_10;
+			int _GlobalMaskToggleOn_10;
 			int _GlobalMaskToggleOff_10;
-			int  _GlobalMaskToggleOn_11;
+			int _GlobalMaskToggleOn_11;
 			int _GlobalMaskToggleOff_11;
-			int  _GlobalMaskToggleOn_12;
+			int _GlobalMaskToggleOn_12;
 			int _GlobalMaskToggleOff_12;
-			int  _GlobalMaskToggleOn_13;
+			int _GlobalMaskToggleOn_13;
 			int _GlobalMaskToggleOff_13;
-			int  _GlobalMaskToggleOn_14;
+			int _GlobalMaskToggleOn_14;
 			int _GlobalMaskToggleOff_14;
-			int  _GlobalMaskToggleOn_15;
+			int _GlobalMaskToggleOn_15;
 			int _GlobalMaskToggleOff_15;
 			//endex
 			//endex
@@ -13269,8 +13208,6 @@ Shader ".poiyomi/Poiyomi Toon"
 				uint index = (uint(uv.x) % 4) * 4 + uint(uv.y) % 4;
 				Out = In - DITHER_THRESHOLDS[index];
 			}
-			
-			static const float Epsilon = 1e-10;
 			// The weights of RGB contributions to luminance.
 			// Should sum to unity.
 			static const float3 HCYwts = float3(0.299, 0.587, 0.114);
@@ -14094,8 +14031,6 @@ Shader ".poiyomi/Poiyomi Toon"
 			{
 				return (toggle == 0 ? value : 1 - value);
 			}
-			
-			// OKLAB
 			
 			float3 PoiBlendNormal(float3 dstNormal, float3 srcNormal)
 			{
@@ -15350,7 +15285,9 @@ Shader ".poiyomi/Poiyomi Toon"
 					poiMods.globalMask[1] = POI2D_SAMPLER_PAN(_GlobalMaskTexture0, _MainTex, poiUV(poiMesh.uv[_GlobalMaskTexture0UV], _GlobalMaskTexture0SplitTilingOffset_G), _GlobalMaskTexture0SplitPan_G).g;
 					poiMods.globalMask[2] = POI2D_SAMPLER_PAN(_GlobalMaskTexture0, _MainTex, poiUV(poiMesh.uv[_GlobalMaskTexture0UV], _GlobalMaskTexture0SplitTilingOffset_B), _GlobalMaskTexture0SplitPan_B).b;
 					poiMods.globalMask[3] = POI2D_SAMPLER_PAN(_GlobalMaskTexture0, _MainTex, poiUV(poiMesh.uv[_GlobalMaskTexture0UV], _GlobalMaskTexture0SplitTilingOffset_A), _GlobalMaskTexture0SplitPan_A).a;
-				} else {
+				}
+				else
+				{
 					poiMods.globalMask[0] = gmcol0[0];
 					poiMods.globalMask[1] = gmcol0[1];
 					poiMods.globalMask[2] = gmcol0[2];
@@ -15366,7 +15303,9 @@ Shader ".poiyomi/Poiyomi Toon"
 					poiMods.globalMask[5] = POI2D_SAMPLER_PAN(_GlobalMaskTexture1, _MainTex, poiUV(poiMesh.uv[_GlobalMaskTexture1UV], _GlobalMaskTexture1SplitTilingOffset_G), _GlobalMaskTexture1SplitPan_G).g;
 					poiMods.globalMask[6] = POI2D_SAMPLER_PAN(_GlobalMaskTexture1, _MainTex, poiUV(poiMesh.uv[_GlobalMaskTexture1UV], _GlobalMaskTexture1SplitTilingOffset_B), _GlobalMaskTexture1SplitPan_B).b;
 					poiMods.globalMask[7] = POI2D_SAMPLER_PAN(_GlobalMaskTexture1, _MainTex, poiUV(poiMesh.uv[_GlobalMaskTexture1UV], _GlobalMaskTexture1SplitTilingOffset_A), _GlobalMaskTexture1SplitPan_A).a;
-				} else {
+				}
+				else
+				{
 					poiMods.globalMask[4] = gmcol1[0];
 					poiMods.globalMask[5] = gmcol1[1];
 					poiMods.globalMask[6] = gmcol1[2];
@@ -15382,7 +15321,9 @@ Shader ".poiyomi/Poiyomi Toon"
 					poiMods.globalMask[9] = POI2D_SAMPLER_PAN(_GlobalMaskTexture2, _MainTex, poiUV(poiMesh.uv[_GlobalMaskTexture2UV], _GlobalMaskTexture2SplitTilingOffset_G), _GlobalMaskTexture2SplitPan_G).g;
 					poiMods.globalMask[10] = POI2D_SAMPLER_PAN(_GlobalMaskTexture2, _MainTex, poiUV(poiMesh.uv[_GlobalMaskTexture2UV], _GlobalMaskTexture2SplitTilingOffset_B), _GlobalMaskTexture2SplitPan_B).b;
 					poiMods.globalMask[11] = POI2D_SAMPLER_PAN(_GlobalMaskTexture2, _MainTex, poiUV(poiMesh.uv[_GlobalMaskTexture2UV], _GlobalMaskTexture2SplitTilingOffset_A), _GlobalMaskTexture2SplitPan_A).a;
-				} else {
+				}
+				else
+				{
 					poiMods.globalMask[8] = gmcol2[0];
 					poiMods.globalMask[9] = gmcol2[1];
 					poiMods.globalMask[10] = gmcol2[2];
@@ -15398,7 +15339,9 @@ Shader ".poiyomi/Poiyomi Toon"
 					poiMods.globalMask[13] = POI2D_SAMPLER_PAN(_GlobalMaskTexture3, _MainTex, poiUV(poiMesh.uv[_GlobalMaskTexture3UV], _GlobalMaskTexture3SplitTilingOffset_G), _GlobalMaskTexture3SplitPan_G).g;
 					poiMods.globalMask[14] = POI2D_SAMPLER_PAN(_GlobalMaskTexture3, _MainTex, poiUV(poiMesh.uv[_GlobalMaskTexture3UV], _GlobalMaskTexture3SplitTilingOffset_B), _GlobalMaskTexture3SplitPan_B).b;
 					poiMods.globalMask[15] = POI2D_SAMPLER_PAN(_GlobalMaskTexture3, _MainTex, poiUV(poiMesh.uv[_GlobalMaskTexture3UV], _GlobalMaskTexture3SplitTilingOffset_A), _GlobalMaskTexture3SplitPan_A).a;
-				} else {
+				}
+				else
+				{
 					poiMods.globalMask[12] = gmcol3[0];
 					poiMods.globalMask[13] = gmcol3[1];
 					poiMods.globalMask[14] = gmcol3[2];
@@ -15414,16 +15357,16 @@ Shader ".poiyomi/Poiyomi Toon"
 				//ifex _GlobalMaskOptionsType!=0
 				if (_GlobalMaskOptionsType == 0)
 				{
-					poiMods.globalMask[0]  = saturate(poiMods.globalMask[0]  + _GlobalMaskSlider_0);
-					poiMods.globalMask[1]  = saturate(poiMods.globalMask[1]  + _GlobalMaskSlider_1);
-					poiMods.globalMask[2]  = saturate(poiMods.globalMask[2]  + _GlobalMaskSlider_2);
-					poiMods.globalMask[3]  = saturate(poiMods.globalMask[3]  + _GlobalMaskSlider_3);
-					poiMods.globalMask[4]  = saturate(poiMods.globalMask[4]  + _GlobalMaskSlider_4);
-					poiMods.globalMask[5]  = saturate(poiMods.globalMask[5]  + _GlobalMaskSlider_5);
-					poiMods.globalMask[6]  = saturate(poiMods.globalMask[6]  + _GlobalMaskSlider_6);
-					poiMods.globalMask[7]  = saturate(poiMods.globalMask[7]  + _GlobalMaskSlider_7);
-					poiMods.globalMask[8]  = saturate(poiMods.globalMask[8]  + _GlobalMaskSlider_8);
-					poiMods.globalMask[9]  = saturate(poiMods.globalMask[9]  + _GlobalMaskSlider_9);
+					poiMods.globalMask[0] = saturate(poiMods.globalMask[0] + _GlobalMaskSlider_0);
+					poiMods.globalMask[1] = saturate(poiMods.globalMask[1] + _GlobalMaskSlider_1);
+					poiMods.globalMask[2] = saturate(poiMods.globalMask[2] + _GlobalMaskSlider_2);
+					poiMods.globalMask[3] = saturate(poiMods.globalMask[3] + _GlobalMaskSlider_3);
+					poiMods.globalMask[4] = saturate(poiMods.globalMask[4] + _GlobalMaskSlider_4);
+					poiMods.globalMask[5] = saturate(poiMods.globalMask[5] + _GlobalMaskSlider_5);
+					poiMods.globalMask[6] = saturate(poiMods.globalMask[6] + _GlobalMaskSlider_6);
+					poiMods.globalMask[7] = saturate(poiMods.globalMask[7] + _GlobalMaskSlider_7);
+					poiMods.globalMask[8] = saturate(poiMods.globalMask[8] + _GlobalMaskSlider_8);
+					poiMods.globalMask[9] = saturate(poiMods.globalMask[9] + _GlobalMaskSlider_9);
 					poiMods.globalMask[10] = saturate(poiMods.globalMask[10] + _GlobalMaskSlider_10);
 					poiMods.globalMask[11] = saturate(poiMods.globalMask[11] + _GlobalMaskSlider_11);
 					poiMods.globalMask[12] = saturate(poiMods.globalMask[12] + _GlobalMaskSlider_12);
@@ -15435,16 +15378,16 @@ Shader ".poiyomi/Poiyomi Toon"
 				//ifex _GlobalMaskOptionsType!=1
 				if (_GlobalMaskOptionsType == 1)
 				{
-					poiMods.globalMask[0]  = lerp(_GlobalMaskMinMaxSlider_0.x,  _GlobalMaskMinMaxSlider_0.y,  poiMods.globalMask[0]);
-					poiMods.globalMask[1]  = lerp(_GlobalMaskMinMaxSlider_1.x,  _GlobalMaskMinMaxSlider_1.y,  poiMods.globalMask[1]);
-					poiMods.globalMask[2]  = lerp(_GlobalMaskMinMaxSlider_2.x,  _GlobalMaskMinMaxSlider_2.y,  poiMods.globalMask[2]);
-					poiMods.globalMask[3]  = lerp(_GlobalMaskMinMaxSlider_3.x,  _GlobalMaskMinMaxSlider_3.y,  poiMods.globalMask[3]);
-					poiMods.globalMask[4]  = lerp(_GlobalMaskMinMaxSlider_4.x,  _GlobalMaskMinMaxSlider_4.y,  poiMods.globalMask[4]);
-					poiMods.globalMask[5]  = lerp(_GlobalMaskMinMaxSlider_5.x,  _GlobalMaskMinMaxSlider_5.y,  poiMods.globalMask[5]);
-					poiMods.globalMask[6]  = lerp(_GlobalMaskMinMaxSlider_6.x,  _GlobalMaskMinMaxSlider_6.y,  poiMods.globalMask[6]);
-					poiMods.globalMask[7]  = lerp(_GlobalMaskMinMaxSlider_7.x,  _GlobalMaskMinMaxSlider_7.y,  poiMods.globalMask[7]);
-					poiMods.globalMask[8]  = lerp(_GlobalMaskMinMaxSlider_8.x,  _GlobalMaskMinMaxSlider_8.y,  poiMods.globalMask[8]);
-					poiMods.globalMask[9]  = lerp(_GlobalMaskMinMaxSlider_9.x,  _GlobalMaskMinMaxSlider_9.y,  poiMods.globalMask[9]);
+					poiMods.globalMask[0] = lerp(_GlobalMaskMinMaxSlider_0.x, _GlobalMaskMinMaxSlider_0.y, poiMods.globalMask[0]);
+					poiMods.globalMask[1] = lerp(_GlobalMaskMinMaxSlider_1.x, _GlobalMaskMinMaxSlider_1.y, poiMods.globalMask[1]);
+					poiMods.globalMask[2] = lerp(_GlobalMaskMinMaxSlider_2.x, _GlobalMaskMinMaxSlider_2.y, poiMods.globalMask[2]);
+					poiMods.globalMask[3] = lerp(_GlobalMaskMinMaxSlider_3.x, _GlobalMaskMinMaxSlider_3.y, poiMods.globalMask[3]);
+					poiMods.globalMask[4] = lerp(_GlobalMaskMinMaxSlider_4.x, _GlobalMaskMinMaxSlider_4.y, poiMods.globalMask[4]);
+					poiMods.globalMask[5] = lerp(_GlobalMaskMinMaxSlider_5.x, _GlobalMaskMinMaxSlider_5.y, poiMods.globalMask[5]);
+					poiMods.globalMask[6] = lerp(_GlobalMaskMinMaxSlider_6.x, _GlobalMaskMinMaxSlider_6.y, poiMods.globalMask[6]);
+					poiMods.globalMask[7] = lerp(_GlobalMaskMinMaxSlider_7.x, _GlobalMaskMinMaxSlider_7.y, poiMods.globalMask[7]);
+					poiMods.globalMask[8] = lerp(_GlobalMaskMinMaxSlider_8.x, _GlobalMaskMinMaxSlider_8.y, poiMods.globalMask[8]);
+					poiMods.globalMask[9] = lerp(_GlobalMaskMinMaxSlider_9.x, _GlobalMaskMinMaxSlider_9.y, poiMods.globalMask[9]);
 					poiMods.globalMask[10] = lerp(_GlobalMaskMinMaxSlider_10.x, _GlobalMaskMinMaxSlider_10.y, poiMods.globalMask[10]);
 					poiMods.globalMask[11] = lerp(_GlobalMaskMinMaxSlider_11.x, _GlobalMaskMinMaxSlider_11.y, poiMods.globalMask[11]);
 					poiMods.globalMask[12] = lerp(_GlobalMaskMinMaxSlider_12.x, _GlobalMaskMinMaxSlider_12.y, poiMods.globalMask[12]);
@@ -15456,16 +15399,16 @@ Shader ".poiyomi/Poiyomi Toon"
 				//ifex _GlobalMaskOptionsType!=2
 				if (_GlobalMaskOptionsType == 2)
 				{
-					if (_GlobalMaskToggleOn_0)  poiMods.globalMask[0]  = 1;
-					if (_GlobalMaskToggleOn_1)  poiMods.globalMask[1]  = 1;
-					if (_GlobalMaskToggleOn_2)  poiMods.globalMask[2]  = 1;
-					if (_GlobalMaskToggleOn_3)  poiMods.globalMask[3]  = 1;
-					if (_GlobalMaskToggleOn_4)  poiMods.globalMask[4]  = 1;
-					if (_GlobalMaskToggleOn_5)  poiMods.globalMask[5]  = 1;
-					if (_GlobalMaskToggleOn_6)  poiMods.globalMask[6]  = 1;
-					if (_GlobalMaskToggleOn_7)  poiMods.globalMask[7]  = 1;
-					if (_GlobalMaskToggleOn_8)  poiMods.globalMask[8]  = 1;
-					if (_GlobalMaskToggleOn_9)  poiMods.globalMask[9]  = 1;
+					if (_GlobalMaskToggleOn_0)  poiMods.globalMask[0] = 1;
+					if (_GlobalMaskToggleOn_1)  poiMods.globalMask[1] = 1;
+					if (_GlobalMaskToggleOn_2)  poiMods.globalMask[2] = 1;
+					if (_GlobalMaskToggleOn_3)  poiMods.globalMask[3] = 1;
+					if (_GlobalMaskToggleOn_4)  poiMods.globalMask[4] = 1;
+					if (_GlobalMaskToggleOn_5)  poiMods.globalMask[5] = 1;
+					if (_GlobalMaskToggleOn_6)  poiMods.globalMask[6] = 1;
+					if (_GlobalMaskToggleOn_7)  poiMods.globalMask[7] = 1;
+					if (_GlobalMaskToggleOn_8)  poiMods.globalMask[8] = 1;
+					if (_GlobalMaskToggleOn_9)  poiMods.globalMask[9] = 1;
 					if (_GlobalMaskToggleOn_10) poiMods.globalMask[10] = 1;
 					if (_GlobalMaskToggleOn_11) poiMods.globalMask[11] = 1;
 					if (_GlobalMaskToggleOn_12) poiMods.globalMask[12] = 1;
@@ -15473,24 +15416,25 @@ Shader ".poiyomi/Poiyomi Toon"
 					if (_GlobalMaskToggleOn_14) poiMods.globalMask[14] = 1;
 					if (_GlobalMaskToggleOn_15) poiMods.globalMask[15] = 1;
 					
-					poiMods.globalMask[0]  *= (1-_GlobalMaskToggleOff_0);
-					poiMods.globalMask[1]  *= (1-_GlobalMaskToggleOff_1);
-					poiMods.globalMask[2]  *= (1-_GlobalMaskToggleOff_2);
-					poiMods.globalMask[3]  *= (1-_GlobalMaskToggleOff_3);
-					poiMods.globalMask[4]  *= (1-_GlobalMaskToggleOff_4);
-					poiMods.globalMask[5]  *= (1-_GlobalMaskToggleOff_5);
-					poiMods.globalMask[6]  *= (1-_GlobalMaskToggleOff_6);
-					poiMods.globalMask[7]  *= (1-_GlobalMaskToggleOff_7);
-					poiMods.globalMask[8]  *= (1-_GlobalMaskToggleOff_8);
-					poiMods.globalMask[9]  *= (1-_GlobalMaskToggleOff_9);
-					poiMods.globalMask[10] *= (1-_GlobalMaskToggleOff_10);
-					poiMods.globalMask[11] *= (1-_GlobalMaskToggleOff_11);
-					poiMods.globalMask[12] *= (1-_GlobalMaskToggleOff_12);
-					poiMods.globalMask[13] *= (1-_GlobalMaskToggleOff_13);
-					poiMods.globalMask[14] *= (1-_GlobalMaskToggleOff_14);
-					poiMods.globalMask[15] *= (1-_GlobalMaskToggleOff_15);
+					poiMods.globalMask[0] *= (1 - _GlobalMaskToggleOff_0);
+					poiMods.globalMask[1] *= (1 - _GlobalMaskToggleOff_1);
+					poiMods.globalMask[2] *= (1 - _GlobalMaskToggleOff_2);
+					poiMods.globalMask[3] *= (1 - _GlobalMaskToggleOff_3);
+					poiMods.globalMask[4] *= (1 - _GlobalMaskToggleOff_4);
+					poiMods.globalMask[5] *= (1 - _GlobalMaskToggleOff_5);
+					poiMods.globalMask[6] *= (1 - _GlobalMaskToggleOff_6);
+					poiMods.globalMask[7] *= (1 - _GlobalMaskToggleOff_7);
+					poiMods.globalMask[8] *= (1 - _GlobalMaskToggleOff_8);
+					poiMods.globalMask[9] *= (1 - _GlobalMaskToggleOff_9);
+					poiMods.globalMask[10] *= (1 - _GlobalMaskToggleOff_10);
+					poiMods.globalMask[11] *= (1 - _GlobalMaskToggleOff_11);
+					poiMods.globalMask[12] *= (1 - _GlobalMaskToggleOff_12);
+					poiMods.globalMask[13] *= (1 - _GlobalMaskToggleOff_13);
+					poiMods.globalMask[14] *= (1 - _GlobalMaskToggleOff_14);
+					poiMods.globalMask[15] *= (1 - _GlobalMaskToggleOff_15);
 				}
 				//endex
+				
 			}
 			//endex
 			
@@ -15504,23 +15448,33 @@ Shader ".poiyomi/Poiyomi Toon"
 				}
 			}
 			
+			void handleGlobalMaskDistance(int index, bool enable, bool type, float minAlpha, float maxAlpha, float min, float max, int blendType, in PoiMesh poiMesh, inout PoiMods poiMods)
+			{
+				if (enable)
+				{
+					float3 position = type ? poiMesh.worldPos : poiMesh.objectPosition;
+					float val = lerp(minAlpha, maxAlpha, smoothstep(min, max, distance(position, _WorldSpaceCameraPos)));
+					poiMods.globalMask[index] = saturate(customDistanceBlend(poiMods.globalMask[index], val, blendType));
+				}
+			}
+			
 			void ApplyGlobalMaskModifiers(in PoiMesh poiMesh, inout PoiMods poiMods, in PoiCam poiCam)
 			{
 				//ifex _GlobalMaskModifiersBackfaceEnable==0
-				if(_GlobalMaskModifiersBackfaceEnable)
+				if (_GlobalMaskModifiersBackfaceEnable)
 				{
 					float facingMode = saturate(poiMesh.isFrontFace) + 1;
 					// _GlobalMaskBackface is 0 for ignore, 1 for back only, 2 for front only
-					poiMods.globalMask[0]  *= _GlobalMaskBackface_0  == 0 ? 1 : (facingMode == (_GlobalMaskBackface_0 ));
-					poiMods.globalMask[1]  *= _GlobalMaskBackface_1  == 0 ? 1 : (facingMode == (_GlobalMaskBackface_1 ));
-					poiMods.globalMask[2]  *= _GlobalMaskBackface_2  == 0 ? 1 : (facingMode == (_GlobalMaskBackface_2 ));
-					poiMods.globalMask[3]  *= _GlobalMaskBackface_3  == 0 ? 1 : (facingMode == (_GlobalMaskBackface_3 ));
-					poiMods.globalMask[4]  *= _GlobalMaskBackface_4  == 0 ? 1 : (facingMode == (_GlobalMaskBackface_4 ));
-					poiMods.globalMask[5]  *= _GlobalMaskBackface_5  == 0 ? 1 : (facingMode == (_GlobalMaskBackface_5 ));
-					poiMods.globalMask[6]  *= _GlobalMaskBackface_6  == 0 ? 1 : (facingMode == (_GlobalMaskBackface_6 ));
-					poiMods.globalMask[7]  *= _GlobalMaskBackface_7  == 0 ? 1 : (facingMode == (_GlobalMaskBackface_7 ));
-					poiMods.globalMask[8]  *= _GlobalMaskBackface_8  == 0 ? 1 : (facingMode == (_GlobalMaskBackface_8 ));
-					poiMods.globalMask[9]  *= _GlobalMaskBackface_9  == 0 ? 1 : (facingMode == (_GlobalMaskBackface_9 ));
+					poiMods.globalMask[0] *= _GlobalMaskBackface_0 == 0 ? 1 : (facingMode == (_GlobalMaskBackface_0));
+					poiMods.globalMask[1] *= _GlobalMaskBackface_1 == 0 ? 1 : (facingMode == (_GlobalMaskBackface_1));
+					poiMods.globalMask[2] *= _GlobalMaskBackface_2 == 0 ? 1 : (facingMode == (_GlobalMaskBackface_2));
+					poiMods.globalMask[3] *= _GlobalMaskBackface_3 == 0 ? 1 : (facingMode == (_GlobalMaskBackface_3));
+					poiMods.globalMask[4] *= _GlobalMaskBackface_4 == 0 ? 1 : (facingMode == (_GlobalMaskBackface_4));
+					poiMods.globalMask[5] *= _GlobalMaskBackface_5 == 0 ? 1 : (facingMode == (_GlobalMaskBackface_5));
+					poiMods.globalMask[6] *= _GlobalMaskBackface_6 == 0 ? 1 : (facingMode == (_GlobalMaskBackface_6));
+					poiMods.globalMask[7] *= _GlobalMaskBackface_7 == 0 ? 1 : (facingMode == (_GlobalMaskBackface_7));
+					poiMods.globalMask[8] *= _GlobalMaskBackface_8 == 0 ? 1 : (facingMode == (_GlobalMaskBackface_8));
+					poiMods.globalMask[9] *= _GlobalMaskBackface_9 == 0 ? 1 : (facingMode == (_GlobalMaskBackface_9));
 					poiMods.globalMask[10] *= _GlobalMaskBackface_10 == 0 ? 1 : (facingMode == (_GlobalMaskBackface_10));
 					poiMods.globalMask[11] *= _GlobalMaskBackface_11 == 0 ? 1 : (facingMode == (_GlobalMaskBackface_11));
 					poiMods.globalMask[12] *= _GlobalMaskBackface_12 == 0 ? 1 : (facingMode == (_GlobalMaskBackface_12));
@@ -15531,7 +15485,7 @@ Shader ".poiyomi/Poiyomi Toon"
 				//endex
 				
 				//ifex _GlobalMaskModifiersMirrorEnable==0
-				if(_GlobalMaskModifiersMirrorEnable)
+				if (_GlobalMaskModifiersMirrorEnable)
 				{
 					float mirrorMode = 0;
 					if (_GlobalMaskMirrorVisibilityMode == 1) // VRC
@@ -15541,16 +15495,16 @@ Shader ".poiyomi/Poiyomi Toon"
 					
 					mirrorMode += 1;
 					// _GlobalMaskMirror is 0 for ignore, 1 for outside mirror only, 2 for in mirror only
-					poiMods.globalMask[0]  *= _GlobalMaskMirror_0  == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_0 ));
-					poiMods.globalMask[1]  *= _GlobalMaskMirror_1  == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_1 ));
-					poiMods.globalMask[2]  *= _GlobalMaskMirror_2  == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_2 ));
-					poiMods.globalMask[3]  *= _GlobalMaskMirror_3  == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_3 ));
-					poiMods.globalMask[4]  *= _GlobalMaskMirror_4  == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_4 ));
-					poiMods.globalMask[5]  *= _GlobalMaskMirror_5  == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_5 ));
-					poiMods.globalMask[6]  *= _GlobalMaskMirror_6  == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_6 ));
-					poiMods.globalMask[7]  *= _GlobalMaskMirror_7  == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_7 ));
-					poiMods.globalMask[8]  *= _GlobalMaskMirror_8  == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_8 ));
-					poiMods.globalMask[9]  *= _GlobalMaskMirror_9  == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_9 ));
+					poiMods.globalMask[0] *= _GlobalMaskMirror_0 == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_0));
+					poiMods.globalMask[1] *= _GlobalMaskMirror_1 == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_1));
+					poiMods.globalMask[2] *= _GlobalMaskMirror_2 == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_2));
+					poiMods.globalMask[3] *= _GlobalMaskMirror_3 == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_3));
+					poiMods.globalMask[4] *= _GlobalMaskMirror_4 == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_4));
+					poiMods.globalMask[5] *= _GlobalMaskMirror_5 == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_5));
+					poiMods.globalMask[6] *= _GlobalMaskMirror_6 == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_6));
+					poiMods.globalMask[7] *= _GlobalMaskMirror_7 == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_7));
+					poiMods.globalMask[8] *= _GlobalMaskMirror_8 == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_8));
+					poiMods.globalMask[9] *= _GlobalMaskMirror_9 == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_9));
 					poiMods.globalMask[10] *= _GlobalMaskMirror_10 == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_10));
 					poiMods.globalMask[11] *= _GlobalMaskMirror_11 == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_11));
 					poiMods.globalMask[12] *= _GlobalMaskMirror_12 == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_12));
@@ -15561,21 +15515,21 @@ Shader ".poiyomi/Poiyomi Toon"
 				//endex
 				
 				//ifex _GlobalMaskModifiersCameraEnable==0
-				if(_GlobalMaskModifiersCameraEnable)
+				if (_GlobalMaskModifiersCameraEnable)
 				{
 					float isCamera = VRCCameraMode() > 0;
 					isCamera += 1;
 					// _GlobalMaskCamera is 0 for ignore, 1 for outside camera only, 2 for in camera only
-					poiMods.globalMask[0]  *= _GlobalMaskCamera_0  == 0 ? 1 : (isCamera == (_GlobalMaskCamera_0 ));
-					poiMods.globalMask[1]  *= _GlobalMaskCamera_1  == 0 ? 1 : (isCamera == (_GlobalMaskCamera_1 ));
-					poiMods.globalMask[2]  *= _GlobalMaskCamera_2  == 0 ? 1 : (isCamera == (_GlobalMaskCamera_2 ));
-					poiMods.globalMask[3]  *= _GlobalMaskCamera_3  == 0 ? 1 : (isCamera == (_GlobalMaskCamera_3 ));
-					poiMods.globalMask[4]  *= _GlobalMaskCamera_4  == 0 ? 1 : (isCamera == (_GlobalMaskCamera_4 ));
-					poiMods.globalMask[5]  *= _GlobalMaskCamera_5  == 0 ? 1 : (isCamera == (_GlobalMaskCamera_5 ));
-					poiMods.globalMask[6]  *= _GlobalMaskCamera_6  == 0 ? 1 : (isCamera == (_GlobalMaskCamera_6 ));
-					poiMods.globalMask[7]  *= _GlobalMaskCamera_7  == 0 ? 1 : (isCamera == (_GlobalMaskCamera_7 ));
-					poiMods.globalMask[8]  *= _GlobalMaskCamera_8  == 0 ? 1 : (isCamera == (_GlobalMaskCamera_8 ));
-					poiMods.globalMask[9]  *= _GlobalMaskCamera_9  == 0 ? 1 : (isCamera == (_GlobalMaskCamera_9 ));
+					poiMods.globalMask[0] *= _GlobalMaskCamera_0 == 0 ? 1 : (isCamera == (_GlobalMaskCamera_0));
+					poiMods.globalMask[1] *= _GlobalMaskCamera_1 == 0 ? 1 : (isCamera == (_GlobalMaskCamera_1));
+					poiMods.globalMask[2] *= _GlobalMaskCamera_2 == 0 ? 1 : (isCamera == (_GlobalMaskCamera_2));
+					poiMods.globalMask[3] *= _GlobalMaskCamera_3 == 0 ? 1 : (isCamera == (_GlobalMaskCamera_3));
+					poiMods.globalMask[4] *= _GlobalMaskCamera_4 == 0 ? 1 : (isCamera == (_GlobalMaskCamera_4));
+					poiMods.globalMask[5] *= _GlobalMaskCamera_5 == 0 ? 1 : (isCamera == (_GlobalMaskCamera_5));
+					poiMods.globalMask[6] *= _GlobalMaskCamera_6 == 0 ? 1 : (isCamera == (_GlobalMaskCamera_6));
+					poiMods.globalMask[7] *= _GlobalMaskCamera_7 == 0 ? 1 : (isCamera == (_GlobalMaskCamera_7));
+					poiMods.globalMask[8] *= _GlobalMaskCamera_8 == 0 ? 1 : (isCamera == (_GlobalMaskCamera_8));
+					poiMods.globalMask[9] *= _GlobalMaskCamera_9 == 0 ? 1 : (isCamera == (_GlobalMaskCamera_9));
 					poiMods.globalMask[10] *= _GlobalMaskCamera_10 == 0 ? 1 : (isCamera == (_GlobalMaskCamera_10));
 					poiMods.globalMask[11] *= _GlobalMaskCamera_11 == 0 ? 1 : (isCamera == (_GlobalMaskCamera_11));
 					poiMods.globalMask[12] *= _GlobalMaskCamera_12 == 0 ? 1 : (isCamera == (_GlobalMaskCamera_12));
@@ -15588,135 +15542,57 @@ Shader ".poiyomi/Poiyomi Toon"
 				if (_GlobalMaskModifiersDistanceEnable)
 				{
 					//ifex _GlobalMaskDistanceEnable_0==0
-					if (_GlobalMaskDistanceEnable_0)
-					{
-						float3 position = _GlobalMaskDistanceType_0 ? poiMesh.worldPos : poiMesh.objectPosition;
-						float val = lerp(_GlobalMaskDistanceMinAlpha_0, _GlobalMaskDistanceMaxAlpha_0, smoothstep(_GlobalMaskDistanceMin_0, _GlobalMaskDistanceMax_0, distance(position, poiCam.worldPos)));
-						poiMods.globalMask[0] = saturate(customDistanceBlend(poiMods.globalMask[0], val, _GlobalMaskDistanceBlendType_0));
-					}
+					handleGlobalMaskDistance(0, _GlobalMaskDistanceEnable_0, _GlobalMaskDistanceType_0, _GlobalMaskDistanceMinAlpha_0, _GlobalMaskDistanceMaxAlpha_0, _GlobalMaskDistanceMin_0, _GlobalMaskDistanceMax_0, _GlobalMaskDistanceBlendType_0, poiMesh, poiMods);
 					//endex
 					//ifex _GlobalMaskDistanceEnable_1==0
-					if (_GlobalMaskDistanceEnable_1)
-					{
-						float3 position = _GlobalMaskDistanceType_1 ? poiMesh.worldPos : poiMesh.objectPosition;
-						float val = lerp(_GlobalMaskDistanceMinAlpha_1, _GlobalMaskDistanceMaxAlpha_1, smoothstep(_GlobalMaskDistanceMin_1, _GlobalMaskDistanceMax_1, distance(position, poiCam.worldPos)));
-						poiMods.globalMask[1] = saturate(customDistanceBlend(poiMods.globalMask[1], val, _GlobalMaskDistanceBlendType_1));
-					}
+					handleGlobalMaskDistance(1, _GlobalMaskDistanceEnable_1, _GlobalMaskDistanceType_1, _GlobalMaskDistanceMinAlpha_1, _GlobalMaskDistanceMaxAlpha_1, _GlobalMaskDistanceMin_1, _GlobalMaskDistanceMax_1, _GlobalMaskDistanceBlendType_1, poiMesh, poiMods);
 					//endex
 					//ifex _GlobalMaskDistanceEnable_2==0
-					if (_GlobalMaskDistanceEnable_2)
-					{
-						float3 position = _GlobalMaskDistanceType_2 ? poiMesh.worldPos : poiMesh.objectPosition;
-						float val = lerp(_GlobalMaskDistanceMinAlpha_2, _GlobalMaskDistanceMaxAlpha_2, smoothstep(_GlobalMaskDistanceMin_2, _GlobalMaskDistanceMax_2, distance(position, poiCam.worldPos)));
-						poiMods.globalMask[2] = saturate(customDistanceBlend(poiMods.globalMask[2], val, _GlobalMaskDistanceBlendType_2));
-					}
+					handleGlobalMaskDistance(2, _GlobalMaskDistanceEnable_2, _GlobalMaskDistanceType_2, _GlobalMaskDistanceMinAlpha_2, _GlobalMaskDistanceMaxAlpha_2, _GlobalMaskDistanceMin_2, _GlobalMaskDistanceMax_2, _GlobalMaskDistanceBlendType_2, poiMesh, poiMods);
 					//endex
 					//ifex _GlobalMaskDistanceEnable_3==0
-					if (_GlobalMaskDistanceEnable_3)
-					{
-						float3 position = _GlobalMaskDistanceType_3 ? poiMesh.worldPos : poiMesh.objectPosition;
-						float val = lerp(_GlobalMaskDistanceMinAlpha_3, _GlobalMaskDistanceMaxAlpha_3, smoothstep(_GlobalMaskDistanceMin_3, _GlobalMaskDistanceMax_3, distance(position, poiCam.worldPos)));
-						poiMods.globalMask[3] = saturate(customDistanceBlend(poiMods.globalMask[3], val, _GlobalMaskDistanceBlendType_3));
-					}
+					handleGlobalMaskDistance(3, _GlobalMaskDistanceEnable_3, _GlobalMaskDistanceType_3, _GlobalMaskDistanceMinAlpha_3, _GlobalMaskDistanceMaxAlpha_3, _GlobalMaskDistanceMin_3, _GlobalMaskDistanceMax_3, _GlobalMaskDistanceBlendType_3, poiMesh, poiMods);
 					//endex
 					//ifex _GlobalMaskDistanceEnable_4==0
-					if (_GlobalMaskDistanceEnable_4)
-					{
-						float3 position = _GlobalMaskDistanceType_4 ? poiMesh.worldPos : poiMesh.objectPosition;
-						float val = lerp(_GlobalMaskDistanceMinAlpha_4, _GlobalMaskDistanceMaxAlpha_4, smoothstep(_GlobalMaskDistanceMin_4, _GlobalMaskDistanceMax_4, distance(position, poiCam.worldPos)));
-						poiMods.globalMask[4] = saturate(customDistanceBlend(poiMods.globalMask[4], val, _GlobalMaskDistanceBlendType_4));
-					}
+					handleGlobalMaskDistance(4, _GlobalMaskDistanceEnable_4, _GlobalMaskDistanceType_4, _GlobalMaskDistanceMinAlpha_4, _GlobalMaskDistanceMaxAlpha_4, _GlobalMaskDistanceMin_4, _GlobalMaskDistanceMax_4, _GlobalMaskDistanceBlendType_4, poiMesh, poiMods);
 					//endex
 					//ifex _GlobalMaskDistanceEnable_5==0
-					if (_GlobalMaskDistanceEnable_5)
-					{
-						float3 position = _GlobalMaskDistanceType_5 ? poiMesh.worldPos : poiMesh.objectPosition;
-						float val = lerp(_GlobalMaskDistanceMinAlpha_5, _GlobalMaskDistanceMaxAlpha_5, smoothstep(_GlobalMaskDistanceMin_5, _GlobalMaskDistanceMax_5, distance(position, poiCam.worldPos)));
-						poiMods.globalMask[5] = saturate(customDistanceBlend(poiMods.globalMask[5], val, _GlobalMaskDistanceBlendType_5));
-					}
+					handleGlobalMaskDistance(5, _GlobalMaskDistanceEnable_5, _GlobalMaskDistanceType_5, _GlobalMaskDistanceMinAlpha_5, _GlobalMaskDistanceMaxAlpha_5, _GlobalMaskDistanceMin_5, _GlobalMaskDistanceMax_5, _GlobalMaskDistanceBlendType_5, poiMesh, poiMods);
 					//endex
 					//ifex _GlobalMaskDistanceEnable_6==0
-					if (_GlobalMaskDistanceEnable_6)
-					{
-						float3 position = _GlobalMaskDistanceType_6 ? poiMesh.worldPos : poiMesh.objectPosition;
-						float val = lerp(_GlobalMaskDistanceMinAlpha_6, _GlobalMaskDistanceMaxAlpha_6, smoothstep(_GlobalMaskDistanceMin_6, _GlobalMaskDistanceMax_6, distance(position, poiCam.worldPos)));
-						poiMods.globalMask[6] = saturate(customDistanceBlend(poiMods.globalMask[6], val, _GlobalMaskDistanceBlendType_6));
-					}
+					handleGlobalMaskDistance(6, _GlobalMaskDistanceEnable_6, _GlobalMaskDistanceType_6, _GlobalMaskDistanceMinAlpha_6, _GlobalMaskDistanceMaxAlpha_6, _GlobalMaskDistanceMin_6, _GlobalMaskDistanceMax_6, _GlobalMaskDistanceBlendType_6, poiMesh, poiMods);
 					//endex
 					//ifex _GlobalMaskDistanceEnable_7==0
-					if (_GlobalMaskDistanceEnable_7)
-					{
-						float3 position = _GlobalMaskDistanceType_7 ? poiMesh.worldPos : poiMesh.objectPosition;
-						float val = lerp(_GlobalMaskDistanceMinAlpha_7, _GlobalMaskDistanceMaxAlpha_7, smoothstep(_GlobalMaskDistanceMin_7, _GlobalMaskDistanceMax_7, distance(position, poiCam.worldPos)));
-						poiMods.globalMask[7] = saturate(customDistanceBlend(poiMods.globalMask[7], val, _GlobalMaskDistanceBlendType_7));
-					}
+					handleGlobalMaskDistance(7, _GlobalMaskDistanceEnable_7, _GlobalMaskDistanceType_7, _GlobalMaskDistanceMinAlpha_7, _GlobalMaskDistanceMaxAlpha_7, _GlobalMaskDistanceMin_7, _GlobalMaskDistanceMax_7, _GlobalMaskDistanceBlendType_7, poiMesh, poiMods);
 					//endex
 					//ifex _GlobalMaskDistanceEnable_8==0
-					if (_GlobalMaskDistanceEnable_8)
-					{
-						float3 position = _GlobalMaskDistanceType_8 ? poiMesh.worldPos : poiMesh.objectPosition;
-						float val = lerp(_GlobalMaskDistanceMinAlpha_8, _GlobalMaskDistanceMaxAlpha_8, smoothstep(_GlobalMaskDistanceMin_8, _GlobalMaskDistanceMax_8, distance(position, poiCam.worldPos)));
-						poiMods.globalMask[8] = saturate(customDistanceBlend(poiMods.globalMask[8], val, _GlobalMaskDistanceBlendType_8));
-					}
+					handleGlobalMaskDistance(8, _GlobalMaskDistanceEnable_8, _GlobalMaskDistanceType_8, _GlobalMaskDistanceMinAlpha_8, _GlobalMaskDistanceMaxAlpha_8, _GlobalMaskDistanceMin_8, _GlobalMaskDistanceMax_8, _GlobalMaskDistanceBlendType_8, poiMesh, poiMods);
 					//endex
 					//ifex _GlobalMaskDistanceEnable_9==0
-					if (_GlobalMaskDistanceEnable_9)
-					{
-						float3 position = _GlobalMaskDistanceType_9 ? poiMesh.worldPos : poiMesh.objectPosition;
-						float val = lerp(_GlobalMaskDistanceMinAlpha_9, _GlobalMaskDistanceMaxAlpha_9, smoothstep(_GlobalMaskDistanceMin_9, _GlobalMaskDistanceMax_9, distance(position, poiCam.worldPos)));
-						poiMods.globalMask[9] = saturate(customDistanceBlend(poiMods.globalMask[9], val, _GlobalMaskDistanceBlendType_9));
-					}
+					handleGlobalMaskDistance(9, _GlobalMaskDistanceEnable_9, _GlobalMaskDistanceType_9, _GlobalMaskDistanceMinAlpha_9, _GlobalMaskDistanceMaxAlpha_9, _GlobalMaskDistanceMin_9, _GlobalMaskDistanceMax_9, _GlobalMaskDistanceBlendType_9, poiMesh, poiMods);
 					//endex
 					//ifex _GlobalMaskDistanceEnable_10==0
-					if (_GlobalMaskDistanceEnable_10)
-					{
-						float3 position = _GlobalMaskDistanceType_10 ? poiMesh.worldPos : poiMesh.objectPosition;
-						float val = lerp(_GlobalMaskDistanceMinAlpha_10, _GlobalMaskDistanceMaxAlpha_10, smoothstep(_GlobalMaskDistanceMin_10, _GlobalMaskDistanceMax_10, distance(position, poiCam.worldPos)));
-						poiMods.globalMask[10] = saturate(customDistanceBlend(poiMods.globalMask[10], val, _GlobalMaskDistanceBlendType_10));
-					}
+					handleGlobalMaskDistance(10, _GlobalMaskDistanceEnable_10, _GlobalMaskDistanceType_10, _GlobalMaskDistanceMinAlpha_10, _GlobalMaskDistanceMaxAlpha_10, _GlobalMaskDistanceMin_10, _GlobalMaskDistanceMax_10, _GlobalMaskDistanceBlendType_10, poiMesh, poiMods);
 					//endex
 					//ifex _GlobalMaskDistanceEnable_11==0
-					if (_GlobalMaskDistanceEnable_11)
-					{
-						float3 position = _GlobalMaskDistanceType_11 ? poiMesh.worldPos : poiMesh.objectPosition;
-						float val = lerp(_GlobalMaskDistanceMinAlpha_11, _GlobalMaskDistanceMaxAlpha_11, smoothstep(_GlobalMaskDistanceMin_11, _GlobalMaskDistanceMax_11, distance(position, poiCam.worldPos)));
-						poiMods.globalMask[11] = saturate(customDistanceBlend(poiMods.globalMask[11], val, _GlobalMaskDistanceBlendType_11));
-					}
+					handleGlobalMaskDistance(11, _GlobalMaskDistanceEnable_11, _GlobalMaskDistanceType_11, _GlobalMaskDistanceMinAlpha_11, _GlobalMaskDistanceMaxAlpha_11, _GlobalMaskDistanceMin_11, _GlobalMaskDistanceMax_11, _GlobalMaskDistanceBlendType_11, poiMesh, poiMods);
 					//endex
 					//ifex _GlobalMaskDistanceEnable_12==0
-					if (_GlobalMaskDistanceEnable_12)
-					{
-						float3 position = _GlobalMaskDistanceType_12 ? poiMesh.worldPos : poiMesh.objectPosition;
-						float val = lerp(_GlobalMaskDistanceMinAlpha_12, _GlobalMaskDistanceMaxAlpha_12, smoothstep(_GlobalMaskDistanceMin_12, _GlobalMaskDistanceMax_12, distance(position, poiCam.worldPos)));
-						poiMods.globalMask[12] = saturate(customDistanceBlend(poiMods.globalMask[12], val, _GlobalMaskDistanceBlendType_12));
-					}
+					handleGlobalMaskDistance(12, _GlobalMaskDistanceEnable_12, _GlobalMaskDistanceType_12, _GlobalMaskDistanceMinAlpha_12, _GlobalMaskDistanceMaxAlpha_12, _GlobalMaskDistanceMin_12, _GlobalMaskDistanceMax_12, _GlobalMaskDistanceBlendType_12, poiMesh, poiMods);
 					//endex
 					//ifex _GlobalMaskDistanceEnable_13==0
-					if (_GlobalMaskDistanceEnable_13)
-					{
-						float3 position = _GlobalMaskDistanceType_13 ? poiMesh.worldPos : poiMesh.objectPosition;
-						float val = lerp(_GlobalMaskDistanceMinAlpha_13, _GlobalMaskDistanceMaxAlpha_13, smoothstep(_GlobalMaskDistanceMin_13, _GlobalMaskDistanceMax_13, distance(position, poiCam.worldPos)));
-						poiMods.globalMask[13] = saturate(customDistanceBlend(poiMods.globalMask[13], val, _GlobalMaskDistanceBlendType_13));
-					}
+					handleGlobalMaskDistance(13, _GlobalMaskDistanceEnable_13, _GlobalMaskDistanceType_13, _GlobalMaskDistanceMinAlpha_13, _GlobalMaskDistanceMaxAlpha_13, _GlobalMaskDistanceMin_13, _GlobalMaskDistanceMax_13, _GlobalMaskDistanceBlendType_13, poiMesh, poiMods);
 					//endex
 					//ifex _GlobalMaskDistanceEnable_14==0
-					if (_GlobalMaskDistanceEnable_14)
-					{
-						float3 position = _GlobalMaskDistanceType_14 ? poiMesh.worldPos : poiMesh.objectPosition;
-						float val = lerp(_GlobalMaskDistanceMinAlpha_14, _GlobalMaskDistanceMaxAlpha_14, smoothstep(_GlobalMaskDistanceMin_14, _GlobalMaskDistanceMax_14, distance(position, poiCam.worldPos)));
-						poiMods.globalMask[14] = saturate(customDistanceBlend(poiMods.globalMask[14], val, _GlobalMaskDistanceBlendType_14));
-					}
+					handleGlobalMaskDistance(14, _GlobalMaskDistanceEnable_14, _GlobalMaskDistanceType_14, _GlobalMaskDistanceMinAlpha_14, _GlobalMaskDistanceMaxAlpha_14, _GlobalMaskDistanceMin_14, _GlobalMaskDistanceMax_14, _GlobalMaskDistanceBlendType_14, poiMesh, poiMods);
 					//endex
 					//ifex _GlobalMaskDistanceEnable_15==0
-					if (_GlobalMaskDistanceEnable_15)
-					{
-						float3 position = _GlobalMaskDistanceType_15 ? poiMesh.worldPos : poiMesh.objectPosition;
-						float val = lerp(_GlobalMaskDistanceMinAlpha_15, _GlobalMaskDistanceMaxAlpha_15, smoothstep(_GlobalMaskDistanceMin_15, _GlobalMaskDistanceMax_15, distance(position, poiCam.worldPos)));
-						poiMods.globalMask[15] = saturate(customDistanceBlend(poiMods.globalMask[15], val, _GlobalMaskDistanceBlendType_15));
-					}
+					handleGlobalMaskDistance(15, _GlobalMaskDistanceEnable_15, _GlobalMaskDistanceType_15, _GlobalMaskDistanceMinAlpha_15, _GlobalMaskDistanceMaxAlpha_15, _GlobalMaskDistanceMin_15, _GlobalMaskDistanceMax_15, _GlobalMaskDistanceBlendType_15, poiMesh, poiMods);
 					//endex
+					
 				}
 				//endex
+				
 			}
 			
 			//ifex _GlobalMaskVertexColorRed==0 && _GlobalMaskVertexColorGreen==0 && _GlobalMaskVertexColorBlue==0 && _GlobalMaskVertexColorAlpha==0
@@ -15729,19 +15605,19 @@ Shader ".poiyomi/Poiyomi Toon"
 				}
 				if (_GlobalMaskVertexColorRed > 0)
 				{
-					applyToGlobalMask(poiMods, _GlobalMaskVertexColorRed-1, _GlobalMaskVertexColorRedBlendType, vcol.r);
+					applyToGlobalMask(poiMods, _GlobalMaskVertexColorRed - 1, _GlobalMaskVertexColorRedBlendType, vcol.r);
 				}
 				if (_GlobalMaskVertexColorGreen > 0)
 				{
-					applyToGlobalMask(poiMods, _GlobalMaskVertexColorGreen-1, _GlobalMaskVertexColorGreenBlendType, vcol.g);
+					applyToGlobalMask(poiMods, _GlobalMaskVertexColorGreen - 1, _GlobalMaskVertexColorGreenBlendType, vcol.g);
 				}
 				if (_GlobalMaskVertexColorBlue > 0)
 				{
-					applyToGlobalMask(poiMods, _GlobalMaskVertexColorBlue-1, _GlobalMaskVertexColorBlueBlendType, vcol.b);
+					applyToGlobalMask(poiMods, _GlobalMaskVertexColorBlue - 1, _GlobalMaskVertexColorBlueBlendType, vcol.b);
 				}
 				if (_GlobalMaskVertexColorAlpha > 0)
 				{
-					applyToGlobalMask(poiMods, _GlobalMaskVertexColorAlpha-1, _GlobalMaskVertexColorAlphaBlendType, vcol.a);
+					applyToGlobalMask(poiMods, _GlobalMaskVertexColorAlpha - 1, _GlobalMaskVertexColorAlphaBlendType, vcol.a);
 				}
 			}
 			//endex
@@ -18185,13 +18061,15 @@ Shader ".poiyomi/Poiyomi Toon"
 					float passthrough = _LightingAdditivePassthrough;
 					#endif
 					
-					if (_LightingAdditiveGradientEnd == _LightingAdditiveGradientStart) _LightingAdditiveGradientEnd += 0.001;
+					float2 ToonAddGradient = float2(_LightingAdditiveGradientStart, _LightingAdditiveGradientEnd);
 					
-					poiLight.rampedLightMap = smoothstep(_LightingAdditiveGradientEnd, _LightingAdditiveGradientStart, 1 - (.5 * poiLight.nDotL + .5));
+					if (ToonAddGradient.x == ToonAddGradient.y) ToonAddGradient.y += 0.0001;
+					
+					poiLight.rampedLightMap = smoothstep(ToonAddGradient.y, ToonAddGradient.x, 1 - (.5 * poiLight.nDotL + .5));
 					#if defined(POINT) || defined(SPOT)
-					poiLight.finalLighting = lerp(poiLight.directColor * max(min(poiLight.additiveShadow, poiLight.detailShadow), passthrough), poiLight.indirectColor, smoothstep(_LightingAdditiveGradientStart, _LightingAdditiveGradientEnd, 1 - (.5 * poiLight.nDotL + .5)));
+					poiLight.finalLighting = lerp(poiLight.directColor * max(min(poiLight.additiveShadow, poiLight.detailShadow), passthrough), poiLight.indirectColor, smoothstep(ToonAddGradient.x, ToonAddGradient.y, 1 - (.5 * poiLight.nDotL + .5)));
 					#else
-					poiLight.finalLighting = lerp(poiLight.directColor * max(min(poiLight.attenuation, poiLight.detailShadow), passthrough), poiLight.indirectColor, smoothstep(_LightingAdditiveGradientStart, _LightingAdditiveGradientEnd, 1 - (.5 * poiLight.nDotL + .5)));
+					poiLight.finalLighting = lerp(poiLight.directColor * max(min(poiLight.attenuation, poiLight.detailShadow), passthrough), poiLight.indirectColor, smoothstep(ToonAddGradient.x, ToonAddGradient.y, 1 - (.5 * poiLight.nDotL + .5)));
 					#endif
 					return;
 				}
@@ -18529,10 +18407,12 @@ Shader ".poiyomi/Poiyomi Toon"
 							
 						}
 						//UNITY_BRANCH
-						if (lightingMode == 1) // Toon
-						
+						// Toon
+						if (lightingMode == 1)
 						{
-							vertexLighting = max(vertexLighting, lerp(poiLight.vColor[index], poiLight.vColor[index] * _LightingAdditivePassthrough, smoothstep(_LightingAdditiveGradientStart, _LightingAdditiveGradientEnd, 1 - (.5 * poiLight.vDotNL[index] + .5))) * poiLight.detailShadow);
+							float2 ToonAddGradient = float2(_LightingAdditiveGradientStart, _LightingAdditiveGradientEnd);
+							if (ToonAddGradient.x == ToonAddGradient.y) ToonAddGradient.y += 0.0001;
+							vertexLighting = max(vertexLighting, lerp(poiLight.vColor[index], poiLight.vColor[index] * _LightingAdditivePassthrough, smoothstep(ToonAddGradient.x, ToonAddGradient.y, 1 - (.5 * poiLight.vDotNL[index] + .5))) * poiLight.detailShadow);
 						}
 					}
 					float3 mixedLight = poiLight.finalLighting;
@@ -19592,9 +19472,10 @@ Shader ".poiyomi/Poiyomi Toon"
 						matcapUV = uv * matcapBorder + 0.5;
 						break;
 					}
+					// Gradient
 					case 3:
 					{
-						matcapUV = 1 - abs(dot(lerp(poiMesh.normals[0], poiMesh.normals[1], matcapNormalStrength), poiCam.viewDir));
+						matcapUV = 1 - abs(dot(normal, poiCam.viewDir));
 						#ifdef POI_AUDIOLINK
 						if (matcapALD.matcapALEnabled)
 						{
@@ -19608,7 +19489,7 @@ Shader ".poiyomi/Poiyomi Toon"
 				matcapUV += matcapPan * _Time.x;
 				matcapUV = RotateUV(matcapUV, matcapRotation * PI, float2(.5, .5), 1.0f);
 				
-				if (IsInMirror())
+				if (IsInMirror() && matcapUVMode != 3)
 				{
 					matcapUV.x = 1 - matcapUV.x;
 				}
@@ -23631,16 +23512,16 @@ Shader ".poiyomi/Poiyomi Toon"
 				#endif
 				//endex
 				
-				poiMods.globalMask[0]  = 1;
-				poiMods.globalMask[1]  = 1;
-				poiMods.globalMask[2]  = 1;
-				poiMods.globalMask[3]  = 1;
-				poiMods.globalMask[4]  = 1;
-				poiMods.globalMask[5]  = 1;
-				poiMods.globalMask[6]  = 1;
-				poiMods.globalMask[7]  = 1;
-				poiMods.globalMask[8]  = 1;
-				poiMods.globalMask[9]  = 1;
+				poiMods.globalMask[0] = 1;
+				poiMods.globalMask[1] = 1;
+				poiMods.globalMask[2] = 1;
+				poiMods.globalMask[3] = 1;
+				poiMods.globalMask[4] = 1;
+				poiMods.globalMask[5] = 1;
+				poiMods.globalMask[6] = 1;
+				poiMods.globalMask[7] = 1;
+				poiMods.globalMask[8] = 1;
+				poiMods.globalMask[9] = 1;
 				poiMods.globalMask[10] = 1;
 				poiMods.globalMask[11] = 1;
 				poiMods.globalMask[12] = 1;
@@ -23657,7 +23538,7 @@ Shader ".poiyomi/Poiyomi Toon"
 				//endex
 				ApplyGlobalMaskModifiers(poiMesh, poiMods, poiCam);
 				//ifex _GlobalMaskOptionsEnable==0
-				if(_GlobalMaskOptionsEnable)
+				if (_GlobalMaskOptionsEnable)
 				{
 					ApplyGlobalMaskOptions(poiMods);
 				}
@@ -25141,6 +25022,7 @@ Shader ".poiyomi/Poiyomi Toon"
 			
 			#define DielectricSpec float4(0.04, 0.04, 0.04, 1.0 - 0.04)
 			#define PI float(3.14159265359)
+			#define Epsilon float(1e-10)
 			
 			#define POI2D_SAMPLE_TEX2D_SAMPLERGRAD(tex, samplertex, coord, dx, dy) tex.SampleGrad(sampler##samplertex, coord, dx, dy)
 			#define POI2D_SAMPLE_TEX2D_SAMPLERGRADD(tex, samp, uv, pan, dx, dy) tex.SampleGrad(samp, POI_PAN_UV(uv, pan), dx, dy)
@@ -25623,37 +25505,37 @@ Shader ".poiyomi/Poiyomi Toon"
 			//endex
 			
 			//ifex _GlobalMaskOptionsType!=2
-			int  _GlobalMaskToggleOn_0;
+			int _GlobalMaskToggleOn_0;
 			int _GlobalMaskToggleOff_0;
-			int  _GlobalMaskToggleOn_1;
+			int _GlobalMaskToggleOn_1;
 			int _GlobalMaskToggleOff_1;
-			int  _GlobalMaskToggleOn_2;
+			int _GlobalMaskToggleOn_2;
 			int _GlobalMaskToggleOff_2;
-			int  _GlobalMaskToggleOn_3;
+			int _GlobalMaskToggleOn_3;
 			int _GlobalMaskToggleOff_3;
-			int  _GlobalMaskToggleOn_4;
+			int _GlobalMaskToggleOn_4;
 			int _GlobalMaskToggleOff_4;
-			int  _GlobalMaskToggleOn_5;
+			int _GlobalMaskToggleOn_5;
 			int _GlobalMaskToggleOff_5;
-			int  _GlobalMaskToggleOn_6;
+			int _GlobalMaskToggleOn_6;
 			int _GlobalMaskToggleOff_6;
-			int  _GlobalMaskToggleOn_7;
+			int _GlobalMaskToggleOn_7;
 			int _GlobalMaskToggleOff_7;
-			int  _GlobalMaskToggleOn_8;
+			int _GlobalMaskToggleOn_8;
 			int _GlobalMaskToggleOff_8;
-			int  _GlobalMaskToggleOn_9;
+			int _GlobalMaskToggleOn_9;
 			int _GlobalMaskToggleOff_9;
-			int  _GlobalMaskToggleOn_10;
+			int _GlobalMaskToggleOn_10;
 			int _GlobalMaskToggleOff_10;
-			int  _GlobalMaskToggleOn_11;
+			int _GlobalMaskToggleOn_11;
 			int _GlobalMaskToggleOff_11;
-			int  _GlobalMaskToggleOn_12;
+			int _GlobalMaskToggleOn_12;
 			int _GlobalMaskToggleOff_12;
-			int  _GlobalMaskToggleOn_13;
+			int _GlobalMaskToggleOn_13;
 			int _GlobalMaskToggleOff_13;
-			int  _GlobalMaskToggleOn_14;
+			int _GlobalMaskToggleOn_14;
 			int _GlobalMaskToggleOff_14;
-			int  _GlobalMaskToggleOn_15;
+			int _GlobalMaskToggleOn_15;
 			int _GlobalMaskToggleOff_15;
 			//endex
 			//endex
@@ -29390,8 +29272,6 @@ Shader ".poiyomi/Poiyomi Toon"
 				uint index = (uint(uv.x) % 4) * 4 + uint(uv.y) % 4;
 				Out = In - DITHER_THRESHOLDS[index];
 			}
-			
-			static const float Epsilon = 1e-10;
 			// The weights of RGB contributions to luminance.
 			// Should sum to unity.
 			static const float3 HCYwts = float3(0.299, 0.587, 0.114);
@@ -30215,8 +30095,6 @@ Shader ".poiyomi/Poiyomi Toon"
 			{
 				return (toggle == 0 ? value : 1 - value);
 			}
-			
-			// OKLAB
 			
 			float3 PoiBlendNormal(float3 dstNormal, float3 srcNormal)
 			{
@@ -31471,7 +31349,9 @@ Shader ".poiyomi/Poiyomi Toon"
 					poiMods.globalMask[1] = POI2D_SAMPLER_PAN(_GlobalMaskTexture0, _MainTex, poiUV(poiMesh.uv[_GlobalMaskTexture0UV], _GlobalMaskTexture0SplitTilingOffset_G), _GlobalMaskTexture0SplitPan_G).g;
 					poiMods.globalMask[2] = POI2D_SAMPLER_PAN(_GlobalMaskTexture0, _MainTex, poiUV(poiMesh.uv[_GlobalMaskTexture0UV], _GlobalMaskTexture0SplitTilingOffset_B), _GlobalMaskTexture0SplitPan_B).b;
 					poiMods.globalMask[3] = POI2D_SAMPLER_PAN(_GlobalMaskTexture0, _MainTex, poiUV(poiMesh.uv[_GlobalMaskTexture0UV], _GlobalMaskTexture0SplitTilingOffset_A), _GlobalMaskTexture0SplitPan_A).a;
-				} else {
+				}
+				else
+				{
 					poiMods.globalMask[0] = gmcol0[0];
 					poiMods.globalMask[1] = gmcol0[1];
 					poiMods.globalMask[2] = gmcol0[2];
@@ -31487,7 +31367,9 @@ Shader ".poiyomi/Poiyomi Toon"
 					poiMods.globalMask[5] = POI2D_SAMPLER_PAN(_GlobalMaskTexture1, _MainTex, poiUV(poiMesh.uv[_GlobalMaskTexture1UV], _GlobalMaskTexture1SplitTilingOffset_G), _GlobalMaskTexture1SplitPan_G).g;
 					poiMods.globalMask[6] = POI2D_SAMPLER_PAN(_GlobalMaskTexture1, _MainTex, poiUV(poiMesh.uv[_GlobalMaskTexture1UV], _GlobalMaskTexture1SplitTilingOffset_B), _GlobalMaskTexture1SplitPan_B).b;
 					poiMods.globalMask[7] = POI2D_SAMPLER_PAN(_GlobalMaskTexture1, _MainTex, poiUV(poiMesh.uv[_GlobalMaskTexture1UV], _GlobalMaskTexture1SplitTilingOffset_A), _GlobalMaskTexture1SplitPan_A).a;
-				} else {
+				}
+				else
+				{
 					poiMods.globalMask[4] = gmcol1[0];
 					poiMods.globalMask[5] = gmcol1[1];
 					poiMods.globalMask[6] = gmcol1[2];
@@ -31503,7 +31385,9 @@ Shader ".poiyomi/Poiyomi Toon"
 					poiMods.globalMask[9] = POI2D_SAMPLER_PAN(_GlobalMaskTexture2, _MainTex, poiUV(poiMesh.uv[_GlobalMaskTexture2UV], _GlobalMaskTexture2SplitTilingOffset_G), _GlobalMaskTexture2SplitPan_G).g;
 					poiMods.globalMask[10] = POI2D_SAMPLER_PAN(_GlobalMaskTexture2, _MainTex, poiUV(poiMesh.uv[_GlobalMaskTexture2UV], _GlobalMaskTexture2SplitTilingOffset_B), _GlobalMaskTexture2SplitPan_B).b;
 					poiMods.globalMask[11] = POI2D_SAMPLER_PAN(_GlobalMaskTexture2, _MainTex, poiUV(poiMesh.uv[_GlobalMaskTexture2UV], _GlobalMaskTexture2SplitTilingOffset_A), _GlobalMaskTexture2SplitPan_A).a;
-				} else {
+				}
+				else
+				{
 					poiMods.globalMask[8] = gmcol2[0];
 					poiMods.globalMask[9] = gmcol2[1];
 					poiMods.globalMask[10] = gmcol2[2];
@@ -31519,7 +31403,9 @@ Shader ".poiyomi/Poiyomi Toon"
 					poiMods.globalMask[13] = POI2D_SAMPLER_PAN(_GlobalMaskTexture3, _MainTex, poiUV(poiMesh.uv[_GlobalMaskTexture3UV], _GlobalMaskTexture3SplitTilingOffset_G), _GlobalMaskTexture3SplitPan_G).g;
 					poiMods.globalMask[14] = POI2D_SAMPLER_PAN(_GlobalMaskTexture3, _MainTex, poiUV(poiMesh.uv[_GlobalMaskTexture3UV], _GlobalMaskTexture3SplitTilingOffset_B), _GlobalMaskTexture3SplitPan_B).b;
 					poiMods.globalMask[15] = POI2D_SAMPLER_PAN(_GlobalMaskTexture3, _MainTex, poiUV(poiMesh.uv[_GlobalMaskTexture3UV], _GlobalMaskTexture3SplitTilingOffset_A), _GlobalMaskTexture3SplitPan_A).a;
-				} else {
+				}
+				else
+				{
 					poiMods.globalMask[12] = gmcol3[0];
 					poiMods.globalMask[13] = gmcol3[1];
 					poiMods.globalMask[14] = gmcol3[2];
@@ -31535,16 +31421,16 @@ Shader ".poiyomi/Poiyomi Toon"
 				//ifex _GlobalMaskOptionsType!=0
 				if (_GlobalMaskOptionsType == 0)
 				{
-					poiMods.globalMask[0]  = saturate(poiMods.globalMask[0]  + _GlobalMaskSlider_0);
-					poiMods.globalMask[1]  = saturate(poiMods.globalMask[1]  + _GlobalMaskSlider_1);
-					poiMods.globalMask[2]  = saturate(poiMods.globalMask[2]  + _GlobalMaskSlider_2);
-					poiMods.globalMask[3]  = saturate(poiMods.globalMask[3]  + _GlobalMaskSlider_3);
-					poiMods.globalMask[4]  = saturate(poiMods.globalMask[4]  + _GlobalMaskSlider_4);
-					poiMods.globalMask[5]  = saturate(poiMods.globalMask[5]  + _GlobalMaskSlider_5);
-					poiMods.globalMask[6]  = saturate(poiMods.globalMask[6]  + _GlobalMaskSlider_6);
-					poiMods.globalMask[7]  = saturate(poiMods.globalMask[7]  + _GlobalMaskSlider_7);
-					poiMods.globalMask[8]  = saturate(poiMods.globalMask[8]  + _GlobalMaskSlider_8);
-					poiMods.globalMask[9]  = saturate(poiMods.globalMask[9]  + _GlobalMaskSlider_9);
+					poiMods.globalMask[0] = saturate(poiMods.globalMask[0] + _GlobalMaskSlider_0);
+					poiMods.globalMask[1] = saturate(poiMods.globalMask[1] + _GlobalMaskSlider_1);
+					poiMods.globalMask[2] = saturate(poiMods.globalMask[2] + _GlobalMaskSlider_2);
+					poiMods.globalMask[3] = saturate(poiMods.globalMask[3] + _GlobalMaskSlider_3);
+					poiMods.globalMask[4] = saturate(poiMods.globalMask[4] + _GlobalMaskSlider_4);
+					poiMods.globalMask[5] = saturate(poiMods.globalMask[5] + _GlobalMaskSlider_5);
+					poiMods.globalMask[6] = saturate(poiMods.globalMask[6] + _GlobalMaskSlider_6);
+					poiMods.globalMask[7] = saturate(poiMods.globalMask[7] + _GlobalMaskSlider_7);
+					poiMods.globalMask[8] = saturate(poiMods.globalMask[8] + _GlobalMaskSlider_8);
+					poiMods.globalMask[9] = saturate(poiMods.globalMask[9] + _GlobalMaskSlider_9);
 					poiMods.globalMask[10] = saturate(poiMods.globalMask[10] + _GlobalMaskSlider_10);
 					poiMods.globalMask[11] = saturate(poiMods.globalMask[11] + _GlobalMaskSlider_11);
 					poiMods.globalMask[12] = saturate(poiMods.globalMask[12] + _GlobalMaskSlider_12);
@@ -31556,16 +31442,16 @@ Shader ".poiyomi/Poiyomi Toon"
 				//ifex _GlobalMaskOptionsType!=1
 				if (_GlobalMaskOptionsType == 1)
 				{
-					poiMods.globalMask[0]  = lerp(_GlobalMaskMinMaxSlider_0.x,  _GlobalMaskMinMaxSlider_0.y,  poiMods.globalMask[0]);
-					poiMods.globalMask[1]  = lerp(_GlobalMaskMinMaxSlider_1.x,  _GlobalMaskMinMaxSlider_1.y,  poiMods.globalMask[1]);
-					poiMods.globalMask[2]  = lerp(_GlobalMaskMinMaxSlider_2.x,  _GlobalMaskMinMaxSlider_2.y,  poiMods.globalMask[2]);
-					poiMods.globalMask[3]  = lerp(_GlobalMaskMinMaxSlider_3.x,  _GlobalMaskMinMaxSlider_3.y,  poiMods.globalMask[3]);
-					poiMods.globalMask[4]  = lerp(_GlobalMaskMinMaxSlider_4.x,  _GlobalMaskMinMaxSlider_4.y,  poiMods.globalMask[4]);
-					poiMods.globalMask[5]  = lerp(_GlobalMaskMinMaxSlider_5.x,  _GlobalMaskMinMaxSlider_5.y,  poiMods.globalMask[5]);
-					poiMods.globalMask[6]  = lerp(_GlobalMaskMinMaxSlider_6.x,  _GlobalMaskMinMaxSlider_6.y,  poiMods.globalMask[6]);
-					poiMods.globalMask[7]  = lerp(_GlobalMaskMinMaxSlider_7.x,  _GlobalMaskMinMaxSlider_7.y,  poiMods.globalMask[7]);
-					poiMods.globalMask[8]  = lerp(_GlobalMaskMinMaxSlider_8.x,  _GlobalMaskMinMaxSlider_8.y,  poiMods.globalMask[8]);
-					poiMods.globalMask[9]  = lerp(_GlobalMaskMinMaxSlider_9.x,  _GlobalMaskMinMaxSlider_9.y,  poiMods.globalMask[9]);
+					poiMods.globalMask[0] = lerp(_GlobalMaskMinMaxSlider_0.x, _GlobalMaskMinMaxSlider_0.y, poiMods.globalMask[0]);
+					poiMods.globalMask[1] = lerp(_GlobalMaskMinMaxSlider_1.x, _GlobalMaskMinMaxSlider_1.y, poiMods.globalMask[1]);
+					poiMods.globalMask[2] = lerp(_GlobalMaskMinMaxSlider_2.x, _GlobalMaskMinMaxSlider_2.y, poiMods.globalMask[2]);
+					poiMods.globalMask[3] = lerp(_GlobalMaskMinMaxSlider_3.x, _GlobalMaskMinMaxSlider_3.y, poiMods.globalMask[3]);
+					poiMods.globalMask[4] = lerp(_GlobalMaskMinMaxSlider_4.x, _GlobalMaskMinMaxSlider_4.y, poiMods.globalMask[4]);
+					poiMods.globalMask[5] = lerp(_GlobalMaskMinMaxSlider_5.x, _GlobalMaskMinMaxSlider_5.y, poiMods.globalMask[5]);
+					poiMods.globalMask[6] = lerp(_GlobalMaskMinMaxSlider_6.x, _GlobalMaskMinMaxSlider_6.y, poiMods.globalMask[6]);
+					poiMods.globalMask[7] = lerp(_GlobalMaskMinMaxSlider_7.x, _GlobalMaskMinMaxSlider_7.y, poiMods.globalMask[7]);
+					poiMods.globalMask[8] = lerp(_GlobalMaskMinMaxSlider_8.x, _GlobalMaskMinMaxSlider_8.y, poiMods.globalMask[8]);
+					poiMods.globalMask[9] = lerp(_GlobalMaskMinMaxSlider_9.x, _GlobalMaskMinMaxSlider_9.y, poiMods.globalMask[9]);
 					poiMods.globalMask[10] = lerp(_GlobalMaskMinMaxSlider_10.x, _GlobalMaskMinMaxSlider_10.y, poiMods.globalMask[10]);
 					poiMods.globalMask[11] = lerp(_GlobalMaskMinMaxSlider_11.x, _GlobalMaskMinMaxSlider_11.y, poiMods.globalMask[11]);
 					poiMods.globalMask[12] = lerp(_GlobalMaskMinMaxSlider_12.x, _GlobalMaskMinMaxSlider_12.y, poiMods.globalMask[12]);
@@ -31577,16 +31463,16 @@ Shader ".poiyomi/Poiyomi Toon"
 				//ifex _GlobalMaskOptionsType!=2
 				if (_GlobalMaskOptionsType == 2)
 				{
-					if (_GlobalMaskToggleOn_0)  poiMods.globalMask[0]  = 1;
-					if (_GlobalMaskToggleOn_1)  poiMods.globalMask[1]  = 1;
-					if (_GlobalMaskToggleOn_2)  poiMods.globalMask[2]  = 1;
-					if (_GlobalMaskToggleOn_3)  poiMods.globalMask[3]  = 1;
-					if (_GlobalMaskToggleOn_4)  poiMods.globalMask[4]  = 1;
-					if (_GlobalMaskToggleOn_5)  poiMods.globalMask[5]  = 1;
-					if (_GlobalMaskToggleOn_6)  poiMods.globalMask[6]  = 1;
-					if (_GlobalMaskToggleOn_7)  poiMods.globalMask[7]  = 1;
-					if (_GlobalMaskToggleOn_8)  poiMods.globalMask[8]  = 1;
-					if (_GlobalMaskToggleOn_9)  poiMods.globalMask[9]  = 1;
+					if (_GlobalMaskToggleOn_0)  poiMods.globalMask[0] = 1;
+					if (_GlobalMaskToggleOn_1)  poiMods.globalMask[1] = 1;
+					if (_GlobalMaskToggleOn_2)  poiMods.globalMask[2] = 1;
+					if (_GlobalMaskToggleOn_3)  poiMods.globalMask[3] = 1;
+					if (_GlobalMaskToggleOn_4)  poiMods.globalMask[4] = 1;
+					if (_GlobalMaskToggleOn_5)  poiMods.globalMask[5] = 1;
+					if (_GlobalMaskToggleOn_6)  poiMods.globalMask[6] = 1;
+					if (_GlobalMaskToggleOn_7)  poiMods.globalMask[7] = 1;
+					if (_GlobalMaskToggleOn_8)  poiMods.globalMask[8] = 1;
+					if (_GlobalMaskToggleOn_9)  poiMods.globalMask[9] = 1;
 					if (_GlobalMaskToggleOn_10) poiMods.globalMask[10] = 1;
 					if (_GlobalMaskToggleOn_11) poiMods.globalMask[11] = 1;
 					if (_GlobalMaskToggleOn_12) poiMods.globalMask[12] = 1;
@@ -31594,24 +31480,25 @@ Shader ".poiyomi/Poiyomi Toon"
 					if (_GlobalMaskToggleOn_14) poiMods.globalMask[14] = 1;
 					if (_GlobalMaskToggleOn_15) poiMods.globalMask[15] = 1;
 					
-					poiMods.globalMask[0]  *= (1-_GlobalMaskToggleOff_0);
-					poiMods.globalMask[1]  *= (1-_GlobalMaskToggleOff_1);
-					poiMods.globalMask[2]  *= (1-_GlobalMaskToggleOff_2);
-					poiMods.globalMask[3]  *= (1-_GlobalMaskToggleOff_3);
-					poiMods.globalMask[4]  *= (1-_GlobalMaskToggleOff_4);
-					poiMods.globalMask[5]  *= (1-_GlobalMaskToggleOff_5);
-					poiMods.globalMask[6]  *= (1-_GlobalMaskToggleOff_6);
-					poiMods.globalMask[7]  *= (1-_GlobalMaskToggleOff_7);
-					poiMods.globalMask[8]  *= (1-_GlobalMaskToggleOff_8);
-					poiMods.globalMask[9]  *= (1-_GlobalMaskToggleOff_9);
-					poiMods.globalMask[10] *= (1-_GlobalMaskToggleOff_10);
-					poiMods.globalMask[11] *= (1-_GlobalMaskToggleOff_11);
-					poiMods.globalMask[12] *= (1-_GlobalMaskToggleOff_12);
-					poiMods.globalMask[13] *= (1-_GlobalMaskToggleOff_13);
-					poiMods.globalMask[14] *= (1-_GlobalMaskToggleOff_14);
-					poiMods.globalMask[15] *= (1-_GlobalMaskToggleOff_15);
+					poiMods.globalMask[0] *= (1 - _GlobalMaskToggleOff_0);
+					poiMods.globalMask[1] *= (1 - _GlobalMaskToggleOff_1);
+					poiMods.globalMask[2] *= (1 - _GlobalMaskToggleOff_2);
+					poiMods.globalMask[3] *= (1 - _GlobalMaskToggleOff_3);
+					poiMods.globalMask[4] *= (1 - _GlobalMaskToggleOff_4);
+					poiMods.globalMask[5] *= (1 - _GlobalMaskToggleOff_5);
+					poiMods.globalMask[6] *= (1 - _GlobalMaskToggleOff_6);
+					poiMods.globalMask[7] *= (1 - _GlobalMaskToggleOff_7);
+					poiMods.globalMask[8] *= (1 - _GlobalMaskToggleOff_8);
+					poiMods.globalMask[9] *= (1 - _GlobalMaskToggleOff_9);
+					poiMods.globalMask[10] *= (1 - _GlobalMaskToggleOff_10);
+					poiMods.globalMask[11] *= (1 - _GlobalMaskToggleOff_11);
+					poiMods.globalMask[12] *= (1 - _GlobalMaskToggleOff_12);
+					poiMods.globalMask[13] *= (1 - _GlobalMaskToggleOff_13);
+					poiMods.globalMask[14] *= (1 - _GlobalMaskToggleOff_14);
+					poiMods.globalMask[15] *= (1 - _GlobalMaskToggleOff_15);
 				}
 				//endex
+				
 			}
 			//endex
 			
@@ -31625,23 +31512,33 @@ Shader ".poiyomi/Poiyomi Toon"
 				}
 			}
 			
+			void handleGlobalMaskDistance(int index, bool enable, bool type, float minAlpha, float maxAlpha, float min, float max, int blendType, in PoiMesh poiMesh, inout PoiMods poiMods)
+			{
+				if (enable)
+				{
+					float3 position = type ? poiMesh.worldPos : poiMesh.objectPosition;
+					float val = lerp(minAlpha, maxAlpha, smoothstep(min, max, distance(position, _WorldSpaceCameraPos)));
+					poiMods.globalMask[index] = saturate(customDistanceBlend(poiMods.globalMask[index], val, blendType));
+				}
+			}
+			
 			void ApplyGlobalMaskModifiers(in PoiMesh poiMesh, inout PoiMods poiMods, in PoiCam poiCam)
 			{
 				//ifex _GlobalMaskModifiersBackfaceEnable==0
-				if(_GlobalMaskModifiersBackfaceEnable)
+				if (_GlobalMaskModifiersBackfaceEnable)
 				{
 					float facingMode = saturate(poiMesh.isFrontFace) + 1;
 					// _GlobalMaskBackface is 0 for ignore, 1 for back only, 2 for front only
-					poiMods.globalMask[0]  *= _GlobalMaskBackface_0  == 0 ? 1 : (facingMode == (_GlobalMaskBackface_0 ));
-					poiMods.globalMask[1]  *= _GlobalMaskBackface_1  == 0 ? 1 : (facingMode == (_GlobalMaskBackface_1 ));
-					poiMods.globalMask[2]  *= _GlobalMaskBackface_2  == 0 ? 1 : (facingMode == (_GlobalMaskBackface_2 ));
-					poiMods.globalMask[3]  *= _GlobalMaskBackface_3  == 0 ? 1 : (facingMode == (_GlobalMaskBackface_3 ));
-					poiMods.globalMask[4]  *= _GlobalMaskBackface_4  == 0 ? 1 : (facingMode == (_GlobalMaskBackface_4 ));
-					poiMods.globalMask[5]  *= _GlobalMaskBackface_5  == 0 ? 1 : (facingMode == (_GlobalMaskBackface_5 ));
-					poiMods.globalMask[6]  *= _GlobalMaskBackface_6  == 0 ? 1 : (facingMode == (_GlobalMaskBackface_6 ));
-					poiMods.globalMask[7]  *= _GlobalMaskBackface_7  == 0 ? 1 : (facingMode == (_GlobalMaskBackface_7 ));
-					poiMods.globalMask[8]  *= _GlobalMaskBackface_8  == 0 ? 1 : (facingMode == (_GlobalMaskBackface_8 ));
-					poiMods.globalMask[9]  *= _GlobalMaskBackface_9  == 0 ? 1 : (facingMode == (_GlobalMaskBackface_9 ));
+					poiMods.globalMask[0] *= _GlobalMaskBackface_0 == 0 ? 1 : (facingMode == (_GlobalMaskBackface_0));
+					poiMods.globalMask[1] *= _GlobalMaskBackface_1 == 0 ? 1 : (facingMode == (_GlobalMaskBackface_1));
+					poiMods.globalMask[2] *= _GlobalMaskBackface_2 == 0 ? 1 : (facingMode == (_GlobalMaskBackface_2));
+					poiMods.globalMask[3] *= _GlobalMaskBackface_3 == 0 ? 1 : (facingMode == (_GlobalMaskBackface_3));
+					poiMods.globalMask[4] *= _GlobalMaskBackface_4 == 0 ? 1 : (facingMode == (_GlobalMaskBackface_4));
+					poiMods.globalMask[5] *= _GlobalMaskBackface_5 == 0 ? 1 : (facingMode == (_GlobalMaskBackface_5));
+					poiMods.globalMask[6] *= _GlobalMaskBackface_6 == 0 ? 1 : (facingMode == (_GlobalMaskBackface_6));
+					poiMods.globalMask[7] *= _GlobalMaskBackface_7 == 0 ? 1 : (facingMode == (_GlobalMaskBackface_7));
+					poiMods.globalMask[8] *= _GlobalMaskBackface_8 == 0 ? 1 : (facingMode == (_GlobalMaskBackface_8));
+					poiMods.globalMask[9] *= _GlobalMaskBackface_9 == 0 ? 1 : (facingMode == (_GlobalMaskBackface_9));
 					poiMods.globalMask[10] *= _GlobalMaskBackface_10 == 0 ? 1 : (facingMode == (_GlobalMaskBackface_10));
 					poiMods.globalMask[11] *= _GlobalMaskBackface_11 == 0 ? 1 : (facingMode == (_GlobalMaskBackface_11));
 					poiMods.globalMask[12] *= _GlobalMaskBackface_12 == 0 ? 1 : (facingMode == (_GlobalMaskBackface_12));
@@ -31652,7 +31549,7 @@ Shader ".poiyomi/Poiyomi Toon"
 				//endex
 				
 				//ifex _GlobalMaskModifiersMirrorEnable==0
-				if(_GlobalMaskModifiersMirrorEnable)
+				if (_GlobalMaskModifiersMirrorEnable)
 				{
 					float mirrorMode = 0;
 					if (_GlobalMaskMirrorVisibilityMode == 1) // VRC
@@ -31662,16 +31559,16 @@ Shader ".poiyomi/Poiyomi Toon"
 					
 					mirrorMode += 1;
 					// _GlobalMaskMirror is 0 for ignore, 1 for outside mirror only, 2 for in mirror only
-					poiMods.globalMask[0]  *= _GlobalMaskMirror_0  == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_0 ));
-					poiMods.globalMask[1]  *= _GlobalMaskMirror_1  == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_1 ));
-					poiMods.globalMask[2]  *= _GlobalMaskMirror_2  == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_2 ));
-					poiMods.globalMask[3]  *= _GlobalMaskMirror_3  == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_3 ));
-					poiMods.globalMask[4]  *= _GlobalMaskMirror_4  == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_4 ));
-					poiMods.globalMask[5]  *= _GlobalMaskMirror_5  == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_5 ));
-					poiMods.globalMask[6]  *= _GlobalMaskMirror_6  == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_6 ));
-					poiMods.globalMask[7]  *= _GlobalMaskMirror_7  == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_7 ));
-					poiMods.globalMask[8]  *= _GlobalMaskMirror_8  == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_8 ));
-					poiMods.globalMask[9]  *= _GlobalMaskMirror_9  == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_9 ));
+					poiMods.globalMask[0] *= _GlobalMaskMirror_0 == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_0));
+					poiMods.globalMask[1] *= _GlobalMaskMirror_1 == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_1));
+					poiMods.globalMask[2] *= _GlobalMaskMirror_2 == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_2));
+					poiMods.globalMask[3] *= _GlobalMaskMirror_3 == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_3));
+					poiMods.globalMask[4] *= _GlobalMaskMirror_4 == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_4));
+					poiMods.globalMask[5] *= _GlobalMaskMirror_5 == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_5));
+					poiMods.globalMask[6] *= _GlobalMaskMirror_6 == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_6));
+					poiMods.globalMask[7] *= _GlobalMaskMirror_7 == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_7));
+					poiMods.globalMask[8] *= _GlobalMaskMirror_8 == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_8));
+					poiMods.globalMask[9] *= _GlobalMaskMirror_9 == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_9));
 					poiMods.globalMask[10] *= _GlobalMaskMirror_10 == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_10));
 					poiMods.globalMask[11] *= _GlobalMaskMirror_11 == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_11));
 					poiMods.globalMask[12] *= _GlobalMaskMirror_12 == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_12));
@@ -31682,21 +31579,21 @@ Shader ".poiyomi/Poiyomi Toon"
 				//endex
 				
 				//ifex _GlobalMaskModifiersCameraEnable==0
-				if(_GlobalMaskModifiersCameraEnable)
+				if (_GlobalMaskModifiersCameraEnable)
 				{
 					float isCamera = VRCCameraMode() > 0;
 					isCamera += 1;
 					// _GlobalMaskCamera is 0 for ignore, 1 for outside camera only, 2 for in camera only
-					poiMods.globalMask[0]  *= _GlobalMaskCamera_0  == 0 ? 1 : (isCamera == (_GlobalMaskCamera_0 ));
-					poiMods.globalMask[1]  *= _GlobalMaskCamera_1  == 0 ? 1 : (isCamera == (_GlobalMaskCamera_1 ));
-					poiMods.globalMask[2]  *= _GlobalMaskCamera_2  == 0 ? 1 : (isCamera == (_GlobalMaskCamera_2 ));
-					poiMods.globalMask[3]  *= _GlobalMaskCamera_3  == 0 ? 1 : (isCamera == (_GlobalMaskCamera_3 ));
-					poiMods.globalMask[4]  *= _GlobalMaskCamera_4  == 0 ? 1 : (isCamera == (_GlobalMaskCamera_4 ));
-					poiMods.globalMask[5]  *= _GlobalMaskCamera_5  == 0 ? 1 : (isCamera == (_GlobalMaskCamera_5 ));
-					poiMods.globalMask[6]  *= _GlobalMaskCamera_6  == 0 ? 1 : (isCamera == (_GlobalMaskCamera_6 ));
-					poiMods.globalMask[7]  *= _GlobalMaskCamera_7  == 0 ? 1 : (isCamera == (_GlobalMaskCamera_7 ));
-					poiMods.globalMask[8]  *= _GlobalMaskCamera_8  == 0 ? 1 : (isCamera == (_GlobalMaskCamera_8 ));
-					poiMods.globalMask[9]  *= _GlobalMaskCamera_9  == 0 ? 1 : (isCamera == (_GlobalMaskCamera_9 ));
+					poiMods.globalMask[0] *= _GlobalMaskCamera_0 == 0 ? 1 : (isCamera == (_GlobalMaskCamera_0));
+					poiMods.globalMask[1] *= _GlobalMaskCamera_1 == 0 ? 1 : (isCamera == (_GlobalMaskCamera_1));
+					poiMods.globalMask[2] *= _GlobalMaskCamera_2 == 0 ? 1 : (isCamera == (_GlobalMaskCamera_2));
+					poiMods.globalMask[3] *= _GlobalMaskCamera_3 == 0 ? 1 : (isCamera == (_GlobalMaskCamera_3));
+					poiMods.globalMask[4] *= _GlobalMaskCamera_4 == 0 ? 1 : (isCamera == (_GlobalMaskCamera_4));
+					poiMods.globalMask[5] *= _GlobalMaskCamera_5 == 0 ? 1 : (isCamera == (_GlobalMaskCamera_5));
+					poiMods.globalMask[6] *= _GlobalMaskCamera_6 == 0 ? 1 : (isCamera == (_GlobalMaskCamera_6));
+					poiMods.globalMask[7] *= _GlobalMaskCamera_7 == 0 ? 1 : (isCamera == (_GlobalMaskCamera_7));
+					poiMods.globalMask[8] *= _GlobalMaskCamera_8 == 0 ? 1 : (isCamera == (_GlobalMaskCamera_8));
+					poiMods.globalMask[9] *= _GlobalMaskCamera_9 == 0 ? 1 : (isCamera == (_GlobalMaskCamera_9));
 					poiMods.globalMask[10] *= _GlobalMaskCamera_10 == 0 ? 1 : (isCamera == (_GlobalMaskCamera_10));
 					poiMods.globalMask[11] *= _GlobalMaskCamera_11 == 0 ? 1 : (isCamera == (_GlobalMaskCamera_11));
 					poiMods.globalMask[12] *= _GlobalMaskCamera_12 == 0 ? 1 : (isCamera == (_GlobalMaskCamera_12));
@@ -31709,135 +31606,57 @@ Shader ".poiyomi/Poiyomi Toon"
 				if (_GlobalMaskModifiersDistanceEnable)
 				{
 					//ifex _GlobalMaskDistanceEnable_0==0
-					if (_GlobalMaskDistanceEnable_0)
-					{
-						float3 position = _GlobalMaskDistanceType_0 ? poiMesh.worldPos : poiMesh.objectPosition;
-						float val = lerp(_GlobalMaskDistanceMinAlpha_0, _GlobalMaskDistanceMaxAlpha_0, smoothstep(_GlobalMaskDistanceMin_0, _GlobalMaskDistanceMax_0, distance(position, poiCam.worldPos)));
-						poiMods.globalMask[0] = saturate(customDistanceBlend(poiMods.globalMask[0], val, _GlobalMaskDistanceBlendType_0));
-					}
+					handleGlobalMaskDistance(0, _GlobalMaskDistanceEnable_0, _GlobalMaskDistanceType_0, _GlobalMaskDistanceMinAlpha_0, _GlobalMaskDistanceMaxAlpha_0, _GlobalMaskDistanceMin_0, _GlobalMaskDistanceMax_0, _GlobalMaskDistanceBlendType_0, poiMesh, poiMods);
 					//endex
 					//ifex _GlobalMaskDistanceEnable_1==0
-					if (_GlobalMaskDistanceEnable_1)
-					{
-						float3 position = _GlobalMaskDistanceType_1 ? poiMesh.worldPos : poiMesh.objectPosition;
-						float val = lerp(_GlobalMaskDistanceMinAlpha_1, _GlobalMaskDistanceMaxAlpha_1, smoothstep(_GlobalMaskDistanceMin_1, _GlobalMaskDistanceMax_1, distance(position, poiCam.worldPos)));
-						poiMods.globalMask[1] = saturate(customDistanceBlend(poiMods.globalMask[1], val, _GlobalMaskDistanceBlendType_1));
-					}
+					handleGlobalMaskDistance(1, _GlobalMaskDistanceEnable_1, _GlobalMaskDistanceType_1, _GlobalMaskDistanceMinAlpha_1, _GlobalMaskDistanceMaxAlpha_1, _GlobalMaskDistanceMin_1, _GlobalMaskDistanceMax_1, _GlobalMaskDistanceBlendType_1, poiMesh, poiMods);
 					//endex
 					//ifex _GlobalMaskDistanceEnable_2==0
-					if (_GlobalMaskDistanceEnable_2)
-					{
-						float3 position = _GlobalMaskDistanceType_2 ? poiMesh.worldPos : poiMesh.objectPosition;
-						float val = lerp(_GlobalMaskDistanceMinAlpha_2, _GlobalMaskDistanceMaxAlpha_2, smoothstep(_GlobalMaskDistanceMin_2, _GlobalMaskDistanceMax_2, distance(position, poiCam.worldPos)));
-						poiMods.globalMask[2] = saturate(customDistanceBlend(poiMods.globalMask[2], val, _GlobalMaskDistanceBlendType_2));
-					}
+					handleGlobalMaskDistance(2, _GlobalMaskDistanceEnable_2, _GlobalMaskDistanceType_2, _GlobalMaskDistanceMinAlpha_2, _GlobalMaskDistanceMaxAlpha_2, _GlobalMaskDistanceMin_2, _GlobalMaskDistanceMax_2, _GlobalMaskDistanceBlendType_2, poiMesh, poiMods);
 					//endex
 					//ifex _GlobalMaskDistanceEnable_3==0
-					if (_GlobalMaskDistanceEnable_3)
-					{
-						float3 position = _GlobalMaskDistanceType_3 ? poiMesh.worldPos : poiMesh.objectPosition;
-						float val = lerp(_GlobalMaskDistanceMinAlpha_3, _GlobalMaskDistanceMaxAlpha_3, smoothstep(_GlobalMaskDistanceMin_3, _GlobalMaskDistanceMax_3, distance(position, poiCam.worldPos)));
-						poiMods.globalMask[3] = saturate(customDistanceBlend(poiMods.globalMask[3], val, _GlobalMaskDistanceBlendType_3));
-					}
+					handleGlobalMaskDistance(3, _GlobalMaskDistanceEnable_3, _GlobalMaskDistanceType_3, _GlobalMaskDistanceMinAlpha_3, _GlobalMaskDistanceMaxAlpha_3, _GlobalMaskDistanceMin_3, _GlobalMaskDistanceMax_3, _GlobalMaskDistanceBlendType_3, poiMesh, poiMods);
 					//endex
 					//ifex _GlobalMaskDistanceEnable_4==0
-					if (_GlobalMaskDistanceEnable_4)
-					{
-						float3 position = _GlobalMaskDistanceType_4 ? poiMesh.worldPos : poiMesh.objectPosition;
-						float val = lerp(_GlobalMaskDistanceMinAlpha_4, _GlobalMaskDistanceMaxAlpha_4, smoothstep(_GlobalMaskDistanceMin_4, _GlobalMaskDistanceMax_4, distance(position, poiCam.worldPos)));
-						poiMods.globalMask[4] = saturate(customDistanceBlend(poiMods.globalMask[4], val, _GlobalMaskDistanceBlendType_4));
-					}
+					handleGlobalMaskDistance(4, _GlobalMaskDistanceEnable_4, _GlobalMaskDistanceType_4, _GlobalMaskDistanceMinAlpha_4, _GlobalMaskDistanceMaxAlpha_4, _GlobalMaskDistanceMin_4, _GlobalMaskDistanceMax_4, _GlobalMaskDistanceBlendType_4, poiMesh, poiMods);
 					//endex
 					//ifex _GlobalMaskDistanceEnable_5==0
-					if (_GlobalMaskDistanceEnable_5)
-					{
-						float3 position = _GlobalMaskDistanceType_5 ? poiMesh.worldPos : poiMesh.objectPosition;
-						float val = lerp(_GlobalMaskDistanceMinAlpha_5, _GlobalMaskDistanceMaxAlpha_5, smoothstep(_GlobalMaskDistanceMin_5, _GlobalMaskDistanceMax_5, distance(position, poiCam.worldPos)));
-						poiMods.globalMask[5] = saturate(customDistanceBlend(poiMods.globalMask[5], val, _GlobalMaskDistanceBlendType_5));
-					}
+					handleGlobalMaskDistance(5, _GlobalMaskDistanceEnable_5, _GlobalMaskDistanceType_5, _GlobalMaskDistanceMinAlpha_5, _GlobalMaskDistanceMaxAlpha_5, _GlobalMaskDistanceMin_5, _GlobalMaskDistanceMax_5, _GlobalMaskDistanceBlendType_5, poiMesh, poiMods);
 					//endex
 					//ifex _GlobalMaskDistanceEnable_6==0
-					if (_GlobalMaskDistanceEnable_6)
-					{
-						float3 position = _GlobalMaskDistanceType_6 ? poiMesh.worldPos : poiMesh.objectPosition;
-						float val = lerp(_GlobalMaskDistanceMinAlpha_6, _GlobalMaskDistanceMaxAlpha_6, smoothstep(_GlobalMaskDistanceMin_6, _GlobalMaskDistanceMax_6, distance(position, poiCam.worldPos)));
-						poiMods.globalMask[6] = saturate(customDistanceBlend(poiMods.globalMask[6], val, _GlobalMaskDistanceBlendType_6));
-					}
+					handleGlobalMaskDistance(6, _GlobalMaskDistanceEnable_6, _GlobalMaskDistanceType_6, _GlobalMaskDistanceMinAlpha_6, _GlobalMaskDistanceMaxAlpha_6, _GlobalMaskDistanceMin_6, _GlobalMaskDistanceMax_6, _GlobalMaskDistanceBlendType_6, poiMesh, poiMods);
 					//endex
 					//ifex _GlobalMaskDistanceEnable_7==0
-					if (_GlobalMaskDistanceEnable_7)
-					{
-						float3 position = _GlobalMaskDistanceType_7 ? poiMesh.worldPos : poiMesh.objectPosition;
-						float val = lerp(_GlobalMaskDistanceMinAlpha_7, _GlobalMaskDistanceMaxAlpha_7, smoothstep(_GlobalMaskDistanceMin_7, _GlobalMaskDistanceMax_7, distance(position, poiCam.worldPos)));
-						poiMods.globalMask[7] = saturate(customDistanceBlend(poiMods.globalMask[7], val, _GlobalMaskDistanceBlendType_7));
-					}
+					handleGlobalMaskDistance(7, _GlobalMaskDistanceEnable_7, _GlobalMaskDistanceType_7, _GlobalMaskDistanceMinAlpha_7, _GlobalMaskDistanceMaxAlpha_7, _GlobalMaskDistanceMin_7, _GlobalMaskDistanceMax_7, _GlobalMaskDistanceBlendType_7, poiMesh, poiMods);
 					//endex
 					//ifex _GlobalMaskDistanceEnable_8==0
-					if (_GlobalMaskDistanceEnable_8)
-					{
-						float3 position = _GlobalMaskDistanceType_8 ? poiMesh.worldPos : poiMesh.objectPosition;
-						float val = lerp(_GlobalMaskDistanceMinAlpha_8, _GlobalMaskDistanceMaxAlpha_8, smoothstep(_GlobalMaskDistanceMin_8, _GlobalMaskDistanceMax_8, distance(position, poiCam.worldPos)));
-						poiMods.globalMask[8] = saturate(customDistanceBlend(poiMods.globalMask[8], val, _GlobalMaskDistanceBlendType_8));
-					}
+					handleGlobalMaskDistance(8, _GlobalMaskDistanceEnable_8, _GlobalMaskDistanceType_8, _GlobalMaskDistanceMinAlpha_8, _GlobalMaskDistanceMaxAlpha_8, _GlobalMaskDistanceMin_8, _GlobalMaskDistanceMax_8, _GlobalMaskDistanceBlendType_8, poiMesh, poiMods);
 					//endex
 					//ifex _GlobalMaskDistanceEnable_9==0
-					if (_GlobalMaskDistanceEnable_9)
-					{
-						float3 position = _GlobalMaskDistanceType_9 ? poiMesh.worldPos : poiMesh.objectPosition;
-						float val = lerp(_GlobalMaskDistanceMinAlpha_9, _GlobalMaskDistanceMaxAlpha_9, smoothstep(_GlobalMaskDistanceMin_9, _GlobalMaskDistanceMax_9, distance(position, poiCam.worldPos)));
-						poiMods.globalMask[9] = saturate(customDistanceBlend(poiMods.globalMask[9], val, _GlobalMaskDistanceBlendType_9));
-					}
+					handleGlobalMaskDistance(9, _GlobalMaskDistanceEnable_9, _GlobalMaskDistanceType_9, _GlobalMaskDistanceMinAlpha_9, _GlobalMaskDistanceMaxAlpha_9, _GlobalMaskDistanceMin_9, _GlobalMaskDistanceMax_9, _GlobalMaskDistanceBlendType_9, poiMesh, poiMods);
 					//endex
 					//ifex _GlobalMaskDistanceEnable_10==0
-					if (_GlobalMaskDistanceEnable_10)
-					{
-						float3 position = _GlobalMaskDistanceType_10 ? poiMesh.worldPos : poiMesh.objectPosition;
-						float val = lerp(_GlobalMaskDistanceMinAlpha_10, _GlobalMaskDistanceMaxAlpha_10, smoothstep(_GlobalMaskDistanceMin_10, _GlobalMaskDistanceMax_10, distance(position, poiCam.worldPos)));
-						poiMods.globalMask[10] = saturate(customDistanceBlend(poiMods.globalMask[10], val, _GlobalMaskDistanceBlendType_10));
-					}
+					handleGlobalMaskDistance(10, _GlobalMaskDistanceEnable_10, _GlobalMaskDistanceType_10, _GlobalMaskDistanceMinAlpha_10, _GlobalMaskDistanceMaxAlpha_10, _GlobalMaskDistanceMin_10, _GlobalMaskDistanceMax_10, _GlobalMaskDistanceBlendType_10, poiMesh, poiMods);
 					//endex
 					//ifex _GlobalMaskDistanceEnable_11==0
-					if (_GlobalMaskDistanceEnable_11)
-					{
-						float3 position = _GlobalMaskDistanceType_11 ? poiMesh.worldPos : poiMesh.objectPosition;
-						float val = lerp(_GlobalMaskDistanceMinAlpha_11, _GlobalMaskDistanceMaxAlpha_11, smoothstep(_GlobalMaskDistanceMin_11, _GlobalMaskDistanceMax_11, distance(position, poiCam.worldPos)));
-						poiMods.globalMask[11] = saturate(customDistanceBlend(poiMods.globalMask[11], val, _GlobalMaskDistanceBlendType_11));
-					}
+					handleGlobalMaskDistance(11, _GlobalMaskDistanceEnable_11, _GlobalMaskDistanceType_11, _GlobalMaskDistanceMinAlpha_11, _GlobalMaskDistanceMaxAlpha_11, _GlobalMaskDistanceMin_11, _GlobalMaskDistanceMax_11, _GlobalMaskDistanceBlendType_11, poiMesh, poiMods);
 					//endex
 					//ifex _GlobalMaskDistanceEnable_12==0
-					if (_GlobalMaskDistanceEnable_12)
-					{
-						float3 position = _GlobalMaskDistanceType_12 ? poiMesh.worldPos : poiMesh.objectPosition;
-						float val = lerp(_GlobalMaskDistanceMinAlpha_12, _GlobalMaskDistanceMaxAlpha_12, smoothstep(_GlobalMaskDistanceMin_12, _GlobalMaskDistanceMax_12, distance(position, poiCam.worldPos)));
-						poiMods.globalMask[12] = saturate(customDistanceBlend(poiMods.globalMask[12], val, _GlobalMaskDistanceBlendType_12));
-					}
+					handleGlobalMaskDistance(12, _GlobalMaskDistanceEnable_12, _GlobalMaskDistanceType_12, _GlobalMaskDistanceMinAlpha_12, _GlobalMaskDistanceMaxAlpha_12, _GlobalMaskDistanceMin_12, _GlobalMaskDistanceMax_12, _GlobalMaskDistanceBlendType_12, poiMesh, poiMods);
 					//endex
 					//ifex _GlobalMaskDistanceEnable_13==0
-					if (_GlobalMaskDistanceEnable_13)
-					{
-						float3 position = _GlobalMaskDistanceType_13 ? poiMesh.worldPos : poiMesh.objectPosition;
-						float val = lerp(_GlobalMaskDistanceMinAlpha_13, _GlobalMaskDistanceMaxAlpha_13, smoothstep(_GlobalMaskDistanceMin_13, _GlobalMaskDistanceMax_13, distance(position, poiCam.worldPos)));
-						poiMods.globalMask[13] = saturate(customDistanceBlend(poiMods.globalMask[13], val, _GlobalMaskDistanceBlendType_13));
-					}
+					handleGlobalMaskDistance(13, _GlobalMaskDistanceEnable_13, _GlobalMaskDistanceType_13, _GlobalMaskDistanceMinAlpha_13, _GlobalMaskDistanceMaxAlpha_13, _GlobalMaskDistanceMin_13, _GlobalMaskDistanceMax_13, _GlobalMaskDistanceBlendType_13, poiMesh, poiMods);
 					//endex
 					//ifex _GlobalMaskDistanceEnable_14==0
-					if (_GlobalMaskDistanceEnable_14)
-					{
-						float3 position = _GlobalMaskDistanceType_14 ? poiMesh.worldPos : poiMesh.objectPosition;
-						float val = lerp(_GlobalMaskDistanceMinAlpha_14, _GlobalMaskDistanceMaxAlpha_14, smoothstep(_GlobalMaskDistanceMin_14, _GlobalMaskDistanceMax_14, distance(position, poiCam.worldPos)));
-						poiMods.globalMask[14] = saturate(customDistanceBlend(poiMods.globalMask[14], val, _GlobalMaskDistanceBlendType_14));
-					}
+					handleGlobalMaskDistance(14, _GlobalMaskDistanceEnable_14, _GlobalMaskDistanceType_14, _GlobalMaskDistanceMinAlpha_14, _GlobalMaskDistanceMaxAlpha_14, _GlobalMaskDistanceMin_14, _GlobalMaskDistanceMax_14, _GlobalMaskDistanceBlendType_14, poiMesh, poiMods);
 					//endex
 					//ifex _GlobalMaskDistanceEnable_15==0
-					if (_GlobalMaskDistanceEnable_15)
-					{
-						float3 position = _GlobalMaskDistanceType_15 ? poiMesh.worldPos : poiMesh.objectPosition;
-						float val = lerp(_GlobalMaskDistanceMinAlpha_15, _GlobalMaskDistanceMaxAlpha_15, smoothstep(_GlobalMaskDistanceMin_15, _GlobalMaskDistanceMax_15, distance(position, poiCam.worldPos)));
-						poiMods.globalMask[15] = saturate(customDistanceBlend(poiMods.globalMask[15], val, _GlobalMaskDistanceBlendType_15));
-					}
+					handleGlobalMaskDistance(15, _GlobalMaskDistanceEnable_15, _GlobalMaskDistanceType_15, _GlobalMaskDistanceMinAlpha_15, _GlobalMaskDistanceMaxAlpha_15, _GlobalMaskDistanceMin_15, _GlobalMaskDistanceMax_15, _GlobalMaskDistanceBlendType_15, poiMesh, poiMods);
 					//endex
+					
 				}
 				//endex
+				
 			}
 			
 			//ifex _GlobalMaskVertexColorRed==0 && _GlobalMaskVertexColorGreen==0 && _GlobalMaskVertexColorBlue==0 && _GlobalMaskVertexColorAlpha==0
@@ -31850,19 +31669,19 @@ Shader ".poiyomi/Poiyomi Toon"
 				}
 				if (_GlobalMaskVertexColorRed > 0)
 				{
-					applyToGlobalMask(poiMods, _GlobalMaskVertexColorRed-1, _GlobalMaskVertexColorRedBlendType, vcol.r);
+					applyToGlobalMask(poiMods, _GlobalMaskVertexColorRed - 1, _GlobalMaskVertexColorRedBlendType, vcol.r);
 				}
 				if (_GlobalMaskVertexColorGreen > 0)
 				{
-					applyToGlobalMask(poiMods, _GlobalMaskVertexColorGreen-1, _GlobalMaskVertexColorGreenBlendType, vcol.g);
+					applyToGlobalMask(poiMods, _GlobalMaskVertexColorGreen - 1, _GlobalMaskVertexColorGreenBlendType, vcol.g);
 				}
 				if (_GlobalMaskVertexColorBlue > 0)
 				{
-					applyToGlobalMask(poiMods, _GlobalMaskVertexColorBlue-1, _GlobalMaskVertexColorBlueBlendType, vcol.b);
+					applyToGlobalMask(poiMods, _GlobalMaskVertexColorBlue - 1, _GlobalMaskVertexColorBlueBlendType, vcol.b);
 				}
 				if (_GlobalMaskVertexColorAlpha > 0)
 				{
-					applyToGlobalMask(poiMods, _GlobalMaskVertexColorAlpha-1, _GlobalMaskVertexColorAlphaBlendType, vcol.a);
+					applyToGlobalMask(poiMods, _GlobalMaskVertexColorAlpha - 1, _GlobalMaskVertexColorAlphaBlendType, vcol.a);
 				}
 			}
 			//endex
@@ -33026,13 +32845,15 @@ Shader ".poiyomi/Poiyomi Toon"
 					float passthrough = _LightingAdditivePassthrough;
 					#endif
 					
-					if (_LightingAdditiveGradientEnd == _LightingAdditiveGradientStart) _LightingAdditiveGradientEnd += 0.001;
+					float2 ToonAddGradient = float2(_LightingAdditiveGradientStart, _LightingAdditiveGradientEnd);
 					
-					poiLight.rampedLightMap = smoothstep(_LightingAdditiveGradientEnd, _LightingAdditiveGradientStart, 1 - (.5 * poiLight.nDotL + .5));
+					if (ToonAddGradient.x == ToonAddGradient.y) ToonAddGradient.y += 0.0001;
+					
+					poiLight.rampedLightMap = smoothstep(ToonAddGradient.y, ToonAddGradient.x, 1 - (.5 * poiLight.nDotL + .5));
 					#if defined(POINT) || defined(SPOT)
-					poiLight.finalLighting = lerp(poiLight.directColor * max(min(poiLight.additiveShadow, poiLight.detailShadow), passthrough), poiLight.indirectColor, smoothstep(_LightingAdditiveGradientStart, _LightingAdditiveGradientEnd, 1 - (.5 * poiLight.nDotL + .5)));
+					poiLight.finalLighting = lerp(poiLight.directColor * max(min(poiLight.additiveShadow, poiLight.detailShadow), passthrough), poiLight.indirectColor, smoothstep(ToonAddGradient.x, ToonAddGradient.y, 1 - (.5 * poiLight.nDotL + .5)));
 					#else
-					poiLight.finalLighting = lerp(poiLight.directColor * max(min(poiLight.attenuation, poiLight.detailShadow), passthrough), poiLight.indirectColor, smoothstep(_LightingAdditiveGradientStart, _LightingAdditiveGradientEnd, 1 - (.5 * poiLight.nDotL + .5)));
+					poiLight.finalLighting = lerp(poiLight.directColor * max(min(poiLight.attenuation, poiLight.detailShadow), passthrough), poiLight.indirectColor, smoothstep(ToonAddGradient.x, ToonAddGradient.y, 1 - (.5 * poiLight.nDotL + .5)));
 					#endif
 					return;
 				}
@@ -33370,10 +33191,12 @@ Shader ".poiyomi/Poiyomi Toon"
 							
 						}
 						//UNITY_BRANCH
-						if (lightingMode == 1) // Toon
-						
+						// Toon
+						if (lightingMode == 1)
 						{
-							vertexLighting = max(vertexLighting, lerp(poiLight.vColor[index], poiLight.vColor[index] * _LightingAdditivePassthrough, smoothstep(_LightingAdditiveGradientStart, _LightingAdditiveGradientEnd, 1 - (.5 * poiLight.vDotNL[index] + .5))) * poiLight.detailShadow);
+							float2 ToonAddGradient = float2(_LightingAdditiveGradientStart, _LightingAdditiveGradientEnd);
+							if (ToonAddGradient.x == ToonAddGradient.y) ToonAddGradient.y += 0.0001;
+							vertexLighting = max(vertexLighting, lerp(poiLight.vColor[index], poiLight.vColor[index] * _LightingAdditivePassthrough, smoothstep(ToonAddGradient.x, ToonAddGradient.y, 1 - (.5 * poiLight.vDotNL[index] + .5))) * poiLight.detailShadow);
 						}
 					}
 					float3 mixedLight = poiLight.finalLighting;
@@ -34433,9 +34256,10 @@ Shader ".poiyomi/Poiyomi Toon"
 						matcapUV = uv * matcapBorder + 0.5;
 						break;
 					}
+					// Gradient
 					case 3:
 					{
-						matcapUV = 1 - abs(dot(lerp(poiMesh.normals[0], poiMesh.normals[1], matcapNormalStrength), poiCam.viewDir));
+						matcapUV = 1 - abs(dot(normal, poiCam.viewDir));
 						#ifdef POI_AUDIOLINK
 						if (matcapALD.matcapALEnabled)
 						{
@@ -34449,7 +34273,7 @@ Shader ".poiyomi/Poiyomi Toon"
 				matcapUV += matcapPan * _Time.x;
 				matcapUV = RotateUV(matcapUV, matcapRotation * PI, float2(.5, .5), 1.0f);
 				
-				if (IsInMirror())
+				if (IsInMirror() && matcapUVMode != 3)
 				{
 					matcapUV.x = 1 - matcapUV.x;
 				}
@@ -37968,16 +37792,16 @@ Shader ".poiyomi/Poiyomi Toon"
 				#endif
 				//endex
 				
-				poiMods.globalMask[0]  = 1;
-				poiMods.globalMask[1]  = 1;
-				poiMods.globalMask[2]  = 1;
-				poiMods.globalMask[3]  = 1;
-				poiMods.globalMask[4]  = 1;
-				poiMods.globalMask[5]  = 1;
-				poiMods.globalMask[6]  = 1;
-				poiMods.globalMask[7]  = 1;
-				poiMods.globalMask[8]  = 1;
-				poiMods.globalMask[9]  = 1;
+				poiMods.globalMask[0] = 1;
+				poiMods.globalMask[1] = 1;
+				poiMods.globalMask[2] = 1;
+				poiMods.globalMask[3] = 1;
+				poiMods.globalMask[4] = 1;
+				poiMods.globalMask[5] = 1;
+				poiMods.globalMask[6] = 1;
+				poiMods.globalMask[7] = 1;
+				poiMods.globalMask[8] = 1;
+				poiMods.globalMask[9] = 1;
 				poiMods.globalMask[10] = 1;
 				poiMods.globalMask[11] = 1;
 				poiMods.globalMask[12] = 1;
@@ -37994,7 +37818,7 @@ Shader ".poiyomi/Poiyomi Toon"
 				//endex
 				ApplyGlobalMaskModifiers(poiMesh, poiMods, poiCam);
 				//ifex _GlobalMaskOptionsEnable==0
-				if(_GlobalMaskOptionsEnable)
+				if (_GlobalMaskOptionsEnable)
 				{
 					ApplyGlobalMaskOptions(poiMods);
 				}
@@ -39365,6 +39189,7 @@ Shader ".poiyomi/Poiyomi Toon"
 			
 			#define DielectricSpec float4(0.04, 0.04, 0.04, 1.0 - 0.04)
 			#define PI float(3.14159265359)
+			#define Epsilon float(1e-10)
 			
 			#define POI2D_SAMPLE_TEX2D_SAMPLERGRAD(tex, samplertex, coord, dx, dy) tex.SampleGrad(sampler##samplertex, coord, dx, dy)
 			#define POI2D_SAMPLE_TEX2D_SAMPLERGRADD(tex, samp, uv, pan, dx, dy) tex.SampleGrad(samp, POI_PAN_UV(uv, pan), dx, dy)
@@ -39908,37 +39733,37 @@ Shader ".poiyomi/Poiyomi Toon"
 			//endex
 			
 			//ifex _GlobalMaskOptionsType!=2
-			int  _GlobalMaskToggleOn_0;
+			int _GlobalMaskToggleOn_0;
 			int _GlobalMaskToggleOff_0;
-			int  _GlobalMaskToggleOn_1;
+			int _GlobalMaskToggleOn_1;
 			int _GlobalMaskToggleOff_1;
-			int  _GlobalMaskToggleOn_2;
+			int _GlobalMaskToggleOn_2;
 			int _GlobalMaskToggleOff_2;
-			int  _GlobalMaskToggleOn_3;
+			int _GlobalMaskToggleOn_3;
 			int _GlobalMaskToggleOff_3;
-			int  _GlobalMaskToggleOn_4;
+			int _GlobalMaskToggleOn_4;
 			int _GlobalMaskToggleOff_4;
-			int  _GlobalMaskToggleOn_5;
+			int _GlobalMaskToggleOn_5;
 			int _GlobalMaskToggleOff_5;
-			int  _GlobalMaskToggleOn_6;
+			int _GlobalMaskToggleOn_6;
 			int _GlobalMaskToggleOff_6;
-			int  _GlobalMaskToggleOn_7;
+			int _GlobalMaskToggleOn_7;
 			int _GlobalMaskToggleOff_7;
-			int  _GlobalMaskToggleOn_8;
+			int _GlobalMaskToggleOn_8;
 			int _GlobalMaskToggleOff_8;
-			int  _GlobalMaskToggleOn_9;
+			int _GlobalMaskToggleOn_9;
 			int _GlobalMaskToggleOff_9;
-			int  _GlobalMaskToggleOn_10;
+			int _GlobalMaskToggleOn_10;
 			int _GlobalMaskToggleOff_10;
-			int  _GlobalMaskToggleOn_11;
+			int _GlobalMaskToggleOn_11;
 			int _GlobalMaskToggleOff_11;
-			int  _GlobalMaskToggleOn_12;
+			int _GlobalMaskToggleOn_12;
 			int _GlobalMaskToggleOff_12;
-			int  _GlobalMaskToggleOn_13;
+			int _GlobalMaskToggleOn_13;
 			int _GlobalMaskToggleOff_13;
-			int  _GlobalMaskToggleOn_14;
+			int _GlobalMaskToggleOn_14;
 			int _GlobalMaskToggleOff_14;
-			int  _GlobalMaskToggleOn_15;
+			int _GlobalMaskToggleOn_15;
 			int _GlobalMaskToggleOff_15;
 			//endex
 			//endex
@@ -41880,8 +41705,6 @@ Shader ".poiyomi/Poiyomi Toon"
 				uint index = (uint(uv.x) % 4) * 4 + uint(uv.y) % 4;
 				Out = In - DITHER_THRESHOLDS[index];
 			}
-			
-			static const float Epsilon = 1e-10;
 			// The weights of RGB contributions to luminance.
 			// Should sum to unity.
 			static const float3 HCYwts = float3(0.299, 0.587, 0.114);
@@ -42705,8 +42528,6 @@ Shader ".poiyomi/Poiyomi Toon"
 			{
 				return (toggle == 0 ? value : 1 - value);
 			}
-			
-			// OKLAB
 			
 			float3 PoiBlendNormal(float3 dstNormal, float3 srcNormal)
 			{
@@ -44001,7 +43822,9 @@ Shader ".poiyomi/Poiyomi Toon"
 					poiMods.globalMask[1] = POI2D_SAMPLER_PAN(_GlobalMaskTexture0, _MainTex, poiUV(poiMesh.uv[_GlobalMaskTexture0UV], _GlobalMaskTexture0SplitTilingOffset_G), _GlobalMaskTexture0SplitPan_G).g;
 					poiMods.globalMask[2] = POI2D_SAMPLER_PAN(_GlobalMaskTexture0, _MainTex, poiUV(poiMesh.uv[_GlobalMaskTexture0UV], _GlobalMaskTexture0SplitTilingOffset_B), _GlobalMaskTexture0SplitPan_B).b;
 					poiMods.globalMask[3] = POI2D_SAMPLER_PAN(_GlobalMaskTexture0, _MainTex, poiUV(poiMesh.uv[_GlobalMaskTexture0UV], _GlobalMaskTexture0SplitTilingOffset_A), _GlobalMaskTexture0SplitPan_A).a;
-				} else {
+				}
+				else
+				{
 					poiMods.globalMask[0] = gmcol0[0];
 					poiMods.globalMask[1] = gmcol0[1];
 					poiMods.globalMask[2] = gmcol0[2];
@@ -44017,7 +43840,9 @@ Shader ".poiyomi/Poiyomi Toon"
 					poiMods.globalMask[5] = POI2D_SAMPLER_PAN(_GlobalMaskTexture1, _MainTex, poiUV(poiMesh.uv[_GlobalMaskTexture1UV], _GlobalMaskTexture1SplitTilingOffset_G), _GlobalMaskTexture1SplitPan_G).g;
 					poiMods.globalMask[6] = POI2D_SAMPLER_PAN(_GlobalMaskTexture1, _MainTex, poiUV(poiMesh.uv[_GlobalMaskTexture1UV], _GlobalMaskTexture1SplitTilingOffset_B), _GlobalMaskTexture1SplitPan_B).b;
 					poiMods.globalMask[7] = POI2D_SAMPLER_PAN(_GlobalMaskTexture1, _MainTex, poiUV(poiMesh.uv[_GlobalMaskTexture1UV], _GlobalMaskTexture1SplitTilingOffset_A), _GlobalMaskTexture1SplitPan_A).a;
-				} else {
+				}
+				else
+				{
 					poiMods.globalMask[4] = gmcol1[0];
 					poiMods.globalMask[5] = gmcol1[1];
 					poiMods.globalMask[6] = gmcol1[2];
@@ -44033,7 +43858,9 @@ Shader ".poiyomi/Poiyomi Toon"
 					poiMods.globalMask[9] = POI2D_SAMPLER_PAN(_GlobalMaskTexture2, _MainTex, poiUV(poiMesh.uv[_GlobalMaskTexture2UV], _GlobalMaskTexture2SplitTilingOffset_G), _GlobalMaskTexture2SplitPan_G).g;
 					poiMods.globalMask[10] = POI2D_SAMPLER_PAN(_GlobalMaskTexture2, _MainTex, poiUV(poiMesh.uv[_GlobalMaskTexture2UV], _GlobalMaskTexture2SplitTilingOffset_B), _GlobalMaskTexture2SplitPan_B).b;
 					poiMods.globalMask[11] = POI2D_SAMPLER_PAN(_GlobalMaskTexture2, _MainTex, poiUV(poiMesh.uv[_GlobalMaskTexture2UV], _GlobalMaskTexture2SplitTilingOffset_A), _GlobalMaskTexture2SplitPan_A).a;
-				} else {
+				}
+				else
+				{
 					poiMods.globalMask[8] = gmcol2[0];
 					poiMods.globalMask[9] = gmcol2[1];
 					poiMods.globalMask[10] = gmcol2[2];
@@ -44049,7 +43876,9 @@ Shader ".poiyomi/Poiyomi Toon"
 					poiMods.globalMask[13] = POI2D_SAMPLER_PAN(_GlobalMaskTexture3, _MainTex, poiUV(poiMesh.uv[_GlobalMaskTexture3UV], _GlobalMaskTexture3SplitTilingOffset_G), _GlobalMaskTexture3SplitPan_G).g;
 					poiMods.globalMask[14] = POI2D_SAMPLER_PAN(_GlobalMaskTexture3, _MainTex, poiUV(poiMesh.uv[_GlobalMaskTexture3UV], _GlobalMaskTexture3SplitTilingOffset_B), _GlobalMaskTexture3SplitPan_B).b;
 					poiMods.globalMask[15] = POI2D_SAMPLER_PAN(_GlobalMaskTexture3, _MainTex, poiUV(poiMesh.uv[_GlobalMaskTexture3UV], _GlobalMaskTexture3SplitTilingOffset_A), _GlobalMaskTexture3SplitPan_A).a;
-				} else {
+				}
+				else
+				{
 					poiMods.globalMask[12] = gmcol3[0];
 					poiMods.globalMask[13] = gmcol3[1];
 					poiMods.globalMask[14] = gmcol3[2];
@@ -44065,16 +43894,16 @@ Shader ".poiyomi/Poiyomi Toon"
 				//ifex _GlobalMaskOptionsType!=0
 				if (_GlobalMaskOptionsType == 0)
 				{
-					poiMods.globalMask[0]  = saturate(poiMods.globalMask[0]  + _GlobalMaskSlider_0);
-					poiMods.globalMask[1]  = saturate(poiMods.globalMask[1]  + _GlobalMaskSlider_1);
-					poiMods.globalMask[2]  = saturate(poiMods.globalMask[2]  + _GlobalMaskSlider_2);
-					poiMods.globalMask[3]  = saturate(poiMods.globalMask[3]  + _GlobalMaskSlider_3);
-					poiMods.globalMask[4]  = saturate(poiMods.globalMask[4]  + _GlobalMaskSlider_4);
-					poiMods.globalMask[5]  = saturate(poiMods.globalMask[5]  + _GlobalMaskSlider_5);
-					poiMods.globalMask[6]  = saturate(poiMods.globalMask[6]  + _GlobalMaskSlider_6);
-					poiMods.globalMask[7]  = saturate(poiMods.globalMask[7]  + _GlobalMaskSlider_7);
-					poiMods.globalMask[8]  = saturate(poiMods.globalMask[8]  + _GlobalMaskSlider_8);
-					poiMods.globalMask[9]  = saturate(poiMods.globalMask[9]  + _GlobalMaskSlider_9);
+					poiMods.globalMask[0] = saturate(poiMods.globalMask[0] + _GlobalMaskSlider_0);
+					poiMods.globalMask[1] = saturate(poiMods.globalMask[1] + _GlobalMaskSlider_1);
+					poiMods.globalMask[2] = saturate(poiMods.globalMask[2] + _GlobalMaskSlider_2);
+					poiMods.globalMask[3] = saturate(poiMods.globalMask[3] + _GlobalMaskSlider_3);
+					poiMods.globalMask[4] = saturate(poiMods.globalMask[4] + _GlobalMaskSlider_4);
+					poiMods.globalMask[5] = saturate(poiMods.globalMask[5] + _GlobalMaskSlider_5);
+					poiMods.globalMask[6] = saturate(poiMods.globalMask[6] + _GlobalMaskSlider_6);
+					poiMods.globalMask[7] = saturate(poiMods.globalMask[7] + _GlobalMaskSlider_7);
+					poiMods.globalMask[8] = saturate(poiMods.globalMask[8] + _GlobalMaskSlider_8);
+					poiMods.globalMask[9] = saturate(poiMods.globalMask[9] + _GlobalMaskSlider_9);
 					poiMods.globalMask[10] = saturate(poiMods.globalMask[10] + _GlobalMaskSlider_10);
 					poiMods.globalMask[11] = saturate(poiMods.globalMask[11] + _GlobalMaskSlider_11);
 					poiMods.globalMask[12] = saturate(poiMods.globalMask[12] + _GlobalMaskSlider_12);
@@ -44086,16 +43915,16 @@ Shader ".poiyomi/Poiyomi Toon"
 				//ifex _GlobalMaskOptionsType!=1
 				if (_GlobalMaskOptionsType == 1)
 				{
-					poiMods.globalMask[0]  = lerp(_GlobalMaskMinMaxSlider_0.x,  _GlobalMaskMinMaxSlider_0.y,  poiMods.globalMask[0]);
-					poiMods.globalMask[1]  = lerp(_GlobalMaskMinMaxSlider_1.x,  _GlobalMaskMinMaxSlider_1.y,  poiMods.globalMask[1]);
-					poiMods.globalMask[2]  = lerp(_GlobalMaskMinMaxSlider_2.x,  _GlobalMaskMinMaxSlider_2.y,  poiMods.globalMask[2]);
-					poiMods.globalMask[3]  = lerp(_GlobalMaskMinMaxSlider_3.x,  _GlobalMaskMinMaxSlider_3.y,  poiMods.globalMask[3]);
-					poiMods.globalMask[4]  = lerp(_GlobalMaskMinMaxSlider_4.x,  _GlobalMaskMinMaxSlider_4.y,  poiMods.globalMask[4]);
-					poiMods.globalMask[5]  = lerp(_GlobalMaskMinMaxSlider_5.x,  _GlobalMaskMinMaxSlider_5.y,  poiMods.globalMask[5]);
-					poiMods.globalMask[6]  = lerp(_GlobalMaskMinMaxSlider_6.x,  _GlobalMaskMinMaxSlider_6.y,  poiMods.globalMask[6]);
-					poiMods.globalMask[7]  = lerp(_GlobalMaskMinMaxSlider_7.x,  _GlobalMaskMinMaxSlider_7.y,  poiMods.globalMask[7]);
-					poiMods.globalMask[8]  = lerp(_GlobalMaskMinMaxSlider_8.x,  _GlobalMaskMinMaxSlider_8.y,  poiMods.globalMask[8]);
-					poiMods.globalMask[9]  = lerp(_GlobalMaskMinMaxSlider_9.x,  _GlobalMaskMinMaxSlider_9.y,  poiMods.globalMask[9]);
+					poiMods.globalMask[0] = lerp(_GlobalMaskMinMaxSlider_0.x, _GlobalMaskMinMaxSlider_0.y, poiMods.globalMask[0]);
+					poiMods.globalMask[1] = lerp(_GlobalMaskMinMaxSlider_1.x, _GlobalMaskMinMaxSlider_1.y, poiMods.globalMask[1]);
+					poiMods.globalMask[2] = lerp(_GlobalMaskMinMaxSlider_2.x, _GlobalMaskMinMaxSlider_2.y, poiMods.globalMask[2]);
+					poiMods.globalMask[3] = lerp(_GlobalMaskMinMaxSlider_3.x, _GlobalMaskMinMaxSlider_3.y, poiMods.globalMask[3]);
+					poiMods.globalMask[4] = lerp(_GlobalMaskMinMaxSlider_4.x, _GlobalMaskMinMaxSlider_4.y, poiMods.globalMask[4]);
+					poiMods.globalMask[5] = lerp(_GlobalMaskMinMaxSlider_5.x, _GlobalMaskMinMaxSlider_5.y, poiMods.globalMask[5]);
+					poiMods.globalMask[6] = lerp(_GlobalMaskMinMaxSlider_6.x, _GlobalMaskMinMaxSlider_6.y, poiMods.globalMask[6]);
+					poiMods.globalMask[7] = lerp(_GlobalMaskMinMaxSlider_7.x, _GlobalMaskMinMaxSlider_7.y, poiMods.globalMask[7]);
+					poiMods.globalMask[8] = lerp(_GlobalMaskMinMaxSlider_8.x, _GlobalMaskMinMaxSlider_8.y, poiMods.globalMask[8]);
+					poiMods.globalMask[9] = lerp(_GlobalMaskMinMaxSlider_9.x, _GlobalMaskMinMaxSlider_9.y, poiMods.globalMask[9]);
 					poiMods.globalMask[10] = lerp(_GlobalMaskMinMaxSlider_10.x, _GlobalMaskMinMaxSlider_10.y, poiMods.globalMask[10]);
 					poiMods.globalMask[11] = lerp(_GlobalMaskMinMaxSlider_11.x, _GlobalMaskMinMaxSlider_11.y, poiMods.globalMask[11]);
 					poiMods.globalMask[12] = lerp(_GlobalMaskMinMaxSlider_12.x, _GlobalMaskMinMaxSlider_12.y, poiMods.globalMask[12]);
@@ -44107,16 +43936,16 @@ Shader ".poiyomi/Poiyomi Toon"
 				//ifex _GlobalMaskOptionsType!=2
 				if (_GlobalMaskOptionsType == 2)
 				{
-					if (_GlobalMaskToggleOn_0)  poiMods.globalMask[0]  = 1;
-					if (_GlobalMaskToggleOn_1)  poiMods.globalMask[1]  = 1;
-					if (_GlobalMaskToggleOn_2)  poiMods.globalMask[2]  = 1;
-					if (_GlobalMaskToggleOn_3)  poiMods.globalMask[3]  = 1;
-					if (_GlobalMaskToggleOn_4)  poiMods.globalMask[4]  = 1;
-					if (_GlobalMaskToggleOn_5)  poiMods.globalMask[5]  = 1;
-					if (_GlobalMaskToggleOn_6)  poiMods.globalMask[6]  = 1;
-					if (_GlobalMaskToggleOn_7)  poiMods.globalMask[7]  = 1;
-					if (_GlobalMaskToggleOn_8)  poiMods.globalMask[8]  = 1;
-					if (_GlobalMaskToggleOn_9)  poiMods.globalMask[9]  = 1;
+					if (_GlobalMaskToggleOn_0)  poiMods.globalMask[0] = 1;
+					if (_GlobalMaskToggleOn_1)  poiMods.globalMask[1] = 1;
+					if (_GlobalMaskToggleOn_2)  poiMods.globalMask[2] = 1;
+					if (_GlobalMaskToggleOn_3)  poiMods.globalMask[3] = 1;
+					if (_GlobalMaskToggleOn_4)  poiMods.globalMask[4] = 1;
+					if (_GlobalMaskToggleOn_5)  poiMods.globalMask[5] = 1;
+					if (_GlobalMaskToggleOn_6)  poiMods.globalMask[6] = 1;
+					if (_GlobalMaskToggleOn_7)  poiMods.globalMask[7] = 1;
+					if (_GlobalMaskToggleOn_8)  poiMods.globalMask[8] = 1;
+					if (_GlobalMaskToggleOn_9)  poiMods.globalMask[9] = 1;
 					if (_GlobalMaskToggleOn_10) poiMods.globalMask[10] = 1;
 					if (_GlobalMaskToggleOn_11) poiMods.globalMask[11] = 1;
 					if (_GlobalMaskToggleOn_12) poiMods.globalMask[12] = 1;
@@ -44124,24 +43953,25 @@ Shader ".poiyomi/Poiyomi Toon"
 					if (_GlobalMaskToggleOn_14) poiMods.globalMask[14] = 1;
 					if (_GlobalMaskToggleOn_15) poiMods.globalMask[15] = 1;
 					
-					poiMods.globalMask[0]  *= (1-_GlobalMaskToggleOff_0);
-					poiMods.globalMask[1]  *= (1-_GlobalMaskToggleOff_1);
-					poiMods.globalMask[2]  *= (1-_GlobalMaskToggleOff_2);
-					poiMods.globalMask[3]  *= (1-_GlobalMaskToggleOff_3);
-					poiMods.globalMask[4]  *= (1-_GlobalMaskToggleOff_4);
-					poiMods.globalMask[5]  *= (1-_GlobalMaskToggleOff_5);
-					poiMods.globalMask[6]  *= (1-_GlobalMaskToggleOff_6);
-					poiMods.globalMask[7]  *= (1-_GlobalMaskToggleOff_7);
-					poiMods.globalMask[8]  *= (1-_GlobalMaskToggleOff_8);
-					poiMods.globalMask[9]  *= (1-_GlobalMaskToggleOff_9);
-					poiMods.globalMask[10] *= (1-_GlobalMaskToggleOff_10);
-					poiMods.globalMask[11] *= (1-_GlobalMaskToggleOff_11);
-					poiMods.globalMask[12] *= (1-_GlobalMaskToggleOff_12);
-					poiMods.globalMask[13] *= (1-_GlobalMaskToggleOff_13);
-					poiMods.globalMask[14] *= (1-_GlobalMaskToggleOff_14);
-					poiMods.globalMask[15] *= (1-_GlobalMaskToggleOff_15);
+					poiMods.globalMask[0] *= (1 - _GlobalMaskToggleOff_0);
+					poiMods.globalMask[1] *= (1 - _GlobalMaskToggleOff_1);
+					poiMods.globalMask[2] *= (1 - _GlobalMaskToggleOff_2);
+					poiMods.globalMask[3] *= (1 - _GlobalMaskToggleOff_3);
+					poiMods.globalMask[4] *= (1 - _GlobalMaskToggleOff_4);
+					poiMods.globalMask[5] *= (1 - _GlobalMaskToggleOff_5);
+					poiMods.globalMask[6] *= (1 - _GlobalMaskToggleOff_6);
+					poiMods.globalMask[7] *= (1 - _GlobalMaskToggleOff_7);
+					poiMods.globalMask[8] *= (1 - _GlobalMaskToggleOff_8);
+					poiMods.globalMask[9] *= (1 - _GlobalMaskToggleOff_9);
+					poiMods.globalMask[10] *= (1 - _GlobalMaskToggleOff_10);
+					poiMods.globalMask[11] *= (1 - _GlobalMaskToggleOff_11);
+					poiMods.globalMask[12] *= (1 - _GlobalMaskToggleOff_12);
+					poiMods.globalMask[13] *= (1 - _GlobalMaskToggleOff_13);
+					poiMods.globalMask[14] *= (1 - _GlobalMaskToggleOff_14);
+					poiMods.globalMask[15] *= (1 - _GlobalMaskToggleOff_15);
 				}
 				//endex
+				
 			}
 			//endex
 			
@@ -44155,23 +43985,33 @@ Shader ".poiyomi/Poiyomi Toon"
 				}
 			}
 			
+			void handleGlobalMaskDistance(int index, bool enable, bool type, float minAlpha, float maxAlpha, float min, float max, int blendType, in PoiMesh poiMesh, inout PoiMods poiMods)
+			{
+				if (enable)
+				{
+					float3 position = type ? poiMesh.worldPos : poiMesh.objectPosition;
+					float val = lerp(minAlpha, maxAlpha, smoothstep(min, max, distance(position, _WorldSpaceCameraPos)));
+					poiMods.globalMask[index] = saturate(customDistanceBlend(poiMods.globalMask[index], val, blendType));
+				}
+			}
+			
 			void ApplyGlobalMaskModifiers(in PoiMesh poiMesh, inout PoiMods poiMods, in PoiCam poiCam)
 			{
 				//ifex _GlobalMaskModifiersBackfaceEnable==0
-				if(_GlobalMaskModifiersBackfaceEnable)
+				if (_GlobalMaskModifiersBackfaceEnable)
 				{
 					float facingMode = saturate(poiMesh.isFrontFace) + 1;
 					// _GlobalMaskBackface is 0 for ignore, 1 for back only, 2 for front only
-					poiMods.globalMask[0]  *= _GlobalMaskBackface_0  == 0 ? 1 : (facingMode == (_GlobalMaskBackface_0 ));
-					poiMods.globalMask[1]  *= _GlobalMaskBackface_1  == 0 ? 1 : (facingMode == (_GlobalMaskBackface_1 ));
-					poiMods.globalMask[2]  *= _GlobalMaskBackface_2  == 0 ? 1 : (facingMode == (_GlobalMaskBackface_2 ));
-					poiMods.globalMask[3]  *= _GlobalMaskBackface_3  == 0 ? 1 : (facingMode == (_GlobalMaskBackface_3 ));
-					poiMods.globalMask[4]  *= _GlobalMaskBackface_4  == 0 ? 1 : (facingMode == (_GlobalMaskBackface_4 ));
-					poiMods.globalMask[5]  *= _GlobalMaskBackface_5  == 0 ? 1 : (facingMode == (_GlobalMaskBackface_5 ));
-					poiMods.globalMask[6]  *= _GlobalMaskBackface_6  == 0 ? 1 : (facingMode == (_GlobalMaskBackface_6 ));
-					poiMods.globalMask[7]  *= _GlobalMaskBackface_7  == 0 ? 1 : (facingMode == (_GlobalMaskBackface_7 ));
-					poiMods.globalMask[8]  *= _GlobalMaskBackface_8  == 0 ? 1 : (facingMode == (_GlobalMaskBackface_8 ));
-					poiMods.globalMask[9]  *= _GlobalMaskBackface_9  == 0 ? 1 : (facingMode == (_GlobalMaskBackface_9 ));
+					poiMods.globalMask[0] *= _GlobalMaskBackface_0 == 0 ? 1 : (facingMode == (_GlobalMaskBackface_0));
+					poiMods.globalMask[1] *= _GlobalMaskBackface_1 == 0 ? 1 : (facingMode == (_GlobalMaskBackface_1));
+					poiMods.globalMask[2] *= _GlobalMaskBackface_2 == 0 ? 1 : (facingMode == (_GlobalMaskBackface_2));
+					poiMods.globalMask[3] *= _GlobalMaskBackface_3 == 0 ? 1 : (facingMode == (_GlobalMaskBackface_3));
+					poiMods.globalMask[4] *= _GlobalMaskBackface_4 == 0 ? 1 : (facingMode == (_GlobalMaskBackface_4));
+					poiMods.globalMask[5] *= _GlobalMaskBackface_5 == 0 ? 1 : (facingMode == (_GlobalMaskBackface_5));
+					poiMods.globalMask[6] *= _GlobalMaskBackface_6 == 0 ? 1 : (facingMode == (_GlobalMaskBackface_6));
+					poiMods.globalMask[7] *= _GlobalMaskBackface_7 == 0 ? 1 : (facingMode == (_GlobalMaskBackface_7));
+					poiMods.globalMask[8] *= _GlobalMaskBackface_8 == 0 ? 1 : (facingMode == (_GlobalMaskBackface_8));
+					poiMods.globalMask[9] *= _GlobalMaskBackface_9 == 0 ? 1 : (facingMode == (_GlobalMaskBackface_9));
 					poiMods.globalMask[10] *= _GlobalMaskBackface_10 == 0 ? 1 : (facingMode == (_GlobalMaskBackface_10));
 					poiMods.globalMask[11] *= _GlobalMaskBackface_11 == 0 ? 1 : (facingMode == (_GlobalMaskBackface_11));
 					poiMods.globalMask[12] *= _GlobalMaskBackface_12 == 0 ? 1 : (facingMode == (_GlobalMaskBackface_12));
@@ -44182,7 +44022,7 @@ Shader ".poiyomi/Poiyomi Toon"
 				//endex
 				
 				//ifex _GlobalMaskModifiersMirrorEnable==0
-				if(_GlobalMaskModifiersMirrorEnable)
+				if (_GlobalMaskModifiersMirrorEnable)
 				{
 					float mirrorMode = 0;
 					if (_GlobalMaskMirrorVisibilityMode == 1) // VRC
@@ -44192,16 +44032,16 @@ Shader ".poiyomi/Poiyomi Toon"
 					
 					mirrorMode += 1;
 					// _GlobalMaskMirror is 0 for ignore, 1 for outside mirror only, 2 for in mirror only
-					poiMods.globalMask[0]  *= _GlobalMaskMirror_0  == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_0 ));
-					poiMods.globalMask[1]  *= _GlobalMaskMirror_1  == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_1 ));
-					poiMods.globalMask[2]  *= _GlobalMaskMirror_2  == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_2 ));
-					poiMods.globalMask[3]  *= _GlobalMaskMirror_3  == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_3 ));
-					poiMods.globalMask[4]  *= _GlobalMaskMirror_4  == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_4 ));
-					poiMods.globalMask[5]  *= _GlobalMaskMirror_5  == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_5 ));
-					poiMods.globalMask[6]  *= _GlobalMaskMirror_6  == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_6 ));
-					poiMods.globalMask[7]  *= _GlobalMaskMirror_7  == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_7 ));
-					poiMods.globalMask[8]  *= _GlobalMaskMirror_8  == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_8 ));
-					poiMods.globalMask[9]  *= _GlobalMaskMirror_9  == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_9 ));
+					poiMods.globalMask[0] *= _GlobalMaskMirror_0 == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_0));
+					poiMods.globalMask[1] *= _GlobalMaskMirror_1 == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_1));
+					poiMods.globalMask[2] *= _GlobalMaskMirror_2 == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_2));
+					poiMods.globalMask[3] *= _GlobalMaskMirror_3 == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_3));
+					poiMods.globalMask[4] *= _GlobalMaskMirror_4 == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_4));
+					poiMods.globalMask[5] *= _GlobalMaskMirror_5 == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_5));
+					poiMods.globalMask[6] *= _GlobalMaskMirror_6 == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_6));
+					poiMods.globalMask[7] *= _GlobalMaskMirror_7 == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_7));
+					poiMods.globalMask[8] *= _GlobalMaskMirror_8 == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_8));
+					poiMods.globalMask[9] *= _GlobalMaskMirror_9 == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_9));
 					poiMods.globalMask[10] *= _GlobalMaskMirror_10 == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_10));
 					poiMods.globalMask[11] *= _GlobalMaskMirror_11 == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_11));
 					poiMods.globalMask[12] *= _GlobalMaskMirror_12 == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_12));
@@ -44212,21 +44052,21 @@ Shader ".poiyomi/Poiyomi Toon"
 				//endex
 				
 				//ifex _GlobalMaskModifiersCameraEnable==0
-				if(_GlobalMaskModifiersCameraEnable)
+				if (_GlobalMaskModifiersCameraEnable)
 				{
 					float isCamera = VRCCameraMode() > 0;
 					isCamera += 1;
 					// _GlobalMaskCamera is 0 for ignore, 1 for outside camera only, 2 for in camera only
-					poiMods.globalMask[0]  *= _GlobalMaskCamera_0  == 0 ? 1 : (isCamera == (_GlobalMaskCamera_0 ));
-					poiMods.globalMask[1]  *= _GlobalMaskCamera_1  == 0 ? 1 : (isCamera == (_GlobalMaskCamera_1 ));
-					poiMods.globalMask[2]  *= _GlobalMaskCamera_2  == 0 ? 1 : (isCamera == (_GlobalMaskCamera_2 ));
-					poiMods.globalMask[3]  *= _GlobalMaskCamera_3  == 0 ? 1 : (isCamera == (_GlobalMaskCamera_3 ));
-					poiMods.globalMask[4]  *= _GlobalMaskCamera_4  == 0 ? 1 : (isCamera == (_GlobalMaskCamera_4 ));
-					poiMods.globalMask[5]  *= _GlobalMaskCamera_5  == 0 ? 1 : (isCamera == (_GlobalMaskCamera_5 ));
-					poiMods.globalMask[6]  *= _GlobalMaskCamera_6  == 0 ? 1 : (isCamera == (_GlobalMaskCamera_6 ));
-					poiMods.globalMask[7]  *= _GlobalMaskCamera_7  == 0 ? 1 : (isCamera == (_GlobalMaskCamera_7 ));
-					poiMods.globalMask[8]  *= _GlobalMaskCamera_8  == 0 ? 1 : (isCamera == (_GlobalMaskCamera_8 ));
-					poiMods.globalMask[9]  *= _GlobalMaskCamera_9  == 0 ? 1 : (isCamera == (_GlobalMaskCamera_9 ));
+					poiMods.globalMask[0] *= _GlobalMaskCamera_0 == 0 ? 1 : (isCamera == (_GlobalMaskCamera_0));
+					poiMods.globalMask[1] *= _GlobalMaskCamera_1 == 0 ? 1 : (isCamera == (_GlobalMaskCamera_1));
+					poiMods.globalMask[2] *= _GlobalMaskCamera_2 == 0 ? 1 : (isCamera == (_GlobalMaskCamera_2));
+					poiMods.globalMask[3] *= _GlobalMaskCamera_3 == 0 ? 1 : (isCamera == (_GlobalMaskCamera_3));
+					poiMods.globalMask[4] *= _GlobalMaskCamera_4 == 0 ? 1 : (isCamera == (_GlobalMaskCamera_4));
+					poiMods.globalMask[5] *= _GlobalMaskCamera_5 == 0 ? 1 : (isCamera == (_GlobalMaskCamera_5));
+					poiMods.globalMask[6] *= _GlobalMaskCamera_6 == 0 ? 1 : (isCamera == (_GlobalMaskCamera_6));
+					poiMods.globalMask[7] *= _GlobalMaskCamera_7 == 0 ? 1 : (isCamera == (_GlobalMaskCamera_7));
+					poiMods.globalMask[8] *= _GlobalMaskCamera_8 == 0 ? 1 : (isCamera == (_GlobalMaskCamera_8));
+					poiMods.globalMask[9] *= _GlobalMaskCamera_9 == 0 ? 1 : (isCamera == (_GlobalMaskCamera_9));
 					poiMods.globalMask[10] *= _GlobalMaskCamera_10 == 0 ? 1 : (isCamera == (_GlobalMaskCamera_10));
 					poiMods.globalMask[11] *= _GlobalMaskCamera_11 == 0 ? 1 : (isCamera == (_GlobalMaskCamera_11));
 					poiMods.globalMask[12] *= _GlobalMaskCamera_12 == 0 ? 1 : (isCamera == (_GlobalMaskCamera_12));
@@ -44239,135 +44079,57 @@ Shader ".poiyomi/Poiyomi Toon"
 				if (_GlobalMaskModifiersDistanceEnable)
 				{
 					//ifex _GlobalMaskDistanceEnable_0==0
-					if (_GlobalMaskDistanceEnable_0)
-					{
-						float3 position = _GlobalMaskDistanceType_0 ? poiMesh.worldPos : poiMesh.objectPosition;
-						float val = lerp(_GlobalMaskDistanceMinAlpha_0, _GlobalMaskDistanceMaxAlpha_0, smoothstep(_GlobalMaskDistanceMin_0, _GlobalMaskDistanceMax_0, distance(position, poiCam.worldPos)));
-						poiMods.globalMask[0] = saturate(customDistanceBlend(poiMods.globalMask[0], val, _GlobalMaskDistanceBlendType_0));
-					}
+					handleGlobalMaskDistance(0, _GlobalMaskDistanceEnable_0, _GlobalMaskDistanceType_0, _GlobalMaskDistanceMinAlpha_0, _GlobalMaskDistanceMaxAlpha_0, _GlobalMaskDistanceMin_0, _GlobalMaskDistanceMax_0, _GlobalMaskDistanceBlendType_0, poiMesh, poiMods);
 					//endex
 					//ifex _GlobalMaskDistanceEnable_1==0
-					if (_GlobalMaskDistanceEnable_1)
-					{
-						float3 position = _GlobalMaskDistanceType_1 ? poiMesh.worldPos : poiMesh.objectPosition;
-						float val = lerp(_GlobalMaskDistanceMinAlpha_1, _GlobalMaskDistanceMaxAlpha_1, smoothstep(_GlobalMaskDistanceMin_1, _GlobalMaskDistanceMax_1, distance(position, poiCam.worldPos)));
-						poiMods.globalMask[1] = saturate(customDistanceBlend(poiMods.globalMask[1], val, _GlobalMaskDistanceBlendType_1));
-					}
+					handleGlobalMaskDistance(1, _GlobalMaskDistanceEnable_1, _GlobalMaskDistanceType_1, _GlobalMaskDistanceMinAlpha_1, _GlobalMaskDistanceMaxAlpha_1, _GlobalMaskDistanceMin_1, _GlobalMaskDistanceMax_1, _GlobalMaskDistanceBlendType_1, poiMesh, poiMods);
 					//endex
 					//ifex _GlobalMaskDistanceEnable_2==0
-					if (_GlobalMaskDistanceEnable_2)
-					{
-						float3 position = _GlobalMaskDistanceType_2 ? poiMesh.worldPos : poiMesh.objectPosition;
-						float val = lerp(_GlobalMaskDistanceMinAlpha_2, _GlobalMaskDistanceMaxAlpha_2, smoothstep(_GlobalMaskDistanceMin_2, _GlobalMaskDistanceMax_2, distance(position, poiCam.worldPos)));
-						poiMods.globalMask[2] = saturate(customDistanceBlend(poiMods.globalMask[2], val, _GlobalMaskDistanceBlendType_2));
-					}
+					handleGlobalMaskDistance(2, _GlobalMaskDistanceEnable_2, _GlobalMaskDistanceType_2, _GlobalMaskDistanceMinAlpha_2, _GlobalMaskDistanceMaxAlpha_2, _GlobalMaskDistanceMin_2, _GlobalMaskDistanceMax_2, _GlobalMaskDistanceBlendType_2, poiMesh, poiMods);
 					//endex
 					//ifex _GlobalMaskDistanceEnable_3==0
-					if (_GlobalMaskDistanceEnable_3)
-					{
-						float3 position = _GlobalMaskDistanceType_3 ? poiMesh.worldPos : poiMesh.objectPosition;
-						float val = lerp(_GlobalMaskDistanceMinAlpha_3, _GlobalMaskDistanceMaxAlpha_3, smoothstep(_GlobalMaskDistanceMin_3, _GlobalMaskDistanceMax_3, distance(position, poiCam.worldPos)));
-						poiMods.globalMask[3] = saturate(customDistanceBlend(poiMods.globalMask[3], val, _GlobalMaskDistanceBlendType_3));
-					}
+					handleGlobalMaskDistance(3, _GlobalMaskDistanceEnable_3, _GlobalMaskDistanceType_3, _GlobalMaskDistanceMinAlpha_3, _GlobalMaskDistanceMaxAlpha_3, _GlobalMaskDistanceMin_3, _GlobalMaskDistanceMax_3, _GlobalMaskDistanceBlendType_3, poiMesh, poiMods);
 					//endex
 					//ifex _GlobalMaskDistanceEnable_4==0
-					if (_GlobalMaskDistanceEnable_4)
-					{
-						float3 position = _GlobalMaskDistanceType_4 ? poiMesh.worldPos : poiMesh.objectPosition;
-						float val = lerp(_GlobalMaskDistanceMinAlpha_4, _GlobalMaskDistanceMaxAlpha_4, smoothstep(_GlobalMaskDistanceMin_4, _GlobalMaskDistanceMax_4, distance(position, poiCam.worldPos)));
-						poiMods.globalMask[4] = saturate(customDistanceBlend(poiMods.globalMask[4], val, _GlobalMaskDistanceBlendType_4));
-					}
+					handleGlobalMaskDistance(4, _GlobalMaskDistanceEnable_4, _GlobalMaskDistanceType_4, _GlobalMaskDistanceMinAlpha_4, _GlobalMaskDistanceMaxAlpha_4, _GlobalMaskDistanceMin_4, _GlobalMaskDistanceMax_4, _GlobalMaskDistanceBlendType_4, poiMesh, poiMods);
 					//endex
 					//ifex _GlobalMaskDistanceEnable_5==0
-					if (_GlobalMaskDistanceEnable_5)
-					{
-						float3 position = _GlobalMaskDistanceType_5 ? poiMesh.worldPos : poiMesh.objectPosition;
-						float val = lerp(_GlobalMaskDistanceMinAlpha_5, _GlobalMaskDistanceMaxAlpha_5, smoothstep(_GlobalMaskDistanceMin_5, _GlobalMaskDistanceMax_5, distance(position, poiCam.worldPos)));
-						poiMods.globalMask[5] = saturate(customDistanceBlend(poiMods.globalMask[5], val, _GlobalMaskDistanceBlendType_5));
-					}
+					handleGlobalMaskDistance(5, _GlobalMaskDistanceEnable_5, _GlobalMaskDistanceType_5, _GlobalMaskDistanceMinAlpha_5, _GlobalMaskDistanceMaxAlpha_5, _GlobalMaskDistanceMin_5, _GlobalMaskDistanceMax_5, _GlobalMaskDistanceBlendType_5, poiMesh, poiMods);
 					//endex
 					//ifex _GlobalMaskDistanceEnable_6==0
-					if (_GlobalMaskDistanceEnable_6)
-					{
-						float3 position = _GlobalMaskDistanceType_6 ? poiMesh.worldPos : poiMesh.objectPosition;
-						float val = lerp(_GlobalMaskDistanceMinAlpha_6, _GlobalMaskDistanceMaxAlpha_6, smoothstep(_GlobalMaskDistanceMin_6, _GlobalMaskDistanceMax_6, distance(position, poiCam.worldPos)));
-						poiMods.globalMask[6] = saturate(customDistanceBlend(poiMods.globalMask[6], val, _GlobalMaskDistanceBlendType_6));
-					}
+					handleGlobalMaskDistance(6, _GlobalMaskDistanceEnable_6, _GlobalMaskDistanceType_6, _GlobalMaskDistanceMinAlpha_6, _GlobalMaskDistanceMaxAlpha_6, _GlobalMaskDistanceMin_6, _GlobalMaskDistanceMax_6, _GlobalMaskDistanceBlendType_6, poiMesh, poiMods);
 					//endex
 					//ifex _GlobalMaskDistanceEnable_7==0
-					if (_GlobalMaskDistanceEnable_7)
-					{
-						float3 position = _GlobalMaskDistanceType_7 ? poiMesh.worldPos : poiMesh.objectPosition;
-						float val = lerp(_GlobalMaskDistanceMinAlpha_7, _GlobalMaskDistanceMaxAlpha_7, smoothstep(_GlobalMaskDistanceMin_7, _GlobalMaskDistanceMax_7, distance(position, poiCam.worldPos)));
-						poiMods.globalMask[7] = saturate(customDistanceBlend(poiMods.globalMask[7], val, _GlobalMaskDistanceBlendType_7));
-					}
+					handleGlobalMaskDistance(7, _GlobalMaskDistanceEnable_7, _GlobalMaskDistanceType_7, _GlobalMaskDistanceMinAlpha_7, _GlobalMaskDistanceMaxAlpha_7, _GlobalMaskDistanceMin_7, _GlobalMaskDistanceMax_7, _GlobalMaskDistanceBlendType_7, poiMesh, poiMods);
 					//endex
 					//ifex _GlobalMaskDistanceEnable_8==0
-					if (_GlobalMaskDistanceEnable_8)
-					{
-						float3 position = _GlobalMaskDistanceType_8 ? poiMesh.worldPos : poiMesh.objectPosition;
-						float val = lerp(_GlobalMaskDistanceMinAlpha_8, _GlobalMaskDistanceMaxAlpha_8, smoothstep(_GlobalMaskDistanceMin_8, _GlobalMaskDistanceMax_8, distance(position, poiCam.worldPos)));
-						poiMods.globalMask[8] = saturate(customDistanceBlend(poiMods.globalMask[8], val, _GlobalMaskDistanceBlendType_8));
-					}
+					handleGlobalMaskDistance(8, _GlobalMaskDistanceEnable_8, _GlobalMaskDistanceType_8, _GlobalMaskDistanceMinAlpha_8, _GlobalMaskDistanceMaxAlpha_8, _GlobalMaskDistanceMin_8, _GlobalMaskDistanceMax_8, _GlobalMaskDistanceBlendType_8, poiMesh, poiMods);
 					//endex
 					//ifex _GlobalMaskDistanceEnable_9==0
-					if (_GlobalMaskDistanceEnable_9)
-					{
-						float3 position = _GlobalMaskDistanceType_9 ? poiMesh.worldPos : poiMesh.objectPosition;
-						float val = lerp(_GlobalMaskDistanceMinAlpha_9, _GlobalMaskDistanceMaxAlpha_9, smoothstep(_GlobalMaskDistanceMin_9, _GlobalMaskDistanceMax_9, distance(position, poiCam.worldPos)));
-						poiMods.globalMask[9] = saturate(customDistanceBlend(poiMods.globalMask[9], val, _GlobalMaskDistanceBlendType_9));
-					}
+					handleGlobalMaskDistance(9, _GlobalMaskDistanceEnable_9, _GlobalMaskDistanceType_9, _GlobalMaskDistanceMinAlpha_9, _GlobalMaskDistanceMaxAlpha_9, _GlobalMaskDistanceMin_9, _GlobalMaskDistanceMax_9, _GlobalMaskDistanceBlendType_9, poiMesh, poiMods);
 					//endex
 					//ifex _GlobalMaskDistanceEnable_10==0
-					if (_GlobalMaskDistanceEnable_10)
-					{
-						float3 position = _GlobalMaskDistanceType_10 ? poiMesh.worldPos : poiMesh.objectPosition;
-						float val = lerp(_GlobalMaskDistanceMinAlpha_10, _GlobalMaskDistanceMaxAlpha_10, smoothstep(_GlobalMaskDistanceMin_10, _GlobalMaskDistanceMax_10, distance(position, poiCam.worldPos)));
-						poiMods.globalMask[10] = saturate(customDistanceBlend(poiMods.globalMask[10], val, _GlobalMaskDistanceBlendType_10));
-					}
+					handleGlobalMaskDistance(10, _GlobalMaskDistanceEnable_10, _GlobalMaskDistanceType_10, _GlobalMaskDistanceMinAlpha_10, _GlobalMaskDistanceMaxAlpha_10, _GlobalMaskDistanceMin_10, _GlobalMaskDistanceMax_10, _GlobalMaskDistanceBlendType_10, poiMesh, poiMods);
 					//endex
 					//ifex _GlobalMaskDistanceEnable_11==0
-					if (_GlobalMaskDistanceEnable_11)
-					{
-						float3 position = _GlobalMaskDistanceType_11 ? poiMesh.worldPos : poiMesh.objectPosition;
-						float val = lerp(_GlobalMaskDistanceMinAlpha_11, _GlobalMaskDistanceMaxAlpha_11, smoothstep(_GlobalMaskDistanceMin_11, _GlobalMaskDistanceMax_11, distance(position, poiCam.worldPos)));
-						poiMods.globalMask[11] = saturate(customDistanceBlend(poiMods.globalMask[11], val, _GlobalMaskDistanceBlendType_11));
-					}
+					handleGlobalMaskDistance(11, _GlobalMaskDistanceEnable_11, _GlobalMaskDistanceType_11, _GlobalMaskDistanceMinAlpha_11, _GlobalMaskDistanceMaxAlpha_11, _GlobalMaskDistanceMin_11, _GlobalMaskDistanceMax_11, _GlobalMaskDistanceBlendType_11, poiMesh, poiMods);
 					//endex
 					//ifex _GlobalMaskDistanceEnable_12==0
-					if (_GlobalMaskDistanceEnable_12)
-					{
-						float3 position = _GlobalMaskDistanceType_12 ? poiMesh.worldPos : poiMesh.objectPosition;
-						float val = lerp(_GlobalMaskDistanceMinAlpha_12, _GlobalMaskDistanceMaxAlpha_12, smoothstep(_GlobalMaskDistanceMin_12, _GlobalMaskDistanceMax_12, distance(position, poiCam.worldPos)));
-						poiMods.globalMask[12] = saturate(customDistanceBlend(poiMods.globalMask[12], val, _GlobalMaskDistanceBlendType_12));
-					}
+					handleGlobalMaskDistance(12, _GlobalMaskDistanceEnable_12, _GlobalMaskDistanceType_12, _GlobalMaskDistanceMinAlpha_12, _GlobalMaskDistanceMaxAlpha_12, _GlobalMaskDistanceMin_12, _GlobalMaskDistanceMax_12, _GlobalMaskDistanceBlendType_12, poiMesh, poiMods);
 					//endex
 					//ifex _GlobalMaskDistanceEnable_13==0
-					if (_GlobalMaskDistanceEnable_13)
-					{
-						float3 position = _GlobalMaskDistanceType_13 ? poiMesh.worldPos : poiMesh.objectPosition;
-						float val = lerp(_GlobalMaskDistanceMinAlpha_13, _GlobalMaskDistanceMaxAlpha_13, smoothstep(_GlobalMaskDistanceMin_13, _GlobalMaskDistanceMax_13, distance(position, poiCam.worldPos)));
-						poiMods.globalMask[13] = saturate(customDistanceBlend(poiMods.globalMask[13], val, _GlobalMaskDistanceBlendType_13));
-					}
+					handleGlobalMaskDistance(13, _GlobalMaskDistanceEnable_13, _GlobalMaskDistanceType_13, _GlobalMaskDistanceMinAlpha_13, _GlobalMaskDistanceMaxAlpha_13, _GlobalMaskDistanceMin_13, _GlobalMaskDistanceMax_13, _GlobalMaskDistanceBlendType_13, poiMesh, poiMods);
 					//endex
 					//ifex _GlobalMaskDistanceEnable_14==0
-					if (_GlobalMaskDistanceEnable_14)
-					{
-						float3 position = _GlobalMaskDistanceType_14 ? poiMesh.worldPos : poiMesh.objectPosition;
-						float val = lerp(_GlobalMaskDistanceMinAlpha_14, _GlobalMaskDistanceMaxAlpha_14, smoothstep(_GlobalMaskDistanceMin_14, _GlobalMaskDistanceMax_14, distance(position, poiCam.worldPos)));
-						poiMods.globalMask[14] = saturate(customDistanceBlend(poiMods.globalMask[14], val, _GlobalMaskDistanceBlendType_14));
-					}
+					handleGlobalMaskDistance(14, _GlobalMaskDistanceEnable_14, _GlobalMaskDistanceType_14, _GlobalMaskDistanceMinAlpha_14, _GlobalMaskDistanceMaxAlpha_14, _GlobalMaskDistanceMin_14, _GlobalMaskDistanceMax_14, _GlobalMaskDistanceBlendType_14, poiMesh, poiMods);
 					//endex
 					//ifex _GlobalMaskDistanceEnable_15==0
-					if (_GlobalMaskDistanceEnable_15)
-					{
-						float3 position = _GlobalMaskDistanceType_15 ? poiMesh.worldPos : poiMesh.objectPosition;
-						float val = lerp(_GlobalMaskDistanceMinAlpha_15, _GlobalMaskDistanceMaxAlpha_15, smoothstep(_GlobalMaskDistanceMin_15, _GlobalMaskDistanceMax_15, distance(position, poiCam.worldPos)));
-						poiMods.globalMask[15] = saturate(customDistanceBlend(poiMods.globalMask[15], val, _GlobalMaskDistanceBlendType_15));
-					}
+					handleGlobalMaskDistance(15, _GlobalMaskDistanceEnable_15, _GlobalMaskDistanceType_15, _GlobalMaskDistanceMinAlpha_15, _GlobalMaskDistanceMaxAlpha_15, _GlobalMaskDistanceMin_15, _GlobalMaskDistanceMax_15, _GlobalMaskDistanceBlendType_15, poiMesh, poiMods);
 					//endex
+					
 				}
 				//endex
+				
 			}
 			
 			//ifex _GlobalMaskVertexColorRed==0 && _GlobalMaskVertexColorGreen==0 && _GlobalMaskVertexColorBlue==0 && _GlobalMaskVertexColorAlpha==0
@@ -44380,19 +44142,19 @@ Shader ".poiyomi/Poiyomi Toon"
 				}
 				if (_GlobalMaskVertexColorRed > 0)
 				{
-					applyToGlobalMask(poiMods, _GlobalMaskVertexColorRed-1, _GlobalMaskVertexColorRedBlendType, vcol.r);
+					applyToGlobalMask(poiMods, _GlobalMaskVertexColorRed - 1, _GlobalMaskVertexColorRedBlendType, vcol.r);
 				}
 				if (_GlobalMaskVertexColorGreen > 0)
 				{
-					applyToGlobalMask(poiMods, _GlobalMaskVertexColorGreen-1, _GlobalMaskVertexColorGreenBlendType, vcol.g);
+					applyToGlobalMask(poiMods, _GlobalMaskVertexColorGreen - 1, _GlobalMaskVertexColorGreenBlendType, vcol.g);
 				}
 				if (_GlobalMaskVertexColorBlue > 0)
 				{
-					applyToGlobalMask(poiMods, _GlobalMaskVertexColorBlue-1, _GlobalMaskVertexColorBlueBlendType, vcol.b);
+					applyToGlobalMask(poiMods, _GlobalMaskVertexColorBlue - 1, _GlobalMaskVertexColorBlueBlendType, vcol.b);
 				}
 				if (_GlobalMaskVertexColorAlpha > 0)
 				{
-					applyToGlobalMask(poiMods, _GlobalMaskVertexColorAlpha-1, _GlobalMaskVertexColorAlphaBlendType, vcol.a);
+					applyToGlobalMask(poiMods, _GlobalMaskVertexColorAlpha - 1, _GlobalMaskVertexColorAlphaBlendType, vcol.a);
 				}
 			}
 			//endex
@@ -45109,13 +44871,15 @@ Shader ".poiyomi/Poiyomi Toon"
 					float passthrough = _LightingAdditivePassthrough;
 					#endif
 					
-					if (_LightingAdditiveGradientEnd == _LightingAdditiveGradientStart) _LightingAdditiveGradientEnd += 0.001;
+					float2 ToonAddGradient = float2(_LightingAdditiveGradientStart, _LightingAdditiveGradientEnd);
 					
-					poiLight.rampedLightMap = smoothstep(_LightingAdditiveGradientEnd, _LightingAdditiveGradientStart, 1 - (.5 * poiLight.nDotL + .5));
+					if (ToonAddGradient.x == ToonAddGradient.y) ToonAddGradient.y += 0.0001;
+					
+					poiLight.rampedLightMap = smoothstep(ToonAddGradient.y, ToonAddGradient.x, 1 - (.5 * poiLight.nDotL + .5));
 					#if defined(POINT) || defined(SPOT)
-					poiLight.finalLighting = lerp(poiLight.directColor * max(min(poiLight.additiveShadow, poiLight.detailShadow), passthrough), poiLight.indirectColor, smoothstep(_LightingAdditiveGradientStart, _LightingAdditiveGradientEnd, 1 - (.5 * poiLight.nDotL + .5)));
+					poiLight.finalLighting = lerp(poiLight.directColor * max(min(poiLight.additiveShadow, poiLight.detailShadow), passthrough), poiLight.indirectColor, smoothstep(ToonAddGradient.x, ToonAddGradient.y, 1 - (.5 * poiLight.nDotL + .5)));
 					#else
-					poiLight.finalLighting = lerp(poiLight.directColor * max(min(poiLight.attenuation, poiLight.detailShadow), passthrough), poiLight.indirectColor, smoothstep(_LightingAdditiveGradientStart, _LightingAdditiveGradientEnd, 1 - (.5 * poiLight.nDotL + .5)));
+					poiLight.finalLighting = lerp(poiLight.directColor * max(min(poiLight.attenuation, poiLight.detailShadow), passthrough), poiLight.indirectColor, smoothstep(ToonAddGradient.x, ToonAddGradient.y, 1 - (.5 * poiLight.nDotL + .5)));
 					#endif
 					return;
 				}
@@ -45453,10 +45217,12 @@ Shader ".poiyomi/Poiyomi Toon"
 							
 						}
 						//UNITY_BRANCH
-						if (lightingMode == 1) // Toon
-						
+						// Toon
+						if (lightingMode == 1)
 						{
-							vertexLighting = max(vertexLighting, lerp(poiLight.vColor[index], poiLight.vColor[index] * _LightingAdditivePassthrough, smoothstep(_LightingAdditiveGradientStart, _LightingAdditiveGradientEnd, 1 - (.5 * poiLight.vDotNL[index] + .5))) * poiLight.detailShadow);
+							float2 ToonAddGradient = float2(_LightingAdditiveGradientStart, _LightingAdditiveGradientEnd);
+							if (ToonAddGradient.x == ToonAddGradient.y) ToonAddGradient.y += 0.0001;
+							vertexLighting = max(vertexLighting, lerp(poiLight.vColor[index], poiLight.vColor[index] * _LightingAdditivePassthrough, smoothstep(ToonAddGradient.x, ToonAddGradient.y, 1 - (.5 * poiLight.vDotNL[index] + .5))) * poiLight.detailShadow);
 						}
 					}
 					float3 mixedLight = poiLight.finalLighting;
@@ -46758,16 +46524,16 @@ Shader ".poiyomi/Poiyomi Toon"
 				#endif
 				//endex
 				
-				poiMods.globalMask[0]  = 1;
-				poiMods.globalMask[1]  = 1;
-				poiMods.globalMask[2]  = 1;
-				poiMods.globalMask[3]  = 1;
-				poiMods.globalMask[4]  = 1;
-				poiMods.globalMask[5]  = 1;
-				poiMods.globalMask[6]  = 1;
-				poiMods.globalMask[7]  = 1;
-				poiMods.globalMask[8]  = 1;
-				poiMods.globalMask[9]  = 1;
+				poiMods.globalMask[0] = 1;
+				poiMods.globalMask[1] = 1;
+				poiMods.globalMask[2] = 1;
+				poiMods.globalMask[3] = 1;
+				poiMods.globalMask[4] = 1;
+				poiMods.globalMask[5] = 1;
+				poiMods.globalMask[6] = 1;
+				poiMods.globalMask[7] = 1;
+				poiMods.globalMask[8] = 1;
+				poiMods.globalMask[9] = 1;
 				poiMods.globalMask[10] = 1;
 				poiMods.globalMask[11] = 1;
 				poiMods.globalMask[12] = 1;
@@ -46784,7 +46550,7 @@ Shader ".poiyomi/Poiyomi Toon"
 				//endex
 				ApplyGlobalMaskModifiers(poiMesh, poiMods, poiCam);
 				//ifex _GlobalMaskOptionsEnable==0
-				if(_GlobalMaskOptionsEnable)
+				if (_GlobalMaskOptionsEnable)
 				{
 					ApplyGlobalMaskOptions(poiMods);
 				}
@@ -47900,6 +47666,7 @@ Shader ".poiyomi/Poiyomi Toon"
 			
 			#define DielectricSpec float4(0.04, 0.04, 0.04, 1.0 - 0.04)
 			#define PI float(3.14159265359)
+			#define Epsilon float(1e-10)
 			
 			#define POI2D_SAMPLE_TEX2D_SAMPLERGRAD(tex, samplertex, coord, dx, dy) tex.SampleGrad(sampler##samplertex, coord, dx, dy)
 			#define POI2D_SAMPLE_TEX2D_SAMPLERGRADD(tex, samp, uv, pan, dx, dy) tex.SampleGrad(samp, POI_PAN_UV(uv, pan), dx, dy)
@@ -48287,37 +48054,37 @@ Shader ".poiyomi/Poiyomi Toon"
 			//endex
 			
 			//ifex _GlobalMaskOptionsType!=2
-			int  _GlobalMaskToggleOn_0;
+			int _GlobalMaskToggleOn_0;
 			int _GlobalMaskToggleOff_0;
-			int  _GlobalMaskToggleOn_1;
+			int _GlobalMaskToggleOn_1;
 			int _GlobalMaskToggleOff_1;
-			int  _GlobalMaskToggleOn_2;
+			int _GlobalMaskToggleOn_2;
 			int _GlobalMaskToggleOff_2;
-			int  _GlobalMaskToggleOn_3;
+			int _GlobalMaskToggleOn_3;
 			int _GlobalMaskToggleOff_3;
-			int  _GlobalMaskToggleOn_4;
+			int _GlobalMaskToggleOn_4;
 			int _GlobalMaskToggleOff_4;
-			int  _GlobalMaskToggleOn_5;
+			int _GlobalMaskToggleOn_5;
 			int _GlobalMaskToggleOff_5;
-			int  _GlobalMaskToggleOn_6;
+			int _GlobalMaskToggleOn_6;
 			int _GlobalMaskToggleOff_6;
-			int  _GlobalMaskToggleOn_7;
+			int _GlobalMaskToggleOn_7;
 			int _GlobalMaskToggleOff_7;
-			int  _GlobalMaskToggleOn_8;
+			int _GlobalMaskToggleOn_8;
 			int _GlobalMaskToggleOff_8;
-			int  _GlobalMaskToggleOn_9;
+			int _GlobalMaskToggleOn_9;
 			int _GlobalMaskToggleOff_9;
-			int  _GlobalMaskToggleOn_10;
+			int _GlobalMaskToggleOn_10;
 			int _GlobalMaskToggleOff_10;
-			int  _GlobalMaskToggleOn_11;
+			int _GlobalMaskToggleOn_11;
 			int _GlobalMaskToggleOff_11;
-			int  _GlobalMaskToggleOn_12;
+			int _GlobalMaskToggleOn_12;
 			int _GlobalMaskToggleOff_12;
-			int  _GlobalMaskToggleOn_13;
+			int _GlobalMaskToggleOn_13;
 			int _GlobalMaskToggleOff_13;
-			int  _GlobalMaskToggleOn_14;
+			int _GlobalMaskToggleOn_14;
 			int _GlobalMaskToggleOff_14;
-			int  _GlobalMaskToggleOn_15;
+			int _GlobalMaskToggleOn_15;
 			int _GlobalMaskToggleOff_15;
 			//endex
 			//endex
@@ -50195,8 +49962,6 @@ Shader ".poiyomi/Poiyomi Toon"
 				uint index = (uint(uv.x) % 4) * 4 + uint(uv.y) % 4;
 				Out = In - DITHER_THRESHOLDS[index];
 			}
-			
-			static const float Epsilon = 1e-10;
 			// The weights of RGB contributions to luminance.
 			// Should sum to unity.
 			static const float3 HCYwts = float3(0.299, 0.587, 0.114);
@@ -51020,8 +50785,6 @@ Shader ".poiyomi/Poiyomi Toon"
 			{
 				return (toggle == 0 ? value : 1 - value);
 			}
-			
-			// OKLAB
 			
 			float3 PoiBlendNormal(float3 dstNormal, float3 srcNormal)
 			{
@@ -52223,7 +51986,9 @@ Shader ".poiyomi/Poiyomi Toon"
 					poiMods.globalMask[1] = POI2D_SAMPLER_PAN(_GlobalMaskTexture0, _MainTex, poiUV(poiMesh.uv[_GlobalMaskTexture0UV], _GlobalMaskTexture0SplitTilingOffset_G), _GlobalMaskTexture0SplitPan_G).g;
 					poiMods.globalMask[2] = POI2D_SAMPLER_PAN(_GlobalMaskTexture0, _MainTex, poiUV(poiMesh.uv[_GlobalMaskTexture0UV], _GlobalMaskTexture0SplitTilingOffset_B), _GlobalMaskTexture0SplitPan_B).b;
 					poiMods.globalMask[3] = POI2D_SAMPLER_PAN(_GlobalMaskTexture0, _MainTex, poiUV(poiMesh.uv[_GlobalMaskTexture0UV], _GlobalMaskTexture0SplitTilingOffset_A), _GlobalMaskTexture0SplitPan_A).a;
-				} else {
+				}
+				else
+				{
 					poiMods.globalMask[0] = gmcol0[0];
 					poiMods.globalMask[1] = gmcol0[1];
 					poiMods.globalMask[2] = gmcol0[2];
@@ -52239,7 +52004,9 @@ Shader ".poiyomi/Poiyomi Toon"
 					poiMods.globalMask[5] = POI2D_SAMPLER_PAN(_GlobalMaskTexture1, _MainTex, poiUV(poiMesh.uv[_GlobalMaskTexture1UV], _GlobalMaskTexture1SplitTilingOffset_G), _GlobalMaskTexture1SplitPan_G).g;
 					poiMods.globalMask[6] = POI2D_SAMPLER_PAN(_GlobalMaskTexture1, _MainTex, poiUV(poiMesh.uv[_GlobalMaskTexture1UV], _GlobalMaskTexture1SplitTilingOffset_B), _GlobalMaskTexture1SplitPan_B).b;
 					poiMods.globalMask[7] = POI2D_SAMPLER_PAN(_GlobalMaskTexture1, _MainTex, poiUV(poiMesh.uv[_GlobalMaskTexture1UV], _GlobalMaskTexture1SplitTilingOffset_A), _GlobalMaskTexture1SplitPan_A).a;
-				} else {
+				}
+				else
+				{
 					poiMods.globalMask[4] = gmcol1[0];
 					poiMods.globalMask[5] = gmcol1[1];
 					poiMods.globalMask[6] = gmcol1[2];
@@ -52255,7 +52022,9 @@ Shader ".poiyomi/Poiyomi Toon"
 					poiMods.globalMask[9] = POI2D_SAMPLER_PAN(_GlobalMaskTexture2, _MainTex, poiUV(poiMesh.uv[_GlobalMaskTexture2UV], _GlobalMaskTexture2SplitTilingOffset_G), _GlobalMaskTexture2SplitPan_G).g;
 					poiMods.globalMask[10] = POI2D_SAMPLER_PAN(_GlobalMaskTexture2, _MainTex, poiUV(poiMesh.uv[_GlobalMaskTexture2UV], _GlobalMaskTexture2SplitTilingOffset_B), _GlobalMaskTexture2SplitPan_B).b;
 					poiMods.globalMask[11] = POI2D_SAMPLER_PAN(_GlobalMaskTexture2, _MainTex, poiUV(poiMesh.uv[_GlobalMaskTexture2UV], _GlobalMaskTexture2SplitTilingOffset_A), _GlobalMaskTexture2SplitPan_A).a;
-				} else {
+				}
+				else
+				{
 					poiMods.globalMask[8] = gmcol2[0];
 					poiMods.globalMask[9] = gmcol2[1];
 					poiMods.globalMask[10] = gmcol2[2];
@@ -52271,7 +52040,9 @@ Shader ".poiyomi/Poiyomi Toon"
 					poiMods.globalMask[13] = POI2D_SAMPLER_PAN(_GlobalMaskTexture3, _MainTex, poiUV(poiMesh.uv[_GlobalMaskTexture3UV], _GlobalMaskTexture3SplitTilingOffset_G), _GlobalMaskTexture3SplitPan_G).g;
 					poiMods.globalMask[14] = POI2D_SAMPLER_PAN(_GlobalMaskTexture3, _MainTex, poiUV(poiMesh.uv[_GlobalMaskTexture3UV], _GlobalMaskTexture3SplitTilingOffset_B), _GlobalMaskTexture3SplitPan_B).b;
 					poiMods.globalMask[15] = POI2D_SAMPLER_PAN(_GlobalMaskTexture3, _MainTex, poiUV(poiMesh.uv[_GlobalMaskTexture3UV], _GlobalMaskTexture3SplitTilingOffset_A), _GlobalMaskTexture3SplitPan_A).a;
-				} else {
+				}
+				else
+				{
 					poiMods.globalMask[12] = gmcol3[0];
 					poiMods.globalMask[13] = gmcol3[1];
 					poiMods.globalMask[14] = gmcol3[2];
@@ -52287,16 +52058,16 @@ Shader ".poiyomi/Poiyomi Toon"
 				//ifex _GlobalMaskOptionsType!=0
 				if (_GlobalMaskOptionsType == 0)
 				{
-					poiMods.globalMask[0]  = saturate(poiMods.globalMask[0]  + _GlobalMaskSlider_0);
-					poiMods.globalMask[1]  = saturate(poiMods.globalMask[1]  + _GlobalMaskSlider_1);
-					poiMods.globalMask[2]  = saturate(poiMods.globalMask[2]  + _GlobalMaskSlider_2);
-					poiMods.globalMask[3]  = saturate(poiMods.globalMask[3]  + _GlobalMaskSlider_3);
-					poiMods.globalMask[4]  = saturate(poiMods.globalMask[4]  + _GlobalMaskSlider_4);
-					poiMods.globalMask[5]  = saturate(poiMods.globalMask[5]  + _GlobalMaskSlider_5);
-					poiMods.globalMask[6]  = saturate(poiMods.globalMask[6]  + _GlobalMaskSlider_6);
-					poiMods.globalMask[7]  = saturate(poiMods.globalMask[7]  + _GlobalMaskSlider_7);
-					poiMods.globalMask[8]  = saturate(poiMods.globalMask[8]  + _GlobalMaskSlider_8);
-					poiMods.globalMask[9]  = saturate(poiMods.globalMask[9]  + _GlobalMaskSlider_9);
+					poiMods.globalMask[0] = saturate(poiMods.globalMask[0] + _GlobalMaskSlider_0);
+					poiMods.globalMask[1] = saturate(poiMods.globalMask[1] + _GlobalMaskSlider_1);
+					poiMods.globalMask[2] = saturate(poiMods.globalMask[2] + _GlobalMaskSlider_2);
+					poiMods.globalMask[3] = saturate(poiMods.globalMask[3] + _GlobalMaskSlider_3);
+					poiMods.globalMask[4] = saturate(poiMods.globalMask[4] + _GlobalMaskSlider_4);
+					poiMods.globalMask[5] = saturate(poiMods.globalMask[5] + _GlobalMaskSlider_5);
+					poiMods.globalMask[6] = saturate(poiMods.globalMask[6] + _GlobalMaskSlider_6);
+					poiMods.globalMask[7] = saturate(poiMods.globalMask[7] + _GlobalMaskSlider_7);
+					poiMods.globalMask[8] = saturate(poiMods.globalMask[8] + _GlobalMaskSlider_8);
+					poiMods.globalMask[9] = saturate(poiMods.globalMask[9] + _GlobalMaskSlider_9);
 					poiMods.globalMask[10] = saturate(poiMods.globalMask[10] + _GlobalMaskSlider_10);
 					poiMods.globalMask[11] = saturate(poiMods.globalMask[11] + _GlobalMaskSlider_11);
 					poiMods.globalMask[12] = saturate(poiMods.globalMask[12] + _GlobalMaskSlider_12);
@@ -52308,16 +52079,16 @@ Shader ".poiyomi/Poiyomi Toon"
 				//ifex _GlobalMaskOptionsType!=1
 				if (_GlobalMaskOptionsType == 1)
 				{
-					poiMods.globalMask[0]  = lerp(_GlobalMaskMinMaxSlider_0.x,  _GlobalMaskMinMaxSlider_0.y,  poiMods.globalMask[0]);
-					poiMods.globalMask[1]  = lerp(_GlobalMaskMinMaxSlider_1.x,  _GlobalMaskMinMaxSlider_1.y,  poiMods.globalMask[1]);
-					poiMods.globalMask[2]  = lerp(_GlobalMaskMinMaxSlider_2.x,  _GlobalMaskMinMaxSlider_2.y,  poiMods.globalMask[2]);
-					poiMods.globalMask[3]  = lerp(_GlobalMaskMinMaxSlider_3.x,  _GlobalMaskMinMaxSlider_3.y,  poiMods.globalMask[3]);
-					poiMods.globalMask[4]  = lerp(_GlobalMaskMinMaxSlider_4.x,  _GlobalMaskMinMaxSlider_4.y,  poiMods.globalMask[4]);
-					poiMods.globalMask[5]  = lerp(_GlobalMaskMinMaxSlider_5.x,  _GlobalMaskMinMaxSlider_5.y,  poiMods.globalMask[5]);
-					poiMods.globalMask[6]  = lerp(_GlobalMaskMinMaxSlider_6.x,  _GlobalMaskMinMaxSlider_6.y,  poiMods.globalMask[6]);
-					poiMods.globalMask[7]  = lerp(_GlobalMaskMinMaxSlider_7.x,  _GlobalMaskMinMaxSlider_7.y,  poiMods.globalMask[7]);
-					poiMods.globalMask[8]  = lerp(_GlobalMaskMinMaxSlider_8.x,  _GlobalMaskMinMaxSlider_8.y,  poiMods.globalMask[8]);
-					poiMods.globalMask[9]  = lerp(_GlobalMaskMinMaxSlider_9.x,  _GlobalMaskMinMaxSlider_9.y,  poiMods.globalMask[9]);
+					poiMods.globalMask[0] = lerp(_GlobalMaskMinMaxSlider_0.x, _GlobalMaskMinMaxSlider_0.y, poiMods.globalMask[0]);
+					poiMods.globalMask[1] = lerp(_GlobalMaskMinMaxSlider_1.x, _GlobalMaskMinMaxSlider_1.y, poiMods.globalMask[1]);
+					poiMods.globalMask[2] = lerp(_GlobalMaskMinMaxSlider_2.x, _GlobalMaskMinMaxSlider_2.y, poiMods.globalMask[2]);
+					poiMods.globalMask[3] = lerp(_GlobalMaskMinMaxSlider_3.x, _GlobalMaskMinMaxSlider_3.y, poiMods.globalMask[3]);
+					poiMods.globalMask[4] = lerp(_GlobalMaskMinMaxSlider_4.x, _GlobalMaskMinMaxSlider_4.y, poiMods.globalMask[4]);
+					poiMods.globalMask[5] = lerp(_GlobalMaskMinMaxSlider_5.x, _GlobalMaskMinMaxSlider_5.y, poiMods.globalMask[5]);
+					poiMods.globalMask[6] = lerp(_GlobalMaskMinMaxSlider_6.x, _GlobalMaskMinMaxSlider_6.y, poiMods.globalMask[6]);
+					poiMods.globalMask[7] = lerp(_GlobalMaskMinMaxSlider_7.x, _GlobalMaskMinMaxSlider_7.y, poiMods.globalMask[7]);
+					poiMods.globalMask[8] = lerp(_GlobalMaskMinMaxSlider_8.x, _GlobalMaskMinMaxSlider_8.y, poiMods.globalMask[8]);
+					poiMods.globalMask[9] = lerp(_GlobalMaskMinMaxSlider_9.x, _GlobalMaskMinMaxSlider_9.y, poiMods.globalMask[9]);
 					poiMods.globalMask[10] = lerp(_GlobalMaskMinMaxSlider_10.x, _GlobalMaskMinMaxSlider_10.y, poiMods.globalMask[10]);
 					poiMods.globalMask[11] = lerp(_GlobalMaskMinMaxSlider_11.x, _GlobalMaskMinMaxSlider_11.y, poiMods.globalMask[11]);
 					poiMods.globalMask[12] = lerp(_GlobalMaskMinMaxSlider_12.x, _GlobalMaskMinMaxSlider_12.y, poiMods.globalMask[12]);
@@ -52329,16 +52100,16 @@ Shader ".poiyomi/Poiyomi Toon"
 				//ifex _GlobalMaskOptionsType!=2
 				if (_GlobalMaskOptionsType == 2)
 				{
-					if (_GlobalMaskToggleOn_0)  poiMods.globalMask[0]  = 1;
-					if (_GlobalMaskToggleOn_1)  poiMods.globalMask[1]  = 1;
-					if (_GlobalMaskToggleOn_2)  poiMods.globalMask[2]  = 1;
-					if (_GlobalMaskToggleOn_3)  poiMods.globalMask[3]  = 1;
-					if (_GlobalMaskToggleOn_4)  poiMods.globalMask[4]  = 1;
-					if (_GlobalMaskToggleOn_5)  poiMods.globalMask[5]  = 1;
-					if (_GlobalMaskToggleOn_6)  poiMods.globalMask[6]  = 1;
-					if (_GlobalMaskToggleOn_7)  poiMods.globalMask[7]  = 1;
-					if (_GlobalMaskToggleOn_8)  poiMods.globalMask[8]  = 1;
-					if (_GlobalMaskToggleOn_9)  poiMods.globalMask[9]  = 1;
+					if (_GlobalMaskToggleOn_0)  poiMods.globalMask[0] = 1;
+					if (_GlobalMaskToggleOn_1)  poiMods.globalMask[1] = 1;
+					if (_GlobalMaskToggleOn_2)  poiMods.globalMask[2] = 1;
+					if (_GlobalMaskToggleOn_3)  poiMods.globalMask[3] = 1;
+					if (_GlobalMaskToggleOn_4)  poiMods.globalMask[4] = 1;
+					if (_GlobalMaskToggleOn_5)  poiMods.globalMask[5] = 1;
+					if (_GlobalMaskToggleOn_6)  poiMods.globalMask[6] = 1;
+					if (_GlobalMaskToggleOn_7)  poiMods.globalMask[7] = 1;
+					if (_GlobalMaskToggleOn_8)  poiMods.globalMask[8] = 1;
+					if (_GlobalMaskToggleOn_9)  poiMods.globalMask[9] = 1;
 					if (_GlobalMaskToggleOn_10) poiMods.globalMask[10] = 1;
 					if (_GlobalMaskToggleOn_11) poiMods.globalMask[11] = 1;
 					if (_GlobalMaskToggleOn_12) poiMods.globalMask[12] = 1;
@@ -52346,24 +52117,25 @@ Shader ".poiyomi/Poiyomi Toon"
 					if (_GlobalMaskToggleOn_14) poiMods.globalMask[14] = 1;
 					if (_GlobalMaskToggleOn_15) poiMods.globalMask[15] = 1;
 					
-					poiMods.globalMask[0]  *= (1-_GlobalMaskToggleOff_0);
-					poiMods.globalMask[1]  *= (1-_GlobalMaskToggleOff_1);
-					poiMods.globalMask[2]  *= (1-_GlobalMaskToggleOff_2);
-					poiMods.globalMask[3]  *= (1-_GlobalMaskToggleOff_3);
-					poiMods.globalMask[4]  *= (1-_GlobalMaskToggleOff_4);
-					poiMods.globalMask[5]  *= (1-_GlobalMaskToggleOff_5);
-					poiMods.globalMask[6]  *= (1-_GlobalMaskToggleOff_6);
-					poiMods.globalMask[7]  *= (1-_GlobalMaskToggleOff_7);
-					poiMods.globalMask[8]  *= (1-_GlobalMaskToggleOff_8);
-					poiMods.globalMask[9]  *= (1-_GlobalMaskToggleOff_9);
-					poiMods.globalMask[10] *= (1-_GlobalMaskToggleOff_10);
-					poiMods.globalMask[11] *= (1-_GlobalMaskToggleOff_11);
-					poiMods.globalMask[12] *= (1-_GlobalMaskToggleOff_12);
-					poiMods.globalMask[13] *= (1-_GlobalMaskToggleOff_13);
-					poiMods.globalMask[14] *= (1-_GlobalMaskToggleOff_14);
-					poiMods.globalMask[15] *= (1-_GlobalMaskToggleOff_15);
+					poiMods.globalMask[0] *= (1 - _GlobalMaskToggleOff_0);
+					poiMods.globalMask[1] *= (1 - _GlobalMaskToggleOff_1);
+					poiMods.globalMask[2] *= (1 - _GlobalMaskToggleOff_2);
+					poiMods.globalMask[3] *= (1 - _GlobalMaskToggleOff_3);
+					poiMods.globalMask[4] *= (1 - _GlobalMaskToggleOff_4);
+					poiMods.globalMask[5] *= (1 - _GlobalMaskToggleOff_5);
+					poiMods.globalMask[6] *= (1 - _GlobalMaskToggleOff_6);
+					poiMods.globalMask[7] *= (1 - _GlobalMaskToggleOff_7);
+					poiMods.globalMask[8] *= (1 - _GlobalMaskToggleOff_8);
+					poiMods.globalMask[9] *= (1 - _GlobalMaskToggleOff_9);
+					poiMods.globalMask[10] *= (1 - _GlobalMaskToggleOff_10);
+					poiMods.globalMask[11] *= (1 - _GlobalMaskToggleOff_11);
+					poiMods.globalMask[12] *= (1 - _GlobalMaskToggleOff_12);
+					poiMods.globalMask[13] *= (1 - _GlobalMaskToggleOff_13);
+					poiMods.globalMask[14] *= (1 - _GlobalMaskToggleOff_14);
+					poiMods.globalMask[15] *= (1 - _GlobalMaskToggleOff_15);
 				}
 				//endex
+				
 			}
 			//endex
 			
@@ -52377,23 +52149,33 @@ Shader ".poiyomi/Poiyomi Toon"
 				}
 			}
 			
+			void handleGlobalMaskDistance(int index, bool enable, bool type, float minAlpha, float maxAlpha, float min, float max, int blendType, in PoiMesh poiMesh, inout PoiMods poiMods)
+			{
+				if (enable)
+				{
+					float3 position = type ? poiMesh.worldPos : poiMesh.objectPosition;
+					float val = lerp(minAlpha, maxAlpha, smoothstep(min, max, distance(position, _WorldSpaceCameraPos)));
+					poiMods.globalMask[index] = saturate(customDistanceBlend(poiMods.globalMask[index], val, blendType));
+				}
+			}
+			
 			void ApplyGlobalMaskModifiers(in PoiMesh poiMesh, inout PoiMods poiMods, in PoiCam poiCam)
 			{
 				//ifex _GlobalMaskModifiersBackfaceEnable==0
-				if(_GlobalMaskModifiersBackfaceEnable)
+				if (_GlobalMaskModifiersBackfaceEnable)
 				{
 					float facingMode = saturate(poiMesh.isFrontFace) + 1;
 					// _GlobalMaskBackface is 0 for ignore, 1 for back only, 2 for front only
-					poiMods.globalMask[0]  *= _GlobalMaskBackface_0  == 0 ? 1 : (facingMode == (_GlobalMaskBackface_0 ));
-					poiMods.globalMask[1]  *= _GlobalMaskBackface_1  == 0 ? 1 : (facingMode == (_GlobalMaskBackface_1 ));
-					poiMods.globalMask[2]  *= _GlobalMaskBackface_2  == 0 ? 1 : (facingMode == (_GlobalMaskBackface_2 ));
-					poiMods.globalMask[3]  *= _GlobalMaskBackface_3  == 0 ? 1 : (facingMode == (_GlobalMaskBackface_3 ));
-					poiMods.globalMask[4]  *= _GlobalMaskBackface_4  == 0 ? 1 : (facingMode == (_GlobalMaskBackface_4 ));
-					poiMods.globalMask[5]  *= _GlobalMaskBackface_5  == 0 ? 1 : (facingMode == (_GlobalMaskBackface_5 ));
-					poiMods.globalMask[6]  *= _GlobalMaskBackface_6  == 0 ? 1 : (facingMode == (_GlobalMaskBackface_6 ));
-					poiMods.globalMask[7]  *= _GlobalMaskBackface_7  == 0 ? 1 : (facingMode == (_GlobalMaskBackface_7 ));
-					poiMods.globalMask[8]  *= _GlobalMaskBackface_8  == 0 ? 1 : (facingMode == (_GlobalMaskBackface_8 ));
-					poiMods.globalMask[9]  *= _GlobalMaskBackface_9  == 0 ? 1 : (facingMode == (_GlobalMaskBackface_9 ));
+					poiMods.globalMask[0] *= _GlobalMaskBackface_0 == 0 ? 1 : (facingMode == (_GlobalMaskBackface_0));
+					poiMods.globalMask[1] *= _GlobalMaskBackface_1 == 0 ? 1 : (facingMode == (_GlobalMaskBackface_1));
+					poiMods.globalMask[2] *= _GlobalMaskBackface_2 == 0 ? 1 : (facingMode == (_GlobalMaskBackface_2));
+					poiMods.globalMask[3] *= _GlobalMaskBackface_3 == 0 ? 1 : (facingMode == (_GlobalMaskBackface_3));
+					poiMods.globalMask[4] *= _GlobalMaskBackface_4 == 0 ? 1 : (facingMode == (_GlobalMaskBackface_4));
+					poiMods.globalMask[5] *= _GlobalMaskBackface_5 == 0 ? 1 : (facingMode == (_GlobalMaskBackface_5));
+					poiMods.globalMask[6] *= _GlobalMaskBackface_6 == 0 ? 1 : (facingMode == (_GlobalMaskBackface_6));
+					poiMods.globalMask[7] *= _GlobalMaskBackface_7 == 0 ? 1 : (facingMode == (_GlobalMaskBackface_7));
+					poiMods.globalMask[8] *= _GlobalMaskBackface_8 == 0 ? 1 : (facingMode == (_GlobalMaskBackface_8));
+					poiMods.globalMask[9] *= _GlobalMaskBackface_9 == 0 ? 1 : (facingMode == (_GlobalMaskBackface_9));
 					poiMods.globalMask[10] *= _GlobalMaskBackface_10 == 0 ? 1 : (facingMode == (_GlobalMaskBackface_10));
 					poiMods.globalMask[11] *= _GlobalMaskBackface_11 == 0 ? 1 : (facingMode == (_GlobalMaskBackface_11));
 					poiMods.globalMask[12] *= _GlobalMaskBackface_12 == 0 ? 1 : (facingMode == (_GlobalMaskBackface_12));
@@ -52404,7 +52186,7 @@ Shader ".poiyomi/Poiyomi Toon"
 				//endex
 				
 				//ifex _GlobalMaskModifiersMirrorEnable==0
-				if(_GlobalMaskModifiersMirrorEnable)
+				if (_GlobalMaskModifiersMirrorEnable)
 				{
 					float mirrorMode = 0;
 					if (_GlobalMaskMirrorVisibilityMode == 1) // VRC
@@ -52414,16 +52196,16 @@ Shader ".poiyomi/Poiyomi Toon"
 					
 					mirrorMode += 1;
 					// _GlobalMaskMirror is 0 for ignore, 1 for outside mirror only, 2 for in mirror only
-					poiMods.globalMask[0]  *= _GlobalMaskMirror_0  == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_0 ));
-					poiMods.globalMask[1]  *= _GlobalMaskMirror_1  == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_1 ));
-					poiMods.globalMask[2]  *= _GlobalMaskMirror_2  == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_2 ));
-					poiMods.globalMask[3]  *= _GlobalMaskMirror_3  == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_3 ));
-					poiMods.globalMask[4]  *= _GlobalMaskMirror_4  == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_4 ));
-					poiMods.globalMask[5]  *= _GlobalMaskMirror_5  == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_5 ));
-					poiMods.globalMask[6]  *= _GlobalMaskMirror_6  == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_6 ));
-					poiMods.globalMask[7]  *= _GlobalMaskMirror_7  == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_7 ));
-					poiMods.globalMask[8]  *= _GlobalMaskMirror_8  == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_8 ));
-					poiMods.globalMask[9]  *= _GlobalMaskMirror_9  == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_9 ));
+					poiMods.globalMask[0] *= _GlobalMaskMirror_0 == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_0));
+					poiMods.globalMask[1] *= _GlobalMaskMirror_1 == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_1));
+					poiMods.globalMask[2] *= _GlobalMaskMirror_2 == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_2));
+					poiMods.globalMask[3] *= _GlobalMaskMirror_3 == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_3));
+					poiMods.globalMask[4] *= _GlobalMaskMirror_4 == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_4));
+					poiMods.globalMask[5] *= _GlobalMaskMirror_5 == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_5));
+					poiMods.globalMask[6] *= _GlobalMaskMirror_6 == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_6));
+					poiMods.globalMask[7] *= _GlobalMaskMirror_7 == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_7));
+					poiMods.globalMask[8] *= _GlobalMaskMirror_8 == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_8));
+					poiMods.globalMask[9] *= _GlobalMaskMirror_9 == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_9));
 					poiMods.globalMask[10] *= _GlobalMaskMirror_10 == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_10));
 					poiMods.globalMask[11] *= _GlobalMaskMirror_11 == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_11));
 					poiMods.globalMask[12] *= _GlobalMaskMirror_12 == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_12));
@@ -52434,21 +52216,21 @@ Shader ".poiyomi/Poiyomi Toon"
 				//endex
 				
 				//ifex _GlobalMaskModifiersCameraEnable==0
-				if(_GlobalMaskModifiersCameraEnable)
+				if (_GlobalMaskModifiersCameraEnable)
 				{
 					float isCamera = VRCCameraMode() > 0;
 					isCamera += 1;
 					// _GlobalMaskCamera is 0 for ignore, 1 for outside camera only, 2 for in camera only
-					poiMods.globalMask[0]  *= _GlobalMaskCamera_0  == 0 ? 1 : (isCamera == (_GlobalMaskCamera_0 ));
-					poiMods.globalMask[1]  *= _GlobalMaskCamera_1  == 0 ? 1 : (isCamera == (_GlobalMaskCamera_1 ));
-					poiMods.globalMask[2]  *= _GlobalMaskCamera_2  == 0 ? 1 : (isCamera == (_GlobalMaskCamera_2 ));
-					poiMods.globalMask[3]  *= _GlobalMaskCamera_3  == 0 ? 1 : (isCamera == (_GlobalMaskCamera_3 ));
-					poiMods.globalMask[4]  *= _GlobalMaskCamera_4  == 0 ? 1 : (isCamera == (_GlobalMaskCamera_4 ));
-					poiMods.globalMask[5]  *= _GlobalMaskCamera_5  == 0 ? 1 : (isCamera == (_GlobalMaskCamera_5 ));
-					poiMods.globalMask[6]  *= _GlobalMaskCamera_6  == 0 ? 1 : (isCamera == (_GlobalMaskCamera_6 ));
-					poiMods.globalMask[7]  *= _GlobalMaskCamera_7  == 0 ? 1 : (isCamera == (_GlobalMaskCamera_7 ));
-					poiMods.globalMask[8]  *= _GlobalMaskCamera_8  == 0 ? 1 : (isCamera == (_GlobalMaskCamera_8 ));
-					poiMods.globalMask[9]  *= _GlobalMaskCamera_9  == 0 ? 1 : (isCamera == (_GlobalMaskCamera_9 ));
+					poiMods.globalMask[0] *= _GlobalMaskCamera_0 == 0 ? 1 : (isCamera == (_GlobalMaskCamera_0));
+					poiMods.globalMask[1] *= _GlobalMaskCamera_1 == 0 ? 1 : (isCamera == (_GlobalMaskCamera_1));
+					poiMods.globalMask[2] *= _GlobalMaskCamera_2 == 0 ? 1 : (isCamera == (_GlobalMaskCamera_2));
+					poiMods.globalMask[3] *= _GlobalMaskCamera_3 == 0 ? 1 : (isCamera == (_GlobalMaskCamera_3));
+					poiMods.globalMask[4] *= _GlobalMaskCamera_4 == 0 ? 1 : (isCamera == (_GlobalMaskCamera_4));
+					poiMods.globalMask[5] *= _GlobalMaskCamera_5 == 0 ? 1 : (isCamera == (_GlobalMaskCamera_5));
+					poiMods.globalMask[6] *= _GlobalMaskCamera_6 == 0 ? 1 : (isCamera == (_GlobalMaskCamera_6));
+					poiMods.globalMask[7] *= _GlobalMaskCamera_7 == 0 ? 1 : (isCamera == (_GlobalMaskCamera_7));
+					poiMods.globalMask[8] *= _GlobalMaskCamera_8 == 0 ? 1 : (isCamera == (_GlobalMaskCamera_8));
+					poiMods.globalMask[9] *= _GlobalMaskCamera_9 == 0 ? 1 : (isCamera == (_GlobalMaskCamera_9));
 					poiMods.globalMask[10] *= _GlobalMaskCamera_10 == 0 ? 1 : (isCamera == (_GlobalMaskCamera_10));
 					poiMods.globalMask[11] *= _GlobalMaskCamera_11 == 0 ? 1 : (isCamera == (_GlobalMaskCamera_11));
 					poiMods.globalMask[12] *= _GlobalMaskCamera_12 == 0 ? 1 : (isCamera == (_GlobalMaskCamera_12));
@@ -52461,135 +52243,57 @@ Shader ".poiyomi/Poiyomi Toon"
 				if (_GlobalMaskModifiersDistanceEnable)
 				{
 					//ifex _GlobalMaskDistanceEnable_0==0
-					if (_GlobalMaskDistanceEnable_0)
-					{
-						float3 position = _GlobalMaskDistanceType_0 ? poiMesh.worldPos : poiMesh.objectPosition;
-						float val = lerp(_GlobalMaskDistanceMinAlpha_0, _GlobalMaskDistanceMaxAlpha_0, smoothstep(_GlobalMaskDistanceMin_0, _GlobalMaskDistanceMax_0, distance(position, poiCam.worldPos)));
-						poiMods.globalMask[0] = saturate(customDistanceBlend(poiMods.globalMask[0], val, _GlobalMaskDistanceBlendType_0));
-					}
+					handleGlobalMaskDistance(0, _GlobalMaskDistanceEnable_0, _GlobalMaskDistanceType_0, _GlobalMaskDistanceMinAlpha_0, _GlobalMaskDistanceMaxAlpha_0, _GlobalMaskDistanceMin_0, _GlobalMaskDistanceMax_0, _GlobalMaskDistanceBlendType_0, poiMesh, poiMods);
 					//endex
 					//ifex _GlobalMaskDistanceEnable_1==0
-					if (_GlobalMaskDistanceEnable_1)
-					{
-						float3 position = _GlobalMaskDistanceType_1 ? poiMesh.worldPos : poiMesh.objectPosition;
-						float val = lerp(_GlobalMaskDistanceMinAlpha_1, _GlobalMaskDistanceMaxAlpha_1, smoothstep(_GlobalMaskDistanceMin_1, _GlobalMaskDistanceMax_1, distance(position, poiCam.worldPos)));
-						poiMods.globalMask[1] = saturate(customDistanceBlend(poiMods.globalMask[1], val, _GlobalMaskDistanceBlendType_1));
-					}
+					handleGlobalMaskDistance(1, _GlobalMaskDistanceEnable_1, _GlobalMaskDistanceType_1, _GlobalMaskDistanceMinAlpha_1, _GlobalMaskDistanceMaxAlpha_1, _GlobalMaskDistanceMin_1, _GlobalMaskDistanceMax_1, _GlobalMaskDistanceBlendType_1, poiMesh, poiMods);
 					//endex
 					//ifex _GlobalMaskDistanceEnable_2==0
-					if (_GlobalMaskDistanceEnable_2)
-					{
-						float3 position = _GlobalMaskDistanceType_2 ? poiMesh.worldPos : poiMesh.objectPosition;
-						float val = lerp(_GlobalMaskDistanceMinAlpha_2, _GlobalMaskDistanceMaxAlpha_2, smoothstep(_GlobalMaskDistanceMin_2, _GlobalMaskDistanceMax_2, distance(position, poiCam.worldPos)));
-						poiMods.globalMask[2] = saturate(customDistanceBlend(poiMods.globalMask[2], val, _GlobalMaskDistanceBlendType_2));
-					}
+					handleGlobalMaskDistance(2, _GlobalMaskDistanceEnable_2, _GlobalMaskDistanceType_2, _GlobalMaskDistanceMinAlpha_2, _GlobalMaskDistanceMaxAlpha_2, _GlobalMaskDistanceMin_2, _GlobalMaskDistanceMax_2, _GlobalMaskDistanceBlendType_2, poiMesh, poiMods);
 					//endex
 					//ifex _GlobalMaskDistanceEnable_3==0
-					if (_GlobalMaskDistanceEnable_3)
-					{
-						float3 position = _GlobalMaskDistanceType_3 ? poiMesh.worldPos : poiMesh.objectPosition;
-						float val = lerp(_GlobalMaskDistanceMinAlpha_3, _GlobalMaskDistanceMaxAlpha_3, smoothstep(_GlobalMaskDistanceMin_3, _GlobalMaskDistanceMax_3, distance(position, poiCam.worldPos)));
-						poiMods.globalMask[3] = saturate(customDistanceBlend(poiMods.globalMask[3], val, _GlobalMaskDistanceBlendType_3));
-					}
+					handleGlobalMaskDistance(3, _GlobalMaskDistanceEnable_3, _GlobalMaskDistanceType_3, _GlobalMaskDistanceMinAlpha_3, _GlobalMaskDistanceMaxAlpha_3, _GlobalMaskDistanceMin_3, _GlobalMaskDistanceMax_3, _GlobalMaskDistanceBlendType_3, poiMesh, poiMods);
 					//endex
 					//ifex _GlobalMaskDistanceEnable_4==0
-					if (_GlobalMaskDistanceEnable_4)
-					{
-						float3 position = _GlobalMaskDistanceType_4 ? poiMesh.worldPos : poiMesh.objectPosition;
-						float val = lerp(_GlobalMaskDistanceMinAlpha_4, _GlobalMaskDistanceMaxAlpha_4, smoothstep(_GlobalMaskDistanceMin_4, _GlobalMaskDistanceMax_4, distance(position, poiCam.worldPos)));
-						poiMods.globalMask[4] = saturate(customDistanceBlend(poiMods.globalMask[4], val, _GlobalMaskDistanceBlendType_4));
-					}
+					handleGlobalMaskDistance(4, _GlobalMaskDistanceEnable_4, _GlobalMaskDistanceType_4, _GlobalMaskDistanceMinAlpha_4, _GlobalMaskDistanceMaxAlpha_4, _GlobalMaskDistanceMin_4, _GlobalMaskDistanceMax_4, _GlobalMaskDistanceBlendType_4, poiMesh, poiMods);
 					//endex
 					//ifex _GlobalMaskDistanceEnable_5==0
-					if (_GlobalMaskDistanceEnable_5)
-					{
-						float3 position = _GlobalMaskDistanceType_5 ? poiMesh.worldPos : poiMesh.objectPosition;
-						float val = lerp(_GlobalMaskDistanceMinAlpha_5, _GlobalMaskDistanceMaxAlpha_5, smoothstep(_GlobalMaskDistanceMin_5, _GlobalMaskDistanceMax_5, distance(position, poiCam.worldPos)));
-						poiMods.globalMask[5] = saturate(customDistanceBlend(poiMods.globalMask[5], val, _GlobalMaskDistanceBlendType_5));
-					}
+					handleGlobalMaskDistance(5, _GlobalMaskDistanceEnable_5, _GlobalMaskDistanceType_5, _GlobalMaskDistanceMinAlpha_5, _GlobalMaskDistanceMaxAlpha_5, _GlobalMaskDistanceMin_5, _GlobalMaskDistanceMax_5, _GlobalMaskDistanceBlendType_5, poiMesh, poiMods);
 					//endex
 					//ifex _GlobalMaskDistanceEnable_6==0
-					if (_GlobalMaskDistanceEnable_6)
-					{
-						float3 position = _GlobalMaskDistanceType_6 ? poiMesh.worldPos : poiMesh.objectPosition;
-						float val = lerp(_GlobalMaskDistanceMinAlpha_6, _GlobalMaskDistanceMaxAlpha_6, smoothstep(_GlobalMaskDistanceMin_6, _GlobalMaskDistanceMax_6, distance(position, poiCam.worldPos)));
-						poiMods.globalMask[6] = saturate(customDistanceBlend(poiMods.globalMask[6], val, _GlobalMaskDistanceBlendType_6));
-					}
+					handleGlobalMaskDistance(6, _GlobalMaskDistanceEnable_6, _GlobalMaskDistanceType_6, _GlobalMaskDistanceMinAlpha_6, _GlobalMaskDistanceMaxAlpha_6, _GlobalMaskDistanceMin_6, _GlobalMaskDistanceMax_6, _GlobalMaskDistanceBlendType_6, poiMesh, poiMods);
 					//endex
 					//ifex _GlobalMaskDistanceEnable_7==0
-					if (_GlobalMaskDistanceEnable_7)
-					{
-						float3 position = _GlobalMaskDistanceType_7 ? poiMesh.worldPos : poiMesh.objectPosition;
-						float val = lerp(_GlobalMaskDistanceMinAlpha_7, _GlobalMaskDistanceMaxAlpha_7, smoothstep(_GlobalMaskDistanceMin_7, _GlobalMaskDistanceMax_7, distance(position, poiCam.worldPos)));
-						poiMods.globalMask[7] = saturate(customDistanceBlend(poiMods.globalMask[7], val, _GlobalMaskDistanceBlendType_7));
-					}
+					handleGlobalMaskDistance(7, _GlobalMaskDistanceEnable_7, _GlobalMaskDistanceType_7, _GlobalMaskDistanceMinAlpha_7, _GlobalMaskDistanceMaxAlpha_7, _GlobalMaskDistanceMin_7, _GlobalMaskDistanceMax_7, _GlobalMaskDistanceBlendType_7, poiMesh, poiMods);
 					//endex
 					//ifex _GlobalMaskDistanceEnable_8==0
-					if (_GlobalMaskDistanceEnable_8)
-					{
-						float3 position = _GlobalMaskDistanceType_8 ? poiMesh.worldPos : poiMesh.objectPosition;
-						float val = lerp(_GlobalMaskDistanceMinAlpha_8, _GlobalMaskDistanceMaxAlpha_8, smoothstep(_GlobalMaskDistanceMin_8, _GlobalMaskDistanceMax_8, distance(position, poiCam.worldPos)));
-						poiMods.globalMask[8] = saturate(customDistanceBlend(poiMods.globalMask[8], val, _GlobalMaskDistanceBlendType_8));
-					}
+					handleGlobalMaskDistance(8, _GlobalMaskDistanceEnable_8, _GlobalMaskDistanceType_8, _GlobalMaskDistanceMinAlpha_8, _GlobalMaskDistanceMaxAlpha_8, _GlobalMaskDistanceMin_8, _GlobalMaskDistanceMax_8, _GlobalMaskDistanceBlendType_8, poiMesh, poiMods);
 					//endex
 					//ifex _GlobalMaskDistanceEnable_9==0
-					if (_GlobalMaskDistanceEnable_9)
-					{
-						float3 position = _GlobalMaskDistanceType_9 ? poiMesh.worldPos : poiMesh.objectPosition;
-						float val = lerp(_GlobalMaskDistanceMinAlpha_9, _GlobalMaskDistanceMaxAlpha_9, smoothstep(_GlobalMaskDistanceMin_9, _GlobalMaskDistanceMax_9, distance(position, poiCam.worldPos)));
-						poiMods.globalMask[9] = saturate(customDistanceBlend(poiMods.globalMask[9], val, _GlobalMaskDistanceBlendType_9));
-					}
+					handleGlobalMaskDistance(9, _GlobalMaskDistanceEnable_9, _GlobalMaskDistanceType_9, _GlobalMaskDistanceMinAlpha_9, _GlobalMaskDistanceMaxAlpha_9, _GlobalMaskDistanceMin_9, _GlobalMaskDistanceMax_9, _GlobalMaskDistanceBlendType_9, poiMesh, poiMods);
 					//endex
 					//ifex _GlobalMaskDistanceEnable_10==0
-					if (_GlobalMaskDistanceEnable_10)
-					{
-						float3 position = _GlobalMaskDistanceType_10 ? poiMesh.worldPos : poiMesh.objectPosition;
-						float val = lerp(_GlobalMaskDistanceMinAlpha_10, _GlobalMaskDistanceMaxAlpha_10, smoothstep(_GlobalMaskDistanceMin_10, _GlobalMaskDistanceMax_10, distance(position, poiCam.worldPos)));
-						poiMods.globalMask[10] = saturate(customDistanceBlend(poiMods.globalMask[10], val, _GlobalMaskDistanceBlendType_10));
-					}
+					handleGlobalMaskDistance(10, _GlobalMaskDistanceEnable_10, _GlobalMaskDistanceType_10, _GlobalMaskDistanceMinAlpha_10, _GlobalMaskDistanceMaxAlpha_10, _GlobalMaskDistanceMin_10, _GlobalMaskDistanceMax_10, _GlobalMaskDistanceBlendType_10, poiMesh, poiMods);
 					//endex
 					//ifex _GlobalMaskDistanceEnable_11==0
-					if (_GlobalMaskDistanceEnable_11)
-					{
-						float3 position = _GlobalMaskDistanceType_11 ? poiMesh.worldPos : poiMesh.objectPosition;
-						float val = lerp(_GlobalMaskDistanceMinAlpha_11, _GlobalMaskDistanceMaxAlpha_11, smoothstep(_GlobalMaskDistanceMin_11, _GlobalMaskDistanceMax_11, distance(position, poiCam.worldPos)));
-						poiMods.globalMask[11] = saturate(customDistanceBlend(poiMods.globalMask[11], val, _GlobalMaskDistanceBlendType_11));
-					}
+					handleGlobalMaskDistance(11, _GlobalMaskDistanceEnable_11, _GlobalMaskDistanceType_11, _GlobalMaskDistanceMinAlpha_11, _GlobalMaskDistanceMaxAlpha_11, _GlobalMaskDistanceMin_11, _GlobalMaskDistanceMax_11, _GlobalMaskDistanceBlendType_11, poiMesh, poiMods);
 					//endex
 					//ifex _GlobalMaskDistanceEnable_12==0
-					if (_GlobalMaskDistanceEnable_12)
-					{
-						float3 position = _GlobalMaskDistanceType_12 ? poiMesh.worldPos : poiMesh.objectPosition;
-						float val = lerp(_GlobalMaskDistanceMinAlpha_12, _GlobalMaskDistanceMaxAlpha_12, smoothstep(_GlobalMaskDistanceMin_12, _GlobalMaskDistanceMax_12, distance(position, poiCam.worldPos)));
-						poiMods.globalMask[12] = saturate(customDistanceBlend(poiMods.globalMask[12], val, _GlobalMaskDistanceBlendType_12));
-					}
+					handleGlobalMaskDistance(12, _GlobalMaskDistanceEnable_12, _GlobalMaskDistanceType_12, _GlobalMaskDistanceMinAlpha_12, _GlobalMaskDistanceMaxAlpha_12, _GlobalMaskDistanceMin_12, _GlobalMaskDistanceMax_12, _GlobalMaskDistanceBlendType_12, poiMesh, poiMods);
 					//endex
 					//ifex _GlobalMaskDistanceEnable_13==0
-					if (_GlobalMaskDistanceEnable_13)
-					{
-						float3 position = _GlobalMaskDistanceType_13 ? poiMesh.worldPos : poiMesh.objectPosition;
-						float val = lerp(_GlobalMaskDistanceMinAlpha_13, _GlobalMaskDistanceMaxAlpha_13, smoothstep(_GlobalMaskDistanceMin_13, _GlobalMaskDistanceMax_13, distance(position, poiCam.worldPos)));
-						poiMods.globalMask[13] = saturate(customDistanceBlend(poiMods.globalMask[13], val, _GlobalMaskDistanceBlendType_13));
-					}
+					handleGlobalMaskDistance(13, _GlobalMaskDistanceEnable_13, _GlobalMaskDistanceType_13, _GlobalMaskDistanceMinAlpha_13, _GlobalMaskDistanceMaxAlpha_13, _GlobalMaskDistanceMin_13, _GlobalMaskDistanceMax_13, _GlobalMaskDistanceBlendType_13, poiMesh, poiMods);
 					//endex
 					//ifex _GlobalMaskDistanceEnable_14==0
-					if (_GlobalMaskDistanceEnable_14)
-					{
-						float3 position = _GlobalMaskDistanceType_14 ? poiMesh.worldPos : poiMesh.objectPosition;
-						float val = lerp(_GlobalMaskDistanceMinAlpha_14, _GlobalMaskDistanceMaxAlpha_14, smoothstep(_GlobalMaskDistanceMin_14, _GlobalMaskDistanceMax_14, distance(position, poiCam.worldPos)));
-						poiMods.globalMask[14] = saturate(customDistanceBlend(poiMods.globalMask[14], val, _GlobalMaskDistanceBlendType_14));
-					}
+					handleGlobalMaskDistance(14, _GlobalMaskDistanceEnable_14, _GlobalMaskDistanceType_14, _GlobalMaskDistanceMinAlpha_14, _GlobalMaskDistanceMaxAlpha_14, _GlobalMaskDistanceMin_14, _GlobalMaskDistanceMax_14, _GlobalMaskDistanceBlendType_14, poiMesh, poiMods);
 					//endex
 					//ifex _GlobalMaskDistanceEnable_15==0
-					if (_GlobalMaskDistanceEnable_15)
-					{
-						float3 position = _GlobalMaskDistanceType_15 ? poiMesh.worldPos : poiMesh.objectPosition;
-						float val = lerp(_GlobalMaskDistanceMinAlpha_15, _GlobalMaskDistanceMaxAlpha_15, smoothstep(_GlobalMaskDistanceMin_15, _GlobalMaskDistanceMax_15, distance(position, poiCam.worldPos)));
-						poiMods.globalMask[15] = saturate(customDistanceBlend(poiMods.globalMask[15], val, _GlobalMaskDistanceBlendType_15));
-					}
+					handleGlobalMaskDistance(15, _GlobalMaskDistanceEnable_15, _GlobalMaskDistanceType_15, _GlobalMaskDistanceMinAlpha_15, _GlobalMaskDistanceMaxAlpha_15, _GlobalMaskDistanceMin_15, _GlobalMaskDistanceMax_15, _GlobalMaskDistanceBlendType_15, poiMesh, poiMods);
 					//endex
+					
 				}
 				//endex
+				
 			}
 			
 			//ifex _GlobalMaskVertexColorRed==0 && _GlobalMaskVertexColorGreen==0 && _GlobalMaskVertexColorBlue==0 && _GlobalMaskVertexColorAlpha==0
@@ -52602,19 +52306,19 @@ Shader ".poiyomi/Poiyomi Toon"
 				}
 				if (_GlobalMaskVertexColorRed > 0)
 				{
-					applyToGlobalMask(poiMods, _GlobalMaskVertexColorRed-1, _GlobalMaskVertexColorRedBlendType, vcol.r);
+					applyToGlobalMask(poiMods, _GlobalMaskVertexColorRed - 1, _GlobalMaskVertexColorRedBlendType, vcol.r);
 				}
 				if (_GlobalMaskVertexColorGreen > 0)
 				{
-					applyToGlobalMask(poiMods, _GlobalMaskVertexColorGreen-1, _GlobalMaskVertexColorGreenBlendType, vcol.g);
+					applyToGlobalMask(poiMods, _GlobalMaskVertexColorGreen - 1, _GlobalMaskVertexColorGreenBlendType, vcol.g);
 				}
 				if (_GlobalMaskVertexColorBlue > 0)
 				{
-					applyToGlobalMask(poiMods, _GlobalMaskVertexColorBlue-1, _GlobalMaskVertexColorBlueBlendType, vcol.b);
+					applyToGlobalMask(poiMods, _GlobalMaskVertexColorBlue - 1, _GlobalMaskVertexColorBlueBlendType, vcol.b);
 				}
 				if (_GlobalMaskVertexColorAlpha > 0)
 				{
-					applyToGlobalMask(poiMods, _GlobalMaskVertexColorAlpha-1, _GlobalMaskVertexColorAlphaBlendType, vcol.a);
+					applyToGlobalMask(poiMods, _GlobalMaskVertexColorAlpha - 1, _GlobalMaskVertexColorAlphaBlendType, vcol.a);
 				}
 			}
 			//endex
@@ -54443,16 +54147,16 @@ Shader ".poiyomi/Poiyomi Toon"
 				#endif
 				//endex
 				
-				poiMods.globalMask[0]  = 1;
-				poiMods.globalMask[1]  = 1;
-				poiMods.globalMask[2]  = 1;
-				poiMods.globalMask[3]  = 1;
-				poiMods.globalMask[4]  = 1;
-				poiMods.globalMask[5]  = 1;
-				poiMods.globalMask[6]  = 1;
-				poiMods.globalMask[7]  = 1;
-				poiMods.globalMask[8]  = 1;
-				poiMods.globalMask[9]  = 1;
+				poiMods.globalMask[0] = 1;
+				poiMods.globalMask[1] = 1;
+				poiMods.globalMask[2] = 1;
+				poiMods.globalMask[3] = 1;
+				poiMods.globalMask[4] = 1;
+				poiMods.globalMask[5] = 1;
+				poiMods.globalMask[6] = 1;
+				poiMods.globalMask[7] = 1;
+				poiMods.globalMask[8] = 1;
+				poiMods.globalMask[9] = 1;
 				poiMods.globalMask[10] = 1;
 				poiMods.globalMask[11] = 1;
 				poiMods.globalMask[12] = 1;
@@ -54469,7 +54173,7 @@ Shader ".poiyomi/Poiyomi Toon"
 				//endex
 				ApplyGlobalMaskModifiers(poiMesh, poiMods, poiCam);
 				//ifex _GlobalMaskOptionsEnable==0
-				if(_GlobalMaskOptionsEnable)
+				if (_GlobalMaskOptionsEnable)
 				{
 					ApplyGlobalMaskOptions(poiMods);
 				}
