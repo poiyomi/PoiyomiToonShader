@@ -65,7 +65,7 @@ namespace Poi.Tools
             PackageExport_ExportMethod = PackageExport_Type.GetMethod("Export", BindingFlags.NonPublic | BindingFlags.Instance);
 
             CustomExport_Method = typeof(PoiImportExportChecker).GetMethod(nameof(CustomExport));
-            DetourExportMethod();
+            //DetourExportMethod();
         }
         public static void CustomExport()
         {
