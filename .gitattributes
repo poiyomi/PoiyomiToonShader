@@ -1,3 +1,5 @@
 # Overrides for GitHub's Linguist language detection (https://github.com/github/linguist/blob/master/docs/overrides.md)
 *.shader linguist-language=ShaderLab
 *.cginc linguist-language=HLSL
+
+* eol=lf
