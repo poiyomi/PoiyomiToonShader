@@ -1114,7 +1114,7 @@ namespace Thry
                 //removes empty lines
                 if (string.IsNullOrEmpty(lineParsed)) continue;
                 //removes code that is commented
-                if (lineParsed.EndsWith("*/", StringComparison.OrdinalIgnoreCase))
+                if (isCommentedOut && lineParsed.EndsWith("*/", StringComparison.OrdinalIgnoreCase))
                 {
                     isCommentedOut = false;
                     continue;
