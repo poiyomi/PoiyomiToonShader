@@ -2,27 +2,19 @@
 %TAG !u! tag:unity3d.com,2011:
 --- !u!21 &2100000
 Material:
-  serializedVersion: 8
+  serializedVersion: 6
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: MP_Skybox
-  m_Shader: {fileID: 103, guid: 0000000000000000f000000000000000, type: 0}
-  m_Parent: {fileID: 0}
-  m_ModifiedSerializedProperties: 0
-  m_ValidKeywords: []
-  m_InvalidKeywords:
-  - VIGNETTE_MASKED
-  - _CUBEMAP
-  - _LIGHTINGMODE_FLAT
-  - _RIM2STYLE_POIYOMI
-  - _RIMSTYLE_POIYOMI
-  - _STOCHASTICMODE_DELIOT_HEITZ
+  m_Shader: {fileID: 4800000, guid: 5ca92f1e9fc35504aba297fd1acd62df, type: 3}
+  m_ShaderKeywords: VIGNETTE_MASKED _CUBEMAP _LIGHTINGMODE_FLAT _RIM2STYLE_POIYOMI
+    _RIMSTYLE_POIYOMI _STOCHASTICMODE_DELIOT_HEITZ
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
+  m_CustomRenderQueue: 2000
   stringTagMap:
     _CubeMapUVMode_isPreset: true
     _CubeMap_isPreset: true
@@ -30,7 +22,6 @@ Material:
     m_start_CubeMap_isPreset: true
     presetName: Shading/Cubemap/Skybox
   disabledShaderPasses: []
-  m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
@@ -506,10 +497,6 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _Tex:
-        m_Texture: {fileID: 8900000, guid: 1f79f71b84fc2844bb81e9ae4f5bc384, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
     - _TextGlyphs:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -538,7 +525,6 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    m_Ints: []
     m_Floats:
     - GeometryShader_Enabled: 1
     - Instancing: 0
@@ -1242,7 +1228,6 @@ Material:
     - _EnableTouchGlow: 0
     - _EnableUDIMDiscardOptions: 0
     - _EnableVolumeColor: 0
-    - _Exposure: 1
     - _FFBFStencilHelp0: 0
     - _FFBFStencilHelp1: 0
     - _FXProximityColor: 0
@@ -2154,7 +2139,6 @@ Material:
     - _RimTexUV: 0
     - _RimVRParallaxStrength: 1
     - _RimWidth: 0.8
-    - _Rotation: 0
     - _SDFBlur: 0.1
     - _SDFShadingTextureUV: 0
     - _SSIgnoreCastedShadows: 0
@@ -3086,7 +3070,6 @@ Material:
     - _TextTimeOffset: {r: 0, g: 0, b: 0, a: 0}
     - _TextTimePadding: {r: 0, g: 0, b: 0, a: 0}
     - _TextTimeScale: {r: 1, g: 1, b: 1, a: 1}
-    - _Tint: {r: 0.5, g: 0.5, b: 0.5, a: 0.5}
     - _UDIMDiscardRow0: {r: 1, g: 1, b: 1, a: 1}
     - _UDIMDiscardRow1: {r: 1, g: 1, b: 1, a: 1}
     - _UDIMDiscardRow2: {r: 1, g: 1, b: 1, a: 1}
@@ -3112,4 +3095,3 @@ Material:
     - _VertexWorldTranslationALMin: {r: 0, g: 0, b: 0, a: 1}
     - _VideoMaskTexturePan: {r: 0, g: 0, b: 0, a: 0}
     - _VideoResolution: {r: 1280, g: 720, b: 0, a: 0}
-  m_BuildTextureStacks: []

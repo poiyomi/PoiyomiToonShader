@@ -2,7 +2,7 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 {
 	Properties
 	{
-		[HideInInspector] shader_master_label ("<color=#E75898ff>Poiyomi 9.0.56</color>", Float) = 0
+		[HideInInspector] shader_master_label ("<color=#E75898ff>Poiyomi 9.0.57</color>", Float) = 0
 		[HideInInspector] shader_is_using_thry_editor ("", Float) = 0
 		[HideInInspector] shader_locale ("0db0b86376c3dca4b9a6828ef8615fe0", Float) = 0
 		[HideInInspector] footer_youtube ("{texture:{name:icon-youtube,height:16},action:{type:URL,data:https://www.youtube.com/poiyomi},hover:YOUTUBE}", Float) = 0
@@ -557,11 +557,15 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 		[HideInInspector] m_end_RGBMask ("RGB Color Masking", Float) = 0
 		//endex
 		
+		//ifex _DecalEnabled==0 && _DecalEnabled1==0 && _DecalEnabled2==0 && _DecalEnabled3==0
 		// Decal Texture
 		[HideInInspector] m_start_DecalSection ("Decals--{button_help:{text:Tutorial,action:{type:URL,data:https://www.poiyomi.com/color-and-normals/decals},hover:YouTube}}", Float) = 0
 		[sRGBWarning][ThryRGBAPacker(Decal 0 Mask, Decal 1 Mask, Decal 2 Mask, Decal 3 Mask, Linear, false)]_DecalMask ("Decal RGBA Mask--{reference_properties:[_DecalMaskPan, _DecalMaskUV]}", 2D) = "white" { }
 		[HideInInspector][Vector2]_DecalMaskPan ("Panning", Vector) = (0, 0, 0, 0)
 		[HideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7)] _DecalMaskUV ("UV", Int) = 0
+		//ifex 0==0
+		//_Udon_VideoTex ("Video Debug Texture", 2D) = "white" { }
+		//endex
 		
 		[HideInInspector] s_start_DecalTPSMaskGroup ("--{condition_showS:(_TPSPenetratorEnabled==1)}", Float) = 0
 		[ThryToggleUI(true)] _DecalTPSDepthMaskEnabled ("<size=13><b>  TPS Depth Enabled</b></size>", Float) = 0
@@ -570,7 +574,6 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 		_Decal2TPSMaskStrength ("Mask b Strength--{condition_showS:(_DecalTPSDepthMaskEnabled==1)}", Range(0, 1)) = 1
 		_Decal3TPSMaskStrength ("Mask a Strength--{condition_showS:(_DecalTPSDepthMaskEnabled==1)}", Range(0, 1)) = 1
 		[HideInInspector] s_end_DecalTPSMaskGroup ("", Float) = 0
-		
 		//ifex _DecalEnabled==0
 		// Decal 0
 		[HideInInspector] m_start_Decal0 ("Decal 0--{reference_property:_DecalEnabled}", Float) = 0
@@ -587,15 +590,15 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 		
 		_DecalColor ("Color--{reference_property:_DecalColorThemeIndex}", Color) = (1, 1, 1, 1)
 		[HideInInspector][ThryWideEnum(Off, 0, Theme Color 0, 1, Theme Color 1, 2, Theme Color 2, 3, Theme Color 3, 4, ColorChord 0, 5, ColorChord 1, 6, ColorChord 2, 7, ColorChord 3, 8, AL Theme 0, 9, AL Theme 1, 10, AL Theme 2, 11, AL Theme 3, 12)] _DecalColorThemeIndex ("", Int) = 0
-		[sRGBWarning(true)]_DecalTexture ("Decal--{reference_properties:[_DecalTexturePan, _DecalTextureUV, _Decal0MaskChannel, _DecalOverrideAlpha]}", 2D) = "white" { }
+		[sRGBWarning(true)]_DecalTexture ("Decal--{reference_properties:[_DecalTexturePan, _DecalTextureUV, _Decal0MaskChannel]}", 2D) = "white" { }
 		[HideInInspector][Vector2]_DecalTexturePan ("Panning", Vector) = (0, 0, 0, 0)
 		[HideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7)] _DecalTextureUV ("UV", Int) = 0
 		[HideInInspector][Enum(R, 0, G, 1, B, 2, A, 3)] _Decal0MaskChannel ("Mask Channel", Int) = 0
-		[HideInInspector][ToggleUI]_DecalOverrideAlpha ("Override Alpha--{reference_property:_Decal0OverrideAlphaMode}", Float) = 0
-		[HideInInspector][Enum(Everywhere, 0, Decal Bounds, 1)] _Decal0OverrideAlphaMode ("Mode", Int) = 0
 		
 		_DecalEmissionStrength ("Emission Strength", Range(0, 20)) = 0
-		[ThryWideEnum(Replace, 0, Darken, 1, Multiply, 2, Lighten, 5, Screen, 6, Subtract, 7, Add, 8, Overlay, 9, Mixed, 20)]_DecalBlendType ("Blending", Range(0, 1)) = 0
+		[ThryWideEnum(Replace, 0, Darken, 1, Multiply, 2, Lighten, 5, Screen, 6, Subtract, 7, Add, 8, Overlay, 9, Mixed, 20)]_DecalBlendType ("Color Blend Mode", Range(0, 1)) = 0
+		[ThryWideEnum(Off, 0, Replace, 1, Multiply, 2, Add, 3, Subtract, 4, Min, 5, Max, 6)]_DecalOverrideAlpha ("Alpha Blend Mode--{reference_property:_Decal0OverrideAlphaMode}", Float) = 0
+		[HideInInspector][Enum(Everywhere, 0, Decal Bounds, 1)] _Decal0OverrideAlphaMode ("Mode", Int) = 0
 		_DecalBlendAlpha ("Alpha", Range(0, 1)) = 1
 		_Decal0Depth ("Depth", Range(-0.5, 2)) = 0
 		
@@ -605,6 +608,15 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 		_DecalHueShift ("Hue Shift", Range(0, 1)) = 0
 		_Decal0HueAngleStrength ("Hue Angle Power", Float) = 0
 		[HideInInspector] s_end_Decal0HueShift ("Hue Shift", Float) = 0
+		
+		[HideInInspector] s_start_Decal0Video ("Video Texture--{reference_property:_Decal0VideoEnabled, persistent_expand:true, default_expand:false}", Float) = 0
+		[HideInInspector][ToggleUI] _Decal0VideoEnabled ("Video Texture", Float) = 0
+		[ThryWideEnum(Shrink2Fit, 0, Grow2Fit, 1, Off, 2)] _Decal0VideoAspectFix ("Aspect Ratio", Int) = 0
+		[ToggleUI] _Decal0VideoFitToScale ("Fit To Scale--{condition_showS:(_Decal0VideoAspectFix==0||_Decal0VideoAspectFix==1)}", Float) = 1
+		[ToggleUI] _Decal0UseDecalAlpha ("Use Decal Alpha", Float) = 0
+		[ToggleUI] _Decal0OnlyVideo ("Only Show Video", Float) = 0
+		_Decal0VideoEmissionStrength ("Emission", Range(0, 20)) = 0
+		[HideInInspector] s_end_Decal0Video ("Video Texture", Float) = 0
 		
 		[HideInInspector] s_start_Decal0ChannelSeparation ("Chromatic Aberration--{reference_property:_Decal0ChannelSeparationEnable, persistent_expand:true, default_expand:false}", Int) = 0
 		[HideInInspector][NoAnimate][ThryToggle(true)]_Decal0ChannelSeparationEnable ("Chromatic Aberration", Float) = 0
@@ -666,15 +678,15 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 		
 		_DecalColor1 ("Color--{reference_property:_DecalColor1ThemeIndex}", Color) = (1, 1, 1, 1)
 		[HideInInspector][ThryWideEnum(Off, 0, Theme Color 0, 1, Theme Color 1, 2, Theme Color 2, 3, Theme Color 3, 4, ColorChord 0, 5, ColorChord 1, 6, ColorChord 2, 7, ColorChord 3, 8, AL Theme 0, 9, AL Theme 1, 10, AL Theme 2, 11, AL Theme 3, 12)] _DecalColor1ThemeIndex ("", Int) = 0
-		[sRGBWarning(true)]_DecalTexture1 ("Decal--{reference_properties:[_DecalTexture1Pan, _DecalTexture1UV, _Decal1MaskChannel, _DecalOverrideAlpha1]}", 2D) = "white" { }
+		[sRGBWarning(true)]_DecalTexture1 ("Decal--{reference_properties:[_DecalTexture1Pan, _DecalTexture1UV, _Decal1MaskChannel]}", 2D) = "white" { }
 		[HideInInspector][Vector2]_DecalTexture1Pan ("Panning", Vector) = (0, 0, 0, 0)
 		[HideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7)] _DecalTexture1UV ("UV", Int) = 0
 		[HideInInspector][Enum(R, 0, G, 1, B, 2, A, 3)] _Decal1MaskChannel ("Mask Channel", Int) = 1
-		[HideInInspector][ToggleUI]_DecalOverrideAlpha1 ("Override Alpha--{reference_property:_Decal1OverrideAlphaMode}", Float) = 0
-		[HideInInspector][Enum(Everywhere, 0, Decal Bounds, 1)] _Decal1OverrideAlphaMode ("Mode", Int) = 0
 		
 		_DecalEmissionStrength1 ("Emission Strength", Range(0, 20)) = 0
-		[ThryWideEnum(Replace, 0, Darken, 1, Multiply, 2, Lighten, 5, Screen, 6, Subtract, 7, Add, 8, Overlay, 9, Mixed, 20)]_DecalBlendType1 ("Blending", Range(0, 1)) = 0
+		[ThryWideEnum(Replace, 0, Darken, 1, Multiply, 2, Lighten, 5, Screen, 6, Subtract, 7, Add, 8, Overlay, 9, Mixed, 20)]_DecalBlendType1 ("Color Blend Mode", Range(0, 1)) = 0
+		[ThryWideEnum(Off, 0, Replace, 1, Multiply, 2, Add, 3, Subtract, 4, Min, 5, Max, 6)]_DecalOverrideAlpha1 ("Alpha Blend Mode--{reference_property:_Decal1OverrideAlphaMode}", Float) = 0
+		[HideInInspector][Enum(Everywhere, 0, Decal Bounds, 1)] _Decal1OverrideAlphaMode ("Mode", Int) = 0
 		_DecalBlendAlpha1 ("Alpha", Range(0, 1)) = 1
 		_Decal1Depth ("Depth", Range(-0.5, 2)) = 0
 		
@@ -684,6 +696,15 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 		_DecalHueShift1 ("Hue Shift", Range(0, 1)) = 0
 		_Decal1HueAngleStrength ("Hue Angle Power", Float) = 0
 		[HideInInspector] s_end_Decal1HueShift ("Hue Shift", Float) = 0
+		
+		[HideInInspector] s_start_Decal1Video ("Video Texture--{reference_property:_Decal1VideoEnabled, persistent_expand:true, default_expand:false}", Float) = 0
+		[HideInInspector][ToggleUI] _Decal1VideoEnabled ("Video Texture", Float) = 0
+		[ThryWideEnum(Shrink2Fit, 0, Grow2Fit, 1, Off, 2)] _Decal1VideoAspectFix ("Aspect Ratio", Int) = 0
+		[ToggleUI] _Decal1VideoFitToScale ("Fit To Scale--{condition_showS:(_Decal1VideoAspectFix==0||_Decal1VideoAspectFix==1)}", Float) = 1
+		[ToggleUI] _Decal1UseDecalAlpha ("Use Decal Alpha", Float) = 0
+		[ToggleUI] _Decal1OnlyVideo ("Only Show Video", Float) = 0
+		_Decal1VideoEmissionStrength ("Emission", Range(0, 20)) = 0
+		[HideInInspector] s_end_Decal1Video ("Video Texture", Float) = 0
 		
 		[HideInInspector] s_start_Decal1ChannelSeparation ("Chromatic Aberration--{reference_property:_Decal1ChannelSeparationEnable, persistent_expand:true, default_expand:false}", Int) = 0
 		[HideInInspector][NoAnimate][ThryToggle(true)]_Decal1ChannelSeparationEnable ("Chromatic Aberration", Float) = 0
@@ -745,15 +766,15 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 		
 		_DecalColor2 ("Color--{reference_property:_DecalColor2ThemeIndex}", Color) = (1, 1, 1, 1)
 		[HideInInspector][ThryWideEnum(Off, 0, Theme Color 0, 1, Theme Color 1, 2, Theme Color 2, 3, Theme Color 3, 4, ColorChord 0, 5, ColorChord 1, 6, ColorChord 2, 7, ColorChord 3, 8, AL Theme 0, 9, AL Theme 1, 10, AL Theme 2, 11, AL Theme 3, 12)] _DecalColor2ThemeIndex ("", Int) = 0
-		[sRGBWarning(true)]_DecalTexture2 ("Decal--{reference_properties:[_DecalTexture2Pan, _DecalTexture2UV, _Decal2MaskChannel, _DecalOverrideAlpha2]}", 2D) = "white" { }
+		[sRGBWarning(true)]_DecalTexture2 ("Decal--{reference_properties:[_DecalTexture2Pan, _DecalTexture2UV, _Decal2MaskChannel]}", 2D) = "white" { }
 		[HideInInspector][Vector2]_DecalTexture2Pan ("Panning", Vector) = (0, 0, 0, 0)
 		[HideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7)] _DecalTexture2UV ("UV", Int) = 0
 		[HideInInspector][Enum(R, 0, G, 1, B, 2, A, 3)] _Decal2MaskChannel ("Mask Channel", Int) = 2
-		[HideInInspector][ToggleUI]_DecalOverrideAlpha2 ("Override Alpha--{reference_property:_Decal2OverrideAlphaMode}", Float) = 0
-		[HideInInspector][Enum(Everywhere, 0, Decal Bounds, 1)] _Decal2OverrideAlphaMode ("Mode", Int) = 0
 		
 		_DecalEmissionStrength2 ("Emission Strength", Range(0, 20)) = 0
-		[ThryWideEnum(Replace, 0, Darken, 1, Multiply, 2, Lighten, 5, Screen, 6, Subtract, 7, Add, 8, Overlay, 9, Mixed, 20)]_DecalBlendType2 ("Blending", Range(0, 1)) = 0
+		[ThryWideEnum(Replace, 0, Darken, 1, Multiply, 2, Lighten, 5, Screen, 6, Subtract, 7, Add, 8, Overlay, 9, Mixed, 20)]_DecalBlendType2 ("Color Blend Mode", Range(0, 1)) = 0
+		[ThryWideEnum(Off, 0, Replace, 1, Multiply, 2, Add, 3, Subtract, 4, Min, 5, Max, 6)]_DecalOverrideAlpha2 ("Alpha Blend Mode--{reference_property:_Decal2OverrideAlphaMode}", Float) = 0
+		[HideInInspector][Enum(Everywhere, 0, Decal Bounds, 1)] _Decal2OverrideAlphaMode ("Mode", Int) = 0
 		_DecalBlendAlpha2 ("Alpha", Range(0, 1)) = 1
 		_Decal2Depth ("Depth", Range(-0.5, 2)) = 0
 		
@@ -763,6 +784,15 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 		_DecalHueShift2 ("Hue Shift", Range(0, 1)) = 0
 		_Decal2HueAngleStrength ("Hue Angle Power", Float) = 0
 		[HideInInspector] s_end_Decal2HueShift ("Hue Shift", Float) = 0
+		
+		[HideInInspector] s_start_Decal2Video ("Video Texture--{reference_property:_Decal2VideoEnabled, persistent_expand:true, default_expand:false}", Float) = 0
+		[HideInInspector][ToggleUI] _Decal2VideoEnabled ("Video Texture", Float) = 0
+		[ThryWideEnum(Shrink2Fit, 0, Grow2Fit, 1, Off, 2)] _Decal2VideoAspectFix ("Aspect Ratio", Int) = 0
+		[ToggleUI] _Decal2VideoFitToScale ("Fit To Scale--{condition_showS:(_Decal2VideoAspectFix==0||_Decal2VideoAspectFix==1)}", Float) = 1
+		[ToggleUI] _Decal2UseDecalAlpha ("Use Decal Alpha", Float) = 0
+		[ToggleUI] _Decal2OnlyVideo ("Only Show Video", Float) = 0
+		_Decal2VideoEmissionStrength ("Emission", Range(0, 20)) = 0
+		[HideInInspector] s_end_Decal2Video ("Video Texture", Float) = 0
 		
 		[HideInInspector] s_start_Decal2ChannelSeparation ("Chromatic Aberration--{reference_property:_Decal2ChannelSeparationEnable, persistent_expand:true, default_expand:false}", Int) = 0
 		[HideInInspector][NoAnimate][ThryToggle(true)]_Decal2ChannelSeparationEnable ("Chromatic Aberration", Float) = 0
@@ -822,17 +852,18 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 		[ToggleUI]_DecalTiled3 ("Tiled", Float) = 0
 		[HideInInspector] s_end_decal3_position ("Positioning", Float) = 0
 		
+		[ThryWideEnum(Default, 0, Video Texture, 1)]_Decal3TextureToUse ("Texture Swap", Int) = 0
 		_DecalColor3 ("Color--{reference_property:_DecalColor3ThemeIndex}", Color) = (1, 1, 1, 1)
 		[HideInInspector][ThryWideEnum(Off, 0, Theme Color 0, 1, Theme Color 1, 2, Theme Color 2, 3, Theme Color 3, 4, ColorChord 0, 5, ColorChord 1, 6, ColorChord 2, 7, ColorChord 3, 8, AL Theme 0, 9, AL Theme 1, 10, AL Theme 2, 11, AL Theme 3, 12)] _DecalColor3ThemeIndex ("", Int) = 0
 		[sRGBWarning(true)]_DecalTexture3 ("Decal--{reference_properties:[_DecalTexture3Pan, _DecalTexture3UV, _Decal3MaskChannel, _DecalOverrideAlpha3]}", 2D) = "white" { }
 		[HideInInspector][Vector2]_DecalTexture3Pan ("Panning", Vector) = (0, 0, 0, 0)
 		[HideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7)] _DecalTexture3UV ("UV", Int) = 0
 		[HideInInspector][Enum(R, 0, G, 1, B, 2, A, 3)] _Decal3MaskChannel ("Mask Channel", Int) = 3
-		[HideInInspector][ToggleUI]_DecalOverrideAlpha3 ("Override Alpha--{reference_property:_Decal3OverrideAlphaMode}", Float) = 0
-		[HideInInspector][Enum(Everywhere, 0, Decal Bounds, 1)] _Decal3OverrideAlphaMode ("Mode", Int) = 0
 		
 		_DecalEmissionStrength3 ("Emission Strength", Range(0, 20)) = 0
-		[ThryWideEnum(Replace, 0, Darken, 1, Multiply, 2, Lighten, 5, Screen, 6, Subtract, 7, Add, 8, Overlay, 9, Mixed, 20)]_DecalBlendType3 ("Blending", Range(0, 1)) = 0
+		[ThryWideEnum(Replace, 0, Darken, 1, Multiply, 2, Lighten, 5, Screen, 6, Subtract, 7, Add, 8, Overlay, 9, Mixed, 20)]_DecalBlendType3 ("Color Blend Mode", Range(0, 1)) = 0
+		[ThryWideEnum(Off, 0, Replace, 1, Multiply, 2, Add, 3, Subtract, 4, Min, 5, Max, 6)]_DecalOverrideAlpha3 ("Alpha Blend Mode--{reference_property:_Decal3OverrideAlphaMode}", Float) = 0
+		[HideInInspector][Enum(Everywhere, 0, Decal Bounds, 1)] _Decal3OverrideAlphaMode ("Mode", Int) = 0
 		_DecalBlendAlpha3 ("Alpha", Range(0, 1)) = 1
 		_Decal3Depth ("Depth", Range(-0.5, 2)) = 0
 		
@@ -842,6 +873,15 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 		_DecalHueShift3 ("Hue Shift", Range(0, 1)) = 0
 		_Decal3HueAngleStrength ("Hue Angle Power", Float) = 0
 		[HideInInspector] s_end_Decal3HueShift ("Hue Shift", Float) = 0
+		
+		[HideInInspector] s_start_Decal3Video ("Video Texture--{reference_property:_Decal3VideoEnabled, persistent_expand:true, default_expand:false}", Float) = 0
+		[HideInInspector][ToggleUI] _Decal3VideoEnabled ("Video Texture", Float) = 0
+		[ThryWideEnum(Shrink2Fit, 0, Grow2Fit, 1, Off, 2)] _Decal3VideoAspectFix ("Aspect Ratio", Int) = 0
+		[ToggleUI] _Decal3VideoFitToScale ("Fit To Scale--{condition_showS:(_Decal3VideoAspectFix==0||_Decal3VideoAspectFix==1)}", Float) = 1
+		[ToggleUI] _Decal3UseDecalAlpha ("Use Decal Alpha", Float) = 0
+		[ToggleUI] _Decal3OnlyVideo ("Only Show Video", Float) = 0
+		_Decal3VideoEmissionStrength ("Emission", Range(0, 20)) = 0
+		[HideInInspector] s_end_Decal3Video ("Video Texture", Float) = 0
 		
 		[HideInInspector] s_start_Decal3ChannelSeparation ("Chromatic Aberration--{reference_property:_Decal3ChannelSeparationEnable, persistent_expand:true, default_expand:false}", Int) = 0
 		[HideInInspector][NoAnimate][ThryToggle(true)]_Decal3ChannelSeparationEnable ("Chromatic Aberration", Float) = 0
@@ -888,6 +928,7 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 		[HideInInspector] m_end_Decal3 ("Decal 0", Float) = 0
 		//endex
 		[HideInInspector] m_end_DecalSection ("Decal", Float) = 0
+		//endex
 		
 		//ifex _NormalCorrect==0
 		[HideInInspector] m_start_normalCorrect (" Normal Correct--{reference_property:_NormalCorrect}}", Float) = 0
@@ -1086,6 +1127,10 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 		[HideInInspector][Vector3]_SssTransmissionAbsorption ("Absorption--{condition_showS:(_LightingMode==3)}", Vector) = (-8, -40, -64, 0)
 		[HideInInspector][Vector3]_SssColorBleedAoWeights ("AO Color Bleed--{condition_showS:(_LightingMode==3)}", Vector) = (0.4, 0.15, 0.13, 0)
 		//endex
+		
+		//ifex _LightingMode!=5
+		// Flat
+		[ToggleUI]_ForceFlatRampedLightmap ("Force Ramped Lightmap--{condition_showS:(_LightingMode==5)}", Range(0, 1)) = 1
 		
 		//ifex _LightingMode!=7
 		// Cloth
@@ -1585,8 +1630,8 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 		[sRGBWarning][ThryRGBAPacker(Mask, Bias, linear, false)]_RimMask ("Mask & Bias--{reference_properties:[_RimMaskPan, _RimMaskUV, _RimMaskChannel, _RimMaskInvert, _RimBiasIntensity], condition_showS:_RimStyle==0}", 2D) = "white" { }
 		[HideInInspector][Vector2]_RimMaskPan ("Panning", Vector) = (0, 0, 0, 0)
 		[HideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7)] _RimMaskUV ("UV", Int) = 0
-		[HideInInspector][ToggleUI]_RimMaskInvert("Invert Mask", Float) = 0
-		[HideInInspector]_RimBiasIntensity("Bias Intensity", Range(0,1)) = 0
+		[HideInInspector][ToggleUI]_RimMaskInvert ("Invert Mask", Float) = 0
+		[HideInInspector]_RimBiasIntensity ("Bias Intensity", Range(0, 1)) = 0
 		[HideInInspector][Enum(R, 0, G, 1, B, 2, A, 3)]_RimMaskChannel ("Channel", Float) = 0
 		
 		[HideInInspector] s_start_RimLight0Color ("Color & Blending--{persistent_expand:true,default_expand:true, condition_showS:_RimStyle==0||_RimStyle==1}", Float) = 1
@@ -1636,8 +1681,8 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 		[Toggle(_)] _Ap_RimLight_FeatherOff ("Ap Feather Off--{ condition_showS:_Add_Antipodean_RimLight==1&&_RimStyle==1}", Float) = 0
 		[HideInInspector] s_end_RimLightDirectionMask ("Light Direction Mask", Float) = 0
 		// Liltoon
-		[HDR][Gamma]_RimColor ("Rim Color--{condition_showS:_RimStyle==2,reference_property:_RimLightColorThemeIndex}", Color) = (0.66,0.5,0.48,1)
-		[sRGBWarning(true)] _RimColorTex ("Color / Mask--{condition_showS:_RimStyle==2,reference_properties:[_RimColorTexPan, _RimColorTexUV]}", 2D) = "white" {}
+		[HDR][Gamma]_RimColor ("Rim Color--{condition_showS:_RimStyle==2,reference_property:_RimLightColorThemeIndex}", Color) = (0.66, 0.5, 0.48, 1)
+		[sRGBWarning(true)] _RimColorTex ("Color / Mask--{condition_showS:_RimStyle==2,reference_properties:[_RimColorTexPan, _RimColorTexUV]}", 2D) = "white" { }
 		[HideInInspector][Vector2] _RimColorTexPan ("Panning", Vector) = (0, 0, 0, 0)
 		[HideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7)] _RimColorTexUV ("UV", Int) = 0
 		_RimMainStrength ("Main Color Blend--{condition_showS:_RimStyle==2}", Range(0, 1)) = 0
@@ -1656,7 +1701,7 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 		_RimDirStrength ("Light direction strength", Range(0, 1)) = 0
 		_RimDirRange ("Direction Light Width", Range(-1, 1)) = 0
 		_RimIndirRange ("Indirection Light Width", Range(-1, 1)) = 0
-		[HDR][Gamma]_RimIndirColor ("Indirection Color", Color) = (1,1,1,1)
+		[HDR][Gamma]_RimIndirColor ("Indirection Color", Color) = (1, 1, 1, 1)
 		_RimIndirBorder ("Indirection Border", Range(0, 1)) = 0.5
 		_RimIndirBlur ("Indirection Blur", Range(0, 1)) = 0.1
 		[HideInInspector] s_end_liltoon_rim_lightdir ("", Float) = 0
@@ -1673,7 +1718,7 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 		[ThryWideEnum(Off, 0, 1R, 1, 1G, 2, 1B, 3, 1A, 4, 2R, 5, 2G, 6, 2B, 7, 2A, 8, 3R, 9, 3G, 10, 3B, 11, 3A, 12, 4R, 13, 4G, 14, 4B, 15, 4A, 16)] _RimGlobalMask (" Global Mask--{reference_property:_RimGlobalMaskBlendType}", Int) = 0
 		[HideInInspector][ThryWideEnum(Add, 7, Subtract, 1, Multiply, 2, Divide, 3, Min, 4, Max, 5, Average, 6, Replace, 0)] _RimGlobalMaskBlendType ("Blending", Int) = 2
 		[ThryWideEnum(Off, 0, 1R, 1, 1G, 2, 1B, 3, 1A, 4, 2R, 5, 2G, 6, 2B, 7, 2A, 8, 3R, 9, 3G, 10, 3B, 11, 3A, 12, 4R, 13, 4G, 14, 4B, 15, 4A, 16)] _RimApplyGlobalMaskIndex (" Apply to Global Mask--{reference_property:_RimApplyGlobalMaskBlendType,condition_showS:_RimStyle==0}", Int) = 0
-		[HideInInspector][ThryWideEnum(Add, 7, Subtract, 1, Multiply, 2, Divide, 3, Min, 4, Max, 5, Average, 6 , Replace, 0)] _RimApplyGlobalMaskBlendType ("Blending", Int) = 2
+		[HideInInspector][ThryWideEnum(Add, 7, Subtract, 1, Multiply, 2, Divide, 3, Min, 4, Max, 5, Average, 6, Replace, 0)] _RimApplyGlobalMaskBlendType ("Blending", Int) = 2
 		[HideInInspector] s_end_RimLight0GlobalMasking ("Alpha & Global Masking", Float) = 0
 		
 		[HideInInspector] m_start_RimAudioLink ("Audio Link ♫--{ condition_showS:_EnableAudioLink==1&&_RimStyle==0}", Float) = 0
@@ -1702,8 +1747,8 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 		[sRGBWarning][ThryRGBAPacker(Mask, Bias, linear, false)]_Rim2Mask ("Mask & Bias--{reference_properties:[_Rim2MaskPan, _Rim2MaskUV, _Rim2MaskChannel, _Rim2MaskInvert, _Rim2BiasIntensity], condition_showS:_Rim2Style==0}", 2D) = "white" { }
 		[HideInInspector][Vector2]_Rim2MaskPan ("Panning", Vector) = (0, 0, 0, 0)
 		[HideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7)] _Rim2MaskUV ("UV", Int) = 0
-		[HideInInspector][ToggleUI]_Rim2MaskInvert("Invert Mask", Float) = 0
-		[HideInInspector]_Rim2BiasIntensity("Bias Intensity", Range(0,1)) = 0
+		[HideInInspector][ToggleUI]_Rim2MaskInvert ("Invert Mask", Float) = 0
+		[HideInInspector]_Rim2BiasIntensity ("Bias Intensity", Range(0, 1)) = 0
 		[HideInInspector][Enum(R, 0, G, 1, B, 2, A, 3)]_Rim2MaskChannel ("Channel", Float) = 0
 		
 		[HideInInspector] s_start_RimLight1Color ("Color & Blending--{persistent_expand:true,default_expand:true, condition_showS:_Rim2Style==0||_Rim2Style==1}", Float) = 1
@@ -1754,8 +1799,8 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 		[HideInInspector] s_end_RimLight2DirectionMask ("Light Direction Mask", Float) = 0
 		
 		// Liltoon
-		[HDR][Gamma]_Rim2Color ("Rim Color--{condition_showS:_Rim2Style==2,reference_property:_Rim2LightColorThemeIndex}", Color) = (0.66,0.5,0.48,1)
-		[sRGBWarning(true)] _Rim2ColorTex ("Color / Mask--{condition_showS:_Rim2Style==2,reference_properties:[_Rim2ColorTexPan, _Rim2ColorTexUV]}", 2D) = "white" {}
+		[HDR][Gamma]_Rim2Color ("Rim Color--{condition_showS:_Rim2Style==2,reference_property:_Rim2LightColorThemeIndex}", Color) = (0.66, 0.5, 0.48, 1)
+		[sRGBWarning(true)] _Rim2ColorTex ("Color / Mask--{condition_showS:_Rim2Style==2,reference_properties:[_Rim2ColorTexPan, _Rim2ColorTexUV]}", 2D) = "white" { }
 		[HideInInspector][Vector2] _Rim2ColorTexPan ("Panning", Vector) = (0, 0, 0, 0)
 		[HideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7)] _Rim2ColorTexUV ("UV", Int) = 0
 		_Rim2MainStrength ("Main Color Blend--{condition_showS:_Rim2Style==2}", Range(0, 1)) = 0
@@ -1773,7 +1818,7 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 		_Rim2DirStrength ("Light direction strength", Range(0, 1)) = 0
 		_Rim2DirRange ("Direction Light Width", Range(-1, 1)) = 0
 		_Rim2IndirRange ("Indirection Light Width", Range(-1, 1)) = 0
-		[HDR][Gamma]_Rim2IndirColor ("Indirection Color", Color) = (1,1,1,1)
+		[HDR][Gamma]_Rim2IndirColor ("Indirection Color", Color) = (1, 1, 1, 1)
 		_Rim2IndirBorder ("Indirection Border", Range(0, 1)) = 0.5
 		_Rim2IndirBlur ("Indirection Blur", Range(0, 1)) = 0.1
 		[HideInInspector] s_end_liltoon_rim2_lightdir ("", Float) = 0
@@ -1788,9 +1833,9 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 		[ThryWideEnum(Off, 0, Add, 1, Multiply, 2)]_Rim2ApplyAlpha ("Intensity to Alpha--{ condition_showS:_Rim2Style==0}", Int) = 0
 		_Rim2ApplyAlphaBlend ("Intensity to Alpha Blend--{ condition_showS:_Rim2Style==0}", Range(0, 1)) = 1.0
 		[ThryWideEnum(Off, 0, 1R, 1, 1G, 2, 1B, 3, 1A, 4, 2R, 5, 2G, 6, 2B, 7, 2A, 8, 3R, 9, 3G, 10, 3B, 11, 3A, 12, 4R, 13, 4G, 14, 4B, 15, 4A, 16)] _Rim2GlobalMask ("Global Mask--{reference_property:_Rim2GlobalMaskBlendType}", Int) = 0
-		[HideInInspector][ThryWideEnum(Add, 7, Subtract, 1, Multiply, 2, Divide, 3, Min, 4, Max, 5, Average, 6 , Replace, 0)] _Rim2GlobalMaskBlendType ("Blending", Int) = 2
+		[HideInInspector][ThryWideEnum(Add, 7, Subtract, 1, Multiply, 2, Divide, 3, Min, 4, Max, 5, Average, 6, Replace, 0)] _Rim2GlobalMaskBlendType ("Blending", Int) = 2
 		[ThryWideEnum(Off, 0, 1R, 1, 1G, 2, 1B, 3, 1A, 4, 2R, 5, 2G, 6, 2B, 7, 2A, 8, 3R, 9, 3G, 10, 3B, 11, 3A, 12, 4R, 13, 4G, 14, 4B, 15, 4A, 16)] _Rim2ApplyGlobalMaskIndex ("Apply to Global Mask--{reference_property:_Rim2ApplyGlobalMaskBlendType,condition_showS:_Rim2Style==0}", Int) = 0
-		[HideInInspector][ThryWideEnum(Add, 7, Subtract, 1, Multiply, 2, Divide, 3, Min, 4, Max, 5, Average, 6 , Replace, 0)] _Rim2ApplyGlobalMaskBlendType ("Blending", Int) = 2
+		[HideInInspector][ThryWideEnum(Add, 7, Subtract, 1, Multiply, 2, Divide, 3, Min, 4, Max, 5, Average, 6, Replace, 0)] _Rim2ApplyGlobalMaskBlendType ("Blending", Int) = 2
 		[HideInInspector] s_end_RimLight1GlobalMasking ("Alpha & Global Masking", Float) = 0
 		
 		[HideInInspector] m_start_Rim2AudioLink ("Audio Link ♫--{ condition_showS:_EnableAudioLink==1&&_Rim2Style==0}", Float) = 0
@@ -5363,7 +5408,6 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				float2 uv3 : TEXCOORD3;
 				uint vertexId : SV_VertexID;
 				UNITY_VERTEX_INPUT_INSTANCE_ID
-				UNITY_VERTEX_OUTPUT_STEREO
 			};
 			
 			struct VertexOut
@@ -9792,6 +9836,10 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 			float _ShadowMainStrength;
 			#endif
 			
+			#ifdef _LIGHTINGMODE_FLAT
+			float _ForceFlatRampedLightmap;
+			#endif
+			
 			#ifdef _LIGHTINGMODE_CLOTH
 			Texture2D_float _ClothDFG;
 			SamplerState sampler_ClothDFG;
@@ -10286,7 +10334,6 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				float2 uv3 : TEXCOORD3;
 				uint vertexId : SV_VertexID;
 				UNITY_VERTEX_INPUT_INSTANCE_ID
-				UNITY_VERTEX_OUTPUT_STEREO
 			};
 			
 			struct VertexOut
@@ -14321,7 +14368,14 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				
 				#ifdef _LIGHTINGMODE_FLAT
 				poiLight.finalLighting = poiLight.directColor * attenuation * shadowAttenuation;
-				poiLight.rampedLightMap = poiLight.nDotLSaturated;
+				if (_ForceFlatRampedLightmap)
+				{
+					poiLight.rampedLightMap = smoothstep(0.4, 0.6, poiLight.nDotLNormalized);
+				}
+				else
+				{
+					poiLight.rampedLightMap = 1;
+				}
 				#endif
 				
 				#ifdef _LIGHTINGMODE_TEXTURERAMP
@@ -16592,6 +16646,8 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				{
 					#if !defined(UNITY_COLORSPACE_GAMMA)
 					float3 tempColor = OpenLitLinearToSRGB(poiFragData.baseColor);
+					#else
+					float3 tempColor = poiFragData.baseColor;
 					#endif
 					#if defined(PROP_MAINGRADATIONTEX) || !defined(OPTIMIZER_ENABLED)
 					tempColor.r = POI_SAMPLE_1D_X(_MainGradationTex, sampler_linear_clamp, tempColor.r).r;
@@ -18529,6 +18585,10 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 			float _ShadowMainStrength;
 			#endif
 			
+			#ifdef _LIGHTINGMODE_FLAT
+			float _ForceFlatRampedLightmap;
+			#endif
+			
 			#ifdef _LIGHTINGMODE_CLOTH
 			Texture2D_float _ClothDFG;
 			SamplerState sampler_ClothDFG;
@@ -18568,6 +18628,7 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 			//endex
 			
 			//ifex _DecalEnabled==0 && _DecalEnabled1==0 && _DecalEnabled2==0 && _DecalEnabled3==0
+			
 			#if defined(PROP_DECALMASK) || !defined(OPTIMIZER_ENABLED)
 			Texture2D _DecalMask;
 			float4 _DecalMask_ST;
@@ -18579,6 +18640,10 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 			float _Decal1TPSMaskStrength;
 			float _Decal2TPSMaskStrength;
 			float _Decal3TPSMaskStrength;
+			
+			sampler2D _Udon_VideoTex;
+			float4 _Udon_VideoTex_TexelSize;
+			
 			#ifdef POI_AUDIOLINK
 			//ifex _DecalEnabled==0
 			#ifdef GEOM_TYPE_BRANCH
@@ -18669,6 +18734,12 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 			//endex
 			//ifex _DecalEnabled==0
 			#ifdef GEOM_TYPE_BRANCH
+			float _Decal0VideoFitToScale;
+			float _Decal0VideoAspectFix;
+			float _Decal0VideoEmissionStrength;
+			float _Decal0VideoEnabled;
+			float _Decal0UseDecalAlpha;
+			float _Decal0OnlyVideo;
 			sampler2D _DecalTexture;
 			float _Decal0FaceMask;
 			float _Decal0MaskChannel;
@@ -18708,6 +18779,13 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 			
 			//ifex _DecalEnabled1==0
 			#ifdef GEOM_TYPE_BRANCH_DETAIL
+			float _Decal1VideoAspectFix;
+			float _Decal1VideoFitToScale;
+			float _Decal1VideoEmissionStrength;
+			float _Decal1VideoEnabled;
+			float _Decal1UseDecalAlpha;
+			float _Decal1OnlyVideo;
+			float _Decal1TextureToUse;
 			sampler2D _DecalTexture1;
 			float _Decal1FaceMask;
 			float _Decal1MaskChannel;
@@ -18747,6 +18825,13 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 			
 			//ifex _DecalEnabled2==0
 			#ifdef GEOM_TYPE_FROND
+			float _Decal2VideoAspectFix;
+			float _Decal2VideoFitToScale;
+			float _Decal2VideoEmissionStrength;
+			float _Decal2VideoEnabled;
+			float _Decal2UseDecalAlpha;
+			float _Decal2OnlyVideo;
+			float _Decal2TextureToUse;
 			sampler2D _DecalTexture2;
 			float _Decal2FaceMask;
 			float _Decal2MaskChannel;
@@ -18786,6 +18871,13 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 			
 			//ifex _DecalEnabled3==0
 			#ifdef DEPTH_OF_FIELD_COC_VIEW
+			float _Decal3VideoAspectFix;
+			float _Decal3VideoFitToScale;
+			float _Decal3VideoEmissionStrength;
+			float _Decal3VideoEnabled;
+			float _Decal3UseDecalAlpha;
+			float _Decal3OnlyVideo;
+			float _Decal3TextureToUse;
 			sampler2D _DecalTexture3;
 			float _Decal3FaceMask;
 			float _Decal3MaskChannel;
@@ -20846,7 +20938,6 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				float2 uv3 : TEXCOORD3;
 				uint vertexId : SV_VertexID;
 				UNITY_VERTEX_INPUT_INSTANCE_ID
-				UNITY_VERTEX_OUTPUT_STEREO
 			};
 			
 			struct VertexOut
@@ -26568,7 +26659,14 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				
 				#ifdef _LIGHTINGMODE_FLAT
 				poiLight.finalLighting = poiLight.directColor * attenuation * shadowAttenuation;
-				poiLight.rampedLightMap = poiLight.nDotLSaturated;
+				if (_ForceFlatRampedLightmap)
+				{
+					poiLight.rampedLightMap = smoothstep(0.4, 0.6, poiLight.nDotLNormalized);
+				}
+				else
+				{
+					poiLight.rampedLightMap = 1;
+				}
 				#endif
 				
 				#ifdef _LIGHTINGMODE_TEXTURERAMP
@@ -26967,7 +27065,7 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				half m_DecalRotationSpeed;
 				float m_DecalEmissionStrength;
 				float m_DecalBlendAlpha;
-				float m_DecalOverrideAlpha;
+				float m_DecalAlphaBlendMode;
 				float m_DecalHueShiftEnabled;
 				float m_DecalHueShift;
 				float m_DecalHueShiftSpeed;
@@ -26980,6 +27078,7 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				float m_DecalChannelSeparationVertical;
 				float m_DecalChannelSeparationAngleStrength;
 				float m_DecalOverrideAlphaMode;
+				float m_DecalOverrideAlpha;
 				
 				#if defined(POI_AUDIOLINK)
 				half m_AudioLinkDecalScaleBand;
@@ -27039,9 +27138,9 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 					decalColor.a *= decalMask[m_DecalMaskChannel] * applyTilingClipping(m_DecalTiled, uv);
 				}
 				
-				void SampleDecal(sampler2D decalTexture, in PoiMods poiMods, in PoiLight poiLight, in PoiMesh poiMesh, in PoiCam poiCam)
+				void SampleDecal(sampler2D decalTexture, in PoiMods poiMods, in PoiLight poiLight, in PoiMesh poiMesh, in PoiCam poiCam, float2 scaleMultiplier = float2(1, 1))
 				{
-					uv = decalUV(m_DecalTextureUV, m_DecalPosition, m_DecalRotation + decalRotation, m_DecalRotationSpeed, decalScale, m_DecalSideOffset +sideMod, m_DecalDepth, poiMesh, poiCam);
+					uv = decalUV(m_DecalTextureUV, m_DecalPosition, m_DecalRotation + decalRotation, m_DecalRotationSpeed, decalScale * scaleMultiplier, m_DecalSideOffset +sideMod, m_DecalDepth, poiMesh, poiCam);
 					// Adjust derivatives for _ST of decal texture
 					float4 dduv = any(fwidth(uv) > .5) ? 0.001 : float4(ddx(uv) * m_DecalTexture_ST.x, ddy(uv) * m_DecalTexture_ST.y);
 					decalColor = tex2D(decalTexture, poiUV(uv, m_DecalTexture_ST) + m_DecalTexturePan * _Time.x, dduv.xy, dduv.zw) * float4(poiThemeColor(poiMods, m_DecalColor.rgb, m_DecalColorThemeIndex), m_DecalColor.a);
@@ -27049,9 +27148,28 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 					decalColor.a *= decalMask[m_DecalMaskChannel] * applyTilingClipping(m_DecalTiled, uv);
 				}
 				
+				void SampleDecalNoAlpha(sampler2D decalTexture, in PoiMods poiMods, in PoiLight poiLight, in PoiMesh poiMesh, in PoiCam poiCam, float2 scaleMultiplier = float2(1, 1))
+				{
+					uv = decalUV(m_DecalTextureUV, m_DecalPosition, m_DecalRotation + decalRotation, m_DecalRotationSpeed, decalScale * scaleMultiplier, m_DecalSideOffset +sideMod, m_DecalDepth, poiMesh, poiCam);
+					// Adjust derivatives for _ST of decal texture
+					float4 dduv = any(fwidth(uv) > .5) ? 0.001 : float4(ddx(uv) * m_DecalTexture_ST.x, ddy(uv) * m_DecalTexture_ST.y);
+					decalColor.rgb = tex2D(decalTexture, poiUV(uv, m_DecalTexture_ST) + m_DecalTexturePan * _Time.x, dduv.xy, dduv.zw) * float4(poiThemeColor(poiMods, m_DecalColor.rgb, m_DecalColorThemeIndex), m_DecalColor.a).rgb;
+					decalColor.rgb = decalHueShift(m_DecalHueShiftEnabled, decalColor.rgb, m_DecalHueShift + poiLight.nDotV * m_DecalHueAngleStrength, m_DecalHueShiftSpeed);
+					decalColor.a *= decalMask[m_DecalMaskChannel] * applyTilingClipping(m_DecalTiled, uv);
+				}
+				
+				void SampleDecalAlphaOnly(sampler2D decalTexture, in PoiMods poiMods, in PoiLight poiLight, in PoiMesh poiMesh, in PoiCam poiCam, float2 scaleMultiplier = float2(1, 1))
+				{
+					uv = decalUV(m_DecalTextureUV, m_DecalPosition, m_DecalRotation + decalRotation, m_DecalRotationSpeed, decalScale * scaleMultiplier, m_DecalSideOffset +sideMod, m_DecalDepth, poiMesh, poiCam);
+					// Adjust derivatives for _ST of decal texture
+					float4 dduv = any(fwidth(uv) > .5) ? 0.001 : float4(ddx(uv) * m_DecalTexture_ST.x, ddy(uv) * m_DecalTexture_ST.y);
+					decalColor = tex2D(decalTexture, poiUV(uv, m_DecalTexture_ST) + m_DecalTexturePan * _Time.x, dduv.xy, dduv.zw) * float4(poiThemeColor(poiMods, m_DecalColor.rgb, m_DecalColorThemeIndex), m_DecalColor.a);
+					decalColor.a *= decalMask[m_DecalMaskChannel] * applyTilingClipping(m_DecalTiled, uv);
+				}
+				
 				void SampleDecalChannelSeparation(sampler2D decalTexture, in PoiMods poiMods, in PoiLight poiLight, in PoiMesh poiMesh, in PoiCam poiCam)
 				{
-					decalColor = 0;
+					decalColor = float4(0, 0, 0, 1);
 					decalChannelOffset += m_DecalChannelSeparation + m_DecalChannelSeparationAngleStrength * (m_DecalChannelSeparationAngleStrength > 0 ? (1 - poiLight.nDotV) : poiLight.nDotV);
 					float2 positionOffset = decalChannelOffset * 0.01 * (decalScale.x + decalScale.y) * float2(cos(m_DecalChannelSeparationVertical), sin(m_DecalChannelSeparationVertical));
 					float2 uvSample0 = decalUV(m_DecalTextureUV, m_DecalPosition + positionOffset, m_DecalRotation + decalRotation, m_DecalRotationSpeed, decalScale, m_DecalSideOffset +sideMod, m_DecalDepth, poiMesh, poiCam);
@@ -27108,17 +27226,29 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 					
 					if (m_DecalOverrideAlpha)
 					{
-						alphaOverride += 1;
+						float finalAlpha = lerp(1, min(decalAlpha, decalColor.a), decalMask[m_DecalMaskChannel]);
 						if (m_DecalOverrideAlphaMode != 0 && !m_DecalTiled)
 						{
 							if (uv.x > 0 && uv.x < 1 && uv.y > 0 && uv.y < 1)
 							{
-								decalAlpha = lerp(decalAlpha, min(decalAlpha, decalColor.a), decalMask[m_DecalMaskChannel]);
+								//decalAlpha = lerp(decalAlpha, min(decalAlpha, decalColor.a), decalMask[m_DecalMaskChannel]);
+								//poiFragData.alpha = saturate(poiFragData.alpha + lerp(1, min(decalAlpha, decalColor.a), decalMask[m_DecalMaskChannel]));
+								if (m_DecalOverrideAlpha == 1) poiFragData.alpha = finalAlpha;
+								if (m_DecalOverrideAlpha == 2) poiFragData.alpha = saturate(poiFragData.alpha * finalAlpha);
+								if (m_DecalOverrideAlpha == 3) poiFragData.alpha = saturate(poiFragData.alpha + finalAlpha);
+								if (m_DecalOverrideAlpha == 4) poiFragData.alpha = saturate(poiFragData.alpha - finalAlpha);
+								if (m_DecalOverrideAlpha == 5) poiFragData.alpha = min(poiFragData.alpha, finalAlpha);
+								if (m_DecalOverrideAlpha == 6) poiFragData.alpha = max(poiFragData.alpha, finalAlpha);
 							}
 						}
 						else
 						{
-							decalAlpha = lerp(decalAlpha, min(decalAlpha, decalColor.a), decalMask[m_DecalMaskChannel]);
+							if (m_DecalOverrideAlpha == 1) poiFragData.alpha = finalAlpha;
+							if (m_DecalOverrideAlpha == 2) poiFragData.alpha = saturate(poiFragData.alpha * finalAlpha);
+							if (m_DecalOverrideAlpha == 3) poiFragData.alpha = saturate(poiFragData.alpha + finalAlpha);
+							if (m_DecalOverrideAlpha == 4) poiFragData.alpha = saturate(poiFragData.alpha - finalAlpha);
+							if (m_DecalOverrideAlpha == 5) poiFragData.alpha = min(poiFragData.alpha, finalAlpha);
+							if (m_DecalOverrideAlpha == 6) poiFragData.alpha = max(poiFragData.alpha, finalAlpha);
 						}
 					}
 					
@@ -27144,10 +27274,61 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 					poiFragData.baseColor.rgb = lerp(poiFragData.baseColor.rgb, customBlend(poiFragData.baseColor.rgb, decalColor.rgb, m_DecalBlendType), decalAlphaMixed);
 					poiFragData.emission += decalColor.rgb * decalColor.a * max(m_DecalEmissionStrength + audioLinkDecalEmission, 0);
 				}
+				float2 GetVideoAspectRatio(float2 videoDimensions, float CorrectionType, float fitToScale)
+				{
+					float2 AspectRatioMultiplier = float2(1, 1);
+					if (fitToScale)
+					{
+						float2 decalScale = m_DecalScale.xy + float2(m_DecalSideOffset.x + m_DecalSideOffset.y, m_DecalSideOffset.z + m_DecalSideOffset.w);
+						if (decalScale.x > decalScale.y)
+						{
+							videoDimensions.xy *= float2((decalScale.y / decalScale.x), 1);
+						}
+						else
+						{
+							videoDimensions.xy *= float2(1, (decalScale.x / decalScale.y));
+						}
+					}
+					
+					if (CorrectionType != 2)
+					{
+						if (CorrectionType == 0)
+						{
+							if (videoDimensions.x > videoDimensions.y)
+							{
+								AspectRatioMultiplier = float2(1, videoDimensions.y / videoDimensions.x);
+							}
+							else
+							{
+								AspectRatioMultiplier = float2(videoDimensions.x / videoDimensions.y, 1);
+							}
+						}
+						else if (CorrectionType == 1)
+						{
+							if (videoDimensions.x > videoDimensions.y)
+							{
+								AspectRatioMultiplier = float2(1 / (videoDimensions.y / videoDimensions.x), 1);
+							}
+							else
+							{
+								AspectRatioMultiplier = float2(1, 1 / (videoDimensions.x / videoDimensions.y));
+							}
+						}
+					}
+					return AspectRatioMultiplier;
+				}
 			};
 			
 			void applyDecals(inout PoiFragData poiFragData, in PoiMesh poiMesh, in PoiCam poiCam, inout PoiMods poiMods, in PoiLight poiLight)
 			{
+				// check if _Udon_VideoTex is greater than 16 pixels in width
+				float udonVideoTexAvailable = 0;
+				float2 udonVideoAspectRatio = 1;
+				if (_Udon_VideoTex_TexelSize.z > 16)
+				{
+					udonVideoTexAvailable = 1;
+				}
+				
 				float decalAlpha = 1;
 				float alphaOverride = 0;
 				#if defined(PROP_DECALMASK) || !defined(OPTIMIZER_ENABLED)
@@ -27232,23 +27413,66 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				Decal0.InitAudiolink(poiMods);
 				#endif
 				
-				#if defined(PROP_DECALTEXTURE) || !defined(OPTIMIZER_ENABLED)
-				//ifex _Decal0ChannelSeparationEnable==0
-				if (_Decal0ChannelSeparationEnable)
+				if (!_Decal0VideoEnabled)
 				{
-					Decal0.SampleDecalChannelSeparation(_DecalTexture, poiMods, poiLight, poiMesh, poiCam);
+					
+					#if defined(PROP_DECALTEXTURE) || !defined(OPTIMIZER_ENABLED)
+					//ifex _Decal0ChannelSeparationEnable==0
+					if (_Decal0ChannelSeparationEnable)
+					{
+						Decal0.SampleDecalChannelSeparation(_DecalTexture, poiMods, poiLight, poiMesh, poiCam);
+					}
+					//endex
+					//ifex _Decal0ChannelSeparationEnable==1
+					if (!_Decal0ChannelSeparationEnable)
+					{
+						Decal0.SampleDecal(_DecalTexture, poiMods, poiLight, poiMesh, poiCam);
+					}
+					//endex
+					#else
+					Decal0.SampleDecalNoTexture(poiMods, poiLight, poiMesh, poiCam);
+					#endif
+					Decal0.Apply(alphaOverride, decalAlpha, poiFragData, poiMesh, poiCam, poiMods, poiLight);
 				}
-				//endex
-				//ifex _Decal0ChannelSeparationEnable==1
-				if (!_Decal0ChannelSeparationEnable)
+				else
 				{
-					Decal0.SampleDecal(_DecalTexture, poiMods, poiLight, poiMesh, poiCam);
+					udonVideoAspectRatio = Decal0.GetVideoAspectRatio(_Udon_VideoTex_TexelSize.zw, _Decal0VideoAspectFix, _Decal0VideoFitToScale);
+					
+					if (_Decal0OnlyVideo)
+					{
+						if (udonVideoTexAvailable)
+						{
+							Decal0.m_DecalEmissionStrength += _Decal0VideoEmissionStrength;
+							if (_Decal0UseDecalAlpha)
+							{
+								Decal0.SampleDecal(_DecalTexture, poiMods, poiLight, poiMesh, poiCam);
+								Decal0.SampleDecalNoAlpha(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio);
+							}
+							else
+							{
+								Decal0.SampleDecal(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio);
+							}
+							Decal0.Apply(alphaOverride, decalAlpha, poiFragData, poiMesh, poiCam, poiMods, poiLight);
+						}
+					}
+					else
+					{
+						Decal0.SampleDecal(_DecalTexture, poiMods, poiLight, poiMesh, poiCam);
+						if (udonVideoTexAvailable)
+						{
+							Decal0.m_DecalEmissionStrength += _Decal0VideoEmissionStrength;
+							if (_Decal0UseDecalAlpha)
+							{
+								Decal0.SampleDecalNoAlpha(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio);
+							}
+							else
+							{
+								Decal0.SampleDecal(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio);
+							}
+						}
+						Decal0.Apply(alphaOverride, decalAlpha, poiFragData, poiMesh, poiCam, poiMods, poiLight);
+					}
 				}
-				//endex
-				#else
-				Decal0.SampleDecalNoTexture(poiMods, poiLight, poiMesh, poiCam);
-				#endif
-				Decal0.Apply(alphaOverride, decalAlpha, poiFragData, poiMesh, poiCam, poiMods, poiLight);
 				#endif
 				//endex
 				
@@ -27289,7 +27513,6 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				Decal1.m_DecalChannelSeparationVertical = _Decal1ChannelSeparationVertical;
 				Decal1.m_DecalChannelSeparationAngleStrength = _Decal1ChannelSeparationAngleStrength;
 				Decal1.m_DecalOverrideAlphaMode = _Decal1OverrideAlphaMode;
-				
 				Decal1.Init(decalMask);
 				
 				#if defined(POI_AUDIOLINK)
@@ -27314,23 +27537,64 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				Decal1.InitAudiolink(poiMods);
 				#endif
 				
-				#if defined(PROP_DECALTEXTURE1) || !defined(OPTIMIZER_ENABLED)
-				//ifex _Decal1ChannelSeparationEnable==0
-				if (_Decal1ChannelSeparationEnable)
+				if (!_Decal1VideoEnabled)
 				{
-					Decal1.SampleDecalChannelSeparation(_DecalTexture1, poiMods, poiLight, poiMesh, poiCam);
+					#if defined(PROP_DECALTEXTURE1) || !defined(OPTIMIZER_ENABLED)
+					//ifex _Decal1ChannelSeparationEnable==0
+					if (_Decal1ChannelSeparationEnable)
+					{
+						Decal1.SampleDecalChannelSeparation(_DecalTexture1, poiMods, poiLight, poiMesh, poiCam);
+					}
+					//endex
+					//ifex _Decal1ChannelSeparationEnable==1
+					if (!_Decal1ChannelSeparationEnable)
+					{
+						Decal1.SampleDecal(_DecalTexture1, poiMods, poiLight, poiMesh, poiCam);
+					}
+					//endex
+					#else
+					Decal1.SampleDecalNoTexture(poiMods, poiLight, poiMesh, poiCam);
+					#endif
+					Decal1.Apply(alphaOverride, decalAlpha, poiFragData, poiMesh, poiCam, poiMods, poiLight);
 				}
-				//endex
-				//ifex _Decal1ChannelSeparationEnable==1
-				if (!_Decal1ChannelSeparationEnable)
+				else
 				{
-					Decal1.SampleDecal(_DecalTexture1, poiMods, poiLight, poiMesh, poiCam);
+					udonVideoAspectRatio = Decal1.GetVideoAspectRatio(_Udon_VideoTex_TexelSize.zw, _Decal1VideoAspectFix, _Decal1VideoFitToScale);
+					if (_Decal1OnlyVideo)
+					{
+						if (udonVideoTexAvailable)
+						{
+							Decal1.m_DecalEmissionStrength += _Decal1VideoEmissionStrength;
+							if (_Decal1UseDecalAlpha)
+							{
+								Decal1.SampleDecal(_DecalTexture1, poiMods, poiLight, poiMesh, poiCam);
+								Decal1.SampleDecalNoAlpha(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio);
+							}
+							else
+							{
+								Decal1.SampleDecal(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio);
+							}
+							Decal1.Apply(alphaOverride, decalAlpha, poiFragData, poiMesh, poiCam, poiMods, poiLight);
+						}
+					}
+					else
+					{
+						Decal1.SampleDecal(_DecalTexture1, poiMods, poiLight, poiMesh, poiCam);
+						if (udonVideoTexAvailable)
+						{
+							Decal1.m_DecalEmissionStrength += _Decal1VideoEmissionStrength;
+							if (_Decal1UseDecalAlpha)
+							{
+								Decal1.SampleDecalNoAlpha(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio);
+							}
+							else
+							{
+								Decal1.SampleDecal(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio);
+							}
+						}
+						Decal1.Apply(alphaOverride, decalAlpha, poiFragData, poiMesh, poiCam, poiMods, poiLight);
+					}
 				}
-				//endex
-				#else
-				Decal1.SampleDecalNoTexture(poiMods, poiLight, poiMesh, poiCam);
-				#endif
-				Decal1.Apply(alphaOverride, decalAlpha, poiFragData, poiMesh, poiCam, poiMods, poiLight);
 				#endif
 				//endex
 				
@@ -27371,7 +27635,6 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				Decal2.m_DecalChannelSeparationVertical = _Decal2ChannelSeparationVertical;
 				Decal2.m_DecalChannelSeparationAngleStrength = _Decal2ChannelSeparationAngleStrength;
 				Decal2.m_DecalOverrideAlphaMode = _Decal2OverrideAlphaMode;
-				
 				Decal2.Init(decalMask);
 				
 				#if defined(POI_AUDIOLINK)
@@ -27395,24 +27658,64 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				
 				Decal2.InitAudiolink(poiMods);
 				#endif
-				
-				#if defined(PROP_DECALTEXTURE2) || !defined(OPTIMIZER_ENABLED)
-				//ifex _Decal2ChannelSeparationEnable==0
-				if (_Decal2ChannelSeparationEnable)
+				if (!_Decal2VideoEnabled)
 				{
-					Decal2.SampleDecalChannelSeparation(_DecalTexture2, poiMods, poiLight, poiMesh, poiCam);
+					#if defined(PROP_DECALTEXTURE2) || !defined(OPTIMIZER_ENABLED)
+					//ifex _Decal2ChannelSeparationEnable==0
+					if (_Decal2ChannelSeparationEnable)
+					{
+						Decal2.SampleDecalChannelSeparation(_DecalTexture2, poiMods, poiLight, poiMesh, poiCam);
+					}
+					//endex
+					//ifex _Decal2ChannelSeparationEnable==1
+					if (!_Decal2ChannelSeparationEnable)
+					{
+						Decal2.SampleDecal(_DecalTexture2, poiMods, poiLight, poiMesh, poiCam);
+					}
+					//endex
+					#else
+					Decal2.SampleDecalNoTexture(poiMods, poiLight, poiMesh, poiCam);
+					#endif
+					Decal2.Apply(alphaOverride, decalAlpha, poiFragData, poiMesh, poiCam, poiMods, poiLight);
 				}
-				//endex
-				//ifex _Decal2ChannelSeparationEnable==1
-				if (!_Decal2ChannelSeparationEnable)
+				else
 				{
-					Decal2.SampleDecal(_DecalTexture2, poiMods, poiLight, poiMesh, poiCam);
+					udonVideoAspectRatio = Decal2.GetVideoAspectRatio(_Udon_VideoTex_TexelSize.zw, _Decal2VideoAspectFix, _Decal2VideoFitToScale);
+					if (_Decal2OnlyVideo)
+					{
+						if (udonVideoTexAvailable)
+						{
+							Decal2.m_DecalEmissionStrength += _Decal2VideoEmissionStrength;
+							if (_Decal2UseDecalAlpha)
+							{
+								Decal2.SampleDecal(_DecalTexture2, poiMods, poiLight, poiMesh, poiCam);
+								Decal2.SampleDecalNoAlpha(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio);
+							}
+							else
+							{
+								Decal2.SampleDecal(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio);
+							}
+							Decal2.Apply(alphaOverride, decalAlpha, poiFragData, poiMesh, poiCam, poiMods, poiLight);
+						}
+					}
+					else
+					{
+						Decal2.SampleDecal(_DecalTexture2, poiMods, poiLight, poiMesh, poiCam);
+						if (udonVideoTexAvailable)
+						{
+							Decal2.m_DecalEmissionStrength += _Decal2VideoEmissionStrength;
+							if (_Decal2UseDecalAlpha)
+							{
+								Decal2.SampleDecalNoAlpha(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio);
+							}
+							else
+							{
+								Decal2.SampleDecal(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio);
+							}
+						}
+						Decal2.Apply(alphaOverride, decalAlpha, poiFragData, poiMesh, poiCam, poiMods, poiLight);
+					}
 				}
-				//endex
-				#else
-				Decal2.SampleDecalNoTexture(poiMods, poiLight, poiMesh, poiCam);
-				#endif
-				Decal2.Apply(alphaOverride, decalAlpha, poiFragData, poiMesh, poiCam, poiMods, poiLight);
 				#endif
 				//endex
 				
@@ -27453,7 +27756,6 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				Decal3.m_DecalChannelSeparationVertical = _Decal3ChannelSeparationVertical;
 				Decal3.m_DecalChannelSeparationAngleStrength = _Decal3ChannelSeparationAngleStrength;
 				Decal3.m_DecalOverrideAlphaMode = _Decal3OverrideAlphaMode;
-				
 				Decal3.Init(decalMask);
 				
 				#if defined(POI_AUDIOLINK)
@@ -27477,32 +27779,73 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				
 				Decal3.InitAudiolink(poiMods);
 				#endif
+				if (!_Decal3VideoEnabled)
+				{
+					#if defined(PROP_DECALTEXTURE3) || !defined(OPTIMIZER_ENABLED)
+					//ifex _Decal3ChannelSeparationEnable==0
+					if (_Decal3ChannelSeparationEnable)
+					{
+						Decal3.SampleDecalChannelSeparation(_DecalTexture3, poiMods, poiLight, poiMesh, poiCam);
+					}
+					//endex
+					//ifex _Decal3ChannelSeparationEnable==1
+					if (!_Decal3ChannelSeparationEnable)
+					{
+						Decal3.SampleDecal(_DecalTexture3, poiMods, poiLight, poiMesh, poiCam);
+					}
+					//endex
+					#else
+					Decal3.SampleDecalNoTexture(poiMods, poiLight, poiMesh, poiCam);
+					#endif
+					Decal3.Apply(alphaOverride, decalAlpha, poiFragData, poiMesh, poiCam, poiMods, poiLight);
+				}
+				else
+				{
+					udonVideoAspectRatio = Decal3.GetVideoAspectRatio(_Udon_VideoTex_TexelSize.zw, _Decal3VideoAspectFix, _Decal3VideoFitToScale);
+					if (_Decal3OnlyVideo)
+					{
+						if (udonVideoTexAvailable)
+						{
+							Decal3.m_DecalEmissionStrength += _Decal3VideoEmissionStrength;
+							if (_Decal3UseDecalAlpha)
+							{
+								Decal3.SampleDecal(_DecalTexture3, poiMods, poiLight, poiMesh, poiCam);
+								Decal3.SampleDecalNoAlpha(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio);
+							}
+							else
+							{
+								Decal3.SampleDecal(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio);
+							}
+							Decal3.Apply(alphaOverride, decalAlpha, poiFragData, poiMesh, poiCam, poiMods, poiLight);
+						}
+					}
+					else
+					{
+						Decal3.SampleDecal(_DecalTexture3, poiMods, poiLight, poiMesh, poiCam);
+						if (udonVideoTexAvailable)
+						{
+							Decal3.m_DecalEmissionStrength += _Decal3VideoEmissionStrength;
+							if (_Decal3UseDecalAlpha)
+							{
+								Decal3.SampleDecalNoAlpha(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio);
+							}
+							else
+							{
+								Decal3.SampleDecal(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio);
+							}
+						}
+						Decal3.Apply(alphaOverride, decalAlpha, poiFragData, poiMesh, poiCam, poiMods, poiLight);
+					}
+				}
+				#endif
+				//endex
+				//if (alphaOverride)
+				//{
 				
-				#if defined(PROP_DECALTEXTURE3) || !defined(OPTIMIZER_ENABLED)
-				//ifex _Decal3ChannelSeparationEnable==0
-				if (_Decal3ChannelSeparationEnable)
-				{
-					Decal3.SampleDecalChannelSeparation(_DecalTexture3, poiMods, poiLight, poiMesh, poiCam);
-				}
-				//endex
-				//ifex _Decal3ChannelSeparationEnable==1
-				if (!_Decal3ChannelSeparationEnable)
-				{
-					Decal3.SampleDecal(_DecalTexture3, poiMods, poiLight, poiMesh, poiCam);
-				}
-				//endex
-				#else
-				Decal3.SampleDecalNoTexture(poiMods, poiLight, poiMesh, poiCam);
-				#endif
-				Decal3.Apply(alphaOverride, decalAlpha, poiFragData, poiMesh, poiCam, poiMods, poiLight);
-				#endif
-				//endex
-				if (alphaOverride)
-				{
-					
-					//poiFragData.baseColor = decalAlpha;
-					poiFragData.alpha *= decalAlpha;
-				}
+				//poiFragData.baseColor = decalAlpha;
+				//poiFragData.alpha *= decalAlpha;
+				
+				//}
 				//poiFragData.baseColor = saturate(poiFragData.baseColor);
 				
 			}
@@ -29283,7 +29626,7 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				
 				if (RimGlobalMask > 0)
 				{
-					rimMask = maskBlend(rimMask, poiMods.globalMask[RimGlobalMask-1], RimGlobalMaskBlendType);
+					rimMask = maskBlend(rimMask, poiMods.globalMask[RimGlobalMask - 1], RimGlobalMaskBlendType);
 				}
 				
 				float4 rimColor = RimTex;
@@ -29317,15 +29660,17 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				
 				if (RimApplyGlobalMaskIndex > 0)
 				{
-					applyToGlobalMask(poiMods, RimApplyGlobalMaskIndex-1, RimApplyGlobalMaskBlendType, rim * blendStrength);
+					applyToGlobalMask(poiMods, RimApplyGlobalMaskIndex - 1, RimApplyGlobalMaskBlendType, rim * blendStrength);
 				}
 				
 				if (RimApplyAlpha == 1) // Add
+				
 				{
 					poiFragData.alpha += lerp(0, saturate(rim), RimApplyAlphaBlend);
 					poiFragData.alpha = saturate(poiFragData.alpha);
 				}
 				if (RimApplyAlpha == 2) // Multiply
+				
 				{
 					poiFragData.alpha *= lerp(1, saturate(rim), RimApplyAlphaBlend);
 				}
@@ -29349,7 +29694,7 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 			{
 				if (RimGlobalMask > 0)
 				{
-					Set_RimLightMask_var = maskBlend(Set_RimLightMask_var, poiMods.globalMask[RimGlobalMask-1], RimGlobalMaskBlendType);
+					Set_RimLightMask_var = maskBlend(Set_RimLightMask_var, poiMods.globalMask[RimGlobalMask - 1], RimGlobalMaskBlendType);
 				}
 				
 				float3 rimColor = float3(poiThemeColor(poiMods, RimLightColor.rgb, RimLightColorThemeIndex));
@@ -29375,7 +29720,7 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 			{
 				if (RimGlobalMask > 0)
 				{
-					RimColorTex.a = maskBlend(RimColorTex.a, poiMods.globalMask[RimGlobalMask-1], RimGlobalMaskBlendType);
+					RimColorTex.a = maskBlend(RimColorTex.a, poiMods.globalMask[RimGlobalMask - 1], RimGlobalMaskBlendType);
 				}
 				float4 rimColor = RimColor;
 				float4 rimIndirColor = RimIndirColor;
@@ -29401,7 +29746,7 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				// Factor
 				float lnRaw = dot(poiLight.direction, normal) * 0.5 + 0.5;
 				float lnDir = saturate((lnRaw + RimDirRange) / (1.0 + RimDirRange));
-				float lnIndir = saturate((1.0-lnRaw + RimIndirRange) / (1.0 + RimIndirRange));
+				float lnIndir = saturate((1.0 - lnRaw + RimIndirRange) / (1.0 + RimIndirRange));
 				float rim = pow(saturate(1.0 - nvabs), RimFresnelPower);
 				rim = !poiMesh.isFrontFace && RimBackfaceMask ? 0.0 : rim;
 				float rimDir = lerp(rim, rim * lnDir, RimDirStrength);
@@ -29413,14 +29758,23 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				rimDir = lerp(rimDir, rimDir * poiLight.rampedLightMap, RimShadowMask);
 				rimIndir = lerp(rimIndir, rimIndir * poiLight.rampedLightMap, RimShadowMask);
 				
-				float3 lightCol = poiLight.directColor + poiLight.indirectColor;
+				float3 lightCol = poiLight.finalLighting;
+				/*
 				#if !defined(POI_PASS_ADD)
 				rimColor.rgb = lerp(rimColor.rgb, rimColor.rgb * lightCol, RimEnableLighting);
 				#else
-				if(RimBlendMode < 3) rimColor.rgb *= lightCol * RimEnableLighting;
+				if (RimBlendMode < 3) rimColor.rgb *= lightCol * RimEnableLighting;
 				#endif
-				poiFragData.baseColor = lilBlendColor(poiFragData.baseColor, rimColor.rgb, rimDir * rimColor.a, RimBlendMode);
-				poiFragData.baseColor = lilBlendColor(poiFragData.baseColor, rimIndirColor.rgb, rimIndir * rimIndirColor.a, RimBlendMode);
+				// Blend
+				*/
+				#if !defined(POI_PASS_ADD)
+				float3 rimLightMul = 1 - RimEnableLighting + lightCol * RimEnableLighting;
+				#else
+				float3 rimLightMul = RimBlendMode < 3 ? lightCol * RimEnableLighting : 1;
+				#endif
+				
+				poiFragData.finalColor = lilBlendColor(poiFragData.finalColor, rimColor.rgb * rimLightMul, rimDir * rimColor.a, RimBlendMode);
+				poiFragData.finalColor = lilBlendColor(poiFragData.finalColor, rimIndirColor.rgb * rimLightMul, rimIndir * rimIndirColor.a, RimBlendMode);
 			}
 			#endif
 			#endif
@@ -32643,6 +32997,8 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				{
 					#if !defined(UNITY_COLORSPACE_GAMMA)
 					float3 tempColor = OpenLitLinearToSRGB(poiFragData.baseColor);
+					#else
+					float3 tempColor = poiFragData.baseColor;
 					#endif
 					#if defined(PROP_MAINGRADATIONTEX) || !defined(OPTIMIZER_ENABLED)
 					tempColor.r = POI_SAMPLE_1D_X(_MainGradationTex, sampler_linear_clamp, tempColor.r).r;
@@ -32822,7 +33178,7 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				float rimBias = 0;
 				#endif
 				
-				if(_RimMaskInvert)
+				if (_RimMaskInvert)
 				{
 					rimMask = 1 - rimMask;
 				}
@@ -32857,14 +33213,7 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				#endif
 				ApplyUTS2RimLighting(poiFragData, poiMesh, poiCam, poiLight, poiMods, Set_RimLightMask_var, _RimGlobalMask, _RimGlobalMaskBlendType, _RimLightColor, _RimLightColorThemeIndex, _Is_LightColor_RimLight, _Is_NormalMapToRimLight, _RimLight_Power, _RimLight_InsideMask, _RimLight_FeatherOff, _LightDirection_MaskOn, _Tweak_LightDirection_MaskLevel, _Add_Antipodean_RimLight, _Ap_RimLightColor, _RimApColorThemeIndex, _Is_LightColor_Ap_RimLight, _Ap_RimLight_Power, _Ap_RimLight_FeatherOff, _Tweak_RimLightMaskLevel, _RimHueShiftEnabled, _RimHueShift, _RimHueShiftSpeed);
 				#endif
-				#ifdef _RIMSTYLE_LILTOON
-				#if defined(PROP_RIMCOLORTEX) || !defined(OPTIMIZER_ENABLED)
-				float4 rimColorTex = POI2D_SAMPLER_PAN(_RimColorTex, _MainTex, poiUV(poiMesh.uv[_RimColorTexUV], _RimColorTex_ST), _RimColorTexPan);
-				#else
-				float4 rimColorTex = 1;
-				#endif
-				ApplyLiltoonRimLighting(poiFragData, poiMesh, poiCam, poiLight, poiMods, _RimColor, _RimIndirColor, rimColorTex, _RimMainStrength, _RimNormalStrength, _RimDirRange, _RimIndirRange, _RimFresnelPower, _RimBackfaceMask, _RimDirStrength, _RimBorder, _RimBlur, _RimIndirBorder, _RimIndirBlur, _RimShadowMask, _RimEnableLighting, _RimVRParallaxStrength, _RimGlobalMask, _RimGlobalMaskBlendType, _RimHueShiftEnabled, _RimHueShift, _RimHueShiftSpeed, _RimBlendMode);
-				#endif
+				
 				#endif
 				//endex
 				//ifex _EnableRim2Lighting==0
@@ -32879,7 +33228,7 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				float rim2Bias = 0;
 				#endif
 				
-				if(_Rim2MaskInvert)
+				if (_Rim2MaskInvert)
 				{
 					rim2Mask = 1 - rim2Mask;
 				}
@@ -32913,14 +33262,7 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				#endif
 				ApplyUTS2RimLighting(poiFragData, poiMesh, poiCam, poiLight, poiMods, Set_Rim2LightMask_var, _Rim2GlobalMask, _Rim2GlobalMaskBlendType, _Rim2LightColor, _Rim2LightColorThemeIndex, _Is_LightColor_Rim2Light, _Is_NormalMapToRim2Light, _Rim2Light_Power, _Rim2Light_InsideMask, _Rim2Light_FeatherOff, _LightDirection_MaskOn2, _Tweak_LightDirection_MaskLevel2, _Add_Antipodean_Rim2Light, _Ap_Rim2LightColor, _Rim2ApColorThemeIndex, _Is_LightColor_Ap_Rim2Light, _Ap_Rim2Light_Power, _Ap_Rim2Light_FeatherOff, _Tweak_Rim2LightMaskLevel, _Rim2HueShiftEnabled, _Rim2HueShift, _Rim2HueShiftSpeed);
 				#endif
-				#ifdef _RIM2STYLE_LILTOON
-				#if defined(PROP_RIM2COLORTEX) || !defined(OPTIMIZER_ENABLED)
-				float4 rim2ColorTex = POI2D_SAMPLER_PAN(_Rim2ColorTex, _MainTex, poiUV(poiMesh.uv[_Rim2ColorTexUV], _Rim2ColorTex_ST), _Rim2ColorTexPan);
-				#else
-				float4 rim2ColorTex = 1;
-				#endif
-				ApplyLiltoonRimLighting(poiFragData, poiMesh, poiCam, poiLight, poiMods, _Rim2Color, _Rim2IndirColor, rim2ColorTex, _Rim2MainStrength, _Rim2NormalStrength, _Rim2DirRange, _Rim2IndirRange, _Rim2FresnelPower, _Rim2BackfaceMask, _Rim2DirStrength, _Rim2Border, _Rim2Blur, _Rim2IndirBorder, _Rim2IndirBlur, _Rim2ShadowMask, _Rim2EnableLighting, _Rim2VRParallaxStrength, _Rim2GlobalMask, _Rim2GlobalMaskBlendType, _Rim2HueShiftEnabled, _Rim2HueShift, _Rim2HueShiftSpeed, _Rim2BlendMode);
-				#endif
+				
 				#endif
 				//endex
 				
@@ -33085,6 +33427,31 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				//ifex _BacklightEnabled!=1
 				#ifdef POI_BACKLIGHT
 				ApplyBacklight(poiFragData, poiMesh, poiLight, poiCam, poiMods);
+				#endif
+				//endex
+				
+				//ifex _EnableRimLighting==0
+				#ifdef _GLOSSYREFLECTIONS_OFF
+				#ifdef _RIMSTYLE_LILTOON
+				#if defined(PROP_RIMCOLORTEX) || !defined(OPTIMIZER_ENABLED)
+				float4 rimColorTex = POI2D_SAMPLER_PAN(_RimColorTex, _MainTex, poiUV(poiMesh.uv[_RimColorTexUV], _RimColorTex_ST), _RimColorTexPan);
+				#else
+				float4 rimColorTex = 1;
+				#endif
+				ApplyLiltoonRimLighting(poiFragData, poiMesh, poiCam, poiLight, poiMods, _RimColor, _RimIndirColor, rimColorTex, _RimMainStrength, _RimNormalStrength, _RimDirRange, _RimIndirRange, _RimFresnelPower, _RimBackfaceMask, _RimDirStrength, _RimBorder, _RimBlur, _RimIndirBorder, _RimIndirBlur, _RimShadowMask, _RimEnableLighting, _RimVRParallaxStrength, _RimGlobalMask, _RimGlobalMaskBlendType, _RimHueShiftEnabled, _RimHueShift, _RimHueShiftSpeed, _RimBlendMode);
+				#endif
+				#endif
+				//endex
+				//ifex _EnableRim2Lighting==0
+				#ifdef POI_RIM2
+				#ifdef _RIM2STYLE_LILTOON
+				#if defined(PROP_RIM2COLORTEX) || !defined(OPTIMIZER_ENABLED)
+				float4 rim2ColorTex = POI2D_SAMPLER_PAN(_Rim2ColorTex, _MainTex, poiUV(poiMesh.uv[_Rim2ColorTexUV], _Rim2ColorTex_ST), _Rim2ColorTexPan);
+				#else
+				float4 rim2ColorTex = 1;
+				#endif
+				ApplyLiltoonRimLighting(poiFragData, poiMesh, poiCam, poiLight, poiMods, _Rim2Color, _Rim2IndirColor, rim2ColorTex, _Rim2MainStrength, _Rim2NormalStrength, _Rim2DirRange, _Rim2IndirRange, _Rim2FresnelPower, _Rim2BackfaceMask, _Rim2DirStrength, _Rim2Border, _Rim2Blur, _Rim2IndirBorder, _Rim2IndirBlur, _Rim2ShadowMask, _Rim2EnableLighting, _Rim2VRParallaxStrength, _Rim2GlobalMask, _Rim2GlobalMaskBlendType, _Rim2HueShiftEnabled, _Rim2HueShift, _Rim2HueShiftSpeed, _Rim2BlendMode);
+				#endif
 				#endif
 				//endex
 				
@@ -34928,6 +35295,10 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 			float _ShadowMainStrength;
 			#endif
 			
+			#ifdef _LIGHTINGMODE_FLAT
+			float _ForceFlatRampedLightmap;
+			#endif
+			
 			#ifdef _LIGHTINGMODE_CLOTH
 			Texture2D_float _ClothDFG;
 			SamplerState sampler_ClothDFG;
@@ -34967,6 +35338,7 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 			//endex
 			
 			//ifex _DecalEnabled==0 && _DecalEnabled1==0 && _DecalEnabled2==0 && _DecalEnabled3==0
+			
 			#if defined(PROP_DECALMASK) || !defined(OPTIMIZER_ENABLED)
 			Texture2D _DecalMask;
 			float4 _DecalMask_ST;
@@ -34978,6 +35350,10 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 			float _Decal1TPSMaskStrength;
 			float _Decal2TPSMaskStrength;
 			float _Decal3TPSMaskStrength;
+			
+			sampler2D _Udon_VideoTex;
+			float4 _Udon_VideoTex_TexelSize;
+			
 			#ifdef POI_AUDIOLINK
 			//ifex _DecalEnabled==0
 			#ifdef GEOM_TYPE_BRANCH
@@ -35068,6 +35444,12 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 			//endex
 			//ifex _DecalEnabled==0
 			#ifdef GEOM_TYPE_BRANCH
+			float _Decal0VideoFitToScale;
+			float _Decal0VideoAspectFix;
+			float _Decal0VideoEmissionStrength;
+			float _Decal0VideoEnabled;
+			float _Decal0UseDecalAlpha;
+			float _Decal0OnlyVideo;
 			sampler2D _DecalTexture;
 			float _Decal0FaceMask;
 			float _Decal0MaskChannel;
@@ -35107,6 +35489,13 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 			
 			//ifex _DecalEnabled1==0
 			#ifdef GEOM_TYPE_BRANCH_DETAIL
+			float _Decal1VideoAspectFix;
+			float _Decal1VideoFitToScale;
+			float _Decal1VideoEmissionStrength;
+			float _Decal1VideoEnabled;
+			float _Decal1UseDecalAlpha;
+			float _Decal1OnlyVideo;
+			float _Decal1TextureToUse;
 			sampler2D _DecalTexture1;
 			float _Decal1FaceMask;
 			float _Decal1MaskChannel;
@@ -35146,6 +35535,13 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 			
 			//ifex _DecalEnabled2==0
 			#ifdef GEOM_TYPE_FROND
+			float _Decal2VideoAspectFix;
+			float _Decal2VideoFitToScale;
+			float _Decal2VideoEmissionStrength;
+			float _Decal2VideoEnabled;
+			float _Decal2UseDecalAlpha;
+			float _Decal2OnlyVideo;
+			float _Decal2TextureToUse;
 			sampler2D _DecalTexture2;
 			float _Decal2FaceMask;
 			float _Decal2MaskChannel;
@@ -35185,6 +35581,13 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 			
 			//ifex _DecalEnabled3==0
 			#ifdef DEPTH_OF_FIELD_COC_VIEW
+			float _Decal3VideoAspectFix;
+			float _Decal3VideoFitToScale;
+			float _Decal3VideoEmissionStrength;
+			float _Decal3VideoEnabled;
+			float _Decal3UseDecalAlpha;
+			float _Decal3OnlyVideo;
+			float _Decal3TextureToUse;
 			sampler2D _DecalTexture3;
 			float _Decal3FaceMask;
 			float _Decal3MaskChannel;
@@ -36910,7 +37313,6 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				float2 uv3 : TEXCOORD3;
 				uint vertexId : SV_VertexID;
 				UNITY_VERTEX_INPUT_INSTANCE_ID
-				UNITY_VERTEX_OUTPUT_STEREO
 			};
 			
 			struct VertexOut
@@ -41352,7 +41754,14 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				
 				#ifdef _LIGHTINGMODE_FLAT
 				poiLight.finalLighting = poiLight.directColor * attenuation * shadowAttenuation;
-				poiLight.rampedLightMap = poiLight.nDotLSaturated;
+				if (_ForceFlatRampedLightmap)
+				{
+					poiLight.rampedLightMap = smoothstep(0.4, 0.6, poiLight.nDotLNormalized);
+				}
+				else
+				{
+					poiLight.rampedLightMap = 1;
+				}
 				#endif
 				
 				#ifdef _LIGHTINGMODE_TEXTURERAMP
@@ -41751,7 +42160,7 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				half m_DecalRotationSpeed;
 				float m_DecalEmissionStrength;
 				float m_DecalBlendAlpha;
-				float m_DecalOverrideAlpha;
+				float m_DecalAlphaBlendMode;
 				float m_DecalHueShiftEnabled;
 				float m_DecalHueShift;
 				float m_DecalHueShiftSpeed;
@@ -41764,6 +42173,7 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				float m_DecalChannelSeparationVertical;
 				float m_DecalChannelSeparationAngleStrength;
 				float m_DecalOverrideAlphaMode;
+				float m_DecalOverrideAlpha;
 				
 				#if defined(POI_AUDIOLINK)
 				half m_AudioLinkDecalScaleBand;
@@ -41823,9 +42233,9 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 					decalColor.a *= decalMask[m_DecalMaskChannel] * applyTilingClipping(m_DecalTiled, uv);
 				}
 				
-				void SampleDecal(sampler2D decalTexture, in PoiMods poiMods, in PoiLight poiLight, in PoiMesh poiMesh, in PoiCam poiCam)
+				void SampleDecal(sampler2D decalTexture, in PoiMods poiMods, in PoiLight poiLight, in PoiMesh poiMesh, in PoiCam poiCam, float2 scaleMultiplier = float2(1, 1))
 				{
-					uv = decalUV(m_DecalTextureUV, m_DecalPosition, m_DecalRotation + decalRotation, m_DecalRotationSpeed, decalScale, m_DecalSideOffset +sideMod, m_DecalDepth, poiMesh, poiCam);
+					uv = decalUV(m_DecalTextureUV, m_DecalPosition, m_DecalRotation + decalRotation, m_DecalRotationSpeed, decalScale * scaleMultiplier, m_DecalSideOffset +sideMod, m_DecalDepth, poiMesh, poiCam);
 					// Adjust derivatives for _ST of decal texture
 					float4 dduv = any(fwidth(uv) > .5) ? 0.001 : float4(ddx(uv) * m_DecalTexture_ST.x, ddy(uv) * m_DecalTexture_ST.y);
 					decalColor = tex2D(decalTexture, poiUV(uv, m_DecalTexture_ST) + m_DecalTexturePan * _Time.x, dduv.xy, dduv.zw) * float4(poiThemeColor(poiMods, m_DecalColor.rgb, m_DecalColorThemeIndex), m_DecalColor.a);
@@ -41833,9 +42243,28 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 					decalColor.a *= decalMask[m_DecalMaskChannel] * applyTilingClipping(m_DecalTiled, uv);
 				}
 				
+				void SampleDecalNoAlpha(sampler2D decalTexture, in PoiMods poiMods, in PoiLight poiLight, in PoiMesh poiMesh, in PoiCam poiCam, float2 scaleMultiplier = float2(1, 1))
+				{
+					uv = decalUV(m_DecalTextureUV, m_DecalPosition, m_DecalRotation + decalRotation, m_DecalRotationSpeed, decalScale * scaleMultiplier, m_DecalSideOffset +sideMod, m_DecalDepth, poiMesh, poiCam);
+					// Adjust derivatives for _ST of decal texture
+					float4 dduv = any(fwidth(uv) > .5) ? 0.001 : float4(ddx(uv) * m_DecalTexture_ST.x, ddy(uv) * m_DecalTexture_ST.y);
+					decalColor.rgb = tex2D(decalTexture, poiUV(uv, m_DecalTexture_ST) + m_DecalTexturePan * _Time.x, dduv.xy, dduv.zw) * float4(poiThemeColor(poiMods, m_DecalColor.rgb, m_DecalColorThemeIndex), m_DecalColor.a).rgb;
+					decalColor.rgb = decalHueShift(m_DecalHueShiftEnabled, decalColor.rgb, m_DecalHueShift + poiLight.nDotV * m_DecalHueAngleStrength, m_DecalHueShiftSpeed);
+					decalColor.a *= decalMask[m_DecalMaskChannel] * applyTilingClipping(m_DecalTiled, uv);
+				}
+				
+				void SampleDecalAlphaOnly(sampler2D decalTexture, in PoiMods poiMods, in PoiLight poiLight, in PoiMesh poiMesh, in PoiCam poiCam, float2 scaleMultiplier = float2(1, 1))
+				{
+					uv = decalUV(m_DecalTextureUV, m_DecalPosition, m_DecalRotation + decalRotation, m_DecalRotationSpeed, decalScale * scaleMultiplier, m_DecalSideOffset +sideMod, m_DecalDepth, poiMesh, poiCam);
+					// Adjust derivatives for _ST of decal texture
+					float4 dduv = any(fwidth(uv) > .5) ? 0.001 : float4(ddx(uv) * m_DecalTexture_ST.x, ddy(uv) * m_DecalTexture_ST.y);
+					decalColor = tex2D(decalTexture, poiUV(uv, m_DecalTexture_ST) + m_DecalTexturePan * _Time.x, dduv.xy, dduv.zw) * float4(poiThemeColor(poiMods, m_DecalColor.rgb, m_DecalColorThemeIndex), m_DecalColor.a);
+					decalColor.a *= decalMask[m_DecalMaskChannel] * applyTilingClipping(m_DecalTiled, uv);
+				}
+				
 				void SampleDecalChannelSeparation(sampler2D decalTexture, in PoiMods poiMods, in PoiLight poiLight, in PoiMesh poiMesh, in PoiCam poiCam)
 				{
-					decalColor = 0;
+					decalColor = float4(0, 0, 0, 1);
 					decalChannelOffset += m_DecalChannelSeparation + m_DecalChannelSeparationAngleStrength * (m_DecalChannelSeparationAngleStrength > 0 ? (1 - poiLight.nDotV) : poiLight.nDotV);
 					float2 positionOffset = decalChannelOffset * 0.01 * (decalScale.x + decalScale.y) * float2(cos(m_DecalChannelSeparationVertical), sin(m_DecalChannelSeparationVertical));
 					float2 uvSample0 = decalUV(m_DecalTextureUV, m_DecalPosition + positionOffset, m_DecalRotation + decalRotation, m_DecalRotationSpeed, decalScale, m_DecalSideOffset +sideMod, m_DecalDepth, poiMesh, poiCam);
@@ -41892,17 +42321,29 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 					
 					if (m_DecalOverrideAlpha)
 					{
-						alphaOverride += 1;
+						float finalAlpha = lerp(1, min(decalAlpha, decalColor.a), decalMask[m_DecalMaskChannel]);
 						if (m_DecalOverrideAlphaMode != 0 && !m_DecalTiled)
 						{
 							if (uv.x > 0 && uv.x < 1 && uv.y > 0 && uv.y < 1)
 							{
-								decalAlpha = lerp(decalAlpha, min(decalAlpha, decalColor.a), decalMask[m_DecalMaskChannel]);
+								//decalAlpha = lerp(decalAlpha, min(decalAlpha, decalColor.a), decalMask[m_DecalMaskChannel]);
+								//poiFragData.alpha = saturate(poiFragData.alpha + lerp(1, min(decalAlpha, decalColor.a), decalMask[m_DecalMaskChannel]));
+								if (m_DecalOverrideAlpha == 1) poiFragData.alpha = finalAlpha;
+								if (m_DecalOverrideAlpha == 2) poiFragData.alpha = saturate(poiFragData.alpha * finalAlpha);
+								if (m_DecalOverrideAlpha == 3) poiFragData.alpha = saturate(poiFragData.alpha + finalAlpha);
+								if (m_DecalOverrideAlpha == 4) poiFragData.alpha = saturate(poiFragData.alpha - finalAlpha);
+								if (m_DecalOverrideAlpha == 5) poiFragData.alpha = min(poiFragData.alpha, finalAlpha);
+								if (m_DecalOverrideAlpha == 6) poiFragData.alpha = max(poiFragData.alpha, finalAlpha);
 							}
 						}
 						else
 						{
-							decalAlpha = lerp(decalAlpha, min(decalAlpha, decalColor.a), decalMask[m_DecalMaskChannel]);
+							if (m_DecalOverrideAlpha == 1) poiFragData.alpha = finalAlpha;
+							if (m_DecalOverrideAlpha == 2) poiFragData.alpha = saturate(poiFragData.alpha * finalAlpha);
+							if (m_DecalOverrideAlpha == 3) poiFragData.alpha = saturate(poiFragData.alpha + finalAlpha);
+							if (m_DecalOverrideAlpha == 4) poiFragData.alpha = saturate(poiFragData.alpha - finalAlpha);
+							if (m_DecalOverrideAlpha == 5) poiFragData.alpha = min(poiFragData.alpha, finalAlpha);
+							if (m_DecalOverrideAlpha == 6) poiFragData.alpha = max(poiFragData.alpha, finalAlpha);
 						}
 					}
 					
@@ -41928,10 +42369,61 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 					poiFragData.baseColor.rgb = lerp(poiFragData.baseColor.rgb, customBlend(poiFragData.baseColor.rgb, decalColor.rgb, m_DecalBlendType), decalAlphaMixed);
 					poiFragData.emission += decalColor.rgb * decalColor.a * max(m_DecalEmissionStrength + audioLinkDecalEmission, 0);
 				}
+				float2 GetVideoAspectRatio(float2 videoDimensions, float CorrectionType, float fitToScale)
+				{
+					float2 AspectRatioMultiplier = float2(1, 1);
+					if (fitToScale)
+					{
+						float2 decalScale = m_DecalScale.xy + float2(m_DecalSideOffset.x + m_DecalSideOffset.y, m_DecalSideOffset.z + m_DecalSideOffset.w);
+						if (decalScale.x > decalScale.y)
+						{
+							videoDimensions.xy *= float2((decalScale.y / decalScale.x), 1);
+						}
+						else
+						{
+							videoDimensions.xy *= float2(1, (decalScale.x / decalScale.y));
+						}
+					}
+					
+					if (CorrectionType != 2)
+					{
+						if (CorrectionType == 0)
+						{
+							if (videoDimensions.x > videoDimensions.y)
+							{
+								AspectRatioMultiplier = float2(1, videoDimensions.y / videoDimensions.x);
+							}
+							else
+							{
+								AspectRatioMultiplier = float2(videoDimensions.x / videoDimensions.y, 1);
+							}
+						}
+						else if (CorrectionType == 1)
+						{
+							if (videoDimensions.x > videoDimensions.y)
+							{
+								AspectRatioMultiplier = float2(1 / (videoDimensions.y / videoDimensions.x), 1);
+							}
+							else
+							{
+								AspectRatioMultiplier = float2(1, 1 / (videoDimensions.x / videoDimensions.y));
+							}
+						}
+					}
+					return AspectRatioMultiplier;
+				}
 			};
 			
 			void applyDecals(inout PoiFragData poiFragData, in PoiMesh poiMesh, in PoiCam poiCam, inout PoiMods poiMods, in PoiLight poiLight)
 			{
+				// check if _Udon_VideoTex is greater than 16 pixels in width
+				float udonVideoTexAvailable = 0;
+				float2 udonVideoAspectRatio = 1;
+				if (_Udon_VideoTex_TexelSize.z > 16)
+				{
+					udonVideoTexAvailable = 1;
+				}
+				
 				float decalAlpha = 1;
 				float alphaOverride = 0;
 				#if defined(PROP_DECALMASK) || !defined(OPTIMIZER_ENABLED)
@@ -42016,23 +42508,66 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				Decal0.InitAudiolink(poiMods);
 				#endif
 				
-				#if defined(PROP_DECALTEXTURE) || !defined(OPTIMIZER_ENABLED)
-				//ifex _Decal0ChannelSeparationEnable==0
-				if (_Decal0ChannelSeparationEnable)
+				if (!_Decal0VideoEnabled)
 				{
-					Decal0.SampleDecalChannelSeparation(_DecalTexture, poiMods, poiLight, poiMesh, poiCam);
+					
+					#if defined(PROP_DECALTEXTURE) || !defined(OPTIMIZER_ENABLED)
+					//ifex _Decal0ChannelSeparationEnable==0
+					if (_Decal0ChannelSeparationEnable)
+					{
+						Decal0.SampleDecalChannelSeparation(_DecalTexture, poiMods, poiLight, poiMesh, poiCam);
+					}
+					//endex
+					//ifex _Decal0ChannelSeparationEnable==1
+					if (!_Decal0ChannelSeparationEnable)
+					{
+						Decal0.SampleDecal(_DecalTexture, poiMods, poiLight, poiMesh, poiCam);
+					}
+					//endex
+					#else
+					Decal0.SampleDecalNoTexture(poiMods, poiLight, poiMesh, poiCam);
+					#endif
+					Decal0.Apply(alphaOverride, decalAlpha, poiFragData, poiMesh, poiCam, poiMods, poiLight);
 				}
-				//endex
-				//ifex _Decal0ChannelSeparationEnable==1
-				if (!_Decal0ChannelSeparationEnable)
+				else
 				{
-					Decal0.SampleDecal(_DecalTexture, poiMods, poiLight, poiMesh, poiCam);
+					udonVideoAspectRatio = Decal0.GetVideoAspectRatio(_Udon_VideoTex_TexelSize.zw, _Decal0VideoAspectFix, _Decal0VideoFitToScale);
+					
+					if (_Decal0OnlyVideo)
+					{
+						if (udonVideoTexAvailable)
+						{
+							Decal0.m_DecalEmissionStrength += _Decal0VideoEmissionStrength;
+							if (_Decal0UseDecalAlpha)
+							{
+								Decal0.SampleDecal(_DecalTexture, poiMods, poiLight, poiMesh, poiCam);
+								Decal0.SampleDecalNoAlpha(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio);
+							}
+							else
+							{
+								Decal0.SampleDecal(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio);
+							}
+							Decal0.Apply(alphaOverride, decalAlpha, poiFragData, poiMesh, poiCam, poiMods, poiLight);
+						}
+					}
+					else
+					{
+						Decal0.SampleDecal(_DecalTexture, poiMods, poiLight, poiMesh, poiCam);
+						if (udonVideoTexAvailable)
+						{
+							Decal0.m_DecalEmissionStrength += _Decal0VideoEmissionStrength;
+							if (_Decal0UseDecalAlpha)
+							{
+								Decal0.SampleDecalNoAlpha(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio);
+							}
+							else
+							{
+								Decal0.SampleDecal(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio);
+							}
+						}
+						Decal0.Apply(alphaOverride, decalAlpha, poiFragData, poiMesh, poiCam, poiMods, poiLight);
+					}
 				}
-				//endex
-				#else
-				Decal0.SampleDecalNoTexture(poiMods, poiLight, poiMesh, poiCam);
-				#endif
-				Decal0.Apply(alphaOverride, decalAlpha, poiFragData, poiMesh, poiCam, poiMods, poiLight);
 				#endif
 				//endex
 				
@@ -42073,7 +42608,6 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				Decal1.m_DecalChannelSeparationVertical = _Decal1ChannelSeparationVertical;
 				Decal1.m_DecalChannelSeparationAngleStrength = _Decal1ChannelSeparationAngleStrength;
 				Decal1.m_DecalOverrideAlphaMode = _Decal1OverrideAlphaMode;
-				
 				Decal1.Init(decalMask);
 				
 				#if defined(POI_AUDIOLINK)
@@ -42098,23 +42632,64 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				Decal1.InitAudiolink(poiMods);
 				#endif
 				
-				#if defined(PROP_DECALTEXTURE1) || !defined(OPTIMIZER_ENABLED)
-				//ifex _Decal1ChannelSeparationEnable==0
-				if (_Decal1ChannelSeparationEnable)
+				if (!_Decal1VideoEnabled)
 				{
-					Decal1.SampleDecalChannelSeparation(_DecalTexture1, poiMods, poiLight, poiMesh, poiCam);
+					#if defined(PROP_DECALTEXTURE1) || !defined(OPTIMIZER_ENABLED)
+					//ifex _Decal1ChannelSeparationEnable==0
+					if (_Decal1ChannelSeparationEnable)
+					{
+						Decal1.SampleDecalChannelSeparation(_DecalTexture1, poiMods, poiLight, poiMesh, poiCam);
+					}
+					//endex
+					//ifex _Decal1ChannelSeparationEnable==1
+					if (!_Decal1ChannelSeparationEnable)
+					{
+						Decal1.SampleDecal(_DecalTexture1, poiMods, poiLight, poiMesh, poiCam);
+					}
+					//endex
+					#else
+					Decal1.SampleDecalNoTexture(poiMods, poiLight, poiMesh, poiCam);
+					#endif
+					Decal1.Apply(alphaOverride, decalAlpha, poiFragData, poiMesh, poiCam, poiMods, poiLight);
 				}
-				//endex
-				//ifex _Decal1ChannelSeparationEnable==1
-				if (!_Decal1ChannelSeparationEnable)
+				else
 				{
-					Decal1.SampleDecal(_DecalTexture1, poiMods, poiLight, poiMesh, poiCam);
+					udonVideoAspectRatio = Decal1.GetVideoAspectRatio(_Udon_VideoTex_TexelSize.zw, _Decal1VideoAspectFix, _Decal1VideoFitToScale);
+					if (_Decal1OnlyVideo)
+					{
+						if (udonVideoTexAvailable)
+						{
+							Decal1.m_DecalEmissionStrength += _Decal1VideoEmissionStrength;
+							if (_Decal1UseDecalAlpha)
+							{
+								Decal1.SampleDecal(_DecalTexture1, poiMods, poiLight, poiMesh, poiCam);
+								Decal1.SampleDecalNoAlpha(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio);
+							}
+							else
+							{
+								Decal1.SampleDecal(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio);
+							}
+							Decal1.Apply(alphaOverride, decalAlpha, poiFragData, poiMesh, poiCam, poiMods, poiLight);
+						}
+					}
+					else
+					{
+						Decal1.SampleDecal(_DecalTexture1, poiMods, poiLight, poiMesh, poiCam);
+						if (udonVideoTexAvailable)
+						{
+							Decal1.m_DecalEmissionStrength += _Decal1VideoEmissionStrength;
+							if (_Decal1UseDecalAlpha)
+							{
+								Decal1.SampleDecalNoAlpha(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio);
+							}
+							else
+							{
+								Decal1.SampleDecal(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio);
+							}
+						}
+						Decal1.Apply(alphaOverride, decalAlpha, poiFragData, poiMesh, poiCam, poiMods, poiLight);
+					}
 				}
-				//endex
-				#else
-				Decal1.SampleDecalNoTexture(poiMods, poiLight, poiMesh, poiCam);
-				#endif
-				Decal1.Apply(alphaOverride, decalAlpha, poiFragData, poiMesh, poiCam, poiMods, poiLight);
 				#endif
 				//endex
 				
@@ -42155,7 +42730,6 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				Decal2.m_DecalChannelSeparationVertical = _Decal2ChannelSeparationVertical;
 				Decal2.m_DecalChannelSeparationAngleStrength = _Decal2ChannelSeparationAngleStrength;
 				Decal2.m_DecalOverrideAlphaMode = _Decal2OverrideAlphaMode;
-				
 				Decal2.Init(decalMask);
 				
 				#if defined(POI_AUDIOLINK)
@@ -42179,24 +42753,64 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				
 				Decal2.InitAudiolink(poiMods);
 				#endif
-				
-				#if defined(PROP_DECALTEXTURE2) || !defined(OPTIMIZER_ENABLED)
-				//ifex _Decal2ChannelSeparationEnable==0
-				if (_Decal2ChannelSeparationEnable)
+				if (!_Decal2VideoEnabled)
 				{
-					Decal2.SampleDecalChannelSeparation(_DecalTexture2, poiMods, poiLight, poiMesh, poiCam);
+					#if defined(PROP_DECALTEXTURE2) || !defined(OPTIMIZER_ENABLED)
+					//ifex _Decal2ChannelSeparationEnable==0
+					if (_Decal2ChannelSeparationEnable)
+					{
+						Decal2.SampleDecalChannelSeparation(_DecalTexture2, poiMods, poiLight, poiMesh, poiCam);
+					}
+					//endex
+					//ifex _Decal2ChannelSeparationEnable==1
+					if (!_Decal2ChannelSeparationEnable)
+					{
+						Decal2.SampleDecal(_DecalTexture2, poiMods, poiLight, poiMesh, poiCam);
+					}
+					//endex
+					#else
+					Decal2.SampleDecalNoTexture(poiMods, poiLight, poiMesh, poiCam);
+					#endif
+					Decal2.Apply(alphaOverride, decalAlpha, poiFragData, poiMesh, poiCam, poiMods, poiLight);
 				}
-				//endex
-				//ifex _Decal2ChannelSeparationEnable==1
-				if (!_Decal2ChannelSeparationEnable)
+				else
 				{
-					Decal2.SampleDecal(_DecalTexture2, poiMods, poiLight, poiMesh, poiCam);
+					udonVideoAspectRatio = Decal2.GetVideoAspectRatio(_Udon_VideoTex_TexelSize.zw, _Decal2VideoAspectFix, _Decal2VideoFitToScale);
+					if (_Decal2OnlyVideo)
+					{
+						if (udonVideoTexAvailable)
+						{
+							Decal2.m_DecalEmissionStrength += _Decal2VideoEmissionStrength;
+							if (_Decal2UseDecalAlpha)
+							{
+								Decal2.SampleDecal(_DecalTexture2, poiMods, poiLight, poiMesh, poiCam);
+								Decal2.SampleDecalNoAlpha(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio);
+							}
+							else
+							{
+								Decal2.SampleDecal(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio);
+							}
+							Decal2.Apply(alphaOverride, decalAlpha, poiFragData, poiMesh, poiCam, poiMods, poiLight);
+						}
+					}
+					else
+					{
+						Decal2.SampleDecal(_DecalTexture2, poiMods, poiLight, poiMesh, poiCam);
+						if (udonVideoTexAvailable)
+						{
+							Decal2.m_DecalEmissionStrength += _Decal2VideoEmissionStrength;
+							if (_Decal2UseDecalAlpha)
+							{
+								Decal2.SampleDecalNoAlpha(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio);
+							}
+							else
+							{
+								Decal2.SampleDecal(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio);
+							}
+						}
+						Decal2.Apply(alphaOverride, decalAlpha, poiFragData, poiMesh, poiCam, poiMods, poiLight);
+					}
 				}
-				//endex
-				#else
-				Decal2.SampleDecalNoTexture(poiMods, poiLight, poiMesh, poiCam);
-				#endif
-				Decal2.Apply(alphaOverride, decalAlpha, poiFragData, poiMesh, poiCam, poiMods, poiLight);
 				#endif
 				//endex
 				
@@ -42237,7 +42851,6 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				Decal3.m_DecalChannelSeparationVertical = _Decal3ChannelSeparationVertical;
 				Decal3.m_DecalChannelSeparationAngleStrength = _Decal3ChannelSeparationAngleStrength;
 				Decal3.m_DecalOverrideAlphaMode = _Decal3OverrideAlphaMode;
-				
 				Decal3.Init(decalMask);
 				
 				#if defined(POI_AUDIOLINK)
@@ -42261,32 +42874,73 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				
 				Decal3.InitAudiolink(poiMods);
 				#endif
+				if (!_Decal3VideoEnabled)
+				{
+					#if defined(PROP_DECALTEXTURE3) || !defined(OPTIMIZER_ENABLED)
+					//ifex _Decal3ChannelSeparationEnable==0
+					if (_Decal3ChannelSeparationEnable)
+					{
+						Decal3.SampleDecalChannelSeparation(_DecalTexture3, poiMods, poiLight, poiMesh, poiCam);
+					}
+					//endex
+					//ifex _Decal3ChannelSeparationEnable==1
+					if (!_Decal3ChannelSeparationEnable)
+					{
+						Decal3.SampleDecal(_DecalTexture3, poiMods, poiLight, poiMesh, poiCam);
+					}
+					//endex
+					#else
+					Decal3.SampleDecalNoTexture(poiMods, poiLight, poiMesh, poiCam);
+					#endif
+					Decal3.Apply(alphaOverride, decalAlpha, poiFragData, poiMesh, poiCam, poiMods, poiLight);
+				}
+				else
+				{
+					udonVideoAspectRatio = Decal3.GetVideoAspectRatio(_Udon_VideoTex_TexelSize.zw, _Decal3VideoAspectFix, _Decal3VideoFitToScale);
+					if (_Decal3OnlyVideo)
+					{
+						if (udonVideoTexAvailable)
+						{
+							Decal3.m_DecalEmissionStrength += _Decal3VideoEmissionStrength;
+							if (_Decal3UseDecalAlpha)
+							{
+								Decal3.SampleDecal(_DecalTexture3, poiMods, poiLight, poiMesh, poiCam);
+								Decal3.SampleDecalNoAlpha(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio);
+							}
+							else
+							{
+								Decal3.SampleDecal(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio);
+							}
+							Decal3.Apply(alphaOverride, decalAlpha, poiFragData, poiMesh, poiCam, poiMods, poiLight);
+						}
+					}
+					else
+					{
+						Decal3.SampleDecal(_DecalTexture3, poiMods, poiLight, poiMesh, poiCam);
+						if (udonVideoTexAvailable)
+						{
+							Decal3.m_DecalEmissionStrength += _Decal3VideoEmissionStrength;
+							if (_Decal3UseDecalAlpha)
+							{
+								Decal3.SampleDecalNoAlpha(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio);
+							}
+							else
+							{
+								Decal3.SampleDecal(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio);
+							}
+						}
+						Decal3.Apply(alphaOverride, decalAlpha, poiFragData, poiMesh, poiCam, poiMods, poiLight);
+					}
+				}
+				#endif
+				//endex
+				//if (alphaOverride)
+				//{
 				
-				#if defined(PROP_DECALTEXTURE3) || !defined(OPTIMIZER_ENABLED)
-				//ifex _Decal3ChannelSeparationEnable==0
-				if (_Decal3ChannelSeparationEnable)
-				{
-					Decal3.SampleDecalChannelSeparation(_DecalTexture3, poiMods, poiLight, poiMesh, poiCam);
-				}
-				//endex
-				//ifex _Decal3ChannelSeparationEnable==1
-				if (!_Decal3ChannelSeparationEnable)
-				{
-					Decal3.SampleDecal(_DecalTexture3, poiMods, poiLight, poiMesh, poiCam);
-				}
-				//endex
-				#else
-				Decal3.SampleDecalNoTexture(poiMods, poiLight, poiMesh, poiCam);
-				#endif
-				Decal3.Apply(alphaOverride, decalAlpha, poiFragData, poiMesh, poiCam, poiMods, poiLight);
-				#endif
-				//endex
-				if (alphaOverride)
-				{
-					
-					//poiFragData.baseColor = decalAlpha;
-					poiFragData.alpha *= decalAlpha;
-				}
+				//poiFragData.baseColor = decalAlpha;
+				//poiFragData.alpha *= decalAlpha;
+				
+				//}
 				//poiFragData.baseColor = saturate(poiFragData.baseColor);
 				
 			}
@@ -43661,7 +44315,7 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				
 				if (RimGlobalMask > 0)
 				{
-					rimMask = maskBlend(rimMask, poiMods.globalMask[RimGlobalMask-1], RimGlobalMaskBlendType);
+					rimMask = maskBlend(rimMask, poiMods.globalMask[RimGlobalMask - 1], RimGlobalMaskBlendType);
 				}
 				
 				float4 rimColor = RimTex;
@@ -43695,15 +44349,17 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				
 				if (RimApplyGlobalMaskIndex > 0)
 				{
-					applyToGlobalMask(poiMods, RimApplyGlobalMaskIndex-1, RimApplyGlobalMaskBlendType, rim * blendStrength);
+					applyToGlobalMask(poiMods, RimApplyGlobalMaskIndex - 1, RimApplyGlobalMaskBlendType, rim * blendStrength);
 				}
 				
 				if (RimApplyAlpha == 1) // Add
+				
 				{
 					poiFragData.alpha += lerp(0, saturate(rim), RimApplyAlphaBlend);
 					poiFragData.alpha = saturate(poiFragData.alpha);
 				}
 				if (RimApplyAlpha == 2) // Multiply
+				
 				{
 					poiFragData.alpha *= lerp(1, saturate(rim), RimApplyAlphaBlend);
 				}
@@ -43727,7 +44383,7 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 			{
 				if (RimGlobalMask > 0)
 				{
-					Set_RimLightMask_var = maskBlend(Set_RimLightMask_var, poiMods.globalMask[RimGlobalMask-1], RimGlobalMaskBlendType);
+					Set_RimLightMask_var = maskBlend(Set_RimLightMask_var, poiMods.globalMask[RimGlobalMask - 1], RimGlobalMaskBlendType);
 				}
 				
 				float3 rimColor = float3(poiThemeColor(poiMods, RimLightColor.rgb, RimLightColorThemeIndex));
@@ -43753,7 +44409,7 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 			{
 				if (RimGlobalMask > 0)
 				{
-					RimColorTex.a = maskBlend(RimColorTex.a, poiMods.globalMask[RimGlobalMask-1], RimGlobalMaskBlendType);
+					RimColorTex.a = maskBlend(RimColorTex.a, poiMods.globalMask[RimGlobalMask - 1], RimGlobalMaskBlendType);
 				}
 				float4 rimColor = RimColor;
 				float4 rimIndirColor = RimIndirColor;
@@ -43779,7 +44435,7 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				// Factor
 				float lnRaw = dot(poiLight.direction, normal) * 0.5 + 0.5;
 				float lnDir = saturate((lnRaw + RimDirRange) / (1.0 + RimDirRange));
-				float lnIndir = saturate((1.0-lnRaw + RimIndirRange) / (1.0 + RimIndirRange));
+				float lnIndir = saturate((1.0 - lnRaw + RimIndirRange) / (1.0 + RimIndirRange));
 				float rim = pow(saturate(1.0 - nvabs), RimFresnelPower);
 				rim = !poiMesh.isFrontFace && RimBackfaceMask ? 0.0 : rim;
 				float rimDir = lerp(rim, rim * lnDir, RimDirStrength);
@@ -43791,14 +44447,23 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				rimDir = lerp(rimDir, rimDir * poiLight.rampedLightMap, RimShadowMask);
 				rimIndir = lerp(rimIndir, rimIndir * poiLight.rampedLightMap, RimShadowMask);
 				
-				float3 lightCol = poiLight.directColor + poiLight.indirectColor;
+				float3 lightCol = poiLight.finalLighting;
+				/*
 				#if !defined(POI_PASS_ADD)
 				rimColor.rgb = lerp(rimColor.rgb, rimColor.rgb * lightCol, RimEnableLighting);
 				#else
-				if(RimBlendMode < 3) rimColor.rgb *= lightCol * RimEnableLighting;
+				if (RimBlendMode < 3) rimColor.rgb *= lightCol * RimEnableLighting;
 				#endif
-				poiFragData.baseColor = lilBlendColor(poiFragData.baseColor, rimColor.rgb, rimDir * rimColor.a, RimBlendMode);
-				poiFragData.baseColor = lilBlendColor(poiFragData.baseColor, rimIndirColor.rgb, rimIndir * rimIndirColor.a, RimBlendMode);
+				// Blend
+				*/
+				#if !defined(POI_PASS_ADD)
+				float3 rimLightMul = 1 - RimEnableLighting + lightCol * RimEnableLighting;
+				#else
+				float3 rimLightMul = RimBlendMode < 3 ? lightCol * RimEnableLighting : 1;
+				#endif
+				
+				poiFragData.finalColor = lilBlendColor(poiFragData.finalColor, rimColor.rgb * rimLightMul, rimDir * rimColor.a, RimBlendMode);
+				poiFragData.finalColor = lilBlendColor(poiFragData.finalColor, rimIndirColor.rgb * rimLightMul, rimIndir * rimIndirColor.a, RimBlendMode);
 			}
 			#endif
 			#endif
@@ -46923,6 +47588,8 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				{
 					#if !defined(UNITY_COLORSPACE_GAMMA)
 					float3 tempColor = OpenLitLinearToSRGB(poiFragData.baseColor);
+					#else
+					float3 tempColor = poiFragData.baseColor;
 					#endif
 					#if defined(PROP_MAINGRADATIONTEX) || !defined(OPTIMIZER_ENABLED)
 					tempColor.r = POI_SAMPLE_1D_X(_MainGradationTex, sampler_linear_clamp, tempColor.r).r;
@@ -47102,7 +47769,7 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				float rimBias = 0;
 				#endif
 				
-				if(_RimMaskInvert)
+				if (_RimMaskInvert)
 				{
 					rimMask = 1 - rimMask;
 				}
@@ -47137,14 +47804,7 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				#endif
 				ApplyUTS2RimLighting(poiFragData, poiMesh, poiCam, poiLight, poiMods, Set_RimLightMask_var, _RimGlobalMask, _RimGlobalMaskBlendType, _RimLightColor, _RimLightColorThemeIndex, _Is_LightColor_RimLight, _Is_NormalMapToRimLight, _RimLight_Power, _RimLight_InsideMask, _RimLight_FeatherOff, _LightDirection_MaskOn, _Tweak_LightDirection_MaskLevel, _Add_Antipodean_RimLight, _Ap_RimLightColor, _RimApColorThemeIndex, _Is_LightColor_Ap_RimLight, _Ap_RimLight_Power, _Ap_RimLight_FeatherOff, _Tweak_RimLightMaskLevel, _RimHueShiftEnabled, _RimHueShift, _RimHueShiftSpeed);
 				#endif
-				#ifdef _RIMSTYLE_LILTOON
-				#if defined(PROP_RIMCOLORTEX) || !defined(OPTIMIZER_ENABLED)
-				float4 rimColorTex = POI2D_SAMPLER_PAN(_RimColorTex, _MainTex, poiUV(poiMesh.uv[_RimColorTexUV], _RimColorTex_ST), _RimColorTexPan);
-				#else
-				float4 rimColorTex = 1;
-				#endif
-				ApplyLiltoonRimLighting(poiFragData, poiMesh, poiCam, poiLight, poiMods, _RimColor, _RimIndirColor, rimColorTex, _RimMainStrength, _RimNormalStrength, _RimDirRange, _RimIndirRange, _RimFresnelPower, _RimBackfaceMask, _RimDirStrength, _RimBorder, _RimBlur, _RimIndirBorder, _RimIndirBlur, _RimShadowMask, _RimEnableLighting, _RimVRParallaxStrength, _RimGlobalMask, _RimGlobalMaskBlendType, _RimHueShiftEnabled, _RimHueShift, _RimHueShiftSpeed, _RimBlendMode);
-				#endif
+				
 				#endif
 				//endex
 				//ifex _EnableRim2Lighting==0
@@ -47159,7 +47819,7 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				float rim2Bias = 0;
 				#endif
 				
-				if(_Rim2MaskInvert)
+				if (_Rim2MaskInvert)
 				{
 					rim2Mask = 1 - rim2Mask;
 				}
@@ -47193,14 +47853,7 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				#endif
 				ApplyUTS2RimLighting(poiFragData, poiMesh, poiCam, poiLight, poiMods, Set_Rim2LightMask_var, _Rim2GlobalMask, _Rim2GlobalMaskBlendType, _Rim2LightColor, _Rim2LightColorThemeIndex, _Is_LightColor_Rim2Light, _Is_NormalMapToRim2Light, _Rim2Light_Power, _Rim2Light_InsideMask, _Rim2Light_FeatherOff, _LightDirection_MaskOn2, _Tweak_LightDirection_MaskLevel2, _Add_Antipodean_Rim2Light, _Ap_Rim2LightColor, _Rim2ApColorThemeIndex, _Is_LightColor_Ap_Rim2Light, _Ap_Rim2Light_Power, _Ap_Rim2Light_FeatherOff, _Tweak_Rim2LightMaskLevel, _Rim2HueShiftEnabled, _Rim2HueShift, _Rim2HueShiftSpeed);
 				#endif
-				#ifdef _RIM2STYLE_LILTOON
-				#if defined(PROP_RIM2COLORTEX) || !defined(OPTIMIZER_ENABLED)
-				float4 rim2ColorTex = POI2D_SAMPLER_PAN(_Rim2ColorTex, _MainTex, poiUV(poiMesh.uv[_Rim2ColorTexUV], _Rim2ColorTex_ST), _Rim2ColorTexPan);
-				#else
-				float4 rim2ColorTex = 1;
-				#endif
-				ApplyLiltoonRimLighting(poiFragData, poiMesh, poiCam, poiLight, poiMods, _Rim2Color, _Rim2IndirColor, rim2ColorTex, _Rim2MainStrength, _Rim2NormalStrength, _Rim2DirRange, _Rim2IndirRange, _Rim2FresnelPower, _Rim2BackfaceMask, _Rim2DirStrength, _Rim2Border, _Rim2Blur, _Rim2IndirBorder, _Rim2IndirBlur, _Rim2ShadowMask, _Rim2EnableLighting, _Rim2VRParallaxStrength, _Rim2GlobalMask, _Rim2GlobalMaskBlendType, _Rim2HueShiftEnabled, _Rim2HueShift, _Rim2HueShiftSpeed, _Rim2BlendMode);
-				#endif
+				
 				#endif
 				//endex
 				
@@ -47280,6 +47933,31 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				//ifex _BacklightEnabled!=1
 				#ifdef POI_BACKLIGHT
 				ApplyBacklight(poiFragData, poiMesh, poiLight, poiCam, poiMods);
+				#endif
+				//endex
+				
+				//ifex _EnableRimLighting==0
+				#ifdef _GLOSSYREFLECTIONS_OFF
+				#ifdef _RIMSTYLE_LILTOON
+				#if defined(PROP_RIMCOLORTEX) || !defined(OPTIMIZER_ENABLED)
+				float4 rimColorTex = POI2D_SAMPLER_PAN(_RimColorTex, _MainTex, poiUV(poiMesh.uv[_RimColorTexUV], _RimColorTex_ST), _RimColorTexPan);
+				#else
+				float4 rimColorTex = 1;
+				#endif
+				ApplyLiltoonRimLighting(poiFragData, poiMesh, poiCam, poiLight, poiMods, _RimColor, _RimIndirColor, rimColorTex, _RimMainStrength, _RimNormalStrength, _RimDirRange, _RimIndirRange, _RimFresnelPower, _RimBackfaceMask, _RimDirStrength, _RimBorder, _RimBlur, _RimIndirBorder, _RimIndirBlur, _RimShadowMask, _RimEnableLighting, _RimVRParallaxStrength, _RimGlobalMask, _RimGlobalMaskBlendType, _RimHueShiftEnabled, _RimHueShift, _RimHueShiftSpeed, _RimBlendMode);
+				#endif
+				#endif
+				//endex
+				//ifex _EnableRim2Lighting==0
+				#ifdef POI_RIM2
+				#ifdef _RIM2STYLE_LILTOON
+				#if defined(PROP_RIM2COLORTEX) || !defined(OPTIMIZER_ENABLED)
+				float4 rim2ColorTex = POI2D_SAMPLER_PAN(_Rim2ColorTex, _MainTex, poiUV(poiMesh.uv[_Rim2ColorTexUV], _Rim2ColorTex_ST), _Rim2ColorTexPan);
+				#else
+				float4 rim2ColorTex = 1;
+				#endif
+				ApplyLiltoonRimLighting(poiFragData, poiMesh, poiCam, poiLight, poiMods, _Rim2Color, _Rim2IndirColor, rim2ColorTex, _Rim2MainStrength, _Rim2NormalStrength, _Rim2DirRange, _Rim2IndirRange, _Rim2FresnelPower, _Rim2BackfaceMask, _Rim2DirStrength, _Rim2Border, _Rim2Blur, _Rim2IndirBorder, _Rim2IndirBlur, _Rim2ShadowMask, _Rim2EnableLighting, _Rim2VRParallaxStrength, _Rim2GlobalMask, _Rim2GlobalMaskBlendType, _Rim2HueShiftEnabled, _Rim2HueShift, _Rim2HueShiftSpeed, _Rim2BlendMode);
+				#endif
 				#endif
 				//endex
 				
@@ -49117,7 +49795,6 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				float2 uv3 : TEXCOORD3;
 				uint vertexId : SV_VertexID;
 				UNITY_VERTEX_INPUT_INSTANCE_ID
-				UNITY_VERTEX_OUTPUT_STEREO
 			};
 			
 			struct VertexOut
@@ -54321,6 +54998,8 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				{
 					#if !defined(UNITY_COLORSPACE_GAMMA)
 					float3 tempColor = OpenLitLinearToSRGB(poiFragData.baseColor);
+					#else
+					float3 tempColor = poiFragData.baseColor;
 					#endif
 					#if defined(PROP_MAINGRADATIONTEX) || !defined(OPTIMIZER_ENABLED)
 					tempColor.r = POI_SAMPLE_1D_X(_MainGradationTex, sampler_linear_clamp, tempColor.r).r;
