@@ -1036,7 +1036,6 @@ Shader ".poiyomi/Poiyomi Toon World"
 		
 		//ifex _LightingMode!=1
 		// Multilayer Math
-		
 		[sRGBWarning]_MultilayerMathBlurMap ("Blur Map--{reference_properties:[_MultilayerMathBlurMapPan, _MultilayerMathBlurMapUV], condition_showS:(_LightingMode==1)}", 2D) = "white" { }
 		[HideInInspector] s_start_MultilayerMath1stLayer ("Shadow Layer 1--{persistent_expand:true,default_expand:true, condition_showS:(_LightingMode==1)}", Float) = 1
 		[sRGBWarning(true)]_ShadowColorTex ("Color Tex--{reference_properties:[_ShadowColorTexPan, _ShadowColorTexUV], condition_showS:(_LightingMode==1)}", 2D) = "black" { }
@@ -1139,6 +1138,7 @@ Shader ".poiyomi/Poiyomi Toon World"
 		//ifex _LightingMode!=5
 		// Flat
 		[ToggleUI]_ForceFlatRampedLightmap ("Force Ramped Lightmap--{condition_showS:(_LightingMode==5)}", Range(0, 1)) = 1
+		//endex
 		
 		//ifex _LightingMode!=7
 		// Cloth
