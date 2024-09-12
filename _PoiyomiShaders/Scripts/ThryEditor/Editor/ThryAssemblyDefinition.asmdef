@@ -1,5 +1,6 @@
 {
-    "name": "ThryAssemblyDefinition",
+    "name": "ThryEditor",
+    "rootNamespace": "",
     "references": [],
     "includePlatforms": [
         "Editor"

@@ -1,0 +1,8 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
+    <Style src="project://database/Assets/_PoiyomiShaders/Scripts/ThryEditor/Editor/Resources/Shader%20Translator/TranslatorEditorStyles.uss?fileID=7433441132597879392&amp;guid=00f87086e8d71f94f9948fb25a8321cf&amp;type=3#TranslatorEditorStyles" />
+    <ui:VisualElement style="flex-grow: 1; flex-direction: row;">
+        <ui:EnumField type="Thry.ThryEditor.ShaderTranslations.ShaderModificationAction+ActionType, ThryEditor" binding-path="actionType" name="actionType" />
+        <ui:TextField picking-mode="Ignore" name="propertyName" binding-path="propertyName" tooltip="Property in the source shader" label="Property" class="padding-horizontal inline-label" style="flex-grow: 1; width: 30%;" />
+        <ui:TextField picking-mode="Ignore" name="targetValue" binding-path="targetValue" tooltip="Target value to set" label="Value" class="padding-horizontal inline-label" style="flex-grow: 1; width: 30%;" />
+    </ui:VisualElement>
+</ui:UXML>

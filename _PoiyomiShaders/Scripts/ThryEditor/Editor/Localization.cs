@@ -63,15 +63,15 @@ namespace Thry{
             return l;
         }
 
-        public void DrawDropdown()
+        public void DrawDropdown(Rect r)
         {
             if(_couldNotLoad)
             {
-                EditorGUILayout.HelpBox("Could not load localization file", MessageType.Warning);
+                EditorGUI.HelpBox(r, "Could not load localization file", MessageType.Warning);
                 return;
             }
             EditorGUI.BeginChangeCheck();
-            SelectedLanguage = EditorGUILayout.Popup(SelectedLanguage + 1, _allLanguages) - 1;
+            SelectedLanguage = EditorGUI.Popup(r, SelectedLanguage + 1, _allLanguages) - 1;
             if(EditorGUI.EndChangeCheck())
             {
                 ShaderEditor.Active.Reload();

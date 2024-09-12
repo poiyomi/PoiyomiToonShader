@@ -117,8 +117,7 @@ namespace Thry.ThryEditor
             {
                 string[] lines = File.ReadAllLines(FILE_NAME_CACHE);
 
-                string presetVersion = lines[0];
-                if(presetVersion != PRESET_VERSION)
+                if(lines.Length == 0 || lines[0] != PRESET_VERSION)
                 {
                     CreatePresetCache();
                     return;
@@ -300,7 +299,7 @@ namespace Thry.ThryEditor
                         
                         if(!PresetCollections[collectionName].Guids.Contains(guid))
                         {
-                            Debug.Log($"AddPreset: {name} ({guid})");
+                            //Debug.Log($"AddPreset: {name} ({guid})");
                             PresetCollections[collectionName].Names.Add(name);
                             PresetCollections[collectionName].Guids.Add(guid);
                         }
@@ -312,7 +311,7 @@ namespace Thry.ThryEditor
                 string name = material.GetTag(TAG_PRESET_NAME, false, material.name).Replace(';', '_');
                 if(!PresetCollections["_full_"].Guids.Contains(guid))
                 {
-                    Debug.Log($"AddPreset: {name} ({guid})");
+                    //Debug.Log($"AddPreset: {name} ({guid})");
                     PresetCollections["_full_"].Names.Add(name);
                     PresetCollections["_full_"].Guids.Add(guid);
                 }
@@ -341,7 +340,7 @@ namespace Thry.ThryEditor
                     // if guid matches, remove from collection
                     if(collection.Value.Guids[i] == guid)
                     {
-                        Debug.Log($"RemovePreset: {collection.Value.Names[i]} ({guid})");
+                        //Debug.Log($"RemovePreset: {collection.Value.Names[i]} ({guid})");
                         collection.Value.Guids.RemoveAt(i);
                         collection.Value.Names.RemoveAt(i);
                         break;
@@ -409,6 +408,8 @@ namespace Thry.ThryEditor
         {
             if (shaderEditor.IsPresetEditor)
             {
+                RectifiedLayout.Seperator();
+
                 EditorGUILayout.LabelField(EditorLocale.editor.Get("preset_material_notify"), Styles.greenStyle);
                 EditorGUI.BeginChangeCheck();
                 bool isSectionPreset = IsMaterialSectionedPreset(shaderEditor.Materials[0]);
@@ -431,6 +432,9 @@ namespace Thry.ThryEditor
                         Save();
                     }
                 }
+
+                RectifiedLayout.Seperator();
+                GUILayout.Space(10);
             }
             if (s_appliedPresets.ContainsKey(shaderEditor.Materials[0]))
             {
@@ -542,6 +546,27 @@ namespace Thry.ThryEditor
         {
             return m.GetTag(TAG_IS_PRESET, false, "false") == "true";
         }
+        
+        public static void SetPreset(IEnumerable<Material> mats, bool set)
+        {
+            if (set)
+            {
+                foreach (Material m in mats)
+                {
+                    m.SetOverrideTag(TAG_IS_PRESET, "true");
+                    if (m.GetTag("presetName", false, "") == "") m.SetOverrideTag("presetName", m.name);
+                    Presets.AddPreset(m);
+                }
+            }
+            else
+            {
+                foreach (Material m in mats)
+                {
+                    m.SetOverrideTag(TAG_IS_PRESET, "");
+                    Presets.RemovePreset(m);
+                }
+            }
+        }
 
         public static bool IsMaterialSectionedPreset(Material m)
         {
@@ -551,6 +576,8 @@ namespace Thry.ThryEditor
         public static void SetMaterialSectionedPreset(Material m, bool value)
         {
             m.SetOverrideTag(TAG_IS_SECTION_PRESET, value ? "true" : "");
+            RemovePreset(m);
+            AddPreset(m);   
         }
 
         public static bool IsSectionPreset(Material m, string headerPropName)
@@ -601,7 +628,7 @@ namespace Thry.ThryEditor
 
         public static bool DoesSectionHavePresets(string headerPropName)
         {
-            return PresetCollections.ContainsKey(headerPropName);
+            return PresetCollections.ContainsKey(headerPropName) && PresetCollections[headerPropName].Guids.Count > 0;
         }
 
 #region Preset Validation
@@ -656,46 +683,6 @@ namespace Thry.ThryEditor
 #endregion
 
 #region Unity Menu Hooks
-
-        [MenuItem("Assets/Thry/Materials/Mark as Preset",false,500)]
-        static void MarkAsPreset()
-        {
-            IEnumerable<Material> mats = Selection.assetGUIDs.Select(g => AssetDatabase.GUIDToAssetPath(g)).
-                Where(p => AssetDatabase.GetMainAssetTypeAtPath(p) == typeof(Material)).Select(p => AssetDatabase.LoadAssetAtPath<Material>(p));
-            foreach (Material m in mats)
-            {
-                m.SetOverrideTag(TAG_IS_PRESET, "true");
-                if (m.GetTag("presetName", false, "") == "") m.SetOverrideTag("presetName", m.name);
-                Presets.AddPreset(m);
-            }
-        }
-
-        [MenuItem("Assets/Thry/Materials/Mark as Preset", true,500)]
-        static bool MarkAsPresetValid()
-        {
-            return Selection.assetGUIDs.Select(g => AssetDatabase.GUIDToAssetPath(g)).
-                All(p => AssetDatabase.GetMainAssetTypeAtPath(p) == typeof(Material));
-        }
-
-        [MenuItem("Assets/Thry/Materials/Remove as preset",false,500)]
-        static void RemoveAsPreset()
-        {
-            IEnumerable<Material> mats = Selection.assetGUIDs.Select(g => AssetDatabase.GUIDToAssetPath(g)).
-                Where(p => AssetDatabase.GetMainAssetTypeAtPath(p) == typeof(Material)).Select(p => AssetDatabase.LoadAssetAtPath<Material>(p));
-            foreach (Material m in mats)
-            {
-                m.SetOverrideTag(TAG_IS_PRESET, "");
-                Presets.RemovePreset(m);
-            }
-        }
-
-        [MenuItem("Assets/Thry/Materials/Remove as preset", true,500)]
-        static bool RemoveAsPresetValid()
-        {
-            return Selection.assetGUIDs.Select(g => AssetDatabase.GUIDToAssetPath(g)).
-                All(p => AssetDatabase.GetMainAssetTypeAtPath(p) == typeof(Material));
-        }
-        
         [MenuItem("Thry/Presets/Rebuild Cache", priority = 100)]
         static void RebuildCache()
         {

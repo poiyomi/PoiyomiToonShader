@@ -155,6 +155,7 @@ namespace Thry
             GUILayout.Label(EditorLocale.editor.Get("shader_ui_design_header"), EditorStyles.boldLabel);
             Dropdown("default_texture_type");
             Toggle("showRenderQueue");
+            Toggle(nameof(Config.showColorspaceWarnings));
 
             EditorGUILayout.Space();
             GUILayout.Label(EditorLocale.editor.Get("shader_ui_features_header"), EditorStyles.boldLabel);

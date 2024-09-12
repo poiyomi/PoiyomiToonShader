@@ -37,13 +37,15 @@ namespace Thry
 
         private void OnGUI()
         {
-            if(_propPosition == null)
+            if(_propPosition == null || _material.mainTexture == null)
             {
                 return;
             }
             HandleInput();
-            // EditorGUI.DrawPreviewTexture(new Rect(0, 0, position.width, position.height), _material.mainTexture, _material);
-            EditorGUI.DrawTextureTransparent(new Rect(0, 0, position.width, position.height), _material.mainTexture, ScaleMode.StretchToFill);
+            if(_material.mainTexture == null)
+                EditorGUI.DrawTextureTransparent(new Rect(0, 0, position.width, position.height), Texture2D.grayTexture, ScaleMode.StretchToFill);
+            else
+                EditorGUI.DrawTextureTransparent(new Rect(0, 0, position.width, position.height), _material.mainTexture, ScaleMode.StretchToFill);
             _gizmoMaterial.SetVector("_Position", _propPosition.vectorValue);
             _gizmoMaterial.SetVector("_Scale", _propScale.vectorValue);
             _gizmoMaterial.SetFloat("_Rotation", _propRotation.floatValue);

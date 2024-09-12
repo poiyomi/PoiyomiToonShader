@@ -2,7 +2,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 {
 	Properties
 	{
-		[HideInInspector] shader_master_label ("<color=#E75898ff>Poiyomi 9.0.57</color>", Float) = 0
+		[HideInInspector] shader_master_label ("<color=#E75898ff>Poiyomi 9.0.60</color>", Float) = 0
 		[HideInInspector] shader_is_using_thry_editor ("", Float) = 0
 		[HideInInspector] shader_locale ("0db0b86376c3dca4b9a6828ef8615fe0", Float) = 0
 		[HideInInspector] footer_youtube ("{texture:{name:icon-youtube,height:16},action:{type:URL,data:https://www.youtube.com/poiyomi},hover:YOUTUBE}", Float) = 0
@@ -62,11 +62,11 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 		[HideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7)] _BumpMapUV ("UV", Int) = 0
 		[HideInInspector]_BumpScale ("Intensity", Range(0, 10)) = 1
 		[HideInInspector][ToggleUI]_BumpMapStochastic ("Stochastic Sampling", Float) = 0
-		[sRGBWarning]_AlphaMask ("Alpha Map--{reference_properties:[_AlphaMaskPan, _AlphaMaskUV, _AlphaMaskInvert, _MainAlphaMaskMode, _AlphaMaskScale, _AlphaMaskValue], alts:[_AlphaMap]}", 2D) = "white" { }
+		[sRGBWarning]_AlphaMask ("Alpha Map--{reference_properties:[_AlphaMaskPan, _AlphaMaskUV, _AlphaMaskInvert, _MainAlphaMaskMode, _AlphaMaskBlendStrength, _AlphaMaskValue], alts:[_AlphaMap]}", 2D) = "white" { }
 		[HideInInspector][Vector2]_AlphaMaskPan ("Panning", Vector) = (0, 0, 0, 0)
 		[HideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7)] _AlphaMaskUV ("UV", Int) = 0
 		[HideInInspector][ThryWideEnum(Off, 0, Replace, 1, Multiply, 2, Add, 3, Subtract, 4)]_MainAlphaMaskMode ("Blend Mode", Int) = 2
-		[HideInInspector]_AlphaMaskScale ("Blend Strength", Float) = 1
+		[HideInInspector]_AlphaMaskBlendStrength ("Blend Strength", Float) = 1
 		[HideInInspector]_AlphaMaskValue ("Blend Offset", Float) = 0
 		[HideInInspector][ToggleUI]_AlphaMaskInvert ("Invert", Float) = 0
 		_Cutoff ("Alpha Cutoff", Range(0, 1.001)) = 0.5
@@ -82,6 +82,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 		
 		[HideInInspector] s_start_MainHueShift ("Hue Shift--{reference_property:_MainHueShiftToggle,persistent_expand:true,default_expand:true}", Float) = 1
 		[HideInInspector][ThryToggleUI(true)] _MainHueShiftToggle ("<size=13><b>  Hue Shift</b></size>", Float) = 0
+		[ThryWideEnum(OKLab, 0, HSV, 1)] _MainHueShiftColorSpace ("Color Space", Int) = 0
 		[ToggleUI]_MainHueShiftReplace ("Hue Replace?", Float) = 1
 		_MainHueShift ("Hue Shift", Range(0, 1)) = 0
 		_MainHueShiftSpeed ("Hue Shift Speed", Float) = 0
@@ -336,7 +337,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 		_VertexGlitchStrength ("Glitch Strength", Range(0, 10)) = 1
 		[HideInInspector] s_start_VertexGlitchTexture ("Glitch Texture--{reference_property:_VertexGlitchingUseTexture,persistent_expand:true,default_expand:true}", Float) = 1
 		[HideInInspector][ThryToggle(POI_VERTEX_GLITCHING_TEXTURE, true)]_VertexGlitchingUseTexture ("Use Texture", Float) = 0
-		[sRGBWarning][ThryRGBAPacker(R Both, G Right, B Left, A unused, linear, false)]_VertexGlitchMap ("Glitch Map [Expand]", 2D) = "white" { }
+		[sRGBWarning][ThryRGBAPacker(R Both, G Right, B Left, A unused, linear, false)]_VertexGlitchMap ("Glitch Map [Click to Expand]", 2D) = "white" { }
 		_VertexGlitchDensity ("Glitch Density", Range(0, 50)) = 10
 		_VertexGlitchMapPanSpeed ("Glitch Map Pan Speed", Range(0, 100)) = 10
 		[HideInInspector] s_end_VertexGlitchTexture ("Glitch Texture", Float) = 0
@@ -380,6 +381,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 		
 		[HideInInspector] s_start_BackFaceHueShift ("Hue Shift--{reference_property:_BackFaceHueShiftEnabled,persistent_expand:true}", Float) = 0
 		[HideInInspector][ToggleUI]_BackFaceHueShiftEnabled ("Hue Shift", Float) = 0
+		[ThryWideEnum(OKLab, 0, HSV, 1)] _BackFaceShiftColorSpace ("Color Space", Int) = 0
 		_BackFaceHueShift ("Shift", Range(0, 1)) = 0
 		_BackFaceHueShiftSpeed ("Shift Speed", Float) = 0
 		[HideInInspector] s_end_BackFaceHueShift ("Hue Shift", Float) = 0
@@ -397,11 +399,11 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 		[HideInInspector][ThryToggle(VIGNETTE)]_RGBMaskEnabled ("RGB Mask Enabled", Float) = 0
 		[ThryWideEnum(Texture, 0, Vertex Color, 1)]_RGBMaskType ("Mask Type", int) = 0
 		
-		[sRGBWarning][ThryRGBAPacker(R Mask, G Mask, B Mask, A Mask, Linear, false)]_RGBMask ("Masks [Expand]--{reference_properties:[_RGBMaskPan, _RGBMaskUV], condition_showS:_RGBMaskType==0}", 2D) = "white" { }
+		[sRGBWarning][ThryRGBAPacker(R Mask, G Mask, B Mask, A Mask, Linear, false)]_RGBMask ("Masks [Click to Expand]--{reference_properties:[_RGBMaskPan, _RGBMaskUV], condition_showS:_RGBMaskType==0}", 2D) = "white" { }
 		[HideInInspector][Vector2]_RGBMaskPan ("Panning", Vector) = (0, 0, 0, 0)
 		[HideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7)]_RGBMaskUV ("UV", int) = 0
 		
-		[sRGBWarning][ThryRGBAPacker(Red Metallic, Green Metallic, Blue Metallic, Alpha Metallic, Linear, false)]_RGBAMetallicMaps ("Metallic Maps [Expand]--{reference_properties:[_RGBAMetallicMapsPan, _RGBAMetallicMapsUV, _RGBAMetallicMapsStochastic, _RGBARedMetallicInvert, _RGBAGreenMetallicInvert, _RGBABlueMetallicInvert, _RGBAAlphaMetallicInvert]}", 2D) = "white" { }
+		[sRGBWarning][ThryRGBAPacker(Red Metallic, Green Metallic, Blue Metallic, Alpha Metallic, Linear, false)]_RGBAMetallicMaps ("Metallic Maps [Click to Expand]--{reference_properties:[_RGBAMetallicMapsPan, _RGBAMetallicMapsUV, _RGBAMetallicMapsStochastic, _RGBARedMetallicInvert, _RGBAGreenMetallicInvert, _RGBABlueMetallicInvert, _RGBAAlphaMetallicInvert]}", 2D) = "white" { }
 		[HideInInspector][Vector2]_RGBAMetallicMapsPan ("Panning", Vector) = (0, 0, 0, 0)
 		[HideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7)]_RGBAMetallicMapsUV ("UV", Int) = 0
 		[HideInInspector][ToggleUI]_RGBAMetallicMapsStochastic ("Stochastic Sampling", Float) = 0
@@ -410,7 +412,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 		[HideInInspector][ToggleUI]_RGBABlueMetallicInvert ("Invert B", Float) = 0
 		[HideInInspector][ToggleUI]_RGBAAlphaMetallicInvert ("Invert A", Float) = 0
 		
-		[sRGBWarning][ThryRGBAPacker(Red Smoothness, Green Smoothness, Blue Smoothness, Alpha Smoothness, Linear, false)]_RGBASmoothnessMaps ("Smoothness Maps [Expand]--{reference_properties:[_RGBASmoothnessMapsPan, _RGBASmoothnessMapsUV, _RGBASmoothnessMapsStochastic, _RGBARedSmoothnessInvert, _RGBAGreenSmoothnessInvert, _RGBABlueSmoothnessInvert, _RGBAAlphaSmoothnessInvert]}", 2D) = "white" { }
+		[sRGBWarning][ThryRGBAPacker(Red Smoothness, Green Smoothness, Blue Smoothness, Alpha Smoothness, Linear, false)]_RGBASmoothnessMaps ("Smoothness Maps [Click to Expand]--{reference_properties:[_RGBASmoothnessMapsPan, _RGBASmoothnessMapsUV, _RGBASmoothnessMapsStochastic, _RGBARedSmoothnessInvert, _RGBAGreenSmoothnessInvert, _RGBABlueSmoothnessInvert, _RGBAAlphaSmoothnessInvert]}", 2D) = "white" { }
 		[HideInInspector][Vector2]_RGBASmoothnessMapsPan ("Panning", Vector) = (0, 0, 0, 0)
 		[HideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7)]_RGBASmoothnessMapsUV ("UV", Int) = 0
 		[HideInInspector][ToggleUI]_RGBASmoothnessMapsStochastic ("Stochastic Sampling", Float) = 0
@@ -555,12 +557,14 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 		
 		//ifex _DecalEnabled==0 && _DecalEnabled1==0 && _DecalEnabled2==0 && _DecalEnabled3==0
 		// Decal Texture
+		//[HideInInspector] m_start_DecalSection ("Decals Group 0--{button_help:{text:Tutorial,action:{type:URL,data:https://www.poiyomi.com/color-and-normals/decals},hover:YouTube}}", Float) = 0
 		[HideInInspector] m_start_DecalSection ("Decals--{button_help:{text:Tutorial,action:{type:URL,data:https://www.poiyomi.com/color-and-normals/decals},hover:YouTube}}", Float) = 0
-		[sRGBWarning][ThryRGBAPacker(Decal 0 Mask, Decal 1 Mask, Decal 2 Mask, Decal 3 Mask, Linear, false)]_DecalMask ("Decal RGBA Mask--{reference_properties:[_DecalMaskPan, _DecalMaskUV]}", 2D) = "white" { }
+		[sRGBWarning][ThryRGBAPacker(Decal 0 Mask, Decal 1 Mask, Decal 2 Mask, Decal 3 Mask, Linear, false)]_DecalMask ("RGBA Mask [Click to Expand]--{reference_properties:[_DecalMaskPan, _DecalMaskUV]}", 2D) = "white" { }
 		[HideInInspector][Vector2]_DecalMaskPan ("Panning", Vector) = (0, 0, 0, 0)
 		[HideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7)] _DecalMaskUV ("UV", Int) = 0
 		//ifex 0==0
-		//_Udon_VideoTex ("Video Debug Texture", 2D) = "white" { }
+		//ex_remove_texture _Udon_VideoTex
+		//_Udon_VideoTex ("Video Debug Texture                                                                                                                               NL", 2D) = "" {}
 		//endex
 		
 		[HideInInspector] s_start_DecalTPSMaskGroup ("--{condition_showS:(_TPSPenetratorEnabled==1)}", Float) = 0
@@ -581,6 +585,8 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 		_DecalRotationSpeed ("Rotation Speed", Float) = 0
 		[VectorLabel(X, Y)]_DecalScale ("Scale", Vector) = (1, 1, 1, 0)
 		[VectorLabel(L, R, D, U)]_DecalSideOffset ("Side Offset", Vector) = (0, 0, 0, 0)
+		[ThryWideEnum(Off, 0, Flip, 1, Left Only, 2, Right Only, 3, Flip Right Only, 4)] _DecalMirroredUVMode ("Mirrored UV Mode", Int) = 0
+		[ThryWideEnum(Off, 0, Symmetry, 1, Flipped, 2)] _DecalSymmetryMode ("Symmetry Mode", Int) = 0
 		[ToggleUI]_DecalTiled ("Tiled", Float) = 0
 		[HideInInspector] s_end_decal_position ("Positioning", Float) = 0
 		
@@ -600,6 +606,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 		
 		[HideInInspector] s_start_Decal0HueShift ("Hue Shift--{reference_property:_DecalHueShiftEnabled, persistent_expand:true, default_expand:false}", Float) = 0
 		[HideInInspector][ThryToggleUI(true)]_DecalHueShiftEnabled ("Hue Shift", Float) = 0
+		[ThryWideEnum(OKLab, 0, HSV, 1)] _DecalHueShiftColorSpace ("Color Space", Int) = 0
 		_DecalHueShiftSpeed ("Shift Speed", Float) = 0
 		_DecalHueShift ("Hue Shift", Range(0, 1)) = 0
 		_Decal0HueAngleStrength ("Hue Angle Power", Float) = 0
@@ -669,6 +676,8 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 		_DecalRotationSpeed1 ("Rotation Speed", Float) = 0
 		[VectorLabel(X, Y)]_DecalScale1 ("Scale", Vector) = (1, 1, 1, 0)
 		[VectorLabel(L, R, D, U)]_DecalSideOffset1 ("Side Offset", Vector) = (0, 0, 0, 0)
+		[ThryWideEnum(Off, 0, Flip, 1, Left Only, 2, Right Only, 3, Flip Right Only, 4)] _DecalMirroredUVMode1 ("Mirrored UV Mode", Int) = 0
+		[ThryWideEnum(Off, 0, Symmetry, 1, Flipped, 2)] _DecalSymmetryMode1 ("Symmetry Mode", Int) = 0
 		[ToggleUI]_DecalTiled1 ("Tiled", Float) = 0
 		[HideInInspector] s_end_decal1_position ("Positioning", Float) = 0
 		
@@ -688,6 +697,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 		
 		[HideInInspector] s_start_Decal1HueShift ("Hue Shift--{reference_property:_DecalHueShiftEnabled1, persistent_expand:true, default_expand:false}", Float) = 0
 		[HideInInspector][ThryToggleUI(true)]_DecalHueShiftEnabled1 ("Hue Shift", Float) = 0
+		[ThryWideEnum(OKLab, 0, HSV, 1)] _DecalHueShiftColorSpace1 ("Color Space", Int) = 0
 		_DecalHueShiftSpeed1 ("Shift Speed", Float) = 0
 		_DecalHueShift1 ("Hue Shift", Range(0, 1)) = 0
 		_Decal1HueAngleStrength ("Hue Angle Power", Float) = 0
@@ -757,6 +767,8 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 		_DecalRotationSpeed2 ("Rotation Speed", Float) = 0
 		[VectorLabel(X, Y)]_DecalScale2 ("Scale", Vector) = (1, 1, 1, 0)
 		[VectorLabel(L, R, D, U)]_DecalSideOffset2 ("Side Offset", Vector) = (0, 0, 0, 0)
+		[ThryWideEnum(Off, 0, Flip, 1, Left Only, 2, Right Only, 3, Flip Right Only, 4)] _DecalMirroredUVMode2 ("Mirrored UV Mode", Int) = 0
+		[ThryWideEnum(Off, 0, Symmetry, 1, Flipped, 2)] _DecalSymmetryMode2 ("Symmetry Mode", Int) = 0
 		[ToggleUI]_DecalTiled2 ("Tiled", Float) = 0
 		[HideInInspector] s_end_decal2_position ("Positioning", Float) = 0
 		
@@ -776,6 +788,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 		
 		[HideInInspector] s_start_Decal2HueShift ("Hue Shift--{reference_property:_DecalHueShiftEnabled2, persistent_expand:true, default_expand:false}", Float) = 0
 		[HideInInspector][ThryToggleUI(true)]_DecalHueShiftEnabled2 ("Hue Shift", Float) = 0
+		[ThryWideEnum(OKLab, 0, HSV, 1)] _DecalHueShiftColorSpace2 ("Color Space", Int) = 0
 		_DecalHueShiftSpeed2 ("Shift Speed", Float) = 0
 		_DecalHueShift2 ("Hue Shift", Range(0, 1)) = 0
 		_Decal2HueAngleStrength ("Hue Angle Power", Float) = 0
@@ -845,10 +858,11 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 		_DecalRotationSpeed3 ("Rotation Speed", Float) = 0
 		[VectorLabel(X, Y)]_DecalScale3 ("Scale", Vector) = (1, 1, 1, 0)
 		[VectorLabel(L, R, D, U)]_DecalSideOffset3 ("Side Offset", Vector) = (0, 0, 0, 0)
+		[ThryWideEnum(Off, 0, Flip, 1, Left Only, 2, Right Only, 3, Flip Right Only, 4)] _DecalMirroredUVMode3 ("Mirrored UV Mode", Int) = 0
+		[ThryWideEnum(Off, 0, Symmetry, 1, Flipped, 2)] _DecalSymmetryMode3 ("Symmetry Mode", Int) = 0
 		[ToggleUI]_DecalTiled3 ("Tiled", Float) = 0
 		[HideInInspector] s_end_decal3_position ("Positioning", Float) = 0
 		
-		[ThryWideEnum(Default, 0, Video Texture, 1)]_Decal3TextureToUse ("Texture Swap", Int) = 0
 		_DecalColor3 ("Color--{reference_property:_DecalColor3ThemeIndex}", Color) = (1, 1, 1, 1)
 		[HideInInspector][ThryWideEnum(Off, 0, Theme Color 0, 1, Theme Color 1, 2, Theme Color 2, 3, Theme Color 3, 4, ColorChord 0, 5, ColorChord 1, 6, ColorChord 2, 7, ColorChord 3, 8, AL Theme 0, 9, AL Theme 1, 10, AL Theme 2, 11, AL Theme 3, 12)] _DecalColor3ThemeIndex ("", Int) = 0
 		[sRGBWarning(true)]_DecalTexture3 ("Decal--{reference_properties:[_DecalTexture3Pan, _DecalTexture3UV, _Decal3MaskChannel, _DecalOverrideAlpha3]}", 2D) = "white" { }
@@ -865,6 +879,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 		
 		[HideInInspector] s_start_Decal3HueShift ("Hue Shift--{reference_property:_DecalHueShiftEnabled3, persistent_expand:true, default_expand:false}", Float) = 0
 		[HideInInspector][ThryToggleUI(true)]_DecalHueShiftEnabled3 ("Hue Shift", Float) = 0
+		[ThryWideEnum(OKLab, 0, HSV, 1)] _DecalHueShiftColorSpace3 ("Color Space", Int) = 0
 		_DecalHueShiftSpeed3 ("Shift Speed", Float) = 0
 		_DecalHueShift3 ("Hue Shift", Range(0, 1)) = 0
 		_Decal3HueAngleStrength ("Hue Angle Power", Float) = 0
@@ -1210,7 +1225,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 		
 		//ifex _EnableAniso==0
 		
-		[HideInInspector] m_start_Aniso (" Anisotropics--{reference_property:_EnableAniso}", Float) = 0
+		[HideInInspector] m_start_Aniso (" Anisotropics--{reference_property:_EnableAniso, button_help:{text:Tutorial,action:{type:URL,data:https://www.poiyomi.com/shading/anisotropics},hover:Documentation}}", Float) = 0
 		[HideInInspector][ThryToggle(POI_ANISOTROPICS)]_EnableAniso ("Enable Aniso", Float) = 0
 		[sRGBWarning(true)][ThryRGBAPacker(RGB Color, A Offset, linear, false)]_AnisoColorMap ("Color & Offset--{reference_properties:[_AnisoColorMapPan, _AnisoColorMapUV]}", 2D) = "white" { }
 		[HideInInspector][Vector2]_AnisoColorMapPan ("Panning", Vector) = (0, 0, 0, 0)
@@ -1307,6 +1322,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 		
 		[HideInInspector] s_start_MatcapHueShift ("Hue Shift--{reference_property:_MatcapHueShiftEnabled,persistent_expand:true}", Float) = 0
 		[HideInInspector][ThryToggleUI(true)] _MatcapHueShiftEnabled ("Hue Shift", Float) = 0
+		[ThryWideEnum(OKLab, 0, HSV, 1)] _MatcapHueShiftColorSpace ("Color Space", Int) = 0
 		_MatcapHueShiftSpeed ("Shift Speed", Float) = 0
 		_MatcapHueShift ("Hue Shift", Range(0, 1)) = 0
 		[HideInInspector] s_end_MatcapHueShift ("", Float) = 0
@@ -1394,6 +1410,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 		
 		[HideInInspector] s_start_Matcap1HueShift ("Hue Shift--{reference_property:_Matcap2HueShiftEnabled,persistent_expand:true}", Float) = 0
 		[HideInInspector][ToggleUI] _Matcap2HueShiftEnabled ("Hue Shift", Float) = 0
+		[ThryWideEnum(OKLab, 0, HSV, 1)] _Matcap2HueShiftColorSpace ("Color Space", Int) = 0
 		_Matcap2HueShiftSpeed ("Shift Speed", Float) = 0
 		_Matcap2HueShift ("Hue Shift", Range(0, 1)) = 0
 		[HideInInspector] s_end_Matcap1HueShift ("", Float) = 0
@@ -1481,6 +1498,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 		
 		[HideInInspector] s_start_Matcap2HueShift ("Hue Shift--{reference_property:_Matcap3HueShiftEnabled,persistent_expand:true}", Float) = 0
 		[HideInInspector][ToggleUI] _Matcap3HueShiftEnabled ("Hue Shift", Float) = 0
+		[ThryWideEnum(OKLab, 0, HSV, 1)] _Matcap3HueShiftColorSpace ("Color Space", Int) = 0
 		_Matcap3HueShiftSpeed ("Shift Speed", Float) = 0
 		_Matcap3HueShift ("Hue Shift", Range(0, 1)) = 0
 		[HideInInspector] s_end_Matcap2HueShift ("", Float) = 0
@@ -1568,6 +1586,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 		
 		[HideInInspector] s_start_Matcap3HueShift ("Hue Shift--{reference_property:_Matcap4HueShiftEnabled,persistent_expand:true}", Float) = 0
 		[HideInInspector][ToggleUI] _Matcap4HueShiftEnabled ("Hue Shift", Float) = 0
+		[ThryWideEnum(OKLab, 0, HSV, 1)] _Matcap4HueShiftColorSpace ("Color Space", Int) = 0
 		_Matcap4HueShiftSpeed ("Shift Speed", Float) = 0
 		_Matcap4HueShift ("Hue Shift", Range(0, 1)) = 0
 		[HideInInspector] s_end_Matcap3HueShift ("", Float) = 0
@@ -1738,6 +1757,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 		
 		[HideInInspector] s_start_RimLight0HueShift ("Hue Shift--{reference_property:_RimHueShiftEnabled,persistent_expand:true,default_expand:false}", Float) = 0
 		[HideInInspector][ToggleUI] _RimHueShiftEnabled ("Hue Shift", Float) = 0
+		[ThryWideEnum(OKLab, 0, HSV, 1)] _RimHueShiftColorSpace ("Color Space", Int) = 0
 		_RimHueShiftSpeed ("Shift Speed", Float) = 0
 		_RimHueShift ("Hue Shift", Range(0, 1)) = 0
 		[HideInInspector] s_end_RimLight0HueShift ("Hue Shift", Float) = 0
@@ -1855,6 +1875,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 		
 		[HideInInspector] s_start_RimLight1HueShift ("Hue Shift--{reference_property:_Rim2HueShiftEnabled,persistent_expand:true,default_expand:false}", Float) = 0
 		[HideInInspector][ToggleUI] _Rim2HueShiftEnabled ("Hue Shift", Float) = 0
+		[ThryWideEnum(OKLab, 0, HSV, 1)] _Rim2HueShiftColorSpace ("Color Space", Int) = 0
 		_Rim2HueShiftSpeed ("Shift Speed", Float) = 0
 		_Rim2HueShift ("Hue Shift", Range(0, 1)) = 0
 		[HideInInspector] s_end_RimLight1HueShift ("Hue Shift", Float) = 0
@@ -1938,7 +1959,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 		_MochieSpecularTint ("Specular Tint--{reference_property:_MochieSpecularTintThemeIndex}", Color) = (1, 1, 1, 1)
 		[HideInInspector][ThryWideEnum(Off, 0, Theme Color 0, 1, Theme Color 1, 2, Theme Color 2, 3, Theme Color 3, 4, ColorChord 0, 5, ColorChord 1, 6, ColorChord 2, 7, ColorChord 3, 8, AL Theme 0, 9, AL Theme 1, 10, AL Theme 2, 11, AL Theme 3, 12)] _MochieSpecularTintThemeIndex ("", Int) = 0
 		
-		[sRGBWarning][ThryRGBAPacker(R Metallic Map, G Smoothness Map, B Reflection Mask, A Specular Mask, linear, false)]_MochieMetallicMaps ("Packed Maps [Expand]--{reference_properties:[_MochieMetallicMapsPan, _MochieMetallicMapsUV, _MochieMetallicMapsStochastic, _MochieMetallicMapsMetallicChannel, _MochieMetallicMapsRoughnessChannel, _MochieMetallicMapsReflectionMaskChannel, _MochieMetallicMapsSpecularMaskChannel, _MochieMetallicMapInvert, _MochieRoughnessMapInvert, _MochieReflectionMaskInvert, _MochieSpecularMaskInvert]}", 2D) = "white" { }
+		[sRGBWarning][ThryRGBAPacker(R Metallic Map, G Smoothness Map, B Reflection Mask, A Specular Mask, linear, false)]_MochieMetallicMaps ("Packed Maps [Click to Expand]--{reference_properties:[_MochieMetallicMapsPan, _MochieMetallicMapsUV, _MochieMetallicMapsStochastic, _MochieMetallicMapsMetallicChannel, _MochieMetallicMapsRoughnessChannel, _MochieMetallicMapsReflectionMaskChannel, _MochieMetallicMapsSpecularMaskChannel, _MochieMetallicMapInvert, _MochieRoughnessMapInvert, _MochieReflectionMaskInvert, _MochieSpecularMaskInvert]}", 2D) = "white" { }
 		[HideInInspector][Vector2]_MochieMetallicMapsPan ("Panning", Vector) = (0, 0, 0, 0)
 		[HideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7)]_MochieMetallicMapsUV ("UV", Int) = 0
 		[HideInInspector][ToggleUI]_MochieMetallicMapsStochastic ("Stochastic Sampling", Float) = 0
@@ -2010,7 +2031,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 		_ClearCoatSpecularTint ("Specular Tint--{reference_property:_ClearCoatSpecularTintThemeIndex}", Color) = (1, 1, 1, 1)
 		[HideInInspector][ThryWideEnum(Off, 0, Theme Color 0, 1, Theme Color 1, 2, Theme Color 2, 3, Theme Color 3, 4, ColorChord 0, 5, ColorChord 1, 6, ColorChord 2, 7, ColorChord 3, 8, AL Theme 0, 9, AL Theme 1, 10, AL Theme 2, 11, AL Theme 3, 12)] _ClearCoatSpecularTintThemeIndex ("", Int) = 0
 		[Space(8)]
-		[sRGBWarning][ThryRGBAPacker(ClearCoat Mask, Smoothness Map, Reflection Mask, Specular Mask, linear, false)]_ClearCoatMaps ("Packed Maps [Expand]--{reference_properties:[_ClearCoatMapsPan, _ClearCoatMapsUV, _ClearCoatMapsStochastic, _ClearCoatMapsClearCoatMaskChannel, _ClearCoatMapsRoughnessChannel, _ClearCoatMapsReflectionMaskChannel, _ClearCoatMapsSpecularMaskChannel, _ClearCoatMaskInvert, _ClearCoatSmoothnessMapInvert, _ClearCoatReflectionMaskInvert, _ClearCoatSpecularMaskInvert]}", 2D) = "white" { }
+		[sRGBWarning][ThryRGBAPacker(ClearCoat Mask, Smoothness Map, Reflection Mask, Specular Mask, linear, false)]_ClearCoatMaps ("Packed Maps [Click to Expand]--{reference_properties:[_ClearCoatMapsPan, _ClearCoatMapsUV, _ClearCoatMapsStochastic, _ClearCoatMapsClearCoatMaskChannel, _ClearCoatMapsRoughnessChannel, _ClearCoatMapsReflectionMaskChannel, _ClearCoatMapsSpecularMaskChannel, _ClearCoatMaskInvert, _ClearCoatSmoothnessMapInvert, _ClearCoatReflectionMaskInvert, _ClearCoatSpecularMaskInvert]}", 2D) = "white" { }
 		[HideInInspector][Vector2]_ClearCoatMapsPan ("Panning", Vector) = (0, 0, 0, 0)
 		[HideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7)]_ClearCoatMapsUV ("UV", Int) = 0
 		[HideInInspector][ToggleUI]_ClearCoatMapsStochastic ("Stochastic Sampling", Float) = 0
@@ -2080,11 +2101,12 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 		[HideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7)]_HighColor_TexUV ("UV", Int) = 0
 		_HighColor ("Tint--{reference_property:_HighColorThemeIndex}", Color) = (1, 1, 1, 1)
 		[HideInInspector][ThryWideEnum(Off, 0, Theme Color 0, 1, Theme Color 1, 2, Theme Color 2, 3, Theme Color 3, 4, ColorChord 0, 5, ColorChord 1, 6, ColorChord 2, 7, ColorChord 3, 8, AL Theme 0, 9, AL Theme 1, 10, AL Theme 2, 11, AL Theme 3, 12)] _HighColorThemeIndex ("", Int) = 0
-		[sRGBWarning]_Set_HighColorMask ("Mask--{reference_properties:[_Set_HighColorMaskPan, _Set_HighColorMaskUV, _Set_HighColorMaskChannel, _Tweak_HighColorMaskLevel]}", 2D) = "white" { }
+		[sRGBWarning]_Set_HighColorMask ("Mask--{reference_properties:[_Set_HighColorMaskPan, _Set_HighColorMaskUV, _Set_HighColorMaskChannel, _Tweak_HighColorMaskLevel, _StylizedSpecularInvertMask]}", 2D) = "white" { }
 		[HideInInspector][Vector2]_Set_HighColorMaskPan ("Panning", Vector) = (0, 0, 0, 0)
 		[HideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7)]_Set_HighColorMaskUV ("UV", Int) = 0
 		[HideInInspector][Enum(R, 0, G, 1, B, 2, A, 3)]_Set_HighColorMaskChannel ("Channel", Float) = 1
 		[HideInInspector]_Tweak_HighColorMaskLevel ("Mask Level", Range(-1, 1)) = 0
+		[HideInInspector][ToggleUI]_StylizedSpecularInvertMask ("Invert Mask", Float) = 0
 		[ThryWideEnum(Toon, 0, Realistic, 1)]_Is_SpecularToHighColor ("Specular Mode", Float) = 0
 		[ThryWideEnum(Replace, 0, Add, 1, Screen, 2, Multiply, 3)]_Is_BlendAddToHiColor ("Color Blend Mode", Int) = 0
 		_StylizedSpecularStrength ("Strength", Float) = 1
@@ -2111,7 +2133,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 		//endex
 		
 		//ifex _BacklightEnabled!=1
-		[HideInInspector] m_start_backlight ("Backlight--{reference_property:_BacklightEnabled}", Float) = 0
+		[HideInInspector] m_start_backlight ("Backlight--{reference_property:_BacklightEnabled, button_help:{text:Tutorial,action:{type:URL,data:https://www.poiyomi.com/shading/backlight},hover:Documentation}}", Float) = 0
 		[HideInInspector][ThryToggle(POI_BACKLIGHT)]_BacklightEnabled ("Backlight Enabled", Float) = 0
 		[HDR][Gamma] _BacklightColor ("Color", Color) = (0.85, 0.8, 0.7, 1.0)
 		[sRGBWarning(true)] _BacklightColorTex ("Texture--{reference_properties:[_BacklightColorTexPan, _BacklightColorTexUV]}", 2D) = "white" { }
@@ -2129,7 +2151,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 		//endex
 		
 		//ifex _LTCGIEnabled!=1
-		[HideInInspector] m_start_LTCGI ("LTCGI (REWORK SOON)--{reference_property:_LTCGIEnabled}", Float) = 0
+		[HideInInspector] m_start_LTCGI ("LTCGI (REWORK SOON)--{reference_property:_LTCGIEnabled, button_help:{text:Tutorial,action:{type:URL,data:https://www.poiyomi.com/shading/ltcgi},hover:Documentation}}", Float) = 0
 		[HideInInspector] [ThryToggle(POI_LTCGI)]_LTCGIEnabled ("LTCGI Enabled", Float) = 0
 		[Helpbox(1)] _LTCGI_Attribution ("This section uses LTCGI by _pi_, click for 'github.com/pimaker/ltcgi'--{onClick:{type:URL,data:https://github.com/pimaker/ltcgi}}", Float) = 0
 		[ToggleUI] _LTCGI_AnimToggle ("Anim Toggle", Int) = 1
@@ -2205,6 +2227,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 		[ToggleUI]_OutlineOverrideAlpha ("Override Base Alpha", Float) = 0
 		_Offset_Z ("Cam Z Offset", Float) = 0
 		[Enum(UnityEngine.Rendering.CullMode)] _OutlineCull ("Cull", Float) = 1
+		[Enum(Off, 0, On, 1)] _OutlineZWrite ("ZWrite", Int) = 1
 		[Enum(UnityEngine.Rendering.CompareFunction)] _OutlineZTest ("ZTest", Float) = 4
 		[HideInInspector] s_end_OutlineRenderingOptions ("Rendering Options", Float) = 0
 		
@@ -2346,9 +2369,12 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 		
 		[HideInInspector] m_start_dissolveHueShift ("Hue Shift--{reference_property:_DissolveHueShiftEnabled}", Float) = 0
 		[HideInInspector][ToggleUI]_DissolveHueShiftEnabled ("Dissolved Enabled", Float) = 0
+		[ThryWideEnum(OKLab, 0, HSV, 1)] _DissolveHueShiftColorSpace ("Color Space", Int) = 0
 		_DissolveHueShiftSpeed ("Dissolved Speed", Float) = 0
 		_DissolveHueShift ("Dissolved Shift", Range(0, 1)) = 0
+		
 		[ToggleUI]_DissolveEdgeHueShiftEnabled ("Edge Enabled", Float) = 0
+		[ThryWideEnum(OKLab, 0, HSV, 1)] _DissolveEdgeHueShiftColorSpace ("Color Space", Int) = 0
 		_DissolveEdgeHueShiftSpeed ("Edge Speed", Float) = 0
 		_DissolveEdgeHueShift ("Edge Shift", Range(0, 1)) = 0
 		[HideInInspector] m_end_dissolveHueShift ("Hue Shift", Float) = 0
@@ -2403,7 +2429,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 		//endex
 		
 		//ifex _EnableFlipbook==0
-		[HideInInspector] m_start_flipBook ("Flipbook--{reference_property:_EnableFlipbook,button_help:{text:Tutorial,action:{type:URL,data:https://www.poiyomi.com/special-fx/flipbook},hover:Documentation}}", Float) = 0
+		[HideInInspector] m_start_flipBook ("Flipbook 0--{reference_property:_EnableFlipbook,button_help:{text:Tutorial,action:{type:URL,data:https://www.poiyomi.com/special-fx/flipbook},hover:Documentation}}", Float) = 0
 		[HideInInspector][ThryToggle(_SUNDISK_HIGH_QUALITY)]_EnableFlipbook ("Enable Flipbook", Float) = 0
 		
 		_FlipbookColor ("Color & alpha--{reference_property:_FlipbookColorThemeIndex}", Color) = (1, 1, 1, 1)
@@ -2450,6 +2476,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 		
 		[HideInInspector] s_start_FlipbookHueShift ("Hue Shift--{reference_property:_FlipbookHueShiftEnabled,persistent_expand:true,default_expand:false}", Float) = 0
 		[HideInInspector][ThryToggleUI(true)]_FlipbookHueShiftEnabled ("Hue Shift", Float) = 0
+		[ThryWideEnum(OKLab, 0, HSV, 1)] _FlipbookHueShiftColorSpace ("Color Space", Int) = 0
 		_FlipbookHueShiftSpeed ("Shift Speed", Float) = 0
 		_FlipbookHueShift ("", Range(0, 1)) = 0
 		[HideInInspector] s_end_FlipbookHueShift ("Hue Shift", Float) = 0
@@ -2484,7 +2511,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 		//ifex _EnableEmission==0
 		//Emission 1
 		[HideInInspector] m_start_emissionOptions ("Emission 0--{reference_property:_EnableEmission,button_help:{text:Tutorial,action:{type:URL,data:https://www.poiyomi.com/special-fx/emission},hover:Documentation}}", Float) = 0
-		[HideInInspector][ThryToggle(_EMISSION)]_EnableEmission ("Enable Emission", Float) = 0
+		[HideInInspector][ThryToggle(_EMISSION)]_EnableEmission ("Enable Emission 0", Float) = 0
 		[sRGBWarning]_EmissionMask ("Emission Mask--{reference_properties:[_EmissionMaskPan, _EmissionMaskUV, _EmissionMaskChannel, _EmissionMaskInvert, _EmissionMask0GlobalMask]}", 2D) = "white" { }
 		[HideInInspector][Vector2]_EmissionMaskPan ("Panning", Vector) = (0, 0, 0, 0)
 		[HideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7)] _EmissionMaskUV ("UV", Int) = 0
@@ -2504,6 +2531,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 		
 		[HideInInspector] s_start_EmissionHueShift0 ("Color Adjust--{reference_property:_EmissionHueShiftEnabled,persistent_expand:true,default_expand:false}", Float) = 0
 		[HideInInspector][ToggleUI]_EmissionHueShiftEnabled ("Hue Shift", Float) = 0
+		[ThryWideEnum(OKLab, 0, HSV, 1)] _EmissionHueShiftColorSpace ("Color Space", Int) = 0
 		_EmissionSaturation("Saturation", Range(-1, 10)) = 0
 		_EmissionHueShift ("Hue Shift", Range(0, 1)) = 0
 		_EmissionHueShiftSpeed ("Hue Shift Speed", Float) = 0
@@ -2570,7 +2598,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 		//ifex _EnableEmission1==0
 		// Second Emission
 		[HideInInspector] m_start_emission1Options ("Emission 1--{reference_property:_EnableEmission1,button_help:{text:Tutorial,action:{type:URL,data:https://www.poiyomi.com/special-fx/emission},hover:Documentation}}", Float) = 0
-		[HideInInspector][ThryToggle(POI_EMISSION_1)]_EnableEmission1 ("Enable Emission 2", Float) = 0
+		[HideInInspector][ThryToggle(POI_EMISSION_1)]_EnableEmission1 ("Enable Emission 0", Float) = 0
 		[sRGBWarning]_EmissionMask1 ("Emission Mask--{reference_properties:[_EmissionMask1Pan, _EmissionMask1UV, _EmissionMask1Channel, _EmissionMaskInvert1, _EmissionMask1GlobalMask]}", 2D) = "white" { }
 		[HideInInspector][Vector2]_EmissionMask1Pan ("Panning", Vector) = (0, 0, 0, 0)
 		[HideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7)] _EmissionMask1UV ("UV", Int) = 0
@@ -2589,6 +2617,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 		
 		[HideInInspector] s_start_EmissionHueShift1 ("Color Adjust--{reference_property:_EmissionHueShiftEnabled1,persistent_expand:true,default_expand:false}", Float) = 0
 		[HideInInspector][ToggleUI]_EmissionHueShiftEnabled1 ("Hue Shift", Float) = 0
+		[ThryWideEnum(OKLab, 0, HSV, 1)] _EmissionHueShiftColorSpace1 ("Color Space", Int) = 0
 		_EmissionSaturation1("Saturation", Range(-1, 10)) = 0
 		_EmissionHueShift1 ("Hue Shift", Range(0, 1)) = 0
 		_EmissionHueShiftSpeed1 ("Hue Shift Speed", Float) = 0
@@ -2656,7 +2685,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 		//ifex _EnableEmission2==0
 		// Third Emission
 		[HideInInspector] m_start_emission2Options ("Emission 2--{reference_property:_EnableEmission2,button_help:{text:Tutorial,action:{type:URL,data:https://www.poiyomi.com/special-fx/emission},hover:Documentation}}", Float) = 0
-		[HideInInspector][ThryToggle(POI_EMISSION_2)]_EnableEmission2 ("Enable Emission 2", Float) = 0
+		[HideInInspector][ThryToggle(POI_EMISSION_2)]_EnableEmission2 ("Enable Emission 0", Float) = 0
 		[sRGBWarning]_EmissionMask2 ("Emission Mask--{reference_properties:[_EmissionMask2Pan, _EmissionMask2UV, _EmissionMask2Channel, _EmissionMaskInvert2, _EmissionMask2GlobalMask]}", 2D) = "white" { }
 		[HideInInspector][Vector2]_EmissionMask2Pan ("Panning", Vector) = (0, 0, 0, 0)
 		[HideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7)] _EmissionMask2UV ("UV", Int) = 0
@@ -2675,6 +2704,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 		
 		[HideInInspector] s_start_EmissionHueShift2 ("Color Adjust--{reference_property:_EmissionHueShiftEnabled2,persistent_expand:true,default_expand:false}", Float) = 0
 		[ToggleUI]_EmissionHueShiftEnabled2 ("Hue Shift", Float) = 0
+		[ThryWideEnum(OKLab, 0, HSV, 1)] _EmissionHueShiftColorSpace2 ("Color Space", Int) = 0
 		_EmissionSaturation2("Saturation", Range(-1, 10)) = 0
 		_EmissionHueShift2 ("Hue Shift", Range(0, 1)) = 0
 		_EmissionHueShiftSpeed2 ("Hue Shift Speed", Float) = 0
@@ -2761,6 +2791,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 		
 		[HideInInspector] s_start_EmissionHueShift3 ("Color Adjust--{reference_property:_EmissionHueShiftEnabled3,persistent_expand:true,default_expand:false}", Float) = 0
 		[HideInInspector][ToggleUI]_EmissionHueShiftEnabled3 ("Hue Shift", Float) = 0
+		[ThryWideEnum(OKLab, 0, HSV, 1)] _EmissionHueShiftColorSpace3 ("Color Space", Int) = 0
 		_EmissionSaturation3("Saturation", Range(-1, 10)) = 0
 		_EmissionHueShift3 ("Hue Shift", Range(0, 1)) = 0
 		_EmissionHueShiftSpeed3 ("Hue Shift Speed", Float) = 0
@@ -2891,6 +2922,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 		
 		[HideInInspector] s_start_GlitterHueShiftSection ("Hue Shift--{reference_property:_GlitterHueShiftEnabled, persistent_expand:true,default_expand:false)}", Float) = 0
 		[HideInInspector][ToggleUI]_GlitterHueShiftEnabled ("Enable Hue Shift", Float) = 0
+		[ThryWideEnum(OKLab, 0, HSV, 1)] _GlitteHueShiftColorSpace ("Color Space", Int) = 0
 		_GlitterHueShiftSpeed ("Shift Speed", Float) = 0
 		_GlitterHueShift ("Hue Shift", Range(0, 1)) = 0
 		[HideInInspector] s_end_GlitterHueShiftSection ("Hue Shift--{reference_property:_ShadowBorderMapToggle, persistent_expand:true,default_expand:false)}", Float) = 0
@@ -3066,7 +3098,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 		//endex
 		
 		//ifex _EnableTouchGlow==0
-		[HideInInspector] m_start_depthFX ("Depth FX--{reference_property:_EnableTouchGlow}", Float) = 0
+		[HideInInspector] m_start_depthFX ("Depth FX--{reference_property:_EnableTouchGlow, button_help:{text:Tutorial,action:{type:URL,data:https://www.poiyomi.com/special-fx/depth-fx},hover:Documentation}}", Float) = 0
 		[HideInInspector][ThryToggle(GRAIN)]_EnableTouchGlow ("Enable Depth FX", Float) = 0
 		[Helpbox(1)]_DepthFXWarning ("Depth FX doesn't write to depth, which can break certain transparent effects like custom fog and raymarching", Int) = 0
 		[sRGBWarning]_DepthMask ("Mask--{reference_properties:[_DepthMaskPan, _DepthMaskUV, _DepthMaskChannel, _DepthMaskGlobalMask]}", 2D) = "white" { }
@@ -3326,7 +3358,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 		//endex
 		
 		//ifex _EnableAudioLink==0
-		[HideInInspector] m_AudioLinkCategory (" Audio Link--{reference_property:_EnableAudioLink}", Float) = 0
+		[HideInInspector] m_AudioLinkCategory (" Audio Link--{reference_property:_EnableAudioLink, button_help:{text:Tutorial,action:{type:URL,data:https://www.poiyomi.com/audio-link/},hover:Documentation}}", Float) = 0
 		[HideInInspector] m_start_audioLink ("Audio Link", Float) = 0
 		[HideInInspector][ThryToggle(POI_AUDIOLINK)] _EnableAudioLink ("Enabled", Float) = 0
 		[Helpbox(1)] _AudioLinkHelp ("This section houses the global controls for audio link. Controls for individual features are in their respective sections. (Emission, Dissolve, etc...)", Int) = 0
@@ -3350,7 +3382,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 		[HideInInspector] m_end_audioLinkOverrides ("Overrides", Float) = 0
 		//endex
 		//ifex _EnableALDecal==0
-		[HideInInspector] m_start_ALDecalSpectrum ("AL ♫ Spectrum--{  reference_property:_EnableALDecal}", Float) = 0
+		[HideInInspector] m_start_ALDecalSpectrum ("AL ♫ Spectrum--{  reference_property:_EnableALDecal, button_help:{text:Tutorial,action:{type:URL,data:https://www.poiyomi.com/audio-link/spectrum},hover:Documentation}}", Float) = 0
 		[HideInInspector][ThryToggle(POI_AL_DECAL)]_EnableALDecal ("Enable AL Decal", Float) = 0
 		[HideInInspector][ThryWideEnum(lil Spectrum, 0)] _ALDecalType ("AL Type--{ condition_showS:_EnableAudioLink==1}", Int) = 0
 		
@@ -3411,7 +3443,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 		//endex
 		
 		//ifex _EnableVolumeColor==0
-		[HideInInspector] m_start_ALVolumeColor ("AL ♫ Volume Color--{  reference_property:_EnableVolumeColor}", Float) = 0
+		[HideInInspector] m_start_ALVolumeColor ("AL ♫ Volume Color--{  reference_property:_EnableVolumeColor, button_help:{text:Tutorial,action:{type:URL,data:https://www.poiyomi.com/audio-link/volume-color},hover:Documentation}}", Float) = 0
 		[HideInInspector][ThryToggle(POI_AL_VOLUMECOLOR)]_EnableVolumeColor ("Enable AL Volume Color", Float) = 0
 		[Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3)] _ALVolumeColorUV ("UV", Int) = 0
 		[Enum(X, 0, Y, 1)] _ALVolumeColorDirection ("UV Direction", Int) = 0
@@ -3495,7 +3527,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 		[HideInInspector] m_end_GlobalThemeColor3   ("Theme Color 3", Float) = 0
 		[HideInInspector] m_end_GlobalThemes ("Global Themes", Float ) = 0
 		
-		[HideInInspector] m_start_GlobalMask ("Global Mask", Float) = 0
+		[HideInInspector] m_start_GlobalMask ("Global Mask--{button_help:{text:Tutorial,action:{type:URL,data:https://www.poiyomi.com/modifiers/global-masks},hover:Documentation}}", Float) = 0
 		
 		//ifex _GlobalMaskTexturesEnable==0
 		[HideInInspector] m_start_GlobalMaskTextures ("Textures--{reference_property:_GlobalMaskTexturesEnable}", Float) = 0
@@ -4001,7 +4033,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 		[HideInInspector] m_end_uvPolar ("Polar UV", Float) = 0
 		
 		//ifex _PoiParallax==0
-		[HideInInspector] m_start_parallax (" Parallax Heightmapping--{reference_property:_PoiParallax}", Float) = 0
+		[HideInInspector] m_start_parallax (" Parallax Heightmapping--{reference_property:_PoiParallax, button_help:{text:Tutorial,action:{type:URL,data:https://www.poiyomi.com/modifiers/uvs/parallax},hover:Documentation}}", Float) = 0
 		[HideInInspector][ThryToggle(POI_PARALLAX)]_PoiParallax ("Enable", Float) = 0
 		[ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7)]_ParallaxUV ("Applies To: ", Int) = 0
 		
@@ -4052,6 +4084,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 		[HideInInspector][ToggleUI]_PPMaskInvert ("Invert", Float) = 0
 		[HideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7)]_PPMaskUV ("UV", Int) = 0
 		
+		[ThryWideEnum(OKLab, 0, HSV, 1)] _PPHueShiftColorSpace ("Hue Color Space", Int) = 0
 		_PPHue ("Hue", Range(0, 1)) = 0
 		[HDR]_PPTint ("Tint", Color) = (1, 1, 1, 1)
 		[VectorLabel(R,G,B)]_PPRGB ("RGB", Vector) = (1, 1, 1, 1)
@@ -4110,7 +4143,9 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 		_OffsetFactor ("Offset Factor", Float) = 0.0
 		_OffsetUnits ("Offset Units", Float) = 0.0
 		[ToggleUI]_RenderingReduceClipDistance ("Reduce Clip Distance", Float) = 0
+		[ToggleUI] _ZClip ("Z Clip", Float) = 1
 		[ToggleUI]_IgnoreFog ("Ignore Fog", Float) = 0
+		//[ToggleUI]_Conservative ("Conservative", Float) = 0
 		[ToggleUI]_FlipBackfaceNormals ("Flip Backface Normals", Int) = 1
 		[HideInInspector] Instancing ("Instancing", Float) = 0 //add this property for instancing variants settings to be shown
 		[ToggleUI] _RenderingEarlyZEnabled ("Early Z", Float) = 0
@@ -4232,6 +4267,8 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 			
 			ZWrite On
 			Cull [_Cull]
+			ZClip [_ZClip]
+			//Conservative [_Conservative]
 			ColorMask 0
 			
 			CGPROGRAM
@@ -4672,7 +4709,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 			float _AlphaMaskUV;
 			float _AlphaMaskInvert;
 			float _MainAlphaMaskMode;
-			float _AlphaMaskScale;
+			float _AlphaMaskBlendStrength;
 			float _AlphaMaskValue;
 			#endif
 			float _Cutoff;
@@ -4685,6 +4722,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 			float4 _MainColorAdjustTexture_ST;
 			float2 _MainColorAdjustTexturePan;
 			float _MainColorAdjustTextureUV;
+			float _MainHueShiftColorSpace;
 			float _MainHueShiftToggle;
 			float _MainHueShiftReplace;
 			float _MainHueShift;
@@ -5372,6 +5410,8 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 			float dissolveAlpha;
 			float4 dissolveToTexture;
 			
+			float _DissolveHueShiftColorSpace;
+			float _DissolveEdgeHueShiftColorSpace;
 			float _DissolveHueShiftEnabled;
 			float _DissolveHueShiftSpeed;
 			float _DissolveHueShift;
@@ -5493,6 +5533,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				float2 parallaxUV;
 				float2 dx;
 				float2 dy;
+				uint isRightHand;
 			};
 			
 			struct PoiCam
@@ -6320,17 +6361,20 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				return float3(H, C, Q.x);
 			}
 			
-			float3 HSVtoRGB(in float3 HSV)
-			{
-				float3 RGB = HUEtoRGB(HSV.x);
-				return ((RGB - 1) * HSV.y + 1) * HSV.z;
+			float3 RGBtoHSV(float3 c){
+				float4 K = float4(0.0, -1.0 / 3.0, 2.0 / 3.0, -1.0);
+				float4 p = lerp(float4(c.bg, K.wz), float4(c.gb, K.xy), step(c.b, c.g));
+				float4 q = lerp(float4(p.xyw, c.r), float4(c.r, p.yzx), step(p.x, c.r));
+				
+				float d = q.x - min(q.w, q.y);
+				float e = 1.0e-10;
+				return float3(abs(q.z + (q.w - q.y) / (6.0 * d + e)), d / (q.x + e), q.x);
 			}
 			
-			float3 RGBtoHSV(in float3 RGB)
-			{
-				float3 HCV = RGBtoHCV(RGB);
-				float S = HCV.y / (HCV.z + Epsilon);
-				return float3(HCV.x, S, HCV.z);
+			float3 HSVtoRGB(float3 c){
+				float4 K = float4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
+				float3 p = abs(frac(c.xxx + K.xyz) * 6.0 - K.www);
+				return c.z * lerp(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
 			}
 			
 			float3 HSLtoRGB(in float3 HSL)
@@ -6470,7 +6514,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 			
 			float3 hueShift(float3 color, float shift)
 			{
-				float3 oklab = linear_srgb_to_oklab(max(color, 0.0000000001));
+				float3 oklab = linear_srgb_to_oklab(color + 0.0000001);
 				float hue = atan2(oklab.z, oklab.y);
 				hue += shift * PI * 2;  // Add the hue shift
 				
@@ -6481,19 +6525,32 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				return oklab_to_linear_srgb(oklab);
 			}
 			
-			float3 hueShift(float4 color, float shift)
+			float3 hueShiftHSV(float3 color, float hueOffset)
 			{
-				return hueShift(color.rgb, shift);
+				float3 hsv = float3(hueOffset, 0, 0);
+				float3 hsvCol = RGBtoHSV(color);
+				return HSVtoRGB(hsvCol + hsv);
 			}
 			
-			/*
-			float3 hueShift(float3 color, float hueOffset)
+			float3 hueShift(float3 color, float shift, float ColorSpace)
 			{
-				color = RGBtoHSV(color);
-				color.x = frac(hueOffset +color.x);
-				return HSVtoRGB(color);
+				switch(ColorSpace)
+				{
+					// OkLab Hue Shift
+					case 0.0:
+					return hueShift(color, shift);
+					// HSV Hue Shift
+					case 1.0:
+					return hueShiftHSV(color, shift);
+					default:
+					return float3(1.0, 0.0, 0.0);
+				}
 			}
-			*/
+			
+			float3 hueShift(float4 color, float shift, float ColorSpace)
+			{
+				return hueShift(color.rgb, shift, ColorSpace);
+			}
 			
 			// LCH
 			float xyzF(float t)
@@ -6967,6 +7024,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 			{
 				float3 customDir = length(lightDirectionOverride.xyz) * normalize(mul((float3x3)unity_ObjectToWorld, lightDirectionOverride.xyz));
 				return lightDirectionOverride.w ? customDir : lightDirectionOverride.xyz; // .w isn't doc'd anywhere and is always 0 unless end user changes it
+				
 			}
 			
 			float3 OpenLitLightingDirectionForSH9()
@@ -8426,6 +8484,8 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 			
 			ZWrite [_ZWrite]
 			Cull [_Cull]
+			ZClip [_ZClip]
+			//Conservative [_Conservative]
 			
 			AlphaToMask [_AlphaToCoverage]
 			ZTest [_ZTest]
@@ -8682,7 +8742,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 			#pragma multi_compile_fwdbase
 			#pragma multi_compile_instancing
 			#pragma multi_compile_fog
-			#pragma multi_compile _ VERTEXLIGHT_ON
+			#pragma multi_compile_fragment _ VERTEXLIGHT_ON
 			#define POI_PASS_BASE
 			
 			// UNITY Includes
@@ -8956,7 +9016,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 			float _AlphaMaskUV;
 			float _AlphaMaskInvert;
 			float _MainAlphaMaskMode;
-			float _AlphaMaskScale;
+			float _AlphaMaskBlendStrength;
 			float _AlphaMaskValue;
 			#endif
 			float _Cutoff;
@@ -8969,6 +9029,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 			float4 _MainColorAdjustTexture_ST;
 			float2 _MainColorAdjustTexturePan;
 			float _MainColorAdjustTextureUV;
+			float _MainHueShiftColorSpace;
 			float _MainHueShiftToggle;
 			float _MainHueShiftReplace;
 			float _MainHueShift;
@@ -9831,6 +9892,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 			
 			float _BackFaceHueShiftEnabled;
 			float _BackFaceHueShift;
+			float _BackFaceShiftColorSpace;
 			float _BackFaceHueShiftSpeed;
 			float _BackFaceEmissionLimiter;
 			#endif
@@ -10336,6 +10398,8 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 			float4 _DecalColor;
 			float _DecalColorThemeIndex;
 			float _DecalTiled;
+			float _DecalMirroredUVMode;
+			float _DecalSymmetryMode;
 			float _DecalBlendType;
 			half _DecalRotation;
 			half3 _DecalScale;
@@ -10345,6 +10409,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 			float _DecalEmissionStrength;
 			float _DecalBlendAlpha;
 			float _DecalOverrideAlpha;
+			float _DecalHueShiftColorSpace;
 			float _DecalHueShiftEnabled;
 			float _DecalHueShift;
 			float _DecalHueShiftSpeed;
@@ -10391,6 +10456,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 			float _DecalEmissionStrength1;
 			float _DecalBlendAlpha1;
 			float _DecalOverrideAlpha1;
+			float _DecalHueShiftColorSpace1;
 			float _DecalHueShiftEnabled1;
 			float _DecalHueShift1;
 			float _DecalHueShiftSpeed1;
@@ -10403,6 +10469,8 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 			float _Decal1ChannelSeparationVertical;
 			float _Decal1ChannelSeparationAngleStrength;
 			float _Decal1OverrideAlphaMode;
+			float _DecalMirroredUVMode1;
+			float _DecalSymmetryMode1;
 			#endif
 			//endex
 			
@@ -10437,6 +10505,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 			float _DecalEmissionStrength2;
 			float _DecalBlendAlpha2;
 			float _DecalOverrideAlpha2;
+			float _DecalHueShiftColorSpace2;
 			float _DecalHueShiftEnabled2;
 			float _DecalHueShift2;
 			float _DecalHueShiftSpeed2;
@@ -10449,6 +10518,8 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 			float _Decal2ChannelSeparationVertical;
 			float _Decal2ChannelSeparationAngleStrength;
 			float _Decal2OverrideAlphaMode;
+			float _DecalMirroredUVMode2;
+			float _DecalSymmetryMode2;
 			#endif
 			//endex
 			
@@ -10483,6 +10554,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 			float _DecalEmissionStrength3;
 			float _DecalBlendAlpha3;
 			float _DecalOverrideAlpha3;
+			float _DecalHueShiftColorSpace3;
 			float _DecalHueShiftEnabled3;
 			float _DecalHueShift3;
 			float _DecalHueShiftSpeed3;
@@ -10495,6 +10567,8 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 			float _Decal3ChannelSeparationVertical;
 			float _Decal3ChannelSeparationAngleStrength;
 			float _Decal3OverrideAlphaMode;
+			float _DecalMirroredUVMode3;
+			float _DecalSymmetryMode3;
 			#endif
 			//endex
 			
@@ -10626,6 +10700,8 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 			float dissolveAlpha;
 			float4 dissolveToTexture;
 			
+			float _DissolveHueShiftColorSpace;
+			float _DissolveEdgeHueShiftColorSpace;
 			float _DissolveHueShiftEnabled;
 			float _DissolveHueShiftSpeed;
 			float _DissolveHueShift;
@@ -10747,6 +10823,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 			float _MatcapEmissionStrength;
 			float _MatcapNormal;
 			float _MatcapHueShiftEnabled;
+			float _MatcapHueShiftColorSpace;
 			float _MatcapHueShiftSpeed;
 			float _MatcapHueShift;
 			int _MatcapApplyToAlphaEnabled;
@@ -10821,6 +10898,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 			float _Matcap2EmissionStrength;
 			float _Matcap2Normal;
 			float _Matcap2HueShiftEnabled;
+			float _Matcap2HueShiftColorSpace;
 			float _Matcap2HueShiftSpeed;
 			float _Matcap2HueShift;
 			int _Matcap2ApplyToAlphaEnabled;
@@ -10896,6 +10974,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 			float _Matcap3EmissionStrength;
 			float _Matcap3Normal;
 			float _Matcap3HueShiftEnabled;
+			float _Matcap3HueShiftColorSpace;
 			float _Matcap3HueShiftSpeed;
 			float _Matcap3HueShift;
 			int _Matcap3ApplyToAlphaEnabled;
@@ -10971,6 +11050,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 			float _Matcap4EmissionStrength;
 			float _Matcap4Normal;
 			float _Matcap4HueShiftEnabled;
+			float _Matcap4HueShiftColorSpace;
 			float _Matcap4HueShiftSpeed;
 			float _Matcap4HueShift;
 			int _Matcap4ApplyToAlphaEnabled;
@@ -11173,6 +11253,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 			
 			// Hueshift
 			float _FlipbookHueShiftEnabled;
+			float _FlipbookHueShiftColorSpace;
 			float _FlipbookHueShiftSpeed;
 			float _FlipbookHueShift;
 			
@@ -11220,6 +11301,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 			float _EmissionBaseColorAsMap;
 			float _EmissionStrength;
 			float _EmissionHueShiftEnabled;
+			float _EmissionHueShiftColorSpace;
 			float _EmissionSaturation;
 			float _EmissionHueShift;
 			float _EmissionHueShiftSpeed;
@@ -11252,7 +11334,6 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 			float _EmissionAL0Enabled;
 			float2 _EmissionAL0StrengthMod;
 			float _EmissionAL0StrengthBand;
-			float _EmissionAL0StrengthBandSmoothing;
 			float2 _AudioLinkEmission0CenterOut;
 			float _AudioLinkEmission0CenterOutSize;
 			float _AudioLinkEmission0CenterOutBand;
@@ -11289,6 +11370,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 			float _EmissionBaseColorAsMap1;
 			float _EmissionStrength1;
 			float _EnableEmission1;
+			float _EmissionHueShiftColorSpace1;
 			float _EmissionHueShift1;
 			float _EmissionHueShiftSpeed1;
 			float4 _EmissiveScroll_Direction1;
@@ -11358,6 +11440,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 			float _EmissionStrength2;
 			float _EnableEmission2;
 			float _EmissionHueShift2;
+			float _EmissionHueShiftColorSpace2;
 			float _EmissionHueShiftSpeed2;
 			float4 _EmissiveScroll_Direction2;
 			float _EmissiveScroll_Width2;
@@ -11425,6 +11508,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 			float _EmissionStrength3;
 			float _EnableEmission3;
 			float _EmissionHueShift3;
+			float _EmissionHueShiftColorSpace3;
 			float _EmissionHueShiftSpeed3;
 			float4 _EmissiveScroll_Direction3;
 			float _EmissiveScroll_Width3;
@@ -11571,6 +11655,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 			float _RimApplyGlobalMaskBlendType;
 			
 			float _RimHueShiftEnabled;
+			float _RimHueShiftColorSpace;
 			float _RimHueShiftSpeed;
 			float _RimHueShift;
 			#endif
@@ -11686,6 +11771,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 			float _Rim2ApplyGlobalMaskBlendType;
 			
 			float _Rim2HueShiftEnabled;
+			float _Rim2HueShiftColorSpace;
 			float _Rim2HueShiftSpeed;
 			float _Rim2HueShift;
 			#endif
@@ -11756,6 +11842,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 			float2 _GlitterUVPanning;
 			
 			float _GlitterHueShiftEnabled;
+			float _GlitteHueShiftColorSpace;
 			float _GlitterHueShiftSpeed;
 			float _GlitterHueShift;
 			float _GlitterHideInShadow;
@@ -11977,6 +12064,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 			float _Set_HighColorMaskUV;
 			float _Set_HighColorMaskChannel;
 			float _Tweak_HighColorMaskLevel;
+			float _StylizedSpecularInvertMask;
 			
 			/*
 			#if defined(PROP_StylizedSpecularOPTMAP1) || !defined(OPTIMIZER_ENABLED)
@@ -12321,7 +12409,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 			float _PPBrightness;
 			float _PPLightness;
 			float _PPHDR;
-			
+			float _PPHueShiftColorSpace;
 			float _PPPosterization;
 			float _PPPosterizationAmount;
 			const static float COLORS = 32;
@@ -12565,6 +12653,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				float2 parallaxUV;
 				float2 dx;
 				float2 dy;
+				uint isRightHand;
 			};
 			
 			struct PoiCam
@@ -13392,17 +13481,20 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				return float3(H, C, Q.x);
 			}
 			
-			float3 HSVtoRGB(in float3 HSV)
-			{
-				float3 RGB = HUEtoRGB(HSV.x);
-				return ((RGB - 1) * HSV.y + 1) * HSV.z;
+			float3 RGBtoHSV(float3 c){
+				float4 K = float4(0.0, -1.0 / 3.0, 2.0 / 3.0, -1.0);
+				float4 p = lerp(float4(c.bg, K.wz), float4(c.gb, K.xy), step(c.b, c.g));
+				float4 q = lerp(float4(p.xyw, c.r), float4(c.r, p.yzx), step(p.x, c.r));
+				
+				float d = q.x - min(q.w, q.y);
+				float e = 1.0e-10;
+				return float3(abs(q.z + (q.w - q.y) / (6.0 * d + e)), d / (q.x + e), q.x);
 			}
 			
-			float3 RGBtoHSV(in float3 RGB)
-			{
-				float3 HCV = RGBtoHCV(RGB);
-				float S = HCV.y / (HCV.z + Epsilon);
-				return float3(HCV.x, S, HCV.z);
+			float3 HSVtoRGB(float3 c){
+				float4 K = float4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
+				float3 p = abs(frac(c.xxx + K.xyz) * 6.0 - K.www);
+				return c.z * lerp(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
 			}
 			
 			float3 HSLtoRGB(in float3 HSL)
@@ -13542,7 +13634,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 			
 			float3 hueShift(float3 color, float shift)
 			{
-				float3 oklab = linear_srgb_to_oklab(max(color, 0.0000000001));
+				float3 oklab = linear_srgb_to_oklab(color + 0.0000001);
 				float hue = atan2(oklab.z, oklab.y);
 				hue += shift * PI * 2;  // Add the hue shift
 				
@@ -13553,19 +13645,32 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				return oklab_to_linear_srgb(oklab);
 			}
 			
-			float3 hueShift(float4 color, float shift)
+			float3 hueShiftHSV(float3 color, float hueOffset)
 			{
-				return hueShift(color.rgb, shift);
+				float3 hsv = float3(hueOffset, 0, 0);
+				float3 hsvCol = RGBtoHSV(color);
+				return HSVtoRGB(hsvCol + hsv);
 			}
 			
-			/*
-			float3 hueShift(float3 color, float hueOffset)
+			float3 hueShift(float3 color, float shift, float ColorSpace)
 			{
-				color = RGBtoHSV(color);
-				color.x = frac(hueOffset +color.x);
-				return HSVtoRGB(color);
+				switch(ColorSpace)
+				{
+					// OkLab Hue Shift
+					case 0.0:
+					return hueShift(color, shift);
+					// HSV Hue Shift
+					case 1.0:
+					return hueShiftHSV(color, shift);
+					default:
+					return float3(1.0, 0.0, 0.0);
+				}
 			}
-			*/
+			
+			float3 hueShift(float4 color, float shift, float ColorSpace)
+			{
+				return hueShift(color.rgb, shift, ColorSpace);
+			}
 			
 			// LCH
 			float xyzF(float t)
@@ -14039,6 +14144,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 			{
 				float3 customDir = length(lightDirectionOverride.xyz) * normalize(mul((float3x3)unity_ObjectToWorld, lightDirectionOverride.xyz));
 				return lightDirectionOverride.w ? customDir : lightDirectionOverride.xyz; // .w isn't doc'd anywhere and is always 0 unless end user changes it
+				
 			}
 			
 			float3 OpenLitLightingDirectionForSH9()
@@ -15398,7 +15504,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 			{
 				// Force Model Opacity to 1 if desired
 				UNITY_BRANCH
-				if (_Mode == 1)
+				if (_Mode == POI_MODE_CUTOUT)
 				{
 					UNITY_BRANCH
 					if (_AlphaSharpenedA2C && _AlphaToCoverage)
@@ -15447,8 +15553,9 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				return color;
 			}
 			
-			inline float4 Refraction(float indexOfRefraction, float chromaticAberration, in PoiMesh poiMesh, in PoiCam poiCam, in PoiMods poiMods, in PoiLight poiLight, in PoiFragData poiFragData)
+			inline float4 Refraction(float indexOfRefraction, float chromaticAberration, in PoiMesh poiMesh, in PoiCam poiCam, in PoiMods poiMods, inout PoiLight poiLight, in PoiFragData poiFragData)
 			{
+				poiLight.finalLighting = max(poiLight.finalLighting, Epsilon);
 				float4 refractionColor;
 				float3 worldViewDir = normalize(UnityWorldSpaceViewDir(poiMesh.worldPos));
 				float3 refractionOffset = ((((indexOfRefraction - 1.0) * mul(UNITY_MATRIX_V, float4(poiMesh.normals[1], 0.0)).xyz) * (1.0 / (poiCam.posScreenSpace.z + 1.0))) * (1.0 - dot(poiMesh.normals[1], worldViewDir)));
@@ -16338,7 +16445,11 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 					#if defined(PROP_BACKFACETEXTURE) || !defined(OPTIMIZER_ENABLED)
 					backFaceColor *= POI2D_SAMPLER_PAN(_BackFaceTexture, _MainTex, poiUV(poiMesh.uv[_BackFaceTextureUV], _BackFaceTexture_ST), _BackFaceTexturePan);
 					#endif
-					backFaceColor.rgb = hueShift(backFaceColor.rgb, frac(_BackFaceHueShift + _BackFaceHueShiftSpeed * _Time.x) * _BackFaceHueShiftEnabled);
+					
+					if (_BackFaceHueShiftEnabled)
+					{
+						backFaceColor.rgb = hueShift(backFaceColor.rgb, frac(_BackFaceHueShift + _BackFaceHueShiftSpeed * _Time.x), _BackFaceShiftColorSpace);
+					}
 					
 					float backFaceMask = 1;
 					#if defined(PROP_BACKFACEMASK) || !defined(OPTIMIZER_ENABLED)
@@ -18200,12 +18311,31 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 			#endif
 			#endif
 			
-			void ApplySubtractiveLighting(inout UnityIndirect indirectLight)
+			float FadeShadows(float attenuation, inout PoiLight poiLight, in PoiMesh poiMesh, in PoiCam poiCam)
+			{
+				#if HANDLE_SHADOWS_BLENDING_IN_GI || ADDITIONAL_MASKED_DIRECTIONAL_SHADOWS
+				// UNITY_LIGHT_ATTENUATION doesn't fade shadows for us.
+				
+				#if ADDITIONAL_MASKED_DIRECTIONAL_SHADOWS
+				attenuation = poiLight.attenuation;
+				#endif
+				
+				float viewZ = dot(_WorldSpaceCameraPos - poiMesh.worldPos, UNITY_MATRIX_V[2].xyz);
+				float shadowFadeDistance = UnityComputeShadowFadeDistance(poiMesh.worldPos, viewZ);
+				float shadowFade = UnityComputeShadowFade(shadowFadeDistance);
+				float bakedAttenuation = UnitySampleBakedOcclusion(poiMesh.lightmapUV.xy, poiMesh.worldPos);
+				attenuation = UnityMixRealtimeAndBakedShadows(attenuation, bakedAttenuation, shadowFade);
+				#endif
+				
+				return attenuation;
+			}
+			
+			void ApplySubtractiveLighting(inout UnityIndirect indirectLight, inout PoiLight poiLight, in PoiMesh poiMesh, in PoiCam poiCam)
 			{
 				#if SUBTRACTIVE_LIGHTING
-				poiLight.attenuation = FadeShadows(lerp(1, poiLight.attenuation, _AttenuationMultiplier));
+				poiLight.attenuation = FadeShadows(poiLight.attenuation, poiLight, poiMesh, poiCam);
 				
-				float ndotl = saturate(dot(i.normal, _WorldSpaceLightPos0.xyz));
+				float ndotl = saturate(dot(poiMesh.normals[0], _WorldSpaceLightPos0.xyz));
 				float3 shadowedLightEstimate = ndotl * (1 - poiLight.attenuation) * _LightColor0.rgb;
 				float3 subtractedLight = indirectLight.diffuse - shadowedLightEstimate;
 				subtractedLight = max(subtractedLight, unity_ShadowColor.rgb);
@@ -18224,14 +18354,11 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				indirectLight.diffuse = DecodeLightmap(UNITY_SAMPLE_TEX2D(unity_Lightmap, poiMesh.lightmapUV.xy));
 				
 				#if defined(DIRLIGHTMAP_COMBINED)
-				float4 lightmapDirection = UNITY_SAMPLE_TEX2D_SAMPLER(
-				unity_LightmapInd, unity_Lightmap, poiMesh.lightmapUV.xy
-				);
-				indirectLight.diffuse = DecodeDirectionalLightmap(
-				indirectLight.diffuse, lightmapDirection, poiMesh.normals[1]
-				);
+				float4 lightmapDirection = UNITY_SAMPLE_TEX2D_SAMPLER(unity_LightmapInd, unity_Lightmap, poiMesh.lightmapUV.xy);
+				indirectLight.diffuse = DecodeDirectionalLightmap(indirectLight.diffuse, lightmapDirection, poiMesh.normals[1]);
 				#endif
-				ApplySubtractiveLighting(indirectLight);
+				
+				ApplySubtractiveLighting(indirectLight, poiLight, poiMesh, poiCam);
 				#endif
 				
 				#if defined(DYNAMICLIGHTMAP_ON)
@@ -18240,13 +18367,8 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				);
 				
 				#if defined(DIRLIGHTMAP_COMBINED)
-				float4 dynamicLightmapDirection = UNITY_SAMPLE_TEX2D_SAMPLER(
-				unity_DynamicDirectionality, unity_DynamicLightmap,
-				poiMesh.lightmapUV.zw
-				);
-				indirectLight.diffuse += DecodeDirectionalLightmap(
-				dynamicLightDiffuse, dynamicLightmapDirection, poiMesh.normals[1]
-				);
+				float4 dynamicLightmapDirection = UNITY_SAMPLE_TEX2D_SAMPLER(unity_DynamicDirectionality, unity_DynamicLightmap, poiMesh.lightmapUV.zw);
+				indirectLight.diffuse += DecodeDirectionalLightmap(dynamicLightDiffuse, dynamicLightmapDirection, poiMesh.normals[1]);
 				#else
 				indirectLight.diffuse += dynamicLightDiffuse;
 				#endif
@@ -18288,6 +18410,27 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 			{
 				return clamp((1.0f - offset) / scale, -0.01f, 1.01f); // Remap Max
 				
+			}
+			
+			half4 POI_BRDF_PBS(half3 diffColor, half3 specColor, half oneMinusReflectivity, half smoothness, float3 normal, float3 viewDir, UnityLight light, UnityIndirect gi)
+			{
+				float3 reflDir = reflect(viewDir, normal);
+				
+				half nl = saturate(dot(normal, light.dir));
+				half nv = saturate(dot(normal, viewDir));
+				
+				// Vectorize Pow4 to save instructions
+				half2 rlPow4AndFresnelTerm = Pow4(float2(dot(reflDir, light.dir), 1 - nv));  // use R.L instead of N.H to save couple of instructions
+				half rlPow4 = rlPow4AndFresnelTerm.x; // power exponent must match kHorizontalWarpExp in NHxRoughness() function in GeneratedTextures.cpp
+				half fresnelTerm = rlPow4AndFresnelTerm.y;
+				
+				half grazingTerm = saturate(smoothness + (1 - oneMinusReflectivity));
+				
+				half3 color = BRDF3_Direct(diffColor, specColor, rlPow4, smoothness);
+				color *= light.color * nl;
+				color += BRDF3_Indirect(diffColor, specColor, gi, grazingTerm, fresnelTerm);
+				
+				return half4(color, 1);
 			}
 			
 			void calculateShading(inout PoiLight poiLight, inout PoiFragData poiFragData, in PoiMesh poiMesh, in PoiCam poiCam)
@@ -18511,7 +18654,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				#endif
 				
 				poiLight.rampedLightMap = poiLight.nDotLSaturated;
-				poiLight.finalLighting = max(UNITY_BRDF_PBS(1, 0, 0, 0, poiMesh.normals[1], poiCam.viewDir, light, indirectLight).xyz, _LightingMinLightBrightness);
+				poiLight.finalLighting = max(POI_BRDF_PBS(1, 0, 0, 0, poiMesh.normals[1], poiCam.viewDir, light, indirectLight).xyz, _LightingMinLightBrightness);
 				#endif
 				
 				#ifdef _LIGHTINGMODE_CLOTH
@@ -18540,8 +18683,9 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				float energyCompensation = EnvBRDFEnergyCompensation(dfg, f0, clothmask);
 				
 				poiLight.finalLighting = Fd_Burley(perceptualRoughness, poiLight.nDotV, poiLight.nDotLSaturated, poiLight.lDotH);
-				poiLight.finalLighting *= _LightColor0 * attenuation * shadowAttenuation * poiLight.nDotLSaturated;
+				poiLight.finalLighting *= poiLight.directColor * attenuation * shadowAttenuation * poiLight.nDotLSaturated;
 				poiLight.rampedLightMap = poiLight.nDotLSaturated;
+				
 				float3 specular = max(0, Specular(clampedRoughness, poiLight, f0, poiMesh.normals[1], clothmask) * poiLight.finalLighting * energyCompensation * UNITY_PI); // (D * V) * F
 				
 				#ifdef UNITY_PASS_FORWARDBASE
@@ -18551,10 +18695,12 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				indirectDiffuse.g = shEvaluateDiffuseL1Geomerics_local(L0.g, unity_SHAg.xyz, poiMesh.normals[1]);
 				indirectDiffuse.b = shEvaluateDiffuseL1Geomerics_local(L0.b, unity_SHAb.xyz, poiMesh.normals[1]);
 				indirectDiffuse = max(0, indirectDiffuse);
+				indirectDiffuse = lerp(indirectDiffuse, dot(indirectDiffuse, float3(0.299, 0.587, 0.114)), _LightingMonochromatic);
 				
 				float3 indirectSpecular = IndirectSpecular(dfg, roughness, poiLight.occlusion, energyCompensation, clothmask, indirectDiffuse, f0, poiLight, poiFragData, poiCam, poiMesh);
 				poiLight.finalLightAdd += max(0, specular + indirectSpecular);
 				poiLight.finalLighting += indirectDiffuse * poiLight.occlusion;
+				
 				#endif
 				
 				poiFragData.baseColor.xyz *= (1 - metallic);
@@ -18696,11 +18842,22 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 			//endex
 			
 			#if defined(GEOM_TYPE_BRANCH) || defined(GEOM_TYPE_BRANCH_DETAIL) || defined(GEOM_TYPE_FROND) || defined(DEPTH_OF_FIELD_COC_VIEW)
-			float2 decalUV(float uvNumber, float2 position, half rotation, half rotationSpeed, half2 scale, float4 scaleOffset, float depth, in PoiMesh poiMesh, in PoiCam poiCam)
+			float2 decalUV(float uvNumber, float2 position, half rotation, half rotationSpeed, half2 scale, float4 scaleOffset, float depth, in float symmetryMode, in float mirroredUVMode, in PoiMesh poiMesh, in PoiCam poiCam)
 			{
 				scaleOffset = float4(-scaleOffset.x, scaleOffset.y, -scaleOffset.z, scaleOffset.w);
 				float2 centerOffset = float2((scaleOffset.x + scaleOffset.y) / 2, (scaleOffset.z + scaleOffset.w) / 2);
-				float2 uv = poiMesh.uv[uvNumber] + calcParallax(depth + 1, poiCam);
+				float2 uv = poiMesh.uv[uvNumber];
+				
+				// Copy
+				if (symmetryMode == 1) uv.x = abs(uv.x - 0.5) + 0.5;
+				// Flip
+				if (symmetryMode == 2 && uv.x < 0.5) uv.x = 1.0 - uv.x;
+				if ((mirroredUVMode == 1 || mirroredUVMode == 4) && poiMesh.isRightHand) uv.x = 1.0 - uv.x;
+				// Hide
+				if (mirroredUVMode == 2 && poiMesh.isRightHand) uv.x = -1.0;
+				if ((mirroredUVMode == 3 || mirroredUVMode == 4) && !poiMesh.isRightHand) uv.x = -1.0;
+				
+				uv += calcParallax(depth + 1, poiCam);
 				float2 decalCenter = position + centerOffset;
 				float theta = radians(rotation + _Time.z * rotationSpeed);
 				float cs = cos(theta);
@@ -18709,13 +18866,12 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				uv = remap(uv, float2(0, 0) - scale / 2 + position + scaleOffset.xz, scale / 2 + position + scaleOffset.yw, float2(0, 0), float2(1, 1));
 				return uv;
 			}
-			
-			inline float3 decalHueShift(float enabled, float3 color, float shift, float shiftSpeed)
+			inline float3 decalHueShift(float enabled, float3 color, float shift, float shiftSpeed, float colorSpace)
 			{
 				//UNITY_BRANCH
 				if (enabled)
 				{
-					color = hueShift(color, shift + _Time.x * shiftSpeed);
+					color = hueShift(color, shift + _Time.x * shiftSpeed, colorSpace);
 				}
 				return color;
 			}
@@ -18757,6 +18913,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				float m_DecalEmissionStrength;
 				float m_DecalBlendAlpha;
 				float m_DecalAlphaBlendMode;
+				float m_DecalHueShiftColorSpace;
 				float m_DecalHueShiftEnabled;
 				float m_DecalHueShift;
 				float m_DecalHueShiftSpeed;
@@ -18770,6 +18927,8 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				float m_DecalChannelSeparationAngleStrength;
 				float m_DecalOverrideAlphaMode;
 				float m_DecalOverrideAlpha;
+				float m_DecalSymmetryMode;
+				float m_DecalMirroredUVMode;
 				
 				#if defined(POI_AUDIOLINK)
 				half m_AudioLinkDecalScaleBand;
@@ -18823,35 +18982,35 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				
 				void SampleDecalNoTexture(in PoiMods poiMods, in PoiLight poiLight, in PoiMesh poiMesh, in PoiCam poiCam)
 				{
-					uv = decalUV(m_DecalTextureUV, m_DecalPosition, m_DecalRotation + decalRotation, m_DecalRotationSpeed, decalScale, m_DecalSideOffset +sideMod, m_DecalDepth, poiMesh, poiCam);
+					uv = decalUV(m_DecalTextureUV, m_DecalPosition, m_DecalRotation + decalRotation, m_DecalRotationSpeed, decalScale, m_DecalSideOffset +sideMod, m_DecalDepth, m_DecalSymmetryMode, m_DecalMirroredUVMode, poiMesh, poiCam);
 					decalColor = float4(poiThemeColor(poiMods, m_DecalColor.rgb, m_DecalColorThemeIndex), m_DecalColor.a);
-					decalColor.rgb = decalHueShift(m_DecalHueShiftEnabled, decalColor.rgb, m_DecalHueShift + poiLight.nDotV * m_DecalHueAngleStrength, m_DecalHueShiftSpeed);
+					decalColor.rgb = decalHueShift(m_DecalHueShiftEnabled, decalColor.rgb, m_DecalHueShift + poiLight.nDotV * m_DecalHueAngleStrength, m_DecalHueShiftSpeed, m_DecalHueShiftColorSpace);
 					decalColor.a *= decalMask[m_DecalMaskChannel] * applyTilingClipping(m_DecalTiled, uv);
 				}
 				
 				void SampleDecal(sampler2D decalTexture, in PoiMods poiMods, in PoiLight poiLight, in PoiMesh poiMesh, in PoiCam poiCam, float2 scaleMultiplier = float2(1, 1))
 				{
-					uv = decalUV(m_DecalTextureUV, m_DecalPosition, m_DecalRotation + decalRotation, m_DecalRotationSpeed, decalScale * scaleMultiplier, m_DecalSideOffset +sideMod, m_DecalDepth, poiMesh, poiCam);
+					uv = decalUV(m_DecalTextureUV, m_DecalPosition, m_DecalRotation + decalRotation, m_DecalRotationSpeed, decalScale * scaleMultiplier, m_DecalSideOffset +sideMod, m_DecalDepth, m_DecalSymmetryMode, m_DecalMirroredUVMode, poiMesh, poiCam);
 					// Adjust derivatives for _ST of decal texture
 					float4 dduv = any(fwidth(uv) > .5) ? 0.001 : float4(ddx(uv) * m_DecalTexture_ST.x, ddy(uv) * m_DecalTexture_ST.y);
 					decalColor = tex2D(decalTexture, poiUV(uv, m_DecalTexture_ST) + m_DecalTexturePan * _Time.x, dduv.xy, dduv.zw) * float4(poiThemeColor(poiMods, m_DecalColor.rgb, m_DecalColorThemeIndex), m_DecalColor.a);
-					decalColor.rgb = decalHueShift(m_DecalHueShiftEnabled, decalColor.rgb, m_DecalHueShift + poiLight.nDotV * m_DecalHueAngleStrength, m_DecalHueShiftSpeed);
+					decalColor.rgb = decalHueShift(m_DecalHueShiftEnabled, decalColor.rgb, m_DecalHueShift + poiLight.nDotV * m_DecalHueAngleStrength, m_DecalHueShiftSpeed, m_DecalHueShiftColorSpace);
 					decalColor.a *= decalMask[m_DecalMaskChannel] * applyTilingClipping(m_DecalTiled, uv);
 				}
 				
 				void SampleDecalNoAlpha(sampler2D decalTexture, in PoiMods poiMods, in PoiLight poiLight, in PoiMesh poiMesh, in PoiCam poiCam, float2 scaleMultiplier = float2(1, 1))
 				{
-					uv = decalUV(m_DecalTextureUV, m_DecalPosition, m_DecalRotation + decalRotation, m_DecalRotationSpeed, decalScale * scaleMultiplier, m_DecalSideOffset +sideMod, m_DecalDepth, poiMesh, poiCam);
+					uv = decalUV(m_DecalTextureUV, m_DecalPosition, m_DecalRotation + decalRotation, m_DecalRotationSpeed, decalScale * scaleMultiplier, m_DecalSideOffset +sideMod, m_DecalDepth, m_DecalSymmetryMode, m_DecalMirroredUVMode, poiMesh, poiCam);
 					// Adjust derivatives for _ST of decal texture
 					float4 dduv = any(fwidth(uv) > .5) ? 0.001 : float4(ddx(uv) * m_DecalTexture_ST.x, ddy(uv) * m_DecalTexture_ST.y);
 					decalColor.rgb = tex2D(decalTexture, poiUV(uv, m_DecalTexture_ST) + m_DecalTexturePan * _Time.x, dduv.xy, dduv.zw) * float4(poiThemeColor(poiMods, m_DecalColor.rgb, m_DecalColorThemeIndex), m_DecalColor.a).rgb;
-					decalColor.rgb = decalHueShift(m_DecalHueShiftEnabled, decalColor.rgb, m_DecalHueShift + poiLight.nDotV * m_DecalHueAngleStrength, m_DecalHueShiftSpeed);
+					decalColor.rgb = decalHueShift(m_DecalHueShiftEnabled, decalColor.rgb, m_DecalHueShift + poiLight.nDotV * m_DecalHueAngleStrength, m_DecalHueShiftSpeed, m_DecalHueShiftColorSpace);
 					decalColor.a *= decalMask[m_DecalMaskChannel] * applyTilingClipping(m_DecalTiled, uv);
 				}
 				
 				void SampleDecalAlphaOnly(sampler2D decalTexture, in PoiMods poiMods, in PoiLight poiLight, in PoiMesh poiMesh, in PoiCam poiCam, float2 scaleMultiplier = float2(1, 1))
 				{
-					uv = decalUV(m_DecalTextureUV, m_DecalPosition, m_DecalRotation + decalRotation, m_DecalRotationSpeed, decalScale * scaleMultiplier, m_DecalSideOffset +sideMod, m_DecalDepth, poiMesh, poiCam);
+					uv = decalUV(m_DecalTextureUV, m_DecalPosition, m_DecalRotation + decalRotation, m_DecalRotationSpeed, decalScale * scaleMultiplier, m_DecalSideOffset +sideMod, m_DecalDepth, m_DecalSymmetryMode, m_DecalMirroredUVMode, poiMesh, poiCam);
 					// Adjust derivatives for _ST of decal texture
 					float4 dduv = any(fwidth(uv) > .5) ? 0.001 : float4(ddx(uv) * m_DecalTexture_ST.x, ddy(uv) * m_DecalTexture_ST.y);
 					decalColor = tex2D(decalTexture, poiUV(uv, m_DecalTexture_ST) + m_DecalTexturePan * _Time.x, dduv.xy, dduv.zw) * float4(poiThemeColor(poiMods, m_DecalColor.rgb, m_DecalColorThemeIndex), m_DecalColor.a);
@@ -18863,8 +19022,8 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 					decalColor = float4(0, 0, 0, 1);
 					decalChannelOffset += m_DecalChannelSeparation + m_DecalChannelSeparationAngleStrength * (m_DecalChannelSeparationAngleStrength > 0 ? (1 - poiLight.nDotV) : poiLight.nDotV);
 					float2 positionOffset = decalChannelOffset * 0.01 * (decalScale.x + decalScale.y) * float2(cos(m_DecalChannelSeparationVertical), sin(m_DecalChannelSeparationVertical));
-					float2 uvSample0 = decalUV(m_DecalTextureUV, m_DecalPosition + positionOffset, m_DecalRotation + decalRotation, m_DecalRotationSpeed, decalScale, m_DecalSideOffset +sideMod, m_DecalDepth, poiMesh, poiCam);
-					float2 uvSample1 = decalUV(m_DecalTextureUV, m_DecalPosition - positionOffset, m_DecalRotation + decalRotation, m_DecalRotationSpeed, decalScale, m_DecalSideOffset +sideMod, m_DecalDepth, poiMesh, poiCam);
+					float2 uvSample0 = decalUV(m_DecalTextureUV, m_DecalPosition + positionOffset, m_DecalRotation + decalRotation, m_DecalRotationSpeed, decalScale, m_DecalSideOffset +sideMod, m_DecalDepth, m_DecalSymmetryMode, m_DecalMirroredUVMode, poiMesh, poiCam);
+					float2 uvSample1 = decalUV(m_DecalTextureUV, m_DecalPosition - positionOffset, m_DecalRotation + decalRotation, m_DecalRotationSpeed, decalScale, m_DecalSideOffset +sideMod, m_DecalDepth, m_DecalSymmetryMode, m_DecalMirroredUVMode, poiMesh, poiCam);
 					
 					float4 dduvSample0 = any(fwidth(uvSample0) > .5) ? 0.001 : float4(ddx(uvSample0) * m_DecalTexture_ST.x, ddy(uvSample0) * m_DecalTexture_ST.y);
 					float4 dduvSample1 = any(fwidth(uvSample1) > .5) ? 0.001 : float4(ddx(uvSample1) * m_DecalTexture_ST.x, ddy(uvSample1) * m_DecalTexture_ST.y);
@@ -18872,8 +19031,8 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 					float4 sample0 = tex2D(decalTexture, poiUV(uvSample0, m_DecalTexture_ST) + m_DecalTexturePan * _Time.x, dduvSample0.xy, dduvSample0.zw) * float4(poiThemeColor(poiMods, m_DecalColor.rgb, m_DecalColorThemeIndex), m_DecalColor.a);
 					float4 sample1 = tex2D(decalTexture, poiUV(uvSample1, m_DecalTexture_ST) + m_DecalTexturePan * _Time.x, dduvSample1.xy, dduvSample1.zw) * float4(poiThemeColor(poiMods, m_DecalColor.rgb, m_DecalColorThemeIndex), m_DecalColor.a);
 					
-					sample0.rgb = decalHueShift(m_DecalHueShiftEnabled, sample0.rgb, m_DecalHueShift + poiLight.nDotV * m_DecalHueAngleStrength, m_DecalHueShiftSpeed);
-					sample1.rgb = decalHueShift(m_DecalHueShiftEnabled, sample1.rgb, m_DecalHueShift + poiLight.nDotV * m_DecalHueAngleStrength, m_DecalHueShiftSpeed);
+					sample0.rgb = decalHueShift(m_DecalHueShiftEnabled, sample0.rgb, m_DecalHueShift + poiLight.nDotV * m_DecalHueAngleStrength, m_DecalHueShiftSpeed, m_DecalHueShiftColorSpace);
+					sample1.rgb = decalHueShift(m_DecalHueShiftEnabled, sample1.rgb, m_DecalHueShift + poiLight.nDotV * m_DecalHueAngleStrength, m_DecalHueShiftSpeed, m_DecalHueShiftColorSpace);
 					
 					float3 channelSeparationColor = HUEtoRGB(frac(m_DecalChannelSeparationHue));
 					
@@ -18896,6 +19055,10 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 						decalColor.a = maskBlend(decalColor.a, poiMods.globalMask[m_DecalGlobalMask - 1], m_DecalGlobalMaskBlendType);
 					}
 					
+					// Hide
+					if (m_DecalMirroredUVMode == 2 && poiMesh.isRightHand) decalColor.a = 0;
+					if ((m_DecalMirroredUVMode == 3 || m_DecalMirroredUVMode == 4) && !poiMesh.isRightHand) decalColor.a = 0;
+					
 					float audioLinkDecalAlpha = 0;
 					float audioLinkDecalEmission = 0;
 					#ifdef POI_AUDIOLINK
@@ -18915,9 +19078,23 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 					audioLinkDecalAlpha = lerp(m_AudioLinkDecalAlpha.x, m_AudioLinkDecalAlpha.y, poiMods.audioLink[m_AudioLinkDecalAlphaBand]) * poiMods.audioLinkAvailable;
 					#endif
 					
+					if (m_DecalFaceMask > 0)
+					{
+						if (m_DecalFaceMask == 1 && !poiMesh.isFrontFace)
+						{
+							decalColor.a *= 0;
+						}
+						else if (m_DecalFaceMask == 2 && poiMesh.isFrontFace)
+						{
+							decalColor.a *= 0;
+						}
+					}
+					
+					float decalAlphaMixed = decalColor.a * saturate(m_DecalBlendAlpha + audioLinkDecalAlpha);
+					
 					if (m_DecalOverrideAlpha)
 					{
-						float finalAlpha = lerp(1, min(decalAlpha, decalColor.a), decalMask[m_DecalMaskChannel]);
+						float finalAlpha = decalAlphaMixed;
 						if (m_DecalOverrideAlphaMode != 0 && !m_DecalTiled)
 						{
 							if (uv.x > 0 && uv.x < 1 && uv.y > 0 && uv.y < 1)
@@ -18942,20 +19119,6 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 							if (m_DecalOverrideAlpha == 6) poiFragData.alpha = max(poiFragData.alpha, finalAlpha);
 						}
 					}
-					
-					if (m_DecalFaceMask > 0)
-					{
-						if (m_DecalFaceMask == 1 && !poiMesh.isFrontFace)
-						{
-							decalColor.a *= 0;
-						}
-						else if (m_DecalFaceMask == 2 && poiMesh.isFrontFace)
-						{
-							decalColor.a *= 0;
-						}
-					}
-					
-					float decalAlphaMixed = decalColor.a * saturate(m_DecalBlendAlpha + audioLinkDecalAlpha);
 					
 					if (m_DecalApplyGlobalMaskIndex > 0)
 					{
@@ -19068,6 +19231,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				Decal0.m_DecalBlendAlpha = _DecalBlendAlpha;
 				Decal0.m_DecalOverrideAlpha = _DecalOverrideAlpha;
 				Decal0.m_DecalHueShiftEnabled = _DecalHueShiftEnabled;
+				Decal0.m_DecalHueShiftColorSpace = _DecalHueShiftColorSpace;
 				Decal0.m_DecalHueShift = _DecalHueShift;
 				Decal0.m_DecalHueShiftSpeed = _DecalHueShiftSpeed;
 				Decal0.m_DecalDepth = _Decal0Depth;
@@ -19079,6 +19243,8 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				Decal0.m_DecalChannelSeparationVertical = _Decal0ChannelSeparationVertical;
 				Decal0.m_DecalChannelSeparationAngleStrength = _Decal0ChannelSeparationAngleStrength;
 				Decal0.m_DecalOverrideAlphaMode = _Decal0OverrideAlphaMode;
+				Decal0.m_DecalMirroredUVMode = _DecalMirroredUVMode;
+				Decal0.m_DecalSymmetryMode = _DecalSymmetryMode;
 				
 				Decal0.Init(decalMask);
 				
@@ -19193,6 +19359,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				Decal1.m_DecalBlendAlpha = _DecalBlendAlpha1;
 				Decal1.m_DecalOverrideAlpha = _DecalOverrideAlpha1;
 				Decal1.m_DecalHueShiftEnabled = _DecalHueShiftEnabled1;
+				Decal1.m_DecalHueShiftColorSpace = _DecalHueShiftColorSpace1;
 				Decal1.m_DecalHueShift = _DecalHueShift1;
 				Decal1.m_DecalHueShiftSpeed = _DecalHueShiftSpeed1;
 				Decal1.m_DecalDepth = _Decal1Depth;
@@ -19204,6 +19371,9 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				Decal1.m_DecalChannelSeparationVertical = _Decal1ChannelSeparationVertical;
 				Decal1.m_DecalChannelSeparationAngleStrength = _Decal1ChannelSeparationAngleStrength;
 				Decal1.m_DecalOverrideAlphaMode = _Decal1OverrideAlphaMode;
+				Decal1.m_DecalMirroredUVMode = _DecalMirroredUVMode1;
+				Decal1.m_DecalSymmetryMode = _DecalSymmetryMode1;
+				
 				Decal1.Init(decalMask);
 				
 				#if defined(POI_AUDIOLINK)
@@ -19314,6 +19484,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				Decal2.m_DecalEmissionStrength = _DecalEmissionStrength2;
 				Decal2.m_DecalBlendAlpha = _DecalBlendAlpha2;
 				Decal2.m_DecalOverrideAlpha = _DecalOverrideAlpha2;
+				Decal2.m_DecalHueShiftColorSpace = _DecalHueShiftColorSpace2;
 				Decal2.m_DecalHueShiftEnabled = _DecalHueShiftEnabled2;
 				Decal2.m_DecalHueShift = _DecalHueShift2;
 				Decal2.m_DecalHueShiftSpeed = _DecalHueShiftSpeed2;
@@ -19326,6 +19497,9 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				Decal2.m_DecalChannelSeparationVertical = _Decal2ChannelSeparationVertical;
 				Decal2.m_DecalChannelSeparationAngleStrength = _Decal2ChannelSeparationAngleStrength;
 				Decal2.m_DecalOverrideAlphaMode = _Decal2OverrideAlphaMode;
+				Decal2.m_DecalMirroredUVMode = _DecalMirroredUVMode2;
+				Decal2.m_DecalSymmetryMode = _DecalSymmetryMode2;
+				
 				Decal2.Init(decalMask);
 				
 				#if defined(POI_AUDIOLINK)
@@ -19435,6 +19609,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				Decal3.m_DecalEmissionStrength = _DecalEmissionStrength3;
 				Decal3.m_DecalBlendAlpha = _DecalBlendAlpha3;
 				Decal3.m_DecalOverrideAlpha = _DecalOverrideAlpha3;
+				Decal3.m_DecalHueShiftColorSpace = _DecalHueShiftColorSpace3;
 				Decal3.m_DecalHueShiftEnabled = _DecalHueShiftEnabled3;
 				Decal3.m_DecalHueShift = _DecalHueShift3;
 				Decal3.m_DecalHueShiftSpeed = _DecalHueShiftSpeed3;
@@ -19447,6 +19622,9 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				Decal3.m_DecalChannelSeparationVertical = _Decal3ChannelSeparationVertical;
 				Decal3.m_DecalChannelSeparationAngleStrength = _Decal3ChannelSeparationAngleStrength;
 				Decal3.m_DecalOverrideAlphaMode = _Decal3OverrideAlphaMode;
+				Decal3.m_DecalMirroredUVMode = _DecalMirroredUVMode3;
+				Decal3.m_DecalSymmetryMode = _DecalSymmetryMode3;
+				
 				Decal3.Init(decalMask);
 				
 				#if defined(POI_AUDIOLINK)
@@ -19565,7 +19743,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				#if defined(PROP_DISSOLVETOTEXTURE) || !defined(OPTIMIZER_ENABLED)
 				dissolveToTexture = POI2D_SAMPLER_PAN(_DissolveToTexture, _MainTex, poiUV(poiMesh.uv[_DissolveToTextureUV], _DissolveToTexture_ST), _DissolveToTexturePan) * float4(poiThemeColor(poiMods, _DissolveTextureColor.rgb, _DissolveTextureColorThemeIndex), _DissolveTextureColor.a);
 				#else
-				dissolveToTexture = _DissolveTextureColor;
+				dissolveToTexture = float4(poiThemeColor(poiMods, _DissolveTextureColor.rgb, _DissolveTextureColorThemeIndex), _DissolveTextureColor.a);
 				#endif
 				
 				#if defined(PROP_DISSOLVENOISETEXTURE) || !defined(OPTIMIZER_ENABLED)
@@ -19787,7 +19965,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				UNITY_BRANCH
 				if (_DissolveHueShiftEnabled)
 				{
-					dissolveToTexture.rgb = hueShift(dissolveToTexture.rgb, _DissolveHueShift + _Time.x * _DissolveHueShiftSpeed);
+					dissolveToTexture.rgb = hueShift(dissolveToTexture.rgb, _DissolveHueShift + _Time.x * _DissolveHueShiftSpeed, _DissolveHueShiftColorSpace);
 				}
 				#endif
 				
@@ -19802,7 +19980,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				}
 				if (_DissolveInverseApplyGlobalMaskIndex > 0)
 				{
-					applyToGlobalMask(poiMods, _DissolveInverseApplyGlobalMaskIndex - 1, _DissolveInverseApplyGlobalMaskBlendType, 1-(dissolveAlpha * .999999));
+					applyToGlobalMask(poiMods, _DissolveInverseApplyGlobalMaskIndex - 1, _DissolveInverseApplyGlobalMaskBlendType, 1 - (dissolveAlpha * .999999));
 				}
 				UNITY_BRANCH
 				if (_DissolveEdgeWidth || (_DissolveType == 2 && _DissolveP2PEdgeLength != 0))
@@ -19812,7 +19990,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 					UNITY_BRANCH
 					if (_DissolveEdgeHueShiftEnabled)
 					{
-						edgeColor.rgb = hueShift(edgeColor.rgb, _DissolveEdgeHueShift + _Time.x * _DissolveEdgeHueShiftSpeed);
+						edgeColor.rgb = hueShift(edgeColor.rgb, _DissolveEdgeHueShift + _Time.x * _DissolveEdgeHueShiftSpeed, _DissolveEdgeHueShiftColorSpace);
 					}
 					#endif
 					poiFragData.baseColor = lerp(poiFragData.baseColor, edgeColor.rgb, smoothstep(0, 1 - _DissolveEdgeHardness * .99999999999, edgeAlpha));
@@ -19883,7 +20061,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				
 				if (_AnisoGlobalMask > 0)
 				{
-					shadowMask = customBlend(shadowMask, poiMods.globalMask[_AnisoGlobalMask-1], _AnisoGlobalMaskBlendType);
+					shadowMask = customBlend(shadowMask, poiMods.globalMask[_AnisoGlobalMask - 1], _AnisoGlobalMaskBlendType);
 				}
 				
 				float spec0 = calculateAnisotropics(lerp(poiMesh.binormal[1], poiMesh.tangent[1], _Aniso0SwitchDirection), _Aniso0Offset +_Aniso0OffsetMapStrength * specMap.a, poiMesh.normals[1], poiCam.viewDir, poiLight.direction, _Aniso0Power * 1000, _Aniso0Strength, shadowMask);
@@ -20119,7 +20297,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				//UNITY_BRANCH
 				if (_MatcapHueShiftEnabled)
 				{
-					matcap.rgb = hueShift(matcap.rgb, _MatcapHueShift + _Time.x * _MatcapHueShiftSpeed);
+					matcap.rgb = hueShift(matcap.rgb, _MatcapHueShift + _Time.x * _MatcapHueShiftSpeed, _MatcapHueShiftColorSpace);
 				}
 				
 				if (_MatcapApplyToAlphaEnabled)
@@ -20234,7 +20412,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				//UNITY_BRANCH
 				if (_Matcap2HueShiftEnabled)
 				{
-					matcap2.rgb = hueShift(matcap2.rgb, _Matcap2HueShift + _Time.x * _Matcap2HueShiftSpeed);
+					matcap2.rgb = hueShift(matcap2.rgb, _Matcap2HueShift + _Time.x * _Matcap2HueShiftSpeed, _Matcap2HueShiftColorSpace);
 				}
 				
 				if (_Matcap2ApplyToAlphaEnabled)
@@ -20350,7 +20528,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				//UNITY_BRANCH
 				if (_Matcap3HueShiftEnabled)
 				{
-					matcap3.rgb = hueShift(matcap3.rgb, _Matcap3HueShift + _Time.x * _Matcap3HueShiftSpeed);
+					matcap3.rgb = hueShift(matcap3.rgb, _Matcap3HueShift + _Time.x * _Matcap3HueShiftSpeed, _Matcap3HueShiftColorSpace);
 				}
 				
 				if (_Matcap3ApplyToAlphaEnabled)
@@ -20466,7 +20644,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				//UNITY_BRANCH
 				if (_Matcap4HueShiftEnabled)
 				{
-					matcap4.rgb = hueShift(matcap4.rgb, _Matcap4HueShift + _Time.x * _Matcap4HueShiftSpeed);
+					matcap4.rgb = hueShift(matcap4.rgb, _Matcap4HueShift + _Time.x * _Matcap4HueShiftSpeed, _Matcap4HueShiftColorSpace);
 				}
 				
 				if (_Matcap4ApplyToAlphaEnabled)
@@ -20804,6 +20982,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				}
 				#endif
 				flipBookPixel = UNITY_SAMPLE_TEX2DARRAY(_FlipbookTexArray, float3(TRANSFORM_TEX(newUV, _FlipbookTexArray) + _Time.x * _FlipbookTexArrayPan, floor(currentFrame)));
+				
 				UNITY_BRANCH
 				if (_FlipbookCrossfadeEnabled)
 				{
@@ -20834,7 +21013,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				UNITY_BRANCH
 				if (_FlipbookHueShiftEnabled)
 				{
-					flipBookPixel.rgb = hueShift(flipBookPixel.rgb, _FlipbookHueShift + _Time.x * _FlipbookHueShiftSpeed);
+					flipBookPixel.rgb = hueShift(flipBookPixel.rgb, _FlipbookHueShift + _Time.x * _FlipbookHueShiftSpeed, _FlipbookHueShiftColorSpace);
 				}
 				half flipbookAlpha = 1;
 				#ifdef POI_AUDIOLINK
@@ -20993,7 +21172,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				{
 					emissionStrength0 *= calculateBlinkingEmission(_EmissiveBlink_Min, _EmissiveBlink_Max, _EmissiveBlink_Velocity, _EmissionBlinkingOffset);
 				}
-				emissionColor0 = hueShift(emissionColor0, frac(_EmissionHueShift + _EmissionHueShiftSpeed * _Time.x) * _EmissionHueShiftEnabled);
+				emissionColor0 = hueShift(emissionColor0, frac(_EmissionHueShift + _EmissionHueShiftSpeed * _Time.x) * _EmissionHueShiftEnabled, _EmissionHueShiftColorSpace);
 				emissionColor0 = lerp(emissionColor0, dot(emissionColor0, float3(0.3, 0.59, 0.11)), - (_EmissionSaturation) * _EmissionHueShiftEnabled);
 				
 				#if defined(PROP_EMISSIONMASK) || !defined(OPTIMIZER_ENABLED)
@@ -21086,7 +21265,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				{
 					emissionStrength1 *= calculateBlinkingEmission(_EmissiveBlink_Min1, _EmissiveBlink_Max1, _EmissiveBlink_Velocity1, _EmissionBlinkingOffset1);
 				}
-				emissionColor1 = hueShift(emissionColor1, frac(_EmissionHueShift1 + _EmissionHueShiftSpeed1 * _Time.x) * _EmissionHueShiftEnabled1);
+				emissionColor1 = hueShift(emissionColor1, frac(_EmissionHueShift1 + _EmissionHueShiftSpeed1 * _Time.x) * _EmissionHueShiftEnabled1, _EmissionHueShiftColorSpace1);
 				emissionColor1 = lerp(emissionColor1, dot(emissionColor1, float3(0.3, 0.59, 0.11)), - (_EmissionSaturation1) * _EmissionHueShiftEnabled1);
 				
 				#if defined(PROP_EMISSIONMASK1) || !defined(OPTIMIZER_ENABLED)
@@ -21169,7 +21348,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				{
 					emissionStrength2 *= calculateBlinkingEmission(_EmissiveBlink_Min2, _EmissiveBlink_Max2, _EmissiveBlink_Velocity2, _EmissionBlinkingOffset2);
 				}
-				emissionColor2 = hueShift(emissionColor2, frac(_EmissionHueShift2 + _EmissionHueShiftSpeed2 * _Time.x) * _EmissionHueShiftEnabled2);
+				emissionColor2 = hueShift(emissionColor2, frac(_EmissionHueShift2 + _EmissionHueShiftSpeed2 * _Time.x) * _EmissionHueShiftEnabled2, _EmissionHueShiftColorSpace2);
 				emissionColor2 = lerp(emissionColor2, dot(emissionColor2, float3(0.3, 0.59, 0.11)), - (_EmissionSaturation2) * _EmissionHueShiftEnabled2);
 				
 				#if defined(PROP_EMISSIONMASK2) || !defined(OPTIMIZER_ENABLED)
@@ -21250,7 +21429,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				{
 					emissionStrength3 *= calculateBlinkingEmission(_EmissiveBlink_Min3, _EmissiveBlink_Max3, _EmissiveBlink_Velocity3, _EmissionBlinkingOffset3);
 				}
-				emissionColor3 = hueShift(emissionColor3, frac(_EmissionHueShift3 + _EmissionHueShiftSpeed3 * _Time.x) * _EmissionHueShiftEnabled3);
+				emissionColor3 = hueShift(emissionColor3, frac(_EmissionHueShift3 + _EmissionHueShiftSpeed3 * _Time.x) * _EmissionHueShiftEnabled3, _EmissionHueShiftColorSpace3);
 				emissionColor3 = lerp(emissionColor3, dot(emissionColor3, float3(0.3, 0.59, 0.11)), - (_EmissionSaturation3) * _EmissionHueShiftEnabled3);
 				
 				#if defined(PROP_EMISSIONMASK3) || !defined(OPTIMIZER_ENABLED)
@@ -21280,7 +21459,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 			//ifex _EnableRimLighting==0 && _EnableRim2Lighting==0
 			#if defined(_GLOSSYREFLECTIONS_OFF) || defined(POI_RIM2)
 			#if defined(_RIMSTYLE_POIYOMI) || defined(_RIM2STYLE_POIYOMI)
-			void ApplyPoiyomiRimLighting(inout PoiFragData poiFragData, in PoiMesh poiMesh, in PoiCam poiCam, in PoiLight poiLight, inout PoiMods poiMods, float Is_NormalMapToRimLight, float RimInvert, float RimPower, float RimStrength, float RimShadowWidth, float RimShadowToggle, float RimWidth, float RimBlendStrength, float RimMask, float RimGlobalMask, float RimGlobalMaskBlendType, float4 RimTex, float4 RimLightColor, float RimLightColorThemeIndex, float RimHueShiftEnabled, float RimHueShift, float RimHueShiftSpeed, float RimSharpness, float RimShadowMaskRampType, float RimShadowMaskInvert, float RimShadowMaskStrength, float2 RimShadowAlpha, float RimApplyGlobalMaskIndex, float RimApplyGlobalMaskBlendType, float RimBaseColorMix, float RimBrightness, float RimBlendMode, half AudioLinkRimWidthBand, float2 AudioLinkRimWidthAdd, half AudioLinkRimEmissionBand, float2 AudioLinkRimEmissionAdd, half AudioLinkRimBrightnessBand, float2 AudioLinkRimBrightnessAdd, float rimBias, float rimBiasIntensity, int RimApplyAlpha, float RimApplyAlphaBlend)
+			void ApplyPoiyomiRimLighting(inout PoiFragData poiFragData, in PoiMesh poiMesh, in PoiCam poiCam, in PoiLight poiLight, inout PoiMods poiMods, float Is_NormalMapToRimLight, float RimInvert, float RimPower, float RimStrength, float RimShadowWidth, float RimShadowToggle, float RimWidth, float RimBlendStrength, float RimMask, float RimGlobalMask, float RimGlobalMaskBlendType, float4 RimTex, float4 RimLightColor, float RimLightColorThemeIndex, float RimHueShiftEnabled, float RimHueShift, float RimHueShiftColorSpace, float RimHueShiftSpeed, float RimSharpness, float RimShadowMaskRampType, float RimShadowMaskInvert, float RimShadowMaskStrength, float2 RimShadowAlpha, float RimApplyGlobalMaskIndex, float RimApplyGlobalMaskBlendType, float RimBaseColorMix, float RimBrightness, float RimBlendMode, half AudioLinkRimWidthBand, float2 AudioLinkRimWidthAdd, half AudioLinkRimEmissionBand, float2 AudioLinkRimEmissionAdd, half AudioLinkRimBrightnessBand, float2 AudioLinkRimBrightnessAdd, float rimBias, float rimBiasIntensity, int RimApplyAlpha, float RimApplyAlphaBlend)
 			{
 				float viewDotNormal = abs(dot(poiCam.viewDir, lerp(poiMesh.normals[0], poiMesh.normals[1], Is_NormalMapToRimLight)));
 				
@@ -21326,7 +21505,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				UNITY_BRANCH
 				if (RimHueShiftEnabled)
 				{
-					rimColor.rgb = hueShift(rimColor.rgb, RimHueShift + _Time.x * RimHueShiftSpeed);
+					rimColor.rgb = hueShift(rimColor.rgb, RimHueShift + _Time.x * RimHueShiftSpeed, RimHueShiftColorSpace);
 				}
 				
 				float rim = 1 - smoothstep(min(RimSharpness, rimWidth), rimWidth, viewDotNormal);
@@ -21381,7 +21560,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 			}
 			#endif
 			#if defined(_RIMSTYLE_UTS2) || defined(_RIM2STYLE_UTS2)
-			void ApplyUTS2RimLighting(inout PoiFragData poiFragData, in PoiMesh poiMesh, in PoiCam poiCam, in PoiLight poiLight, in PoiMods poiMods, float Set_RimLightMask_var, float RimGlobalMask, float RimGlobalMaskBlendType, float4 RimLightColor, float RimLightColorThemeIndex, float Is_LightColor_RimLight, float Is_NormalMapToRimLight, float RimLight_Power, float RimLight_InsideMask, float RimLight_FeatherOff, float LightDirection_MaskOn, float Tweak_LightDirection_MaskLevel, float Add_Antipodean_RimLight, float4 Ap_RimLightColor, float RimApColorThemeIndex, float Is_LightColor_Ap_RimLight, float Ap_RimLight_Power, float Ap_RimLight_FeatherOff, float Tweak_RimLightMaskLevel, float RimHueShiftEnabled, float RimHueShift, float RimHueShiftSpeed)
+			void ApplyUTS2RimLighting(inout PoiFragData poiFragData, in PoiMesh poiMesh, in PoiCam poiCam, in PoiLight poiLight, in PoiMods poiMods, float Set_RimLightMask_var, float RimGlobalMask, float RimGlobalMaskBlendType, float4 RimLightColor, float RimLightColorThemeIndex, float Is_LightColor_RimLight, float Is_NormalMapToRimLight, float RimLight_Power, float RimLight_InsideMask, float RimLight_FeatherOff, float LightDirection_MaskOn, float Tweak_LightDirection_MaskLevel, float Add_Antipodean_RimLight, float4 Ap_RimLightColor, float RimApColorThemeIndex, float Is_LightColor_Ap_RimLight, float Ap_RimLight_Power, float Ap_RimLight_FeatherOff, float Tweak_RimLightMaskLevel, float RimHueShiftEnabled, float RimHueShift, float RimHueShiftColorSpace, float RimHueShiftSpeed)
 			{
 				if (RimGlobalMask > 0)
 				{
@@ -21401,13 +21580,13 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				UNITY_BRANCH
 				if (RimHueShiftEnabled)
 				{
-					_RimLight_var = hueShift(_RimLight_var, RimHueShift + _Time.x * RimHueShiftSpeed);
+					_RimLight_var = hueShift(_RimLight_var, RimHueShift + _Time.x * RimHueShiftSpeed, RimHueShiftColorSpace);
 				}
 				poiFragData.baseColor += _RimLight_var;
 			}
 			#endif
 			#if defined(_RIMSTYLE_LILTOON) || defined(_RIM2STYLE_LILTOON)
-			void ApplyLiltoonRimLighting(inout PoiFragData poiFragData, in PoiMesh poiMesh, in PoiCam poiCam, in PoiLight poiLight, in PoiMods poiMods, float4 RimColor, float4 RimIndirColor, float4 RimColorTex, float RimMainStrength, float RimNormalStrength, float RimDirRange, float RimIndirRange, float RimFresnelPower, float RimBackfaceMask, float RimDirStrength, float RimBorder, float RimBlur, float RimIndirBorder, float RimIndirBlur, float RimShadowMask, float RimEnableLighting, float RimVRParallaxStrength, float RimGlobalMask, float RimGlobalMaskBlendType, float RimHueShiftEnabled, float RimHueShift, float RimHueShiftSpeed, int RimBlendMode)
+			void ApplyLiltoonRimLighting(inout PoiFragData poiFragData, in PoiMesh poiMesh, in PoiCam poiCam, in PoiLight poiLight, in PoiMods poiMods, float4 RimColor, float4 RimIndirColor, float4 RimColorTex, float RimMainStrength, float RimNormalStrength, float RimDirRange, float RimIndirRange, float RimFresnelPower, float RimBackfaceMask, float RimDirStrength, float RimBorder, float RimBlur, float RimIndirBorder, float RimIndirBlur, float RimShadowMask, float RimEnableLighting, float RimVRParallaxStrength, float RimGlobalMask, float RimGlobalMaskBlendType, float RimHueShiftEnabled, float RimHueShift, float RimHueShiftColorSpace, float RimHueShiftSpeed, int RimBlendMode)
 			{
 				if (RimGlobalMask > 0)
 				{
@@ -21420,8 +21599,8 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				
 				if (RimHueShiftEnabled)
 				{
-					rimColor.rgb = hueShift(rimColor.rgb, RimHueShift + _Time.x * RimHueShiftSpeed);
-					rimIndirColor.rgb = hueShift(rimIndirColor.rgb, RimHueShift + _Time.x * RimHueShiftSpeed);
+					rimColor.rgb = hueShift(rimColor.rgb, RimHueShift + _Time.x * RimHueShiftSpeed, RimHueShiftColorSpace);
+					rimIndirColor.rgb = hueShift(rimIndirColor.rgb, RimHueShift + _Time.x * RimHueShiftSpeed, RimHueShiftColorSpace);
 				}
 				
 				rimColor.rgb = lerp(rimColor.rgb, rimColor.rgb * poiFragData.baseColor, RimMainStrength);
@@ -21810,7 +21989,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 					UNITY_BRANCH
 					if (_GlitterHueShiftEnabled)
 					{
-						glitterColor.rgb = hueShift(glitterColor.rgb, _GlitterHueShift + _Time.x * _GlitterHueShiftSpeed);
+						glitterColor.rgb = hueShift(glitterColor.rgb, _GlitterHueShift + _Time.x * _GlitterHueShiftSpeed, _GlitteHueShiftColorSpace);
 					}
 					float GlitterbrightnessOffset = 0;
 					#ifdef POI_AUDIOLINK
@@ -22428,7 +22607,10 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				#else
 				float specularMask = 1;
 				#endif
-				
+				if(_StylizedSpecularInvertMask)
+				{
+					specularMask = 1 - specularMask;
+				}
 				specularMask = saturate(specularMask + _Tweak_HighColorMaskLevel);
 				
 				float specMask = saturate(specMask1 + specMask2) * specularMask * lerp(poiLight.rampedLightMap, 1, _StylizedSpecularIgnoreShadow);
@@ -23243,7 +23425,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 			void applyPostProcessing(inout PoiFragData poiFragData, in PoiMesh poiMesh)
 			{
 				float3 col = poiFragData.finalColor;
-				col = hueShift(col, _PPHue);
+				col = hueShift(col, _PPHue, _PPHueShiftColorSpace);
 				col *= _PPTint;
 				col *= _PPRGB;
 				col = GetSaturation(col, _PPSaturation);
@@ -23979,6 +24161,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				poiMesh.isFrontFace = facing;
 				poiMesh.dx = ddx(poiMesh.uv[0]);
 				poiMesh.dy = ddy(poiMesh.uv[0]);
+				poiMesh.isRightHand = i.tangent.w > 0.0;
 				
 				#ifndef POI_PASS_OUTLINE
 				if (!poiMesh.isFrontFace && _FlipBackfaceNormals)
@@ -24324,6 +24507,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 					poiLight.directColor += _LightColor0.rgb;
 					// OpenLit does a few other things by default like clamp direct colour
 					// see https://github.com/lilxyzw/OpenLit/blob/main/Assets/OpenLit/core.hlsl#L174
+					
 				}
 				
 				float lightMapMode = _LightingMapMode;
@@ -24390,6 +24574,13 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 					UNITY_LIGHT_ATTENUATION(attenuation, i, poiMesh.worldPos)
 					poiLight.attenuation *= attenuation;
 				}
+				
+				#if defined(HANDLE_SHADOWS_BLENDING_IN_GI)
+				half bakedAtten = UnitySampleBakedOcclusion(poiMesh.lightmapUV.xy, poiMesh.worldPos);
+				float zDist = dot(_WorldSpaceCameraPos - poiMesh.worldPos, UNITY_MATRIX_V[2].xyz);
+				float fadeDist = UnityComputeShadowFadeDistance(poiMesh.worldPos, zDist);
+				poiLight.attenuation = UnityMixRealtimeAndBakedShadows(poiLight.attenuation, bakedAtten, UnityComputeShadowFade(fadeDist));
+				#endif
 				
 				if (!any(poiLight.directColor) && !any(poiLight.indirectColor) && lightMapMode == 0)
 				{
@@ -24516,7 +24707,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				#endif
 				poiLight.additiveShadow = UNITY_SHADOW_ATTENUATION(i, poiMesh.worldPos);
 				poiLight.attenuationStrength = _LightingAdditiveCastedShadows;
-				poiLight.directColor = _LightingAdditiveLimited ? MaxLuminance(_LightColor0.rgb * poiLight.attenuation, _LightingAdditiveLimit) : _LightColor0.rgb  * poiLight.attenuation;
+				poiLight.directColor = _LightingAdditiveLimited ? MaxLuminance(_LightColor0.rgb * poiLight.attenuation, _LightingAdditiveLimit) : _LightColor0.rgb * poiLight.attenuation;
 				
 				#if defined(POINT_COOKIE) || defined(DIRECTIONAL_COOKIE)
 				poiLight.indirectColor = 0;
@@ -24664,7 +24855,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 					hueShiftAlpha.g = maskBlend(hueShiftAlpha.g, poiMods.globalMask[_MainBrightnessGlobalMask - 1], _MainBrightnessGlobalMaskBlendType);
 				}
 				
-				if (_MainHueShiftToggle)
+				if (_MainHueShiftToggle == 1)
 				{
 					float shift = _MainHueShift;
 					#ifdef POI_AUDIOLINK
@@ -24676,11 +24867,11 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 					#endif
 					if (_MainHueShiftReplace)
 					{
-						poiFragData.baseColor = lerp(poiFragData.baseColor, hueShift(poiFragData.baseColor, shift + _MainHueShiftSpeed * _Time.x), hueShiftAlpha.r);
+						poiFragData.baseColor = lerp(poiFragData.baseColor, hueShift(poiFragData.baseColor, shift + _MainHueShiftSpeed * _Time.x, _MainHueShiftColorSpace), hueShiftAlpha.r);
 					}
 					else
 					{
-						poiFragData.baseColor = hueShift(poiFragData.baseColor, frac((shift - (1 - hueShiftAlpha.r) + _MainHueShiftSpeed * _Time.x)));
+						poiFragData.baseColor = hueShift(poiFragData.baseColor, frac((shift - (1 - hueShiftAlpha.r) + _MainHueShiftSpeed * _Time.x)), _MainHueShiftColorSpace);
 					}
 				}
 				
@@ -24714,7 +24905,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				if (_MainAlphaMaskMode)
 				{
 					float alphaMask = POI2D_SAMPLER_PAN(_AlphaMask, _MainTex, poiUV(poiMesh.uv[_AlphaMaskUV], _AlphaMask_ST), _AlphaMaskPan.xy).r;
-					alphaMask = saturate(alphaMask * _AlphaMaskScale + _AlphaMaskValue);
+					alphaMask = saturate(alphaMask * _AlphaMaskBlendStrength + (_AlphaMaskInvert ?_AlphaMaskValue * -1 : _AlphaMaskValue));
 					if (_AlphaMaskInvert) alphaMask = 1 - alphaMask;
 					if (_MainAlphaMaskMode == 1) poiFragData.alpha = alphaMask;
 					if (_MainAlphaMaskMode == 2) poiFragData.alpha = poiFragData.alpha * alphaMask;
@@ -24901,7 +25092,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				AudioLinkRimBrightnessAdd = _AudioLinkRimBrightnessAdd;
 				#endif
 				
-				ApplyPoiyomiRimLighting(poiFragData, poiMesh, poiCam, poiLight, poiMods, _Is_NormalMapToRimLight, _RimLightingInvert, _RimPower, _RimStrength, _RimShadowWidth, _RimShadowToggle, _RimWidth, _RimBlendStrength, rimMask, _RimGlobalMask, _RimGlobalMaskBlendType, rimColor, _RimLightColor, _RimLightColorThemeIndex, _RimHueShiftEnabled, _RimHueShift, _RimHueShiftSpeed, _RimSharpness, _RimShadowMaskRampType, _RimShadowMaskInvert, _RimShadowMaskStrength, _RimShadowAlpha, _RimApplyGlobalMaskIndex, _RimApplyGlobalMaskBlendType, _RimBaseColorMix, _RimBrightness, _RimPoiBlendMode, AudioLinkRimWidthBand, AudioLinkRimWidthAdd, AudioLinkRimEmissionBand, AudioLinkRimEmissionAdd, AudioLinkRimBrightnessBand, AudioLinkRimBrightnessAdd, rimBias, _RimBiasIntensity, _RimApplyAlpha, _RimApplyAlphaBlend);
+				ApplyPoiyomiRimLighting(poiFragData, poiMesh, poiCam, poiLight, poiMods, _Is_NormalMapToRimLight, _RimLightingInvert, _RimPower, _RimStrength, _RimShadowWidth, _RimShadowToggle, _RimWidth, _RimBlendStrength, rimMask, _RimGlobalMask, _RimGlobalMaskBlendType, rimColor, _RimLightColor, _RimLightColorThemeIndex, _RimHueShiftEnabled, _RimHueShift, _RimHueShiftColorSpace, _RimHueShiftSpeed,  _RimSharpness, _RimShadowMaskRampType, _RimShadowMaskInvert, _RimShadowMaskStrength, _RimShadowAlpha, _RimApplyGlobalMaskIndex, _RimApplyGlobalMaskBlendType, _RimBaseColorMix, _RimBrightness, _RimPoiBlendMode, AudioLinkRimWidthBand, AudioLinkRimWidthAdd, AudioLinkRimEmissionBand, AudioLinkRimEmissionAdd, AudioLinkRimBrightnessBand, AudioLinkRimBrightnessAdd, rimBias, _RimBiasIntensity, _RimApplyAlpha, _RimApplyAlphaBlend);
 				#endif
 				#ifdef _RIMSTYLE_UTS2
 				#if defined(PROP_SET_RIMLIGHTMASK) || !defined(OPTIMIZER_ENABLED)
@@ -24909,7 +25100,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				#else
 				float Set_RimLightMask_var = 1;
 				#endif
-				ApplyUTS2RimLighting(poiFragData, poiMesh, poiCam, poiLight, poiMods, Set_RimLightMask_var, _RimGlobalMask, _RimGlobalMaskBlendType, _RimLightColor, _RimLightColorThemeIndex, _Is_LightColor_RimLight, _Is_NormalMapToRimLight, _RimLight_Power, _RimLight_InsideMask, _RimLight_FeatherOff, _LightDirection_MaskOn, _Tweak_LightDirection_MaskLevel, _Add_Antipodean_RimLight, _Ap_RimLightColor, _RimApColorThemeIndex, _Is_LightColor_Ap_RimLight, _Ap_RimLight_Power, _Ap_RimLight_FeatherOff, _Tweak_RimLightMaskLevel, _RimHueShiftEnabled, _RimHueShift, _RimHueShiftSpeed);
+				ApplyUTS2RimLighting(poiFragData, poiMesh, poiCam, poiLight, poiMods, Set_RimLightMask_var, _RimGlobalMask, _RimGlobalMaskBlendType, _RimLightColor, _RimLightColorThemeIndex, _Is_LightColor_RimLight, _Is_NormalMapToRimLight, _RimLight_Power, _RimLight_InsideMask, _RimLight_FeatherOff, _LightDirection_MaskOn, _Tweak_LightDirection_MaskLevel, _Add_Antipodean_RimLight, _Ap_RimLightColor, _RimApColorThemeIndex, _Is_LightColor_Ap_RimLight, _Ap_RimLight_Power, _Ap_RimLight_FeatherOff, _Tweak_RimLightMaskLevel, _RimHueShiftEnabled, _RimHueShift, _RimHueShiftColorSpace, _RimHueShiftSpeed);
 				#endif
 				
 				#endif
@@ -24950,7 +25141,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				AudioLinkRim2BrightnessBand = _AudioLinkRim2BrightnessBand;
 				AudioLinkRim2BrightnessAdd = _AudioLinkRim2BrightnessAdd;
 				#endif
-				ApplyPoiyomiRimLighting(poiFragData, poiMesh, poiCam, poiLight, poiMods, _Is_NormalMapToRim2Light, _Rim2LightingInvert, _Rim2Power, _Rim2Strength, _Rim2ShadowWidth, _Rim2ShadowToggle, _Rim2Width, _Rim2BlendStrength, rim2Mask, _Rim2GlobalMask, _Rim2GlobalMaskBlendType, rim2Color, _Rim2LightColor, _Rim2LightColorThemeIndex, _Rim2HueShiftEnabled, _Rim2HueShift, _Rim2HueShiftSpeed, _Rim2Sharpness, _Rim2ShadowMaskRampType, _Rim2ShadowMaskInvert, _Rim2ShadowMaskStrength, _Rim2ShadowAlpha, _Rim2ApplyGlobalMaskIndex, _Rim2ApplyGlobalMaskBlendType, _Rim2BaseColorMix, _Rim2Brightness, _RimPoi2BlendMode, AudioLinkRim2WidthBand, AudioLinkRim2WidthAdd, AudioLinkRim2EmissionBand, AudioLinkRim2EmissionAdd, AudioLinkRim2BrightnessBand, AudioLinkRim2BrightnessAdd, rim2Bias, _Rim2BiasIntensity, _Rim2ApplyAlpha, _Rim2ApplyAlphaBlend);
+				ApplyPoiyomiRimLighting(poiFragData, poiMesh, poiCam, poiLight, poiMods, _Is_NormalMapToRim2Light, _Rim2LightingInvert, _Rim2Power, _Rim2Strength, _Rim2ShadowWidth, _Rim2ShadowToggle, _Rim2Width, _Rim2BlendStrength, rim2Mask, _Rim2GlobalMask, _Rim2GlobalMaskBlendType, rim2Color, _Rim2LightColor, _Rim2LightColorThemeIndex, _Rim2HueShiftEnabled, _Rim2HueShift, _Rim2HueShiftColorSpace, _Rim2HueShiftSpeed, _Rim2Sharpness, _Rim2ShadowMaskRampType, _Rim2ShadowMaskInvert, _Rim2ShadowMaskStrength, _Rim2ShadowAlpha, _Rim2ApplyGlobalMaskIndex, _Rim2ApplyGlobalMaskBlendType, _Rim2BaseColorMix, _Rim2Brightness, _RimPoi2BlendMode, AudioLinkRim2WidthBand, AudioLinkRim2WidthAdd, AudioLinkRim2EmissionBand, AudioLinkRim2EmissionAdd, AudioLinkRim2BrightnessBand, AudioLinkRim2BrightnessAdd, rim2Bias, _Rim2BiasIntensity, _Rim2ApplyAlpha, _Rim2ApplyAlphaBlend);
 				#endif
 				#ifdef _RIM2STYLE_UTS2
 				#if defined(PROP_SET_RIM2LIGHTMASK) || !defined(OPTIMIZER_ENABLED)
@@ -24958,7 +25149,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				#else
 				float Set_Rim2LightMask_var = 1;
 				#endif
-				ApplyUTS2RimLighting(poiFragData, poiMesh, poiCam, poiLight, poiMods, Set_Rim2LightMask_var, _Rim2GlobalMask, _Rim2GlobalMaskBlendType, _Rim2LightColor, _Rim2LightColorThemeIndex, _Is_LightColor_Rim2Light, _Is_NormalMapToRim2Light, _Rim2Light_Power, _Rim2Light_InsideMask, _Rim2Light_FeatherOff, _LightDirection_MaskOn2, _Tweak_LightDirection_MaskLevel2, _Add_Antipodean_Rim2Light, _Ap_Rim2LightColor, _Rim2ApColorThemeIndex, _Is_LightColor_Ap_Rim2Light, _Ap_Rim2Light_Power, _Ap_Rim2Light_FeatherOff, _Tweak_Rim2LightMaskLevel, _Rim2HueShiftEnabled, _Rim2HueShift, _Rim2HueShiftSpeed);
+				ApplyUTS2RimLighting(poiFragData, poiMesh, poiCam, poiLight, poiMods, Set_Rim2LightMask_var, _Rim2GlobalMask, _Rim2GlobalMaskBlendType, _Rim2LightColor, _Rim2LightColorThemeIndex, _Is_LightColor_Rim2Light, _Is_NormalMapToRim2Light, _Rim2Light_Power, _Rim2Light_InsideMask, _Rim2Light_FeatherOff, _LightDirection_MaskOn2, _Tweak_LightDirection_MaskLevel2, _Add_Antipodean_Rim2Light, _Ap_Rim2LightColor, _Rim2ApColorThemeIndex, _Is_LightColor_Ap_Rim2Light, _Ap_Rim2Light_Power, _Ap_Rim2Light_FeatherOff, _Tweak_Rim2LightMaskLevel, _Rim2HueShiftEnabled, _Rim2HueShift, _Rim2HueShiftColorSpace, _Rim2HueShiftSpeed);
 				#endif
 				
 				#endif
@@ -25136,7 +25327,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				#else
 				float4 rimColorTex = 1;
 				#endif
-				ApplyLiltoonRimLighting(poiFragData, poiMesh, poiCam, poiLight, poiMods, _RimColor, _RimIndirColor, rimColorTex, _RimMainStrength, _RimNormalStrength, _RimDirRange, _RimIndirRange, _RimFresnelPower, _RimBackfaceMask, _RimDirStrength, _RimBorder, _RimBlur, _RimIndirBorder, _RimIndirBlur, _RimShadowMask, _RimEnableLighting, _RimVRParallaxStrength, _RimGlobalMask, _RimGlobalMaskBlendType, _RimHueShiftEnabled, _RimHueShift, _RimHueShiftSpeed, _RimBlendMode);
+				ApplyLiltoonRimLighting(poiFragData, poiMesh, poiCam, poiLight, poiMods, _RimColor, _RimIndirColor, rimColorTex, _RimMainStrength, _RimNormalStrength, _RimDirRange, _RimIndirRange, _RimFresnelPower, _RimBackfaceMask, _RimDirStrength, _RimBorder, _RimBlur, _RimIndirBorder, _RimIndirBlur, _RimShadowMask, _RimEnableLighting, _RimVRParallaxStrength, _RimGlobalMask, _RimGlobalMaskBlendType, _RimHueShiftEnabled, _RimHueShift, _RimHueShiftColorSpace, _RimHueShiftSpeed, _RimBlendMode);
 				#endif
 				#endif
 				//endex
@@ -25148,7 +25339,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				#else
 				float4 rim2ColorTex = 1;
 				#endif
-				ApplyLiltoonRimLighting(poiFragData, poiMesh, poiCam, poiLight, poiMods, _Rim2Color, _Rim2IndirColor, rim2ColorTex, _Rim2MainStrength, _Rim2NormalStrength, _Rim2DirRange, _Rim2IndirRange, _Rim2FresnelPower, _Rim2BackfaceMask, _Rim2DirStrength, _Rim2Border, _Rim2Blur, _Rim2IndirBorder, _Rim2IndirBlur, _Rim2ShadowMask, _Rim2EnableLighting, _Rim2VRParallaxStrength, _Rim2GlobalMask, _Rim2GlobalMaskBlendType, _Rim2HueShiftEnabled, _Rim2HueShift, _Rim2HueShiftSpeed, _Rim2BlendMode);
+				ApplyLiltoonRimLighting(poiFragData, poiMesh, poiCam, poiLight, poiMods, _Rim2Color, _Rim2IndirColor, rim2ColorTex, _Rim2MainStrength, _Rim2NormalStrength, _Rim2DirRange, _Rim2IndirRange, _Rim2FresnelPower, _Rim2BackfaceMask, _Rim2DirStrength, _Rim2Border, _Rim2Blur, _Rim2IndirBorder, _Rim2IndirBlur, _Rim2ShadowMask, _Rim2EnableLighting, _Rim2VRParallaxStrength, _Rim2GlobalMask, _Rim2GlobalMaskBlendType, _Rim2HueShiftEnabled, _Rim2HueShift, _Rim2HueShiftColorSpace, _Rim2HueShiftSpeed, _Rim2BlendMode);
 				#endif
 				#endif
 				//endex
@@ -25302,6 +25493,8 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 			
 			ZWrite Off
 			Cull [_Cull]
+			ZClip [_ZClip]
+			//Conservative [_Conservative]
 			
 			AlphaToMask [_AlphaToCoverage]
 			ZTest [_ZTest]
@@ -25831,7 +26024,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 			float _AlphaMaskUV;
 			float _AlphaMaskInvert;
 			float _MainAlphaMaskMode;
-			float _AlphaMaskScale;
+			float _AlphaMaskBlendStrength;
 			float _AlphaMaskValue;
 			#endif
 			float _Cutoff;
@@ -25844,6 +26037,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 			float4 _MainColorAdjustTexture_ST;
 			float2 _MainColorAdjustTexturePan;
 			float _MainColorAdjustTextureUV;
+			float _MainHueShiftColorSpace;
 			float _MainHueShiftToggle;
 			float _MainHueShiftReplace;
 			float _MainHueShift;
@@ -26706,6 +26900,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 			
 			float _BackFaceHueShiftEnabled;
 			float _BackFaceHueShift;
+			float _BackFaceShiftColorSpace;
 			float _BackFaceHueShiftSpeed;
 			float _BackFaceEmissionLimiter;
 			#endif
@@ -27198,6 +27393,8 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 			float4 _DecalColor;
 			float _DecalColorThemeIndex;
 			float _DecalTiled;
+			float _DecalMirroredUVMode;
+			float _DecalSymmetryMode;
 			float _DecalBlendType;
 			half _DecalRotation;
 			half3 _DecalScale;
@@ -27207,6 +27404,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 			float _DecalEmissionStrength;
 			float _DecalBlendAlpha;
 			float _DecalOverrideAlpha;
+			float _DecalHueShiftColorSpace;
 			float _DecalHueShiftEnabled;
 			float _DecalHueShift;
 			float _DecalHueShiftSpeed;
@@ -27253,6 +27451,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 			float _DecalEmissionStrength1;
 			float _DecalBlendAlpha1;
 			float _DecalOverrideAlpha1;
+			float _DecalHueShiftColorSpace1;
 			float _DecalHueShiftEnabled1;
 			float _DecalHueShift1;
 			float _DecalHueShiftSpeed1;
@@ -27265,6 +27464,8 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 			float _Decal1ChannelSeparationVertical;
 			float _Decal1ChannelSeparationAngleStrength;
 			float _Decal1OverrideAlphaMode;
+			float _DecalMirroredUVMode1;
+			float _DecalSymmetryMode1;
 			#endif
 			//endex
 			
@@ -27299,6 +27500,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 			float _DecalEmissionStrength2;
 			float _DecalBlendAlpha2;
 			float _DecalOverrideAlpha2;
+			float _DecalHueShiftColorSpace2;
 			float _DecalHueShiftEnabled2;
 			float _DecalHueShift2;
 			float _DecalHueShiftSpeed2;
@@ -27311,6 +27513,8 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 			float _Decal2ChannelSeparationVertical;
 			float _Decal2ChannelSeparationAngleStrength;
 			float _Decal2OverrideAlphaMode;
+			float _DecalMirroredUVMode2;
+			float _DecalSymmetryMode2;
 			#endif
 			//endex
 			
@@ -27345,6 +27549,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 			float _DecalEmissionStrength3;
 			float _DecalBlendAlpha3;
 			float _DecalOverrideAlpha3;
+			float _DecalHueShiftColorSpace3;
 			float _DecalHueShiftEnabled3;
 			float _DecalHueShift3;
 			float _DecalHueShiftSpeed3;
@@ -27357,6 +27562,8 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 			float _Decal3ChannelSeparationVertical;
 			float _Decal3ChannelSeparationAngleStrength;
 			float _Decal3OverrideAlphaMode;
+			float _DecalMirroredUVMode3;
+			float _DecalSymmetryMode3;
 			#endif
 			//endex
 			
@@ -27488,6 +27695,8 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 			float dissolveAlpha;
 			float4 dissolveToTexture;
 			
+			float _DissolveHueShiftColorSpace;
+			float _DissolveEdgeHueShiftColorSpace;
 			float _DissolveHueShiftEnabled;
 			float _DissolveHueShiftSpeed;
 			float _DissolveHueShift;
@@ -27609,6 +27818,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 			float _MatcapEmissionStrength;
 			float _MatcapNormal;
 			float _MatcapHueShiftEnabled;
+			float _MatcapHueShiftColorSpace;
 			float _MatcapHueShiftSpeed;
 			float _MatcapHueShift;
 			int _MatcapApplyToAlphaEnabled;
@@ -27683,6 +27893,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 			float _Matcap2EmissionStrength;
 			float _Matcap2Normal;
 			float _Matcap2HueShiftEnabled;
+			float _Matcap2HueShiftColorSpace;
 			float _Matcap2HueShiftSpeed;
 			float _Matcap2HueShift;
 			int _Matcap2ApplyToAlphaEnabled;
@@ -27758,6 +27969,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 			float _Matcap3EmissionStrength;
 			float _Matcap3Normal;
 			float _Matcap3HueShiftEnabled;
+			float _Matcap3HueShiftColorSpace;
 			float _Matcap3HueShiftSpeed;
 			float _Matcap3HueShift;
 			int _Matcap3ApplyToAlphaEnabled;
@@ -27833,6 +28045,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 			float _Matcap4EmissionStrength;
 			float _Matcap4Normal;
 			float _Matcap4HueShiftEnabled;
+			float _Matcap4HueShiftColorSpace;
 			float _Matcap4HueShiftSpeed;
 			float _Matcap4HueShift;
 			int _Matcap4ApplyToAlphaEnabled;
@@ -28035,6 +28248,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 			
 			// Hueshift
 			float _FlipbookHueShiftEnabled;
+			float _FlipbookHueShiftColorSpace;
 			float _FlipbookHueShiftSpeed;
 			float _FlipbookHueShift;
 			
@@ -28161,6 +28375,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 			float _RimApplyGlobalMaskBlendType;
 			
 			float _RimHueShiftEnabled;
+			float _RimHueShiftColorSpace;
 			float _RimHueShiftSpeed;
 			float _RimHueShift;
 			#endif
@@ -28276,6 +28491,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 			float _Rim2ApplyGlobalMaskBlendType;
 			
 			float _Rim2HueShiftEnabled;
+			float _Rim2HueShiftColorSpace;
 			float _Rim2HueShiftSpeed;
 			float _Rim2HueShift;
 			#endif
@@ -28346,6 +28562,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 			float2 _GlitterUVPanning;
 			
 			float _GlitterHueShiftEnabled;
+			float _GlitteHueShiftColorSpace;
 			float _GlitterHueShiftSpeed;
 			float _GlitterHueShift;
 			float _GlitterHideInShadow;
@@ -28549,6 +28766,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 			float _Set_HighColorMaskUV;
 			float _Set_HighColorMaskChannel;
 			float _Tweak_HighColorMaskLevel;
+			float _StylizedSpecularInvertMask;
 			
 			/*
 			#if defined(PROP_StylizedSpecularOPTMAP1) || !defined(OPTIMIZER_ENABLED)
@@ -28888,7 +29106,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 			float _PPBrightness;
 			float _PPLightness;
 			float _PPHDR;
-			
+			float _PPHueShiftColorSpace;
 			float _PPPosterization;
 			float _PPPosterizationAmount;
 			const static float COLORS = 32;
@@ -29092,6 +29310,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				float2 parallaxUV;
 				float2 dx;
 				float2 dy;
+				uint isRightHand;
 			};
 			
 			struct PoiCam
@@ -29919,17 +30138,20 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				return float3(H, C, Q.x);
 			}
 			
-			float3 HSVtoRGB(in float3 HSV)
-			{
-				float3 RGB = HUEtoRGB(HSV.x);
-				return ((RGB - 1) * HSV.y + 1) * HSV.z;
+			float3 RGBtoHSV(float3 c){
+				float4 K = float4(0.0, -1.0 / 3.0, 2.0 / 3.0, -1.0);
+				float4 p = lerp(float4(c.bg, K.wz), float4(c.gb, K.xy), step(c.b, c.g));
+				float4 q = lerp(float4(p.xyw, c.r), float4(c.r, p.yzx), step(p.x, c.r));
+				
+				float d = q.x - min(q.w, q.y);
+				float e = 1.0e-10;
+				return float3(abs(q.z + (q.w - q.y) / (6.0 * d + e)), d / (q.x + e), q.x);
 			}
 			
-			float3 RGBtoHSV(in float3 RGB)
-			{
-				float3 HCV = RGBtoHCV(RGB);
-				float S = HCV.y / (HCV.z + Epsilon);
-				return float3(HCV.x, S, HCV.z);
+			float3 HSVtoRGB(float3 c){
+				float4 K = float4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
+				float3 p = abs(frac(c.xxx + K.xyz) * 6.0 - K.www);
+				return c.z * lerp(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
 			}
 			
 			float3 HSLtoRGB(in float3 HSL)
@@ -30069,7 +30291,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 			
 			float3 hueShift(float3 color, float shift)
 			{
-				float3 oklab = linear_srgb_to_oklab(max(color, 0.0000000001));
+				float3 oklab = linear_srgb_to_oklab(color + 0.0000001);
 				float hue = atan2(oklab.z, oklab.y);
 				hue += shift * PI * 2;  // Add the hue shift
 				
@@ -30080,19 +30302,32 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				return oklab_to_linear_srgb(oklab);
 			}
 			
-			float3 hueShift(float4 color, float shift)
+			float3 hueShiftHSV(float3 color, float hueOffset)
 			{
-				return hueShift(color.rgb, shift);
+				float3 hsv = float3(hueOffset, 0, 0);
+				float3 hsvCol = RGBtoHSV(color);
+				return HSVtoRGB(hsvCol + hsv);
 			}
 			
-			/*
-			float3 hueShift(float3 color, float hueOffset)
+			float3 hueShift(float3 color, float shift, float ColorSpace)
 			{
-				color = RGBtoHSV(color);
-				color.x = frac(hueOffset +color.x);
-				return HSVtoRGB(color);
+				switch(ColorSpace)
+				{
+					// OkLab Hue Shift
+					case 0.0:
+					return hueShift(color, shift);
+					// HSV Hue Shift
+					case 1.0:
+					return hueShiftHSV(color, shift);
+					default:
+					return float3(1.0, 0.0, 0.0);
+				}
 			}
-			*/
+			
+			float3 hueShift(float4 color, float shift, float ColorSpace)
+			{
+				return hueShift(color.rgb, shift, ColorSpace);
+			}
 			
 			// LCH
 			float xyzF(float t)
@@ -30566,6 +30801,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 			{
 				float3 customDir = length(lightDirectionOverride.xyz) * normalize(mul((float3x3)unity_ObjectToWorld, lightDirectionOverride.xyz));
 				return lightDirectionOverride.w ? customDir : lightDirectionOverride.xyz; // .w isn't doc'd anywhere and is always 0 unless end user changes it
+				
 			}
 			
 			float3 OpenLitLightingDirectionForSH9()
@@ -31925,7 +32161,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 			{
 				// Force Model Opacity to 1 if desired
 				UNITY_BRANCH
-				if (_Mode == 1)
+				if (_Mode == POI_MODE_CUTOUT)
 				{
 					UNITY_BRANCH
 					if (_AlphaSharpenedA2C && _AlphaToCoverage)
@@ -31974,8 +32210,9 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				return color;
 			}
 			
-			inline float4 Refraction(float indexOfRefraction, float chromaticAberration, in PoiMesh poiMesh, in PoiCam poiCam, in PoiMods poiMods, in PoiLight poiLight, in PoiFragData poiFragData)
+			inline float4 Refraction(float indexOfRefraction, float chromaticAberration, in PoiMesh poiMesh, in PoiCam poiCam, in PoiMods poiMods, inout PoiLight poiLight, in PoiFragData poiFragData)
 			{
+				poiLight.finalLighting = max(poiLight.finalLighting, Epsilon);
 				float4 refractionColor;
 				float3 worldViewDir = normalize(UnityWorldSpaceViewDir(poiMesh.worldPos));
 				float3 refractionOffset = ((((indexOfRefraction - 1.0) * mul(UNITY_MATRIX_V, float4(poiMesh.normals[1], 0.0)).xyz) * (1.0 / (poiCam.posScreenSpace.z + 1.0))) * (1.0 - dot(poiMesh.normals[1], worldViewDir)));
@@ -32865,7 +33102,11 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 					#if defined(PROP_BACKFACETEXTURE) || !defined(OPTIMIZER_ENABLED)
 					backFaceColor *= POI2D_SAMPLER_PAN(_BackFaceTexture, _MainTex, poiUV(poiMesh.uv[_BackFaceTextureUV], _BackFaceTexture_ST), _BackFaceTexturePan);
 					#endif
-					backFaceColor.rgb = hueShift(backFaceColor.rgb, frac(_BackFaceHueShift + _BackFaceHueShiftSpeed * _Time.x) * _BackFaceHueShiftEnabled);
+					
+					if (_BackFaceHueShiftEnabled)
+					{
+						backFaceColor.rgb = hueShift(backFaceColor.rgb, frac(_BackFaceHueShift + _BackFaceHueShiftSpeed * _Time.x), _BackFaceShiftColorSpace);
+					}
 					
 					float backFaceMask = 1;
 					#if defined(PROP_BACKFACEMASK) || !defined(OPTIMIZER_ENABLED)
@@ -33447,12 +33688,31 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 			#endif
 			#endif
 			
-			void ApplySubtractiveLighting(inout UnityIndirect indirectLight)
+			float FadeShadows(float attenuation, inout PoiLight poiLight, in PoiMesh poiMesh, in PoiCam poiCam)
+			{
+				#if HANDLE_SHADOWS_BLENDING_IN_GI || ADDITIONAL_MASKED_DIRECTIONAL_SHADOWS
+				// UNITY_LIGHT_ATTENUATION doesn't fade shadows for us.
+				
+				#if ADDITIONAL_MASKED_DIRECTIONAL_SHADOWS
+				attenuation = poiLight.attenuation;
+				#endif
+				
+				float viewZ = dot(_WorldSpaceCameraPos - poiMesh.worldPos, UNITY_MATRIX_V[2].xyz);
+				float shadowFadeDistance = UnityComputeShadowFadeDistance(poiMesh.worldPos, viewZ);
+				float shadowFade = UnityComputeShadowFade(shadowFadeDistance);
+				float bakedAttenuation = UnitySampleBakedOcclusion(poiMesh.lightmapUV.xy, poiMesh.worldPos);
+				attenuation = UnityMixRealtimeAndBakedShadows(attenuation, bakedAttenuation, shadowFade);
+				#endif
+				
+				return attenuation;
+			}
+			
+			void ApplySubtractiveLighting(inout UnityIndirect indirectLight, inout PoiLight poiLight, in PoiMesh poiMesh, in PoiCam poiCam)
 			{
 				#if SUBTRACTIVE_LIGHTING
-				poiLight.attenuation = FadeShadows(lerp(1, poiLight.attenuation, _AttenuationMultiplier));
+				poiLight.attenuation = FadeShadows(poiLight.attenuation, poiLight, poiMesh, poiCam);
 				
-				float ndotl = saturate(dot(i.normal, _WorldSpaceLightPos0.xyz));
+				float ndotl = saturate(dot(poiMesh.normals[0], _WorldSpaceLightPos0.xyz));
 				float3 shadowedLightEstimate = ndotl * (1 - poiLight.attenuation) * _LightColor0.rgb;
 				float3 subtractedLight = indirectLight.diffuse - shadowedLightEstimate;
 				subtractedLight = max(subtractedLight, unity_ShadowColor.rgb);
@@ -33471,14 +33731,11 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				indirectLight.diffuse = DecodeLightmap(UNITY_SAMPLE_TEX2D(unity_Lightmap, poiMesh.lightmapUV.xy));
 				
 				#if defined(DIRLIGHTMAP_COMBINED)
-				float4 lightmapDirection = UNITY_SAMPLE_TEX2D_SAMPLER(
-				unity_LightmapInd, unity_Lightmap, poiMesh.lightmapUV.xy
-				);
-				indirectLight.diffuse = DecodeDirectionalLightmap(
-				indirectLight.diffuse, lightmapDirection, poiMesh.normals[1]
-				);
+				float4 lightmapDirection = UNITY_SAMPLE_TEX2D_SAMPLER(unity_LightmapInd, unity_Lightmap, poiMesh.lightmapUV.xy);
+				indirectLight.diffuse = DecodeDirectionalLightmap(indirectLight.diffuse, lightmapDirection, poiMesh.normals[1]);
 				#endif
-				ApplySubtractiveLighting(indirectLight);
+				
+				ApplySubtractiveLighting(indirectLight, poiLight, poiMesh, poiCam);
 				#endif
 				
 				#if defined(DYNAMICLIGHTMAP_ON)
@@ -33487,13 +33744,8 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				);
 				
 				#if defined(DIRLIGHTMAP_COMBINED)
-				float4 dynamicLightmapDirection = UNITY_SAMPLE_TEX2D_SAMPLER(
-				unity_DynamicDirectionality, unity_DynamicLightmap,
-				poiMesh.lightmapUV.zw
-				);
-				indirectLight.diffuse += DecodeDirectionalLightmap(
-				dynamicLightDiffuse, dynamicLightmapDirection, poiMesh.normals[1]
-				);
+				float4 dynamicLightmapDirection = UNITY_SAMPLE_TEX2D_SAMPLER(unity_DynamicDirectionality, unity_DynamicLightmap, poiMesh.lightmapUV.zw);
+				indirectLight.diffuse += DecodeDirectionalLightmap(dynamicLightDiffuse, dynamicLightmapDirection, poiMesh.normals[1]);
 				#else
 				indirectLight.diffuse += dynamicLightDiffuse;
 				#endif
@@ -33535,6 +33787,27 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 			{
 				return clamp((1.0f - offset) / scale, -0.01f, 1.01f); // Remap Max
 				
+			}
+			
+			half4 POI_BRDF_PBS(half3 diffColor, half3 specColor, half oneMinusReflectivity, half smoothness, float3 normal, float3 viewDir, UnityLight light, UnityIndirect gi)
+			{
+				float3 reflDir = reflect(viewDir, normal);
+				
+				half nl = saturate(dot(normal, light.dir));
+				half nv = saturate(dot(normal, viewDir));
+				
+				// Vectorize Pow4 to save instructions
+				half2 rlPow4AndFresnelTerm = Pow4(float2(dot(reflDir, light.dir), 1 - nv));  // use R.L instead of N.H to save couple of instructions
+				half rlPow4 = rlPow4AndFresnelTerm.x; // power exponent must match kHorizontalWarpExp in NHxRoughness() function in GeneratedTextures.cpp
+				half fresnelTerm = rlPow4AndFresnelTerm.y;
+				
+				half grazingTerm = saturate(smoothness + (1 - oneMinusReflectivity));
+				
+				half3 color = BRDF3_Direct(diffColor, specColor, rlPow4, smoothness);
+				color *= light.color * nl;
+				color += BRDF3_Indirect(diffColor, specColor, gi, grazingTerm, fresnelTerm);
+				
+				return half4(color, 1);
 			}
 			
 			void calculateShading(inout PoiLight poiLight, inout PoiFragData poiFragData, in PoiMesh poiMesh, in PoiCam poiCam)
@@ -33758,7 +34031,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				#endif
 				
 				poiLight.rampedLightMap = poiLight.nDotLSaturated;
-				poiLight.finalLighting = max(UNITY_BRDF_PBS(1, 0, 0, 0, poiMesh.normals[1], poiCam.viewDir, light, indirectLight).xyz, _LightingMinLightBrightness);
+				poiLight.finalLighting = max(POI_BRDF_PBS(1, 0, 0, 0, poiMesh.normals[1], poiCam.viewDir, light, indirectLight).xyz, _LightingMinLightBrightness);
 				#endif
 				
 				#ifdef _LIGHTINGMODE_CLOTH
@@ -33787,8 +34060,9 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				float energyCompensation = EnvBRDFEnergyCompensation(dfg, f0, clothmask);
 				
 				poiLight.finalLighting = Fd_Burley(perceptualRoughness, poiLight.nDotV, poiLight.nDotLSaturated, poiLight.lDotH);
-				poiLight.finalLighting *= _LightColor0 * attenuation * shadowAttenuation * poiLight.nDotLSaturated;
+				poiLight.finalLighting *= poiLight.directColor * attenuation * shadowAttenuation * poiLight.nDotLSaturated;
 				poiLight.rampedLightMap = poiLight.nDotLSaturated;
+				
 				float3 specular = max(0, Specular(clampedRoughness, poiLight, f0, poiMesh.normals[1], clothmask) * poiLight.finalLighting * energyCompensation * UNITY_PI); // (D * V) * F
 				
 				#ifdef UNITY_PASS_FORWARDBASE
@@ -33798,10 +34072,12 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				indirectDiffuse.g = shEvaluateDiffuseL1Geomerics_local(L0.g, unity_SHAg.xyz, poiMesh.normals[1]);
 				indirectDiffuse.b = shEvaluateDiffuseL1Geomerics_local(L0.b, unity_SHAb.xyz, poiMesh.normals[1]);
 				indirectDiffuse = max(0, indirectDiffuse);
+				indirectDiffuse = lerp(indirectDiffuse, dot(indirectDiffuse, float3(0.299, 0.587, 0.114)), _LightingMonochromatic);
 				
 				float3 indirectSpecular = IndirectSpecular(dfg, roughness, poiLight.occlusion, energyCompensation, clothmask, indirectDiffuse, f0, poiLight, poiFragData, poiCam, poiMesh);
 				poiLight.finalLightAdd += max(0, specular + indirectSpecular);
 				poiLight.finalLighting += indirectDiffuse * poiLight.occlusion;
+				
 				#endif
 				
 				poiFragData.baseColor.xyz *= (1 - metallic);
@@ -33943,11 +34219,22 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 			//endex
 			
 			#if defined(GEOM_TYPE_BRANCH) || defined(GEOM_TYPE_BRANCH_DETAIL) || defined(GEOM_TYPE_FROND) || defined(DEPTH_OF_FIELD_COC_VIEW)
-			float2 decalUV(float uvNumber, float2 position, half rotation, half rotationSpeed, half2 scale, float4 scaleOffset, float depth, in PoiMesh poiMesh, in PoiCam poiCam)
+			float2 decalUV(float uvNumber, float2 position, half rotation, half rotationSpeed, half2 scale, float4 scaleOffset, float depth, in float symmetryMode, in float mirroredUVMode, in PoiMesh poiMesh, in PoiCam poiCam)
 			{
 				scaleOffset = float4(-scaleOffset.x, scaleOffset.y, -scaleOffset.z, scaleOffset.w);
 				float2 centerOffset = float2((scaleOffset.x + scaleOffset.y) / 2, (scaleOffset.z + scaleOffset.w) / 2);
-				float2 uv = poiMesh.uv[uvNumber] + calcParallax(depth + 1, poiCam);
+				float2 uv = poiMesh.uv[uvNumber];
+				
+				// Copy
+				if (symmetryMode == 1) uv.x = abs(uv.x - 0.5) + 0.5;
+				// Flip
+				if (symmetryMode == 2 && uv.x < 0.5) uv.x = 1.0 - uv.x;
+				if ((mirroredUVMode == 1 || mirroredUVMode == 4) && poiMesh.isRightHand) uv.x = 1.0 - uv.x;
+				// Hide
+				if (mirroredUVMode == 2 && poiMesh.isRightHand) uv.x = -1.0;
+				if ((mirroredUVMode == 3 || mirroredUVMode == 4) && !poiMesh.isRightHand) uv.x = -1.0;
+				
+				uv += calcParallax(depth + 1, poiCam);
 				float2 decalCenter = position + centerOffset;
 				float theta = radians(rotation + _Time.z * rotationSpeed);
 				float cs = cos(theta);
@@ -33956,13 +34243,12 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				uv = remap(uv, float2(0, 0) - scale / 2 + position + scaleOffset.xz, scale / 2 + position + scaleOffset.yw, float2(0, 0), float2(1, 1));
 				return uv;
 			}
-			
-			inline float3 decalHueShift(float enabled, float3 color, float shift, float shiftSpeed)
+			inline float3 decalHueShift(float enabled, float3 color, float shift, float shiftSpeed, float colorSpace)
 			{
 				//UNITY_BRANCH
 				if (enabled)
 				{
-					color = hueShift(color, shift + _Time.x * shiftSpeed);
+					color = hueShift(color, shift + _Time.x * shiftSpeed, colorSpace);
 				}
 				return color;
 			}
@@ -34004,6 +34290,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				float m_DecalEmissionStrength;
 				float m_DecalBlendAlpha;
 				float m_DecalAlphaBlendMode;
+				float m_DecalHueShiftColorSpace;
 				float m_DecalHueShiftEnabled;
 				float m_DecalHueShift;
 				float m_DecalHueShiftSpeed;
@@ -34017,6 +34304,8 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				float m_DecalChannelSeparationAngleStrength;
 				float m_DecalOverrideAlphaMode;
 				float m_DecalOverrideAlpha;
+				float m_DecalSymmetryMode;
+				float m_DecalMirroredUVMode;
 				
 				#if defined(POI_AUDIOLINK)
 				half m_AudioLinkDecalScaleBand;
@@ -34070,35 +34359,35 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				
 				void SampleDecalNoTexture(in PoiMods poiMods, in PoiLight poiLight, in PoiMesh poiMesh, in PoiCam poiCam)
 				{
-					uv = decalUV(m_DecalTextureUV, m_DecalPosition, m_DecalRotation + decalRotation, m_DecalRotationSpeed, decalScale, m_DecalSideOffset +sideMod, m_DecalDepth, poiMesh, poiCam);
+					uv = decalUV(m_DecalTextureUV, m_DecalPosition, m_DecalRotation + decalRotation, m_DecalRotationSpeed, decalScale, m_DecalSideOffset +sideMod, m_DecalDepth, m_DecalSymmetryMode, m_DecalMirroredUVMode, poiMesh, poiCam);
 					decalColor = float4(poiThemeColor(poiMods, m_DecalColor.rgb, m_DecalColorThemeIndex), m_DecalColor.a);
-					decalColor.rgb = decalHueShift(m_DecalHueShiftEnabled, decalColor.rgb, m_DecalHueShift + poiLight.nDotV * m_DecalHueAngleStrength, m_DecalHueShiftSpeed);
+					decalColor.rgb = decalHueShift(m_DecalHueShiftEnabled, decalColor.rgb, m_DecalHueShift + poiLight.nDotV * m_DecalHueAngleStrength, m_DecalHueShiftSpeed, m_DecalHueShiftColorSpace);
 					decalColor.a *= decalMask[m_DecalMaskChannel] * applyTilingClipping(m_DecalTiled, uv);
 				}
 				
 				void SampleDecal(sampler2D decalTexture, in PoiMods poiMods, in PoiLight poiLight, in PoiMesh poiMesh, in PoiCam poiCam, float2 scaleMultiplier = float2(1, 1))
 				{
-					uv = decalUV(m_DecalTextureUV, m_DecalPosition, m_DecalRotation + decalRotation, m_DecalRotationSpeed, decalScale * scaleMultiplier, m_DecalSideOffset +sideMod, m_DecalDepth, poiMesh, poiCam);
+					uv = decalUV(m_DecalTextureUV, m_DecalPosition, m_DecalRotation + decalRotation, m_DecalRotationSpeed, decalScale * scaleMultiplier, m_DecalSideOffset +sideMod, m_DecalDepth, m_DecalSymmetryMode, m_DecalMirroredUVMode, poiMesh, poiCam);
 					// Adjust derivatives for _ST of decal texture
 					float4 dduv = any(fwidth(uv) > .5) ? 0.001 : float4(ddx(uv) * m_DecalTexture_ST.x, ddy(uv) * m_DecalTexture_ST.y);
 					decalColor = tex2D(decalTexture, poiUV(uv, m_DecalTexture_ST) + m_DecalTexturePan * _Time.x, dduv.xy, dduv.zw) * float4(poiThemeColor(poiMods, m_DecalColor.rgb, m_DecalColorThemeIndex), m_DecalColor.a);
-					decalColor.rgb = decalHueShift(m_DecalHueShiftEnabled, decalColor.rgb, m_DecalHueShift + poiLight.nDotV * m_DecalHueAngleStrength, m_DecalHueShiftSpeed);
+					decalColor.rgb = decalHueShift(m_DecalHueShiftEnabled, decalColor.rgb, m_DecalHueShift + poiLight.nDotV * m_DecalHueAngleStrength, m_DecalHueShiftSpeed, m_DecalHueShiftColorSpace);
 					decalColor.a *= decalMask[m_DecalMaskChannel] * applyTilingClipping(m_DecalTiled, uv);
 				}
 				
 				void SampleDecalNoAlpha(sampler2D decalTexture, in PoiMods poiMods, in PoiLight poiLight, in PoiMesh poiMesh, in PoiCam poiCam, float2 scaleMultiplier = float2(1, 1))
 				{
-					uv = decalUV(m_DecalTextureUV, m_DecalPosition, m_DecalRotation + decalRotation, m_DecalRotationSpeed, decalScale * scaleMultiplier, m_DecalSideOffset +sideMod, m_DecalDepth, poiMesh, poiCam);
+					uv = decalUV(m_DecalTextureUV, m_DecalPosition, m_DecalRotation + decalRotation, m_DecalRotationSpeed, decalScale * scaleMultiplier, m_DecalSideOffset +sideMod, m_DecalDepth, m_DecalSymmetryMode, m_DecalMirroredUVMode, poiMesh, poiCam);
 					// Adjust derivatives for _ST of decal texture
 					float4 dduv = any(fwidth(uv) > .5) ? 0.001 : float4(ddx(uv) * m_DecalTexture_ST.x, ddy(uv) * m_DecalTexture_ST.y);
 					decalColor.rgb = tex2D(decalTexture, poiUV(uv, m_DecalTexture_ST) + m_DecalTexturePan * _Time.x, dduv.xy, dduv.zw) * float4(poiThemeColor(poiMods, m_DecalColor.rgb, m_DecalColorThemeIndex), m_DecalColor.a).rgb;
-					decalColor.rgb = decalHueShift(m_DecalHueShiftEnabled, decalColor.rgb, m_DecalHueShift + poiLight.nDotV * m_DecalHueAngleStrength, m_DecalHueShiftSpeed);
+					decalColor.rgb = decalHueShift(m_DecalHueShiftEnabled, decalColor.rgb, m_DecalHueShift + poiLight.nDotV * m_DecalHueAngleStrength, m_DecalHueShiftSpeed, m_DecalHueShiftColorSpace);
 					decalColor.a *= decalMask[m_DecalMaskChannel] * applyTilingClipping(m_DecalTiled, uv);
 				}
 				
 				void SampleDecalAlphaOnly(sampler2D decalTexture, in PoiMods poiMods, in PoiLight poiLight, in PoiMesh poiMesh, in PoiCam poiCam, float2 scaleMultiplier = float2(1, 1))
 				{
-					uv = decalUV(m_DecalTextureUV, m_DecalPosition, m_DecalRotation + decalRotation, m_DecalRotationSpeed, decalScale * scaleMultiplier, m_DecalSideOffset +sideMod, m_DecalDepth, poiMesh, poiCam);
+					uv = decalUV(m_DecalTextureUV, m_DecalPosition, m_DecalRotation + decalRotation, m_DecalRotationSpeed, decalScale * scaleMultiplier, m_DecalSideOffset +sideMod, m_DecalDepth, m_DecalSymmetryMode, m_DecalMirroredUVMode, poiMesh, poiCam);
 					// Adjust derivatives for _ST of decal texture
 					float4 dduv = any(fwidth(uv) > .5) ? 0.001 : float4(ddx(uv) * m_DecalTexture_ST.x, ddy(uv) * m_DecalTexture_ST.y);
 					decalColor = tex2D(decalTexture, poiUV(uv, m_DecalTexture_ST) + m_DecalTexturePan * _Time.x, dduv.xy, dduv.zw) * float4(poiThemeColor(poiMods, m_DecalColor.rgb, m_DecalColorThemeIndex), m_DecalColor.a);
@@ -34110,8 +34399,8 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 					decalColor = float4(0, 0, 0, 1);
 					decalChannelOffset += m_DecalChannelSeparation + m_DecalChannelSeparationAngleStrength * (m_DecalChannelSeparationAngleStrength > 0 ? (1 - poiLight.nDotV) : poiLight.nDotV);
 					float2 positionOffset = decalChannelOffset * 0.01 * (decalScale.x + decalScale.y) * float2(cos(m_DecalChannelSeparationVertical), sin(m_DecalChannelSeparationVertical));
-					float2 uvSample0 = decalUV(m_DecalTextureUV, m_DecalPosition + positionOffset, m_DecalRotation + decalRotation, m_DecalRotationSpeed, decalScale, m_DecalSideOffset +sideMod, m_DecalDepth, poiMesh, poiCam);
-					float2 uvSample1 = decalUV(m_DecalTextureUV, m_DecalPosition - positionOffset, m_DecalRotation + decalRotation, m_DecalRotationSpeed, decalScale, m_DecalSideOffset +sideMod, m_DecalDepth, poiMesh, poiCam);
+					float2 uvSample0 = decalUV(m_DecalTextureUV, m_DecalPosition + positionOffset, m_DecalRotation + decalRotation, m_DecalRotationSpeed, decalScale, m_DecalSideOffset +sideMod, m_DecalDepth, m_DecalSymmetryMode, m_DecalMirroredUVMode, poiMesh, poiCam);
+					float2 uvSample1 = decalUV(m_DecalTextureUV, m_DecalPosition - positionOffset, m_DecalRotation + decalRotation, m_DecalRotationSpeed, decalScale, m_DecalSideOffset +sideMod, m_DecalDepth, m_DecalSymmetryMode, m_DecalMirroredUVMode, poiMesh, poiCam);
 					
 					float4 dduvSample0 = any(fwidth(uvSample0) > .5) ? 0.001 : float4(ddx(uvSample0) * m_DecalTexture_ST.x, ddy(uvSample0) * m_DecalTexture_ST.y);
 					float4 dduvSample1 = any(fwidth(uvSample1) > .5) ? 0.001 : float4(ddx(uvSample1) * m_DecalTexture_ST.x, ddy(uvSample1) * m_DecalTexture_ST.y);
@@ -34119,8 +34408,8 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 					float4 sample0 = tex2D(decalTexture, poiUV(uvSample0, m_DecalTexture_ST) + m_DecalTexturePan * _Time.x, dduvSample0.xy, dduvSample0.zw) * float4(poiThemeColor(poiMods, m_DecalColor.rgb, m_DecalColorThemeIndex), m_DecalColor.a);
 					float4 sample1 = tex2D(decalTexture, poiUV(uvSample1, m_DecalTexture_ST) + m_DecalTexturePan * _Time.x, dduvSample1.xy, dduvSample1.zw) * float4(poiThemeColor(poiMods, m_DecalColor.rgb, m_DecalColorThemeIndex), m_DecalColor.a);
 					
-					sample0.rgb = decalHueShift(m_DecalHueShiftEnabled, sample0.rgb, m_DecalHueShift + poiLight.nDotV * m_DecalHueAngleStrength, m_DecalHueShiftSpeed);
-					sample1.rgb = decalHueShift(m_DecalHueShiftEnabled, sample1.rgb, m_DecalHueShift + poiLight.nDotV * m_DecalHueAngleStrength, m_DecalHueShiftSpeed);
+					sample0.rgb = decalHueShift(m_DecalHueShiftEnabled, sample0.rgb, m_DecalHueShift + poiLight.nDotV * m_DecalHueAngleStrength, m_DecalHueShiftSpeed, m_DecalHueShiftColorSpace);
+					sample1.rgb = decalHueShift(m_DecalHueShiftEnabled, sample1.rgb, m_DecalHueShift + poiLight.nDotV * m_DecalHueAngleStrength, m_DecalHueShiftSpeed, m_DecalHueShiftColorSpace);
 					
 					float3 channelSeparationColor = HUEtoRGB(frac(m_DecalChannelSeparationHue));
 					
@@ -34143,6 +34432,10 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 						decalColor.a = maskBlend(decalColor.a, poiMods.globalMask[m_DecalGlobalMask - 1], m_DecalGlobalMaskBlendType);
 					}
 					
+					// Hide
+					if (m_DecalMirroredUVMode == 2 && poiMesh.isRightHand) decalColor.a = 0;
+					if ((m_DecalMirroredUVMode == 3 || m_DecalMirroredUVMode == 4) && !poiMesh.isRightHand) decalColor.a = 0;
+					
 					float audioLinkDecalAlpha = 0;
 					float audioLinkDecalEmission = 0;
 					#ifdef POI_AUDIOLINK
@@ -34162,9 +34455,23 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 					audioLinkDecalAlpha = lerp(m_AudioLinkDecalAlpha.x, m_AudioLinkDecalAlpha.y, poiMods.audioLink[m_AudioLinkDecalAlphaBand]) * poiMods.audioLinkAvailable;
 					#endif
 					
+					if (m_DecalFaceMask > 0)
+					{
+						if (m_DecalFaceMask == 1 && !poiMesh.isFrontFace)
+						{
+							decalColor.a *= 0;
+						}
+						else if (m_DecalFaceMask == 2 && poiMesh.isFrontFace)
+						{
+							decalColor.a *= 0;
+						}
+					}
+					
+					float decalAlphaMixed = decalColor.a * saturate(m_DecalBlendAlpha + audioLinkDecalAlpha);
+					
 					if (m_DecalOverrideAlpha)
 					{
-						float finalAlpha = lerp(1, min(decalAlpha, decalColor.a), decalMask[m_DecalMaskChannel]);
+						float finalAlpha = decalAlphaMixed;
 						if (m_DecalOverrideAlphaMode != 0 && !m_DecalTiled)
 						{
 							if (uv.x > 0 && uv.x < 1 && uv.y > 0 && uv.y < 1)
@@ -34189,20 +34496,6 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 							if (m_DecalOverrideAlpha == 6) poiFragData.alpha = max(poiFragData.alpha, finalAlpha);
 						}
 					}
-					
-					if (m_DecalFaceMask > 0)
-					{
-						if (m_DecalFaceMask == 1 && !poiMesh.isFrontFace)
-						{
-							decalColor.a *= 0;
-						}
-						else if (m_DecalFaceMask == 2 && poiMesh.isFrontFace)
-						{
-							decalColor.a *= 0;
-						}
-					}
-					
-					float decalAlphaMixed = decalColor.a * saturate(m_DecalBlendAlpha + audioLinkDecalAlpha);
 					
 					if (m_DecalApplyGlobalMaskIndex > 0)
 					{
@@ -34315,6 +34608,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				Decal0.m_DecalBlendAlpha = _DecalBlendAlpha;
 				Decal0.m_DecalOverrideAlpha = _DecalOverrideAlpha;
 				Decal0.m_DecalHueShiftEnabled = _DecalHueShiftEnabled;
+				Decal0.m_DecalHueShiftColorSpace = _DecalHueShiftColorSpace;
 				Decal0.m_DecalHueShift = _DecalHueShift;
 				Decal0.m_DecalHueShiftSpeed = _DecalHueShiftSpeed;
 				Decal0.m_DecalDepth = _Decal0Depth;
@@ -34326,6 +34620,8 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				Decal0.m_DecalChannelSeparationVertical = _Decal0ChannelSeparationVertical;
 				Decal0.m_DecalChannelSeparationAngleStrength = _Decal0ChannelSeparationAngleStrength;
 				Decal0.m_DecalOverrideAlphaMode = _Decal0OverrideAlphaMode;
+				Decal0.m_DecalMirroredUVMode = _DecalMirroredUVMode;
+				Decal0.m_DecalSymmetryMode = _DecalSymmetryMode;
 				
 				Decal0.Init(decalMask);
 				
@@ -34440,6 +34736,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				Decal1.m_DecalBlendAlpha = _DecalBlendAlpha1;
 				Decal1.m_DecalOverrideAlpha = _DecalOverrideAlpha1;
 				Decal1.m_DecalHueShiftEnabled = _DecalHueShiftEnabled1;
+				Decal1.m_DecalHueShiftColorSpace = _DecalHueShiftColorSpace1;
 				Decal1.m_DecalHueShift = _DecalHueShift1;
 				Decal1.m_DecalHueShiftSpeed = _DecalHueShiftSpeed1;
 				Decal1.m_DecalDepth = _Decal1Depth;
@@ -34451,6 +34748,9 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				Decal1.m_DecalChannelSeparationVertical = _Decal1ChannelSeparationVertical;
 				Decal1.m_DecalChannelSeparationAngleStrength = _Decal1ChannelSeparationAngleStrength;
 				Decal1.m_DecalOverrideAlphaMode = _Decal1OverrideAlphaMode;
+				Decal1.m_DecalMirroredUVMode = _DecalMirroredUVMode1;
+				Decal1.m_DecalSymmetryMode = _DecalSymmetryMode1;
+				
 				Decal1.Init(decalMask);
 				
 				#if defined(POI_AUDIOLINK)
@@ -34561,6 +34861,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				Decal2.m_DecalEmissionStrength = _DecalEmissionStrength2;
 				Decal2.m_DecalBlendAlpha = _DecalBlendAlpha2;
 				Decal2.m_DecalOverrideAlpha = _DecalOverrideAlpha2;
+				Decal2.m_DecalHueShiftColorSpace = _DecalHueShiftColorSpace2;
 				Decal2.m_DecalHueShiftEnabled = _DecalHueShiftEnabled2;
 				Decal2.m_DecalHueShift = _DecalHueShift2;
 				Decal2.m_DecalHueShiftSpeed = _DecalHueShiftSpeed2;
@@ -34573,6 +34874,9 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				Decal2.m_DecalChannelSeparationVertical = _Decal2ChannelSeparationVertical;
 				Decal2.m_DecalChannelSeparationAngleStrength = _Decal2ChannelSeparationAngleStrength;
 				Decal2.m_DecalOverrideAlphaMode = _Decal2OverrideAlphaMode;
+				Decal2.m_DecalMirroredUVMode = _DecalMirroredUVMode2;
+				Decal2.m_DecalSymmetryMode = _DecalSymmetryMode2;
+				
 				Decal2.Init(decalMask);
 				
 				#if defined(POI_AUDIOLINK)
@@ -34682,6 +34986,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				Decal3.m_DecalEmissionStrength = _DecalEmissionStrength3;
 				Decal3.m_DecalBlendAlpha = _DecalBlendAlpha3;
 				Decal3.m_DecalOverrideAlpha = _DecalOverrideAlpha3;
+				Decal3.m_DecalHueShiftColorSpace = _DecalHueShiftColorSpace3;
 				Decal3.m_DecalHueShiftEnabled = _DecalHueShiftEnabled3;
 				Decal3.m_DecalHueShift = _DecalHueShift3;
 				Decal3.m_DecalHueShiftSpeed = _DecalHueShiftSpeed3;
@@ -34694,6 +34999,9 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				Decal3.m_DecalChannelSeparationVertical = _Decal3ChannelSeparationVertical;
 				Decal3.m_DecalChannelSeparationAngleStrength = _Decal3ChannelSeparationAngleStrength;
 				Decal3.m_DecalOverrideAlphaMode = _Decal3OverrideAlphaMode;
+				Decal3.m_DecalMirroredUVMode = _DecalMirroredUVMode3;
+				Decal3.m_DecalSymmetryMode = _DecalSymmetryMode3;
+				
 				Decal3.Init(decalMask);
 				
 				#if defined(POI_AUDIOLINK)
@@ -34812,7 +35120,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				#if defined(PROP_DISSOLVETOTEXTURE) || !defined(OPTIMIZER_ENABLED)
 				dissolveToTexture = POI2D_SAMPLER_PAN(_DissolveToTexture, _MainTex, poiUV(poiMesh.uv[_DissolveToTextureUV], _DissolveToTexture_ST), _DissolveToTexturePan) * float4(poiThemeColor(poiMods, _DissolveTextureColor.rgb, _DissolveTextureColorThemeIndex), _DissolveTextureColor.a);
 				#else
-				dissolveToTexture = _DissolveTextureColor;
+				dissolveToTexture = float4(poiThemeColor(poiMods, _DissolveTextureColor.rgb, _DissolveTextureColorThemeIndex), _DissolveTextureColor.a);
 				#endif
 				
 				#if defined(PROP_DISSOLVENOISETEXTURE) || !defined(OPTIMIZER_ENABLED)
@@ -35034,7 +35342,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				UNITY_BRANCH
 				if (_DissolveHueShiftEnabled)
 				{
-					dissolveToTexture.rgb = hueShift(dissolveToTexture.rgb, _DissolveHueShift + _Time.x * _DissolveHueShiftSpeed);
+					dissolveToTexture.rgb = hueShift(dissolveToTexture.rgb, _DissolveHueShift + _Time.x * _DissolveHueShiftSpeed, _DissolveHueShiftColorSpace);
 				}
 				#endif
 				
@@ -35049,7 +35357,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				}
 				if (_DissolveInverseApplyGlobalMaskIndex > 0)
 				{
-					applyToGlobalMask(poiMods, _DissolveInverseApplyGlobalMaskIndex - 1, _DissolveInverseApplyGlobalMaskBlendType, 1-(dissolveAlpha * .999999));
+					applyToGlobalMask(poiMods, _DissolveInverseApplyGlobalMaskIndex - 1, _DissolveInverseApplyGlobalMaskBlendType, 1 - (dissolveAlpha * .999999));
 				}
 				UNITY_BRANCH
 				if (_DissolveEdgeWidth || (_DissolveType == 2 && _DissolveP2PEdgeLength != 0))
@@ -35059,7 +35367,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 					UNITY_BRANCH
 					if (_DissolveEdgeHueShiftEnabled)
 					{
-						edgeColor.rgb = hueShift(edgeColor.rgb, _DissolveEdgeHueShift + _Time.x * _DissolveEdgeHueShiftSpeed);
+						edgeColor.rgb = hueShift(edgeColor.rgb, _DissolveEdgeHueShift + _Time.x * _DissolveEdgeHueShiftSpeed, _DissolveEdgeHueShiftColorSpace);
 					}
 					#endif
 					poiFragData.baseColor = lerp(poiFragData.baseColor, edgeColor.rgb, smoothstep(0, 1 - _DissolveEdgeHardness * .99999999999, edgeAlpha));
@@ -35130,7 +35438,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				
 				if (_AnisoGlobalMask > 0)
 				{
-					shadowMask = customBlend(shadowMask, poiMods.globalMask[_AnisoGlobalMask-1], _AnisoGlobalMaskBlendType);
+					shadowMask = customBlend(shadowMask, poiMods.globalMask[_AnisoGlobalMask - 1], _AnisoGlobalMaskBlendType);
 				}
 				
 				float spec0 = calculateAnisotropics(lerp(poiMesh.binormal[1], poiMesh.tangent[1], _Aniso0SwitchDirection), _Aniso0Offset +_Aniso0OffsetMapStrength * specMap.a, poiMesh.normals[1], poiCam.viewDir, poiLight.direction, _Aniso0Power * 1000, _Aniso0Strength, shadowMask);
@@ -35366,7 +35674,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				//UNITY_BRANCH
 				if (_MatcapHueShiftEnabled)
 				{
-					matcap.rgb = hueShift(matcap.rgb, _MatcapHueShift + _Time.x * _MatcapHueShiftSpeed);
+					matcap.rgb = hueShift(matcap.rgb, _MatcapHueShift + _Time.x * _MatcapHueShiftSpeed, _MatcapHueShiftColorSpace);
 				}
 				
 				if (_MatcapApplyToAlphaEnabled)
@@ -35481,7 +35789,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				//UNITY_BRANCH
 				if (_Matcap2HueShiftEnabled)
 				{
-					matcap2.rgb = hueShift(matcap2.rgb, _Matcap2HueShift + _Time.x * _Matcap2HueShiftSpeed);
+					matcap2.rgb = hueShift(matcap2.rgb, _Matcap2HueShift + _Time.x * _Matcap2HueShiftSpeed, _Matcap2HueShiftColorSpace);
 				}
 				
 				if (_Matcap2ApplyToAlphaEnabled)
@@ -35597,7 +35905,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				//UNITY_BRANCH
 				if (_Matcap3HueShiftEnabled)
 				{
-					matcap3.rgb = hueShift(matcap3.rgb, _Matcap3HueShift + _Time.x * _Matcap3HueShiftSpeed);
+					matcap3.rgb = hueShift(matcap3.rgb, _Matcap3HueShift + _Time.x * _Matcap3HueShiftSpeed, _Matcap3HueShiftColorSpace);
 				}
 				
 				if (_Matcap3ApplyToAlphaEnabled)
@@ -35713,7 +36021,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				//UNITY_BRANCH
 				if (_Matcap4HueShiftEnabled)
 				{
-					matcap4.rgb = hueShift(matcap4.rgb, _Matcap4HueShift + _Time.x * _Matcap4HueShiftSpeed);
+					matcap4.rgb = hueShift(matcap4.rgb, _Matcap4HueShift + _Time.x * _Matcap4HueShiftSpeed, _Matcap4HueShiftColorSpace);
 				}
 				
 				if (_Matcap4ApplyToAlphaEnabled)
@@ -36051,6 +36359,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				}
 				#endif
 				flipBookPixel = UNITY_SAMPLE_TEX2DARRAY(_FlipbookTexArray, float3(TRANSFORM_TEX(newUV, _FlipbookTexArray) + _Time.x * _FlipbookTexArrayPan, floor(currentFrame)));
+				
 				UNITY_BRANCH
 				if (_FlipbookCrossfadeEnabled)
 				{
@@ -36081,7 +36390,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				UNITY_BRANCH
 				if (_FlipbookHueShiftEnabled)
 				{
-					flipBookPixel.rgb = hueShift(flipBookPixel.rgb, _FlipbookHueShift + _Time.x * _FlipbookHueShiftSpeed);
+					flipBookPixel.rgb = hueShift(flipBookPixel.rgb, _FlipbookHueShift + _Time.x * _FlipbookHueShiftSpeed, _FlipbookHueShiftColorSpace);
 				}
 				half flipbookAlpha = 1;
 				#ifdef POI_AUDIOLINK
@@ -36121,7 +36430,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 			//ifex _EnableRimLighting==0 && _EnableRim2Lighting==0
 			#if defined(_GLOSSYREFLECTIONS_OFF) || defined(POI_RIM2)
 			#if defined(_RIMSTYLE_POIYOMI) || defined(_RIM2STYLE_POIYOMI)
-			void ApplyPoiyomiRimLighting(inout PoiFragData poiFragData, in PoiMesh poiMesh, in PoiCam poiCam, in PoiLight poiLight, inout PoiMods poiMods, float Is_NormalMapToRimLight, float RimInvert, float RimPower, float RimStrength, float RimShadowWidth, float RimShadowToggle, float RimWidth, float RimBlendStrength, float RimMask, float RimGlobalMask, float RimGlobalMaskBlendType, float4 RimTex, float4 RimLightColor, float RimLightColorThemeIndex, float RimHueShiftEnabled, float RimHueShift, float RimHueShiftSpeed, float RimSharpness, float RimShadowMaskRampType, float RimShadowMaskInvert, float RimShadowMaskStrength, float2 RimShadowAlpha, float RimApplyGlobalMaskIndex, float RimApplyGlobalMaskBlendType, float RimBaseColorMix, float RimBrightness, float RimBlendMode, half AudioLinkRimWidthBand, float2 AudioLinkRimWidthAdd, half AudioLinkRimEmissionBand, float2 AudioLinkRimEmissionAdd, half AudioLinkRimBrightnessBand, float2 AudioLinkRimBrightnessAdd, float rimBias, float rimBiasIntensity, int RimApplyAlpha, float RimApplyAlphaBlend)
+			void ApplyPoiyomiRimLighting(inout PoiFragData poiFragData, in PoiMesh poiMesh, in PoiCam poiCam, in PoiLight poiLight, inout PoiMods poiMods, float Is_NormalMapToRimLight, float RimInvert, float RimPower, float RimStrength, float RimShadowWidth, float RimShadowToggle, float RimWidth, float RimBlendStrength, float RimMask, float RimGlobalMask, float RimGlobalMaskBlendType, float4 RimTex, float4 RimLightColor, float RimLightColorThemeIndex, float RimHueShiftEnabled, float RimHueShift, float RimHueShiftColorSpace, float RimHueShiftSpeed, float RimSharpness, float RimShadowMaskRampType, float RimShadowMaskInvert, float RimShadowMaskStrength, float2 RimShadowAlpha, float RimApplyGlobalMaskIndex, float RimApplyGlobalMaskBlendType, float RimBaseColorMix, float RimBrightness, float RimBlendMode, half AudioLinkRimWidthBand, float2 AudioLinkRimWidthAdd, half AudioLinkRimEmissionBand, float2 AudioLinkRimEmissionAdd, half AudioLinkRimBrightnessBand, float2 AudioLinkRimBrightnessAdd, float rimBias, float rimBiasIntensity, int RimApplyAlpha, float RimApplyAlphaBlend)
 			{
 				float viewDotNormal = abs(dot(poiCam.viewDir, lerp(poiMesh.normals[0], poiMesh.normals[1], Is_NormalMapToRimLight)));
 				
@@ -36167,7 +36476,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				UNITY_BRANCH
 				if (RimHueShiftEnabled)
 				{
-					rimColor.rgb = hueShift(rimColor.rgb, RimHueShift + _Time.x * RimHueShiftSpeed);
+					rimColor.rgb = hueShift(rimColor.rgb, RimHueShift + _Time.x * RimHueShiftSpeed, RimHueShiftColorSpace);
 				}
 				
 				float rim = 1 - smoothstep(min(RimSharpness, rimWidth), rimWidth, viewDotNormal);
@@ -36222,7 +36531,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 			}
 			#endif
 			#if defined(_RIMSTYLE_UTS2) || defined(_RIM2STYLE_UTS2)
-			void ApplyUTS2RimLighting(inout PoiFragData poiFragData, in PoiMesh poiMesh, in PoiCam poiCam, in PoiLight poiLight, in PoiMods poiMods, float Set_RimLightMask_var, float RimGlobalMask, float RimGlobalMaskBlendType, float4 RimLightColor, float RimLightColorThemeIndex, float Is_LightColor_RimLight, float Is_NormalMapToRimLight, float RimLight_Power, float RimLight_InsideMask, float RimLight_FeatherOff, float LightDirection_MaskOn, float Tweak_LightDirection_MaskLevel, float Add_Antipodean_RimLight, float4 Ap_RimLightColor, float RimApColorThemeIndex, float Is_LightColor_Ap_RimLight, float Ap_RimLight_Power, float Ap_RimLight_FeatherOff, float Tweak_RimLightMaskLevel, float RimHueShiftEnabled, float RimHueShift, float RimHueShiftSpeed)
+			void ApplyUTS2RimLighting(inout PoiFragData poiFragData, in PoiMesh poiMesh, in PoiCam poiCam, in PoiLight poiLight, in PoiMods poiMods, float Set_RimLightMask_var, float RimGlobalMask, float RimGlobalMaskBlendType, float4 RimLightColor, float RimLightColorThemeIndex, float Is_LightColor_RimLight, float Is_NormalMapToRimLight, float RimLight_Power, float RimLight_InsideMask, float RimLight_FeatherOff, float LightDirection_MaskOn, float Tweak_LightDirection_MaskLevel, float Add_Antipodean_RimLight, float4 Ap_RimLightColor, float RimApColorThemeIndex, float Is_LightColor_Ap_RimLight, float Ap_RimLight_Power, float Ap_RimLight_FeatherOff, float Tweak_RimLightMaskLevel, float RimHueShiftEnabled, float RimHueShift, float RimHueShiftColorSpace, float RimHueShiftSpeed)
 			{
 				if (RimGlobalMask > 0)
 				{
@@ -36242,13 +36551,13 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				UNITY_BRANCH
 				if (RimHueShiftEnabled)
 				{
-					_RimLight_var = hueShift(_RimLight_var, RimHueShift + _Time.x * RimHueShiftSpeed);
+					_RimLight_var = hueShift(_RimLight_var, RimHueShift + _Time.x * RimHueShiftSpeed, RimHueShiftColorSpace);
 				}
 				poiFragData.baseColor += _RimLight_var;
 			}
 			#endif
 			#if defined(_RIMSTYLE_LILTOON) || defined(_RIM2STYLE_LILTOON)
-			void ApplyLiltoonRimLighting(inout PoiFragData poiFragData, in PoiMesh poiMesh, in PoiCam poiCam, in PoiLight poiLight, in PoiMods poiMods, float4 RimColor, float4 RimIndirColor, float4 RimColorTex, float RimMainStrength, float RimNormalStrength, float RimDirRange, float RimIndirRange, float RimFresnelPower, float RimBackfaceMask, float RimDirStrength, float RimBorder, float RimBlur, float RimIndirBorder, float RimIndirBlur, float RimShadowMask, float RimEnableLighting, float RimVRParallaxStrength, float RimGlobalMask, float RimGlobalMaskBlendType, float RimHueShiftEnabled, float RimHueShift, float RimHueShiftSpeed, int RimBlendMode)
+			void ApplyLiltoonRimLighting(inout PoiFragData poiFragData, in PoiMesh poiMesh, in PoiCam poiCam, in PoiLight poiLight, in PoiMods poiMods, float4 RimColor, float4 RimIndirColor, float4 RimColorTex, float RimMainStrength, float RimNormalStrength, float RimDirRange, float RimIndirRange, float RimFresnelPower, float RimBackfaceMask, float RimDirStrength, float RimBorder, float RimBlur, float RimIndirBorder, float RimIndirBlur, float RimShadowMask, float RimEnableLighting, float RimVRParallaxStrength, float RimGlobalMask, float RimGlobalMaskBlendType, float RimHueShiftEnabled, float RimHueShift, float RimHueShiftColorSpace, float RimHueShiftSpeed, int RimBlendMode)
 			{
 				if (RimGlobalMask > 0)
 				{
@@ -36261,8 +36570,8 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				
 				if (RimHueShiftEnabled)
 				{
-					rimColor.rgb = hueShift(rimColor.rgb, RimHueShift + _Time.x * RimHueShiftSpeed);
-					rimIndirColor.rgb = hueShift(rimIndirColor.rgb, RimHueShift + _Time.x * RimHueShiftSpeed);
+					rimColor.rgb = hueShift(rimColor.rgb, RimHueShift + _Time.x * RimHueShiftSpeed, RimHueShiftColorSpace);
+					rimIndirColor.rgb = hueShift(rimIndirColor.rgb, RimHueShift + _Time.x * RimHueShiftSpeed, RimHueShiftColorSpace);
 				}
 				
 				rimColor.rgb = lerp(rimColor.rgb, rimColor.rgb * poiFragData.baseColor, RimMainStrength);
@@ -36651,7 +36960,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 					UNITY_BRANCH
 					if (_GlitterHueShiftEnabled)
 					{
-						glitterColor.rgb = hueShift(glitterColor.rgb, _GlitterHueShift + _Time.x * _GlitterHueShiftSpeed);
+						glitterColor.rgb = hueShift(glitterColor.rgb, _GlitterHueShift + _Time.x * _GlitterHueShiftSpeed, _GlitteHueShiftColorSpace);
 					}
 					float GlitterbrightnessOffset = 0;
 					#ifdef POI_AUDIOLINK
@@ -37231,7 +37540,10 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				#else
 				float specularMask = 1;
 				#endif
-				
+				if(_StylizedSpecularInvertMask)
+				{
+					specularMask = 1 - specularMask;
+				}
 				specularMask = saturate(specularMask + _Tweak_HighColorMaskLevel);
 				
 				float specMask = saturate(specMask1 + specMask2) * specularMask * lerp(poiLight.rampedLightMap, 1, _StylizedSpecularIgnoreShadow);
@@ -38046,7 +38358,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 			void applyPostProcessing(inout PoiFragData poiFragData, in PoiMesh poiMesh)
 			{
 				float3 col = poiFragData.finalColor;
-				col = hueShift(col, _PPHue);
+				col = hueShift(col, _PPHue, _PPHueShiftColorSpace);
 				col *= _PPTint;
 				col *= _PPRGB;
 				col = GetSaturation(col, _PPSaturation);
@@ -38722,6 +39034,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				poiMesh.isFrontFace = facing;
 				poiMesh.dx = ddx(poiMesh.uv[0]);
 				poiMesh.dy = ddy(poiMesh.uv[0]);
+				poiMesh.isRightHand = i.tangent.w > 0.0;
 				
 				#ifndef POI_PASS_OUTLINE
 				if (!poiMesh.isFrontFace && _FlipBackfaceNormals)
@@ -39067,6 +39380,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 					poiLight.directColor += _LightColor0.rgb;
 					// OpenLit does a few other things by default like clamp direct colour
 					// see https://github.com/lilxyzw/OpenLit/blob/main/Assets/OpenLit/core.hlsl#L174
+					
 				}
 				
 				float lightMapMode = _LightingMapMode;
@@ -39133,6 +39447,13 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 					UNITY_LIGHT_ATTENUATION(attenuation, i, poiMesh.worldPos)
 					poiLight.attenuation *= attenuation;
 				}
+				
+				#if defined(HANDLE_SHADOWS_BLENDING_IN_GI)
+				half bakedAtten = UnitySampleBakedOcclusion(poiMesh.lightmapUV.xy, poiMesh.worldPos);
+				float zDist = dot(_WorldSpaceCameraPos - poiMesh.worldPos, UNITY_MATRIX_V[2].xyz);
+				float fadeDist = UnityComputeShadowFadeDistance(poiMesh.worldPos, zDist);
+				poiLight.attenuation = UnityMixRealtimeAndBakedShadows(poiLight.attenuation, bakedAtten, UnityComputeShadowFade(fadeDist));
+				#endif
 				
 				if (!any(poiLight.directColor) && !any(poiLight.indirectColor) && lightMapMode == 0)
 				{
@@ -39259,7 +39580,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				#endif
 				poiLight.additiveShadow = UNITY_SHADOW_ATTENUATION(i, poiMesh.worldPos);
 				poiLight.attenuationStrength = _LightingAdditiveCastedShadows;
-				poiLight.directColor = _LightingAdditiveLimited ? MaxLuminance(_LightColor0.rgb * poiLight.attenuation, _LightingAdditiveLimit) : _LightColor0.rgb  * poiLight.attenuation;
+				poiLight.directColor = _LightingAdditiveLimited ? MaxLuminance(_LightColor0.rgb * poiLight.attenuation, _LightingAdditiveLimit) : _LightColor0.rgb * poiLight.attenuation;
 				
 				#if defined(POINT_COOKIE) || defined(DIRECTIONAL_COOKIE)
 				poiLight.indirectColor = 0;
@@ -39407,7 +39728,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 					hueShiftAlpha.g = maskBlend(hueShiftAlpha.g, poiMods.globalMask[_MainBrightnessGlobalMask - 1], _MainBrightnessGlobalMaskBlendType);
 				}
 				
-				if (_MainHueShiftToggle)
+				if (_MainHueShiftToggle == 1)
 				{
 					float shift = _MainHueShift;
 					#ifdef POI_AUDIOLINK
@@ -39419,11 +39740,11 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 					#endif
 					if (_MainHueShiftReplace)
 					{
-						poiFragData.baseColor = lerp(poiFragData.baseColor, hueShift(poiFragData.baseColor, shift + _MainHueShiftSpeed * _Time.x), hueShiftAlpha.r);
+						poiFragData.baseColor = lerp(poiFragData.baseColor, hueShift(poiFragData.baseColor, shift + _MainHueShiftSpeed * _Time.x, _MainHueShiftColorSpace), hueShiftAlpha.r);
 					}
 					else
 					{
-						poiFragData.baseColor = hueShift(poiFragData.baseColor, frac((shift - (1 - hueShiftAlpha.r) + _MainHueShiftSpeed * _Time.x)));
+						poiFragData.baseColor = hueShift(poiFragData.baseColor, frac((shift - (1 - hueShiftAlpha.r) + _MainHueShiftSpeed * _Time.x)), _MainHueShiftColorSpace);
 					}
 				}
 				
@@ -39457,7 +39778,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				if (_MainAlphaMaskMode)
 				{
 					float alphaMask = POI2D_SAMPLER_PAN(_AlphaMask, _MainTex, poiUV(poiMesh.uv[_AlphaMaskUV], _AlphaMask_ST), _AlphaMaskPan.xy).r;
-					alphaMask = saturate(alphaMask * _AlphaMaskScale + _AlphaMaskValue);
+					alphaMask = saturate(alphaMask * _AlphaMaskBlendStrength + (_AlphaMaskInvert ?_AlphaMaskValue * -1 : _AlphaMaskValue));
 					if (_AlphaMaskInvert) alphaMask = 1 - alphaMask;
 					if (_MainAlphaMaskMode == 1) poiFragData.alpha = alphaMask;
 					if (_MainAlphaMaskMode == 2) poiFragData.alpha = poiFragData.alpha * alphaMask;
@@ -39644,7 +39965,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				AudioLinkRimBrightnessAdd = _AudioLinkRimBrightnessAdd;
 				#endif
 				
-				ApplyPoiyomiRimLighting(poiFragData, poiMesh, poiCam, poiLight, poiMods, _Is_NormalMapToRimLight, _RimLightingInvert, _RimPower, _RimStrength, _RimShadowWidth, _RimShadowToggle, _RimWidth, _RimBlendStrength, rimMask, _RimGlobalMask, _RimGlobalMaskBlendType, rimColor, _RimLightColor, _RimLightColorThemeIndex, _RimHueShiftEnabled, _RimHueShift, _RimHueShiftSpeed, _RimSharpness, _RimShadowMaskRampType, _RimShadowMaskInvert, _RimShadowMaskStrength, _RimShadowAlpha, _RimApplyGlobalMaskIndex, _RimApplyGlobalMaskBlendType, _RimBaseColorMix, _RimBrightness, _RimPoiBlendMode, AudioLinkRimWidthBand, AudioLinkRimWidthAdd, AudioLinkRimEmissionBand, AudioLinkRimEmissionAdd, AudioLinkRimBrightnessBand, AudioLinkRimBrightnessAdd, rimBias, _RimBiasIntensity, _RimApplyAlpha, _RimApplyAlphaBlend);
+				ApplyPoiyomiRimLighting(poiFragData, poiMesh, poiCam, poiLight, poiMods, _Is_NormalMapToRimLight, _RimLightingInvert, _RimPower, _RimStrength, _RimShadowWidth, _RimShadowToggle, _RimWidth, _RimBlendStrength, rimMask, _RimGlobalMask, _RimGlobalMaskBlendType, rimColor, _RimLightColor, _RimLightColorThemeIndex, _RimHueShiftEnabled, _RimHueShift, _RimHueShiftColorSpace, _RimHueShiftSpeed,  _RimSharpness, _RimShadowMaskRampType, _RimShadowMaskInvert, _RimShadowMaskStrength, _RimShadowAlpha, _RimApplyGlobalMaskIndex, _RimApplyGlobalMaskBlendType, _RimBaseColorMix, _RimBrightness, _RimPoiBlendMode, AudioLinkRimWidthBand, AudioLinkRimWidthAdd, AudioLinkRimEmissionBand, AudioLinkRimEmissionAdd, AudioLinkRimBrightnessBand, AudioLinkRimBrightnessAdd, rimBias, _RimBiasIntensity, _RimApplyAlpha, _RimApplyAlphaBlend);
 				#endif
 				#ifdef _RIMSTYLE_UTS2
 				#if defined(PROP_SET_RIMLIGHTMASK) || !defined(OPTIMIZER_ENABLED)
@@ -39652,7 +39973,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				#else
 				float Set_RimLightMask_var = 1;
 				#endif
-				ApplyUTS2RimLighting(poiFragData, poiMesh, poiCam, poiLight, poiMods, Set_RimLightMask_var, _RimGlobalMask, _RimGlobalMaskBlendType, _RimLightColor, _RimLightColorThemeIndex, _Is_LightColor_RimLight, _Is_NormalMapToRimLight, _RimLight_Power, _RimLight_InsideMask, _RimLight_FeatherOff, _LightDirection_MaskOn, _Tweak_LightDirection_MaskLevel, _Add_Antipodean_RimLight, _Ap_RimLightColor, _RimApColorThemeIndex, _Is_LightColor_Ap_RimLight, _Ap_RimLight_Power, _Ap_RimLight_FeatherOff, _Tweak_RimLightMaskLevel, _RimHueShiftEnabled, _RimHueShift, _RimHueShiftSpeed);
+				ApplyUTS2RimLighting(poiFragData, poiMesh, poiCam, poiLight, poiMods, Set_RimLightMask_var, _RimGlobalMask, _RimGlobalMaskBlendType, _RimLightColor, _RimLightColorThemeIndex, _Is_LightColor_RimLight, _Is_NormalMapToRimLight, _RimLight_Power, _RimLight_InsideMask, _RimLight_FeatherOff, _LightDirection_MaskOn, _Tweak_LightDirection_MaskLevel, _Add_Antipodean_RimLight, _Ap_RimLightColor, _RimApColorThemeIndex, _Is_LightColor_Ap_RimLight, _Ap_RimLight_Power, _Ap_RimLight_FeatherOff, _Tweak_RimLightMaskLevel, _RimHueShiftEnabled, _RimHueShift, _RimHueShiftColorSpace, _RimHueShiftSpeed);
 				#endif
 				
 				#endif
@@ -39693,7 +40014,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				AudioLinkRim2BrightnessBand = _AudioLinkRim2BrightnessBand;
 				AudioLinkRim2BrightnessAdd = _AudioLinkRim2BrightnessAdd;
 				#endif
-				ApplyPoiyomiRimLighting(poiFragData, poiMesh, poiCam, poiLight, poiMods, _Is_NormalMapToRim2Light, _Rim2LightingInvert, _Rim2Power, _Rim2Strength, _Rim2ShadowWidth, _Rim2ShadowToggle, _Rim2Width, _Rim2BlendStrength, rim2Mask, _Rim2GlobalMask, _Rim2GlobalMaskBlendType, rim2Color, _Rim2LightColor, _Rim2LightColorThemeIndex, _Rim2HueShiftEnabled, _Rim2HueShift, _Rim2HueShiftSpeed, _Rim2Sharpness, _Rim2ShadowMaskRampType, _Rim2ShadowMaskInvert, _Rim2ShadowMaskStrength, _Rim2ShadowAlpha, _Rim2ApplyGlobalMaskIndex, _Rim2ApplyGlobalMaskBlendType, _Rim2BaseColorMix, _Rim2Brightness, _RimPoi2BlendMode, AudioLinkRim2WidthBand, AudioLinkRim2WidthAdd, AudioLinkRim2EmissionBand, AudioLinkRim2EmissionAdd, AudioLinkRim2BrightnessBand, AudioLinkRim2BrightnessAdd, rim2Bias, _Rim2BiasIntensity, _Rim2ApplyAlpha, _Rim2ApplyAlphaBlend);
+				ApplyPoiyomiRimLighting(poiFragData, poiMesh, poiCam, poiLight, poiMods, _Is_NormalMapToRim2Light, _Rim2LightingInvert, _Rim2Power, _Rim2Strength, _Rim2ShadowWidth, _Rim2ShadowToggle, _Rim2Width, _Rim2BlendStrength, rim2Mask, _Rim2GlobalMask, _Rim2GlobalMaskBlendType, rim2Color, _Rim2LightColor, _Rim2LightColorThemeIndex, _Rim2HueShiftEnabled, _Rim2HueShift, _Rim2HueShiftColorSpace, _Rim2HueShiftSpeed, _Rim2Sharpness, _Rim2ShadowMaskRampType, _Rim2ShadowMaskInvert, _Rim2ShadowMaskStrength, _Rim2ShadowAlpha, _Rim2ApplyGlobalMaskIndex, _Rim2ApplyGlobalMaskBlendType, _Rim2BaseColorMix, _Rim2Brightness, _RimPoi2BlendMode, AudioLinkRim2WidthBand, AudioLinkRim2WidthAdd, AudioLinkRim2EmissionBand, AudioLinkRim2EmissionAdd, AudioLinkRim2BrightnessBand, AudioLinkRim2BrightnessAdd, rim2Bias, _Rim2BiasIntensity, _Rim2ApplyAlpha, _Rim2ApplyAlphaBlend);
 				#endif
 				#ifdef _RIM2STYLE_UTS2
 				#if defined(PROP_SET_RIM2LIGHTMASK) || !defined(OPTIMIZER_ENABLED)
@@ -39701,7 +40022,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				#else
 				float Set_Rim2LightMask_var = 1;
 				#endif
-				ApplyUTS2RimLighting(poiFragData, poiMesh, poiCam, poiLight, poiMods, Set_Rim2LightMask_var, _Rim2GlobalMask, _Rim2GlobalMaskBlendType, _Rim2LightColor, _Rim2LightColorThemeIndex, _Is_LightColor_Rim2Light, _Is_NormalMapToRim2Light, _Rim2Light_Power, _Rim2Light_InsideMask, _Rim2Light_FeatherOff, _LightDirection_MaskOn2, _Tweak_LightDirection_MaskLevel2, _Add_Antipodean_Rim2Light, _Ap_Rim2LightColor, _Rim2ApColorThemeIndex, _Is_LightColor_Ap_Rim2Light, _Ap_Rim2Light_Power, _Ap_Rim2Light_FeatherOff, _Tweak_Rim2LightMaskLevel, _Rim2HueShiftEnabled, _Rim2HueShift, _Rim2HueShiftSpeed);
+				ApplyUTS2RimLighting(poiFragData, poiMesh, poiCam, poiLight, poiMods, Set_Rim2LightMask_var, _Rim2GlobalMask, _Rim2GlobalMaskBlendType, _Rim2LightColor, _Rim2LightColorThemeIndex, _Is_LightColor_Rim2Light, _Is_NormalMapToRim2Light, _Rim2Light_Power, _Rim2Light_InsideMask, _Rim2Light_FeatherOff, _LightDirection_MaskOn2, _Tweak_LightDirection_MaskLevel2, _Add_Antipodean_Rim2Light, _Ap_Rim2LightColor, _Rim2ApColorThemeIndex, _Is_LightColor_Ap_Rim2Light, _Ap_Rim2Light_Power, _Ap_Rim2Light_FeatherOff, _Tweak_Rim2LightMaskLevel, _Rim2HueShiftEnabled, _Rim2HueShift, _Rim2HueShiftColorSpace, _Rim2HueShiftSpeed);
 				#endif
 				
 				#endif
@@ -39794,7 +40115,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				#else
 				float4 rimColorTex = 1;
 				#endif
-				ApplyLiltoonRimLighting(poiFragData, poiMesh, poiCam, poiLight, poiMods, _RimColor, _RimIndirColor, rimColorTex, _RimMainStrength, _RimNormalStrength, _RimDirRange, _RimIndirRange, _RimFresnelPower, _RimBackfaceMask, _RimDirStrength, _RimBorder, _RimBlur, _RimIndirBorder, _RimIndirBlur, _RimShadowMask, _RimEnableLighting, _RimVRParallaxStrength, _RimGlobalMask, _RimGlobalMaskBlendType, _RimHueShiftEnabled, _RimHueShift, _RimHueShiftSpeed, _RimBlendMode);
+				ApplyLiltoonRimLighting(poiFragData, poiMesh, poiCam, poiLight, poiMods, _RimColor, _RimIndirColor, rimColorTex, _RimMainStrength, _RimNormalStrength, _RimDirRange, _RimIndirRange, _RimFresnelPower, _RimBackfaceMask, _RimDirStrength, _RimBorder, _RimBlur, _RimIndirBorder, _RimIndirBlur, _RimShadowMask, _RimEnableLighting, _RimVRParallaxStrength, _RimGlobalMask, _RimGlobalMaskBlendType, _RimHueShiftEnabled, _RimHueShift, _RimHueShiftColorSpace, _RimHueShiftSpeed, _RimBlendMode);
 				#endif
 				#endif
 				//endex
@@ -39806,7 +40127,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				#else
 				float4 rim2ColorTex = 1;
 				#endif
-				ApplyLiltoonRimLighting(poiFragData, poiMesh, poiCam, poiLight, poiMods, _Rim2Color, _Rim2IndirColor, rim2ColorTex, _Rim2MainStrength, _Rim2NormalStrength, _Rim2DirRange, _Rim2IndirRange, _Rim2FresnelPower, _Rim2BackfaceMask, _Rim2DirStrength, _Rim2Border, _Rim2Blur, _Rim2IndirBorder, _Rim2IndirBlur, _Rim2ShadowMask, _Rim2EnableLighting, _Rim2VRParallaxStrength, _Rim2GlobalMask, _Rim2GlobalMaskBlendType, _Rim2HueShiftEnabled, _Rim2HueShift, _Rim2HueShiftSpeed, _Rim2BlendMode);
+				ApplyLiltoonRimLighting(poiFragData, poiMesh, poiCam, poiLight, poiMods, _Rim2Color, _Rim2IndirColor, rim2ColorTex, _Rim2MainStrength, _Rim2NormalStrength, _Rim2DirRange, _Rim2IndirRange, _Rim2FresnelPower, _Rim2BackfaceMask, _Rim2DirStrength, _Rim2Border, _Rim2Blur, _Rim2IndirBorder, _Rim2IndirBlur, _Rim2ShadowMask, _Rim2EnableLighting, _Rim2VRParallaxStrength, _Rim2GlobalMask, _Rim2GlobalMaskBlendType, _Rim2HueShiftEnabled, _Rim2HueShift, _Rim2HueShiftColorSpace, _Rim2HueShiftSpeed, _Rim2BlendMode);
 				#endif
 				#endif
 				//endex
@@ -39930,12 +40251,12 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 			ColorMask [_ColorMask]
 			BlendOp [_BlendOp], [_BlendOpAlpha]
 			Blend [_SrcBlend] [_DstBlend]
-			ZWrite [_ZWrite]
 			AlphaToMask [_AlphaToCoverage]
 			Cull [_OutlineCull]
 			*/
 			AlphaToMask [_AlphaToCoverage]
 			ZTest [_OutlineZTest]
+			ZWrite [_OutlineZWrite]
 			Cull [_OutlineCull]
 			BlendOp [_OutlineBlendOp], [_OutlineBlendOpAlpha]
 			Blend [_OutlineSrcBlend] [_OutlineDstBlend], [_OutlineSrcBlendAlpha] [_OutlineDstBlendAlpha]
@@ -40187,7 +40508,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 			#pragma multi_compile_fwdbase
 			#pragma multi_compile_instancing
 			#pragma multi_compile_fog
-			#pragma multi_compile _ VERTEXLIGHT_ON
+			#pragma multi_compile_fragment _ VERTEXLIGHT_ON
 			#define POI_PASS_OUTLINE
 			
 			// UNITY Includes
@@ -40461,7 +40782,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 			float _AlphaMaskUV;
 			float _AlphaMaskInvert;
 			float _MainAlphaMaskMode;
-			float _AlphaMaskScale;
+			float _AlphaMaskBlendStrength;
 			float _AlphaMaskValue;
 			#endif
 			float _Cutoff;
@@ -40474,6 +40795,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 			float4 _MainColorAdjustTexture_ST;
 			float2 _MainColorAdjustTexturePan;
 			float _MainColorAdjustTextureUV;
+			float _MainHueShiftColorSpace;
 			float _MainHueShiftToggle;
 			float _MainHueShiftReplace;
 			float _MainHueShift;
@@ -41552,6 +41874,8 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 			float dissolveAlpha;
 			float4 dissolveToTexture;
 			
+			float _DissolveHueShiftColorSpace;
+			float _DissolveEdgeHueShiftColorSpace;
 			float _DissolveHueShiftEnabled;
 			float _DissolveHueShiftSpeed;
 			float _DissolveHueShift;
@@ -41679,6 +42003,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 			
 			// Hueshift
 			float _FlipbookHueShiftEnabled;
+			float _FlipbookHueShiftColorSpace;
 			float _FlipbookHueShiftSpeed;
 			float _FlipbookHueShift;
 			
@@ -41924,6 +42249,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				float2 parallaxUV;
 				float2 dx;
 				float2 dy;
+				uint isRightHand;
 			};
 			
 			struct PoiCam
@@ -42751,17 +43077,20 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				return float3(H, C, Q.x);
 			}
 			
-			float3 HSVtoRGB(in float3 HSV)
-			{
-				float3 RGB = HUEtoRGB(HSV.x);
-				return ((RGB - 1) * HSV.y + 1) * HSV.z;
+			float3 RGBtoHSV(float3 c){
+				float4 K = float4(0.0, -1.0 / 3.0, 2.0 / 3.0, -1.0);
+				float4 p = lerp(float4(c.bg, K.wz), float4(c.gb, K.xy), step(c.b, c.g));
+				float4 q = lerp(float4(p.xyw, c.r), float4(c.r, p.yzx), step(p.x, c.r));
+				
+				float d = q.x - min(q.w, q.y);
+				float e = 1.0e-10;
+				return float3(abs(q.z + (q.w - q.y) / (6.0 * d + e)), d / (q.x + e), q.x);
 			}
 			
-			float3 RGBtoHSV(in float3 RGB)
-			{
-				float3 HCV = RGBtoHCV(RGB);
-				float S = HCV.y / (HCV.z + Epsilon);
-				return float3(HCV.x, S, HCV.z);
+			float3 HSVtoRGB(float3 c){
+				float4 K = float4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
+				float3 p = abs(frac(c.xxx + K.xyz) * 6.0 - K.www);
+				return c.z * lerp(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
 			}
 			
 			float3 HSLtoRGB(in float3 HSL)
@@ -42901,7 +43230,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 			
 			float3 hueShift(float3 color, float shift)
 			{
-				float3 oklab = linear_srgb_to_oklab(max(color, 0.0000000001));
+				float3 oklab = linear_srgb_to_oklab(color + 0.0000001);
 				float hue = atan2(oklab.z, oklab.y);
 				hue += shift * PI * 2;  // Add the hue shift
 				
@@ -42912,19 +43241,32 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				return oklab_to_linear_srgb(oklab);
 			}
 			
-			float3 hueShift(float4 color, float shift)
+			float3 hueShiftHSV(float3 color, float hueOffset)
 			{
-				return hueShift(color.rgb, shift);
+				float3 hsv = float3(hueOffset, 0, 0);
+				float3 hsvCol = RGBtoHSV(color);
+				return HSVtoRGB(hsvCol + hsv);
 			}
 			
-			/*
-			float3 hueShift(float3 color, float hueOffset)
+			float3 hueShift(float3 color, float shift, float ColorSpace)
 			{
-				color = RGBtoHSV(color);
-				color.x = frac(hueOffset +color.x);
-				return HSVtoRGB(color);
+				switch(ColorSpace)
+				{
+					// OkLab Hue Shift
+					case 0.0:
+					return hueShift(color, shift);
+					// HSV Hue Shift
+					case 1.0:
+					return hueShiftHSV(color, shift);
+					default:
+					return float3(1.0, 0.0, 0.0);
+				}
 			}
-			*/
+			
+			float3 hueShift(float4 color, float shift, float ColorSpace)
+			{
+				return hueShift(color.rgb, shift, ColorSpace);
+			}
 			
 			// LCH
 			float xyzF(float t)
@@ -43398,6 +43740,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 			{
 				float3 customDir = length(lightDirectionOverride.xyz) * normalize(mul((float3x3)unity_ObjectToWorld, lightDirectionOverride.xyz));
 				return lightDirectionOverride.w ? customDir : lightDirectionOverride.xyz; // .w isn't doc'd anywhere and is always 0 unless end user changes it
+				
 			}
 			
 			float3 OpenLitLightingDirectionForSH9()
@@ -44721,7 +45064,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 			{
 				// Force Model Opacity to 1 if desired
 				UNITY_BRANCH
-				if (_Mode == 1)
+				if (_Mode == POI_MODE_CUTOUT)
 				{
 					UNITY_BRANCH
 					if (_AlphaSharpenedA2C && _AlphaToCoverage)
@@ -45764,12 +46107,31 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 			#endif
 			#endif
 			
-			void ApplySubtractiveLighting(inout UnityIndirect indirectLight)
+			float FadeShadows(float attenuation, inout PoiLight poiLight, in PoiMesh poiMesh, in PoiCam poiCam)
+			{
+				#if HANDLE_SHADOWS_BLENDING_IN_GI || ADDITIONAL_MASKED_DIRECTIONAL_SHADOWS
+				// UNITY_LIGHT_ATTENUATION doesn't fade shadows for us.
+				
+				#if ADDITIONAL_MASKED_DIRECTIONAL_SHADOWS
+				attenuation = poiLight.attenuation;
+				#endif
+				
+				float viewZ = dot(_WorldSpaceCameraPos - poiMesh.worldPos, UNITY_MATRIX_V[2].xyz);
+				float shadowFadeDistance = UnityComputeShadowFadeDistance(poiMesh.worldPos, viewZ);
+				float shadowFade = UnityComputeShadowFade(shadowFadeDistance);
+				float bakedAttenuation = UnitySampleBakedOcclusion(poiMesh.lightmapUV.xy, poiMesh.worldPos);
+				attenuation = UnityMixRealtimeAndBakedShadows(attenuation, bakedAttenuation, shadowFade);
+				#endif
+				
+				return attenuation;
+			}
+			
+			void ApplySubtractiveLighting(inout UnityIndirect indirectLight, inout PoiLight poiLight, in PoiMesh poiMesh, in PoiCam poiCam)
 			{
 				#if SUBTRACTIVE_LIGHTING
-				poiLight.attenuation = FadeShadows(lerp(1, poiLight.attenuation, _AttenuationMultiplier));
+				poiLight.attenuation = FadeShadows(poiLight.attenuation, poiLight, poiMesh, poiCam);
 				
-				float ndotl = saturate(dot(i.normal, _WorldSpaceLightPos0.xyz));
+				float ndotl = saturate(dot(poiMesh.normals[0], _WorldSpaceLightPos0.xyz));
 				float3 shadowedLightEstimate = ndotl * (1 - poiLight.attenuation) * _LightColor0.rgb;
 				float3 subtractedLight = indirectLight.diffuse - shadowedLightEstimate;
 				subtractedLight = max(subtractedLight, unity_ShadowColor.rgb);
@@ -45788,14 +46150,11 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				indirectLight.diffuse = DecodeLightmap(UNITY_SAMPLE_TEX2D(unity_Lightmap, poiMesh.lightmapUV.xy));
 				
 				#if defined(DIRLIGHTMAP_COMBINED)
-				float4 lightmapDirection = UNITY_SAMPLE_TEX2D_SAMPLER(
-				unity_LightmapInd, unity_Lightmap, poiMesh.lightmapUV.xy
-				);
-				indirectLight.diffuse = DecodeDirectionalLightmap(
-				indirectLight.diffuse, lightmapDirection, poiMesh.normals[1]
-				);
+				float4 lightmapDirection = UNITY_SAMPLE_TEX2D_SAMPLER(unity_LightmapInd, unity_Lightmap, poiMesh.lightmapUV.xy);
+				indirectLight.diffuse = DecodeDirectionalLightmap(indirectLight.diffuse, lightmapDirection, poiMesh.normals[1]);
 				#endif
-				ApplySubtractiveLighting(indirectLight);
+				
+				ApplySubtractiveLighting(indirectLight, poiLight, poiMesh, poiCam);
 				#endif
 				
 				#if defined(DYNAMICLIGHTMAP_ON)
@@ -45804,13 +46163,8 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				);
 				
 				#if defined(DIRLIGHTMAP_COMBINED)
-				float4 dynamicLightmapDirection = UNITY_SAMPLE_TEX2D_SAMPLER(
-				unity_DynamicDirectionality, unity_DynamicLightmap,
-				poiMesh.lightmapUV.zw
-				);
-				indirectLight.diffuse += DecodeDirectionalLightmap(
-				dynamicLightDiffuse, dynamicLightmapDirection, poiMesh.normals[1]
-				);
+				float4 dynamicLightmapDirection = UNITY_SAMPLE_TEX2D_SAMPLER(unity_DynamicDirectionality, unity_DynamicLightmap, poiMesh.lightmapUV.zw);
+				indirectLight.diffuse += DecodeDirectionalLightmap(dynamicLightDiffuse, dynamicLightmapDirection, poiMesh.normals[1]);
 				#else
 				indirectLight.diffuse += dynamicLightDiffuse;
 				#endif
@@ -45852,6 +46206,27 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 			{
 				return clamp((1.0f - offset) / scale, -0.01f, 1.01f); // Remap Max
 				
+			}
+			
+			half4 POI_BRDF_PBS(half3 diffColor, half3 specColor, half oneMinusReflectivity, half smoothness, float3 normal, float3 viewDir, UnityLight light, UnityIndirect gi)
+			{
+				float3 reflDir = reflect(viewDir, normal);
+				
+				half nl = saturate(dot(normal, light.dir));
+				half nv = saturate(dot(normal, viewDir));
+				
+				// Vectorize Pow4 to save instructions
+				half2 rlPow4AndFresnelTerm = Pow4(float2(dot(reflDir, light.dir), 1 - nv));  // use R.L instead of N.H to save couple of instructions
+				half rlPow4 = rlPow4AndFresnelTerm.x; // power exponent must match kHorizontalWarpExp in NHxRoughness() function in GeneratedTextures.cpp
+				half fresnelTerm = rlPow4AndFresnelTerm.y;
+				
+				half grazingTerm = saturate(smoothness + (1 - oneMinusReflectivity));
+				
+				half3 color = BRDF3_Direct(diffColor, specColor, rlPow4, smoothness);
+				color *= light.color * nl;
+				color += BRDF3_Indirect(diffColor, specColor, gi, grazingTerm, fresnelTerm);
+				
+				return half4(color, 1);
 			}
 			
 			void calculateShading(inout PoiLight poiLight, inout PoiFragData poiFragData, in PoiMesh poiMesh, in PoiCam poiCam)
@@ -46075,7 +46450,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				#endif
 				
 				poiLight.rampedLightMap = poiLight.nDotLSaturated;
-				poiLight.finalLighting = max(UNITY_BRDF_PBS(1, 0, 0, 0, poiMesh.normals[1], poiCam.viewDir, light, indirectLight).xyz, _LightingMinLightBrightness);
+				poiLight.finalLighting = max(POI_BRDF_PBS(1, 0, 0, 0, poiMesh.normals[1], poiCam.viewDir, light, indirectLight).xyz, _LightingMinLightBrightness);
 				#endif
 				
 				#ifdef _LIGHTINGMODE_CLOTH
@@ -46104,8 +46479,9 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				float energyCompensation = EnvBRDFEnergyCompensation(dfg, f0, clothmask);
 				
 				poiLight.finalLighting = Fd_Burley(perceptualRoughness, poiLight.nDotV, poiLight.nDotLSaturated, poiLight.lDotH);
-				poiLight.finalLighting *= _LightColor0 * attenuation * shadowAttenuation * poiLight.nDotLSaturated;
+				poiLight.finalLighting *= poiLight.directColor * attenuation * shadowAttenuation * poiLight.nDotLSaturated;
 				poiLight.rampedLightMap = poiLight.nDotLSaturated;
+				
 				float3 specular = max(0, Specular(clampedRoughness, poiLight, f0, poiMesh.normals[1], clothmask) * poiLight.finalLighting * energyCompensation * UNITY_PI); // (D * V) * F
 				
 				#ifdef UNITY_PASS_FORWARDBASE
@@ -46115,10 +46491,12 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				indirectDiffuse.g = shEvaluateDiffuseL1Geomerics_local(L0.g, unity_SHAg.xyz, poiMesh.normals[1]);
 				indirectDiffuse.b = shEvaluateDiffuseL1Geomerics_local(L0.b, unity_SHAb.xyz, poiMesh.normals[1]);
 				indirectDiffuse = max(0, indirectDiffuse);
+				indirectDiffuse = lerp(indirectDiffuse, dot(indirectDiffuse, float3(0.299, 0.587, 0.114)), _LightingMonochromatic);
 				
 				float3 indirectSpecular = IndirectSpecular(dfg, roughness, poiLight.occlusion, energyCompensation, clothmask, indirectDiffuse, f0, poiLight, poiFragData, poiCam, poiMesh);
 				poiLight.finalLightAdd += max(0, specular + indirectSpecular);
 				poiLight.finalLighting += indirectDiffuse * poiLight.occlusion;
+				
 				#endif
 				
 				poiFragData.baseColor.xyz *= (1 - metallic);
@@ -46282,7 +46660,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				#if defined(PROP_DISSOLVETOTEXTURE) || !defined(OPTIMIZER_ENABLED)
 				dissolveToTexture = POI2D_SAMPLER_PAN(_DissolveToTexture, _MainTex, poiUV(poiMesh.uv[_DissolveToTextureUV], _DissolveToTexture_ST), _DissolveToTexturePan) * float4(poiThemeColor(poiMods, _DissolveTextureColor.rgb, _DissolveTextureColorThemeIndex), _DissolveTextureColor.a);
 				#else
-				dissolveToTexture = _DissolveTextureColor;
+				dissolveToTexture = float4(poiThemeColor(poiMods, _DissolveTextureColor.rgb, _DissolveTextureColorThemeIndex), _DissolveTextureColor.a);
 				#endif
 				
 				#if defined(PROP_DISSOLVENOISETEXTURE) || !defined(OPTIMIZER_ENABLED)
@@ -46504,7 +46882,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				UNITY_BRANCH
 				if (_DissolveHueShiftEnabled)
 				{
-					dissolveToTexture.rgb = hueShift(dissolveToTexture.rgb, _DissolveHueShift + _Time.x * _DissolveHueShiftSpeed);
+					dissolveToTexture.rgb = hueShift(dissolveToTexture.rgb, _DissolveHueShift + _Time.x * _DissolveHueShiftSpeed, _DissolveHueShiftColorSpace);
 				}
 				#endif
 				
@@ -46519,7 +46897,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				}
 				if (_DissolveInverseApplyGlobalMaskIndex > 0)
 				{
-					applyToGlobalMask(poiMods, _DissolveInverseApplyGlobalMaskIndex - 1, _DissolveInverseApplyGlobalMaskBlendType, 1-(dissolveAlpha * .999999));
+					applyToGlobalMask(poiMods, _DissolveInverseApplyGlobalMaskIndex - 1, _DissolveInverseApplyGlobalMaskBlendType, 1 - (dissolveAlpha * .999999));
 				}
 				UNITY_BRANCH
 				if (_DissolveEdgeWidth || (_DissolveType == 2 && _DissolveP2PEdgeLength != 0))
@@ -46529,7 +46907,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 					UNITY_BRANCH
 					if (_DissolveEdgeHueShiftEnabled)
 					{
-						edgeColor.rgb = hueShift(edgeColor.rgb, _DissolveEdgeHueShift + _Time.x * _DissolveEdgeHueShiftSpeed);
+						edgeColor.rgb = hueShift(edgeColor.rgb, _DissolveEdgeHueShift + _Time.x * _DissolveEdgeHueShiftSpeed, _DissolveEdgeHueShiftColorSpace);
 					}
 					#endif
 					poiFragData.baseColor = lerp(poiFragData.baseColor, edgeColor.rgb, smoothstep(0, 1 - _DissolveEdgeHardness * .99999999999, edgeAlpha));
@@ -46737,6 +47115,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				}
 				#endif
 				flipBookPixel = UNITY_SAMPLE_TEX2DARRAY(_FlipbookTexArray, float3(TRANSFORM_TEX(newUV, _FlipbookTexArray) + _Time.x * _FlipbookTexArrayPan, floor(currentFrame)));
+				
 				UNITY_BRANCH
 				if (_FlipbookCrossfadeEnabled)
 				{
@@ -46767,7 +47146,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				UNITY_BRANCH
 				if (_FlipbookHueShiftEnabled)
 				{
-					flipBookPixel.rgb = hueShift(flipBookPixel.rgb, _FlipbookHueShift + _Time.x * _FlipbookHueShiftSpeed);
+					flipBookPixel.rgb = hueShift(flipBookPixel.rgb, _FlipbookHueShift + _Time.x * _FlipbookHueShiftSpeed, _FlipbookHueShiftColorSpace);
 				}
 				half flipbookAlpha = 1;
 				#ifdef POI_AUDIOLINK
@@ -47489,6 +47868,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				poiMesh.isFrontFace = facing;
 				poiMesh.dx = ddx(poiMesh.uv[0]);
 				poiMesh.dy = ddy(poiMesh.uv[0]);
+				poiMesh.isRightHand = i.tangent.w > 0.0;
 				
 				#ifndef POI_PASS_OUTLINE
 				if (!poiMesh.isFrontFace && _FlipBackfaceNormals)
@@ -47834,6 +48214,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 					poiLight.directColor += _LightColor0.rgb;
 					// OpenLit does a few other things by default like clamp direct colour
 					// see https://github.com/lilxyzw/OpenLit/blob/main/Assets/OpenLit/core.hlsl#L174
+					
 				}
 				
 				float lightMapMode = _LightingMapMode;
@@ -47900,6 +48281,13 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 					UNITY_LIGHT_ATTENUATION(attenuation, i, poiMesh.worldPos)
 					poiLight.attenuation *= attenuation;
 				}
+				
+				#if defined(HANDLE_SHADOWS_BLENDING_IN_GI)
+				half bakedAtten = UnitySampleBakedOcclusion(poiMesh.lightmapUV.xy, poiMesh.worldPos);
+				float zDist = dot(_WorldSpaceCameraPos - poiMesh.worldPos, UNITY_MATRIX_V[2].xyz);
+				float fadeDist = UnityComputeShadowFadeDistance(poiMesh.worldPos, zDist);
+				poiLight.attenuation = UnityMixRealtimeAndBakedShadows(poiLight.attenuation, bakedAtten, UnityComputeShadowFade(fadeDist));
+				#endif
 				
 				if (!any(poiLight.directColor) && !any(poiLight.indirectColor) && lightMapMode == 0)
 				{
@@ -48026,7 +48414,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				#endif
 				poiLight.additiveShadow = UNITY_SHADOW_ATTENUATION(i, poiMesh.worldPos);
 				poiLight.attenuationStrength = _LightingAdditiveCastedShadows;
-				poiLight.directColor = _LightingAdditiveLimited ? MaxLuminance(_LightColor0.rgb * poiLight.attenuation, _LightingAdditiveLimit) : _LightColor0.rgb  * poiLight.attenuation;
+				poiLight.directColor = _LightingAdditiveLimited ? MaxLuminance(_LightColor0.rgb * poiLight.attenuation, _LightingAdditiveLimit) : _LightColor0.rgb * poiLight.attenuation;
 				
 				#if defined(POINT_COOKIE) || defined(DIRECTIONAL_COOKIE)
 				poiLight.indirectColor = 0;
@@ -48168,7 +48556,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 					hueShiftAlpha.g = maskBlend(hueShiftAlpha.g, poiMods.globalMask[_MainBrightnessGlobalMask - 1], _MainBrightnessGlobalMaskBlendType);
 				}
 				
-				if (_MainHueShiftToggle)
+				if (_MainHueShiftToggle == 1)
 				{
 					float shift = _MainHueShift;
 					#ifdef POI_AUDIOLINK
@@ -48180,11 +48568,11 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 					#endif
 					if (_MainHueShiftReplace)
 					{
-						poiFragData.baseColor = lerp(poiFragData.baseColor, hueShift(poiFragData.baseColor, shift + _MainHueShiftSpeed * _Time.x), hueShiftAlpha.r);
+						poiFragData.baseColor = lerp(poiFragData.baseColor, hueShift(poiFragData.baseColor, shift + _MainHueShiftSpeed * _Time.x, _MainHueShiftColorSpace), hueShiftAlpha.r);
 					}
 					else
 					{
-						poiFragData.baseColor = hueShift(poiFragData.baseColor, frac((shift - (1 - hueShiftAlpha.r) + _MainHueShiftSpeed * _Time.x)));
+						poiFragData.baseColor = hueShift(poiFragData.baseColor, frac((shift - (1 - hueShiftAlpha.r) + _MainHueShiftSpeed * _Time.x)), _MainHueShiftColorSpace);
 					}
 				}
 				
@@ -48218,7 +48606,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				if (_MainAlphaMaskMode)
 				{
 					float alphaMask = POI2D_SAMPLER_PAN(_AlphaMask, _MainTex, poiUV(poiMesh.uv[_AlphaMaskUV], _AlphaMask_ST), _AlphaMaskPan.xy).r;
-					alphaMask = saturate(alphaMask * _AlphaMaskScale + _AlphaMaskValue);
+					alphaMask = saturate(alphaMask * _AlphaMaskBlendStrength + (_AlphaMaskInvert ?_AlphaMaskValue * -1 : _AlphaMaskValue));
 					if (_AlphaMaskInvert) alphaMask = 1 - alphaMask;
 					if (_MainAlphaMaskMode == 1) poiFragData.alpha = alphaMask;
 					if (_MainAlphaMaskMode == 2) poiFragData.alpha = poiFragData.alpha * alphaMask;
@@ -48426,6 +48814,8 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 			
 			ZWrite [_ZWrite]
 			Cull [_Cull]
+			ZClip [_ZClip]
+			//Conservative [_Conservative]
 			AlphaToMask Off
 			ZTest [_ZTest]
 			ColorMask [_ColorMask]
@@ -48881,7 +49271,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 			float _AlphaMaskUV;
 			float _AlphaMaskInvert;
 			float _MainAlphaMaskMode;
-			float _AlphaMaskScale;
+			float _AlphaMaskBlendStrength;
 			float _AlphaMaskValue;
 			#endif
 			float _Cutoff;
@@ -48894,6 +49284,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 			float4 _MainColorAdjustTexture_ST;
 			float2 _MainColorAdjustTexturePan;
 			float _MainColorAdjustTextureUV;
+			float _MainHueShiftColorSpace;
 			float _MainHueShiftToggle;
 			float _MainHueShiftReplace;
 			float _MainHueShift;
@@ -49651,6 +50042,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 			
 			float _BackFaceHueShiftEnabled;
 			float _BackFaceHueShift;
+			float _BackFaceShiftColorSpace;
 			float _BackFaceHueShiftSpeed;
 			float _BackFaceEmissionLimiter;
 			#endif
@@ -49786,6 +50178,8 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 			float dissolveAlpha;
 			float4 dissolveToTexture;
 			
+			float _DissolveHueShiftColorSpace;
+			float _DissolveEdgeHueShiftColorSpace;
 			float _DissolveHueShiftEnabled;
 			float _DissolveHueShiftSpeed;
 			float _DissolveHueShift;
@@ -49913,6 +50307,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 			
 			// Hueshift
 			float _FlipbookHueShiftEnabled;
+			float _FlipbookHueShiftColorSpace;
 			float _FlipbookHueShiftSpeed;
 			float _FlipbookHueShift;
 			
@@ -50194,6 +50589,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				float2 parallaxUV;
 				float2 dx;
 				float2 dy;
+				uint isRightHand;
 			};
 			
 			struct PoiCam
@@ -51021,17 +51417,20 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				return float3(H, C, Q.x);
 			}
 			
-			float3 HSVtoRGB(in float3 HSV)
-			{
-				float3 RGB = HUEtoRGB(HSV.x);
-				return ((RGB - 1) * HSV.y + 1) * HSV.z;
+			float3 RGBtoHSV(float3 c){
+				float4 K = float4(0.0, -1.0 / 3.0, 2.0 / 3.0, -1.0);
+				float4 p = lerp(float4(c.bg, K.wz), float4(c.gb, K.xy), step(c.b, c.g));
+				float4 q = lerp(float4(p.xyw, c.r), float4(c.r, p.yzx), step(p.x, c.r));
+				
+				float d = q.x - min(q.w, q.y);
+				float e = 1.0e-10;
+				return float3(abs(q.z + (q.w - q.y) / (6.0 * d + e)), d / (q.x + e), q.x);
 			}
 			
-			float3 RGBtoHSV(in float3 RGB)
-			{
-				float3 HCV = RGBtoHCV(RGB);
-				float S = HCV.y / (HCV.z + Epsilon);
-				return float3(HCV.x, S, HCV.z);
+			float3 HSVtoRGB(float3 c){
+				float4 K = float4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
+				float3 p = abs(frac(c.xxx + K.xyz) * 6.0 - K.www);
+				return c.z * lerp(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
 			}
 			
 			float3 HSLtoRGB(in float3 HSL)
@@ -51171,7 +51570,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 			
 			float3 hueShift(float3 color, float shift)
 			{
-				float3 oklab = linear_srgb_to_oklab(max(color, 0.0000000001));
+				float3 oklab = linear_srgb_to_oklab(color + 0.0000001);
 				float hue = atan2(oklab.z, oklab.y);
 				hue += shift * PI * 2;  // Add the hue shift
 				
@@ -51182,19 +51581,32 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				return oklab_to_linear_srgb(oklab);
 			}
 			
-			float3 hueShift(float4 color, float shift)
+			float3 hueShiftHSV(float3 color, float hueOffset)
 			{
-				return hueShift(color.rgb, shift);
+				float3 hsv = float3(hueOffset, 0, 0);
+				float3 hsvCol = RGBtoHSV(color);
+				return HSVtoRGB(hsvCol + hsv);
 			}
 			
-			/*
-			float3 hueShift(float3 color, float hueOffset)
+			float3 hueShift(float3 color, float shift, float ColorSpace)
 			{
-				color = RGBtoHSV(color);
-				color.x = frac(hueOffset +color.x);
-				return HSVtoRGB(color);
+				switch(ColorSpace)
+				{
+					// OkLab Hue Shift
+					case 0.0:
+					return hueShift(color, shift);
+					// HSV Hue Shift
+					case 1.0:
+					return hueShiftHSV(color, shift);
+					default:
+					return float3(1.0, 0.0, 0.0);
+				}
 			}
-			*/
+			
+			float3 hueShift(float4 color, float shift, float ColorSpace)
+			{
+				return hueShift(color.rgb, shift, ColorSpace);
+			}
 			
 			// LCH
 			float xyzF(float t)
@@ -51668,6 +52080,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 			{
 				float3 customDir = length(lightDirectionOverride.xyz) * normalize(mul((float3x3)unity_ObjectToWorld, lightDirectionOverride.xyz));
 				return lightDirectionOverride.w ? customDir : lightDirectionOverride.xyz; // .w isn't doc'd anywhere and is always 0 unless end user changes it
+				
 			}
 			
 			float3 OpenLitLightingDirectionForSH9()
@@ -52991,7 +53404,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 			{
 				// Force Model Opacity to 1 if desired
 				UNITY_BRANCH
-				if (_Mode == 1)
+				if (_Mode == POI_MODE_CUTOUT)
 				{
 					UNITY_BRANCH
 					if (_AlphaSharpenedA2C && _AlphaToCoverage)
@@ -53761,7 +54174,11 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 					#if defined(PROP_BACKFACETEXTURE) || !defined(OPTIMIZER_ENABLED)
 					backFaceColor *= POI2D_SAMPLER_PAN(_BackFaceTexture, _MainTex, poiUV(poiMesh.uv[_BackFaceTextureUV], _BackFaceTexture_ST), _BackFaceTexturePan);
 					#endif
-					backFaceColor.rgb = hueShift(backFaceColor.rgb, frac(_BackFaceHueShift + _BackFaceHueShiftSpeed * _Time.x) * _BackFaceHueShiftEnabled);
+					
+					if (_BackFaceHueShiftEnabled)
+					{
+						backFaceColor.rgb = hueShift(backFaceColor.rgb, frac(_BackFaceHueShift + _BackFaceHueShiftSpeed * _Time.x), _BackFaceShiftColorSpace);
+					}
 					
 					float backFaceMask = 1;
 					#if defined(PROP_BACKFACEMASK) || !defined(OPTIMIZER_ENABLED)
@@ -53810,7 +54227,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				#if defined(PROP_DISSOLVETOTEXTURE) || !defined(OPTIMIZER_ENABLED)
 				dissolveToTexture = POI2D_SAMPLER_PAN(_DissolveToTexture, _MainTex, poiUV(poiMesh.uv[_DissolveToTextureUV], _DissolveToTexture_ST), _DissolveToTexturePan) * float4(poiThemeColor(poiMods, _DissolveTextureColor.rgb, _DissolveTextureColorThemeIndex), _DissolveTextureColor.a);
 				#else
-				dissolveToTexture = _DissolveTextureColor;
+				dissolveToTexture = float4(poiThemeColor(poiMods, _DissolveTextureColor.rgb, _DissolveTextureColorThemeIndex), _DissolveTextureColor.a);
 				#endif
 				
 				#if defined(PROP_DISSOLVENOISETEXTURE) || !defined(OPTIMIZER_ENABLED)
@@ -54032,7 +54449,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				UNITY_BRANCH
 				if (_DissolveHueShiftEnabled)
 				{
-					dissolveToTexture.rgb = hueShift(dissolveToTexture.rgb, _DissolveHueShift + _Time.x * _DissolveHueShiftSpeed);
+					dissolveToTexture.rgb = hueShift(dissolveToTexture.rgb, _DissolveHueShift + _Time.x * _DissolveHueShiftSpeed, _DissolveHueShiftColorSpace);
 				}
 				#endif
 				
@@ -54047,7 +54464,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				}
 				if (_DissolveInverseApplyGlobalMaskIndex > 0)
 				{
-					applyToGlobalMask(poiMods, _DissolveInverseApplyGlobalMaskIndex - 1, _DissolveInverseApplyGlobalMaskBlendType, 1-(dissolveAlpha * .999999));
+					applyToGlobalMask(poiMods, _DissolveInverseApplyGlobalMaskIndex - 1, _DissolveInverseApplyGlobalMaskBlendType, 1 - (dissolveAlpha * .999999));
 				}
 				UNITY_BRANCH
 				if (_DissolveEdgeWidth || (_DissolveType == 2 && _DissolveP2PEdgeLength != 0))
@@ -54057,7 +54474,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 					UNITY_BRANCH
 					if (_DissolveEdgeHueShiftEnabled)
 					{
-						edgeColor.rgb = hueShift(edgeColor.rgb, _DissolveEdgeHueShift + _Time.x * _DissolveEdgeHueShiftSpeed);
+						edgeColor.rgb = hueShift(edgeColor.rgb, _DissolveEdgeHueShift + _Time.x * _DissolveEdgeHueShiftSpeed, _DissolveEdgeHueShiftColorSpace);
 					}
 					#endif
 					poiFragData.baseColor = lerp(poiFragData.baseColor, edgeColor.rgb, smoothstep(0, 1 - _DissolveEdgeHardness * .99999999999, edgeAlpha));
@@ -54265,6 +54682,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				}
 				#endif
 				flipBookPixel = UNITY_SAMPLE_TEX2DARRAY(_FlipbookTexArray, float3(TRANSFORM_TEX(newUV, _FlipbookTexArray) + _Time.x * _FlipbookTexArrayPan, floor(currentFrame)));
+				
 				UNITY_BRANCH
 				if (_FlipbookCrossfadeEnabled)
 				{
@@ -54295,7 +54713,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				UNITY_BRANCH
 				if (_FlipbookHueShiftEnabled)
 				{
-					flipBookPixel.rgb = hueShift(flipBookPixel.rgb, _FlipbookHueShift + _Time.x * _FlipbookHueShiftSpeed);
+					flipBookPixel.rgb = hueShift(flipBookPixel.rgb, _FlipbookHueShift + _Time.x * _FlipbookHueShiftSpeed, _FlipbookHueShiftColorSpace);
 				}
 				half flipbookAlpha = 1;
 				#ifdef POI_AUDIOLINK
@@ -55118,6 +55536,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				poiMesh.isFrontFace = facing;
 				poiMesh.dx = ddx(poiMesh.uv[0]);
 				poiMesh.dy = ddy(poiMesh.uv[0]);
+				poiMesh.isRightHand = i.tangent.w > 0.0;
 				
 				#ifndef POI_PASS_OUTLINE
 				if (!poiMesh.isFrontFace && _FlipBackfaceNormals)
@@ -55329,7 +55748,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 					hueShiftAlpha.g = maskBlend(hueShiftAlpha.g, poiMods.globalMask[_MainBrightnessGlobalMask - 1], _MainBrightnessGlobalMaskBlendType);
 				}
 				
-				if (_MainHueShiftToggle)
+				if (_MainHueShiftToggle == 1)
 				{
 					float shift = _MainHueShift;
 					#ifdef POI_AUDIOLINK
@@ -55341,11 +55760,11 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 					#endif
 					if (_MainHueShiftReplace)
 					{
-						poiFragData.baseColor = lerp(poiFragData.baseColor, hueShift(poiFragData.baseColor, shift + _MainHueShiftSpeed * _Time.x), hueShiftAlpha.r);
+						poiFragData.baseColor = lerp(poiFragData.baseColor, hueShift(poiFragData.baseColor, shift + _MainHueShiftSpeed * _Time.x, _MainHueShiftColorSpace), hueShiftAlpha.r);
 					}
 					else
 					{
-						poiFragData.baseColor = hueShift(poiFragData.baseColor, frac((shift - (1 - hueShiftAlpha.r) + _MainHueShiftSpeed * _Time.x)));
+						poiFragData.baseColor = hueShift(poiFragData.baseColor, frac((shift - (1 - hueShiftAlpha.r) + _MainHueShiftSpeed * _Time.x)), _MainHueShiftColorSpace);
 					}
 				}
 				
@@ -55379,7 +55798,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				if (_MainAlphaMaskMode)
 				{
 					float alphaMask = POI2D_SAMPLER_PAN(_AlphaMask, _MainTex, poiUV(poiMesh.uv[_AlphaMaskUV], _AlphaMask_ST), _AlphaMaskPan.xy).r;
-					alphaMask = saturate(alphaMask * _AlphaMaskScale + _AlphaMaskValue);
+					alphaMask = saturate(alphaMask * _AlphaMaskBlendStrength + (_AlphaMaskInvert ?_AlphaMaskValue * -1 : _AlphaMaskValue));
 					if (_AlphaMaskInvert) alphaMask = 1 - alphaMask;
 					if (_MainAlphaMaskMode == 1) poiFragData.alpha = alphaMask;
 					if (_MainAlphaMaskMode == 2) poiFragData.alpha = poiFragData.alpha * alphaMask;

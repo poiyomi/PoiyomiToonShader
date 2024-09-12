@@ -9,6 +9,10 @@ using UnityEngine;
 using System;
 using System.Linq;
 using Thry.ThryEditor;
+using System.Reflection;
+using static Thry.UnityHelper;
+using Thry.ThryEditor.ShaderTranslations;
+using JetBrains.Annotations;
 
 namespace Thry
 {
@@ -23,6 +27,7 @@ namespace Thry
         public const string PROPERTY_NAME_ON_SWAP_TO_ACTIONS = "shader_on_swap_to";
         public const string PROPERTY_NAME_SHADER_VERSION = "shader_version";
         public const string PROPERTY_NAME_EDITOR_DETECT = "shader_is_using_thry_editor";
+        public const string PROPERTY_NAME_IN_SHADER_PRESETS = "_Mode";
 
         //Static
         private static string s_edtiorDirectoryPath;
@@ -37,7 +42,6 @@ namespace Thry
 
         // UI Instance Variables
 
-        public bool DoShowSearchBar;
         private string _enteredSearchTerm = "";
         private string _appliedSearchTerm = "";
 
@@ -56,6 +60,7 @@ namespace Thry
         public MaterialProperty[] Properties;
         public Material[] Materials;
         public Shader Shader;
+        public Shader LastShader;
         public ShaderPart CurrentProperty;
         public Dictionary<string, ShaderProperty> PropertyDictionary;
         public List<ShaderPart> ShaderParts;
@@ -79,7 +84,13 @@ namespace Thry
         private string _shaderUpdateUrl = null;
 
         //other
+        string ShaderOptimizerPropertyName = null;
         ShaderProperty ShaderOptimizerProperty { get; set; }
+        ShaderProperty LocaleProperty { get; set; }
+        ShaderProperty InShaderPresetsProperty { get; set; }
+
+        [PublicAPI]
+        public float ShaderRenderingPreset { get => InShaderPresetsProperty.FloatValue; set => InShaderPresetsProperty.FloatValue = value; }
 
         private DefineableAction[] _onSwapToActions = null;
 
@@ -154,7 +165,7 @@ namespace Thry
 
         private enum ThryPropertyType
         {
-            none, property, master_label, footer, header, header_end, header_start, group_start, group_end, section_start, section_end, instancing, dsgi, lightmap_flags, locale, on_swap_to, space, shader_version
+            none, property, master_label, footer, header, header_end, header_start, group_start, group_end, section_start, section_end, instancing, dsgi, lightmap_flags, locale, on_swap_to, space, shader_version, optimizer, in_shader_presets
         }
 
         private ThryPropertyType GetPropertyType(MaterialProperty p)
@@ -198,7 +209,15 @@ namespace Thry
                 if (name.StartsWith("space"))
                     return ThryPropertyType.space;
             }
-            else if(flags.HasFlag(MaterialProperty.PropFlags.HideInInspector) == false)
+            else if (name == ShaderOptimizerPropertyName)
+            {
+                return ThryPropertyType.optimizer;
+            }
+            else if(name == PROPERTY_NAME_IN_SHADER_PRESETS)
+            {
+                return ThryPropertyType.in_shader_presets;
+            }
+            else if (flags.HasFlag(MaterialProperty.PropFlags.HideInInspector) == false)
             {
                 return ThryPropertyType.property;
             }
@@ -236,6 +255,11 @@ namespace Thry
         //finds all properties and headers and stores them in correct order
         private void CollectAllProperties()
         {
+            if (ShaderOptimizer.IsShaderUsingThryOptimizer(Shader))
+            {
+                ShaderOptimizerPropertyName = ShaderOptimizer.GetOptimizerPropertyName(Shader);
+            }
+
             //load display names from file if it exists
             MaterialProperty[] props = Properties;
             Dictionary<string, string> labels = LoadDisplayNamesFromFile();
@@ -325,7 +349,7 @@ namespace Thry
                     case ThryPropertyType.none:
                     case ThryPropertyType.property:
                         if (props[i].type == MaterialProperty.PropType.Texture)
-                            NewProperty = new TextureProperty(this, props[i], displayName, offset, optionsRaw, props[i].flags.HasFlag(MaterialProperty.PropFlags.NoScaleOffset) == false, false, i);
+                            NewProperty = new ShaderTextureProperty(this, props[i], displayName, offset, optionsRaw, props[i].flags.HasFlag(MaterialProperty.PropFlags.NoScaleOffset) == false, false, i);
                         else
                             NewProperty = new ShaderProperty(this, props[i], displayName, offset, optionsRaw, false, i);
                         break;
@@ -339,7 +363,7 @@ namespace Thry
                         NewProperty = new InstancingProperty(this, props[i], displayName, offset, optionsRaw, false, i);
                         break;
                     case ThryPropertyType.locale:
-                        NewProperty = new LocaleProperty(this, props[i], displayName, offset, optionsRaw, false, i);
+                        LocaleProperty = new LocaleProperty(this, props[i], displayName, offset, optionsRaw, false, i);
                         break;
                     case ThryPropertyType.shader_version:
                         PropertyOptions options = PropertyOptions.Deserialize(optionsRaw);
@@ -348,6 +372,13 @@ namespace Thry
                         _isShaderUpToDate = _shaderVersionLocal >= _shaderVersionRemote;
                         _shaderUpdateUrl = options.generic_string;
                         _hasShaderUpdateUrl = _shaderUpdateUrl != null;
+                        break;
+                    case ThryPropertyType.optimizer:
+                        ShaderOptimizerProperty = new ShaderProperty(this, props[i], displayName, offset, optionsRaw, false, i);
+                        ShaderOptimizerProperty.SetIsExemptFromLockedDisabling(true);
+                        break;
+                    case ThryPropertyType.in_shader_presets:
+                        InShaderPresetsProperty = new ShaderProperty(this, props[i], displayName, offset, optionsRaw, false, i);
                         break;
                 }
                 if (NewProperty != null)
@@ -390,12 +421,6 @@ namespace Thry
 
             //collect shader properties
             CollectAllProperties();
-
-            if (ShaderOptimizer.IsShaderUsingThryOptimizer(Shader))
-            {
-                ShaderOptimizerProperty = PropertyDictionary[ShaderOptimizer.GetOptimizerPropertyName(Shader)];
-                if(ShaderOptimizerProperty != null) ShaderOptimizerProperty.ExemptFromLockedDisabling = true;
-            }
 
             _renderQueueProperty = new RenderQueueProperty(this);
             _vRCFallbackProperty = new VRCFallbackProperty(this);
@@ -446,6 +471,9 @@ namespace Thry
 
         public override void AssignNewShaderToMaterial(Material material, Shader oldShader, Shader newShader)
         {
+            this.ShaderOptimizerProperty = null;
+            this.LocaleProperty = null;
+            this.InShaderPresetsProperty = null;
             //Unity sets the render queue to the shader defult when changing shader
             //This seems to be some deeper process that cant be disabled so i just set it again after the swap
             //Even material.shader = newShader resets the queue. (this is actually the only thing the base function does)
@@ -456,6 +484,8 @@ namespace Thry
             FixKeywords(new Material[] { material });
             _doReloadNextDraw = true;
             _didSwapToShader = true;
+            LastShader = oldShader;
+            Shader = newShader;
         }
 
         void InitEditorData(MaterialEditor materialEditor)
@@ -467,6 +497,10 @@ namespace Thry
 
         public override void OnGUI(MaterialEditor materialEditor, MaterialProperty[] props)
         {
+#if UNITY_2022_1_OR_NEWER
+            EditorGUI.indentLevel -= 2;
+#endif
+
             IsDrawing = true;
             //Init
             bool reloadUI = _isFirstOnGUICall || (_doReloadNextDraw && Event.current.type == EventType.Layout) || (materialEditor.target as Material).shader != Shader;
@@ -491,15 +525,27 @@ namespace Thry
             GUIDevloperMode();
             GUIShaderVersioning();
 
+            GUILayout.Space(5);
             GUITopBar();
+            GUILayout.Space(5);
             GUISearchBar();
+            GUILockinButton();
+            GUIPresetsBar();
+
             Presets.PresetEditorGUI(this);
             ShaderTranslator.SuggestedTranslationButtonGUI(this);
 
+#if UNITY_2022_1_OR_NEWER
+            EditorGUI.indentLevel += 2;
+#endif
+
             //PROPERTIES
-            foreach (ShaderPart part in MainGroup.parts)
+            using ( new DetourMaterialPropertyVariantIcon())
             {
-                part.Draw();
+                foreach (ShaderPart part in MainGroup.parts)
+                {
+                    part.Draw();
+                }
             }
 
             //Render Queue selection
@@ -555,51 +601,82 @@ namespace Thry
             if (_shaderHeader != null && _shaderHeader.Options.texture != null) _shaderHeader.Draw();
 
             bool drawAboveToolbar = EditorGUIUtility.wideMode == false;
-            if(_shaderHeader != null && drawAboveToolbar) _shaderHeader.Draw(new CRect(EditorGUILayout.GetControlRect()));
+            if(_shaderHeader != null && drawAboveToolbar) _shaderHeader.Draw(EditorGUILayout.GetControlRect());
 
-            Rect mainHeaderRect = EditorGUILayout.BeginHorizontal();
-            //draw editor settings button
-            if (GuiHelper.ButtonWithCursor(Styles.icon_style_settings, "Settings", 25, 25))
+            Rect topBarRect = RectifiedLayout.GetRect(25);
+            Rect iconRect = new Rect(topBarRect.x, topBarRect.y, 25, 25);
+            if(GUILib.ButtonWithCursor(iconRect, Styles.icon_style_settings, "Settings"))
             {
                 EditorWindow.GetWindow<Settings>(false, "Thry Settings", true);
             }
-            if (GuiHelper.ButtonWithCursor(Styles.icon_style_search, "Search", 25, 25))
+            iconRect.x += 25;
+            if (GUILib.ButtonWithCursor(iconRect, Styles.icon_style_tools, "Tools"))
             {
-                DoShowSearchBar = !DoShowSearchBar;
-                if(!DoShowSearchBar) ClearSearch();
+                PopupTools(iconRect);
             }
-            if (GuiHelper.ButtonWithCursor(Styles.icon_style_presets, "Presets" , 25, 25))
+            iconRect.x += 25;
+            ShaderTranslator.TranslationSelectionGUI(iconRect, this);
+            iconRect.x += 25;
+            if (GUILib.ButtonWithCursor(iconRect, Styles.icon_style_thryIcon, "Thryrallo"))
+                Application.OpenURL("https://www.twitter.com/thryrallo");
+
+            Rect headerRect = new Rect(topBarRect);
+            headerRect.x = iconRect.x + 25;
+            headerRect.width = topBarRect.width - headerRect.x;
+
+            if (LocaleProperty != null)
             {
-                Input.PowerUse();
-                Presets.OpenPresetsMenu(Rect.zero, this, false);
+                Rect localeRect = new Rect(topBarRect);
+                localeRect.width = 100;
+                localeRect.x = topBarRect.width - 100;
+                LocaleProperty.Draw(localeRect);
+                headerRect.width -= localeRect.width;
             }
+            
 
             //draw master label text after ui elements, so it can be positioned between
-            if (_shaderHeader != null && !drawAboveToolbar) _shaderHeader.Draw(new CRect(mainHeaderRect));
+            if (_shaderHeader != null && !drawAboveToolbar) _shaderHeader.Draw(headerRect);
+        }
 
-            GUILayout.FlexibleSpace();
-            Rect popupPosition;
-            if (GuiHelper.ButtonWithCursor(Styles.icon_style_tools, "Tools", 25, 25, out popupPosition))
-            {
-                PopupTools(popupPosition);
-            }
-            ShaderTranslator.TranslationSelectionGUI(this);
-            if (GuiHelper.ButtonWithCursor(Styles.icon_style_thryIcon, "Thryrallo", 25, 25))
-                Application.OpenURL("https://www.twitter.com/thryrallo");
-            EditorGUILayout.EndHorizontal();
+        private void GUILockinButton()
+        {
+            if(ShaderOptimizerProperty != null)
+                ShaderOptimizerProperty.Draw();
+        }
+
+        private void GUIPresetsBar()
+        {
+            Rect barRect = RectifiedLayout.GetRect(25);
+
+            Rect inShaderRect = new Rect(barRect);
+            inShaderRect.width /= 3;
+            inShaderRect.x = barRect.width - inShaderRect.width;
+
+            Rect presetsRect = new Rect(barRect);
+            presetsRect.width = inShaderRect.width;
+            presetsRect.height = 18;
+
+            Rect presetsIcon = new Rect(presetsRect);
+            presetsIcon.width = 18;
+            presetsIcon.height = 18;
+            presetsIcon.x = presetsRect.width - 20;
+
+            if (GUI.Button(presetsRect, "Presets") | GUILib.Button(presetsIcon, Styles.icon_style_presets))
+                Presets.OpenPresetsMenu(barRect, this, false);
+            ThryWideEnumDrawer.RenderLabel = false;
+            if (InShaderPresetsProperty!= null)
+                InShaderPresetsProperty.Draw(inShaderRect);
+            ThryWideEnumDrawer.RenderLabel = true;
         }
 
         private void GUISearchBar()
         {
-            if (DoShowSearchBar)
+            EditorGUI.BeginChangeCheck();
+            _enteredSearchTerm = EditorGUILayout.TextField(_enteredSearchTerm, EditorStyles.toolbarSearchField);
+            if (EditorGUI.EndChangeCheck())
             {
-                EditorGUI.BeginChangeCheck();
-                _enteredSearchTerm = EditorGUILayout.TextField(_enteredSearchTerm);
-                if (EditorGUI.EndChangeCheck())
-                {
-                    _appliedSearchTerm = _enteredSearchTerm.ToLower();
-                    UpdateSearch(MainGroup);
-                }
+                _appliedSearchTerm = _enteredSearchTerm.ToLower();
+                UpdateSearch(MainGroup);
             }
         }
 
@@ -689,6 +766,12 @@ namespace Thry
             {
                 menu.AddDisabledItem(new GUIContent($"Unbound properties: 0"));
             }
+            menu.AddSeparator("");
+            menu.AddItem(new GUIContent("Is Preset"), Presets.IsPreset(Materials[0]), delegate ()
+            {
+                Presets.SetPreset(Materials, !Presets.IsPreset(Materials[0]));
+                this.Reload();
+            });
             menu.DropDown(position);
         }
 
@@ -750,17 +833,20 @@ namespace Thry
 
         //iterate the same way drawing would iterate
         //if display part, display all parents parts
-        private void UpdateSearch(ShaderPart part)
+        private void UpdateSearch(ShaderPart part, bool parentIsSearchResult = false)
         {
-            part.has_not_searchedFor = part.Content.text.ToLower().Contains(_appliedSearchTerm) == false;
+            bool includesSearchTerm = part.Content.text.ToLower().Contains(_appliedSearchTerm);
+            part.has_not_searchedFor = includesSearchTerm || parentIsSearchResult;
             if (part is ShaderGroup)
             {
                 foreach (ShaderPart p in (part as ShaderGroup).parts)
                 {
-                    UpdateSearch(p);
-                    part.has_not_searchedFor &= p.has_not_searchedFor;
+                    UpdateSearch(p, includesSearchTerm);
+                    part.has_not_searchedFor |= !p.has_not_searchedFor;
                 }
             }
+
+            part.has_not_searchedFor = !part.has_not_searchedFor;
         }
 
         private void ClearSearch()

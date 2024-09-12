@@ -1,0 +1,30 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="True">
+    <Style src="project://database/Assets/_PoiyomiShaders/Scripts/ThryEditor/Editor/Resources/Shader%20Translator/TranslatorEditorStyles.uss?fileID=7433441132597879392&amp;guid=00f87086e8d71f94f9948fb25a8321cf&amp;type=3#TranslatorEditorStyles" />
+    <ui:VisualElement class="section" style="flex-grow: 1;">
+        <ui:TextField picking-mode="Ignore" label="Translation Name" binding-path="Name" />
+    </ui:VisualElement>
+    <ui:VisualElement name="originShaderContainer" class="section" style="flex-grow: 1;">
+        <ui:VisualElement name="shaderSelectionContainer" class="padding-vertical" style="flex-grow: 0; flex-direction: row;">
+            <ui:TextField picking-mode="Ignore" label="Origin Shader Name" binding-path="OriginShader" name="shaderText" style="flex-grow: 1; margin-right: 0;" />
+            <ui:DropdownField name="shaderDropdown" class="icon-only-dropdown" style="margin-left: 0; margin-right: 0;" />
+        </ui:VisualElement>
+        <ui:TextField picking-mode="Ignore" label="Origin Shader Regex" binding-path="OriginShaderRegex" name="shaderRegexText" />
+        <ui:Toggle label="Match Using Regex" binding-path="MatchOriginShaderBasedOnRegex" name="shaderRegexToggle" />
+    </ui:VisualElement>
+    <ui:VisualElement name="targetShaderContainer" class="section" style="flex-grow: 1;">
+        <ui:VisualElement name="shaderSelectionContainer" class="padding-vertical" style="flex-grow: 0; flex-direction: row;">
+            <ui:TextField picking-mode="Ignore" label="Target Shader" binding-path="TargetShader" name="shaderText" style="flex-grow: 1; margin-right: 0;" />
+            <ui:DropdownField name="shaderDropdown" class="icon-only-dropdown" style="margin-left: 0; margin-right: 0;" />
+        </ui:VisualElement>
+        <ui:TextField picking-mode="Ignore" label="Target Shader Regex" binding-path="TargetShaderRegex" name="shaderRegexText" />
+        <ui:Toggle label="Match Using Regex" binding-path="MatchTargetShaderBasedOnRegex" name="shaderRegexToggle" />
+    </ui:VisualElement>
+    <ui:VisualElement class="section" style="flex-grow: 1;">
+        <ui:ListView focusable="true" reorderable="true" reorder-mode="Animated" header-title="Property Translation Sections" show-foldout-header="true" show-alternating-row-backgrounds="All" show-border="true" name="sectionsList" binding-path="PropertyTranslationContainers" show-add-remove-footer="true" virtualization-method="DynamicHeight" class="list-inline" />
+        <ui:ListView focusable="true" reorderable="true" reorder-mode="Animated" header-title="Before Translation Modifications" show-foldout-header="true" show-alternating-row-backgrounds="All" show-border="true" name="preModsList" binding-path="PreTranslationPropertyModifications" show-add-remove-footer="true" virtualization-method="DynamicHeight" class="list-inline" />
+        <ui:ListView focusable="true" reorderable="true" reorder-mode="Animated" header-title="After Translation Modifications" show-foldout-header="true" show-alternating-row-backgrounds="All" show-border="true" name="postModsList" binding-path="PostTranslationPropertyModifications" show-add-remove-footer="true" virtualization-method="DynamicHeight" class="list-inline" />
+    </ui:VisualElement>
+    <ui:Foldout text="Help" value="false" class="foldout-inline section">
+        <ui:Label tabindex="-1" text="Property translations are a little quirky so I&apos;ll try explain how everything works here.&#10;&#10;Property translations are split into sections for organization, but the sections or their names don&apos;t actually do anything special.&#10;&#10;For the property translations list, on the left we have the &lt;b&gt;Source&lt;/b&gt; property name, then the &lt;b&gt;Target&lt;/b&gt; property name. &#10;The value from the source property will be copied to the target property in the target shader. &#10;Optionally we can use a &lt;b&gt;Math Expression&lt;/b&gt; to transform the value in some way. The value can be substituted with x. For example, an expression of &lt;b&gt;x + 1&lt;/b&gt; will return the value of our shader property + 1. An expression of &lt;b&gt;69&lt;/b&gt; will replace the value with 69. Nice.&#10;&lt;b&gt;Math Expressions&lt;/b&gt; use Unity&apos;s &lt;b&gt;ExpressionEvaluator&lt;/b&gt;, which means they support math operations and functions such as round(x) and abs(x), check Unity docs for more info.&#10;&#10;To the right of the expression we have a checkbox which enables conditional expressions. If conditionals are enabled, the &lt;b&gt;Math Expression&lt;/b&gt; field in line with the properties is ignored.&#10;Conditional blocks can do math (+, -, /, *, %, ^), use parenthesis and conditional expressions (==, !=, &gt;, &gt;=, &lt;, &lt;=, &amp;&amp;, ||) and need to evaluate to true to return their expression. If a conditional box is left empty, it will evaluate to true. The value in conditionals can be substituted with x too, but math functions [like abs(x)] aren&apos;t supported like in the expression box.&#10;For example if our property has a value of 3 and we want it to be set to 4: &lt;b&gt;if&lt;/b&gt; 3 &lt;b&gt;then&lt;/b&gt; 4.&#10;If we want all values over 4 to be set to 0 we can use &lt;b&gt;if&lt;/b&gt; x &gt; 4 &lt;b&gt;then&lt;/b&gt; 0&#10;&#10;If we don&apos;t specify an expression but only a number like: &lt;b&gt;if&lt;/b&gt; 4, it&apos;s implied that we mean &lt;b&gt;if&lt;/b&gt; x == 4. So &lt;b&gt;if&lt;/b&gt; x == 4 &lt;b&gt;then&lt;/b&gt; 5 is the same as &lt;b&gt;if&lt;/b&gt; 4 &lt;b&gt;then&lt;/b&gt; 5" parse-escape-sequences="true" display-tooltip-when-elided="true" style="white-space: normal;" />
+    </ui:Foldout>
+</ui:UXML>

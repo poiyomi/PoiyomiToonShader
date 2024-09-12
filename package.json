@@ -1,7 +1,7 @@
 {
   "name": "com.poiyomi.toon",
   "displayName": "Poiyomi Toon Shader",
-  "version": "9.0.57",
+  "version": "9.0.60",
   "description": "Feature-rich shaders for Unity and VRChat.",
   "author": {
     "name": "Poiyomi",
@@ -10,7 +10,7 @@
   "gitDependencies": {},
   "vpmDependencies": {},
   "legacyFolders": {
-    "Assets\\_PoiyomiShaders": ""
+    "Assets\\_PoiyomiShaders": "2fcadee009b41d847ac672dd72e80430"
   },
   "legacyFiles": {},
   "hideInEditor": false,

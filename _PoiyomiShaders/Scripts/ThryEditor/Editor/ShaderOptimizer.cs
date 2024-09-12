@@ -411,8 +411,16 @@ namespace Thry
             string shaderFilePath = AssetDatabase.GetAssetPath(shader);
             string materialFilePath = AssetDatabase.GetAssetPath(material);
             string materialFolder = Path.GetDirectoryName(materialFilePath);
-            string guid = AssetDatabase.AssetPathToGUID(materialFilePath);
-            string newShaderName = "Hidden/Locked/" + shader.name + "/" + guid;
+            bool isSubAsset = AssetDatabase.IsSubAsset(material);
+            if (!AssetDatabase.TryGetGUIDAndLocalFileIdentifier(material, out string guid, out long fileId))
+            {
+                guid = AssetDatabase.AssetPathToGUID(materialFilePath);
+                isSubAsset = false;
+            }
+
+
+
+            string newShaderName = "Hidden/Locked/" + shader.name + "/" + guid + (isSubAsset ? $"_{fileId}" : "");
             string shaderOptimizerButtonDrawerName = $"[{nameof(ThryShaderOptimizerLockButtonDrawer).Replace("Drawer", "")}]";
             //string newShaderDirectory = materialFolder + "/OptimizedShaders/" + material.name + "-" + smallguid + "/";
             // unity path stuff (https://docs.unity3d.com/Manual/SpecialFolders.html)
@@ -427,7 +435,7 @@ namespace Thry
             // if directory already exists swap to using the guid
             if (Directory.Exists(newShaderDirectory))
             {
-                newShaderDirectory = materialFolder + "/OptimizedShaders/" + guid + "/";
+                newShaderDirectory = materialFolder + "/OptimizedShaders/" + guid + (isSubAsset ? $"_{fileId}" : "") + "/";
             }
             
 
@@ -449,6 +457,7 @@ namespace Thry
             List<PropertyData> constantProps = new List<PropertyData>();
             List<RenamingProperty> animatedPropsToRename = new List<RenamingProperty>();
             List<RenamingProperty> animatedPropsToDuplicate = new List<RenamingProperty>();
+            List<string> stripTextures = new List<string>();
             foreach (MaterialProperty prop in props)
             {
                 if (prop == null) continue;
@@ -600,7 +609,7 @@ namespace Thry
             // Parse shader and cginc files, also gets preprocessor macros
             List<ParsedShaderFile> shaderFiles = new List<ParsedShaderFile>();
             List<Macro> macros = new List<Macro>();
-            if (!ParseShaderFilesRecursive(shaderFiles, newShaderDirectory, shaderFilePath, macros, material))
+            if (!ParseShaderFilesRecursive(shaderFiles, newShaderDirectory, shaderFilePath, macros, material, stripTextures))
                 return false;
 
             // Remove all defines where name if not in shader files
@@ -801,11 +810,11 @@ namespace Thry
             ApplyStruct applyStruct = new ApplyStruct();
             applyStruct.material = material;
             applyStruct.shader = shader;
-            applyStruct.smallguid = guid;
             applyStruct.newShaderName = newShaderName;
             applyStruct.animatedPropsToRename = animatedPropsToRename;
             applyStruct.animatedPropsToDuplicate = animatedPropsToDuplicate;
             applyStruct.animPropertySuffix = animPropertySuffix;
+            applyStruct.stripTextures = stripTextures;
 
             if (applyShaderLater)
             {
@@ -822,12 +831,12 @@ namespace Thry
         {
             public Material material;
             public Shader shader;
-            public string smallguid;
             public string newShaderName;
             public List<RenamingProperty> animatedPropsToRename;
             public List<RenamingProperty> animatedPropsToDuplicate;
             public string animPropertySuffix;
             public bool shared;
+            public List<string> stripTextures;
         }
 
         private static bool LockApplyShader(Material material)
@@ -854,22 +863,17 @@ namespace Thry
         public static void DetourApplyMaterialPropertyDrawers()
         {
         // Unity 2022 Crashes on apple silicon when detouring ApplyMaterialPropertyDrawers
-#if UNITY_EDITOR_WIN
             Helper.TryDetourFromTo(ApplyMaterialPropertyDrawersOriginalMethodInfo, ApplyMaterialPropertyDrawersPatchMethodInfo);
 #if UNITY_2022_1_OR_NEWER
             Helper.TryDetourFromTo(ApplyMaterialPropertyDrawersFromNativeOriginalMethodInfo, ApplyMaterialPropertyDrawersFromNativePatchMethodInfo);
-#endif
 #endif
         }
 
         public static void RestoreApplyMaterialPropertyDrawers()
         {
-            
-#if UNITY_EDITOR_WIN
             Helper.RestoreDetour(ApplyMaterialPropertyDrawersOriginalMethodInfo);
 #if UNITY_2022_1_OR_NEWER
             Helper.RestoreDetour(ApplyMaterialPropertyDrawersFromNativeOriginalMethodInfo);
-#endif
 #endif
         }
 
@@ -893,6 +897,37 @@ namespace Thry
             // So these are saved as temp values and reassigned after switching shaders
             string renderType = material.GetTag("RenderType", false, "");
             int renderQueue = material.renderQueue;
+
+            // Strip removed textures
+            SerializedObject serializedObject = new SerializedObject(material);
+            SerializedProperty serializedTexProperties = serializedObject.FindProperty("m_SavedProperties.m_TexEnvs");
+            List<(string tag,string guid)> savedTextures = new List<(string,string)>();
+            for(int i=0;i<serializedTexProperties.arraySize;i++)
+            {
+                SerializedProperty prop = serializedTexProperties.GetArrayElementAtIndex(i);
+                string propName = prop.FindPropertyRelative("first").stringValue;
+                Object propTex = prop.FindPropertyRelative("second.m_Texture").objectReferenceValue;
+                bool doStrip = applyStruct.stripTextures.Contains(propName) && propTex != null;
+                if (doStrip || propTex == null)
+                {
+                    if(doStrip)
+                    {
+                        var guid =
+#if UNITY_2019_1_OR_NEWER
+                        AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(material.GetTexture(propName)));
+#elif UNITY_2022_1_OR_NEWER
+                        AssetDatabase.GUIDFromAssetPath(AssetDatabase.GetAssetPath(material.GetTexture(propName)));
+#endif
+                        savedTextures.Add(("_stripped_tex_" + propName, guid.ToString()));
+                    }
+                    serializedTexProperties.DeleteArrayElementAtIndex(i);
+                    i -= 1;
+                }
+            }
+            serializedObject.ApplyModifiedPropertiesWithoutUndo();
+
+            foreach ((string tag, string guid) in savedTextures)
+                material.SetOverrideTag(tag, guid);
 
             // Actually switch the shader
             Shader newShader = Shader.Find(newShaderName);
@@ -1008,7 +1043,7 @@ namespace Thry
         // Save each file as string[], parse each macro with //KSOEvaluateMacro
         // Only editing done is replacing #include "X" filepaths where necessary
         // most of these args could be private static members of the class
-        private static bool ParseShaderFilesRecursive(List<ParsedShaderFile> filesParsed, string newTopLevelDirectory, string filePath, List<Macro> macros, Material material)
+        private static bool ParseShaderFilesRecursive(List<ParsedShaderFile> filesParsed, string newTopLevelDirectory, string filePath, List<Macro> macros, Material material, List<string> stripTextures)
         {
             // Infinite recursion check
             if (filesParsed.Exists(x => x.filePath == filePath)) return true;
@@ -1109,7 +1144,23 @@ namespace Thry
                     }
                     continue;
                 }
-                if (doExclude) continue;
+                if (doExclude)
+                {
+                    // check for texture property definitions, remove textures later
+                    // needs specific naming
+                    if(lineParsed.EndsWith("{ }", StringComparison.Ordinal) && lineParsed.IndexOf("2D)", StringComparison.Ordinal) >= 0)
+                    {
+                        lineParsed = lineParsed.Substring(0, lineParsed.IndexOf('"'));
+                        if (lineParsed.IndexOf("]", StringComparison.Ordinal) >= 0) // Unity 2019 doesn't like string.Contains(string, StringComparison)
+                        {
+                            lineParsed = lineParsed.Substring(lineParsed.LastIndexOf(']') + 1);
+                        }
+                        lineParsed = lineParsed.Substring(0, lineParsed.IndexOf('('));
+                        lineParsed = lineParsed.Trim();
+                        stripTextures.Add(lineParsed);
+                    }
+                    continue;
+                }
 
                 //removes empty lines
                 if (string.IsNullOrEmpty(lineParsed)) continue;
@@ -1134,11 +1185,13 @@ namespace Thry
                     {
                         bool hasMultiple = lineParsed.Contains('&') || lineParsed.Contains('|');
 
-                        if(DEBUG_IF_DEF_REMOVAL)
+#pragma warning disable CS0162 // Unreachable code detected
+                        if (DEBUG_IF_DEF_REMOVAL)
                         {
                             removeEndifStackDebugging.AppendLine($"push {ifStacking}" + lineParsed);
                             removeEndifStackIfLines.Push(lineParsed);
                         }
+#pragma warning restore CS0162 // Unreachable code detected
 
                         if (!hasMultiple && lineParsed.StartsWith("#ifdef", StringComparison.Ordinal))
                         {
@@ -1209,11 +1262,14 @@ namespace Thry
                             Debug.LogError(removeEndifStackDebugging.ToString());
                             GUIUtility.systemCopyBuffer = string.Join(Environment.NewLine, includedLines);
                         }
-                        if(DEBUG_IF_DEF_REMOVAL)
+#pragma warning disable CS0162 // Unreachable code detected
+                        if (DEBUG_IF_DEF_REMOVAL)
                         {
                             fileLines[i] += $" // {removeEndifStackIfLines.Peek()}";
                             removeEndifStackDebugging.AppendLine($"pop {ifStacking}" + removeEndifStackIfLines.Pop());
                         }
+#pragma warning restore CS0162 // Unreachable code detected
+
                         if (removeEndifStack.Pop()) continue;
                     }
                     if (!isIncluded) continue;
@@ -1248,7 +1304,7 @@ namespace Thry
                         {
                             includeFullpath = GetFullPath(includeFilename, Path.GetDirectoryName(filePath));
                         }
-                        if (!ParseShaderFilesRecursive(filesParsed, newTopLevelDirectory, includeFullpath, macros, material))
+                        if (!ParseShaderFilesRecursive(filesParsed, newTopLevelDirectory, includeFullpath, macros, material, stripTextures))
                             return false;
                         //Change include to be be ralative to only one directory up, because all files are moved into the same folder
                         fileLines[i] = fileLines[i].Replace(includeFilename, "/"+includeFilename.Split('/').Last());
@@ -1693,7 +1749,7 @@ namespace Thry
             shader = Shader.Find(closestShaderName);
             return shader != null && closestDistance < name.Length * 0.5f;
         }
-        private static UnlockSuccess UnlockConcrete (Material material)
+        private static UnlockSuccess UnlockConcrete(Material material)
         {
             Shader lockedShader = material.shader;
             // Check if shader is Hidden
@@ -1702,46 +1758,9 @@ namespace Thry
                 Debug.LogWarning("[Shader Optimizer] Shader " + lockedShader.name + " is not locked.");
                 return UnlockSuccess.wasNotLocked;
             }
-            Shader orignalShader = null;
-            // Check for original shader by name
-            string originalShaderName = material.GetTag(TAG_ORIGINAL_SHADER, false, "");
-            if(originalShaderName == "")
-            {
-                Debug.LogWarning("[Shader Optimizer] Original shader name not saved to material.");
-            }else
-            {
-                orignalShader = Shader.Find(originalShaderName);
-                if (orignalShader == null)
-                {
-                    Debug.LogWarning("[Shader Optimizer] Original shader " + originalShaderName + " could not be found");
-                }
-            }
-            // Check for original shader by GUID
-            if(orignalShader == null)
-            {
-                string originalShaderGUID = material.GetTag(TAG_ORIGINAL_SHADER_GUID, false, "");
-                if(originalShaderGUID != "")
-                {
-                    Debug.LogWarning("[Shader Optimizer] Original shader GUID found. Searching by GUID.");
-                    string originalShaderPath = AssetDatabase.GUIDToAssetPath(originalShaderGUID);
-                    if(string.IsNullOrWhiteSpace(originalShaderPath) == false)
-                        orignalShader = AssetDatabase.LoadAssetAtPath<Shader>(originalShaderPath);
-                    if (orignalShader == null)
-                    {
-                        Debug.LogWarning("[Shader Optimizer] Original shader " + originalShaderGUID + " could not be found");
-                    }
-                }
-            }
-            // Check for original shader by guessing name
-            if(orignalShader == null)
-            {
-                if(GuessShader(lockedShader, out orignalShader))
-                    Debug.LogWarning("[Shader Optimizer] Original shader not saved to material. Guessing shader name.");
-                else
-                    lockedShader = null;
-            }
 
-            if(orignalShader == null)
+            Shader originalShader = GetOriginalShader(material);
+            if (originalShader == null)
             {
                 Debug.LogError("[Shader Optimizer] Original shader not saved to material, could not unlock shader");
                 if(EditorUtility.DisplayDialog("Unlock Material", $"The original shader for {material.name} could not be resolved.\nPlease select a shader manually.", "Ok")) {}
@@ -1754,11 +1773,22 @@ namespace Thry
             int renderQueue = material.renderQueue;
             string unlockedMaterialGUID = AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(material));
             DetourApplyMaterialPropertyDrawers();
-            material.shader = orignalShader;
+            material.shader = originalShader;
             RestoreApplyMaterialPropertyDrawers();
             material.SetOverrideTag("RenderType", renderType);
             material.renderQueue = renderQueue;
             material.shaderKeywords = material.GetTag("OriginalKeywords", false, string.Join(" ", material.shaderKeywords)).Split(' ');
+
+            // Restore stripped textures
+            foreach (string tex in material.GetTexturePropertyNames())
+            {
+                string guid = material.GetTag("_stripped_tex_" + tex, false);
+                if (!string.IsNullOrWhiteSpace(guid))
+                {
+                    material.SetOverrideTag("_stripped_tex_" + tex, "");
+                    material.SetTexture(tex, AssetDatabase.LoadAssetAtPath<Texture>(AssetDatabase.GUIDToAssetPath(guid)));
+                }
+            }
 
             // Delete the variants folder and all files in it, as to not orhpan files and inflate Unity project
             // But only if no other material is using the locked shader
@@ -1782,9 +1812,60 @@ namespace Thry
                 FileUtil.DeleteFileOrDirectory(lockedFolder);
                 FileUtil.DeleteFileOrDirectory(lockedFolder + ".meta");
             }
-            //AssetDatabase.Refresh();
 
             return UnlockSuccess.success;
+        }
+
+        private static Shader GetOriginalShaderByName(Material material)
+        {
+            string originalShaderName = material.GetTag(TAG_ORIGINAL_SHADER, false, string.Empty);
+            if (string.IsNullOrEmpty(originalShaderName))
+            {
+                Debug.LogWarning("[Shader Optimizer] Original shader name not saved to material.");
+
+                return null;
+            }
+
+            Shader originalShader = Shader.Find(originalShaderName);
+            Debug.LogWarning($"[Shader Optimizer] Original shader {originalShaderName} could not be found");
+
+            return originalShader;
+        }
+
+        private static Shader GetOriginalShaderByGUID(Material material)
+        {
+            string originalShaderGUID = material.GetTag(TAG_ORIGINAL_SHADER_GUID, false, string.Empty);
+            if (string.IsNullOrEmpty(originalShaderGUID))
+            {
+                Debug.LogWarning("[Shader Optimizer] Original shader GUID not saved to material.");
+
+                return null;
+            }
+
+            Shader originalShader = null;
+
+            string originalShaderPath = AssetDatabase.GUIDToAssetPath(originalShaderGUID);
+            if (!string.IsNullOrWhiteSpace(originalShaderPath))
+                originalShader = AssetDatabase.LoadAssetAtPath<Shader>(originalShaderPath);
+
+            if (originalShader == null)
+                Debug.LogWarning($"[Shader Optimizer] Original shader {originalShaderGUID} could not be found");
+
+            return originalShader;
+        }
+
+        public static Shader GetOriginalShader(Material material)
+        {
+            Shader originalShader = GetOriginalShaderByGUID(material);
+
+            // Check for original shader by GUID
+            if (originalShader == null) originalShader = GetOriginalShaderByName(material);
+
+            // Check for original shader by guessing name
+            if (originalShader == null && GuessShader(material.shader, out originalShader))
+                Debug.LogWarning("[Shader Optimizer] Original shader not saved to material. Guessing shader name.");
+
+            return originalShader;
         }
 
         public static void DeleteTags(Material[] materials)
@@ -2493,20 +2574,15 @@ namespace Thry
 
             foreach (Material material in lockedMaterials)
             {
-                string originalShaderName = material.GetTag(ShaderOptimizer.TAG_ORIGINAL_SHADER, false, "");
-                Shader originalShader = null;
-                if (originalShaderName == "" && originalShader == null) ShaderOptimizer.GuessShader(material.shader, out originalShader);
-                if (originalShader == null) originalShader = Shader.Find(originalShaderName);
+                Shader originalShader = ShaderOptimizer.GetOriginalShader(material);
+                if (originalShader == null) continue;
+                
+                if (!lockedMaterialsByShader.ContainsKey(originalShader))
+                    lockedMaterialsByShader[originalShader] = new List<Material>();
+                lockedMaterialsByShader[originalShader].Add(material);
 
-                if (originalShader != null)
-                {
-                    if (!lockedMaterialsByShader.ContainsKey(originalShader))
-                        lockedMaterialsByShader[originalShader] = new List<Material>();
-                    lockedMaterialsByShader[originalShader].Add(material);
-
-                    if (!lockedFoldouts.ContainsKey(originalShader.name))
-                        lockedFoldouts.Add(originalShader.name, false);
-                }
+                if (!lockedFoldouts.ContainsKey(originalShader.name))
+                    lockedFoldouts.Add(originalShader.name, false);
             }
             EditorUtility.ClearProgressBar();
         }

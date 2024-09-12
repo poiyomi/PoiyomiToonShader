@@ -1,0 +1,7 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
+    <Style src="project://database/Assets/_PoiyomiShaders/Scripts/ThryEditor/Editor/Resources/Shader%20Translator/AvatarMaterialTranslatorStyles.uss?fileID=7433441132597879392&amp;guid=6454453dcac5841408fa39399865fc2d&amp;type=3#AvatarMaterialTranslatorStyles" />
+    <ui:VisualElement style="flex-grow: 1; flex-direction: row;">
+        <uie:ObjectField type="UnityEngine.Material, UnityEngine.CoreModule" class="read-only-object-field" style="flex-grow: 1;" />
+        <ui:Button text="x" parse-escape-sequences="false" display-tooltip-when-elided="false" enable-rich-text="false" />
+    </ui:VisualElement>
+</ui:UXML>

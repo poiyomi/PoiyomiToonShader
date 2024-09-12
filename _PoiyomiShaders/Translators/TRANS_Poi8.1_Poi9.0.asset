@@ -19,10 +19,17 @@ MonoBehaviour:
   MatchTargetShaderBasedOnRegex: 1
   OriginShaderRegex: \.poiyomi\/Old Versions\/8\.
   TargetShaderRegex: '\.poiyomi\/Poiyomi '
-  PropertyTranslations:
-  - Origin: _RimBlendMode
-    Target: _RimPoiBlendMode
-    Math: 
-  - Origin: _ClippingMask
-    Target: _AlphaMask
-    Math: 
+  PropertyTranslationContainers:
+  - containerName: 
+    PropertyTranslations:
+    - Origin: _RimBlendMode
+      Target: _RimPoiBlendMode
+      Math: 
+      UseConditionals: 0
+      ConditionalProperties: []
+    - Origin: _ClippingMask
+      Target: _AlphaMask
+      Math: 
+      UseConditionals: 0
+      ConditionalProperties: []
+  PropertyModifications: []

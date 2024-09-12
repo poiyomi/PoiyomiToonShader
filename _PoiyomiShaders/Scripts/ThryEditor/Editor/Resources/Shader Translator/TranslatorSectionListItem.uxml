@@ -1,0 +1,14 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="True">
+    <Style src="project://database/Assets/_PoiyomiShaders/Scripts/ThryEditor/Editor/Resources/Thry/TranslatorEditorStyles.uss?fileID=7433441132597879392&amp;guid=00f87086e8d71f94f9948fb25a8321cf&amp;type=3#TranslatorEditorStyles" />
+    <ui:Foldout text="Properties" name="mainFoldout" class="foldout-inline padding-vertical">
+        <ui:TextField picking-mode="Ignore" label="Section Name" binding-path="containerName" name="nameField" value="Properties" class="padding-vertical" />
+        <ui:VisualElement class="list-header-columns" style="flex-grow: 1; flex-direction: row; padding-left: 0; padding-right: 0; padding-top: 0; padding-bottom: 0; margin-bottom: 1px; border-left-color: rgba(0, 0, 0, 0.58); border-right-color: rgba(0, 0, 0, 0.58); border-top-color: rgba(0, 0, 0, 0.58); border-bottom-color: rgba(0, 0, 0, 0.58);">
+            <ui:Label tabindex="-1" text="Source" parse-escape-sequences="true" display-tooltip-when-elided="true" enable-rich-text="false" style="flex-grow: 1; flex-shrink: 1; width: auto; margin-left: 33px;" />
+            <ui:Label tabindex="-1" text="Target" parse-escape-sequences="true" display-tooltip-when-elided="true" enable-rich-text="false" style="flex-grow: 1; flex-shrink: 1; width: auto; margin-left: 33px;" />
+            <ui:Label tabindex="-1" text="Math Expression" parse-escape-sequences="true" display-tooltip-when-elided="true" enable-rich-text="false" name="Label" style="flex-grow: 1; flex-shrink: 1; width: auto; margin-left: 33px;" />
+        </ui:VisualElement>
+        <ui:VisualElement class="padding-vertical" style="flex-grow: 1;">
+            <ui:ListView reorderable="true" reorder-mode="Animated" show-alternating-row-backgrounds="All" binding-path="PropertyTranslations" show-border="true" virtualization-method="DynamicHeight" name="propertyList" show-add-remove-footer="true" show-bound-collection-size="false" />
+        </ui:VisualElement>
+    </ui:Foldout>
+</ui:UXML>

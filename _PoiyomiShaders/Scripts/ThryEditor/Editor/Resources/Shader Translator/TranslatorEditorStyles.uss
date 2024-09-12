@@ -1,0 +1,70 @@
+.list-header-columns {
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    border-left-color: rgba(0, 0, 0, 0.5);
+    border-right-color: rgba(0, 0, 0, 0.5);
+    border-top-color: rgba(0, 0, 0, 0.5);
+    border-bottom-color: rgba(0, 0, 0, 0.5);
+    border-top-left-radius: 3px;
+    border-bottom-left-radius: 3px;
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+    -unity-font-style: bold;
+}
+
+.padding-horizontal {
+    padding-left: 1px;
+    padding-right: 1px;
+}
+
+.padding-vertical {
+    padding-top: 2px;
+    padding-bottom: 2px;
+}
+
+.section {
+    background-color: rgba(0, 0, 0, 0.07);
+    margin-top: 5px;
+    margin-bottom: 5px;
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+    margin-right: 2px;
+    padding-right: 8px;
+    padding-bottom: 5px;
+    padding-top: 5px;
+}
+
+.foldout-inline {
+}
+
+.foldout-inline > Toggle {
+    padding-left: 16px;
+}
+
+.icon-only-dropdown {
+}
+
+.icon-only-dropdown > VisualElement {
+    max-width: 20px;
+    min-width: 20px;
+}
+
+.icon-only-dropdown > VisualElement > PopupTextElement {
+    display: none;
+}
+
+.list-inline {
+}
+
+.list-inline > #unity-list-view__foldout-header {
+    padding-left: 16px;
+}
+
+.inline-label > Label {
+    min-width: auto;
+    min-height: auto;
+}

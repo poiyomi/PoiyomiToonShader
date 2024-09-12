@@ -1,0 +1,9 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
+    <Style src="project://database/Assets/_PoiyomiShaders/Scripts/ThryEditor/Editor/Resources/Thry/TranslatorEditorStyles.uss?fileID=7433441132597879392&amp;guid=00f87086e8d71f94f9948fb25a8321cf&amp;type=3#TranslatorEditorStyles" />
+    <ui:VisualElement style="flex-grow: 1; flex-direction: row;">
+        <ui:Label tabindex="-1" text="if" parse-escape-sequences="true" display-tooltip-when-elided="true" style="align-self: center; -unity-text-align: upper-center; flex-grow: 1; flex-shrink: 1;" />
+        <ui:TextField picking-mode="Ignore" name="conditionText" binding-path="ConditionalExpression" class="padding-horizontal" style="flex-grow: 1; flex-shrink: 1; align-self: stretch; width: 40%;" />
+        <ui:Label tabindex="-1" text="then" parse-escape-sequences="true" display-tooltip-when-elided="true" style="align-self: center; -unity-text-align: upper-center; flex-grow: 1; flex-shrink: 1;" />
+        <ui:TextField picking-mode="Ignore" name="mathText" binding-path="MathExpression" class="padding-horizontal" style="align-self: stretch; flex-grow: 1; flex-shrink: 1; width: 40%;" />
+    </ui:VisualElement>
+</ui:UXML>

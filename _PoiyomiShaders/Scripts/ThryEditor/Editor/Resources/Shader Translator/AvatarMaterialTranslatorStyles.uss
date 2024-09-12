@@ -1,0 +1,33 @@
+.apply-button {
+    flex-grow: 1;
+}
+
+.read-only-object-field {
+    opacity: 0.9;
+}
+
+.read-only-object-field > VisualElement > ObjectFieldSelector {
+    display: none;
+}
+
+.label-in-list {
+    -unity-text-align: middle-left;
+    margin-left: 2px;
+    margin-right: 2px;
+}
+
+.section {
+    padding-left: 4px;
+    padding-right: 4px;
+}
+
+.list-no-remove {
+}
+
+.list-no-remove > #unity-list-view__footer > #unity-list-view__remove-button {
+    display: none;
+}
+
+.list-no-remove > #unity-list-view__foldout-header > #unity-content > #unity-list-view__footer > #unity-list-view__remove-button {
+    display: none;
+}

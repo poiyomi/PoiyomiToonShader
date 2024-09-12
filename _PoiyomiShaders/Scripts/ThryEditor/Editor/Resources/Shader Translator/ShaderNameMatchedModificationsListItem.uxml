@@ -1,0 +1,12 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
+    <Style src="project://database/Assets/_PoiyomiShaders/Scripts/ThryEditor/Editor/Resources/Shader%20Translator/TranslatorEditorStyles.uss?fileID=7433441132597879392&amp;guid=00f87086e8d71f94f9948fb25a8321cf&amp;type=3#TranslatorEditorStyles" />
+    <ui:VisualElement class="space-horizontally padding-horizontal padding-vertical" style="flex-grow: 1;">
+        <ui:VisualElement class="padding-vertical" style="flex-grow: 1; flex-direction: row;">
+            <ui:Label tabindex="-1" text="Source Shader Name" parse-escape-sequences="false" display-tooltip-when-elided="false" enable-rich-text="false" style="-unity-text-align: middle-left;" />
+            <ui:EnumField type="Thry.ThryEditor.ShaderTranslations.ShaderNameMatchedModifications+ConditionOperator, ThryEditor" tooltip="Operation to match by" binding-path="conditionOperator" class="inline-label padding-horizontal" style="width: 90px;" />
+            <ui:Toggle label="Not" binding-path="negateCondition" class="inline-label padding-horizontal" style="-unity-text-align: middle-left;" />
+            <ui:TextField picking-mode="Ignore" name="sourceProperty" binding-path="shaderNameMatch" tooltip="Name of the source shader" class="padding-horizontal" style="flex-grow: 1; width: 30%;" />
+        </ui:VisualElement>
+        <ui:ListView reorderable="true" header-title="Modifications" show-add-remove-footer="true" show-foldout-header="true" virtualization-method="DynamicHeight" binding-path="propertyModifications" name="modsList" show-border="true" show-alternating-row-backgrounds="All" reorder-mode="Animated" class="padding-vertical" />
+    </ui:VisualElement>
+</ui:UXML>

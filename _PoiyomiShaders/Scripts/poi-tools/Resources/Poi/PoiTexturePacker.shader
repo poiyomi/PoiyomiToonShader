@@ -52,8 +52,8 @@ Shader "Hidden/Poi/TexturePacker"
 			{
 				float4 vertex : SV_POSITION;
 				float4 ase_texcoord : TEXCOORD0;
-				UNITY_VERTEX_OUTPUT_STEREO
 				UNITY_VERTEX_INPUT_INSTANCE_ID
+				UNITY_VERTEX_OUTPUT_STEREO
 			};
 
 			uniform sampler2D _Red;

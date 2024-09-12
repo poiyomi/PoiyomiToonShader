@@ -1,0 +1,21 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
+    <Style src="project://database/Assets/_PoiyomiShaders/Scripts/ThryEditor/Editor/Resources/Shader%20Translator/AvatarMaterialTranslatorStyles.uss?fileID=7433441132597879392&amp;guid=6454453dcac5841408fa39399865fc2d&amp;type=3#AvatarMaterialTranslatorStyles" />
+    <ui:VisualElement class="section" style="flex-grow: 1; padding-top: 4px; padding-bottom: 4px;">
+        <uie:ObjectField label="Avatar" type="UnityEngine.GameObject, UnityEngine.CoreModule" name="avatarField" />
+        <ui:VisualElement class="section" style="flex-grow: 0;">
+            <ui:ListView focusable="true" show-foldout-header="true" header-title="Materials" selection-type="None" show-border="true" name="materialList" show-add-remove-footer="false" show-bound-collection-size="false" style="flex-grow: 1; max-height: 300px;" />
+        </ui:VisualElement>
+        <ui:VisualElement class="section" style="flex-grow: 1;">
+            <ui:DropdownField label="Target Shader" index="-1" name="targetShader" />
+            <ui:ListView focusable="true" header-title="Available Translations" show-add-remove-footer="false" show-border="true" show-foldout-header="true" show-bound-collection-size="false" name="translationList" />
+        </ui:VisualElement>
+        <ui:VisualElement style="justify-content: flex-end;">
+            <ui:VisualElement name="applyButtonsContainer" style="flex-grow: 0;">
+                <ui:VisualElement style="flex-grow: 1; flex-direction: row; height: 40px;">
+                    <ui:Button text="Apply" parse-escape-sequences="true" display-tooltip-when-elided="true" enable-rich-text="true" name="applyButton" class="apply-button" />
+                    <ui:Button text="Apply to Copy" parse-escape-sequences="true" display-tooltip-when-elided="true" name="applyToCopyButton" class="apply-button" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

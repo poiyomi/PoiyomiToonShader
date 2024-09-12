@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.Remoting.Messaging;
 using UnityEditor;
 using UnityEngine;
 
@@ -17,6 +18,7 @@ namespace Thry
         private Mesh _mesh;
         private Vector2[][] _uvTriangles;
         private Vector3[][] _worldTriangles;
+        private Vector3[][] _worldNormals;
         private bool _isActive;
         private Mode _mode = Mode.None;
         private HandleMode _handleMode = HandleMode.Position;
@@ -101,10 +103,11 @@ namespace Thry
 
         void Init()
         {
-            // EditorUtility.DisplayProgressBar("Decal Tool", "Loading Mesh...", 0.0f);
             GetMesh();
+
             _uvTriangles = new Vector2[_mesh.triangles.Length / 3][];
             _worldTriangles = new Vector3[_mesh.triangles.Length / 3][];
+            _worldNormals = new Vector3[_mesh.triangles.Length / 3][];
             int[] triangles = _mesh.triangles;
             Vector2[] uvs;
             if(_uvIndex == 1) uvs = _mesh.uv2;
@@ -117,20 +120,24 @@ namespace Thry
             bool isSMR = _renderer is SkinnedMeshRenderer;
             for(int i = 0; i < triangles.Length; i += 3)
             {
-                // if(i%100 == 0) EditorUtility.DisplayProgressBar("Decal Tool", "Loading Mesh...", (float)i / triangles.Length);
                 _uvTriangles[i / 3] = new Vector2[3];
                 _worldTriangles[i / 3] = new Vector3[3];
-                for(int j = 0; j < 3; j++)
+                _worldNormals[i / 3] = new Vector3[3];
+                for (int j = 0; j < 3; j++)
                 {
                     _uvTriangles[i / 3][j] = uvs[triangles[i + j]];
                     if(isSMR)
+                    {
                         _worldTriangles[i / 3][j] = root.TransformPoint(Vector3.Scale(vertices[triangles[i + j]], inverseScale));
+                        _worldNormals[i / 3][j] = root.TransformDirection(_mesh.normals[triangles[i + j]]);
+                    }
                     else
+                    {
                         _worldTriangles[i / 3][j] = root.TransformPoint(vertices[triangles[i + j]]);
-                    // _worldTriangles[i / 3][j] = vertices[triangles[i + j]];
+                        _worldNormals[i / 3][j] = _mesh.normals[triangles[i + j]];
+                    }
                 }
             }
-            // EditorUtility.ClearProgressBar();
         }
 
         private void OnSceneGUI(SceneView sceneView) 
@@ -215,18 +222,20 @@ namespace Thry
             {
                 gizmoNormal = -_pivotNormal;
             }
-            Quaternion rotation = Quaternion.LookRotation(gizmoNormal, _pivotUp);
 
-            if(Tools.pivotRotation == PivotRotation.Local)
+            Vector3 up = _pivotUp;
+            if (Tools.pivotRotation == PivotRotation.Local)
             {
-                rotation *= Quaternion.Euler(0, 0, -_propRotation.floatValue);
+                up = Quaternion.AngleAxis(-_propRotation.floatValue, gizmoNormal) * up;
             }
-            
+
+            Quaternion rotation = Quaternion.LookRotation(gizmoNormal, up);
+
             Vector3 moved = Handles.PositionHandle(_pivotPoint, rotation);
             if(moved != _pivotPoint)
             {
                 Vector2 uv = Vector2.zero;
-                Ray ray = new Ray(moved - _pivotNormal * 0.1f, _pivotNormal);
+                Ray ray = new Ray(moved - gizmoNormal * 0.1f, gizmoNormal);
                 if(RaycastToClosestUV(ray, ref uv))
                 {
                     _propPosition.vectorValue = uv;
@@ -317,6 +326,7 @@ namespace Thry
         Vector3 _pivotPoint;
         Vector3 _pivotNormal;
         Vector3 _pivotUp;
+
         void GetPivot()
         {
             _pivotPoint = Vector3.zero;
@@ -327,25 +337,26 @@ namespace Thry
             // uv position to world position using renderer mesh
             for(int i=0; i<_worldTriangles.Length;i++)
             {
-                Vector2[] uvTriangle = _uvTriangles[i];
-                float a = TriangleArea(uvTriangle[0], uvTriangle[1], uvTriangle[2]);
+                Vector2[] triUVcoords = _uvTriangles[i];
+                float a = TriangleArea(triUVcoords[0], triUVcoords[1], triUVcoords[2]);
                 if(a == 0) continue;
                 // check if uv is inside uvTriangle
-                float a1 = TriangleArea(uvTriangle[1], uvTriangle[2], uv) / a;
+                float a1 = TriangleArea(triUVcoords[1], triUVcoords[2], uv) / a;
                 if(a1 < 0) continue;
-                float a2 = TriangleArea(uvTriangle[2], uvTriangle[0], uv) / a;
+                float a2 = TriangleArea(triUVcoords[2], triUVcoords[0], uv) / a;
                 if(a2 < 0) continue;
-                float a3 = TriangleArea(uvTriangle[0], uvTriangle[1], uv) / a;
+                float a3 = TriangleArea(triUVcoords[0], triUVcoords[1], uv) / a;
                 if(a3 < 0) continue;
                 // get a1, a2, a3 of uv up
-                float a1Up = TriangleArea(uvTriangle[1], uvTriangle[2], uvUp) / a;
-                float a2Up = TriangleArea(uvTriangle[2], uvTriangle[0], uvUp) / a;
-                float a3Up = TriangleArea(uvTriangle[0], uvTriangle[1], uvUp) / a;
+                float a1Up = TriangleArea(triUVcoords[1], triUVcoords[2], uvUp) / a;
+                float a2Up = TriangleArea(triUVcoords[2], triUVcoords[0], uvUp) / a;
+                float a3Up = TriangleArea(triUVcoords[0], triUVcoords[1], uvUp) / a;
                 // point inside the triangle - find mesh position by interpolation
-                Vector3[] triangle = _worldTriangles[i];
-                _pivotPoint = triangle[0] * a1 + triangle[1] * a2 + triangle[2] * a3;
-                _pivotNormal = Vector3.Cross(triangle[1] - triangle[0], triangle[2] - triangle[0]).normalized;
-                _pivotUp = (triangle[0] * a1Up + triangle[1] * a2Up + triangle[2] * a3Up - _pivotPoint).normalized;
+                Vector3[] triVertices = _worldTriangles[i];
+                Vector3[] triNormals = _worldNormals[i];
+                _pivotPoint = triVertices[0] * a1 + triVertices[1] * a2 + triVertices[2] * a3;
+                _pivotNormal = triNormals[0] * a1 + triNormals[1] * a2 + triNormals[2] * a3;
+                _pivotUp = (triVertices[0] * a1Up + triVertices[1] * a2Up + triVertices[2] * a3Up - _pivotPoint).normalized;
                 return;
             }
         }

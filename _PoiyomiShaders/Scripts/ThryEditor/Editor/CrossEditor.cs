@@ -152,10 +152,14 @@ namespace Thry
                 EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
 
                 // Cursed but makes it render similar to the inspector
+                
                 EditorGUILayout.BeginHorizontal();
-                EditorGUILayout.Space(15);
+                EditorGUILayout.Space(30);
                 EditorGUILayout.BeginVertical();
+                bool wideMode = EditorGUIUtility.wideMode;
+                EditorGUIUtility.wideMode = true;
                 _shaderEditor.OnGUI(_materialEditor, _materialProperties);
+                EditorGUIUtility.wideMode = wideMode;
                 EditorGUILayout.EndVertical();
                 EditorGUILayout.EndHorizontal();
                 

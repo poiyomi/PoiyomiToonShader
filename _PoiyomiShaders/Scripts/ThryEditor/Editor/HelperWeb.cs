@@ -41,11 +41,13 @@ namespace Thry
                 bool fetching = true;
                 while (fetching)
                 {
+#pragma warning disable CS0618 // Type or member is obsolete
                     if (request.isHttpError || request.isNetworkError)
                     {
                         fetching = false;
                         Debug.Log(request.error);
                     }
+#pragma warning restore CS0618 // Type or member is obsolete
                     if (request.isDone)
                     {
                         fetching = false;

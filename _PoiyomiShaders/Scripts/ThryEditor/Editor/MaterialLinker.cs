@@ -201,7 +201,7 @@ namespace Thry
             {
                 GUILayout.Label("Linked Materials", EditorStyles.boldLabel);
                 float listMaxHeight = this.position.height - 110;
-                GuiHelper.DrawListField<Material>(linked_materials, listMaxHeight, ref scrollPos);
+                GUILib.DrawListField<Material>(linked_materials, listMaxHeight, ref scrollPos);
                 GUILayout.Box("Drag and Drop new Material", EditorStyles.helpBox, GUILayout.MinHeight(30));
                 //Rect drag_rect = GUILayoutUtility.GetLastRect();
                 Rect lastRect = GUILayoutUtility.GetLastRect();
