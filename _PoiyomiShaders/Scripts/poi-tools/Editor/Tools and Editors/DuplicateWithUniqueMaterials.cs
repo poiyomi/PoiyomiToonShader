@@ -82,6 +82,10 @@ namespace Poi.Tools
                     Debug.LogWarning(warningLog);
                 }
 
+                // Make sure our path is in assets
+                if(!avatarAssetPath.StartsWith("Assets"))
+                    avatarAssetPath = "Assets";
+
                 if(avatarAssetPath != "Assets")
                     avatarAssetPath = PoiHelpers.NormalizePathSlashes(Path.GetDirectoryName(avatarAssetPath));
 
@@ -99,8 +103,8 @@ namespace Poi.Tools
                     string materialPath = AssetDatabase.GetAssetPath(mat);
                     string newMaterialPath = $"{newMaterialsFolder}/{mat.name}.mat";
 
-                    // Duplicate materials if they're sub assets, like inside an fbx or if they're a default material
-                    if(AssetDatabase.IsSubAsset(mat) || materialPath.StartsWith("Resources/unity_builtin_extra"))
+                    // Duplicate materials if they're not in assets or sub assets, like inside an fbx or if they're a default material
+                    if(AssetDatabase.IsSubAsset(mat) || !materialPath.StartsWith("Assets/"))
                     {
                         var materialCopy = new Material(mat);
                         AssetDatabase.CreateAsset(materialCopy, newMaterialPath);

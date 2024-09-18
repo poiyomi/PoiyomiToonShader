@@ -376,7 +376,7 @@ namespace Thry
             List<Texture2D> gifFrames = new List<Texture2D>();
 #if SYSTEM_DRAWING
             var gifImage = System.Drawing.Image.FromFile(path);
-            var dimension = new System.Drawing.Imaging.FrameDimension(gifImage.FrameDimensionsList[0]);
+            var dimension = System.Drawing.Imaging.FrameDimension.Time;
 
             int width = Mathf.ClosestPowerOfTwo(gifImage.Width - 1);
             int height = Mathf.ClosestPowerOfTwo(gifImage.Height - 1);
@@ -390,7 +390,8 @@ namespace Thry
             {
                 gifImage.SelectActiveFrame(dimension, i);
                 var ogframe = new System.Drawing.Bitmap(gifImage.Width, gifImage.Height);
-                System.Drawing.Graphics.FromImage(ogframe).DrawImage(gifImage, System.Drawing.Point.Empty);
+                var canvas = System.Drawing.Graphics.FromImage(ogframe);
+                canvas.DrawImage(gifImage, canvas.RenderingOrigin);
                 var frame = ResizeBitmap(ogframe, width, height);
 
                 Texture2D frameTexture = new Texture2D(frame.Width, frame.Height);

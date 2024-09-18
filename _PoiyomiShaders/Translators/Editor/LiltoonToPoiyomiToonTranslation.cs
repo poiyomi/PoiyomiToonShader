@@ -473,6 +473,10 @@ namespace Poi.Tools.ShaderTranslator.Translations
                 new PropertyTranslation("_DstBlendAlphaFA", "_AddDstBlendAlpha"),
                 */
                 #endregion
+
+                #region UV Tile Discard
+                new PropertyTranslation("_UDIMDiscardCompile", "_EnableUDIMDiscardOptions"),
+                #endregion
             };
         }
 

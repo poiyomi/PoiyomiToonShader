@@ -2,7 +2,7 @@ Shader ".poiyomi/Poiyomi Toon World"
 {
 	Properties
 	{
-		[HideInInspector] shader_master_label ("<color=#E75898ff>Poiyomi 9.0.60</color>", Float) = 0
+		[HideInInspector] shader_master_label ("<color=#E75898ff>Poiyomi 9.0.61</color>", Float) = 0
 		[HideInInspector] shader_is_using_thry_editor ("", Float) = 0
 		[HideInInspector] shader_locale ("0db0b86376c3dca4b9a6828ef8615fe0", Float) = 0
 		[HideInInspector] footer_youtube ("{texture:{name:icon-youtube,height:16},action:{type:URL,data:https://www.youtube.com/poiyomi},hover:YOUTUBE}", Float) = 0
@@ -4239,8 +4239,6 @@ Shader ".poiyomi/Poiyomi Toon World"
 			
 			ZWrite On
 			Cull [_Cull]
-			ZClip [_ZClip]
-			//Conservative [_Conservative]
 			ColorMask 0
 			
 			CGPROGRAM
@@ -6477,11 +6475,17 @@ Shader ".poiyomi/Poiyomi Toon World"
 			
 			float3 hueShift(float3 color, float shift)
 			{
-				float3 oklab = linear_srgb_to_oklab(color + 0.0000001);
+				float3 oklab = linear_srgb_to_oklab(color);
+				float chroma = length(oklab.yz);
+				
+				if (chroma < 1e-5) {
+					// No hue to shift for achromatic colors
+					return color;
+				}
+				
 				float hue = atan2(oklab.z, oklab.y);
 				hue += shift * PI * 2;  // Add the hue shift
 				
-				float chroma = length(oklab.yz);
 				oklab.y = cos(hue) * chroma;
 				oklab.z = sin(hue) * chroma;
 				
@@ -8447,8 +8451,6 @@ Shader ".poiyomi/Poiyomi Toon World"
 			
 			ZWrite [_ZWrite]
 			Cull [_Cull]
-			ZClip [_ZClip]
-			//Conservative [_Conservative]
 			
 			AlphaToMask [_AlphaToCoverage]
 			ZTest [_ZTest]
@@ -13556,11 +13558,17 @@ Shader ".poiyomi/Poiyomi Toon World"
 			
 			float3 hueShift(float3 color, float shift)
 			{
-				float3 oklab = linear_srgb_to_oklab(color + 0.0000001);
+				float3 oklab = linear_srgb_to_oklab(color);
+				float chroma = length(oklab.yz);
+				
+				if (chroma < 1e-5) {
+					// No hue to shift for achromatic colors
+					return color;
+				}
+				
 				float hue = atan2(oklab.z, oklab.y);
 				hue += shift * PI * 2;  // Add the hue shift
 				
-				float chroma = length(oklab.yz);
 				oklab.y = cos(hue) * chroma;
 				oklab.z = sin(hue) * chroma;
 				
@@ -15426,7 +15434,7 @@ Shader ".poiyomi/Poiyomi Toon World"
 			{
 				// Force Model Opacity to 1 if desired
 				UNITY_BRANCH
-				if (_Mode == POI_MODE_CUTOUT)
+				if (_Mode == 1)
 				{
 					UNITY_BRANCH
 					if (_AlphaSharpenedA2C && _AlphaToCoverage)
@@ -25299,8 +25307,6 @@ Shader ".poiyomi/Poiyomi Toon World"
 			
 			ZWrite Off
 			Cull [_Cull]
-			ZClip [_ZClip]
-			//Conservative [_Conservative]
 			
 			AlphaToMask [_AlphaToCoverage]
 			ZTest [_ZTest]
@@ -30056,11 +30062,17 @@ Shader ".poiyomi/Poiyomi Toon World"
 			
 			float3 hueShift(float3 color, float shift)
 			{
-				float3 oklab = linear_srgb_to_oklab(color + 0.0000001);
+				float3 oklab = linear_srgb_to_oklab(color);
+				float chroma = length(oklab.yz);
+				
+				if (chroma < 1e-5) {
+					// No hue to shift for achromatic colors
+					return color;
+				}
+				
 				float hue = atan2(oklab.z, oklab.y);
 				hue += shift * PI * 2;  // Add the hue shift
 				
-				float chroma = length(oklab.yz);
 				oklab.y = cos(hue) * chroma;
 				oklab.z = sin(hue) * chroma;
 				
@@ -31926,7 +31938,7 @@ Shader ".poiyomi/Poiyomi Toon World"
 			{
 				// Force Model Opacity to 1 if desired
 				UNITY_BRANCH
-				if (_Mode == POI_MODE_CUTOUT)
+				if (_Mode == 1)
 				{
 					UNITY_BRANCH
 					if (_AlphaSharpenedA2C && _AlphaToCoverage)
@@ -42870,11 +42882,17 @@ Shader ".poiyomi/Poiyomi Toon World"
 			
 			float3 hueShift(float3 color, float shift)
 			{
-				float3 oklab = linear_srgb_to_oklab(color + 0.0000001);
+				float3 oklab = linear_srgb_to_oklab(color);
+				float chroma = length(oklab.yz);
+				
+				if (chroma < 1e-5) {
+					// No hue to shift for achromatic colors
+					return color;
+				}
+				
 				float hue = atan2(oklab.z, oklab.y);
 				hue += shift * PI * 2;  // Add the hue shift
 				
-				float chroma = length(oklab.yz);
 				oklab.y = cos(hue) * chroma;
 				oklab.z = sin(hue) * chroma;
 				
@@ -44704,7 +44722,7 @@ Shader ".poiyomi/Poiyomi Toon World"
 			{
 				// Force Model Opacity to 1 if desired
 				UNITY_BRANCH
-				if (_Mode == POI_MODE_CUTOUT)
+				if (_Mode == 1)
 				{
 					UNITY_BRANCH
 					if (_AlphaSharpenedA2C && _AlphaToCoverage)
@@ -48454,8 +48472,6 @@ Shader ".poiyomi/Poiyomi Toon World"
 			
 			ZWrite [_ZWrite]
 			Cull [_Cull]
-			ZClip [_ZClip]
-			//Conservative [_Conservative]
 			AlphaToMask Off
 			ZTest [_ZTest]
 			ColorMask [_ColorMask]
@@ -51199,11 +51215,17 @@ Shader ".poiyomi/Poiyomi Toon World"
 			
 			float3 hueShift(float3 color, float shift)
 			{
-				float3 oklab = linear_srgb_to_oklab(color + 0.0000001);
+				float3 oklab = linear_srgb_to_oklab(color);
+				float chroma = length(oklab.yz);
+				
+				if (chroma < 1e-5) {
+					// No hue to shift for achromatic colors
+					return color;
+				}
+				
 				float hue = atan2(oklab.z, oklab.y);
 				hue += shift * PI * 2;  // Add the hue shift
 				
-				float chroma = length(oklab.yz);
 				oklab.y = cos(hue) * chroma;
 				oklab.z = sin(hue) * chroma;
 				
@@ -53033,7 +53055,7 @@ Shader ".poiyomi/Poiyomi Toon World"
 			{
 				// Force Model Opacity to 1 if desired
 				UNITY_BRANCH
-				if (_Mode == POI_MODE_CUTOUT)
+				if (_Mode == 1)
 				{
 					UNITY_BRANCH
 					if (_AlphaSharpenedA2C && _AlphaToCoverage)
@@ -59608,11 +59630,17 @@ Shader ".poiyomi/Poiyomi Toon World"
 			
 			float3 hueShift(float3 color, float shift)
 			{
-				float3 oklab = linear_srgb_to_oklab(color + 0.0000001);
+				float3 oklab = linear_srgb_to_oklab(color);
+				float chroma = length(oklab.yz);
+				
+				if (chroma < 1e-5) {
+					// No hue to shift for achromatic colors
+					return color;
+				}
+				
 				float hue = atan2(oklab.z, oklab.y);
 				hue += shift * PI * 2;  // Add the hue shift
 				
-				float chroma = length(oklab.yz);
 				oklab.y = cos(hue) * chroma;
 				oklab.z = sin(hue) * chroma;
 				
@@ -61442,7 +61470,7 @@ Shader ".poiyomi/Poiyomi Toon World"
 			{
 				// Force Model Opacity to 1 if desired
 				UNITY_BRANCH
-				if (_Mode == POI_MODE_CUTOUT)
+				if (_Mode == 1)
 				{
 					UNITY_BRANCH
 					if (_AlphaSharpenedA2C && _AlphaToCoverage)

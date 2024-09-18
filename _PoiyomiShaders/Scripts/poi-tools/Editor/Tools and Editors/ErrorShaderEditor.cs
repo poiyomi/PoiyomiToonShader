@@ -14,14 +14,29 @@ namespace Poi.Tools
         const string LockedMaterialText = "Generated shader for this locked Poiyomi material is missing.\nYou can unlock this material by clicking below.";
         const string LockedMaterialText_Pro = "Generated shader for this locked Poiyomi Pro material is missing.\nYou can unlock this material by clicking below.";
         const string LockedMaterialText_ProMissing = "Generated shader for this locked Poiyomi Pro material is missing.\nTo unlock this material you need Poiyomi Pro which is missing from your project.";
-        const string UnlockedMaterialText_ProMissing = "Poiyomi Pro material detected.\nTo unlock this material you need Poiyomi Pro which is missing from your project.";
+        const string UnlockedMaterialText_ProMissing = "Poiyomi Pro material detected.\nTo use this material you need Poiyomi Pro which is missing from your project.";
 
         string originalShader;
         bool isErrorShader;
         bool isPoiyomiMaterial;
         bool isProMaterial;
-        bool projectHasPro;
         bool isLockedMaterial;
+
+        static bool? ProjectHasPro
+        {
+            get
+            {
+                if(_projectHasPro == null)
+                {
+                    _projectHasPro = ShaderUtil.GetAllShaderInfo()
+                        .Select(info => info.name)
+                        .Where(name => !name.StartsWith("Hidden/"))
+                        .Any(name => name.Contains("Poiyomi Pro"));
+                }
+                return (bool)_projectHasPro;
+            }
+        }
+        static bool? _projectHasPro;
 
         Material targetMaterial;
 
@@ -36,6 +51,10 @@ namespace Poi.Tools
             targetMaterial = target as Material;
 
             isErrorShader = targetMaterial.shader.name == ErrorShaderName;
+
+            if(!isErrorShader)
+                return;
+
             originalShader = targetMaterial.GetTag("OriginalShader", false);
 
             isPoiyomiMaterial = !string.IsNullOrWhiteSpace(originalShader);
@@ -55,14 +74,6 @@ namespace Poi.Tools
             }
             //Unity 2019 doesn't have .Contains(string, StringComparison) so using .IndexOf() instead
             isProMaterial = originalShader.IndexOf("Poiyomi Pro", System.StringComparison.CurrentCultureIgnoreCase) != -1;
-
-            if(isProMaterial)
-            {
-                projectHasPro = ShaderUtil.GetAllShaderInfo()
-                    .Select(info => info.name)
-                    .Where(name => !name.StartsWith("Hidden/"))
-                    .Any(name => name.Contains("Poiyomi Pro"));
-            }
         }
 
         public override void OnInspectorGUI()
@@ -79,7 +90,7 @@ namespace Poi.Tools
             {
                 if(isProMaterial)
                 {
-                    if(projectHasPro)
+                    if((bool)ProjectHasPro)
                     {
                         EditorGUILayout.HelpBox(LockedMaterialText_Pro, MessageType.Warning);
                         if(GUILayout.Button("Unlock Material"))
@@ -101,7 +112,7 @@ namespace Poi.Tools
             }
             else
             {
-                if(isProMaterial && !projectHasPro)
+                if(isProMaterial && !(bool)ProjectHasPro)
                 {
                     EditorGUILayout.HelpBox(UnlockedMaterialText_ProMissing, MessageType.Warning);
                     if(GUILayout.Button("More info"))

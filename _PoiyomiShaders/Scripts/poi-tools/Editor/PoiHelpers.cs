@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using Thry;
 using UnityEditor;
 using UnityEngine;
 
@@ -175,11 +176,15 @@ namespace Poi.Tools
                 if(string.IsNullOrWhiteSpace(materialAssetPath))
                     return false;
 
-                string assetDirectory = Path.GetDirectoryName(materialAssetPath);
-                string newPath = $"{assetDirectory}\\{newMaterialAssetName}{(newMaterialAssetName.EndsWith(".mat") ? "" : ".mat")}";
-                materialCopyPath = AssetDatabase.GenerateUniqueAssetPath(newPath);
+                string newPath;
+                if(IsDefaultAsset(materialAsset))
+                    newPath = $"Assets/Duplicated Materials/{newMaterialAssetName}{(newMaterialAssetName.EndsWith(".mat") ? "" : ".mat")}";
+                else
+                    newPath = $"{Path.GetDirectoryName(materialAssetPath)}/{newMaterialAssetName}{(newMaterialAssetName.EndsWith(".mat") ? "" : ".mat")}";
 
-                if(AssetDatabase.IsSubAsset(materialAsset) || materialAssetPath.StartsWith("Resources/unity_builtin_extra"))
+                materialCopyPath = NormalizePathSlashes(AssetDatabase.GenerateUniqueAssetPath(newPath));
+
+                if(AssetDatabase.IsSubAsset(materialAsset) || IsDefaultAsset(materialAsset))
                 {
                     AssetDatabase.CreateAsset(new Material(materialAsset), materialCopyPath);
                     return true;
@@ -190,6 +195,17 @@ namespace Poi.Tools
             {
                 return false;
             }
+        }
+
+        public static bool IsDefaultAsset(UnityEngine.Object asset)
+        {
+            string path = AssetDatabase.GetAssetPath(asset);
+            return IsDefaultAssetPath(path);
+        }
+
+        public static bool IsDefaultAssetPath(string assetPath)
+        {
+            return !string.IsNullOrWhiteSpace(assetPath) && assetPath.StartsWith("Resources/unity_builtin_extra");
         }
     }
 

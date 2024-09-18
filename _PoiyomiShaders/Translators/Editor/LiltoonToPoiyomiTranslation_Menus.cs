@@ -168,7 +168,7 @@ namespace Poi.Tools.ShaderTranslator.Translations.Menu
 
         #region Context - GameObject
 
-        [MenuItem("GameObject/Poiyomi/Materials/Translate to Poiyomi Toon", priority = PoiContextMenus.ContextGameObjectMaterial + 10)]
+        [MenuItem("GameObject/Poiyomi/Materials/Translate to Poiyomi Toon", false, priority = PoiContextMenus.ContextGameObjectMaterial + 10)]
         static void TranslateAllMaterialsInObjectToToon(MenuCommand command)
         {
             int undoIndex = Undo.GetCurrentGroup();
@@ -180,7 +180,7 @@ namespace Poi.Tools.ShaderTranslator.Translations.Menu
             Undo.CollapseUndoOperations(undoIndex);
         }
 
-        [MenuItem("GameObject/Poiyomi/Materials/Translate Copy to Poiyomi Toon", priority = PoiContextMenus.ContextGameObjectMaterial + 11)]
+        [MenuItem("GameObject/Poiyomi/Materials/Translate Copy to Poiyomi Toon", false, priority = PoiContextMenus.ContextGameObjectMaterial + 11)]
         static void TranslateAllMaterialsInObjectToToonCopy(MenuCommand command)
         {
             var obj = command.context as GameObject;
@@ -194,7 +194,7 @@ namespace Poi.Tools.ShaderTranslator.Translations.Menu
             Undo.CollapseUndoOperations(undoIndex);
         }
 
-        [MenuItem("GameObject/Poiyomi/Materials/Translate to Poiyomi Pro", priority = PoiContextMenus.ContextGameObjectMaterial + 20)]
+        [MenuItem("GameObject/Poiyomi/Materials/Translate to Poiyomi Pro", false, priority = PoiContextMenus.ContextGameObjectMaterial + 20)]
         static void TranslateAllMaterialsInObjectToPro(MenuCommand command)
         {
             int undoIndex = Undo.GetCurrentGroup();
@@ -206,7 +206,7 @@ namespace Poi.Tools.ShaderTranslator.Translations.Menu
             Undo.CollapseUndoOperations(undoIndex);
         }
 
-        [MenuItem("GameObject/Poiyomi/Materials/Translate Copy to Poiyomi Pro", priority = PoiContextMenus.ContextGameObjectMaterial + 21)]
+        [MenuItem("GameObject/Poiyomi/Materials/Translate Copy to Poiyomi Pro", false, priority = PoiContextMenus.ContextGameObjectMaterial + 21)]
         static void TranslateAllMaterialsInObjectToProCopy(MenuCommand command)
         {
             var obj = command.context as GameObject;
@@ -219,6 +219,10 @@ namespace Poi.Tools.ShaderTranslator.Translations.Menu
 
             Undo.CollapseUndoOperations(undoIndex);
         }
+
+        [MenuItem("GameObject/Poiyomi/Materials/Translate to Poiyomi Pro", true)]
+        [MenuItem("GameObject/Poiyomi/Materials/Translate Copy to Poiyomi Pro", true)]
+        static bool TranslateCopyToPoiyomiPro_Validate() => _ProjectHasPro();
 
         #endregion
 
@@ -239,7 +243,14 @@ namespace Poi.Tools.ShaderTranslator.Translations.Menu
         static void TranslateSelectedMaterialCopyInAssetsToToon()
         {
             var materials = _GetSelectedMaterials();
+            if(materials.Count == 0)
+            {
+                Debug.LogWarning("No materials selected to translate");
+                return;
+            }
+
             _DuplicateAndTranslateMaterials(materials, false);
+            EditorGUIUtility.PingObject(materials.Last());
         }
 
         [MenuItem("Assets/Poiyomi/Materials/Translate to Poiyomi Pro", false, PoiContextMenus.AssetsMenuBase + 32)]
@@ -257,22 +268,31 @@ namespace Poi.Tools.ShaderTranslator.Translations.Menu
         static void TranslateSelectedMaterialCopyInAssetsToPro()
         {
             var materials = _GetSelectedMaterials();
+            if(materials.Count == 0)
+            {
+                Debug.LogWarning("No materials selected to translate");
+                return;
+            }
+
             _DuplicateAndTranslateMaterials(materials, true);
+            EditorGUIUtility.PingObject(materials.Last());
         }
 
         [MenuItem("Assets/Poiyomi/Materials/Translate to Poiyomi Toon", true)]
+        [MenuItem("Assets/Poiyomi/Materials/Translate Copy to Poiyomi Toon", true)]
         static bool TranslateSelectedMaterialsInAssetsToToon_Validate()
         {
             return Selection.activeObject != null && Selection.objects.Any(s => s is Material || s is DefaultAsset);
         }
 
         [MenuItem("Assets/Poiyomi/Materials/Translate to Poiyomi Pro", true)]
+        [MenuItem("Assets/Poiyomi/Materials/Translate Copy to Poiyomi Pro", true)]
         static bool TranslateSelectedMaterialsInAssetsToPro_Validate()
         {
             //Unity 2019 doesn't have .Contains(string, StringComparison) so using .IndexOf() instead
             return Selection.activeObject != null
                 && Selection.objects.Any(s => s is Material || s is DefaultAsset)
-                && AllShaderNames.Any(name => name.IndexOf("Poiyomi Pro", StringComparison.CurrentCultureIgnoreCase) != -1);
+                && _ProjectHasPro();
         }
 
         #endregion
@@ -291,6 +311,17 @@ namespace Poi.Tools.ShaderTranslator.Translations.Menu
             if(material == null)
                 return;
 
+            if(PoiHelpers.IsDefaultAsset(material))
+            {
+                Debug.LogWarning($"Material <b>{material.name}</b> is a default asset and won't be translated. You should translate a copy of it instead.");
+                return;
+            }
+            else if(AssetDatabase.IsSubAsset(material))
+            {
+                Debug.LogWarning($"Material <b>{material.name}</b> is a sub asset and won't be translated. You should translate a copy.");
+                return;
+            }
+
             string suffix = isPro ? "Pro" : "Toon";
             string shaderName = $"{ShaderNameBase} {suffix}";
 
@@ -308,9 +339,15 @@ namespace Poi.Tools.ShaderTranslator.Translations.Menu
             {
                 foreach(var obj in Selection.objects)
                 {
-                    if(obj is Material)
+                    if(obj is Material mat)
                     {
-                        _TranslateMaterial(obj as Material, isPro);
+                        if(PoiHelpers.IsDefaultAsset(mat))
+                        {
+                            Debug.LogWarning($"Material <b>{mat.name}</b> is a default asset and won't be translated. You should translate a copy of it instead.");
+                            continue;
+                        }
+
+                        _TranslateMaterial(mat, isPro);
                     }
                     else if(obj is DefaultAsset)
                     {
@@ -335,6 +372,17 @@ namespace Poi.Tools.ShaderTranslator.Translations.Menu
         {
             if(material == null)
                 return;
+
+            if(PoiHelpers.IsDefaultAsset(material))
+            {
+                Debug.LogWarning($"Material <b>{material.name}</b> is a default asset and won't be translated. You should translate a copy of it instead.");
+                return;
+            }
+            else if(AssetDatabase.IsSubAsset(material))
+            {
+                Debug.LogWarning($"Material <b>{material.name}</b> is a sub asset and won't be translated. You should translate a copy.");
+                return;
+            }
 
             string shaderSuffix = isPro ? "Pro" : "Toon";
             Undo.RegisterFullObjectHierarchyUndo(material, $"Translate {material.name} to Poiyomi {shaderSuffix}");
