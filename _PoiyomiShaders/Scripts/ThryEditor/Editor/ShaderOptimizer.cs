@@ -303,7 +303,7 @@ namespace Thry
             public string newName;
         }
 
-        public static void CopyAnimatedTagToMaterials(Material[] targets, MaterialProperty source)
+        public static void CopyAnimatedTag(MaterialProperty source, Material[] targets)
         {
             string val = (source.targets[0] as Material).GetTag(source.name + AnimatedTagSuffix, false, "");
             foreach (Material m in targets)
@@ -312,7 +312,7 @@ namespace Thry
             }
         }
 
-        public static void CopyAnimatedTagFromMaterial(Material source, MaterialProperty target)
+        public static void CopyAnimatedTag(Material source, MaterialProperty target)
         {
             string val = source.GetTag(target.name + AnimatedTagSuffix, false, "");
             foreach (Material m in target.targets)
@@ -321,7 +321,7 @@ namespace Thry
             }
         }
 
-        public static void CopyAnimatedTagFromProperty(MaterialProperty source, MaterialProperty target)
+        public static void CopyAnimatedTag(MaterialProperty source, MaterialProperty target)
         {
             string val = (source.targets[0] as Material).GetTag(source.name + AnimatedTagSuffix, false, "");
             foreach (Material m in target.targets)
@@ -401,8 +401,28 @@ namespace Thry
 
         public static bool IsPropertyExcemptFromLocking(MaterialProperty prop)
         {
+            if(prop == null) return false;
             // if not a texture, but has non-modifiable texture data flag, is used as indicator to prevent locking
-            return prop.displayName.EndsWith(ExemptFromLockingSuffix, StringComparison.Ordinal) || (prop.type != MaterialProperty.PropType.Texture && prop.flags.HasFlag(MaterialProperty.PropFlags.NonModifiableTextureData));
+            return prop.displayName.EndsWith(ExemptFromLockingSuffix, StringComparison.Ordinal) 
+                || (prop.type != MaterialProperty.PropType.Texture && prop.flags.HasFlag(MaterialProperty.PropFlags.NonModifiableTextureData))
+                || GetAttributes(prop).Contains("DoNotLock");
+        }
+
+        public static bool IsPropertyExcemptFromLocking(ShaderPart part)
+        {
+            if(part.MaterialProperty == null) return false;
+            return part.HasAttribute("DoNotLock")
+            || (part.MaterialProperty.type != MaterialProperty.PropType.Texture && part.MaterialProperty.flags.HasFlag(MaterialProperty.PropFlags.NonModifiableTextureData))
+            || part.MaterialProperty.displayName.EndsWith(ExemptFromLockingSuffix, StringComparison.Ordinal);
+        }
+
+        private static string[] GetAttributes(MaterialProperty prop)
+        {
+            Shader s = (prop.targets[0] as Material).shader;
+            if(s == null) return new string[0];
+            int index = s.FindPropertyIndex(prop.name);
+            if(index < 0) return new string[0];
+            return s.GetPropertyAttributes(index);
         }
 
         private static bool Lock(Material material, MaterialProperty[] props, bool applyShaderLater = false)
@@ -1987,7 +2007,7 @@ namespace Thry
         #endregion
 
         // ifex indenting
-        [MenuItem("Assets/Thry/Shaders/Ifex Indenting", false, 303)]
+        [MenuItem("Assets/Thry/Shaders/Ifex Indenting", false, 305)]
         static void IfExIndenting()
         {
             Shader s = Selection.objects[0] as Shader;
@@ -2032,14 +2052,13 @@ namespace Thry
         [MenuItem("Assets/Thry/Materials/Unlock All", false, 303)]
         static void UnlockAllMaterials()
         {
-            IEnumerable<Material> mats = Selection.assetGUIDs.Select(g => AssetDatabase.LoadAssetAtPath<Material>(AssetDatabase.GUIDToAssetPath(g)));
-            SetLockedForAllMaterials(mats, 0, true);
+            SetLockedForAllMaterials(GetSelectedLockableMaterials(), 0, true);
         }
 
         [MenuItem("Assets/Thry/Materials/Unlock All", true)]
         static bool UnlockAllMaterialsValidator()
         {
-            return SelectedObjectsAreLockableMaterials();
+            return AreSelectedObjectsMaterials();
         }
 
         //---Asset Locking
@@ -2047,14 +2066,13 @@ namespace Thry
         [MenuItem("Assets/Thry/Materials/Lock All", false, 303)]
         static void LockAllMaterials()
         {
-            IEnumerable<Material> mats = Selection.assetGUIDs.Select(g => AssetDatabase.LoadAssetAtPath<Material>(AssetDatabase.GUIDToAssetPath(g)));
-            SetLockedForAllMaterials(mats, 1, true);
+            SetLockedForAllMaterials(GetSelectedLockableMaterials(), 1, true);
         }
 
         [MenuItem("Assets/Thry/Materials/Lock All", true)]
         static bool LockAllMaterialsValidator()
         {
-            return SelectedObjectsAreLockableMaterials();
+            return AreSelectedObjectsMaterials();
         }
 
         //This does not work for folders on the left side of the project explorer, because they are not exposed to Selection
@@ -2118,19 +2136,18 @@ namespace Thry
 
         //----Folder Unlock
 
-        static bool SelectedObjectsAreLockableMaterials()
+        static bool AreSelectedObjectsMaterials()
         {
             if (Selection.assetGUIDs != null && Selection.assetGUIDs.Length > 0)
             {
-                return Selection.assetGUIDs.All(g =>
-                {
-                    if (AssetDatabase.GetMainAssetTypeAtPath(AssetDatabase.GUIDToAssetPath(g)) != typeof(Material))
-                        return false;
-                    Material m = AssetDatabase.LoadAssetAtPath<Material>(AssetDatabase.GUIDToAssetPath(g));
-                    return IsShaderUsingThryOptimizer(m.shader);
-                });
+                return Selection.assetGUIDs.All(g => AssetDatabase.GetMainAssetTypeAtPath(AssetDatabase.GUIDToAssetPath(g)) == typeof(Material));
             }
             return false;
+        }
+
+        static IEnumerable<Material> GetSelectedLockableMaterials()
+        {
+            return Selection.assetGUIDs.Select(g => AssetDatabase.LoadAssetAtPath<Material>(AssetDatabase.GUIDToAssetPath(g))).Where(m => m != null && IsShaderUsingThryOptimizer(m.shader));
         }
 
         //----VRChat Callback to force Locking on upload
@@ -2380,7 +2397,7 @@ namespace Thry
                         Material reference = null;
                         if(s_shaderPropertyCombinations.ContainsKey(hash))
                         {
-
+                            s_shaderPropertyCombinations[hash].RemoveAll(m2 => m2 == null);
                             reference = s_shaderPropertyCombinations[hash].FirstOrDefault(m2 => m2 != m && (materialsToChangeLock.Contains(m2) || Shader.Find(applyStructsLater[m2].newShaderName) != null));
                         }
                         if (reference != null)

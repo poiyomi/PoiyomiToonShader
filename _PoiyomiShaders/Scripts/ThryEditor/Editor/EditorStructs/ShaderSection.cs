@@ -1,12 +1,5 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using Thry.ThryEditor;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 namespace Thry
 {
@@ -21,14 +14,14 @@ namespace Thry
         {
         }
 
-        public override void DrawInternal(GUIContent content, Rect? rect = null, bool useEditorIndent = false, bool isInHeader = false)
+        protected override void DrawInternal(GUIContent content, Rect? rect = null, bool useEditorIndent = false, bool isInHeader = false)
         {
             if (Options.margin_top > 0)
             {
                 GUILayoutUtility.GetRect(0, Options.margin_top);
             }
 
-            ShaderProperty reference = Options.reference_property != null ? ActiveShaderEditor.PropertyDictionary[Options.reference_property] : null;
+            ShaderProperty reference = Options.reference_property != null ? MyShaderUI.PropertyDictionary[Options.reference_property] : null;
             bool has_header = string.IsNullOrWhiteSpace(this.Content.text) == false || reference != null;
 
             int headerTextX = 18;
@@ -84,7 +77,7 @@ namespace Thry
             if (IsExpanded)
             {
                 EditorGUI.BeginDisabledGroup(DoDisableChildren);
-                foreach (ShaderPart part in parts)
+                foreach (ShaderPart part in Children)
                 {
                     part.Draw();
                 }

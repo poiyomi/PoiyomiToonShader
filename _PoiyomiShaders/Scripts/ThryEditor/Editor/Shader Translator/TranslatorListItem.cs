@@ -1,5 +1,4 @@
 #if UNITY_2022_1_OR_NEWER
-using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;

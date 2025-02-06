@@ -12,23 +12,29 @@ namespace Poi.Tools.ShaderTranslator.Translations
 {
     public class LiltoonToPoiyomiToonTranslation : ScriptedShaderTranslator
     {
+        public override bool CanTranslateMaterial(Material sourceMaterial)
+        {
+            // Check if the material we're trying to translate uses liltoon
+            return sourceMaterial.shader.name.IndexOf("liltoon", StringComparison.CurrentCultureIgnoreCase) != -1;
+        }
+
         protected override void DoBeforeTranslation(TranslationContext context)
         {
             // Set render mode dropdown based on liltoon shader name.
             string shaderName = Path.GetFileName(SourceShader.Shader.name);
 
-            if(shaderName.Contains("lilToonCutout"))
+            if (shaderName.Contains("lilToonCutout"))
             {
                 SetTargetRenderingPreset(context, PoiShaderRenderingPreset.Cutout);
             }
-            else if(shaderName.Contains("lilToonTransparent") || shaderName.Contains("lilToonOnePassTransparent") || shaderName.Contains("lilToonTwoPassTransparent"))
+            else if (shaderName.Contains("lilToonTransparent") || shaderName.Contains("lilToonOnePassTransparent") || shaderName.Contains("lilToonTwoPassTransparent"))
             {
-                if(GetSourcePropertyValue<bool>(context, "_UseReflection"))
+                if (GetSourcePropertyValue<bool>(context, "_UseReflection"))
                     SetTargetRenderingPreset(context, PoiShaderRenderingPreset.Transparent);
                 else
                     SetTargetRenderingPreset(context, PoiShaderRenderingPreset.TransClipping);
             }
-            else if(shaderName.Contains("lilToonRefraction"))
+            else if (shaderName.Contains("lilToonRefraction"))
             {
                 SetTargetRenderingPreset(context, PoiShaderRenderingPreset.Transparent);
             }
@@ -46,6 +52,18 @@ namespace Poi.Tools.ShaderTranslator.Translations
             SetTargetPropertyValue(context, "_LightingColorMode", 3);
             SetTargetPropertyValue(context, "_LightingMapMode", 1);
             SetTargetPropertyValue(context, "_LightingDirectionMode", 4);
+
+            // Set Decal Symmetry Modes
+            if (TryGetDecalMirrorModes(context, "2nd", out PoiUvMirrorMode mirrorModeDecal0, out PoiUvSymmetryMode symmetryModeDecal0))
+            {
+                SetTargetPropertyValue(context, "_DecalMirroredUVMode", mirrorModeDecal0);
+                SetTargetPropertyValue(context, "_DecalSymmetryMode", symmetryModeDecal0);
+            }
+            if (TryGetDecalMirrorModes(context, "3rd", out PoiUvMirrorMode mirrorModeDecal1, out PoiUvSymmetryMode symmetryModeDecal1))
+            {
+                SetTargetPropertyValue(context, "_DecalMirroredUVMode1", mirrorModeDecal1);
+                SetTargetPropertyValue(context, "_DecalSymmetryMode1", symmetryModeDecal1);
+            }
 
             // Manually restore render queue
             SetTargetRenderQueue(context, context.originalRenderQueue);
@@ -72,6 +90,31 @@ namespace Poi.Tools.ShaderTranslator.Translations
                 }),
                 new PropertyTranslation("_MainColorAdjustMask", "_MainColorAdjustTexture"),
                 new PropertyTranslation("_MainColorAdjustMask_ST", "_MainColorAdjustTexture_ST"),
+                new PropertyTranslation("_MainTexHSVG", (context) =>
+                {
+                    return GetSourcePropertyValue<Vector4>(context, "_MainTexHSVG") != new Vector4(0,1,1,1);
+                },
+                (prop, context) =>
+                {
+                    var hsvg = GetSourcePropertyValue<Vector4>(context, "_MainTexHSVG");
+                    SetTargetPropertyValue(context, "_MainColorAdjustToggle", 1);
+                    SetTargetPropertyValue(context, "_MainHueShiftColorSpace", 1);
+                    SetTargetPropertyValue(context, "_MainHueShiftToggle", 1);
+                    SetTargetPropertyValue(context, "_MainHueShift", hsvg.x > 0 ? hsvg.x : -0.5f + hsvg.x + 1.5f );
+                    SetTargetPropertyValue(context, "_Saturation", hsvg.y - 1.0f);
+                    SetTargetPropertyValue(context, "_MainBrightness", hsvg.z - 1.0f);
+                }),
+                new PropertyTranslation("_MainGradationTex", "_MainGradationTex", (context) =>
+                {
+                    return GetSourcePropertyValue<Texture2D>(context, "_MainGradationTex") != null;
+                },
+                (prop, context) =>
+                {
+                    SetTargetPropertyValue(context, "_MainColorAdjustToggle", 1);
+                    SetTargetPropertyValue(context, "_ColorGradingToggle", 1);
+                    var gradStrength = GetSourcePropertyValue<float>(context, "_MainGradationStrength");
+                    SetTargetPropertyValue(context, "_MainGradationStrength", gradStrength);
+                }),
 
                 new PropertyTranslation("_UseBumpMap", (prop, context) =>
                 {
@@ -96,6 +139,11 @@ namespace Poi.Tools.ShaderTranslator.Translations
                 }),
                 new PropertyTranslation("_EmissionBlendMask", "_EmissionMask"),
                 new PropertyTranslation("_EmissionBlendMask_ST", "_EmissionMask_ST"),
+                new PropertyTranslation("_EmissionBlendMask_ScrollRotate", (prop, context) =>
+                {
+                    var scrollVector = GetSourcePropertyValue<Vector4>(context, prop);
+                    SetTargetPropertyValue(context, "_EmissionMaskPan", scrollVector * 20);
+                }),
                 new PropertyTranslation("_EmissionMainStrength", "_EmissionBaseColorAsMap"),
                 #endregion
 
@@ -112,6 +160,11 @@ namespace Poi.Tools.ShaderTranslator.Translations
                 new PropertyTranslation("_Emission2ndBlendMask", "_EmissionMask1"),
                 new PropertyTranslation("_Emission2ndBlendMask_ST", "_EmissionMask1_ST"),
                 new PropertyTranslation("_Emission2ndMainStrength", "_EmissionBaseColorAsMap1"),
+                new PropertyTranslation("_Emission2ndBlendMask_ScrollRotate", (prop, context) =>
+                {
+                    var scrollVector = GetSourcePropertyValue<Vector4>(context, prop);
+                    SetTargetPropertyValue(context, "_EmissionMask1Pan", scrollVector * 20);
+                }),
                 #endregion
 
                 #region Lighting
@@ -136,14 +189,14 @@ namespace Poi.Tools.ShaderTranslator.Translations
                 new PropertyTranslation("_UseMatCap", "_MatcapEnable"),
                 new PropertyTranslation("_MatCapTex", "_Matcap"),
                 new PropertyTranslation("_MatCapTex_ST", "_Matcap_ST"),
-                new PropertyTranslation("_MatCapColor", "_MatcapColor"),
                 new PropertyTranslation("_MatCapMainStrength", "_MatcapBaseColorMix"),
                 new PropertyTranslation("_MatCapNormalStrength", "_MatcapNormal"),
                 new PropertyTranslation("_MatCapBlendMask", "_MatcapMask"),
                 new PropertyTranslation("_MatCapBlendMask_ST", "_MatcapMask_ST"),
                 new PropertyTranslation("_MatCapColor", (prop, context) =>
                 {
-                    float alpha = GetSourcePropertyValue<Color>(context, prop).a;
+                    Color matcapColor = GetSourcePropertyValue<Color>(context, prop);
+                    float alpha = matcapColor.a;
                     int blendMode = GetSourcePropertyValue<int>(context, "_MatCapBlendMode");
                     float replaceValue = 0;
                     switch(blendMode)
@@ -156,6 +209,10 @@ namespace Poi.Tools.ShaderTranslator.Translations
                     }
                     // Reset replace to 0 if it's not being used because by default it's on 1 in poi
                     SetTargetPropertyValue(context, "_MatcapReplace", replaceValue);
+                    matcapColor.a = 1.0f; // If we don't do this, we double the intensity by accident
+                    SetTargetPropertyValue(context, "_MatcapColor", matcapColor);
+                    // liltoon doesn't have this option (AFAIK) and is 0.5f in code
+                    SetTargetPropertyValue(context, "_MatcapBorder", 0.5f);
                 }),
                 new PropertyTranslation("_MatCapLod", (prop, context) =>
                 {
@@ -165,7 +222,7 @@ namespace Poi.Tools.ShaderTranslator.Translations
                         return;
 
                     SetTargetPropertyValue(context, "_MatcapSmoothnessEnabled", true);
-                    SetTargetPropertyValue(context, "_MatcapSmoothness", smoothness / 10); // liltoon goes up to 10
+                    SetTargetPropertyValue(context, "_MatcapSmoothness", 1 - (smoothness / 10)); // liltoon goes up to 10
                 }),
                 new PropertyTranslation("_MatCapCustomNormal", "_Matcap0CustomNormal"),
                 new PropertyTranslation("_MatCapBumpScale", "_Matcap0NormalMapScale"),
@@ -212,13 +269,33 @@ namespace Poi.Tools.ShaderTranslator.Translations
                 new PropertyTranslation("_MatCap2ndBumpMap_ST", "_Matcap1NormalMap_ST"),
                 #endregion
 
-                #region Rim lights
-                new PropertyTranslation("_UseRim", "_EnableRimLighting", (prop, context) =>
-                {
+                #region Rim lights (uses Rimlight 2)
+                new PropertyTranslation("_UseRim", "_EnableRim2Lighting", (prop, context) =>
+                {   
                     // If rimlight is enabled, set the style to liltoon. All other properties are the same
                     if(GetSourcePropertyValue<bool>(context, prop))
-                        SetTargetPropertyValue(context, "_RimStyle", 2);
+                        SetTargetPropertyValue(context, "_Rim2Style", 2);
                 }),
+                new PropertyTranslation("_RimColor", "_Rim2Color"),
+                new PropertyTranslation("_RimColorTex", "_Rim2ColorTex"),
+                new PropertyTranslation("_RimColorTex_ST", "_Rim2ColorTex_ST"),
+                new PropertyTranslation("_RimMainStrength", "_Rim2MainStrength"),
+                new PropertyTranslation("_RimNormalStrength", "_Rim2NormalStrength"),
+                new PropertyTranslation("_RimBorder", "_Rim2Border"),
+                new PropertyTranslation("_RimBlur", "_Rim2Blur"),
+                new PropertyTranslation("_RimFresnelPower", "_Rim2FresnelPower"),
+                new PropertyTranslation("_RimEnableLighting", "_Rim2EnableLighting"),
+                new PropertyTranslation("_RimShadowMask", "_Rim2ShadowMask"),
+                new PropertyTranslation("_RimBackfaceMask", "_Rim2BackfaceMask"),
+                new PropertyTranslation("_RimVRParallaxStrength", "_Rim2VRParallaxStrength"),
+                // new PropertyTranslation("_RimApplyTransparency", "_Rim2ApplyTransparency"),
+                new PropertyTranslation("_RimDirStrength", "_Rim2DirStrength"),
+                new PropertyTranslation("_RimDirRange", "_Rim2DirRange"),
+                new PropertyTranslation("_RimIndirRange", "_Rim2IndirRange"),
+                new PropertyTranslation("_RimIndirColor", "_Rim2IndirColor"),
+                new PropertyTranslation("_RimIndirBorder", "_Rim2IndirBorder"),
+                new PropertyTranslation("_RimIndirBlur", "_Rim2IndirBlur"),
+                new PropertyTranslation("_RimBlendMode", "_Rim2BlendMode"),
 
                 #endregion
 
@@ -245,6 +322,7 @@ namespace Poi.Tools.ShaderTranslator.Translations
                 #endregion
 
                 #region Decal
+                new PropertyTranslation("_Main2ndBlendMask", "_DecalMask"),
                 new PropertyTranslation("_UseMain2ndTex", "_DecalEnabled"),
                 new PropertyTranslation("_Main2ndTex", "_DecalTexture"),
                 new PropertyTranslation("_Main2ndTex_ST", (prop, context) =>
@@ -265,27 +343,27 @@ namespace Poi.Tools.ShaderTranslator.Translations
                         SetTargetPropertyValue(context, "_DecalTexture_ST", textureScaleAndOffset);
                     }
                 }),
-                new PropertyTranslation("_Main2ndTexIsDecal", "_DecalTiled", (prop, context) =>
+                new PropertyTranslation("_Main2ndTexIsDecal", (prop, context) =>
                 {
                     bool value = GetSourcePropertyValue<bool>(context, prop);
-                    SetContextPropertyValue(context, prop, Convert.ToSingle(!value));
+                    SetTargetPropertyValue(context,  "_DecalTiled", !value);
                 }),
                 new PropertyTranslation("_Main2ndTex_UVMode", "_DecalTextureUV"),
-                new PropertyTranslation("_Main2ndTexBlendMode", "_DecalBlendType", (prop, context) =>
+                new PropertyTranslation("_Main2ndTexBlendMode", (prop, context) =>
                 {
                     //liltoon: normal, add, screen, multiply
                     //poiyomi: replace, darken, multiply, lighten, screen, subtract, add, overlay, mixed
                     int value = GetSourcePropertyValue<int>(context, prop);
                     switch(value)
                     {
-                        case 1: value = 6; break;
-                        case 2: value = 4; break;
+                        case 1: value = 8; break;
+                        case 2: value = 6; break;
                         case 3: value = 2; break;
                         default: value = 0; break;
                     }
-                    SetContextPropertyValue(context, prop, value);
+                    SetTargetPropertyValue(context, "_DecalBlendType", value);
                 }),
-                new PropertyTranslation("_Main2ndTexAlphaMode", "_DecalOverrideAlpha", (prop, context) =>
+                new PropertyTranslation("_Main2ndTexAlphaMode", (prop, context) =>
                 {
                     //liltoon: normal, replace, multiply, add, subtract
                     //poiyomi: off, multiply, add, subtract, min, max
@@ -298,29 +376,29 @@ namespace Poi.Tools.ShaderTranslator.Translations
                         case 4: value = 3; break;
                         default: break;
                     }
-                    SetContextPropertyValue(context, prop, value);
+                    SetTargetPropertyValue(context, "_DecalOverrideAlpha", value);
                 }),
                 new PropertyTranslation("_Color2nd", "_DecalColor", (prop, context) =>
                 {
                     Color colorValue = GetSourcePropertyValue<Color>(context, prop);
                     SetTargetPropertyValue(context, "_DecalBlendAlpha", colorValue.a);
                 }),
-                new PropertyTranslation("_Main2ndEnableLighting", "_DecalEmissionStrength", (prop, context) =>
+                new PropertyTranslation("_Main2ndEnableLighting", (prop, context) =>
                 {
                     float value = GetSourcePropertyValue<float>(context, prop);
-                    SetContextPropertyValue(context, prop, value * -1);
+                    SetTargetPropertyValue(context, "_DecalEmissionStrength", value * -1);
                 }),
-                new PropertyTranslation("_Main2ndTex_ScrollRotate_ST", (prop, context) =>
+                new PropertyTranslation("_Main2ndTex_ScrollRotate", (prop, context) =>
                 {
                     Vector4 vectorValue = GetSourcePropertyValue<Vector4>(context, prop);
-                    SetTargetPropertyValue(context, "_DecalTexturePan", new Vector2(vectorValue.x, vectorValue.y));
+                    SetTargetPropertyValue(context, "_DecalTexturePan", vectorValue * 20);
                 }),
-                new PropertyTranslation("_Main2ndTexAngle", "_DecalRotation", (prop, context) =>
+                new PropertyTranslation("_Main2ndTexAngle", (prop, context) =>
                 {
                     float floatValue = GetSourcePropertyValue<float>(context, prop);
-                    SetContextPropertyValue(context, prop, (floatValue * Mathf.Rad2Deg) % 360);
+                    SetTargetPropertyValue(context, "_DecalRotation", (floatValue * Mathf.Rad2Deg) % 360);
                 }),
-                new PropertyTranslation("_Main2ndTex_Cull", "_Decal0FaceMask", (prop, context) =>
+                new PropertyTranslation("_Main2ndTex_Cull", (prop, context) =>
                 {
                     // liltoon: cull off, cull front, cull back
                     // poiyomi: off, front only, back only
@@ -330,8 +408,9 @@ namespace Poi.Tools.ShaderTranslator.Translations
                         case 1: value = 2; break;
                         case 2: value = 1; break;
                     }
-                    SetContextPropertyValue(context, prop, value);
+                    SetTargetPropertyValue(context, "_Decal0FaceMask", value);
                 }),
+                // Decal Mirror modes are handled in DoAfterTranslation
                 #endregion
 
                 #region Decal 2
@@ -355,13 +434,13 @@ namespace Poi.Tools.ShaderTranslator.Translations
                         SetTargetPropertyValue(context, "_DecalTexture1_ST", textureScaleAndOffset);
                     }
                 }),
-                new PropertyTranslation("_Main3rdTexIsDecal", "_DecalTiled1", (prop, context) =>
+                new PropertyTranslation("_Main3rdTexIsDecal", (prop, context) =>
                 {
                     bool value = GetSourcePropertyValue<bool>(context, prop);
-                    SetContextPropertyValue(context, prop, Convert.ToSingle(!value));
+                    SetTargetPropertyValue(context, "_DecalTiled1", !value);
                 }),
                 new PropertyTranslation("_Main3rdTex_UVMode", "_DecalTexture1UV"),
-                new PropertyTranslation("_Main3rdTexBlendMode", "_DecalBlendType1", (prop, context) =>
+                new PropertyTranslation("_Main3rdTexBlendMode", (prop, context) =>
                 {
                     //liltoon: normal, add, screen, multiply
                     //poiyomi: replace, darken, multiply, lighten, screen, subtract, add, overlay, mixed
@@ -373,9 +452,9 @@ namespace Poi.Tools.ShaderTranslator.Translations
                         case 3: value = 2; break;
                         default: value = 0; break;
                     }
-                    SetContextPropertyValue(context, prop, value);
+                    SetTargetPropertyValue(context, "_DecalBlendType1", value);
                 }),
-                new PropertyTranslation("_Main3rdTexAlphaMode", "_DecalOverrideAlpha1", (prop, context) =>
+                new PropertyTranslation("_Main3rdTexAlphaMode", (prop, context) =>
                 {
                     //liltoon: normal, replace, multiply, add, subtract
                     //poiyomi: off, multiply, add, subtract, min, max
@@ -388,29 +467,29 @@ namespace Poi.Tools.ShaderTranslator.Translations
                         case 4: value = 3; break;
                         default: break;
                     }
-                    SetContextPropertyValue(context, prop, value);
+                    SetTargetPropertyValue(context, "_DecalOverrideAlpha1", value);
                 }),
                 new PropertyTranslation("_Color3rd", "_DecalColor1", (prop, context) =>
                 {
                     Color colorValue = GetSourcePropertyValue<Color>(context, prop);
                     SetTargetPropertyValue(context, "_DecalBlendAlpha1", colorValue.a);
                 }),
-                new PropertyTranslation("_Main3rdEnableLighting", "_DecalEmissionStrength1", (prop, context) =>
+                new PropertyTranslation("_Main3rdEnableLighting",  (prop, context) =>
                 {
                     float value = GetSourcePropertyValue<float>(context, prop);
-                    SetContextPropertyValue(context, prop, value * -1);
+                    SetTargetPropertyValue(context, "_DecalEmissionStrength1", value * -1);
                 }),
-                new PropertyTranslation("_Main3rdTex_ScrollRotate_ST", (prop, context) =>
+                new PropertyTranslation("_Main3rdTex_ScrollRotate", (prop, context) =>
                 {
                     Vector4 vectorValue = GetSourcePropertyValue<Vector4>(context, prop);
-                    SetTargetPropertyValue(context, "_DecalTexture1Pan", new Vector2(vectorValue.x, vectorValue.y));
+                    SetTargetPropertyValue(context, "_DecalTexture1Pan", vectorValue * 20);
                 }),
-                new PropertyTranslation("_Main3rdTexAngle", "_DecalRotation1", (prop, context) =>
+                new PropertyTranslation("_Main3rdTexAngle", (prop, context) =>
                 {
                     float floatValue = GetSourcePropertyValue<float>(context, prop);
-                    SetContextPropertyValue(context, prop, (floatValue * Mathf.Rad2Deg) % 360);
+                    SetTargetPropertyValue(context, "_DecalRotation1", (floatValue * Mathf.Rad2Deg) % 360);
                 }),
-                new PropertyTranslation("_Main3rdTex_Cull", "_Decal1FaceMask", (prop, context) =>
+                new PropertyTranslation("_Main3rdTex_Cull", (prop, context) =>
                 {
                     // liltoon: cull off, cull front, cull back
                     // poiyomi: off, front only, back only
@@ -420,26 +499,39 @@ namespace Poi.Tools.ShaderTranslator.Translations
                         case 1: value = 2; break;
                         case 2: value = 1; break;
                     }
-                    SetContextPropertyValue(context, prop, value);
+                    SetTargetPropertyValue(context, "_Decal1FaceMask", value);
                 }),
+                // Decal mirror modes are handled in DoAfterTranslation
                 #endregion
 
-                #region Rim shade -> Rimlight 2
+                #region Rim shade -> Rimlight 1
                 new PropertyTranslation("_UseRimShade", IsRimShadeEnabled, (prop, context) =>
                 {
                     // RimShade seems to just be Rim Lighting in "Multiply" mode
-                    SetTargetPropertyValue(context, "_EnableRim2Lighting", 1);
-                    SetTargetPropertyValue(context, "_Rim2Style", 2);
-                    SetTargetPropertyValue(context, "_Rim2ShadowMask", 0); // Lines: lil's rimshade seems to ignore shadows completely
-                    SetTargetPropertyValue(context, "_Rim2BlendMode", 3); // Lines: Multiply mode
-                    SetTargetPropertyValue(context, "_Rim2EnableLighting", 0);
+                    SetTargetPropertyValue(context, "_EnableRimLighting", 1);
+                    SetTargetPropertyValue(context, "_RimStyle", 2);
+                    SetTargetPropertyValue(context, "_RimShadowMask", 0); // Lines: lil's rimshade seems to ignore shadows completely
+                    SetTargetPropertyValue(context, "_RimBlendMode", 3); // Lines: Multiply mode
+                    SetTargetPropertyValue(context, "_RimEnableLighting", 0);
+                    SetTargetPropertyValue(context, "_RimDirStrength", 0);
+                    SetTargetPropertyValue(context, "_RimMainStrength", 0);
                 }),
-                new PropertyTranslation("_RimShadeBorder", "_Rim2Border", IsRimShadeEnabled),
-                new PropertyTranslation("_RimShadeBlur", "_Rim2Blur", IsRimShadeEnabled),
-                new PropertyTranslation("_RimShadeFresnelPower", "_Rim2FresnelPower", IsRimShadeEnabled),
-                new PropertyTranslation("_RimShadeColor", "_Rim2Color", IsRimShadeEnabled),
-                new PropertyTranslation("_RimShadeMask", "_Rim2ColorTex", IsRimShadeEnabled),
-                new PropertyTranslation("_RimShadeMask_ST", "_Rim2ColorTex_ST", IsRimShadeEnabled),
+                new PropertyTranslation("_RimShadeBorder", "_RimBorder", IsRimShadeEnabled),
+                new PropertyTranslation("_RimShadeBlur", "_RimBlur", IsRimShadeEnabled),
+                new PropertyTranslation("_RimShadeFresnelPower", "_RimFresnelPower", IsRimShadeEnabled),
+                new PropertyTranslation("_RimShadeColor", "_RimColor", IsRimShadeEnabled),
+                new PropertyTranslation("_RimShadeMask", "_RimColorTex", IsRimShadeEnabled),
+                new PropertyTranslation("_RimShadeMask_ST", "_RimColorTex_ST", IsRimShadeEnabled),
+
+                #endregion
+
+                #region Stylized Reflections
+                new PropertyTranslation("_UseReflection", UseReflection, (prop, context) =>
+                {
+                    SetTargetPropertyValue(context, "_StylizedSpecular", 1);
+                    SetTargetPropertyValue(context, "_StylizedReflectionMode", 1);
+                }),
+
                 #endregion
 
                 #region  Rendering Options
@@ -477,13 +569,60 @@ namespace Poi.Tools.ShaderTranslator.Translations
                 #region UV Tile Discard
                 new PropertyTranslation("_UDIMDiscardCompile", "_EnableUDIMDiscardOptions"),
                 #endregion
+                
+                #region Stencils
+                new PropertyTranslation("_StencilRef", "_StencilRef"),
+                new PropertyTranslation("_StencilReadMask", "_StencilReadMask"),
+                new PropertyTranslation("_StencilWriteMask", "_StencilWriteMask"),
+                new PropertyTranslation("_StencilPass", "_StencilPassOp"),
+                new PropertyTranslation("_StencilFail", "_StencilFailOp"),
+                new PropertyTranslation("_StencilZFail", "_StencilZFailOp"),
+                new PropertyTranslation("_StencilComp", "_StencilCompareFunction"),
+                #endregion
             };
         }
 
+        bool TryGetDecalMirrorModes(TranslationContext context, string decalPropertyNameNumberPart, out PoiUvMirrorMode uvMirrorMode, out PoiUvSymmetryMode uvSymmetryMode)
+        {
+            uvMirrorMode = PoiUvMirrorMode.Off;
+            uvSymmetryMode = PoiUvSymmetryMode.Off;
+
+            bool texIsEnabled = GetSourcePropertyValue<bool>(context, $"_UseMain{decalPropertyNameNumberPart}Tex");
+            bool texIsDecal = GetSourcePropertyValue<bool>(context, $"_Main{decalPropertyNameNumberPart}TexIsDecal");
+            if (!texIsEnabled || !texIsDecal)
+                return false;
+
+            bool isLeft = GetSourcePropertyValue<bool>(context, $"_Main{decalPropertyNameNumberPart}TexIsLeftOnly");
+            bool isRight = GetSourcePropertyValue<bool>(context, $"_Main{decalPropertyNameNumberPart}TexIsRightOnly");
+            bool shouldCopy = GetSourcePropertyValue<bool>(context, $"_Main{decalPropertyNameNumberPart}TexShouldCopy");
+            bool shouldFlipMirror = GetSourcePropertyValue<bool>(context, $"_Main{decalPropertyNameNumberPart}TexShouldFlipMirror");
+            bool shouldFlipCopy = GetSourcePropertyValue<bool>(context, $"_Main{decalPropertyNameNumberPart}TexShouldFlipCopy");
+
+            if (shouldFlipMirror && isRight)
+                uvMirrorMode = PoiUvMirrorMode.FlipRightOnly;
+            else if (shouldFlipMirror)
+                uvMirrorMode = PoiUvMirrorMode.Flip;
+            else if (isLeft)
+                uvMirrorMode = PoiUvMirrorMode.LeftOnly;
+            else if (isRight)
+                uvMirrorMode = PoiUvMirrorMode.RightOnly;
+
+            if (shouldCopy && shouldFlipCopy)
+                uvSymmetryMode = PoiUvSymmetryMode.Flipped;
+            else if (shouldCopy)
+                uvSymmetryMode = PoiUvSymmetryMode.Symmetry;
+
+            return true;
+        }
+        bool UseReflection(TranslationContext context)
+        {
+            return GetSourcePropertyValue<bool>(context, "_UseReflection");
+        }
         bool IsRimShadeEnabled(TranslationContext context)
         {
             return GetSourcePropertyValue<bool>(context, "_UseRimShade");
         }
+
         bool IsBump2ndEnabled(TranslationContext context)
         {
             return GetSourcePropertyValue<bool>(context, "_UseBump2ndMap");

@@ -1,7 +1,5 @@
 ﻿#if UNITY_2022_1_OR_NEWER
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;

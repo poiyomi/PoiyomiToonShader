@@ -14,6 +14,8 @@ namespace Thry
         private MaterialProperty _propUVChannel;
         private Material _material;
         private Material _gizmoMaterial;
+        private int _initalUndoGroup;
+        private bool _doDiscard = false;
 
         public static DecalTool OpenDecalTool(Material m)
         {
@@ -21,6 +23,7 @@ namespace Thry
             window._material = m;
             window._gizmoMaterial = new Material(AssetDatabase.LoadAssetAtPath<Shader>(AssetDatabase.GUIDToAssetPath(GUID_GIZMO_SHADER)));
             window._gizmoMaterial.color = Color.white;
+            window._initalUndoGroup = Undo.GetCurrentGroup();
             return window;
         }
 
@@ -52,6 +55,29 @@ namespace Thry
             _gizmoMaterial.SetVector("_Offset", _propOffset.vectorValue);
             _gizmoMaterial.SetNumber("_UVChannel", _propUVChannel.GetNumber());
             EditorGUI.DrawPreviewTexture(new Rect(0, 0, position.width, position.height), Texture2D.whiteTexture, _gizmoMaterial);
+
+            if(Event.current.type == EventType.KeyUp && Event.current.keyCode == KeyCode.Escape)
+            {
+                Event.current.Use();
+                Undo.RevertAllDownToGroup(_initalUndoGroup);
+                _doDiscard = true;
+                this.Close();
+            }
+        }
+
+        private void OnDestroy()
+        {
+            // Close() throws an exception, if called from OnGUI
+            // GUI Error: Invalid GUILayout state in DockArea view. Verify that all layout Begin/End calls match
+            // /shrug, idk how to fix that, so I just disable the log for a frame
+            bool isLoggerEnabled = Debug.unityLogger.logEnabled;
+            Debug.unityLogger.logEnabled = false;
+            if(!_doDiscard)
+            {
+                Undo.SetCurrentGroupName("Apply Decal Texture Tool");
+                Undo.CollapseUndoOperations(_initalUndoGroup);
+            }
+            EditorApplication.delayCall += () => Debug.unityLogger.logEnabled = isLoggerEnabled;
         }
 
         private Vector2 _lastMousePosition;

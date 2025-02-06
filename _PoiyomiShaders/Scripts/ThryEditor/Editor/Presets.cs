@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Data;
 using System.IO;
 using System.Linq;
-using System.Security.Policy;
 using System.Text;
 using UnityEditor;
 using UnityEngine;
@@ -234,7 +232,7 @@ namespace Thry.ThryEditor
                         RemovePreset(material);
                         AddPreset(material);
                     }
-                    Debug.Log($"OnPostprocessAllAssets: {material.name} ({AssetDatabase.AssetPathToGUID(asset)})");
+                    // Debug.Log($"OnPostprocessAllAssets: {material.name} ({AssetDatabase.AssetPathToGUID(asset)})");
                     KnownMaterials.Add(AssetDatabase.AssetPathToGUID(asset));
                 }
             }
@@ -495,7 +493,7 @@ namespace Thry.ThryEditor
                 {
                     if (IsPreset(preset, prop))
                     {
-                        prop.CopyFromMaterial(preset);
+                        prop.CopyFrom(preset);
                     }
                 }
             }else if(parent is ShaderGroup)
@@ -507,7 +505,7 @@ namespace Thry.ThryEditor
         
         static void ApplyPresetRecursive(ShaderEditor shaderEditor, Material preset, ShaderGroup parent)
         {
-            foreach (ShaderPart prop in parent.parts)
+            foreach (ShaderPart prop in parent.Children)
             {
                 if(prop is ShaderGroup)
                 {
@@ -516,7 +514,7 @@ namespace Thry.ThryEditor
                 {
                     if (IsPreset(preset, prop))
                     {
-                        prop.CopyFromMaterial(preset);
+                        prop.CopyFrom(preset);
                     }
                 }
             }
@@ -544,7 +542,7 @@ namespace Thry.ThryEditor
 
         public static bool IsPreset(Material m)
         {
-            return m.GetTag(TAG_IS_PRESET, false, "false") == "true";
+            return m?.GetTag(TAG_IS_PRESET, false, "false") == "true";
         }
         
         public static void SetPreset(IEnumerable<Material> mats, bool set)
@@ -553,6 +551,7 @@ namespace Thry.ThryEditor
             {
                 foreach (Material m in mats)
                 {
+                    if(m == null) continue;
                     m.SetOverrideTag(TAG_IS_PRESET, "true");
                     if (m.GetTag("presetName", false, "") == "") m.SetOverrideTag("presetName", m.name);
                     Presets.AddPreset(m);
@@ -562,6 +561,7 @@ namespace Thry.ThryEditor
             {
                 foreach (Material m in mats)
                 {
+                    if(m == null) continue;
                     m.SetOverrideTag(TAG_IS_PRESET, "");
                     Presets.RemovePreset(m);
                 }
@@ -570,7 +570,7 @@ namespace Thry.ThryEditor
 
         public static bool IsMaterialSectionedPreset(Material m)
         {
-            return m.GetTag(TAG_IS_SECTION_PRESET, false, "false") == "true";
+            return m?.GetTag(TAG_IS_SECTION_PRESET, false, "false") == "true";
         }
 
         public static void SetMaterialSectionedPreset(Material m, bool value)

@@ -2,10 +2,8 @@
 // Copyright (C) 2019 Thryrallo
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Net;
 using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;

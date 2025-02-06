@@ -32,4 +32,12 @@ MonoBehaviour:
       Math: 
       UseConditionals: 0
       ConditionalProperties: []
-  PropertyModifications: []
+  PreTranslationPropertyModifications: []
+  PostTranslationPropertyModifications:
+  - negateCondition: 1
+    shaderNameMatch: 
+    conditionOperator: 0
+    propertyModifications:
+    - actionType: 1
+      propertyName: _MainHueShiftColorSpace
+      targetValue: 1

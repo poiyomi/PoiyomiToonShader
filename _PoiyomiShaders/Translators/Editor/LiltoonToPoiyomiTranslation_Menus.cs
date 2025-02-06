@@ -10,6 +10,9 @@ namespace Poi.Tools.ShaderTranslator.Translations.Menu
     class LiltoonToPoiyomiTranslation_Menus
     {
         const string ShaderNameBase = ".poiyomi/Poiyomi";
+        const string MaterialSwapAnimationsDetectedTitle = "Material Swap Animations Detected";
+        const string MaterialSwapAnimationsDetectedMessage_Translate = "Animations that swap materials on your avatar were detected. Would you like materials inside those animations to be translated as well? This won't change your animations.\n\nAffected animations:\n{0}";
+        const string MaterialSwapAnimationsDetectedMessage_TranslateCopy = "Animations that swap materials on your avatar were detected. Would you like materials inside those animations to be duplicated and the duplicates translated? This won't change your animations.\n\nAffected animations:\n{0}";
 
         static string[] AllShaderNames
         {
@@ -187,9 +190,35 @@ namespace Poi.Tools.ShaderTranslator.Translations.Menu
             int undoIndex = Undo.GetCurrentGroup();
             Undo.SetCurrentGroupName($"Duplicate materials in all renderers of <b>{obj.name}</b> and it's children and translate them to <b>Poiyomi Toon</b>");
 
+            Material[] matSwappedMaterials = null;
+            if(PoiHelpers.TryGetAnimationsWithMaterialSwapsInAvatar(obj, out var animClipAndCurveBindings))
+            {
+                string clipNames = string.Join("\n", animClipAndCurveBindings.Keys.Select(clip => clip.name));
+                if(EditorUtility.DisplayDialog(MaterialSwapAnimationsDetectedTitle, string.Format(MaterialSwapAnimationsDetectedMessage_TranslateCopy, clipNames), "Yes", "No"))
+                {
+                    foreach(var animationAndCurveBinding in animClipAndCurveBindings)
+                    {
+                        matSwappedMaterials = PoiHelpers.GetMaterialsFromMaterialSwapCurveBindings(animationAndCurveBinding.Key, animationAndCurveBinding.Value).ToArray();
+                    }
+                }
+            }
+
             var translationCache = new Dictionary<Material, Material>();
             foreach(var renderer in obj.GetComponentsInChildren<Renderer>(true))
+            {
                 _DuplicateRendererMaterialsAndTranslate(renderer, false, translationCache);
+            }
+
+            if(matSwappedMaterials != null)
+            {
+                foreach(var material in matSwappedMaterials)
+                {
+                    if(translationCache.ContainsKey(material))
+                        continue;
+
+                    PoiHelpers.TryDuplicateMaterialAsset(material, $"{material.name}_PoiToon", out _);
+                }
+            }
 
             Undo.CollapseUndoOperations(undoIndex);
         }
@@ -213,9 +242,33 @@ namespace Poi.Tools.ShaderTranslator.Translations.Menu
             int undoIndex = Undo.GetCurrentGroup();
             Undo.SetCurrentGroupName($"Duplicate materials in all renderers of <b>{obj.name}</b> and it's children and translate them to <b>Poiyomi Pro</b>");
 
+            Material[] matSwappedMaterials = null;
+            if(PoiHelpers.TryGetAnimationsWithMaterialSwapsInAvatar(obj, out var animClipAndCurveBindings))
+            {
+                string clipNames = string.Join("\n", animClipAndCurveBindings.Keys.Select(clip => clip.name));
+                if(EditorUtility.DisplayDialog(MaterialSwapAnimationsDetectedTitle, string.Format(MaterialSwapAnimationsDetectedMessage_TranslateCopy, clipNames), "Yes", "No"))
+                {
+                    foreach(var animationAndCurveBinding in animClipAndCurveBindings)
+                    {
+                        matSwappedMaterials = PoiHelpers.GetMaterialsFromMaterialSwapCurveBindings(animationAndCurveBinding.Key, animationAndCurveBinding.Value).ToArray();
+                    }
+                }
+            }
+
             var translationCache = new Dictionary<Material, Material>();
             foreach(var renderer in obj.GetComponentsInChildren<Renderer>(true))
                 _DuplicateRendererMaterialsAndTranslate(renderer, true, translationCache);
+
+            if(matSwappedMaterials != null)
+            {
+                foreach(var material in matSwappedMaterials)
+                {
+                    if(translationCache.ContainsKey(material))
+                        continue;
+
+                    PoiHelpers.TryDuplicateMaterialAsset(material, $"{material.name}_PoiPro", out _);
+                }
+            }
 
             Undo.CollapseUndoOperations(undoIndex);
         }
@@ -301,8 +354,22 @@ namespace Poi.Tools.ShaderTranslator.Translations.Menu
 
         static void _TranslateMaterialsInObject(GameObject obj, bool isPro)
         {
-            var allMaterials = obj.GetComponentsInChildren<Renderer>(true).SelectMany(m => m.sharedMaterials).Where(m => m != null).Distinct();
-            foreach(var mat in allMaterials)
+            var allMaterials = obj.GetComponentsInChildren<Renderer>(true).SelectMany(m => m.sharedMaterials).Where(m => m != null).ToList();
+
+            if(PoiHelpers.TryGetAnimationsWithMaterialSwapsInAvatar(obj, out var animationClipsAndMatSwapCurveBindings))
+            {
+                string clipNames = string.Join("\n", animationClipsAndMatSwapCurveBindings.Keys.Select(clip => clip.name));
+                if(EditorUtility.DisplayDialog(MaterialSwapAnimationsDetectedTitle, string.Format(MaterialSwapAnimationsDetectedMessage_Translate, clipNames), "Yes", "No"))
+                {
+                    foreach(var animationAndCurveBinding in animationClipsAndMatSwapCurveBindings)
+                    {
+                        var materials = PoiHelpers.GetMaterialsFromMaterialSwapCurveBindings(animationAndCurveBinding.Key, animationAndCurveBinding.Value);
+                        allMaterials.AddRange(materials);
+                    }
+                }
+            }
+
+            foreach(var mat in allMaterials.Distinct())
                 _TranslateSelectedMaterialContext(mat, isPro);
         }
 
@@ -411,6 +478,11 @@ namespace Poi.Tools.ShaderTranslator.Translations.Menu
                 if(material == null)
                     continue;
 
+                // Skip material if it's not using liltoon
+                var translator = isPro ? ProInstance : ToonInstance;
+                if(!translator.CanTranslateMaterial(material))
+                    continue;
+
                 PoiHelpers.TryDuplicateMaterialAsset(material, $"{material.name}_{(isPro ? "PoiPro" : "PoiToon")}", out string newAssetPath);
                 var materialCopy = AssetDatabase.LoadAssetAtPath<Material>(newAssetPath);
                 _TranslateMaterial(materialCopy, isPro);
@@ -438,6 +510,11 @@ namespace Poi.Tools.ShaderTranslator.Translations.Menu
                     sharedMaterials[i] = existingMaterial;
                     continue;
                 }
+
+                // Skip material if it's not using liltoon
+                var translator = isPro ? ProInstance : ToonInstance;
+                if(!translator.CanTranslateMaterial(material))
+                    continue;
 
                 if(!PoiHelpers.TryDuplicateMaterialAsset(material, $"{material.name}_Poi{(isPro ? "Pro" : "Toon")}", out string newPath))
                     return;

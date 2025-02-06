@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Thry
 {
@@ -20,6 +18,6 @@ namespace Thry
             }
         }
 
-        public static ShaderPart transfer_group;
+        public static ShaderPart copy_part;
     }
 }

@@ -163,7 +163,7 @@ namespace Thry
         {
             if (_shaderEditor != null) return;
 
-            _shaderEditor = new ShaderEditor();
+            _shaderEditor = new ShaderEditor(){ IsCrossEditor = true };
             _materialEditor = Editor.CreateEditor(_targets.ToArray()) as MaterialEditor;
 
             // group targets by shader, take one material per shader
@@ -191,13 +191,20 @@ namespace Thry
                 }
             }
             // For each property get all materials, whos shader has this property
-            Dictionary<string, List<Material>> propertyMaterials = new Dictionary<string, List<Material>>();
+            Dictionary<string, Material[]> propertyMaterials = new Dictionary<string, Material[]>();
             foreach (string property in propertiesOrdered)
             {
-                propertyMaterials[property] = _targets.Where(t => shaderProperties[t.shader].Contains(property)).ToList();
+                propertyMaterials[property] = _targets.Where(t => shaderProperties[t.shader].Contains(property)).ToArray();
             }
             // Get MaterialProperties of all materials
-            _materialProperties = propertiesOrdered.Select(p => MaterialEditor.GetMaterialProperty(propertyMaterials[p].ToArray(), p)).ToArray();
+            _materialProperties = propertiesOrdered.Select(p => MaterialEditor.GetMaterialProperty(propertyMaterials[p], p)).ToArray();
+            Debug.Log(propertyMaterials["_EnableGrabpass"].Length);
+            MaterialProperty test = _materialProperties.Where(p => p.name == "_EnableGrabpass").First();
+            Debug.Log(test.displayName);
+            Debug.Log(test.type);
+            Debug.Log(test.flags);
+            Shader s = (test.targets[0] as Material).shader;
+            Debug.Log(string.Join(",", s.GetPropertyAttributes(s.FindPropertyIndex(test.name))));
         }
     }
 }

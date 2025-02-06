@@ -15,6 +15,7 @@ namespace Poi.Tools
         const string LockedMaterialText_Pro = "Generated shader for this locked Poiyomi Pro material is missing.\nYou can unlock this material by clicking below.";
         const string LockedMaterialText_ProMissing = "Generated shader for this locked Poiyomi Pro material is missing.\nTo unlock this material you need Poiyomi Pro which is missing from your project.";
         const string UnlockedMaterialText_ProMissing = "Poiyomi Pro material detected.\nTo use this material you need Poiyomi Pro which is missing from your project.";
+        const string UnlockedMaterialText = "Poiyomi material detected.\nNot sure what happened but you can try to switch the shader to the latest toon below.";
 
         string originalShader;
         bool isErrorShader;
@@ -118,6 +119,12 @@ namespace Poi.Tools
                     if(GUILayout.Button("More info"))
                         Application.OpenURL(PoiyomiProUrl);
                 }
+                else if(!isProMaterial)
+                {
+                    EditorGUILayout.HelpBox(UnlockedMaterialText, MessageType.Warning);
+                    if(GUILayout.Button("Switch to latest Toon"))
+                        SwitchShader(".poiyomi/Poiyomi Toon");
+                }
             }
 
             EditorGUILayout.EndVertical();
@@ -125,7 +132,14 @@ namespace Poi.Tools
 
         void SwitchShader(string shaderName)
         {
-            serializedObject.FindProperty("m_Shader").objectReferenceValue = Shader.Find(shaderName);
+            Shader shader = Shader.Find(shaderName);
+            if(!shader)
+            {
+                Debug.LogError($"Couldn't find shader {shaderName} in the project.");
+                return;
+            }
+
+            serializedObject.FindProperty("m_Shader").objectReferenceValue = shader;
             serializedObject.ApplyModifiedProperties();
             Initialize();
         }

@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Runtime.Remoting.Messaging;
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEngine;
 
 namespace Thry
@@ -23,6 +20,7 @@ namespace Thry
         private Mode _mode = Mode.None;
         private HandleMode _handleMode = HandleMode.Position;
         private Tool _previousTool;
+        private int _initalUndoGroup;
 
         public enum Mode
         {
@@ -78,17 +76,33 @@ namespace Thry
             SceneView.duringSceneGui += OnSceneGUI;
             Selection.selectionChanged += OnSelectionChange;
             _isActive = true;
+
+            _initalUndoGroup = Undo.GetCurrentGroup();
         }
 
-        public void Deactivate() 
+        public void Deactivate(bool discardChanges) 
         {
             if(!_isActive) return;
             SceneView.duringSceneGui -= OnSceneGUI;
             Selection.selectionChanged -= OnSelectionChange;
             Tools.current = _previousTool;
             _isActive = false;
+
+            if(discardChanges)
+            {
+                Undo.RevertAllDownToGroup(_initalUndoGroup);
+            }else if(_mode == Mode.Raycast)
+            {
+                Undo.SetCurrentGroupName("Apply Decal Raycast Tool");
+                Undo.CollapseUndoOperations(_initalUndoGroup);
+            }
+            if(Undo.GetCurrentGroup() != _initalUndoGroup + 1)
+            {
+                Undo.SetCurrentGroupName("Apply Decal Scene Tool");
+                Undo.CollapseUndoOperations(_initalUndoGroup);
+            }
+
             _mode = Mode.None;
-            
         }
 
         public Mode GetMode()
@@ -98,16 +112,17 @@ namespace Thry
 
         void OnSelectionChange() 
         {
-            this.Deactivate();
+            this.Deactivate(false);
         }
 
         void Init()
         {
             GetMesh();
 
-            _uvTriangles = new Vector2[_mesh.triangles.Length / 3][];
-            _worldTriangles = new Vector3[_mesh.triangles.Length / 3][];
-            _worldNormals = new Vector3[_mesh.triangles.Length / 3][];
+            int meshTriangleLength = _mesh.triangles.Length;
+            _uvTriangles = new Vector2[meshTriangleLength / 3][];
+            _worldTriangles = new Vector3[meshTriangleLength / 3][];
+            _worldNormals = new Vector3[meshTriangleLength / 3][];
             int[] triangles = _mesh.triangles;
             Vector2[] uvs;
             if(_uvIndex == 1) uvs = _mesh.uv2;
@@ -118,6 +133,9 @@ namespace Thry
             Transform root = _renderer.transform;
             Vector3 inverseScale = new Vector3(1.0f / root.lossyScale.x, 1.0f / root.lossyScale.y, 1.0f / root.lossyScale.z);
             bool isSMR = _renderer is SkinnedMeshRenderer;
+
+            Vector3[] meshNormals = _mesh.normals; // Repeatedly accessing _mesh.normals in a loop is veeeery slow
+            
             for(int i = 0; i < triangles.Length; i += 3)
             {
                 _uvTriangles[i / 3] = new Vector2[3];
@@ -129,12 +147,12 @@ namespace Thry
                     if(isSMR)
                     {
                         _worldTriangles[i / 3][j] = root.TransformPoint(Vector3.Scale(vertices[triangles[i + j]], inverseScale));
-                        _worldNormals[i / 3][j] = root.TransformDirection(_mesh.normals[triangles[i + j]]);
+                        _worldNormals[i / 3][j] = root.TransformDirection(meshNormals[triangles[i + j]]);
                     }
                     else
                     {
                         _worldTriangles[i / 3][j] = root.TransformPoint(vertices[triangles[i + j]]);
-                        _worldNormals[i / 3][j] = _mesh.normals[triangles[i + j]];
+                        _worldNormals[i / 3][j] = meshNormals[triangles[i + j]];
                     }
                 }
             }
@@ -142,6 +160,11 @@ namespace Thry
 
         private void OnSceneGUI(SceneView sceneView) 
         {
+            if(Event.current.type == EventType.KeyUp && Event.current.keyCode == KeyCode.Escape)
+            {
+                Deactivate(true);
+                return;
+            }
             switch(_mode)
             {
                 case Mode.Raycast:
@@ -171,7 +194,7 @@ namespace Thry
             if(Event.current.type == EventType.MouseDown && Event.current.button == 0)
             {
                 Event.current.Use();
-                Deactivate();
+                Deactivate(false);
             }
         }
 

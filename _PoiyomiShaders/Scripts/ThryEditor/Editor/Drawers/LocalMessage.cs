@@ -1,11 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
 using UnityEditor;
 using UnityEngine;
-using static Thry.GradientEditor;
-using static Thry.TexturePacker;
 
 namespace Thry
 {
@@ -43,7 +37,7 @@ namespace Thry
 
         public override float GetPropertyHeight(MaterialProperty prop, string label, MaterialEditor editor)
         {
-            DrawingData.LastPropertyUsedCustomDrawer = true;
+            ShaderProperty.RegisterDrawer(this);
             return 0;
         }
     }

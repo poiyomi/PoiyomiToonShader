@@ -1,13 +1,9 @@
 using JetBrains.Annotations;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using Thry.ThryEditor;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.UIElements;
+using static UnityEditor.MaterialProperty;
 
 namespace Thry
 {
@@ -18,14 +14,14 @@ namespace Thry
         protected bool _doDrawTwoFields = false;
 
         //Done for e.g. Vectors cause they draw in 2 lines for some fucking reasons
-        public bool DoCustomHeightOffset { protected set; get; } = false;
-        public float CustomHeightOffset { protected set; get; } = 0;
+        private bool _doCustomHeightOffset { set; get; } = false;
+        private float _customHeightOffset { set; get; } = 0;
 
         public string Keyword { private set; get; }
 
-        protected MaterialPropertyDrawer[] _customDecorators;
+        protected List<MaterialPropertyDrawer> _customDecorators = new List<MaterialPropertyDrawer>();
         protected Rect[] _customDecoratorRects;
-        protected bool _hasDrawer = false;
+        protected MaterialPropertyDrawer _drawer = null;
 
         bool _needsDrawerInitlization = true;
 
@@ -61,7 +57,7 @@ namespace Thry
             set
             {
                 MaterialProperty.SetNumber(value);
-                if (Keyword != null) SetKeyword(ShaderEditor.Active.Materials, MaterialProperty.GetNumber() == 1);
+                if (Keyword != null) SetKeywordState(ShaderEditor.Active.Materials, MaterialProperty.GetNumber() == 1);
                 ExecuteOnValueActions(ShaderEditor.Active.Materials);
                 MaterialEditor.ApplyMaterialPropertyDrawers(ShaderEditor.Active.Materials);
             }
@@ -111,47 +107,107 @@ namespace Thry
             }
         }
 
-        public override void CopyFromMaterial(Material m, bool isTopCall = false)
+        public enum DrawerType{ None, Toggle, Slider }
+        [PublicAPI]
+        public DrawerType GetDrawerType()
         {
-            MaterialHelper.CopyPropertyValueFromMaterial(MaterialProperty, m);
-            CopyReferencePropertiesFromMaterial(m);
+            if (_drawer == null) return DrawerType.None;
+            if (_drawer.GetType().Name.IndexOf("Toggle", StringComparison.OrdinalIgnoreCase) != -1) return DrawerType.Toggle;
+            if (_drawer.GetType().Name.IndexOf("Slider", StringComparison.OrdinalIgnoreCase) != -1) return DrawerType.Slider;
+            return DrawerType.None;
+        }
 
-            if (Keyword != null) SetKeyword(ActiveShaderEditor.Materials, m.GetNumber(MaterialProperty) == 1);
+        public override void CopyFrom(Material src, bool applyDrawers = true, bool deepCopy = true, HashSet<PropType> skipPropertyTypes = null, HashSet<string> skipPropertyNames = null)
+        {
+            if(skipPropertyTypes?.Contains(MaterialProperty.type) == true) return;
+            if(skipPropertyNames?.Contains(MaterialProperty.name) == true) return;
+
+            MaterialHelper.CopyValue(src, MaterialProperty);
+            CopyReferencePropertiesFrom(src, skipPropertyTypes, skipPropertyNames);
+
+            if (Keyword != null) SetKeywordState(MyShaderUI.Materials, src.GetNumber(MaterialProperty) == 1);
             if (IsAnimatable)
             {
-                ShaderOptimizer.CopyAnimatedTagFromMaterial(m, MaterialProperty);
+                ShaderOptimizer.CopyAnimatedTag(src, MaterialProperty);
+                UpdateIsAnimatedFromTag();
             }
-            this.IsAnimated = IsAnimatable && ShaderOptimizer.GetAnimatedTag(MaterialProperty) != "";
-            this.IsRenaming = IsAnimatable && ShaderOptimizer.GetAnimatedTag(MaterialProperty) == "2";
 
             ExecuteOnValueActions(ShaderEditor.Active.Materials);
-
-            if (isTopCall) ActiveShaderEditor.ApplyDrawers();
+            RaisePropertyValueChanged();
+            if (applyDrawers) MyShaderUI.ApplyDrawers();
         }
 
-        public override void CopyToMaterial(Material m, bool isTopCall = false, MaterialProperty.PropType[] skipPropertyTypes = null)
+        public override void CopyFrom(ShaderPart srcPart, bool applyDrawers = true, bool deepCopy = true, HashSet<PropType> skipPropertyTypes = null, HashSet<string> skipPropertyNames = null)
         {
-            if (ShouldSkipProperty(MaterialProperty, skipPropertyTypes)) return;
+            if(skipPropertyTypes?.Contains(MaterialProperty.type) == true) return;
+            if(skipPropertyNames?.Contains(MaterialProperty.name) == true) return;
+            if(skipPropertyNames?.Contains(srcPart.MaterialProperty.name) == true) return;
+            if (srcPart is ShaderProperty == false) return;
+            ShaderProperty src = srcPart as ShaderProperty;
 
-            MaterialHelper.CopyPropertyValueToMaterial(MaterialProperty, m);
-            CopyReferencePropertiesToMaterial(m);
+            MaterialHelper.CopyValue(src.MaterialProperty, MaterialProperty);
+            CopyReferencePropertiesFrom(src, skipPropertyTypes, skipPropertyNames);
 
-            if (Keyword != null) SetKeyword(m, MaterialProperty.GetNumber() == 1);
+            if (Keyword != null) SetKeywordState(MyShaderUI.Materials, (src.MaterialProperty.targets[0] as Material).GetNumber(MaterialProperty) == 1);
             if (IsAnimatable)
-                ShaderOptimizer.CopyAnimatedTagToMaterials(new Material[] { m }, MaterialProperty);
+            {
+                ShaderOptimizer.CopyAnimatedTag(src.MaterialProperty, MaterialProperty);
+                UpdateIsAnimatedFromTag();
+            }
 
-            ExecuteOnValueActions(new Material[] { m });
-
-            if (isTopCall) MaterialEditor.ApplyMaterialPropertyDrawers(m);
+            ExecuteOnValueActions(ShaderEditor.Active.Materials);
+            RaisePropertyValueChanged();
+            if (applyDrawers) MyShaderUI.ApplyDrawers();
         }
 
-        private void SetKeyword(Material[] materials, bool enabled)
+        public override void CopyTo(Material[] targets, bool applyDrawers = true, bool deepCopy = true, HashSet<PropType> skipPropertyTypes = null, HashSet<string> skipPropertyNames = null)
+        {
+            if(skipPropertyTypes?.Contains(MaterialProperty.type) == true) return;
+            if(skipPropertyNames?.Contains(MaterialProperty.name) == true) return;
+
+            MaterialHelper.CopyValue(MaterialProperty, targets);
+            CopyReferencePropertiesTo(targets, skipPropertyTypes, skipPropertyNames);
+
+            if (Keyword != null) SetKeywordState(targets, MaterialProperty.GetNumber() == 1);
+            if (IsAnimatable)
+            {
+                ShaderOptimizer.CopyAnimatedTag(MaterialProperty, targets);
+            }
+
+            ExecuteOnValueActions(targets);
+
+            if (applyDrawers) MaterialEditor.ApplyMaterialPropertyDrawers(targets);
+        }
+
+        public override void CopyTo(ShaderPart targetPart, bool applyDrawers = true, bool deepCopy = true, HashSet<PropType> skipPropertyTypes = null, HashSet<string> skipPropertyNames = null)
+        {
+            if(skipPropertyTypes?.Contains(MaterialProperty.type) == true) return;
+            if(skipPropertyNames?.Contains(MaterialProperty.name) == true) return;
+            if(skipPropertyNames?.Contains(targetPart.MaterialProperty.name) == true) return;
+            if (targetPart is ShaderProperty == false) return;
+            ShaderProperty target = targetPart as ShaderProperty;
+
+            MaterialHelper.CopyValue(MaterialProperty, target.MaterialProperty);
+            CopyReferencePropertiesTo(target, skipPropertyTypes, skipPropertyNames);
+
+            if (Keyword != null) SetKeywordState(target.MaterialProperty.targets as Material[], MaterialProperty.GetNumber() == 1);
+            if (IsAnimatable)
+            {
+                ShaderOptimizer.CopyAnimatedTag(MaterialProperty, target.MaterialProperty.targets as Material[]);
+            }
+
+            target.ExecuteOnValueActions(target.MaterialProperty.targets as Material[]);
+            target.RaisePropertyValueChanged();
+            if (applyDrawers) MaterialEditor.ApplyMaterialPropertyDrawers(target.MaterialProperty.targets as Material[]);
+        }
+
+        private void SetKeywordState(Material[] materials, bool enabled)
         {
             if (enabled) foreach (Material m in materials) m.EnableKeyword(Keyword);
             else foreach (Material m in materials) m.DisableKeyword(Keyword);
         }
 
-        private void SetKeyword(Material m, bool enabled)
+        private void SetKeywordState(Material m, bool enabled)
         {
             if (enabled) m.EnableKeyword(Keyword);
             else m.DisableKeyword(Keyword);
@@ -159,29 +215,50 @@ namespace Thry
 
         public void UpdateKeywordFromValue()
         {
-            if (Keyword != null) SetKeyword(ActiveShaderEditor.Materials, MaterialProperty.GetNumber() == 1);
+            if (Keyword != null) SetKeywordState(MyShaderUI.Materials, MaterialProperty.GetNumber() == 1);
+        }
+
+        private static ShaderProperty _activeProperty;
+        public static void RegisterDrawer(MaterialPropertyDrawer drawer)
+        {
+            if(_activeProperty == null) return;
+            _activeProperty._drawer = drawer;
+        }
+        public static void RegisterDecorator(MaterialPropertyDrawer drawer)
+        {
+            if(_activeProperty == null) return;
+            if(_activeProperty._customDecorators.Contains(drawer) == false)
+            {
+                _activeProperty._customDecorators.Add(drawer);
+                _activeProperty._customDecoratorRects = new Rect[_activeProperty._customDecorators.Count];
+            }
+        }
+        public static void DisallowAnimation()
+        {
+            if(_activeProperty == null) return;
+            _activeProperty.IsAnimatable = false;
         }
 
         void InitializeDrawers()
         {
-            DrawingData.ResetLastDrawerData();
-            DrawingData.IsCollectingProperties = true;
-            ShaderEditor.Active.Editor.GetPropertyHeight(MaterialProperty, MaterialProperty.displayName);
-
-            this.IsAnimatable = !DrawingData.LastPropertyDoesntAllowAnimation && IsAnimatable; // &&, so that IsAnimatable can be set to false before InitializeDrawers
-            this._hasDrawer = DrawingData.LastPropertyUsedCustomDrawer;
+            if(!_needsDrawerInitlization) return;
+            if(MaterialProperty == null) return;
+            _needsDrawerInitlization = false;
+            // Makes Drawers and Decorators Register themself
+            _activeProperty = this;
+            MyMaterialEditor.GetPropertyHeight(MaterialProperty, MaterialProperty.displayName);
+            _activeProperty = null;
 
             if (MaterialProperty.type == MaterialProperty.PropType.Vector && _doForceIntoOneLine == false)
             {
-                this.DoCustomHeightOffset = !DrawingData.LastPropertyUsedCustomDrawer;
-                this.CustomHeightOffset = -EditorGUIUtility.singleLineHeight;
+                this._doCustomHeightOffset = _drawer == null;
+                this._customHeightOffset = -EditorGUIUtility.singleLineHeight;
             }
-            if (DrawingData.LastPropertyDecorators.Count > 0)
-            {
-                _customDecorators = DrawingData.LastPropertyDecorators.ToArray();
-                _customDecoratorRects = new Rect[DrawingData.LastPropertyDecorators.Count];
-            }
+            UpdateIsAnimatedFromTag();
+        }
 
+        private void UpdateIsAnimatedFromTag()
+        {
             // Animatable Stuff
             bool propHasDuplicate = ShaderEditor.Active.GetMaterialProperty(MaterialProperty.name + "_" + ShaderEditor.Active.RenamedPropertySuffix) != null;
             string tag = null;
@@ -206,37 +283,32 @@ namespace Thry
 
             this.IsAnimated = IsAnimatable && tag != "";
             this.IsRenaming = IsAnimatable && tag == "2";
-
-            DrawingData.IsCollectingProperties = false;
         }
 
-        public override void DrawInternal(GUIContent content, Rect? rect = null, bool useEditorIndent = false, bool isInHeader = false)
+        protected override void DrawInternal(GUIContent content, Rect? rect = null, bool useEditorIndent = false, bool isInHeader = false)
         {
-            ActiveShaderEditor.CurrentProperty = this;
-            UpdatedMaterialPropertyReference();
-
-            if (_needsDrawerInitlization)
-            {
-                InitializeDrawers();
-                _needsDrawerInitlization = false;
-            }
-
+            if(content == null)
+                content = GUIContent.none;
+            
+            MyShaderUI.CurrentProperty = this;
+            InitializeDrawers();
             PreDraw();
-            if (ActiveShaderEditor.IsLockedMaterial)
+            if (MyShaderUI.IsLockedMaterial)
                 EditorGUI.BeginDisabledGroup(!(IsAnimatable && (IsAnimated || IsRenaming)) && !IsExemptFromLockedDisabling);
 
             int oldIndentLevel = EditorGUI.indentLevel;
             if (!useEditorIndent)
                 EditorGUI.indentLevel = XOffset + 1;
 
-            if (_customDecorators != null && _doCustomDrawLogic)
+            if (_customDecoratorRects != null && _doCustomDrawLogic)
             {
-                for (int i = 0; i < _customDecorators.Length; i++)
+                for (int i = 0; i < _customDecoratorRects.Length; i++)
                 {
-                    _customDecoratorRects[i] = EditorGUILayout.GetControlRect(false, GUILayout.Height(_customDecorators[i].GetPropertyHeight(MaterialProperty, content.text, ActiveShaderEditor.Editor)));
+                    _customDecoratorRects[i] = EditorGUILayout.GetControlRect(false, GUILayout.Height(_customDecorators[i].GetPropertyHeight(MaterialProperty, content.text, MyMaterialEditor)));
                 }
             }
 
+            EditorGUI.BeginChangeCheck();
             if (_doCustomDrawLogic)
             {
                 DrawDefault();
@@ -246,74 +318,79 @@ namespace Thry
                 Rect r = GUILayoutUtility.GetRect(content, Styles.vectorPropertyStyle);
                 float labelWidth = (r.width - EditorGUIUtility.labelWidth) / 2; ;
                 r.width -= labelWidth;
-                ActiveShaderEditor.Editor.ShaderProperty(r, this.MaterialProperty, content);
+                MyMaterialEditor.ShaderProperty(r, this.MaterialProperty, content);
 
                 r.x += r.width;
                 r.width = labelWidth;
                 float prevLabelW = EditorGUIUtility.labelWidth;
                 EditorGUIUtility.labelWidth = 0;
-                ActiveShaderEditor.PropertyDictionary[Options.reference_property].Draw(r, new GUIContent());
+                MyShaderUI.PropertyDictionary[Options.reference_property].Draw(r, new GUIContent());
                 EditorGUIUtility.labelWidth = prevLabelW;
             }
             else if (_doForceIntoOneLine)
             {
-                ActiveShaderEditor.Editor.ShaderProperty(GUILayoutUtility.GetRect(content, Styles.vectorPropertyStyle), this.MaterialProperty, content);
+                MyMaterialEditor.ShaderProperty(GUILayoutUtility.GetRect(content, Styles.vectorPropertyStyle), this.MaterialProperty, content);
             }
-            else if (DoCustomHeightOffset)
+            else if (_doCustomHeightOffset)
             {
-                ActiveShaderEditor.Editor.ShaderProperty(
-                    GUILayoutUtility.GetRect(EditorGUIUtility.currentViewWidth, ActiveShaderEditor.Editor.GetPropertyHeight(this.MaterialProperty, content.text) + CustomHeightOffset)
+                MyMaterialEditor.ShaderProperty(
+                    GUILayoutUtility.GetRect(EditorGUIUtility.currentViewWidth, MyMaterialEditor.GetPropertyHeight(this.MaterialProperty, content.text) + _customHeightOffset)
                     , this.MaterialProperty, content);
             }
             else if (rect != null)
             {
                 // Custom Drawing for Range, because it doesnt draw correctly if inside the big texture property
-                if (!_hasDrawer && MaterialProperty.type == MaterialProperty.PropType.Range)
+                if (_drawer == null && MaterialProperty.type == MaterialProperty.PropType.Range)
                 {
                     MaterialProperty.floatValue = EditorGUI.Slider(rect.Value, content, MaterialProperty.floatValue, 0, MaterialProperty.rangeLimits.y);
                 }
                 else
                 {
-                    ActiveShaderEditor.Editor.ShaderProperty(rect.Value, this.MaterialProperty, content);
+                    MyMaterialEditor.ShaderProperty(rect.Value, this.MaterialProperty, content);
                 }
             }
             else
             {
-                ActiveShaderEditor.Editor.ShaderProperty(this.MaterialProperty, content);
+                MyMaterialEditor.ShaderProperty(this.MaterialProperty, content);
             }
 
             if (_customDecorators != null && _doCustomDrawLogic)
             {
-                for (int i = 0; i < _customDecorators.Length; i++)
+                for (int i = 0; i < _customDecorators.Count; i++)
                 {
-                    _customDecorators[i].OnGUI(_customDecoratorRects[i], MaterialProperty, content, ShaderEditor.Active.Editor);
+                    _customDecorators[i].OnGUI(_customDecoratorRects[i], MaterialProperty, content, MyMaterialEditor);
                 }
+            }
+
+            if(EditorGUI.EndChangeCheck())
+            {
+                Undo.SetCurrentGroupName($"Modify {content.text} of {ShaderEditor.Active.TargetName}");
+                RaisePropertyValueChanged();
+                ExecuteOnValueActions(ShaderEditor.Active.Materials);
+                AutomaticAnimatedMarking();
             }
 
             EditorGUI.indentLevel = oldIndentLevel;
             if (rect == null) DrawingData.LastGuiObjectRect = GUILayoutUtility.GetLastRect();
             else DrawingData.LastGuiObjectRect = rect.Value;
-            if (ActiveShaderEditor.IsLockedMaterial)
+            if (MyShaderUI.IsLockedMaterial)
                 EditorGUI.EndDisabledGroup();
         }
 
-        public virtual void PreDraw() { }
-
-        public virtual void DrawDefault() { }
-
-        public override void TransferFromMaterialAndGroup(Material m, ShaderPart p, bool isTopCall = false, MaterialProperty.PropType[] skipPropertyTypes = null)
+        private void AutomaticAnimatedMarking()
         {
-            if (ShouldSkipProperty(p.MaterialProperty, skipPropertyTypes)) return;
-            if (MaterialProperty.type != p.MaterialProperty.type) return;
-            MaterialHelper.CopyMaterialValueFromProperty(MaterialProperty, p.MaterialProperty);
-            if (Keyword != null) SetKeyword(ActiveShaderEditor.Materials, m.GetNumber(p.MaterialProperty) == 1);
-            if (IsAnimatable && p.IsAnimatable)
-                ShaderOptimizer.CopyAnimatedTagFromProperty(p.MaterialProperty, MaterialProperty);
-            this.IsAnimated = IsAnimatable && ShaderOptimizer.GetAnimatedTag(MaterialProperty) != "";
-            this.IsRenaming = IsAnimatable && ShaderOptimizer.GetAnimatedTag(MaterialProperty) == "2";
-
-            if (isTopCall) ActiveShaderEditor.ApplyDrawers();
+            if (MyShaderUI.ActiveRenderer != null && MyShaderUI.IsInAnimationMode && IsAnimatable && !IsAnimated)
+            {
+                if (MaterialProperty.type == MaterialProperty.PropType.Texture ?
+                    AnimationMode.IsPropertyAnimated(MyShaderUI.ActiveRenderer, "material." + MaterialProperty.name + "_ST.x") :
+                    AnimationMode.IsPropertyAnimated(MyShaderUI.ActiveRenderer, "material." + MaterialProperty.name))
+                    SetAnimated(true, false);
+            }
         }
+
+        protected virtual void PreDraw() { }
+
+        protected virtual void DrawDefault() { }
 
         public override void FindUnusedTextures(List<string> unusedList, bool isEnabled)
         {
@@ -325,6 +402,13 @@ namespace Thry
             {
                 unusedList.Add(MaterialProperty.name);
             }
+        }
+
+        public override bool Search(string searchTerm, List<ShaderGroup> foundHeaders, bool isParentInSearch = false)
+        {
+            return isParentInSearch
+                || this.Content.text.IndexOf(searchTerm, System.StringComparison.OrdinalIgnoreCase) >= 0
+                || this.MaterialProperty?.name.IndexOf(searchTerm, System.StringComparison.OrdinalIgnoreCase) >= 0;
         }
     }
 

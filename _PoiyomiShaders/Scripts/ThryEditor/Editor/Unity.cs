@@ -1,7 +1,6 @@
 ﻿// Material/Shader Inspector for Unity 2017/2018
 // Copyright (C) 2019 Thryrallo
 
-using JetBrains.Annotations;
 using System;
 using System.Collections.Generic;
 using System.IO;

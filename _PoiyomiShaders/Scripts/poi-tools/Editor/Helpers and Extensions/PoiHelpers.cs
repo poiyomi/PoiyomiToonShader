@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
-using Thry;
 using UnityEditor;
 using UnityEngine;
 
 namespace Poi.Tools
 {
+    //TODO: Split these into separate classes
     public static class PoiHelpers
     {
         static readonly string suffixSeparator = "_";
@@ -147,6 +148,12 @@ namespace Poi.Tools
         }
         static HashSet<char> _illegalFilenameChars;
 
+        /// <summary>
+        /// Replace all illegal filename characters (as returned by Path.GetInvalidFileNameChars()) with <paramref name="replacement"/>
+        /// </summary>
+        /// <param name="original">Original filename</param>
+        /// <param name="replacement"></param>
+        /// <returns></returns>
         public static string ReplaceIllegalFilenameCharacters(string original, char replacement = '_')
         {
             var sb = new StringBuilder();
@@ -197,71 +204,75 @@ namespace Poi.Tools
             }
         }
 
+        /// <summary>
+        /// Is this a built in unity asset?
+        /// </summary>
+        /// <param name="asset">The asset to check</param>
+        /// <returns>True if path is not empty and starts with Resources/unity_builtin_extra</returns>
         public static bool IsDefaultAsset(UnityEngine.Object asset)
         {
             string path = AssetDatabase.GetAssetPath(asset);
             return IsDefaultAssetPath(path);
         }
 
+        /// <summary>
+        /// Is this the path of built in unity asset?
+        /// </summary>
+        /// <param name="assetPath">The path to check</param>
+        /// <returns>True if path is not empty and starts with Resources/unity_builtin_extra</returns>
         public static bool IsDefaultAssetPath(string assetPath)
         {
             return !string.IsNullOrWhiteSpace(assetPath) && assetPath.StartsWith("Resources/unity_builtin_extra");
         }
-    }
-
-    public static class PoiExtensions
-    {
-        public static Shader PackerShader => Shader.Find("Hidden/Poi/TexturePacker");
-
-        public static Shader UnpackerShader => Shader.Find("Hidden/Poi/TextureUnpacker");
 
         /// <summary>
-        /// Extension method that bakes a material to <paramref name="tex"/>
+        /// Get material swap animations in avatar
         /// </summary>
-        /// <param name="tex">Texture to bake <paramref name="materialToBake"/> to</param>
-        /// <param name="materialToBake">Material to bake to <paramref name="tex"/></param>
-        public static void BakeMaterialToTexture(this Texture2D tex, Material materialToBake)
+        /// <param name="gameObject">Avatar game object</param>
+        /// <param name="animationClipAndMaterialSwapCurveBindings">A dictionary of animation clips and an array of curves that swap a material for each.</param>
+        /// <returns>True if <paramref name="animationClipAndMaterialSwapCurveBindings"/>has any materials</returns>
+        public static bool TryGetAnimationsWithMaterialSwapsInAvatar(GameObject gameObject, out Dictionary<AnimationClip, EditorCurveBinding[]> animationClipAndMaterialSwapCurveBindings)
         {
-            var res = new Vector2Int(tex.width, tex.height);
+            animationClipAndMaterialSwapCurveBindings = new Dictionary<AnimationClip, EditorCurveBinding[]>();
+            if(gameObject == null)
+                return false;
 
-            RenderTexture renderTexture = RenderTexture.GetTemporary(res.x, res.y);
-            Graphics.Blit(null, renderTexture, materialToBake);
+            var allAnimators = gameObject.GetComponentsInChildren<Animator>(true)
+                .Select(anim => anim.runtimeAnimatorController)
+                .Where(ctrl => ctrl != null);
 
-            //transfer image from rendertexture to texture
-            RenderTexture.active = renderTexture;
-            tex.ReadPixels(new Rect(Vector2.zero, res), 0, 0);
-            tex.Apply(false, false);
+            var runtimeControllers = new List<RuntimeAnimatorController>(allAnimators);
 
-            //clean up variables
-            RenderTexture.active = null;
-            RenderTexture.ReleaseTemporary(renderTexture);
-        }
-
-        /// <summary>
-        /// Rounds vector to closest power of two. Optionally, if above ceiling, square root down by one power of two
-        /// </summary>
-        /// <param name="vec"></param>
-        /// <param name="ceiling">Power of two ceiling. Will be rounded to power of two if not power of two already</param>
-        /// <returns></returns>
-        public static Vector2Int ClosestPowerOfTwo(this Vector2Int vec, int? ceiling = null)
-        {
-            int x = Mathf.ClosestPowerOfTwo(vec.x);
-            int y = Mathf.ClosestPowerOfTwo(vec.y);
-
-            if(ceiling != null)
+#if VRC_SDK_VRCSDK3 && !UDON
+            var descriptor = gameObject.GetComponent<VRC.SDK3.Avatars.Components.VRCAvatarDescriptor>();
+            if(descriptor && descriptor.customizeAnimationLayers)
             {
-                int ceil = Mathf.ClosestPowerOfTwo((int) ceiling);
+                runtimeControllers.AddRange(descriptor.baseAnimationLayers.Select(layer => layer.animatorController).Where(ctrl => ctrl != null));
+                runtimeControllers.AddRange(descriptor.specialAnimationLayers.Select(layer => layer.animatorController).Where(ctrl => ctrl != null));
+            }
+#endif
+            var allAnimationClips = allAnimators
+                .SelectMany(anim => anim.animationClips)
+                .Where(anim => anim != null)
+                .Distinct();
 
-                x = Mathf.Clamp(x, x, ceil);
-                y = Mathf.Clamp(y, y, ceil);
+            foreach(var clip in allAnimationClips)
+            {
+                var bindings = AnimationUtility.GetObjectReferenceCurveBindings(clip);
+                var matSwapBindings = bindings
+                    .Where(b => typeof(Renderer).IsAssignableFrom(b.type) && b.propertyName.StartsWith("m_Materials.Array.data")).ToArray();
+
+                if(matSwapBindings != null && matSwapBindings.Length > 0)
+                    animationClipAndMaterialSwapCurveBindings[clip] = matSwapBindings;
             }
 
-            return new Vector2Int(x, y);
+            return animationClipAndMaterialSwapCurveBindings.Keys.Count > 0;
         }
 
-        public static string SanitizePathString(this string path)
+        public static IEnumerable<Material> GetMaterialsFromMaterialSwapCurveBindings(AnimationClip animationClip, EditorCurveBinding[] materialSwapCurveBindings)
         {
-            return PoiHelpers.ReplaceIllegalFilenameCharacters(path);
+            var matSwapKeyframes = materialSwapCurveBindings.SelectMany(binding => AnimationUtility.GetObjectReferenceCurve(animationClip, binding));
+            return matSwapKeyframes.Select(frame => frame.value as Material).Distinct();
         }
     }
 }

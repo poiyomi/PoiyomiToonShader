@@ -3,13 +3,11 @@
 
 using System.Collections.Generic;
 using System.IO;
-using System.Text.RegularExpressions;
 using UnityEditor;
 using UnityEngine;
 using System;
 using System.Linq;
 using Thry.ThryEditor;
-using System.Reflection;
 using static Thry.UnityHelper;
 using Thry.ThryEditor.ShaderTranslations;
 using JetBrains.Annotations;
@@ -19,24 +17,20 @@ namespace Thry
     public class ShaderEditor : ShaderGUI
     {
         public const string EXTRA_OPTIONS_PREFIX = "--";
-        public const float MATERIAL_NOT_RESET = 69.12f;
-
         public const string PROPERTY_NAME_MASTER_LABEL = "shader_master_label";
-        public const string PROPERTY_NAME_LABEL_FILE = "shader_properties_label_file";
         public const string PROPERTY_NAME_LOCALE = "shader_locale";
         public const string PROPERTY_NAME_ON_SWAP_TO_ACTIONS = "shader_on_swap_to";
         public const string PROPERTY_NAME_SHADER_VERSION = "shader_version";
-        public const string PROPERTY_NAME_EDITOR_DETECT = "shader_is_using_thry_editor";
         public const string PROPERTY_NAME_IN_SHADER_PRESETS = "_Mode";
 
         //Static
         private static string s_edtiorDirectoryPath;
 
         public static InputEvent Input = new InputEvent();
-        public static ShaderEditor Active;
+        public static ShaderEditor Active { get; private set; }
 
         // Stores the different shader properties
-        public ShaderGroup MainGroup;
+        private ShaderGroup _mainGroup;
         private RenderQueueProperty _renderQueueProperty;
         private VRCFallbackProperty _vRCFallbackProperty;
 
@@ -44,6 +38,7 @@ namespace Thry
 
         private string _enteredSearchTerm = "";
         private string _appliedSearchTerm = "";
+        public bool IsInSearchMode { private set; get; } = false;
 
         // shader specified values
         private ShaderHeaderProperty _shaderHeader = null;
@@ -51,29 +46,32 @@ namespace Thry
 
         // sates
         private bool _isFirstOnGUICall = true;
-        private bool _wasUsed = false;
         private bool _doReloadNextDraw = false;
         private bool _didSwapToShader = false;
+        private bool _didRegisterCallbacks = false;
 
         //EditorData
-        public MaterialEditor Editor;
-        public MaterialProperty[] Properties;
-        public Material[] Materials;
-        public Shader Shader;
-        public Shader LastShader;
-        public ShaderPart CurrentProperty;
-        public Dictionary<string, ShaderProperty> PropertyDictionary;
-        public List<ShaderPart> ShaderParts;
-        public List<ShaderProperty> TextureArrayProperties;
-        public bool IsFirstCall;
         public bool DoUseShaderOptimizer;
-        public bool IsLockedMaterial;
-        public bool IsInAnimationMode;
-        public Renderer ActiveRenderer;
         public string RenamedPropertySuffix;
         public bool HasCustomRenameSuffix;
-        public Localization Locale;
-        public ShaderTranslator SuggestedTranslationDefinition;
+        public bool IsLockedMaterial;
+        public bool IsCrossEditor = false;
+
+        public MaterialEditor Editor { get; private set; }
+        public MaterialProperty[] Properties { get; private set; }
+        public Material[] Materials { get; private set; }
+        public Shader Shader { get; private set; }
+        public ShaderImporter ImporterShader { get; private set; }
+        public Shader LastShader { get; private set; }
+        public ShaderPart CurrentProperty;
+        public Dictionary<string, ShaderProperty> PropertyDictionary { get; private set; }
+        public List<ShaderPart> ShaderParts { get; private set; }
+        public List<ShaderProperty> TextureArrayProperties { get; private set; }
+        public bool IsFirstCall { get; private set; }
+        public bool IsInAnimationMode { get; private set; }
+        public Renderer ActiveRenderer { get; private set; }
+        public Localization Locale { get; private set; }
+        public ShaderTranslator SuggestedTranslationDefinition { get; private set; }
         private string _duplicatePropertyNamesString = null;
 
         //Shader Versioning
@@ -126,41 +124,70 @@ namespace Thry
             }
         }
 
-        //-------------Init functions--------------------
-
-        private Dictionary<string, string> LoadDisplayNamesFromFile()
+        public string TargetName
         {
-            //load display names from file if it exists
-            MaterialProperty label_file_property = GetMaterialProperty(PROPERTY_NAME_LABEL_FILE);
-            Dictionary<string, string> labels = new Dictionary<string, string>();
-            if (label_file_property != null)
+            get
             {
-                string[] guids = AssetDatabase.FindAssets(label_file_property.displayName);
-                if (guids.Length == 0)
+                if(Materials.Length == 1)
                 {
-                    Debug.LogWarning("Label File could not be found");
-                    return labels;
+                    return Materials[0].name;
                 }
-                string path = AssetDatabase.GUIDToAssetPath(guids[0]);
-                string[] data = Regex.Split(Thry.FileHelper.ReadFileIntoString(path), @"\r?\n");
-                foreach (string d in data)
-                {
-                    string[] set = Regex.Split(d, ":=");
-                    if (set.Length > 1) labels[set[0]] = set[1];
-                }
+                return $"{Materials.Length} Materials";
             }
-            return labels;
         }
+
+        public void SetShader(Shader shader, Shader lastShader = null)
+        {
+            Shader = shader;
+            LastShader = lastShader;
+            ImporterShader = ShaderImporter.GetAtPath(AssetDatabase.GetAssetPath(Shader)) as ShaderImporter;
+        }
+
+        // Needed for the CrossEditor
+        static Dictionary<Shader, ShaderImporter> s_shaderImporterCache = new Dictionary<Shader, ShaderImporter>();
+        public ShaderImporter GetShaderImporter(Shader shader)
+        {
+            if(s_shaderImporterCache.ContainsKey(shader))
+            {
+                return s_shaderImporterCache[shader];
+            }
+            ShaderImporter importer = ShaderImporter.GetAtPath(AssetDatabase.GetAssetPath(shader)) as ShaderImporter;
+            s_shaderImporterCache.Add(shader, importer);
+            return importer;
+        }
+
+        // Needed for the CrossEditor
+        Dictionary<string, MaterialEditor> s_editorCache = new Dictionary<string, MaterialEditor>();
+        public MaterialEditor GetMaterialEditor(UnityEngine.Object[] targets)
+        {
+            string key = string.Join(",", targets.Select(t => t.name));
+            if(s_editorCache.ContainsKey(key))
+            {
+                return s_editorCache[key];
+            }
+            MaterialEditor editor = MaterialEditor.CreateEditor(targets) as MaterialEditor;
+            s_editorCache.Add(key, editor);
+            return editor;
+        }
+
+        public void ApplySuggestedTranslationDefinition()
+        {
+            if(SuggestedTranslationDefinition != null)
+            {
+                SuggestedTranslationDefinition.Apply(this);
+                SuggestedTranslationDefinition = null;
+            }
+        }
+
+        //-------------Init functions--------------------
 
         public static string SplitOptionsFromDisplayName(ref string displayName)
         {
-            if (displayName.Contains(EXTRA_OPTIONS_PREFIX))
-            {
-                string[] parts = displayName.Split(new string[] { EXTRA_OPTIONS_PREFIX }, 2, System.StringSplitOptions.None);
-                displayName = parts[0];
-                return parts[1];
-            }
-            return null;
+            int index = displayName.IndexOf(EXTRA_OPTIONS_PREFIX, StringComparison.Ordinal);
+            if(index == -1) return null;
+            string options = displayName.Substring(index + EXTRA_OPTIONS_PREFIX.Length);
+            displayName = displayName.Substring(0, index);
+            return options;
         }
 
         private enum ThryPropertyType
@@ -262,18 +289,16 @@ namespace Thry
 
             //load display names from file if it exists
             MaterialProperty[] props = Properties;
-            Dictionary<string, string> labels = LoadDisplayNamesFromFile();
             LoadLocales();
 
             PropertyDictionary = new Dictionary<string, ShaderProperty>();
             ShaderParts = new List<ShaderPart>();
-            MainGroup = new ShaderGroup(this); //init top object that all Shader Objects are childs of
+            _mainGroup = new ShaderGroup(this); //init top object that all Shader Objects are childs of
             Stack<ShaderGroup> groupStack = new Stack<ShaderGroup>(); //header stack. used to keep track if editorData header to parent new objects to
-            groupStack.Push(MainGroup); //add top object as top object to stack
-            groupStack.Push(MainGroup); //add top object a second time, because it get's popped with first actual header item
+            groupStack.Push(_mainGroup); //add top object as top object to stack
+            groupStack.Push(_mainGroup); //add top object a second time, because it get's popped with first actual header item
             _footers = new List<FooterButton>(); //init footer list
             int offsetDepthCount = 0;
-            DrawingData.IsCollectingProperties = true;
 
             HashSet<string> duplicatePropertiesSearch = new HashSet<string>(); // for debugging
             List<string> duplicateProperties = new List<string>(); // for debugging
@@ -281,9 +306,6 @@ namespace Thry
             for (int i = 0; i < props.Length; i++)
             {
                 string displayName = props[i].displayName;
-
-                //Load from label file
-                if (labels.ContainsKey(props[i].name)) displayName = labels[props[i].name];
 
                 //extract json data from display name
                 string optionsRaw = SplitOptionsFromDisplayName(ref displayName);
@@ -293,12 +315,8 @@ namespace Thry
                 int offset = offsetDepthCount;
                 
                 // Duplicate property name check
-                if (duplicatePropertiesSearch.Contains(props[i].name))
+                if(duplicatePropertiesSearch.Add(props[i].name) == false)
                     duplicateProperties.Add(props[i].name);
-                else
-                    duplicatePropertiesSearch.Add(props[i].name);
-
-                DrawingData.ResetLastDrawerData();
 
                 ThryPropertyType type = GetPropertyType(props[i]);
                 ShaderProperty NewProperty = null;
@@ -331,7 +349,7 @@ namespace Thry
                 // push if needed
                 if(newPart != null)
                 {
-                    groupStack.Peek().addPart(newPart);
+                    groupStack.Peek().AddPart(newPart);
                     groupStack.Push(newPart as ShaderGroup);
                 }
                 
@@ -385,20 +403,24 @@ namespace Thry
                 {
                     newPart = NewProperty;
                     if (type != ThryPropertyType.none)
-                        groupStack.Peek().addPart(NewProperty);
+                    {
+                        groupStack.Peek().AddPart(NewProperty);
+                    }
                 }
                 if (newPart != null)
                 {
-                    if (!PropertyDictionary.ContainsKey(props[i].name))
+#if UNITY_2022_1_OR_NEWER // Unity 2019 needs to check if key exists before adding? (Information from pumkin did not check)
+                    PropertyDictionary.TryAdd(props[i].name, NewProperty);
+#else
+                    if(!PropertyDictionary.ContainsKey(props[i].name))
                         PropertyDictionary.Add(props[i].name, NewProperty);
+#endif
                     ShaderParts.Add(newPart);
                 }
             }
 
             if(duplicateProperties.Count > 0 && Config.Singleton.enableDeveloperMode)
                 _duplicatePropertyNamesString = string.Join("\n ", duplicateProperties.ToArray());
-
-            DrawingData.IsCollectingProperties = false;
         }
 
         //-------------Draw Functions----------------
@@ -408,11 +430,12 @@ namespace Thry
             Config config = Config.Singleton;
             Active = this;
             Helper.RegisterEditorUse();
+            RegisterCallacks();
 
             //get material targets
             Materials = Editor.targets.Select(o => o as Material).ToArray();
 
-            Shader = Materials[0].shader;
+            SetShader(Materials[0].shader, LastShader);
 
             RenamedPropertySuffix = ShaderOptimizer.GetRenamedPropertySuffix(Materials[0]);
             HasCustomRenameSuffix = ShaderOptimizer.HasCustomRenameSuffix(Materials[0]);
@@ -426,8 +449,6 @@ namespace Thry
             _vRCFallbackProperty = new VRCFallbackProperty(this);
             ShaderParts.Add(_renderQueueProperty);
             ShaderParts.Add(_vRCFallbackProperty);
-
-            AddResetProperty();
 
             if(Config.Singleton.forceAsyncCompilationPreview)
             {
@@ -451,22 +472,76 @@ namespace Thry
             return null;
         }
 
-        private void AddResetProperty()
+        
+        private void RegisterCallacks()
         {
-            if (Materials[0].HasProperty(PROPERTY_NAME_EDITOR_DETECT) == false)
-            {
-                string path = AssetDatabase.GetAssetPath(Materials[0].shader);
-                UnityHelper.AddShaderPropertyToSourceCode(path, "[HideInInspector] shader_is_using_thry_editor(\"\", Float)", "0");
-            }
-            Materials[0].SetFloat(PROPERTY_NAME_EDITOR_DETECT, 69);
+            if (_didRegisterCallbacks) return;
+            _didRegisterCallbacks = true;
+            //TODO: Handle these in Unity <2022.2
+            #if UNITY_2022_2_OR_NEWER
+            Undo.undoRedoEvent += UndoRedoEvent;
+            #endif
         }
 
+        private void UnregisterCallbacks()
+        {
+            if (_didRegisterCallbacks == false) return;
+            _didRegisterCallbacks = false;
+            //TODO: Handle these in Unity <2022.2
+            #if UNITY_2022_2_OR_NEWER
+            Undo.undoRedoEvent -= UndoRedoEvent;
+            #endif
+        }
         
+        //TODO: Handle these in Unity <2022.2
+        #if UNITY_2022_2_OR_NEWER
+        private void UndoRedoEvent(in UndoRedoInfo undo)
+        {
+            if(Materials[0] != null && (undo.undoName.EndsWith(Materials[0].name, StringComparison.Ordinal) 
+                || undo.undoName.EndsWith("Materials", StringComparison.Ordinal)))
+            {
+                EditorApplication.delayCall += () =>
+                {
+                    bool repaint = false;
+                    foreach(ShaderPart part in ShaderParts)
+                    {
+                        repaint |= part.CheckForValueChange();
+                    }
+                    if(repaint)
+                    {
+                        Repaint();
+                    }
+                };   
+            }
+        }
+        #endif
 
         public override void OnClosed(Material material)
         {
             base.OnClosed(material);
+            UnregisterCallbacks();
             _isFirstOnGUICall = true;
+        }
+
+        #if UNITY_2021_2_OR_NEWER
+        public override void ValidateMaterial(Material material)
+        {
+            base.ValidateMaterial(material);
+            if(Undo.GetCurrentGroupName() == "Reset Material")
+            {
+                if(Active != null && Active.Materials[0] == material)
+                    Active.OnReset();
+            }
+        }
+        #endif
+
+        private void OnReset()
+        {
+            ShaderOptimizer.DeleteTags(Materials);
+            foreach(Material m in Materials)
+                MaterialLinker.UnlinkAll(m);
+            _vRCFallbackProperty?.SetPropertyValue((string)_vRCFallbackProperty.PropertyDefaultValue);
+            _doReloadNextDraw = true;
         }
 
         public override void AssignNewShaderToMaterial(Material material, Shader oldShader, Shader newShader)
@@ -484,8 +559,7 @@ namespace Thry
             FixKeywords(new Material[] { material });
             _doReloadNextDraw = true;
             _didSwapToShader = true;
-            LastShader = oldShader;
-            Shader = newShader;
+            SetShader(newShader, oldShader);
         }
 
         void InitEditorData(MaterialEditor materialEditor)
@@ -497,11 +571,6 @@ namespace Thry
 
         public override void OnGUI(MaterialEditor materialEditor, MaterialProperty[] props)
         {
-#if UNITY_2022_1_OR_NEWER
-            EditorGUI.indentLevel -= 2;
-#endif
-
-            IsDrawing = true;
             //Init
             bool reloadUI = _isFirstOnGUICall || (_doReloadNextDraw && Event.current.type == EventType.Layout) || (materialEditor.target as Material).shader != Shader;
             if (reloadUI) 
@@ -513,12 +582,33 @@ namespace Thry
 
             //Update Data
             Properties = props;
-            Shader = Materials[0].shader;
             Input.Update(IsLockedMaterial);
             ActiveRenderer = Selection.activeTransform?.GetComponent<Renderer>();
             IsInAnimationMode = AnimationMode.InAnimationMode();
 
             Active = this;
+
+            // Undos throw errors because the structure of the UI changes between layout and repaint
+            // This is a workaround to prevent the error by exiting the GUI call early
+            if((Event.current.type == EventType.ExecuteCommand || Event.current.type == EventType.ValidateCommand)
+                && Event.current.commandName == "UndoRedoPerformed")
+            {
+                _doReloadNextDraw = true;
+                GUIUtility.ExitGUI();
+                return;
+            }
+            Draw();
+            HandleEvents();
+            _didSwapToShader = false;
+        }
+
+        void Draw()
+        {
+            
+            IsDrawing = true;
+#if UNITY_2022_1_OR_NEWER
+            EditorGUI.indentLevel -= 2;
+#endif
 
             DoVariantWarning();
             GUIManualReloadButton();
@@ -542,7 +632,7 @@ namespace Thry
             //PROPERTIES
             using ( new DetourMaterialPropertyVariantIcon())
             {
-                foreach (ShaderPart part in MainGroup.parts)
+                foreach (ShaderPart part in _mainGroup.Children)
                 {
                     part.Draw();
                 }
@@ -555,11 +645,7 @@ namespace Thry
             BetterTooltips.DrawActive();
 
             GUIFooters();
-
-            HandleEvents();
-
             IsDrawing = false;
-            _didSwapToShader = false;
         }
 
         private void GUIManualReloadButton()
@@ -671,12 +757,11 @@ namespace Thry
 
         private void GUISearchBar()
         {
-            EditorGUI.BeginChangeCheck();
             _enteredSearchTerm = EditorGUILayout.TextField(_enteredSearchTerm, EditorStyles.toolbarSearchField);
-            if (EditorGUI.EndChangeCheck())
+            if(_enteredSearchTerm != _appliedSearchTerm)
             {
-                _appliedSearchTerm = _enteredSearchTerm.ToLower();
-                UpdateSearch(MainGroup);
+                _appliedSearchTerm = _enteredSearchTerm;
+                UpdateSearch();
             }
         }
 
@@ -700,7 +785,7 @@ namespace Thry
 #if UNITY_2022_1_OR_NEWER
             if(Materials[0].isVariant)
             {
-                EditorGUILayout.HelpBox("This material is a variant. It cannot be locked or uploaded to VRChat.", MessageType.Warning);
+                EditorGUILayout.HelpBox("This material is a variant, which isn't supported by Poiyomi at this time.\nThe material cannot be locked or uploaded to VRChat. To continue using this material, clear the Parent box above.", MessageType.Warning);
             }
 #endif
         }
@@ -718,7 +803,7 @@ namespace Thry
             int unboundTextures = MaterialCleaner.CountUnusedProperties(MaterialCleaner.CleanPropertyType.Texture, Materials);
             int unboundProperties = MaterialCleaner.CountAllUnusedProperties(Materials);
             List<string> unusedTextures = new List<string>();
-            MainGroup.FindUnusedTextures(unusedTextures, true);
+            _mainGroup.FindUnusedTextures(unusedTextures, true);
             if (unboundTextures > 0 && !IsLockedMaterial)
             {
                 menu.AddItem(new GUIContent($"Unbound Textures: {unboundTextures}/List in console"), false, delegate ()
@@ -767,6 +852,35 @@ namespace Thry
                 menu.AddDisabledItem(new GUIContent($"Unbound properties: 0"));
             }
             menu.AddSeparator("");
+            menu.AddItem(new GUIContent("Debug/Screenshot Material Inspector"),false, () =>
+            {
+                InspectorCapture.CaptureActiveInspector(Environment.GetFolderPath(Environment.SpecialFolder.Desktop));
+            });
+            menu.AddItem(new GUIContent("Debug/Copy Non-Default Material Settings"), false, () =>
+            {
+                string materialString = MaterialToDebugString.ConvertMaterialToDebugString(this, true);
+                if(string.IsNullOrEmpty(materialString))
+                {
+                    Debug.LogError($"Failed to copy material settings to clipboard");
+                    return;
+                }
+
+                EditorGUIUtility.systemCopyBuffer = materialString;
+                Debug.Log($"Copied material settings to clipboard:\n{materialString}");
+            });
+            menu.AddItem(new GUIContent("Debug/Copy All Material Settings"), false, () =>
+            {
+                string materialString = MaterialToDebugString.ConvertMaterialToDebugString(this, false); 
+                if(string.IsNullOrEmpty(materialString))
+                {
+                    Debug.LogError($"Failed to copy material settings to clipboard");
+                    return;
+                }
+
+                EditorGUIUtility.systemCopyBuffer = materialString;
+                Debug.Log($"Copied material settings to clipboard:\n{materialString}");
+            });
+            menu.AddSeparator("");
             menu.AddItem(new GUIContent("Is Preset"), Presets.IsPreset(Materials[0]), delegate ()
             {
                 Presets.SetPreset(Materials, !Presets.IsPreset(Materials[0]));
@@ -800,11 +914,6 @@ namespace Thry
             //if reloaded, set reload to false
             if (_doReloadNextDraw && Event.current.type == EventType.Layout) _doReloadNextDraw = false;
 
-            //if was undo, reload
-            bool isUndo = (e.type == EventType.ExecuteCommand || e.type == EventType.ValidateCommand) && e.commandName == "UndoRedoPerformed";
-            if (isUndo) _doReloadNextDraw = true;
-
-
             //on swap
             if (_onSwapToActions != null && _didSwapToShader)
             {
@@ -813,52 +922,39 @@ namespace Thry
                 _onSwapToActions = null;
             }
 
-            //test if material has been reset
-            if (_wasUsed && e.type == EventType.Repaint)
-            {
-                if (Materials[0].HasProperty("shader_is_using_thry_editor") && Materials[0].GetFloat("shader_is_using_thry_editor") != 69)
-                {
-                    _doReloadNextDraw = true;
-                    HandleReset();
-                    _wasUsed = true;
-                }
-            }
-
-            if (e.type == EventType.Used) _wasUsed = true;
             if (Input.HadMouseDownRepaint) Input.HadMouseDown = false;
             Input.HadMouseDownRepaint = false;
             IsFirstCall = false;
             materialPropertyDictionary = null;
         }
 
+        public void SetSearchTerm(string term)
+        {
+            _enteredSearchTerm = term;
+            Editor.Repaint();
+            GUIUtility.ExitGUI();
+        }
+
         //iterate the same way drawing would iterate
         //if display part, display all parents parts
-        private void UpdateSearch(ShaderPart part, bool parentIsSearchResult = false)
+        List<ShaderGroup> _foundGroups = new List<ShaderGroup>();
+        private void UpdateSearch()
         {
-            bool includesSearchTerm = part.Content.text.ToLower().Contains(_appliedSearchTerm);
-            part.has_not_searchedFor = includesSearchTerm || parentIsSearchResult;
-            if (part is ShaderGroup)
+            IsInSearchMode = _enteredSearchTerm.Length > 0;
+            foreach (ShaderGroup g in _foundGroups)
+                g.SetSearchExpanded(false);
+            _foundGroups.Clear();
+            _mainGroup.Search(_enteredSearchTerm, _foundGroups);
+            for(int i = 1; i < 11 && i <= _foundGroups.Count; i++)
             {
-                foreach (ShaderPart p in (part as ShaderGroup).parts)
-                {
-                    UpdateSearch(p, includesSearchTerm);
-                    part.has_not_searchedFor |= !p.has_not_searchedFor;
-                }
+                _foundGroups[_foundGroups.Count - i].SetSearchExpanded(true);
             }
-
-            part.has_not_searchedFor = !part.has_not_searchedFor;
         }
 
         private void ClearSearch()
         {
-            _appliedSearchTerm = "";
-            UpdateSearch(MainGroup);
-        }
-
-        private void HandleReset()
-        {
-            MaterialLinker.UnlinkAll(Materials[0]);
-            ShaderOptimizer.DeleteTags(Materials);
+            _enteredSearchTerm = "";
+            UpdateSearch();
         }
 
         public void Repaint()

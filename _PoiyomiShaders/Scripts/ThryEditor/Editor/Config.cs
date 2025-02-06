@@ -9,38 +9,29 @@ namespace Thry
 {
     public class Config
     {
-        // consts
         private const string PATH_CONFIG_FILE = "Thry/Config.json";
-        private const string VERSION = "2.57.0";
+        private const string VERSION = "2.62.4";
 
-        // static
         private static Config config;
 
         public static void OnCompile()
         {
-            if (!File.Exists(PATH_CONFIG_FILE))
+            string prevVersion = Singleton.verion;
+            string installedVersion = VERSION;
+            int versionComparision = Helper.CompareVersions(installedVersion, prevVersion);
+            if (versionComparision != 0)
             {
-                //Settings.firstTimePopup();
+                config.verion = VERSION;
+                config.Save();
             }
-            else
+            if (versionComparision == 1)
             {
-                string prevVersion = Singleton.verion;
-                string installedVersion = VERSION;
-                int versionComparision = Helper.CompareVersions(installedVersion, prevVersion);
-                if (versionComparision != 0)
-                {
-                    config.verion = VERSION;
-                    config.Save();
-                }
-                if (versionComparision == 1)
-                {
-                    Settings.updatedPopup(versionComparision);
-                }
-                else if (versionComparision == -1)
-                {
-                    config.OnUpgrade(prevVersion);
-                    Debug.Log(">>> Thry Editor has been updated to version " + installedVersion);
-                }
+                Settings.updatedPopup(versionComparision);
+            }
+            else if (versionComparision == -1)
+            {
+                config.OnUpgrade(prevVersion);
+                Debug.Log(">>> Thry Editor has been updated to version " + installedVersion);
             }
         }
 
@@ -73,9 +64,14 @@ namespace Thry
         public bool showColorspaceWarnings = true;
         public bool allowCustomLockingRenaming = false;
         public bool autoMarkPropertiesAnimated = true;
+        public bool showStarNextToNonDefaultProperties = true;
         public TextureImporterFormat texturePackerCompressionWithAlphaOverwrite = TextureImporterFormat.Automatic;
         public TextureImporterFormat texturePackerCompressionNoAlphaOverwrite = TextureImporterFormat.Automatic;
         public TextureImporterFormat gradientEditorCompressionOverwrite = TextureImporterFormat.Automatic;
+
+        public TextureSaveLocation inlinePackerSaveLocation = TextureSaveLocation.material;
+        public string inlinePackerSaveLocationCustom = "Assets/Textures/Packed";
+        public bool inlinePackerChrunchCompression = false;
 
         public string locale = "English";
 
@@ -203,5 +199,10 @@ namespace Thry
     public enum TextureDisplayType
     {
         small, big, big_basic
+    }
+
+    public enum TextureSaveLocation
+    {
+        material, texture, prompt, custom
     }
 }

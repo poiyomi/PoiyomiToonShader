@@ -1,33 +1,47 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
-using System.Reflection;
-using Thry.ThryEditor;
+using JetBrains.Annotations;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.UIElements;
+using static UnityEditor.MaterialProperty;
 
 namespace Thry
 {
     public class ShaderGroup : ShaderPart
     {
-        public List<ShaderPart> parts = new List<ShaderPart>();
+        public override bool IsPropertyValueDefault
+        {
+            get
+            {
+                if(_isPropertyValueDefault == null)
+                {
+                    _isPropertyValueDefault = Children.All(p => p.IsPropertyValueDefault);
+                }
+                return _isPropertyValueDefault.Value;
+            }
+        }
+
+        private List<ShaderPart> _children = new List<ShaderPart>();
+        private ReadOnlyCollection<ShaderPart> _readonlychildren => new ReadOnlyCollection<ShaderPart>(_children);
+        [PublicAPI]
+        public ReadOnlyCollection<ShaderPart> Children => _readonlychildren;
+
         protected bool _isExpanded;
+        private bool _isSearchExpanded;
 
         public ShaderGroup(ShaderEditor shaderEditor) : base(null, 0, "", null, shaderEditor)
         {
 
         }
 
-        public ShaderGroup(ShaderEditor shaderEditor, string optionsRaw) : base(null, 0, "", null, shaderEditor)
-        {
-            this._optionsRaw = optionsRaw;
-        }
-
         public ShaderGroup(ShaderEditor shaderEditor, MaterialProperty prop, MaterialEditor materialEditor, string displayName, int xOffset, string optionsRaw, int propertyIndex) : base(shaderEditor, prop, xOffset, displayName, optionsRaw, propertyIndex)
         {
-
+            PropertyValueChanged += (PropertyValueEventArgs args) => 
+            {
+                if(!_doOptionsNeedInitilization && Options.persistent_expand)
+                    _isExpanded = this.MaterialProperty.GetNumber() == 1;
+            };
         }
 
         protected override void InitOptions()
@@ -41,16 +55,19 @@ namespace Thry
         {
             get
             {
-                return _isExpanded;
+                return ShaderEditor.Active.IsInSearchMode ? _isSearchExpanded : _isExpanded;
             }
             set
             {
+                if(ShaderEditor.Active.IsInSearchMode)
+                {
+                    _isSearchExpanded = value;
+                    return;
+                }
                 if (Options.persistent_expand)
                 {
                     if (AnimationMode.InAnimationMode())
                     {
-
-
 #if UNITY_2020_1_OR_NEWER
                         // So we do this instead
                         _isExpanded = value;
@@ -63,16 +80,25 @@ namespace Thry
                         
                         AnimationMode.StopAnimationMode();
                         this.MaterialProperty.SetNumber(value ? 1 : 0);
+                        Undo.SetCurrentGroupName((value ? "Expand" : "Collapse") + $" {Content.text} of {ShaderEditor.Active.TargetName}");
+                        RaisePropertyValueChanged();
                         AnimationMode.StartAnimationMode();
 #endif
                     }
                     else
                     {
                         this.MaterialProperty.SetNumber(value ? 1 : 0);
+                        Undo.SetCurrentGroupName((value ? "Expand" : "Collapse") + $" {Content.text} of {ShaderEditor.Active.TargetName}");
+                        RaisePropertyValueChanged();
                     }
                 }
                 _isExpanded = value;
             }
+        }
+
+        public void SetSearchExpanded(bool value)
+        {
+            _isSearchExpanded = value;
         }
 
         protected bool DoDisableChildren
@@ -83,59 +109,74 @@ namespace Thry
             }
         }
 
-        public void addPart(ShaderPart part)
+        public void AddPart(ShaderPart part)
         {
-            parts.Add(part);
+            part.SetParent(this);
+            _children.Add(part);
         }
 
-        public override void CopyFromMaterial(Material m, bool isTopCall = false)
+        public override void CopyFrom(Material src, bool applyDrawers = true, bool deepCopy = true, HashSet<PropType> skipPropertyTypes = null, HashSet<string> skipPropertyNames = null)
         {
-            if (Options.reference_property != null)
-                ActiveShaderEditor.PropertyDictionary[Options.reference_property].CopyFromMaterial(m);
-            foreach (ShaderPart p in parts)
-                p.CopyFromMaterial(m);
-            if (isTopCall) ActiveShaderEditor.ApplyDrawers();
+            if(skipPropertyNames?.Contains(MaterialProperty.name) == true) return;
+            CopyReferencePropertiesFrom(src, skipPropertyTypes, skipPropertyNames);
+
+            if(deepCopy)
+                foreach (ShaderPart p in Children)
+                    p.CopyFrom(src, false, true, skipPropertyTypes, skipPropertyNames);
+
+            if (applyDrawers) MyShaderUI.ApplyDrawers();
         }
 
-        public override void CopyToMaterial(Material m, bool isTopCall = false, MaterialProperty.PropType[] skipPropertyTypes = null)
+        public override void CopyFrom(ShaderPart srcPart, bool applyDrawers = true, bool deepCopy = true, HashSet<PropType> skipPropertyTypes = null, HashSet<string> skipPropertyNames = null)
         {
-            if (ShouldSkipProperty(MaterialProperty, skipPropertyTypes)) return;
+            if(skipPropertyNames?.Contains(MaterialProperty.name) == true) return;
+            if(skipPropertyNames?.Contains(srcPart.MaterialProperty.name) == true) return;
+            if (srcPart is ShaderGroup == false) return;
+            ShaderGroup src = srcPart as ShaderGroup;
+            CopyReferencePropertiesFrom(src, skipPropertyTypes, skipPropertyNames);
 
-            if (Options.reference_property != null)
-                ActiveShaderEditor.PropertyDictionary[Options.reference_property].CopyToMaterial(m);
-            foreach (ShaderPart p in parts)
-            {
-                if (!ShouldSkipProperty(p.MaterialProperty, skipPropertyTypes))
-                    p.CopyToMaterial(m);
-            }
-            if (isTopCall) MaterialEditor.ApplyMaterialPropertyDrawers(m);
+            for (int i = 0; deepCopy && i < src.Children.Count && i < Children.Count; i++)
+                Children[i].CopyFrom(src.Children[i], false, true, skipPropertyTypes, skipPropertyNames);
+
+            if (applyDrawers) MyShaderUI.ApplyDrawers();
         }
 
-        public override void DrawInternal(GUIContent content, Rect? rect = null, bool useEditorIndent = false, bool isInHeader = false)
+        public override void CopyTo(Material[] targets, bool applyDrawers = true, bool deepCopy = true, HashSet<PropType> skipPropertyTypes = null, HashSet<string> skipPropertyNames = null)
+        {
+            if(skipPropertyNames?.Contains(MaterialProperty.name) == true) return;
+            CopyReferencePropertiesTo(targets, skipPropertyTypes, skipPropertyNames);
+
+            if(deepCopy)
+                foreach (ShaderPart p in Children)
+                    p.CopyTo(targets, false, true, skipPropertyTypes, skipPropertyNames);
+
+            if (applyDrawers) MaterialEditor.ApplyMaterialPropertyDrawers(targets);
+        }
+
+        public override void CopyTo(ShaderPart targetPart, bool applyDrawers = true, bool deepCopy = true, HashSet<PropType> skipPropertyTypes = null, HashSet<string> skipPropertyNames = null)
+        {
+            if(skipPropertyNames?.Contains(MaterialProperty.name) == true) return;
+            if(skipPropertyNames?.Contains(targetPart.MaterialProperty.name) == true) return;
+            if (targetPart is ShaderGroup == false) return;
+            ShaderGroup target = targetPart as ShaderGroup;
+            CopyReferencePropertiesTo(target, skipPropertyTypes, skipPropertyNames);
+            
+            for(int i = 0; deepCopy && i < Children.Count && i < target.Children.Count; i++)
+                Children[i].CopyTo(target.Children[i], false, true, skipPropertyTypes, skipPropertyNames);
+
+            if (applyDrawers) MaterialEditor.ApplyMaterialPropertyDrawers(target.MaterialProperty.targets);
+        }
+
+        protected override void DrawInternal(GUIContent content, Rect? rect = null, bool useEditorIndent = false, bool isInHeader = false)
         {
             if (Options.margin_top > 0)
             {
                 GUILayoutUtility.GetRect(0, Options.margin_top);
             }
-            foreach (ShaderPart part in parts)
+            foreach (ShaderPart part in Children)
             {
                 part.Draw();
             }
-        }
-
-        public override void TransferFromMaterialAndGroup(Material m, ShaderPart p, bool isTopCall = false, MaterialProperty.PropType[] propertyTypesToSkip = null)
-        {
-            if (ShouldSkipProperty(MaterialProperty, propertyTypesToSkip)) return;
-            if (p is ShaderGroup == false) return;
-            ShaderGroup group = p as ShaderGroup;
-            if (Options.reference_property != null && group.Options.reference_property != null)
-                ActiveShaderEditor.PropertyDictionary[Options.reference_property].TransferFromMaterialAndGroup(m, group.ActiveShaderEditor.PropertyDictionary[group.Options.reference_property]);
-            for (int i = 0; i < group.parts.Count && i < parts.Count; i++)
-            {
-                if (!ShouldSkipProperty(parts[i].MaterialProperty, propertyTypesToSkip))
-                    parts[i].TransferFromMaterialAndGroup(m, group.parts[i]);
-            }
-            if (isTopCall) ActiveShaderEditor.ApplyDrawers();
         }
 
         public override void FindUnusedTextures(List<string> unusedList, bool isEnabled)
@@ -144,16 +185,16 @@ namespace Thry
             {
                 isEnabled &= Options.condition_enable.Test();
             }
-            foreach (ShaderPart p in (this as ShaderGroup).parts)
+            foreach (ShaderPart p in (this as ShaderGroup).Children)
                 p.FindUnusedTextures(unusedList, isEnabled);
         }
 
-        protected void HandleLinkedMaterials()
+        protected void UpdateLinkedMaterials()
         {
-            List<Material> linked_materials = MaterialLinker.GetLinked(MaterialProperty);
+            if(ShaderEditor.Active.IsInAnimationMode) return;
+            IEnumerable<Material> linked_materials = MaterialLinker.GetLinked(MaterialProperty);
             if (linked_materials != null)
-                foreach (Material m in linked_materials)
-                    this.CopyToMaterial(m);
+                this.CopyTo(linked_materials.ToArray());
         }
 
         protected void FoldoutArrow(Rect rect, Event e)
@@ -162,8 +203,25 @@ namespace Thry
             {
                 Rect arrowRect = new RectOffset(4, 0, 0, 0).Remove(rect);
                 arrowRect.width = 13;
-                EditorStyles.foldout.Draw(arrowRect, false, false, _isExpanded, false);
+                EditorStyles.foldout.Draw(arrowRect, false, false, IsExpanded, false);
             }
+        }
+
+        public override bool Search(string searchTerm, List<ShaderGroup> foundHeaders, bool isParentInSearch = false)
+        {
+            bool found = isParentInSearch
+                || this.Content.text.IndexOf(searchTerm, System.StringComparison.OrdinalIgnoreCase) >= 0
+                || this.MaterialProperty?.name.IndexOf(searchTerm, System.StringComparison.OrdinalIgnoreCase) >= 0;
+            bool foundInChild = false;
+            foreach (ShaderPart p in Children)
+            {
+                if (p.Search(searchTerm, foundHeaders, isParentInSearch || found))
+                    foundInChild = true;
+            }
+            found |= foundInChild;
+            if(found && this is ShaderHeader) foundHeaders.Add(this);
+            this.has_not_searchedFor = !found;
+            return found;
         }
     }
 

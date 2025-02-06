@@ -19,19 +19,19 @@ namespace Poi.Tools.ShaderTranslator
         public string TargetName { get; private set; }
 
         /// <summary>
-        /// Condition that needs to return true for translation to happen
+        /// Condition that needs to return true for the property translation to happen
         /// </summary>
         public Predicate<TranslationContext> Condition { get; private set; } = _ => true;
 
         /// <summary>
-        /// Run during translation. Can be used to transform the value of the shader property. Provided is the ShaderProperty representation and the TranslationContext.
+        /// Runs during translation, right before the value is copied from the translation context. Can be used to transform the value inside the translation context or do other stuff like set other properties. Provided is the ShaderProperty representation and the TranslationContext.
         /// </summary>
         public Action<ShaderProperty, TranslationContext> OnTranslate { get; private set; }
 
         private PropertyTranslation() { }
 
         /// <summary>
-        ///
+        /// A property translation without a target. This does nothing with the value but still runs <paramref name="onTranslate"/> when <paramref name="sourceName"/> is encountered.
         /// </summary>
         /// <param name="sourceName">Name of property in source shader</param>
         /// <param name="onTranslate">Run during translation. Can be used to transform the value of the shader property. Provided is the ShaderProperty representation and the TranslationContext.</param>
@@ -41,7 +41,7 @@ namespace Poi.Tools.ShaderTranslator
         }
 
         /// <summary>
-        ///
+        /// A property translation without a target. This does nothing with the value but if <paramref name="condition"/> returns true, <paramref name="onTranslate"/> gets run when <paramref name="sourceName"/> is encountered.
         /// </summary>
         /// <param name="sourceName">Name of property in source shader</param>
         /// <param name="condition">Condition predicate that needs to return true for translation to happen</param>
@@ -53,7 +53,7 @@ namespace Poi.Tools.ShaderTranslator
         }
 
         /// <summary>
-        ///
+        /// A property translation that's used to copy the value of <paramref name="sourceName"/> to <paramref name="targetName"/>.
         /// </summary>
         /// <param name="sourceName">Name of property in source shader</param>
         /// <param name="targetName">Name of property in target shader</param>
@@ -64,7 +64,7 @@ namespace Poi.Tools.ShaderTranslator
         }
 
         /// <summary>
-        ///
+        /// A property translation that's used to copy the value of <paramref name="sourceName"/> to <paramref name="targetName"/> if <paramref name="condition"/> returns true.
         /// </summary>
         /// <param name="sourceName">Name of property in source shader</param>
         /// <param name="targetName">Name of property in target shader</param>
@@ -75,7 +75,7 @@ namespace Poi.Tools.ShaderTranslator
         }
 
         /// <summary>
-        ///
+        /// A property translation that's used to copy the value of <paramref name="sourceName"/> to <paramref name="targetName"/>. The value gets copied from the translation context to <paramref name="targetName"/>.
         /// </summary>
         /// <param name="sourceName">Name of property in source shader</param>
         /// <param name="targetName">Name of property in target shader</param>
@@ -86,7 +86,7 @@ namespace Poi.Tools.ShaderTranslator
         }
 
         /// <summary>
-        ///
+        /// A property translation that's used to copy the value of <paramref name="sourceName"/> to <paramref name="targetName"/>. If <paramref name="condition"/> returns true, <paramref name="onTranslate"/> runs, then the value gets copied from the translation context to <paramref name="targetName"/>.
         /// </summary>
         /// <param name="sourceName">Name of property in source shader</param>
         /// <param name="targetName">Name of property in target shader</param>

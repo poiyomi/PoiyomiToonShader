@@ -1,11 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
 using UnityEditor;
 using UnityEngine;
-using static Thry.GradientEditor;
-using static Thry.TexturePacker;
 
 namespace Thry
 {
@@ -43,11 +37,11 @@ namespace Thry
                 ShaderEditor.Active.PropertyDictionary[_offsetPropertyName].MaterialProperty);
         }
 
-        void DiscardSceneTool()
+        void DiscardSceneTool(bool discardChanges = false)
         {
             if (_sceneTool != null)
             {
-                _sceneTool.Deactivate();
+                _sceneTool.Deactivate(discardChanges);
                 _sceneTool = null;
             }
         }
@@ -71,6 +65,8 @@ namespace Thry
                         ShaderEditor.Active.PropertyDictionary[_rotationPropertyName].MaterialProperty,
                         ShaderEditor.Active.PropertyDictionary[_scalePropertyName].MaterialProperty,
                         ShaderEditor.Active.PropertyDictionary[_offsetPropertyName].MaterialProperty);
+                    if(Event.current.type == EventType.KeyUp && Event.current.keyCode == KeyCode.Escape)
+                        DiscardSceneTool(true);
                 }
             }
             else
@@ -104,7 +100,7 @@ namespace Thry
             {
                 if (_sceneTool != null && _sceneTool.GetMode() == DecalSceneTool.Mode.Raycast)
                 {
-                    DiscardSceneTool();
+                    DiscardSceneTool(true);
                 }
                 else
                 {
@@ -136,8 +132,7 @@ namespace Thry
 
         public override float GetPropertyHeight(MaterialProperty prop, string label, MaterialEditor editor)
         {
-            DrawingData.LastPropertyUsedCustomDrawer = true;
-            DrawingData.LastPropertyDoesntAllowAnimation = false;
+            ShaderProperty.RegisterDecorator(this);
             return EditorGUIUtility.singleLineHeight + 6;
         }
     }

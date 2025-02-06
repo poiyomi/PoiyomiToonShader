@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Thry;
 using UnityEditor;
 using UnityEngine;
+using Poi.Tools.Package;
 
 namespace Poi.Tools.Menus
 {
@@ -11,10 +11,16 @@ namespace Poi.Tools.Menus
     {
         public const int ContextMaterialBase = 2020;
         public const int ContextRendererBase = 2020;
-        public const int AssetsMenuBase = 1110;
+        public const int AssetsMenuBase = 1200;//
+        #if UNITY_2020_1_OR_NEWER
+        public const int ContextGameObjectBase = 2020;
+        public const int ContextGameObjectTools = 2120;
+        public const int ContextGameObjectMaterial = 2030;
+        #else // For some reason unity 2019 doesn't seem to like numbers too big here
         public const int ContextGameObjectBase = 24;
         public const int ContextGameObjectMaterial = 30;
         public const int ContextGameObjectTools = 40;
+        #endif
 
         #region Assets
 
@@ -30,6 +36,32 @@ namespace Poi.Tools.Menus
         {
             var mats = _GetSelectedMaterials();
             ShaderOptimizer.SetLockedForAllMaterials(mats, 0);
+        }
+
+        // Font conversion tool
+        [MenuItem("Assets/Poiyomi/Fonts/Convert Font", true, priority = AssetsMenuBase + 10)]
+        public static bool ConvertFont_Validate()
+        {
+            return Selection.activeObject is Font;
+        }
+
+        [MenuItem("Assets/Poiyomi/Fonts/Convert Font", false)]
+        public static async void ConvertFontContextMenu()
+        {
+            var package = await PoiPackageHandler.GetPackageInfoAsync(PoiExternalToolRegistry.ExternalPoiToolPackageName, true, true);
+            if(package == null)
+            {
+                Debug.LogError("Package is not installed boss");
+                return;
+            }
+
+            if(Selection.activeObject is Font font)
+            {
+                if(PoiExternalToolRegistry.TryGetTool(PoiExternalToolRegistry.PoiFontToolId, out IPoiExternalTool tool))
+                    tool.Execute(font);
+                else
+                    Debug.LogError($"Tool {PoiExternalToolRegistry.PoiFontToolId} not found in project");
+            }
         }
 
         #endregion

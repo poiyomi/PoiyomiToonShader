@@ -32,7 +32,7 @@ namespace Thry
         public string Get(string key)
         {
             if(dictionary.ContainsKey(key)) return dictionary[key][selected_locale_index];
-            Debug.LogWarning("Locale[key] could not be found.");
+            Debug.LogWarning($"Locale[{key}] could not be found.");
             return key;
         }
 

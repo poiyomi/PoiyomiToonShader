@@ -157,7 +157,7 @@ float4 ApplyHSV(float4 pixel, float hue, float saturation, float value){
 [numthreads(8, 8, 1)]
 void CSMain(uint3 id : SV_DispatchThreadID)
 {
-	float2 uv = float2(id.x / Width, id.y / Height)  + Offset;
+	float2 uv = float2((id.x+0.5) / Width, (id.y+0.5) / Height)  + Offset;
 
 	// Rotate uv by Rotation around 0.5 0.5 and scale by Scale
 	float2 center = float2(0.5, 0.5);
@@ -260,6 +260,7 @@ float4 Channels_Strength_R;
 float4 Channels_Strength_G;
 float4 Channels_Strength_B;
 float4 Channels_Strength_A;
+float4 Channels_Add;
 
 [numthreads(8, 8, 1)]
 void CS_ChannelLerper(uint3 id : SV_DispatchThreadID)
@@ -282,5 +283,6 @@ void CS_ChannelLerper(uint3 id : SV_DispatchThreadID)
 		+ lerp(0, color.g, Channels_Strength_A.y)
 		+ lerp(0, color.b, Channels_Strength_A.z)
 		+ lerp(0, color.a, Channels_Strength_A.w);
+	res += Channels_Add;
 	Result[id.xy] = res;
 }

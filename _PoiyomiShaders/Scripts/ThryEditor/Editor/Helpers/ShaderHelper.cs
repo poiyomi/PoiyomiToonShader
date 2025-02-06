@@ -1,14 +1,8 @@
-using System;
 using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.Profiling;
 
 namespace Thry
 {
@@ -85,28 +79,21 @@ namespace Thry
             return codes;
         }
         //------------Track ShaderEditor shaders-------------------
-
-        // [MenuItem("Thry/Shader Editor/Test")]
-        // public static void Test()
-        // {
-        //     Shader shader = Shader.Find(".poiyomi/Poiyomi 8.1/Poiyomi Pro");
-        //     Debug.Log(IsShaderUsingThryEditor(shader));
-        // }
-
-        public static bool IsShaderUsingThryEditor(Shader shader)
+        
+        public static bool IsShaderUsingThryEditor(MaterialEditor materialEditor)
         {
-            return IsShaderUsingThryEditor(new Material(shader));
+            return materialEditor != null && materialEditor.target != null && IsShaderUsingThryEditor((Material)materialEditor.target);
         }
         public static bool IsShaderUsingThryEditor(Material material)
         {
-            return IsShaderUsingThryEditor(MaterialEditor.CreateEditor(material) as MaterialEditor);
+            return material != null && material.shader != null && IsShaderUsingThryEditor(material.shader);
         }
-        public static bool IsShaderUsingThryEditor(MaterialEditor materialEditor)
+        public static bool IsShaderUsingThryEditor(Shader shader)
         {
-            PropertyInfo shaderGUIProperty = typeof(MaterialEditor).GetProperty("customShaderGUI");
-            var gui = shaderGUIProperty.GetValue(materialEditor);
-            // gui is null for some shaders. I think it has to do with packages maybe
-            return (gui != null) && gui.GetType() == typeof(ShaderEditor);
+            PropertyInfo shaderGUIProperty = typeof(Shader).GetProperty("customEditor", BindingFlags.Instance | BindingFlags.NonPublic);
+            MethodInfo getter = shaderGUIProperty.GetGetMethod(nonPublic: true);
+            string customEditorName = (string)getter.Invoke(shader, null);
+            return customEditorName == typeof(ShaderEditor).FullName;
         }
 
         internal static List<(string prop, List<string> keywords)> GetPropertyKeywordsForShader(Shader s)

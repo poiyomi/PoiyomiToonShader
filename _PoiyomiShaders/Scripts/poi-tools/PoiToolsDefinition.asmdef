@@ -1,5 +1,6 @@
 {
     "name": "Poi.Tools",
+    "rootNamespace": "",
     "references": [
         "GUID:9a4c6debc6b05b24d87e13b68d68d9a3",
         "GUID:1efbd8ef56fbc0146a62083b5af6074c"

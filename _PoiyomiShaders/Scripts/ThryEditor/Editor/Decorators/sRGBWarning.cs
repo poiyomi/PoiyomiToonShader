@@ -1,37 +1,29 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
 using UnityEditor;
 using UnityEngine;
-using static Thry.GradientEditor;
-using static Thry.TexturePacker;
 
 namespace Thry
 {
     public class sRGBWarningDecorator : MaterialPropertyDrawer
     {
-        bool _isSRGB = true;
+        private ColorSpace _targetColorSpace = ColorSpace.Linear;
 
-        public sRGBWarningDecorator()
-        {
-            _isSRGB = false;
-        }
+        public sRGBWarningDecorator(){}
 
-        public sRGBWarningDecorator(string shouldHaveSRGB)
+        public sRGBWarningDecorator(string colorSpace)
         {
-            this._isSRGB = shouldHaveSRGB.ToLower() == "true";
+            if(colorSpace == "gamma" || colorSpace == "true")
+                _targetColorSpace = ColorSpace.Gamma;
         }
 
         public override void OnGUI(Rect position, MaterialProperty prop, GUIContent label, MaterialEditor editor)
         {
             if (Config.Singleton.showColorspaceWarnings)
-                GUILib.ColorspaceWarning(prop, _isSRGB);
+                GUILib.ColorspaceWarning(prop, _targetColorSpace == ColorSpace.Gamma);
         }
 
         public override float GetPropertyHeight(MaterialProperty prop, string label, MaterialEditor editor)
         {
-            DrawingData.RegisterDecorator(this);
+            ShaderProperty.RegisterDecorator(this);
             return 0;
         }
     }

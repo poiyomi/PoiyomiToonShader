@@ -1,14 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Runtime.InteropServices;
-using System.Text.RegularExpressions;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.Profiling;
 
 namespace Thry
 {
@@ -39,12 +30,12 @@ namespace Thry
         /// </summary>
         /// <param name="key">Property Name or "render_queue"</param>
         /// <param name="value"></param>
-        public static void SetMaterialValue(string key, string value)
+        public static void SetValueAdvanced(string key, string value)
         {
             Material[] materials = ShaderEditor.Active.Materials;
             if (ShaderEditor.Active.PropertyDictionary.TryGetValue(key, out ShaderProperty p))
             {
-                MaterialHelper.SetMaterialPropertyValue(p.MaterialProperty, value);
+                MaterialHelper.SetValue(p.MaterialProperty, value);
                 p.UpdateKeywordFromValue();
             }
             else if (key == "render_queue")
@@ -69,7 +60,7 @@ namespace Thry
             }
         }
 
-        public static void SetMaterialPropertyValue(MaterialProperty p, string value)
+        public static void SetValue(MaterialProperty p, string value)
         {
             object prev = null;
             if (p.type == MaterialProperty.PropType.Texture)
@@ -103,44 +94,44 @@ namespace Thry
                 p.applyPropertyCallback.Invoke(p, 1, prev);
         }
 
-        public static void CopyPropertyValueFromMaterial(MaterialProperty p, Material source)
+        public static void CopyValue(Material source, MaterialProperty target)
         {
-            if (!source.HasProperty(p.name)) return;
+            if (!source.HasProperty(target.name)) return;
             object prev = null;
-            switch (p.type)
+            switch (target.type)
             {
                 case MaterialProperty.PropType.Float:
                 case MaterialProperty.PropType.Range:
-                    prev = p.floatValue;
-                    p.floatValue = source.GetNumber(p);
+                    prev = target.floatValue;
+                    target.floatValue = source.GetNumber(target);
                     break;
 #if UNITY_2022_1_OR_NEWER
                 case MaterialProperty.PropType.Int:
-                    prev = p.intValue;
-                    p.intValue = source.GetInt(p.name);
+                    prev = target.intValue;
+                    target.intValue = source.GetInt(target.name);
                     break;
 #endif
                 case MaterialProperty.PropType.Color:
-                    prev = p.colorValue;
-                    p.colorValue = source.GetColor(p.name);
+                    prev = target.colorValue;
+                    target.colorValue = source.GetColor(target.name);
                     break;
                 case MaterialProperty.PropType.Vector:
-                    prev = p.vectorValue;
-                    p.vectorValue = source.GetVector(p.name);
+                    prev = target.vectorValue;
+                    target.vectorValue = source.GetVector(target.name);
                     break;
                 case MaterialProperty.PropType.Texture:
-                    prev = p.textureValue;
-                    p.textureValue = source.GetTexture(p.name);
-                    Vector2 offset = source.GetTextureOffset(p.name);
-                    Vector2 scale = source.GetTextureScale(p.name);
-                    p.textureScaleAndOffset = new Vector4(scale.x, scale.y, offset.x, offset.y);
+                    prev = target.textureValue;
+                    target.textureValue = source.GetTexture(target.name);
+                    Vector2 offset = source.GetTextureOffset(target.name);
+                    Vector2 scale = source.GetTextureScale(target.name);
+                    target.textureScaleAndOffset = new Vector4(scale.x, scale.y, offset.x, offset.y);
                     break;
             }
-            if (p.applyPropertyCallback != null)
-                p.applyPropertyCallback.Invoke(p, 1, prev);
+            if (target.applyPropertyCallback != null)
+                target.applyPropertyCallback.Invoke(target, 1, prev);
         }
 
-        public static void CopyMaterialValueFromProperty(MaterialProperty target, MaterialProperty source)
+        public static void CopyValue(MaterialProperty source, MaterialProperty target)
         {
             object prev = null;
             switch (target.type)
@@ -174,9 +165,30 @@ namespace Thry
                 target.applyPropertyCallback.Invoke(target, 1, prev);
         }
 
-        public static void CopyPropertyValueToMaterial(MaterialProperty source, Material target)
+        public static void CopyValue(MaterialProperty source, params Material[] targets)
         {
-            CopyMaterialValueFromProperty(MaterialEditor.GetMaterialProperty(new Material[] { target }, source.name), source);
+            CopyValue(source, MaterialEditor.GetMaterialProperty(targets, source.name));
+        }
+
+        public static object GetValue(MaterialProperty property)
+        {
+            switch (property.type)
+            {
+                case MaterialProperty.PropType.Float:
+                case MaterialProperty.PropType.Range:
+                    return property.floatValue;
+#if UNITY_2022_1_OR_NEWER
+                case MaterialProperty.PropType.Int:
+                    return property.intValue;
+#endif
+                case MaterialProperty.PropType.Color:
+                    return property.colorValue;
+                case MaterialProperty.PropType.Vector:
+                    return property.vectorValue;
+                case MaterialProperty.PropType.Texture:
+                    return property.textureValue;
+            }
+            return null;
         }
     }
 

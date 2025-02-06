@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 #if !UNITY_2022_1_OR_NEWER

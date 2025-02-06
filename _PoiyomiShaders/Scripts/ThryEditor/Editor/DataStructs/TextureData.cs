@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text.RegularExpressions;
 using UnityEditor;
 using UnityEngine;
 
@@ -99,6 +97,7 @@ namespace Thry
 
         private static TextureData ParseForThryParser(string s)
         {
+            s = s.Trim(' ', '"');
             if (s.StartsWith("{") == false)
             {
                 return new TextureData()

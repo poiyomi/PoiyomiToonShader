@@ -1,0 +1,12 @@
+{
+    "surname": "Vanessa",
+    "name": "Cool",
+    "age": 25,
+    "house": {
+        "address": "Street Name 123",
+        "rooms": [
+            "bedroom",
+            "kitchen"
+        ]
+    }
+}

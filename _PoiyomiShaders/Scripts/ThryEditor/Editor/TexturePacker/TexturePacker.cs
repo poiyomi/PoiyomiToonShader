@@ -23,14 +23,14 @@ namespace Thry
             return packer;
         }
 
-        [MenuItem("Assets/Thry/Open in Texture Packer")]
+        [MenuItem("Assets/Thry/Textures/Open in Texture Packer")]
         public static void OpenInTexturePacker()
         {
             TexturePacker packer = ShowWindow();
             packer.InitilizeWithOneTexture(Selection.activeObject as Texture2D);
         }
 
-        [MenuItem("Assets/Thry/Open in Texture Packer", true)]
+        [MenuItem("Assets/Thry/Textures/Open in Texture Packer", true)]
         public static bool OpenInTexturePackerValidate()
         {
             return Selection.activeObject is Texture2D;
@@ -1266,12 +1266,13 @@ namespace Thry
 
 
 
-        void ExportChannel(RenderTexture renderTex, Vector4 lerpR, Vector4 lerpG, Vector4 lerpB, Vector4 lerpA , string namePostfix)
+        void ExportChannel(RenderTexture renderTex, Vector4 lerpR, Vector4 lerpG, Vector4 lerpB, Vector4 lerpA, Vector4 add, string namePostfix)
         {
             ComputeShader.SetVector("Channels_Strength_R", lerpR);
             ComputeShader.SetVector("Channels_Strength_G", lerpG);
             ComputeShader.SetVector("Channels_Strength_B", lerpB);
             ComputeShader.SetVector("Channels_Strength_A", lerpA);
+            ComputeShader.SetVector("Channels_Add", add);
             ComputeShader.Dispatch(2, _outputTexture.width / 8, _outputTexture.height / 8, 1);
 
             Texture2D tex = new Texture2D(renderTex.width, renderTex.height, TextureFormat.RGBA64, true, _colorSpace == ColorSpace.Linear);
@@ -1302,27 +1303,28 @@ namespace Thry
             Vector4 b = new Vector4(0, 0, 1, 0);
             Vector4 a = new Vector4(0, 0, 0, 1);
             Vector4 none = new Vector4(0, 0, 0, 0);
+            Vector4 addAlpha = new Vector4(0, 0, 0, 1);
             if(exportAsBlackAndWhite)
             {
                 if(_channel_export[0])
-                    ExportChannel(target, r, r, r, none, "_R");
+                    ExportChannel(target, r, r, r, none, addAlpha, "_R");
                 if(_channel_export[1])
-                    ExportChannel(target, g, g, g, none, "_G");
+                    ExportChannel(target, g, g, g, none, addAlpha, "_G");
                 if(_channel_export[2])
-                    ExportChannel(target, b, b, b, none, "_B");
+                    ExportChannel(target, b, b, b, none, addAlpha, "_B");
                 if(_channel_export[3])
-                    ExportChannel(target, a, a, a, none, "_A");
+                    ExportChannel(target, a, a, a, none, addAlpha, "_A");
             }
             else
             {
                 if(_channel_export[0])
-                    ExportChannel(target, r, none, none, none, "_R");
+                    ExportChannel(target, r, none, none, none, none, "_R");
                 if(_channel_export[1])
-                    ExportChannel(target, none, g, none, none, "_G");
+                    ExportChannel(target, none, g, none, none, none, "_G");
                 if(_channel_export[2])
-                    ExportChannel(target, none, none, b, none, "_B");
+                    ExportChannel(target, none, none, b, none, none, "_B");
                 if(_channel_export[3])
-                    ExportChannel(target, none, none, none, a, "_A");
+                    ExportChannel(target, none, none, none, a, none, "_A");
             }
         }
 

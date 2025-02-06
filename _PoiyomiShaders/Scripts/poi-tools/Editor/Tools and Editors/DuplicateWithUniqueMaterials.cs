@@ -9,6 +9,9 @@ namespace Poi.Tools
 {
     public class DuplicateWithUniqueMaterials : EditorWindow
     {
+        const string MaterialSwapDetectedDialogTitle = "Material Animations Detected";
+        const string MaterialSwapDetectedDialogMessage = "Animations that swap materials on your avatar were detected. Would you like materials inside those animations to be duplicated as well? This won't change your animations.\nAffected animations:\n{0}";
+
         public static void DuplicateWithNewMaterials(GameObject avatar)
         {
             // Duplicate avatar as backup and replace all materials with duplicates on the original avatar
@@ -19,8 +22,16 @@ namespace Poi.Tools
 
             Undo.RegisterFullObjectHierarchyUndo(avatar, $"Undo {avatar.name}");
 
+            bool duplicateMaterialsInAnimations = false;
+
             try
             {
+                if(PoiHelpers.TryGetAnimationsWithMaterialSwapsInAvatar(avatar, out var clipsAndCurveBindings))
+                {
+                    var clipNames = string.Join("\n", clipsAndCurveBindings.Keys.Distinct().Select(clip => clip.name));
+                    duplicateMaterialsInAnimations = EditorUtility.DisplayDialog(MaterialSwapDetectedDialogTitle, string.Format(MaterialSwapDetectedDialogMessage, clipNames), "Yes", "No");
+                }
+
                 string oldAvatarName = avatar.name;
                 Selection.activeObject = avatar;
                 SceneView.lastActiveSceneView.Focus();
@@ -42,9 +53,9 @@ namespace Poi.Tools
                 var materials = renderers.SelectMany(ren => ren.sharedMaterials)
                     .Where(mat => mat != null)
                     .Distinct()
-                    .ToArray();
+                    .ToList();
 
-                var originalAndTranslatedMaterials = new Dictionary<Material, Material>();
+                var originalAndDuplicatedMaterials = new Dictionary<Material, Material>();
 
                 string avatarAssetPath;
                 if(PrefabUtility.IsPartOfAnyPrefab(avatar))
@@ -97,11 +108,31 @@ namespace Poi.Tools
                     newMaterialsFolder = AssetDatabase.GenerateUniqueAssetPath(newMaterialsFolder);
                 PoiHelpers.EnsurePathExistsInAssets(newMaterialsFolder);
 
+                // Get materials from animations
+                if(duplicateMaterialsInAnimations)
+                {
+                    var animationMaterials = new HashSet<Material>();
+                    foreach(var kv in clipsAndCurveBindings)
+                    {
+                        foreach(EditorCurveBinding curveBinding in kv.Value)
+                        {
+                            ObjectReferenceKeyframe[] keyframes = AnimationUtility.GetObjectReferenceCurve(kv.Key, curveBinding);
+                            foreach(ObjectReferenceKeyframe keyframe in keyframes)
+                            {
+                                Material materialValue = keyframe.value as Material;
+                                if(materialValue != null)
+                                    animationMaterials.Add(materialValue);
+                            }
+                        }
+                    }
+                    materials.AddRange(animationMaterials);
+                }
+
                 // Duplicate materials
                 foreach(Material mat in materials)
                 {
                     string materialPath = AssetDatabase.GetAssetPath(mat);
-                    string newMaterialPath = $"{newMaterialsFolder}/{mat.name}.mat";
+                    string newMaterialPath = AssetDatabase.GenerateUniqueAssetPath($"{newMaterialsFolder}/{mat.name}.mat");
 
                     // Duplicate materials if they're not in assets or sub assets, like inside an fbx or if they're a default material
                     if(AssetDatabase.IsSubAsset(mat) || !materialPath.StartsWith("Assets/"))
@@ -117,7 +148,7 @@ namespace Poi.Tools
 
                     AssetDatabase.ImportAsset(newMaterialPath);
                     var newMaterial = AssetDatabase.LoadAssetAtPath<Material>(newMaterialPath);
-                    originalAndTranslatedMaterials.Add(mat, newMaterial);
+                    originalAndDuplicatedMaterials.Add(mat, newMaterial);
                 }
 
                 // Replace old materials with their translated copies
@@ -130,7 +161,7 @@ namespace Poi.Tools
                         if(sharedMats[i] == null)
                             continue;
 
-                        if(originalAndTranslatedMaterials.TryGetValue(sharedMats[i], out Material translatedMat))
+                        if(originalAndDuplicatedMaterials.TryGetValue(sharedMats[i], out Material translatedMat))
                             sharedMats[i] = translatedMat;
                     }
                     renderer.sharedMaterials = sharedMats.ToArray();

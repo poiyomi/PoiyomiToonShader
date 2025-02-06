@@ -2,11 +2,8 @@
 // Copyright (C) 2019 Thryrallo
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 using UnityEditor;
 using UnityEditor.PackageManager;
 using UnityEngine;
@@ -74,7 +71,7 @@ namespace Thry
             _is_init = true;
 
             if (thry_message == null)
-                WebHelper.DownloadStringASync(Thry.URL.SETTINGS_MESSAGE_URL, (Action<string>)delegate (string s) { thry_message = Parser.Deserialize<ButtonData>(s); });
+                WebHelper.DownloadStringASync(Thry.URL.SETTINGS_MESSAGE_URL, (Action<string>)delegate (string s) { thry_message = Parser.Deserialize<ButtonData>(s);});
         }
 
         //------------------Main GUI
@@ -153,42 +150,50 @@ namespace Thry
         {
             EditorGUILayout.Space();
             GUILayout.Label(EditorLocale.editor.Get("shader_ui_design_header"), EditorStyles.boldLabel);
-            Dropdown("default_texture_type");
-            Toggle("showRenderQueue");
+            Dropdown(nameof(Config.default_texture_type));
+            Toggle(nameof(Config.showRenderQueue));
             Toggle(nameof(Config.showColorspaceWarnings));
+            Toggle(nameof(Config.showStarNextToNonDefaultProperties));
 
             EditorGUILayout.Space();
             GUILayout.Label(EditorLocale.editor.Get("shader_ui_features_header"), EditorStyles.boldLabel);
             EditorGUILayout.Space();
-            Toggle("autoMarkPropertiesAnimated");
-            Toggle("allowCustomLockingRenaming");
+            Toggle(nameof(Config.autoMarkPropertiesAnimated));
+            Toggle(nameof(Config.allowCustomLockingRenaming));
             GUIGradients();
 
             EditorGUILayout.Space();
             GUILayout.Label(EditorLocale.editor.Get("avatar_fixes_header"), EditorStyles.boldLabel);
-            Toggle("autoSetAnchorOverride");
-            Dropdown("humanBoneAnchor");
-            Text("anchorOverrideObjectName");
+            Toggle(nameof(Config.autoSetAnchorOverride));
+            Dropdown(nameof(Config.humanBoneAnchor));
+            Text(nameof(Config.anchorOverrideObjectName));
 
             EditorGUILayout.Space();
             GUILayout.Label(EditorLocale.editor.Get("textures_header"), EditorStyles.boldLabel);
-            Dropdown("texturePackerCompressionWithAlphaOverwrite");
-            Dropdown("texturePackerCompressionNoAlphaOverwrite");
-            Dropdown("gradientEditorCompressionOverwrite");
+            Dropdown(nameof(Config.texturePackerCompressionWithAlphaOverwrite));
+            Dropdown(nameof(Config.texturePackerCompressionNoAlphaOverwrite));
+            Dropdown(nameof(Config.gradientEditorCompressionOverwrite));
+            
+            EditorGUILayout.Space();
+            GUILayout.Label(EditorLocale.editor.Get("texture_packer_header"), EditorStyles.boldLabel);
+            Toggle(nameof(Config.inlinePackerChrunchCompression));
+            Dropdown(nameof(Config.inlinePackerSaveLocation));
+            if (Config.Singleton.inlinePackerSaveLocation == TextureSaveLocation.custom)
+                Text(nameof(Config.inlinePackerSaveLocationCustom));
 
             EditorGUILayout.Space();
             GUILayout.Label(EditorLocale.editor.Get("technical_header"), EditorStyles.boldLabel);
-            Toggle("forceAsyncCompilationPreview");
-            Toggle("saveAfterLockUnlock");
-            Toggle("fixKeywordsWhenLocking");
+            Toggle(nameof(Config.forceAsyncCompilationPreview));
+            Toggle(nameof(Config.saveAfterLockUnlock));
+            Toggle(nameof(Config.fixKeywordsWhenLocking));
 
             EditorGUILayout.Space();
             GUILayout.Label(EditorLocale.editor.Get("developer_header"), EditorStyles.boldLabel);
-            Toggle("showManualReloadButton");
-            Toggle("enableDeveloperMode");
+            Toggle(nameof(Config.showManualReloadButton));
+            Toggle(nameof(Config.enableDeveloperMode));
             if(Config.Singleton.enableDeveloperMode)
             {
-                Toggle("disableUnlockedShaderStrippingOnBuild");
+                Toggle(nameof(Config.disableUnlockedShaderStrippingOnBuild));
             }
         }
 

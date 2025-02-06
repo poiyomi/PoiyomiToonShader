@@ -94,9 +94,8 @@ namespace Thry{
         public string Get(string id, string defaultValue)
         {
             if(id == null) return defaultValue;
-            if (_localizedStrings.ContainsKey(id))
+            if(_localizedStrings.TryGetValue(id, out string[] ar))
             {
-                string[] ar = _localizedStrings[id];
                 if (ar.Length > SelectedLanguage && SelectedLanguage > -1)
                 {
                     return ar[SelectedLanguage] ?? defaultValue;
@@ -342,11 +341,9 @@ namespace Thry{
 
                     if(key.StartsWith("footer_")) continue;
                     if(key == ShaderEditor.PROPERTY_NAME_MASTER_LABEL) continue;
-                    if(key == ShaderEditor.PROPERTY_NAME_LABEL_FILE) continue;
                     if(key == ShaderEditor.PROPERTY_NAME_LOCALE) continue;
                     if(key == ShaderEditor.PROPERTY_NAME_ON_SWAP_TO_ACTIONS) continue;
                     if(key == ShaderEditor.PROPERTY_NAME_SHADER_VERSION) continue;
-                    if(key == ShaderEditor.PROPERTY_NAME_EDITOR_DETECT) continue;
                     if (!string.IsNullOrWhiteSpace(value) && !locale._localizedStrings.ContainsKey(key))
                     {
                         locale._localizedStrings.Add(key, new string[locale.Languages.Length]);

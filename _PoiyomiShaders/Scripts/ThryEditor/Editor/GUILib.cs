@@ -130,7 +130,8 @@ namespace Thry
             Rect object_rect = new Rect(position);
             object_rect.height = GUILayoutUtility.GetLastRect().y - object_rect.y + GUILayoutUtility.GetLastRect().height;
             DrawingData.LastGuiObjectRect = object_rect;
-            DrawingData.TooltipCheckRect = tooltipRect;            
+            DrawingData.TooltipCheckRect = tooltipRect;
+            DrawingData.IconsPositioningCount = 1;
             DrawingData.IconsPositioningHeights[0] = iconsPositioningHeight;
 
             // Border Code start
@@ -296,6 +297,7 @@ namespace Thry
 
             DrawingData.LastGuiObjectRect = border;
             DrawingData.TooltipCheckRect = Rect.MinMaxRect(border.x, border.y, scale_offset_rect.xMax, scale_offset_rect.yMax);
+            DrawingData.IconsPositioningCount = 1;
             DrawingData.IconsPositioningHeights[0] = scale_offset_rect.y;
         }
 
@@ -336,6 +338,7 @@ namespace Thry
 
             DrawingData.LastGuiObjectRect = position;
             DrawingData.TooltipCheckRect = tooltipCheckRect;
+            DrawingData.IconsPositioningCount = 1;
             DrawingData.IconsPositioningHeights[0] = iconsPositioningHeight;
         }
 
@@ -592,14 +595,12 @@ namespace Thry
         public static void ColorspaceWarning(MaterialProperty tex, bool shouldHaveSRGB) {
             if (tex.textureValue) {
                 string texPath = AssetDatabase.GetAssetPath(tex.textureValue);
-                TextureImporter texImporter;
-                var importer = TextureImporter.GetAtPath(texPath) as TextureImporter;
+                TextureImporter importer = TextureImporter.GetAtPath(texPath) as TextureImporter;
                 if (importer != null) {
-                    texImporter = (TextureImporter)importer;
-                    if (texImporter.sRGBTexture != shouldHaveSRGB) {
+                    if (importer.sRGBTexture != shouldHaveSRGB) {
                         if (TextureImportWarningBox(shouldHaveSRGB ? EditorLocale.editor.Get("colorSpaceWarningSRGB") : EditorLocale.editor.Get("colorSpaceWarningLinear"))) {
-                            texImporter.sRGBTexture = shouldHaveSRGB;
-                            texImporter.SaveAndReimport();
+                            importer.sRGBTexture = shouldHaveSRGB;
+                            importer.SaveAndReimport();
                         }
                     }
                 }
@@ -618,6 +619,36 @@ namespace Thry
             public void Dispose()
             {
                 GUI.color = _prev;
+            }
+        }
+
+        public class IndentOverrideScope : IDisposable
+        {
+            int _prev;
+            public IndentOverrideScope(int indent)
+            {
+                _prev = EditorGUI.indentLevel;
+                EditorGUI.indentLevel = indent;
+            }
+
+            public void Dispose()
+            {
+                EditorGUI.indentLevel = _prev;
+            }
+        }
+
+        public class AnimationScope : IDisposable
+        {
+            MaterialEditor _editor;
+            public AnimationScope(MaterialEditor editor, MaterialProperty prop)
+            {
+                _editor = editor;
+                _editor.BeginAnimatedCheck(prop);
+            }
+
+            public void Dispose()
+            {
+                _editor.EndAnimatedCheck();
             }
         }
 
