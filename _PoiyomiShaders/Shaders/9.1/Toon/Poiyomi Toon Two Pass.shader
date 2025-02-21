@@ -2,7 +2,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 {
 	Properties
 	{
-		[HideInInspector] shader_master_label ("<color=#E75898ff>Poiyomi 9.1.20</color>", Float) = 0
+		[HideInInspector] shader_master_label ("<color=#E75898ff>Poiyomi 9.1.22</color>", Float) = 0
 		[HideInInspector] shader_is_using_thry_editor ("", Float) = 0
 		[HideInInspector] shader_locale ("0db0b86376c3dca4b9a6828ef8615fe0", Float) = 0
 		[HideInInspector] footer_youtube ("{texture:{name:icon-youtube,height:16},action:{type:URL,data:https://www.youtube.com/poiyomi},hover:YOUTUBE}", Float) = 0
@@ -79,12 +79,12 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 		//ifex _MainColorAdjustToggle==0
 		[HideInInspector] m_start_ColorAdjust ("Color Adjust--{reference_property:_MainColorAdjustToggle,button_help:{text:Tutorial,action:{type:URL,data:https://www.poiyomi.com/color-and-normals/color-adjust},hover:Documentation}}", Float) = 0
 		[HideInInspector][ThryToggle(COLOR_GRADING_HDR)] _MainColorAdjustToggle ("Adjust Colors", Float) = 0
-		[sRGBWarning][ThryRGBAPacker(R Hue Mask, G Brightness Mask, B Saturation Mask, , linear, false)]_MainColorAdjustTexture ("Mask (Expand)--{reference_properties:[_MainColorAdjustTexturePan, _MainColorAdjustTextureUV]}", 2D) = "white" { }
+		[sRGBWarning][ThryRGBAPacker(R Hue Mask, G Brightness Mask, B Saturation Mask, Gamma , A, linear, false)]_MainColorAdjustTexture ("Mask (Expand)--{reference_properties:[_MainColorAdjustTexturePan, _MainColorAdjustTextureUV]}", 2D) = "white" { }
 		[HideInInspector][Vector2]_MainColorAdjustTexturePan ("Panning", Vector) = (0, 0, 0, 0)
 		[HideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7)] _MainColorAdjustTextureUV ("UV", Int) = 0
 		_Saturation ("Saturation", Range(-1, 10)) = 0
-		_MainBrightness ("Brightness", Range(-1, 1)) = 0
-		_MainGammma ("Gamma", Range(0, 5)) = 1
+		_MainBrightness ("Brightness", Range(-1, 2)) = 0
+		_MainGamma ("Gamma", Range(0.01, 5)) = 1
 		
 		[HideInInspector] s_start_MainHueShift ("Hue Shift--{reference_property:_MainHueShiftToggle,persistent_expand:true,default_expand:true}", Float) = 1
 		[HideInInspector][ThryToggleUI(true)] _MainHueShiftToggle ("<size=13><b>  Hue Shift</b></size>", Float) = 0
@@ -104,7 +104,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 		
 		[HideInInspector] s_start_ColorAdjustColorGrading ("Color Grading--{reference_property:_ColorGradingToggle, persistent_expand:true}", Float) = 0
 		[HideInInspector][ToggleUI] _ColorGradingToggle ("Color Grading", Float) = 0
-		[NoScaleOffset] _MainGradationTex ("Gradation Map", 2D) = "white" { }
+		[NoScaleOffset][Gradient] _MainGradationTex ("Gradation Map", 2D) = "white" { }
 		_MainGradationStrength ("Gradation Strength", Range(0, 1)) = 0
 		[HideInInspector] s_end_ColorAdjustColorGrading ("Color Grading", Float) = 0
 		
@@ -115,6 +115,8 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 		[HideInInspector][ThryWideEnum(Add, 7, Subtract, 1, Multiply, 2, Divide, 3, Min, 4, Max, 5, Average, 6, Replace, 0)] _MainSaturationGlobalMaskBlendType ("Blending", Int) = 2
 		[ThryWideEnum(Off, 0, 1R, 1, 1G, 2, 1B, 3, 1A, 4, 2R, 5, 2G, 6, 2B, 7, 2A, 8, 3R, 9, 3G, 10, 3B, 11, 3A, 12, 4R, 13, 4G, 14, 4B, 15, 4A, 16)] _MainBrightnessGlobalMask ("Brightness--{reference_property:_MainBrightnessGlobalMaskBlendType}", Int) = 0
 		[HideInInspector][ThryWideEnum(Add, 7, Subtract, 1, Multiply, 2, Divide, 3, Min, 4, Max, 5, Average, 6, Replace, 0)] _MainBrightnessGlobalMaskBlendType ("Blending", Int) = 2
+		[ThryWideEnum(Off, 0, 1R, 1, 1G, 2, 1B, 3, 1A, 4, 2R, 5, 2G, 6, 2B, 7, 2A, 8, 3R, 9, 3G, 10, 3B, 11, 3A, 12, 4R, 13, 4G, 14, 4B, 15, 4A, 16)] _MainGammaGlobalMask ("Gamma--{reference_property:_MainGammaGlobalMaskBlendType}", Int) = 0
+		[HideInInspector][ThryWideEnum(Add, 7, Subtract, 1, Multiply, 2, Divide, 3, Min, 4, Max, 5, Average, 6, Replace, 0)] _MainGammaGlobalMaskBlendType ("Blending", Int) = 2
 		[HideInInspector] s_end_MainHueShiftGlobalMask ("Global Mask", Float) = 0
 		[HideInInspector] m_end_ColorAdjust ("Color Adjust", Float) = 0
 		//endex
@@ -1029,7 +1031,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 		// Lighting Additive
 		[HideInInspector] s_start_LightDataAddPass ("Add Pass (Point & Spot lights)--{persistent_expand:true,default_expand:true}", Float) = 1
 		[ToggleUI]_LightingAdditiveEnable ("Pixel lights (Important)", Float) = 1
-		[ToggleUI]_DisableDirectionalInAdd ("Ignore Directional--{condition_showS:(_LightingAdditiveEnable==1)}", Float) = 1
+		[ToggleUI]_DisableDirectionalInAdd ("Ignore Directional Lights--{condition_showS:(_LightingAdditiveEnable==1)}", Float) = 1
 		[ToggleUI]_LightingAdditiveLimited ("Limit Brightness", Float) = 1
 		_LightingAdditiveLimit ("Max Brightness--{condition_showS:(_LightingAdditiveLimited==1)}", Range(0, 10)) = 1
 		_LightingAdditiveCastedShadows ("Receive Casted Shadows", Range(0, 1)) = 1
@@ -1103,8 +1105,8 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 		_ShadowBorderMask ("Shadow Border Map--{reference_properties:[_ShadowBorderMaskPan, _ShadowBorderMaskUV]}", 2D) = "white" { }
 		[HideInInspector][Vector2]_ShadowBorderMaskPan ("Panning", Vector) = (0, 0, 0, 0)
 		[HideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7)] _ShadowBorderMaskUV ("UV", Int) = 0
-		[ToggleUI]_ShadowPostAO ("Post AO", Float) = 0
 		_ShadowBorderMaskLOD ("Border Map LOD", Range(0, 1)) = 0
+		[ToggleUI]_ShadowPostAO ("Ignore Border Properties", Float) = 0
 		[VectorToSliders(1st Min, n0.01, p1.01, 1st Max, n0.01, p1.01, 2nd Min, n0.01, p1.01, 2nd Max, n0.01, p1.01)]_ShadowAOShift ("Shadow AO Shift", Vector) = (0, 1, 0, 1)
 		[VectorToSliders(3rd Min, n0.01, p1.01, 3rd Max, n0.01, p1.01)]_ShadowAOShift2 ("Shadow AO Shift", Vector) = (0, 1, 0, 1)
 		[HideInInspector] s_end_MultilayerMathBorderMap ("Shadow Border Map", Float) = 1
@@ -2230,7 +2232,10 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 		
 		[HideInInspector] s_start_OutlineColorAdjust ("Color Adjust--{reference_property:_OutlineHueShift,persistent_expand:true,default_expand:false}", Float) = 0
 		[HideInInspector][ThryToggleUI(true)]_OutlineHueShift ("Color Adjust", Float) = 0
-		[VectorToSliders(Hue, 0, 1, Saturation, 0, 2, Value, 0, 2, Gamma, 0.01, 2)]_OutlineTexHSVG ("HSVG", Vector) = (0, 1, 1, 1)
+		_OutlineHue ("Hue", Range(0,1)) = 0
+		_OutlineSaturation ("Saturation", Range(0,2)) = 1
+		_OutlineValue ("Value", Range(0,2)) = 1
+		_OutlineGamma ("Gamma", Range(0.01,2)) = 1
 		_OutlineHueOffsetSpeed ("Shift Speed", Float) = 0
 		[HideInInspector] s_end_OutlineColorAdjust ("Color Adjust", Float) = 0
 		
@@ -2747,7 +2752,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 		[ToggleUI]_EmissionReplace2 ("Override Base Color", Float) = 0
 		
 		[HideInInspector] s_start_EmissionHueShift2 ("Color Adjust--{reference_property:_EmissionHueShiftEnabled2,persistent_expand:true,default_expand:false}", Float) = 0
-		[ToggleUI]_EmissionHueShiftEnabled2 ("Hue Shift", Float) = 0
+		[HideInInspector][ToggleUI]_EmissionHueShiftEnabled2 ("Hue Shift", Float) = 0
 		[ThryWideEnum(OKLab, 0, HSV, 1)] _EmissionHueShiftColorSpace2 ("Color Space", Int) = 0
 		[ThryWideEnum(Hue Select, 0, Hue Shift, 1)] _EmissionHueSelectOrShift2 ("Select or Shift", Int) = 1
 		_EmissionSaturation2 ("Saturation", Range(-1, 10)) = 0
@@ -4799,7 +4804,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			float _MainHueShiftSpeed;
 			float _Saturation;
 			float _MainBrightness;
-			float _MainGammma;
+			float _MainGamma;
 			
 			float _MainHueALCTEnabled;
 			float _MainALHueShiftBand;
@@ -4812,6 +4817,8 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			float _MainSaturationGlobalMaskBlendType;
 			float _MainBrightnessGlobalMask;
 			float _MainBrightnessGlobalMaskBlendType;
+			float _MainGammaGlobalMask;
+			float _MainGammaGlobalMaskBlendType;
 			
 			#if defined(PROP_MAINGRADATIONTEX) || !defined(OPTIMIZER_ENABLED)
 			Texture2D _MainGradationTex;
@@ -9169,7 +9176,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			float _MainHueShiftSpeed;
 			float _Saturation;
 			float _MainBrightness;
-			float _MainGammma;
+			float _MainGamma;
 			
 			float _MainHueALCTEnabled;
 			float _MainALHueShiftBand;
@@ -9182,6 +9189,8 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			float _MainSaturationGlobalMaskBlendType;
 			float _MainBrightnessGlobalMask;
 			float _MainBrightnessGlobalMaskBlendType;
+			float _MainGammaGlobalMask;
+			float _MainGammaGlobalMaskBlendType;
 			
 			#if defined(PROP_MAINGRADATIONTEX) || !defined(OPTIMIZER_ENABLED)
 			Texture2D _MainGradationTex;
@@ -22412,10 +22421,11 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				UNITY_BRANCH
 				if (_MochieGSAAEnabled)
 				{
-					percepRough = GSAA_Filament(poiMesh.normals[_PBRNormalSelect], percepRough, _PoiGSAAVariance, _PoiGSAAThreshold);
+					float3 normals = lerp(poiMesh.normals[0], poiMesh.normals[1], _PBRNormalSelect);
+					percepRough = GSAA_Filament(normals, percepRough, _PoiGSAAVariance, _PoiGSAAThreshold);
 					if (_Specular2ndLayer == 1 && _MochieSpecularStrength2 > 0)
 					{
-						percepRough2 = GSAA_Filament(poiMesh.normals[_PBRNormalSelect], percepRough2, _PoiGSAAVariance, _PoiGSAAThreshold);
+						percepRough2 = GSAA_Filament(normals, percepRough2, _PoiGSAAVariance, _PoiGSAAThreshold);
 					}
 				}
 				float brdfRoughness = percepRough * percepRough;
@@ -23066,7 +23076,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 						
 						// EXPANDED MACRO
 						float3 envReflectionColor = 0;
-						if (SceneHasReflections() || _ReflectionCubeOverride)
+						if (!SceneHasReflections() || _ReflectionCubeOverride)
 						{
 							#if defined(PROP_REFLECTIONCUBETEX) || !defined(OPTIMIZER_ENABLED)
 							envReflectionColor = lilCustomReflection(_ReflectionCubeTex, _ReflectionCubeTex_HDR, poiCam.viewDir, N, perceptualRoughness);
@@ -25300,6 +25310,10 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				{
 					hueShiftAlpha.g = maskBlend(hueShiftAlpha.g, poiMods.globalMask[_MainBrightnessGlobalMask - 1], _MainBrightnessGlobalMaskBlendType);
 				}
+				if (_MainGammaGlobalMask > 0)
+				{
+					hueShiftAlpha.a = maskBlend(hueShiftAlpha.a, poiMods.globalMask[_MainGammaGlobalMask - 1], _MainGammaGlobalMaskBlendType);
+				}
 				
 				if (_MainHueShiftToggle == 1)
 				{
@@ -25340,7 +25354,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 					#endif
 					poiFragData.baseColor = lerp(poiFragData.baseColor, tempColor, _MainGradationStrength);
 				}
-				poiFragData.baseColor = pow(abs(poiFragData.baseColor), _MainGammma);
+				poiFragData.baseColor = lerp(poiFragData.baseColor, pow(abs(poiFragData.baseColor), _MainGamma), hueShiftAlpha.a);
 				poiFragData.baseColor = lerp(poiFragData.baseColor, dot(poiFragData.baseColor, float3(0.3, 0.59, 0.11)), - (_Saturation) * hueShiftAlpha.b);
 				poiFragData.baseColor = saturate(lerp(poiFragData.baseColor, poiFragData.baseColor * (_MainBrightness + 1), hueShiftAlpha.g));
 				#endif
@@ -25504,7 +25518,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				float rimBias = rimMaskAndBias.a;
 				#else
 				float rimMask = 1;
-				float rimBias = 0;
+				float rimBias = 1;
 				#endif
 				
 				if (_RimMaskInvert)
@@ -25554,7 +25568,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				float rim2Bias = rim2MaskAndBias.a;
 				#else
 				float rim2Mask = 1;
-				float rim2Bias = 0;
+				float rim2Bias = 1;
 				#endif
 				
 				if (_Rim2MaskInvert)
@@ -26533,7 +26547,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			float _MainHueShiftSpeed;
 			float _Saturation;
 			float _MainBrightness;
-			float _MainGammma;
+			float _MainGamma;
 			
 			float _MainHueALCTEnabled;
 			float _MainALHueShiftBand;
@@ -26546,6 +26560,8 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			float _MainSaturationGlobalMaskBlendType;
 			float _MainBrightnessGlobalMask;
 			float _MainBrightnessGlobalMaskBlendType;
+			float _MainGammaGlobalMask;
+			float _MainGammaGlobalMaskBlendType;
 			
 			#if defined(PROP_MAINGRADATIONTEX) || !defined(OPTIMIZER_ENABLED)
 			Texture2D _MainGradationTex;
@@ -37723,10 +37739,11 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				UNITY_BRANCH
 				if (_MochieGSAAEnabled)
 				{
-					percepRough = GSAA_Filament(poiMesh.normals[_PBRNormalSelect], percepRough, _PoiGSAAVariance, _PoiGSAAThreshold);
+					float3 normals = lerp(poiMesh.normals[0], poiMesh.normals[1], _PBRNormalSelect);
+					percepRough = GSAA_Filament(normals, percepRough, _PoiGSAAVariance, _PoiGSAAThreshold);
 					if (_Specular2ndLayer == 1 && _MochieSpecularStrength2 > 0)
 					{
-						percepRough2 = GSAA_Filament(poiMesh.normals[_PBRNormalSelect], percepRough2, _PoiGSAAVariance, _PoiGSAAThreshold);
+						percepRough2 = GSAA_Filament(normals, percepRough2, _PoiGSAAVariance, _PoiGSAAThreshold);
 					}
 				}
 				float brdfRoughness = percepRough * percepRough;
@@ -38339,7 +38356,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 						
 						// EXPANDED MACRO
 						float3 envReflectionColor = 0;
-						if (SceneHasReflections() || _ReflectionCubeOverride)
+						if (!SceneHasReflections() || _ReflectionCubeOverride)
 						{
 							#if defined(PROP_REFLECTIONCUBETEX) || !defined(OPTIMIZER_ENABLED)
 							envReflectionColor = lilCustomReflection(_ReflectionCubeTex, _ReflectionCubeTex_HDR, poiCam.viewDir, N, perceptualRoughness);
@@ -40513,6 +40530,10 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				{
 					hueShiftAlpha.g = maskBlend(hueShiftAlpha.g, poiMods.globalMask[_MainBrightnessGlobalMask - 1], _MainBrightnessGlobalMaskBlendType);
 				}
+				if (_MainGammaGlobalMask > 0)
+				{
+					hueShiftAlpha.a = maskBlend(hueShiftAlpha.a, poiMods.globalMask[_MainGammaGlobalMask - 1], _MainGammaGlobalMaskBlendType);
+				}
 				
 				if (_MainHueShiftToggle == 1)
 				{
@@ -40553,7 +40574,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 					#endif
 					poiFragData.baseColor = lerp(poiFragData.baseColor, tempColor, _MainGradationStrength);
 				}
-				poiFragData.baseColor = pow(abs(poiFragData.baseColor), _MainGammma);
+				poiFragData.baseColor = lerp(poiFragData.baseColor, pow(abs(poiFragData.baseColor), _MainGamma), hueShiftAlpha.a);
 				poiFragData.baseColor = lerp(poiFragData.baseColor, dot(poiFragData.baseColor, float3(0.3, 0.59, 0.11)), - (_Saturation) * hueShiftAlpha.b);
 				poiFragData.baseColor = saturate(lerp(poiFragData.baseColor, poiFragData.baseColor * (_MainBrightness + 1), hueShiftAlpha.g));
 				#endif
@@ -40717,7 +40738,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				float rimBias = rimMaskAndBias.a;
 				#else
 				float rimMask = 1;
-				float rimBias = 0;
+				float rimBias = 1;
 				#endif
 				
 				if (_RimMaskInvert)
@@ -40767,7 +40788,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				float rim2Bias = rim2MaskAndBias.a;
 				#else
 				float rim2Mask = 1;
-				float rim2Bias = 0;
+				float rim2Bias = 1;
 				#endif
 				
 				if (_Rim2MaskInvert)
@@ -41632,7 +41653,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			float _MainHueShiftSpeed;
 			float _Saturation;
 			float _MainBrightness;
-			float _MainGammma;
+			float _MainGamma;
 			
 			float _MainHueALCTEnabled;
 			float _MainALHueShiftBand;
@@ -41645,6 +41666,8 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			float _MainSaturationGlobalMaskBlendType;
 			float _MainBrightnessGlobalMask;
 			float _MainBrightnessGlobalMaskBlendType;
+			float _MainGammaGlobalMask;
+			float _MainGammaGlobalMaskBlendType;
 			
 			#if defined(PROP_MAINGRADATIONTEX) || !defined(OPTIMIZER_ENABLED)
 			Texture2D _MainGradationTex;
@@ -41750,7 +41773,10 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			float _OutlineRimLightBlend;
 			float _OutlineLit;
 			float _OutlineTintMix;
-			float4 _OutlineTexHSVG;
+			float _OutlineHue;
+			float _OutlineSaturation;
+			float _OutlineValue;
+			float _OutlineGamma;
 			float _OutlineHueShift;
 			float _OutlineHueOffset;
 			float _OutlineHueOffsetSpeed;
@@ -45974,7 +46000,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				if (_OutlineHueShift)
 				{
 					//poiFragData.baseColor = hueShift(poiFragData.baseColor, _OutlineHueOffset +_OutlineHueOffsetSpeed * _Time.x);
-					float4 hsvg = _OutlineTexHSVG;
+					float4 hsvg = float4(_OutlineHue ,_OutlineSaturation ,_OutlineValue ,_OutlineGamma);
 					hsvg.r += _OutlineHueOffsetSpeed * _Time.x;
 					poiFragData.baseColor.rgb = lilToneCorrection(poiFragData.baseColor.rgb, hsvg);
 				}
@@ -49459,6 +49485,10 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				{
 					hueShiftAlpha.g = maskBlend(hueShiftAlpha.g, poiMods.globalMask[_MainBrightnessGlobalMask - 1], _MainBrightnessGlobalMaskBlendType);
 				}
+				if (_MainGammaGlobalMask > 0)
+				{
+					hueShiftAlpha.a = maskBlend(hueShiftAlpha.a, poiMods.globalMask[_MainGammaGlobalMask - 1], _MainGammaGlobalMaskBlendType);
+				}
 				
 				if (_MainHueShiftToggle == 1)
 				{
@@ -49499,7 +49529,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 					#endif
 					poiFragData.baseColor = lerp(poiFragData.baseColor, tempColor, _MainGradationStrength);
 				}
-				poiFragData.baseColor = pow(abs(poiFragData.baseColor), _MainGammma);
+				poiFragData.baseColor = lerp(poiFragData.baseColor, pow(abs(poiFragData.baseColor), _MainGamma), hueShiftAlpha.a);
 				poiFragData.baseColor = lerp(poiFragData.baseColor, dot(poiFragData.baseColor, float3(0.3, 0.59, 0.11)), - (_Saturation) * hueShiftAlpha.b);
 				poiFragData.baseColor = saturate(lerp(poiFragData.baseColor, poiFragData.baseColor * (_MainBrightness + 1), hueShiftAlpha.g));
 				#endif
@@ -50304,7 +50334,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			float _MainHueShiftSpeed;
 			float _Saturation;
 			float _MainBrightness;
-			float _MainGammma;
+			float _MainGamma;
 			
 			float _MainHueALCTEnabled;
 			float _MainALHueShiftBand;
@@ -50317,6 +50347,8 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			float _MainSaturationGlobalMaskBlendType;
 			float _MainBrightnessGlobalMask;
 			float _MainBrightnessGlobalMaskBlendType;
+			float _MainGammaGlobalMask;
+			float _MainGammaGlobalMaskBlendType;
 			
 			#if defined(PROP_MAINGRADATIONTEX) || !defined(OPTIMIZER_ENABLED)
 			Texture2D _MainGradationTex;
@@ -63547,10 +63579,11 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				UNITY_BRANCH
 				if (_MochieGSAAEnabled)
 				{
-					percepRough = GSAA_Filament(poiMesh.normals[_PBRNormalSelect], percepRough, _PoiGSAAVariance, _PoiGSAAThreshold);
+					float3 normals = lerp(poiMesh.normals[0], poiMesh.normals[1], _PBRNormalSelect);
+					percepRough = GSAA_Filament(normals, percepRough, _PoiGSAAVariance, _PoiGSAAThreshold);
 					if (_Specular2ndLayer == 1 && _MochieSpecularStrength2 > 0)
 					{
-						percepRough2 = GSAA_Filament(poiMesh.normals[_PBRNormalSelect], percepRough2, _PoiGSAAVariance, _PoiGSAAThreshold);
+						percepRough2 = GSAA_Filament(normals, percepRough2, _PoiGSAAVariance, _PoiGSAAThreshold);
 					}
 				}
 				float brdfRoughness = percepRough * percepRough;
@@ -64201,7 +64234,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 						
 						// EXPANDED MACRO
 						float3 envReflectionColor = 0;
-						if (SceneHasReflections() || _ReflectionCubeOverride)
+						if (!SceneHasReflections() || _ReflectionCubeOverride)
 						{
 							#if defined(PROP_REFLECTIONCUBETEX) || !defined(OPTIMIZER_ENABLED)
 							envReflectionColor = lilCustomReflection(_ReflectionCubeTex, _ReflectionCubeTex_HDR, poiCam.viewDir, N, perceptualRoughness);
@@ -66435,6 +66468,10 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				{
 					hueShiftAlpha.g = maskBlend(hueShiftAlpha.g, poiMods.globalMask[_MainBrightnessGlobalMask - 1], _MainBrightnessGlobalMaskBlendType);
 				}
+				if (_MainGammaGlobalMask > 0)
+				{
+					hueShiftAlpha.a = maskBlend(hueShiftAlpha.a, poiMods.globalMask[_MainGammaGlobalMask - 1], _MainGammaGlobalMaskBlendType);
+				}
 				
 				if (_MainHueShiftToggle == 1)
 				{
@@ -66475,7 +66512,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 					#endif
 					poiFragData.baseColor = lerp(poiFragData.baseColor, tempColor, _MainGradationStrength);
 				}
-				poiFragData.baseColor = pow(abs(poiFragData.baseColor), _MainGammma);
+				poiFragData.baseColor = lerp(poiFragData.baseColor, pow(abs(poiFragData.baseColor), _MainGamma), hueShiftAlpha.a);
 				poiFragData.baseColor = lerp(poiFragData.baseColor, dot(poiFragData.baseColor, float3(0.3, 0.59, 0.11)), - (_Saturation) * hueShiftAlpha.b);
 				poiFragData.baseColor = saturate(lerp(poiFragData.baseColor, poiFragData.baseColor * (_MainBrightness + 1), hueShiftAlpha.g));
 				#endif
@@ -66639,7 +66676,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				float rimBias = rimMaskAndBias.a;
 				#else
 				float rimMask = 1;
-				float rimBias = 0;
+				float rimBias = 1;
 				#endif
 				
 				if (_RimMaskInvert)
@@ -66689,7 +66726,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				float rim2Bias = rim2MaskAndBias.a;
 				#else
 				float rim2Mask = 1;
-				float rim2Bias = 0;
+				float rim2Bias = 1;
 				#endif
 				
 				if (_Rim2MaskInvert)
@@ -67670,7 +67707,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			float _MainHueShiftSpeed;
 			float _Saturation;
 			float _MainBrightness;
-			float _MainGammma;
+			float _MainGamma;
 			
 			float _MainHueALCTEnabled;
 			float _MainALHueShiftBand;
@@ -67683,6 +67720,8 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			float _MainSaturationGlobalMaskBlendType;
 			float _MainBrightnessGlobalMask;
 			float _MainBrightnessGlobalMaskBlendType;
+			float _MainGammaGlobalMask;
+			float _MainGammaGlobalMaskBlendType;
 			
 			#if defined(PROP_MAINGRADATIONTEX) || !defined(OPTIMIZER_ENABLED)
 			Texture2D _MainGradationTex;
@@ -78860,10 +78899,11 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				UNITY_BRANCH
 				if (_MochieGSAAEnabled)
 				{
-					percepRough = GSAA_Filament(poiMesh.normals[_PBRNormalSelect], percepRough, _PoiGSAAVariance, _PoiGSAAThreshold);
+					float3 normals = lerp(poiMesh.normals[0], poiMesh.normals[1], _PBRNormalSelect);
+					percepRough = GSAA_Filament(normals, percepRough, _PoiGSAAVariance, _PoiGSAAThreshold);
 					if (_Specular2ndLayer == 1 && _MochieSpecularStrength2 > 0)
 					{
-						percepRough2 = GSAA_Filament(poiMesh.normals[_PBRNormalSelect], percepRough2, _PoiGSAAVariance, _PoiGSAAThreshold);
+						percepRough2 = GSAA_Filament(normals, percepRough2, _PoiGSAAVariance, _PoiGSAAThreshold);
 					}
 				}
 				float brdfRoughness = percepRough * percepRough;
@@ -79476,7 +79516,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 						
 						// EXPANDED MACRO
 						float3 envReflectionColor = 0;
-						if (SceneHasReflections() || _ReflectionCubeOverride)
+						if (!SceneHasReflections() || _ReflectionCubeOverride)
 						{
 							#if defined(PROP_REFLECTIONCUBETEX) || !defined(OPTIMIZER_ENABLED)
 							envReflectionColor = lilCustomReflection(_ReflectionCubeTex, _ReflectionCubeTex_HDR, poiCam.viewDir, N, perceptualRoughness);
@@ -81650,6 +81690,10 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				{
 					hueShiftAlpha.g = maskBlend(hueShiftAlpha.g, poiMods.globalMask[_MainBrightnessGlobalMask - 1], _MainBrightnessGlobalMaskBlendType);
 				}
+				if (_MainGammaGlobalMask > 0)
+				{
+					hueShiftAlpha.a = maskBlend(hueShiftAlpha.a, poiMods.globalMask[_MainGammaGlobalMask - 1], _MainGammaGlobalMaskBlendType);
+				}
 				
 				if (_MainHueShiftToggle == 1)
 				{
@@ -81690,7 +81734,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 					#endif
 					poiFragData.baseColor = lerp(poiFragData.baseColor, tempColor, _MainGradationStrength);
 				}
-				poiFragData.baseColor = pow(abs(poiFragData.baseColor), _MainGammma);
+				poiFragData.baseColor = lerp(poiFragData.baseColor, pow(abs(poiFragData.baseColor), _MainGamma), hueShiftAlpha.a);
 				poiFragData.baseColor = lerp(poiFragData.baseColor, dot(poiFragData.baseColor, float3(0.3, 0.59, 0.11)), - (_Saturation) * hueShiftAlpha.b);
 				poiFragData.baseColor = saturate(lerp(poiFragData.baseColor, poiFragData.baseColor * (_MainBrightness + 1), hueShiftAlpha.g));
 				#endif
@@ -81854,7 +81898,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				float rimBias = rimMaskAndBias.a;
 				#else
 				float rimMask = 1;
-				float rimBias = 0;
+				float rimBias = 1;
 				#endif
 				
 				if (_RimMaskInvert)
@@ -81904,7 +81948,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				float rim2Bias = rim2MaskAndBias.a;
 				#else
 				float rim2Mask = 1;
-				float rim2Bias = 0;
+				float rim2Bias = 1;
 				#endif
 				
 				if (_Rim2MaskInvert)
@@ -82679,7 +82723,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			float _MainHueShiftSpeed;
 			float _Saturation;
 			float _MainBrightness;
-			float _MainGammma;
+			float _MainGamma;
 			
 			float _MainHueALCTEnabled;
 			float _MainALHueShiftBand;
@@ -82692,6 +82736,8 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			float _MainSaturationGlobalMaskBlendType;
 			float _MainBrightnessGlobalMask;
 			float _MainBrightnessGlobalMaskBlendType;
+			float _MainGammaGlobalMask;
+			float _MainGammaGlobalMaskBlendType;
 			
 			#if defined(PROP_MAINGRADATIONTEX) || !defined(OPTIMIZER_ENABLED)
 			Texture2D _MainGradationTex;
@@ -89169,6 +89215,10 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				{
 					hueShiftAlpha.g = maskBlend(hueShiftAlpha.g, poiMods.globalMask[_MainBrightnessGlobalMask - 1], _MainBrightnessGlobalMaskBlendType);
 				}
+				if (_MainGammaGlobalMask > 0)
+				{
+					hueShiftAlpha.a = maskBlend(hueShiftAlpha.a, poiMods.globalMask[_MainGammaGlobalMask - 1], _MainGammaGlobalMaskBlendType);
+				}
 				
 				if (_MainHueShiftToggle == 1)
 				{
@@ -89209,7 +89259,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 					#endif
 					poiFragData.baseColor = lerp(poiFragData.baseColor, tempColor, _MainGradationStrength);
 				}
-				poiFragData.baseColor = pow(abs(poiFragData.baseColor), _MainGammma);
+				poiFragData.baseColor = lerp(poiFragData.baseColor, pow(abs(poiFragData.baseColor), _MainGamma), hueShiftAlpha.a);
 				poiFragData.baseColor = lerp(poiFragData.baseColor, dot(poiFragData.baseColor, float3(0.3, 0.59, 0.11)), - (_Saturation) * hueShiftAlpha.b);
 				poiFragData.baseColor = saturate(lerp(poiFragData.baseColor, poiFragData.baseColor * (_MainBrightness + 1), hueShiftAlpha.g));
 				#endif

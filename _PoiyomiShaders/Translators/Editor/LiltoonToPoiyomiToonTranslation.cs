@@ -103,6 +103,7 @@ namespace Poi.Tools.ShaderTranslator.Translations
                     SetTargetPropertyValue(context, "_MainHueShift", hsvg.x > 0 ? hsvg.x : -0.5f + hsvg.x + 1.5f );
                     SetTargetPropertyValue(context, "_Saturation", hsvg.y - 1.0f);
                     SetTargetPropertyValue(context, "_MainBrightness", hsvg.z - 1.0f);
+                    SetTargetPropertyValue(context, "_MainGamma", hsvg.w);
                 }),
                 new PropertyTranslation("_MainGradationTex", "_MainGradationTex", (context) =>
                 {
@@ -311,6 +312,18 @@ namespace Poi.Tools.ShaderTranslator.Translations
                 new PropertyTranslation("_OutlineWidthMask", "_OutlineMask"),
                 new PropertyTranslation("_OutlineWidthMask_ST", "_OutlineMask_ST"),
                 new PropertyTranslation("_OutlineWidth", "_LineWidth"),
+                 new PropertyTranslation("_OutlineTexHSVG", (prop, context) =>
+                {
+                    var hsvg = GetSourcePropertyValue<Vector4>(context, prop);
+                    if(hsvg.x != 0 && hsvg.y != 1 && hsvg.z != 1 && hsvg.w != 1)
+                    {
+                        SetTargetPropertyValue(context, "_OutlineHueShift", 1);
+                        SetTargetPropertyValue(context, "_OutlineHue", hsvg.x > 0 ? hsvg.x : -0.5f + hsvg.x + 1.5f );
+                        SetTargetPropertyValue(context, "_OutlineSaturation", hsvg.y);
+                        SetTargetPropertyValue(context, "_OutlineValue", hsvg.z);
+                        SetTargetPropertyValue(context, "_OutlineGamma", hsvg.w);
+                    }
+                }),
                 #endregion
 
                 #region Glitter
