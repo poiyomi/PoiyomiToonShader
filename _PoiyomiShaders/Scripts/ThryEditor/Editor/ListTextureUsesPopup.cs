@@ -4,7 +4,7 @@ using System.IO;
 using UnityEditor;
 using UnityEngine;
 
-namespace Thry
+namespace Thry.ThryEditor
 {
     public class ListTextureUsesPopup : EditorWindow
     {

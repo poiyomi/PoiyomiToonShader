@@ -195,6 +195,7 @@ namespace Poi.Tools.ShaderTranslator
                         vectorValue = new Vector4(col.r, col.g, col.b, col.a);
                     else
                         throw new InvalidCastException($"Can't cast {value.GetType()} to {typeof(Vector4)}");
+                    thryProperty.VectorValue = Vector4.one; // Ok so, hear me out. Either Thry or Unity doesn't seem to like it when I'm setting a value that's 0 to 0, and when the stored shader value loads, it gets overwritten. Setting it to something else fixes it
 
                     thryProperty.VectorValue = vectorValue;
                     break;

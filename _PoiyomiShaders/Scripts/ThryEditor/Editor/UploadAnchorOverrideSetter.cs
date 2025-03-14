@@ -1,13 +1,12 @@
 using System;
 using System.Linq;
-using Thry;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Rendering;
 
-namespace Pumkin.UploadCallbacks
+namespace Thry.ThryEditor.UploadCallbacks // sry Pumkin for taking away your namespace. Just tring to tidy up a bit
 {
-    public static class UploadAnchorOverrideSetter
+    public static class UploadAnchorOverrideSetter // Cool Pumkin Stuff. No Thry stuff
     {
         const string SkipAvatarObjectName = "AutoAnchorDisabled";
 

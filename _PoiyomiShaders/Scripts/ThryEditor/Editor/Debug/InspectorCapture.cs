@@ -9,7 +9,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace Thry
+namespace Thry.ThryEditor
 {
     /// <summary>
     /// Provides functionality for screenshotting full editor windows, and the inspector in particular

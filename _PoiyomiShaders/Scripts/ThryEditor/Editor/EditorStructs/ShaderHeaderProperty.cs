@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-namespace Thry
+namespace Thry.ThryEditor
 {
     public class ShaderHeaderProperty : ShaderPart
     {

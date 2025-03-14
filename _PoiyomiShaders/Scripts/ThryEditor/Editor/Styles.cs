@@ -4,7 +4,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace Thry
+namespace Thry.ThryEditor
 {
     public class Styles
     {

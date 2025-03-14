@@ -1,5 +1,5 @@
 
-namespace Thry
+namespace Thry.ThryEditor.Helpers
 {
     public class PersistentData
     {

@@ -1,7 +1,8 @@
-﻿using UnityEditor;
+﻿using Thry.ThryEditor.Helpers;
+using UnityEditor;
 using UnityEngine;
 
-namespace Thry
+namespace Thry.ThryEditor
 {
     public class DecalTool : EditorWindow
     {

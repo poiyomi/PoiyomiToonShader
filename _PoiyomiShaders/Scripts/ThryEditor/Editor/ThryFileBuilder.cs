@@ -1,9 +1,10 @@
 ﻿using System.IO;
 using System.Linq;
+using Thry.ThryEditor.Helpers;
 using UnityEditor;
 using UnityEngine;
 
-namespace Thry {
+namespace Thry.ThryEditor {
     public class ThryFileCreator {
 
         [MenuItem("Thry/ShaderUI/UI Creator Helper/Create Label Boiler", false, priority = 40)]

@@ -5,7 +5,7 @@ using System.Text;
 using UnityEditor;
 using UnityEngine;
 
-namespace Thry
+namespace Thry.ThryEditor
 {
     public static class MaterialToDebugString
     {

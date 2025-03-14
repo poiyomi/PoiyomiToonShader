@@ -4,15 +4,17 @@
 using System;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using Thry.ThryEditor.Helpers;
 using UnityEditor;
 using UnityEngine;
 
-namespace Thry
+namespace Thry.ThryEditor
 {
     public class GradientEditor : EditorWindow
     {
         public class GradientData
         {
+            public bool UsePreviewTexture;
             public Texture PreviewTexture;
             public Gradient Gradient;
         }
@@ -20,6 +22,7 @@ namespace Thry
         {
             texture_settings_data = LoadTextureSettings(prop, predefinedTextureSettings, force_texture_options);
             data.Gradient = TextureHelper.GetGradient(prop.textureValue);
+            data.UsePreviewTexture = true;
             GradientEditor window = (GradientEditor)EditorWindow.GetWindow(typeof(GradientEditor));
             window.titleContent = new GUIContent("Gradient '" +prop.name +"' of '"+ prop.targets[0].name + "'");
             window._colorSpace = colorSpace;
@@ -113,10 +116,8 @@ namespace Thry
                     importer.SaveAndReimport();
                 }
             }
-            else
-            {
-                UpdatePreviewTexture(_privious_preview_texture);
-            }
+            _data.UsePreviewTexture = false;
+            ShaderEditor.RepaintActive();
         }
 
         private string GradientFileName(Gradient gradient, string material_name)
@@ -243,13 +244,6 @@ namespace Thry
             textureSettings.ApplyModes(_data.PreviewTexture);
             _prop.textureValue = _data.PreviewTexture;
             _gradient_has_been_edited = true;
-            ShaderEditor.RepaintActive();
-        }
-
-        private void UpdatePreviewTexture(Texture texture)
-        {
-            _data.PreviewTexture = texture;
-            _prop.textureValue = texture;
             ShaderEditor.RepaintActive();
         }
 

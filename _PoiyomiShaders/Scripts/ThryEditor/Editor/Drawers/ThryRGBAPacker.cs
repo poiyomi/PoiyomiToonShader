@@ -1,11 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Thry.ThryEditor.Helpers;
 using UnityEditor;
 using UnityEngine;
-using static Thry.TexturePacker;
+using static Thry.ThryEditor.TexturePacker;
 
-namespace Thry
+namespace Thry.ThryEditor.Drawers
 {
     public class ThryRGBAPackerDrawer : MaterialPropertyDrawer
     {

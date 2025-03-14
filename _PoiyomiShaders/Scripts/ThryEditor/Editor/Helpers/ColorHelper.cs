@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace Thry
+namespace Thry.ThryEditor.Helpers
 {
     public class ColorHelper
     {

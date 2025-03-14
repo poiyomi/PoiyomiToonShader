@@ -6,7 +6,8 @@ using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 
-namespace Thry{
+namespace Thry.ThryEditor
+{
     public class Localization : ScriptableObject
     {
         [SerializeField] Shader[] ValidateWithShaders;

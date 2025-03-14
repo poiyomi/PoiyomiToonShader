@@ -1,5 +1,5 @@
 
-namespace Thry
+namespace Thry.ThryEditor.Helpers
 {
     static class StringExtensions
     {

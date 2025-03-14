@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Reflection;
+using Thry.ThryEditor.Helpers;
 using UnityEditor;
 using UnityEngine;
 
-namespace Thry
+namespace Thry.ThryEditor
 {
     public class GradientEditor2 : EditorWindow
     {

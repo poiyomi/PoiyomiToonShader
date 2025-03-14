@@ -1,5 +1,5 @@
 
-namespace Thry
+namespace Thry.ThryEditor.Drawers
 {
     public class ThryToggleUIDrawer : ThryToggleDrawer
     {

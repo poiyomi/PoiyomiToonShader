@@ -1,6 +1,6 @@
 using System.Text.RegularExpressions;
 
-namespace Thry
+namespace Thry.ThryEditor.Helpers
 {
     public class StringHelper
     {

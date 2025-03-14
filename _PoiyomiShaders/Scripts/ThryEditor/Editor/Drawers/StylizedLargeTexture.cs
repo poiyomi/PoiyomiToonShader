@@ -1,7 +1,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace Thry
+namespace Thry.ThryEditor.Drawers
 {
     [System.Obsolete("Use StylizedLargeTextureDrawer instead")]
     public class StylizedBigTextureDrawer : StylizedLargeTextureDrawer

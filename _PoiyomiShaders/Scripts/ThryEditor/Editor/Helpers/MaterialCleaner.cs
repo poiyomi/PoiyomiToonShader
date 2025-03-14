@@ -3,7 +3,7 @@ using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
-namespace Thry
+namespace Thry.ThryEditor.Helpers
 {
     //Adapted from https://github.com/lukis101/VRCUnityStuffs/blob/master/Scripts/Editor/MaterialCleaner.cs
     //MIT License

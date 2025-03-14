@@ -1,10 +1,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Thry.ThryEditor.Helpers;
 using UnityEditor;
 using UnityEngine;
 
-namespace Thry
+namespace Thry.ThryEditor.Drawers
 {
     public class ThryShaderOptimizerLockButtonDrawer : MaterialPropertyDrawer
     {

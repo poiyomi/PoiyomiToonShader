@@ -1,7 +1,8 @@
+using Thry.ThryEditor.Helpers;
 using UnityEditor;
 using UnityEngine;
 
-namespace Thry
+namespace Thry.ThryEditor.Drawers
 {
     public class CurveDrawer : MaterialPropertyDrawer
     {

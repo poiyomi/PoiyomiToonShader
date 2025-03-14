@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEditor;
 using ABI.CCK.Scripts.Editor;
 
-namespace Pumkin.UploadCallbacks
+namespace Thry.ThryEditor.UploadCallbacks // sry Pumkin for taking away your namespace. Just tring to tidy up a bit
 {
     [InitializeOnLoad]
     public class AbiAutoAnchor

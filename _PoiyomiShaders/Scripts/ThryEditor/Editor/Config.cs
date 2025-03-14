@@ -2,15 +2,18 @@
 // Copyright (C) 2019 Thryrallo
 
 using System.IO;
+using Thry.ThryEditor.Helpers;
 using UnityEditor;
 using UnityEngine;
 
-namespace Thry
+namespace Thry.ThryEditor
 {
+    
+
     public class Config
     {
         private const string PATH_CONFIG_FILE = "Thry/Config.json";
-        private const string VERSION = "2.62.4";
+        private const string VERSION = "2.62.11";
 
         private static Config config;
 
@@ -31,7 +34,7 @@ namespace Thry
             else if (versionComparision == -1)
             {
                 config.OnUpgrade(prevVersion);
-                Debug.Log(">>> Thry Editor has been updated to version " + installedVersion);
+                ThryLogger.Log("ThryEditor", "Updated to version " + installedVersion);
             }
         }
 
@@ -58,6 +61,7 @@ namespace Thry
         }
 
         //actual config class
+        public LoggingLevel loggingLevel = LoggingLevel.Normal;
         public TextureDisplayType default_texture_type = TextureDisplayType.small;
         public bool showRenderQueue = true;
         public bool showManualReloadButton = false;

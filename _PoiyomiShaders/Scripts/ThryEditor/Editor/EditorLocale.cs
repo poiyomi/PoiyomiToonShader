@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
+using Thry.ThryEditor.Helpers;
 using UnityEngine;
 
-namespace Thry
+namespace Thry.ThryEditor
 {
     public class EditorLocale
     {

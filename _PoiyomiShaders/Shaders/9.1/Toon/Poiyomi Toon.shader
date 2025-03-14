@@ -2,7 +2,7 @@ Shader ".poiyomi/Poiyomi Toon"
 {
 	Properties
 	{
-		[HideInInspector] shader_master_label ("<color=#E75898ff>Poiyomi 9.1.23</color>", Float) = 0
+		[HideInInspector] shader_master_label ("<color=#E75898ff>Poiyomi 9.1.24</color>", Float) = 0
 		[HideInInspector] shader_is_using_thry_editor ("", Float) = 0
 		[HideInInspector] shader_locale ("0db0b86376c3dca4b9a6828ef8615fe0", Float) = 0
 		[HideInInspector] footer_youtube ("{texture:{name:icon-youtube,height:16},action:{type:URL,data:https://www.youtube.com/poiyomi},hover:YOUTUBE}", Float) = 0
@@ -1062,7 +1062,6 @@ Shader ".poiyomi/Poiyomi Toon"
 		
 		//ifex _LightingMode!=1
 		// Multilayer Math
-		[sRGBWarning]_MultilayerMathBlurMap ("Blur Map--{reference_properties:[_MultilayerMathBlurMapPan, _MultilayerMathBlurMapUV], condition_showS:(_LightingMode==1)}", 2D) = "white" { }
 		[HideInInspector] s_start_MultilayerMath1stLayer ("Shadow Layer 1--{persistent_expand:true,default_expand:true, condition_showS:(_LightingMode==1)}", Float) = 1
 		[sRGBWarning(true)]_ShadowColorTex ("Color Tex--{reference_properties:[_ShadowColorTexPan, _ShadowColorTexUV], condition_showS:(_LightingMode==1)}", 2D) = "black" { }
 		[HideInInspector][Vector2]_ShadowColorTexPan ("Panning", Vector) = (0, 0, 0, 0)
@@ -1100,17 +1099,25 @@ Shader ".poiyomi/Poiyomi Toon"
 		_ShadowBorderRange ("Border Range--{condition_showS:(_LightingMode==1)}", Range(0, 1)) = 0
 		[HideInInspector] s_end_MultilayerMathBorder ("Border", Float) = 1
 		
-		[HideInInspector] s_start_MultilayerMathBorderMap ("Shadow Border Map--{reference_property:_ShadowBorderMapToggle, persistent_expand:true,default_expand:false, condition_showS:(_LightingMode==1)}", Float) = 0
-		[HideInInspector][ToggleUI] _ShadowBorderMapToggle ("Shadow Border Map Toggle", Float) = 0
-		_ShadowBorderMask ("Shadow Border Map--{reference_properties:[_ShadowBorderMaskPan, _ShadowBorderMaskUV]}", 2D) = "white" { }
+		[HideInInspector] s_start_MultilayerShadowMap ("Shadow Map--{persistent_expand:true,default_expand:false, condition_showS:(_LightingMode==1)}", Float) = 0
+		[ThryWideEnum(Strength, 0, Flat, 1)] _ShadowMaskType ("Map Type", Int) = 0
+		_ShadowStrengthMask ("Color Tex--{reference_properties:[_ShadowStrengthMaskPan, _ShadowStrengthMaskUV]}", 2D) = "white" { }
+		[HideInInspector][Vector2]_ShadowStrengthMaskPan ("Panning", Vector) = (0, 0, 0, 0)
+		[HideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7)] _ShadowStrengthMaskUV ("UV", Int) = 0
+		_ShadowFlatBorder ("Border--{condition_showS:(_ShadowMaskType==1)}", Range(-2, 2)) = 1
+		_ShadowFlatBlur ("Blur--{condition_showS:(_ShadowMaskType==1)}", Range(0.001, 2)) = 1
+		//_ShadowStrengthMaskLOD ("LOD", Range(0, 1)) = 0
+		[HideInInspector] s_end_MultilayerShadowMap ("Shadow Map}", Float) = 0
+		
+		_ShadowBorderMask ("AO Map--{reference_properties:[_ShadowBorderMaskPan, _ShadowBorderMaskUV, _ShadowBorderMaskLOD, _ShadowPostAO, _ShadowAOShift, _ShadowAOShift2], condition_showS:(_LightingMode==1)}", 2D) = "white" { }
 		[HideInInspector][Vector2]_ShadowBorderMaskPan ("Panning", Vector) = (0, 0, 0, 0)
 		[HideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7)] _ShadowBorderMaskUV ("UV", Int) = 0
-		_ShadowBorderMaskLOD ("Border Map LOD", Range(0, 1)) = 0
-		[ToggleUI]_ShadowPostAO ("Ignore Border Properties", Float) = 0
-		[VectorToSliders(1st Min, n0.01, p1.01, 1st Max, n0.01, p1.01, 2nd Min, n0.01, p1.01, 2nd Max, n0.01, p1.01)]_ShadowAOShift ("Shadow AO Shift", Vector) = (0, 1, 0, 1)
-		[VectorToSliders(3rd Min, n0.01, p1.01, 3rd Max, n0.01, p1.01)]_ShadowAOShift2 ("Shadow AO Shift", Vector) = (0, 1, 0, 1)
-		[HideInInspector] s_end_MultilayerMathBorderMap ("Shadow Border Map", Float) = 1
+		[HideInInspector]_ShadowBorderMaskLOD ("Border Map LOD", Range(0, 1)) = 0
+		[HideInInspector][ToggleUI]_ShadowPostAO ("Ignore Border Properties", Float) = 0
+		[HideInInspector][VectorToSliders(1st Min, n0.01, p1.01, 1st Max, n0.01, p1.01, 2nd Min, n0.01, p1.01, 2nd Max, n0.01, p1.01)]_ShadowAOShift ("Shadow AO Shift", Vector) = (0, 1, 0, 1)
+		[HideInInspector][VectorToSliders(3rd Min, n0.01, p1.01, 3rd Max, n0.01, p1.01)]_ShadowAOShift2 ("Shadow AO Shift", Vector) = (0, 1, 0, 1)
 		
+		[sRGBWarning]_MultilayerMathBlurMap ("Blur Map--{reference_properties:[_MultilayerMathBlurMapPan, _MultilayerMathBlurMapUV], condition_showS:(_LightingMode==1)}", 2D) = "white" { }
 		[ToggleUI]_LightingMulitlayerNonLinear ("Non Linear Lightmap--{condition_showS:(_LightingMode==1)}", Float) = 1
 		_ShadowMainStrength ("Base Color Blend--{condition_showS:(_LightingMode==1)}", Range(0, 1)) = 0
 		_ShadowEnvStrength ("Env Strength on Shadow Color--{condition_showS:(_LightingMode==1)}", Range(0, 1)) = 0
@@ -1727,9 +1734,10 @@ Shader ".poiyomi/Poiyomi Toon"
 		[HideInInspector] s_end_RimLightDirectionMask ("Light Direction Mask", Float) = 0
 		// Liltoon
 		[HDR][Gamma]_RimColor ("Rim Color--{condition_showS:_RimStyle==2,reference_property:_RimLightColorThemeIndex}", Color) = (0.66, 0.5, 0.48, 1)
-		[sRGBWarning(true)] _RimColorTex ("Color / Mask--{condition_showS:_RimStyle==2,reference_properties:[_RimColorTexPan, _RimColorTexUV]}", 2D) = "white" { }
+		[sRGBWarning(true)] _RimColorTex ("Color / Mask--{condition_showS:_RimStyle==2,reference_properties:[_RimColorTexPan,  _RimMaskOnlyMask, _RimColorTexUV]}", 2D) = "white" { }
 		[HideInInspector][Vector2] _RimColorTexPan ("Panning", Vector) = (0, 0, 0, 0)
 		[HideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7)] _RimColorTexUV ("UV", Int) = 0
+		[HideInInspector][ToggleUI]_RimMaskOnlyMask ("Mask Only", Float) = 0
 		_RimMainStrength ("Main Color Blend--{condition_showS:_RimStyle==2}", Range(0, 1)) = 0
 		_RimNormalStrength ("Normal Strength--{condition_showS:_RimStyle==2}", Range(0, 1)) = 1.0
 		_RimBorder ("Border--{condition_showS:_RimStyle==2}", Range(0, 1)) = 0.5
@@ -1847,9 +1855,10 @@ Shader ".poiyomi/Poiyomi Toon"
 		
 		// Liltoon
 		[HDR][Gamma]_Rim2Color ("Rim Color--{condition_showS:_Rim2Style==2,reference_property:_Rim2LightColorThemeIndex}", Color) = (0.66, 0.5, 0.48, 1)
-		[sRGBWarning(true)] _Rim2ColorTex ("Color / Mask--{condition_showS:_Rim2Style==2,reference_properties:[_Rim2ColorTexPan, _Rim2ColorTexUV]}", 2D) = "white" { }
+		[sRGBWarning(true)] _Rim2ColorTex ("Color / Mask--{condition_showS:_Rim2Style==2,reference_properties:[_Rim2ColorTexPan, _Rim2ColorTexUV, _Rim2MaskOnlyMask]}", 2D) = "white" { }
 		[HideInInspector][Vector2] _Rim2ColorTexPan ("Panning", Vector) = (0, 0, 0, 0)
 		[HideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7)] _Rim2ColorTexUV ("UV", Int) = 0
+		[HideInInspector][ToggleUI]_Rim2MaskOnlyMask ("Mask Only", Float) = 0
 		_Rim2MainStrength ("Main Color Blend--{condition_showS:_Rim2Style==2}", Range(0, 1)) = 0
 		_Rim2NormalStrength ("Normal Strength--{condition_showS:_Rim2Style==2}", Range(0, 1)) = 1.0
 		_Rim2Border ("Border--{condition_showS:_Rim2Style==2}", Range(0, 1)) = 0.5
@@ -2208,7 +2217,7 @@ Shader ".poiyomi/Poiyomi Toon"
 		[HideInInspector] m_OutlineCategory (" Outlines--{reference_property:_EnableOutlines,button_help:{text:Tutorial,action:{type:URL,data:https://www.poiyomi.com/outlines/main},hover:Documentation}}", Float) = 0
 		//ifex _EnableOutlines!=1
 		// Outline Vertex
-		[HideInInspector][ToggleUI]_EnableOutlines ("Enable Outlines", float) = 0
+		[DoNotAnimate][HideInInspector][ToggleUI]_EnableOutlines ("Enable Outlines", float) = 0
 		[Enum(Basic, 1, Rim Light, 2, Directional, 3, DropShadow, 4)]_OutlineExpansionMode ("Mode", Int) = 1
 		[Enum(Local, 0, World, 1)]_OutlineSpace ("Space", Int) = 0
 		
@@ -2266,7 +2275,7 @@ Shader ".poiyomi/Poiyomi Toon"
 		[HideInInspector] s_end_VertexColors ("Vertex Colors", Float) = 0
 		
 		[HideInInspector] s_start_OutlineRenderingOptions ("Rendering Options--{persistent_expand:true,default_expand:false}", Float) = 0
-		[ToggleUI]_OutlineClipAtZeroWidth ("Clip 0 Width", Float) = 0
+		[ToggleUI]_OutlineClipAtZeroWidth ("Clip 0 Width", Float) = 1
 		[ToggleUI]_OutlineOverrideAlpha ("Override Base Alpha", Float) = 0
 		_Offset_Z ("Cam Z Offset", Float) = 0
 		[Enum(UnityEngine.Rendering.CullMode)] _OutlineCull ("Cull", Float) = 1
@@ -7692,7 +7701,7 @@ Shader ".poiyomi/Poiyomi Toon"
 				
 				//ifex _VertexManipulationsEnabled==0
 				#ifdef AUTO_EXPOSURE
-				float4 audioLinkBands = 0;
+				float audioLinkBands[5];
 				float3 ALrotation = 0;
 				float3 ALLocalTranslation = 0;
 				float3 CTALRotation = 0;
@@ -7704,10 +7713,11 @@ Shader ".poiyomi/Poiyomi Toon"
 				#ifdef POI_AUDIOLINK
 				if (AudioLinkIsAvailable() && _VertexAudioLinkEnabled && _AudioLinkAnimToggle)
 				{
-					audioLinkBands.x = AudioLinkData(ALPASS_AUDIOBASS).r;
-					audioLinkBands.y = AudioLinkData(ALPASS_AUDIOLOWMIDS).r;
-					audioLinkBands.z = AudioLinkData(ALPASS_AUDIOHIGHMIDS).r;
-					audioLinkBands.w = AudioLinkData(ALPASS_AUDIOTREBLE).r;
+					audioLinkBands[0] = _AudioLinkSmoothingBass == 0 ? AudioLinkData(ALPASS_AUDIOLINK + float2(0, 0))[0] : AudioLinkData(ALPASS_FILTEREDAUDIOLINK + float2((1 - _AudioLinkSmoothingBass) * 15.95, 0))[0];
+					audioLinkBands[1] = _AudioLinkSmoothingLowMid == 0 ? AudioLinkData(ALPASS_AUDIOLINK + float2(0, 1))[0] : AudioLinkData(ALPASS_FILTEREDAUDIOLINK + float2((1 - _AudioLinkSmoothingLowMid) * 15.95, 1))[0];
+					audioLinkBands[2] = _AudioLinkSmoothingHighMid == 0 ? AudioLinkData(ALPASS_AUDIOLINK + float2(0, 2))[0] : AudioLinkData(ALPASS_FILTEREDAUDIOLINK + float2((1 - _AudioLinkSmoothingHighMid) * 15.95, 2))[0];
+					audioLinkBands[3] = _AudioLinkSmoothingTreble == 0 ? AudioLinkData(ALPASS_AUDIOLINK + float2(0, 3))[0] : AudioLinkData(ALPASS_FILTEREDAUDIOLINK + float2((1 - _AudioLinkSmoothingTreble) * 15.95, 3))[0];
+					audioLinkBands[4] = AudioLinkData(ALPASS_GENERALVU + float2(8, 0))[0];
 					
 					if (any(_VertexLocalTranslationALMin) || any(_VertexLocalTranslationALMax))
 					{
@@ -10287,7 +10297,6 @@ Shader ".poiyomi/Poiyomi Toon"
 			#endif
 			
 			#ifdef _LIGHTINGMODE_MULTILAYER_MATH
-			float _ShadowBorderMapToggle;
 			#if defined(PROP_SHADOWBORDERMASK) || !defined(OPTIMIZER_ENABLED)
 			Texture2D _ShadowBorderMask;
 			float4 _ShadowBorderMask_ST;
@@ -10340,6 +10349,16 @@ Shader ".poiyomi/Poiyomi Toon"
 			float _ShadowBorderRange;
 			float _ShadowEnvStrength;
 			float _ShadowMainStrength;
+			float _ShadowMaskType;
+			#if defined(PROP_SHADOWSTRENGTHMASK) || !defined(OPTIMIZER_ENABLED)
+			Texture2D _ShadowStrengthMask;
+			float4 _ShadowStrengthMask_ST;
+			float4 _ShadowStrengthMaskPan;
+			float _ShadowStrengthMaskUV;
+			#endif
+			float _ShadowFlatBorder;
+			float _ShadowFlatBlur;
+			float _MultilayerShadowStrength;
 			#endif
 			
 			#ifdef _LIGHTINGMODE_FLAT
@@ -11775,6 +11794,7 @@ Shader ".poiyomi/Poiyomi Toon"
 			float4 _RimIndirColor;
 			float _RimIndirBorder;
 			float _RimIndirBlur;
+			float _RimMaskOnlyMask;
 			int _RimBlendMode;
 			#endif
 			
@@ -11892,6 +11912,7 @@ Shader ".poiyomi/Poiyomi Toon"
 			float4 _Rim2IndirColor;
 			float _Rim2IndirBorder;
 			float _Rim2IndirBlur;
+			float _Rim2MaskOnlyMask;
 			int _Rim2BlendMode;
 			#endif
 			
@@ -14945,7 +14966,7 @@ Shader ".poiyomi/Poiyomi Toon"
 				
 				//ifex _VertexManipulationsEnabled==0
 				#ifdef AUTO_EXPOSURE
-				float4 audioLinkBands = 0;
+				float audioLinkBands[5];
 				float3 ALrotation = 0;
 				float3 ALLocalTranslation = 0;
 				float3 CTALRotation = 0;
@@ -14957,10 +14978,11 @@ Shader ".poiyomi/Poiyomi Toon"
 				#ifdef POI_AUDIOLINK
 				if (AudioLinkIsAvailable() && _VertexAudioLinkEnabled && _AudioLinkAnimToggle)
 				{
-					audioLinkBands.x = AudioLinkData(ALPASS_AUDIOBASS).r;
-					audioLinkBands.y = AudioLinkData(ALPASS_AUDIOLOWMIDS).r;
-					audioLinkBands.z = AudioLinkData(ALPASS_AUDIOHIGHMIDS).r;
-					audioLinkBands.w = AudioLinkData(ALPASS_AUDIOTREBLE).r;
+					audioLinkBands[0] = _AudioLinkSmoothingBass == 0 ? AudioLinkData(ALPASS_AUDIOLINK + float2(0, 0))[0] : AudioLinkData(ALPASS_FILTEREDAUDIOLINK + float2((1 - _AudioLinkSmoothingBass) * 15.95, 0))[0];
+					audioLinkBands[1] = _AudioLinkSmoothingLowMid == 0 ? AudioLinkData(ALPASS_AUDIOLINK + float2(0, 1))[0] : AudioLinkData(ALPASS_FILTEREDAUDIOLINK + float2((1 - _AudioLinkSmoothingLowMid) * 15.95, 1))[0];
+					audioLinkBands[2] = _AudioLinkSmoothingHighMid == 0 ? AudioLinkData(ALPASS_AUDIOLINK + float2(0, 2))[0] : AudioLinkData(ALPASS_FILTEREDAUDIOLINK + float2((1 - _AudioLinkSmoothingHighMid) * 15.95, 2))[0];
+					audioLinkBands[3] = _AudioLinkSmoothingTreble == 0 ? AudioLinkData(ALPASS_AUDIOLINK + float2(0, 3))[0] : AudioLinkData(ALPASS_FILTEREDAUDIOLINK + float2((1 - _AudioLinkSmoothingTreble) * 15.95, 3))[0];
+					audioLinkBands[4] = AudioLinkData(ALPASS_GENERALVU + float2(8, 0))[0];
 					
 					if (any(_VertexLocalTranslationALMin) || any(_VertexLocalTranslationALMax))
 					{
@@ -18624,43 +18646,43 @@ Shader ".poiyomi/Poiyomi Toon"
 				lightMap.z *= lerp(1.0, shadowAttenuationNoStrength, _Shadow3rdReceive);
 				
 				float4 shadowBorderMask = 1;
-				if (_ShadowBorderMapToggle)
+				
+				#if defined(PROP_SHADOWBORDERMASK) || !defined(OPTIMIZER_ENABLED)
+				// This should be moved to ui but honestly if these are locked in the compiler should be able to resolve it at compile time
+				float2 shadowShift0 = float2(_ShadowAOShift.x, _ShadowAOShift.y);
+				float2 shadowShift1 = float2(_ShadowAOShift.z, _ShadowAOShift.w);
+				float2 shadowShift2 = float2(_ShadowAOShift2.x, _ShadowAOShift2.y);
+				
+				//float2 shadowShift0 = float2(GetRemapMinValue(_ShadowAOShift.x, _ShadowAOShift.y), GetRemapMaxValue(_ShadowAOShift.x, _ShadowAOShift.y));
+				//float2 shadowShift1 = float2(GetRemapMinValue(_ShadowAOShift.z, _ShadowAOShift.w), GetRemapMaxValue(_ShadowAOShift.z, _ShadowAOShift.w));
+				//float2 shadowShift2 = float2(GetRemapMinValue(_ShadowAOShift2.x, _ShadowAOShift2.y), GetRemapMaxValue(_ShadowAOShift2.x, _ShadowAOShift2.y));
+				
+				shadowShift0.y = (shadowShift0.x == shadowShift0.y) ? (shadowShift0.y + 0.001f) : shadowShift0.y;
+				shadowShift1.y = (shadowShift1.x == shadowShift1.y) ? (shadowShift1.y + 0.001f) : shadowShift1.y;
+				shadowShift2.y = (shadowShift2.x == shadowShift2.y) ? (shadowShift2.y + 0.001f) : shadowShift2.y;
+				
+				shadowShift0 = float2(1.0f / (shadowShift0.y - shadowShift0.x), shadowShift0.x / (shadowShift0.x - shadowShift0.y));
+				shadowShift1 = float2(1.0f / (shadowShift1.y - shadowShift1.x), shadowShift1.x / (shadowShift1.x - shadowShift1.y));
+				shadowShift2 = float2(1.0f / (shadowShift2.y - shadowShift2.x), shadowShift2.x / (shadowShift2.x - shadowShift2.y));
+				
+				#if defined(PROP_SHADOWBORDERMASK) || !defined(OPTIMIZER_ENABLED)
+				float2 shadowBorderMaskUV = poiUV(poiMesh.uv[_ShadowBorderMaskUV], _ShadowBorderMask_ST);
+				if (_ShadowBorderMaskLOD)
 				{
-					// This should be moved to ui but honestly if these are locked in the compiler should be able to resolve it at compile time
-					float2 shadowShift0 = float2(_ShadowAOShift.x, _ShadowAOShift.y);
-					float2 shadowShift1 = float2(_ShadowAOShift.z, _ShadowAOShift.w);
-					float2 shadowShift2 = float2(_ShadowAOShift2.x, _ShadowAOShift2.y);
-					
-					//float2 shadowShift0 = float2(GetRemapMinValue(_ShadowAOShift.x, _ShadowAOShift.y), GetRemapMaxValue(_ShadowAOShift.x, _ShadowAOShift.y));
-					//float2 shadowShift1 = float2(GetRemapMinValue(_ShadowAOShift.z, _ShadowAOShift.w), GetRemapMaxValue(_ShadowAOShift.z, _ShadowAOShift.w));
-					//float2 shadowShift2 = float2(GetRemapMinValue(_ShadowAOShift2.x, _ShadowAOShift2.y), GetRemapMaxValue(_ShadowAOShift2.x, _ShadowAOShift2.y));
-					
-					shadowShift0.y = (shadowShift0.x == shadowShift0.y) ? (shadowShift0.y + 0.001f) : shadowShift0.y;
-					shadowShift1.y = (shadowShift1.x == shadowShift1.y) ? (shadowShift1.y + 0.001f) : shadowShift1.y;
-					shadowShift2.y = (shadowShift2.x == shadowShift2.y) ? (shadowShift2.y + 0.001f) : shadowShift2.y;
-					
-					shadowShift0 = float2(1.0f / (shadowShift0.y - shadowShift0.x), shadowShift0.x / (shadowShift0.x - shadowShift0.y));
-					shadowShift1 = float2(1.0f / (shadowShift1.y - shadowShift1.x), shadowShift1.x / (shadowShift1.x - shadowShift1.y));
-					shadowShift2 = float2(1.0f / (shadowShift2.y - shadowShift2.x), shadowShift2.x / (shadowShift2.x - shadowShift2.y));
-					
-					#if defined(PROP_SHADOWBORDERMASK) || !defined(OPTIMIZER_ENABLED)
-					float2 shadowBorderMaskUV = poiUV(poiMesh.uv[_ShadowBorderMaskUV], _ShadowBorderMask_ST);
-					if (_ShadowBorderMaskLOD)
-					{
-						shadowBorderMask = POI2D_SAMPLE_TEX2D_SAMPLERGRADD(_ShadowBorderMask, sampler_trilinear_repeat, shadowBorderMaskUV, _ShadowBorderMaskPan, max(abs(ddx(shadowBorderMaskUV)), pow(_ShadowBorderMaskLOD, 4)), max(abs(ddy(shadowBorderMaskUV)), pow(_ShadowBorderMaskLOD, 4)));
-					}
-					else
-					{
-						shadowBorderMask = POI2D_SAMPLER_PAN(_ShadowBorderMask, _linear_repeat, shadowBorderMaskUV, _ShadowBorderMaskPan);
-					}
-					#endif
-					
-					shadowBorderMask.r = saturate(shadowBorderMask.r * shadowShift0.x + shadowShift0.y);
-					shadowBorderMask.g = saturate(shadowBorderMask.g * shadowShift1.x + shadowShift1.y);
-					shadowBorderMask.b = saturate(shadowBorderMask.b * shadowShift2.x + shadowShift2.y);
-					
-					lightMap.xyz = _ShadowPostAO ? lightMap.xyz : lightMap.xyz * shadowBorderMask.rgb;
+					shadowBorderMask = POI2D_SAMPLE_TEX2D_SAMPLERGRADD(_ShadowBorderMask, sampler_trilinear_repeat, shadowBorderMaskUV, _ShadowBorderMaskPan, max(abs(ddx(shadowBorderMaskUV)), pow(_ShadowBorderMaskLOD, 4)), max(abs(ddy(shadowBorderMaskUV)), pow(_ShadowBorderMaskLOD, 4)));
 				}
+				else
+				{
+					shadowBorderMask = POI2D_SAMPLER_PAN(_ShadowBorderMask, _linear_repeat, shadowBorderMaskUV, _ShadowBorderMaskPan);
+				}
+				#endif
+				
+				shadowBorderMask.r = saturate(shadowBorderMask.r * shadowShift0.x + shadowShift0.y);
+				shadowBorderMask.g = saturate(shadowBorderMask.g * shadowShift1.x + shadowShift1.y);
+				shadowBorderMask.b = saturate(shadowBorderMask.b * shadowShift2.x + shadowShift2.y);
+				
+				lightMap.xyz = _ShadowPostAO ? lightMap.xyz : lightMap.xyz * shadowBorderMask.rgb;
+				#endif
 				
 				if (_LightingMapMode == 4)
 				{
@@ -18685,6 +18707,24 @@ Shader ".poiyomi/Poiyomi Toon"
 				lns = _ShadowPostAO ? lns * shadowBorderMask.rgbr : lns;
 				#endif
 				lns = saturate(lns);
+				
+				#if defined(PROP_SHADOWSTRENGTHMASK) || !defined(OPTIMIZER_ENABLED)
+				float4 shadowStrengthMask = POI2D_SAMPLER_PAN(_ShadowStrengthMask, _MainTex, poiUV(poiMesh.uv[_ShadowStrengthMaskUV], _ShadowStrengthMask_ST), _ShadowStrengthMaskPan);
+				#else
+				float4 shadowStrengthMask = 1;
+				#endif
+				if(_ShadowMaskType == 1)
+				{
+					float3 flatN = normalize(mul((float3x3)unity_ObjectToWorld, float3(0.0,0.25,1.0)));//normalize(LIL_MATRIX_M._m02_m12_m22);
+					float lnFlat = saturate((dot(flatN, poiLight.direction) + _ShadowFlatBorder) / _ShadowFlatBlur);
+					//lnFlat *= lerp(1.0, calculatedShadow, _ShadowReceive);
+					lns = lerp(lnFlat, lns, shadowStrengthMask.r);
+				}
+				else if(_ShadowMaskType == 0)
+				{
+					shadowStrength *= shadowStrengthMask.r;
+				}
+				//lns.x = lerp(1.0, lns.x, shadowStrength);
 				//poiLight.finalLighting = lns.rgb;
 				//return;
 				float3 indirectColor = 1;
@@ -21703,7 +21743,7 @@ Shader ".poiyomi/Poiyomi Toon"
 			}
 			#endif
 			#if defined(_RIMSTYLE_LILTOON) || defined(_RIM2STYLE_LILTOON)
-			void ApplyLiltoonRimLighting(inout PoiFragData poiFragData, in PoiMesh poiMesh, in PoiCam poiCam, in PoiLight poiLight, in PoiMods poiMods, float4 RimColor, float4 RimIndirColor, float4 RimColorTex, float RimMainStrength, float RimNormalStrength, float RimDirRange, float RimIndirRange, float RimFresnelPower, float RimBackfaceMask, float RimDirStrength, float RimBorder, float RimBlur, float RimIndirBorder, float RimIndirBlur, float RimShadowMask, float RimEnableLighting, float RimVRParallaxStrength, float RimGlobalMask, float RimGlobalMaskBlendType, float RimHueShiftEnabled, float RimHueShift, float RimHueShiftColorSpace, float RimHueSelectOrShift, float RimHueShiftSpeed, int RimBlendMode)
+			void ApplyLiltoonRimLighting(inout PoiFragData poiFragData, in PoiMesh poiMesh, in PoiCam poiCam, in PoiLight poiLight, in PoiMods poiMods, float4 RimColor, float4 RimIndirColor, float4 RimColorTex, float RimMainStrength, float RimNormalStrength, float RimDirRange, float RimIndirRange, float RimFresnelPower, float RimBackfaceMask, float RimDirStrength, float RimBorder, float RimBlur, float RimIndirBorder, float RimIndirBlur, float RimShadowMask, float RimEnableLighting, float RimVRParallaxStrength, float RimGlobalMask, float RimGlobalMaskBlendType, float RimHueShiftEnabled, float RimHueShift, float RimHueShiftColorSpace, float RimHueSelectOrShift, float RimHueShiftSpeed, int RimBlendMode, float RimTexMaskOnly)
 			{
 				if (RimGlobalMask > 0)
 				{
@@ -21711,8 +21751,16 @@ Shader ".poiyomi/Poiyomi Toon"
 				}
 				float4 rimColor = RimColor;
 				float4 rimIndirColor = RimIndirColor;
-				rimColor *= RimColorTex;
-				rimIndirColor *= RimColorTex;
+				if(RimTexMaskOnly > 0)
+				{
+					rimColor.a *= RimColorTex.r;
+					rimIndirColor.a *= RimColorTex.r;
+				}
+				else
+				{
+					rimColor *= RimColorTex;
+					rimIndirColor *= RimColorTex;
+				}
 				
 				if (RimHueShiftEnabled)
 				{
@@ -25792,7 +25840,7 @@ Shader ".poiyomi/Poiyomi Toon"
 				#else
 				float4 rimColorTex = 1;
 				#endif
-				ApplyLiltoonRimLighting(poiFragData, poiMesh, poiCam, poiLight, poiMods, _RimColor, _RimIndirColor, rimColorTex, _RimMainStrength, _RimNormalStrength, _RimDirRange, _RimIndirRange, _RimFresnelPower, _RimBackfaceMask, _RimDirStrength, _RimBorder, _RimBlur, _RimIndirBorder, _RimIndirBlur, _RimShadowMask, _RimEnableLighting, _RimVRParallaxStrength, _RimGlobalMask, _RimGlobalMaskBlendType, _RimHueShiftEnabled, _RimHueShift, _RimHueShiftColorSpace, _RimHueSelectOrShift, _RimHueShiftSpeed, _RimBlendMode);
+				ApplyLiltoonRimLighting(poiFragData, poiMesh, poiCam, poiLight, poiMods, _RimColor, _RimIndirColor, rimColorTex, _RimMainStrength, _RimNormalStrength, _RimDirRange, _RimIndirRange, _RimFresnelPower, _RimBackfaceMask, _RimDirStrength, _RimBorder, _RimBlur, _RimIndirBorder, _RimIndirBlur, _RimShadowMask, _RimEnableLighting, _RimVRParallaxStrength, _RimGlobalMask, _RimGlobalMaskBlendType, _RimHueShiftEnabled, _RimHueShift, _RimHueShiftColorSpace, _RimHueSelectOrShift, _RimHueShiftSpeed, _RimBlendMode, _RimMaskOnlyMask);
 				#endif
 				#endif
 				//endex
@@ -25804,7 +25852,7 @@ Shader ".poiyomi/Poiyomi Toon"
 				#else
 				float4 rim2ColorTex = 1;
 				#endif
-				ApplyLiltoonRimLighting(poiFragData, poiMesh, poiCam, poiLight, poiMods, _Rim2Color, _Rim2IndirColor, rim2ColorTex, _Rim2MainStrength, _Rim2NormalStrength, _Rim2DirRange, _Rim2IndirRange, _Rim2FresnelPower, _Rim2BackfaceMask, _Rim2DirStrength, _Rim2Border, _Rim2Blur, _Rim2IndirBorder, _Rim2IndirBlur, _Rim2ShadowMask, _Rim2EnableLighting, _Rim2VRParallaxStrength, _Rim2GlobalMask, _Rim2GlobalMaskBlendType, _Rim2HueShiftEnabled, _Rim2HueShift, _Rim2HueShiftColorSpace, _Rim2HueSelectOrShift, _Rim2HueShiftSpeed, _Rim2BlendMode);
+				ApplyLiltoonRimLighting(poiFragData, poiMesh, poiCam, poiLight, poiMods, _Rim2Color, _Rim2IndirColor, rim2ColorTex, _Rim2MainStrength, _Rim2NormalStrength, _Rim2DirRange, _Rim2IndirRange, _Rim2FresnelPower, _Rim2BackfaceMask, _Rim2DirStrength, _Rim2Border, _Rim2Blur, _Rim2IndirBorder, _Rim2IndirBlur, _Rim2ShadowMask, _Rim2EnableLighting, _Rim2VRParallaxStrength, _Rim2GlobalMask, _Rim2GlobalMaskBlendType, _Rim2HueShiftEnabled, _Rim2HueShift, _Rim2HueShiftColorSpace, _Rim2HueSelectOrShift, _Rim2HueShiftSpeed, _Rim2BlendMode, _Rim2MaskOnlyMask);
 				#endif
 				#endif
 				//endex
@@ -27644,7 +27692,6 @@ Shader ".poiyomi/Poiyomi Toon"
 			#endif
 			
 			#ifdef _LIGHTINGMODE_MULTILAYER_MATH
-			float _ShadowBorderMapToggle;
 			#if defined(PROP_SHADOWBORDERMASK) || !defined(OPTIMIZER_ENABLED)
 			Texture2D _ShadowBorderMask;
 			float4 _ShadowBorderMask_ST;
@@ -27697,6 +27744,16 @@ Shader ".poiyomi/Poiyomi Toon"
 			float _ShadowBorderRange;
 			float _ShadowEnvStrength;
 			float _ShadowMainStrength;
+			float _ShadowMaskType;
+			#if defined(PROP_SHADOWSTRENGTHMASK) || !defined(OPTIMIZER_ENABLED)
+			Texture2D _ShadowStrengthMask;
+			float4 _ShadowStrengthMask_ST;
+			float4 _ShadowStrengthMaskPan;
+			float _ShadowStrengthMaskUV;
+			#endif
+			float _ShadowFlatBorder;
+			float _ShadowFlatBlur;
+			float _MultilayerShadowStrength;
 			#endif
 			
 			#ifdef _LIGHTINGMODE_FLAT
@@ -28853,6 +28910,7 @@ Shader ".poiyomi/Poiyomi Toon"
 			float4 _RimIndirColor;
 			float _RimIndirBorder;
 			float _RimIndirBlur;
+			float _RimMaskOnlyMask;
 			int _RimBlendMode;
 			#endif
 			
@@ -28970,6 +29028,7 @@ Shader ".poiyomi/Poiyomi Toon"
 			float4 _Rim2IndirColor;
 			float _Rim2IndirBorder;
 			float _Rim2IndirBlur;
+			float _Rim2MaskOnlyMask;
 			int _Rim2BlendMode;
 			#endif
 			
@@ -31958,7 +32017,7 @@ Shader ".poiyomi/Poiyomi Toon"
 				
 				//ifex _VertexManipulationsEnabled==0
 				#ifdef AUTO_EXPOSURE
-				float4 audioLinkBands = 0;
+				float audioLinkBands[5];
 				float3 ALrotation = 0;
 				float3 ALLocalTranslation = 0;
 				float3 CTALRotation = 0;
@@ -31970,10 +32029,11 @@ Shader ".poiyomi/Poiyomi Toon"
 				#ifdef POI_AUDIOLINK
 				if (AudioLinkIsAvailable() && _VertexAudioLinkEnabled && _AudioLinkAnimToggle)
 				{
-					audioLinkBands.x = AudioLinkData(ALPASS_AUDIOBASS).r;
-					audioLinkBands.y = AudioLinkData(ALPASS_AUDIOLOWMIDS).r;
-					audioLinkBands.z = AudioLinkData(ALPASS_AUDIOHIGHMIDS).r;
-					audioLinkBands.w = AudioLinkData(ALPASS_AUDIOTREBLE).r;
+					audioLinkBands[0] = _AudioLinkSmoothingBass == 0 ? AudioLinkData(ALPASS_AUDIOLINK + float2(0, 0))[0] : AudioLinkData(ALPASS_FILTEREDAUDIOLINK + float2((1 - _AudioLinkSmoothingBass) * 15.95, 0))[0];
+					audioLinkBands[1] = _AudioLinkSmoothingLowMid == 0 ? AudioLinkData(ALPASS_AUDIOLINK + float2(0, 1))[0] : AudioLinkData(ALPASS_FILTEREDAUDIOLINK + float2((1 - _AudioLinkSmoothingLowMid) * 15.95, 1))[0];
+					audioLinkBands[2] = _AudioLinkSmoothingHighMid == 0 ? AudioLinkData(ALPASS_AUDIOLINK + float2(0, 2))[0] : AudioLinkData(ALPASS_FILTEREDAUDIOLINK + float2((1 - _AudioLinkSmoothingHighMid) * 15.95, 2))[0];
+					audioLinkBands[3] = _AudioLinkSmoothingTreble == 0 ? AudioLinkData(ALPASS_AUDIOLINK + float2(0, 3))[0] : AudioLinkData(ALPASS_FILTEREDAUDIOLINK + float2((1 - _AudioLinkSmoothingTreble) * 15.95, 3))[0];
+					audioLinkBands[4] = AudioLinkData(ALPASS_GENERALVU + float2(8, 0))[0];
 					
 					if (any(_VertexLocalTranslationALMin) || any(_VertexLocalTranslationALMax))
 					{
@@ -34357,43 +34417,43 @@ Shader ".poiyomi/Poiyomi Toon"
 				lightMap.z *= lerp(1.0, shadowAttenuationNoStrength, _Shadow3rdReceive);
 				
 				float4 shadowBorderMask = 1;
-				if (_ShadowBorderMapToggle)
+				
+				#if defined(PROP_SHADOWBORDERMASK) || !defined(OPTIMIZER_ENABLED)
+				// This should be moved to ui but honestly if these are locked in the compiler should be able to resolve it at compile time
+				float2 shadowShift0 = float2(_ShadowAOShift.x, _ShadowAOShift.y);
+				float2 shadowShift1 = float2(_ShadowAOShift.z, _ShadowAOShift.w);
+				float2 shadowShift2 = float2(_ShadowAOShift2.x, _ShadowAOShift2.y);
+				
+				//float2 shadowShift0 = float2(GetRemapMinValue(_ShadowAOShift.x, _ShadowAOShift.y), GetRemapMaxValue(_ShadowAOShift.x, _ShadowAOShift.y));
+				//float2 shadowShift1 = float2(GetRemapMinValue(_ShadowAOShift.z, _ShadowAOShift.w), GetRemapMaxValue(_ShadowAOShift.z, _ShadowAOShift.w));
+				//float2 shadowShift2 = float2(GetRemapMinValue(_ShadowAOShift2.x, _ShadowAOShift2.y), GetRemapMaxValue(_ShadowAOShift2.x, _ShadowAOShift2.y));
+				
+				shadowShift0.y = (shadowShift0.x == shadowShift0.y) ? (shadowShift0.y + 0.001f) : shadowShift0.y;
+				shadowShift1.y = (shadowShift1.x == shadowShift1.y) ? (shadowShift1.y + 0.001f) : shadowShift1.y;
+				shadowShift2.y = (shadowShift2.x == shadowShift2.y) ? (shadowShift2.y + 0.001f) : shadowShift2.y;
+				
+				shadowShift0 = float2(1.0f / (shadowShift0.y - shadowShift0.x), shadowShift0.x / (shadowShift0.x - shadowShift0.y));
+				shadowShift1 = float2(1.0f / (shadowShift1.y - shadowShift1.x), shadowShift1.x / (shadowShift1.x - shadowShift1.y));
+				shadowShift2 = float2(1.0f / (shadowShift2.y - shadowShift2.x), shadowShift2.x / (shadowShift2.x - shadowShift2.y));
+				
+				#if defined(PROP_SHADOWBORDERMASK) || !defined(OPTIMIZER_ENABLED)
+				float2 shadowBorderMaskUV = poiUV(poiMesh.uv[_ShadowBorderMaskUV], _ShadowBorderMask_ST);
+				if (_ShadowBorderMaskLOD)
 				{
-					// This should be moved to ui but honestly if these are locked in the compiler should be able to resolve it at compile time
-					float2 shadowShift0 = float2(_ShadowAOShift.x, _ShadowAOShift.y);
-					float2 shadowShift1 = float2(_ShadowAOShift.z, _ShadowAOShift.w);
-					float2 shadowShift2 = float2(_ShadowAOShift2.x, _ShadowAOShift2.y);
-					
-					//float2 shadowShift0 = float2(GetRemapMinValue(_ShadowAOShift.x, _ShadowAOShift.y), GetRemapMaxValue(_ShadowAOShift.x, _ShadowAOShift.y));
-					//float2 shadowShift1 = float2(GetRemapMinValue(_ShadowAOShift.z, _ShadowAOShift.w), GetRemapMaxValue(_ShadowAOShift.z, _ShadowAOShift.w));
-					//float2 shadowShift2 = float2(GetRemapMinValue(_ShadowAOShift2.x, _ShadowAOShift2.y), GetRemapMaxValue(_ShadowAOShift2.x, _ShadowAOShift2.y));
-					
-					shadowShift0.y = (shadowShift0.x == shadowShift0.y) ? (shadowShift0.y + 0.001f) : shadowShift0.y;
-					shadowShift1.y = (shadowShift1.x == shadowShift1.y) ? (shadowShift1.y + 0.001f) : shadowShift1.y;
-					shadowShift2.y = (shadowShift2.x == shadowShift2.y) ? (shadowShift2.y + 0.001f) : shadowShift2.y;
-					
-					shadowShift0 = float2(1.0f / (shadowShift0.y - shadowShift0.x), shadowShift0.x / (shadowShift0.x - shadowShift0.y));
-					shadowShift1 = float2(1.0f / (shadowShift1.y - shadowShift1.x), shadowShift1.x / (shadowShift1.x - shadowShift1.y));
-					shadowShift2 = float2(1.0f / (shadowShift2.y - shadowShift2.x), shadowShift2.x / (shadowShift2.x - shadowShift2.y));
-					
-					#if defined(PROP_SHADOWBORDERMASK) || !defined(OPTIMIZER_ENABLED)
-					float2 shadowBorderMaskUV = poiUV(poiMesh.uv[_ShadowBorderMaskUV], _ShadowBorderMask_ST);
-					if (_ShadowBorderMaskLOD)
-					{
-						shadowBorderMask = POI2D_SAMPLE_TEX2D_SAMPLERGRADD(_ShadowBorderMask, sampler_trilinear_repeat, shadowBorderMaskUV, _ShadowBorderMaskPan, max(abs(ddx(shadowBorderMaskUV)), pow(_ShadowBorderMaskLOD, 4)), max(abs(ddy(shadowBorderMaskUV)), pow(_ShadowBorderMaskLOD, 4)));
-					}
-					else
-					{
-						shadowBorderMask = POI2D_SAMPLER_PAN(_ShadowBorderMask, _linear_repeat, shadowBorderMaskUV, _ShadowBorderMaskPan);
-					}
-					#endif
-					
-					shadowBorderMask.r = saturate(shadowBorderMask.r * shadowShift0.x + shadowShift0.y);
-					shadowBorderMask.g = saturate(shadowBorderMask.g * shadowShift1.x + shadowShift1.y);
-					shadowBorderMask.b = saturate(shadowBorderMask.b * shadowShift2.x + shadowShift2.y);
-					
-					lightMap.xyz = _ShadowPostAO ? lightMap.xyz : lightMap.xyz * shadowBorderMask.rgb;
+					shadowBorderMask = POI2D_SAMPLE_TEX2D_SAMPLERGRADD(_ShadowBorderMask, sampler_trilinear_repeat, shadowBorderMaskUV, _ShadowBorderMaskPan, max(abs(ddx(shadowBorderMaskUV)), pow(_ShadowBorderMaskLOD, 4)), max(abs(ddy(shadowBorderMaskUV)), pow(_ShadowBorderMaskLOD, 4)));
 				}
+				else
+				{
+					shadowBorderMask = POI2D_SAMPLER_PAN(_ShadowBorderMask, _linear_repeat, shadowBorderMaskUV, _ShadowBorderMaskPan);
+				}
+				#endif
+				
+				shadowBorderMask.r = saturate(shadowBorderMask.r * shadowShift0.x + shadowShift0.y);
+				shadowBorderMask.g = saturate(shadowBorderMask.g * shadowShift1.x + shadowShift1.y);
+				shadowBorderMask.b = saturate(shadowBorderMask.b * shadowShift2.x + shadowShift2.y);
+				
+				lightMap.xyz = _ShadowPostAO ? lightMap.xyz : lightMap.xyz * shadowBorderMask.rgb;
+				#endif
 				
 				if (_LightingMapMode == 4)
 				{
@@ -34418,6 +34478,24 @@ Shader ".poiyomi/Poiyomi Toon"
 				lns = _ShadowPostAO ? lns * shadowBorderMask.rgbr : lns;
 				#endif
 				lns = saturate(lns);
+				
+				#if defined(PROP_SHADOWSTRENGTHMASK) || !defined(OPTIMIZER_ENABLED)
+				float4 shadowStrengthMask = POI2D_SAMPLER_PAN(_ShadowStrengthMask, _MainTex, poiUV(poiMesh.uv[_ShadowStrengthMaskUV], _ShadowStrengthMask_ST), _ShadowStrengthMaskPan);
+				#else
+				float4 shadowStrengthMask = 1;
+				#endif
+				if(_ShadowMaskType == 1)
+				{
+					float3 flatN = normalize(mul((float3x3)unity_ObjectToWorld, float3(0.0,0.25,1.0)));//normalize(LIL_MATRIX_M._m02_m12_m22);
+					float lnFlat = saturate((dot(flatN, poiLight.direction) + _ShadowFlatBorder) / _ShadowFlatBlur);
+					//lnFlat *= lerp(1.0, calculatedShadow, _ShadowReceive);
+					lns = lerp(lnFlat, lns, shadowStrengthMask.r);
+				}
+				else if(_ShadowMaskType == 0)
+				{
+					shadowStrength *= shadowStrengthMask.r;
+				}
+				//lns.x = lerp(1.0, lns.x, shadowStrength);
 				//poiLight.finalLighting = lns.rgb;
 				//return;
 				float3 indirectColor = 1;
@@ -37020,7 +37098,7 @@ Shader ".poiyomi/Poiyomi Toon"
 			}
 			#endif
 			#if defined(_RIMSTYLE_LILTOON) || defined(_RIM2STYLE_LILTOON)
-			void ApplyLiltoonRimLighting(inout PoiFragData poiFragData, in PoiMesh poiMesh, in PoiCam poiCam, in PoiLight poiLight, in PoiMods poiMods, float4 RimColor, float4 RimIndirColor, float4 RimColorTex, float RimMainStrength, float RimNormalStrength, float RimDirRange, float RimIndirRange, float RimFresnelPower, float RimBackfaceMask, float RimDirStrength, float RimBorder, float RimBlur, float RimIndirBorder, float RimIndirBlur, float RimShadowMask, float RimEnableLighting, float RimVRParallaxStrength, float RimGlobalMask, float RimGlobalMaskBlendType, float RimHueShiftEnabled, float RimHueShift, float RimHueShiftColorSpace, float RimHueSelectOrShift, float RimHueShiftSpeed, int RimBlendMode)
+			void ApplyLiltoonRimLighting(inout PoiFragData poiFragData, in PoiMesh poiMesh, in PoiCam poiCam, in PoiLight poiLight, in PoiMods poiMods, float4 RimColor, float4 RimIndirColor, float4 RimColorTex, float RimMainStrength, float RimNormalStrength, float RimDirRange, float RimIndirRange, float RimFresnelPower, float RimBackfaceMask, float RimDirStrength, float RimBorder, float RimBlur, float RimIndirBorder, float RimIndirBlur, float RimShadowMask, float RimEnableLighting, float RimVRParallaxStrength, float RimGlobalMask, float RimGlobalMaskBlendType, float RimHueShiftEnabled, float RimHueShift, float RimHueShiftColorSpace, float RimHueSelectOrShift, float RimHueShiftSpeed, int RimBlendMode, float RimTexMaskOnly)
 			{
 				if (RimGlobalMask > 0)
 				{
@@ -37028,8 +37106,16 @@ Shader ".poiyomi/Poiyomi Toon"
 				}
 				float4 rimColor = RimColor;
 				float4 rimIndirColor = RimIndirColor;
-				rimColor *= RimColorTex;
-				rimIndirColor *= RimColorTex;
+				if(RimTexMaskOnly > 0)
+				{
+					rimColor.a *= RimColorTex.r;
+					rimIndirColor.a *= RimColorTex.r;
+				}
+				else
+				{
+					rimColor *= RimColorTex;
+					rimIndirColor *= RimColorTex;
+				}
 				
 				if (RimHueShiftEnabled)
 				{
@@ -40926,7 +41012,7 @@ Shader ".poiyomi/Poiyomi Toon"
 				#else
 				float4 rimColorTex = 1;
 				#endif
-				ApplyLiltoonRimLighting(poiFragData, poiMesh, poiCam, poiLight, poiMods, _RimColor, _RimIndirColor, rimColorTex, _RimMainStrength, _RimNormalStrength, _RimDirRange, _RimIndirRange, _RimFresnelPower, _RimBackfaceMask, _RimDirStrength, _RimBorder, _RimBlur, _RimIndirBorder, _RimIndirBlur, _RimShadowMask, _RimEnableLighting, _RimVRParallaxStrength, _RimGlobalMask, _RimGlobalMaskBlendType, _RimHueShiftEnabled, _RimHueShift, _RimHueShiftColorSpace, _RimHueSelectOrShift, _RimHueShiftSpeed, _RimBlendMode);
+				ApplyLiltoonRimLighting(poiFragData, poiMesh, poiCam, poiLight, poiMods, _RimColor, _RimIndirColor, rimColorTex, _RimMainStrength, _RimNormalStrength, _RimDirRange, _RimIndirRange, _RimFresnelPower, _RimBackfaceMask, _RimDirStrength, _RimBorder, _RimBlur, _RimIndirBorder, _RimIndirBlur, _RimShadowMask, _RimEnableLighting, _RimVRParallaxStrength, _RimGlobalMask, _RimGlobalMaskBlendType, _RimHueShiftEnabled, _RimHueShift, _RimHueShiftColorSpace, _RimHueSelectOrShift, _RimHueShiftSpeed, _RimBlendMode, _RimMaskOnlyMask);
 				#endif
 				#endif
 				//endex
@@ -40938,7 +41024,7 @@ Shader ".poiyomi/Poiyomi Toon"
 				#else
 				float4 rim2ColorTex = 1;
 				#endif
-				ApplyLiltoonRimLighting(poiFragData, poiMesh, poiCam, poiLight, poiMods, _Rim2Color, _Rim2IndirColor, rim2ColorTex, _Rim2MainStrength, _Rim2NormalStrength, _Rim2DirRange, _Rim2IndirRange, _Rim2FresnelPower, _Rim2BackfaceMask, _Rim2DirStrength, _Rim2Border, _Rim2Blur, _Rim2IndirBorder, _Rim2IndirBlur, _Rim2ShadowMask, _Rim2EnableLighting, _Rim2VRParallaxStrength, _Rim2GlobalMask, _Rim2GlobalMaskBlendType, _Rim2HueShiftEnabled, _Rim2HueShift, _Rim2HueShiftColorSpace, _Rim2HueSelectOrShift, _Rim2HueShiftSpeed, _Rim2BlendMode);
+				ApplyLiltoonRimLighting(poiFragData, poiMesh, poiCam, poiLight, poiMods, _Rim2Color, _Rim2IndirColor, rim2ColorTex, _Rim2MainStrength, _Rim2NormalStrength, _Rim2DirRange, _Rim2IndirRange, _Rim2FresnelPower, _Rim2BackfaceMask, _Rim2DirStrength, _Rim2Border, _Rim2Blur, _Rim2IndirBorder, _Rim2IndirBlur, _Rim2ShadowMask, _Rim2EnableLighting, _Rim2VRParallaxStrength, _Rim2GlobalMask, _Rim2GlobalMaskBlendType, _Rim2HueShiftEnabled, _Rim2HueShift, _Rim2HueShiftColorSpace, _Rim2HueSelectOrShift, _Rim2HueShiftSpeed, _Rim2BlendMode, _Rim2MaskOnlyMask);
 				#endif
 				#endif
 				//endex
@@ -42505,7 +42591,6 @@ Shader ".poiyomi/Poiyomi Toon"
 			#endif
 			
 			#ifdef _LIGHTINGMODE_MULTILAYER_MATH
-			float _ShadowBorderMapToggle;
 			#if defined(PROP_SHADOWBORDERMASK) || !defined(OPTIMIZER_ENABLED)
 			Texture2D _ShadowBorderMask;
 			float4 _ShadowBorderMask_ST;
@@ -42558,6 +42643,16 @@ Shader ".poiyomi/Poiyomi Toon"
 			float _ShadowBorderRange;
 			float _ShadowEnvStrength;
 			float _ShadowMainStrength;
+			float _ShadowMaskType;
+			#if defined(PROP_SHADOWSTRENGTHMASK) || !defined(OPTIMIZER_ENABLED)
+			Texture2D _ShadowStrengthMask;
+			float4 _ShadowStrengthMask_ST;
+			float4 _ShadowStrengthMaskPan;
+			float _ShadowStrengthMaskUV;
+			#endif
+			float _ShadowFlatBorder;
+			float _ShadowFlatBlur;
+			float _MultilayerShadowStrength;
 			#endif
 			
 			#ifdef _LIGHTINGMODE_FLAT
@@ -45187,7 +45282,7 @@ Shader ".poiyomi/Poiyomi Toon"
 				
 				//ifex _VertexManipulationsEnabled==0
 				#ifdef AUTO_EXPOSURE
-				float4 audioLinkBands = 0;
+				float audioLinkBands[5];
 				float3 ALrotation = 0;
 				float3 ALLocalTranslation = 0;
 				float3 CTALRotation = 0;
@@ -45199,10 +45294,11 @@ Shader ".poiyomi/Poiyomi Toon"
 				#ifdef POI_AUDIOLINK
 				if (AudioLinkIsAvailable() && _VertexAudioLinkEnabled && _AudioLinkAnimToggle)
 				{
-					audioLinkBands.x = AudioLinkData(ALPASS_AUDIOBASS).r;
-					audioLinkBands.y = AudioLinkData(ALPASS_AUDIOLOWMIDS).r;
-					audioLinkBands.z = AudioLinkData(ALPASS_AUDIOHIGHMIDS).r;
-					audioLinkBands.w = AudioLinkData(ALPASS_AUDIOTREBLE).r;
+					audioLinkBands[0] = _AudioLinkSmoothingBass == 0 ? AudioLinkData(ALPASS_AUDIOLINK + float2(0, 0))[0] : AudioLinkData(ALPASS_FILTEREDAUDIOLINK + float2((1 - _AudioLinkSmoothingBass) * 15.95, 0))[0];
+					audioLinkBands[1] = _AudioLinkSmoothingLowMid == 0 ? AudioLinkData(ALPASS_AUDIOLINK + float2(0, 1))[0] : AudioLinkData(ALPASS_FILTEREDAUDIOLINK + float2((1 - _AudioLinkSmoothingLowMid) * 15.95, 1))[0];
+					audioLinkBands[2] = _AudioLinkSmoothingHighMid == 0 ? AudioLinkData(ALPASS_AUDIOLINK + float2(0, 2))[0] : AudioLinkData(ALPASS_FILTEREDAUDIOLINK + float2((1 - _AudioLinkSmoothingHighMid) * 15.95, 2))[0];
+					audioLinkBands[3] = _AudioLinkSmoothingTreble == 0 ? AudioLinkData(ALPASS_AUDIOLINK + float2(0, 3))[0] : AudioLinkData(ALPASS_FILTEREDAUDIOLINK + float2((1 - _AudioLinkSmoothingTreble) * 15.95, 3))[0];
+					audioLinkBands[4] = AudioLinkData(ALPASS_GENERALVU + float2(8, 0))[0];
 					
 					if (any(_VertexLocalTranslationALMin) || any(_VertexLocalTranslationALMax))
 					{
@@ -47211,43 +47307,43 @@ Shader ".poiyomi/Poiyomi Toon"
 				lightMap.z *= lerp(1.0, shadowAttenuationNoStrength, _Shadow3rdReceive);
 				
 				float4 shadowBorderMask = 1;
-				if (_ShadowBorderMapToggle)
+				
+				#if defined(PROP_SHADOWBORDERMASK) || !defined(OPTIMIZER_ENABLED)
+				// This should be moved to ui but honestly if these are locked in the compiler should be able to resolve it at compile time
+				float2 shadowShift0 = float2(_ShadowAOShift.x, _ShadowAOShift.y);
+				float2 shadowShift1 = float2(_ShadowAOShift.z, _ShadowAOShift.w);
+				float2 shadowShift2 = float2(_ShadowAOShift2.x, _ShadowAOShift2.y);
+				
+				//float2 shadowShift0 = float2(GetRemapMinValue(_ShadowAOShift.x, _ShadowAOShift.y), GetRemapMaxValue(_ShadowAOShift.x, _ShadowAOShift.y));
+				//float2 shadowShift1 = float2(GetRemapMinValue(_ShadowAOShift.z, _ShadowAOShift.w), GetRemapMaxValue(_ShadowAOShift.z, _ShadowAOShift.w));
+				//float2 shadowShift2 = float2(GetRemapMinValue(_ShadowAOShift2.x, _ShadowAOShift2.y), GetRemapMaxValue(_ShadowAOShift2.x, _ShadowAOShift2.y));
+				
+				shadowShift0.y = (shadowShift0.x == shadowShift0.y) ? (shadowShift0.y + 0.001f) : shadowShift0.y;
+				shadowShift1.y = (shadowShift1.x == shadowShift1.y) ? (shadowShift1.y + 0.001f) : shadowShift1.y;
+				shadowShift2.y = (shadowShift2.x == shadowShift2.y) ? (shadowShift2.y + 0.001f) : shadowShift2.y;
+				
+				shadowShift0 = float2(1.0f / (shadowShift0.y - shadowShift0.x), shadowShift0.x / (shadowShift0.x - shadowShift0.y));
+				shadowShift1 = float2(1.0f / (shadowShift1.y - shadowShift1.x), shadowShift1.x / (shadowShift1.x - shadowShift1.y));
+				shadowShift2 = float2(1.0f / (shadowShift2.y - shadowShift2.x), shadowShift2.x / (shadowShift2.x - shadowShift2.y));
+				
+				#if defined(PROP_SHADOWBORDERMASK) || !defined(OPTIMIZER_ENABLED)
+				float2 shadowBorderMaskUV = poiUV(poiMesh.uv[_ShadowBorderMaskUV], _ShadowBorderMask_ST);
+				if (_ShadowBorderMaskLOD)
 				{
-					// This should be moved to ui but honestly if these are locked in the compiler should be able to resolve it at compile time
-					float2 shadowShift0 = float2(_ShadowAOShift.x, _ShadowAOShift.y);
-					float2 shadowShift1 = float2(_ShadowAOShift.z, _ShadowAOShift.w);
-					float2 shadowShift2 = float2(_ShadowAOShift2.x, _ShadowAOShift2.y);
-					
-					//float2 shadowShift0 = float2(GetRemapMinValue(_ShadowAOShift.x, _ShadowAOShift.y), GetRemapMaxValue(_ShadowAOShift.x, _ShadowAOShift.y));
-					//float2 shadowShift1 = float2(GetRemapMinValue(_ShadowAOShift.z, _ShadowAOShift.w), GetRemapMaxValue(_ShadowAOShift.z, _ShadowAOShift.w));
-					//float2 shadowShift2 = float2(GetRemapMinValue(_ShadowAOShift2.x, _ShadowAOShift2.y), GetRemapMaxValue(_ShadowAOShift2.x, _ShadowAOShift2.y));
-					
-					shadowShift0.y = (shadowShift0.x == shadowShift0.y) ? (shadowShift0.y + 0.001f) : shadowShift0.y;
-					shadowShift1.y = (shadowShift1.x == shadowShift1.y) ? (shadowShift1.y + 0.001f) : shadowShift1.y;
-					shadowShift2.y = (shadowShift2.x == shadowShift2.y) ? (shadowShift2.y + 0.001f) : shadowShift2.y;
-					
-					shadowShift0 = float2(1.0f / (shadowShift0.y - shadowShift0.x), shadowShift0.x / (shadowShift0.x - shadowShift0.y));
-					shadowShift1 = float2(1.0f / (shadowShift1.y - shadowShift1.x), shadowShift1.x / (shadowShift1.x - shadowShift1.y));
-					shadowShift2 = float2(1.0f / (shadowShift2.y - shadowShift2.x), shadowShift2.x / (shadowShift2.x - shadowShift2.y));
-					
-					#if defined(PROP_SHADOWBORDERMASK) || !defined(OPTIMIZER_ENABLED)
-					float2 shadowBorderMaskUV = poiUV(poiMesh.uv[_ShadowBorderMaskUV], _ShadowBorderMask_ST);
-					if (_ShadowBorderMaskLOD)
-					{
-						shadowBorderMask = POI2D_SAMPLE_TEX2D_SAMPLERGRADD(_ShadowBorderMask, sampler_trilinear_repeat, shadowBorderMaskUV, _ShadowBorderMaskPan, max(abs(ddx(shadowBorderMaskUV)), pow(_ShadowBorderMaskLOD, 4)), max(abs(ddy(shadowBorderMaskUV)), pow(_ShadowBorderMaskLOD, 4)));
-					}
-					else
-					{
-						shadowBorderMask = POI2D_SAMPLER_PAN(_ShadowBorderMask, _linear_repeat, shadowBorderMaskUV, _ShadowBorderMaskPan);
-					}
-					#endif
-					
-					shadowBorderMask.r = saturate(shadowBorderMask.r * shadowShift0.x + shadowShift0.y);
-					shadowBorderMask.g = saturate(shadowBorderMask.g * shadowShift1.x + shadowShift1.y);
-					shadowBorderMask.b = saturate(shadowBorderMask.b * shadowShift2.x + shadowShift2.y);
-					
-					lightMap.xyz = _ShadowPostAO ? lightMap.xyz : lightMap.xyz * shadowBorderMask.rgb;
+					shadowBorderMask = POI2D_SAMPLE_TEX2D_SAMPLERGRADD(_ShadowBorderMask, sampler_trilinear_repeat, shadowBorderMaskUV, _ShadowBorderMaskPan, max(abs(ddx(shadowBorderMaskUV)), pow(_ShadowBorderMaskLOD, 4)), max(abs(ddy(shadowBorderMaskUV)), pow(_ShadowBorderMaskLOD, 4)));
 				}
+				else
+				{
+					shadowBorderMask = POI2D_SAMPLER_PAN(_ShadowBorderMask, _linear_repeat, shadowBorderMaskUV, _ShadowBorderMaskPan);
+				}
+				#endif
+				
+				shadowBorderMask.r = saturate(shadowBorderMask.r * shadowShift0.x + shadowShift0.y);
+				shadowBorderMask.g = saturate(shadowBorderMask.g * shadowShift1.x + shadowShift1.y);
+				shadowBorderMask.b = saturate(shadowBorderMask.b * shadowShift2.x + shadowShift2.y);
+				
+				lightMap.xyz = _ShadowPostAO ? lightMap.xyz : lightMap.xyz * shadowBorderMask.rgb;
+				#endif
 				
 				if (_LightingMapMode == 4)
 				{
@@ -47272,6 +47368,24 @@ Shader ".poiyomi/Poiyomi Toon"
 				lns = _ShadowPostAO ? lns * shadowBorderMask.rgbr : lns;
 				#endif
 				lns = saturate(lns);
+				
+				#if defined(PROP_SHADOWSTRENGTHMASK) || !defined(OPTIMIZER_ENABLED)
+				float4 shadowStrengthMask = POI2D_SAMPLER_PAN(_ShadowStrengthMask, _MainTex, poiUV(poiMesh.uv[_ShadowStrengthMaskUV], _ShadowStrengthMask_ST), _ShadowStrengthMaskPan);
+				#else
+				float4 shadowStrengthMask = 1;
+				#endif
+				if(_ShadowMaskType == 1)
+				{
+					float3 flatN = normalize(mul((float3x3)unity_ObjectToWorld, float3(0.0,0.25,1.0)));//normalize(LIL_MATRIX_M._m02_m12_m22);
+					float lnFlat = saturate((dot(flatN, poiLight.direction) + _ShadowFlatBorder) / _ShadowFlatBlur);
+					//lnFlat *= lerp(1.0, calculatedShadow, _ShadowReceive);
+					lns = lerp(lnFlat, lns, shadowStrengthMask.r);
+				}
+				else if(_ShadowMaskType == 0)
+				{
+					shadowStrength *= shadowStrengthMask.r;
+				}
+				//lns.x = lerp(1.0, lns.x, shadowStrength);
 				//poiLight.finalLighting = lns.rgb;
 				//return;
 				float3 indirectColor = 1;
@@ -53634,7 +53748,7 @@ Shader ".poiyomi/Poiyomi Toon"
 				
 				//ifex _VertexManipulationsEnabled==0
 				#ifdef AUTO_EXPOSURE
-				float4 audioLinkBands = 0;
+				float audioLinkBands[5];
 				float3 ALrotation = 0;
 				float3 ALLocalTranslation = 0;
 				float3 CTALRotation = 0;
@@ -53646,10 +53760,11 @@ Shader ".poiyomi/Poiyomi Toon"
 				#ifdef POI_AUDIOLINK
 				if (AudioLinkIsAvailable() && _VertexAudioLinkEnabled && _AudioLinkAnimToggle)
 				{
-					audioLinkBands.x = AudioLinkData(ALPASS_AUDIOBASS).r;
-					audioLinkBands.y = AudioLinkData(ALPASS_AUDIOLOWMIDS).r;
-					audioLinkBands.z = AudioLinkData(ALPASS_AUDIOHIGHMIDS).r;
-					audioLinkBands.w = AudioLinkData(ALPASS_AUDIOTREBLE).r;
+					audioLinkBands[0] = _AudioLinkSmoothingBass == 0 ? AudioLinkData(ALPASS_AUDIOLINK + float2(0, 0))[0] : AudioLinkData(ALPASS_FILTEREDAUDIOLINK + float2((1 - _AudioLinkSmoothingBass) * 15.95, 0))[0];
+					audioLinkBands[1] = _AudioLinkSmoothingLowMid == 0 ? AudioLinkData(ALPASS_AUDIOLINK + float2(0, 1))[0] : AudioLinkData(ALPASS_FILTEREDAUDIOLINK + float2((1 - _AudioLinkSmoothingLowMid) * 15.95, 1))[0];
+					audioLinkBands[2] = _AudioLinkSmoothingHighMid == 0 ? AudioLinkData(ALPASS_AUDIOLINK + float2(0, 2))[0] : AudioLinkData(ALPASS_FILTEREDAUDIOLINK + float2((1 - _AudioLinkSmoothingHighMid) * 15.95, 2))[0];
+					audioLinkBands[3] = _AudioLinkSmoothingTreble == 0 ? AudioLinkData(ALPASS_AUDIOLINK + float2(0, 3))[0] : AudioLinkData(ALPASS_FILTEREDAUDIOLINK + float2((1 - _AudioLinkSmoothingTreble) * 15.95, 3))[0];
+					audioLinkBands[4] = AudioLinkData(ALPASS_GENERALVU + float2(8, 0))[0];
 					
 					if (any(_VertexLocalTranslationALMin) || any(_VertexLocalTranslationALMax))
 					{

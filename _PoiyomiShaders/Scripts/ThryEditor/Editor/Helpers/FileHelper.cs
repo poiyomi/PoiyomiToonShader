@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 using UnityEditor;
 using UnityEngine;
 
-namespace Thry
+namespace Thry.ThryEditor.Helpers
 {
     public class FileHelper
     {

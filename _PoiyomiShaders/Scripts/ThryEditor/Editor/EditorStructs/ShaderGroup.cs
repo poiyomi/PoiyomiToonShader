@@ -6,7 +6,7 @@ using UnityEditor;
 using UnityEngine;
 using static UnityEditor.MaterialProperty;
 
-namespace Thry
+namespace Thry.ThryEditor
 {
     public class ShaderGroup : ShaderPart
     {

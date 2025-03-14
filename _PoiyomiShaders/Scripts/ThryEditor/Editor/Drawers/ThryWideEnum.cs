@@ -4,7 +4,7 @@ using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 
-namespace Thry
+namespace Thry.ThryEditor.Drawers
 {
     // Enum with normal editor width, rather than MaterialEditor Default GUI widths
     // Would be nice if Decorators could access Drawers too so this wouldn't be necessary for something to trivial
@@ -142,7 +142,10 @@ namespace Thry
             return base.GetPropertyHeight(prop, label, editor);
         }
     }
+}
 
+namespace Thry
+{
     public enum ColorMask
     {
         None,

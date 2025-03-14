@@ -1,9 +1,10 @@
 using System;
 using System.Collections.Generic;
+using Thry.ThryEditor.Helpers;
 using UnityEditor;
 using UnityEngine;
 
-namespace Thry
+namespace Thry.ThryEditor
 {
     public class TextureData
     {

@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 using System.Linq;
-using Thry.ThryEditor;
+using Thry.ThryEditor.Helpers;
 using UnityEditor;
 using UnityEngine;
 
-namespace Thry
+namespace Thry.ThryEditor
 {
     public class ShaderHeader : ShaderGroup
     {
@@ -188,6 +188,7 @@ namespace Thry
             var menu = new GenericMenu();
             menu.AddItem(new GUIContent("Reset"), false, delegate ()
             {
+                ThryLogger.LogDetail("ShaderHeader", $"Resetting '{property.Content.text}' of {ShaderEditor.Active.Materials[0].name}");
                 int undoGroup = Undo.GetCurrentGroup();
 
                 property.CopyFrom(new Material(materials[0].shader), true);
@@ -202,6 +203,7 @@ namespace Thry
             menu.AddSeparator("");
             menu.AddItem(new GUIContent("Copy"), false, delegate ()
             {
+                ThryLogger.LogDetail("ShaderHeader", $"Copying '{property.Content.text}' of {ShaderEditor.Active.Materials[0].name}");
                 Mediator.copy_material = new Material(materials[0]);
                 Mediator.copy_part = property;
             });
@@ -209,6 +211,7 @@ namespace Thry
             {
                 if (Mediator.copy_material != null || Mediator.copy_part != null)
                 {
+                    ThryLogger.LogDetail("ShaderHeader", $"Pasting '{property.Content.text}' of {ShaderEditor.Active.Materials[0].name}");
                     int undoGroup = Undo.GetCurrentGroup();
 
                     property.CopyFrom(Mediator.copy_part);
@@ -222,6 +225,7 @@ namespace Thry
             {
                 if (Mediator.copy_material != null || Mediator.copy_part != null)
                 {
+                    ThryLogger.LogDetail("ShaderHeader", $"Pasting* '{property.Content.text}' of {ShaderEditor.Active.Materials[0].name}");
                     int undoGroup = Undo.GetCurrentGroup();
 
                     var propsToIgnore = new HashSet<MaterialProperty.PropType> { MaterialProperty.PropType.Texture };
@@ -237,6 +241,7 @@ namespace Thry
                 if(Mediator.copy_material == null || Mediator.copy_part == null)
                     return;
                 
+                ThryLogger.LogDetail("ShaderHeader", $"Pasting** '{property.Content.text}' of {ShaderEditor.Active.Materials[0].name}");
                 var popup = ScriptableObject.CreateInstance<PasteSpecialPopup>();
                 popup.Init(Mediator.copy_part);
                 popup.ShowUtility();

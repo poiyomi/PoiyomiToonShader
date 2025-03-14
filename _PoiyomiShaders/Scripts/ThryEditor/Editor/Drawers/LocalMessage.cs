@@ -1,7 +1,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace Thry
+namespace Thry.ThryEditor.Drawers
 {
     public class LocalMessageDrawer : MaterialPropertyDrawer
     {

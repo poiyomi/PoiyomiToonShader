@@ -4,6 +4,7 @@ using Thry;
 using UnityEditor;
 using UnityEngine;
 using Poi.Tools.Package;
+using Thry.ThryEditor;
 
 namespace Poi.Tools.Menus
 {

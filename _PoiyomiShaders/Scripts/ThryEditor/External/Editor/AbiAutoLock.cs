@@ -7,7 +7,7 @@ using ABI.CCK.Components;
 using UnityEditor;
 using System.Linq;
 
-namespace Thry
+namespace Thry.ThryEditor.UploadCallbacks
 {
     public class AbiAutoLock
     {

@@ -3,7 +3,7 @@ using System;
 using UnityEngine;
 using VRC.SDKBase.Editor.BuildPipeline;
 
-namespace Pumkin.UploadCallbacks
+namespace Thry.ThryEditor.UploadCallbacks // sry Pumkin for taking away your namespace. Just tring to tidy up a bit
 {
     public class VRCAutoAnchor : IVRCSDKPreprocessAvatarCallback
     {

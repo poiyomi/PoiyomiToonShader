@@ -1,7 +1,8 @@
+using Thry.ThryEditor;
 using UnityEditor;
 using UnityEngine;
 
-namespace Thry
+namespace ThThry.ThryEditor.Drawersry
 {
     public class Vector31Drawer : MaterialPropertyDrawer
     {

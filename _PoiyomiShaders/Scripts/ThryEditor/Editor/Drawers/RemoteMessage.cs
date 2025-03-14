@@ -1,6 +1,6 @@
 using System;
 
-namespace Thry
+namespace Thry.ThryEditor.Drawers
 {
     public class RemoteMessageDrawer : LocalMessageDrawer
     {

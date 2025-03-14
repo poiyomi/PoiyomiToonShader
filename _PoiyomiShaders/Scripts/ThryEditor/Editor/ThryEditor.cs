@@ -8,9 +8,11 @@ using UnityEngine;
 using System;
 using System.Linq;
 using Thry.ThryEditor;
-using static Thry.UnityHelper;
 using Thry.ThryEditor.ShaderTranslations;
 using JetBrains.Annotations;
+using Thry.ThryEditor.Helpers;
+using Thry.ThryEditor.Drawers;
+using static Thry.ThryEditor.UnityHelper;
 
 namespace Thry
 {
@@ -75,8 +77,8 @@ namespace Thry
         private string _duplicatePropertyNamesString = null;
 
         //Shader Versioning
-        private Version _shaderVersionLocal;
-        private Version _shaderVersionRemote;
+        private ThryEditor.Version _shaderVersionLocal;
+        private ThryEditor.Version _shaderVersionRemote;
         private bool _hasShaderUpdateUrl = false;
         private bool _isShaderUpToDate = true;
         private string _shaderUpdateUrl = null;
@@ -385,8 +387,8 @@ namespace Thry
                         break;
                     case ThryPropertyType.shader_version:
                         PropertyOptions options = PropertyOptions.Deserialize(optionsRaw);
-                        _shaderVersionRemote = new Version(WebHelper.GetCachedString(options.remote_version_url));
-                        _shaderVersionLocal = new Version(displayName);
+                        _shaderVersionRemote = new ThryEditor.Version(WebHelper.GetCachedString(options.remote_version_url));
+                        _shaderVersionLocal = new ThryEditor.Version(displayName);
                         _isShaderUpToDate = _shaderVersionLocal >= _shaderVersionRemote;
                         _shaderUpdateUrl = options.generic_string;
                         _hasShaderUpdateUrl = _shaderUpdateUrl != null;

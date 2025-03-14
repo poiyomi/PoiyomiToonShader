@@ -1,7 +1,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace Thry
+namespace Thry.ThryEditor.Helpers
 {
     public class MaterialHelper
     {
@@ -168,6 +168,13 @@ namespace Thry
         public static void CopyValue(MaterialProperty source, params Material[] targets)
         {
             CopyValue(source, MaterialEditor.GetMaterialProperty(targets, source.name));
+        }
+
+        public static object GetValue(Material material, string propertyName)
+        {
+            if (!material.HasProperty(propertyName)) return null;
+            MaterialProperty property = MaterialEditor.GetMaterialProperty(new Material[] { material }, propertyName);
+            return GetValue(property);
         }
 
         public static object GetValue(MaterialProperty property)

@@ -7,11 +7,12 @@ using System.ComponentModel;
 using System.Net;
 using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
+using Thry.ThryEditor.Helpers;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Networking;
 
-namespace Thry
+namespace Thry.ThryEditor
 {
     public class WebHelper
     {

@@ -1,7 +1,7 @@
 using System;
 using System.IO;
 
-namespace Thry
+namespace Thry.ThryEditor.Helpers
 {
     public class TrashHandler
     {

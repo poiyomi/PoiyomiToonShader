@@ -2,7 +2,7 @@ using System.IO;
 using System.Text.RegularExpressions;
 using UnityEditor;
 
-namespace Thry
+namespace Thry.ThryEditor.Helpers
 {
     public class VRCInterface
     {

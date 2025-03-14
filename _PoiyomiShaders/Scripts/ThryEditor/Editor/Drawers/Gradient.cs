@@ -1,9 +1,10 @@
 using System.Collections.Generic;
+using Thry.ThryEditor.Helpers;
 using UnityEditor;
 using UnityEngine;
-using static Thry.GradientEditor;
+using static Thry.ThryEditor.GradientEditor;
 
-namespace Thry
+namespace Thry.ThryEditor.Drawers
 {
     public class GradientDrawer : MaterialPropertyDrawer
     {
@@ -28,7 +29,6 @@ namespace Thry
             if(_gradient_data.TryGetValue(prop.targets[0], out _data))
                 return;
             _data = new GradientData();
-            _data.PreviewTexture = prop.textureValue;
             _gradient_data[prop.targets[0]] = _data;
         }
 
@@ -42,10 +42,7 @@ namespace Thry
                 UpdateRects(position, prop);
                 if (ShaderEditor.Input.Click && _border_position.Contains(Event.current.mousePosition))
                     Open(prop);
-                EditorGUI.BeginChangeCheck();
                 GUILib.SmallTextureProperty(position, prop, label, editor, DrawingData.CurrentTextureProperty.hasFoldoutProperties);
-                if(EditorGUI.EndChangeCheck())
-                    _data.PreviewTexture = prop.textureValue;
                 GradientField(prop);
             }
             else
@@ -115,8 +112,6 @@ namespace Thry
 
                 bool changed = GUILib.HandleTexturePicker(prop);
                 changed |= GUILib.AcceptDragAndDrop(_border_position, prop);
-                if (changed)
-                    _data.PreviewTexture = prop.textureValue;
                 if (GUI.Button(button_select, "Select", EditorStyles.miniButton))
                 {
                     GUILib.OpenTexturePicker(prop);
@@ -147,8 +142,9 @@ namespace Thry
         private void GradientField(MaterialProperty prop)
         {
             DrawBackgroundTexture();
-            if (prop.textureValue != null && _data.PreviewTexture != null)
-                DrawGradientTexture();
+            Texture2D gradientTex = (_data.UsePreviewTexture ? _data.PreviewTexture : prop.textureValue) as Texture2D;
+            if (gradientTex != null)
+                DrawGradientTexture(gradientTex);
             else
                 GUI.DrawTexture(_border_position, Texture2D.whiteTexture, ScaleMode.StretchToFill, false, 0, Color.grey, 1, 1);
         }
@@ -160,11 +156,11 @@ namespace Thry
             GUI.DrawTextureWithTexCoords(_gradient_position, backgroundTexture, texCoordsRect, false);
         }
 
-        private void DrawGradientTexture()
+        private void DrawGradientTexture(Texture2D texture)
         {
-            TextureWrapMode wrap_mode = _data.PreviewTexture.wrapMode;
-            _data.PreviewTexture.wrapMode = TextureWrapMode.Clamp;
-            bool vertical = _data.PreviewTexture.height > _data.PreviewTexture.width;
+            TextureWrapMode wrap_mode = texture.wrapMode;
+            texture.wrapMode = TextureWrapMode.Clamp;
+            bool vertical = texture.height > texture.width;
             Vector2 pivot = new Vector2();
             if (vertical)
             {
@@ -176,13 +172,13 @@ namespace Thry
                 _gradient_position.y += h;
                 _gradient_position.height = -h;
             }
-            GUI.DrawTexture(_gradient_position, _data.PreviewTexture, ScaleMode.StretchToFill, true);
+            GUI.DrawTexture(_gradient_position, texture, ScaleMode.StretchToFill, true);
             if (vertical)
             {
                 GUIUtility.RotateAroundPivot(90, pivot);
             }
-            GUI.DrawTexture(_border_position, _data.PreviewTexture, ScaleMode.StretchToFill, false, 0, Color.grey, 1, 1);
-            _data.PreviewTexture.wrapMode = wrap_mode;
+            GUI.DrawTexture(_border_position, texture, ScaleMode.StretchToFill, false, 0, Color.grey, 1, 1);
+            texture.wrapMode = wrap_mode;
         }
 
         public override float GetPropertyHeight(MaterialProperty prop, string label, MaterialEditor editor)

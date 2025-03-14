@@ -35,21 +35,27 @@ using System.Linq;
 using System.Security.Cryptography;
 using Object = UnityEngine.Object;
 using System.Reflection;
+using Thry.ThryEditor.Helpers;
+using Thry.ThryEditor.Drawers;
+
 #if VRC_SDK_VRCSDK3
 using VRC.SDKBase;
 #endif
+
 #if VRC_SDK_VRCSDK2
 using VRCSDK2;
 #endif
+
 #if VRC_SDK_VRCSDK2 || VRC_SDK_VRCSDK3
 using VRC.SDKBase.Editor.BuildPipeline;
 #endif
+
 #if VRC_SDK_VRCSDK3 && !UDON
 using static VRC.SDK3.Avatars.Components.VRCAvatarDescriptor;
 using VRC.SDK3.Avatars.Components;
 #endif
 
-namespace Thry
+namespace Thry.ThryEditor
 {
     
     public enum LightMode

@@ -183,6 +183,24 @@ namespace Poi.Tools.ShaderTranslator.Translations
                         return;
 
                     SetTargetPropertyValue(context, "_LightingMode", 1);
+
+                    // Get the raw vector values from a material
+                    Vector4 shadowAOShift = GetSourcePropertyValue<Vector4>(context, "_ShadowAOShift");
+                    Vector4 shadowAOShift2 = GetSourcePropertyValue<Vector4>(context, "_ShadowAOShift2");
+
+                    Vector4 poiShadowAOShift = new Vector4();
+                    Vector4 poiShadowAOShift2 = new Vector4();
+
+                    // We can demonstrate the conversion by recalculating them
+                    poiShadowAOShift.x = shadowAOShift.x != 0 ? -shadowAOShift.y / shadowAOShift.x : 0f;
+                    poiShadowAOShift.y = shadowAOShift.x != 0 ? (1f - shadowAOShift.y) / shadowAOShift.x : 1f;
+                    poiShadowAOShift.z = shadowAOShift.z != 0 ? -shadowAOShift.w / shadowAOShift.z : 0f;
+                    poiShadowAOShift.w = shadowAOShift.z != 0 ? (1f - shadowAOShift.w) / shadowAOShift.z : 1f;
+                    poiShadowAOShift2.x = shadowAOShift2.x != 0 ? -shadowAOShift2.y / shadowAOShift2.x : 0f;
+                    poiShadowAOShift2.y = shadowAOShift2.x != 0 ? (1f - shadowAOShift2.y) / shadowAOShift2.x : 1f;
+
+                    SetTargetPropertyValue(context, "_ShadowAOShift", poiShadowAOShift);
+                    SetTargetPropertyValue(context, "_ShadowAOShift2", poiShadowAOShift2);
                 }),
                 #endregion
 
@@ -312,6 +330,7 @@ namespace Poi.Tools.ShaderTranslator.Translations
                 new PropertyTranslation("_OutlineWidthMask", "_OutlineMask"),
                 new PropertyTranslation("_OutlineWidthMask_ST", "_OutlineMask_ST"),
                 new PropertyTranslation("_OutlineWidth", "_LineWidth"),
+                new PropertyTranslation("_OutlineDeleteMesh", "_OutlineClipAtZeroWidth"),
                  new PropertyTranslation("_OutlineTexHSVG", (prop, context) =>
                 {
                     var hsvg = GetSourcePropertyValue<Vector4>(context, prop);
@@ -394,7 +413,7 @@ namespace Poi.Tools.ShaderTranslator.Translations
                 new PropertyTranslation("_Color2nd", "_DecalColor", (prop, context) =>
                 {
                     Color colorValue = GetSourcePropertyValue<Color>(context, prop);
-                    SetTargetPropertyValue(context, "_DecalBlendAlpha", colorValue.a);
+                    //SetTargetPropertyValue(context, "_DecalBlendAlpha", colorValue.a);
                 }),
                 new PropertyTranslation("_Main2ndEnableLighting", (prop, context) =>
                 {
@@ -485,7 +504,7 @@ namespace Poi.Tools.ShaderTranslator.Translations
                 new PropertyTranslation("_Color3rd", "_DecalColor1", (prop, context) =>
                 {
                     Color colorValue = GetSourcePropertyValue<Color>(context, prop);
-                    SetTargetPropertyValue(context, "_DecalBlendAlpha1", colorValue.a);
+                    //SetTargetPropertyValue(context, "_DecalBlendAlpha1", colorValue.a);
                 }),
                 new PropertyTranslation("_Main3rdEnableLighting",  (prop, context) =>
                 {
@@ -521,6 +540,7 @@ namespace Poi.Tools.ShaderTranslator.Translations
                 new PropertyTranslation("_UseRimShade", IsRimShadeEnabled, (prop, context) =>
                 {
                     // RimShade seems to just be Rim Lighting in "Multiply" mode
+                    SetTargetPropertyValue(context, "_RimMaskOnlyMask", 1);
                     SetTargetPropertyValue(context, "_EnableRimLighting", 1);
                     SetTargetPropertyValue(context, "_RimStyle", 2);
                     SetTargetPropertyValue(context, "_RimShadowMask", 0); // Lines: lil's rimshade seems to ignore shadows completely

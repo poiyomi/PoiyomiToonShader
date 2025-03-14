@@ -5,7 +5,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.Profiling;
 
-namespace Thry
+namespace Thry.ThryEditor.Helpers
 {
     public class TextureHelper
     {

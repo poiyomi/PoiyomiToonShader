@@ -1,4 +1,4 @@
-namespace Thry
+namespace Thry.ThryEditor
 {
     public class PATH
     {
