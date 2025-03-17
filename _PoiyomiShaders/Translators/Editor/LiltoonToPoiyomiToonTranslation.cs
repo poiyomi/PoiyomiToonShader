@@ -201,6 +201,7 @@ namespace Poi.Tools.ShaderTranslator.Translations
 
                     SetTargetPropertyValue(context, "_ShadowAOShift", poiShadowAOShift);
                     SetTargetPropertyValue(context, "_ShadowAOShift2", poiShadowAOShift2);
+                    SetTargetPropertyValue(context, "_ShadowBorderMapToggle", 1.0f);
                 }),
                 #endregion
 
