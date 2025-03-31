@@ -126,7 +126,7 @@ namespace Thry.ThryEditor
         public MaterialProperty MaterialProperty { private set; get; }
         public ShaderEditor MyShaderUI { protected set; get; }
         
-        private GUIContent _content, _contentNonDefault;
+        protected GUIContent _content, _contentNonDefault;
         public GUIContent Content 
         {
             protected set
@@ -171,6 +171,7 @@ namespace Thry.ThryEditor
         public MaterialEditor MyMaterialEditor { protected set; get; } = null;
 
         protected bool has_not_searchedFor = false; //used for property search
+        protected bool _doEditLocale = false;
 
         GenericMenu _contextMenu;
         public XOffsetManager XOffset { private set; get; }
@@ -610,7 +611,11 @@ namespace Thry.ThryEditor
             }
 
             if (Options.condition_show.Test())
+            {
+                GUILocaleEditing(isInHeader);
                 PerformDraw(content, rect, useEditorIndent, isInHeader);
+            }
+                
 
             if (hasAddedDisabledGroup)
             {
@@ -619,6 +624,8 @@ namespace Thry.ThryEditor
                 EditorGUI.EndDisabledGroup();
             }
         }
+
+        protected virtual void GUILocaleEditing(bool isInHeader){}
         
         private void PerformDraw(GUIContent content, Rect? rect, bool useEditorIndent, bool isInHeader = false)
         {
@@ -697,6 +704,11 @@ namespace Thry.ThryEditor
                 if (!ShaderEditor.Active.IsLockedMaterial || IsAnimated)
                 {
                     _contextMenu = new GenericMenu();
+                    if(ShaderEditor.Active.Locale.EditInUI)
+                    {
+                        _contextMenu.AddItem(new GUIContent("Edit Text"), false, () => { _doEditLocale = !_doEditLocale; });
+                        _contextMenu.AddSeparator("");
+                    }
                     if (IsAnimatable && !ShaderEditor.Active.IsLockedMaterial)
                     {
                         _contextMenu.AddItem(new GUIContent("Animated (when locked)"), IsAnimated, () => { SetAnimated(!IsAnimated, false); });

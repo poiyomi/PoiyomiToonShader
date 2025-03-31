@@ -296,6 +296,25 @@ namespace Thry.ThryEditor
             this.IsRenaming = IsAnimatable && tag == "2";
         }
 
+        protected override void GUILocaleEditing(bool isInHeader)
+        {
+            if(!isInHeader && _doEditLocale && ShaderEditor.Active.Locale.EditInUI && MaterialProperty != null)
+            {
+                EditorGUI.BeginChangeCheck();
+                Rect translationRect = EditorGUILayout.GetControlRect();
+                translationRect.x += 15;
+                translationRect.width -= 15;
+                string newTranslation = EditorGUI.DelayedTextField(translationRect, new GUIContent(MaterialProperty.name, ShaderEditor.GetMaterialPropertyDisplayNameWithoutOptions(MaterialProperty)), _content.text);
+                if(EditorGUI.EndChangeCheck())
+                {
+                    _content.text = newTranslation;
+                    Content = _content;
+                    ShaderEditor.Active.Locale.Set(MaterialProperty, newTranslation);
+                    ShaderEditor.Active.Locale.Save();
+                }
+            }
+        }
+
         protected override void DrawInternal(GUIContent content, Rect? rect = null, bool useEditorIndent = false, bool isInHeader = false)
         {
             if(content == null)

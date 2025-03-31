@@ -75,7 +75,27 @@ namespace Thry.ThryEditor
         {
             if (options.reference_property != null && ShaderEditor.Active.PropertyDictionary.ContainsKey(options.reference_property))
             {
-                GUI.Box(rect, new GUIContent("     " + content.text, content.tooltip), Styles.dropDownHeader);
+                if(ShaderEditor.Active.Locale.EditInUI)
+                {
+                    GUI.Box(rect, new GUIContent("", MaterialProperty.name), Styles.dropDownHeader);
+                    Rect translationRect = new Rect(rect);
+                    translationRect.x += 40;
+                    translationRect.y += 1;
+                    translationRect.width -= 100;
+                    translationRect.height -= 4;
+                    EditorGUI.BeginChangeCheck();
+                    string newTranslation = EditorGUI.DelayedTextField(translationRect, _content.text);
+                    if(EditorGUI.EndChangeCheck())
+                    {
+                        Content = new GUIContent(newTranslation);
+                        ShaderEditor.Active.Locale.Set(MaterialProperty.name, newTranslation);
+                        ShaderEditor.Active.Locale.Save();
+                    }
+                }else
+                {
+                    GUI.Box(rect, new GUIContent("     " + content.text, content.tooltip), Styles.dropDownHeader);
+                }
+                
                 DrawIcons(rect, options, e);
 
                 Rect togglePropertyRect = new Rect(rect);

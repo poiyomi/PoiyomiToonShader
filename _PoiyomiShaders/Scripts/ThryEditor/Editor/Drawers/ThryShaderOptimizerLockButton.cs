@@ -44,7 +44,7 @@ namespace Thry.ThryEditor.Drawers
                 if (EditorGUI.EndChangeCheck())
                 {
                     SaveChangeStack();
-                    ShaderOptimizer.SetLockedForAllMaterials(shaderOptimizer.targets.Select(t => t as Material), shaderOptimizer.floatValue == 1 ? 0 : 1, true, false, false, shaderOptimizer);
+                    ShaderOptimizer.ToggleLockFromPropertyButton(shaderOptimizer);
                     RestoreChangeStack();
                 }
             }
@@ -66,7 +66,7 @@ namespace Thry.ThryEditor.Drawers
                 if (EditorGUI.EndChangeCheck())
                 {
                     SaveChangeStack();
-                    ShaderOptimizer.SetLockedForAllMaterials(shaderOptimizer.targets.Select(t => t as Material), shaderOptimizer.GetNumber() == 1 ? 0 : 1, true, false, false, shaderOptimizer);
+                    ShaderOptimizer.ToggleLockFromPropertyButton(shaderOptimizer);
                     RestoreChangeStack();
                 }
             }

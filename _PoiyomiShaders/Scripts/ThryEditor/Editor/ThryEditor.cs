@@ -192,6 +192,14 @@ namespace Thry
             return options;
         }
 
+        public static string GetMaterialPropertyDisplayNameWithoutOptions(MaterialProperty prop)
+        {
+            string displayName = prop.displayName;
+            int index = displayName.IndexOf(EXTRA_OPTIONS_PREFIX, StringComparison.Ordinal);
+            if(index == -1) return displayName;
+            return displayName.Substring(0, index);
+        }
+
         private enum ThryPropertyType
         {
             none, property, master_label, footer, header, header_end, header_start, group_start, group_end, section_start, section_end, instancing, dsgi, lightmap_flags, locale, on_swap_to, space, shader_version, optimizer, in_shader_presets

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using Thry.ThryEditor.Helpers;
 using UnityEditor;
 using UnityEngine;
 
@@ -21,6 +22,24 @@ namespace Thry.ThryEditor
         string[] _allLanguages;
         bool _isLoaded = false;
         bool _couldNotLoad = false;
+
+        bool _editInUI = false;
+
+        public bool EditInUI
+        {
+            get => _editInUI;
+            set
+            {
+                if(_editInUI != value)
+                {
+                    _editInUI = value;
+                    if(!value)
+                    {
+                        Save();
+                    }
+                }
+            }
+        }
 
         // Use
         public static Localization Load(string guid)
@@ -105,6 +124,27 @@ namespace Thry.ThryEditor
             return defaultValue;
         }
 
+        public void Set(MaterialProperty prop, string value)
+        {
+            Set(prop.name, value);
+        }
+
+        public void Set(MaterialProperty prop, FieldInfo field, string value)
+        {
+            string id = prop.name + "." + field.DeclaringType + "." + field.Name;
+            Set(id, value);
+        }
+
+        public void Set(string id, string value)
+        {
+            if (!_localizedStrings.ContainsKey(id))
+            {
+                _localizedStrings.Add(id, new string[Languages.Length]);
+            }
+            ThryLogger.LogDetail($"{Languages[SelectedLanguage]}[{id}] => {value}");
+            _localizedStrings[id][SelectedLanguage] = value;
+        }
+
         // Managment
 
         void AddLanguage(string language)
@@ -157,7 +197,7 @@ namespace Thry.ThryEditor
             }
         }
 
-        void Save()
+        public void Save()
         {
             _keys = _localizedStrings.Keys.ToArray();
             _values = new string[_keys.Length * Languages.Length];
@@ -398,6 +438,10 @@ namespace Thry.ThryEditor
 
                 EditorGUILayout.Space(20);
                 EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
+                locale.EditInUI = EditorGUILayout.Toggle("Edit inside material UI", locale.EditInUI);
+
+                EditorGUILayout.Space(20);
+                EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
                 EditorGUILayout.LabelField("Select Language To Edit", EditorStyles.boldLabel);
                 GUIEditLanguageSelection(locale);
 
@@ -584,11 +628,15 @@ namespace Thry.ThryEditor
                 if(EditorGUI.EndChangeCheck())
                 {
                     List<string> res = new List<string>();
+                    bool searchById = _searchById.Length > 0;
+                    bool searchByTranslation = _searchByTranslation.Length > 0;
                     foreach (string key in locale._localizedStrings.Keys)
                     {
                         if(locale._localizedStrings[key][_selectedLanguageIndex] == null) continue;
-                        if(locale._localizedStrings[key][_selectedLanguageIndex].IndexOf(_searchByTranslation, StringComparison.OrdinalIgnoreCase) != -1
-                         && key.IndexOf(_searchById, StringComparison.OrdinalIgnoreCase) != -1)
+                        if(
+                            (searchByTranslation && locale._localizedStrings[key][_selectedLanguageIndex].IndexOf(_searchByTranslation, StringComparison.OrdinalIgnoreCase) != -1)
+                         || (searchById && key.IndexOf(_searchById, StringComparison.OrdinalIgnoreCase) != -1)
+                         )
                         {
                             res.Add(key);
                         }
