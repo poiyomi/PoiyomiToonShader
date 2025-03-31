@@ -97,7 +97,7 @@ namespace Thry.ThryEditor
             EditorGUILayout.Space(10, true);
 
             scrollPosition = EditorGUILayout.BeginScrollView(scrollPosition);
-            EditorGUILayout.LabelField($"Unlocked Materials ({unlockedMaterials})", Styles.EDITOR_LABEL_HEADER);
+            EditorGUILayout.LabelField($"Unlocked Materials ({unlockedMaterials})", Styles.editorHeaderLabel);
             EditorGUILayout.BeginHorizontal();
             if (GUILayout.Button("Lock All")) 
             {
@@ -149,7 +149,7 @@ namespace Thry.ThryEditor
 
             EditorGUILayout.Space(10, true);
 
-            EditorGUILayout.LabelField($"Locked Materials ({lockedMaterials})", Styles.EDITOR_LABEL_HEADER);
+            EditorGUILayout.LabelField($"Locked Materials ({lockedMaterials})", Styles.editorHeaderLabel);
             List<Material> materialsToUnlock = new List<Material>();
 
             EditorGUILayout.BeginHorizontal();

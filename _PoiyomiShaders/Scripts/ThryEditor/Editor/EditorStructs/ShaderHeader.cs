@@ -21,7 +21,7 @@ namespace Thry.ThryEditor
         {
             MyShaderUI.CurrentProperty = this;
             EditorGUI.BeginChangeCheck();
-            Rect position = GUILayoutUtility.GetRect(content, Styles.dropDownHeader);
+            Rect position = GUILayoutUtility.GetRect(content, Styles.dropdownHeader);
             DrawHeader(position, content);
             Rect headerRect = DrawingData.LastGuiObjectHeaderRect;
             if (IsExpanded)
@@ -77,7 +77,7 @@ namespace Thry.ThryEditor
             {
                 if(ShaderEditor.Active.Locale.EditInUI)
                 {
-                    GUI.Box(rect, new GUIContent("", MaterialProperty.name), Styles.dropDownHeader);
+                    GUI.Box(rect, new GUIContent("", MaterialProperty.name), Styles.dropdownHeader);
                     Rect translationRect = new Rect(rect);
                     translationRect.x += 40;
                     translationRect.y += 1;
@@ -93,7 +93,7 @@ namespace Thry.ThryEditor
                     }
                 }else
                 {
-                    GUI.Box(rect, new GUIContent("     " + content.text, content.tooltip), Styles.dropDownHeader);
+                    GUI.Box(rect, new GUIContent("     " + content.text, content.tooltip), Styles.dropdownHeader);
                 }
                 
                 DrawIcons(rect, options, e);
@@ -122,7 +122,7 @@ namespace Thry.ThryEditor
             }
             else
             {
-                GUI.Box(rect, content, Styles.dropDownHeader);
+                GUI.Box(rect, content, Styles.dropdownHeader);
                 DrawIcons(rect, options, e);
             }
 
@@ -156,7 +156,7 @@ namespace Thry.ThryEditor
             ButtonData button = options.button_help;
             if (button != null && button.condition_show.Test())
             {
-                if (GUILib.Button(rect, Styles.icon_style_help))
+                if (GUILib.Button(rect, Icons.help))
                 {
                     ShaderEditor.Input.Use();
                     if (button.action != null) button.action.Perform(ShaderEditor.Active?.Materials);
@@ -169,7 +169,7 @@ namespace Thry.ThryEditor
             bool hasPresets = Presets.DoesSectionHavePresets(this.MaterialProperty.name);
             if (hasPresets)
             {
-                if (GUILib.Button(rect, Styles.icon_style_presets))
+                if (GUILib.Button(rect, Icons.presets))
                 {
                     ShaderEditor.Input.Use();
                     Presets.OpenPresetsMenu(rect, MyShaderUI, true, this.MaterialProperty.name);
@@ -179,7 +179,7 @@ namespace Thry.ThryEditor
 
         private void DrawDowdownSettings(Rect rect, Event e)
         {
-            if (GUILib.Button(rect, Styles.icon_style_menu))
+            if (GUILib.Button(rect, Icons.menu))
             {
                 ShaderEditor.Input.Use();
                 Rect buttonRect = new Rect(rect);
@@ -195,7 +195,7 @@ namespace Thry.ThryEditor
 
         private void DrawLinkSettings(Rect rect, Event e)
         {
-            if (GUILib.Button(rect, Styles.icon_style_linked, Styles.COLOR_ICON_ACTIVE_CYAN, MaterialLinker.IsLinked(ShaderEditor.Active.CurrentProperty.MaterialProperty)))
+            if (GUILib.Button(rect, Icons.linked, Color.cyan, MaterialLinker.IsLinked(ShaderEditor.Active.CurrentProperty.MaterialProperty)))
             {
                 ShaderEditor.Input.Use();
                 IEnumerable<Material> linked_materials = MaterialLinker.GetLinked(ShaderEditor.Active.CurrentProperty.MaterialProperty);

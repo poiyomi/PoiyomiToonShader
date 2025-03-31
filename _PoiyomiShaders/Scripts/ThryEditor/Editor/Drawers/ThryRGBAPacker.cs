@@ -392,7 +392,7 @@ namespace Thry.ThryEditor.Drawers
         {
             if (_current._packedTexture == null) Pack();
             string dir;
-            switch(Config.Singleton.inlinePackerSaveLocation)
+            switch(Config.Instance.inlinePackerSaveLocation)
             {
                 case TextureSaveLocation.material:
                     dir = System.IO.Path.GetDirectoryName(AssetDatabase.GetAssetPath(ShaderEditor.Active.Materials[0]));
@@ -405,7 +405,7 @@ namespace Thry.ThryEditor.Drawers
                     else dir = System.IO.Path.GetDirectoryName(AssetDatabase.GetAssetPath(ShaderEditor.Active.Materials[0]));
                     break;
                 case TextureSaveLocation.custom:
-                    dir = Config.Singleton.inlinePackerSaveLocationCustom;
+                    dir = Config.Instance.inlinePackerSaveLocationCustom;
                     break;
                 case TextureSaveLocation.prompt:
                     dir = EditorUtility.OpenFolderPanel("Select Folder", "Assets", "");
@@ -420,7 +420,7 @@ namespace Thry.ThryEditor.Drawers
             _prop.textureValue = TextureHelper.SaveTextureAsPNG(_current._packedTexture, path);
             TextureImporter importer = AssetImporter.GetAtPath(path) as TextureImporter;
             importer.streamingMipmaps = true;
-            importer.crunchedCompression = Config.Singleton.inlinePackerChrunchCompression;
+            importer.crunchedCompression = Config.Instance.inlinePackerChrunchCompression;
             importer.sRGBTexture = _colorSpace == ColorSpace.Gamma;
             importer.filterMode = GetFiltermode();
             importer.alphaIsTransparency = _current._packedTexture.alphaIsTransparency;

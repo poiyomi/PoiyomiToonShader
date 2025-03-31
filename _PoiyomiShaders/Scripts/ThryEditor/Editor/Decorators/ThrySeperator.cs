@@ -5,7 +5,7 @@ namespace Thry.ThryEditor.Decorators
 {
     public class ThrySeperatorDecorator : MaterialPropertyDrawer
     {
-        Color _color = Styles.COLOR_FG;
+        Color _color = Colors.foreground;
 
         public ThrySeperatorDecorator() { }
         public ThrySeperatorDecorator(string c)

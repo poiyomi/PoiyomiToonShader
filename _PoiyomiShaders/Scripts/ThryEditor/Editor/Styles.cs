@@ -8,9 +8,9 @@ namespace Thry.ThryEditor
 {
     public class Styles
     {
-        public static GUIStyle masterLabel { get; private set; } = new GUIStyle(GUI.skin.label) { richText = true, alignment = TextAnchor.MiddleCenter };
-        public static GUIStyle EDITOR_LABEL_HEADER { get; private set; } = new GUIStyle(GUI.skin.label) { fontSize = 16, alignment = TextAnchor.MiddleCenter };
-        public static GUIStyle dropDownHeader { get; private set; } = new GUIStyle(new GUIStyle("ShurikenModuleTitle"))
+        public static readonly GUIStyle masterLabel = new GUIStyle(GUI.skin.label) { richText = true, alignment = TextAnchor.MiddleCenter };
+        public static readonly GUIStyle editorHeaderLabel = new GUIStyle(GUI.skin.label) { fontSize = 16, alignment = TextAnchor.MiddleCenter };
+        public static readonly GUIStyle dropdownHeader = new GUIStyle(new GUIStyle("ShurikenModuleTitle"))
         {
             font = new GUIStyle(EditorStyles.label).font,
             fontSize = GUI.skin.font.fontSize,
@@ -19,49 +19,27 @@ namespace Thry.ThryEditor
             contentOffset = new Vector2(20f, -2f)
         };
 
-        public static Color COLOR_BG { get; private set; } = (EditorGUIUtility.isProSkin) ? new Color(0.4f, 0.4f, 0.4f) : new Color(0.8f, 0.8f, 0.8f);
-        public static Color COLOR_FG { get; private set; } = (EditorGUIUtility.isProSkin) ? new Color(0.8f, 0.8f, 0.8f) : Color.black;
+        public static readonly GUIStyle animatedIndicatorStyle = new GUIStyle() { normal = new GUIStyleState() { textColor = new Color(0.3f, 1, 0.3f) }, alignment = TextAnchor.MiddleRight };
+        public static readonly GUIStyle presetIndicatorStyle = new GUIStyle() { normal = new GUIStyleState() { textColor = Color.cyan }, alignment = TextAnchor.MiddleRight };
+        public static readonly GUIStyle madeByLabel = new GUIStyle(EditorStyles.label) { fontSize = 10 };
+        public static readonly GUIStyle notification = new GUIStyle(GUI.skin.box) { fontSize = 12, wordWrap = true, normal = new GUIStyleState() { textColor = Color.red } };
 
-        private static Color COLOR_ICON_FONT = GUI.skin.label.normal.textColor;
-        private static Color COLOR_ICON_GRAY = EditorGUIUtility.isProSkin ? COLOR_ICON_FONT : new Color(0.4f, 0.4f, 0.4f);
-        public static Color COLOR_ICON_ACTIVE_CYAN = Color.cyan;
-        private static Color COLOR_ICON_ACTIVE_RED = Color.red;
-        public static Color COLOR_BACKGROUND_1 = EditorGUIUtility.isProSkin ? new Color(0.27f, 0.27f, 0.27f) : new Color(0.65f, 0.65f, 0.65f);
-        public static Color COLOR_BACKGROUND_2 = EditorGUIUtility.isProSkin ? new Color(0.5f, 0.5f, 0.5f) : new Color(0.85f, 0.85f, 0.85f);
+        public static readonly GUIStyle vectorPropertyStyle = new GUIStyle() { padding = new RectOffset(0, 0, 2, 2) };
 
-        public static GUIStyle dropDownHeaderLabel { get; private set; } = new GUIStyle(EditorStyles.boldLabel) { alignment = TextAnchor.MiddleCenter };
-        public static GUIStyle label_align_right { get; private set; } = new GUIStyle(EditorStyles.label) { alignment = TextAnchor.UpperRight };
-        public static GUIStyle dropDownHeaderButton { get; private set; } = new GUIStyle(EditorStyles.toolbarButton);
-        public static GUIStyle vectorPropertyStyle { get; private set; } = new GUIStyle() { padding = new RectOffset(0, 0, 2, 2) };
-        public static GUIStyle greenStyle { get; private set; } = new GUIStyle() { normal = new GUIStyleState() { textColor = new Color(0, 0.5f, 0) } };
-        public static GUIStyle animatedIndicatorStyle { get; private set; } = new GUIStyle() { normal = new GUIStyleState() { textColor = new Color(0.3f, 1, 0.3f) }, alignment = TextAnchor.MiddleRight };
-        public static GUIStyle presetIndicatorStyle { get; private set; } = new GUIStyle() { normal = new GUIStyleState() { textColor = Color.cyan }, alignment = TextAnchor.MiddleRight };
-        public static GUIStyle orangeStyle { get; private set; } = new GUIStyle() { normal = new GUIStyleState() { textColor = new Color(0.9f, 0.5f, 0) } };
-        public static GUIStyle cyanStyle { get; private set; } = new GUIStyle() { normal = new GUIStyleState() { textColor = COLOR_ICON_ACTIVE_CYAN } };
-        public static GUIStyle redStyle { get; private set; } = new GUIStyle() { normal = new GUIStyleState() { textColor = Color.red } };
-        public static GUIStyle made_by_style { get; private set; } = new GUIStyle(EditorStyles.label) { fontSize = 10 };
-        public static GUIStyle notification_style { get; private set; } = new GUIStyle(GUI.skin.box) { fontSize = 12, wordWrap = true, normal = new GUIStyleState() { textColor = Color.red } };
+        public static readonly GUIStyle orangeStyle = new GUIStyle() { normal = new GUIStyleState() { textColor = new Color(0.9f, 0.5f, 0) } };
+        public static readonly GUIStyle cyanStyle = new GUIStyle() { normal = new GUIStyleState() { textColor = Color.cyan } };
+        public static readonly GUIStyle redStyle = new GUIStyle() { normal = new GUIStyleState() { textColor = Color.red } };
+        public static readonly GUIStyle greenStyle = new GUIStyle() { normal = new GUIStyleState() { textColor = new Color(0, 0.5f, 0) } };
 
-        public static GUIStyle style_toggle_left_richtext { get; private set; } = new GUIStyle(EditorStyles.label) { richText = true };
-        public static GUIStyle richtext { get; private set; } = new GUIStyle(EditorStyles.label) { richText = true, wordWrap = true };
-        public static GUIStyle richtext_center { get; private set; } = new GUIStyle(EditorStyles.label) { richText = true, wordWrap = true, alignment = TextAnchor.MiddleCenter };
         
-        public static GUIStyle ButtonGreenText { get; private set; } = new GUIStyle(GUI.skin.button) { normal = new GUIStyleState() { textColor = new Color(0, 0.5f, 0) } };
-        public static GUIStyle padding2pxHorizontal1pxVertical { get; private set; } = new GUIStyle() { padding = new RectOffset(2, 2, 1, 1) };
+        public static readonly GUIStyle upperRight = new GUIStyle(EditorStyles.label) { alignment = TextAnchor.UpperRight };
+        public static readonly GUIStyle upperLeft_richText = new GUIStyle(EditorStyles.label) { richText = true };
+        public static readonly GUIStyle upperLeft_richText_wordWrap = new GUIStyle(EditorStyles.label) { richText = true, wordWrap = true };
+        public static readonly GUIStyle middleCenter_richText_wordWrap = new GUIStyle(EditorStyles.label) { richText = true, wordWrap = true, alignment = TextAnchor.MiddleCenter };
+        
+        public static readonly GUIStyle padding2pxHorizontal1pxVertical = new GUIStyle() { padding = new RectOffset(2, 2, 1, 1) };
 
-        public static GUIStyle icon_style_help = CreateIconStyle(EditorGUIUtility.IconContent("_Help@2x"));
-        public static GUIStyle icon_style_menu = CreateIconStyle(EditorGUIUtility.IconContent("_Menu"));
-        public static GUIStyle icon_style_settings = CreateIconStyle(EditorGUIUtility.IconContent("_Popup@2x"));
-        public static GUIStyle icon_style_search = CreateIconStyle(EditorGUIUtility.IconContent("Search Icon"));
-        public static GUIStyle icon_style_presets = CreateIconStyle(EditorGUIUtility.IconContent("Preset.Context"));
-        public static GUIStyle icon_style_add = CreateIconStyle(EditorGUIUtility.IconContent("PrefabOverlayAdded Icon"));
-        public static GUIStyle icon_style_remove = CreateIconStyle(EditorGUIUtility.IconContent("PrefabOverlayRemoved Icon"));
-        public static GUIStyle icon_style_refresh = CreateIconStyle(EditorGUIUtility.IconContent("d_Refresh"));
-        public static GUIStyle icon_style_shaders = CreateIconStyle(EditorGUIUtility.IconContent("d_ShaderVariantCollection Icon"));
-        public static GUIStyle icon_style_tools = CreateIconStyle(EditorGUIUtility.IconContent("d_SceneViewTools@2x"));
-        public static GUIStyle icon_style_linked = CreateIconStyle(LoadTextureByGUID(RESOURCE_GUID.ICON_LINK));
-        public static GUIStyle icon_style_thryIcon = CreateIconStyle(LoadTextureByGUID(RESOURCE_GUID.ICON_THRY));
-
+        // Variant Stuff
         public static readonly GUIContent revertContent = EditorGUIUtility.TrTextContent("Revert");
         public static readonly GUIContent revertAllContent = EditorGUIUtility.TrTextContent("Revert all Overrides");
         public static readonly GUIContent lockContent = EditorGUIUtility.TrTextContent("Lock in children");
@@ -70,8 +48,30 @@ namespace Thry.ThryEditor
         public static string applyToMaterialText = L10n.Tr("Apply to Material '{0}'");
         public static string applyToVariantText = L10n.Tr("Apply as Override in Variant '{0}'");
         public static readonly GUIContent resetContent = EditorGUIUtility.TrTextContent("Reset");
+    }
 
-        public static Texture texture_icon_shaders = EditorGUIUtility.IconContent("d_ShaderVariantCollection Icon").image;
+    public class Colors
+    {
+        public static readonly Color foreground = EditorGUIUtility.isProSkin ? new Color(0.8f, 0.8f, 0.8f) : Color.black;
+
+        public static readonly Color backgroundDark = EditorGUIUtility.isProSkin ? new Color(0.27f, 0.27f, 0.27f) : new Color(0.65f, 0.65f, 0.65f);
+        public static readonly Color backgroundLight = EditorGUIUtility.isProSkin ? new Color(0.5f, 0.5f, 0.5f) : new Color(0.85f, 0.85f, 0.85f);
+    }
+
+    public class Icons
+    {
+        public static readonly GUIStyle help = CreateIconStyle(EditorGUIUtility.IconContent("_Help@2x"));
+        public static readonly GUIStyle menu = CreateIconStyle(EditorGUIUtility.IconContent("_Menu"));
+        public static readonly GUIStyle settings = CreateIconStyle(EditorGUIUtility.IconContent("_Popup@2x"));
+        public static readonly GUIStyle search = CreateIconStyle(EditorGUIUtility.IconContent("Search Icon"));
+        public static readonly GUIStyle presets = CreateIconStyle(EditorGUIUtility.IconContent("Preset.Context"));
+        public static readonly GUIStyle add = CreateIconStyle(EditorGUIUtility.IconContent("PrefabOverlayAdded Icon"));
+        public static readonly GUIStyle remove = CreateIconStyle(EditorGUIUtility.IconContent("PrefabOverlayRemoved Icon"));
+        public static readonly GUIStyle refresh = CreateIconStyle(EditorGUIUtility.IconContent("d_Refresh"));
+        public static readonly GUIStyle shaders = CreateIconStyle(EditorGUIUtility.IconContent("d_ShaderVariantCollection Icon"));
+        public static readonly GUIStyle tools = CreateIconStyle(EditorGUIUtility.IconContent("d_SceneViewTools@2x"));
+        public static readonly GUIStyle linked = CreateIconStyle(LoadTextureByGUID(RESOURCE_GUID.ICON_LINK));
+        public static readonly GUIStyle thryIcon = CreateIconStyle(LoadTextureByGUID(RESOURCE_GUID.ICON_THRY));
 
         static GUIStyle CreateIconStyle(GUIContent content)
         {

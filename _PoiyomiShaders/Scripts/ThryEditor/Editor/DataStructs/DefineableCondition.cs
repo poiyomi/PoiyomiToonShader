@@ -55,13 +55,12 @@ namespace Thry.ThryEditor
 
         void InitEditorVersion()
         {
-            int c_ev = Helper.CompareVersions(Config.Singleton.verion, _value);
-            if (_compareType == CompareType.EQUAL) _constantValue = c_ev == 0;
-            if (_compareType == CompareType.NOT_EQUAL) _constantValue = c_ev != 0;
-            if (_compareType == CompareType.SMALLER) _constantValue = c_ev == 1;
-            if (_compareType == CompareType.BIGGER) _constantValue = c_ev == -1;
-            if (_compareType == CompareType.BIGGER_EQ) _constantValue = c_ev == -1 || c_ev == 0;
-            if (_compareType == CompareType.SMALLER_EQ) _constantValue = c_ev == 1 || c_ev == 0;
+            if (_compareType == CompareType.EQUAL)      _constantValue = Config.Instance.Version == _value;
+            if (_compareType == CompareType.NOT_EQUAL)  _constantValue = Config.Instance.Version != _value;
+            if (_compareType == CompareType.SMALLER)    _constantValue = Config.Instance.Version <  _value;
+            if (_compareType == CompareType.BIGGER)     _constantValue = Config.Instance.Version >  _value;
+            if (_compareType == CompareType.BIGGER_EQ)  _constantValue = Config.Instance.Version >= _value;
+            if (_compareType == CompareType.SMALLER_EQ) _constantValue = Config.Instance.Version <= _value;
         }
 
         void InitVRCSDKVersion()

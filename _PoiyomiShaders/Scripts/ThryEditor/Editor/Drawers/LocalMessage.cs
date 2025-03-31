@@ -20,7 +20,7 @@ namespace Thry.ThryEditor.Drawers
             if (_buttonData == null) return;
             if (_buttonData.text.Length > 0)
             {
-                GUILayout.Label(new GUIContent(_buttonData.text, _buttonData.hover), _buttonData.center_position ? Styles.richtext_center : Styles.richtext);
+                GUILayout.Label(new GUIContent(_buttonData.text, _buttonData.hover), _buttonData.center_position ? Styles.middleCenter_richText_wordWrap : Styles.upperLeft_richText_wordWrap);
                 Rect r = GUILayoutUtility.GetLastRect();
                 if (Event.current.type == EventType.MouseDown && r.Contains(Event.current.mousePosition))
                     _buttonData.action.Perform(ShaderEditor.Active?.Materials);

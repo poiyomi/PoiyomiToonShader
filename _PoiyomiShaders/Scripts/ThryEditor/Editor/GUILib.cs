@@ -13,7 +13,7 @@ namespace Thry.ThryEditor
 
         public static void ConfigTextureProperty(Rect position, MaterialProperty prop, GUIContent label, MaterialEditor editor, bool hasFoldoutProperties, bool skip_drag_and_drop_handling = false)
         {
-            switch (Config.Singleton.default_texture_type)
+            switch (Config.Instance.default_texture_type)
             {
                 case TextureDisplayType.small:
                     SmallTextureProperty(position, prop, label, editor, hasFoldoutProperties);
@@ -42,7 +42,7 @@ namespace Thry.ThryEditor
                 Rect border = EditorGUILayout.BeginVertical();
                 GUILayoutUtility.GetRect(0, 5);
                 border = new RectOffset(EditorGUI.indentLevel * -15 - 26, 3, -3, -3).Add(border);
-                GUI.DrawTexture(border, Texture2D.whiteTexture, ScaleMode.StretchToFill, true, 0, Styles.COLOR_BACKGROUND_1, 3, 10);
+                GUI.DrawTexture(border, Texture2D.whiteTexture, ScaleMode.StretchToFill, true, 0, Colors.backgroundDark, 3, 10);
             }
             // Border Code end
                 
@@ -65,7 +65,7 @@ namespace Thry.ThryEditor
                 vramPos = thumbnailPos;
                 vramPos.x += thumbnailPos.width - SMALL_TEXTURE_VRAM_DISPLAY_WIDTH;
                 vramPos.width = SMALL_TEXTURE_VRAM_DISPLAY_WIDTH;
-                GUI.Label(vramPos, content, Styles.label_align_right);
+                GUI.Label(vramPos, content, Styles.upperRight);
             }
             //Prop right next to texture
             if (DrawingData.CurrentTextureProperty.DoesReferencePropertyExist)
@@ -181,7 +181,7 @@ namespace Thry.ThryEditor
             // Reserve space
             GUILayoutUtility.GetRect(0, border.height - position.height - 5);
 
-            GUI.DrawTexture(border, Texture2D.whiteTexture, ScaleMode.StretchToFill, false, 0, Styles.COLOR_BACKGROUND_1, 3, 10);
+            GUI.DrawTexture(border, Texture2D.whiteTexture, ScaleMode.StretchToFill, false, 0, Colors.backgroundDark, 3, 10);
 
             Rect previewSide = new Rect(border);
             Rect optionsSide = new Rect(border);
@@ -215,7 +215,7 @@ namespace Thry.ThryEditor
                     GUI.DrawTexture(previewRect, prop.textureValue);
                 }
             }
-            GUI.DrawTexture(previewRectBorder, Texture2D.whiteTexture, ScaleMode.StretchToFill, false, 0, Styles.COLOR_BACKGROUND_1, 3, 10);
+            GUI.DrawTexture(previewRectBorder, Texture2D.whiteTexture, ScaleMode.StretchToFill, false, 0, Colors.backgroundDark, 3, 10);
 
             //selection button and pinging
             if (GUI.Button(buttonSelectRect, "Select", EditorStyles.miniButton))
@@ -542,32 +542,6 @@ namespace Thry.ThryEditor
             return changed;
         }
 
-        public static void DrawLocaleSelection(GUIContent label, string[] locales, int selected)
-        {
-            EditorGUI.BeginChangeCheck();
-            selected = EditorGUILayout.Popup(label.text, selected, locales);
-            if (EditorGUI.EndChangeCheck())
-            {
-                ShaderEditor.Active.PropertyDictionary[ShaderEditor.PROPERTY_NAME_LOCALE].MaterialProperty.SetNumber(selected);
-                ShaderEditor.ReloadActive();
-            }
-        }
-
-        public static void DrawHeader(ref bool enabled, ref bool options, GUIContent name)
-        {
-            var r = EditorGUILayout.BeginHorizontal("box");
-            enabled = EditorGUILayout.Toggle(enabled, EditorStyles.radioButton, GUILayout.MaxWidth(15.0f));
-            options = GUI.Toggle(r, options, GUIContent.none, new GUIStyle());
-            EditorGUILayout.LabelField(name, Styles.dropDownHeaderLabel);
-            EditorGUILayout.EndHorizontal();
-        }
-
-        public static void DrawMasterLabel(string shaderName, Rect parent)
-        {
-            Rect rect = new Rect(0, parent.y, parent.width, 18);
-            EditorGUI.LabelField(rect, "<size=16>" + shaderName + "</size>", Styles.masterLabel);
-        }
-
         public static float CurrentIndentWidth()
         {
             return EditorGUI.indentLevel * 15;
@@ -770,7 +744,7 @@ namespace Thry.ThryEditor
 
         public static void Seperator()
         {
-            EditorGUI.DrawRect(RectifiedLayout.GetRect(1), Styles.COLOR_FG);
+            EditorGUI.DrawRect(RectifiedLayout.GetRect(1), Colors.foreground);
         }
     }
     public class BetterTooltips
@@ -833,7 +807,7 @@ namespace Thry.ThryEditor
 
             public void Draw()
             {
-                EditorGUI.DrawRect(containerRect, Styles.COLOR_BG);
+                EditorGUI.DrawRect(containerRect, Colors.backgroundDark);
                 EditorGUI.LabelField(contentRect, content);
                 isSelected = false;
             }

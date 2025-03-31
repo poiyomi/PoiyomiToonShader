@@ -34,12 +34,12 @@ namespace Thry.ThryEditor
             {
                 // Draw as border line
                 Vector4 borderWidths = new Vector4(3, (has_header ? HEADER_HEIGHT : 3), 3, 3);
-                GUI.DrawTexture(border, Texture2D.whiteTexture, ScaleMode.StretchToFill, true, 0, Styles.COLOR_BACKGROUND_1, borderWidths, 5);
+                GUI.DrawTexture(border, Texture2D.whiteTexture, ScaleMode.StretchToFill, true, 0, Colors.backgroundDark, borderWidths, 5);
             }
             else
             {
                 // Draw as solid
-                GUI.DrawTexture(border, Texture2D.whiteTexture, ScaleMode.StretchToFill, true, 0, Styles.COLOR_BACKGROUND_1, Vector4.zero, 5);
+                GUI.DrawTexture(border, Texture2D.whiteTexture, ScaleMode.StretchToFill, true, 0, Colors.backgroundDark, Vector4.zero, 5);
             }
 
             // Draw Reference

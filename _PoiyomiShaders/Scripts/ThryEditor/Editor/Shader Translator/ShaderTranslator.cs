@@ -284,7 +284,7 @@ namespace Thry.ThryEditor.ShaderTranslations
 
         public static void TranslationSelectionGUI(Rect r, ShaderEditor editor)
         {
-            if (GUILib.ButtonWithCursor(r, Styles.icon_style_shaders, "Shader Translation"))
+            if (GUILib.ButtonWithCursor(r, Icons.shaders, "Shader Translation"))
             {
                 EditorUtility.DisplayCustomMenu(r, TranslationDefinitions.Select(t => new GUIContent(t.Name)).ToArray(), -1, ConfirmTranslationSelection, editor);
             }

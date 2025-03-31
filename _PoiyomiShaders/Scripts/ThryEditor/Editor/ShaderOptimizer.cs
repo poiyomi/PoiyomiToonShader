@@ -677,7 +677,7 @@ namespace Thry.ThryEditor
             SetLockedForAllMaterialsInternal(prop.targets.Select(t => t as Material), prop.GetNumber() == 1 ? 0 : 1, true, false, false, prop);
         }
 
-        [Obsolete("Use ShaderOptimizer.LockChildren or ShaderOptimizer.UnlockChildren instead")]
+        [Obsolete("Use ShaderOptimizer.LockMaterials or ShaderOptimizer.UnlockMaterials instead")]
         public static bool SetLockForAllChildren(GameObject[] objects, int lockState, bool showProgressbar = false, bool showDialog = false, bool allowCancel = true)
         {
             return SetLockForAllChildrenInternal(objects, lockState, showProgressbar, showDialog, allowCancel);
@@ -717,7 +717,7 @@ namespace Thry.ThryEditor
                 .Distinct();
 
             // Make sure keywords are set correctly for materials to be locked. If unlocking, do this after the shaders are unlocked
-            if(isLocking && Config.Singleton.fixKeywordsWhenLocking)
+            if(isLocking && Config.Instance.fixKeywordsWhenLocking)
                 ShaderEditor.FixKeywords(materialsToChangeLock);
 
             float i = 0;
@@ -815,7 +815,7 @@ namespace Thry.ThryEditor
             EditorUtility.ClearProgressBar();
 
             // In case any keywords were messed up in the material following unlock, fix them now
-            if (!isLocking && Config.Singleton.fixKeywordsWhenLocking)
+            if (!isLocking && Config.Instance.fixKeywordsWhenLocking)
                 ShaderEditor.FixKeywords(materialsToChangeLock);
 
             AssetDatabase.StopAssetEditing();
@@ -837,7 +837,7 @@ namespace Thry.ThryEditor
             AssetDatabase.Refresh();
 
             // Make sure things get saved after a cycle. This prevents thumbnails from getting stuck
-            if(Config.Singleton.saveAfterLockUnlock)
+            if(Config.Instance.saveAfterLockUnlock)
                 EditorApplication.update += QueueSaveAfterLockUnlock;
 
             if (ShaderEditor.Active != null && ShaderEditor.Active.IsDrawing)
@@ -2511,7 +2511,7 @@ namespace Thry.ThryEditor
             public void OnProcessShader(Shader shader, UnityEditor.Rendering.ShaderSnippetData snippet, IList<UnityEditor.Rendering.ShaderCompilerData> data)
             {
                 // Don't strip if the user disabled it (developer mode only)
-                if(Config.Singleton.enableDeveloperMode && Config.Singleton.disableUnlockedShaderStrippingOnBuild)
+                if(Config.Instance.enableDeveloperMode && Config.Instance.disableUnlockedShaderStrippingOnBuild)
                     return;
 
                 // Strip shaders from the build under the following conditions:

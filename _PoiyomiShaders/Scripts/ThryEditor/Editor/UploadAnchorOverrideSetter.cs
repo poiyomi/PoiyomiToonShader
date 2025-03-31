@@ -24,18 +24,18 @@ namespace Thry.ThryEditor.UploadCallbacks // sry Pumkin for taking away your nam
 
         static bool Enabled
         {
-            get => Config.Singleton.autoSetAnchorOverride;
-            set => Config.Singleton.autoSetAnchorOverride = value;
+            get => Config.Instance.autoSetAnchorOverride;
+            set => Config.Instance.autoSetAnchorOverride = value;
         }
 
         static bool AskedOnce
         {
-            get => Config.Singleton.autoSetAnchorAskedOnce;
-            set => Config.Singleton.autoSetAnchorAskedOnce = value;
+            get => Config.Instance.autoSetAnchorAskedOnce;
+            set => Config.Instance.autoSetAnchorAskedOnce = value;
         }
 
-        static HumanBodyBones HumanBoneAnchor => Config.Singleton.humanBoneAnchor;
-        static string AnchorName => Config.Singleton.anchorOverrideObjectName;
+        static HumanBodyBones HumanBoneAnchor => Config.Instance.humanBoneAnchor;
+        static string AnchorName => Config.Instance.anchorOverrideObjectName;
 
         public static bool ShouldSkipAvatar(GameObject avatar)
         {
@@ -54,7 +54,7 @@ namespace Thry.ThryEditor.UploadCallbacks // sry Pumkin for taking away your nam
 
                 Enabled = EditorUtility.DisplayDialog(DialogTitle, DialogMessage, DialogYes, DialogNo);
                 AskedOnce = true;
-                Config.Singleton.Save();
+                Config.Instance.Save();
             }
 
             if(!Enabled)

@@ -17,7 +17,7 @@ namespace Thry.ThryEditor.Decorators
 
         public override void OnGUI(Rect position, MaterialProperty prop, GUIContent label, MaterialEditor editor)
         {
-            if (Config.Singleton.showColorspaceWarnings)
+            if (Config.Instance.showColorspaceWarnings)
                 GUILib.ColorspaceWarning(prop, _targetColorSpace == ColorSpace.Gamma);
         }
 

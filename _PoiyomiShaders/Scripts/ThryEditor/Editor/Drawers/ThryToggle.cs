@@ -108,7 +108,7 @@ namespace Thry.ThryEditor.Drawers
 
             bool value = (Math.Abs(prop.GetNumber()) > 0.001f);
             EditorGUI.showMixedValue = prop.hasMixedValue;
-            if (left) value = EditorGUI.ToggleLeft(position, label, value, Styles.style_toggle_left_richtext);
+            if (left) value = EditorGUI.ToggleLeft(position, label, value, Styles.upperLeft_richText);
             else value = EditorGUI.Toggle(position, label, value);
             EditorGUI.showMixedValue = false;
             if (EditorGUI.EndChangeCheck())

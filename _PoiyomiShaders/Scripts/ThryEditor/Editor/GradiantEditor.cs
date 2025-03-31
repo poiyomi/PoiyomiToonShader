@@ -103,14 +103,14 @@ namespace Thry.ThryEditor
                     TextureImporter importer = (TextureImporter)TextureImporter.GetAtPath(AssetDatabase.GetAssetPath(saved));
                      importer.textureCompression = TextureImporterCompression.CompressedHQ;
                      importer.sRGBTexture = _colorSpace != ColorSpace.Linear;
-                    if(Config.Singleton.gradientEditorCompressionOverwrite != TextureImporterFormat.Automatic)
+                    if(Config.Instance.gradientEditorCompressionOverwrite != TextureImporterFormat.Automatic)
                     {
                         importer.SetPlatformTextureSettings(new TextureImporterPlatformSettings()
                         {
                             name = "PC",
                             overridden = true,
                             maxTextureSize = 2048,
-                            format = Config.Singleton.gradientEditorCompressionOverwrite
+                            format = Config.Instance.gradientEditorCompressionOverwrite
                         });
                     }
                     importer.SaveAndReimport();
@@ -128,7 +128,7 @@ namespace Thry.ThryEditor
 
         private string GradientFileName(string hash, string material_name)
         {
-            Config config = Config.Singleton;
+            Config config = Config.Instance;
             string ret = config.gradient_name;
             ret = Regex.Replace(ret, "<hash>", hash);
             ret = Regex.Replace(ret, "<material>", material_name);

@@ -434,7 +434,7 @@ namespace Thry.ThryEditor
             EditorGUILayout.Space(15);
             Rect backgroundImageSettings = EditorGUILayout.BeginVertical();
             backgroundImageSettings = new RectOffset(5, 5, 5, 5).Add(backgroundImageSettings);
-            GUI.DrawTexture(backgroundImageSettings, Texture2D.whiteTexture, ScaleMode.StretchToFill, true, 1, Styles.COLOR_BACKGROUND_1, 0, 10);
+            GUI.DrawTexture(backgroundImageSettings, Texture2D.whiteTexture, ScaleMode.StretchToFill, true, 1, Colors.backgroundDark, 0, 10);
 
             EditorGUI.BeginChangeCheck();
             _colorSpace = (ColorSpace)EditorGUILayout.EnumPopup(_colorSpace);
@@ -613,7 +613,7 @@ namespace Thry.ThryEditor
         {
             Rect bg = new Rect(position.width / 2 - 150, 10, 300, 30);
             Rect rObjField = new RectOffset(5, 5, 5, 5).Remove(bg);
-            GUI.DrawTexture(bg, Texture2D.whiteTexture, ScaleMode.StretchToFill, true, 0, Styles.COLOR_BACKGROUND_1, 0, 10);
+            GUI.DrawTexture(bg, Texture2D.whiteTexture, ScaleMode.StretchToFill, true, 0, Colors.backgroundDark, 0, 10);
 
             if(_config == null)
             {
@@ -718,7 +718,7 @@ namespace Thry.ThryEditor
             Rect r = EditorGUILayout.BeginHorizontal();
 
             Rect background = new Rect(r.x + r.width / 2 - 400, r.y - 5, 800, 97);
-            GUI.DrawTexture(background, Texture2D.whiteTexture, ScaleMode.StretchToFill, true, 0, Styles.COLOR_BACKGROUND_1, 0, 10);
+            GUI.DrawTexture(background, Texture2D.whiteTexture, ScaleMode.StretchToFill, true, 0, Colors.backgroundDark, 0, 10);
 
             GUILayout.FlexibleSpace();
             // show current path
@@ -852,7 +852,7 @@ namespace Thry.ThryEditor
 
             // Draw background
             Rect background = new Rect(buttonR.x + 10, rect.y - 20, (rect.x + rect.width + 5) - (buttonR.x + 10), rect.height + 25);
-            GUI.DrawTexture(background, Texture2D.whiteTexture, ScaleMode.StretchToFill, true, 1, Styles.COLOR_BACKGROUND_1, 0, 10);
+            GUI.DrawTexture(background, Texture2D.whiteTexture, ScaleMode.StretchToFill, true, 1, Colors.backgroundDark, 0, 10);
 
             if(_showTransparency)
                 EditorGUI.DrawTextureTransparent(rect, texture != null ? texture : Texture2D.blackTexture, ScaleMode.ScaleToFit, 1);
@@ -936,7 +936,7 @@ namespace Thry.ThryEditor
             Rect filterRect = new Rect(textureRect.x, textureRect.y + textureHeight, textureRect.width, 20);
 
             Rect background = new Rect(rect.x - 5, rect.y - 5, rect.width + channelWidth + 40, rect.height + 10);
-            GUI.DrawTexture(background, Texture2D.whiteTexture, ScaleMode.StretchToFill, true, 1, Styles.COLOR_BACKGROUND_1, 0, 10);
+            GUI.DrawTexture(background, Texture2D.whiteTexture, ScaleMode.StretchToFill, true, 1, Colors.backgroundDark, 0, 10);
 
             // Draw textrue & filtermode. Change filtermode if texture is changed
             EditorGUI.BeginChangeCheck();
@@ -1362,7 +1362,7 @@ namespace Thry.ThryEditor
             importer.alphaIsTransparency = _alphaIsTransparency;
             importer.textureCompression = TextureImporterCompression.Compressed;
             TextureImporterFormat overwriteFormat = importer.DoesSourceTextureHaveAlpha() ? 
-                Config.Singleton.texturePackerCompressionWithAlphaOverwrite : Config.Singleton.texturePackerCompressionNoAlphaOverwrite;
+                Config.Instance.texturePackerCompressionWithAlphaOverwrite : Config.Instance.texturePackerCompressionNoAlphaOverwrite;
             if(overwriteFormat != TextureImporterFormat.Automatic)
             {
                 importer.SetPlatformTextureSettings(new TextureImporterPlatformSettings()
@@ -1413,7 +1413,7 @@ namespace Thry.ThryEditor
             importer.alphaIsTransparency = texture.alphaIsTransparency;
             importer.textureCompression = TextureImporterCompression.Compressed;
             TextureImporterFormat overwriteFormat = importer.DoesSourceTextureHaveAlpha() ? 
-                Config.Singleton.texturePackerCompressionWithAlphaOverwrite : Config.Singleton.texturePackerCompressionNoAlphaOverwrite;
+                Config.Instance.texturePackerCompressionWithAlphaOverwrite : Config.Instance.texturePackerCompressionNoAlphaOverwrite;
             if(overwriteFormat != TextureImporterFormat.Automatic)
             {
                 importer.SetPlatformTextureSettings(new TextureImporterPlatformSettings()

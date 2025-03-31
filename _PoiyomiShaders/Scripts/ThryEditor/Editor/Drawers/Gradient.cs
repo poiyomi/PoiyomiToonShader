@@ -37,7 +37,7 @@ namespace Thry.ThryEditor.Drawers
             Init(prop);
             ShaderEditor.Active.Editor.EndAnimatedCheck(); // Fixes all dropdoen properties being animated / highlighted
 
-            if (Config.Singleton.default_texture_type == TextureDisplayType.small)
+            if (Config.Instance.default_texture_type == TextureDisplayType.small)
             {
                 UpdateRects(position, prop);
                 if (ShaderEditor.Input.Click && _border_position.Contains(Event.current.mousePosition))
@@ -62,7 +62,7 @@ namespace Thry.ThryEditor.Drawers
                 if (ShaderEditor.Input.Click && _border_position.Contains(Event.current.mousePosition))
                     Open(prop);
 
-                GUI.DrawTexture(top_bg_rect, Texture2D.whiteTexture, ScaleMode.StretchToFill, true, 0, Styles.COLOR_BACKGROUND_1, 3, 10);
+                GUI.DrawTexture(top_bg_rect, Texture2D.whiteTexture, ScaleMode.StretchToFill, true, 0, Colors.backgroundDark, 3, 10);
 
                 if (DrawingData.CurrentTextureProperty.hasScaleOffset || DrawingData.CurrentTextureProperty.Options.reference_properties != null)
                 {
@@ -73,7 +73,7 @@ namespace Thry.ThryEditor.Drawers
                     extraPropsBackground.height = extraPropsBackground.height + 25;
                     float propertyX = extraPropsBackground.x + 15;
                     float propertyWidth = extraPropsBackground.width - 30;
-                    GUI.DrawTexture(extraPropsBackground, Texture2D.whiteTexture, ScaleMode.StretchToFill, true, 0, Styles.COLOR_BACKGROUND_1, 3, 10);
+                    GUI.DrawTexture(extraPropsBackground, Texture2D.whiteTexture, ScaleMode.StretchToFill, true, 0, Colors.backgroundDark, 3, 10);
                     Rect r;
                     if (DrawingData.CurrentTextureProperty.hasScaleOffset)
                     {
@@ -107,7 +107,7 @@ namespace Thry.ThryEditor.Drawers
                 {
                     GUILayoutUtility.GetRect(0, 5);
                     Rect backgroundBottom = new RectOffset(3, 3, -5, 10).Add(_border_position);
-                    GUI.DrawTexture(backgroundBottom, Texture2D.whiteTexture, ScaleMode.StretchToFill, true, 0, Styles.COLOR_BACKGROUND_1, 3, 10);
+                    GUI.DrawTexture(backgroundBottom, Texture2D.whiteTexture, ScaleMode.StretchToFill, true, 0, Colors.backgroundDark, 3, 10);
                 }
 
                 bool changed = GUILib.HandleTexturePicker(prop);

@@ -334,8 +334,7 @@ namespace Thry.ThryEditor
             if (CheckForEditorRemove(assets))
             {
                 Debug.Log("[Thry] ShaderEditor is being deleted.");
-                Config.Singleton.verion = "0";
-                Config.Singleton.Save();
+                Config.Instance.ClearVersion();
             }
         }
 

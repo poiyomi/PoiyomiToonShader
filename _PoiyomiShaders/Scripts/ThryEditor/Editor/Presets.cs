@@ -211,6 +211,12 @@ namespace Thry.ThryEditor
             }
         }
 
+        static void ClearCache()
+        {
+            s_presetCollections.Clear();
+            s_presetCollections["_full_"] = new PresetsCollection();
+        }
+
         static void LoadPresetCache()
         {
             string[] lines = File.ReadAllLines(FILE_NAME_CACHE);
@@ -250,6 +256,8 @@ namespace Thry.ThryEditor
 
         static void CreatePresetCache()
         {
+            // Delete old cache
+            ClearCache();
             // Create cache
             // Find all materials
             string[] guids = AssetDatabase.FindAssets("t:material");
@@ -336,8 +344,10 @@ namespace Thry.ThryEditor
             if(deletedAssets.Length > 0)
             { 
                 // go through all preset collections
-                Dictionary<string, string> pathsToGuids = PresetCollections.SelectMany(
-                    c => c.Value.Guids.Select(g => (AssetDatabase.GUIDToAssetPath(g), g))).ToDictionary(k => k.Item1, v => v.Item2);
+                Dictionary<string, string> pathsToGuids = PresetCollections.
+                    SelectMany(c => c.Value.Guids).Distinct(). // Guids of all preset materials. Because of sectioned can exists multiples
+                    Select(g => (AssetDatabase.GUIDToAssetPath(g), g)). // Tuple of path and guid
+                    ToDictionary(k => k.Item1, v => v.Item2);
                 // Check if any presets were deleted, iterate over all deleted materials
                 foreach (string asset in deletedAssets.Where(a => a.EndsWith(".mat")))
                 {
@@ -797,10 +807,10 @@ namespace Thry.ThryEditor
                 }
                 if(structure.Count > 0)
                 {
-                    Rect r = GUILayoutUtility.GetRect(new GUIContent(), Styles.dropDownHeader);
+                    Rect r = GUILayoutUtility.GetRect(new GUIContent(), Styles.dropdownHeader);
                     r.x = EditorGUI.indentLevel * 15;
                     r.width -= r.x;
-                    GUI.Box(r, name, Styles.dropDownHeader);
+                    GUI.Box(r, name, Styles.dropdownHeader);
                     if (Event.current.type == EventType.Repaint)
                     {
                         var toggleRect = new Rect(r.x + 4f, r.y + 2f, 13f, 13f);

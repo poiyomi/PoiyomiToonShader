@@ -29,14 +29,14 @@ namespace Poi.Tools.Menus
         static void LockMaterialsInAssets()
         {
             var mats = _GetSelectedMaterials();
-            ShaderOptimizer.SetLockedForAllMaterials(mats, 1);
+            ShaderOptimizer.LockMaterials(mats);
         }
 
         [MenuItem("Assets/Poiyomi/Materials/Unlock Materials", priority = AssetsMenuBase + 1)]
         static void UnlockMaterialsInAssets()
         {
             var mats = _GetSelectedMaterials();
-            ShaderOptimizer.SetLockedForAllMaterials(mats, 0);
+            ShaderOptimizer.UnlockMaterials(mats);
         }
 
         // Font conversion tool
@@ -76,7 +76,7 @@ namespace Poi.Tools.Menus
             int undoIndex = Undo.GetCurrentGroup();
             Undo.SetCurrentGroupName($"Lock materials in {renderer.name}");
 
-            ShaderOptimizer.SetLockedForAllMaterials(renderer.sharedMaterials, 1);
+            ShaderOptimizer.LockMaterials(renderer.sharedMaterials);
 
             Undo.CollapseUndoOperations(undoIndex);
         }
@@ -88,7 +88,7 @@ namespace Poi.Tools.Menus
             int undoIndex = Undo.GetCurrentGroup();
             Undo.SetCurrentGroupName($"Lock materials in {renderer.name}");
 
-            ShaderOptimizer.SetLockedForAllMaterials(renderer.sharedMaterials, 0);
+            ShaderOptimizer.UnlockMaterials(renderer.sharedMaterials);
 
             Undo.CollapseUndoOperations(undoIndex);
         }
@@ -106,7 +106,7 @@ namespace Poi.Tools.Menus
             Undo.SetCurrentGroupName($"Lock materials in {obj.name}");
             Undo.RegisterFullObjectHierarchyUndo(obj, $"Lock materials in {obj.name}");
 
-            ShaderOptimizer.SetLockForAllChildren(new[] { command.context as GameObject }, 1);
+            ShaderOptimizer.LockMaterials(GetMaterialsInChildren(obj));
 
             Undo.CollapseUndoOperations(undoIndex);
         }
@@ -120,9 +120,14 @@ namespace Poi.Tools.Menus
             Undo.SetCurrentGroupName($"Unlock materials in {obj.name}");
             Undo.RegisterFullObjectHierarchyUndo(obj, $"Unlock materials in {obj.name}");
 
-            ShaderOptimizer.SetLockForAllChildren(new[] { command.context as GameObject }, 0);
+            ShaderOptimizer.UnlockMaterials(GetMaterialsInChildren(obj));
 
             Undo.CollapseUndoOperations(undoIndex);
+        }
+
+        static IEnumerable<Material> GetMaterialsInChildren(params GameObject[] objects)
+        {
+            return objects.SelectMany(o => o.GetComponentsInChildren<Renderer>(true)).SelectMany(r => r.sharedMaterials).Distinct();
         }
 
         #endregion

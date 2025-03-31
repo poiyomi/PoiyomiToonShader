@@ -2,63 +2,35 @@
 // Copyright (C) 2019 Thryrallo
 
 using System.IO;
+using BestHTTP.SecureProtocol.Org.BouncyCastle.Utilities.Zlib;
 using Thry.ThryEditor.Helpers;
 using UnityEditor;
 using UnityEngine;
 
 namespace Thry.ThryEditor
 {
-    
-
     public class Config
     {
         private const string PATH_CONFIG_FILE = "Thry/Config.json";
-        private const string VERSION = "2.63.1";
+        private static readonly Version INSTALLED_VERSION = "2.63.4";
 
-        private static Config config;
+        private static Config s_config;
 
-        public static void OnCompile()
-        {
-            string prevVersion = Singleton.verion;
-            string installedVersion = VERSION;
-            int versionComparision = Helper.CompareVersions(installedVersion, prevVersion);
-            if (versionComparision != 0)
-            {
-                config.verion = VERSION;
-                config.Save();
-            }
-            if (versionComparision == 1)
-            {
-                Settings.updatedPopup(versionComparision);
-            }
-            else if (versionComparision == -1)
-            {
-                config.OnUpgrade(prevVersion);
-                ThryLogger.Log("ThryEditor", "Updated to version " + installedVersion);
-            }
-        }
-
-        private static bool LoadFromFile(ref Config config)
-        {
-            if (!File.Exists(PATH_CONFIG_FILE)) return false;
-            string data = FileHelper.ReadFileIntoString(PATH_CONFIG_FILE);
-            if (string.IsNullOrWhiteSpace(data)) return false;
-            config = JsonUtility.FromJson<Config>(data);
-            return true;
-        }
-
-        public static Config Singleton
+        public static Config Instance
         {
             get
             {
-                if (config == null)
+                if (s_config == null)
                 {
-                    if(!LoadFromFile(ref config))
-                        config = new Config().Save();
+                    if(!LoadFromFile(ref s_config))
+                        s_config = new Config().Save();
                 }
-                return config;
+                return s_config;
             }
         }
+
+        [SerializeField] private Version lastVersion = null;
+        public Version Version => INSTALLED_VERSION;
 
         //actual config class
         public LoggingLevel loggingLevel = LoggingLevel.Normal;
@@ -91,7 +63,43 @@ namespace Thry.ThryEditor
         public bool fixKeywordsWhenLocking = true;
         public bool saveAfterLockUnlock = true;
 
-        public string verion = VERSION;
+        public static void OnCompile()
+        {
+            if (Instance.lastVersion == null)
+            {
+                ThryLogger.Log("ThryEditor", "Installed version " + INSTALLED_VERSION);
+                Instance.lastVersion = INSTALLED_VERSION;
+                Instance.Save();
+            }
+            if (Instance.lastVersion < INSTALLED_VERSION)
+            {
+                ThryLogger.Log("ThryEditor", "Updated to version " + INSTALLED_VERSION);
+                Instance.OnUpgrade(Instance.lastVersion, INSTALLED_VERSION);
+                Instance.lastVersion = INSTALLED_VERSION;
+                Instance.Save();
+            }else if (Instance.lastVersion > INSTALLED_VERSION)
+            {
+                ThryLogger.LogWarn("ThryEditor", "Downgraded to version " + Instance.lastVersion);
+                Settings.OpenDowngradePopup();
+                Instance.lastVersion = INSTALLED_VERSION;
+                Instance.Save();
+            }
+        }
+
+        private static bool LoadFromFile(ref Config config)
+        {
+            if (!File.Exists(PATH_CONFIG_FILE)) return false;
+            string data = FileHelper.ReadFileIntoString(PATH_CONFIG_FILE);
+            if (string.IsNullOrWhiteSpace(data)) return false;
+            config = JsonUtility.FromJson<Config>(data);
+            return true;
+        }
+
+        public void ClearVersion()
+        {
+            lastVersion = null;
+            Save();
+        }
 
         public Config Save()
         {
@@ -99,11 +107,8 @@ namespace Thry.ThryEditor
             return this;
         }
 
-        private void OnUpgrade(string oldVersionString)
+        private void OnUpgrade(Version oldVersion, Version newVersion)
         {
-            Version newVersion = new Version(VERSION);
-            Version oldVersion = new Version(oldVersionString);
-
             //Upgrade locking valuesd from Animated property to tags
             if (newVersion >= "2.11.0" && oldVersion > "2.0" && oldVersion < "2.11.0")
             {
@@ -111,75 +116,61 @@ namespace Thry.ThryEditor
             }
         }
     }
-
+    
+    [System.Serializable]
     public class Version
     {
-        private string value;
+        [SerializeField]
+        private string _stringValue = "0";
 
         public Version(string s)
         {
-            if (string.IsNullOrEmpty(s)) s = "0";
-            this.value = s;
+            if (string.IsNullOrEmpty(s)) _stringValue = "0";
+            else _stringValue = s;
+        }
+
+        public static implicit operator Version(string s)
+        {
+            return new Version(s);
+        }
+
+        public static explicit operator string(Version v)
+        {
+            return v._stringValue;
         }
 
         public static bool operator ==(Version x, Version y)
         {
-            return Helper.CompareVersions(x.value, y.value) == 0;
+            bool xIsNull = x is null || x._stringValue is null || x._stringValue == "0";
+            bool yIsNull = y is null || y._stringValue is null || y._stringValue == "0";
+            if (xIsNull && yIsNull) return true;
+            if (xIsNull || yIsNull) return false;
+            return Helper.CompareVersions(x._stringValue, y._stringValue) == 0;
         }
 
         public static bool operator !=(Version x, Version y)
         {
-            return Helper.CompareVersions(x.value, y.value) != 0;
+            return !(x==y);
         }
 
         public static bool operator >(Version x, Version y)
         {
-            return Helper.CompareVersions(x.value, y.value) == -1;
+            return Helper.CompareVersions(x._stringValue, y._stringValue) == -1;
         }
 
         public static bool operator <(Version x, Version y)
         {
-            return Helper.CompareVersions(x.value, y.value) == 1;
+            return Helper.CompareVersions(x._stringValue, y._stringValue) == 1;
         }
 
         public static bool operator >=(Version x, Version y)
         {
-            return Helper.CompareVersions(x.value, y.value) < 1;
+            return Helper.CompareVersions(x._stringValue, y._stringValue) < 1;
         }
 
         public static bool operator <=(Version x, Version y)
         {
-            return Helper.CompareVersions(x.value, y.value) > -1;
-        }
-
-        public static bool operator ==(Version x, string y)
-        {
-            return Helper.CompareVersions(x.value, y) == 0;
-        }
-
-        public static bool operator !=(Version x, string y)
-        {
-            return Helper.CompareVersions(x.value, y) != 0;
-        }
-
-        public static bool operator >(Version x, string y)
-        {
-            return Helper.CompareVersions(x.value, y) == -1;
-        }
-
-        public static bool operator <(Version x, string y)
-        {
-            return Helper.CompareVersions(x.value, y) == 1;
-        }
-
-        public static bool operator >=(Version x, string y)
-        {
-            return Helper.CompareVersions(x.value, y) < 1;
-        }
-
-        public static bool operator <=(Version x, string y)
-        {
-            return Helper.CompareVersions(x.value, y) > -1;
+            return Helper.CompareVersions(x._stringValue, y._stringValue) > -1;
         }
 
         public override bool Equals(object o)
@@ -191,7 +182,7 @@ namespace Thry.ThryEditor
 
         public override string ToString()
         {
-            return value;
+            return _stringValue;
         }
 
         public override int GetHashCode()

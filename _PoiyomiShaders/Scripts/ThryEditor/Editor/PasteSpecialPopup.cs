@@ -55,7 +55,7 @@ namespace Thry.ThryEditor
                     {
                         float halfViewWidth = EditorGUIUtility.currentViewWidth * 0.5f; 
                         EditorGUILayout.BeginHorizontal();
-                        IsEnabled = EditorGUILayout.ToggleLeft(ShaderPart.Content, IsEnabled, Styles.richtext);
+                        IsEnabled = EditorGUILayout.ToggleLeft(ShaderPart.Content, IsEnabled, Styles.upperLeft_richText_wordWrap);
                         DrawShaderProperty(ShaderPart.MaterialProperty, GUILayout.Width(halfViewWidth));
                         EditorGUILayout.EndHorizontal();
                         return;
@@ -67,7 +67,7 @@ namespace Thry.ThryEditor
                     var foldoutRect = new Rect(rect.x, rect.y, rect.width, rect.height);
                     var toggleRect = new Rect(rect.x + 16f, rect.y, 14f, rect.height);
                     var labelRect = new Rect(rect.x + 32f, rect.y, rect.width - 32f, rect.height);
-                    EditorGUI.LabelField(rect, GUIContent.none, Styles.dropDownHeader);
+                    EditorGUI.LabelField(rect, GUIContent.none, Styles.dropdownHeader);
                     
                     IsEnabled = EditorGUI.Toggle(toggleRect, GUIContent.none, IsEnabled);
                     IsExpanded = EditorGUI.Foldout(foldoutRect, IsExpanded, string.Empty, true);

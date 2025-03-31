@@ -141,7 +141,7 @@ namespace Thry.ThryEditor
             }
             get
             {
-                if(Config.Singleton.showStarNextToNonDefaultProperties && !IsPropertyValueDefault)
+                if(Config.Instance.showStarNextToNonDefaultProperties && !IsPropertyValueDefault)
                     return _contentNonDefault;
                 return _content;
             }

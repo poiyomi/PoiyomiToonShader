@@ -70,9 +70,9 @@ namespace Thry.ThryEditor.Drawers
                     RestoreChangeStack();
                 }
             }
-            if (Config.Singleton.allowCustomLockingRenaming || ShaderEditor.Active.HasCustomRenameSuffix)
+            if (Config.Instance.allowCustomLockingRenaming || ShaderEditor.Active.HasCustomRenameSuffix)
             {
-                EditorGUI.BeginDisabledGroup(!Config.Singleton.allowCustomLockingRenaming || ShaderEditor.Active.IsLockedMaterial);
+                EditorGUI.BeginDisabledGroup(!Config.Instance.allowCustomLockingRenaming || ShaderEditor.Active.IsLockedMaterial);
                 EditorGUI.BeginChangeCheck();
                 EditorGUI.showMixedValue = ShaderEditor.Active.HasMixedCustomPropertySuffix;
                 ShaderEditor.Active.RenamedPropertySuffix = EditorGUILayout.TextField("Locked property suffix: ", ShaderEditor.Active.RenamedPropertySuffix);
@@ -86,7 +86,7 @@ namespace Thry.ThryEditor.Drawers
                         ShaderEditor.Active.RenamedPropertySuffix = ShaderOptimizer.GetRenamedPropertySuffix(ShaderEditor.Active.Materials[0]);
                     ShaderEditor.Active.HasCustomRenameSuffix = ShaderOptimizer.HasCustomRenameSuffix(ShaderEditor.Active.Materials[0]);
                 }
-                if (!Config.Singleton.allowCustomLockingRenaming)
+                if (!Config.Instance.allowCustomLockingRenaming)
                 {
                     EditorGUILayout.HelpBox("This feature is disabled in the config file. You can enable it by setting allowCustomLockingRenaming to true.", MessageType.Info);
                 }

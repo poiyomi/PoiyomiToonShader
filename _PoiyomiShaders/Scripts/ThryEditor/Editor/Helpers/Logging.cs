@@ -21,7 +21,7 @@ namespace Thry.ThryEditor.Helpers
 
         public static void Log(string prefix, string message)
         {
-            if (Config.Singleton.loggingLevel == LoggingLevel.None) return;
+            if (Config.Instance.loggingLevel == LoggingLevel.None) return;
             Print(prefix, "#ff78e0", message);
         }
 
@@ -32,7 +32,7 @@ namespace Thry.ThryEditor.Helpers
 
         public static void LogDetail(string prefix, string message)
         {
-            if ((int)Config.Singleton.loggingLevel < (int)LoggingLevel.Detailed) return;
+            if ((int)Config.Instance.loggingLevel < (int)LoggingLevel.Detailed) return;
             Print(prefix, "#d778ff", message);
         }
 
@@ -65,7 +65,7 @@ namespace Thry.ThryEditor.Helpers
             sb.Append(prefix);
             sb.Append("</color>] ");
             sb.Append(message);
-            if (Config.Singleton.loggingLevel == LoggingLevel.StackTraced)
+            if (Config.Instance.loggingLevel == LoggingLevel.StackTraced)
                 sb.Append("\n" + new System.Diagnostics.StackTrace().ToString());
             Debug.Log(sb.ToString());
         }
