@@ -37,6 +37,7 @@ using Object = UnityEngine.Object;
 using System.Reflection;
 using Thry.ThryEditor.Helpers;
 using Thry.ThryEditor.Drawers;
+using JetBrains.Annotations;
 
 #if VRC_SDK_VRCSDK3
 using VRC.SDKBase;
@@ -53,8 +54,6 @@ using VRC.SDKBase.Editor.BuildPipeline;
 #if VRC_SDK_VRCSDK3 && !UDON
 using static VRC.SDK3.Avatars.Components.VRCAvatarDescriptor;
 using VRC.SDK3.Avatars.Components;
-using JetBrains.Annotations;
-using Thry.ThryEditor;
 #endif
 
 namespace Thry.ThryEditor

@@ -2,7 +2,6 @@
 // Copyright (C) 2019 Thryrallo
 
 using System.IO;
-using BestHTTP.SecureProtocol.Org.BouncyCastle.Utilities.Zlib;
 using Thry.ThryEditor.Helpers;
 using UnityEditor;
 using UnityEngine;
@@ -12,7 +11,7 @@ namespace Thry.ThryEditor
     public class Config
     {
         private const string PATH_CONFIG_FILE = "Thry/Config.json";
-        private static readonly Version INSTALLED_VERSION = "2.63.4";
+        private static readonly Version INSTALLED_VERSION = "2.63.6";
 
         private static Config s_config;
 
