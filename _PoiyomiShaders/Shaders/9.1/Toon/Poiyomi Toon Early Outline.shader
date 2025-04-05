@@ -2,7 +2,7 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 {
 	Properties
 	{
-		[HideInInspector] shader_master_label ("<color=#E75898ff>Poiyomi 9.1.28</color>", Float) = 0
+		[HideInInspector] shader_master_label ("<color=#E75898ff>Poiyomi 9.1.29</color>", Float) = 0
 		[HideInInspector] shader_is_using_thry_editor ("", Float) = 0
 		[HideInInspector] shader_locale ("0db0b86376c3dca4b9a6828ef8615fe0", Float) = 0
 		[HideInInspector] footer_youtube ("{texture:{name:icon-youtube,height:16},action:{type:URL,data:https://www.youtube.com/poiyomi},hover:YOUTUBE}", Float) = 0
@@ -10153,7 +10153,7 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 			float _ShadowBorderMaskLOD;
 			float4 _ShadowAOShift;
 			float4 _ShadowAOShift2;
-			
+			float _ShadowBorderMapToggle;
 			float4 _ShadowColor;
 			float _LightingMulitlayerNonLinear;
 			#if defined(PROP_SHADOWCOLORTEX) || !defined(OPTIMIZER_ENABLED)
@@ -14893,42 +14893,46 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				
 				float4 shadowBorderMask = 1;
 				
-				#if defined(PROP_SHADOWBORDERMASK) || !defined(OPTIMIZER_ENABLED)
-				// This should be moved to ui but honestly if these are locked in the compiler should be able to resolve it at compile time
-				float2 shadowShift0 = float2(_ShadowAOShift.x, _ShadowAOShift.y);
-				float2 shadowShift1 = float2(_ShadowAOShift.z, _ShadowAOShift.w);
-				float2 shadowShift2 = float2(_ShadowAOShift2.x, _ShadowAOShift2.y);
-				
-				//float2 shadowShift0 = float2(GetRemapMinValue(_ShadowAOShift.x, _ShadowAOShift.y), GetRemapMaxValue(_ShadowAOShift.x, _ShadowAOShift.y));
-				//float2 shadowShift1 = float2(GetRemapMinValue(_ShadowAOShift.z, _ShadowAOShift.w), GetRemapMaxValue(_ShadowAOShift.z, _ShadowAOShift.w));
-				//float2 shadowShift2 = float2(GetRemapMinValue(_ShadowAOShift2.x, _ShadowAOShift2.y), GetRemapMaxValue(_ShadowAOShift2.x, _ShadowAOShift2.y));
-				
-				shadowShift0.y = (shadowShift0.x == shadowShift0.y) ? (shadowShift0.y + 0.001f) : shadowShift0.y;
-				shadowShift1.y = (shadowShift1.x == shadowShift1.y) ? (shadowShift1.y + 0.001f) : shadowShift1.y;
-				shadowShift2.y = (shadowShift2.x == shadowShift2.y) ? (shadowShift2.y + 0.001f) : shadowShift2.y;
-				
-				shadowShift0 = float2(1.0f / (shadowShift0.y - shadowShift0.x), shadowShift0.x / (shadowShift0.x - shadowShift0.y));
-				shadowShift1 = float2(1.0f / (shadowShift1.y - shadowShift1.x), shadowShift1.x / (shadowShift1.x - shadowShift1.y));
-				shadowShift2 = float2(1.0f / (shadowShift2.y - shadowShift2.x), shadowShift2.x / (shadowShift2.x - shadowShift2.y));
-				
-				#if defined(PROP_SHADOWBORDERMASK) || !defined(OPTIMIZER_ENABLED)
-				float2 shadowBorderMaskUV = poiUV(poiMesh.uv[_ShadowBorderMaskUV], _ShadowBorderMask_ST);
-				if (_ShadowBorderMaskLOD)
+				if(_ShadowBorderMapToggle)
 				{
-					shadowBorderMask = POI2D_SAMPLE_TEX2D_SAMPLERGRADD(_ShadowBorderMask, sampler_trilinear_repeat, shadowBorderMaskUV, _ShadowBorderMaskPan, max(abs(ddx(shadowBorderMaskUV)), pow(_ShadowBorderMaskLOD, 4)), max(abs(ddy(shadowBorderMaskUV)), pow(_ShadowBorderMaskLOD, 4)));
+					
+					#if defined(PROP_SHADOWBORDERMASK) || !defined(OPTIMIZER_ENABLED)
+					// This should be moved to ui but honestly if these are locked in the compiler should be able to resolve it at compile time
+					float2 shadowShift0 = float2(_ShadowAOShift.x, _ShadowAOShift.y);
+					float2 shadowShift1 = float2(_ShadowAOShift.z, _ShadowAOShift.w);
+					float2 shadowShift2 = float2(_ShadowAOShift2.x, _ShadowAOShift2.y);
+					
+					//float2 shadowShift0 = float2(GetRemapMinValue(_ShadowAOShift.x, _ShadowAOShift.y), GetRemapMaxValue(_ShadowAOShift.x, _ShadowAOShift.y));
+					//float2 shadowShift1 = float2(GetRemapMinValue(_ShadowAOShift.z, _ShadowAOShift.w), GetRemapMaxValue(_ShadowAOShift.z, _ShadowAOShift.w));
+					//float2 shadowShift2 = float2(GetRemapMinValue(_ShadowAOShift2.x, _ShadowAOShift2.y), GetRemapMaxValue(_ShadowAOShift2.x, _ShadowAOShift2.y));
+					
+					shadowShift0.y = (shadowShift0.x == shadowShift0.y) ? (shadowShift0.y + 0.001f) : shadowShift0.y;
+					shadowShift1.y = (shadowShift1.x == shadowShift1.y) ? (shadowShift1.y + 0.001f) : shadowShift1.y;
+					shadowShift2.y = (shadowShift2.x == shadowShift2.y) ? (shadowShift2.y + 0.001f) : shadowShift2.y;
+					
+					shadowShift0 = float2(1.0f / (shadowShift0.y - shadowShift0.x), shadowShift0.x / (shadowShift0.x - shadowShift0.y));
+					shadowShift1 = float2(1.0f / (shadowShift1.y - shadowShift1.x), shadowShift1.x / (shadowShift1.x - shadowShift1.y));
+					shadowShift2 = float2(1.0f / (shadowShift2.y - shadowShift2.x), shadowShift2.x / (shadowShift2.x - shadowShift2.y));
+					
+					#if defined(PROP_SHADOWBORDERMASK) || !defined(OPTIMIZER_ENABLED)
+					float2 shadowBorderMaskUV = poiUV(poiMesh.uv[_ShadowBorderMaskUV], _ShadowBorderMask_ST);
+					if (_ShadowBorderMaskLOD)
+					{
+						shadowBorderMask = POI2D_SAMPLE_TEX2D_SAMPLERGRADD(_ShadowBorderMask, sampler_trilinear_repeat, shadowBorderMaskUV, _ShadowBorderMaskPan, max(abs(ddx(shadowBorderMaskUV)), pow(_ShadowBorderMaskLOD, 4)), max(abs(ddy(shadowBorderMaskUV)), pow(_ShadowBorderMaskLOD, 4)));
+					}
+					else
+					{
+						shadowBorderMask = POI2D_SAMPLER_PAN(_ShadowBorderMask, _linear_repeat, shadowBorderMaskUV, _ShadowBorderMaskPan);
+					}
+					#endif
+					
+					shadowBorderMask.r = saturate(shadowBorderMask.r * shadowShift0.x + shadowShift0.y);
+					shadowBorderMask.g = saturate(shadowBorderMask.g * shadowShift1.x + shadowShift1.y);
+					shadowBorderMask.b = saturate(shadowBorderMask.b * shadowShift2.x + shadowShift2.y);
+					
+					lightMap.xyz = _ShadowPostAO ? lightMap.xyz : lightMap.xyz * shadowBorderMask.rgb;
+					#endif
 				}
-				else
-				{
-					shadowBorderMask = POI2D_SAMPLER_PAN(_ShadowBorderMask, _linear_repeat, shadowBorderMaskUV, _ShadowBorderMaskPan);
-				}
-				#endif
-				
-				shadowBorderMask.r = saturate(shadowBorderMask.r * shadowShift0.x + shadowShift0.y);
-				shadowBorderMask.g = saturate(shadowBorderMask.g * shadowShift1.x + shadowShift1.y);
-				shadowBorderMask.b = saturate(shadowBorderMask.b * shadowShift2.x + shadowShift2.y);
-				
-				lightMap.xyz = _ShadowPostAO ? lightMap.xyz : lightMap.xyz * shadowBorderMask.rgb;
-				#endif
 				
 				if (_LightingMapMode == 4)
 				{
@@ -19181,7 +19185,7 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 			float _ShadowBorderMaskLOD;
 			float4 _ShadowAOShift;
 			float4 _ShadowAOShift2;
-			
+			float _ShadowBorderMapToggle;
 			float4 _ShadowColor;
 			float _LightingMulitlayerNonLinear;
 			#if defined(PROP_SHADOWCOLORTEX) || !defined(OPTIMIZER_ENABLED)
@@ -27552,42 +27556,46 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				
 				float4 shadowBorderMask = 1;
 				
-				#if defined(PROP_SHADOWBORDERMASK) || !defined(OPTIMIZER_ENABLED)
-				// This should be moved to ui but honestly if these are locked in the compiler should be able to resolve it at compile time
-				float2 shadowShift0 = float2(_ShadowAOShift.x, _ShadowAOShift.y);
-				float2 shadowShift1 = float2(_ShadowAOShift.z, _ShadowAOShift.w);
-				float2 shadowShift2 = float2(_ShadowAOShift2.x, _ShadowAOShift2.y);
-				
-				//float2 shadowShift0 = float2(GetRemapMinValue(_ShadowAOShift.x, _ShadowAOShift.y), GetRemapMaxValue(_ShadowAOShift.x, _ShadowAOShift.y));
-				//float2 shadowShift1 = float2(GetRemapMinValue(_ShadowAOShift.z, _ShadowAOShift.w), GetRemapMaxValue(_ShadowAOShift.z, _ShadowAOShift.w));
-				//float2 shadowShift2 = float2(GetRemapMinValue(_ShadowAOShift2.x, _ShadowAOShift2.y), GetRemapMaxValue(_ShadowAOShift2.x, _ShadowAOShift2.y));
-				
-				shadowShift0.y = (shadowShift0.x == shadowShift0.y) ? (shadowShift0.y + 0.001f) : shadowShift0.y;
-				shadowShift1.y = (shadowShift1.x == shadowShift1.y) ? (shadowShift1.y + 0.001f) : shadowShift1.y;
-				shadowShift2.y = (shadowShift2.x == shadowShift2.y) ? (shadowShift2.y + 0.001f) : shadowShift2.y;
-				
-				shadowShift0 = float2(1.0f / (shadowShift0.y - shadowShift0.x), shadowShift0.x / (shadowShift0.x - shadowShift0.y));
-				shadowShift1 = float2(1.0f / (shadowShift1.y - shadowShift1.x), shadowShift1.x / (shadowShift1.x - shadowShift1.y));
-				shadowShift2 = float2(1.0f / (shadowShift2.y - shadowShift2.x), shadowShift2.x / (shadowShift2.x - shadowShift2.y));
-				
-				#if defined(PROP_SHADOWBORDERMASK) || !defined(OPTIMIZER_ENABLED)
-				float2 shadowBorderMaskUV = poiUV(poiMesh.uv[_ShadowBorderMaskUV], _ShadowBorderMask_ST);
-				if (_ShadowBorderMaskLOD)
+				if(_ShadowBorderMapToggle)
 				{
-					shadowBorderMask = POI2D_SAMPLE_TEX2D_SAMPLERGRADD(_ShadowBorderMask, sampler_trilinear_repeat, shadowBorderMaskUV, _ShadowBorderMaskPan, max(abs(ddx(shadowBorderMaskUV)), pow(_ShadowBorderMaskLOD, 4)), max(abs(ddy(shadowBorderMaskUV)), pow(_ShadowBorderMaskLOD, 4)));
+					
+					#if defined(PROP_SHADOWBORDERMASK) || !defined(OPTIMIZER_ENABLED)
+					// This should be moved to ui but honestly if these are locked in the compiler should be able to resolve it at compile time
+					float2 shadowShift0 = float2(_ShadowAOShift.x, _ShadowAOShift.y);
+					float2 shadowShift1 = float2(_ShadowAOShift.z, _ShadowAOShift.w);
+					float2 shadowShift2 = float2(_ShadowAOShift2.x, _ShadowAOShift2.y);
+					
+					//float2 shadowShift0 = float2(GetRemapMinValue(_ShadowAOShift.x, _ShadowAOShift.y), GetRemapMaxValue(_ShadowAOShift.x, _ShadowAOShift.y));
+					//float2 shadowShift1 = float2(GetRemapMinValue(_ShadowAOShift.z, _ShadowAOShift.w), GetRemapMaxValue(_ShadowAOShift.z, _ShadowAOShift.w));
+					//float2 shadowShift2 = float2(GetRemapMinValue(_ShadowAOShift2.x, _ShadowAOShift2.y), GetRemapMaxValue(_ShadowAOShift2.x, _ShadowAOShift2.y));
+					
+					shadowShift0.y = (shadowShift0.x == shadowShift0.y) ? (shadowShift0.y + 0.001f) : shadowShift0.y;
+					shadowShift1.y = (shadowShift1.x == shadowShift1.y) ? (shadowShift1.y + 0.001f) : shadowShift1.y;
+					shadowShift2.y = (shadowShift2.x == shadowShift2.y) ? (shadowShift2.y + 0.001f) : shadowShift2.y;
+					
+					shadowShift0 = float2(1.0f / (shadowShift0.y - shadowShift0.x), shadowShift0.x / (shadowShift0.x - shadowShift0.y));
+					shadowShift1 = float2(1.0f / (shadowShift1.y - shadowShift1.x), shadowShift1.x / (shadowShift1.x - shadowShift1.y));
+					shadowShift2 = float2(1.0f / (shadowShift2.y - shadowShift2.x), shadowShift2.x / (shadowShift2.x - shadowShift2.y));
+					
+					#if defined(PROP_SHADOWBORDERMASK) || !defined(OPTIMIZER_ENABLED)
+					float2 shadowBorderMaskUV = poiUV(poiMesh.uv[_ShadowBorderMaskUV], _ShadowBorderMask_ST);
+					if (_ShadowBorderMaskLOD)
+					{
+						shadowBorderMask = POI2D_SAMPLE_TEX2D_SAMPLERGRADD(_ShadowBorderMask, sampler_trilinear_repeat, shadowBorderMaskUV, _ShadowBorderMaskPan, max(abs(ddx(shadowBorderMaskUV)), pow(_ShadowBorderMaskLOD, 4)), max(abs(ddy(shadowBorderMaskUV)), pow(_ShadowBorderMaskLOD, 4)));
+					}
+					else
+					{
+						shadowBorderMask = POI2D_SAMPLER_PAN(_ShadowBorderMask, _linear_repeat, shadowBorderMaskUV, _ShadowBorderMaskPan);
+					}
+					#endif
+					
+					shadowBorderMask.r = saturate(shadowBorderMask.r * shadowShift0.x + shadowShift0.y);
+					shadowBorderMask.g = saturate(shadowBorderMask.g * shadowShift1.x + shadowShift1.y);
+					shadowBorderMask.b = saturate(shadowBorderMask.b * shadowShift2.x + shadowShift2.y);
+					
+					lightMap.xyz = _ShadowPostAO ? lightMap.xyz : lightMap.xyz * shadowBorderMask.rgb;
+					#endif
 				}
-				else
-				{
-					shadowBorderMask = POI2D_SAMPLER_PAN(_ShadowBorderMask, _linear_repeat, shadowBorderMaskUV, _ShadowBorderMaskPan);
-				}
-				#endif
-				
-				shadowBorderMask.r = saturate(shadowBorderMask.r * shadowShift0.x + shadowShift0.y);
-				shadowBorderMask.g = saturate(shadowBorderMask.g * shadowShift1.x + shadowShift1.y);
-				shadowBorderMask.b = saturate(shadowBorderMask.b * shadowShift2.x + shadowShift2.y);
-				
-				lightMap.xyz = _ShadowPostAO ? lightMap.xyz : lightMap.xyz * shadowBorderMask.rgb;
-				#endif
 				
 				if (_LightingMapMode == 4)
 				{
@@ -36665,7 +36673,7 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 			float _ShadowBorderMaskLOD;
 			float4 _ShadowAOShift;
 			float4 _ShadowAOShift2;
-			
+			float _ShadowBorderMapToggle;
 			float4 _ShadowColor;
 			float _LightingMulitlayerNonLinear;
 			#if defined(PROP_SHADOWCOLORTEX) || !defined(OPTIMIZER_ENABLED)
@@ -43412,42 +43420,46 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				
 				float4 shadowBorderMask = 1;
 				
-				#if defined(PROP_SHADOWBORDERMASK) || !defined(OPTIMIZER_ENABLED)
-				// This should be moved to ui but honestly if these are locked in the compiler should be able to resolve it at compile time
-				float2 shadowShift0 = float2(_ShadowAOShift.x, _ShadowAOShift.y);
-				float2 shadowShift1 = float2(_ShadowAOShift.z, _ShadowAOShift.w);
-				float2 shadowShift2 = float2(_ShadowAOShift2.x, _ShadowAOShift2.y);
-				
-				//float2 shadowShift0 = float2(GetRemapMinValue(_ShadowAOShift.x, _ShadowAOShift.y), GetRemapMaxValue(_ShadowAOShift.x, _ShadowAOShift.y));
-				//float2 shadowShift1 = float2(GetRemapMinValue(_ShadowAOShift.z, _ShadowAOShift.w), GetRemapMaxValue(_ShadowAOShift.z, _ShadowAOShift.w));
-				//float2 shadowShift2 = float2(GetRemapMinValue(_ShadowAOShift2.x, _ShadowAOShift2.y), GetRemapMaxValue(_ShadowAOShift2.x, _ShadowAOShift2.y));
-				
-				shadowShift0.y = (shadowShift0.x == shadowShift0.y) ? (shadowShift0.y + 0.001f) : shadowShift0.y;
-				shadowShift1.y = (shadowShift1.x == shadowShift1.y) ? (shadowShift1.y + 0.001f) : shadowShift1.y;
-				shadowShift2.y = (shadowShift2.x == shadowShift2.y) ? (shadowShift2.y + 0.001f) : shadowShift2.y;
-				
-				shadowShift0 = float2(1.0f / (shadowShift0.y - shadowShift0.x), shadowShift0.x / (shadowShift0.x - shadowShift0.y));
-				shadowShift1 = float2(1.0f / (shadowShift1.y - shadowShift1.x), shadowShift1.x / (shadowShift1.x - shadowShift1.y));
-				shadowShift2 = float2(1.0f / (shadowShift2.y - shadowShift2.x), shadowShift2.x / (shadowShift2.x - shadowShift2.y));
-				
-				#if defined(PROP_SHADOWBORDERMASK) || !defined(OPTIMIZER_ENABLED)
-				float2 shadowBorderMaskUV = poiUV(poiMesh.uv[_ShadowBorderMaskUV], _ShadowBorderMask_ST);
-				if (_ShadowBorderMaskLOD)
+				if(_ShadowBorderMapToggle)
 				{
-					shadowBorderMask = POI2D_SAMPLE_TEX2D_SAMPLERGRADD(_ShadowBorderMask, sampler_trilinear_repeat, shadowBorderMaskUV, _ShadowBorderMaskPan, max(abs(ddx(shadowBorderMaskUV)), pow(_ShadowBorderMaskLOD, 4)), max(abs(ddy(shadowBorderMaskUV)), pow(_ShadowBorderMaskLOD, 4)));
+					
+					#if defined(PROP_SHADOWBORDERMASK) || !defined(OPTIMIZER_ENABLED)
+					// This should be moved to ui but honestly if these are locked in the compiler should be able to resolve it at compile time
+					float2 shadowShift0 = float2(_ShadowAOShift.x, _ShadowAOShift.y);
+					float2 shadowShift1 = float2(_ShadowAOShift.z, _ShadowAOShift.w);
+					float2 shadowShift2 = float2(_ShadowAOShift2.x, _ShadowAOShift2.y);
+					
+					//float2 shadowShift0 = float2(GetRemapMinValue(_ShadowAOShift.x, _ShadowAOShift.y), GetRemapMaxValue(_ShadowAOShift.x, _ShadowAOShift.y));
+					//float2 shadowShift1 = float2(GetRemapMinValue(_ShadowAOShift.z, _ShadowAOShift.w), GetRemapMaxValue(_ShadowAOShift.z, _ShadowAOShift.w));
+					//float2 shadowShift2 = float2(GetRemapMinValue(_ShadowAOShift2.x, _ShadowAOShift2.y), GetRemapMaxValue(_ShadowAOShift2.x, _ShadowAOShift2.y));
+					
+					shadowShift0.y = (shadowShift0.x == shadowShift0.y) ? (shadowShift0.y + 0.001f) : shadowShift0.y;
+					shadowShift1.y = (shadowShift1.x == shadowShift1.y) ? (shadowShift1.y + 0.001f) : shadowShift1.y;
+					shadowShift2.y = (shadowShift2.x == shadowShift2.y) ? (shadowShift2.y + 0.001f) : shadowShift2.y;
+					
+					shadowShift0 = float2(1.0f / (shadowShift0.y - shadowShift0.x), shadowShift0.x / (shadowShift0.x - shadowShift0.y));
+					shadowShift1 = float2(1.0f / (shadowShift1.y - shadowShift1.x), shadowShift1.x / (shadowShift1.x - shadowShift1.y));
+					shadowShift2 = float2(1.0f / (shadowShift2.y - shadowShift2.x), shadowShift2.x / (shadowShift2.x - shadowShift2.y));
+					
+					#if defined(PROP_SHADOWBORDERMASK) || !defined(OPTIMIZER_ENABLED)
+					float2 shadowBorderMaskUV = poiUV(poiMesh.uv[_ShadowBorderMaskUV], _ShadowBorderMask_ST);
+					if (_ShadowBorderMaskLOD)
+					{
+						shadowBorderMask = POI2D_SAMPLE_TEX2D_SAMPLERGRADD(_ShadowBorderMask, sampler_trilinear_repeat, shadowBorderMaskUV, _ShadowBorderMaskPan, max(abs(ddx(shadowBorderMaskUV)), pow(_ShadowBorderMaskLOD, 4)), max(abs(ddy(shadowBorderMaskUV)), pow(_ShadowBorderMaskLOD, 4)));
+					}
+					else
+					{
+						shadowBorderMask = POI2D_SAMPLER_PAN(_ShadowBorderMask, _linear_repeat, shadowBorderMaskUV, _ShadowBorderMaskPan);
+					}
+					#endif
+					
+					shadowBorderMask.r = saturate(shadowBorderMask.r * shadowShift0.x + shadowShift0.y);
+					shadowBorderMask.g = saturate(shadowBorderMask.g * shadowShift1.x + shadowShift1.y);
+					shadowBorderMask.b = saturate(shadowBorderMask.b * shadowShift2.x + shadowShift2.y);
+					
+					lightMap.xyz = _ShadowPostAO ? lightMap.xyz : lightMap.xyz * shadowBorderMask.rgb;
+					#endif
 				}
-				else
-				{
-					shadowBorderMask = POI2D_SAMPLER_PAN(_ShadowBorderMask, _linear_repeat, shadowBorderMaskUV, _ShadowBorderMaskPan);
-				}
-				#endif
-				
-				shadowBorderMask.r = saturate(shadowBorderMask.r * shadowShift0.x + shadowShift0.y);
-				shadowBorderMask.g = saturate(shadowBorderMask.g * shadowShift1.x + shadowShift1.y);
-				shadowBorderMask.b = saturate(shadowBorderMask.b * shadowShift2.x + shadowShift2.y);
-				
-				lightMap.xyz = _ShadowPostAO ? lightMap.xyz : lightMap.xyz * shadowBorderMask.rgb;
-				#endif
 				
 				if (_LightingMapMode == 4)
 				{
