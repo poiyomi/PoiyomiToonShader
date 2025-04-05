@@ -2,7 +2,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 {
 	Properties
 	{
-		[HideInInspector] shader_master_label ("<color=#E75898ff>Poiyomi 9.1.29</color>", Float) = 0
+		[HideInInspector] shader_master_label ("<color=#E75898ff>Poiyomi 9.1.30</color>", Float) = 0
 		[HideInInspector] shader_is_using_thry_editor ("", Float) = 0
 		[HideInInspector] shader_locale ("0db0b86376c3dca4b9a6828ef8615fe0", Float) = 0
 		[HideInInspector] footer_youtube ("{texture:{name:icon-youtube,height:16},action:{type:URL,data:https://www.youtube.com/poiyomi},hover:YOUTUBE}", Float) = 0
@@ -984,6 +984,15 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 		_GrabpassColor ("Color", Color) = (1, 1, 1, 1)
 		_GrabPassBrightness ("Multiplicative Brightness", Float) = 1
 		_GrabPassAddBrightness ("Additive Brightness", Float) = 0
+		
+		[HideInInspector] s_start_GrabPassHueShift ("Hue Shift--{reference_property:_GrabPassHueShiftToggle,persistent_expand:true,default_expand:true}", Float) = 1
+		[HideInInspector][ThryToggleUI(true)] _GrabPassHueShiftToggle ("<size=13><b>  Hue Shift</b></size>", Float) = 0
+		[ThryWideEnum(OKLab, 0, HSV, 1)] _GrabPassHueShiftColorSpace ("Color Space", Int) = 0
+		[ThryWideEnum(Hue Select, 0, Hue Shift, 1)] _GrabPassHueSelectOrShift ("Select or Shift", Int) = 1
+		[ToggleUI]_GrabPassHueShiftReplace ("Hue Replace?", Float) = 1
+		_GrabPassHueShift ("Hue Shift", Range(0, 1)) = 0
+		_GrabPassHueShiftSpeed ("Hue Shift Speed", Float) = 0
+		[HideInInspector] s_end_MainHueShift ("Name Motion", Float) = 0
 		[HideInInspector] m_end_GrabpassColor ("Color", Float) = 0
 		
 		[HideInInspector] m_start_GrabPassAdvanced ("Advanced", Float) = 0
@@ -15949,6 +15958,11 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 			}
 			//endex
 			
+			float _GrabPassHueShiftToggle;
+			float _GrabPassHueShiftColorSpace;
+			float _GrabPassHueSelectOrShift;
+			float _GrabPassHueShift;
+			float _GrabPassHueShiftSpeed;
 			//endex
 			
 			//ifex _EnableGrabpass==0
@@ -16056,6 +16070,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				}
 				
 				grabpassColor = (_GrabpassColor * grabpassColor * _GrabPassBrightness) + (_GrabPassAddBrightness * _GrabpassColor);
+				grabpassColor = hueShift(grabpassColor, frac(_GrabPassHueShift + _GrabPassHueShiftSpeed * _Time.x), _GrabPassHueShiftColorSpace, _GrabPassHueSelectOrShift);
 				
 				#ifdef POI_PASS_ADD
 				poiFragData.baseColor = poiBlend(_GrabSrcBlend, float4(poiFragData.baseColor, poiFragData.alpha), _GrabDstBlend, float4(0, 0, 0, 1), blendFactor);
@@ -33258,6 +33273,11 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 			}
 			//endex
 			
+			float _GrabPassHueShiftToggle;
+			float _GrabPassHueShiftColorSpace;
+			float _GrabPassHueSelectOrShift;
+			float _GrabPassHueShift;
+			float _GrabPassHueShiftSpeed;
 			//endex
 			
 			//ifex _EnableGrabpass==0
@@ -33365,6 +33385,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				}
 				
 				grabpassColor = (_GrabpassColor * grabpassColor * _GrabPassBrightness) + (_GrabPassAddBrightness * _GrabpassColor);
+				grabpassColor = hueShift(grabpassColor, frac(_GrabPassHueShift + _GrabPassHueShiftSpeed * _Time.x), _GrabPassHueShiftColorSpace, _GrabPassHueSelectOrShift);
 				
 				#ifdef POI_PASS_ADD
 				poiFragData.baseColor = poiBlend(_GrabSrcBlend, float4(poiFragData.baseColor, poiFragData.alpha), _GrabDstBlend, float4(0, 0, 0, 1), blendFactor);
