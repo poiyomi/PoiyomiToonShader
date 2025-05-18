@@ -11,7 +11,7 @@ namespace Thry.ThryEditor
     public class Config
     {
         private const string PATH_CONFIG_FILE = "Thry/Config.json";
-        private static readonly Version INSTALLED_VERSION = "2.63.6";
+        private static readonly Version INSTALLED_VERSION = "2.63.10";
 
         private static Config s_config;
 
@@ -40,6 +40,7 @@ namespace Thry.ThryEditor
         public bool allowCustomLockingRenaming = false;
         public bool autoMarkPropertiesAnimated = true;
         public bool showStarNextToNonDefaultProperties = true;
+        public bool showNotes = true;
         public TextureImporterFormat texturePackerCompressionWithAlphaOverwrite = TextureImporterFormat.Automatic;
         public TextureImporterFormat texturePackerCompressionNoAlphaOverwrite = TextureImporterFormat.Automatic;
         public TextureImporterFormat gradientEditorCompressionOverwrite = TextureImporterFormat.Automatic;

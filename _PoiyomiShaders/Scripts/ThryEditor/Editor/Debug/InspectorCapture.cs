@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 using System.Threading.Tasks;
 using UnityEditor;
 using UnityEngine;
@@ -63,11 +64,15 @@ namespace Thry.ThryEditor
         /// <returns>A texture containing the editor window</returns>
         static async Task<Texture2D> ScreenshotAsync(EditorWindow window)
         {
+            InitReflections(window);
+            
             List<Color> pixels = new List<Color>();
-
             float originalScroll = SetScroll(window);
 
             var baseHeight = window.position.height - (_tabsHeight + _footer);
+
+            bool originalExpanded = GetPreviewExpanded(window) ?? false;
+            SetPreviewExpanded(window, false);
 
             for(int i = 0; i < 64; i++)
             {
@@ -82,6 +87,7 @@ namespace Thry.ThryEditor
             }
 
             SetScroll(window, originalScroll);
+            SetPreviewExpanded(window, originalExpanded);
 
             int width = (int)window.position.width;
             int height = pixels.Count / width;
@@ -115,18 +121,64 @@ namespace Thry.ThryEditor
         }
 
         /// <summary>
-        /// Sets the editor window's scroll, returns the resulting scroll value
+        /// Sets the editor window's scroll, by directly setting the ScrollViewField's value. Returns the resulting scroll value
         /// </summary>
         /// <param name="inspector">The window to scroll</param>
         /// <param name="scroll">the y value of the scroll</param>
         /// <returns>the value passed in clamped to the min max scroll of the window</returns>
-        private static float SetScroll(EditorWindow inspector, float scroll = -1)
+        static float SetScroll(EditorWindow inspector, float scroll = -1)
         {
-            var scrollViewField = inspector.GetType().GetField("m_ScrollView",
-                System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-            var scrollView = scrollViewField.GetValue(inspector) as ScrollView;
+            var scrollView = ScrollViewField.GetValue(inspector) as ScrollView;
             if(scroll >= 0) scrollView.scrollOffset = new Vector2(0, scroll);
             return scrollView.scrollOffset.y;
+        }
+
+        static FieldInfo PreviewResizerField;
+        static MethodInfo PreviewResizerGetExpandedMethod;
+        static MethodInfo PreviewResizerSetExpandedMethod;
+        static FieldInfo ScrollViewField;
+        static Type lastWindowType;
+        
+        static void InitReflections(EditorWindow window)
+        {
+            if(window.GetType() == lastWindowType)
+                return;
+            
+            lastWindowType = window.GetType();
+            if(PreviewResizerField == null)
+                PreviewResizerField = lastWindowType.GetField("m_PreviewResizer", BindingFlags.NonPublic | BindingFlags.Instance);
+
+            if(PreviewResizerField != null && (PreviewResizerGetExpandedMethod == null || PreviewResizerSetExpandedMethod == null))
+            {
+                Type resizerType = PreviewResizerField.FieldType;
+                PreviewResizerGetExpandedMethod = resizerType.GetMethod("GetExpanded");
+                PreviewResizerSetExpandedMethod = resizerType.GetMethod("SetExpanded", new[] {typeof(bool)});
+            }
+            
+            if(ScrollViewField == null)
+                ScrollViewField = lastWindowType.GetField("m_ScrollView", BindingFlags.NonPublic | BindingFlags.Instance);
+        }
+
+        static bool? GetPreviewExpanded(EditorWindow window)
+        {
+            if(PreviewResizerField == null || PreviewResizerGetExpandedMethod == null)
+                return null;
+            
+            var previewResizer = PreviewResizerField.GetValue(window);
+            if(previewResizer == null)
+                return null;
+            return (bool)PreviewResizerGetExpandedMethod.Invoke(previewResizer, null);
+        }
+
+        static void SetPreviewExpanded(EditorWindow window, bool expanded)
+        {
+            if(PreviewResizerSetExpandedMethod == null)
+                return;
+            
+            var previewResizer = PreviewResizerField.GetValue(window);
+            if(previewResizer == null)
+                return;
+            PreviewResizerSetExpandedMethod.Invoke(previewResizer, new object[] { expanded });
         }
     }
 }

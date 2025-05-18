@@ -145,12 +145,17 @@ namespace Poi.Tools
             try
             {
                 AssetDatabase.StartAssetEditing();
-                foreach (var thirdPartyIncluder in thirdPartyIncluders)
+                foreach (var includer in thirdPartyIncluders)
                 {
-                    foreach (var thirdPartyInclude in thirdPartyIncluder.ThirdPartyIncludes)
+                    foreach (var include in includer.ThirdPartyIncludes)
                     {
-                        string destinationPath = Path.Combine(projectPath, thirdPartyInclude.destinationPath);
-                        File.WriteAllText(destinationPath, "");
+                        // only clear if user checked “Clear Contents”
+                        if (!include.clearContents)
+                            continue;
+
+                        string destPath = Path.Combine(projectPath, include.destinationPath);
+                        if (File.Exists(destPath))
+                            File.WriteAllText(destPath, string.Empty);
                     }
                 }
             }
@@ -160,6 +165,7 @@ namespace Poi.Tools
                 AssetDatabase.Refresh();
             }
         }
+
     }
     public class ThirdPartyIncluderAssetPostProcessor : AssetPostprocessor
     {

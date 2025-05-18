@@ -280,6 +280,30 @@ namespace Thry.ThryEditor
             public string name;
             public Vector4 value;
             public string lastDeclarationType;
+
+            public void ToCode(StringBuilder sb)
+            {
+                switch (type)
+                {
+                    case PropertyType.Float:
+                        string constantValue;
+                        // Special Handling for ints 
+                        if(lastDeclarationType == "int")
+                            constantValue = value.x.ToString("F0", CultureInfo.InvariantCulture);
+                        else
+                            constantValue = value.x.ToString("0.0####################", CultureInfo.InvariantCulture);
+
+                        // Add comment with property name, for easier debug
+                        sb.Append($"({constantValue} /*{name}*/)");
+                        break;
+                    case PropertyType.Vector:
+                        sb.Append("float4("+value.x.ToString(CultureInfo.InvariantCulture)+","
+                                        +value.y.ToString(CultureInfo.InvariantCulture)+","
+                                        +value.z.ToString(CultureInfo.InvariantCulture)+","
+                                        +value.w.ToString(CultureInfo.InvariantCulture)+")");
+                        break;
+                }
+            }
         }
 
         public class Macro
@@ -320,6 +344,16 @@ namespace Thry.ThryEditor
             public string animPropertySuffix;
             public bool shared;
             public List<string> stripTextures;
+        }
+
+        private static string GetColorMaskString(int colorMask)
+        {
+            string mask = "";
+            if ((colorMask & 8) != 0) mask += "R";
+            if ((colorMask & 4) != 0) mask += "G";
+            if ((colorMask & 2) != 0) mask += "B";
+            if ((colorMask & 1) != 0) mask += "A";
+            return mask;
         }
 
         private static Dictionary<Material, ApplyStruct> s_applyStructsLater = new Dictionary<Material, ApplyStruct>();
@@ -1117,6 +1151,10 @@ namespace Thry.ThryEditor
                 }
             }
 
+            // Fix some properties that require special handling
+            // _ColorMask should write RGBA string instead of 0-15
+            PropertyData colorMaskProp = constantProps.FirstOrDefault(x => x.name == "_ColorMask");
+
             // Get list of lightmode passes to delete
             List<string> disabledLightModes = new List<string>();
             var disabledLightModesProperty = Array.Find(props, x => x.name == DisabledLightModesPropertyName);
@@ -1293,6 +1331,12 @@ namespace Thry.ThryEditor
                                             break;
                                     }
                                 }
+                            }
+                        }else if(trimmedLine.StartsWith("ColorMask", StringComparison.Ordinal))
+                        {
+                            if (colorMaskProp != null)
+                            {
+                                psf.lines[i] = psf.lines[i].Replace("[_ColorMask]", GetColorMaskString((int)colorMaskProp.value.x));
                             }
                         }
                     }
@@ -1524,14 +1568,15 @@ namespace Thry.ThryEditor
             {
                 string lineParsed = fileLines[i].TrimStart();
 
-                if(lineParsed.StartsWith("//", StringComparison.Ordinal))
+                if (lineParsed.StartsWith("//", StringComparison.Ordinal))
                 {
-                    //Exclusion logic
-                    if(lineParsed.StartsWith("//ifex", StringComparison.Ordinal))
+                    // Exclusion logic
+                    if (lineParsed.StartsWith("//ifex", StringComparison.Ordinal))
                     {
-                        if(!doExclude){ // If already excluding, only track depth
+                        if (!doExclude) // if already excluding, only track depth
+                        {
                             var condition = DefineableCondition.Parse(lineParsed.Substring(6), material);
-                            if(condition.Test())
+                            if (condition.Test())
                             {
                                 doExclude = true;
                                 excludeStartDepth = currentExcludeDepth;
@@ -1539,9 +1584,9 @@ namespace Thry.ThryEditor
                         }
                         currentExcludeDepth++;
                     }
-                    else if(lineParsed.StartsWith("//endex", StringComparison.Ordinal))
+                    else if (lineParsed.StartsWith("//endex", StringComparison.Ordinal))
                     {
-                        if(currentExcludeDepth == 0)
+                        if (currentExcludeDepth == 0)
                         {
                             Debug.LogError("[Shader Optimizer] Number of 'endex' statements does not match number of 'ifex' statements."
                                 +$"\nError found in file '{filePath}' line {i+1}");
@@ -1549,10 +1594,7 @@ namespace Thry.ThryEditor
                         else
                         {
                             currentExcludeDepth--;
-                            if(currentExcludeDepth == excludeStartDepth)
-                            {
-                                doExclude = false;
-                            }
+                            if (currentExcludeDepth == excludeStartDepth) doExclude = false;
                         }
                     }
                     // Specifically requires no whitespace between // and KSOEvaluateMacro
@@ -1577,7 +1619,7 @@ namespace Thry.ThryEditor
                 {
                     // check for texture property definitions, remove textures later
                     // needs specific naming
-                    if(lineParsed.EndsWith("{ }", StringComparison.Ordinal) && lineParsed.IndexOf("2D)", StringComparison.Ordinal) >= 0)
+                    if (lineParsed.EndsWith("{ }", StringComparison.Ordinal) && lineParsed.IndexOf("2D)", StringComparison.Ordinal) >= 0)
                     {
                         lineParsed = lineParsed.Substring(0, lineParsed.IndexOf('"'));
                         if (lineParsed.IndexOf("]", StringComparison.Ordinal) >= 0) // Unity 2019 doesn't like string.Contains(string, StringComparison)
@@ -1591,9 +1633,9 @@ namespace Thry.ThryEditor
                     continue;
                 }
 
-                //removes empty lines
+                // Remove empty lines
                 if (string.IsNullOrEmpty(lineParsed)) continue;
-                //removes code that is commented
+                // Remove code that is commented
                 if (isCommentedOut && lineParsed.EndsWith("*/", StringComparison.OrdinalIgnoreCase))
                 {
                     isCommentedOut = false;
@@ -1606,10 +1648,10 @@ namespace Thry.ThryEditor
                 }
                 if (isCommentedOut) continue;
 
-                //Removed code from defines blocks
+                // Remove code from defines blocks
                 if (REMOVE_UNUSED_IF_DEFS)
                 {
-                    //Check if Line contains #ifs
+                    // Check if line contains a preprocessor conditional (e.g., #if, #ifdef, #ifndef)
                     if (lineParsed.StartsWith("#if", StringComparison.Ordinal))
                     {
                         bool hasMultiple = lineParsed.Contains('&') || lineParsed.Contains('|');
@@ -1663,7 +1705,7 @@ namespace Thry.ThryEditor
                     }
                     else if (lineParsed.StartsWith("#else"))
                     {
-                        if(removeEndifStack.Count == 0)
+                        if (removeEndifStack.Count == 0)
                         {
                             Debug.LogError("[Shader Optimizer] Number of 'endif' statements does not match number of 'if' statements."
                                 +$"\nError found in file '{filePath}' line {i+1}. Current output copied to clipboard.");
@@ -1676,12 +1718,9 @@ namespace Thry.ThryEditor
                     else if (lineParsed.StartsWith("#endif", StringComparison.Ordinal))
                     {
                         ifStacking--;
-                        if (ifStacking == isNotIncludedAtDepth)
-                        {
-                            isIncluded = true;
-                        }
-                        // for debugging
-                        if(removeEndifStack.Count == 0)
+                        if (ifStacking == isNotIncludedAtDepth) isIncluded = true;
+                        // For debugging
+                        if (removeEndifStack.Count == 0)
                         {
                             Debug.LogError("[Shader Optimizer] Number of 'endif' statements does not match number of 'if' statements."
                                 +$"\nError found in file '{filePath}' line {i+1}. Current output copied to clipboard.");
@@ -1698,7 +1737,7 @@ namespace Thry.ThryEditor
                     if (!isIncluded) continue;
                 }
 
-                //Remove pragmas
+                // Remove pragmas
                 if (lineParsed.StartsWith("#pragma shader_feature", StringComparison.Ordinal))
                 {
                     string trimmed = lineParsed.Replace("#pragma shader_feature_local", "").Replace("#pragma shader_feature", "").TrimStart();
@@ -1723,13 +1762,11 @@ namespace Thry.ThryEditor
                     if (DefaultUnityShaderIncludes.Contains(includeFilename) == false)
                     {
                         string includeFullpath = includeFilename;
-                        if (includeFilename.StartsWith("Assets/", StringComparison.Ordinal) == false)//not absolute
-                        {
+                        if (includeFilename.StartsWith("Assets/", StringComparison.Ordinal) == false && includeFilename.StartsWith("Packages/", StringComparison.Ordinal) == false) // not absolute
                             includeFullpath = GetFullPath(includeFilename, Path.GetDirectoryName(filePath));
-                        }
                         if (!ParseShaderFilesRecursive(filesParsed, newTopLevelDirectory, includeFullpath, macros, material, stripTextures))
                             return false;
-                        //Change include to be be ralative to only one directory up, because all files are moved into the same folder
+                        // Change include to be be ralative to only one directory up, because all files are moved into the same folder
                         fileLines[i] = fileLines[i].Replace(includeFilename, "/"+includeFilename.Split('/').Last());
                     }
                 }
@@ -2075,26 +2112,7 @@ namespace Thry.ThryEditor
                             // This could technically be more efficient by being outside the IndexOf loop
                             StringBuilder sb = new StringBuilder(lines[i].Length * 2);
                             sb.Append(lines[i], 0, constantIndex);
-                            switch (constant.type)
-                            {
-                                case PropertyType.Float:
-                                    string constantValue;
-                                    // Special Handling for ints 
-                                    if(constant.lastDeclarationType == "int")
-                                        constantValue = constant.value.x.ToString("F0", CultureInfo.InvariantCulture);
-                                    else
-                                        constantValue = constant.value.x.ToString("0.0####################", CultureInfo.InvariantCulture);
-
-                                    // Add comment with property name, for easier debug
-                                    sb.Append($"({constantValue} /*{constant.name}*/)");
-                                    break;
-                                case PropertyType.Vector:
-                                    sb.Append("float4("+constant.value.x.ToString(CultureInfo.InvariantCulture)+","
-                                                    +constant.value.y.ToString(CultureInfo.InvariantCulture)+","
-                                                    +constant.value.z.ToString(CultureInfo.InvariantCulture)+","
-                                                    +constant.value.w.ToString(CultureInfo.InvariantCulture)+")");
-                                    break;
-                            }
+                            constant.ToCode(sb);
                             sb.Append(lines[i], constantIndex+constant.name.Length, lines[i].Length-constantIndex-constant.name.Length);
                             lines[i] = sb.ToString();
 

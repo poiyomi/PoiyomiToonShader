@@ -924,6 +924,7 @@ Material:
     - _ClearCoatTPSDepthMaskEnabled: 0
     - _ClearCoatTPSMaskStrength: 1
     - _ClearcoatFresnel: 1
+    - _ClearcoatFresnelStrength: 0.5
     - _ClothLerp: 0
     - _ClothMetallicSmoothnessMapInvert: 0
     - _ClothMetallicSmoothnessMapUV: 0
@@ -2364,6 +2365,7 @@ Material:
     - _RefSpecFresnel: 1
     - _RefSpecFresnelAlpha: 1
     - _RefSpecFresnelBack: 1
+    - _RefSpecFresnelStrength: 0.5
     - _Reflectance: 0.04
     - _ReflectionApplyTransparency: 1
     - _ReflectionBlendMode: 1
@@ -3230,6 +3232,11 @@ Material:
     - m_start_voronoiRandom: 0
     - m_thirdpartyCategory: 0
     - s_end_ALAlpha: 0
+    - s_end_ALDecalAudioModsOptions: 0
+    - s_end_ALDecalBand: 0
+    - s_end_ALDecalColorsBlendingOptions: 0
+    - s_end_ALDecalShapeClipOptions: 0
+    - s_end_ALDecalVolumeOptions: 0
     - s_end_ALSpectrumMotion: 0
     - s_end_ALVertexGlitching: 0
     - s_end_ALVertexHeight: 0
@@ -3433,6 +3440,11 @@ Material:
     - s_end_outline_al_color: 0
     - s_end_vertexRounding: 0
     - s_start_ALAlpha: 0
+    - s_start_ALDecalAudioModsOptions: 1
+    - s_start_ALDecalBandOptions: 1
+    - s_start_ALDecalColorsBlendingOptions: 1
+    - s_start_ALDecalShapeClipOptions: 1
+    - s_start_ALDecalVolumeOptions: 1
     - s_start_ALSpectrumMotion: 0
     - s_start_ALVertexGlitching: 0
     - s_start_ALVertexHeight: 0
@@ -3726,7 +3738,7 @@ Material:
     - _AudioLinkRimWidthAdd: {r: 0, g: 0, b: 0, a: 0}
     - _AudioLinkVoronoiInnerEmission: {r: 0, g: 0, b: 0, a: 0}
     - _AudioLinkVoronoiOuterEmission: {r: 0, g: 0, b: 0, a: 0}
-    - _BackFaceColor: {r: 0, g: 0.112710275, b: 0.33499998, a: 0.6}
+    - _BackFaceColor: {r: 0, g: 0.112710245, b: 0.33499995, a: 0.69803923}
     - _BackFaceMaskPan: {r: 0, g: 0, b: 0, a: 0}
     - _BackFaceTexturePan: {r: 0, g: 0, b: 0, a: 0}
     - _BacklightColor: {r: 0.85, g: 0.8, b: 0.7, a: 1}

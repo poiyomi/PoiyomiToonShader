@@ -94,6 +94,12 @@ namespace Thry.ThryEditor
                 }else
                 {
                     GUI.Box(rect, new GUIContent("     " + content.text, content.tooltip), Styles.dropdownHeader);
+                    if(Config.Instance.showNotes && !string.IsNullOrWhiteSpace(Note))
+                    {
+                        Rect noteRect = new Rect(rect);
+                        noteRect.width -= 60;
+                        GUI.Label(noteRect, Note, Styles.label_property_note);
+                    }
                 }
                 
                 DrawIcons(rect, options, e);
@@ -123,6 +129,12 @@ namespace Thry.ThryEditor
             else
             {
                 GUI.Box(rect, content, Styles.dropdownHeader);
+                if(Config.Instance.showNotes && !string.IsNullOrWhiteSpace(Note))
+                {
+                    Rect noteRect = new Rect(rect);
+                    noteRect.width -= 60;
+                    GUI.Label(noteRect, Note, Styles.label_property_note);
+                }
                 DrawIcons(rect, options, e);
             }
 
@@ -282,6 +294,23 @@ namespace Thry.ThryEditor
                 };
                 
             });
+            menu.AddSeparator("");
+            if(Config.Instance.showNotes)
+            {
+                menu.AddItem(new GUIContent("Set Note"), false, () =>
+                {
+                    var popup = ScriptableObject.CreateInstance<SetNotePopup>();
+                    popup.Init(this, new Rect());
+                    popup.ShowUtility();
+                });
+                //menu.AddItem(new GUIContent("Clear Note"), false, () => { Note = null; }); // Too easy to missclick when there's no undo?
+            }
+            else
+            {
+                menu.AddDisabledItem(new GUIContent("Set Note"));
+                //menu.AddDisabledItem(new GUIContent("Clear Note"));
+            }
+
             menu.DropDown(position);
         }
 

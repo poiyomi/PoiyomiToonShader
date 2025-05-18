@@ -26,6 +26,7 @@ Material:
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
   stringTagMap:
+    _AddBlendOp_isPreset: true
     _DisableDirectionalInAdd_isPreset: true
     _LightingAdditiveCastedShadows_isPreset: true
     _LightingAdditiveEnable_isPreset: true
@@ -673,7 +674,7 @@ Material:
     - _ALVolumeColorLowThemeIndex: 0
     - _ALVolumeColorMidThemeIndex: 0
     - _ALVolumeColorUV: 0
-    - _AddBlendOp: 4
+    - _AddBlendOp: 0
     - _AddBlendOpAlpha: 4
     - _AddDstBlend: 1
     - _AddDstBlendAlpha: 1
@@ -948,6 +949,7 @@ Material:
     - _ClearCoatTPSDepthMaskEnabled: 0
     - _ClearCoatTPSMaskStrength: 1
     - _ClearcoatFresnel: 1
+    - _ClearcoatFresnelStrength: 0.5
     - _ClothLerp: 0
     - _ClothMetallicSmoothnessMapInvert: 0
     - _ClothMetallicSmoothnessMapUV: 0
@@ -2405,6 +2407,7 @@ Material:
     - _RefSpecFresnel: 1
     - _RefSpecFresnelAlpha: 1
     - _RefSpecFresnelBack: 1
+    - _RefSpecFresnelStrength: 0.5
     - _Reflectance: 0.04
     - _ReflectionApplyTransparency: 1
     - _ReflectionBlendMode: 1
@@ -3129,8 +3132,8 @@ Material:
     - m_grabPassCategory: 0
     - m_lightingCategory: 1
     - m_mainCategory: 0
-    - m_modifierCategory: 0
-    - m_renderingCategory: 0
+    - m_modifierCategory: 1
+    - m_renderingCategory: 1
     - m_specialFXCategory: 0
     - m_start_ALDecalSpectrum: 0
     - m_start_ALVolumeColor: 0
@@ -3235,7 +3238,7 @@ Material:
     - m_start_backFace: 0
     - m_start_backlight: 0
     - m_start_bakedLighting: 0
-    - m_start_blending: 0
+    - m_start_blending: 1
     - m_start_brdf: 1
     - m_start_clearCoat: 0
     - m_start_clearcoatadvanced: 0
@@ -3286,6 +3289,11 @@ Material:
     - m_start_voronoiRandom: 0
     - m_thirdpartyCategory: 0
     - s_end_ALAlpha: 0
+    - s_end_ALDecalAudioModsOptions: 0
+    - s_end_ALDecalBand: 0
+    - s_end_ALDecalColorsBlendingOptions: 0
+    - s_end_ALDecalShapeClipOptions: 0
+    - s_end_ALDecalVolumeOptions: 0
     - s_end_ALSpectrumMotion: 0
     - s_end_ALVertexGlitching: 0
     - s_end_ALVertexHeight: 0
@@ -3489,6 +3497,11 @@ Material:
     - s_end_outline_al_color: 0
     - s_end_vertexRounding: 0
     - s_start_ALAlpha: 0
+    - s_start_ALDecalAudioModsOptions: 1
+    - s_start_ALDecalBandOptions: 1
+    - s_start_ALDecalColorsBlendingOptions: 1
+    - s_start_ALDecalShapeClipOptions: 1
+    - s_start_ALDecalVolumeOptions: 1
     - s_start_ALSpectrumMotion: 0
     - s_start_ALVertexGlitching: 0
     - s_start_ALVertexHeight: 0

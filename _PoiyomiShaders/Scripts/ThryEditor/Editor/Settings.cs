@@ -170,6 +170,7 @@ namespace Thry.ThryEditor
             Toggle(nameof(Config.autoMarkPropertiesAnimated));
             Toggle(nameof(Config.allowCustomLockingRenaming));
             GUIGradients();
+            Toggle(nameof(Config.showNotes));
 
             EditorGUILayout.Space();
             GUILayout.Label(EditorLocale.editor.Get("avatar_fixes_header"), EditorStyles.boldLabel);

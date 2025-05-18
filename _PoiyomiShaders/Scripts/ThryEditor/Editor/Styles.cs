@@ -23,6 +23,12 @@ namespace Thry.ThryEditor
         public static readonly GUIStyle presetIndicatorStyle = new GUIStyle() { normal = new GUIStyleState() { textColor = Color.cyan }, alignment = TextAnchor.MiddleRight };
         public static readonly GUIStyle madeByLabel = new GUIStyle(EditorStyles.label) { fontSize = 10 };
         public static readonly GUIStyle notification = new GUIStyle(GUI.skin.box) { fontSize = 12, wordWrap = true, normal = new GUIStyleState() { textColor = Color.red } };
+        public static GUIStyle label_property_note { get; private set; } = new GUIStyle(EditorStyles.label)
+        {
+            alignment = TextAnchor.MiddleRight, 
+            padding = new RectOffset(0, 0, 0, 4), 
+            normal = new GUIStyleState { textColor = new Color(1f, 1f, 1f, 0.6f) },
+        };
 
         public static readonly GUIStyle vectorPropertyStyle = new GUIStyle() { padding = new RectOffset(0, 0, 2, 2) };
 

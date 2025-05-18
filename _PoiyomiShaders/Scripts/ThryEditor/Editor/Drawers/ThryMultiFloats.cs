@@ -39,6 +39,8 @@ namespace Thry.ThryEditor.Drawers
                 _otherMaterialProps[i] = sProp.MaterialProperty;
             }
 
+            EditorGUI.LabelField(labelR, label);
+
             bool anyChanged;
             using (var change_scope = new EditorGUI.ChangeCheckScope())
             {

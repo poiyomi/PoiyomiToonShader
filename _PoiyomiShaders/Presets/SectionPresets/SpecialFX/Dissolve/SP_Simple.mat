@@ -33,7 +33,10 @@ Material:
     _DissolveEdgeEmission_isPreset: true
     _DissolveEdgeGradient_isPreset: true
     _DissolveEdgeHardness_isPreset: true
+    _DissolveEdgeHueShiftEnabled_isPreset: true
+    _DissolveEdgeHueShiftSpeed_isPreset: true
     _DissolveEdgeWidth_isPreset: true
+    _DissolveHueShiftEnabled_isPreset: true
     _DissolveNoiseTexture_isPreset: true
     _DissolveTextureColor_isPreset: true
     _DissolveToEmissionStrength_isPreset: true
@@ -905,6 +908,7 @@ Material:
     - _ClearCoatTPSDepthMaskEnabled: 0
     - _ClearCoatTPSMaskStrength: 1
     - _ClearcoatFresnel: 1
+    - _ClearcoatFresnelStrength: 0.5
     - _ClothLerp: 0
     - _ClothMetallicSmoothnessMapInvert: 0
     - _ClothMetallicSmoothnessMapUV: 0
@@ -2332,6 +2336,7 @@ Material:
     - _RefSpecFresnel: 1
     - _RefSpecFresnelAlpha: 1
     - _RefSpecFresnelBack: 1
+    - _RefSpecFresnelStrength: 0.5
     - _Reflectance: 0.04
     - _ReflectionApplyTransparency: 1
     - _ReflectionBlendMode: 1
@@ -3051,7 +3056,7 @@ Material:
     - m_start_depthFX: 0
     - m_start_depthRimLightOptions: 0
     - m_start_dissolve: 1
-    - m_start_dissolveHueShift: 0
+    - m_start_dissolveHueShift: 1
     - m_start_emission1Options: 0
     - m_start_emission2Options: 0
     - m_start_emission3Options: 0
@@ -3086,6 +3091,11 @@ Material:
     - m_start_voronoiRandom: 0
     - m_thirdpartyCategory: 0
     - s_end_ALAlpha: 0
+    - s_end_ALDecalAudioModsOptions: 0
+    - s_end_ALDecalBand: 0
+    - s_end_ALDecalColorsBlendingOptions: 0
+    - s_end_ALDecalShapeClipOptions: 0
+    - s_end_ALDecalVolumeOptions: 0
     - s_end_ALSpectrumMotion: 0
     - s_end_ALVertexGlitching: 0
     - s_end_ALVertexHeight: 0
@@ -3287,6 +3297,11 @@ Material:
     - s_end_outline_al_color: 0
     - s_end_vertexRounding: 0
     - s_start_ALAlpha: 0
+    - s_start_ALDecalAudioModsOptions: 1
+    - s_start_ALDecalBandOptions: 1
+    - s_start_ALDecalColorsBlendingOptions: 1
+    - s_start_ALDecalShapeClipOptions: 1
+    - s_start_ALDecalVolumeOptions: 1
     - s_start_ALSpectrumMotion: 0
     - s_start_ALVertexGlitching: 0
     - s_start_ALVertexHeight: 0
