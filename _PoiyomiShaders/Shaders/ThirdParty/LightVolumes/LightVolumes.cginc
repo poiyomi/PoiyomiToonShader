@@ -124,55 +124,20 @@ void LV_SampleVolume(uint id, float3 localUVW, out float3 L0, out float3 L1r, ou
                 
 }
 
-// Forms specular based on roughness
-float LV_DistributionGGX(float NoH, float roughness) {
-    float f = (roughness - 1) * ((roughness + 1) * (NoH * NoH)) + 1;
-    return (roughness * roughness) / ((float) 3.141592653589793f * f * f);
-}
-
-// Faster normalize
-float3 LV_Normalize(float3 v) {
-    return rsqrt(dot(v, v)) * v;
-}
-
-// Calculates speculars for light volumes or any SH L1 data
-float3 LightVolumeSpecular(float3 albedo, float smoothness, float metallic, float3 worldNormal, float3 viewDir, float3 L0, float3 L1r, float3 L1g, float3 L1b) {
-    
-    float3 specColor = max(float3(dot(reflect(-L1r, worldNormal), viewDir), dot(reflect(-L1g, worldNormal), viewDir), dot(reflect(-L1b, worldNormal), viewDir)), 0);
-    
-    float3 rDir = LV_Normalize(LV_Normalize(L1r) + viewDir);
-    float3 gDir = LV_Normalize(LV_Normalize(L1g) + viewDir);
-    float3 bDir = LV_Normalize(LV_Normalize(L1b) + viewDir);
-    
-    float rNh = saturate(dot(worldNormal, rDir));
-    float gNh = saturate(dot(worldNormal, gDir));
-    float bNh = saturate(dot(worldNormal, bDir));
-    
-    float roughness = 1 - smoothness;
-    float roughExp = roughness * roughness;
-    
-    float rSpec = LV_DistributionGGX(rNh, roughExp);
-    float gSpec = LV_DistributionGGX(gNh, roughExp);
-    float bSpec = LV_DistributionGGX(bNh, roughExp);
-    
-    return max((rSpec + gSpec + bSpec) * (specColor + L0) * lerp(0.04f, albedo, metallic), 0.0) / 3;
-    
-}
-
-// Calculates speculars for light volumes or any SH L1 data, but simplified, with only one dominant direction
-float3 LightVolumeSpecularDominant(float3 albedo, float smoothness, float metallic, float3 worldNormal, float3 viewDir, float3 L0, float3 L1r, float3 L1g, float3 L1b) {
-
-    float3 dominantDir = L1r + L1g + L1b;
-    float3 dir = LV_Normalize(LV_Normalize(dominantDir) + viewDir);
-    float nh = saturate(dot(worldNormal, dir));
-    
-    float roughness = 1 - smoothness;
-    float roughExp = roughness * roughness;
-    
-    float spec = LV_DistributionGGX(nh, roughExp);
-    
-    return max(spec * L0 * lerp(0.04f, albedo, metallic), 0.0);
-    
+// Calculates speculars based on SH components
+float3 LightVolumeSpecular(float3 albedo, float smoothness, float metallic, float3 worldNormal, float3 worldPosition, float3 L0, float3 L1r, float3 L1g, float3 L1b) {
+    float3 invLightLength = rsqrt(float3(dot(L1r, L1r), dot(L1g, L1g), dot(L1b, L1b)));
+    float3 worldDir = normalize(_WorldSpaceCameraPos.xyz - worldPosition);
+    float fresnel = 1 - saturate(dot(worldNormal, worldDir));
+    float3 specColor = max(float3(dot(reflect(-L1r * invLightLength.x, worldNormal), worldDir), dot(reflect(-L1g * invLightLength.y, worldNormal), worldDir), dot(reflect(-L1b * invLightLength.z, worldNormal), worldDir)), 0);
+    float smooth2 = smoothness * smoothness;
+    float smoothExp = smooth2 * smooth2 * smoothness;
+    float3 specMask = pow(max(specColor.x, max(specColor.y, specColor.z)), lerp(1, 200, smoothExp));
+    float3 specs = ((1 / (invLightLength * 0.003f)) * specColor + L0) * specMask;
+    float fresnel2 = fresnel * fresnel;
+    float fresnelExp = fresnel2 * fresnel2 * fresnel;
+    float3 f0 = lerp(0.04f, albedo, metallic);
+    return lerp(specs * 0.003f, specs, smoothExp) * ((1 - f0) * fresnelExp + f0);
 }
 
 // Calculate Light Volume Color based on all SH components provided and the world normal
@@ -212,11 +177,11 @@ void LightVolumeSH(float3 worldPos, out float3 L0, out float3 L1r, out float3 L1
     
     // Iterating through all light volumes with simplified algorithm requiring Light Volumes to be sorted by weight in descending order
     [loop]
-    for (uint id = 0; id < (uint) _UdonLightVolumeCount; id++) {
+    for (uint id = 0; id < _UdonLightVolumeCount; id++) {
         localUVW = LV_LocalFromVolume(id, worldPos);
         if (LV_PointLocalAABB(localUVW)) { // Intersection test
-            if (id < (uint) _UdonLightVolumeAdditiveCount) { // Sampling additive volumes
-                if (addVolumesCount < (uint) _UdonLightVolumeAdditiveMaxOverdraw) {
+            if (id < _UdonLightVolumeAdditiveCount) { // Sampling additive volumes
+                if (addVolumesCount < _UdonLightVolumeAdditiveMaxOverdraw) {
                     LV_SampleVolume(id, localUVW, L0_, L1r_, L1g_, L1b_);
                     L0 += L0_;
                     L1r += L1r_;
@@ -299,7 +264,6 @@ void LightVolumeSH(float3 worldPos, out float3 L0, out float3 L1r, out float3 L1
 
 }
 
-// Calculates SH components based on the world position but for additive volumes only
 void LightVolumeAdditiveSH(float3 worldPos, out float3 L0, out float3 L1r, out float3 L1g, out float3 L1b) {
 
     // Initializing output variables
@@ -317,7 +281,7 @@ void LightVolumeAdditiveSH(float3 worldPos, out float3 L0, out float3 L1r, out f
     
     // Iterating through all light volumes with simplified algorithm requiring Light Volumes to be sorted by weight in descending order
     [loop]
-    for (uint id = 0; id < (uint) _UdonLightVolumeAdditiveCount && addVolumesCount < (uint) _UdonLightVolumeAdditiveMaxOverdraw; id++) {
+    for (uint id = 0; id < _UdonLightVolumeAdditiveCount && addVolumesCount < _UdonLightVolumeAdditiveMaxOverdraw; id++) {
         localUVW = LV_LocalFromVolume(id, worldPos);
         //Intersection test
         if (LV_PointLocalAABB(localUVW)) {

@@ -2,7 +2,7 @@ Shader ".poiyomi/Poiyomi Toon"
 {
 	Properties
 	{
-		[HideInInspector] shader_master_label ("<color=#E75898ff>Poiyomi 9.2.36</color>", Float) = 0
+		[HideInInspector] shader_master_label ("<color=#E75898ff>Poiyomi 9.2.37</color>", Float) = 0
 		[HideInInspector] shader_is_using_thry_editor ("", Float) = 0
 		[HideInInspector] shader_locale ("0db0b86376c3dca4b9a6828ef8615fe0", Float) = 0
 		[HideInInspector] footer_youtube ("{texture:{name:icon-youtube,height:16},action:{type:URL,data:https://www.youtube.com/poiyomi},hover:YOUTUBE}", Float) = 0
@@ -4686,12 +4686,7 @@ Shader ".poiyomi/Poiyomi Toon"
 			#include "AutoLight.cginc"
 			#include "UnityLightingCommon.cginc"
 			#include "UnityPBSLighting.cginc"
-			#ifdef POI_PASS_META
-			#include "UnityMetaPass.cginc"
-			#endif
-			#ifdef POI_PASS_BASE
-			#include "../../ThirdParty/LightVolumes/LightVolumes.cginc"
-			#endif
+			
 			#pragma vertex vert
 			
 			#pragma fragment frag
@@ -8962,6 +8957,7 @@ Shader ".poiyomi/Poiyomi Toon"
 			
 			ENDCG
 		}
+		
 		//endex
 		
 		Pass
@@ -9265,12 +9261,9 @@ Shader ".poiyomi/Poiyomi Toon"
 			#include "AutoLight.cginc"
 			#include "UnityLightingCommon.cginc"
 			#include "UnityPBSLighting.cginc"
-			#ifdef POI_PASS_META
-			#include "UnityMetaPass.cginc"
-			#endif
-			#ifdef POI_PASS_BASE
+			
 			#include "../../ThirdParty/LightVolumes/LightVolumes.cginc"
-			#endif
+			
 			#pragma vertex vert
 			
 			#pragma fragment frag
@@ -19572,7 +19565,7 @@ Shader ".poiyomi/Poiyomi Toon"
 				poiLight.rampedLightMap = poiLight.nDotLSaturated;
 				poiLight.finalLighting = max(POI_BRDF_PBS(1, 0, 0, 0, poiMesh.normals[1], poiCam.viewDir, light, indirectLight).xyz, _LightingMinLightBrightness);
 				
-				#ifdef POI_PASS_BASE
+				#ifdef UNITY_PASS_FORWARDBASE
 				if(_UdonLightVolumeEnabled)
 				{
 					float3 L0 = 0;
@@ -22098,14 +22091,13 @@ Shader ".poiyomi/Poiyomi Toon"
 					emissionTex = UNITY_SAMPLE_TEX2D_SAMPLER(_EmissionMap, _MainTex, ((.5 + poiLight.nDotV * .5) * _EmissionMap_ST.xy) + _Time.x * _EmissionCenterOutSpeed);
 				}
 				emissionColor0 = emissionTex.rgb * lerp(1, poiFragData.baseColor, mixBaseColor).rgb * poiThemeColor(poiMods, _EmissionColor.rgb, _EmissionColorThemeIndex);
-				emissionAlpha = emissionTex.a * _EmissionColor.a;
+				emissionAlpha = emissionTex.a;
 				#else
 				emissionColor0 = lerp(1, poiFragData.baseColor, mixBaseColor).rgb * poiThemeColor(poiMods, _EmissionColor.rgb, _EmissionColorThemeIndex);
-				emissionAlpha = _EmissionColor.a;
 				#endif
 				
 				float3 inverseLighting = saturate((1.0 - poiLight.directColor) * sqrt(poiLight.directColor));
-				emissionColor0 *= lerp(emissionColor0.rgb, emissionColor0.rgb * inverseLighting, _EmissionFluorescence);
+				emissionColor0 = lerp(emissionColor0.rgb, emissionColor0.rgb * inverseLighting, _EmissionFluorescence);
 				
 				emissionStrength0 *= emissionAlpha;
 				
@@ -22277,14 +22269,13 @@ Shader ".poiyomi/Poiyomi Toon"
 					emissionTex__1 = UNITY_SAMPLE_TEX2D_SAMPLER(_EmissionMap1, _MainTex, ((.5 + poiLight.nDotV * .5) * _EmissionMap1_ST.xy) + _Time.x * _EmissionCenterOutSpeed1);
 				}
 				emissionColor0__1 = emissionTex__1.rgb * lerp(1, poiFragData.baseColor, mixBaseColor__1).rgb * poiThemeColor(poiMods, _EmissionColor1.rgb, _EmissionColor1ThemeIndex);
-				emissionAlpha__1 = emissionTex__1.a * _EmissionColor1.a;
+				emissionAlpha__1 = emissionTex__1.a;
 				#else
 				emissionColor0__1 = lerp(1, poiFragData.baseColor, mixBaseColor__1).rgb * poiThemeColor(poiMods, _EmissionColor1.rgb, _EmissionColor1ThemeIndex);
-				emissionAlpha__1 = _EmissionColor1.a;
 				#endif
 				
 				float3 inverseLighting__1 = saturate((1.0 - poiLight.directColor) * sqrt(poiLight.directColor));
-				emissionColor0__1 *= lerp(emissionColor0__1.rgb, emissionColor0__1.rgb * inverseLighting__1, _EmissionFluorescence1);
+				emissionColor0__1 = lerp(emissionColor0__1.rgb, emissionColor0__1.rgb * inverseLighting__1, _EmissionFluorescence1);
 				
 				emissionStrength0__1 *= emissionAlpha__1;
 				
@@ -22456,14 +22447,13 @@ Shader ".poiyomi/Poiyomi Toon"
 					emissionTex__2 = UNITY_SAMPLE_TEX2D_SAMPLER(_EmissionMap2, _MainTex, ((.5 + poiLight.nDotV * .5) * _EmissionMap2_ST.xy) + _Time.x * _EmissionCenterOutSpeed2);
 				}
 				emissionColor0__2 = emissionTex__2.rgb * lerp(1, poiFragData.baseColor, mixBaseColor__2).rgb * poiThemeColor(poiMods, _EmissionColor2.rgb, _EmissionColor2ThemeIndex);
-				emissionAlpha__2 = emissionTex__2.a * _EmissionColor2.a;
+				emissionAlpha__2 = emissionTex__2.a;
 				#else
 				emissionColor0__2 = lerp(1, poiFragData.baseColor, mixBaseColor__2).rgb * poiThemeColor(poiMods, _EmissionColor2.rgb, _EmissionColor2ThemeIndex);
-				emissionAlpha__2 = _EmissionColor2.a;
 				#endif
 				
 				float3 inverseLighting__2 = saturate((1.0 - poiLight.directColor) * sqrt(poiLight.directColor));
-				emissionColor0__2 *= lerp(emissionColor0__2.rgb, emissionColor0__2.rgb * inverseLighting__2, _EmissionFluorescence2);
+				emissionColor0__2 = lerp(emissionColor0__2.rgb, emissionColor0__2.rgb * inverseLighting__2, _EmissionFluorescence2);
 				
 				emissionStrength0__2 *= emissionAlpha__2;
 				
@@ -22635,14 +22625,13 @@ Shader ".poiyomi/Poiyomi Toon"
 					emissionTex__3 = UNITY_SAMPLE_TEX2D_SAMPLER(_EmissionMap3, _MainTex, ((.5 + poiLight.nDotV * .5) * _EmissionMap3_ST.xy) + _Time.x * _EmissionCenterOutSpeed3);
 				}
 				emissionColor0__3 = emissionTex__3.rgb * lerp(1, poiFragData.baseColor, mixBaseColor__3).rgb * poiThemeColor(poiMods, _EmissionColor3.rgb, _EmissionColor3ThemeIndex);
-				emissionAlpha__3 = emissionTex__3.a * _EmissionColor3.a;
+				emissionAlpha__3 = emissionTex__3.a;
 				#else
 				emissionColor0__3 = lerp(1, poiFragData.baseColor, mixBaseColor__3).rgb * poiThemeColor(poiMods, _EmissionColor3.rgb, _EmissionColor3ThemeIndex);
-				emissionAlpha__3 = _EmissionColor3.a;
 				#endif
 				
 				float3 inverseLighting__3 = saturate((1.0 - poiLight.directColor) * sqrt(poiLight.directColor));
-				emissionColor0__3 *= lerp(emissionColor0__3.rgb, emissionColor0__3.rgb * inverseLighting__3, _EmissionFluorescence3);
+				emissionColor0__3 = lerp(emissionColor0__3.rgb, emissionColor0__3.rgb * inverseLighting__3, _EmissionFluorescence3);
 				
 				emissionStrength0__3 *= emissionAlpha__3;
 				
@@ -26034,7 +26023,7 @@ Shader ".poiyomi/Poiyomi Toon"
 				poiLight.finalLightAdd = 0;
 				
 				float3 L0, L1r, L1g, L1b = 0;
-				#ifdef POI_PASS_BASE
+				#ifdef UNITY_PASS_FORWARDBASE
 				if(_UdonLightVolumeEnabled)
 				{
 					LightVolumeSH(poiMesh.worldPos, L0, L1r, L1g, L1b);
@@ -26086,7 +26075,7 @@ Shader ".poiyomi/Poiyomi Toon"
 					poiLight.shadowMask = maskBlend(poiLight.shadowMask, poiMods.globalMask[_LightDataShadowMaskGlobalMaskR - 1], _LightDataShadowMaskGlobalMaskBlendTypeR);
 				}
 				
-				#ifdef POI_PASS_BASE
+				#ifdef UNITY_PASS_FORWARDBASE
 				
 				bool lightExists = false;
 				if (any(_LightColor0.rgb >= 0.002))
@@ -26268,7 +26257,7 @@ Shader ".poiyomi/Poiyomi Toon"
 					poiLight.direction = float3(.4, 1, .4);
 				}
 				
-				#ifdef POI_PASS_BASE
+				#ifdef UNITY_PASS_FORWARDBASE
 				if(_UdonLightVolumeEnabled)
 				{
 					poiLight.direction = L1r + L1g + L1b;
@@ -27528,12 +27517,7 @@ Shader ".poiyomi/Poiyomi Toon"
 			#include "AutoLight.cginc"
 			#include "UnityLightingCommon.cginc"
 			#include "UnityPBSLighting.cginc"
-			#ifdef POI_PASS_META
-			#include "UnityMetaPass.cginc"
-			#endif
-			#ifdef POI_PASS_BASE
-			#include "../../ThirdParty/LightVolumes/LightVolumes.cginc"
-			#endif
+			
 			#pragma vertex vert
 			
 			#pragma fragment frag
@@ -36193,7 +36177,7 @@ Shader ".poiyomi/Poiyomi Toon"
 				poiLight.rampedLightMap = poiLight.nDotLSaturated;
 				poiLight.finalLighting = max(POI_BRDF_PBS(1, 0, 0, 0, poiMesh.normals[1], poiCam.viewDir, light, indirectLight).xyz, _LightingMinLightBrightness);
 				
-				#ifdef POI_PASS_BASE
+				#ifdef UNITY_PASS_FORWARDBASE
 				if(_UdonLightVolumeEnabled)
 				{
 					float3 L0 = 0;
@@ -41841,7 +41825,7 @@ Shader ".poiyomi/Poiyomi Toon"
 				poiLight.finalLightAdd = 0;
 				
 				float3 L0, L1r, L1g, L1b = 0;
-				#ifdef POI_PASS_BASE
+				#ifdef UNITY_PASS_FORWARDBASE
 				if(_UdonLightVolumeEnabled)
 				{
 					LightVolumeSH(poiMesh.worldPos, L0, L1r, L1g, L1b);
@@ -41893,7 +41877,7 @@ Shader ".poiyomi/Poiyomi Toon"
 					poiLight.shadowMask = maskBlend(poiLight.shadowMask, poiMods.globalMask[_LightDataShadowMaskGlobalMaskR - 1], _LightDataShadowMaskGlobalMaskBlendTypeR);
 				}
 				
-				#ifdef POI_PASS_BASE
+				#ifdef UNITY_PASS_FORWARDBASE
 				
 				bool lightExists = false;
 				if (any(_LightColor0.rgb >= 0.002))
@@ -42075,7 +42059,7 @@ Shader ".poiyomi/Poiyomi Toon"
 					poiLight.direction = float3(.4, 1, .4);
 				}
 				
-				#ifdef POI_PASS_BASE
+				#ifdef UNITY_PASS_FORWARDBASE
 				if(_UdonLightVolumeEnabled)
 				{
 					poiLight.direction = L1r + L1g + L1b;
@@ -43219,12 +43203,9 @@ Shader ".poiyomi/Poiyomi Toon"
 			#include "AutoLight.cginc"
 			#include "UnityLightingCommon.cginc"
 			#include "UnityPBSLighting.cginc"
-			#ifdef POI_PASS_META
-			#include "UnityMetaPass.cginc"
-			#endif
-			#ifdef POI_PASS_BASE
+			
 			#include "../../ThirdParty/LightVolumes/LightVolumes.cginc"
-			#endif
+			
 			#pragma vertex vert
 			
 			#pragma fragment frag
@@ -49558,7 +49539,7 @@ Shader ".poiyomi/Poiyomi Toon"
 				poiLight.rampedLightMap = poiLight.nDotLSaturated;
 				poiLight.finalLighting = max(POI_BRDF_PBS(1, 0, 0, 0, poiMesh.normals[1], poiCam.viewDir, light, indirectLight).xyz, _LightingMinLightBrightness);
 				
-				#ifdef POI_PASS_BASE
+				#ifdef UNITY_PASS_FORWARDBASE
 				if(_UdonLightVolumeEnabled)
 				{
 					float3 L0 = 0;
@@ -51172,7 +51153,7 @@ Shader ".poiyomi/Poiyomi Toon"
 				poiLight.finalLightAdd = 0;
 				
 				float3 L0, L1r, L1g, L1b = 0;
-				#ifdef POI_PASS_BASE
+				#ifdef UNITY_PASS_FORWARDBASE
 				if(_UdonLightVolumeEnabled)
 				{
 					LightVolumeSH(poiMesh.worldPos, L0, L1r, L1g, L1b);
@@ -51224,7 +51205,7 @@ Shader ".poiyomi/Poiyomi Toon"
 					poiLight.shadowMask = maskBlend(poiLight.shadowMask, poiMods.globalMask[_LightDataShadowMaskGlobalMaskR - 1], _LightDataShadowMaskGlobalMaskBlendTypeR);
 				}
 				
-				#ifdef POI_PASS_BASE
+				#ifdef UNITY_PASS_FORWARDBASE
 				
 				bool lightExists = false;
 				if (any(_LightColor0.rgb >= 0.002))
@@ -51406,7 +51387,7 @@ Shader ".poiyomi/Poiyomi Toon"
 					poiLight.direction = float3(.4, 1, .4);
 				}
 				
-				#ifdef POI_PASS_BASE
+				#ifdef UNITY_PASS_FORWARDBASE
 				if(_UdonLightVolumeEnabled)
 				{
 					poiLight.direction = L1r + L1g + L1b;
@@ -51964,6 +51945,7 @@ Shader ".poiyomi/Poiyomi Toon"
 			
 			ENDCG
 		}
+		
 		//endex
 		
 		Pass
@@ -52264,12 +52246,7 @@ Shader ".poiyomi/Poiyomi Toon"
 			#include "AutoLight.cginc"
 			#include "UnityLightingCommon.cginc"
 			#include "UnityPBSLighting.cginc"
-			#ifdef POI_PASS_META
-			#include "UnityMetaPass.cginc"
-			#endif
-			#ifdef POI_PASS_BASE
-			#include "../../ThirdParty/LightVolumes/LightVolumes.cginc"
-			#endif
+			
 			#pragma vertex vert
 			
 			#pragma fragment frag
