@@ -2,7 +2,7 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 {
 	Properties
 	{
-		[HideInInspector] shader_master_label ("<color=#E75898ff>Poiyomi 9.2.35</color>", Float) = 0
+		[HideInInspector] shader_master_label ("<color=#E75898ff>Poiyomi 9.2.36</color>", Float) = 0
 		[HideInInspector] shader_is_using_thry_editor ("", Float) = 0
 		[HideInInspector] shader_locale ("0db0b86376c3dca4b9a6828ef8615fe0", Float) = 0
 		[HideInInspector] footer_youtube ("{texture:{name:icon-youtube,height:16},action:{type:URL,data:https://www.youtube.com/poiyomi},hover:YOUTUBE}", Float) = 0
@@ -4463,12 +4463,12 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 			#pragma shader_feature_local POI_GLOBALMASK_TEXTURES
 			//endex
 			
-			//ifex _EnableUDIMDiscardOptions==0
-			#pragma shader_feature_local POI_UDIMDISCARD
-			//endex
-			
 			//ifex _EnableDistortion==0
 			#pragma shader_feature USER_LUT
+			//endex
+			
+			//ifex _EnableUDIMDiscardOptions==0
+			#pragma shader_feature_local POI_UDIMDISCARD
 			//endex
 			
 			//ifex _PoiParallax==0
@@ -4690,7 +4690,7 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 			#include "UnityMetaPass.cginc"
 			#endif
 			#ifdef POI_PASS_BASE
-			#include "Assets/_PoiyomiShaders/Shaders/ThirdParty/LightVolumes/LightVolumes.cginc"
+			#include "../../ThirdParty/LightVolumes/LightVolumes.cginc"
 			#endif
 			#pragma vertex vert
 			
@@ -9045,12 +9045,12 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 			#pragma shader_feature_local POI_GLOBALMASK_TEXTURES
 			//endex
 			
-			//ifex _EnableUDIMDiscardOptions==0
-			#pragma shader_feature_local POI_UDIMDISCARD
-			//endex
-			
 			//ifex _EnableDistortion==0
 			#pragma shader_feature USER_LUT
+			//endex
+			
+			//ifex _EnableUDIMDiscardOptions==0
+			#pragma shader_feature_local POI_UDIMDISCARD
 			//endex
 			
 			//ifex _PoiParallax==0
@@ -9274,7 +9274,7 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 			#include "UnityMetaPass.cginc"
 			#endif
 			#ifdef POI_PASS_BASE
-			#include "Assets/_PoiyomiShaders/Shaders/ThirdParty/LightVolumes/LightVolumes.cginc"
+			#include "../../ThirdParty/LightVolumes/LightVolumes.cginc"
 			#endif
 			#pragma vertex vert
 			
@@ -10156,49 +10156,6 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 			int _GlobalMaskVertexColorAlphaBlendType;
 			//endex
 			
-			//ifex _EnableUDIMDiscardOptions==0
-			#ifdef POI_UDIMDISCARD
-			float _UDIMDiscardMode;
-			float _UDIMDiscardUV;
-			float _UDIMDiscardRow3_0;
-			float _UDIMDiscardRow3_1;
-			float _UDIMDiscardRow3_2;
-			float _UDIMDiscardRow3_3;
-			float _UDIMDiscardRow2_0;
-			float _UDIMDiscardRow2_1;
-			float _UDIMDiscardRow2_2;
-			float _UDIMDiscardRow2_3;
-			float _UDIMDiscardRow1_0;
-			float _UDIMDiscardRow1_1;
-			float _UDIMDiscardRow1_2;
-			float _UDIMDiscardRow1_3;
-			float _UDIMDiscardRow0_0;
-			float _UDIMDiscardRow0_1;
-			float _UDIMDiscardRow0_2;
-			float _UDIMDiscardRow0_3;
-			
-			float _EnableUDIMFaceDiscardOptions;
-			float _UDIMFaceDiscardFace;
-			float _UDIMFaceDiscardUV;
-			float _UDIMFaceDiscardRow3_0;
-			float _UDIMFaceDiscardRow3_1;
-			float _UDIMFaceDiscardRow3_2;
-			float _UDIMFaceDiscardRow3_3;
-			float _UDIMFaceDiscardRow2_0;
-			float _UDIMFaceDiscardRow2_1;
-			float _UDIMFaceDiscardRow2_2;
-			float _UDIMFaceDiscardRow2_3;
-			float _UDIMFaceDiscardRow1_0;
-			float _UDIMFaceDiscardRow1_1;
-			float _UDIMFaceDiscardRow1_2;
-			float _UDIMFaceDiscardRow1_3;
-			float _UDIMFaceDiscardRow0_0;
-			float _UDIMFaceDiscardRow0_1;
-			float _UDIMFaceDiscardRow0_2;
-			float _UDIMFaceDiscardRow0_3;
-			#endif
-			//endex
-			
 			//ifex _EnableDistortion==0
 			#ifdef USER_LUT
 			#if defined(PROP_DISTORTIONFLOWTEXTURE) || !defined(OPTIMIZER_ENABLED)
@@ -10248,6 +10205,49 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 			float _UVModWorldPos1;
 			float _UVModLocalPos0;
 			float _UVModLocalPos1;
+			
+			//ifex _EnableUDIMDiscardOptions==0
+			#ifdef POI_UDIMDISCARD
+			float _UDIMDiscardMode;
+			float _UDIMDiscardUV;
+			float _UDIMDiscardRow3_0;
+			float _UDIMDiscardRow3_1;
+			float _UDIMDiscardRow3_2;
+			float _UDIMDiscardRow3_3;
+			float _UDIMDiscardRow2_0;
+			float _UDIMDiscardRow2_1;
+			float _UDIMDiscardRow2_2;
+			float _UDIMDiscardRow2_3;
+			float _UDIMDiscardRow1_0;
+			float _UDIMDiscardRow1_1;
+			float _UDIMDiscardRow1_2;
+			float _UDIMDiscardRow1_3;
+			float _UDIMDiscardRow0_0;
+			float _UDIMDiscardRow0_1;
+			float _UDIMDiscardRow0_2;
+			float _UDIMDiscardRow0_3;
+			
+			float _EnableUDIMFaceDiscardOptions;
+			float _UDIMFaceDiscardFace;
+			float _UDIMFaceDiscardUV;
+			float _UDIMFaceDiscardRow3_0;
+			float _UDIMFaceDiscardRow3_1;
+			float _UDIMFaceDiscardRow3_2;
+			float _UDIMFaceDiscardRow3_3;
+			float _UDIMFaceDiscardRow2_0;
+			float _UDIMFaceDiscardRow2_1;
+			float _UDIMFaceDiscardRow2_2;
+			float _UDIMFaceDiscardRow2_3;
+			float _UDIMFaceDiscardRow1_0;
+			float _UDIMFaceDiscardRow1_1;
+			float _UDIMFaceDiscardRow1_2;
+			float _UDIMFaceDiscardRow1_3;
+			float _UDIMFaceDiscardRow0_0;
+			float _UDIMFaceDiscardRow0_1;
+			float _UDIMFaceDiscardRow0_2;
+			float _UDIMFaceDiscardRow0_3;
+			#endif
+			//endex
 			
 			//ifex _EnableAudioLink==0
 			#ifdef POI_AUDIOLINK
@@ -14637,47 +14637,6 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 			}
 			//endex
 			
-			//ifex _EnableUDIMDiscardOptions==0
-			#ifdef POI_UDIMDISCARD
-			void applyUDIMDiscard(in VertexOut i, in uint facing)
-			{
-				// UDIM Discaarad
-				if(_UDIMDiscardMode == 1) // Don't run if in vertex mode
-				{
-					float2 udim = floor(vertexUV(i, _UDIMDiscardUV));
-					
-					float4 UDIMDiscardRows[4];
-					UDIMDiscardRows[0] = float4(_UDIMDiscardRow0_0, _UDIMDiscardRow0_1, _UDIMDiscardRow0_2, _UDIMDiscardRow0_3);
-					UDIMDiscardRows[1] = float4(_UDIMDiscardRow1_0, _UDIMDiscardRow1_1, _UDIMDiscardRow1_2, _UDIMDiscardRow1_3);
-					UDIMDiscardRows[2] = float4(_UDIMDiscardRow2_0, _UDIMDiscardRow2_1, _UDIMDiscardRow2_2, _UDIMDiscardRow2_3);
-					UDIMDiscardRows[3] = float4(_UDIMDiscardRow3_0, _UDIMDiscardRow3_1, _UDIMDiscardRow3_2, _UDIMDiscardRow3_3);
-					
-					float shouldDiscard = shouldPerformUDIMDiscard(udim, UDIMDiscardRows);
-					
-					clip(shouldDiscard); // Clip if discarded
-				}
-				
-				// UDIM Face Discard
-				if(_EnableUDIMFaceDiscardOptions && saturate(facing) == _UDIMFaceDiscardFace) // Run if Face Discard enabled & this is the face to discard
-				{
-					float2 faceUdim = floor(vertexUV(i, _UDIMFaceDiscardUV));
-					
-					float4 UDIMFaceDiscardRows[4];
-					UDIMFaceDiscardRows[0] = float4(_UDIMFaceDiscardRow0_0, _UDIMFaceDiscardRow0_1, _UDIMFaceDiscardRow0_2, _UDIMFaceDiscardRow0_3);
-					UDIMFaceDiscardRows[1] = float4(_UDIMFaceDiscardRow1_0, _UDIMFaceDiscardRow1_1, _UDIMFaceDiscardRow1_2, _UDIMFaceDiscardRow1_3);
-					UDIMFaceDiscardRows[2] = float4(_UDIMFaceDiscardRow2_0, _UDIMFaceDiscardRow2_1, _UDIMFaceDiscardRow2_2, _UDIMFaceDiscardRow2_3);
-					UDIMFaceDiscardRows[3] = float4(_UDIMFaceDiscardRow3_0, _UDIMFaceDiscardRow3_1, _UDIMFaceDiscardRow3_2, _UDIMFaceDiscardRow3_3);
-					
-					float shouldDiscard = shouldPerformUDIMDiscard(faceUdim, UDIMFaceDiscardRows);
-					
-					clip(shouldDiscard); // Clip if discarded
-				}
-				
-				return;
-			}
-			#endif
-			//endex
-			
 			float2 calculatePolarCoordinate(in PoiMesh poiMesh)
 			{
 				float2 delta = poiMesh.uv[_PolarUV] - _PolarCenter;
@@ -14781,6 +14740,47 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				flowVector *= distortionStrength;
 				flowVector1 *= distortionStrength1;
 				return poiMesh.uv[_DistortionUvToDistort] + ((flowVector.xy + flowVector1.xy) / 2) * distortionMask;
+			}
+			#endif
+			//endex
+			
+			//ifex _EnableUDIMDiscardOptions==0
+			#ifdef POI_UDIMDISCARD
+			void applyUDIMDiscard(in VertexOut i, in uint facing)
+			{
+				// UDIM Discaarad
+				if(_UDIMDiscardMode == 1) // Don't run if in vertex mode
+				{
+					float2 udim = floor(vertexUV(i, _UDIMDiscardUV));
+					
+					float4 UDIMDiscardRows[4];
+					UDIMDiscardRows[0] = float4(_UDIMDiscardRow0_0, _UDIMDiscardRow0_1, _UDIMDiscardRow0_2, _UDIMDiscardRow0_3);
+					UDIMDiscardRows[1] = float4(_UDIMDiscardRow1_0, _UDIMDiscardRow1_1, _UDIMDiscardRow1_2, _UDIMDiscardRow1_3);
+					UDIMDiscardRows[2] = float4(_UDIMDiscardRow2_0, _UDIMDiscardRow2_1, _UDIMDiscardRow2_2, _UDIMDiscardRow2_3);
+					UDIMDiscardRows[3] = float4(_UDIMDiscardRow3_0, _UDIMDiscardRow3_1, _UDIMDiscardRow3_2, _UDIMDiscardRow3_3);
+					
+					float shouldDiscard = shouldPerformUDIMDiscard(udim, UDIMDiscardRows);
+					
+					clip(shouldDiscard); // Clip if discarded
+				}
+				
+				// UDIM Face Discard
+				if(_EnableUDIMFaceDiscardOptions && saturate(facing) == _UDIMFaceDiscardFace) // Run if Face Discard enabled & this is the face to discard
+				{
+					float2 faceUdim = floor(vertexUV(i, _UDIMFaceDiscardUV));
+					
+					float4 UDIMFaceDiscardRows[4];
+					UDIMFaceDiscardRows[0] = float4(_UDIMFaceDiscardRow0_0, _UDIMFaceDiscardRow0_1, _UDIMFaceDiscardRow0_2, _UDIMFaceDiscardRow0_3);
+					UDIMFaceDiscardRows[1] = float4(_UDIMFaceDiscardRow1_0, _UDIMFaceDiscardRow1_1, _UDIMFaceDiscardRow1_2, _UDIMFaceDiscardRow1_3);
+					UDIMFaceDiscardRows[2] = float4(_UDIMFaceDiscardRow2_0, _UDIMFaceDiscardRow2_1, _UDIMFaceDiscardRow2_2, _UDIMFaceDiscardRow2_3);
+					UDIMFaceDiscardRows[3] = float4(_UDIMFaceDiscardRow3_0, _UDIMFaceDiscardRow3_1, _UDIMFaceDiscardRow3_2, _UDIMFaceDiscardRow3_3);
+					
+					float shouldDiscard = shouldPerformUDIMDiscard(faceUdim, UDIMFaceDiscardRows);
+					
+					clip(shouldDiscard); // Clip if discarded
+				}
+				
+				return;
 			}
 			#endif
 			//endex
@@ -18093,12 +18093,12 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 			#pragma shader_feature_local POI_GLOBALMASK_TEXTURES
 			//endex
 			
-			//ifex _EnableUDIMDiscardOptions==0
-			#pragma shader_feature_local POI_UDIMDISCARD
-			//endex
-			
 			//ifex _EnableDistortion==0
 			#pragma shader_feature USER_LUT
+			//endex
+			
+			//ifex _EnableUDIMDiscardOptions==0
+			#pragma shader_feature_local POI_UDIMDISCARD
 			//endex
 			
 			//ifex _PoiParallax==0
@@ -18322,7 +18322,7 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 			#include "UnityMetaPass.cginc"
 			#endif
 			#ifdef POI_PASS_BASE
-			#include "Assets/_PoiyomiShaders/Shaders/ThirdParty/LightVolumes/LightVolumes.cginc"
+			#include "../../ThirdParty/LightVolumes/LightVolumes.cginc"
 			#endif
 			#pragma vertex vert
 			
@@ -19140,49 +19140,6 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 			int _GlobalMaskVertexColorAlphaBlendType;
 			//endex
 			
-			//ifex _EnableUDIMDiscardOptions==0
-			#ifdef POI_UDIMDISCARD
-			float _UDIMDiscardMode;
-			float _UDIMDiscardUV;
-			float _UDIMDiscardRow3_0;
-			float _UDIMDiscardRow3_1;
-			float _UDIMDiscardRow3_2;
-			float _UDIMDiscardRow3_3;
-			float _UDIMDiscardRow2_0;
-			float _UDIMDiscardRow2_1;
-			float _UDIMDiscardRow2_2;
-			float _UDIMDiscardRow2_3;
-			float _UDIMDiscardRow1_0;
-			float _UDIMDiscardRow1_1;
-			float _UDIMDiscardRow1_2;
-			float _UDIMDiscardRow1_3;
-			float _UDIMDiscardRow0_0;
-			float _UDIMDiscardRow0_1;
-			float _UDIMDiscardRow0_2;
-			float _UDIMDiscardRow0_3;
-			
-			float _EnableUDIMFaceDiscardOptions;
-			float _UDIMFaceDiscardFace;
-			float _UDIMFaceDiscardUV;
-			float _UDIMFaceDiscardRow3_0;
-			float _UDIMFaceDiscardRow3_1;
-			float _UDIMFaceDiscardRow3_2;
-			float _UDIMFaceDiscardRow3_3;
-			float _UDIMFaceDiscardRow2_0;
-			float _UDIMFaceDiscardRow2_1;
-			float _UDIMFaceDiscardRow2_2;
-			float _UDIMFaceDiscardRow2_3;
-			float _UDIMFaceDiscardRow1_0;
-			float _UDIMFaceDiscardRow1_1;
-			float _UDIMFaceDiscardRow1_2;
-			float _UDIMFaceDiscardRow1_3;
-			float _UDIMFaceDiscardRow0_0;
-			float _UDIMFaceDiscardRow0_1;
-			float _UDIMFaceDiscardRow0_2;
-			float _UDIMFaceDiscardRow0_3;
-			#endif
-			//endex
-			
 			//ifex _EnableDistortion==0
 			#ifdef USER_LUT
 			#if defined(PROP_DISTORTIONFLOWTEXTURE) || !defined(OPTIMIZER_ENABLED)
@@ -19232,6 +19189,49 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 			float _UVModWorldPos1;
 			float _UVModLocalPos0;
 			float _UVModLocalPos1;
+			
+			//ifex _EnableUDIMDiscardOptions==0
+			#ifdef POI_UDIMDISCARD
+			float _UDIMDiscardMode;
+			float _UDIMDiscardUV;
+			float _UDIMDiscardRow3_0;
+			float _UDIMDiscardRow3_1;
+			float _UDIMDiscardRow3_2;
+			float _UDIMDiscardRow3_3;
+			float _UDIMDiscardRow2_0;
+			float _UDIMDiscardRow2_1;
+			float _UDIMDiscardRow2_2;
+			float _UDIMDiscardRow2_3;
+			float _UDIMDiscardRow1_0;
+			float _UDIMDiscardRow1_1;
+			float _UDIMDiscardRow1_2;
+			float _UDIMDiscardRow1_3;
+			float _UDIMDiscardRow0_0;
+			float _UDIMDiscardRow0_1;
+			float _UDIMDiscardRow0_2;
+			float _UDIMDiscardRow0_3;
+			
+			float _EnableUDIMFaceDiscardOptions;
+			float _UDIMFaceDiscardFace;
+			float _UDIMFaceDiscardUV;
+			float _UDIMFaceDiscardRow3_0;
+			float _UDIMFaceDiscardRow3_1;
+			float _UDIMFaceDiscardRow3_2;
+			float _UDIMFaceDiscardRow3_3;
+			float _UDIMFaceDiscardRow2_0;
+			float _UDIMFaceDiscardRow2_1;
+			float _UDIMFaceDiscardRow2_2;
+			float _UDIMFaceDiscardRow2_3;
+			float _UDIMFaceDiscardRow1_0;
+			float _UDIMFaceDiscardRow1_1;
+			float _UDIMFaceDiscardRow1_2;
+			float _UDIMFaceDiscardRow1_3;
+			float _UDIMFaceDiscardRow0_0;
+			float _UDIMFaceDiscardRow0_1;
+			float _UDIMFaceDiscardRow0_2;
+			float _UDIMFaceDiscardRow0_3;
+			#endif
+			//endex
 			
 			//ifex _PoiParallax==0
 			#ifdef POI_PARALLAX
@@ -25908,47 +25908,6 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 			}
 			//endex
 			
-			//ifex _EnableUDIMDiscardOptions==0
-			#ifdef POI_UDIMDISCARD
-			void applyUDIMDiscard(in VertexOut i, in uint facing)
-			{
-				// UDIM Discaarad
-				if(_UDIMDiscardMode == 1) // Don't run if in vertex mode
-				{
-					float2 udim = floor(vertexUV(i, _UDIMDiscardUV));
-					
-					float4 UDIMDiscardRows[4];
-					UDIMDiscardRows[0] = float4(_UDIMDiscardRow0_0, _UDIMDiscardRow0_1, _UDIMDiscardRow0_2, _UDIMDiscardRow0_3);
-					UDIMDiscardRows[1] = float4(_UDIMDiscardRow1_0, _UDIMDiscardRow1_1, _UDIMDiscardRow1_2, _UDIMDiscardRow1_3);
-					UDIMDiscardRows[2] = float4(_UDIMDiscardRow2_0, _UDIMDiscardRow2_1, _UDIMDiscardRow2_2, _UDIMDiscardRow2_3);
-					UDIMDiscardRows[3] = float4(_UDIMDiscardRow3_0, _UDIMDiscardRow3_1, _UDIMDiscardRow3_2, _UDIMDiscardRow3_3);
-					
-					float shouldDiscard = shouldPerformUDIMDiscard(udim, UDIMDiscardRows);
-					
-					clip(shouldDiscard); // Clip if discarded
-				}
-				
-				// UDIM Face Discard
-				if(_EnableUDIMFaceDiscardOptions && saturate(facing) == _UDIMFaceDiscardFace) // Run if Face Discard enabled & this is the face to discard
-				{
-					float2 faceUdim = floor(vertexUV(i, _UDIMFaceDiscardUV));
-					
-					float4 UDIMFaceDiscardRows[4];
-					UDIMFaceDiscardRows[0] = float4(_UDIMFaceDiscardRow0_0, _UDIMFaceDiscardRow0_1, _UDIMFaceDiscardRow0_2, _UDIMFaceDiscardRow0_3);
-					UDIMFaceDiscardRows[1] = float4(_UDIMFaceDiscardRow1_0, _UDIMFaceDiscardRow1_1, _UDIMFaceDiscardRow1_2, _UDIMFaceDiscardRow1_3);
-					UDIMFaceDiscardRows[2] = float4(_UDIMFaceDiscardRow2_0, _UDIMFaceDiscardRow2_1, _UDIMFaceDiscardRow2_2, _UDIMFaceDiscardRow2_3);
-					UDIMFaceDiscardRows[3] = float4(_UDIMFaceDiscardRow3_0, _UDIMFaceDiscardRow3_1, _UDIMFaceDiscardRow3_2, _UDIMFaceDiscardRow3_3);
-					
-					float shouldDiscard = shouldPerformUDIMDiscard(faceUdim, UDIMFaceDiscardRows);
-					
-					clip(shouldDiscard); // Clip if discarded
-				}
-				
-				return;
-			}
-			#endif
-			//endex
-			
 			float2 calculatePolarCoordinate(in PoiMesh poiMesh)
 			{
 				float2 delta = poiMesh.uv[_PolarUV] - _PolarCenter;
@@ -26052,6 +26011,47 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				flowVector *= distortionStrength;
 				flowVector1 *= distortionStrength1;
 				return poiMesh.uv[_DistortionUvToDistort] + ((flowVector.xy + flowVector1.xy) / 2) * distortionMask;
+			}
+			#endif
+			//endex
+			
+			//ifex _EnableUDIMDiscardOptions==0
+			#ifdef POI_UDIMDISCARD
+			void applyUDIMDiscard(in VertexOut i, in uint facing)
+			{
+				// UDIM Discaarad
+				if(_UDIMDiscardMode == 1) // Don't run if in vertex mode
+				{
+					float2 udim = floor(vertexUV(i, _UDIMDiscardUV));
+					
+					float4 UDIMDiscardRows[4];
+					UDIMDiscardRows[0] = float4(_UDIMDiscardRow0_0, _UDIMDiscardRow0_1, _UDIMDiscardRow0_2, _UDIMDiscardRow0_3);
+					UDIMDiscardRows[1] = float4(_UDIMDiscardRow1_0, _UDIMDiscardRow1_1, _UDIMDiscardRow1_2, _UDIMDiscardRow1_3);
+					UDIMDiscardRows[2] = float4(_UDIMDiscardRow2_0, _UDIMDiscardRow2_1, _UDIMDiscardRow2_2, _UDIMDiscardRow2_3);
+					UDIMDiscardRows[3] = float4(_UDIMDiscardRow3_0, _UDIMDiscardRow3_1, _UDIMDiscardRow3_2, _UDIMDiscardRow3_3);
+					
+					float shouldDiscard = shouldPerformUDIMDiscard(udim, UDIMDiscardRows);
+					
+					clip(shouldDiscard); // Clip if discarded
+				}
+				
+				// UDIM Face Discard
+				if(_EnableUDIMFaceDiscardOptions && saturate(facing) == _UDIMFaceDiscardFace) // Run if Face Discard enabled & this is the face to discard
+				{
+					float2 faceUdim = floor(vertexUV(i, _UDIMFaceDiscardUV));
+					
+					float4 UDIMFaceDiscardRows[4];
+					UDIMFaceDiscardRows[0] = float4(_UDIMFaceDiscardRow0_0, _UDIMFaceDiscardRow0_1, _UDIMFaceDiscardRow0_2, _UDIMFaceDiscardRow0_3);
+					UDIMFaceDiscardRows[1] = float4(_UDIMFaceDiscardRow1_0, _UDIMFaceDiscardRow1_1, _UDIMFaceDiscardRow1_2, _UDIMFaceDiscardRow1_3);
+					UDIMFaceDiscardRows[2] = float4(_UDIMFaceDiscardRow2_0, _UDIMFaceDiscardRow2_1, _UDIMFaceDiscardRow2_2, _UDIMFaceDiscardRow2_3);
+					UDIMFaceDiscardRows[3] = float4(_UDIMFaceDiscardRow3_0, _UDIMFaceDiscardRow3_1, _UDIMFaceDiscardRow3_2, _UDIMFaceDiscardRow3_3);
+					
+					float shouldDiscard = shouldPerformUDIMDiscard(faceUdim, UDIMFaceDiscardRows);
+					
+					clip(shouldDiscard); // Clip if discarded
+				}
+				
+				return;
 			}
 			#endif
 			//endex
@@ -36357,12 +36357,12 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 			#pragma shader_feature_local POI_GLOBALMASK_TEXTURES
 			//endex
 			
-			//ifex _EnableUDIMDiscardOptions==0
-			#pragma shader_feature_local POI_UDIMDISCARD
-			//endex
-			
 			//ifex _EnableDistortion==0
 			#pragma shader_feature USER_LUT
+			//endex
+			
+			//ifex _EnableUDIMDiscardOptions==0
+			#pragma shader_feature_local POI_UDIMDISCARD
 			//endex
 			
 			//ifex _PoiParallax==0
@@ -36585,7 +36585,7 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 			#include "UnityMetaPass.cginc"
 			#endif
 			#ifdef POI_PASS_BASE
-			#include "Assets/_PoiyomiShaders/Shaders/ThirdParty/LightVolumes/LightVolumes.cginc"
+			#include "../../ThirdParty/LightVolumes/LightVolumes.cginc"
 			#endif
 			#pragma vertex vert
 			
@@ -37403,49 +37403,6 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 			int _GlobalMaskVertexColorAlphaBlendType;
 			//endex
 			
-			//ifex _EnableUDIMDiscardOptions==0
-			#ifdef POI_UDIMDISCARD
-			float _UDIMDiscardMode;
-			float _UDIMDiscardUV;
-			float _UDIMDiscardRow3_0;
-			float _UDIMDiscardRow3_1;
-			float _UDIMDiscardRow3_2;
-			float _UDIMDiscardRow3_3;
-			float _UDIMDiscardRow2_0;
-			float _UDIMDiscardRow2_1;
-			float _UDIMDiscardRow2_2;
-			float _UDIMDiscardRow2_3;
-			float _UDIMDiscardRow1_0;
-			float _UDIMDiscardRow1_1;
-			float _UDIMDiscardRow1_2;
-			float _UDIMDiscardRow1_3;
-			float _UDIMDiscardRow0_0;
-			float _UDIMDiscardRow0_1;
-			float _UDIMDiscardRow0_2;
-			float _UDIMDiscardRow0_3;
-			
-			float _EnableUDIMFaceDiscardOptions;
-			float _UDIMFaceDiscardFace;
-			float _UDIMFaceDiscardUV;
-			float _UDIMFaceDiscardRow3_0;
-			float _UDIMFaceDiscardRow3_1;
-			float _UDIMFaceDiscardRow3_2;
-			float _UDIMFaceDiscardRow3_3;
-			float _UDIMFaceDiscardRow2_0;
-			float _UDIMFaceDiscardRow2_1;
-			float _UDIMFaceDiscardRow2_2;
-			float _UDIMFaceDiscardRow2_3;
-			float _UDIMFaceDiscardRow1_0;
-			float _UDIMFaceDiscardRow1_1;
-			float _UDIMFaceDiscardRow1_2;
-			float _UDIMFaceDiscardRow1_3;
-			float _UDIMFaceDiscardRow0_0;
-			float _UDIMFaceDiscardRow0_1;
-			float _UDIMFaceDiscardRow0_2;
-			float _UDIMFaceDiscardRow0_3;
-			#endif
-			//endex
-			
 			//ifex _EnableDistortion==0
 			#ifdef USER_LUT
 			#if defined(PROP_DISTORTIONFLOWTEXTURE) || !defined(OPTIMIZER_ENABLED)
@@ -37495,6 +37452,49 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 			float _UVModWorldPos1;
 			float _UVModLocalPos0;
 			float _UVModLocalPos1;
+			
+			//ifex _EnableUDIMDiscardOptions==0
+			#ifdef POI_UDIMDISCARD
+			float _UDIMDiscardMode;
+			float _UDIMDiscardUV;
+			float _UDIMDiscardRow3_0;
+			float _UDIMDiscardRow3_1;
+			float _UDIMDiscardRow3_2;
+			float _UDIMDiscardRow3_3;
+			float _UDIMDiscardRow2_0;
+			float _UDIMDiscardRow2_1;
+			float _UDIMDiscardRow2_2;
+			float _UDIMDiscardRow2_3;
+			float _UDIMDiscardRow1_0;
+			float _UDIMDiscardRow1_1;
+			float _UDIMDiscardRow1_2;
+			float _UDIMDiscardRow1_3;
+			float _UDIMDiscardRow0_0;
+			float _UDIMDiscardRow0_1;
+			float _UDIMDiscardRow0_2;
+			float _UDIMDiscardRow0_3;
+			
+			float _EnableUDIMFaceDiscardOptions;
+			float _UDIMFaceDiscardFace;
+			float _UDIMFaceDiscardUV;
+			float _UDIMFaceDiscardRow3_0;
+			float _UDIMFaceDiscardRow3_1;
+			float _UDIMFaceDiscardRow3_2;
+			float _UDIMFaceDiscardRow3_3;
+			float _UDIMFaceDiscardRow2_0;
+			float _UDIMFaceDiscardRow2_1;
+			float _UDIMFaceDiscardRow2_2;
+			float _UDIMFaceDiscardRow2_3;
+			float _UDIMFaceDiscardRow1_0;
+			float _UDIMFaceDiscardRow1_1;
+			float _UDIMFaceDiscardRow1_2;
+			float _UDIMFaceDiscardRow1_3;
+			float _UDIMFaceDiscardRow0_0;
+			float _UDIMFaceDiscardRow0_1;
+			float _UDIMFaceDiscardRow0_2;
+			float _UDIMFaceDiscardRow0_3;
+			#endif
+			//endex
 			
 			//ifex _PoiParallax==0
 			#ifdef POI_PARALLAX
@@ -43809,47 +43809,6 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 			}
 			//endex
 			
-			//ifex _EnableUDIMDiscardOptions==0
-			#ifdef POI_UDIMDISCARD
-			void applyUDIMDiscard(in VertexOut i, in uint facing)
-			{
-				// UDIM Discaarad
-				if(_UDIMDiscardMode == 1) // Don't run if in vertex mode
-				{
-					float2 udim = floor(vertexUV(i, _UDIMDiscardUV));
-					
-					float4 UDIMDiscardRows[4];
-					UDIMDiscardRows[0] = float4(_UDIMDiscardRow0_0, _UDIMDiscardRow0_1, _UDIMDiscardRow0_2, _UDIMDiscardRow0_3);
-					UDIMDiscardRows[1] = float4(_UDIMDiscardRow1_0, _UDIMDiscardRow1_1, _UDIMDiscardRow1_2, _UDIMDiscardRow1_3);
-					UDIMDiscardRows[2] = float4(_UDIMDiscardRow2_0, _UDIMDiscardRow2_1, _UDIMDiscardRow2_2, _UDIMDiscardRow2_3);
-					UDIMDiscardRows[3] = float4(_UDIMDiscardRow3_0, _UDIMDiscardRow3_1, _UDIMDiscardRow3_2, _UDIMDiscardRow3_3);
-					
-					float shouldDiscard = shouldPerformUDIMDiscard(udim, UDIMDiscardRows);
-					
-					clip(shouldDiscard); // Clip if discarded
-				}
-				
-				// UDIM Face Discard
-				if(_EnableUDIMFaceDiscardOptions && saturate(facing) == _UDIMFaceDiscardFace) // Run if Face Discard enabled & this is the face to discard
-				{
-					float2 faceUdim = floor(vertexUV(i, _UDIMFaceDiscardUV));
-					
-					float4 UDIMFaceDiscardRows[4];
-					UDIMFaceDiscardRows[0] = float4(_UDIMFaceDiscardRow0_0, _UDIMFaceDiscardRow0_1, _UDIMFaceDiscardRow0_2, _UDIMFaceDiscardRow0_3);
-					UDIMFaceDiscardRows[1] = float4(_UDIMFaceDiscardRow1_0, _UDIMFaceDiscardRow1_1, _UDIMFaceDiscardRow1_2, _UDIMFaceDiscardRow1_3);
-					UDIMFaceDiscardRows[2] = float4(_UDIMFaceDiscardRow2_0, _UDIMFaceDiscardRow2_1, _UDIMFaceDiscardRow2_2, _UDIMFaceDiscardRow2_3);
-					UDIMFaceDiscardRows[3] = float4(_UDIMFaceDiscardRow3_0, _UDIMFaceDiscardRow3_1, _UDIMFaceDiscardRow3_2, _UDIMFaceDiscardRow3_3);
-					
-					float shouldDiscard = shouldPerformUDIMDiscard(faceUdim, UDIMFaceDiscardRows);
-					
-					clip(shouldDiscard); // Clip if discarded
-				}
-				
-				return;
-			}
-			#endif
-			//endex
-			
 			float2 calculatePolarCoordinate(in PoiMesh poiMesh)
 			{
 				float2 delta = poiMesh.uv[_PolarUV] - _PolarCenter;
@@ -43953,6 +43912,47 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				flowVector *= distortionStrength;
 				flowVector1 *= distortionStrength1;
 				return poiMesh.uv[_DistortionUvToDistort] + ((flowVector.xy + flowVector1.xy) / 2) * distortionMask;
+			}
+			#endif
+			//endex
+			
+			//ifex _EnableUDIMDiscardOptions==0
+			#ifdef POI_UDIMDISCARD
+			void applyUDIMDiscard(in VertexOut i, in uint facing)
+			{
+				// UDIM Discaarad
+				if(_UDIMDiscardMode == 1) // Don't run if in vertex mode
+				{
+					float2 udim = floor(vertexUV(i, _UDIMDiscardUV));
+					
+					float4 UDIMDiscardRows[4];
+					UDIMDiscardRows[0] = float4(_UDIMDiscardRow0_0, _UDIMDiscardRow0_1, _UDIMDiscardRow0_2, _UDIMDiscardRow0_3);
+					UDIMDiscardRows[1] = float4(_UDIMDiscardRow1_0, _UDIMDiscardRow1_1, _UDIMDiscardRow1_2, _UDIMDiscardRow1_3);
+					UDIMDiscardRows[2] = float4(_UDIMDiscardRow2_0, _UDIMDiscardRow2_1, _UDIMDiscardRow2_2, _UDIMDiscardRow2_3);
+					UDIMDiscardRows[3] = float4(_UDIMDiscardRow3_0, _UDIMDiscardRow3_1, _UDIMDiscardRow3_2, _UDIMDiscardRow3_3);
+					
+					float shouldDiscard = shouldPerformUDIMDiscard(udim, UDIMDiscardRows);
+					
+					clip(shouldDiscard); // Clip if discarded
+				}
+				
+				// UDIM Face Discard
+				if(_EnableUDIMFaceDiscardOptions && saturate(facing) == _UDIMFaceDiscardFace) // Run if Face Discard enabled & this is the face to discard
+				{
+					float2 faceUdim = floor(vertexUV(i, _UDIMFaceDiscardUV));
+					
+					float4 UDIMFaceDiscardRows[4];
+					UDIMFaceDiscardRows[0] = float4(_UDIMFaceDiscardRow0_0, _UDIMFaceDiscardRow0_1, _UDIMFaceDiscardRow0_2, _UDIMFaceDiscardRow0_3);
+					UDIMFaceDiscardRows[1] = float4(_UDIMFaceDiscardRow1_0, _UDIMFaceDiscardRow1_1, _UDIMFaceDiscardRow1_2, _UDIMFaceDiscardRow1_3);
+					UDIMFaceDiscardRows[2] = float4(_UDIMFaceDiscardRow2_0, _UDIMFaceDiscardRow2_1, _UDIMFaceDiscardRow2_2, _UDIMFaceDiscardRow2_3);
+					UDIMFaceDiscardRows[3] = float4(_UDIMFaceDiscardRow3_0, _UDIMFaceDiscardRow3_1, _UDIMFaceDiscardRow3_2, _UDIMFaceDiscardRow3_3);
+					
+					float shouldDiscard = shouldPerformUDIMDiscard(faceUdim, UDIMFaceDiscardRows);
+					
+					clip(shouldDiscard); // Clip if discarded
+				}
+				
+				return;
 			}
 			#endif
 			//endex
@@ -52039,12 +52039,12 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 			#pragma shader_feature_local POI_GLOBALMASK_TEXTURES
 			//endex
 			
-			//ifex _EnableUDIMDiscardOptions==0
-			#pragma shader_feature_local POI_UDIMDISCARD
-			//endex
-			
 			//ifex _EnableDistortion==0
 			#pragma shader_feature USER_LUT
+			//endex
+			
+			//ifex _EnableUDIMDiscardOptions==0
+			#pragma shader_feature_local POI_UDIMDISCARD
 			//endex
 			
 			//ifex _PoiParallax==0
@@ -52268,7 +52268,7 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 			#include "UnityMetaPass.cginc"
 			#endif
 			#ifdef POI_PASS_BASE
-			#include "Assets/_PoiyomiShaders/Shaders/ThirdParty/LightVolumes/LightVolumes.cginc"
+			#include "../../ThirdParty/LightVolumes/LightVolumes.cginc"
 			#endif
 			#pragma vertex vert
 			
@@ -52981,49 +52981,6 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 			int _GlobalMaskVertexColorAlphaBlendType;
 			//endex
 			
-			//ifex _EnableUDIMDiscardOptions==0
-			#ifdef POI_UDIMDISCARD
-			float _UDIMDiscardMode;
-			float _UDIMDiscardUV;
-			float _UDIMDiscardRow3_0;
-			float _UDIMDiscardRow3_1;
-			float _UDIMDiscardRow3_2;
-			float _UDIMDiscardRow3_3;
-			float _UDIMDiscardRow2_0;
-			float _UDIMDiscardRow2_1;
-			float _UDIMDiscardRow2_2;
-			float _UDIMDiscardRow2_3;
-			float _UDIMDiscardRow1_0;
-			float _UDIMDiscardRow1_1;
-			float _UDIMDiscardRow1_2;
-			float _UDIMDiscardRow1_3;
-			float _UDIMDiscardRow0_0;
-			float _UDIMDiscardRow0_1;
-			float _UDIMDiscardRow0_2;
-			float _UDIMDiscardRow0_3;
-			
-			float _EnableUDIMFaceDiscardOptions;
-			float _UDIMFaceDiscardFace;
-			float _UDIMFaceDiscardUV;
-			float _UDIMFaceDiscardRow3_0;
-			float _UDIMFaceDiscardRow3_1;
-			float _UDIMFaceDiscardRow3_2;
-			float _UDIMFaceDiscardRow3_3;
-			float _UDIMFaceDiscardRow2_0;
-			float _UDIMFaceDiscardRow2_1;
-			float _UDIMFaceDiscardRow2_2;
-			float _UDIMFaceDiscardRow2_3;
-			float _UDIMFaceDiscardRow1_0;
-			float _UDIMFaceDiscardRow1_1;
-			float _UDIMFaceDiscardRow1_2;
-			float _UDIMFaceDiscardRow1_3;
-			float _UDIMFaceDiscardRow0_0;
-			float _UDIMFaceDiscardRow0_1;
-			float _UDIMFaceDiscardRow0_2;
-			float _UDIMFaceDiscardRow0_3;
-			#endif
-			//endex
-			
 			//ifex _EnableDistortion==0
 			#ifdef USER_LUT
 			#if defined(PROP_DISTORTIONFLOWTEXTURE) || !defined(OPTIMIZER_ENABLED)
@@ -53073,6 +53030,49 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 			float _UVModWorldPos1;
 			float _UVModLocalPos0;
 			float _UVModLocalPos1;
+			
+			//ifex _EnableUDIMDiscardOptions==0
+			#ifdef POI_UDIMDISCARD
+			float _UDIMDiscardMode;
+			float _UDIMDiscardUV;
+			float _UDIMDiscardRow3_0;
+			float _UDIMDiscardRow3_1;
+			float _UDIMDiscardRow3_2;
+			float _UDIMDiscardRow3_3;
+			float _UDIMDiscardRow2_0;
+			float _UDIMDiscardRow2_1;
+			float _UDIMDiscardRow2_2;
+			float _UDIMDiscardRow2_3;
+			float _UDIMDiscardRow1_0;
+			float _UDIMDiscardRow1_1;
+			float _UDIMDiscardRow1_2;
+			float _UDIMDiscardRow1_3;
+			float _UDIMDiscardRow0_0;
+			float _UDIMDiscardRow0_1;
+			float _UDIMDiscardRow0_2;
+			float _UDIMDiscardRow0_3;
+			
+			float _EnableUDIMFaceDiscardOptions;
+			float _UDIMFaceDiscardFace;
+			float _UDIMFaceDiscardUV;
+			float _UDIMFaceDiscardRow3_0;
+			float _UDIMFaceDiscardRow3_1;
+			float _UDIMFaceDiscardRow3_2;
+			float _UDIMFaceDiscardRow3_3;
+			float _UDIMFaceDiscardRow2_0;
+			float _UDIMFaceDiscardRow2_1;
+			float _UDIMFaceDiscardRow2_2;
+			float _UDIMFaceDiscardRow2_3;
+			float _UDIMFaceDiscardRow1_0;
+			float _UDIMFaceDiscardRow1_1;
+			float _UDIMFaceDiscardRow1_2;
+			float _UDIMFaceDiscardRow1_3;
+			float _UDIMFaceDiscardRow0_0;
+			float _UDIMFaceDiscardRow0_1;
+			float _UDIMFaceDiscardRow0_2;
+			float _UDIMFaceDiscardRow0_3;
+			#endif
+			//endex
 			
 			//ifex _PoiParallax==0
 			#ifdef POI_PARALLAX
@@ -57293,47 +57293,6 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 			}
 			//endex
 			
-			//ifex _EnableUDIMDiscardOptions==0
-			#ifdef POI_UDIMDISCARD
-			void applyUDIMDiscard(in VertexOut i, in uint facing)
-			{
-				// UDIM Discaarad
-				if(_UDIMDiscardMode == 1) // Don't run if in vertex mode
-				{
-					float2 udim = floor(vertexUV(i, _UDIMDiscardUV));
-					
-					float4 UDIMDiscardRows[4];
-					UDIMDiscardRows[0] = float4(_UDIMDiscardRow0_0, _UDIMDiscardRow0_1, _UDIMDiscardRow0_2, _UDIMDiscardRow0_3);
-					UDIMDiscardRows[1] = float4(_UDIMDiscardRow1_0, _UDIMDiscardRow1_1, _UDIMDiscardRow1_2, _UDIMDiscardRow1_3);
-					UDIMDiscardRows[2] = float4(_UDIMDiscardRow2_0, _UDIMDiscardRow2_1, _UDIMDiscardRow2_2, _UDIMDiscardRow2_3);
-					UDIMDiscardRows[3] = float4(_UDIMDiscardRow3_0, _UDIMDiscardRow3_1, _UDIMDiscardRow3_2, _UDIMDiscardRow3_3);
-					
-					float shouldDiscard = shouldPerformUDIMDiscard(udim, UDIMDiscardRows);
-					
-					clip(shouldDiscard); // Clip if discarded
-				}
-				
-				// UDIM Face Discard
-				if(_EnableUDIMFaceDiscardOptions && saturate(facing) == _UDIMFaceDiscardFace) // Run if Face Discard enabled & this is the face to discard
-				{
-					float2 faceUdim = floor(vertexUV(i, _UDIMFaceDiscardUV));
-					
-					float4 UDIMFaceDiscardRows[4];
-					UDIMFaceDiscardRows[0] = float4(_UDIMFaceDiscardRow0_0, _UDIMFaceDiscardRow0_1, _UDIMFaceDiscardRow0_2, _UDIMFaceDiscardRow0_3);
-					UDIMFaceDiscardRows[1] = float4(_UDIMFaceDiscardRow1_0, _UDIMFaceDiscardRow1_1, _UDIMFaceDiscardRow1_2, _UDIMFaceDiscardRow1_3);
-					UDIMFaceDiscardRows[2] = float4(_UDIMFaceDiscardRow2_0, _UDIMFaceDiscardRow2_1, _UDIMFaceDiscardRow2_2, _UDIMFaceDiscardRow2_3);
-					UDIMFaceDiscardRows[3] = float4(_UDIMFaceDiscardRow3_0, _UDIMFaceDiscardRow3_1, _UDIMFaceDiscardRow3_2, _UDIMFaceDiscardRow3_3);
-					
-					float shouldDiscard = shouldPerformUDIMDiscard(faceUdim, UDIMFaceDiscardRows);
-					
-					clip(shouldDiscard); // Clip if discarded
-				}
-				
-				return;
-			}
-			#endif
-			//endex
-			
 			float2 calculatePolarCoordinate(in PoiMesh poiMesh)
 			{
 				float2 delta = poiMesh.uv[_PolarUV] - _PolarCenter;
@@ -57437,6 +57396,47 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				flowVector *= distortionStrength;
 				flowVector1 *= distortionStrength1;
 				return poiMesh.uv[_DistortionUvToDistort] + ((flowVector.xy + flowVector1.xy) / 2) * distortionMask;
+			}
+			#endif
+			//endex
+			
+			//ifex _EnableUDIMDiscardOptions==0
+			#ifdef POI_UDIMDISCARD
+			void applyUDIMDiscard(in VertexOut i, in uint facing)
+			{
+				// UDIM Discaarad
+				if(_UDIMDiscardMode == 1) // Don't run if in vertex mode
+				{
+					float2 udim = floor(vertexUV(i, _UDIMDiscardUV));
+					
+					float4 UDIMDiscardRows[4];
+					UDIMDiscardRows[0] = float4(_UDIMDiscardRow0_0, _UDIMDiscardRow0_1, _UDIMDiscardRow0_2, _UDIMDiscardRow0_3);
+					UDIMDiscardRows[1] = float4(_UDIMDiscardRow1_0, _UDIMDiscardRow1_1, _UDIMDiscardRow1_2, _UDIMDiscardRow1_3);
+					UDIMDiscardRows[2] = float4(_UDIMDiscardRow2_0, _UDIMDiscardRow2_1, _UDIMDiscardRow2_2, _UDIMDiscardRow2_3);
+					UDIMDiscardRows[3] = float4(_UDIMDiscardRow3_0, _UDIMDiscardRow3_1, _UDIMDiscardRow3_2, _UDIMDiscardRow3_3);
+					
+					float shouldDiscard = shouldPerformUDIMDiscard(udim, UDIMDiscardRows);
+					
+					clip(shouldDiscard); // Clip if discarded
+				}
+				
+				// UDIM Face Discard
+				if(_EnableUDIMFaceDiscardOptions && saturate(facing) == _UDIMFaceDiscardFace) // Run if Face Discard enabled & this is the face to discard
+				{
+					float2 faceUdim = floor(vertexUV(i, _UDIMFaceDiscardUV));
+					
+					float4 UDIMFaceDiscardRows[4];
+					UDIMFaceDiscardRows[0] = float4(_UDIMFaceDiscardRow0_0, _UDIMFaceDiscardRow0_1, _UDIMFaceDiscardRow0_2, _UDIMFaceDiscardRow0_3);
+					UDIMFaceDiscardRows[1] = float4(_UDIMFaceDiscardRow1_0, _UDIMFaceDiscardRow1_1, _UDIMFaceDiscardRow1_2, _UDIMFaceDiscardRow1_3);
+					UDIMFaceDiscardRows[2] = float4(_UDIMFaceDiscardRow2_0, _UDIMFaceDiscardRow2_1, _UDIMFaceDiscardRow2_2, _UDIMFaceDiscardRow2_3);
+					UDIMFaceDiscardRows[3] = float4(_UDIMFaceDiscardRow3_0, _UDIMFaceDiscardRow3_1, _UDIMFaceDiscardRow3_2, _UDIMFaceDiscardRow3_3);
+					
+					float shouldDiscard = shouldPerformUDIMDiscard(faceUdim, UDIMFaceDiscardRows);
+					
+					clip(shouldDiscard); // Clip if discarded
+				}
+				
+				return;
 			}
 			#endif
 			//endex
