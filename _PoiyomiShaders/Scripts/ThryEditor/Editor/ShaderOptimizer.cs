@@ -2098,7 +2098,7 @@ namespace Thry.ThryEditor
                             // Skip basic declarations of unity shader properties i.e. "uniform float4 _Color;"
                             if (!declarationFound)
                             {
-                                string precedingText = lines[i].Substring(0, constantIndex-1).TrimEnd(); // whitespace removed string immediately to the left should be float or float4
+                                string precedingText = lines[i].Substring(0, constantIndex).TrimEnd(); // whitespace removed string immediately to the left should be float or float4
                                 string restOftheFile = lines[i].Substring(constantIndex + constant.name.Length).TrimStart(); // whitespace removed character immediately to the right should be ;
                                 if (Array.Exists(ValidPropertyDataTypes, x => precedingText.EndsWith(x, StringComparison.Ordinal)) && restOftheFile.StartsWith(";", StringComparison.Ordinal))
                                 {

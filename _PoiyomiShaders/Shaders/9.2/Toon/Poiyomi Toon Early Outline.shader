@@ -2,7 +2,7 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 {
 	Properties
 	{
-		[HideInInspector] shader_master_label ("<color=#E75898ff>Poiyomi 9.2.38</color>", Float) = 0
+		[HideInInspector] shader_master_label ("<color=#E75898ff>Poiyomi 9.2.39</color>", Float) = 0
 		[HideInInspector] shader_is_using_thry_editor ("", Float) = 0
 		[HideInInspector] shader_locale ("0db0b86376c3dca4b9a6828ef8615fe0", Float) = 0
 		[HideInInspector] footer_youtube ("{texture:{name:icon-youtube,height:16},action:{type:URL,data:https://www.youtube.com/poiyomi},hover:YOUTUBE}", Float) = 0
@@ -5505,7 +5505,7 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 			float _DissolveType;
 			float _DissolveEdgeWidth;
 			float4 _DissolveEdgeColor;
-			sampler2D _DissolveEdgeGradient;
+			Texture2D _DissolveEdgeGradient;
 			float4 _DissolveEdgeGradient_ST;
 			float2 _DissolveEdgeGradientPan;
 			float _DissolveEdgeGradientUV;
@@ -5691,7 +5691,7 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 			uniform float _CustomFogAttenuation;
 			uniform float _CustomFogHeightFogStartY;
 			uniform float _CustomFogHeightFogHeight;
-			uniform sampler2D _BloomPrePassTexture;
+			uniform Texture2D _BloomPrePassTexture;
 			#endif
 			//endex
 			#endif
@@ -10918,7 +10918,7 @@ float _LightingAdditiveDetailStrength;
 float _DissolveType;
 float _DissolveEdgeWidth;
 float4 _DissolveEdgeColor;
-sampler2D _DissolveEdgeGradient;
+Texture2D _DissolveEdgeGradient;
 float4 _DissolveEdgeGradient_ST;
 float2 _DissolveEdgeGradientPan;
 float _DissolveEdgeGradientUV;
@@ -11299,7 +11299,7 @@ uniform float _CustomFogOffset;
 uniform float _CustomFogAttenuation;
 uniform float _CustomFogHeightFogStartY;
 uniform float _CustomFogHeightFogHeight;
-uniform sampler2D _BloomPrePassTexture;
+uniform Texture2D _BloomPrePassTexture;
 #endif
 //endex
 #endif
@@ -15987,7 +15987,7 @@ float3 L1r = 0;
 float3 L1g = 0;
 float3 L1b = 0;
 LightVolumeSH(poiMesh.worldPos, L0, L1r, L1g, L1b);
-poiLight.finalLighting = max(LightVolumeEvaluate(poiMesh.normals[1], L0, L1r, L1g, L1b),_LightingMinLightBrightness);
+poiLight.finalLighting = clamp(LightVolumeEvaluate(poiMesh.normals[1], L0, L1r, L1g, L1b),_LightingMinLightBrightness, _LightingCap);
 }
 #endif
 #endif
@@ -16441,7 +16441,7 @@ applyToGlobalMask(poiMods, _DissolveInverseApplyGlobalMaskIndex - 1, _DissolveIn
 UNITY_BRANCH
 if (_DissolveEdgeWidth || (_DissolveType == 2 && _DissolveP2PEdgeLength != 0))
 {
-edgeColor = tex2D(_DissolveEdgeGradient, poiUV(float2(edgeAlpha, edgeAlpha), _DissolveEdgeGradient_ST)) * float4(poiThemeColor(poiMods, _DissolveEdgeColor.rgb, _DissolveEdgeColorThemeIndex), _DissolveEdgeColor.a);
+edgeColor = _DissolveEdgeGradient.Sample(sampler_MainTex, poiUV(float2(edgeAlpha, edgeAlpha), _DissolveEdgeGradient_ST)) * float4(poiThemeColor(poiMods, _DissolveEdgeColor.rgb, _DissolveEdgeColorThemeIndex), _DissolveEdgeColor.a);
 #ifndef POI_SHADOW
 UNITY_BRANCH
 if (_DissolveEdgeHueShiftEnabled)
@@ -18377,7 +18377,7 @@ poiFragData.emission = 0;
 //ifex _BSSBloomfog!=1
 #ifdef POIBS_BLOOMFOG
 float3 fogDistance = i.worldPos + - _WorldSpaceCameraPos;
-float4 fogCol = -float4(poiFragData.finalColor, 1) + tex2D(_BloomPrePassTexture, i.fogCoord.xy);
+float4 fogCol = -float4(poiFragData.finalColor, 1) + POI2D_SAMPLER(_BloomPrePassTexture, _MainTex, i.fogCoord.xy);
 fogCol.a = -poiFragData.alpha;
 
 #ifdef BSSBLOOMFOGTYPE_HEIGHT
@@ -20881,7 +20881,7 @@ float _DecalSymmetryMode3;
 float _DissolveType;
 float _DissolveEdgeWidth;
 float4 _DissolveEdgeColor;
-sampler2D _DissolveEdgeGradient;
+Texture2D _DissolveEdgeGradient;
 float4 _DissolveEdgeGradient_ST;
 float2 _DissolveEdgeGradientPan;
 float _DissolveEdgeGradientUV;
@@ -22905,7 +22905,7 @@ uniform float _CustomFogOffset;
 uniform float _CustomFogAttenuation;
 uniform float _CustomFogHeightFogStartY;
 uniform float _CustomFogHeightFogHeight;
-uniform sampler2D _BloomPrePassTexture;
+uniform Texture2D _BloomPrePassTexture;
 #endif
 //endex
 #endif
@@ -29351,7 +29351,7 @@ float3 L1r = 0;
 float3 L1g = 0;
 float3 L1b = 0;
 LightVolumeSH(poiMesh.worldPos, L0, L1r, L1g, L1b);
-poiLight.finalLighting = max(LightVolumeEvaluate(poiMesh.normals[1], L0, L1r, L1g, L1b),_LightingMinLightBrightness);
+poiLight.finalLighting = clamp(LightVolumeEvaluate(poiMesh.normals[1], L0, L1r, L1g, L1b),_LightingMinLightBrightness, _LightingCap);
 }
 #endif
 #endif
@@ -30689,7 +30689,7 @@ applyToGlobalMask(poiMods, _DissolveInverseApplyGlobalMaskIndex - 1, _DissolveIn
 UNITY_BRANCH
 if (_DissolveEdgeWidth || (_DissolveType == 2 && _DissolveP2PEdgeLength != 0))
 {
-edgeColor = tex2D(_DissolveEdgeGradient, poiUV(float2(edgeAlpha, edgeAlpha), _DissolveEdgeGradient_ST)) * float4(poiThemeColor(poiMods, _DissolveEdgeColor.rgb, _DissolveEdgeColorThemeIndex), _DissolveEdgeColor.a);
+edgeColor = _DissolveEdgeGradient.Sample(sampler_MainTex, poiUV(float2(edgeAlpha, edgeAlpha), _DissolveEdgeGradient_ST)) * float4(poiThemeColor(poiMods, _DissolveEdgeColor.rgb, _DissolveEdgeColorThemeIndex), _DissolveEdgeColor.a);
 #ifndef POI_SHADOW
 UNITY_BRANCH
 if (_DissolveEdgeHueShiftEnabled)
@@ -36988,7 +36988,7 @@ poiFragData.emission = 0;
 //ifex _BSSBloomfog!=1
 #ifdef POIBS_BLOOMFOG
 float3 fogDistance = i.worldPos + - _WorldSpaceCameraPos;
-float4 fogCol = -float4(poiFragData.finalColor, 1) + tex2D(_BloomPrePassTexture, i.fogCoord.xy);
+float4 fogCol = -float4(poiFragData.finalColor, 1) + POI2D_SAMPLER(_BloomPrePassTexture, _MainTex, i.fogCoord.xy);
 fogCol.a = -poiFragData.alpha;
 
 #ifdef BSSBLOOMFOGTYPE_HEIGHT
@@ -39177,7 +39177,7 @@ float _DecalSymmetryMode3;
 float _DissolveType;
 float _DissolveEdgeWidth;
 float4 _DissolveEdgeColor;
-sampler2D _DissolveEdgeGradient;
+Texture2D _DissolveEdgeGradient;
 float4 _DissolveEdgeGradient_ST;
 float2 _DissolveEdgeGradientPan;
 float _DissolveEdgeGradientUV;
@@ -40852,7 +40852,7 @@ uniform float _CustomFogOffset;
 uniform float _CustomFogAttenuation;
 uniform float _CustomFogHeightFogStartY;
 uniform float _CustomFogHeightFogHeight;
-uniform sampler2D _BloomPrePassTexture;
+uniform Texture2D _BloomPrePassTexture;
 #endif
 //endex
 #endif
@@ -46018,7 +46018,7 @@ float3 L1r = 0;
 float3 L1g = 0;
 float3 L1b = 0;
 LightVolumeSH(poiMesh.worldPos, L0, L1r, L1g, L1b);
-poiLight.finalLighting = max(LightVolumeEvaluate(poiMesh.normals[1], L0, L1r, L1g, L1b),_LightingMinLightBrightness);
+poiLight.finalLighting = clamp(LightVolumeEvaluate(poiMesh.normals[1], L0, L1r, L1g, L1b),_LightingMinLightBrightness, _LightingCap);
 }
 #endif
 #endif
@@ -47356,7 +47356,7 @@ applyToGlobalMask(poiMods, _DissolveInverseApplyGlobalMaskIndex - 1, _DissolveIn
 UNITY_BRANCH
 if (_DissolveEdgeWidth || (_DissolveType == 2 && _DissolveP2PEdgeLength != 0))
 {
-edgeColor = tex2D(_DissolveEdgeGradient, poiUV(float2(edgeAlpha, edgeAlpha), _DissolveEdgeGradient_ST)) * float4(poiThemeColor(poiMods, _DissolveEdgeColor.rgb, _DissolveEdgeColorThemeIndex), _DissolveEdgeColor.a);
+edgeColor = _DissolveEdgeGradient.Sample(sampler_MainTex, poiUV(float2(edgeAlpha, edgeAlpha), _DissolveEdgeGradient_ST)) * float4(poiThemeColor(poiMods, _DissolveEdgeColor.rgb, _DissolveEdgeColorThemeIndex), _DissolveEdgeColor.a);
 #ifndef POI_SHADOW
 UNITY_BRANCH
 if (_DissolveEdgeHueShiftEnabled)
@@ -52723,7 +52723,7 @@ poiFragData.emission = 0;
 //ifex _BSSBloomfog!=1
 #ifdef POIBS_BLOOMFOG
 float3 fogDistance = i.worldPos + - _WorldSpaceCameraPos;
-float4 fogCol = -float4(poiFragData.finalColor, 1) + tex2D(_BloomPrePassTexture, i.fogCoord.xy);
+float4 fogCol = -float4(poiFragData.finalColor, 1) + POI2D_SAMPLER(_BloomPrePassTexture, _MainTex, i.fogCoord.xy);
 fogCol.a = -poiFragData.alpha;
 
 #ifdef BSSBLOOMFOGTYPE_HEIGHT
@@ -54075,7 +54075,7 @@ float _BackFaceHueSelectOrShift;
 float _DissolveType;
 float _DissolveEdgeWidth;
 float4 _DissolveEdgeColor;
-sampler2D _DissolveEdgeGradient;
+Texture2D _DissolveEdgeGradient;
 float4 _DissolveEdgeGradient_ST;
 float2 _DissolveEdgeGradientPan;
 float _DissolveEdgeGradientUV;
@@ -54492,7 +54492,7 @@ uniform float _CustomFogOffset;
 uniform float _CustomFogAttenuation;
 uniform float _CustomFogHeightFogStartY;
 uniform float _CustomFogHeightFogHeight;
-uniform sampler2D _BloomPrePassTexture;
+uniform Texture2D _BloomPrePassTexture;
 #endif
 //endex
 #endif
@@ -58819,7 +58819,7 @@ applyToGlobalMask(poiMods, _DissolveInverseApplyGlobalMaskIndex - 1, _DissolveIn
 UNITY_BRANCH
 if (_DissolveEdgeWidth || (_DissolveType == 2 && _DissolveP2PEdgeLength != 0))
 {
-edgeColor = tex2D(_DissolveEdgeGradient, poiUV(float2(edgeAlpha, edgeAlpha), _DissolveEdgeGradient_ST)) * float4(poiThemeColor(poiMods, _DissolveEdgeColor.rgb, _DissolveEdgeColorThemeIndex), _DissolveEdgeColor.a);
+edgeColor = _DissolveEdgeGradient.Sample(sampler_MainTex, poiUV(float2(edgeAlpha, edgeAlpha), _DissolveEdgeGradient_ST)) * float4(poiThemeColor(poiMods, _DissolveEdgeColor.rgb, _DissolveEdgeColorThemeIndex), _DissolveEdgeColor.a);
 #ifndef POI_SHADOW
 UNITY_BRANCH
 if (_DissolveEdgeHueShiftEnabled)
