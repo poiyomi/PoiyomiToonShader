@@ -39,9 +39,7 @@ namespace Thry.ThryEditor.Drawers
             ShaderEditor.Active.IsLockedMaterial = shaderOptimizer.GetNumber() == 1;
             if (shaderOptimizer.hasMixedValue)
             {
-                EditorGUI.BeginChangeCheck();
-                GUILayout.Button(EditorLocale.editor.Get("lockin_button_multi").ReplaceVariables(materialEditor.targets.Length));
-                if (EditorGUI.EndChangeCheck())
+                if(GUILayout.Button(EditorLocale.editor.Get("lockin_button_multi").ReplaceVariables(materialEditor.targets.Length)))
                 {
                     SaveChangeStack();
                     ShaderOptimizer.ToggleLockFromPropertyButton(shaderOptimizer);
@@ -50,24 +48,27 @@ namespace Thry.ThryEditor.Drawers
             }
             else
             {
-                EditorGUI.BeginChangeCheck();
+                bool didClickButton = false;
                 if (shaderOptimizer.GetNumber() == 0)
                 {
                     if (materialEditor.targets.Length == 1)
-                        RectifiedLayout.Button(EditorLocale.editor.Get("lockin_button_single"));
-                    else RectifiedLayout.Button(EditorLocale.editor.Get("lockin_button_multi").ReplaceVariables(materialEditor.targets.Length));
+                        didClickButton = RectifiedLayout.Button(EditorLocale.editor.Get("lockin_button_single"));
+                    else
+                        didClickButton = RectifiedLayout.Button(EditorLocale.editor.Get("lockin_button_multi").ReplaceVariables(materialEditor.targets.Length));
                 }
                 else
                 {
                     if (materialEditor.targets.Length == 1)
-                        RectifiedLayout.Button(EditorLocale.editor.Get("unlock_button_single"));
-                    else RectifiedLayout.Button(EditorLocale.editor.Get("unlock_button_multi").ReplaceVariables(materialEditor.targets.Length));
+                        didClickButton = RectifiedLayout.Button(EditorLocale.editor.Get("unlock_button_single"));
+                    else
+                        didClickButton = RectifiedLayout.Button(EditorLocale.editor.Get("unlock_button_multi").ReplaceVariables(materialEditor.targets.Length));
                 }
-                if (EditorGUI.EndChangeCheck())
+                if (didClickButton)
                 {
                     SaveChangeStack();
                     ShaderOptimizer.ToggleLockFromPropertyButton(shaderOptimizer);
                     RestoreChangeStack();
+                    Object[] targets = Selection.objects;
                 }
             }
             if (Config.Instance.allowCustomLockingRenaming || ShaderEditor.Active.HasCustomRenameSuffix)
