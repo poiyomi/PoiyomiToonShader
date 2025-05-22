@@ -778,7 +778,7 @@ namespace Thry.ThryEditor
             }
 
             Object[] prevTargets = Selection.objects;
-            if (ShaderEditor.Active != null && ShaderEditor.Active.IsDrawing)
+            if (ShaderEditor.Active != null)
             {
                 Selection.objects = new Object[0];
             }
@@ -891,12 +891,8 @@ namespace Thry.ThryEditor
             if(Config.Instance.saveAfterLockUnlock)
                 EditorApplication.update += QueueSaveAfterLockUnlock;
 
-            if (ShaderEditor.Active != null && ShaderEditor.Active.IsDrawing)
+            if (ShaderEditor.Active != null)
             {
-                // GUIUtility.ExitGUI();
-                // ShaderEditor.Active.SetShader(ShaderEditor.Active.Materials[0].shader);
-                // Object[] targets = Selection.objects;
-                // Selection.objects = new Object[0];
                 Selection.objects = prevTargets;
             }
                 

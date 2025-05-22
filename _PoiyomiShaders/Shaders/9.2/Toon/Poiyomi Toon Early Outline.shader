@@ -2,7 +2,7 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 {
 	Properties
 	{
-		[HideInInspector] shader_master_label ("<color=#E75898ff>Poiyomi 9.2.40</color>", Float) = 0
+		[HideInInspector] shader_master_label ("<color=#E75898ff>Poiyomi 9.2.41</color>", Float) = 0
 		[HideInInspector] shader_is_using_thry_editor ("", Float) = 0
 		[HideInInspector] shader_locale ("0db0b86376c3dca4b9a6828ef8615fe0", Float) = 0
 		[HideInInspector] footer_youtube ("{texture:{name:icon-youtube,height:16},action:{type:URL,data:https://www.youtube.com/poiyomi},hover:YOUTUBE}", Float) = 0
@@ -15859,7 +15859,7 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				
 				float4 shadowBorderMask = 1;
 				
-				if(_ShadowBorderMapToggle)
+				if (_ShadowBorderMapToggle)
 				{
 					
 					#if defined(PROP_SHADOWBORDERMASK) || !defined(OPTIMIZER_ENABLED)
@@ -15929,14 +15929,14 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				#else
 				float4 shadowStrengthMask = 1;
 				#endif
-				if(_ShadowMaskType == 1)
+				if (_ShadowMaskType == 1)
 				{
-					float3 flatN = normalize(mul((float3x3)unity_ObjectToWorld, float3(0.0,0.25,1.0)));//normalize(LIL_MATRIX_M._m02_m12_m22);
+					float3 flatN = normalize(mul((float3x3)unity_ObjectToWorld, float3(0.0, 0.25, 1.0)));//normalize(LIL_MATRIX_M._m02_m12_m22);
 					float lnFlat = saturate((dot(flatN, poiLight.direction) + _ShadowFlatBorder) / _ShadowFlatBlur);
 					//lnFlat *= lerp(1.0, calculatedShadow, _ShadowReceive);
 					lns = lerp(lnFlat, lns, shadowStrengthMask.r);
 				}
-				else if(_ShadowMaskType == 0)
+				else if (_ShadowMaskType == 0)
 				{
 					shadowStrength *= shadowStrengthMask.r;
 				}
@@ -16012,14 +16012,19 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				poiLight.finalLighting = max(POI_BRDF_PBS(1, 0, 0, 0, poiMesh.normals[1], poiCam.viewDir, light, indirectLight).xyz, _LightingMinLightBrightness);
 				
 				#ifdef UNITY_PASS_FORWARDBASE
-				if(_UdonLightVolumeEnabled)
+				if (_UdonLightVolumeEnabled)
 				{
 					float3 L0 = 0;
 					float3 L1r = 0;
 					float3 L1g = 0;
 					float3 L1b = 0;
+					#ifdef LIGHTMAP_ON
+					LightVolumeAdditiveSH(poiMesh.worldPos, L0, L1r, L1g, L1b);
+					poiLight.finalLighting += clamp(LightVolumeEvaluate(poiMesh.normals[1], L0, L1r, L1g, L1b), _LightingMinLightBrightness, _LightingCap);
+					#else
 					LightVolumeSH(poiMesh.worldPos, L0, L1r, L1g, L1b);
-					poiLight.finalLighting = clamp(LightVolumeEvaluate(poiMesh.normals[1], L0, L1r, L1g, L1b),_LightingMinLightBrightness, _LightingCap);
+					poiLight.finalLighting = clamp(LightVolumeEvaluate(poiMesh.normals[1], L0, L1r, L1g, L1b), _LightingMinLightBrightness, _LightingCap);
+					#endif
 				}
 				#endif
 				#endif
@@ -29255,7 +29260,7 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				
 				float4 shadowBorderMask = 1;
 				
-				if(_ShadowBorderMapToggle)
+				if (_ShadowBorderMapToggle)
 				{
 					
 					#if defined(PROP_SHADOWBORDERMASK) || !defined(OPTIMIZER_ENABLED)
@@ -29325,14 +29330,14 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				#else
 				float4 shadowStrengthMask = 1;
 				#endif
-				if(_ShadowMaskType == 1)
+				if (_ShadowMaskType == 1)
 				{
-					float3 flatN = normalize(mul((float3x3)unity_ObjectToWorld, float3(0.0,0.25,1.0)));//normalize(LIL_MATRIX_M._m02_m12_m22);
+					float3 flatN = normalize(mul((float3x3)unity_ObjectToWorld, float3(0.0, 0.25, 1.0)));//normalize(LIL_MATRIX_M._m02_m12_m22);
 					float lnFlat = saturate((dot(flatN, poiLight.direction) + _ShadowFlatBorder) / _ShadowFlatBlur);
 					//lnFlat *= lerp(1.0, calculatedShadow, _ShadowReceive);
 					lns = lerp(lnFlat, lns, shadowStrengthMask.r);
 				}
-				else if(_ShadowMaskType == 0)
+				else if (_ShadowMaskType == 0)
 				{
 					shadowStrength *= shadowStrengthMask.r;
 				}
@@ -29408,14 +29413,19 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				poiLight.finalLighting = max(POI_BRDF_PBS(1, 0, 0, 0, poiMesh.normals[1], poiCam.viewDir, light, indirectLight).xyz, _LightingMinLightBrightness);
 				
 				#ifdef UNITY_PASS_FORWARDBASE
-				if(_UdonLightVolumeEnabled)
+				if (_UdonLightVolumeEnabled)
 				{
 					float3 L0 = 0;
 					float3 L1r = 0;
 					float3 L1g = 0;
 					float3 L1b = 0;
+					#ifdef LIGHTMAP_ON
+					LightVolumeAdditiveSH(poiMesh.worldPos, L0, L1r, L1g, L1b);
+					poiLight.finalLighting += clamp(LightVolumeEvaluate(poiMesh.normals[1], L0, L1r, L1g, L1b), _LightingMinLightBrightness, _LightingCap);
+					#else
 					LightVolumeSH(poiMesh.worldPos, L0, L1r, L1g, L1b);
-					poiLight.finalLighting = clamp(LightVolumeEvaluate(poiMesh.normals[1], L0, L1r, L1g, L1b),_LightingMinLightBrightness, _LightingCap);
+					poiLight.finalLighting = clamp(LightVolumeEvaluate(poiMesh.normals[1], L0, L1r, L1g, L1b), _LightingMinLightBrightness, _LightingCap);
+					#endif
 				}
 				#endif
 				#endif
@@ -45923,7 +45933,7 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				
 				float4 shadowBorderMask = 1;
 				
-				if(_ShadowBorderMapToggle)
+				if (_ShadowBorderMapToggle)
 				{
 					
 					#if defined(PROP_SHADOWBORDERMASK) || !defined(OPTIMIZER_ENABLED)
@@ -45993,14 +46003,14 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				#else
 				float4 shadowStrengthMask = 1;
 				#endif
-				if(_ShadowMaskType == 1)
+				if (_ShadowMaskType == 1)
 				{
-					float3 flatN = normalize(mul((float3x3)unity_ObjectToWorld, float3(0.0,0.25,1.0)));//normalize(LIL_MATRIX_M._m02_m12_m22);
+					float3 flatN = normalize(mul((float3x3)unity_ObjectToWorld, float3(0.0, 0.25, 1.0)));//normalize(LIL_MATRIX_M._m02_m12_m22);
 					float lnFlat = saturate((dot(flatN, poiLight.direction) + _ShadowFlatBorder) / _ShadowFlatBlur);
 					//lnFlat *= lerp(1.0, calculatedShadow, _ShadowReceive);
 					lns = lerp(lnFlat, lns, shadowStrengthMask.r);
 				}
-				else if(_ShadowMaskType == 0)
+				else if (_ShadowMaskType == 0)
 				{
 					shadowStrength *= shadowStrengthMask.r;
 				}
@@ -46076,14 +46086,19 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				poiLight.finalLighting = max(POI_BRDF_PBS(1, 0, 0, 0, poiMesh.normals[1], poiCam.viewDir, light, indirectLight).xyz, _LightingMinLightBrightness);
 				
 				#ifdef UNITY_PASS_FORWARDBASE
-				if(_UdonLightVolumeEnabled)
+				if (_UdonLightVolumeEnabled)
 				{
 					float3 L0 = 0;
 					float3 L1r = 0;
 					float3 L1g = 0;
 					float3 L1b = 0;
+					#ifdef LIGHTMAP_ON
+					LightVolumeAdditiveSH(poiMesh.worldPos, L0, L1r, L1g, L1b);
+					poiLight.finalLighting += clamp(LightVolumeEvaluate(poiMesh.normals[1], L0, L1r, L1g, L1b), _LightingMinLightBrightness, _LightingCap);
+					#else
 					LightVolumeSH(poiMesh.worldPos, L0, L1r, L1g, L1b);
-					poiLight.finalLighting = clamp(LightVolumeEvaluate(poiMesh.normals[1], L0, L1r, L1g, L1b),_LightingMinLightBrightness, _LightingCap);
+					poiLight.finalLighting = clamp(LightVolumeEvaluate(poiMesh.normals[1], L0, L1r, L1g, L1b), _LightingMinLightBrightness, _LightingCap);
+					#endif
 				}
 				#endif
 				#endif
