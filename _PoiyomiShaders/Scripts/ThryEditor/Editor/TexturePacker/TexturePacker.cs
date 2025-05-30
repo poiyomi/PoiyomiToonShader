@@ -13,7 +13,6 @@ namespace Thry.ThryEditor
         const int MIN_WIDTH = 850;
         const int MIN_HEIGHT = 790;
 
-        [MenuItem("Thry/Texture Packer", priority = 100)]
         public static TexturePacker ShowWindow()
         {
             TexturePacker packer = (TexturePacker)GetWindow(typeof(TexturePacker));

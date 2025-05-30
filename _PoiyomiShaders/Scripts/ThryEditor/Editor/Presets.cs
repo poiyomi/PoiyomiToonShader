@@ -280,6 +280,11 @@ namespace Thry.ThryEditor
             EditorUtility.ClearProgressBar();
         }
 
+        public static void RebuildCache()
+        {
+            CreatePresetCache();
+        }
+
         static Dictionary<Shader, List<string>> s_headersInShader = new Dictionary<Shader, List<string>>();
         static List<string> GetHeadersInShader(Material m)
         {       
@@ -736,14 +741,6 @@ namespace Thry.ThryEditor
             }
         }
 
-#endregion
-
-#region Unity Menu Hooks
-        [MenuItem("Thry/Presets/Rebuild Cache", priority = 100)]
-        static void RebuildCache()
-        {
-            Presets.CreatePresetCache();
-        }
 #endregion
     }
 

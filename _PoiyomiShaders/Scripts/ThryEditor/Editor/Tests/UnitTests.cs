@@ -7,7 +7,7 @@ namespace Thry.ThryEditor
 {
     public class UnitTests
     {
-        [MenuItem("Thry/ShaderUI/Test/Run Timed Tests")]
+        [MenuItem("Thry/ThryEditor/Dev Test/Run Timed Tests", priority = 100)]
         static void RunTimeTest()
         {
             System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
@@ -23,7 +23,7 @@ namespace Thry.ThryEditor
             Debug.Log($"Ran 1000 tests in {sw.ElapsedMilliseconds}ms");
         }
 
-        [MenuItem("Thry/ShaderUI/Test/Run Parser Tests")]
+        [MenuItem("Thry/ThryEditor/Dev Test/Run Parser Tests", priority = 100)]
         public static void RunUnitTests()
         {
             int testCount = 0;

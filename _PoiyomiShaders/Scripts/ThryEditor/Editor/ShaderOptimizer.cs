@@ -359,6 +359,7 @@ namespace Thry.ThryEditor
 
         private static string GetColorMaskString(int colorMask)
         {
+            if (colorMask == 0) return "0";
             string mask = "";
             if ((colorMask & 8) != 0) mask += "R";
             if ((colorMask & 4) != 0) mask += "G";

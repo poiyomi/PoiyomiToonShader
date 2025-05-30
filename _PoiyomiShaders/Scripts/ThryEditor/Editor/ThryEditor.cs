@@ -365,6 +365,7 @@ namespace Thry
                     groupStack.Push(newPart as ShaderGroup);
                 }
                 
+                bool doAssignPropertyToGroup = true;
                 switch (type)
                 {
                     case ThryPropertyType.on_swap_to:
@@ -406,27 +407,32 @@ namespace Thry
                     case ThryPropertyType.optimizer:
                         ShaderOptimizerProperty = new ShaderProperty(this, props[i], displayName, offset, optionsRaw, false, i);
                         ShaderOptimizerProperty.SetIsExemptFromLockedDisabling(true);
+                        NewProperty = ShaderOptimizerProperty;
+                        doAssignPropertyToGroup = false;
                         break;
                     case ThryPropertyType.in_shader_presets:
                         InShaderPresetsProperty = new ShaderProperty(this, props[i], displayName, offset, optionsRaw, false, i);
+                        NewProperty = InShaderPresetsProperty;
+                        doAssignPropertyToGroup = false;
                         break;
                 }
                 if (NewProperty != null)
                 {
                     newPart = NewProperty;
-                    if (type != ThryPropertyType.none)
+                    if (type != ThryPropertyType.none && doAssignPropertyToGroup)
                     {
                         groupStack.Peek().AddPart(NewProperty);
                     }
-                }
-                if (newPart != null)
-                {
+                    
 #if UNITY_2022_1_OR_NEWER // Unity 2019 needs to check if key exists before adding? (Information from pumkin did not check)
                     PropertyDictionary.TryAdd(props[i].name, NewProperty);
 #else
                     if(!PropertyDictionary.ContainsKey(props[i].name))
                         PropertyDictionary.Add(props[i].name, NewProperty);
 #endif
+                }
+                if (newPart != null)
+                {
                     ShaderParts.Add(newPart);
                 }
             }
@@ -1094,8 +1100,38 @@ namespace Thry
             if(count > 1) EditorUtility.ClearProgressBar();
         }
 
+        [MenuItem("Thry/Twitter", priority = -100)]
+        static void MenuThryTwitter()
+        {
+            Application.OpenURL("https://www.twitter.com/thryrallo");
+        }
+
+        [MenuItem("Thry/Texture Packer", priority = 1)]
+        static void MenuTexturePacker()
+        {
+            TexturePacker.ShowWindow();
+        }
+
+        [MenuItem("Thry/Cross Shader Editor", priority = 2)]
+        public static void ShowWindow()
+        {
+            CrossEditor.GetInstance();
+        }
+
+        [MenuItem("Thry/Material Lock Manager", priority = 3)]
+        static void MenuShaderOptUnlockedMaterials()
+        {
+            EditorWindow.GetWindow<UnlockedMaterialsList>(false, "Materials", true);
+        }
+
+        [MenuItem("Thry/ThryEditor/Settings",priority = 4)]
+        static void MenuShaderUISettings()
+        {
+            EditorWindow.GetWindow<Settings>(false, "Thry Settings", true);
+        }
+
         /// <summary> Iterate through all materials with FixKeywords. </summary>
-        [MenuItem("Thry/Shader Tools/Fix Keywords for All Materials (Slow)", priority = -20)]
+        [MenuItem("Thry/ThryEditor/Fix Keywords for All Materials (Slow)", priority = 50)]
         static void FixAllKeywords()
         {
             IEnumerable<Material> materialsToFix = AssetDatabase.FindAssets("t:material")
@@ -1108,28 +1144,16 @@ namespace Thry
             FixKeywords(materialsToFix);
         }
 
-        [MenuItem("Thry/Twitter", priority = -100)]
-        static void MenuThryTwitter()
-        {
-            Application.OpenURL("https://www.twitter.com/thryrallo");
-        }
-
-        [MenuItem("Thry/ShaderUI/Settings",priority = -20)]
-        static void MenuShaderUISettings()
-        {
-            EditorWindow.GetWindow<Settings>(false, "Thry Settings", true);
-        }
-
-        [MenuItem("Thry/Shader Optimizer/Upgraded Animated Properties", priority = -20)]
+        [MenuItem("Thry/ThryEditor/Upgraded Animated Properties", priority = 50)]
         static void MenuUpgradeAnimatedPropertiesToTagsOnAllMaterials()
         {
             ShaderOptimizer.UpgradeAnimatedPropertiesToTagsOnAllMaterials();
         }
-
-        [MenuItem("Thry/Shader Optimizer/Materials List", priority = 0)]
-        static void MenuShaderOptUnlockedMaterials()
+        
+        [MenuItem("Thry/ThryEditor/Rebuild Presets Cache", priority = 50)]
+        static void RebuildCache()
         {
-            EditorWindow.GetWindow<UnlockedMaterialsList>(false, "Materials", true);
+            Presets.RebuildCache();
         }
 
         [MenuItem("Assets/Thry/Materials/Cleaner/List Unbound Properties", priority = 303)]

@@ -8,18 +8,12 @@ namespace Thry.ThryEditor
 {
     public class CrossEditor : EditorWindow
     {
-        private static CrossEditor GetInstance()
+        public static CrossEditor GetInstance()
         {
             CrossEditor window = GetWindow(typeof(CrossEditor)) as CrossEditor;
             window.name = "Cross Shader Editor";
 
             return window;
-        }
-
-        [MenuItem("Thry/Cross Shader Editor", priority = -20)]
-        public static void ShowWindow()
-        {
-            GetInstance();
         }
 
         [MenuItem("Assets/Thry/Materials/Add to Cross Shader Editor", false , 400)]
