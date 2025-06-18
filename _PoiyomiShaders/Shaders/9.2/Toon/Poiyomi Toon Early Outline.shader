@@ -1813,7 +1813,7 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 		//endex
 		
 		//ifex _SubsurfaceScattering==0
-		[HideInInspector] m_start_subsurfaceScattering (" Subsurface Scattering--{reference_property:_SubsurfaceScattering,button_help:{text:Tutorial,action:{type:URL,data:https://www.poiyomi.com/shading/subsurface-scattering},hover:Documentation}}}", Float) = 0
+		[HideInInspector] m_start_subsurfaceScattering (" Translucency--{reference_property:_SubsurfaceScattering,button_help:{text:Tutorial,action:{type:URL,data:https://www.poiyomi.com/shading/subsurface-scattering},hover:Documentation}}}", Float) = 0
 		[HideInInspector][ThryToggle(POI_SUBSURFACESCATTERING)]_SubsurfaceScattering ("Enable", Float) = 0
 		
 		_SSSColor ("Subsurface Color", Color) = (1, 0, 0, 1)
@@ -1830,6 +1830,33 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 		[HideInInspector] m_end_subsurfaceScattering ("", Float) = 0
 		//endex
 		
+		//ifex _PostIntegratedSSS==0
+		[HideInInspector] m_start_postintegratedsss(" Post Integrated Subsurface Scattering--{reference_property:_PostIntegratedSSS,button_help:{text:Tutorial,action:{type:URL,data:https://www.poiyomi.com/shading/subsurface-scattering},hover:Documentation}}}", Float) = 0 //update documentation link when it exists
+		[HideInInspector][ThryToggle(ZH_POSTINTEGRATEDSSS)]_PostIntegratedSSS("Enable", Float) = 0
+
+		_PISSSColor("Subsurface Color", Color) = (1, 0, 0, 1)
+		_PISSSLUTMap("LUT", 2D) = "white" { }
+
+		_PISSSThicknessMap("Thickness Map--{reference_properties:[_PISSSThicknessMapPan, _PISSSThicknessMapUV, _PISSSThicknessMapChannel]}", 2D) = "white" { }
+		[HideInInspector][Vector2]_PISSSThicknessMapPan ("Panning", Vector) = (0, 0, 0, 0)
+		[HideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, DistortedUV1, 4)] _PISSSThicknessMapUV ("UV", Int) = 0
+		[HideInInspector][Enum(R, 0, G, 1, B, 2, A, 3)] _PISSSThicknessMapChannel ("Channel", Int) = 0
+				
+		_PISSSThicknessMod("Thickness mod", Range(0, 1)) = .5
+		_PISSSStrength("Light Strength", Range(0, 1)) = 0.25
+		_PISSSUpper("Penumbrae Upper", Range(0, 1)) = 1
+		_PISSSLower("Penumbrae Lower", Range(0, 1)) = 0
+
+		[HideInInspector] s_start_RimLight1GlobalMasking ("Global Masking--{persistent_expand:true,default_expand:false}", Float) = 0
+		[ThryWideEnum(Off, 0, 1R, 1, 1G, 2, 1B, 3, 1A, 4, 2R, 5, 2G, 6, 2B, 7, 2A, 8, 3R, 9, 3G, 10, 3B, 11, 3A, 12, 4R, 13, 4G, 14, 4B, 15, 4A, 16)] _PISSSGlobalMask ("Global Mask--{reference_property:_PISSSGlobalMaskBlendType}", Int) = 0
+		[HideInInspector][ThryWideEnum(Add, 7, Subtract, 1, Multiply, 2, Divide, 3, Min, 4, Max, 5, Average, 6, Replace, 0)] _PISSSGlobalMaskBlendType("Blending", Int) = 2
+		[ThryWideEnum(Off, 0, 1R, 1, 1G, 2, 1B, 3, 1A, 4, 2R, 5, 2G, 6, 2B, 7, 2A, 8, 3R, 9, 3G, 10, 3B, 11, 3A, 12, 4R, 13, 4G, 14, 4B, 15, 4A, 16)] _PISSSApplyGlobalMask ("Global Mask--{reference_property:_PISSSApplyGlobalMaskBlendType}", Int) = 0
+		[HideInInspector][ThryWideEnum(Add, 7, Subtract, 1, Multiply, 2, Divide, 3, Min, 4, Max, 5, Average, 6, Replace, 0)] _PISSSApplyGlobalMaskBlendType("Blending", Int) = 2
+		[HideInInspector] s_end_RimLight1GlobalMasking ("Apply to Global Masking", Float) = 0
+
+		[HideInInspector] m_end_postintegratedsss("", Float) = 0
+		//endex
+
 		//ifex _MochieBRDF==0
 		[HideInInspector] m_start_brdf (" Reflections & Specular--{reference_property:_MochieBRDF,button_help:{text:Tutorial,action:{type:URL,data:https://www.poiyomi.com/shading/reflections-and-specular},hover:Documentation}}", Float) = 0
 		[HideInInspector][ThryToggle(MOCHIE_PBR)]_MochieBRDF ("Enable", Float) = 0
@@ -4714,7 +4741,11 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 			//ifex _SubsurfaceScattering==0
 			#pragma shader_feature_local POI_SUBSURFACESCATTERING
 			//endex
-			
+						
+			//ifex _PostIntegratedSSS==0
+			#pragma shader_feature_local ZH_POSTINTEGRATEDSSS
+			//endex
+
 			//ifex _MochieBRDF==0
 			#pragma shader_feature_local MOCHIE_PBR
 			//endex
@@ -9654,6 +9685,10 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 			#pragma shader_feature_local POI_SUBSURFACESCATTERING
 			//endex
 			
+			//ifex _PostIntegratedSSS==0
+			#pragma shader_feature_local ZH_POSTINTEGRATEDSSS
+			//endex
+
 			//ifex _MochieBRDF==0
 			#pragma shader_feature_local MOCHIE_PBR
 			//endex
@@ -19407,6 +19442,10 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 			#pragma shader_feature_local POI_SUBSURFACESCATTERING
 			//endex
 			
+			//ifex _PostIntegratedSSS==0
+			#pragma shader_feature_local ZH_POSTINTEGRATEDSSS
+			//endex
+			
 			//ifex _MochieBRDF==0
 			#pragma shader_feature_local MOCHIE_PBR
 			//endex
@@ -23156,6 +23195,29 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 			float _SSSSpread;
 			float _SSSDistortion;
 			float _SSSBaseColorMix;
+			#endif
+			//endex
+			
+			//ifex _PostIntegratedSSS==0
+			#ifdef ZH_POSTINTEGRATEDSSS
+			#if defined(PROP_PISSSThicknessMap) || !defined(OPTIMIZER_ENABLED)
+			Texture2D _PISSSThicknessMap;
+			#endif
+			float4 _PISSSThicknessMap_ST;
+			float2 _PISSSThicknessMapPan;
+			float _PISSSThicknessMapUV;
+			float _PISSSThicknessMapChannel;
+			
+			float _PISSSGlobalMask;
+			float _PISSSGlobalMaskBlendType;
+			float _PISSSApplyGlobalMask;
+			float _PISSSApplyGlobalMaskBlendType;
+			sampler2D _PISSSLUTMap;
+			float _PISSSThicknessMod;
+			float4 _PISSSColor;
+			float _PISSSStrength;
+			float _PISSSUpper;
+			float _PISSSLower;
 			#endif
 			//endex
 			
@@ -34331,6 +34393,36 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 			#endif
 			//endex
 			
+			//ifex _PostIntegratedSSS==0
+			#ifdef ZH_POSTINTEGRATEDSSS
+			void applyPostIntegratedSSS(in PoiCam poiCam, inout PoiLight poiLight, in PoiMesh poiMesh, in PoiFragData poiFragData, inout PoiMods poiMods)
+			{
+				float4 SSS = 1;
+				float mask = 1;
+				#if defined(PROP_PISSSThicknessMap) || !defined(OPTIMIZER_ENABLED)
+				SSS = POI2D_SAMPLER_PAN(_PISSSThicknessMap, _MainTex, poiUV(poiMesh.uv[_PISSSThicknessMapUV], _PISSSThicknessMap_ST), _PISSSThicknessMapPan);
+				#endif
+				SSS = saturate(lerp((1 - SSS.r), 1, _PISSSThicknessMod));
+				float LUT = tex2D(_PISSSLUTMap, float2(lerp(_PISSSLower, _PISSSUpper, poiLight.nDotLNormalized), clamp(SSS.r, .01, .99))) * (_PISSSStrength * 4);
+
+				float3 LightDiff = max(poiLight.indirectColor, poiLight.directColor);
+				if (_PISSSGlobalMask > 0)
+				{
+					mask = maskBlend(mask, poiMods.globalMask[_PISSSGlobalMask - 1], _PISSSGlobalMaskBlendType);
+				}
+				if (_PISSSApplyGlobalMask > 0)
+				{
+					applyToGlobalMask(poiMods, _PISSSApplyGlobalMask - 1, _PISSSApplyGlobalMaskBlendType, LUT * mask);
+				}
+				#if defined(POINT) || defined(SPOT)
+				poiLight.finalLightAdd += _PISSSColor.rgb * (LUT * (_PISSSStrength * 4)) * LightDiff * mask;
+				#else
+				poiLight.finalLightAdd += _PISSSColor.rgb * (LUT * (_PISSSStrength * 4)) * LightDiff * mask;
+				#endif
+			}
+			#endif
+			//endex
+
 			//ifex _MochieBRDF==0 && _ClearCoatBRDF==0
 			#if defined(MOCHIE_PBR) || defined(POI_CLEARCOAT)
 			
@@ -38082,6 +38174,12 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				#endif
 				//endex
 				
+				//ifex _PostIntegratedSSS==0
+				#ifdef ZH_POSTINTEGRATEDSSS
+				applyPostIntegratedSSS(poiCam, poiLight, poiMesh, poiFragData, poiMods);
+				#endif
+				//endex
+
 				//ifex _MochieBRDF==0
 				#ifdef MOCHIE_PBR
 				MochieBRDF(poiFragData, poiCam, poiLight, poiMesh, poiMods);
@@ -38485,6 +38583,10 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 			#pragma shader_feature_local POI_SUBSURFACESCATTERING
 			//endex
 			
+			//ifex _PostIntegratedSSS==0
+			#pragma shader_feature_local ZH_POSTINTEGRATEDSSS
+			//endex
+		
 			//ifex _MochieBRDF==0
 			#pragma shader_feature_local MOCHIE_PBR
 			//endex
@@ -41610,6 +41712,29 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 			#endif
 			//endex
 			
+			//ifex _PostIntegratedSSS==0
+			#ifdef ZH_POSTINTEGRATEDSSS
+			#if defined(PROP_PISSSThicknessMap) || !defined(OPTIMIZER_ENABLED)
+			Texture2D _PISSSThicknessMap;
+			#endif
+			float4 _PISSSThicknessMap_ST;
+			float2 _PISSSThicknessMapPan;
+			float _PISSSThicknessMapUV;
+			float _PISSSThicknessMapChannel;
+			
+			float _PISSSGlobalMask;
+			float _PISSSGlobalMaskBlendType;
+			float _PISSSApplyGlobalMask;
+			float _PISSSApplyGlobalMaskBlendType;
+			sampler2D _PISSSLUTMap;
+			float _PISSSThicknessMod;
+			float4 _PISSSColor;
+			float _PISSSStrength;
+			float _PISSSUpper;
+			float _PISSSLower;
+			#endif
+			//endex
+
 			//ifex _MochieBRDF==0
 			#ifdef MOCHIE_PBR
 			#if defined(PROP_MOCHIEMETALLICMAPS) || !defined(OPTIMIZER_ENABLED)
@@ -50725,6 +50850,36 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 			#endif
 			//endex
 			
+			//ifex _PostIntegratedSSS==0
+			#ifdef ZH_POSTINTEGRATEDSSS
+			void applyPostIntegratedSSS(in PoiCam poiCam, inout PoiLight poiLight, in PoiMesh poiMesh, in PoiFragData poiFragData, inout PoiMods poiMods)
+			{
+				float4 SSS = 1;
+				float mask = 1;
+				#if defined(PROP_PISSSThicknessMap) || !defined(OPTIMIZER_ENABLED)
+				SSS = POI2D_SAMPLER_PAN(_PISSSThicknessMap, _MainTex, poiUV(poiMesh.uv[_PISSSThicknessMapUV], _PISSSThicknessMap_ST), _PISSSThicknessMapPan);
+				#endif
+				SSS = saturate(lerp((1 - SSS.r), 1, _PISSSThicknessMod));
+				float LUT = tex2D(_PISSSLUTMap, float2(lerp(_PISSSLower, _PISSSUpper, poiLight.nDotLNormalized), clamp(SSS.r, .01, .99))) * (_PISSSStrength * 4);
+
+				float3 LightDiff = max(poiLight.indirectColor, poiLight.directColor);
+				if (_PISSSGlobalMask > 0)
+				{
+					mask = maskBlend(mask, poiMods.globalMask[_PISSSGlobalMask - 1], _PISSSGlobalMaskBlendType);
+				}
+				if (_PISSSApplyGlobalMask > 0)
+				{
+					applyToGlobalMask(poiMods, _PISSSApplyGlobalMask - 1, _PISSSApplyGlobalMaskBlendType, LUT * mask);
+				}
+				#if defined(POINT) || defined(SPOT)
+				poiLight.finalLightAdd += _PISSSColor.rgb * (LUT * (_PISSSStrength * 4)) * LightDiff * mask;
+				#else
+				poiLight.finalLightAdd += _PISSSColor.rgb * (LUT * (_PISSSStrength * 4)) * LightDiff * mask;
+				#endif
+			}
+			#endif
+			//endex
+			
 			//ifex _MochieBRDF==0 && _ClearCoatBRDF==0
 			#if defined(MOCHIE_PBR) || defined(POI_CLEARCOAT)
 			
@@ -54298,6 +54453,12 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				#endif
 				//endex
 				
+				//ifex _PostIntegratedSSS==0
+				#ifdef ZH_POSTINTEGRATEDSSS
+				applyPostIntegratedSSS(poiCam, poiLight, poiMesh, poiFragData, poiMods);
+				#endif
+				//endex
+				
 				//ifex _MochieBRDF==0
 				#ifdef MOCHIE_PBR
 				MochieBRDF(poiFragData, poiCam, poiLight, poiMesh, poiMods);
@@ -54653,6 +54814,10 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 			
 			//ifex _SubsurfaceScattering==0
 			#pragma shader_feature_local POI_SUBSURFACESCATTERING
+			//endex
+			
+			//ifex _PostIntegratedSSS==0
+			#pragma shader_feature_local ZH_POSTINTEGRATEDSSS
 			//endex
 			
 			//ifex _MochieBRDF==0
