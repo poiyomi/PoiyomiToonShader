@@ -1,10 +1,6 @@
 using System;
-using System.Collections.Generic;
-using System.Text.RegularExpressions;
-using Algolia.Search.Models.Rules;
 using Thry.ThryEditor.Helpers;
 using UnityEditor;
-using UnityEditorInternal;
 using UnityEngine;
 
 namespace Thry.ThryEditor
@@ -33,8 +29,11 @@ namespace Thry.ThryEditor
                     _material = useThisMaterialInsteadOfOpenEditor;
                     _forceUseMaterialInsteadOfEditor = true;
                 }
-                _material = ShaderEditor.Active.Materials[0];
-                _forceUseMaterialInsteadOfEditor = false;
+                else
+                {
+                    _material = ShaderEditor.Active.Materials[0];
+                    _forceUseMaterialInsteadOfEditor = false;
+                }
             }
 
             public MaterialProperty GetMaterialProperty(string key)
@@ -94,13 +93,16 @@ namespace Thry.ThryEditor
                             }
                             return 0f;
                         }
-                        return prop.type switch
-                            {
-                                MaterialProperty.PropType.Color => prop.colorValue,
-                                MaterialProperty.PropType.Vector => prop.vectorValue,
-                                MaterialProperty.PropType.Texture => prop.textureValue != null ? prop.textureValue.name : "null",
-                                _ => prop.GetNumber()
-                            };
+                        switch (prop.type)
+                        {
+                            case MaterialProperty.PropType.Float:
+                            case MaterialProperty.PropType.Range:
+                                return prop.floatValue;
+                            case MaterialProperty.PropType.Texture:
+                                return prop.textureValue != null ? prop.textureValue.name : "null";
+                            default:
+                                return prop.GetNumber();
+                        }
                     }
 
                     return 0;
@@ -250,13 +252,15 @@ namespace Thry.ThryEditor
                 return false;
             }
 
-            bool IsNumericType(object obj) =>
-                obj is byte or sbyte
-                or short or ushort
-                or int or uint
-                or long or ulong
-                or float or double
-                or decimal;
+            bool IsNumericType(object obj)
+            {
+                return obj is byte || obj is sbyte
+                || obj is short || obj is ushort
+                || obj is int || obj is uint
+                || obj is long || obj is ulong
+                || obj is float || obj is double
+                || obj is decimal;
+            }
 
             public static ComparissionType TypeFromString(string s)
             {
@@ -373,14 +377,19 @@ namespace Thry.ThryEditor
 
             public override string ToString()
             {
-                return _type switch
+                switch (_type)
                 {
-                    BooleanType.TRUE => "true",
-                    BooleanType.FALSE => "false",
-                    BooleanType.PROPERTY_IS_ANIMATED => $"isAnimated({_data})",
-                    BooleanType.PROPERTY_IS_NOT_ANIMATED => $"isNotAnimated({_data})",
-                    _ => "none"
-                };
+                    case BooleanType.TRUE:
+                        return "true";
+                    case BooleanType.FALSE:
+                        return "false";
+                    case BooleanType.PROPERTY_IS_ANIMATED:
+                        return $"isAnimated({_data})";
+                    case BooleanType.PROPERTY_IS_NOT_ANIMATED:
+                        return $"isNotAnimated({_data})";
+                    default:
+                        return "none";
+                }
             }
         }
 
