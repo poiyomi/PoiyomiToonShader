@@ -8,6 +8,8 @@ namespace Thry.ThryEditor
 {
     public class DefineableAction
     {
+        public static DefineableAction None => new DefineableAction();
+
         public DefineableActionType type = DefineableActionType.NONE;
         public string data = "";
         public void Perform(Material[] targets)

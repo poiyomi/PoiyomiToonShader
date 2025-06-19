@@ -132,17 +132,20 @@ namespace Thry.ThryEditor
             protected set
             {
                 _content = value;
-                if(string.IsNullOrWhiteSpace(value.text))
-                {
-                    _contentNonDefault = GUIContent.none;
-                    return;
-                }
-                _contentNonDefault = new GUIContent(value.text + '*');
             }
             get
             {
-                if(Config.Instance.showStarNextToNonDefaultProperties && !IsPropertyValueDefault)
+                if (Config.Instance.showStarNextToNonDefaultProperties && !IsPropertyValueDefault)
+                {
+                    if (_contentNonDefault == null)
+                    {
+                        if (_content == null || string.IsNullOrWhiteSpace(_content.text))
+                            _contentNonDefault = GUIContent.none;
+                        else
+                            _contentNonDefault = new GUIContent(_content.text + '*');
+                    }
                     return _contentNonDefault;
+                }
                 return _content;
             }
         }
@@ -212,6 +215,25 @@ namespace Thry.ThryEditor
             return MaterialHelper.GetValue(MaterialProperty);
         }
 
+        // private static Vector4 GetPropertyDefaultValue([NotNull("ArgumentNullException")] Shader shader, int propertyIndex)
+        static MethodInfo s_fastGetPropertyDefaultValueMethod = 
+            typeof(Shader).GetMethod("GetPropertyDefaultValue", BindingFlags.NonPublic | BindingFlags.Static, null, new Type[] { typeof(Shader), typeof(int) }, null);
+
+        static Func<Shader, int , Vector4> FastGetPropertyDefaultValue =
+            (Func<Shader, int, Vector4>)Delegate.CreateDelegate(typeof(Func<Shader, int, Vector4>), s_fastGetPropertyDefaultValueMethod);
+
+        // private static extern int GetPropertyDefaultIntValue([NotNull("ArgumentNullException")] Shader shader, int propertyIndex);
+        static MethodInfo s_fastGetPropertyDefaultIntValueMethod =
+            typeof(Shader).GetMethod("GetPropertyDefaultIntValue", BindingFlags.NonPublic | BindingFlags.Static, null, new Type[] { typeof(Shader), typeof(int) }, null);
+        static Func<Shader, int, int> FastGetPropertyDefaultIntValue = 
+            (Func<Shader, int, int>)Delegate.CreateDelegate(typeof(Func<Shader, int, int>), s_fastGetPropertyDefaultIntValueMethod);
+
+        // private static extern string GetPropertyTextureDefaultName([NotNull("ArgumentNullException")] Shader shader, int propertyIndex);
+        static MethodInfo s_fastGetPropertyTextureDefaultNameMethod =
+            typeof(Shader).GetMethod("GetPropertyTextureDefaultName", BindingFlags.NonPublic | BindingFlags.Static, null, new Type[] { typeof(Shader), typeof(int) }, null);
+        static Func<Shader, int, string> FastGetPropertyTextureDefaultName =
+            (Func<Shader, int, string>)Delegate.CreateDelegate(typeof(Func<Shader, int, string>), s_fastGetPropertyTextureDefaultNameMethod);
+
         private object _propertyDefaultValue;
         public virtual object PropertyDefaultValue { 
             get
@@ -220,34 +242,34 @@ namespace Thry.ThryEditor
                 {
                     try
                     {
-                    if(MaterialProperty == null)
-                        return null;
-                    switch (MaterialProperty.type)
-                    {
-                        case PropType.Float:
-                        case PropType.Range:
-                            _propertyDefaultValue = MyShader.GetPropertyDefaultFloatValue(ShaderPropertyIndex);
-                            break;
-                        case PropType.Color:
-                        case PropType.Vector:
-                            _propertyDefaultValue = MyShader.GetPropertyDefaultVectorValue(ShaderPropertyIndex);
-                            break;
-                        case PropType.Texture:
-                            Texture tex = ShaderEditor.Active.GetShaderImporter(MyShader).GetDefaultTexture(MaterialProperty.name);
-                            if(tex != null) _propertyDefaultValue = tex.name;
-                            else            _propertyDefaultValue = MyShader.GetPropertyTextureDefaultName(ShaderPropertyIndex);
-                            break;
+                        if (MaterialProperty == null)
+                            return null;
+                        switch (MaterialProperty.type)
+                        {
+                            case PropType.Float:
+                            case PropType.Range:
+                                _propertyDefaultValue = FastGetPropertyDefaultValue(MyShader, ShaderPropertyIndex).x;
+                                break;
+                            case PropType.Color:
+                            case PropType.Vector:
+                                _propertyDefaultValue = FastGetPropertyDefaultValue(MyShader, ShaderPropertyIndex);
+                                break;
+                            case PropType.Texture:
+                                Texture tex = ShaderEditor.Active.GetShaderImporter(MyShader).GetDefaultTexture(MaterialProperty.name);
+                                if (tex != null) _propertyDefaultValue = tex.name;
+                                else _propertyDefaultValue = FastGetPropertyTextureDefaultName(MyShader, ShaderPropertyIndex);
+                                break;
 #if UNITY_2022_1_OR_NEWER
-                        case PropType.Int:
-                            _propertyDefaultValue = MyShader.GetPropertyDefaultIntValue(ShaderPropertyIndex);
-                            break;
+                            case PropType.Int:
+                                _propertyDefaultValue = FastGetPropertyDefaultIntValue(MyShader, ShaderPropertyIndex);
+                                break;
 #endif
-                        default :
-                            _propertyDefaultValue = -1;
-                            break;
+                            default:
+                                _propertyDefaultValue = -1;
+                                break;
+                        }
                     }
-                    }
-                    catch(Exception e)
+                    catch (Exception e)
                     {
                         Debug.LogError(e);
                         Debug.Log($"{MyShader.name} {MaterialProperty.name} {ShaderPropertyIndex}  {MyShader.FindPropertyIndex(MaterialProperty.name)} {MyShader.GetPropertyType(ShaderPropertyIndex)}");

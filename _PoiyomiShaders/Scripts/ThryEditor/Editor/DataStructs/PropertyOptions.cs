@@ -6,7 +6,7 @@ namespace Thry.ThryEditor
         public string tooltip = "";
         public DefineableAction altClick;
         public DefineableAction onClick;
-        public DefineableCondition condition_show = new DefineableCondition();
+        public DefineableCondition condition_show = DefineableCondition.None;
         public string condition_showS;
         public DefineableCondition condition_enable = null;
         public DefineableCondition condition_enable_children = null;
@@ -29,12 +29,14 @@ namespace Thry.ThryEditor
         public bool default_expand = false;
         public bool ref_float_toggles_expand = true;
 
+        public static PropertyOptions Default => new PropertyOptions();
+
         public static PropertyOptions Deserialize(string s)
         {
-            if (s == null) return new PropertyOptions();
+            if (s == null) return Default;
             s = s.Replace("''", "\"");
             PropertyOptions options = Parser.Deserialize<PropertyOptions>(s);
-            if (options == null) return new PropertyOptions();
+            if (options == null) return Default;
             // The following could be removed since the parser can now handle it. leaving it in for now /shrug
             if (options.condition_showS != null)
             {

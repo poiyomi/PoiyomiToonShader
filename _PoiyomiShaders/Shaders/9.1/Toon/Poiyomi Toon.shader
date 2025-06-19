@@ -1,8 +1,8 @@
-Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
+Shader ".poiyomi/Old Versions/9.1/oiyomi Toon"
 {
 	Properties
 	{
-		[HideInInspector] shader_master_label ("<color=#E75898ff>Poiyomi 9.1.22</color>", Float) = 0
+		[HideInInspector] shader_master_label ("<color=#E75898ff>Poiyomi 9.1.30</color>", Float) = 0
 		[HideInInspector] shader_is_using_thry_editor ("", Float) = 0
 		[HideInInspector] shader_locale ("0db0b86376c3dca4b9a6828ef8615fe0", Float) = 0
 		[HideInInspector] footer_youtube ("{texture:{name:icon-youtube,height:16},action:{type:URL,data:https://www.youtube.com/poiyomi},hover:YOUTUBE}", Float) = 0
@@ -79,7 +79,7 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 		//ifex _MainColorAdjustToggle==0
 		[HideInInspector] m_start_ColorAdjust ("Color Adjust--{reference_property:_MainColorAdjustToggle,button_help:{text:Tutorial,action:{type:URL,data:https://www.poiyomi.com/color-and-normals/color-adjust},hover:Documentation}}", Float) = 0
 		[HideInInspector][ThryToggle(COLOR_GRADING_HDR)] _MainColorAdjustToggle ("Adjust Colors", Float) = 0
-		[sRGBWarning][ThryRGBAPacker(R Hue Mask, G Brightness Mask, B Saturation Mask, Gamma , A, linear, false)]_MainColorAdjustTexture ("Mask (Expand)--{reference_properties:[_MainColorAdjustTexturePan, _MainColorAdjustTextureUV]}", 2D) = "white" { }
+		[sRGBWarning][ThryRGBAPacker(R Hue Mask, G Brightness Mask, B Saturation Mask,A Gamma , linear, false)]_MainColorAdjustTexture ("Mask (Expand)--{reference_properties:[_MainColorAdjustTexturePan, _MainColorAdjustTextureUV]}", 2D) = "white" { }
 		[HideInInspector][Vector2]_MainColorAdjustTexturePan ("Panning", Vector) = (0, 0, 0, 0)
 		[HideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7)] _MainColorAdjustTextureUV ("UV", Int) = 0
 		_Saturation ("Saturation", Range(-1, 10)) = 0
@@ -1062,7 +1062,6 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 		
 		//ifex _LightingMode!=1
 		// Multilayer Math
-		[sRGBWarning]_MultilayerMathBlurMap ("Blur Map--{reference_properties:[_MultilayerMathBlurMapPan, _MultilayerMathBlurMapUV], condition_showS:(_LightingMode==1)}", 2D) = "white" { }
 		[HideInInspector] s_start_MultilayerMath1stLayer ("Shadow Layer 1--{persistent_expand:true,default_expand:true, condition_showS:(_LightingMode==1)}", Float) = 1
 		[sRGBWarning(true)]_ShadowColorTex ("Color Tex--{reference_properties:[_ShadowColorTexPan, _ShadowColorTexUV], condition_showS:(_LightingMode==1)}", 2D) = "black" { }
 		[HideInInspector][Vector2]_ShadowColorTexPan ("Panning", Vector) = (0, 0, 0, 0)
@@ -1100,9 +1099,19 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 		_ShadowBorderRange ("Border Range--{condition_showS:(_LightingMode==1)}", Range(0, 1)) = 0
 		[HideInInspector] s_end_MultilayerMathBorder ("Border", Float) = 1
 		
+		[HideInInspector] s_start_MultilayerShadowMap ("Shadow Map--{persistent_expand:true,default_expand:false, condition_showS:(_LightingMode==1)}", Float) = 0
+		[ThryWideEnum(Strength, 0, Flat, 1)] _ShadowMaskType ("Map Type", Int) = 0
+		_ShadowStrengthMask ("Color Tex--{reference_properties:[_ShadowStrengthMaskPan, _ShadowStrengthMaskUV]}", 2D) = "white" { }
+		[HideInInspector][Vector2]_ShadowStrengthMaskPan ("Panning", Vector) = (0, 0, 0, 0)
+		[HideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7)] _ShadowStrengthMaskUV ("UV", Int) = 0
+		_ShadowFlatBorder ("Border--{condition_showS:(_ShadowMaskType==1)}", Range(-2, 2)) = 1
+		_ShadowFlatBlur ("Blur--{condition_showS:(_ShadowMaskType==1)}", Range(0.001, 2)) = 1
+		//_ShadowStrengthMaskLOD ("LOD", Range(0, 1)) = 0
+		[HideInInspector] s_end_MultilayerShadowMap ("Shadow Map}", Float) = 0
+		
 		[HideInInspector] s_start_MultilayerMathBorderMap ("Shadow Border Map--{reference_property:_ShadowBorderMapToggle, persistent_expand:true,default_expand:false, condition_showS:(_LightingMode==1)}", Float) = 0
 		[HideInInspector][ToggleUI] _ShadowBorderMapToggle ("Shadow Border Map Toggle", Float) = 0
-		_ShadowBorderMask ("Shadow Border Map--{reference_properties:[_ShadowBorderMaskPan, _ShadowBorderMaskUV]}", 2D) = "white" { }
+		_ShadowBorderMask ("AO Map--{reference_properties:[_ShadowBorderMaskPan, _ShadowBorderMaskUV]}", 2D) = "white" { }
 		[HideInInspector][Vector2]_ShadowBorderMaskPan ("Panning", Vector) = (0, 0, 0, 0)
 		[HideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7)] _ShadowBorderMaskUV ("UV", Int) = 0
 		_ShadowBorderMaskLOD ("Border Map LOD", Range(0, 1)) = 0
@@ -1111,6 +1120,7 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 		[VectorToSliders(3rd Min, n0.01, p1.01, 3rd Max, n0.01, p1.01)]_ShadowAOShift2 ("Shadow AO Shift", Vector) = (0, 1, 0, 1)
 		[HideInInspector] s_end_MultilayerMathBorderMap ("Shadow Border Map", Float) = 1
 		
+		[sRGBWarning]_MultilayerMathBlurMap ("Blur Map--{reference_properties:[_MultilayerMathBlurMapPan, _MultilayerMathBlurMapUV], condition_showS:(_LightingMode==1)}", 2D) = "white" { }
 		[ToggleUI]_LightingMulitlayerNonLinear ("Non Linear Lightmap--{condition_showS:(_LightingMode==1)}", Float) = 1
 		_ShadowMainStrength ("Base Color Blend--{condition_showS:(_LightingMode==1)}", Range(0, 1)) = 0
 		_ShadowEnvStrength ("Env Strength on Shadow Color--{condition_showS:(_LightingMode==1)}", Range(0, 1)) = 0
@@ -1727,9 +1737,10 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 		[HideInInspector] s_end_RimLightDirectionMask ("Light Direction Mask", Float) = 0
 		// Liltoon
 		[HDR][Gamma]_RimColor ("Rim Color--{condition_showS:_RimStyle==2,reference_property:_RimLightColorThemeIndex}", Color) = (0.66, 0.5, 0.48, 1)
-		[sRGBWarning(true)] _RimColorTex ("Color / Mask--{condition_showS:_RimStyle==2,reference_properties:[_RimColorTexPan, _RimColorTexUV]}", 2D) = "white" { }
+		[sRGBWarning(true)] _RimColorTex ("Color / Mask--{condition_showS:_RimStyle==2,reference_properties:[_RimColorTexPan,  _RimMaskOnlyMask, _RimColorTexUV]}", 2D) = "white" { }
 		[HideInInspector][Vector2] _RimColorTexPan ("Panning", Vector) = (0, 0, 0, 0)
 		[HideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7)] _RimColorTexUV ("UV", Int) = 0
+		[HideInInspector][ToggleUI]_RimMaskOnlyMask ("Mask Only", Float) = 0
 		_RimMainStrength ("Main Color Blend--{condition_showS:_RimStyle==2}", Range(0, 1)) = 0
 		_RimNormalStrength ("Normal Strength--{condition_showS:_RimStyle==2}", Range(0, 1)) = 1.0
 		_RimBorder ("Border--{condition_showS:_RimStyle==2}", Range(0, 1)) = 0.5
@@ -1808,7 +1819,7 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 		_Rim2BlendStrength ("Blend Alpha--{ condition_showS:_Rim2Style==0}", Range(0, 1)) = 1
 		_Rim2BaseColorMix ("Mix Base Color--{ condition_showS:_Rim2Style==0}", Range(0, 1)) = 0
 		_Rim2Brightness ("Brightness--{ condition_showS:_Rim2Style==0}", Range(0, 10)) = 1
-		_Rim2Strength ("Rim Emission--{ condition_showS:_Rim2Style==0}", Range(0, 20)) = 0
+		_Rim2Strength ("Emission--{ condition_showS:_Rim2Style==0}", Range(0, 20)) = 0
 		_Tweak_Rim2LightMaskLevel ("Tweak_RimLightMaskLevel--{ condition_showS:_Rim2Style==1}", Range(-1, 1)) = 0
 		_Is_LightColor_Rim2Light ("Mix Light Color--{ condition_showS:_Rim2Style==1}", Range(0, 1)) = 1
 		[HideInInspector] s_end_RimLight1Color ("Color & Brightness", Float) = 0
@@ -1847,9 +1858,10 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 		
 		// Liltoon
 		[HDR][Gamma]_Rim2Color ("Rim Color--{condition_showS:_Rim2Style==2,reference_property:_Rim2LightColorThemeIndex}", Color) = (0.66, 0.5, 0.48, 1)
-		[sRGBWarning(true)] _Rim2ColorTex ("Color / Mask--{condition_showS:_Rim2Style==2,reference_properties:[_Rim2ColorTexPan, _Rim2ColorTexUV]}", 2D) = "white" { }
+		[sRGBWarning(true)] _Rim2ColorTex ("Color / Mask--{condition_showS:_Rim2Style==2,reference_properties:[_Rim2ColorTexPan, _Rim2ColorTexUV, _Rim2MaskOnlyMask]}", 2D) = "white" { }
 		[HideInInspector][Vector2] _Rim2ColorTexPan ("Panning", Vector) = (0, 0, 0, 0)
 		[HideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7)] _Rim2ColorTexUV ("UV", Int) = 0
+		[HideInInspector][ToggleUI]_Rim2MaskOnlyMask ("Mask Only", Float) = 0
 		_Rim2MainStrength ("Main Color Blend--{condition_showS:_Rim2Style==2}", Range(0, 1)) = 0
 		_Rim2NormalStrength ("Normal Strength--{condition_showS:_Rim2Style==2}", Range(0, 1)) = 1.0
 		_Rim2Border ("Border--{condition_showS:_Rim2Style==2}", Range(0, 1)) = 0.5
@@ -1972,6 +1984,7 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 		[Space(10)]
 		_MochieReflectionStrength ("Reflection Visibility", Range(0, 1)) = 1
 		_MochieSpecularStrength ("Specular Visibility", Range(0, 5)) = 1
+		_RefSpecFresnelStrength ("Fresnel Strength", Range(0, 1)) = .5
 		[Space(10)]
 		[ThryTexture][NoScaleOffset]_MochieReflCube ("Cubemap", Cube) = "" { }
 		[ToggleUI]_MochieForceFallback ("Force Fallback", Int) = 0
@@ -1999,9 +2012,6 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 		[ToggleUI]_MochieLitFallback ("Lit Fallback", Float) = 1
 		[ToggleUI]_IgnoreCastedShadows ("Ignore Casted Shadows", Float) = 0
 		_PBRNormalSelect ("Pixel Normal Mix", Range(0, 1)) = 1
-		[PowerSlider(.2)]_RefSpecFresnel ("Fresnel Reflection", Range(0, 1)) = 1
-		_RefSpecFresnelAlpha ("Fresnel Alpha", Range(0, 1)) = 1
-		[PowerSlider(.2)]_RefSpecFresnelBack ("Backface Fresnel Reflection", Range(0, 1)) = 1
 		[ThryToggleUI(true)]_MochieGSAAEnabled ("<size=13><b>  GSAA</b></size>", Float) = 1
 		_PoiGSAAVariance ("GSAA Variance--{condition_showS:(_MochieGSAAEnabled==1)}", Range(0, 1)) = 0.15
 		_PoiGSAAThreshold ("GSAA Threshold--{condition_showS:(_MochieGSAAEnabled==1)}", Range(0, 1)) = 0.1
@@ -2025,6 +2035,7 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 		_ClearCoatSmoothness ("Smoothness", Range(0, 1)) = 1
 		_ClearCoatReflectionStrength ("Reflections Visibility", Range(0, 1)) = 1
 		_ClearCoatSpecularStrength ("Specular Visibility", Range(0, 1)) = 1
+		_ClearcoatFresnelStrength ("Fresnel Strength", Range(0, 1)) = .5
 		_ClearCoatReflectionTint ("Reflection Tint--{reference_property:_ClearCoatReflectionTintThemeIndex}", Color) = (1, 1, 1, 1)
 		[HideInInspector][ThryWideEnum(Off, 0, Theme Color 0, 1, Theme Color 1, 2, Theme Color 2, 3, Theme Color 3, 4, ColorChord 0, 5, ColorChord 1, 6, ColorChord 2, 7, ColorChord 3, 8, AL Theme 0, 9, AL Theme 1, 10, AL Theme 2, 11, AL Theme 3, 12)] _ClearCoatReflectionTintThemeIndex ("", Int) = 0
 		_ClearCoatSpecularTint ("Specular Tint--{reference_property:_ClearCoatSpecularTintThemeIndex}", Color) = (1, 1, 1, 1)
@@ -2050,7 +2061,6 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 		[ToggleUI]_ClearCoatLitFallback ("Lit Fallback", Float) = 1
 		[ToggleUI]_CCIgnoreCastedShadows ("Ignore Casted Shadows", Float) = 0
 		_ClearCoatNormalSelect ("Pixel Normal Mix", Range(0, 1)) = 0
-		[PowerSlider(.2)]_ClearcoatFresnel ("Fresnel Reflection", Range(0, 1)) = 1
 		[ThryToggleUI(true)]_ClearCoatGSAAEnabled ("<size=13><b>  GSAA</b></size>", Float) = 1
 		_ClearCoatGSAAVariance ("GSAA Variance", Range(0, 1)) = 0.15
 		_ClearCoatGSAAThreshold ("GSAA Threshold", Range(0, 1)) = 0.1
@@ -2208,7 +2218,7 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 		[HideInInspector] m_OutlineCategory (" Outlines--{reference_property:_EnableOutlines,button_help:{text:Tutorial,action:{type:URL,data:https://www.poiyomi.com/outlines/main},hover:Documentation}}", Float) = 0
 		//ifex _EnableOutlines!=1
 		// Outline Vertex
-		[HideInInspector][ToggleUI]_EnableOutlines ("Enable Outlines", float) = 0
+		[DoNotAnimate][HideInInspector][ToggleUI]_EnableOutlines ("Enable Outlines", float) = 0
 		[Enum(Basic, 1, Rim Light, 2, Directional, 3, DropShadow, 4)]_OutlineExpansionMode ("Mode", Int) = 1
 		[Enum(Local, 0, World, 1)]_OutlineSpace ("Space", Int) = 0
 		
@@ -2266,7 +2276,7 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 		[HideInInspector] s_end_VertexColors ("Vertex Colors", Float) = 0
 		
 		[HideInInspector] s_start_OutlineRenderingOptions ("Rendering Options--{persistent_expand:true,default_expand:false}", Float) = 0
-		[ToggleUI]_OutlineClipAtZeroWidth ("Clip 0 Width", Float) = 0
+		[ToggleUI]_OutlineClipAtZeroWidth ("Clip 0 Width", Float) = 1
 		[ToggleUI]_OutlineOverrideAlpha ("Override Base Alpha", Float) = 0
 		_Offset_Z ("Cam Z Offset", Float) = 0
 		[Enum(UnityEngine.Rendering.CullMode)] _OutlineCull ("Cull", Float) = 1
@@ -2320,6 +2330,31 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 		[HideInInspector] _UDIMDiscardRow0_1("", Float) = 0
 		[HideInInspector] _UDIMDiscardRow0_2("", Float) = 0
 		[HideInInspector] _UDIMDiscardRow0_3("", Float) = 0
+		
+		[HideInInspector] m_start_udimfacediscardOptions ("Face Discard--{reference_property:_EnableUDIMFaceDiscardOptions}", Float) = 0
+		[HideInInspector][ToggleUI]_EnableUDIMFaceDiscardOptions ("Enabled", Float) = 0
+		[ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3)]_UDIMFaceDiscardUV ("Face Discard UV", Int) = 0
+		[Enum(Back, 0, Front, 1)] _UDIMFaceDiscardFace ("Face to Discard", Int) = 0
+		[ThryMultiFloats(true, _UDIMFaceDiscardRow3_1, _UDIMFaceDiscardRow3_2, _UDIMFaceDiscardRow3_3)] _UDIMFaceDiscardRow3_0("v = 3", Float) = 0
+		[HideInInspector] _UDIMFaceDiscardRow3_1("", Float) = 0
+		[HideInInspector] _UDIMFaceDiscardRow3_2("", Float) = 0
+		[HideInInspector] _UDIMFaceDiscardRow3_3("", Float) = 0
+		
+		[ThryMultiFloats(true, _UDIMFaceDiscardRow2_1, _UDIMFaceDiscardRow2_2, _UDIMFaceDiscardRow2_3)] _UDIMFaceDiscardRow2_0("v = 2", Float) = 0
+		[HideInInspector] _UDIMFaceDiscardRow2_1("", Float) = 0
+		[HideInInspector] _UDIMFaceDiscardRow2_2("", Float) = 0
+		[HideInInspector] _UDIMFaceDiscardRow2_3("", Float) = 0
+		
+		[ThryMultiFloats(true, _UDIMFaceDiscardRow1_1, _UDIMFaceDiscardRow1_2, _UDIMFaceDiscardRow1_3)] _UDIMFaceDiscardRow1_0("v = 1", Float) = 0
+		[HideInInspector] _UDIMFaceDiscardRow1_1("", Float) = 0
+		[HideInInspector] _UDIMFaceDiscardRow1_2("", Float) = 0
+		[HideInInspector] _UDIMFaceDiscardRow1_3("", Float) = 0
+		
+		[ThryMultiFloats(true, _UDIMFaceDiscardRow0_1, _UDIMFaceDiscardRow0_2, _UDIMFaceDiscardRow0_3)] _UDIMFaceDiscardRow0_0("v = 0", Float) = 0
+		[HideInInspector] _UDIMFaceDiscardRow0_1("", Float) = 0
+		[HideInInspector] _UDIMFaceDiscardRow0_2("", Float) = 0
+		[HideInInspector] _UDIMFaceDiscardRow0_3("", Float) = 0
+		[HideInInspector] m_end_udimfacediscardOptions ("Row 3", Float) = 0
 		
 		[HideInInspector] m_end_udimdiscardOptions ("UV Tile Discard", Float) = 0
 		//endex
@@ -3440,8 +3475,6 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 		[HideInInspector][ThryToggle(POI_AL_DECAL)]_EnableALDecal ("Enable AL Decal", Float) = 0
 		[HideInInspector][ThryWideEnum(lil Spectrum, 0)] _ALDecalType ("AL Type--{ condition_showS:_EnableAudioLink==1}", Int) = 0
 		
-		[ThryHeaderLabel(Transform, 13)]
-		[Space(4)]
 		[Enum(Normal, 0, Circle, 1)] _ALDecalUVMode ("UV Mode", Float) = 0
 		[ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7)] _ALDecalUV ("UV", Int) = 0
 		[Vector2]_ALUVPosition ("Position", Vector) = (.5, .5, 1)
@@ -3451,30 +3484,31 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 		_ALDecalLineWidth ("Line Width", Range(0, 1)) = 1.0
 		_ALDecaldCircleDimensions ("Cirlce Dimensions--{ condition_showS:_ALDecalUVMode==1}", Vector) = (0, 1, 0, 1)
 		
-		[Space][ThryHeaderLabel(Volume, 13)]
-		[Space(4)]
+		[HideInInspector] s_start_ALDecalVolumeOptions ("Volume--{persistent_expand:true,default_expand:true}", Float) = 1
 		_ALDecalVolumeStep ("Volume Step Num (0 = Off)", Float) = 0.0
 		_ALDecalVolumeClipMin ("Volume Clip Min", Range(0, 1)) = 0.0
 		_ALDecalVolumeClipMax ("Volume Clip Max", Range(0, 1)) = 1.0
+		[HideInInspector] s_end_ALDecalVolumeOptions ("Volume", Float) = 0
 		
-		[Space][ThryHeaderLabel(Band, 13)]
-		[Space(4)]
+		[HideInInspector] s_start_ALDecalBandOptions ("Band--{persistent_expand:true,default_expand:true}", Float) = 1
 		_ALDecalBandStep ("Band Step Num (0 = Off)", Float) = 0.0
 		_ALDecalBandClipMin ("Band Clip Min", Range(0, 1)) = 0.0
 		_ALDecalBandClipMax ("Band Clip Max", Range(0, 1)) = 1.0
+		[HideInInspector] s_end_ALDecalBand ("Band", Float) = 0
 		
-		[Space][ThryToggleUI(true)]_ALDecalShapeClip ("<size=13><b>  Shape Clip</b></size>", Float) = 0
-		_ALDecalShapeClipVolumeWidth ("Volume Width--{ condition_showS:_ALDecalShapeClip==1}", Range(0, 1)) = 0.5
-		_ALDecalShapeClipBandWidth ("Band Width--{ condition_showS:_ALDecalShapeClip==1}", Range(0, 1)) = 0.5
+		[HideInInspector] s_start_ALDecalShapeClipOptions ("Shape Clip--{reference_property:_ALDecalShapeClip,persistent_expand:true,default_expand:true}", Float) = 1
+		[HideInInspector][ThryToggleUI(true)]_ALDecalShapeClip ("<size=13><b>  Shape Clip</b></size>", Float) = 0
+		_ALDecalShapeClipVolumeWidth ("Volume Width", Range(0, 1)) = 0.5
+		_ALDecalShapeClipBandWidth ("Band Width", Range(0, 1)) = 0.5
+		[HideInInspector] s_end_ALDecalShapeClipOptions ("Shape Clip", Float) = 0
 		
-		[Space][ThryHeaderLabel(Audio Mods, 13)]
-		[Space(4)]
+		[HideInInspector] s_start_ALDecalAudioModsOptions ("Audio Mods--{persistent_expand:true,default_expand:true}", Float) = 1
 		_ALDecalVolume ("Volume", Int) = 0.5
 		_ALDecalBaseBoost ("Bass Boost", Float) = 5.0
 		_ALDecalTrebleBoost ("Treble Boost", Float) = 1.0
+		[HideInInspector] s_end_ALDecalAudioModsOptions ("Audio Mods", Float) = 0
 		
-		[Space][ThryHeaderLabel(Colors and Blending, 13)]
-		[Space(4)]
+		[HideInInspector] s_start_ALDecalColorsBlendingOptions ("Colors and Blending--{persistent_expand:true,default_expand:true}", Float) = 1
 		[sRGBWarning(true)][ThryRGBAPacker(RGB Color, A Mask, sRGB, false)]_ALDecalColorMask ("Color & Mask--{reference_properties:[_ALDecalColorMaskPan, _ALDecalColorMaskUV]}", 2D) = "white" { }
 		[HideInInspector][Vector2]_ALDecalColorMaskPan ("Panning", Vector) = (0, 0, 0, 0)
 		[HideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7)] _ALDecalColorMaskUV ("UV", Int) = 0
@@ -3494,6 +3528,7 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 		[ThryWideEnum(Off, 0, 1R, 1, 1G, 2, 1B, 3, 1A, 4, 2R, 5, 2G, 6, 2B, 7, 2A, 8, 3R, 9, 3G, 10, 3B, 11, 3A, 12, 4R, 13, 4G, 14, 4B, 15, 4A, 16)] _ALDecalGlobalMask ("Global Mask--{reference_property:_ALDecalGlobalMaskBlendType}", Int) = 0
 		[HideInInspector][ThryWideEnum(Add, 7, Subtract, 1, Multiply, 2, Divide, 3, Min, 4, Max, 5, Average, 6, Replace, 0)] _ALDecalGlobalMaskBlendType ("Blending", Int) = 2
 		[HideInInspector] m_end_ALDecalSpectrum ("AL ♫ Spectrum", Float) = 0
+		[HideInInspector] s_end_ALDecalColorsBlendingOptions ("Colors and Blending", Float) = 0
 		//endex
 		
 		//ifex _EnableVolumeColor==0
@@ -5231,6 +5266,26 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 			float _UDIMDiscardRow0_1;
 			float _UDIMDiscardRow0_2;
 			float _UDIMDiscardRow0_3;
+			
+			float _EnableUDIMFaceDiscardOptions;
+			float _UDIMFaceDiscardFace;
+			float _UDIMFaceDiscardUV;
+			float _UDIMFaceDiscardRow3_0;
+			float _UDIMFaceDiscardRow3_1;
+			float _UDIMFaceDiscardRow3_2;
+			float _UDIMFaceDiscardRow3_3;
+			float _UDIMFaceDiscardRow2_0;
+			float _UDIMFaceDiscardRow2_1;
+			float _UDIMFaceDiscardRow2_2;
+			float _UDIMFaceDiscardRow2_3;
+			float _UDIMFaceDiscardRow1_0;
+			float _UDIMFaceDiscardRow1_1;
+			float _UDIMFaceDiscardRow1_2;
+			float _UDIMFaceDiscardRow1_3;
+			float _UDIMFaceDiscardRow0_0;
+			float _UDIMFaceDiscardRow0_1;
+			float _UDIMFaceDiscardRow0_2;
+			float _UDIMFaceDiscardRow0_3;
 			#endif
 			//endex
 			
@@ -7296,6 +7351,30 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 				unity_SpecCube0.GetDimensions(width, height);
 				return !(width * height < 2);
 			}
+			//ifex _EnableUDIMDiscardOptions==0
+			#ifdef POI_UDIMDISCARD
+			float shouldPerformUDIMDiscard(float2 udim, float4 UDIMDiscardRows[4])
+			{
+				float shouldDiscard = 0;
+				float4 xMask = float4(  (udim.x >= 0 && udim.x < 1),
+				(udim.x >= 1 && udim.x < 2),
+				(udim.x >= 2 && udim.x < 3),
+				(udim.x >= 3 && udim.x < 4));
+				
+				shouldDiscard += (udim.y >= 0 && udim.y < 1) * dot(UDIMDiscardRows[0], xMask);
+				shouldDiscard += (udim.y >= 1 && udim.y < 2) * dot(UDIMDiscardRows[1], xMask);
+				shouldDiscard += (udim.y >= 2 && udim.y < 3) * dot(UDIMDiscardRows[2], xMask);
+				shouldDiscard += (udim.y >= 3 && udim.y < 4) * dot(UDIMDiscardRows[3], xMask);
+				
+				shouldDiscard *= any(float4(udim.y >= 0, udim.y < 4, udim.x >= 0, udim.x < 4)); // never discard outside 4x4 grid in pos coords
+				
+				// Use a threshold so that there's some room for animations to be close to 0, but not exactly 0
+				const float threshold = 0.001;
+				return threshold - shouldDiscard;
+			}
+			#endif
+			//endex
+			
 			//ifex _EnableAudioLink==0
 			#ifdef POI_AUDIOLINK
 			
@@ -7637,6 +7716,18 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 			#endif
 			//endex
 			
+			void applyReducedRenderClipDistance(inout VertexOut o)
+			{
+				if (o.pos.w < _ProjectionParams.y * 1.01 && o.pos.w > 0)
+				{
+					#if defined(UNITY_REVERSED_Z) // DirectX
+					o.pos.z = o.pos.z * 0.0001 + o.pos.w * 0.999;
+					#else // OpenGL
+					o.pos.z = o.pos.z * 0.0001 - o.pos.w * 0.999;
+					#endif
+				}
+			}
+			
 			VertexOut vert(
 			#ifndef POI_TESSELLATED
 			appdata v
@@ -7667,22 +7758,15 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 					udim += (v.uv2.xy * (_UDIMDiscardUV == 2));
 					udim += (v.uv3.xy * (_UDIMDiscardUV == 3));
 					
-					float isDiscarded = 0;
-					float4 xMask = float4(  (udim.x >= 0 && udim.x < 1),
-					(udim.x >= 1 && udim.x < 2),
-					(udim.x >= 2 && udim.x < 3),
-					(udim.x >= 3 && udim.x < 4));
+					float4 UDIMDiscardRows[4];
+					UDIMDiscardRows[0] = float4(_UDIMDiscardRow0_0, _UDIMDiscardRow0_1, _UDIMDiscardRow0_2, _UDIMDiscardRow0_3);
+					UDIMDiscardRows[1] = float4(_UDIMDiscardRow1_0, _UDIMDiscardRow1_1, _UDIMDiscardRow1_2, _UDIMDiscardRow1_3);
+					UDIMDiscardRows[2] = float4(_UDIMDiscardRow2_0, _UDIMDiscardRow2_1, _UDIMDiscardRow2_2, _UDIMDiscardRow2_3);
+					UDIMDiscardRows[3] = float4(_UDIMDiscardRow3_0, _UDIMDiscardRow3_1, _UDIMDiscardRow3_2, _UDIMDiscardRow3_3);
 					
-					isDiscarded += (udim.y >= 0 && udim.y < 1) * dot(float4(_UDIMDiscardRow0_0, _UDIMDiscardRow0_1, _UDIMDiscardRow0_2, _UDIMDiscardRow0_3), xMask);
-					isDiscarded += (udim.y >= 1 && udim.y < 2) * dot(float4(_UDIMDiscardRow1_0, _UDIMDiscardRow1_1, _UDIMDiscardRow1_2, _UDIMDiscardRow1_3), xMask);
-					isDiscarded += (udim.y >= 2 && udim.y < 3) * dot(float4(_UDIMDiscardRow2_0, _UDIMDiscardRow2_1, _UDIMDiscardRow2_2, _UDIMDiscardRow2_3), xMask);
-					isDiscarded += (udim.y >= 3 && udim.y < 4) * dot(float4(_UDIMDiscardRow3_0, _UDIMDiscardRow3_1, _UDIMDiscardRow3_2, _UDIMDiscardRow3_3), xMask);
+					float shouldDiscard = shouldPerformUDIMDiscard(udim, UDIMDiscardRows);
 					
-					isDiscarded *= any(float4(udim.y >= 0, udim.y < 4, udim.x >= 0, udim.x < 4)); // never discard outside 4x4 grid in pos coords
-					
-					// Use a threshold so that there's some room for animations to be close to 0, but not exactly 0
-					const float threshold = 0.001;
-					if(isDiscarded > threshold) // Early Return skips rest of vertex shader
+					if(shouldDiscard < 0) // Early Return skips rest of vertex shader
 					{
 						return (VertexOut)POI_NAN;
 					}
@@ -7692,7 +7776,7 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 				
 				//ifex _VertexManipulationsEnabled==0
 				#ifdef AUTO_EXPOSURE
-				float4 audioLinkBands = 0;
+				float audioLinkBands[5];
 				float3 ALrotation = 0;
 				float3 ALLocalTranslation = 0;
 				float3 CTALRotation = 0;
@@ -7704,10 +7788,11 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 				#ifdef POI_AUDIOLINK
 				if (AudioLinkIsAvailable() && _VertexAudioLinkEnabled && _AudioLinkAnimToggle)
 				{
-					audioLinkBands.x = AudioLinkData(ALPASS_AUDIOBASS).r;
-					audioLinkBands.y = AudioLinkData(ALPASS_AUDIOLOWMIDS).r;
-					audioLinkBands.z = AudioLinkData(ALPASS_AUDIOHIGHMIDS).r;
-					audioLinkBands.w = AudioLinkData(ALPASS_AUDIOTREBLE).r;
+					audioLinkBands[0] = _AudioLinkSmoothingBass == 0 ? AudioLinkData(ALPASS_AUDIOLINK + float2(0, 0))[0] : AudioLinkData(ALPASS_FILTEREDAUDIOLINK + float2((1 - _AudioLinkSmoothingBass) * 15.95, 0))[0];
+					audioLinkBands[1] = _AudioLinkSmoothingLowMid == 0 ? AudioLinkData(ALPASS_AUDIOLINK + float2(0, 1))[0] : AudioLinkData(ALPASS_FILTEREDAUDIOLINK + float2((1 - _AudioLinkSmoothingLowMid) * 15.95, 1))[0];
+					audioLinkBands[2] = _AudioLinkSmoothingHighMid == 0 ? AudioLinkData(ALPASS_AUDIOLINK + float2(0, 2))[0] : AudioLinkData(ALPASS_FILTEREDAUDIOLINK + float2((1 - _AudioLinkSmoothingHighMid) * 15.95, 2))[0];
+					audioLinkBands[3] = _AudioLinkSmoothingTreble == 0 ? AudioLinkData(ALPASS_AUDIOLINK + float2(0, 3))[0] : AudioLinkData(ALPASS_FILTEREDAUDIOLINK + float2((1 - _AudioLinkSmoothingTreble) * 15.95, 3))[0];
+					audioLinkBands[4] = AudioLinkData(ALPASS_GENERALVU + float2(8, 0))[0];
 					
 					if (any(_VertexLocalTranslationALMin) || any(_VertexLocalTranslationALMax))
 					{
@@ -8103,14 +8188,7 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 				
 				if (_RenderingReduceClipDistance)
 				{
-					if (o.pos.w < _ProjectionParams.y * 1.01 && o.pos.w > 0)
-					{
-						#if defined(UNITY_REVERSED_Z) // DirectX
-						o.pos.z = o.pos.z * 0.0001 + o.pos.w * 0.999;
-						#else // OpenGL
-						o.pos.z = o.pos.z * 0.0001 - o.pos.w * 0.999;
-						#endif
-					}
+					applyReducedRenderClipDistance(o);
 				}
 				
 				#ifdef POI_PASS_META
@@ -8475,27 +8553,38 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 			
 			//ifex _EnableUDIMDiscardOptions==0
 			#ifdef POI_UDIMDISCARD
-			void applyUDIMDiscard(in VertexOut i)
+			void applyUDIMDiscard(in VertexOut i, in uint facing)
 			{
+				// UDIM Discaarad
 				if(_UDIMDiscardMode == 1) // Don't run if in vertex mode
 				{
 					float2 udim = floor(vertexUV(i, _UDIMDiscardUV));
 					
-					float isDiscarded = 0;
-					float4 xMask = float4(  (udim.x >= 0 && udim.x < 1),
-					(udim.x >= 1 && udim.x < 2),
-					(udim.x >= 2 && udim.x < 3),
-					(udim.x >= 3 && udim.x < 4));
+					float4 UDIMDiscardRows[4];
+					UDIMDiscardRows[0] = float4(_UDIMDiscardRow0_0, _UDIMDiscardRow0_1, _UDIMDiscardRow0_2, _UDIMDiscardRow0_3);
+					UDIMDiscardRows[1] = float4(_UDIMDiscardRow1_0, _UDIMDiscardRow1_1, _UDIMDiscardRow1_2, _UDIMDiscardRow1_3);
+					UDIMDiscardRows[2] = float4(_UDIMDiscardRow2_0, _UDIMDiscardRow2_1, _UDIMDiscardRow2_2, _UDIMDiscardRow2_3);
+					UDIMDiscardRows[3] = float4(_UDIMDiscardRow3_0, _UDIMDiscardRow3_1, _UDIMDiscardRow3_2, _UDIMDiscardRow3_3);
 					
-					isDiscarded += (udim.y >= 0 && udim.y < 1) * dot(float4(_UDIMDiscardRow0_0, _UDIMDiscardRow0_1, _UDIMDiscardRow0_2, _UDIMDiscardRow0_3), xMask);
-					isDiscarded += (udim.y >= 1 && udim.y < 2) * dot(float4(_UDIMDiscardRow1_0, _UDIMDiscardRow1_1, _UDIMDiscardRow1_2, _UDIMDiscardRow1_3), xMask);
-					isDiscarded += (udim.y >= 2 && udim.y < 3) * dot(float4(_UDIMDiscardRow2_0, _UDIMDiscardRow2_1, _UDIMDiscardRow2_2, _UDIMDiscardRow2_3), xMask);
-					isDiscarded += (udim.y >= 3 && udim.y < 4) * dot(float4(_UDIMDiscardRow3_0, _UDIMDiscardRow3_1, _UDIMDiscardRow3_2, _UDIMDiscardRow3_3), xMask);
+					float shouldDiscard = shouldPerformUDIMDiscard(udim, UDIMDiscardRows);
 					
-					isDiscarded *= any(float4(udim.y >= 0, udim.y < 4, udim.x >= 0, udim.x < 4)); // never discard outside 4x4 grid in pos coords
+					clip(shouldDiscard); // Clip if discarded
+				}
+				
+				// UDIM Face Discard
+				if(_EnableUDIMFaceDiscardOptions && saturate(facing) == _UDIMFaceDiscardFace) // Run if Face Discard enabled & this is the face to discard
+				{
+					float2 faceUdim = floor(vertexUV(i, _UDIMFaceDiscardUV));
 					
-					const float threshold = 0.001;
-					clip(threshold - isDiscarded); // Clip if discarded
+					float4 UDIMFaceDiscardRows[4];
+					UDIMFaceDiscardRows[0] = float4(_UDIMFaceDiscardRow0_0, _UDIMFaceDiscardRow0_1, _UDIMFaceDiscardRow0_2, _UDIMFaceDiscardRow0_3);
+					UDIMFaceDiscardRows[1] = float4(_UDIMFaceDiscardRow1_0, _UDIMFaceDiscardRow1_1, _UDIMFaceDiscardRow1_2, _UDIMFaceDiscardRow1_3);
+					UDIMFaceDiscardRows[2] = float4(_UDIMFaceDiscardRow2_0, _UDIMFaceDiscardRow2_1, _UDIMFaceDiscardRow2_2, _UDIMFaceDiscardRow2_3);
+					UDIMFaceDiscardRows[3] = float4(_UDIMFaceDiscardRow3_0, _UDIMFaceDiscardRow3_1, _UDIMFaceDiscardRow3_2, _UDIMFaceDiscardRow3_3);
+					
+					float shouldDiscard = shouldPerformUDIMDiscard(faceUdim, UDIMFaceDiscardRows);
+					
+					clip(shouldDiscard); // Clip if discarded
 				}
 				
 				return;
@@ -9683,6 +9772,26 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 			float _UDIMDiscardRow0_1;
 			float _UDIMDiscardRow0_2;
 			float _UDIMDiscardRow0_3;
+			
+			float _EnableUDIMFaceDiscardOptions;
+			float _UDIMFaceDiscardFace;
+			float _UDIMFaceDiscardUV;
+			float _UDIMFaceDiscardRow3_0;
+			float _UDIMFaceDiscardRow3_1;
+			float _UDIMFaceDiscardRow3_2;
+			float _UDIMFaceDiscardRow3_3;
+			float _UDIMFaceDiscardRow2_0;
+			float _UDIMFaceDiscardRow2_1;
+			float _UDIMFaceDiscardRow2_2;
+			float _UDIMFaceDiscardRow2_3;
+			float _UDIMFaceDiscardRow1_0;
+			float _UDIMFaceDiscardRow1_1;
+			float _UDIMFaceDiscardRow1_2;
+			float _UDIMFaceDiscardRow1_3;
+			float _UDIMFaceDiscardRow0_0;
+			float _UDIMFaceDiscardRow0_1;
+			float _UDIMFaceDiscardRow0_2;
+			float _UDIMFaceDiscardRow0_3;
 			#endif
 			//endex
 			
@@ -10287,7 +10396,6 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 			#endif
 			
 			#ifdef _LIGHTINGMODE_MULTILAYER_MATH
-			float _ShadowBorderMapToggle;
 			#if defined(PROP_SHADOWBORDERMASK) || !defined(OPTIMIZER_ENABLED)
 			Texture2D _ShadowBorderMask;
 			float4 _ShadowBorderMask_ST;
@@ -10298,7 +10406,7 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 			float _ShadowBorderMaskLOD;
 			float4 _ShadowAOShift;
 			float4 _ShadowAOShift2;
-			
+			float _ShadowBorderMapToggle;
 			float4 _ShadowColor;
 			float _LightingMulitlayerNonLinear;
 			#if defined(PROP_SHADOWCOLORTEX) || !defined(OPTIMIZER_ENABLED)
@@ -10340,6 +10448,16 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 			float _ShadowBorderRange;
 			float _ShadowEnvStrength;
 			float _ShadowMainStrength;
+			float _ShadowMaskType;
+			#if defined(PROP_SHADOWSTRENGTHMASK) || !defined(OPTIMIZER_ENABLED)
+			Texture2D _ShadowStrengthMask;
+			float4 _ShadowStrengthMask_ST;
+			float4 _ShadowStrengthMaskPan;
+			float _ShadowStrengthMaskUV;
+			#endif
+			float _ShadowFlatBorder;
+			float _ShadowFlatBlur;
+			float _MultilayerShadowStrength;
 			#endif
 			
 			#ifdef _LIGHTINGMODE_FLAT
@@ -11775,6 +11893,7 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 			float4 _RimIndirColor;
 			float _RimIndirBorder;
 			float _RimIndirBlur;
+			float _RimMaskOnlyMask;
 			int _RimBlendMode;
 			#endif
 			
@@ -11892,6 +12011,7 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 			float4 _Rim2IndirColor;
 			float _Rim2IndirBorder;
 			float _Rim2IndirBlur;
+			float _Rim2MaskOnlyMask;
 			int _Rim2BlendMode;
 			#endif
 			
@@ -12087,9 +12207,7 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 			float _Specular2ndLayer;
 			float _MochieSpecularStrength2;
 			float _MochieRoughnessMultiplier2;
-			float _RefSpecFresnel;
-			float _RefSpecFresnelAlpha;
-			float _RefSpecFresnelBack;
+			float _RefSpecFresnelStrength;
 			samplerCUBE _MochieReflCube;
 			float4 _MochieReflCube_HDR;
 			float _MochieForceFallback;
@@ -12149,7 +12267,7 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 			float _ClearCoatGSAAEnabled;
 			float _ClearCoatGSAAVariance;
 			float _ClearCoatGSAAThreshold;
-			float _ClearcoatFresnel;
+			float _ClearcoatFresnelStrength;
 			
 			float _ClearCoatGlobalMask;
 			float _ClearCoatGlobalMaskBlendType;
@@ -14511,6 +14629,30 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 				unity_SpecCube0.GetDimensions(width, height);
 				return !(width * height < 2);
 			}
+			//ifex _EnableUDIMDiscardOptions==0
+			#ifdef POI_UDIMDISCARD
+			float shouldPerformUDIMDiscard(float2 udim, float4 UDIMDiscardRows[4])
+			{
+				float shouldDiscard = 0;
+				float4 xMask = float4(  (udim.x >= 0 && udim.x < 1),
+				(udim.x >= 1 && udim.x < 2),
+				(udim.x >= 2 && udim.x < 3),
+				(udim.x >= 3 && udim.x < 4));
+				
+				shouldDiscard += (udim.y >= 0 && udim.y < 1) * dot(UDIMDiscardRows[0], xMask);
+				shouldDiscard += (udim.y >= 1 && udim.y < 2) * dot(UDIMDiscardRows[1], xMask);
+				shouldDiscard += (udim.y >= 2 && udim.y < 3) * dot(UDIMDiscardRows[2], xMask);
+				shouldDiscard += (udim.y >= 3 && udim.y < 4) * dot(UDIMDiscardRows[3], xMask);
+				
+				shouldDiscard *= any(float4(udim.y >= 0, udim.y < 4, udim.x >= 0, udim.x < 4)); // never discard outside 4x4 grid in pos coords
+				
+				// Use a threshold so that there's some room for animations to be close to 0, but not exactly 0
+				const float threshold = 0.001;
+				return threshold - shouldDiscard;
+			}
+			#endif
+			//endex
+			
 			//ifex _EnableAudioLink==0
 			#ifdef POI_AUDIOLINK
 			
@@ -14852,6 +14994,18 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 			#endif
 			//endex
 			
+			void applyReducedRenderClipDistance(inout VertexOut o)
+			{
+				if (o.pos.w < _ProjectionParams.y * 1.01 && o.pos.w > 0)
+				{
+					#if defined(UNITY_REVERSED_Z) // DirectX
+					o.pos.z = o.pos.z * 0.0001 + o.pos.w * 0.999;
+					#else // OpenGL
+					o.pos.z = o.pos.z * 0.0001 - o.pos.w * 0.999;
+					#endif
+				}
+			}
+			
 			//ifex _EnableDepthBulge==0
 			#if defined(POI_DEPTHBULGE)
 			void applyDepthBulgeFX(inout VertexOut o)
@@ -14920,22 +15074,15 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 					udim += (v.uv2.xy * (_UDIMDiscardUV == 2));
 					udim += (v.uv3.xy * (_UDIMDiscardUV == 3));
 					
-					float isDiscarded = 0;
-					float4 xMask = float4(  (udim.x >= 0 && udim.x < 1),
-					(udim.x >= 1 && udim.x < 2),
-					(udim.x >= 2 && udim.x < 3),
-					(udim.x >= 3 && udim.x < 4));
+					float4 UDIMDiscardRows[4];
+					UDIMDiscardRows[0] = float4(_UDIMDiscardRow0_0, _UDIMDiscardRow0_1, _UDIMDiscardRow0_2, _UDIMDiscardRow0_3);
+					UDIMDiscardRows[1] = float4(_UDIMDiscardRow1_0, _UDIMDiscardRow1_1, _UDIMDiscardRow1_2, _UDIMDiscardRow1_3);
+					UDIMDiscardRows[2] = float4(_UDIMDiscardRow2_0, _UDIMDiscardRow2_1, _UDIMDiscardRow2_2, _UDIMDiscardRow2_3);
+					UDIMDiscardRows[3] = float4(_UDIMDiscardRow3_0, _UDIMDiscardRow3_1, _UDIMDiscardRow3_2, _UDIMDiscardRow3_3);
 					
-					isDiscarded += (udim.y >= 0 && udim.y < 1) * dot(float4(_UDIMDiscardRow0_0, _UDIMDiscardRow0_1, _UDIMDiscardRow0_2, _UDIMDiscardRow0_3), xMask);
-					isDiscarded += (udim.y >= 1 && udim.y < 2) * dot(float4(_UDIMDiscardRow1_0, _UDIMDiscardRow1_1, _UDIMDiscardRow1_2, _UDIMDiscardRow1_3), xMask);
-					isDiscarded += (udim.y >= 2 && udim.y < 3) * dot(float4(_UDIMDiscardRow2_0, _UDIMDiscardRow2_1, _UDIMDiscardRow2_2, _UDIMDiscardRow2_3), xMask);
-					isDiscarded += (udim.y >= 3 && udim.y < 4) * dot(float4(_UDIMDiscardRow3_0, _UDIMDiscardRow3_1, _UDIMDiscardRow3_2, _UDIMDiscardRow3_3), xMask);
+					float shouldDiscard = shouldPerformUDIMDiscard(udim, UDIMDiscardRows);
 					
-					isDiscarded *= any(float4(udim.y >= 0, udim.y < 4, udim.x >= 0, udim.x < 4)); // never discard outside 4x4 grid in pos coords
-					
-					// Use a threshold so that there's some room for animations to be close to 0, but not exactly 0
-					const float threshold = 0.001;
-					if(isDiscarded > threshold) // Early Return skips rest of vertex shader
+					if(shouldDiscard < 0) // Early Return skips rest of vertex shader
 					{
 						return (VertexOut)POI_NAN;
 					}
@@ -14945,7 +15092,7 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 				
 				//ifex _VertexManipulationsEnabled==0
 				#ifdef AUTO_EXPOSURE
-				float4 audioLinkBands = 0;
+				float audioLinkBands[5];
 				float3 ALrotation = 0;
 				float3 ALLocalTranslation = 0;
 				float3 CTALRotation = 0;
@@ -14957,10 +15104,11 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 				#ifdef POI_AUDIOLINK
 				if (AudioLinkIsAvailable() && _VertexAudioLinkEnabled && _AudioLinkAnimToggle)
 				{
-					audioLinkBands.x = AudioLinkData(ALPASS_AUDIOBASS).r;
-					audioLinkBands.y = AudioLinkData(ALPASS_AUDIOLOWMIDS).r;
-					audioLinkBands.z = AudioLinkData(ALPASS_AUDIOHIGHMIDS).r;
-					audioLinkBands.w = AudioLinkData(ALPASS_AUDIOTREBLE).r;
+					audioLinkBands[0] = _AudioLinkSmoothingBass == 0 ? AudioLinkData(ALPASS_AUDIOLINK + float2(0, 0))[0] : AudioLinkData(ALPASS_FILTEREDAUDIOLINK + float2((1 - _AudioLinkSmoothingBass) * 15.95, 0))[0];
+					audioLinkBands[1] = _AudioLinkSmoothingLowMid == 0 ? AudioLinkData(ALPASS_AUDIOLINK + float2(0, 1))[0] : AudioLinkData(ALPASS_FILTEREDAUDIOLINK + float2((1 - _AudioLinkSmoothingLowMid) * 15.95, 1))[0];
+					audioLinkBands[2] = _AudioLinkSmoothingHighMid == 0 ? AudioLinkData(ALPASS_AUDIOLINK + float2(0, 2))[0] : AudioLinkData(ALPASS_FILTEREDAUDIOLINK + float2((1 - _AudioLinkSmoothingHighMid) * 15.95, 2))[0];
+					audioLinkBands[3] = _AudioLinkSmoothingTreble == 0 ? AudioLinkData(ALPASS_AUDIOLINK + float2(0, 3))[0] : AudioLinkData(ALPASS_FILTEREDAUDIOLINK + float2((1 - _AudioLinkSmoothingTreble) * 15.95, 3))[0];
+					audioLinkBands[4] = AudioLinkData(ALPASS_GENERALVU + float2(8, 0))[0];
 					
 					if (any(_VertexLocalTranslationALMin) || any(_VertexLocalTranslationALMax))
 					{
@@ -15356,14 +15504,7 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 				
 				if (_RenderingReduceClipDistance)
 				{
-					if (o.pos.w < _ProjectionParams.y * 1.01 && o.pos.w > 0)
-					{
-						#if defined(UNITY_REVERSED_Z) // DirectX
-						o.pos.z = o.pos.z * 0.0001 + o.pos.w * 0.999;
-						#else // OpenGL
-						o.pos.z = o.pos.z * 0.0001 - o.pos.w * 0.999;
-						#endif
-					}
+					applyReducedRenderClipDistance(o);
 				}
 				
 				#ifdef POI_PASS_META
@@ -16087,27 +16228,38 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 			
 			//ifex _EnableUDIMDiscardOptions==0
 			#ifdef POI_UDIMDISCARD
-			void applyUDIMDiscard(in VertexOut i)
+			void applyUDIMDiscard(in VertexOut i, in uint facing)
 			{
+				// UDIM Discaarad
 				if(_UDIMDiscardMode == 1) // Don't run if in vertex mode
 				{
 					float2 udim = floor(vertexUV(i, _UDIMDiscardUV));
 					
-					float isDiscarded = 0;
-					float4 xMask = float4(  (udim.x >= 0 && udim.x < 1),
-					(udim.x >= 1 && udim.x < 2),
-					(udim.x >= 2 && udim.x < 3),
-					(udim.x >= 3 && udim.x < 4));
+					float4 UDIMDiscardRows[4];
+					UDIMDiscardRows[0] = float4(_UDIMDiscardRow0_0, _UDIMDiscardRow0_1, _UDIMDiscardRow0_2, _UDIMDiscardRow0_3);
+					UDIMDiscardRows[1] = float4(_UDIMDiscardRow1_0, _UDIMDiscardRow1_1, _UDIMDiscardRow1_2, _UDIMDiscardRow1_3);
+					UDIMDiscardRows[2] = float4(_UDIMDiscardRow2_0, _UDIMDiscardRow2_1, _UDIMDiscardRow2_2, _UDIMDiscardRow2_3);
+					UDIMDiscardRows[3] = float4(_UDIMDiscardRow3_0, _UDIMDiscardRow3_1, _UDIMDiscardRow3_2, _UDIMDiscardRow3_3);
 					
-					isDiscarded += (udim.y >= 0 && udim.y < 1) * dot(float4(_UDIMDiscardRow0_0, _UDIMDiscardRow0_1, _UDIMDiscardRow0_2, _UDIMDiscardRow0_3), xMask);
-					isDiscarded += (udim.y >= 1 && udim.y < 2) * dot(float4(_UDIMDiscardRow1_0, _UDIMDiscardRow1_1, _UDIMDiscardRow1_2, _UDIMDiscardRow1_3), xMask);
-					isDiscarded += (udim.y >= 2 && udim.y < 3) * dot(float4(_UDIMDiscardRow2_0, _UDIMDiscardRow2_1, _UDIMDiscardRow2_2, _UDIMDiscardRow2_3), xMask);
-					isDiscarded += (udim.y >= 3 && udim.y < 4) * dot(float4(_UDIMDiscardRow3_0, _UDIMDiscardRow3_1, _UDIMDiscardRow3_2, _UDIMDiscardRow3_3), xMask);
+					float shouldDiscard = shouldPerformUDIMDiscard(udim, UDIMDiscardRows);
 					
-					isDiscarded *= any(float4(udim.y >= 0, udim.y < 4, udim.x >= 0, udim.x < 4)); // never discard outside 4x4 grid in pos coords
+					clip(shouldDiscard); // Clip if discarded
+				}
+				
+				// UDIM Face Discard
+				if(_EnableUDIMFaceDiscardOptions && saturate(facing) == _UDIMFaceDiscardFace) // Run if Face Discard enabled & this is the face to discard
+				{
+					float2 faceUdim = floor(vertexUV(i, _UDIMFaceDiscardUV));
 					
-					const float threshold = 0.001;
-					clip(threshold - isDiscarded); // Clip if discarded
+					float4 UDIMFaceDiscardRows[4];
+					UDIMFaceDiscardRows[0] = float4(_UDIMFaceDiscardRow0_0, _UDIMFaceDiscardRow0_1, _UDIMFaceDiscardRow0_2, _UDIMFaceDiscardRow0_3);
+					UDIMFaceDiscardRows[1] = float4(_UDIMFaceDiscardRow1_0, _UDIMFaceDiscardRow1_1, _UDIMFaceDiscardRow1_2, _UDIMFaceDiscardRow1_3);
+					UDIMFaceDiscardRows[2] = float4(_UDIMFaceDiscardRow2_0, _UDIMFaceDiscardRow2_1, _UDIMFaceDiscardRow2_2, _UDIMFaceDiscardRow2_3);
+					UDIMFaceDiscardRows[3] = float4(_UDIMFaceDiscardRow3_0, _UDIMFaceDiscardRow3_1, _UDIMFaceDiscardRow3_2, _UDIMFaceDiscardRow3_3);
+					
+					float shouldDiscard = shouldPerformUDIMDiscard(faceUdim, UDIMFaceDiscardRows);
+					
+					clip(shouldDiscard); // Clip if discarded
 				}
 				
 				return;
@@ -18624,8 +18776,11 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 				lightMap.z *= lerp(1.0, shadowAttenuationNoStrength, _Shadow3rdReceive);
 				
 				float4 shadowBorderMask = 1;
-				if (_ShadowBorderMapToggle)
+				
+				if(_ShadowBorderMapToggle)
 				{
+					
+					#if defined(PROP_SHADOWBORDERMASK) || !defined(OPTIMIZER_ENABLED)
 					// This should be moved to ui but honestly if these are locked in the compiler should be able to resolve it at compile time
 					float2 shadowShift0 = float2(_ShadowAOShift.x, _ShadowAOShift.y);
 					float2 shadowShift1 = float2(_ShadowAOShift.z, _ShadowAOShift.w);
@@ -18660,6 +18815,7 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 					shadowBorderMask.b = saturate(shadowBorderMask.b * shadowShift2.x + shadowShift2.y);
 					
 					lightMap.xyz = _ShadowPostAO ? lightMap.xyz : lightMap.xyz * shadowBorderMask.rgb;
+					#endif
 				}
 				
 				if (_LightingMapMode == 4)
@@ -18685,6 +18841,24 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 				lns = _ShadowPostAO ? lns * shadowBorderMask.rgbr : lns;
 				#endif
 				lns = saturate(lns);
+				
+				#if defined(PROP_SHADOWSTRENGTHMASK) || !defined(OPTIMIZER_ENABLED)
+				float4 shadowStrengthMask = POI2D_SAMPLER_PAN(_ShadowStrengthMask, _MainTex, poiUV(poiMesh.uv[_ShadowStrengthMaskUV], _ShadowStrengthMask_ST), _ShadowStrengthMaskPan);
+				#else
+				float4 shadowStrengthMask = 1;
+				#endif
+				if(_ShadowMaskType == 1)
+				{
+					float3 flatN = normalize(mul((float3x3)unity_ObjectToWorld, float3(0.0,0.25,1.0)));//normalize(LIL_MATRIX_M._m02_m12_m22);
+					float lnFlat = saturate((dot(flatN, poiLight.direction) + _ShadowFlatBorder) / _ShadowFlatBlur);
+					//lnFlat *= lerp(1.0, calculatedShadow, _ShadowReceive);
+					lns = lerp(lnFlat, lns, shadowStrengthMask.r);
+				}
+				else if(_ShadowMaskType == 0)
+				{
+					shadowStrength *= shadowStrengthMask.r;
+				}
+				//lns.x = lerp(1.0, lns.x, shadowStrength);
 				//poiLight.finalLighting = lns.rgb;
 				//return;
 				float3 indirectColor = 1;
@@ -20376,7 +20550,16 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 				}
 				#endif
 				matcap.rgb *= matcapIntensity;
+				
+				#ifndef POI_GRABPASS
 				matcap.rgb = lerp(matcap.rgb, matcap.rgb * poiFragData.baseColor.rgb, _MatcapBaseColorMix);
+				#endif
+				
+				//UNITY_BRANCH
+				if (_MatcapHueShiftEnabled)
+				{
+					matcap.rgb = hueShift(matcap.rgb, _MatcapHueShift + _Time.x * _MatcapHueShiftSpeed, _MatcapHueShiftColorSpace, _MatcapHueSelectOrShift);
+				}
 				
 				#if defined(PROP_MATCAPMASK) || !defined(OPTIMIZER_ENABLED)
 				matcapMask = POI2D_SAMPLER_PAN(_MatcapMask, _MainTex, poiUV(poiMesh.uv[_MatcapMaskUV], _MatcapMask_ST), _MatcapMaskPan)[_MatcapMaskChannel];
@@ -20397,12 +20580,6 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 				#endif
 				
 				poiFragData.alpha *= lerp(1, matcap.a, matcapMask * _MatcapAlphaOverride);
-				
-				//UNITY_BRANCH
-				if (_MatcapHueShiftEnabled)
-				{
-					matcap.rgb = hueShift(matcap.rgb, _MatcapHueShift + _Time.x * _MatcapHueShiftSpeed, _MatcapHueShiftColorSpace, _MatcapHueSelectOrShift);
-				}
 				
 				if (_MatcapApplyToAlphaEnabled)
 				{
@@ -20492,7 +20669,9 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 				}
 				#endif
 				matcap2.rgb *= matcapIntensity;
+				#ifndef POI_GRABPASS
 				matcap2.rgb = lerp(matcap2.rgb, matcap2.rgb * poiFragData.baseColor.rgb, _Matcap2BaseColorMix);
+				#endif
 				
 				#if defined(PROP_MATCAP2MASK) || !defined(OPTIMIZER_ENABLED)
 				matcap2Mask = POI2D_SAMPLER_PAN(_Matcap2Mask, _MainTex, poiUV(poiMesh.uv[_Matcap2MaskUV], _Matcap2Mask_ST), _Matcap2MaskPan)[_Matcap2MaskChannel];
@@ -20608,7 +20787,9 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 				}
 				#endif
 				matcap3.rgb *= matcapIntensity;
+				#ifndef POI_GRABPASS
 				matcap3.rgb = lerp(matcap3.rgb, matcap3.rgb * poiFragData.baseColor.rgb, _Matcap3BaseColorMix);
+				#endif
 				
 				#if defined(PROP_MATCAP3MASK) || !defined(OPTIMIZER_ENABLED)
 				matcap3Mask = POI2D_SAMPLER_PAN(_Matcap3Mask, _MainTex, poiUV(poiMesh.uv[_Matcap3MaskUV], _Matcap3Mask_ST), _Matcap3MaskPan)[_Matcap3MaskChannel];
@@ -20724,7 +20905,9 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 				}
 				#endif
 				matcap4.rgb *= matcapIntensity;
+				#ifndef POI_GRABPASS
 				matcap4.rgb = lerp(matcap4.rgb, matcap4.rgb * poiFragData.baseColor.rgb, _Matcap4BaseColorMix);
+				#endif
 				
 				#if defined(PROP_MATCAP4MASK) || !defined(OPTIMIZER_ENABLED)
 				matcap4Mask = POI2D_SAMPLER_PAN(_Matcap4Mask, _MainTex, poiUV(poiMesh.uv[_Matcap4MaskUV], _Matcap4Mask_ST), _Matcap4MaskPan)[_Matcap4MaskChannel];
@@ -21237,18 +21420,24 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 				
 				float glowInTheDarkMultiplier0 = calculateGlowInTheDark(_GITDEMinLight, _GITDEMaxLight, _GITDEMinEmissionMultiplier, _GITDEMaxEmissionMultiplier, _EnableGITDEmission, _GITDEWorldOrMesh, poiLight);
 				
+				#ifdef POI_GRABPASS
+				float mixBaseColor = 0;
+				#else
+				float mixBaseColor = _EmissionBaseColorAsMap;
+				#endif
+				
 				#if defined(PROP_EMISSIONMAP) || !defined(OPTIMIZER_ENABLED)
 				//UNITY_BRANCH
 				if (!_EmissionCenterOutEnabled)
 				{
-					emissionColor0 = POI2D_SAMPLER_PAN(_EmissionMap, _MainTex, poiUV(poiMesh.uv[_EmissionMapUV], _EmissionMap_ST), _EmissionMapPan).rgb * lerp(1, poiFragData.baseColor, _EmissionBaseColorAsMap).rgb * poiThemeColor(poiMods, _EmissionColor.rgb, _EmissionColorThemeIndex);
+					emissionColor0 = POI2D_SAMPLER_PAN(_EmissionMap, _MainTex, poiUV(poiMesh.uv[_EmissionMapUV], _EmissionMap_ST), _EmissionMapPan).rgb * lerp(1, poiFragData.baseColor, mixBaseColor).rgb * poiThemeColor(poiMods, _EmissionColor.rgb, _EmissionColorThemeIndex);
 				}
 				else
 				{
-					emissionColor0 = UNITY_SAMPLE_TEX2D_SAMPLER(_EmissionMap, _MainTex, ((.5 + poiLight.nDotV * .5) * _EmissionMap_ST.xy) + _Time.x * _EmissionCenterOutSpeed).rgb * lerp(1, poiFragData.baseColor, _EmissionBaseColorAsMap).rgb * poiThemeColor(poiMods, _EmissionColor.rgb, _EmissionColorThemeIndex);
+					emissionColor0 = UNITY_SAMPLE_TEX2D_SAMPLER(_EmissionMap, _MainTex, ((.5 + poiLight.nDotV * .5) * _EmissionMap_ST.xy) + _Time.x * _EmissionCenterOutSpeed).rgb * lerp(1, poiFragData.baseColor, mixBaseColor).rgb * poiThemeColor(poiMods, _EmissionColor.rgb, _EmissionColorThemeIndex);
 				}
 				#else
-				emissionColor0 = lerp(1, poiFragData.baseColor, _EmissionBaseColorAsMap).rgb * poiThemeColor(poiMods, _EmissionColor.rgb, _EmissionColorThemeIndex);
+				emissionColor0 = lerp(1, poiFragData.baseColor, mixBaseColor).rgb * poiThemeColor(poiMods, _EmissionColor.rgb, _EmissionColorThemeIndex);
 				#endif
 				
 				//UNITY_BRANCH
@@ -21334,19 +21523,25 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 				applyALCenterOutEmission(poiMods, poiLight.nDotV, emissionStrength1, _AudioLinkEmission1CenterOutSize, _AudioLinkEmission1CenterOutBand, _AudioLinkEmission1CenterOut, _EmissionAL1Enabled, _AudioLinkEmission1CenterOutDuration);
 				
 				float glowInTheDarkMultiplier1 = calculateGlowInTheDark(_GITDEMinLight1, _GITDEMaxLight1, _GITDEMinEmissionMultiplier1, _GITDEMaxEmissionMultiplier1, _EnableGITDEmission1, _GITDEWorldOrMesh1, poiLight);
-				#if defined(PROP_EMISSIONMAP1) || !defined(OPTIMIZER_ENABLED)
 				
+				#ifdef POI_GRABPASS
+				float mixBaseColor = 0;
+				#else
+				float mixBaseColor = _EmissionBaseColorAsMap1;
+				#endif
+				
+				#if defined(PROP_EMISSIONMAP1) || !defined(OPTIMIZER_ENABLED)
 				//UNITY_BRANCH
 				if (!_EmissionCenterOutEnabled1)
 				{
-					emissionColor1 = POI2D_SAMPLER_PAN(_EmissionMap1, _MainTex, poiUV(poiMesh.uv[_EmissionMap1UV], _EmissionMap1_ST), _EmissionMap1Pan) * lerp(1, poiFragData.baseColor, _EmissionBaseColorAsMap1).rgb * poiThemeColor(poiMods, _EmissionColor1.rgb, _EmissionColor1ThemeIndex);
+					emissionColor1 = POI2D_SAMPLER_PAN(_EmissionMap1, _MainTex, poiUV(poiMesh.uv[_EmissionMap1UV], _EmissionMap1_ST), _EmissionMap1Pan) * lerp(1, poiFragData.baseColor, mixBaseColor).rgb * poiThemeColor(poiMods, _EmissionColor1.rgb, _EmissionColor1ThemeIndex);
 				}
 				else
 				{
-					emissionColor1 = UNITY_SAMPLE_TEX2D_SAMPLER(_EmissionMap1, _MainTex, ((.5 + poiLight.nDotV * .5) * _EmissionMap1_ST.xy) + _Time.x * _EmissionCenterOutSpeed1).rgb * lerp(1, poiFragData.baseColor, _EmissionBaseColorAsMap1).rgb * poiThemeColor(poiMods, _EmissionColor1.rgb, _EmissionColor1ThemeIndex);
+					emissionColor1 = UNITY_SAMPLE_TEX2D_SAMPLER(_EmissionMap1, _MainTex, ((.5 + poiLight.nDotV * .5) * _EmissionMap1_ST.xy) + _Time.x * _EmissionCenterOutSpeed1).rgb * lerp(1, poiFragData.baseColor, mixBaseColor).rgb * poiThemeColor(poiMods, _EmissionColor1.rgb, _EmissionColor1ThemeIndex);
 				}
 				#else
-				emissionColor1 = lerp(1, poiFragData.baseColor, _EmissionBaseColorAsMap1).rgb * poiThemeColor(poiMods, _EmissionColor1.rgb, _EmissionColor1ThemeIndex);
+				emissionColor1 = lerp(1, poiFragData.baseColor, mixBaseColor).rgb * poiThemeColor(poiMods, _EmissionColor1.rgb, _EmissionColor1ThemeIndex);
 				#endif
 				//UNITY_BRANCH
 				if (_ScrollingEmission1)
@@ -21419,19 +21614,26 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 				applyALCenterOutEmission(poiMods, poiLight.nDotV, emissionStrength2, _AudioLinkEmission2CenterOutSize, _AudioLinkEmission2CenterOutBand, _AudioLinkEmission2CenterOut, _EmissionAL2Enabled, _AudioLinkEmission2CenterOutDuration);
 				
 				float glowInTheDarkMultiplier2 = calculateGlowInTheDark(_GITDEMinLight2, _GITDEMaxLight2, _GITDEMinEmissionMultiplier2, _GITDEMaxEmissionMultiplier2, _EnableGITDEmission2, _GITDEWorldOrMesh2, poiLight);
+				
+				#ifdef POI_GRABPASS
+				float mixBaseColor = 0;
+				#else
+				float mixBaseColor = _EmissionBaseColorAsMap2;
+				#endif
+				
 				#if defined(PROP_EMISSIONMAP2) || !defined(OPTIMIZER_ENABLED)
 				
 				//UNITY_BRANCH
 				if (!_EmissionCenterOutEnabled2)
 				{
-					emissionColor2 = POI2D_SAMPLER_PAN(_EmissionMap2, _MainTex, poiUV(poiMesh.uv[_EmissionMap2UV], _EmissionMap2_ST), _EmissionMap2Pan) * lerp(1, poiFragData.baseColor, _EmissionBaseColorAsMap2).rgb * poiThemeColor(poiMods, _EmissionColor2.rgb, _EmissionColor2ThemeIndex);
+					emissionColor2 = POI2D_SAMPLER_PAN(_EmissionMap2, _MainTex, poiUV(poiMesh.uv[_EmissionMap2UV], _EmissionMap2_ST), _EmissionMap2Pan) * lerp(1, poiFragData.baseColor, mixBaseColor).rgb * poiThemeColor(poiMods, _EmissionColor2.rgb, _EmissionColor2ThemeIndex);
 				}
 				else
 				{
-					emissionColor2 = UNITY_SAMPLE_TEX2D_SAMPLER(_EmissionMap2, _MainTex, ((.5 + poiLight.nDotV * .5) * _EmissionMap2_ST.xy) + _Time.x * _EmissionCenterOutSpeed2).rgb * lerp(1, poiFragData.baseColor, _EmissionBaseColorAsMap2).rgb * poiThemeColor(poiMods, _EmissionColor2.rgb, _EmissionColor2ThemeIndex);
+					emissionColor2 = UNITY_SAMPLE_TEX2D_SAMPLER(_EmissionMap2, _MainTex, ((.5 + poiLight.nDotV * .5) * _EmissionMap2_ST.xy) + _Time.x * _EmissionCenterOutSpeed2).rgb * lerp(1, poiFragData.baseColor, mixBaseColor).rgb * poiThemeColor(poiMods, _EmissionColor2.rgb, _EmissionColor2ThemeIndex);
 				}
 				#else
-				emissionColor2 = lerp(1, poiFragData.baseColor, _EmissionBaseColorAsMap2).rgb * poiThemeColor(poiMods, _EmissionColor2.rgb, _EmissionColor2ThemeIndex);
+				emissionColor2 = lerp(1, poiFragData.baseColor, mixBaseColor).rgb * poiThemeColor(poiMods, _EmissionColor2.rgb, _EmissionColor2ThemeIndex);
 				#endif
 				//UNITY_BRANCH
 				if (_ScrollingEmission2)
@@ -21502,19 +21704,26 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 				applyALCenterOutEmission(poiMods, poiLight.nDotV, emissionStrength3, _AudioLinkEmission3CenterOutSize, _AudioLinkEmission3CenterOutBand, _AudioLinkEmission3CenterOut, _EmissionAL3Enabled, _AudioLinkEmission3CenterOutDuration);
 				
 				float glowInTheDarkMultiplier3 = calculateGlowInTheDark(_GITDEMinLight3, _GITDEMaxLight3, _GITDEMinEmissionMultiplier3, _GITDEMaxEmissionMultiplier3, _EnableGITDEmission3, _GITDEWorldOrMesh3, poiLight);
+				
+				#ifdef POI_GRABPASS
+				float mixBaseColor = 0;
+				#else
+				float mixBaseColor = _EmissionBaseColorAsMap3;
+				#endif
+				
 				#if defined(PROP_EMISSIONMAP3) || !defined(OPTIMIZER_ENABLED)
 				
 				//UNITY_BRANCH
 				if (!_EmissionCenterOutEnabled3)
 				{
-					emissionColor3 = POI2D_SAMPLER_PAN(_EmissionMap3, _MainTex, poiUV(poiMesh.uv[_EmissionMap3UV], _EmissionMap3_ST), _EmissionMap3Pan) * lerp(1, poiFragData.baseColor, _EmissionBaseColorAsMap3).rgb * poiThemeColor(poiMods, _EmissionColor3.rgb, _EmissionColor3ThemeIndex);
+					emissionColor3 = POI2D_SAMPLER_PAN(_EmissionMap3, _MainTex, poiUV(poiMesh.uv[_EmissionMap3UV], _EmissionMap3_ST), _EmissionMap3Pan) * lerp(1, poiFragData.baseColor, mixBaseColor).rgb * poiThemeColor(poiMods, _EmissionColor3.rgb, _EmissionColor3ThemeIndex);
 				}
 				else
 				{
-					emissionColor3 = UNITY_SAMPLE_TEX2D_SAMPLER(_EmissionMap3, _MainTex, ((.5 + poiLight.nDotV * .5) * _EmissionMap3_ST.xy) + _Time.x * _EmissionCenterOutSpeed3).rgb * lerp(1, poiFragData.baseColor, _EmissionBaseColorAsMap3).rgb * poiThemeColor(poiMods, _EmissionColor3.rgb, _EmissionColor3ThemeIndex);
+					emissionColor3 = UNITY_SAMPLE_TEX2D_SAMPLER(_EmissionMap3, _MainTex, ((.5 + poiLight.nDotV * .5) * _EmissionMap3_ST.xy) + _Time.x * _EmissionCenterOutSpeed3).rgb * lerp(1, poiFragData.baseColor, mixBaseColor).rgb * poiThemeColor(poiMods, _EmissionColor3.rgb, _EmissionColor3ThemeIndex);
 				}
 				#else
-				emissionColor3 = lerp(1, poiFragData.baseColor, _EmissionBaseColorAsMap3).rgb * poiThemeColor(poiMods, _EmissionColor3.rgb, _EmissionColor3ThemeIndex);
+				emissionColor3 = lerp(1, poiFragData.baseColor, mixBaseColor).rgb * poiThemeColor(poiMods, _EmissionColor3.rgb, _EmissionColor3ThemeIndex);
 				#endif
 				//UNITY_BRANCH
 				if (_ScrollingEmission3)
@@ -21657,12 +21866,16 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 					poiFragData.alpha = saturate(poiFragData.alpha);
 				}
 				if (RimApplyAlpha == 2) // Multiply
-				
 				{
 					poiFragData.alpha *= lerp(1, saturate(rim), RimApplyAlphaBlend);
 				}
 				
+				#ifdef POI_GRABPASS
+				float3 finalRimColor = rimColor.rgb;
+				#else
 				float3 finalRimColor = rimColor.rgb * lerp(1, poiFragData.baseColor, RimBaseColorMix);
+				#endif
+				
 				finalRimColor *= RimBrightness;
 				// Add 0, Replace 1, Multiply 2, Mixed 3
 				switch(RimBlendMode)
@@ -21703,7 +21916,7 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 			}
 			#endif
 			#if defined(_RIMSTYLE_LILTOON) || defined(_RIM2STYLE_LILTOON)
-			void ApplyLiltoonRimLighting(inout PoiFragData poiFragData, in PoiMesh poiMesh, in PoiCam poiCam, in PoiLight poiLight, in PoiMods poiMods, float4 RimColor, float4 RimIndirColor, float4 RimColorTex, float RimMainStrength, float RimNormalStrength, float RimDirRange, float RimIndirRange, float RimFresnelPower, float RimBackfaceMask, float RimDirStrength, float RimBorder, float RimBlur, float RimIndirBorder, float RimIndirBlur, float RimShadowMask, float RimEnableLighting, float RimVRParallaxStrength, float RimGlobalMask, float RimGlobalMaskBlendType, float RimHueShiftEnabled, float RimHueShift, float RimHueShiftColorSpace, float RimHueSelectOrShift, float RimHueShiftSpeed, int RimBlendMode)
+			void ApplyLiltoonRimLighting(inout PoiFragData poiFragData, in PoiMesh poiMesh, in PoiCam poiCam, in PoiLight poiLight, in PoiMods poiMods, float4 RimColor, float4 RimIndirColor, float4 RimColorTex, float RimMainStrength, float RimNormalStrength, float RimDirRange, float RimIndirRange, float RimFresnelPower, float RimBackfaceMask, float RimDirStrength, float RimBorder, float RimBlur, float RimIndirBorder, float RimIndirBlur, float RimShadowMask, float RimEnableLighting, float RimVRParallaxStrength, float RimGlobalMask, float RimGlobalMaskBlendType, float RimHueShiftEnabled, float RimHueShift, float RimHueShiftColorSpace, float RimHueSelectOrShift, float RimHueShiftSpeed, int RimBlendMode, float RimTexMaskOnly)
 			{
 				if (RimGlobalMask > 0)
 				{
@@ -21711,8 +21924,16 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 				}
 				float4 rimColor = RimColor;
 				float4 rimIndirColor = RimIndirColor;
-				rimColor *= RimColorTex;
-				rimIndirColor *= RimColorTex;
+				if(RimTexMaskOnly > 0)
+				{
+					rimColor.a *= RimColorTex.r;
+					rimIndirColor.a *= RimColorTex.r;
+				}
+				else
+				{
+					rimColor *= RimColorTex;
+					rimIndirColor *= RimColorTex;
+				}
 				
 				if (RimHueShiftEnabled)
 				{
@@ -22499,14 +22720,8 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 				float surfaceReduction = (1.0 / (brdfRoughness * brdfRoughness + 1.0));
 				float grazingTerm = saturate(smoothness + (1 - omr));
 				float3 reflCol = GetReflections(poiCam, poiLight, poiMesh, roughness, _MochieForceFallback, _MochieLitFallback, _MochieReflCube, _MochieReflCube_HDR, pbrReflectionDir);
-				if (poiMesh.isFrontFace)
-				{
-					reflections = surfaceReduction * reflCol * lerp(1, FresnelLerp(specCol, grazingTerm, pbrNDotV), _RefSpecFresnel);
-				}
-				else
-				{
-					reflections = surfaceReduction * reflCol * lerp(1, FresnelLerp(specCol, grazingTerm, pbrNDotV), _RefSpecFresnelBack);
-				}
+				
+				reflections = surfaceReduction * reflCol * FresnelLerp(specCol, specCol + lerp(specCol, 1, _RefSpecFresnelStrength) * _RefSpecFresnelStrength, pbrNDotV);
 				
 				reflections *= poiThemeColor(poiMods, _MochieReflectionTint, _MochieReflectionTintThemeIndex);
 				reflections *= reflectionMask;
@@ -22637,7 +22852,7 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 				float surfaceReduction = (1.0 / (brdfRoughness * brdfRoughness + 1.0));
 				float grazingTerm = saturate(smoothness + (1 - omr));
 				float3 reflCol = GetReflections(poiCam, poiLight, poiMesh, roughness, _ClearCoatForceFallback, _ClearCoatLitFallback, _ClearCoatFallback, _ClearCoatFallback_HDR, clearcoatReflectionDir);
-				reflections = surfaceReduction * reflCol * lerp(1, FresnelLerp(specCol, grazingTerm, clearcoatNDotV), _ClearcoatFresnel);
+				reflections = surfaceReduction * reflCol * FresnelLerp(specCol, specCol + lerp(specCol, 1, _ClearcoatFresnelStrength) * _ClearcoatFresnelStrength, clearcoatNDotV);
 				reflections *= poiThemeColor(poiMods, _ClearCoatReflectionTint, _ClearCoatReflectionTintThemeIndex) * reflectionMask;
 				diffuse = lerp(diffuse, diffuse * omr, reflectionMask);
 				
@@ -24559,7 +24774,7 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 				poiFragData.toggleVertexLights = 0;
 				
 				#ifdef POI_UDIMDISCARD
-				applyUDIMDiscard(i);
+				applyUDIMDiscard(i, facing);
 				#endif
 				
 				//ifex _NormalCorrect==0
@@ -25462,6 +25677,11 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 				poiLight.directLuminance = dot(poiLight.directColor, float3(0.299, 0.587, 0.114));
 				poiLight.indirectLuminance = dot(poiLight.directColor, float3(0.299, 0.587, 0.114));
 				poiLight.finalLuminance = dot(poiLight.finalLighting, float3(0.299, 0.587, 0.114));
+				
+				#ifdef POI_GRABPASS
+				poiLight.finalLighting = max(poiLight.finalLighting, 0.0001);
+				#endif
+				
 				//endex
 				
 				#if defined(GEOM_TYPE_BRANCH) || defined(GEOM_TYPE_BRANCH_DETAIL) || defined(GEOM_TYPE_FROND) || defined(DEPTH_OF_FIELD_COC_VIEW)
@@ -25792,7 +26012,7 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 				#else
 				float4 rimColorTex = 1;
 				#endif
-				ApplyLiltoonRimLighting(poiFragData, poiMesh, poiCam, poiLight, poiMods, _RimColor, _RimIndirColor, rimColorTex, _RimMainStrength, _RimNormalStrength, _RimDirRange, _RimIndirRange, _RimFresnelPower, _RimBackfaceMask, _RimDirStrength, _RimBorder, _RimBlur, _RimIndirBorder, _RimIndirBlur, _RimShadowMask, _RimEnableLighting, _RimVRParallaxStrength, _RimGlobalMask, _RimGlobalMaskBlendType, _RimHueShiftEnabled, _RimHueShift, _RimHueShiftColorSpace, _RimHueSelectOrShift, _RimHueShiftSpeed, _RimBlendMode);
+				ApplyLiltoonRimLighting(poiFragData, poiMesh, poiCam, poiLight, poiMods, _RimColor, _RimIndirColor, rimColorTex, _RimMainStrength, _RimNormalStrength, _RimDirRange, _RimIndirRange, _RimFresnelPower, _RimBackfaceMask, _RimDirStrength, _RimBorder, _RimBlur, _RimIndirBorder, _RimIndirBlur, _RimShadowMask, _RimEnableLighting, _RimVRParallaxStrength, _RimGlobalMask, _RimGlobalMaskBlendType, _RimHueShiftEnabled, _RimHueShift, _RimHueShiftColorSpace, _RimHueSelectOrShift, _RimHueShiftSpeed, _RimBlendMode, _RimMaskOnlyMask);
 				#endif
 				#endif
 				//endex
@@ -25804,7 +26024,7 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 				#else
 				float4 rim2ColorTex = 1;
 				#endif
-				ApplyLiltoonRimLighting(poiFragData, poiMesh, poiCam, poiLight, poiMods, _Rim2Color, _Rim2IndirColor, rim2ColorTex, _Rim2MainStrength, _Rim2NormalStrength, _Rim2DirRange, _Rim2IndirRange, _Rim2FresnelPower, _Rim2BackfaceMask, _Rim2DirStrength, _Rim2Border, _Rim2Blur, _Rim2IndirBorder, _Rim2IndirBlur, _Rim2ShadowMask, _Rim2EnableLighting, _Rim2VRParallaxStrength, _Rim2GlobalMask, _Rim2GlobalMaskBlendType, _Rim2HueShiftEnabled, _Rim2HueShift, _Rim2HueShiftColorSpace, _Rim2HueSelectOrShift, _Rim2HueShiftSpeed, _Rim2BlendMode);
+				ApplyLiltoonRimLighting(poiFragData, poiMesh, poiCam, poiLight, poiMods, _Rim2Color, _Rim2IndirColor, rim2ColorTex, _Rim2MainStrength, _Rim2NormalStrength, _Rim2DirRange, _Rim2IndirRange, _Rim2FresnelPower, _Rim2BackfaceMask, _Rim2DirStrength, _Rim2Border, _Rim2Blur, _Rim2IndirBorder, _Rim2IndirBlur, _Rim2ShadowMask, _Rim2EnableLighting, _Rim2VRParallaxStrength, _Rim2GlobalMask, _Rim2GlobalMaskBlendType, _Rim2HueShiftEnabled, _Rim2HueShift, _Rim2HueShiftColorSpace, _Rim2HueSelectOrShift, _Rim2HueShiftSpeed, _Rim2BlendMode, _Rim2MaskOnlyMask);
 				#endif
 				#endif
 				//endex
@@ -27053,6 +27273,26 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 			float _UDIMDiscardRow0_1;
 			float _UDIMDiscardRow0_2;
 			float _UDIMDiscardRow0_3;
+			
+			float _EnableUDIMFaceDiscardOptions;
+			float _UDIMFaceDiscardFace;
+			float _UDIMFaceDiscardUV;
+			float _UDIMFaceDiscardRow3_0;
+			float _UDIMFaceDiscardRow3_1;
+			float _UDIMFaceDiscardRow3_2;
+			float _UDIMFaceDiscardRow3_3;
+			float _UDIMFaceDiscardRow2_0;
+			float _UDIMFaceDiscardRow2_1;
+			float _UDIMFaceDiscardRow2_2;
+			float _UDIMFaceDiscardRow2_3;
+			float _UDIMFaceDiscardRow1_0;
+			float _UDIMFaceDiscardRow1_1;
+			float _UDIMFaceDiscardRow1_2;
+			float _UDIMFaceDiscardRow1_3;
+			float _UDIMFaceDiscardRow0_0;
+			float _UDIMFaceDiscardRow0_1;
+			float _UDIMFaceDiscardRow0_2;
+			float _UDIMFaceDiscardRow0_3;
 			#endif
 			//endex
 			
@@ -27644,7 +27884,6 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 			#endif
 			
 			#ifdef _LIGHTINGMODE_MULTILAYER_MATH
-			float _ShadowBorderMapToggle;
 			#if defined(PROP_SHADOWBORDERMASK) || !defined(OPTIMIZER_ENABLED)
 			Texture2D _ShadowBorderMask;
 			float4 _ShadowBorderMask_ST;
@@ -27655,7 +27894,7 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 			float _ShadowBorderMaskLOD;
 			float4 _ShadowAOShift;
 			float4 _ShadowAOShift2;
-			
+			float _ShadowBorderMapToggle;
 			float4 _ShadowColor;
 			float _LightingMulitlayerNonLinear;
 			#if defined(PROP_SHADOWCOLORTEX) || !defined(OPTIMIZER_ENABLED)
@@ -27697,6 +27936,16 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 			float _ShadowBorderRange;
 			float _ShadowEnvStrength;
 			float _ShadowMainStrength;
+			float _ShadowMaskType;
+			#if defined(PROP_SHADOWSTRENGTHMASK) || !defined(OPTIMIZER_ENABLED)
+			Texture2D _ShadowStrengthMask;
+			float4 _ShadowStrengthMask_ST;
+			float4 _ShadowStrengthMaskPan;
+			float _ShadowStrengthMaskUV;
+			#endif
+			float _ShadowFlatBorder;
+			float _ShadowFlatBlur;
+			float _MultilayerShadowStrength;
 			#endif
 			
 			#ifdef _LIGHTINGMODE_FLAT
@@ -28853,6 +29102,7 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 			float4 _RimIndirColor;
 			float _RimIndirBorder;
 			float _RimIndirBlur;
+			float _RimMaskOnlyMask;
 			int _RimBlendMode;
 			#endif
 			
@@ -28970,6 +29220,7 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 			float4 _Rim2IndirColor;
 			float _Rim2IndirBorder;
 			float _Rim2IndirBlur;
+			float _Rim2MaskOnlyMask;
 			int _Rim2BlendMode;
 			#endif
 			
@@ -29165,9 +29416,7 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 			float _Specular2ndLayer;
 			float _MochieSpecularStrength2;
 			float _MochieRoughnessMultiplier2;
-			float _RefSpecFresnel;
-			float _RefSpecFresnelAlpha;
-			float _RefSpecFresnelBack;
+			float _RefSpecFresnelStrength;
 			samplerCUBE _MochieReflCube;
 			float4 _MochieReflCube_HDR;
 			float _MochieForceFallback;
@@ -29227,7 +29476,7 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 			float _ClearCoatGSAAEnabled;
 			float _ClearCoatGSAAVariance;
 			float _ClearCoatGSAAThreshold;
-			float _ClearcoatFresnel;
+			float _ClearcoatFresnelStrength;
 			
 			float _ClearCoatGlobalMask;
 			float _ClearCoatGlobalMaskBlendType;
@@ -31524,6 +31773,30 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 				unity_SpecCube0.GetDimensions(width, height);
 				return !(width * height < 2);
 			}
+			//ifex _EnableUDIMDiscardOptions==0
+			#ifdef POI_UDIMDISCARD
+			float shouldPerformUDIMDiscard(float2 udim, float4 UDIMDiscardRows[4])
+			{
+				float shouldDiscard = 0;
+				float4 xMask = float4(  (udim.x >= 0 && udim.x < 1),
+				(udim.x >= 1 && udim.x < 2),
+				(udim.x >= 2 && udim.x < 3),
+				(udim.x >= 3 && udim.x < 4));
+				
+				shouldDiscard += (udim.y >= 0 && udim.y < 1) * dot(UDIMDiscardRows[0], xMask);
+				shouldDiscard += (udim.y >= 1 && udim.y < 2) * dot(UDIMDiscardRows[1], xMask);
+				shouldDiscard += (udim.y >= 2 && udim.y < 3) * dot(UDIMDiscardRows[2], xMask);
+				shouldDiscard += (udim.y >= 3 && udim.y < 4) * dot(UDIMDiscardRows[3], xMask);
+				
+				shouldDiscard *= any(float4(udim.y >= 0, udim.y < 4, udim.x >= 0, udim.x < 4)); // never discard outside 4x4 grid in pos coords
+				
+				// Use a threshold so that there's some room for animations to be close to 0, but not exactly 0
+				const float threshold = 0.001;
+				return threshold - shouldDiscard;
+			}
+			#endif
+			//endex
+			
 			//ifex _EnableAudioLink==0
 			#ifdef POI_AUDIOLINK
 			
@@ -31865,6 +32138,18 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 			#endif
 			//endex
 			
+			void applyReducedRenderClipDistance(inout VertexOut o)
+			{
+				if (o.pos.w < _ProjectionParams.y * 1.01 && o.pos.w > 0)
+				{
+					#if defined(UNITY_REVERSED_Z) // DirectX
+					o.pos.z = o.pos.z * 0.0001 + o.pos.w * 0.999;
+					#else // OpenGL
+					o.pos.z = o.pos.z * 0.0001 - o.pos.w * 0.999;
+					#endif
+				}
+			}
+			
 			//ifex _EnableDepthBulge==0
 			#if defined(POI_DEPTHBULGE)
 			void applyDepthBulgeFX(inout VertexOut o)
@@ -31933,22 +32218,15 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 					udim += (v.uv2.xy * (_UDIMDiscardUV == 2));
 					udim += (v.uv3.xy * (_UDIMDiscardUV == 3));
 					
-					float isDiscarded = 0;
-					float4 xMask = float4(  (udim.x >= 0 && udim.x < 1),
-					(udim.x >= 1 && udim.x < 2),
-					(udim.x >= 2 && udim.x < 3),
-					(udim.x >= 3 && udim.x < 4));
+					float4 UDIMDiscardRows[4];
+					UDIMDiscardRows[0] = float4(_UDIMDiscardRow0_0, _UDIMDiscardRow0_1, _UDIMDiscardRow0_2, _UDIMDiscardRow0_3);
+					UDIMDiscardRows[1] = float4(_UDIMDiscardRow1_0, _UDIMDiscardRow1_1, _UDIMDiscardRow1_2, _UDIMDiscardRow1_3);
+					UDIMDiscardRows[2] = float4(_UDIMDiscardRow2_0, _UDIMDiscardRow2_1, _UDIMDiscardRow2_2, _UDIMDiscardRow2_3);
+					UDIMDiscardRows[3] = float4(_UDIMDiscardRow3_0, _UDIMDiscardRow3_1, _UDIMDiscardRow3_2, _UDIMDiscardRow3_3);
 					
-					isDiscarded += (udim.y >= 0 && udim.y < 1) * dot(float4(_UDIMDiscardRow0_0, _UDIMDiscardRow0_1, _UDIMDiscardRow0_2, _UDIMDiscardRow0_3), xMask);
-					isDiscarded += (udim.y >= 1 && udim.y < 2) * dot(float4(_UDIMDiscardRow1_0, _UDIMDiscardRow1_1, _UDIMDiscardRow1_2, _UDIMDiscardRow1_3), xMask);
-					isDiscarded += (udim.y >= 2 && udim.y < 3) * dot(float4(_UDIMDiscardRow2_0, _UDIMDiscardRow2_1, _UDIMDiscardRow2_2, _UDIMDiscardRow2_3), xMask);
-					isDiscarded += (udim.y >= 3 && udim.y < 4) * dot(float4(_UDIMDiscardRow3_0, _UDIMDiscardRow3_1, _UDIMDiscardRow3_2, _UDIMDiscardRow3_3), xMask);
+					float shouldDiscard = shouldPerformUDIMDiscard(udim, UDIMDiscardRows);
 					
-					isDiscarded *= any(float4(udim.y >= 0, udim.y < 4, udim.x >= 0, udim.x < 4)); // never discard outside 4x4 grid in pos coords
-					
-					// Use a threshold so that there's some room for animations to be close to 0, but not exactly 0
-					const float threshold = 0.001;
-					if(isDiscarded > threshold) // Early Return skips rest of vertex shader
+					if(shouldDiscard < 0) // Early Return skips rest of vertex shader
 					{
 						return (VertexOut)POI_NAN;
 					}
@@ -31958,7 +32236,7 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 				
 				//ifex _VertexManipulationsEnabled==0
 				#ifdef AUTO_EXPOSURE
-				float4 audioLinkBands = 0;
+				float audioLinkBands[5];
 				float3 ALrotation = 0;
 				float3 ALLocalTranslation = 0;
 				float3 CTALRotation = 0;
@@ -31970,10 +32248,11 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 				#ifdef POI_AUDIOLINK
 				if (AudioLinkIsAvailable() && _VertexAudioLinkEnabled && _AudioLinkAnimToggle)
 				{
-					audioLinkBands.x = AudioLinkData(ALPASS_AUDIOBASS).r;
-					audioLinkBands.y = AudioLinkData(ALPASS_AUDIOLOWMIDS).r;
-					audioLinkBands.z = AudioLinkData(ALPASS_AUDIOHIGHMIDS).r;
-					audioLinkBands.w = AudioLinkData(ALPASS_AUDIOTREBLE).r;
+					audioLinkBands[0] = _AudioLinkSmoothingBass == 0 ? AudioLinkData(ALPASS_AUDIOLINK + float2(0, 0))[0] : AudioLinkData(ALPASS_FILTEREDAUDIOLINK + float2((1 - _AudioLinkSmoothingBass) * 15.95, 0))[0];
+					audioLinkBands[1] = _AudioLinkSmoothingLowMid == 0 ? AudioLinkData(ALPASS_AUDIOLINK + float2(0, 1))[0] : AudioLinkData(ALPASS_FILTEREDAUDIOLINK + float2((1 - _AudioLinkSmoothingLowMid) * 15.95, 1))[0];
+					audioLinkBands[2] = _AudioLinkSmoothingHighMid == 0 ? AudioLinkData(ALPASS_AUDIOLINK + float2(0, 2))[0] : AudioLinkData(ALPASS_FILTEREDAUDIOLINK + float2((1 - _AudioLinkSmoothingHighMid) * 15.95, 2))[0];
+					audioLinkBands[3] = _AudioLinkSmoothingTreble == 0 ? AudioLinkData(ALPASS_AUDIOLINK + float2(0, 3))[0] : AudioLinkData(ALPASS_FILTEREDAUDIOLINK + float2((1 - _AudioLinkSmoothingTreble) * 15.95, 3))[0];
+					audioLinkBands[4] = AudioLinkData(ALPASS_GENERALVU + float2(8, 0))[0];
 					
 					if (any(_VertexLocalTranslationALMin) || any(_VertexLocalTranslationALMax))
 					{
@@ -32369,14 +32648,7 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 				
 				if (_RenderingReduceClipDistance)
 				{
-					if (o.pos.w < _ProjectionParams.y * 1.01 && o.pos.w > 0)
-					{
-						#if defined(UNITY_REVERSED_Z) // DirectX
-						o.pos.z = o.pos.z * 0.0001 + o.pos.w * 0.999;
-						#else // OpenGL
-						o.pos.z = o.pos.z * 0.0001 - o.pos.w * 0.999;
-						#endif
-					}
+					applyReducedRenderClipDistance(o);
 				}
 				
 				#ifdef POI_PASS_META
@@ -33100,27 +33372,38 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 			
 			//ifex _EnableUDIMDiscardOptions==0
 			#ifdef POI_UDIMDISCARD
-			void applyUDIMDiscard(in VertexOut i)
+			void applyUDIMDiscard(in VertexOut i, in uint facing)
 			{
+				// UDIM Discaarad
 				if(_UDIMDiscardMode == 1) // Don't run if in vertex mode
 				{
 					float2 udim = floor(vertexUV(i, _UDIMDiscardUV));
 					
-					float isDiscarded = 0;
-					float4 xMask = float4(  (udim.x >= 0 && udim.x < 1),
-					(udim.x >= 1 && udim.x < 2),
-					(udim.x >= 2 && udim.x < 3),
-					(udim.x >= 3 && udim.x < 4));
+					float4 UDIMDiscardRows[4];
+					UDIMDiscardRows[0] = float4(_UDIMDiscardRow0_0, _UDIMDiscardRow0_1, _UDIMDiscardRow0_2, _UDIMDiscardRow0_3);
+					UDIMDiscardRows[1] = float4(_UDIMDiscardRow1_0, _UDIMDiscardRow1_1, _UDIMDiscardRow1_2, _UDIMDiscardRow1_3);
+					UDIMDiscardRows[2] = float4(_UDIMDiscardRow2_0, _UDIMDiscardRow2_1, _UDIMDiscardRow2_2, _UDIMDiscardRow2_3);
+					UDIMDiscardRows[3] = float4(_UDIMDiscardRow3_0, _UDIMDiscardRow3_1, _UDIMDiscardRow3_2, _UDIMDiscardRow3_3);
 					
-					isDiscarded += (udim.y >= 0 && udim.y < 1) * dot(float4(_UDIMDiscardRow0_0, _UDIMDiscardRow0_1, _UDIMDiscardRow0_2, _UDIMDiscardRow0_3), xMask);
-					isDiscarded += (udim.y >= 1 && udim.y < 2) * dot(float4(_UDIMDiscardRow1_0, _UDIMDiscardRow1_1, _UDIMDiscardRow1_2, _UDIMDiscardRow1_3), xMask);
-					isDiscarded += (udim.y >= 2 && udim.y < 3) * dot(float4(_UDIMDiscardRow2_0, _UDIMDiscardRow2_1, _UDIMDiscardRow2_2, _UDIMDiscardRow2_3), xMask);
-					isDiscarded += (udim.y >= 3 && udim.y < 4) * dot(float4(_UDIMDiscardRow3_0, _UDIMDiscardRow3_1, _UDIMDiscardRow3_2, _UDIMDiscardRow3_3), xMask);
+					float shouldDiscard = shouldPerformUDIMDiscard(udim, UDIMDiscardRows);
 					
-					isDiscarded *= any(float4(udim.y >= 0, udim.y < 4, udim.x >= 0, udim.x < 4)); // never discard outside 4x4 grid in pos coords
+					clip(shouldDiscard); // Clip if discarded
+				}
+				
+				// UDIM Face Discard
+				if(_EnableUDIMFaceDiscardOptions && saturate(facing) == _UDIMFaceDiscardFace) // Run if Face Discard enabled & this is the face to discard
+				{
+					float2 faceUdim = floor(vertexUV(i, _UDIMFaceDiscardUV));
 					
-					const float threshold = 0.001;
-					clip(threshold - isDiscarded); // Clip if discarded
+					float4 UDIMFaceDiscardRows[4];
+					UDIMFaceDiscardRows[0] = float4(_UDIMFaceDiscardRow0_0, _UDIMFaceDiscardRow0_1, _UDIMFaceDiscardRow0_2, _UDIMFaceDiscardRow0_3);
+					UDIMFaceDiscardRows[1] = float4(_UDIMFaceDiscardRow1_0, _UDIMFaceDiscardRow1_1, _UDIMFaceDiscardRow1_2, _UDIMFaceDiscardRow1_3);
+					UDIMFaceDiscardRows[2] = float4(_UDIMFaceDiscardRow2_0, _UDIMFaceDiscardRow2_1, _UDIMFaceDiscardRow2_2, _UDIMFaceDiscardRow2_3);
+					UDIMFaceDiscardRows[3] = float4(_UDIMFaceDiscardRow3_0, _UDIMFaceDiscardRow3_1, _UDIMFaceDiscardRow3_2, _UDIMFaceDiscardRow3_3);
+					
+					float shouldDiscard = shouldPerformUDIMDiscard(faceUdim, UDIMFaceDiscardRows);
+					
+					clip(shouldDiscard); // Clip if discarded
 				}
 				
 				return;
@@ -34357,8 +34640,11 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 				lightMap.z *= lerp(1.0, shadowAttenuationNoStrength, _Shadow3rdReceive);
 				
 				float4 shadowBorderMask = 1;
-				if (_ShadowBorderMapToggle)
+				
+				if(_ShadowBorderMapToggle)
 				{
+					
+					#if defined(PROP_SHADOWBORDERMASK) || !defined(OPTIMIZER_ENABLED)
 					// This should be moved to ui but honestly if these are locked in the compiler should be able to resolve it at compile time
 					float2 shadowShift0 = float2(_ShadowAOShift.x, _ShadowAOShift.y);
 					float2 shadowShift1 = float2(_ShadowAOShift.z, _ShadowAOShift.w);
@@ -34393,6 +34679,7 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 					shadowBorderMask.b = saturate(shadowBorderMask.b * shadowShift2.x + shadowShift2.y);
 					
 					lightMap.xyz = _ShadowPostAO ? lightMap.xyz : lightMap.xyz * shadowBorderMask.rgb;
+					#endif
 				}
 				
 				if (_LightingMapMode == 4)
@@ -34418,6 +34705,24 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 				lns = _ShadowPostAO ? lns * shadowBorderMask.rgbr : lns;
 				#endif
 				lns = saturate(lns);
+				
+				#if defined(PROP_SHADOWSTRENGTHMASK) || !defined(OPTIMIZER_ENABLED)
+				float4 shadowStrengthMask = POI2D_SAMPLER_PAN(_ShadowStrengthMask, _MainTex, poiUV(poiMesh.uv[_ShadowStrengthMaskUV], _ShadowStrengthMask_ST), _ShadowStrengthMaskPan);
+				#else
+				float4 shadowStrengthMask = 1;
+				#endif
+				if(_ShadowMaskType == 1)
+				{
+					float3 flatN = normalize(mul((float3x3)unity_ObjectToWorld, float3(0.0,0.25,1.0)));//normalize(LIL_MATRIX_M._m02_m12_m22);
+					float lnFlat = saturate((dot(flatN, poiLight.direction) + _ShadowFlatBorder) / _ShadowFlatBlur);
+					//lnFlat *= lerp(1.0, calculatedShadow, _ShadowReceive);
+					lns = lerp(lnFlat, lns, shadowStrengthMask.r);
+				}
+				else if(_ShadowMaskType == 0)
+				{
+					shadowStrength *= shadowStrengthMask.r;
+				}
+				//lns.x = lerp(1.0, lns.x, shadowStrength);
 				//poiLight.finalLighting = lns.rgb;
 				//return;
 				float3 indirectColor = 1;
@@ -36109,7 +36414,16 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 				}
 				#endif
 				matcap.rgb *= matcapIntensity;
+				
+				#ifndef POI_GRABPASS
 				matcap.rgb = lerp(matcap.rgb, matcap.rgb * poiFragData.baseColor.rgb, _MatcapBaseColorMix);
+				#endif
+				
+				//UNITY_BRANCH
+				if (_MatcapHueShiftEnabled)
+				{
+					matcap.rgb = hueShift(matcap.rgb, _MatcapHueShift + _Time.x * _MatcapHueShiftSpeed, _MatcapHueShiftColorSpace, _MatcapHueSelectOrShift);
+				}
 				
 				#if defined(PROP_MATCAPMASK) || !defined(OPTIMIZER_ENABLED)
 				matcapMask = POI2D_SAMPLER_PAN(_MatcapMask, _MainTex, poiUV(poiMesh.uv[_MatcapMaskUV], _MatcapMask_ST), _MatcapMaskPan)[_MatcapMaskChannel];
@@ -36130,12 +36444,6 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 				#endif
 				
 				poiFragData.alpha *= lerp(1, matcap.a, matcapMask * _MatcapAlphaOverride);
-				
-				//UNITY_BRANCH
-				if (_MatcapHueShiftEnabled)
-				{
-					matcap.rgb = hueShift(matcap.rgb, _MatcapHueShift + _Time.x * _MatcapHueShiftSpeed, _MatcapHueShiftColorSpace, _MatcapHueSelectOrShift);
-				}
 				
 				if (_MatcapApplyToAlphaEnabled)
 				{
@@ -36225,7 +36533,9 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 				}
 				#endif
 				matcap2.rgb *= matcapIntensity;
+				#ifndef POI_GRABPASS
 				matcap2.rgb = lerp(matcap2.rgb, matcap2.rgb * poiFragData.baseColor.rgb, _Matcap2BaseColorMix);
+				#endif
 				
 				#if defined(PROP_MATCAP2MASK) || !defined(OPTIMIZER_ENABLED)
 				matcap2Mask = POI2D_SAMPLER_PAN(_Matcap2Mask, _MainTex, poiUV(poiMesh.uv[_Matcap2MaskUV], _Matcap2Mask_ST), _Matcap2MaskPan)[_Matcap2MaskChannel];
@@ -36341,7 +36651,9 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 				}
 				#endif
 				matcap3.rgb *= matcapIntensity;
+				#ifndef POI_GRABPASS
 				matcap3.rgb = lerp(matcap3.rgb, matcap3.rgb * poiFragData.baseColor.rgb, _Matcap3BaseColorMix);
+				#endif
 				
 				#if defined(PROP_MATCAP3MASK) || !defined(OPTIMIZER_ENABLED)
 				matcap3Mask = POI2D_SAMPLER_PAN(_Matcap3Mask, _MainTex, poiUV(poiMesh.uv[_Matcap3MaskUV], _Matcap3Mask_ST), _Matcap3MaskPan)[_Matcap3MaskChannel];
@@ -36457,7 +36769,9 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 				}
 				#endif
 				matcap4.rgb *= matcapIntensity;
+				#ifndef POI_GRABPASS
 				matcap4.rgb = lerp(matcap4.rgb, matcap4.rgb * poiFragData.baseColor.rgb, _Matcap4BaseColorMix);
+				#endif
 				
 				#if defined(PROP_MATCAP4MASK) || !defined(OPTIMIZER_ENABLED)
 				matcap4Mask = POI2D_SAMPLER_PAN(_Matcap4Mask, _MainTex, poiUV(poiMesh.uv[_Matcap4MaskUV], _Matcap4Mask_ST), _Matcap4MaskPan)[_Matcap4MaskChannel];
@@ -36974,12 +37288,16 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 					poiFragData.alpha = saturate(poiFragData.alpha);
 				}
 				if (RimApplyAlpha == 2) // Multiply
-				
 				{
 					poiFragData.alpha *= lerp(1, saturate(rim), RimApplyAlphaBlend);
 				}
 				
+				#ifdef POI_GRABPASS
+				float3 finalRimColor = rimColor.rgb;
+				#else
 				float3 finalRimColor = rimColor.rgb * lerp(1, poiFragData.baseColor, RimBaseColorMix);
+				#endif
+				
 				finalRimColor *= RimBrightness;
 				// Add 0, Replace 1, Multiply 2, Mixed 3
 				switch(RimBlendMode)
@@ -37020,7 +37338,7 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 			}
 			#endif
 			#if defined(_RIMSTYLE_LILTOON) || defined(_RIM2STYLE_LILTOON)
-			void ApplyLiltoonRimLighting(inout PoiFragData poiFragData, in PoiMesh poiMesh, in PoiCam poiCam, in PoiLight poiLight, in PoiMods poiMods, float4 RimColor, float4 RimIndirColor, float4 RimColorTex, float RimMainStrength, float RimNormalStrength, float RimDirRange, float RimIndirRange, float RimFresnelPower, float RimBackfaceMask, float RimDirStrength, float RimBorder, float RimBlur, float RimIndirBorder, float RimIndirBlur, float RimShadowMask, float RimEnableLighting, float RimVRParallaxStrength, float RimGlobalMask, float RimGlobalMaskBlendType, float RimHueShiftEnabled, float RimHueShift, float RimHueShiftColorSpace, float RimHueSelectOrShift, float RimHueShiftSpeed, int RimBlendMode)
+			void ApplyLiltoonRimLighting(inout PoiFragData poiFragData, in PoiMesh poiMesh, in PoiCam poiCam, in PoiLight poiLight, in PoiMods poiMods, float4 RimColor, float4 RimIndirColor, float4 RimColorTex, float RimMainStrength, float RimNormalStrength, float RimDirRange, float RimIndirRange, float RimFresnelPower, float RimBackfaceMask, float RimDirStrength, float RimBorder, float RimBlur, float RimIndirBorder, float RimIndirBlur, float RimShadowMask, float RimEnableLighting, float RimVRParallaxStrength, float RimGlobalMask, float RimGlobalMaskBlendType, float RimHueShiftEnabled, float RimHueShift, float RimHueShiftColorSpace, float RimHueSelectOrShift, float RimHueShiftSpeed, int RimBlendMode, float RimTexMaskOnly)
 			{
 				if (RimGlobalMask > 0)
 				{
@@ -37028,8 +37346,16 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 				}
 				float4 rimColor = RimColor;
 				float4 rimIndirColor = RimIndirColor;
-				rimColor *= RimColorTex;
-				rimIndirColor *= RimColorTex;
+				if(RimTexMaskOnly > 0)
+				{
+					rimColor.a *= RimColorTex.r;
+					rimIndirColor.a *= RimColorTex.r;
+				}
+				else
+				{
+					rimColor *= RimColorTex;
+					rimIndirColor *= RimColorTex;
+				}
 				
 				if (RimHueShiftEnabled)
 				{
@@ -37816,14 +38142,8 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 				float surfaceReduction = (1.0 / (brdfRoughness * brdfRoughness + 1.0));
 				float grazingTerm = saturate(smoothness + (1 - omr));
 				float3 reflCol = GetReflections(poiCam, poiLight, poiMesh, roughness, _MochieForceFallback, _MochieLitFallback, _MochieReflCube, _MochieReflCube_HDR, pbrReflectionDir);
-				if (poiMesh.isFrontFace)
-				{
-					reflections = surfaceReduction * reflCol * lerp(1, FresnelLerp(specCol, grazingTerm, pbrNDotV), _RefSpecFresnel);
-				}
-				else
-				{
-					reflections = surfaceReduction * reflCol * lerp(1, FresnelLerp(specCol, grazingTerm, pbrNDotV), _RefSpecFresnelBack);
-				}
+				
+				reflections = surfaceReduction * reflCol * FresnelLerp(specCol, specCol + lerp(specCol, 1, _RefSpecFresnelStrength) * _RefSpecFresnelStrength, pbrNDotV);
 				
 				reflections *= poiThemeColor(poiMods, _MochieReflectionTint, _MochieReflectionTintThemeIndex);
 				reflections *= reflectionMask;
@@ -37954,7 +38274,7 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 				float surfaceReduction = (1.0 / (brdfRoughness * brdfRoughness + 1.0));
 				float grazingTerm = saturate(smoothness + (1 - omr));
 				float3 reflCol = GetReflections(poiCam, poiLight, poiMesh, roughness, _ClearCoatForceFallback, _ClearCoatLitFallback, _ClearCoatFallback, _ClearCoatFallback_HDR, clearcoatReflectionDir);
-				reflections = surfaceReduction * reflCol * lerp(1, FresnelLerp(specCol, grazingTerm, clearcoatNDotV), _ClearcoatFresnel);
+				reflections = surfaceReduction * reflCol * FresnelLerp(specCol, specCol + lerp(specCol, 1, _ClearcoatFresnelStrength) * _ClearcoatFresnelStrength, clearcoatNDotV);
 				reflections *= poiThemeColor(poiMods, _ClearCoatReflectionTint, _ClearCoatReflectionTintThemeIndex) * reflectionMask;
 				diffuse = lerp(diffuse, diffuse * omr, reflectionMask);
 				
@@ -39778,7 +40098,7 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 				poiFragData.toggleVertexLights = 0;
 				
 				#ifdef POI_UDIMDISCARD
-				applyUDIMDiscard(i);
+				applyUDIMDiscard(i, facing);
 				#endif
 				
 				//ifex _NormalCorrect==0
@@ -40681,6 +41001,11 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 				poiLight.directLuminance = dot(poiLight.directColor, float3(0.299, 0.587, 0.114));
 				poiLight.indirectLuminance = dot(poiLight.directColor, float3(0.299, 0.587, 0.114));
 				poiLight.finalLuminance = dot(poiLight.finalLighting, float3(0.299, 0.587, 0.114));
+				
+				#ifdef POI_GRABPASS
+				poiLight.finalLighting = max(poiLight.finalLighting, 0.0001);
+				#endif
+				
 				//endex
 				
 				#if defined(GEOM_TYPE_BRANCH) || defined(GEOM_TYPE_BRANCH_DETAIL) || defined(GEOM_TYPE_FROND) || defined(DEPTH_OF_FIELD_COC_VIEW)
@@ -40926,7 +41251,7 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 				#else
 				float4 rimColorTex = 1;
 				#endif
-				ApplyLiltoonRimLighting(poiFragData, poiMesh, poiCam, poiLight, poiMods, _RimColor, _RimIndirColor, rimColorTex, _RimMainStrength, _RimNormalStrength, _RimDirRange, _RimIndirRange, _RimFresnelPower, _RimBackfaceMask, _RimDirStrength, _RimBorder, _RimBlur, _RimIndirBorder, _RimIndirBlur, _RimShadowMask, _RimEnableLighting, _RimVRParallaxStrength, _RimGlobalMask, _RimGlobalMaskBlendType, _RimHueShiftEnabled, _RimHueShift, _RimHueShiftColorSpace, _RimHueSelectOrShift, _RimHueShiftSpeed, _RimBlendMode);
+				ApplyLiltoonRimLighting(poiFragData, poiMesh, poiCam, poiLight, poiMods, _RimColor, _RimIndirColor, rimColorTex, _RimMainStrength, _RimNormalStrength, _RimDirRange, _RimIndirRange, _RimFresnelPower, _RimBackfaceMask, _RimDirStrength, _RimBorder, _RimBlur, _RimIndirBorder, _RimIndirBlur, _RimShadowMask, _RimEnableLighting, _RimVRParallaxStrength, _RimGlobalMask, _RimGlobalMaskBlendType, _RimHueShiftEnabled, _RimHueShift, _RimHueShiftColorSpace, _RimHueSelectOrShift, _RimHueShiftSpeed, _RimBlendMode, _RimMaskOnlyMask);
 				#endif
 				#endif
 				//endex
@@ -40938,7 +41263,7 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 				#else
 				float4 rim2ColorTex = 1;
 				#endif
-				ApplyLiltoonRimLighting(poiFragData, poiMesh, poiCam, poiLight, poiMods, _Rim2Color, _Rim2IndirColor, rim2ColorTex, _Rim2MainStrength, _Rim2NormalStrength, _Rim2DirRange, _Rim2IndirRange, _Rim2FresnelPower, _Rim2BackfaceMask, _Rim2DirStrength, _Rim2Border, _Rim2Blur, _Rim2IndirBorder, _Rim2IndirBlur, _Rim2ShadowMask, _Rim2EnableLighting, _Rim2VRParallaxStrength, _Rim2GlobalMask, _Rim2GlobalMaskBlendType, _Rim2HueShiftEnabled, _Rim2HueShift, _Rim2HueShiftColorSpace, _Rim2HueSelectOrShift, _Rim2HueShiftSpeed, _Rim2BlendMode);
+				ApplyLiltoonRimLighting(poiFragData, poiMesh, poiCam, poiLight, poiMods, _Rim2Color, _Rim2IndirColor, rim2ColorTex, _Rim2MainStrength, _Rim2NormalStrength, _Rim2DirRange, _Rim2IndirRange, _Rim2FresnelPower, _Rim2BackfaceMask, _Rim2DirStrength, _Rim2Border, _Rim2Blur, _Rim2IndirBorder, _Rim2IndirBlur, _Rim2ShadowMask, _Rim2EnableLighting, _Rim2VRParallaxStrength, _Rim2GlobalMask, _Rim2GlobalMaskBlendType, _Rim2HueShiftEnabled, _Rim2HueShift, _Rim2HueShiftColorSpace, _Rim2HueSelectOrShift, _Rim2HueShiftSpeed, _Rim2BlendMode, _Rim2MaskOnlyMask);
 				#endif
 				#endif
 				//endex
@@ -42223,6 +42548,26 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 			float _UDIMDiscardRow0_1;
 			float _UDIMDiscardRow0_2;
 			float _UDIMDiscardRow0_3;
+			
+			float _EnableUDIMFaceDiscardOptions;
+			float _UDIMFaceDiscardFace;
+			float _UDIMFaceDiscardUV;
+			float _UDIMFaceDiscardRow3_0;
+			float _UDIMFaceDiscardRow3_1;
+			float _UDIMFaceDiscardRow3_2;
+			float _UDIMFaceDiscardRow3_3;
+			float _UDIMFaceDiscardRow2_0;
+			float _UDIMFaceDiscardRow2_1;
+			float _UDIMFaceDiscardRow2_2;
+			float _UDIMFaceDiscardRow2_3;
+			float _UDIMFaceDiscardRow1_0;
+			float _UDIMFaceDiscardRow1_1;
+			float _UDIMFaceDiscardRow1_2;
+			float _UDIMFaceDiscardRow1_3;
+			float _UDIMFaceDiscardRow0_0;
+			float _UDIMFaceDiscardRow0_1;
+			float _UDIMFaceDiscardRow0_2;
+			float _UDIMFaceDiscardRow0_3;
 			#endif
 			//endex
 			
@@ -42505,7 +42850,6 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 			#endif
 			
 			#ifdef _LIGHTINGMODE_MULTILAYER_MATH
-			float _ShadowBorderMapToggle;
 			#if defined(PROP_SHADOWBORDERMASK) || !defined(OPTIMIZER_ENABLED)
 			Texture2D _ShadowBorderMask;
 			float4 _ShadowBorderMask_ST;
@@ -42516,7 +42860,7 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 			float _ShadowBorderMaskLOD;
 			float4 _ShadowAOShift;
 			float4 _ShadowAOShift2;
-			
+			float _ShadowBorderMapToggle;
 			float4 _ShadowColor;
 			float _LightingMulitlayerNonLinear;
 			#if defined(PROP_SHADOWCOLORTEX) || !defined(OPTIMIZER_ENABLED)
@@ -42558,6 +42902,16 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 			float _ShadowBorderRange;
 			float _ShadowEnvStrength;
 			float _ShadowMainStrength;
+			float _ShadowMaskType;
+			#if defined(PROP_SHADOWSTRENGTHMASK) || !defined(OPTIMIZER_ENABLED)
+			Texture2D _ShadowStrengthMask;
+			float4 _ShadowStrengthMask_ST;
+			float4 _ShadowStrengthMaskPan;
+			float _ShadowStrengthMaskUV;
+			#endif
+			float _ShadowFlatBorder;
+			float _ShadowFlatBlur;
+			float _MultilayerShadowStrength;
 			#endif
 			
 			#ifdef _LIGHTINGMODE_FLAT
@@ -44791,6 +45145,30 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 				unity_SpecCube0.GetDimensions(width, height);
 				return !(width * height < 2);
 			}
+			//ifex _EnableUDIMDiscardOptions==0
+			#ifdef POI_UDIMDISCARD
+			float shouldPerformUDIMDiscard(float2 udim, float4 UDIMDiscardRows[4])
+			{
+				float shouldDiscard = 0;
+				float4 xMask = float4(  (udim.x >= 0 && udim.x < 1),
+				(udim.x >= 1 && udim.x < 2),
+				(udim.x >= 2 && udim.x < 3),
+				(udim.x >= 3 && udim.x < 4));
+				
+				shouldDiscard += (udim.y >= 0 && udim.y < 1) * dot(UDIMDiscardRows[0], xMask);
+				shouldDiscard += (udim.y >= 1 && udim.y < 2) * dot(UDIMDiscardRows[1], xMask);
+				shouldDiscard += (udim.y >= 2 && udim.y < 3) * dot(UDIMDiscardRows[2], xMask);
+				shouldDiscard += (udim.y >= 3 && udim.y < 4) * dot(UDIMDiscardRows[3], xMask);
+				
+				shouldDiscard *= any(float4(udim.y >= 0, udim.y < 4, udim.x >= 0, udim.x < 4)); // never discard outside 4x4 grid in pos coords
+				
+				// Use a threshold so that there's some room for animations to be close to 0, but not exactly 0
+				const float threshold = 0.001;
+				return threshold - shouldDiscard;
+			}
+			#endif
+			//endex
+			
 			//ifex _EnableAudioLink==0
 			#ifdef POI_AUDIOLINK
 			
@@ -45132,6 +45510,18 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 			#endif
 			//endex
 			
+			void applyReducedRenderClipDistance(inout VertexOut o)
+			{
+				if (o.pos.w < _ProjectionParams.y * 1.01 && o.pos.w > 0)
+				{
+					#if defined(UNITY_REVERSED_Z) // DirectX
+					o.pos.z = o.pos.z * 0.0001 + o.pos.w * 0.999;
+					#else // OpenGL
+					o.pos.z = o.pos.z * 0.0001 - o.pos.w * 0.999;
+					#endif
+				}
+			}
+			
 			VertexOut vert(
 			#ifndef POI_TESSELLATED
 			appdata v
@@ -45162,22 +45552,15 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 					udim += (v.uv2.xy * (_UDIMDiscardUV == 2));
 					udim += (v.uv3.xy * (_UDIMDiscardUV == 3));
 					
-					float isDiscarded = 0;
-					float4 xMask = float4(  (udim.x >= 0 && udim.x < 1),
-					(udim.x >= 1 && udim.x < 2),
-					(udim.x >= 2 && udim.x < 3),
-					(udim.x >= 3 && udim.x < 4));
+					float4 UDIMDiscardRows[4];
+					UDIMDiscardRows[0] = float4(_UDIMDiscardRow0_0, _UDIMDiscardRow0_1, _UDIMDiscardRow0_2, _UDIMDiscardRow0_3);
+					UDIMDiscardRows[1] = float4(_UDIMDiscardRow1_0, _UDIMDiscardRow1_1, _UDIMDiscardRow1_2, _UDIMDiscardRow1_3);
+					UDIMDiscardRows[2] = float4(_UDIMDiscardRow2_0, _UDIMDiscardRow2_1, _UDIMDiscardRow2_2, _UDIMDiscardRow2_3);
+					UDIMDiscardRows[3] = float4(_UDIMDiscardRow3_0, _UDIMDiscardRow3_1, _UDIMDiscardRow3_2, _UDIMDiscardRow3_3);
 					
-					isDiscarded += (udim.y >= 0 && udim.y < 1) * dot(float4(_UDIMDiscardRow0_0, _UDIMDiscardRow0_1, _UDIMDiscardRow0_2, _UDIMDiscardRow0_3), xMask);
-					isDiscarded += (udim.y >= 1 && udim.y < 2) * dot(float4(_UDIMDiscardRow1_0, _UDIMDiscardRow1_1, _UDIMDiscardRow1_2, _UDIMDiscardRow1_3), xMask);
-					isDiscarded += (udim.y >= 2 && udim.y < 3) * dot(float4(_UDIMDiscardRow2_0, _UDIMDiscardRow2_1, _UDIMDiscardRow2_2, _UDIMDiscardRow2_3), xMask);
-					isDiscarded += (udim.y >= 3 && udim.y < 4) * dot(float4(_UDIMDiscardRow3_0, _UDIMDiscardRow3_1, _UDIMDiscardRow3_2, _UDIMDiscardRow3_3), xMask);
+					float shouldDiscard = shouldPerformUDIMDiscard(udim, UDIMDiscardRows);
 					
-					isDiscarded *= any(float4(udim.y >= 0, udim.y < 4, udim.x >= 0, udim.x < 4)); // never discard outside 4x4 grid in pos coords
-					
-					// Use a threshold so that there's some room for animations to be close to 0, but not exactly 0
-					const float threshold = 0.001;
-					if(isDiscarded > threshold) // Early Return skips rest of vertex shader
+					if(shouldDiscard < 0) // Early Return skips rest of vertex shader
 					{
 						return (VertexOut)POI_NAN;
 					}
@@ -45187,7 +45570,7 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 				
 				//ifex _VertexManipulationsEnabled==0
 				#ifdef AUTO_EXPOSURE
-				float4 audioLinkBands = 0;
+				float audioLinkBands[5];
 				float3 ALrotation = 0;
 				float3 ALLocalTranslation = 0;
 				float3 CTALRotation = 0;
@@ -45199,10 +45582,11 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 				#ifdef POI_AUDIOLINK
 				if (AudioLinkIsAvailable() && _VertexAudioLinkEnabled && _AudioLinkAnimToggle)
 				{
-					audioLinkBands.x = AudioLinkData(ALPASS_AUDIOBASS).r;
-					audioLinkBands.y = AudioLinkData(ALPASS_AUDIOLOWMIDS).r;
-					audioLinkBands.z = AudioLinkData(ALPASS_AUDIOHIGHMIDS).r;
-					audioLinkBands.w = AudioLinkData(ALPASS_AUDIOTREBLE).r;
+					audioLinkBands[0] = _AudioLinkSmoothingBass == 0 ? AudioLinkData(ALPASS_AUDIOLINK + float2(0, 0))[0] : AudioLinkData(ALPASS_FILTEREDAUDIOLINK + float2((1 - _AudioLinkSmoothingBass) * 15.95, 0))[0];
+					audioLinkBands[1] = _AudioLinkSmoothingLowMid == 0 ? AudioLinkData(ALPASS_AUDIOLINK + float2(0, 1))[0] : AudioLinkData(ALPASS_FILTEREDAUDIOLINK + float2((1 - _AudioLinkSmoothingLowMid) * 15.95, 1))[0];
+					audioLinkBands[2] = _AudioLinkSmoothingHighMid == 0 ? AudioLinkData(ALPASS_AUDIOLINK + float2(0, 2))[0] : AudioLinkData(ALPASS_FILTEREDAUDIOLINK + float2((1 - _AudioLinkSmoothingHighMid) * 15.95, 2))[0];
+					audioLinkBands[3] = _AudioLinkSmoothingTreble == 0 ? AudioLinkData(ALPASS_AUDIOLINK + float2(0, 3))[0] : AudioLinkData(ALPASS_FILTEREDAUDIOLINK + float2((1 - _AudioLinkSmoothingTreble) * 15.95, 3))[0];
+					audioLinkBands[4] = AudioLinkData(ALPASS_GENERALVU + float2(8, 0))[0];
 					
 					if (any(_VertexLocalTranslationALMin) || any(_VertexLocalTranslationALMax))
 					{
@@ -45598,14 +45982,7 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 				
 				if (_RenderingReduceClipDistance)
 				{
-					if (o.pos.w < _ProjectionParams.y * 1.01 && o.pos.w > 0)
-					{
-						#if defined(UNITY_REVERSED_Z) // DirectX
-						o.pos.z = o.pos.z * 0.0001 + o.pos.w * 0.999;
-						#else // OpenGL
-						o.pos.z = o.pos.z * 0.0001 - o.pos.w * 0.999;
-						#endif
-					}
+					applyReducedRenderClipDistance(o);
 				}
 				
 				#ifdef POI_PASS_META
@@ -46405,27 +46782,38 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 			
 			//ifex _EnableUDIMDiscardOptions==0
 			#ifdef POI_UDIMDISCARD
-			void applyUDIMDiscard(in VertexOut i)
+			void applyUDIMDiscard(in VertexOut i, in uint facing)
 			{
+				// UDIM Discaarad
 				if(_UDIMDiscardMode == 1) // Don't run if in vertex mode
 				{
 					float2 udim = floor(vertexUV(i, _UDIMDiscardUV));
 					
-					float isDiscarded = 0;
-					float4 xMask = float4(  (udim.x >= 0 && udim.x < 1),
-					(udim.x >= 1 && udim.x < 2),
-					(udim.x >= 2 && udim.x < 3),
-					(udim.x >= 3 && udim.x < 4));
+					float4 UDIMDiscardRows[4];
+					UDIMDiscardRows[0] = float4(_UDIMDiscardRow0_0, _UDIMDiscardRow0_1, _UDIMDiscardRow0_2, _UDIMDiscardRow0_3);
+					UDIMDiscardRows[1] = float4(_UDIMDiscardRow1_0, _UDIMDiscardRow1_1, _UDIMDiscardRow1_2, _UDIMDiscardRow1_3);
+					UDIMDiscardRows[2] = float4(_UDIMDiscardRow2_0, _UDIMDiscardRow2_1, _UDIMDiscardRow2_2, _UDIMDiscardRow2_3);
+					UDIMDiscardRows[3] = float4(_UDIMDiscardRow3_0, _UDIMDiscardRow3_1, _UDIMDiscardRow3_2, _UDIMDiscardRow3_3);
 					
-					isDiscarded += (udim.y >= 0 && udim.y < 1) * dot(float4(_UDIMDiscardRow0_0, _UDIMDiscardRow0_1, _UDIMDiscardRow0_2, _UDIMDiscardRow0_3), xMask);
-					isDiscarded += (udim.y >= 1 && udim.y < 2) * dot(float4(_UDIMDiscardRow1_0, _UDIMDiscardRow1_1, _UDIMDiscardRow1_2, _UDIMDiscardRow1_3), xMask);
-					isDiscarded += (udim.y >= 2 && udim.y < 3) * dot(float4(_UDIMDiscardRow2_0, _UDIMDiscardRow2_1, _UDIMDiscardRow2_2, _UDIMDiscardRow2_3), xMask);
-					isDiscarded += (udim.y >= 3 && udim.y < 4) * dot(float4(_UDIMDiscardRow3_0, _UDIMDiscardRow3_1, _UDIMDiscardRow3_2, _UDIMDiscardRow3_3), xMask);
+					float shouldDiscard = shouldPerformUDIMDiscard(udim, UDIMDiscardRows);
 					
-					isDiscarded *= any(float4(udim.y >= 0, udim.y < 4, udim.x >= 0, udim.x < 4)); // never discard outside 4x4 grid in pos coords
+					clip(shouldDiscard); // Clip if discarded
+				}
+				
+				// UDIM Face Discard
+				if(_EnableUDIMFaceDiscardOptions && saturate(facing) == _UDIMFaceDiscardFace) // Run if Face Discard enabled & this is the face to discard
+				{
+					float2 faceUdim = floor(vertexUV(i, _UDIMFaceDiscardUV));
 					
-					const float threshold = 0.001;
-					clip(threshold - isDiscarded); // Clip if discarded
+					float4 UDIMFaceDiscardRows[4];
+					UDIMFaceDiscardRows[0] = float4(_UDIMFaceDiscardRow0_0, _UDIMFaceDiscardRow0_1, _UDIMFaceDiscardRow0_2, _UDIMFaceDiscardRow0_3);
+					UDIMFaceDiscardRows[1] = float4(_UDIMFaceDiscardRow1_0, _UDIMFaceDiscardRow1_1, _UDIMFaceDiscardRow1_2, _UDIMFaceDiscardRow1_3);
+					UDIMFaceDiscardRows[2] = float4(_UDIMFaceDiscardRow2_0, _UDIMFaceDiscardRow2_1, _UDIMFaceDiscardRow2_2, _UDIMFaceDiscardRow2_3);
+					UDIMFaceDiscardRows[3] = float4(_UDIMFaceDiscardRow3_0, _UDIMFaceDiscardRow3_1, _UDIMFaceDiscardRow3_2, _UDIMFaceDiscardRow3_3);
+					
+					float shouldDiscard = shouldPerformUDIMDiscard(faceUdim, UDIMFaceDiscardRows);
+					
+					clip(shouldDiscard); // Clip if discarded
 				}
 				
 				return;
@@ -47211,8 +47599,11 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 				lightMap.z *= lerp(1.0, shadowAttenuationNoStrength, _Shadow3rdReceive);
 				
 				float4 shadowBorderMask = 1;
-				if (_ShadowBorderMapToggle)
+				
+				if(_ShadowBorderMapToggle)
 				{
+					
+					#if defined(PROP_SHADOWBORDERMASK) || !defined(OPTIMIZER_ENABLED)
 					// This should be moved to ui but honestly if these are locked in the compiler should be able to resolve it at compile time
 					float2 shadowShift0 = float2(_ShadowAOShift.x, _ShadowAOShift.y);
 					float2 shadowShift1 = float2(_ShadowAOShift.z, _ShadowAOShift.w);
@@ -47247,6 +47638,7 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 					shadowBorderMask.b = saturate(shadowBorderMask.b * shadowShift2.x + shadowShift2.y);
 					
 					lightMap.xyz = _ShadowPostAO ? lightMap.xyz : lightMap.xyz * shadowBorderMask.rgb;
+					#endif
 				}
 				
 				if (_LightingMapMode == 4)
@@ -47272,6 +47664,24 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 				lns = _ShadowPostAO ? lns * shadowBorderMask.rgbr : lns;
 				#endif
 				lns = saturate(lns);
+				
+				#if defined(PROP_SHADOWSTRENGTHMASK) || !defined(OPTIMIZER_ENABLED)
+				float4 shadowStrengthMask = POI2D_SAMPLER_PAN(_ShadowStrengthMask, _MainTex, poiUV(poiMesh.uv[_ShadowStrengthMaskUV], _ShadowStrengthMask_ST), _ShadowStrengthMaskPan);
+				#else
+				float4 shadowStrengthMask = 1;
+				#endif
+				if(_ShadowMaskType == 1)
+				{
+					float3 flatN = normalize(mul((float3x3)unity_ObjectToWorld, float3(0.0,0.25,1.0)));//normalize(LIL_MATRIX_M._m02_m12_m22);
+					float lnFlat = saturate((dot(flatN, poiLight.direction) + _ShadowFlatBorder) / _ShadowFlatBlur);
+					//lnFlat *= lerp(1.0, calculatedShadow, _ShadowReceive);
+					lns = lerp(lnFlat, lns, shadowStrengthMask.r);
+				}
+				else if(_ShadowMaskType == 0)
+				{
+					shadowStrength *= shadowStrengthMask.r;
+				}
+				//lns.x = lerp(1.0, lns.x, shadowStrength);
 				//poiLight.finalLighting = lns.rgb;
 				//return;
 				float3 indirectColor = 1;
@@ -48739,7 +49149,7 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 				poiFragData.toggleVertexLights = 0;
 				
 				#ifdef POI_UDIMDISCARD
-				applyUDIMDiscard(i);
+				applyUDIMDiscard(i, facing);
 				#endif
 				
 				//ifex _NormalCorrect==0
@@ -49612,6 +50022,11 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 				poiLight.directLuminance = dot(poiLight.directColor, float3(0.299, 0.587, 0.114));
 				poiLight.indirectLuminance = dot(poiLight.directColor, float3(0.299, 0.587, 0.114));
 				poiLight.finalLuminance = dot(poiLight.finalLighting, float3(0.299, 0.587, 0.114));
+				
+				#ifdef POI_GRABPASS
+				poiLight.finalLighting = max(poiLight.finalLighting, 0.0001);
+				#endif
+				
 				//endex
 				
 				//ifex _EnableOutlines!=1
@@ -50737,6 +51152,26 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 			float _UDIMDiscardRow0_1;
 			float _UDIMDiscardRow0_2;
 			float _UDIMDiscardRow0_3;
+			
+			float _EnableUDIMFaceDiscardOptions;
+			float _UDIMFaceDiscardFace;
+			float _UDIMFaceDiscardUV;
+			float _UDIMFaceDiscardRow3_0;
+			float _UDIMFaceDiscardRow3_1;
+			float _UDIMFaceDiscardRow3_2;
+			float _UDIMFaceDiscardRow3_3;
+			float _UDIMFaceDiscardRow2_0;
+			float _UDIMFaceDiscardRow2_1;
+			float _UDIMFaceDiscardRow2_2;
+			float _UDIMFaceDiscardRow2_3;
+			float _UDIMFaceDiscardRow1_0;
+			float _UDIMFaceDiscardRow1_1;
+			float _UDIMFaceDiscardRow1_2;
+			float _UDIMFaceDiscardRow1_3;
+			float _UDIMFaceDiscardRow0_0;
+			float _UDIMFaceDiscardRow0_1;
+			float _UDIMFaceDiscardRow0_2;
+			float _UDIMFaceDiscardRow0_3;
 			#endif
 			//endex
 			
@@ -53238,6 +53673,30 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 				unity_SpecCube0.GetDimensions(width, height);
 				return !(width * height < 2);
 			}
+			//ifex _EnableUDIMDiscardOptions==0
+			#ifdef POI_UDIMDISCARD
+			float shouldPerformUDIMDiscard(float2 udim, float4 UDIMDiscardRows[4])
+			{
+				float shouldDiscard = 0;
+				float4 xMask = float4(  (udim.x >= 0 && udim.x < 1),
+				(udim.x >= 1 && udim.x < 2),
+				(udim.x >= 2 && udim.x < 3),
+				(udim.x >= 3 && udim.x < 4));
+				
+				shouldDiscard += (udim.y >= 0 && udim.y < 1) * dot(UDIMDiscardRows[0], xMask);
+				shouldDiscard += (udim.y >= 1 && udim.y < 2) * dot(UDIMDiscardRows[1], xMask);
+				shouldDiscard += (udim.y >= 2 && udim.y < 3) * dot(UDIMDiscardRows[2], xMask);
+				shouldDiscard += (udim.y >= 3 && udim.y < 4) * dot(UDIMDiscardRows[3], xMask);
+				
+				shouldDiscard *= any(float4(udim.y >= 0, udim.y < 4, udim.x >= 0, udim.x < 4)); // never discard outside 4x4 grid in pos coords
+				
+				// Use a threshold so that there's some room for animations to be close to 0, but not exactly 0
+				const float threshold = 0.001;
+				return threshold - shouldDiscard;
+			}
+			#endif
+			//endex
+			
 			//ifex _EnableAudioLink==0
 			#ifdef POI_AUDIOLINK
 			
@@ -53579,6 +54038,18 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 			#endif
 			//endex
 			
+			void applyReducedRenderClipDistance(inout VertexOut o)
+			{
+				if (o.pos.w < _ProjectionParams.y * 1.01 && o.pos.w > 0)
+				{
+					#if defined(UNITY_REVERSED_Z) // DirectX
+					o.pos.z = o.pos.z * 0.0001 + o.pos.w * 0.999;
+					#else // OpenGL
+					o.pos.z = o.pos.z * 0.0001 - o.pos.w * 0.999;
+					#endif
+				}
+			}
+			
 			VertexOut vert(
 			#ifndef POI_TESSELLATED
 			appdata v
@@ -53609,22 +54080,15 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 					udim += (v.uv2.xy * (_UDIMDiscardUV == 2));
 					udim += (v.uv3.xy * (_UDIMDiscardUV == 3));
 					
-					float isDiscarded = 0;
-					float4 xMask = float4(  (udim.x >= 0 && udim.x < 1),
-					(udim.x >= 1 && udim.x < 2),
-					(udim.x >= 2 && udim.x < 3),
-					(udim.x >= 3 && udim.x < 4));
+					float4 UDIMDiscardRows[4];
+					UDIMDiscardRows[0] = float4(_UDIMDiscardRow0_0, _UDIMDiscardRow0_1, _UDIMDiscardRow0_2, _UDIMDiscardRow0_3);
+					UDIMDiscardRows[1] = float4(_UDIMDiscardRow1_0, _UDIMDiscardRow1_1, _UDIMDiscardRow1_2, _UDIMDiscardRow1_3);
+					UDIMDiscardRows[2] = float4(_UDIMDiscardRow2_0, _UDIMDiscardRow2_1, _UDIMDiscardRow2_2, _UDIMDiscardRow2_3);
+					UDIMDiscardRows[3] = float4(_UDIMDiscardRow3_0, _UDIMDiscardRow3_1, _UDIMDiscardRow3_2, _UDIMDiscardRow3_3);
 					
-					isDiscarded += (udim.y >= 0 && udim.y < 1) * dot(float4(_UDIMDiscardRow0_0, _UDIMDiscardRow0_1, _UDIMDiscardRow0_2, _UDIMDiscardRow0_3), xMask);
-					isDiscarded += (udim.y >= 1 && udim.y < 2) * dot(float4(_UDIMDiscardRow1_0, _UDIMDiscardRow1_1, _UDIMDiscardRow1_2, _UDIMDiscardRow1_3), xMask);
-					isDiscarded += (udim.y >= 2 && udim.y < 3) * dot(float4(_UDIMDiscardRow2_0, _UDIMDiscardRow2_1, _UDIMDiscardRow2_2, _UDIMDiscardRow2_3), xMask);
-					isDiscarded += (udim.y >= 3 && udim.y < 4) * dot(float4(_UDIMDiscardRow3_0, _UDIMDiscardRow3_1, _UDIMDiscardRow3_2, _UDIMDiscardRow3_3), xMask);
+					float shouldDiscard = shouldPerformUDIMDiscard(udim, UDIMDiscardRows);
 					
-					isDiscarded *= any(float4(udim.y >= 0, udim.y < 4, udim.x >= 0, udim.x < 4)); // never discard outside 4x4 grid in pos coords
-					
-					// Use a threshold so that there's some room for animations to be close to 0, but not exactly 0
-					const float threshold = 0.001;
-					if(isDiscarded > threshold) // Early Return skips rest of vertex shader
+					if(shouldDiscard < 0) // Early Return skips rest of vertex shader
 					{
 						return (VertexOut)POI_NAN;
 					}
@@ -53634,7 +54098,7 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 				
 				//ifex _VertexManipulationsEnabled==0
 				#ifdef AUTO_EXPOSURE
-				float4 audioLinkBands = 0;
+				float audioLinkBands[5];
 				float3 ALrotation = 0;
 				float3 ALLocalTranslation = 0;
 				float3 CTALRotation = 0;
@@ -53646,10 +54110,11 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 				#ifdef POI_AUDIOLINK
 				if (AudioLinkIsAvailable() && _VertexAudioLinkEnabled && _AudioLinkAnimToggle)
 				{
-					audioLinkBands.x = AudioLinkData(ALPASS_AUDIOBASS).r;
-					audioLinkBands.y = AudioLinkData(ALPASS_AUDIOLOWMIDS).r;
-					audioLinkBands.z = AudioLinkData(ALPASS_AUDIOHIGHMIDS).r;
-					audioLinkBands.w = AudioLinkData(ALPASS_AUDIOTREBLE).r;
+					audioLinkBands[0] = _AudioLinkSmoothingBass == 0 ? AudioLinkData(ALPASS_AUDIOLINK + float2(0, 0))[0] : AudioLinkData(ALPASS_FILTEREDAUDIOLINK + float2((1 - _AudioLinkSmoothingBass) * 15.95, 0))[0];
+					audioLinkBands[1] = _AudioLinkSmoothingLowMid == 0 ? AudioLinkData(ALPASS_AUDIOLINK + float2(0, 1))[0] : AudioLinkData(ALPASS_FILTEREDAUDIOLINK + float2((1 - _AudioLinkSmoothingLowMid) * 15.95, 1))[0];
+					audioLinkBands[2] = _AudioLinkSmoothingHighMid == 0 ? AudioLinkData(ALPASS_AUDIOLINK + float2(0, 2))[0] : AudioLinkData(ALPASS_FILTEREDAUDIOLINK + float2((1 - _AudioLinkSmoothingHighMid) * 15.95, 2))[0];
+					audioLinkBands[3] = _AudioLinkSmoothingTreble == 0 ? AudioLinkData(ALPASS_AUDIOLINK + float2(0, 3))[0] : AudioLinkData(ALPASS_FILTEREDAUDIOLINK + float2((1 - _AudioLinkSmoothingTreble) * 15.95, 3))[0];
+					audioLinkBands[4] = AudioLinkData(ALPASS_GENERALVU + float2(8, 0))[0];
 					
 					if (any(_VertexLocalTranslationALMin) || any(_VertexLocalTranslationALMax))
 					{
@@ -54045,14 +54510,7 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 				
 				if (_RenderingReduceClipDistance)
 				{
-					if (o.pos.w < _ProjectionParams.y * 1.01 && o.pos.w > 0)
-					{
-						#if defined(UNITY_REVERSED_Z) // DirectX
-						o.pos.z = o.pos.z * 0.0001 + o.pos.w * 0.999;
-						#else // OpenGL
-						o.pos.z = o.pos.z * 0.0001 - o.pos.w * 0.999;
-						#endif
-					}
+					applyReducedRenderClipDistance(o);
 				}
 				
 				#ifdef POI_PASS_META
@@ -54759,27 +55217,38 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 			
 			//ifex _EnableUDIMDiscardOptions==0
 			#ifdef POI_UDIMDISCARD
-			void applyUDIMDiscard(in VertexOut i)
+			void applyUDIMDiscard(in VertexOut i, in uint facing)
 			{
+				// UDIM Discaarad
 				if(_UDIMDiscardMode == 1) // Don't run if in vertex mode
 				{
 					float2 udim = floor(vertexUV(i, _UDIMDiscardUV));
 					
-					float isDiscarded = 0;
-					float4 xMask = float4(  (udim.x >= 0 && udim.x < 1),
-					(udim.x >= 1 && udim.x < 2),
-					(udim.x >= 2 && udim.x < 3),
-					(udim.x >= 3 && udim.x < 4));
+					float4 UDIMDiscardRows[4];
+					UDIMDiscardRows[0] = float4(_UDIMDiscardRow0_0, _UDIMDiscardRow0_1, _UDIMDiscardRow0_2, _UDIMDiscardRow0_3);
+					UDIMDiscardRows[1] = float4(_UDIMDiscardRow1_0, _UDIMDiscardRow1_1, _UDIMDiscardRow1_2, _UDIMDiscardRow1_3);
+					UDIMDiscardRows[2] = float4(_UDIMDiscardRow2_0, _UDIMDiscardRow2_1, _UDIMDiscardRow2_2, _UDIMDiscardRow2_3);
+					UDIMDiscardRows[3] = float4(_UDIMDiscardRow3_0, _UDIMDiscardRow3_1, _UDIMDiscardRow3_2, _UDIMDiscardRow3_3);
 					
-					isDiscarded += (udim.y >= 0 && udim.y < 1) * dot(float4(_UDIMDiscardRow0_0, _UDIMDiscardRow0_1, _UDIMDiscardRow0_2, _UDIMDiscardRow0_3), xMask);
-					isDiscarded += (udim.y >= 1 && udim.y < 2) * dot(float4(_UDIMDiscardRow1_0, _UDIMDiscardRow1_1, _UDIMDiscardRow1_2, _UDIMDiscardRow1_3), xMask);
-					isDiscarded += (udim.y >= 2 && udim.y < 3) * dot(float4(_UDIMDiscardRow2_0, _UDIMDiscardRow2_1, _UDIMDiscardRow2_2, _UDIMDiscardRow2_3), xMask);
-					isDiscarded += (udim.y >= 3 && udim.y < 4) * dot(float4(_UDIMDiscardRow3_0, _UDIMDiscardRow3_1, _UDIMDiscardRow3_2, _UDIMDiscardRow3_3), xMask);
+					float shouldDiscard = shouldPerformUDIMDiscard(udim, UDIMDiscardRows);
 					
-					isDiscarded *= any(float4(udim.y >= 0, udim.y < 4, udim.x >= 0, udim.x < 4)); // never discard outside 4x4 grid in pos coords
+					clip(shouldDiscard); // Clip if discarded
+				}
+				
+				// UDIM Face Discard
+				if(_EnableUDIMFaceDiscardOptions && saturate(facing) == _UDIMFaceDiscardFace) // Run if Face Discard enabled & this is the face to discard
+				{
+					float2 faceUdim = floor(vertexUV(i, _UDIMFaceDiscardUV));
 					
-					const float threshold = 0.001;
-					clip(threshold - isDiscarded); // Clip if discarded
+					float4 UDIMFaceDiscardRows[4];
+					UDIMFaceDiscardRows[0] = float4(_UDIMFaceDiscardRow0_0, _UDIMFaceDiscardRow0_1, _UDIMFaceDiscardRow0_2, _UDIMFaceDiscardRow0_3);
+					UDIMFaceDiscardRows[1] = float4(_UDIMFaceDiscardRow1_0, _UDIMFaceDiscardRow1_1, _UDIMFaceDiscardRow1_2, _UDIMFaceDiscardRow1_3);
+					UDIMFaceDiscardRows[2] = float4(_UDIMFaceDiscardRow2_0, _UDIMFaceDiscardRow2_1, _UDIMFaceDiscardRow2_2, _UDIMFaceDiscardRow2_3);
+					UDIMFaceDiscardRows[3] = float4(_UDIMFaceDiscardRow3_0, _UDIMFaceDiscardRow3_1, _UDIMFaceDiscardRow3_2, _UDIMFaceDiscardRow3_3);
+					
+					float shouldDiscard = shouldPerformUDIMDiscard(faceUdim, UDIMFaceDiscardRows);
+					
+					clip(shouldDiscard); // Clip if discarded
 				}
 				
 				return;
@@ -56508,7 +56977,7 @@ Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon"
 				poiFragData.toggleVertexLights = 0;
 				
 				#ifdef POI_UDIMDISCARD
-				applyUDIMDiscard(i);
+				applyUDIMDiscard(i, facing);
 				#endif
 				
 				//ifex _NormalCorrect==0

@@ -1,198 +1,444 @@
 using System;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using Algolia.Search.Models.Rules;
 using Thry.ThryEditor.Helpers;
 using UnityEditor;
+using UnityEditorInternal;
 using UnityEngine;
 
 namespace Thry.ThryEditor
 {
-    public class DefineableCondition
-    {
-        public DefineableConditionType type = DefineableConditionType.NONE;
-        public string data = "";
-        public DefineableCondition condition1;
-        public DefineableCondition condition2;
+    public abstract class DefineableCondition
+    {   
+        private enum CombinationType{ AND, OR }
+        private enum ComparissionType { NONE, BIGGER, SMALLER, EQUAL, NOT_EQUAL, BIGGER_EQ, SMALLER_EQ}
 
-        CompareType _compareType;
-        string _obj;
-        ShaderProperty _propertyObj;
-        Material _materialInsteadOfEditor;
+        public static DefineableCondition None => new BooleanCondition(null , BooleanCondition.BooleanType.NONE);
 
-        string _value;
-        float _floatValue;
-
-        bool _hasConstantValue;
-        bool _constantValue;
-
-        bool _isInit = false;
-        public void Init()
+        protected class MaterialRenference
         {
-            if (_isInit) return;
-            _hasConstantValue = true;
-            if (type == DefineableConditionType.NONE) { _constantValue = true; }
-            else if (type == DefineableConditionType.TRUE) { _constantValue = true; }
-            else if (type == DefineableConditionType.FALSE) { _constantValue = false; }
-            else
+            Material _material;
+            bool _forceUseMaterialInsteadOfEditor;
+
+            public Material Material => _material;
+
+            static MaterialRenference _defaultMaterialRenference = new MaterialRenference(null);
+            public static MaterialRenference Default => _defaultMaterialRenference;
+
+            public MaterialRenference(Material useThisMaterialInsteadOfOpenEditor)
             {
-                var (compareType, compareString) = GetComparetor();
+                if (useThisMaterialInsteadOfOpenEditor != null)
+                {
+                    _material = useThisMaterialInsteadOfOpenEditor;
+                    _forceUseMaterialInsteadOfEditor = true;
+                }
+                _material = ShaderEditor.Active.Materials[0];
+                _forceUseMaterialInsteadOfEditor = false;
+            }
+
+            public MaterialProperty GetMaterialProperty(string key)
+            {
+                if (_forceUseMaterialInsteadOfEditor)
+                {
+                    return MaterialEditor.GetMaterialProperty(new Material[] { _material }, key);
+                }
+                else if (ShaderEditor.Active != null && ShaderEditor.Active.PropertyDictionary.TryGetValue(key, out ShaderProperty property))
+                {
+                    return property.MaterialProperty;
+                }
+                return null;
+            }
+        }
+
+        private class ComparissionData
+        {
+            enum DataType { FLOAT, MATERIAL_PROPERTY, CONDITION, THRY_EDITOR_VERSION, VRC_SDK_VERSION, RENDERQUEUE }
+
+            private DataType _type;
+            private DefineableCondition _condition;
+            private float _floatData;
+            private bool _isConstant;
+            private MaterialRenference _materialReference;
+            private string _key;
+            private bool _isErrorLogged = false;
+
+            public object Value
+            {
+                get
+                {
+                    if (_type == DataType.FLOAT) return _floatData;
+                    if (_type == DataType.CONDITION) return _condition.Test();
+                    if (_type == DataType.THRY_EDITOR_VERSION) return Config.Instance.Version;
+                    if (_type == DataType.VRC_SDK_VERSION)
+                    {
+                        if (VRCInterface.Get().Sdk_information.type == VRCInterface.VRC_SDK_Type.NONE) return 0f;
+                        return VRCInterface.Get().Sdk_information.installed_version;
+                    }
+                    if (_type == DataType.RENDERQUEUE)
+                    {
+                        if (_materialReference.Material == null) return 0f;
+                        return _materialReference.Material.renderQueue;
+                    }
+                    if (_type == DataType.MATERIAL_PROPERTY)
+                    {
+                        MaterialProperty prop = _materialReference.GetMaterialProperty(_key);
+                        if (prop == null)
+                        {
+                            if( !_isErrorLogged)
+                            {
+                                _isErrorLogged = true;
+                                ThryLogger.LogDetail(
+                                    $"Failed to get material property '{_key}' from material '{_materialReference.Material?.name}' for condition. "
+                                );
+                            }
+                            return 0f;
+                        }
+                        return prop.type switch
+                            {
+                                MaterialProperty.PropType.Color => prop.colorValue,
+                                MaterialProperty.PropType.Vector => prop.vectorValue,
+                                MaterialProperty.PropType.Texture => prop.textureValue != null ? prop.textureValue.name : "null",
+                                _ => prop.GetNumber()
+                            };
+                    }
+
+                    return 0;
+                }
+            }
+            public bool IsConstant => _isConstant;
+
+            public ComparissionData(string data, MaterialRenference materialRenference)
+            {
+                _materialReference = materialRenference;
+                if (float.TryParse(data, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out _floatData))
+                {
+                    _type = DataType.FLOAT;
+                    _isConstant = true;
+                }
+                else if (data == "VRCSDK")
+                {
+                    _type = DataType.VRC_SDK_VERSION;
+                    _isConstant = true;
+                }
+                else if (data == "ThryEditor")
+                {
+                    _type = DataType.THRY_EDITOR_VERSION;
+                    _isConstant = true;
+                }
+                else if (BooleanCondition.TryParse(data, out BooleanCondition condition, _materialReference))
+                {
+                    _condition = condition;
+                    _type = DataType.CONDITION;
+                    _isConstant = _condition.IsConstant;
+                }
+                else if (data.StartsWith("RenderQueue", StringComparison.OrdinalIgnoreCase))
+                {
+                    _type = DataType.RENDERQUEUE;
+                    _isConstant = false;
+                }
+                else
+                {
+                    _type = DataType.MATERIAL_PROPERTY;
+                    _isConstant = false;
+                    _key = data;
+                }
+            }
+
+            public ComparissionData(float value)
+            {
+                _type = DataType.FLOAT;
+                _floatData = value;
+                _isConstant = true;
+            }
+
+            public ComparissionData(DefineableCondition condition)
+            {
+                _type = DataType.CONDITION;
+                _condition = condition;
+                _isConstant = condition.IsConstant;
+            }
+
+            public override string ToString()
+            {
+                switch (_type)
+                {
+                    case DataType.FLOAT:
+                        return _floatData.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                    case DataType.MATERIAL_PROPERTY:
+                        return _key;
+                    case DataType.CONDITION:
+                        return _condition.ToString();
+                    case DataType.THRY_EDITOR_VERSION:
+                        return "ThryEditor";
+                    case DataType.VRC_SDK_VERSION:
+                        return "VRCSDK";
+                    case DataType.RENDERQUEUE:
+                        return "RenderQueue";
+                    default:
+                        return "Unknown";
+                }
+            }
+        }
+
+        private class Comparission : DefineableCondition
+        {
+            private ComparissionData _left;
+            private ComparissionData _right;
+            private ComparissionType _compareType;
+            private bool _isConstant;
+            private bool _constant;
+
+            protected override bool IsConstant => _isConstant;
+
+            public Comparission(ComparissionData left, ComparissionData right, ComparissionType compareType)
+            {
+                _left = left;
+                _right = right;
                 _compareType = compareType;
-
-                string[] parts = Regex.Split(data, compareString);
-                _obj = parts[0].Trim();
-                _value = parts[parts.Length - 1].Trim();
-
-                _floatValue = Parser.ParseFloat(_value);
-                if (ShaderEditor.Active != null && ShaderEditor.Active.PropertyDictionary.ContainsKey(_obj))
-                    _propertyObj = ShaderEditor.Active.PropertyDictionary[_obj];
-
-                if (type == DefineableConditionType.EDITOR_VERSION) InitEditorVersion();
-                else if (type == DefineableConditionType.VRC_SDK_VERSION) InitVRCSDKVersion();
-                else _hasConstantValue = false;
+                _isConstant = _left.IsConstant && _right.IsConstant;
+                if (_isConstant) _constant = Evaluate();
             }
 
-            _isInit = true;
-        }
-
-        void InitEditorVersion()
-        {
-            if (_compareType == CompareType.EQUAL)      _constantValue = Config.Instance.Version == _value;
-            if (_compareType == CompareType.NOT_EQUAL)  _constantValue = Config.Instance.Version != _value;
-            if (_compareType == CompareType.SMALLER)    _constantValue = Config.Instance.Version <  _value;
-            if (_compareType == CompareType.BIGGER)     _constantValue = Config.Instance.Version >  _value;
-            if (_compareType == CompareType.BIGGER_EQ)  _constantValue = Config.Instance.Version >= _value;
-            if (_compareType == CompareType.SMALLER_EQ) _constantValue = Config.Instance.Version <= _value;
-        }
-
-        void InitVRCSDKVersion()
-        {
-            if (VRCInterface.Get().Sdk_information.type == VRCInterface.VRC_SDK_Type.NONE)
+            public override bool Test()
             {
-                _constantValue = false;
-                return;
+                if (_isConstant) return _constant;
+                return Evaluate();
             }
-            int c_vrc = Helper.CompareVersions(VRCInterface.Get().Sdk_information.installed_version, _value);
-            if (_compareType == CompareType.EQUAL) _constantValue = c_vrc == 0;
-            if (_compareType == CompareType.NOT_EQUAL) _constantValue = c_vrc != 0;
-            if (_compareType == CompareType.SMALLER) _constantValue = c_vrc == 1;
-            if (_compareType == CompareType.BIGGER) _constantValue = c_vrc == -1;
-            if (_compareType == CompareType.BIGGER_EQ) _constantValue = c_vrc == -1 || c_vrc == 0;
-            if (_compareType == CompareType.SMALLER_EQ) _constantValue = c_vrc == 1 || c_vrc == 0;
-        }
 
-        public bool Test()
-        {
-            Init();
-            if (_hasConstantValue) return _constantValue;
-
-            MaterialProperty materialProperty = null;
-            switch (type)
+            private bool Evaluate()
             {
-                case DefineableConditionType.PROPERTY_BOOL:
-                    materialProperty = GetMaterialProperty();
-                    if (materialProperty == null) return false;
-                    if (_compareType == CompareType.NONE) return materialProperty.GetNumber() == 1;
-                    if (_compareType == CompareType.EQUAL) return materialProperty.GetNumber() == _floatValue;
-                    if (_compareType == CompareType.NOT_EQUAL) return materialProperty.GetNumber() != _floatValue;
-                    if (_compareType == CompareType.SMALLER) return materialProperty.GetNumber() < _floatValue;
-                    if (_compareType == CompareType.BIGGER) return materialProperty.GetNumber() > _floatValue;
-                    if (_compareType == CompareType.BIGGER_EQ) return materialProperty.GetNumber() >= _floatValue;
-                    if (_compareType == CompareType.SMALLER_EQ) return materialProperty.GetNumber() <= _floatValue;
-                    break;
-                case DefineableConditionType.TEXTURE_SET:
-                    materialProperty = GetMaterialProperty();
-                    if (materialProperty == null) return false;
-                    return (materialProperty.textureValue == null) == (_compareType == CompareType.EQUAL);
-                case DefineableConditionType.DROPDOWN:
-                    materialProperty = GetMaterialProperty();
-                    if (materialProperty == null) return false;
-                    if (_compareType == CompareType.NONE) return materialProperty.GetNumber() == 1;
-                    if (_compareType == CompareType.EQUAL) return "" + materialProperty.GetNumber() == _value;
-                    if (_compareType == CompareType.NOT_EQUAL) return "" + materialProperty.GetNumber() != _value;
-                    break;
-                case DefineableConditionType.PROPERTY_IS_ANIMATED:
-                    return ShaderOptimizer.IsAnimated(_materialInsteadOfEditor, _obj);
-                case DefineableConditionType.PROPERTY_IS_NOT_ANIMATED:
-                    return !ShaderOptimizer.IsAnimated(_materialInsteadOfEditor, _obj);
-                case DefineableConditionType.AND:
-                    if (condition1 != null && condition2 != null) return condition1.Test() && condition2.Test();
-                    break;
-                case DefineableConditionType.OR:
-                    if (condition1 != null && condition2 != null) return condition1.Test() || condition2.Test();
-                    break;
-                case DefineableConditionType.NOT:
-                    if (condition1 != null) return !condition1.Test();
-                    break;
+                if (TryCompareGeneral(_left.Value, _right.Value, out int result))
+                {
+                    if (_compareType == ComparissionType.EQUAL) return result == 0;
+                    if (_compareType == ComparissionType.NOT_EQUAL) return result != 0;
+                    if (_compareType == ComparissionType.SMALLER) return result < 0;
+                    if (_compareType == ComparissionType.BIGGER) return result > 0;
+                    if (_compareType == ComparissionType.BIGGER_EQ) return result >= 0;
+                    if (_compareType == ComparissionType.SMALLER_EQ) return result <= 0;
+                }
+                else
+                {
+                    ThryLogger.LogDetail(
+                        $"Failed to compare values: {_left.Value} and {_right.Value}. Comparision: {this.ToString()}"
+                    );
+                }
+                return false;
             }
 
-            return true;
-        }
-
-        private MaterialProperty GetMaterialProperty()
-        {
-            if (_materialInsteadOfEditor) return MaterialEditor.GetMaterialProperty(new Material[] { _materialInsteadOfEditor }, _obj);
-            if (_propertyObj != null) return _propertyObj.MaterialProperty;
-            return null;
-        }
-        private (CompareType, string) GetComparetor()
-        {
-            if (data.Contains("=="))
-                return (CompareType.EQUAL, "==");
-            if (data.Contains("!="))
-                return (CompareType.NOT_EQUAL, "!=");
-            if (data.Contains(">="))
-                return (CompareType.BIGGER_EQ, ">=");
-            if (data.Contains("<="))
-                return (CompareType.SMALLER_EQ, "<=");
-            if (data.Contains(">"))
-                return (CompareType.BIGGER, ">");
-            if (data.Contains("<"))
-                return (CompareType.SMALLER, "<");
-            return (CompareType.NONE, "##");
-        }
-
-        public override string ToString()
-        {
-            switch (type)
+            bool TryCompareGeneral(object a, object b, out int result)
             {
-                case DefineableConditionType.PROPERTY_BOOL:
-                    return data;
-                case DefineableConditionType.EDITOR_VERSION:
-                    return "EDITOR_VERSION" + data;
-                case DefineableConditionType.VRC_SDK_VERSION:
-                    return "VRC_SDK_VERSION" + data;
-                case DefineableConditionType.TEXTURE_SET:
-                    return "TEXTURE_SET" + data;
-                case DefineableConditionType.DROPDOWN:
-                    return "DROPDOWN" + data;
-                case DefineableConditionType.PROPERTY_IS_ANIMATED:
-                    return $"isAnimated({data})";
-                case DefineableConditionType.PROPERTY_IS_NOT_ANIMATED:
-                    return $"isNotAnimated({data})";
-                case DefineableConditionType.AND:
-                    if (condition1 != null && condition2 != null) return "(" + condition1.ToString() + "&&" + condition2.ToString() + ")";
-                    break;
-                case DefineableConditionType.OR:
-                    if (condition1 != null && condition2 != null) return "(" + condition1.ToString() + "||" + condition2.ToString() + ")";
-                    break;
-                case DefineableConditionType.NOT:
-                    if (condition1 != null) return "!" + condition1.ToString();
-                    break;
+                result = 0;
+
+                if (a == null || b == null)
+                    return false;
+
+                if (IsNumericType(a) && IsNumericType(b))
+                {
+                    double d1 = Convert.ToDouble(a);
+                    double d2 = Convert.ToDouble(b);
+                    result = d1.CompareTo(d2);
+                    return true;
+                }
+
+                if (a.GetType() == b.GetType() && a is IComparable compA)
+                {
+                    result = compA.CompareTo(b);
+                    return true;
+                }
+
+                return false;
             }
-            return "True(NONE)";
+
+            bool IsNumericType(object obj) =>
+                obj is byte or sbyte
+                or short or ushort
+                or int or uint
+                or long or ulong
+                or float or double
+                or decimal;
+
+            public static ComparissionType TypeFromString(string s)
+            {
+                if (s == "==") return ComparissionType.EQUAL;
+                if (s == "!=") return ComparissionType.NOT_EQUAL;
+                if (s == ">=") return ComparissionType.BIGGER_EQ;
+                if (s == "<=") return ComparissionType.SMALLER_EQ;
+                if (s == ">") return ComparissionType.BIGGER;
+                if (s == "<") return ComparissionType.SMALLER;
+                return ComparissionType.NONE;
+            }
+
+            public static string TypeToString(ComparissionType type)
+            {
+                switch (type)
+                {
+                    case ComparissionType.EQUAL: return "==";
+                    case ComparissionType.NOT_EQUAL: return "!=";
+                    case ComparissionType.BIGGER_EQ: return ">=";
+                    case ComparissionType.SMALLER_EQ: return "<=";
+                    case ComparissionType.BIGGER: return ">";
+                    case ComparissionType.SMALLER: return "<";
+                    default: return "?";
+                }
+            }
+            
+            public override string ToString()
+            {
+                return $"{_left} {TypeToString(_compareType)} {_right}";
+            }
         }
+
+        private class BooleanCondition : DefineableCondition
+        {
+            public enum BooleanType
+            {
+                NONE,
+                TRUE,
+                FALSE,
+                PROPERTY_IS_ANIMATED,
+                PROPERTY_IS_NOT_ANIMATED
+            }
+
+            private BooleanType _type;
+            private string _data;
+            private MaterialRenference _materialReference;
+
+            protected override bool IsConstant => _type == BooleanType.TRUE || _type == BooleanType.FALSE || _type == BooleanType.NONE;
+
+            public BooleanCondition(bool value)
+            {
+                _type = value ? BooleanType.TRUE : BooleanType.FALSE;
+            }
+
+            public BooleanCondition(string data, BooleanType type, MaterialRenference materialReference = null)
+            {
+                _data = data;
+                _type = type;
+                _materialReference = materialReference ?? MaterialRenference.Default;
+            }
+
+            public override bool Test()
+            {
+                switch (_type)
+                {
+                    case BooleanType.TRUE:
+                        return true;
+                    case BooleanType.FALSE:
+                        return false;
+                    case BooleanType.NONE:
+                        return true; // Default to true if no condition is set
+                    case BooleanType.PROPERTY_IS_ANIMATED:
+                        return ShaderOptimizer.IsAnimated(_materialReference.Material, _data);
+                    case BooleanType.PROPERTY_IS_NOT_ANIMATED:
+                        return !ShaderOptimizer.IsAnimated(_materialReference.Material, _data);
+                    default:
+                        throw new InvalidOperationException("Unknown boolean condition type");
+                }
+            }
+
+            public static bool TryParse(string s, out BooleanCondition condition, MaterialRenference materialReference)
+            {
+                if (s.StartsWith("isNotAnimated(", StringComparison.Ordinal))
+                {
+                    condition = new BooleanCondition(
+                        s.Replace("isNotAnimated(", "").TrimEnd(')', ' '),
+                        BooleanCondition.BooleanType.PROPERTY_IS_NOT_ANIMATED,
+                        materialReference
+                    );
+                    return true;
+                }
+                if (s.StartsWith("isAnimated(", StringComparison.Ordinal))
+                {
+                    condition = new BooleanCondition(
+                        s.Replace("isAnimated(", "").TrimEnd(')', ' '),
+                        BooleanCondition.BooleanType.PROPERTY_IS_ANIMATED,
+                        materialReference
+                    );
+                    return true;
+                }
+                if (s.Equals("true", StringComparison.OrdinalIgnoreCase))
+                {
+                    condition = new BooleanCondition(true);
+                    return true;
+                }
+                if (s.Equals("false", StringComparison.OrdinalIgnoreCase))
+                {
+                    condition = new BooleanCondition(false);
+                    return true;
+                }
+                condition = null;
+                return false;
+            }
+
+            public override string ToString()
+            {
+                return _type switch
+                {
+                    BooleanType.TRUE => "true",
+                    BooleanType.FALSE => "false",
+                    BooleanType.PROPERTY_IS_ANIMATED => $"isAnimated({_data})",
+                    BooleanType.PROPERTY_IS_NOT_ANIMATED => $"isNotAnimated({_data})",
+                    _ => "none"
+                };
+            }
+        }
+
+        private class Combination : DefineableCondition
+        {
+            private DefineableCondition _condition1;
+            private DefineableCondition _condition2;
+            private CombinationType _type;
+            private bool _isConstant;
+            private bool _constant;
+
+            protected override bool IsConstant => _isConstant;
+
+            public Combination(CombinationType type, DefineableCondition condition1, DefineableCondition condition2)
+            {
+                _type = type;
+                _condition1 = condition1;
+                _condition2 = condition2;
+                _isConstant = condition1.IsConstant && condition2.IsConstant;
+                if (_isConstant) _constant = Evaluate();
+            }
+
+            public override bool Test()
+            {
+                if (_isConstant) return _constant;
+                return Evaluate();
+            }
+
+            private bool Evaluate()
+            {
+                if (_type == CombinationType.AND) return _condition1.Test() && _condition2.Test();
+                if (_type == CombinationType.OR) return _condition1.Test() || _condition2.Test();
+                throw new InvalidOperationException("Invalid combination type");
+            }
+
+            public override string ToString()
+            {
+                string op = _type == CombinationType.AND ? "&&" : "||";
+                return $"({_condition1} {op} {_condition2})";
+            }
+        }
+
+        protected abstract bool IsConstant { get; }
+        public abstract bool Test();
 
         private static DefineableCondition ParseForThryParser(string s)
         {
-            return Parse(s);
+            return ParseInternal(s, MaterialRenference.Default);
         }
 
-        private static readonly char[] ComparissionLiteralsToCheckFor = "*><=".ToCharArray();
-        public static DefineableCondition Parse(string s, Material useThisMaterialInsteadOfOpenEditor = null, int start = 0, int end = -1)
+        public static DefineableCondition Parse(string s, Material useThisMaterialInsteadOfOpenEditor = null)
+        {
+            return ParseInternal(s, new MaterialRenference(useThisMaterialInsteadOfOpenEditor));
+        }
+
+        protected static DefineableCondition ParseInternal(string s, MaterialRenference materialRenference, int start = 0, int end = -1)
         {
             if (end == -1) end = s.Length;
-            DefineableCondition con;
-
-            // Debug.Log("Parsing: " + s.Substring(start, end - start));
 
             int depth = 0;
             int bracketStart = -1;
@@ -203,7 +449,7 @@ namespace Thry.ThryEditor
                 char c = s[i];
                 if (c == ' ' || c == '\t' || c == '\n' || c == '\r')
                 {
-                    if(allPreviousCharsAreEmpty) start += 1;
+                    if (allPreviousCharsAreEmpty) start += 1;
                     continue;
                 }
                 if (c == '(')
@@ -226,24 +472,19 @@ namespace Thry.ThryEditor
                 {
                     if (c == '&')
                     {
-                        con = new DefineableCondition();
-                        con._materialInsteadOfEditor = useThisMaterialInsteadOfOpenEditor;
-
-                        con.type = DefineableConditionType.AND;
-                        con.condition1 = Parse(s, useThisMaterialInsteadOfOpenEditor, start, i);
-                        con.condition2 = Parse(s, useThisMaterialInsteadOfOpenEditor, i + (s[i + 1] == '&' ? 2 : 1), end);
-                        return con;
+                        return new Combination(
+                            CombinationType.AND,
+                            ParseInternal(s, materialRenference, start, i),
+                            ParseInternal(s, materialRenference, i + (s[i + 1] == '&' ? 2 : 1), end)
+                        );
                     }
                     else if (c == '|')
                     {
-
-                        con = new DefineableCondition();
-                        con._materialInsteadOfEditor = useThisMaterialInsteadOfOpenEditor;
-
-                        con.type = DefineableConditionType.OR;
-                        con.condition1 = Parse(s, useThisMaterialInsteadOfOpenEditor, start, i);
-                        con.condition2 = Parse(s, useThisMaterialInsteadOfOpenEditor, i + (s[i + 1] == '|' ? 2 : 1), end);
-                        return con;
+                        return new Combination(
+                            CombinationType.OR,
+                            ParseInternal(s, materialRenference, start, i),
+                            ParseInternal(s, materialRenference, i + (s[i + 1] == '|' ? 2 : 1), end)
+                        );
                     }
                 }
                 allPreviousCharsAreEmpty = false;
@@ -253,136 +494,57 @@ namespace Thry.ThryEditor
             bool isInverted = IsInverted(s, ref start);
 
             // if no AND or OR was found, check for brackets
+            DefineableCondition con;
             if (bracketStart != -1 && bracketEnd != -1)
             {
-                con = Parse(s, useThisMaterialInsteadOfOpenEditor, bracketStart + 1, bracketEnd);
+                con = ParseInternal(s, materialRenference, bracketStart + 1, bracketEnd);
             }
             else
             {
-                con = ParseSingle(s.Substring(start, end - start), useThisMaterialInsteadOfOpenEditor);
+                con = ParseSingle(s.Substring(start, end - start), materialRenference);
             }
 
             if (isInverted)
             {
-                DefineableCondition inverted = new DefineableCondition();
-                inverted._materialInsteadOfEditor = useThisMaterialInsteadOfOpenEditor;
-                inverted.type = DefineableConditionType.NOT;
-                inverted.condition1 = con;
-                return inverted;
+                return new Comparission(new ComparissionData(con), new ComparissionData(0), ComparissionType.EQUAL);
             }
 
             return con;
         }
 
-        static bool IsInverted(string s, ref int start)
-        {
-            for (int i = start; i < s.Length; i++)
+            static bool IsInverted(string s, ref int start)
             {
-                if (s[i] == '!')
+                for (int i = start; i < s.Length; i++)
                 {
-                    start += 1;
-                    return true;
+                    if (s[i] == '!')
+                    {
+                        start += 1;
+                        return true;
+                    }
+                    if (s[i] != ' ')
+                        return false;
                 }
-                if (s[i] != ' ')
-                    return false;
+                return false;
             }
-            return false;
-        }
 
-        static DefineableCondition ParseSingle(string s, Material useThisMaterialInsteadOfOpenEditor = null)
+        private static readonly char[] ComparissionLiteralsToCheckFor = "!><=".ToCharArray();
+        static DefineableCondition ParseSingle(string s, MaterialRenference materialRenference)
         {
-            // Debug.Log("Parsing single: " + s);
-
-            DefineableCondition con = new DefineableCondition
+            int compIndex = s.IndexOfAny(ComparissionLiteralsToCheckFor);
+            int comLength = s[compIndex + 1] == '=' ? 2 : 1;
+            if (compIndex != -1)
             {
-                _materialInsteadOfEditor = useThisMaterialInsteadOfOpenEditor
-            };
-
-            if (s.IndexOfAny(ComparissionLiteralsToCheckFor) != -1)
-            {
-                //is a comparission
-                con.data = s;
-                con.type = DefineableConditionType.PROPERTY_BOOL;
-                if (s.StartsWith("VRCSDK", StringComparison.Ordinal))
-                {
-                    con.type = DefineableConditionType.VRC_SDK_VERSION;
-                    con.data = s.Replace("VRCSDK", "");
-                }
-                else if (s.StartsWith("ThryEditor", StringComparison.Ordinal))
-                {
-                    con.type = DefineableConditionType.EDITOR_VERSION;
-                    con.data = s.Replace("ThryEditor", "");
-                }
-                else if (IsTextureNullComparission(s, useThisMaterialInsteadOfOpenEditor))
-                {
-                    con.type = DefineableConditionType.TEXTURE_SET;
-                    con.data = s.Replace("TEXTURE_SET", "");
-                }
-                return con;
+                return new Comparission(
+                    new ComparissionData(s.Substring(0, compIndex).Trim(), materialRenference),
+                    new ComparissionData(s.Substring(compIndex + comLength).Trim(), materialRenference),
+                    Comparission.TypeFromString(s.Substring(compIndex, comLength))
+                );
             }
-            if (s.StartsWith("isNotAnimated(", StringComparison.Ordinal))
+            if (BooleanCondition.TryParse(s, out BooleanCondition booleanCondition, materialRenference))
             {
-                con.type = DefineableConditionType.PROPERTY_IS_NOT_ANIMATED;
-                con.data = s.Replace("isNotAnimated(", "").TrimEnd(')', ' ');
-                return con;
+                return booleanCondition;
             }
-            if (s.StartsWith("isAnimated(", StringComparison.Ordinal))
-            {
-                con.type = DefineableConditionType.PROPERTY_IS_ANIMATED;
-                con.data = s.Replace("isAnimated(", "").TrimEnd(')', ' ');
-                return con;
-            }
-            if (s.Equals("true", StringComparison.OrdinalIgnoreCase))
-            {
-                con.type = DefineableConditionType.TRUE;
-                return con;
-            }
-            if (s.Equals("false", StringComparison.OrdinalIgnoreCase))
-            {
-                con.type = DefineableConditionType.FALSE;
-                return con;
-            }
-            return con;
-        }
-
-        static bool IsTextureNullComparission(string data, Material useThisMaterialInsteadOfOpenEditor = null)
-        {
-            // Check if property is a texture property && is checking for null
-            Material m = GetReferencedMaterial(useThisMaterialInsteadOfOpenEditor);
-            if (m == null) return false;
-            if (data.Length < 7) return false;
-            if (data.EndsWith("null") == false) return false;
-            string propertyName = data.Substring(0, data.Length - 6);
-            if (m.HasProperty(propertyName) == false) return false;
-            MaterialProperty p = MaterialEditor.GetMaterialProperty(new Material[] { m }, propertyName);
-            return p.type == MaterialProperty.PropType.Texture;
-        }
-
-        static Material GetReferencedMaterial(Material useThisMaterialInsteadOfOpenEditor = null)
-        {
-            if (useThisMaterialInsteadOfOpenEditor != null) return useThisMaterialInsteadOfOpenEditor;
-            if (ShaderEditor.Active != null) return ShaderEditor.Active.Materials[0];
-            return null;
+            return new BooleanCondition(s, BooleanCondition.BooleanType.NONE);
         }
     }
-
-    enum CompareType { NONE, BIGGER, SMALLER, EQUAL, NOT_EQUAL, BIGGER_EQ, SMALLER_EQ }
-
-    public enum DefineableConditionType
-    {
-        NONE,
-        TRUE,
-        FALSE,
-        PROPERTY_BOOL,
-        PROPERTY_IS_ANIMATED,
-        PROPERTY_IS_NOT_ANIMATED,
-        EDITOR_VERSION,
-        VRC_SDK_VERSION,
-        TEXTURE_SET,
-        DROPDOWN,
-        AND,
-        OR,
-        NOT
-    }
-
 }

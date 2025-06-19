@@ -204,7 +204,7 @@ namespace Thry
 
         private enum ThryPropertyType
         {
-            none, property, master_label, footer, header, header_end, header_start, group_start, group_end, section_start, section_end, instancing, dsgi, lightmap_flags, locale, on_swap_to, space, shader_version, optimizer, in_shader_presets
+            hidden_property, shown_property, master_label, footer, header, header_end, header_start, group_start, group_end, section_start, section_end, instancing, dsgi, lightmap_flags, locale, on_swap_to, space, shader_version, optimizer, in_shader_presets
         }
 
         private ThryPropertyType GetPropertyType(MaterialProperty p)
@@ -214,53 +214,47 @@ namespace Thry
 
             if (flags == MaterialProperty.PropFlags.HideInInspector)
             {
-                if (name == PROPERTY_NAME_MASTER_LABEL)
-                    return ThryPropertyType.master_label;
-                if (name == PROPERTY_NAME_ON_SWAP_TO_ACTIONS)
-                    return ThryPropertyType.on_swap_to;
-                if (name == PROPERTY_NAME_SHADER_VERSION)
-                    return ThryPropertyType.shader_version;
+                if (name[0] == '_')
+                {
+                    return ThryPropertyType.hidden_property;
+                }
 
-                if (name.StartsWith("m_start", StringComparison.Ordinal))
-                    return ThryPropertyType.header_start;
-                if (name.StartsWith("m_end", StringComparison.Ordinal))
-                    return ThryPropertyType.header_end;
-                if (name.StartsWith("m_", StringComparison.Ordinal))
-                    return ThryPropertyType.header;
-                if (name.StartsWith("g_start", StringComparison.Ordinal))
-                    return ThryPropertyType.group_start;
-                if (name.StartsWith("g_end", StringComparison.Ordinal))
-                    return ThryPropertyType.group_end;
-                if (name.StartsWith("s_start", StringComparison.Ordinal))
-                    return ThryPropertyType.section_start;
-                if (name.StartsWith("s_end", StringComparison.Ordinal))
-                    return ThryPropertyType.section_end;
-                if (name.StartsWith("footer_", StringComparison.Ordinal))
-                    return ThryPropertyType.footer;
-                if (name == "Instancing")
-                    return ThryPropertyType.instancing;
-                if (name == "DSGI")
-                    return ThryPropertyType.dsgi;
-                if (name == "LightmapFlags")
-                    return ThryPropertyType.lightmap_flags;
-                if (name == PROPERTY_NAME_LOCALE)
-                    return ThryPropertyType.locale;
-                if (name.StartsWith("space"))
-                    return ThryPropertyType.space;
+                if (name == PROPERTY_NAME_MASTER_LABEL)       return ThryPropertyType.master_label;
+                if (name == PROPERTY_NAME_ON_SWAP_TO_ACTIONS) return ThryPropertyType.on_swap_to;
+                if (name == PROPERTY_NAME_SHADER_VERSION)     return ThryPropertyType.shader_version;
+                if (name == PROPERTY_NAME_LOCALE)             return ThryPropertyType.locale;
+                
+                if (name == "Instancing")    return ThryPropertyType.instancing;
+                if (name == "DSGI")          return ThryPropertyType.dsgi;
+                if (name == "LightmapFlags") return ThryPropertyType.lightmap_flags;
+
+                
+                if (name[0] == 'm')
+                {
+                    if (name.StartsWith("m_start", StringComparison.Ordinal)) return ThryPropertyType.header_start;
+                    if (name.StartsWith("m_end", StringComparison.Ordinal)) return ThryPropertyType.header_end;
+                    if (name.StartsWith("m_", StringComparison.Ordinal)) return ThryPropertyType.header;
+                }
+                else if (name[0] == 'g')
+                {
+                    if (name.StartsWith("g_start", StringComparison.Ordinal)) return ThryPropertyType.group_start;
+                    if (name.StartsWith("g_end", StringComparison.Ordinal)) return ThryPropertyType.group_end;
+                }
+                else if (name[0] == 's')
+                {
+                    if (name.StartsWith("s_start", StringComparison.Ordinal)) return ThryPropertyType.section_start;
+                    if (name.StartsWith("s_end", StringComparison.Ordinal)) return ThryPropertyType.section_end;
+                }
+                
+
+                if (name.StartsWith("footer_", StringComparison.Ordinal)) return ThryPropertyType.footer;
+                if (name.StartsWith("space", StringComparison.Ordinal))   return ThryPropertyType.space;
             }
-            else if (name == ShaderOptimizerPropertyName)
-            {
-                return ThryPropertyType.optimizer;
-            }
-            else if(name == PROPERTY_NAME_IN_SHADER_PRESETS)
-            {
-                return ThryPropertyType.in_shader_presets;
-            }
-            else if (flags.HasFlag(MaterialProperty.PropFlags.HideInInspector) == false)
-            {
-                return ThryPropertyType.property;
-            }
-            return ThryPropertyType.none;
+            if (name == ShaderOptimizerPropertyName)  return ThryPropertyType.optimizer;
+            if (name == PROPERTY_NAME_IN_SHADER_PRESETS) return ThryPropertyType.in_shader_presets;
+
+            if (flags.HasFlag(MaterialProperty.PropFlags.HideInInspector)) return ThryPropertyType.hidden_property;
+            return ThryPropertyType.shown_property;
         }
 
         private void LoadLocales()
@@ -377,8 +371,8 @@ namespace Thry
                     case ThryPropertyType.footer:
                         _footers.Add(new FooterButton(Parser.Deserialize<ButtonData>(displayName)));
                         break;
-                    case ThryPropertyType.none:
-                    case ThryPropertyType.property:
+                    case ThryPropertyType.hidden_property:
+                    case ThryPropertyType.shown_property:
                         if (props[i].type == MaterialProperty.PropType.Texture)
                             NewProperty = new ShaderTextureProperty(this, props[i], displayName, offset, optionsRaw, props[i].flags.HasFlag(MaterialProperty.PropFlags.NoScaleOffset) == false, false, i);
                         else
@@ -419,7 +413,7 @@ namespace Thry
                 if (NewProperty != null)
                 {
                     newPart = NewProperty;
-                    if (type != ThryPropertyType.none && doAssignPropertyToGroup)
+                    if (type != ThryPropertyType.hidden_property && doAssignPropertyToGroup)
                     {
                         groupStack.Peek().AddPart(NewProperty);
                     }
