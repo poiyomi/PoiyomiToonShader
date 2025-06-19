@@ -8,7 +8,7 @@ namespace Thry.ThryEditor
     public abstract class DefineableCondition
     {   
         private enum CombinationType{ AND, OR }
-        private enum ComparissionType { NONE, BIGGER, SMALLER, EQUAL, NOT_EQUAL, BIGGER_EQ, SMALLER_EQ}
+        private enum ComparisonType { NONE, BIGGER, SMALLER, EQUAL, NOT_EQUAL, BIGGER_EQ, SMALLER_EQ}
 
         public static DefineableCondition None => new BooleanCondition(null , BooleanCondition.BooleanType.NONE);
 
@@ -17,7 +17,7 @@ namespace Thry.ThryEditor
             Material _material;
             bool _forceUseMaterialInsteadOfEditor;
 
-            public Material Material => _material;
+            public Material Material => _forceUseMaterialInsteadOfEditor ? _material : ShaderEditor.Active?.Materials[0];
 
             static MaterialRenference _defaultMaterialRenference = new MaterialRenference(null);
             public static MaterialRenference Default => _defaultMaterialRenference;
@@ -31,7 +31,6 @@ namespace Thry.ThryEditor
                 }
                 else
                 {
-                    _material = ShaderEditor.Active.Materials[0];
                     _forceUseMaterialInsteadOfEditor = false;
                 }
             }
@@ -50,7 +49,7 @@ namespace Thry.ThryEditor
             }
         }
 
-        private class ComparissionData
+        private class ComparisonData
         {
             enum DataType { FLOAT, MATERIAL_PROPERTY, CONDITION, THRY_EDITOR_VERSION, VRC_SDK_VERSION, RENDERQUEUE }
 
@@ -110,7 +109,7 @@ namespace Thry.ThryEditor
             }
             public bool IsConstant => _isConstant;
 
-            public ComparissionData(string data, MaterialRenference materialRenference)
+            public ComparisonData(string data, MaterialRenference materialRenference)
             {
                 _materialReference = materialRenference;
                 if (float.TryParse(data, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out _floatData))
@@ -147,14 +146,14 @@ namespace Thry.ThryEditor
                 }
             }
 
-            public ComparissionData(float value)
+            public ComparisonData(float value)
             {
                 _type = DataType.FLOAT;
                 _floatData = value;
                 _isConstant = true;
             }
 
-            public ComparissionData(DefineableCondition condition)
+            public ComparisonData(DefineableCondition condition)
             {
                 _type = DataType.CONDITION;
                 _condition = condition;
@@ -183,17 +182,17 @@ namespace Thry.ThryEditor
             }
         }
 
-        private class Comparission : DefineableCondition
+        private class Comparison : DefineableCondition
         {
-            private ComparissionData _left;
-            private ComparissionData _right;
-            private ComparissionType _compareType;
+            private ComparisonData _left;
+            private ComparisonData _right;
+            private ComparisonType _compareType;
             private bool _isConstant;
             private bool _constant;
 
             protected override bool IsConstant => _isConstant;
 
-            public Comparission(ComparissionData left, ComparissionData right, ComparissionType compareType)
+            public Comparison(ComparisonData left, ComparisonData right, ComparisonType compareType)
             {
                 _left = left;
                 _right = right;
@@ -212,12 +211,12 @@ namespace Thry.ThryEditor
             {
                 if (TryCompareGeneral(_left.Value, _right.Value, out int result))
                 {
-                    if (_compareType == ComparissionType.EQUAL) return result == 0;
-                    if (_compareType == ComparissionType.NOT_EQUAL) return result != 0;
-                    if (_compareType == ComparissionType.SMALLER) return result < 0;
-                    if (_compareType == ComparissionType.BIGGER) return result > 0;
-                    if (_compareType == ComparissionType.BIGGER_EQ) return result >= 0;
-                    if (_compareType == ComparissionType.SMALLER_EQ) return result <= 0;
+                    if (_compareType == ComparisonType.EQUAL) return result == 0;
+                    if (_compareType == ComparisonType.NOT_EQUAL) return result != 0;
+                    if (_compareType == ComparisonType.SMALLER) return result < 0;
+                    if (_compareType == ComparisonType.BIGGER) return result > 0;
+                    if (_compareType == ComparisonType.BIGGER_EQ) return result >= 0;
+                    if (_compareType == ComparisonType.SMALLER_EQ) return result <= 0;
                 }
                 else
                 {
@@ -262,27 +261,27 @@ namespace Thry.ThryEditor
                 || obj is decimal;
             }
 
-            public static ComparissionType TypeFromString(string s)
+            public static ComparisonType TypeFromString(string s)
             {
-                if (s == "==") return ComparissionType.EQUAL;
-                if (s == "!=") return ComparissionType.NOT_EQUAL;
-                if (s == ">=") return ComparissionType.BIGGER_EQ;
-                if (s == "<=") return ComparissionType.SMALLER_EQ;
-                if (s == ">") return ComparissionType.BIGGER;
-                if (s == "<") return ComparissionType.SMALLER;
-                return ComparissionType.NONE;
+                if (s == "==") return ComparisonType.EQUAL;
+                if (s == "!=") return ComparisonType.NOT_EQUAL;
+                if (s == ">=") return ComparisonType.BIGGER_EQ;
+                if (s == "<=") return ComparisonType.SMALLER_EQ;
+                if (s == ">") return ComparisonType.BIGGER;
+                if (s == "<") return ComparisonType.SMALLER;
+                return ComparisonType.NONE;
             }
 
-            public static string TypeToString(ComparissionType type)
+            public static string TypeToString(ComparisonType type)
             {
                 switch (type)
                 {
-                    case ComparissionType.EQUAL: return "==";
-                    case ComparissionType.NOT_EQUAL: return "!=";
-                    case ComparissionType.BIGGER_EQ: return ">=";
-                    case ComparissionType.SMALLER_EQ: return "<=";
-                    case ComparissionType.BIGGER: return ">";
-                    case ComparissionType.SMALLER: return "<";
+                    case ComparisonType.EQUAL: return "==";
+                    case ComparisonType.NOT_EQUAL: return "!=";
+                    case ComparisonType.BIGGER_EQ: return ">=";
+                    case ComparisonType.SMALLER_EQ: return "<=";
+                    case ComparisonType.BIGGER: return ">";
+                    case ComparisonType.SMALLER: return "<";
                     default: return "?";
                 }
             }
@@ -515,7 +514,7 @@ namespace Thry.ThryEditor
 
             if (isInverted)
             {
-                return new Comparission(new ComparissionData(con), new ComparissionData(0), ComparissionType.EQUAL);
+                return new Comparison(new ComparisonData(con), new ComparisonData(0), ComparisonType.EQUAL);
             }
 
             return con;
@@ -536,17 +535,17 @@ namespace Thry.ThryEditor
                 return false;
             }
 
-        private static readonly char[] ComparissionLiteralsToCheckFor = "!><=".ToCharArray();
+        private static readonly char[] ComparisonLiteralsToCheckFor = "!><=".ToCharArray();
         static DefineableCondition ParseSingle(string s, MaterialRenference materialRenference)
         {
-            int compIndex = s.IndexOfAny(ComparissionLiteralsToCheckFor);
+            int compIndex = s.IndexOfAny(ComparisonLiteralsToCheckFor);
             int comLength = s[compIndex + 1] == '=' ? 2 : 1;
             if (compIndex != -1)
             {
-                return new Comparission(
-                    new ComparissionData(s.Substring(0, compIndex).Trim(), materialRenference),
-                    new ComparissionData(s.Substring(compIndex + comLength).Trim(), materialRenference),
-                    Comparission.TypeFromString(s.Substring(compIndex, comLength))
+                return new Comparison(
+                    new ComparisonData(s.Substring(0, compIndex).Trim(), materialRenference),
+                    new ComparisonData(s.Substring(compIndex + comLength).Trim(), materialRenference),
+                    Comparison.TypeFromString(s.Substring(compIndex, comLength))
                 );
             }
             if (BooleanCondition.TryParse(s, out BooleanCondition booleanCondition, materialRenference))

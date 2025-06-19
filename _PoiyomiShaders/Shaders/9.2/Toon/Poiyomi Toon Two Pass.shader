@@ -2,7 +2,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 {
 	Properties
 	{
-		[HideInInspector] shader_master_label ("<color=#E75898ff>Poiyomi 9.2.50</color>", Float) = 0
+		[HideInInspector] shader_master_label ("<color=#E75898ff>Poiyomi 9.2.51</color>", Float) = 0
 		[HideInInspector] shader_is_using_thry_editor ("", Float) = 0
 		[HideInInspector] shader_locale ("0db0b86376c3dca4b9a6828ef8615fe0", Float) = 0
 		[HideInInspector] footer_youtube ("{texture:{name:icon-youtube,height:16},action:{type:URL,data:https://www.youtube.com/poiyomi},hover:YOUTUBE}", Float) = 0
@@ -3532,7 +3532,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 		[HideInInspector] s_start_vertexRounding ("Vertex Rounding (Blocky/PS1)--{reference_property:_VertexRoundingEnabled,persistent_expand:true,default_expand:true}", Float) = 0
 		[HideInInspector][ToggleUI]_VertexRoundingEnabled ("Rounding Enabled", Float) = 0
 		[ThryWideEnum(R, 0, G, 1, B, 2, A, 3, Vert Col R, 4, Vert Col G, 5, Vert Col B, 6, Vert Col A, 7)]_VertexRoundingMaskChannel ("Mask Channel", Float) = 0
-		[Enum(World, 0, Local, 1)]_VertexRoundingSpace ("Rounding Space", Int) = 0
+		[ThryWideEnum(World, 0, Local, 1)]_VertexRoundingSpace ("Rounding Space", Int) = 0
 		_VertexRoundingDivision ("Rounding Interval", Float) = 0.02
 		[HideInInspector] s_end_vertexRounding ("Vertex Rounding (Blocky/PS1)", Float) = 0
 		//endex
