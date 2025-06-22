@@ -197,6 +197,18 @@ namespace Thry.ThryEditor.Helpers
             }
             return null;
         }
+
+        public static string[] GetFloatPropertiesFromSerializedObject(Material material)
+        {
+            SerializedObject serializedObject = new SerializedObject(material);
+            SerializedProperty savedProperties = serializedObject.FindProperty("m_SavedProperties").FindPropertyRelative("m_Floats");
+            string[] properties = new string[savedProperties.arraySize];
+            for (int i = 0; i < properties.Length; i++)
+            {
+                properties[i] = savedProperties.GetArrayElementAtIndex(i).displayName;
+            }
+            return properties;
+        }
     }
 
 }

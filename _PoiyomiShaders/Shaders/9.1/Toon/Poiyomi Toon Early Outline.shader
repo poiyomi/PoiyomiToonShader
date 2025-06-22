@@ -1,4 +1,4 @@
-Shader ".poiyomi/Old Versions/9.1/oiyomi Toon Outline Early"
+Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon Outline Early"
 {
 	Properties
 	{

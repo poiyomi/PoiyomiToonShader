@@ -1,4 +1,4 @@
-Shader ".poiyomi/Old Versions/9.1/oiyomi Toon Grab Pass"
+Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon Grab Pass"
 {
 	Properties
 	{

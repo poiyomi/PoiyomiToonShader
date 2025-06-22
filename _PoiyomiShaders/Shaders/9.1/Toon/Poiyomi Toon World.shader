@@ -1,4 +1,4 @@
-Shader ".poiyomi/Old Versions/9.1/oiyomi Toon World"
+Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon World"
 {
 	Properties
 	{

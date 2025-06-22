@@ -39,19 +39,29 @@ namespace Thry.ThryEditor
                 return appliedPreset;
             }
         }
+        
+        static Comparer<string> s_nameComparer = Comparer<string>.Create((a, b) =>
+        {
+            // Compare by name, names with more slashes (/) are considered to be more specific
+            int aSlashCount = a.Count(c => c == '/');
+            int bSlashCount = b.Count(c => c == '/');
+            if (aSlashCount > bSlashCount) return -1;
+            if (aSlashCount < bSlashCount) return 1;
+            return string.Compare(a, b, StringComparison.OrdinalIgnoreCase);
+        });
 
         class PresetsCollection
         {
             private Dictionary<string, string> _nameToGuid = new Dictionary<string, string>();
             private Dictionary<string, string> _guidToName = new Dictionary<string, string>();
             public IEnumerable<string> Guids => _guidToName.Keys;
-            public IEnumerable<string> Names => _nameToGuid.Keys;
             public IEnumerable<string> Paths => _guidToName.Keys.Select(g => AssetDatabase.GUIDToAssetPath(g));
+            public IEnumerable<string> Names => _nameToGuid.Keys.OrderBy(s => s, s_nameComparer);
             public int Count => _nameToGuid.Count;
 
             public void Remove(string guid)
             {
-                if(_guidToName.ContainsKey(guid))
+                if (_guidToName.ContainsKey(guid))
                 {
                     _nameToGuid.Remove(_guidToName[guid]);
                     _guidToName.Remove(guid);
@@ -60,11 +70,11 @@ namespace Thry.ThryEditor
 
             public bool Add(string name, string guid)
             {
-                if(_nameToGuid.ContainsKey(name))
+                if (_nameToGuid.ContainsKey(name))
                 {
                     return false;
                 }
-                if(_guidToName.ContainsKey(guid))
+                if (_guidToName.ContainsKey(guid))
                 {
                     return false;
                 }
@@ -75,7 +85,7 @@ namespace Thry.ThryEditor
 
             public void AddOrUpdate(string name, string guid)
             {
-                if(_guidToName.ContainsKey(guid))
+                if (_guidToName.ContainsKey(guid))
                 {
                     _nameToGuid.Remove(_guidToName[guid]);
                 }
@@ -86,7 +96,7 @@ namespace Thry.ThryEditor
             public void RemoveWithoutPath()
             {
                 var guids = _guidToName.Keys.Where(k => string.IsNullOrWhiteSpace(AssetDatabase.GUIDToAssetPath(k))).ToList();
-                foreach(string guid in guids)
+                foreach (string guid in guids)
                 {
                     _nameToGuid.Remove(_guidToName[guid]);
                     _guidToName.Remove(guid);
@@ -105,7 +115,7 @@ namespace Thry.ThryEditor
 
             public void Serialize(StringBuilder sb)
             {
-                foreach(KeyValuePair<string, string> entry in _nameToGuid)
+                foreach (KeyValuePair<string, string> entry in _nameToGuid)
                 {
                     sb.AppendLine($"{entry.Key};{entry.Value}");
                 }
@@ -292,19 +302,8 @@ namespace Thry.ThryEditor
             {
                 return s_headersInShader[m.shader];
             }
-            MaterialProperty[] props = MaterialEditor.GetMaterialProperties(new Material[] { m });
-            List<string> headers = new List<string>();
-            foreach (MaterialProperty prop in props)
-            {
-                if (prop.flags == MaterialProperty.PropFlags.HideInInspector &&
-                    prop.name.StartsWith("m_", StringComparison.Ordinal)
-                    )
-                {
-                    headers.Add(prop.name);
-                }
-            }
-            s_headersInShader[m.shader] = headers;
-            return headers;
+            string[] props = MaterialHelper.GetFloatPropertiesFromSerializedObject(m);
+            return props.Where(p => p.StartsWith("m_", StringComparison.Ordinal)).ToList();
         }
 
         static void Save()

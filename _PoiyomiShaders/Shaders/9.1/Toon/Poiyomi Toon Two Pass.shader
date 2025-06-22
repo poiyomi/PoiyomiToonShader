@@ -1,4 +1,4 @@
-Shader ".poiyomi/Old Versions/9.1/oiyomi Toon Two Pass"
+Shader ".poiyomi/Old Versions/9.1/Poiyomi Toon Two Pass"
 {
 	Properties
 	{
