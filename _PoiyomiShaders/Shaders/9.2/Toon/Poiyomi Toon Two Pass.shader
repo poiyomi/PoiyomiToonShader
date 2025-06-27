@@ -2,7 +2,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 {
 	Properties
 	{
-		[HideInInspector] shader_master_label ("<color=#E75898ff>Poiyomi 9.2.53</color>", Float) = 0
+		[HideInInspector] shader_master_label ("<color=#E75898ff>Poiyomi 9.2.55</color>", Float) = 0
 		[HideInInspector] shader_is_using_thry_editor ("", Float) = 0
 		[HideInInspector] shader_locale ("0db0b86376c3dca4b9a6828ef8615fe0", Float) = 0
 		[HideInInspector] footer_youtube ("{texture:{name:icon-youtube,height:16},action:{type:URL,data:https://www.youtube.com/poiyomi},hover:YOUTUBE}", Float) = 0
@@ -9943,8 +9943,11 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			cbuffer LightVolumeUniforms {
 				#endif
 				
-				// Are Light Volumes enabled on scene? Returns 0 if not, returns 1, 2 or other number if there are light volumes. Number represents the light volumes system internal version number.
+				// Are Light Volumes enabled on scene? can be 0 or 1
 				uniform float _UdonLightVolumeEnabled;
+				
+				// Rreturns 1, 2 or other number if there are light volumes on the scene. Number represents the light volumes system internal version number.
+				uniform float _UdonLightVolumeVersion;
 				
 				// All volumes count in scene
 				uniform float _UdonLightVolumeCount;
@@ -10042,11 +10045,6 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			
 			#define LV_PI 3.141592653589793f
 			#define LV_PI2 6.283185307179586f
-			
-			// Checks if Light Volumes are used in this scene. Returns 0 if not, returns 1, 2 or other number if there are light volumes. Number represents the light volumes system internal version number.
-			float LightVolumesEnabled() {
-				return _UdonLightVolumeEnabled;
-			}
 			
 			// Smoothstep to 0, 1 but cheaper
 			float LV_Smoothstep01(float x) {
@@ -10530,7 +10528,7 @@ occlusion = 1;
 // Clamping gloabal iteration counts
 uint volumesCount = min((uint) _UdonLightVolumeCount, 32);
 
-//if (_UdonLightVolumeEnabled < VRCLV_VERSION || volumesCount == 0 ) { // Fallback to default light probes if Light Volume are not enabled or a version is too old to have a support
+//if (_UdonLightVolumeVersion < VRCLV_VERSION || volumesCount == 0 ) { // Fallback to default light probes if Light Volume are not enabled or a version is too old to have a support
 if (_UdonLightVolumeEnabled == 0 || volumesCount == 0) { // Legacy! Fallback to default light probes if Light Volume are not enabled or a version is too old to have a support. Legacy!
 LV_SampleLightProbe(L0, L1r, L1g, L1b);
 return;
@@ -10653,7 +10651,7 @@ occlusion = 1;
 uint pointCount = min((uint) _UdonPointLightVolumeCount, 128);
 uint additiveCount = min((uint) _UdonLightVolumeAdditiveCount, 32);
 
-//if (_UdonLightVolumeEnabled < VRCLV_VERSION || (additiveCount == 0 && pointCount == 0)) return;
+//if (_UdonLightVolumeVersion < VRCLV_VERSION || (additiveCount == 0 && pointCount == 0)) return;
 if (_UdonLightVolumeEnabled == 0 || additiveCount == 0 && pointCount == 0)
 return; // Legacy!
 
@@ -10782,35 +10780,45 @@ return float3(LV_EvaluateSH(L0.r, L1r, worldNormal), LV_EvaluateSH(L0.g, L1g, wo
 }
 
 // Calculates L1 SH based on the world position. Samples both light volumes and point lights.
-void LightVolumeSH(float3 worldPos, out float3 L0, out float3 L1r, out float3 L1g, out float3 L1b) {
+void LightVolumeSH(float3 worldPos, out float3 L0, out float3 L1r, out float3 L1g, out float3 L1b, float3 worldPosOffset = 0) {
 L0 = 0; L1r = 0; L1g = 0; L1b = 0; float4 occlusion = 1;
-LV_LightVolumeSH(worldPos, L0, L1r, L1g, L1b, occlusion);
+LV_LightVolumeSH(worldPos + worldPosOffset, L0, L1r, L1g, L1b, occlusion);
 LV_PointLightVolumeSH(worldPos, occlusion, L0, L1r, L1g, L1b);
 }
 
 // Calculates L1 SH based on the world position from additive volumes only. Samples both light volumes and point lights.
-void LightVolumeAdditiveSH(float3 worldPos, out float3 L0, out float3 L1r, out float3 L1g, out float3 L1b) {
+void LightVolumeAdditiveSH(float3 worldPos, out float3 L0, out float3 L1r, out float3 L1g, out float3 L1b, float3 worldPosOffset = 0) {
 L0 = 0; L1r = 0; L1g = 0; L1b = 0; float4 occlusion = 1;
-LV_LightVolumeAdditiveSH(worldPos, L0, L1r, L1g, L1b, occlusion);
+LV_LightVolumeAdditiveSH(worldPos + worldPosOffset, L0, L1r, L1g, L1b, occlusion);
 LV_PointLightVolumeSH(worldPos, occlusion, L0, L1r, L1g, L1b);
 }
 
 // Calculates L0 SH based on the world position. Samples both light volumes and point lights.
-float3 LightVolumeSH_L0(float3 worldPos) {
+float3 LightVolumeSH_L0(float3 worldPos, float3 worldPosOffset = 0) {
 float3 L0 = 0; float4 occlusion = 1;
 float3 unused_L1; // Let's just pray that compiler will strip everything x.x
-LV_LightVolumeSH(worldPos, L0, unused_L1, unused_L1, unused_L1, occlusion);
+LV_LightVolumeSH(worldPos + worldPosOffset, L0, unused_L1, unused_L1, unused_L1, occlusion);
 LV_PointLightVolumeSH(worldPos, occlusion, L0, unused_L1, unused_L1, unused_L1);
 return L0;
 }
 
 // Calculates L0 SH based on the world position from additive volumes only. Samples both light volumes and point lights.
-float3 LightVolumeAdditiveSH_L0(float3 worldPos) {
+float3 LightVolumeAdditiveSH_L0(float3 worldPos, float3 worldPosOffset = 0) {
 float3 L0 = 0; float4 occlusion = 1;
 float3 unused_L1; // Let's just pray that compiler will strip everything x.x
-LV_LightVolumeAdditiveSH(worldPos, L0, unused_L1, unused_L1, unused_L1, occlusion);
+LV_LightVolumeAdditiveSH(worldPos + worldPosOffset, L0, unused_L1, unused_L1, unused_L1, occlusion);
 LV_PointLightVolumeSH(worldPos, occlusion, L0, unused_L1, unused_L1, unused_L1);
 return L0;
+}
+
+// Checks if Light Volumes are used in this scene. Returns 0 if not, returns 1 if enabled
+float LightVolumesEnabled() {
+return _UdonLightVolumeEnabled;
+}
+
+// Returns the light volumes version
+float LightVolumesVersion() {
+return _UdonLightVolumeVersion;
 }
 
 #endif
@@ -46154,8 +46162,11 @@ CGPROGRAM
 cbuffer LightVolumeUniforms {
 #endif
 
-// Are Light Volumes enabled on scene? Returns 0 if not, returns 1, 2 or other number if there are light volumes. Number represents the light volumes system internal version number.
+// Are Light Volumes enabled on scene? can be 0 or 1
 uniform float _UdonLightVolumeEnabled;
+
+// Rreturns 1, 2 or other number if there are light volumes on the scene. Number represents the light volumes system internal version number.
+uniform float _UdonLightVolumeVersion;
 
 // All volumes count in scene
 uniform float _UdonLightVolumeCount;
@@ -46253,11 +46264,6 @@ uniform Texture2DArray _UdonPointLightVolumeTexture;
 
 #define LV_PI 3.141592653589793f
 #define LV_PI2 6.283185307179586f
-
-// Checks if Light Volumes are used in this scene. Returns 0 if not, returns 1, 2 or other number if there are light volumes. Number represents the light volumes system internal version number.
-float LightVolumesEnabled() {
-return _UdonLightVolumeEnabled;
-}
 
 // Smoothstep to 0, 1 but cheaper
 float LV_Smoothstep01(float x) {
@@ -46741,7 +46747,7 @@ occlusion = 1;
 // Clamping gloabal iteration counts
 uint volumesCount = min((uint) _UdonLightVolumeCount, 32);
 
-//if (_UdonLightVolumeEnabled < VRCLV_VERSION || volumesCount == 0 ) { // Fallback to default light probes if Light Volume are not enabled or a version is too old to have a support
+//if (_UdonLightVolumeVersion < VRCLV_VERSION || volumesCount == 0 ) { // Fallback to default light probes if Light Volume are not enabled or a version is too old to have a support
 if (_UdonLightVolumeEnabled == 0 || volumesCount == 0) { // Legacy! Fallback to default light probes if Light Volume are not enabled or a version is too old to have a support. Legacy!
 LV_SampleLightProbe(L0, L1r, L1g, L1b);
 return;
@@ -46864,7 +46870,7 @@ occlusion = 1;
 uint pointCount = min((uint) _UdonPointLightVolumeCount, 128);
 uint additiveCount = min((uint) _UdonLightVolumeAdditiveCount, 32);
 
-//if (_UdonLightVolumeEnabled < VRCLV_VERSION || (additiveCount == 0 && pointCount == 0)) return;
+//if (_UdonLightVolumeVersion < VRCLV_VERSION || (additiveCount == 0 && pointCount == 0)) return;
 if (_UdonLightVolumeEnabled == 0 || additiveCount == 0 && pointCount == 0)
 return; // Legacy!
 
@@ -46993,35 +46999,45 @@ return float3(LV_EvaluateSH(L0.r, L1r, worldNormal), LV_EvaluateSH(L0.g, L1g, wo
 }
 
 // Calculates L1 SH based on the world position. Samples both light volumes and point lights.
-void LightVolumeSH(float3 worldPos, out float3 L0, out float3 L1r, out float3 L1g, out float3 L1b) {
+void LightVolumeSH(float3 worldPos, out float3 L0, out float3 L1r, out float3 L1g, out float3 L1b, float3 worldPosOffset = 0) {
 L0 = 0; L1r = 0; L1g = 0; L1b = 0; float4 occlusion = 1;
-LV_LightVolumeSH(worldPos, L0, L1r, L1g, L1b, occlusion);
+LV_LightVolumeSH(worldPos + worldPosOffset, L0, L1r, L1g, L1b, occlusion);
 LV_PointLightVolumeSH(worldPos, occlusion, L0, L1r, L1g, L1b);
 }
 
 // Calculates L1 SH based on the world position from additive volumes only. Samples both light volumes and point lights.
-void LightVolumeAdditiveSH(float3 worldPos, out float3 L0, out float3 L1r, out float3 L1g, out float3 L1b) {
+void LightVolumeAdditiveSH(float3 worldPos, out float3 L0, out float3 L1r, out float3 L1g, out float3 L1b, float3 worldPosOffset = 0) {
 L0 = 0; L1r = 0; L1g = 0; L1b = 0; float4 occlusion = 1;
-LV_LightVolumeAdditiveSH(worldPos, L0, L1r, L1g, L1b, occlusion);
+LV_LightVolumeAdditiveSH(worldPos + worldPosOffset, L0, L1r, L1g, L1b, occlusion);
 LV_PointLightVolumeSH(worldPos, occlusion, L0, L1r, L1g, L1b);
 }
 
 // Calculates L0 SH based on the world position. Samples both light volumes and point lights.
-float3 LightVolumeSH_L0(float3 worldPos) {
+float3 LightVolumeSH_L0(float3 worldPos, float3 worldPosOffset = 0) {
 float3 L0 = 0; float4 occlusion = 1;
 float3 unused_L1; // Let's just pray that compiler will strip everything x.x
-LV_LightVolumeSH(worldPos, L0, unused_L1, unused_L1, unused_L1, occlusion);
+LV_LightVolumeSH(worldPos + worldPosOffset, L0, unused_L1, unused_L1, unused_L1, occlusion);
 LV_PointLightVolumeSH(worldPos, occlusion, L0, unused_L1, unused_L1, unused_L1);
 return L0;
 }
 
 // Calculates L0 SH based on the world position from additive volumes only. Samples both light volumes and point lights.
-float3 LightVolumeAdditiveSH_L0(float3 worldPos) {
+float3 LightVolumeAdditiveSH_L0(float3 worldPos, float3 worldPosOffset = 0) {
 float3 L0 = 0; float4 occlusion = 1;
 float3 unused_L1; // Let's just pray that compiler will strip everything x.x
-LV_LightVolumeAdditiveSH(worldPos, L0, unused_L1, unused_L1, unused_L1, occlusion);
+LV_LightVolumeAdditiveSH(worldPos + worldPosOffset, L0, unused_L1, unused_L1, unused_L1, occlusion);
 LV_PointLightVolumeSH(worldPos, occlusion, L0, unused_L1, unused_L1, unused_L1);
 return L0;
+}
+
+// Checks if Light Volumes are used in this scene. Returns 0 if not, returns 1 if enabled
+float LightVolumesEnabled() {
+return _UdonLightVolumeEnabled;
+}
+
+// Returns the light volumes version
+float LightVolumesVersion() {
+return _UdonLightVolumeVersion;
 }
 
 #endif
@@ -82279,8 +82295,11 @@ CGPROGRAM
 cbuffer LightVolumeUniforms {
 #endif
 
-// Are Light Volumes enabled on scene? Returns 0 if not, returns 1, 2 or other number if there are light volumes. Number represents the light volumes system internal version number.
+// Are Light Volumes enabled on scene? can be 0 or 1
 uniform float _UdonLightVolumeEnabled;
+
+// Rreturns 1, 2 or other number if there are light volumes on the scene. Number represents the light volumes system internal version number.
+uniform float _UdonLightVolumeVersion;
 
 // All volumes count in scene
 uniform float _UdonLightVolumeCount;
@@ -82378,11 +82397,6 @@ uniform Texture2DArray _UdonPointLightVolumeTexture;
 
 #define LV_PI 3.141592653589793f
 #define LV_PI2 6.283185307179586f
-
-// Checks if Light Volumes are used in this scene. Returns 0 if not, returns 1, 2 or other number if there are light volumes. Number represents the light volumes system internal version number.
-float LightVolumesEnabled() {
-return _UdonLightVolumeEnabled;
-}
 
 // Smoothstep to 0, 1 but cheaper
 float LV_Smoothstep01(float x) {
@@ -82866,7 +82880,7 @@ occlusion = 1;
 // Clamping gloabal iteration counts
 uint volumesCount = min((uint) _UdonLightVolumeCount, 32);
 
-//if (_UdonLightVolumeEnabled < VRCLV_VERSION || volumesCount == 0 ) { // Fallback to default light probes if Light Volume are not enabled or a version is too old to have a support
+//if (_UdonLightVolumeVersion < VRCLV_VERSION || volumesCount == 0 ) { // Fallback to default light probes if Light Volume are not enabled or a version is too old to have a support
 if (_UdonLightVolumeEnabled == 0 || volumesCount == 0) { // Legacy! Fallback to default light probes if Light Volume are not enabled or a version is too old to have a support. Legacy!
 LV_SampleLightProbe(L0, L1r, L1g, L1b);
 return;
@@ -82989,7 +83003,7 @@ occlusion = 1;
 uint pointCount = min((uint) _UdonPointLightVolumeCount, 128);
 uint additiveCount = min((uint) _UdonLightVolumeAdditiveCount, 32);
 
-//if (_UdonLightVolumeEnabled < VRCLV_VERSION || (additiveCount == 0 && pointCount == 0)) return;
+//if (_UdonLightVolumeVersion < VRCLV_VERSION || (additiveCount == 0 && pointCount == 0)) return;
 if (_UdonLightVolumeEnabled == 0 || additiveCount == 0 && pointCount == 0)
 return; // Legacy!
 
@@ -83118,35 +83132,45 @@ return float3(LV_EvaluateSH(L0.r, L1r, worldNormal), LV_EvaluateSH(L0.g, L1g, wo
 }
 
 // Calculates L1 SH based on the world position. Samples both light volumes and point lights.
-void LightVolumeSH(float3 worldPos, out float3 L0, out float3 L1r, out float3 L1g, out float3 L1b) {
+void LightVolumeSH(float3 worldPos, out float3 L0, out float3 L1r, out float3 L1g, out float3 L1b, float3 worldPosOffset = 0) {
 L0 = 0; L1r = 0; L1g = 0; L1b = 0; float4 occlusion = 1;
-LV_LightVolumeSH(worldPos, L0, L1r, L1g, L1b, occlusion);
+LV_LightVolumeSH(worldPos + worldPosOffset, L0, L1r, L1g, L1b, occlusion);
 LV_PointLightVolumeSH(worldPos, occlusion, L0, L1r, L1g, L1b);
 }
 
 // Calculates L1 SH based on the world position from additive volumes only. Samples both light volumes and point lights.
-void LightVolumeAdditiveSH(float3 worldPos, out float3 L0, out float3 L1r, out float3 L1g, out float3 L1b) {
+void LightVolumeAdditiveSH(float3 worldPos, out float3 L0, out float3 L1r, out float3 L1g, out float3 L1b, float3 worldPosOffset = 0) {
 L0 = 0; L1r = 0; L1g = 0; L1b = 0; float4 occlusion = 1;
-LV_LightVolumeAdditiveSH(worldPos, L0, L1r, L1g, L1b, occlusion);
+LV_LightVolumeAdditiveSH(worldPos + worldPosOffset, L0, L1r, L1g, L1b, occlusion);
 LV_PointLightVolumeSH(worldPos, occlusion, L0, L1r, L1g, L1b);
 }
 
 // Calculates L0 SH based on the world position. Samples both light volumes and point lights.
-float3 LightVolumeSH_L0(float3 worldPos) {
+float3 LightVolumeSH_L0(float3 worldPos, float3 worldPosOffset = 0) {
 float3 L0 = 0; float4 occlusion = 1;
 float3 unused_L1; // Let's just pray that compiler will strip everything x.x
-LV_LightVolumeSH(worldPos, L0, unused_L1, unused_L1, unused_L1, occlusion);
+LV_LightVolumeSH(worldPos + worldPosOffset, L0, unused_L1, unused_L1, unused_L1, occlusion);
 LV_PointLightVolumeSH(worldPos, occlusion, L0, unused_L1, unused_L1, unused_L1);
 return L0;
 }
 
 // Calculates L0 SH based on the world position from additive volumes only. Samples both light volumes and point lights.
-float3 LightVolumeAdditiveSH_L0(float3 worldPos) {
+float3 LightVolumeAdditiveSH_L0(float3 worldPos, float3 worldPosOffset = 0) {
 float3 L0 = 0; float4 occlusion = 1;
 float3 unused_L1; // Let's just pray that compiler will strip everything x.x
-LV_LightVolumeAdditiveSH(worldPos, L0, unused_L1, unused_L1, unused_L1, occlusion);
+LV_LightVolumeAdditiveSH(worldPos + worldPosOffset, L0, unused_L1, unused_L1, unused_L1, occlusion);
 LV_PointLightVolumeSH(worldPos, occlusion, L0, unused_L1, unused_L1, unused_L1);
 return L0;
+}
+
+// Checks if Light Volumes are used in this scene. Returns 0 if not, returns 1 if enabled
+float LightVolumesEnabled() {
+return _UdonLightVolumeEnabled;
+}
+
+// Returns the light volumes version
+float LightVolumesVersion() {
+return _UdonLightVolumeVersion;
 }
 
 #endif

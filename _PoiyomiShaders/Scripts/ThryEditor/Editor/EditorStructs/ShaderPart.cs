@@ -401,8 +401,17 @@ namespace Thry.ThryEditor
             if (ShaderPropertyAttributes == null) return false;
             return ShaderPropertyAttributes.Contains(attribute, StringComparer.OrdinalIgnoreCase);
         }
+
+        public ShaderProperty TryFetchReferenceProperty()
+        {
+            if (string.IsNullOrWhiteSpace(Options.reference_property) == false && MyShaderUI.PropertyDictionary.TryGetValue(Options.reference_property, out ShaderProperty referenceProp))
+            {
+                return referenceProp;
+            }
+            return null;
+        }
 #endregion
-#region Initialization
+        #region Initialization
         public ShaderPart(string propertyIdentifier, int xOffset, string displayName, string tooltip, ShaderEditor shaderEditor)
         {
             this._optionsRaw = null;

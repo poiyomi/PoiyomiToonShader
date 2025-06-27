@@ -52,10 +52,10 @@ namespace Thry.ThryEditor
 
         class PresetsCollection
         {
-            private Dictionary<string, string> _nameToGuid = new Dictionary<string, string>();
+            private SortedDictionary<string, string> _nameToGuid = new SortedDictionary<string, string>(s_nameComparer);
             private Dictionary<string, string> _guidToName = new Dictionary<string, string>();
-            public IEnumerable<string> Guids => _guidToName.Keys;
-            public IEnumerable<string> Paths => _guidToName.Keys.Select(g => AssetDatabase.GUIDToAssetPath(g));
+            public IEnumerable<string> Guids => _nameToGuid.Values;
+            public IEnumerable<string> Paths => _nameToGuid.Values.Select(g => AssetDatabase.GUIDToAssetPath(g));
             public IEnumerable<string> Names => _nameToGuid.Keys.OrderBy(s => s, s_nameComparer);
             public int Count => _nameToGuid.Count;
 
@@ -579,6 +579,7 @@ namespace Thry.ThryEditor
 
             if(!IsMaterialSectionedPreset(preset))
             {
+                ThryLogger.LogDetail($"Apply preset '{preset.name}' to '{shaderEditor.Materials[0].name}'");
                 foreach (ShaderPart part in shaderEditor.ShaderParts)
                 {
                     if (IsPreset(preset, part))
@@ -612,15 +613,15 @@ namespace Thry.ThryEditor
 
         public static void SetProperty(Material m, ShaderPart prop, bool value)
         {
-            if (prop.CustomStringTagID != null) m.SetOverrideTag(prop.CustomStringTagID + TAG_POSTFIX_IS_PROPERTY_PRESET, value ? "true" : "");
-            if (prop.MaterialProperty != null)   m.SetOverrideTag(prop.MaterialProperty.name + TAG_POSTFIX_IS_PROPERTY_PRESET, value ? "true" : "");
+            if (prop.CustomStringTagID  != null) m.SetOverrideTag(prop.CustomStringTagID + TAG_POSTFIX_IS_PROPERTY_PRESET, value ? "true" : "");
+            if (prop.MaterialProperty   != null) m.SetOverrideTag(prop.MaterialProperty.name + TAG_POSTFIX_IS_PROPERTY_PRESET, value ? "true" : "");
             if (prop.PropertyIdentifier != null) m.SetOverrideTag(prop.PropertyIdentifier    + TAG_POSTFIX_IS_PROPERTY_PRESET, value ? "true" : "");
         }
 
         public static bool IsPreset(Material m, ShaderPart prop)
         {
-            if (prop.CustomStringTagID != null) return m.GetTag(prop.CustomStringTagID + TAG_POSTFIX_IS_PROPERTY_PRESET, false, "") == "true";
-            if (prop.MaterialProperty != null)   return m.GetTag(prop.MaterialProperty.name + TAG_POSTFIX_IS_PROPERTY_PRESET, false, "") == "true";
+            if (prop.CustomStringTagID  != null) return m.GetTag(prop.CustomStringTagID + TAG_POSTFIX_IS_PROPERTY_PRESET, false, "") == "true";
+            if (prop.MaterialProperty   != null) return m.GetTag(prop.MaterialProperty.name + TAG_POSTFIX_IS_PROPERTY_PRESET, false, "") == "true";
             if (prop.PropertyIdentifier != null) return m.GetTag(prop.PropertyIdentifier    + TAG_POSTFIX_IS_PROPERTY_PRESET, false, "") == "true";
             return false;
         }
@@ -931,7 +932,7 @@ namespace Thry.ThryEditor
             EditorUtility.ClearProgressBar();
             mainStruct.Reset();
             tickedPresets.Clear();
-            shaderEditor.Reload();
+            shaderEditor.Reload(true);
         }
     }
 }

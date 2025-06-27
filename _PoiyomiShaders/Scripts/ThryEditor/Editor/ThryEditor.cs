@@ -987,11 +987,14 @@ namespace Thry
                 Active.Repaint();
         }
 
-        public void Reload()
+        public void Reload(bool doRepaint = false)
         {
             this._isFirstOnGUICall = true;
             this._doReloadNextDraw = true;
-            // this.Repaint();
+            if (doRepaint)
+            {
+                this.Repaint();
+            }
             ThryWideEnumDrawer.Reload();
             ThryRGBAPackerDrawer.Reload();
         }
