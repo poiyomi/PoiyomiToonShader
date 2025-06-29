@@ -2,7 +2,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 {
 	Properties
 	{
-		[HideInInspector] shader_master_label ("<color=#E75898ff>Poiyomi 9.2.55</color>", Float) = 0
+		[HideInInspector] shader_master_label ("<color=#E75898ff>Poiyomi 9.2.56</color>", Float) = 0
 		[HideInInspector] shader_is_using_thry_editor ("", Float) = 0
 		[HideInInspector] shader_locale ("0db0b86376c3dca4b9a6828ef8615fe0", Float) = 0
 		[HideInInspector] footer_youtube ("{texture:{name:icon-youtube,height:16},action:{type:URL,data:https://www.youtube.com/poiyomi},hover:YOUTUBE}", Float) = 0
@@ -21807,7 +21807,6 @@ poiLight.rampedLightMap = poiLight.nDotLSaturated;
 poiLight.finalLighting = max(POI_BRDF_PBS(1, 0, 0, 0, poiMesh.normals[1], poiCam.viewDir, light, indirectLight).xyz, _LightingMinLightBrightness);
 
 //ifex _LightingEnableLightVolumes==0  && isNotAnimated(_LightingEnableLightVolumes)
-/*
 #ifdef UNITY_PASS_FORWARDBASE
 if (_UdonLightVolumeEnabled && _LightingEnableLightVolumes)
 {
@@ -21818,13 +21817,9 @@ float3 L1b = 0;
 #ifdef LIGHTMAP_ON
 LightVolumeAdditiveSH(poiMesh.worldPos, L0, L1r, L1g, L1b);
 poiLight.finalLighting += clamp(LightVolumeEvaluate(poiMesh.normals[1], L0, L1r, L1g, L1b), _LightingMinLightBrightness, _LightingCap);
-#else
-LightVolumeSH(poiMesh.worldPos, L0, L1r, L1g, L1b);
-poiLight.finalLighting = clamp(LightVolumeEvaluate(poiMesh.normals[1], L0, L1r, L1g, L1b), _LightingMinLightBrightness, _LightingCap);
 #endif
 }
 #endif
-*/
 //endex
 #endif
 
@@ -39107,7 +39102,6 @@ poiLight.rampedLightMap = poiLight.nDotLSaturated;
 poiLight.finalLighting = max(POI_BRDF_PBS(1, 0, 0, 0, poiMesh.normals[1], poiCam.viewDir, light, indirectLight).xyz, _LightingMinLightBrightness);
 
 //ifex _LightingEnableLightVolumes==0  && isNotAnimated(_LightingEnableLightVolumes)
-/*
 #ifdef UNITY_PASS_FORWARDBASE
 if (_UdonLightVolumeEnabled && _LightingEnableLightVolumes)
 {
@@ -39118,13 +39112,9 @@ float3 L1b = 0;
 #ifdef LIGHTMAP_ON
 LightVolumeAdditiveSH(poiMesh.worldPos, L0, L1r, L1g, L1b);
 poiLight.finalLighting += clamp(LightVolumeEvaluate(poiMesh.normals[1], L0, L1r, L1g, L1b), _LightingMinLightBrightness, _LightingCap);
-#else
-LightVolumeSH(poiMesh.worldPos, L0, L1r, L1g, L1b);
-poiLight.finalLighting = clamp(LightVolumeEvaluate(poiMesh.normals[1], L0, L1r, L1g, L1b), _LightingMinLightBrightness, _LightingCap);
 #endif
 }
 #endif
-*/
 //endex
 #endif
 
@@ -58037,7 +58027,6 @@ poiLight.rampedLightMap = poiLight.nDotLSaturated;
 poiLight.finalLighting = max(POI_BRDF_PBS(1, 0, 0, 0, poiMesh.normals[1], poiCam.viewDir, light, indirectLight).xyz, _LightingMinLightBrightness);
 
 //ifex _LightingEnableLightVolumes==0  && isNotAnimated(_LightingEnableLightVolumes)
-/*
 #ifdef UNITY_PASS_FORWARDBASE
 if (_UdonLightVolumeEnabled && _LightingEnableLightVolumes)
 {
@@ -58048,13 +58037,9 @@ float3 L1b = 0;
 #ifdef LIGHTMAP_ON
 LightVolumeAdditiveSH(poiMesh.worldPos, L0, L1r, L1g, L1b);
 poiLight.finalLighting += clamp(LightVolumeEvaluate(poiMesh.normals[1], L0, L1r, L1g, L1b), _LightingMinLightBrightness, _LightingCap);
-#else
-LightVolumeSH(poiMesh.worldPos, L0, L1r, L1g, L1b);
-poiLight.finalLighting = clamp(LightVolumeEvaluate(poiMesh.normals[1], L0, L1r, L1g, L1b), _LightingMinLightBrightness, _LightingCap);
 #endif
 }
 #endif
-*/
 //endex
 #endif
 
@@ -75341,7 +75326,6 @@ poiLight.rampedLightMap = poiLight.nDotLSaturated;
 poiLight.finalLighting = max(POI_BRDF_PBS(1, 0, 0, 0, poiMesh.normals[1], poiCam.viewDir, light, indirectLight).xyz, _LightingMinLightBrightness);
 
 //ifex _LightingEnableLightVolumes==0  && isNotAnimated(_LightingEnableLightVolumes)
-/*
 #ifdef UNITY_PASS_FORWARDBASE
 if (_UdonLightVolumeEnabled && _LightingEnableLightVolumes)
 {
@@ -75352,13 +75336,9 @@ float3 L1b = 0;
 #ifdef LIGHTMAP_ON
 LightVolumeAdditiveSH(poiMesh.worldPos, L0, L1r, L1g, L1b);
 poiLight.finalLighting += clamp(LightVolumeEvaluate(poiMesh.normals[1], L0, L1r, L1g, L1b), _LightingMinLightBrightness, _LightingCap);
-#else
-LightVolumeSH(poiMesh.worldPos, L0, L1r, L1g, L1b);
-poiLight.finalLighting = clamp(LightVolumeEvaluate(poiMesh.normals[1], L0, L1r, L1g, L1b), _LightingMinLightBrightness, _LightingCap);
 #endif
 }
 #endif
-*/
 //endex
 #endif
 
@@ -90078,7 +90058,6 @@ poiLight.rampedLightMap = poiLight.nDotLSaturated;
 poiLight.finalLighting = max(POI_BRDF_PBS(1, 0, 0, 0, poiMesh.normals[1], poiCam.viewDir, light, indirectLight).xyz, _LightingMinLightBrightness);
 
 //ifex _LightingEnableLightVolumes==0  && isNotAnimated(_LightingEnableLightVolumes)
-/*
 #ifdef UNITY_PASS_FORWARDBASE
 if (_UdonLightVolumeEnabled && _LightingEnableLightVolumes)
 {
@@ -90089,13 +90068,9 @@ float3 L1b = 0;
 #ifdef LIGHTMAP_ON
 LightVolumeAdditiveSH(poiMesh.worldPos, L0, L1r, L1g, L1b);
 poiLight.finalLighting += clamp(LightVolumeEvaluate(poiMesh.normals[1], L0, L1r, L1g, L1b), _LightingMinLightBrightness, _LightingCap);
-#else
-LightVolumeSH(poiMesh.worldPos, L0, L1r, L1g, L1b);
-poiLight.finalLighting = clamp(LightVolumeEvaluate(poiMesh.normals[1], L0, L1r, L1g, L1b), _LightingMinLightBrightness, _LightingCap);
 #endif
 }
 #endif
-*/
 //endex
 #endif
 
