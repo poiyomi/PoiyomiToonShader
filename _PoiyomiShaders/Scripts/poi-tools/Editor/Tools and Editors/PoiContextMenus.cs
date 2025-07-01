@@ -140,6 +140,12 @@ namespace Poi.Tools.Menus
             DuplicateWithUniqueMaterials.DuplicateWithNewMaterials(command.context as GameObject);
         }
 
+        [MenuItem("GameObject/Poiyomi/Tools/Duplicate Only Translatable Materials", false, priority = ContextGameObjectTools + 1)]
+        public static void NoWorkie2(MenuCommand command)
+        {
+            DuplicateWithUniqueMaterialsOnlyTranslatable.DuplicateWithNewMaterialsOnlyTranslatable(command.context as GameObject);
+        }
+
         #endregion
 
         #region Helper Functions

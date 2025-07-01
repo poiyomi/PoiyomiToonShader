@@ -245,7 +245,13 @@ namespace Poi.Tools.ShaderTranslator
         /// <returns></returns>
         protected T GetSourcePropertyValue<T>(TranslationContext context, string propertyName)
         {
-            return GetSourcePropertyValue<T>(context, context.SourcePropertiesAndValues.First(x => x.Key.name == propertyName).Key);
+            var property = context.SourcePropertiesAndValues
+                .FirstOrDefault(x => x.Key.name == propertyName).Key;
+
+            if (property == null)
+                return default;
+
+            return GetSourcePropertyValue<T>(context, property);
         }
 
         /// <summary>
