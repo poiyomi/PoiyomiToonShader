@@ -6,11 +6,11 @@ using UnityEngine;
 namespace Thry.ThryEditor
 {
     public abstract class DefineableCondition
-    {   
-        private enum CombinationType{ AND, OR }
-        private enum ComparisonType { NONE, BIGGER, SMALLER, EQUAL, NOT_EQUAL, BIGGER_EQ, SMALLER_EQ}
+    {
+        private enum CombinationType { AND, OR }
+        private enum ComparisonType { NONE, BIGGER, SMALLER, EQUAL, NOT_EQUAL, BIGGER_EQ, SMALLER_EQ }
 
-        public static DefineableCondition None => new BooleanCondition(null , BooleanCondition.BooleanType.NONE);
+        public static DefineableCondition None => new BooleanCondition(null, BooleanCondition.BooleanType.NONE);
 
         protected class MaterialRenference
         {
@@ -83,7 +83,7 @@ namespace Thry.ThryEditor
                         MaterialProperty prop = _materialReference.GetMaterialProperty(_key);
                         if (prop == null)
                         {
-                            if( !_isErrorLogged)
+                            if (!_isErrorLogged)
                             {
                                 _isErrorLogged = true;
                                 ThryLogger.LogDetail(
@@ -285,7 +285,7 @@ namespace Thry.ThryEditor
                     default: return "?";
                 }
             }
-            
+
             public override string ToString()
             {
                 return $"{_left} {TypeToString(_compareType)} {_right}";
@@ -520,20 +520,20 @@ namespace Thry.ThryEditor
             return con;
         }
 
-            static bool IsInverted(string s, ref int start)
+        static bool IsInverted(string s, ref int start)
+        {
+            for (int i = start; i < s.Length; i++)
             {
-                for (int i = start; i < s.Length; i++)
+                if (s[i] == '!')
                 {
-                    if (s[i] == '!')
-                    {
-                        start += 1;
-                        return true;
-                    }
-                    if (s[i] != ' ')
-                        return false;
+                    start += 1;
+                    return true;
                 }
-                return false;
+                if (s[i] != ' ')
+                    return false;
             }
+            return false;
+        }
 
         private static readonly char[] ComparisonLiteralsToCheckFor = "!><=".ToCharArray();
         static DefineableCondition ParseSingle(string s, MaterialRenference materialRenference)

@@ -559,14 +559,14 @@ namespace Thry.ThryEditor
 
         public static void ApplyFullList(ShaderEditor shaderEditor, Material[] originals, List<Material> presets)
         {
-            for(int i=0;i<shaderEditor.Materials.Length && i < originals.Length;i++)
-                shaderEditor.Materials[i].CopyPropertiesFromMaterial(originals[i]);
+            // for(int i=0;i<shaderEditor.Materials.Length && i < originals.Length;i++)
+            //     shaderEditor.Materials[i].CopyPropertiesFromMaterial(originals[i]);
+            shaderEditor.ShaderParts.ForEach(p => p.CopyFrom(originals[0], applyDrawers: false, copyReferenceProperties: false, deepCopy: false));
             foreach (Material preset in presets)
             {
                 ApplyPresetInternal(shaderEditor, preset, preset, null);
             }
-            foreach(Material m in shaderEditor.Materials)
-                MaterialEditor.ApplyMaterialPropertyDrawers(m);
+            shaderEditor.ApplyDrawers();
             shaderEditor.Reload();
         }
 
@@ -584,7 +584,10 @@ namespace Thry.ThryEditor
                 {
                     if (IsPreset(preset, part))
                     {
-                        part.CopyFrom(copyFrom, applyDrawers: false);
+                        if(part is ShaderGroup)
+                            part.CopyFrom(copyFrom, applyDrawers: false, copyReferenceProperties: true, deepCopy: true);
+                        else
+                            part.CopyFrom(copyFrom, applyDrawers: false, copyReferenceProperties: false);
                     }
                 }
             }else if(parent is ShaderGroup)

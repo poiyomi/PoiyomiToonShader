@@ -118,15 +118,16 @@ namespace Thry.ThryEditor
             return DrawerType.None;
         }
 
-        public override void CopyFrom(Material src, bool applyDrawers = true, bool deepCopy = true, HashSet<PropType> skipPropertyTypes = null, HashSet<string> skipPropertyNames = null)
+        public override void CopyFrom(Material src, bool applyDrawers = true, bool deepCopy = true, bool copyReferenceProperties = true, HashSet<PropType> skipPropertyTypes = null, HashSet<string> skipPropertyNames = null)
         {
-            if(skipPropertyTypes?.Contains(MaterialProperty.type) == true) return;
-            if(skipPropertyNames?.Contains(MaterialProperty.name) == true) return;
+            if (skipPropertyTypes?.Contains(MaterialProperty.type) == true) return;
+            if (skipPropertyNames?.Contains(MaterialProperty.name) == true) return;
 
             UpdatedMaterialPropertyReference();
 
             MaterialHelper.CopyValue(src, MaterialProperty);
-            CopyReferencePropertiesFrom(src, skipPropertyTypes, skipPropertyNames);
+            if(copyReferenceProperties)
+                CopyReferencePropertiesFrom(src, skipPropertyTypes, skipPropertyNames);
 
             if (Keyword != null) SetKeywordState(MyShaderUI.Materials, src.GetNumber(MaterialProperty) == 1);
             if (IsAnimatable)
@@ -140,7 +141,7 @@ namespace Thry.ThryEditor
             if (applyDrawers) MyShaderUI.ApplyDrawers();
         }
 
-        public override void CopyFrom(ShaderPart srcPart, bool applyDrawers = true, bool deepCopy = true, HashSet<PropType> skipPropertyTypes = null, HashSet<string> skipPropertyNames = null)
+        public override void CopyFrom(ShaderPart srcPart, bool applyDrawers = true, bool deepCopy = true, bool copyReferenceProperties = true, HashSet<PropType> skipPropertyTypes = null, HashSet<string> skipPropertyNames = null)
         {
             if(skipPropertyTypes?.Contains(MaterialProperty.type) == true) return;
             if(skipPropertyNames?.Contains(MaterialProperty.name) == true) return;
@@ -152,7 +153,8 @@ namespace Thry.ThryEditor
             src.UpdatedMaterialPropertyReference();
 
             MaterialHelper.CopyValue(src.MaterialProperty, MaterialProperty);
-            CopyReferencePropertiesFrom(src, skipPropertyTypes, skipPropertyNames);
+            if(copyReferenceProperties)
+                CopyReferencePropertiesFrom(src, skipPropertyTypes, skipPropertyNames);
 
             if (Keyword != null) SetKeywordState(MyShaderUI.Materials, (src.MaterialProperty.targets[0] as Material).GetNumber(MaterialProperty) == 1);
             if (IsAnimatable)
@@ -166,7 +168,7 @@ namespace Thry.ThryEditor
             if (applyDrawers) MyShaderUI.ApplyDrawers();
         }
 
-        public override void CopyTo(Material[] targets, bool applyDrawers = true, bool deepCopy = true, HashSet<PropType> skipPropertyTypes = null, HashSet<string> skipPropertyNames = null)
+        public override void CopyTo(Material[] targets, bool applyDrawers = true, bool deepCopy = true, bool copyReferenceProperties = true, HashSet<PropType> skipPropertyTypes = null, HashSet<string> skipPropertyNames = null)
         {
             if(skipPropertyTypes?.Contains(MaterialProperty.type) == true) return;
             if(skipPropertyNames?.Contains(MaterialProperty.name) == true) return;
@@ -174,7 +176,8 @@ namespace Thry.ThryEditor
             UpdatedMaterialPropertyReference();
 
             MaterialHelper.CopyValue(MaterialProperty, targets);
-            CopyReferencePropertiesTo(targets, skipPropertyTypes, skipPropertyNames);
+            if(copyReferenceProperties)
+                CopyReferencePropertiesTo(targets, skipPropertyTypes, skipPropertyNames);
 
             if (Keyword != null) SetKeywordState(targets, MaterialProperty.GetNumber() == 1);
             if (IsAnimatable)
@@ -187,7 +190,7 @@ namespace Thry.ThryEditor
             if (applyDrawers) MaterialEditor.ApplyMaterialPropertyDrawers(targets);
         }
 
-        public override void CopyTo(ShaderPart targetPart, bool applyDrawers = true, bool deepCopy = true, HashSet<PropType> skipPropertyTypes = null, HashSet<string> skipPropertyNames = null)
+        public override void CopyTo(ShaderPart targetPart, bool applyDrawers = true, bool deepCopy = true, bool copyReferenceProperties = true, HashSet<PropType> skipPropertyTypes = null, HashSet<string> skipPropertyNames = null)
         {
             if(skipPropertyTypes?.Contains(MaterialProperty.type) == true) return;
             if(skipPropertyNames?.Contains(MaterialProperty.name) == true) return;
@@ -199,7 +202,8 @@ namespace Thry.ThryEditor
             target.UpdatedMaterialPropertyReference();
 
             MaterialHelper.CopyValue(MaterialProperty, target.MaterialProperty);
-            CopyReferencePropertiesTo(target, skipPropertyTypes, skipPropertyNames);
+            if(copyReferenceProperties)
+                CopyReferencePropertiesTo(target, skipPropertyTypes, skipPropertyNames);
 
             if (Keyword != null) SetKeywordState(target.MaterialProperty.targets as Material[], MaterialProperty.GetNumber() == 1);
             if (IsAnimatable)

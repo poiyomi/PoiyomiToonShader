@@ -149,18 +149,42 @@ namespace Thry.ThryEditor
             return true;
         }
 
-        private static Dictionary<Type,Dictionary<string,FieldInfo>> fieldCache = new Dictionary<Type,Dictionary<string,FieldInfo>>();
+        private static Dictionary<Type, Dictionary<string, FieldInfo>> fieldCache = new Dictionary<Type, Dictionary<string, FieldInfo>>();
         private static Dictionary<Type,Dictionary<string,PropertyInfo>> propertyCache = new Dictionary<Type,Dictionary<string,PropertyInfo>>();
+        static Dictionary<string, FieldInfo> GetFields(Type t)
+        {
+            if (fieldCache.TryGetValue(t, out Dictionary<string, FieldInfo> fields))
+                return fields;
+
+            fields = new Dictionary<string, FieldInfo>();
+            foreach (FieldInfo field in t.GetFields())
+                fields.Add(field.Name, field);
+            fieldCache.Add(t, fields);
+            return fields;
+        }
+
+        static Dictionary<string, PropertyInfo> GetProperties(Type t)
+        {
+            if (propertyCache.TryGetValue(t, out Dictionary<string, PropertyInfo> properties))
+                return properties;
+
+            properties = new Dictionary<string, PropertyInfo>();
+            foreach (PropertyInfo property in t.GetProperties().Where(p => p.CanWrite && p.CanRead && p.GetIndexParameters().Length == 0))
+                properties.Add(property.Name, property);
+            propertyCache.Add(t, properties);
+            return properties;
+        }
+
         private static object ParseToObject(string input, int start, int end, Type t)
         {
-            while(start < end && (input[start] == ' ' || input[start] == '\t' || input[start] == '\n' || input[start] == '\r'))
+            while (start < end && (input[start] == ' ' || input[start] == '\t' || input[start] == '\n' || input[start] == '\r'))
                 start++;
-            while(end > start && (input[end-1] == ' ' || input[end-1] == '\t' || input[end-1] == '\n' || input[end-1] == '\r'))
+            while (end > start && (input[end - 1] == ' ' || input[end - 1] == '\t' || input[end - 1] == '\n' || input[end - 1] == '\r'))
                 end--;
-            if(end - start == 4 && input.Substring(start, 4) == "null")
+            if (end - start == 4 && input.Substring(start, 4) == "null")
                 return null;
             object returnObject;
-            if(input[start] != '{' || input[end - 1] != '}')
+            if (input[start] != '{' || input[end - 1] != '}')
             {
                 if (TryThryParser(input, start, end, t, out returnObject))
                     return returnObject;
@@ -169,22 +193,15 @@ namespace Thry.ThryEditor
             start += 1;
             end -= 1;
 
-            Dictionary<string,FieldInfo> fields;
-            if (!fieldCache.TryGetValue(t, out fields))
+            // If type is abstract find concrete type that matches the most Fields/Properties
+            if (t.IsAbstract)
             {
-                fields = new Dictionary<string, FieldInfo>();
-                foreach (FieldInfo field in t.GetFields())
-                    fields.Add(field.Name, field);
-                fieldCache.Add(t, fields);
+                ThryLogger.LogDetail("ThryParser", "Cannot parse abstract type " + t.Name + ". Please use a concrete type instead.");
+                return null;
             }
-            Dictionary<string, PropertyInfo> properties;
-            if (!propertyCache.TryGetValue(t, out properties))
-            {
-                properties = new Dictionary<string, PropertyInfo>();
-                foreach (PropertyInfo property in t.GetProperties().Where(p => p.CanWrite && p.CanRead && p.GetIndexParameters().Length == 0))
-                    properties.Add(property.Name, property);
-                propertyCache.Add(t, properties);
-            }
+
+            Dictionary<string, FieldInfo> fields = GetFields(t);
+            Dictionary<string, PropertyInfo> properties = GetProperties(t);
 
             returnObject = Activator.CreateInstance(t);
 
@@ -200,23 +217,25 @@ namespace Thry.ThryEditor
                     keyStart++;
                 while (input[keyEnd - 1] == ' ' || input[keyEnd - 1] == '\t' || input[keyEnd - 1] == '\n' || input[keyEnd - 1] == '\r')
                     keyEnd--;
-                if(input[keyStart] == '\"')
+                if (input[keyStart] == '\"')
                     keyStart++;
-                if(input[keyEnd - 1] == '\"')
+                if (input[keyEnd - 1] == '\"')
                     keyEnd--;
                 string key = input.Substring(keyStart, keyEnd - keyStart);
                 if (fields.TryGetValue(key, out FieldInfo field))
                 {
                     object value = ParseJsonPart(input, seperatorIndex + 1, varEnd, field.FieldType);
-                    field.SetValue(returnObject, value);
+                    if(value != null)
+                        field.SetValue(returnObject, value);
                 }
                 else if (properties.TryGetValue(key, out PropertyInfo property))
                 {
                     object value = ParseJsonPart(input, seperatorIndex + 1, varEnd, property.PropertyType);
-                    property.SetValue(returnObject, value, null);
+                    if(value != null)
+                        property.SetValue(returnObject, value, null);
                 }
             }
-        
+
             int depth = 0;
             int variableStart = start;
             bool isString = false;
@@ -231,7 +250,8 @@ namespace Thry.ThryEditor
                     {
                         parseVariable(variableStart, i);
                         variableStart = i + 1;
-                    }else if(i == end - 1)
+                    }
+                    else if (i == end - 1)
                     {
                         parseVariable(variableStart, i + 1);
                     }

@@ -553,7 +553,7 @@ namespace Thry.ThryEditor
         /// <param name="deepCopy"> Copy the values of the children of this property </param>
         /// <param name="skipPropertyTypes"> Skip copying properties of the specified types </param>
         /// <param name="skipPropertyNames"> Skip copying properties with the specified names </param>
-        public abstract void CopyFrom(Material src, bool applyDrawers = true, bool deepCopy = true, HashSet<PropType> skipPropertyTypes = null, HashSet<string> skipPropertyNames = null);
+        public abstract void CopyFrom(Material src, bool applyDrawers = true, bool deepCopy = true, bool copyReferenceProperties = true, HashSet<PropType> skipPropertyTypes = null, HashSet<string> skipPropertyNames = null);
         [PublicAPI]
         /// <summary> Copy the values for this property from the source property </summary>
         /// <param name="src"> The source property to copy from </param>
@@ -561,7 +561,7 @@ namespace Thry.ThryEditor
         /// <param name="deepCopy"> Copy the values of the children of this property </param>
         /// <param name="skipPropertyTypes"> Skip copying properties of the specified types </param>
         /// <param name="skipPropertyNames"> Skip copying properties with the specified names </param>
-        public abstract void CopyFrom(ShaderPart src, bool applyDrawers = true, bool deepCopy = true, HashSet<PropType> skipPropertyTypes = null, HashSet<string> skipPropertyNames = null);
+        public abstract void CopyFrom(ShaderPart src, bool applyDrawers = true, bool deepCopy = true, bool copyReferenceProperties = true, HashSet<PropType> skipPropertyTypes = null, HashSet<string> skipPropertyNames = null);
         [PublicAPI]
         /// <summary> Copy the values of property to the target materials </summary>
         /// <param name="targets"> The target materials to copy to </param>
@@ -569,7 +569,7 @@ namespace Thry.ThryEditor
         /// <param name="deepCopy"> Copy the values of the children of this property </param>
         /// <param name="skipPropertyTypes"> Skip copying properties of the specified types </param>
         /// <param name="skipPropertyNames"> Skip copying properties with the specified names </param>
-        public abstract void CopyTo(Material[] targets, bool applyDrawers = true, bool deepCopy = true, HashSet<PropType> skipPropertyTypes = null, HashSet<string> skipPropertyNames = null);
+        public abstract void CopyTo(Material[] targets, bool applyDrawers = true, bool deepCopy = true, bool copyReferenceProperties = true, HashSet<PropType> skipPropertyTypes = null, HashSet<string> skipPropertyNames = null);
         [PublicAPI]
         /// <summary> Copy the values of property to the target property </summary>
         /// <param name="target"> The target property to copy to </param>
@@ -577,7 +577,7 @@ namespace Thry.ThryEditor
         /// <param name="deepCopy"> Copy the values of the children of this property </param>
         /// <param name="skipPropertyTypes"> Skip copying properties of the specified types </param>
         /// <param name="skipPropertyNames"> Skip copying properties with the specified names </param>
-        public abstract void CopyTo(ShaderPart target, bool applyDrawers = true, bool deepCopy = true, HashSet<PropType> skipPropertyTypes = null, HashSet<string> skipPropertyNames = null);
+        public abstract void CopyTo(ShaderPart target, bool applyDrawers = true, bool deepCopy = true, bool copyReferenceProperties = true, HashSet<PropType> skipPropertyTypes = null, HashSet<string> skipPropertyNames = null);
         [PublicAPI]
         /// <summary> Copy the values of property from the source material </summary>
         /// <param name="target"> The target material to copy to </param>
@@ -585,9 +585,9 @@ namespace Thry.ThryEditor
         /// <param name="deepCopy"> Copy the values of the children of this property </param>
         /// <param name="skipPropertyTypes"> Skip copying properties of the specified types </param>
         /// <param name="skipPropertyNames"> Skip copying properties with the specified names </param>
-        public void CopyTo(Material target, bool applyDrawers = true, bool deepCopy = true, HashSet<PropType> skipPropertyTypes = null, HashSet<string> skipPropertyNames = null)
+        public void CopyTo(Material target, bool applyDrawers = true, bool deepCopy = true, bool copyReferenceProperties = true, HashSet<PropType> skipPropertyTypes = null, HashSet<string> skipPropertyNames = null)
         {
-            CopyTo(new Material[] { target }, applyDrawers, deepCopy, skipPropertyTypes, skipPropertyNames);
+            CopyTo(new Material[] { target }, applyDrawers, deepCopy, copyReferenceProperties, skipPropertyTypes, skipPropertyNames);
         }
 
         protected void CopyReferencePropertiesTo(Material[] targets, HashSet<PropType> skipPropertyTypes, HashSet<string> skipPropertyNames)
@@ -596,12 +596,12 @@ namespace Thry.ThryEditor
                 foreach (string r_property in Options.reference_properties)
                 {
                     ShaderProperty property = MyShaderUI.PropertyDictionary[r_property];
-                    property.CopyTo(targets, false, true, skipPropertyTypes, skipPropertyNames);
+                    property.CopyTo(targets, false, true, true, skipPropertyTypes, skipPropertyNames);
                 }
             if (string.IsNullOrWhiteSpace(Options.reference_property) == false)
             {
                 ShaderProperty property = MyShaderUI.PropertyDictionary[Options.reference_property];
-                property.CopyTo(targets, false, true, skipPropertyTypes, skipPropertyNames);
+                property.CopyTo(targets, false, true, true, skipPropertyTypes, skipPropertyNames);
             }
         }
 
@@ -611,12 +611,12 @@ namespace Thry.ThryEditor
                 foreach (string r_property in Options.reference_properties)
                 {
                     ShaderProperty property = MyShaderUI.PropertyDictionary[r_property];
-                    property.CopyFrom(source, false, true, skipPropertyTypes, skipPropertyNames);
+                    property.CopyFrom(source, false, true, true, skipPropertyTypes, skipPropertyNames);
                 }
             if (string.IsNullOrWhiteSpace(Options.reference_property) == false)
             {
                 ShaderProperty property = MyShaderUI.PropertyDictionary[Options.reference_property];
-                property.CopyFrom(source, false, true, skipPropertyTypes, skipPropertyNames);
+                property.CopyFrom(source, false, true, true, skipPropertyTypes, skipPropertyNames);
             }
         }
 
@@ -627,13 +627,13 @@ namespace Thry.ThryEditor
                 {
                     ShaderProperty property = MyShaderUI.PropertyDictionary[Options.reference_properties[i]];
                     ShaderProperty srcProperty = src.MyShaderUI.PropertyDictionary[src.Options.reference_properties[i]];
-                    property.CopyFrom(srcProperty, false, true, skipPropertyTypes, skipPropertyNames);
+                    property.CopyFrom(srcProperty, false, true, true, skipPropertyTypes, skipPropertyNames);
                 }
             if (!string.IsNullOrWhiteSpace(Options.reference_property) && !string.IsNullOrWhiteSpace(src.Options.reference_property))
             {
                 ShaderProperty property = MyShaderUI.PropertyDictionary[Options.reference_property];
                 ShaderProperty srcProperty = src.MyShaderUI.PropertyDictionary[src.Options.reference_property];
-                property.CopyFrom(srcProperty, false, true, skipPropertyTypes, skipPropertyNames);
+                property.CopyFrom(srcProperty, false, true, true, skipPropertyTypes, skipPropertyNames);
             }
         }
 
@@ -644,13 +644,13 @@ namespace Thry.ThryEditor
                 {
                     ShaderProperty property = MyShaderUI.PropertyDictionary[Options.reference_properties[i]];
                     ShaderProperty targetProperty = target.MyShaderUI.PropertyDictionary[target.Options.reference_properties[i]];
-                    property.CopyTo(targetProperty, false, true, skipPropertyTypes, skipPropertyNames);
+                    property.CopyTo(targetProperty, false, true, true, skipPropertyTypes, skipPropertyNames);
                 }
             if (!string.IsNullOrWhiteSpace(Options.reference_property) && !string.IsNullOrWhiteSpace(target.Options.reference_property))
             {
                 ShaderProperty property = MyShaderUI.PropertyDictionary[Options.reference_property];
                 ShaderProperty targetProperty = target.MyShaderUI.PropertyDictionary[target.Options.reference_property];
-                property.CopyTo(targetProperty, false, true, skipPropertyTypes, skipPropertyNames);
+                property.CopyTo(targetProperty, false, true, true, skipPropertyTypes, skipPropertyNames);
             }
         }
 

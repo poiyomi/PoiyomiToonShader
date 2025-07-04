@@ -27,19 +27,19 @@ namespace Thry.ThryEditor
         public override object PropertyDefaultValue => ShaderEditor.Active.Shader.renderQueue;
         public override bool IsPropertyValueDefault => MyShaderUI.Materials.All(m => m.renderQueue == ShaderEditor.Active.Shader.renderQueue);
 
-        public override void CopyFrom(Material sourceM, bool applyDrawers = true, bool deepCopy = true, HashSet<MaterialProperty.PropType> skipPropertyTypes = null, HashSet<string> skipPropertyNames = null)
+        public override void CopyFrom(Material sourceM, bool applyDrawers = true, bool deepCopy = true, bool copyReferenceProperties = true, HashSet<MaterialProperty.PropType> skipPropertyTypes = null, HashSet<string> skipPropertyNames = null)
         {
             foreach (Material m in MyShaderUI.Materials) m.renderQueue = sourceM.renderQueue;
         }
-        public override void CopyTo(Material[] targetsM, bool applyDrawers = true, bool deepCopy = true, HashSet<MaterialProperty.PropType> skipPropertyTypes = null, HashSet<string> skipPropertyNames = null)
+        public override void CopyTo(Material[] targetsM, bool applyDrawers = true, bool deepCopy = true, bool copyReferenceProperties = true, HashSet<MaterialProperty.PropType> skipPropertyTypes = null, HashSet<string> skipPropertyNames = null)
         {
             foreach (Material m in targetsM) m.renderQueue = MyShaderUI.Materials[0].renderQueue;
         }
-        public override void CopyFrom(ShaderPart srcPart, bool applyDrawers = true, bool deepCopy = true, HashSet<MaterialProperty.PropType> skipPropertyTypes = null, HashSet<string> skipPropertyNames = null)
+        public override void CopyFrom(ShaderPart srcPart, bool applyDrawers = true, bool deepCopy = true, bool copyReferenceProperties = true, HashSet<MaterialProperty.PropType> skipPropertyTypes = null, HashSet<string> skipPropertyNames = null)
         {
             this.CopyFrom(srcPart.MaterialProperty.targets[0] as Material);
         }
-        public override void CopyTo(ShaderPart targetPart, bool applyDrawers = true, bool deepCopy = true, HashSet<MaterialProperty.PropType> skipPropertyTypes = null, HashSet<string> skipPropertyNames = null)
+        public override void CopyTo(ShaderPart targetPart, bool applyDrawers = true, bool deepCopy = true, bool copyReferenceProperties = true, HashSet<MaterialProperty.PropType> skipPropertyTypes = null, HashSet<string> skipPropertyNames = null)
         {
             this.CopyTo(targetPart.MaterialProperty.targets.Cast<Material>().ToArray());
         }
@@ -96,21 +96,21 @@ namespace Thry.ThryEditor
         public override object PropertyDefaultValue => "None";
         public override bool IsPropertyValueDefault => MyShaderUI.Materials.All(m => m.GetTag("VRCFallback", false, "None") == "None");
 
-        public override void CopyFrom(Material sourceM, bool applyDrawers = true, bool deepCopy = true, HashSet<MaterialProperty.PropType> skipPropertyTypes = null, HashSet<string> skipPropertyNames = null)
+        public override void CopyFrom(Material sourceM, bool applyDrawers = true, bool deepCopy = true, bool copyReferenceProperties = true, HashSet<MaterialProperty.PropType> skipPropertyTypes = null, HashSet<string> skipPropertyNames = null)
         {
             string value = sourceM.GetTag("VRCFallback", false, "None");
             foreach (Material m in MyShaderUI.Materials) m.SetOverrideTag("VRCFallback", value);
         }
-        public override void CopyTo(Material[] targetsM, bool applyDrawers = true, bool deepCopy = true, HashSet<MaterialProperty.PropType> skipPropertyTypes = null, HashSet<string> skipPropertyNames = null)
+        public override void CopyTo(Material[] targetsM, bool applyDrawers = true, bool deepCopy = true, bool copyReferenceProperties = true, HashSet<MaterialProperty.PropType> skipPropertyTypes = null, HashSet<string> skipPropertyNames = null)
         {
             string value = MyShaderUI.Materials[0].GetTag("VRCFallback", false, "None");
             foreach (Material m in targetsM) m.SetOverrideTag("VRCFallback", value);
         }
-        public override void CopyFrom(ShaderPart srcPart, bool applyDrawers = true, bool deepCopy = true, HashSet<MaterialProperty.PropType> skipPropertyTypes = null, HashSet<string> skipPropertyNames = null)
+        public override void CopyFrom(ShaderPart srcPart, bool applyDrawers = true, bool deepCopy = true, bool copyReferenceProperties = true, HashSet<MaterialProperty.PropType> skipPropertyTypes = null, HashSet<string> skipPropertyNames = null)
         {
             this.CopyFrom(srcPart.MaterialProperty.targets[0] as Material, applyDrawers);
         }
-        public override void CopyTo(ShaderPart targetPart, bool applyDrawers = true, bool deepCopy = true, HashSet<MaterialProperty.PropType> skipPropertyTypes = null, HashSet<string> skipPropertyNames = null)
+        public override void CopyTo(ShaderPart targetPart, bool applyDrawers = true, bool deepCopy = true, bool copyReferenceProperties = true, HashSet<MaterialProperty.PropType> skipPropertyTypes = null, HashSet<string> skipPropertyNames = null)
         {
             this.CopyTo(targetPart.MaterialProperty.targets.Cast<Material>().ToArray(), applyDrawers);
         }
