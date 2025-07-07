@@ -2,7 +2,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 {
 	Properties
 	{
-		[HideInInspector] shader_master_label ("<color=#E75898ff>Poiyomi 9.2.59</color>", Float) = 0
+		[HideInInspector] shader_master_label ("<color=#E75898ff>Poiyomi 9.2.61</color>", Float) = 0
 		[HideInInspector] shader_is_using_thry_editor ("", Float) = 0
 		[HideInInspector] shader_locale ("0db0b86376c3dca4b9a6828ef8615fe0", Float) = 0
 		[HideInInspector] footer_youtube ("{texture:{name:icon-youtube,height:16},action:{type:URL,data:https://www.youtube.com/poiyomi},hover:YOUTUBE}", Float) = 0
@@ -4701,7 +4701,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			//endex
 			
 			#pragma multi_compile_instancing
-			#pragma multi_compile_fog
+			//#pragma multi_compile_fog
 			#define POI_PASS_EARLYZ
 			
 			#pragma shader_feature_local _STOCHASTICMODE_DELIOT_HEITZ _STOCHASTICMODE_HEXTILE _STOCHASTICMODE_NONE
@@ -7986,6 +7986,36 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				unity_SpecCube0.GetDimensions(width, height);
 				return !(width * height < 2);
 			}
+			
+			void applyUnityFog(inout float3 col, float depth)
+			{
+				float fogFactor = 1.0;
+				
+				if (unity_FogParams.x != 0.0f) // Is Exp2 fog active?
+				
+				{
+					float exponent_val = unity_FogParams.x * depth;
+					fogFactor = exp2(-exponent_val * exponent_val);
+				}
+				else if (unity_FogParams.y != 0.0f) // Is Exp fog active?
+				
+				{
+					float exponent = unity_FogParams.y * depth;
+					fogFactor = exp2(-exponent);
+				}
+				else if (unity_FogParams.z != unity_FogParams.w)
+				{
+					fogFactor = depth * unity_FogParams.z + unity_FogParams.w;
+				}
+				
+				fixed3 appliedFogColor = unity_FogColor.rgb;
+				
+				#if defined(UNITY_PASS_FORWARDADD)
+				appliedFogColor = fixed3(0, 0, 0);
+				#endif
+				
+				col = lerp(appliedFogColor, col, saturate(fogFactor));
+			}
 			//ifex _EnableUDIMDiscardOptions==0
 			#ifdef POI_UDIMDISCARD
 			float shouldPerformUDIMDiscard(float2 udim, float4 UDIMDiscardRows[4])
@@ -9700,7 +9730,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			
 			#pragma multi_compile_fwdbase
 			#pragma multi_compile_instancing
-			#pragma multi_compile_fog
+			//#pragma multi_compile_fog
 			#pragma multi_compile_fragment _ VERTEXLIGHT_ON
 			#define POI_PASS_BASE
 			
@@ -17084,6 +17114,36 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				float width, height;
 				unity_SpecCube0.GetDimensions(width, height);
 				return !(width * height < 2);
+			}
+			
+			void applyUnityFog(inout float3 col, float depth)
+			{
+				float fogFactor = 1.0;
+				
+				if (unity_FogParams.x != 0.0f) // Is Exp2 fog active?
+				
+				{
+					float exponent_val = unity_FogParams.x * depth;
+					fogFactor = exp2(-exponent_val * exponent_val);
+				}
+				else if (unity_FogParams.y != 0.0f) // Is Exp fog active?
+				
+				{
+					float exponent = unity_FogParams.y * depth;
+					fogFactor = exp2(-exponent);
+				}
+				else if (unity_FogParams.z != unity_FogParams.w)
+				{
+					fogFactor = depth * unity_FogParams.z + unity_FogParams.w;
+				}
+				
+				fixed3 appliedFogColor = unity_FogColor.rgb;
+				
+				#if defined(UNITY_PASS_FORWARDADD)
+				appliedFogColor = fixed3(0, 0, 0);
+				#endif
+				
+				col = lerp(appliedFogColor, col, saturate(fogFactor));
 			}
 			//ifex _EnableUDIMDiscardOptions==0
 			#ifdef POI_UDIMDISCARD
@@ -29549,12 +29609,6 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				}
 				//endex
 				
-				//UNITY_BRANCH
-				if (_IgnoreFog == 0)
-				{
-					UNITY_APPLY_FOG(i.fogCoord, poiFragData.finalColor);
-				}
-				
 				#ifndef POI_PASS_BASETWO
 				poiFragData.alpha = _AlphaForceOpaque ? 1 : poiFragData.alpha;
 				#else
@@ -29618,7 +29672,9 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				#endif
 				//endex
 				
-				return float4(poiFragData.finalColor + poiFragData.emission * poiMods.globalEmission, poiFragData.alpha) + POI_SAFE_RGB0;
+				poiFragData.finalColor += poiFragData.emission * poiMods.globalEmission;
+				applyUnityFog(poiFragData.finalColor, poiCam.clipPos.w);
+				return float4(poiFragData.finalColor, poiFragData.alpha) + POI_SAFE_RGB0;
 			}
 			
 			ENDCG
@@ -29685,7 +29741,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			
 			#pragma multi_compile_fwdadd_fullshadows
 			#pragma multi_compile_instancing
-			#pragma multi_compile_fog
+			//#pragma multi_compile_fog
 			#define POI_PASS_ADD
 			
 			#pragma shader_feature_local _STOCHASTICMODE_DELIOT_HEITZ _STOCHASTICMODE_HEXTILE _STOCHASTICMODE_NONE
@@ -35735,6 +35791,36 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				float width, height;
 				unity_SpecCube0.GetDimensions(width, height);
 				return !(width * height < 2);
+			}
+			
+			void applyUnityFog(inout float3 col, float depth)
+			{
+				float fogFactor = 1.0;
+				
+				if (unity_FogParams.x != 0.0f) // Is Exp2 fog active?
+				
+				{
+					float exponent_val = unity_FogParams.x * depth;
+					fogFactor = exp2(-exponent_val * exponent_val);
+				}
+				else if (unity_FogParams.y != 0.0f) // Is Exp fog active?
+				
+				{
+					float exponent = unity_FogParams.y * depth;
+					fogFactor = exp2(-exponent);
+				}
+				else if (unity_FogParams.z != unity_FogParams.w)
+				{
+					fogFactor = depth * unity_FogParams.z + unity_FogParams.w;
+				}
+				
+				fixed3 appliedFogColor = unity_FogColor.rgb;
+				
+				#if defined(UNITY_PASS_FORWARDADD)
+				appliedFogColor = fixed3(0, 0, 0);
+				#endif
+				
+				col = lerp(appliedFogColor, col, saturate(fogFactor));
 			}
 			//ifex _EnableUDIMDiscardOptions==0
 			#ifdef POI_UDIMDISCARD
@@ -46003,12 +46089,6 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				}
 				//endex
 				
-				//UNITY_BRANCH
-				if (_IgnoreFog == 0)
-				{
-					UNITY_APPLY_FOG(i.fogCoord, poiFragData.finalColor);
-				}
-				
 				#ifndef POI_PASS_BASETWO
 				poiFragData.alpha = _AlphaForceOpaque ? 1 : poiFragData.alpha;
 				#else
@@ -46071,6 +46151,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				#endif
 				//endex
 				
+				applyUnityFog(poiFragData.finalColor, poiCam.clipPos.w);
 				return float4(poiFragData.finalColor, poiFragData.alpha) + POI_SAFE_RGB0;
 			}
 			
@@ -46137,7 +46218,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			
 			#pragma multi_compile_fwdbase
 			#pragma multi_compile_instancing
-			#pragma multi_compile_fog
+			//#pragma multi_compile_fog
 			#pragma multi_compile_fragment _ VERTEXLIGHT_ON
 			#define POI_PASS_BASE
 			#define POI_PASS_BASETWO
@@ -53534,6 +53615,36 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				float width, height;
 				unity_SpecCube0.GetDimensions(width, height);
 				return !(width * height < 2);
+			}
+			
+			void applyUnityFog(inout float3 col, float depth)
+			{
+				float fogFactor = 1.0;
+				
+				if (unity_FogParams.x != 0.0f) // Is Exp2 fog active?
+				
+				{
+					float exponent_val = unity_FogParams.x * depth;
+					fogFactor = exp2(-exponent_val * exponent_val);
+				}
+				else if (unity_FogParams.y != 0.0f) // Is Exp fog active?
+				
+				{
+					float exponent = unity_FogParams.y * depth;
+					fogFactor = exp2(-exponent);
+				}
+				else if (unity_FogParams.z != unity_FogParams.w)
+				{
+					fogFactor = depth * unity_FogParams.z + unity_FogParams.w;
+				}
+				
+				fixed3 appliedFogColor = unity_FogColor.rgb;
+				
+				#if defined(UNITY_PASS_FORWARDADD)
+				appliedFogColor = fixed3(0, 0, 0);
+				#endif
+				
+				col = lerp(appliedFogColor, col, saturate(fogFactor));
 			}
 			//ifex _EnableUDIMDiscardOptions==0
 			#ifdef POI_UDIMDISCARD
@@ -65999,12 +66110,6 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				}
 				//endex
 				
-				//UNITY_BRANCH
-				if (_IgnoreFog == 0)
-				{
-					UNITY_APPLY_FOG(i.fogCoord, poiFragData.finalColor);
-				}
-				
 				#ifndef POI_PASS_BASETWO
 				poiFragData.alpha = _AlphaForceOpaque ? 1 : poiFragData.alpha;
 				#else
@@ -66070,7 +66175,9 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				#endif
 				//endex
 				
-				return float4(poiFragData.finalColor + poiFragData.emission * poiMods.globalEmission, poiFragData.alpha) + POI_SAFE_RGB0;
+				poiFragData.finalColor += poiFragData.emission * poiMods.globalEmission;
+				applyUnityFog(poiFragData.finalColor, poiCam.clipPos.w);
+				return float4(poiFragData.finalColor, poiFragData.alpha) + POI_SAFE_RGB0;
 			}
 			
 			ENDCG
@@ -66139,7 +66246,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			
 			#pragma multi_compile_fwdadd_fullshadows
 			#pragma multi_compile_instancing
-			#pragma multi_compile_fog
+			//#pragma multi_compile_fog
 			#define POI_PASS_ADD
 			
 			#pragma shader_feature_local _STOCHASTICMODE_DELIOT_HEITZ _STOCHASTICMODE_HEXTILE _STOCHASTICMODE_NONE
@@ -72189,6 +72296,36 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				float width, height;
 				unity_SpecCube0.GetDimensions(width, height);
 				return !(width * height < 2);
+			}
+			
+			void applyUnityFog(inout float3 col, float depth)
+			{
+				float fogFactor = 1.0;
+				
+				if (unity_FogParams.x != 0.0f) // Is Exp2 fog active?
+				
+				{
+					float exponent_val = unity_FogParams.x * depth;
+					fogFactor = exp2(-exponent_val * exponent_val);
+				}
+				else if (unity_FogParams.y != 0.0f) // Is Exp fog active?
+				
+				{
+					float exponent = unity_FogParams.y * depth;
+					fogFactor = exp2(-exponent);
+				}
+				else if (unity_FogParams.z != unity_FogParams.w)
+				{
+					fogFactor = depth * unity_FogParams.z + unity_FogParams.w;
+				}
+				
+				fixed3 appliedFogColor = unity_FogColor.rgb;
+				
+				#if defined(UNITY_PASS_FORWARDADD)
+				appliedFogColor = fixed3(0, 0, 0);
+				#endif
+				
+				col = lerp(appliedFogColor, col, saturate(fogFactor));
 			}
 			//ifex _EnableUDIMDiscardOptions==0
 			#ifdef POI_UDIMDISCARD
@@ -82457,12 +82594,6 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				}
 				//endex
 				
-				//UNITY_BRANCH
-				if (_IgnoreFog == 0)
-				{
-					UNITY_APPLY_FOG(i.fogCoord, poiFragData.finalColor);
-				}
-				
 				#ifndef POI_PASS_BASETWO
 				poiFragData.alpha = _AlphaForceOpaque ? 1 : poiFragData.alpha;
 				#else
@@ -82525,6 +82656,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				#endif
 				//endex
 				
+				applyUnityFog(poiFragData.finalColor, poiCam.clipPos.w);
 				return float4(poiFragData.finalColor, poiFragData.alpha) + POI_SAFE_RGB0;
 			}
 			
@@ -82596,7 +82728,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			
 			#pragma multi_compile_fwdbase
 			#pragma multi_compile_instancing
-			#pragma multi_compile_fog
+			//#pragma multi_compile_fog
 			#pragma multi_compile_fragment _ VERTEXLIGHT_ON
 			#define POI_PASS_OUTLINE
 			
@@ -87593,6 +87725,36 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				float width, height;
 				unity_SpecCube0.GetDimensions(width, height);
 				return !(width * height < 2);
+			}
+			
+			void applyUnityFog(inout float3 col, float depth)
+			{
+				float fogFactor = 1.0;
+				
+				if (unity_FogParams.x != 0.0f) // Is Exp2 fog active?
+				
+				{
+					float exponent_val = unity_FogParams.x * depth;
+					fogFactor = exp2(-exponent_val * exponent_val);
+				}
+				else if (unity_FogParams.y != 0.0f) // Is Exp fog active?
+				
+				{
+					float exponent = unity_FogParams.y * depth;
+					fogFactor = exp2(-exponent);
+				}
+				else if (unity_FogParams.z != unity_FogParams.w)
+				{
+					fogFactor = depth * unity_FogParams.z + unity_FogParams.w;
+				}
+				
+				fixed3 appliedFogColor = unity_FogColor.rgb;
+				
+				#if defined(UNITY_PASS_FORWARDADD)
+				appliedFogColor = fixed3(0, 0, 0);
+				#endif
+				
+				col = lerp(appliedFogColor, col, saturate(fogFactor));
 			}
 			//ifex _EnableUDIMDiscardOptions==0
 			#ifdef POI_UDIMDISCARD
@@ -92966,12 +93128,6 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				#endif
 				//endex
 				
-				//UNITY_BRANCH
-				if (_IgnoreFog == 0)
-				{
-					UNITY_APPLY_FOG(i.fogCoord, poiFragData.finalColor);
-				}
-				
 				#ifndef POI_PASS_BASETWO
 				poiFragData.alpha = _AlphaForceOpaque ? 1 : poiFragData.alpha;
 				#else
@@ -93017,7 +93173,9 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				
 				clip(poiFragData.alpha - _Cutoff);
 				
-				return float4(poiFragData.finalColor + poiFragData.emission * poiMods.globalEmission, poiFragData.alpha) + POI_SAFE_RGB0;
+				poiFragData.finalColor += poiFragData.emission * poiMods.globalEmission;
+				applyUnityFog(poiFragData.finalColor, poiCam.clipPos.w);
+				return float4(poiFragData.finalColor, poiFragData.alpha) + POI_SAFE_RGB0;
 			}
 			
 			ENDCG
@@ -93082,10 +93240,9 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			#pragma skip_optimizations d3d11
 			//endex
 			
-			#pragma skip_variants FOG_LINEAR FOG_EXP FOG_EXP2
 			#pragma multi_compile_instancing
 			#pragma multi_compile_shadowcaster
-			#pragma multi_compile_fog
+			//#pragma multi_compile_fog
 			#define POI_PASS_SHADOW
 			
 			#pragma shader_feature_local _STOCHASTICMODE_DELIOT_HEITZ _STOCHASTICMODE_HEXTILE _STOCHASTICMODE_NONE
@@ -96896,6 +97053,36 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				float width, height;
 				unity_SpecCube0.GetDimensions(width, height);
 				return !(width * height < 2);
+			}
+			
+			void applyUnityFog(inout float3 col, float depth)
+			{
+				float fogFactor = 1.0;
+				
+				if (unity_FogParams.x != 0.0f) // Is Exp2 fog active?
+				
+				{
+					float exponent_val = unity_FogParams.x * depth;
+					fogFactor = exp2(-exponent_val * exponent_val);
+				}
+				else if (unity_FogParams.y != 0.0f) // Is Exp fog active?
+				
+				{
+					float exponent = unity_FogParams.y * depth;
+					fogFactor = exp2(-exponent);
+				}
+				else if (unity_FogParams.z != unity_FogParams.w)
+				{
+					fogFactor = depth * unity_FogParams.z + unity_FogParams.w;
+				}
+				
+				fixed3 appliedFogColor = unity_FogColor.rgb;
+				
+				#if defined(UNITY_PASS_FORWARDADD)
+				appliedFogColor = fixed3(0, 0, 0);
+				#endif
+				
+				col = lerp(appliedFogColor, col, saturate(fogFactor));
 			}
 			//ifex _EnableUDIMDiscardOptions==0
 			#ifdef POI_UDIMDISCARD
@@ -101060,12 +101247,6 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				#endif
 				//endex
 				
-				//UNITY_BRANCH
-				if (_IgnoreFog == 0)
-				{
-					UNITY_APPLY_FOG(i.fogCoord, poiFragData.finalColor);
-				}
-				
 				#ifndef POI_PASS_BASETWO
 				poiFragData.alpha = _AlphaForceOpaque ? 1 : poiFragData.alpha;
 				#else
@@ -101087,6 +101268,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				
 				clip(poiFragData.alpha - _Cutoff);
 				
+				applyUnityFog(poiFragData.finalColor, poiCam.clipPos.w);
 				return float4(poiFragData.finalColor, poiFragData.alpha) + POI_SAFE_RGB0;
 			}
 			
