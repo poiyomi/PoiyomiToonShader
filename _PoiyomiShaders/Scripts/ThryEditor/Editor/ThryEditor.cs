@@ -562,6 +562,11 @@ namespace Thry
             _doReloadNextDraw = true;
         }
 
+        public void UpdatePropertyReferences()
+        {
+            Properties = MaterialEditor.GetMaterialProperties(Materials);
+        }
+
         public override void AssignNewShaderToMaterial(Material material, Shader oldShader, Shader newShader)
         {
             this.ShaderOptimizerProperty = null;

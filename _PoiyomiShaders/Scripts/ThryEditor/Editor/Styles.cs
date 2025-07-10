@@ -19,8 +19,8 @@ namespace Thry.ThryEditor
             contentOffset = new Vector2(20f, -2f)
         };
 
-        public static readonly GUIStyle animatedIndicatorStyle = new GUIStyle() { normal = new GUIStyleState() { textColor = new Color(0.3f, 1, 0.3f) }, alignment = TextAnchor.MiddleRight };
-        public static readonly GUIStyle presetIndicatorStyle = new GUIStyle() { normal = new GUIStyleState() { textColor = Color.cyan }, alignment = TextAnchor.MiddleRight };
+        public static readonly GUIStyle animatedIndicatorStyle = new GUIStyle() { normal = new GUIStyleState() { textColor = EditorGUIUtility.isProSkin ? new Color(0.3f, 1f, 0.3f) : new Color(0f, 0.5f, 0f) }, alignment = TextAnchor.MiddleRight };
+        public static readonly GUIStyle presetIndicatorStyle = new GUIStyle() { normal = new GUIStyleState() { textColor = EditorGUIUtility.isProSkin ? new Color(0f, 1f, 1f) : new Color(0f, 0.5f, 0.71f) }, alignment = TextAnchor.MiddleRight };
         public static readonly GUIStyle madeByLabel = new GUIStyle(EditorStyles.label) { fontSize = 10 };
         public static readonly GUIStyle notification = new GUIStyle(GUI.skin.box) { fontSize = 12, wordWrap = true, normal = new GUIStyleState() { textColor = Color.red } };
         public static GUIStyle label_property_note { get; private set; } = new GUIStyle(EditorStyles.label)

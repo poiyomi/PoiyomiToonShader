@@ -559,9 +559,9 @@ namespace Thry.ThryEditor
 
         public static void ApplyFullList(ShaderEditor shaderEditor, Material[] originals, List<Material> presets)
         {
-            // for(int i=0;i<shaderEditor.Materials.Length && i < originals.Length;i++)
-            //     shaderEditor.Materials[i].CopyPropertiesFromMaterial(originals[i]);
-            shaderEditor.ShaderParts.ForEach(p => p.CopyFrom(originals[0], applyDrawers: false, copyReferenceProperties: false, deepCopy: false));
+            for(int i=0;i<shaderEditor.Materials.Length && i < originals.Length;i++)
+                shaderEditor.Materials[i].CopyPropertiesFromMaterial(originals[i]);
+            shaderEditor.UpdatePropertyReferences();
             foreach (Material preset in presets)
             {
                 ApplyPresetInternal(shaderEditor, preset, preset, null);
