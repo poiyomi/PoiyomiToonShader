@@ -2,7 +2,7 @@ Shader ".poiyomi/Poiyomi Toon"
 {
 	Properties
 	{
-		[HideInInspector] shader_master_label ("<color=#E75898ff>Poiyomi 9.2.63</color>", Float) = 0
+		[HideInInspector] shader_master_label ("<color=#E75898ff>Poiyomi 9.2.64</color>", Float) = 0
 		[HideInInspector] shader_is_using_thry_editor ("", Float) = 0
 		[HideInInspector] shader_locale ("0db0b86376c3dca4b9a6828ef8615fe0", Float) = 0
 		[HideInInspector] footer_youtube ("{texture:{name:icon-youtube,height:16},action:{type:URL,data:https://www.youtube.com/poiyomi},hover:YOUTUBE}", Float) = 0
@@ -2933,6 +2933,7 @@ Shader ".poiyomi/Poiyomi Toon"
 		[ThryWideEnum(Tex Gradient, 0, UV Gradient, 1)]_PathSource ("Path Source", Float) = 0
 		[ThryWideEnum(Replace, 0, Add, 1, Multiply, 2)]_PathSurfaceBlendMode ("Blend Mode", Float) = 0
 		[Enum(Split Channels, 0, Merged Channels, 1)]_PathGradientType ("Gradient Type--{condition_showS:_PathSource==0}", Float) = 0
+		[ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7)] _PathingUVSelect ("UV--{condition_showS:_PathSource==1}", Int) = 0
 		[ToggleUI] _PathPointSampling ("Point Sampling", Float) = 1
 		[ToggleUI]_PathingOverrideAlpha ("Override alpha", Float) = 0
 		[sRGBWarning][ThryRGBAPacker(R Path, G Path, B Path, A Path, linear, false)]_PathingMap ("RGBA Path Gradient / Mask--{reference_properties:[_PathingMapPan, _PathingMapUV]}", 2D) = "white" { }
@@ -14609,6 +14610,7 @@ Shader ".poiyomi/Poiyomi Toon"
 			float4 _PathingColorMap_ST;
 			float4 _PathingColorMapPan;
 			float _PathingColorMapUV;
+			float _PathingUVSelect;
 			
 			float _PathingOverrideAlpha;
 			float _PathSource;
@@ -26716,7 +26718,7 @@ Shader ".poiyomi/Poiyomi Toon"
 				}
 				else
 				{
-					float2 uv = poiMesh.uv[_PathingMapUV];
+					float2 uv = poiMesh.uv[_PathingUVSelect];
 					float4 dirs = float4(_PathSourceDirR, _PathSourceDirG, _PathSourceDirB, _PathSourceDirA);
 					path = lerp(uv.xxxx, uv.yyyy, dirs);
 				}
@@ -26850,7 +26852,6 @@ Shader ".poiyomi/Poiyomi Toon"
 						fillAlpha = step(path[i], currentTime);
 					}
 					
-					half loopAlpha = saturate(1.0 - min(abs(currentTime - path[i]), 1.0 - abs(currentTime - path[i])) * 2.0 * rcpPathWidth);
 					half pathAlpha = saturate(1.0 - abs(lerp(-pathWidth, 1.0 + pathWidth, currentTime) - path[i]) * rcpPathWidth);
 					half loopAlpha = saturate(1.0 - min(abs(currentTime - path[i]), 1.0 - abs(currentTime - path[i])) * rcpPathWidth);
 					
@@ -33389,6 +33390,7 @@ Shader ".poiyomi/Poiyomi Toon"
 			float4 _PathingColorMap_ST;
 			float4 _PathingColorMapPan;
 			float _PathingColorMapUV;
+			float _PathingUVSelect;
 			
 			float _PathingOverrideAlpha;
 			float _PathSource;
@@ -43418,7 +43420,7 @@ Shader ".poiyomi/Poiyomi Toon"
 				}
 				else
 				{
-					float2 uv = poiMesh.uv[_PathingMapUV];
+					float2 uv = poiMesh.uv[_PathingUVSelect];
 					float4 dirs = float4(_PathSourceDirR, _PathSourceDirG, _PathSourceDirB, _PathSourceDirA);
 					path = lerp(uv.xxxx, uv.yyyy, dirs);
 				}
@@ -43552,7 +43554,6 @@ Shader ".poiyomi/Poiyomi Toon"
 						fillAlpha = step(path[i], currentTime);
 					}
 					
-					half loopAlpha = saturate(1.0 - min(abs(currentTime - path[i]), 1.0 - abs(currentTime - path[i])) * 2.0 * rcpPathWidth);
 					half pathAlpha = saturate(1.0 - abs(lerp(-pathWidth, 1.0 + pathWidth, currentTime) - path[i]) * rcpPathWidth);
 					half loopAlpha = saturate(1.0 - min(abs(currentTime - path[i]), 1.0 - abs(currentTime - path[i])) * rcpPathWidth);
 					
