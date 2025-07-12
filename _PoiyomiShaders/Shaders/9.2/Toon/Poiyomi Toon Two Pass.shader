@@ -2,7 +2,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 {
 	Properties
 	{
-		[HideInInspector] shader_master_label ("<color=#E75898ff>Poiyomi 9.2.64</color>", Float) = 0
+		[HideInInspector] shader_master_label ("<color=#E75898ff>Poiyomi 9.2.65</color>", Float) = 0
 		[HideInInspector] shader_is_using_thry_editor ("", Float) = 0
 		[HideInInspector] shader_locale ("0db0b86376c3dca4b9a6828ef8615fe0", Float) = 0
 		[HideInInspector] footer_youtube ("{texture:{name:icon-youtube,height:16},action:{type:URL,data:https://www.youtube.com/poiyomi},hover:YOUTUBE}", Float) = 0
@@ -2419,18 +2419,20 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 		
 		_FlipbookColor ("Color & alpha--{reference_property:_FlipbookColorThemeIndex}", Color) = (1, 1, 1, 1)
 		[HideInInspector][ThryWideEnum(Off, 0, Theme Color 0, 1, Theme Color 1, 2, Theme Color 2, 3, Theme Color 3, 4, ColorChord 0, 5, ColorChord 1, 6, ColorChord 2, 7, ColorChord 3, 8, AL Theme 0, 9, AL Theme 1, 10, AL Theme 2, 11, AL Theme 3, 12)] _FlipbookColorThemeIndex ("", Int) = 0
-		[TextureArray]_FlipbookTexArray ("Texture Array--{reference_properties:[_FlipbookTexArrayPan, _FlipbookTexArrayUV, _FlipbookTiled, _FlipbookColorReplaces]}", 2DArray) = "" { }
+		[TextureArray]_FlipbookTexArray ("Texture Array--{reference_properties:[_FlipbookTexArrayPan, _FlipbookTexArrayUV, _FlipbookColorReplaces, _FlipbookIntensityControlsAlpha]}", 2DArray) = "" { }
 		[HideInInspector][Vector2]_FlipbookTexArrayPan ("Panning", Vector) = (0, 0, 0, 0)
 		[HideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7)] _FlipbookTexArrayUV ("UV", Int) = 0
-		[HideInInspector][ToggleUI]_FlipbookTiled ("Tiled", Float) = 0
 		[HideInInspector][ToggleUI]_FlipbookColorReplaces ("Flipbook as Color Mask", Float) = 0
+		[HideInInspector][ToggleUI]_FlipbookIntensityControlsAlpha ("Color Intensity To Alpha", Float) = 0
 		[sRGBWarning]_FlipbookMask ("Mask--{reference_properties:[_FlipbookMaskPan, _FlipbookMaskUV, _FlipbookMaskChannel, _FlipbookMaskGlobalMask]}", 2D) = "white" { }
 		[HideInInspector][Vector2]_FlipbookMaskPan ("Panning", Vector) = (0, 0, 0, 0)
 		[HideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7)] _FlipbookMaskUV ("UV", Int) = 0
 		[HideInInspector][Enum(R, 0, G, 1, B, 2, A, 3)]_FlipbookMaskChannel ("Channel", Float) = 0
 		[HideInInspector][ThryWideEnum(Off, 0, 1R, 1, 1G, 2, 1B, 3, 1A, 4, 2R, 5, 2G, 6, 2B, 7, 2A, 8, 3R, 9, 3G, 10, 3B, 11, 3A, 12, 4R, 13, 4G, 14, 4B, 15, 4A, 16)] _FlipbookMaskGlobalMask (" Global Mask--{reference_property:_FlipbookMaskGlobalMaskBlendType}", Int) = 0
 		[HideInInspector][ThryWideEnum(Add, 7, Subtract, 1, Multiply, 2, Divide, 3, Min, 4, Max, 5, Average, 6, Replace, 0)]_FlipbookMaskGlobalMaskBlendType ("Blending", Range(0, 1)) = 2
+		[ThryWideEnum(Off, 0, Tiled (Seamless), 1, Tiled (Sprite), 2)]_FlipbookTiled ("Tiling", Int) = 0
 		[ThryWideEnum(Replace, 0, Darken, 1, Multiply, 2, Lighten, 5, Screen, 6, Subtract, 7, Add, 8, Overlay, 9, Mixed, 20)]_FlipbookBlendType ("Blending", Range(0, 1)) = 0
+		[ThryWideEnum(Off, 0, Replace Alpha, 1, Replace Alpha And Color, 2)]_FlipbookAlphaControlsFinalAlpha ("Alpha/Color Override", Int) = 0
 		_FlipbookReplace ("Replace", Range(0, 1)) = 1
 		_FlipbookEmissionStrength ("Emission Strength", Range(0, 20)) = 0
 		_FlipbookFPS ("FPS", Float) = 30.0
@@ -2467,11 +2469,6 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 		_FlipbookHueShiftSpeed ("Shift Speed", Float) = 0
 		_FlipbookHueShift ("", Range(0, 1)) = 0
 		[HideInInspector] s_end_FlipbookHueShift ("Hue Shift", Float) = 0
-		
-		[HideInInspector] s_start_FlipBookAdvanced ("Advanced--{persistent_expand:true,default_expand:false}", Float) = 0
-		[ToggleUI]_FlipbookIntensityControlsAlpha ("Color Intensity To Alpha", Float) = 0
-		[ToggleUI]_FlipbookAlphaControlsFinalAlpha ("Overide Material Alpha", Float) = 0
-		[HideInInspector] s_end_FlipBookAdvanced ("", Float) = 0
 		
 		//Flipbook audio link
 		[HideInInspector] m_start_FlipbookAudioLink ("Audio Link ♫--{ condition_showS:_EnableAudioLink==1}", Float) = 0
@@ -2964,20 +2961,20 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 		[HideInInspector][Vector2]_PathingColorMapPan ("Panning", Vector) = (0, 0, 0, 0)
 		
 		[HideInInspector] s_start_PathTypes ("Path Types--{persistent_expand:true, default_expand:true}", Float) = 1
-		[ThryWideEnum(Fill, 0, Path, 1, Loop, 2, Dashed, 3, Off, 4)]_PathTypeR ("R Path Type", Float) = 0
-		[ThryWideEnum(Fill, 0, Path, 1, Loop, 2, Dashed, 3, Off, 4)]_PathTypeG ("G Path Type", Float) = 0
-		[ThryWideEnum(Fill, 0, Path, 1, Loop, 2, Dashed, 3, Off, 4)]_PathTypeB ("B Path Type", Float) = 0
-		[ThryWideEnum(Fill, 0, Path, 1, Loop, 2, Dashed, 3, Off, 4)]_PathTypeA ("A Path Type", Float) = 0
+		[ThryWideEnum(Fill, 0, Path, 1, Loop, 2, Dashed, 3, Off, 4)]_PathTypeR ("R Path Type", Float) = 2
+		[ThryWideEnum(Fill, 0, Path, 1, Loop, 2, Dashed, 3, Off, 4)]_PathTypeG ("G Path Type", Float) = 2
+		[ThryWideEnum(Fill, 0, Path, 1, Loop, 2, Dashed, 3, Off, 4)]_PathTypeB ("B Path Type", Float) = 2
+		[ThryWideEnum(Fill, 0, Path, 1, Loop, 2, Dashed, 3, Off, 4)]_PathTypeA ("A Path Type", Float) = 2
 		[HideInInspector] s_end_PathTypes ("Path Types", Float) = 0
 		
 		[HideInInspector] s_start_PathColors ("Path Colors--{persistent_expand:true, default_expand:true}", Float) = 1
-		[HDR]_PathColorR ("R Color--{reference_property:_PathColorRThemeIndex}", Color) = (1, 1, 1)
+		[HDR]_PathColorR ("R Color--{reference_property:_PathColorRThemeIndex}", Color) = (1, 1, 1, 1)
 		[HideInInspector][ThryWideEnum(Off, 0, Theme Color 0, 1, Theme Color 1, 2, Theme Color 2, 3, Theme Color 3, 4, ColorChord 0, 5, ColorChord 1, 6, ColorChord 2, 7, ColorChord 3, 8, AL Theme 0, 9, AL Theme 1, 10, AL Theme 2, 11, AL Theme 3, 12)] _PathColorRThemeIndex ("", Int) = 0
-		[HDR]_PathColorG ("G Color--{reference_property:_PathColorGThemeIndex}", Color) = (1, 1, 1)
+		[HDR]_PathColorG ("G Color--{reference_property:_PathColorGThemeIndex}", Color) = (1, 1, 1, 1)
 		[HideInInspector][ThryWideEnum(Off, 0, Theme Color 0, 1, Theme Color 1, 2, Theme Color 2, 3, Theme Color 3, 4, ColorChord 0, 5, ColorChord 1, 6, ColorChord 2, 7, ColorChord 3, 8, AL Theme 0, 9, AL Theme 1, 10, AL Theme 2, 11, AL Theme 3, 12)] _PathColorGThemeIndex ("", Int) = 0
-		[HDR]_PathColorB ("B Color--{reference_property:_PathColorBThemeIndex}", Color) = (1, 1, 1)
+		[HDR]_PathColorB ("B Color--{reference_property:_PathColorBThemeIndex}", Color) = (1, 1, 1, 1)
 		[HideInInspector][ThryWideEnum(Off, 0, Theme Color 0, 1, Theme Color 1, 2, Theme Color 2, 3, Theme Color 3, 4, ColorChord 0, 5, ColorChord 1, 6, ColorChord 2, 7, ColorChord 3, 8, AL Theme 0, 9, AL Theme 1, 10, AL Theme 2, 11, AL Theme 3, 12)] _PathColorBThemeIndex ("", Int) = 0
-		[HDR]_PathColorA ("A Color--{reference_property:_PathColorAThemeIndex}", Color) = (1, 1, 1)
+		[HDR]_PathColorA ("A Color--{reference_property:_PathColorAThemeIndex}", Color) = (1, 1, 1, 1)
 		[HideInInspector][ThryWideEnum(Off, 0, Theme Color 0, 1, Theme Color 1, 2, Theme Color 2, 3, Theme Color 3, 4, ColorChord 0, 5, ColorChord 1, 6, ColorChord 2, 7, ColorChord 3, 8, AL Theme 0, 9, AL Theme 1, 10, AL Theme 2, 11, AL Theme 3, 12)] _PathColorAThemeIndex ("", Int) = 0
 		[HideInInspector] s_end_PathColors ("Path Colors", Float) = 0
 		
@@ -2991,9 +2988,9 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 		[HideInInspector] s_start_PathAppearance ("Path Appearance--{persistent_expand:true, default_expand:true}", Float) = 1
 		[VectorLabel(R, G, B, A)]_PathEmissionStrength ("Emission Strength", Vector) = (0.0, 0.0, 0.0, 0.0)
 		[VectorLabel(R, G, B, A)]_PathSoftness ("Softness", Vector) = (1, 1, 1, 1)
-		[VectorLabel(R, G, B, A)]_PathSpeed ("Speed", Vector) = (1.0, 1.0, 1.0, 1.0)
+		[VectorLabel(R, G, B, A)]_PathSpeed ("Speed", Vector) = (0.1, 0.1, 0.1, 0.1)
 		[VectorLabel(R, G, B, A)]_PathWidth ("Length", Vector) = (0.03, 0.03, 0.03, 0.03)
-		[VectorLabel(R, G, B, A)]_PathGapLengths("Gap Length--{condition_showS:(_PathTypeR==3||_PathTypeG==3||_PathTypeB==3||_PathTypeA==3)}", Vector) = (0.1, 0.1, 0.1, 0.1)
+		[VectorLabel(R, G, B, A)]_PathGapLengths ("Gap Length--{condition_showS:(_PathTypeR==3||_PathTypeG==3||_PathTypeB==3||_PathTypeA==3)}", Vector) = (0.1, 0.1, 0.1, 0.1)
 		[HideInInspector] s_end_PathAppearance ("Path Appearance", Float) = 0
 		
 		[MultiSlider]_PathRemapR ("R Range--{condition_showS:_EnablePathRemapping==1}", Vector) = (0, 1, 0, 1)
@@ -3007,7 +3004,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 		[HideInInspector] s_end_TimingOptions ("Timing Options", Float) = 0
 		
 		[HideInInspector] s_start_PathRemapping ("Path Remapping--{reference_property:_EnablePathRemapping, persistent_expand:true, default_expand:false}", Float) = 1
-		[HideInInspector][ThryToggle] _EnablePathRemapping("Enable", Float) = 0
+		[HideInInspector][ThryToggle] _EnablePathRemapping ("Enable", Float) = 0
 		[MultiSlider]_PathRemapR ("R Range", Vector) = (0, 1, 0, 1)
 		[MultiSlider]_PathRemapG ("G Range", Vector) = (0, 1, 0, 1)
 		[MultiSlider]_PathRemapB ("B Range", Vector) = (0, 1, 0, 1)
@@ -24312,20 +24309,26 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				float cs = cos(theta);
 				float sn = sin(theta);
 				float2 spriteCenter = flipbookScaleOffset.zw + .5;
-				// 2d rotation
 				uv = float2((uv.x - spriteCenter.x) * cs - (uv.y - spriteCenter.y) * sn + spriteCenter.x, (uv.x - spriteCenter.x) * sn + (uv.y - spriteCenter.y) * cs + spriteCenter.y);
 				float4 sideOffset = float4( - (_FlipbookSideOffset.x), _FlipbookSideOffset.y, - (_FlipbookSideOffset.z), _FlipbookSideOffset.w);
 				float2 bottomLeft = float2(0, 0) + flipbookScaleOffset.xy / 2 + flipbookScaleOffset.zw + sideOffset.xz;
 				float2 topRight = float2(1, 1) - flipbookScaleOffset.xy / 2 + flipbookScaleOffset.zw + sideOffset.yw;
 				float2 newUV = remap(uv, bottomLeft, topRight, float2(0, 0), float2(1, 1));
 				
-				UNITY_BRANCH
+				float edgeAlpha = 1.0;
+				
 				if (_FlipbookTiled == 0)
 				{
-					if (max(newUV.x, newUV.y) > 1 || min(newUV.x, newUV.y) < 0)
-					{
-						return;
-					}
+					float2 pixelWidth = fwidth(newUV) + 1.0e-7;
+					float2 edgeFactor = (1.0 - abs(newUV * 2.0 - 1.0)) / pixelWidth;
+					edgeAlpha = saturate(min(edgeFactor.x, edgeFactor.y));
+				}
+				else if (_FlipbookTiled == 2)
+				{
+					float2 tiledUVs = frac(newUV);
+					float2 pixelWidth = fwidth(newUV) + 1.0e-7;
+					float2 edgeFactor = (1.0 - abs(tiledUVs * 2.0 - 1.0)) / pixelWidth;
+					edgeAlpha = saturate(min(edgeFactor.x, edgeFactor.y));
 				}
 				
 				float currentFrame = 0;
@@ -24370,7 +24373,11 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 					currentFrame %= totalFramesAL;
 				}
 				#endif
-				flipBookPixel = UNITY_SAMPLE_TEX2DARRAY(_FlipbookTexArray, float3(TRANSFORM_TEX(newUV, _FlipbookTexArray) + _Time.x * _FlipbookTexArrayPan, floor(currentFrame)));
+				
+				float2 finalUV = TRANSFORM_TEX(newUV, _FlipbookTexArray) + _Time.x * _FlipbookTexArrayPan;
+				float2 ddxUV = ddx(finalUV);
+				float2 ddyUV = ddy(finalUV);
+				flipBookPixel = _FlipbookTexArray.SampleGrad(sampler_FlipbookTexArray, float3(finalUV, floor(currentFrame)), ddxUV, ddyUV);
 				
 				UNITY_BRANCH
 				if (_FlipbookCrossfadeEnabled)
@@ -24380,9 +24387,11 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 					{
 						totalFramesCF += max(0, _FlipbookStartFrame);
 					}
-					float4 flipbookNextPixel = UNITY_SAMPLE_TEX2DARRAY(_FlipbookTexArray, float3(TRANSFORM_TEX(newUV, _FlipbookTexArray) + _Time.x * _FlipbookTexArrayPan, floor((currentFrame + 1) % totalFramesCF)));
+					float4 flipbookNextPixel = _FlipbookTexArray.SampleGrad(sampler_FlipbookTexArray, float3(finalUV, floor((currentFrame + 1) % totalFramesCF)), ddxUV, ddyUV);
 					flipBookPixel = lerp(flipBookPixel, flipbookNextPixel, smoothstep(_FlipbookCrossfadeRange.x, _FlipbookCrossfadeRange.y, frac(currentFrame)));
 				}
+				
+				flipBookPixel.a *= edgeAlpha;
 				
 				UNITY_BRANCH
 				if (_FlipbookIntensityControlsAlpha)
@@ -24414,7 +24423,17 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				
 				#if !defined(POI_PASS_OUTLINE) && !defined(UNITY_PASS_SHADOWCASTER)
 				
-				poiFragData.baseColor = lerp(poiFragData.baseColor.rgb, customBlend(poiFragData.baseColor.rgb, flipBookPixel.rgb, _FlipbookBlendType), flipBookPixel.a * _FlipbookColor.a * _FlipbookReplace * flipBookMask * flipbookAlpha);
+				float finalFlipbookAlpha = saturate(flipBookPixel.a * _FlipbookColor.a * _FlipbookReplace * flipBookMask * flipbookAlpha);
+				
+				if (_FlipbookAlphaControlsFinalAlpha == 2)
+				{
+					poiFragData.baseColor = flipBookPixel.rgb;
+					poiFragData.alpha = finalFlipbookAlpha;
+				}
+				else
+				{
+					poiFragData.baseColor = lerp(poiFragData.baseColor.rgb, customBlend(poiFragData.baseColor.rgb, flipBookPixel.rgb, _FlipbookBlendType), finalFlipbookAlpha);
+				}
 				
 				float flipbookEmissionStrength = _FlipbookEmissionStrength;
 				#ifdef POI_AUDIOLINK
@@ -24423,13 +24442,12 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 					flipbookEmissionStrength += max(lerp(_AudioLinkFlipbookEmission.x, _AudioLinkFlipbookEmission.y, poiMods.audioLink[_AudioLinkFlipbookEmissionBand]), 0);
 				}
 				#endif
-				
-				poiFragData.emission += lerp(0, flipBookPixel.rgb * flipbookEmissionStrength, flipBookPixel.a * _FlipbookColor.a * flipBookMask * flipbookAlpha);
+				poiFragData.emission += lerp(0, flipBookPixel.rgb * flipbookEmissionStrength, finalFlipbookAlpha);
 				
 				#endif
 				
 				UNITY_BRANCH
-				if (_FlipbookAlphaControlsFinalAlpha)
+				if (_FlipbookAlphaControlsFinalAlpha > 0 && _FlipbookAlphaControlsFinalAlpha != 2)
 				{
 					poiFragData.alpha = lerp(poiFragData.alpha, flipBookPixel.a * _FlipbookColor.a, flipBookMask);
 				}
@@ -26775,6 +26793,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			#ifdef POI_PATHING
 			void applyPathing(inout PoiFragData poiFragData, in PoiMesh poiMesh, in PoiMods poiMods)
 			{
+				// Sample path source: texture-based gradient or UV-derived
 				float4 pathSourceOrMask = float4(1, 1, 1, 1);
 				#if defined(PROP_PATHINGMAP) || !defined(OPTIMIZER_ENABLED)
 				if (_PathPointSampling)
@@ -26787,6 +26806,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				}
 				#endif
 				
+				// Determine path values based on source type
 				float4 path;
 				if (_PathSource == 0)
 				{
@@ -26799,36 +26819,40 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 					path = lerp(uv.xxxx, uv.yyyy, dirs);
 				}
 				
+				// Merge channels if selected for texture source
 				if (_PathSource == 0 && _PathGradientType == 1)
 				{
 					path = dot(path, 0.25);
 				}
 				
-				// MODIFICATION START
-				float4 pathRemapMask = 1.0; // Initialize mask to 1 (no effect)
+				// Apply remapping if enabled: mask outside range and normalize inside
+				float4 pathRemapMask = 1.0; // Default to full effect
 				if (_EnablePathRemapping)
 				{
 					float4 remapStarts = float4(_PathRemapR.x, _PathRemapG.x, _PathRemapB.x, _PathRemapA.x);
 					float4 remapEnds = float4(_PathRemapR.y, _PathRemapG.y, _PathRemapB.y, _PathRemapA.y);
 					
-					// Create a mask that is 1 ONLY inside the user-defined range from the original path values.
+					// Mask: 1 only within remap range
 					pathRemapMask.r = step(remapStarts.r, path.r) * (1.0 - step(remapEnds.r, path.r));
 					pathRemapMask.g = step(remapStarts.g, path.g) * (1.0 - step(remapEnds.g, path.g));
 					pathRemapMask.b = step(remapStarts.b, path.b) * (1.0 - step(remapEnds.b, path.b));
 					pathRemapMask.a = step(remapStarts.a, path.a) * (1.0 - step(remapEnds.a, path.a));
 					
-					// Now, remap the path value for the animation logic.
+					// Remap values within range to 0-1
 					path = saturate((path - remapStarts) / (remapEnds - remapStarts + 1e-6));
 				}
-				// MODIFICATION END
 				
+				// Sample color map for additional tinting/masking
 				#if defined(PROP_PATHINGCOLORMAP) || !defined(OPTIMIZER_ENABLED)
 				float4 pathColorMap = POI2D_SAMPLER_PAN(_PathingColorMap, _MainTex, poiUV(poiMesh.uv[_PathingColorMapUV], _PathingColorMap_ST), _PathingColorMapPan);
 				#else
 				float4 pathColorMap = float4(1, 1, 1, 1);
 				#endif
 				
-				float4 PathColor[4] = {_PathColorR, _PathColorG, _PathColorB, _PathColorA};
+				// Array of per-channel colors (RGBA includes alpha for opacity control)
+				float4 PathColor[4] = {
+					_PathColorR, _PathColorG, _PathColorB, _PathColorA
+				};
 				float4 pathTypes = float4(_PathTypeR, _PathTypeG, _PathTypeB, _PathTypeA);
 				float4 finalPathAlpha = 0;
 				float4 pathAudioLinkEmissionAdd = 0;
@@ -26895,6 +26919,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				[unroll]
 				for (int i = 0; i < 4; i++)
 				{
+					// Calculate time with potential AudioLink offsets
 					#ifdef POI_AUDIOLINK
 					float timeOffset = _PathALTimeOffset || _PathALChrono ? alTimeOffsets[i] : 0;
 					#else
@@ -26902,12 +26927,14 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 					#endif
 					float currentTime = frac((_PathTime[i] == -999.0f ? _Time.y * _PathSpeed[i] : _PathTime[i]) + _PathOffset[i] + timeOffset);
 					
+					// Segment time if enabled
 					float pathSegments = abs(_PathSegments[i]);
 					if (pathSegments > 0)
 					{
 						currentTime = (ceil(currentTime * pathSegments) - 0.5) * rcp(pathSegments);
 					}
 					
+					// Compute path width with potential AudioLink adjustment
 					#ifdef POI_AUDIOLINK
 					half pathWidth = _PathWidth[i] * 0.5 + (_PathALWidthOffset ? alWidthOffsets[i] : 0);
 					#else
@@ -26916,6 +26943,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 					half rcpPathWidth = rcp(pathWidth + 1e-6);
 					half softness = max(_PathSoftness[i], 0);
 					
+					// Compute alpha for Fill type
 					half fillAlpha;
 					if (softness > 1e-5)
 					{
@@ -26928,9 +26956,11 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 						fillAlpha = step(path[i], currentTime);
 					}
 					
+					// Compute alpha for Path and Loop types
 					half pathAlpha = saturate(1.0 - abs(lerp(-pathWidth, 1.0 + pathWidth, currentTime) - path[i]) * rcpPathWidth);
 					half loopAlpha = saturate(1.0 - min(abs(currentTime - path[i]), 1.0 - abs(currentTime - path[i])) * rcpPathWidth);
 					
+					// Compute alpha for Dashed type
 					half dashAlpha = 0;
 					float totalDashLength = _PathWidth[i] + _PathGapLengths[i];
 					if (totalDashLength > 1e-6)
@@ -26946,15 +26976,17 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 						dashAlpha = rise * fall;
 					}
 					
+					// Select alpha based on path type
 					half currentAlpha = 0;
 					if (pathTypes[i] == 0)      currentAlpha = fillAlpha;
 					else if (pathTypes[i] == 1) currentAlpha = pathAlpha;
 					else if (pathTypes[i] == 2) currentAlpha = loopAlpha;
 					else if (pathTypes[i] == 3) currentAlpha = dashAlpha;
 					
-					// MODIFICATION: Apply the remap mask here.
+					// Apply remap mask
 					currentAlpha *= pathRemapMask[i];
 					
+					// Avoid zero-path artifacts
 					currentAlpha *= step(1e-6, path[i]);
 					
 					#ifdef POI_AUDIOLINK
@@ -26965,8 +26997,12 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 							float4 historyToggles = float4(_PathALHistoryR, _PathALHistoryG, _PathALHistoryB, _PathALHistoryA);
 							if (historyToggles[i] > 0)
 							{
-								float historyBands[4] = {_PathALHistoryBandR, _PathALHistoryBandG, _PathALHistoryBandB, _PathALHistoryBandA};
-								float2 historyRanges[4] = {_PathALHistoryRangeR.xy, _PathALHistoryRangeG.xy, _PathALHistoryRangeB.xy, _PathALHistoryRangeA.xy};
+								float historyBands[4] = {
+									_PathALHistoryBandR, _PathALHistoryBandG, _PathALHistoryBandB, _PathALHistoryBandA
+								};
+								float2 historyRanges[4] = {
+									_PathALHistoryRangeR.xy, _PathALHistoryRangeG.xy, _PathALHistoryRangeB.xy, _PathALHistoryRangeA.xy
+								};
 								float historyUV = lerp(historyRanges[i].x, historyRanges[i].y, path[i]);
 								if (pathSegments > 0)
 								{
@@ -26979,10 +27015,15 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 						
 						if (_PathALAutoCorrelator)
 						{
-							float acTypes[4] = {_PathALAutoCorrelatorR, _PathALAutoCorrelatorG, _PathALAutoCorrelatorB, _PathALAutoCorrelatorA};
-							if (acTypes[i] > 0 && path[0] > 0)
+							float acTypes[4] = {
+								_PathALAutoCorrelatorR, _PathALAutoCorrelatorG, _PathALAutoCorrelatorB, _PathALAutoCorrelatorA
+							};
+							if (acTypes[i] > 0 && path[i] > 0)  // <-- Fixed: Changed path[0] to path[i]
+							
 							{
-								float2 acRanges[4] = {_PathALAutoCorrelatorRangeR.xy, _PathALAutoCorrelatorRangeG.xy, _PathALAutoCorrelatorRangeB.xy, _PathALAutoCorrelatorRangeA.xy};
+								float2 acRanges[4] = {
+									_PathALAutoCorrelatorRangeR.xy, _PathALAutoCorrelatorRangeG.xy, _PathALAutoCorrelatorRangeB.xy, _PathALAutoCorrelatorRangeA.xy
+								};
 								float acUV = lerp(acRanges[i].x, acRanges[i].y, path[i]);
 								if (acTypes[i] == 2) acUV = abs(1.0 - acUV * 2.0);
 								if (pathSegments > 0)
@@ -26990,14 +27031,15 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 									acUV = (ceil(acUV * pathSegments) - 0.5) * rcp(pathSegments);
 								}
 								float acValue = AudioLinkLerp(ALPASS_AUTOCORRELATOR + float2(acUV * AUDIOLINK_WIDTH, 0))[0];
-								//acValue = saturate(abs(acValue) * rcp(AudioLinkLerp(ALPASS_AUTOCORRELATOR)));
-								//acValue *= smoothstep(0.01, 0.2, AudioLinkData(ALPASS_FILTEREDVU_INTENSITY + uint2(0, 0)));
+								//acValue = saturate(abs(acValue) * rcp(AudioLinkLerp(ALPASS_AUTOCORRELATOR)));  // Optional: Uncomment if you want this normalization
+								//acValue *= smoothstep(0.01, 0.2, AudioLinkData(ALPASS_FILTEREDVU_INTENSITY + uint2(0, 0)));  // Optional: Uncomment for VU intensity gating
 								currentAlpha = lerp(currentAlpha * acValue, acValue, _PathALAutoCorrelatorMode);
 							}
 						}
 					}
 					#endif
 					
+					// Adjust alpha for Dash/Fill types vs. others
 					if (pathTypes[i] == 3 || pathTypes[i] == 0)
 					{
 						finalPathAlpha[i] = currentAlpha;
@@ -27008,11 +27050,13 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 					}
 				}
 				
+				// Multiply by source mask if UV-based
 				if (_PathSource == 1)
 				{
 					finalPathAlpha *= pathSourceOrMask;
 				}
 				
+				// Compute emission (ignores color alpha)
 				float3 pathEmission = 0;
 				pathEmission += finalPathAlpha.r * poiThemeColor(poiMods, PathColor[0].rgb, _PathColorRThemeIndex) * (_PathEmissionStrength.r + pathAudioLinkEmissionAdd.r);
 				pathEmission += finalPathAlpha.g * poiThemeColor(poiMods, PathColor[1].rgb, _PathColorGThemeIndex) * (_PathEmissionStrength.g + pathAudioLinkEmissionAdd.g);
@@ -27023,31 +27067,34 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				float3 finalPathColor = 0;
 				float finalAlpha = 0;
 				
+				// Apply themed color and scale opacity alphas by color alpha (affects color contribution and blending, but not emission)
 				float3 colorR = poiThemeColor(poiMods, PathColor[0].rgb, _PathColorRThemeIndex);
-				float alphaR = finalPathAlpha.r;
+				float alphaR = finalPathAlpha.r * PathColor[0].a;
 				finalPathColor = colorR * alphaR;
 				finalAlpha = alphaR;
 				
 				float3 colorG = poiThemeColor(poiMods, PathColor[1].rgb, _PathColorGThemeIndex);
-				float alphaG = finalPathAlpha.g;
+				float alphaG = finalPathAlpha.g * PathColor[1].a;
 				finalPathColor = (colorG * alphaG) + finalPathColor * (1.0 - alphaG);
 				finalAlpha = alphaG + finalAlpha * (1.0 - alphaG);
 				
 				float3 colorB = poiThemeColor(poiMods, PathColor[2].rgb, _PathColorBThemeIndex);
-				float alphaB = finalPathAlpha.b;
+				float alphaB = finalPathAlpha.b * PathColor[2].a;
 				finalPathColor = (colorB * alphaB) + finalPathColor * (1.0 - alphaB);
 				finalAlpha = alphaB + finalAlpha * (1.0 - alphaB);
 				
 				float3 colorA = poiThemeColor(poiMods, PathColor[3].rgb, _PathColorAThemeIndex);
-				float alphaA = finalPathAlpha.a;
+				float alphaA = finalPathAlpha.a * PathColor[3].a;
 				finalPathColor = (colorA * alphaA) + finalPathColor * (1.0 - alphaA);
 				finalAlpha = alphaA + finalAlpha * (1.0 - alphaA);
 				
+				// Apply color map to final color and alpha
 				finalPathColor *= pathColorMap.rgb;
 				finalAlpha *= pathColorMap.a;
 				finalPathColor *= pathColorMap.a;
 				pathEmission *= pathColorMap.rgb * pathColorMap.a;
 				
+				// Blend path color onto base albedo based on mode
 				if (_PathSurfaceBlendMode == 0)
 				{
 					albedo = albedo * (1.0 - finalAlpha) + finalPathColor;
@@ -27061,6 +27108,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 					albedo *= (finalPathColor + (1.0 - finalAlpha));
 				}
 				
+				// Override alpha if enabled
 				poiFragData.alpha = lerp(poiFragData.alpha, finalAlpha, _PathingOverrideAlpha);
 				poiFragData.baseColor = albedo;
 				poiFragData.emission += pathEmission;
@@ -41766,20 +41814,26 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				float cs = cos(theta);
 				float sn = sin(theta);
 				float2 spriteCenter = flipbookScaleOffset.zw + .5;
-				// 2d rotation
 				uv = float2((uv.x - spriteCenter.x) * cs - (uv.y - spriteCenter.y) * sn + spriteCenter.x, (uv.x - spriteCenter.x) * sn + (uv.y - spriteCenter.y) * cs + spriteCenter.y);
 				float4 sideOffset = float4( - (_FlipbookSideOffset.x), _FlipbookSideOffset.y, - (_FlipbookSideOffset.z), _FlipbookSideOffset.w);
 				float2 bottomLeft = float2(0, 0) + flipbookScaleOffset.xy / 2 + flipbookScaleOffset.zw + sideOffset.xz;
 				float2 topRight = float2(1, 1) - flipbookScaleOffset.xy / 2 + flipbookScaleOffset.zw + sideOffset.yw;
 				float2 newUV = remap(uv, bottomLeft, topRight, float2(0, 0), float2(1, 1));
 				
-				UNITY_BRANCH
+				float edgeAlpha = 1.0;
+				
 				if (_FlipbookTiled == 0)
 				{
-					if (max(newUV.x, newUV.y) > 1 || min(newUV.x, newUV.y) < 0)
-					{
-						return;
-					}
+					float2 pixelWidth = fwidth(newUV) + 1.0e-7;
+					float2 edgeFactor = (1.0 - abs(newUV * 2.0 - 1.0)) / pixelWidth;
+					edgeAlpha = saturate(min(edgeFactor.x, edgeFactor.y));
+				}
+				else if (_FlipbookTiled == 2)
+				{
+					float2 tiledUVs = frac(newUV);
+					float2 pixelWidth = fwidth(newUV) + 1.0e-7;
+					float2 edgeFactor = (1.0 - abs(tiledUVs * 2.0 - 1.0)) / pixelWidth;
+					edgeAlpha = saturate(min(edgeFactor.x, edgeFactor.y));
 				}
 				
 				float currentFrame = 0;
@@ -41824,7 +41878,11 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 					currentFrame %= totalFramesAL;
 				}
 				#endif
-				flipBookPixel = UNITY_SAMPLE_TEX2DARRAY(_FlipbookTexArray, float3(TRANSFORM_TEX(newUV, _FlipbookTexArray) + _Time.x * _FlipbookTexArrayPan, floor(currentFrame)));
+				
+				float2 finalUV = TRANSFORM_TEX(newUV, _FlipbookTexArray) + _Time.x * _FlipbookTexArrayPan;
+				float2 ddxUV = ddx(finalUV);
+				float2 ddyUV = ddy(finalUV);
+				flipBookPixel = _FlipbookTexArray.SampleGrad(sampler_FlipbookTexArray, float3(finalUV, floor(currentFrame)), ddxUV, ddyUV);
 				
 				UNITY_BRANCH
 				if (_FlipbookCrossfadeEnabled)
@@ -41834,9 +41892,11 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 					{
 						totalFramesCF += max(0, _FlipbookStartFrame);
 					}
-					float4 flipbookNextPixel = UNITY_SAMPLE_TEX2DARRAY(_FlipbookTexArray, float3(TRANSFORM_TEX(newUV, _FlipbookTexArray) + _Time.x * _FlipbookTexArrayPan, floor((currentFrame + 1) % totalFramesCF)));
+					float4 flipbookNextPixel = _FlipbookTexArray.SampleGrad(sampler_FlipbookTexArray, float3(finalUV, floor((currentFrame + 1) % totalFramesCF)), ddxUV, ddyUV);
 					flipBookPixel = lerp(flipBookPixel, flipbookNextPixel, smoothstep(_FlipbookCrossfadeRange.x, _FlipbookCrossfadeRange.y, frac(currentFrame)));
 				}
+				
+				flipBookPixel.a *= edgeAlpha;
 				
 				UNITY_BRANCH
 				if (_FlipbookIntensityControlsAlpha)
@@ -41868,7 +41928,17 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				
 				#if !defined(POI_PASS_OUTLINE) && !defined(UNITY_PASS_SHADOWCASTER)
 				
-				poiFragData.baseColor = lerp(poiFragData.baseColor.rgb, customBlend(poiFragData.baseColor.rgb, flipBookPixel.rgb, _FlipbookBlendType), flipBookPixel.a * _FlipbookColor.a * _FlipbookReplace * flipBookMask * flipbookAlpha);
+				float finalFlipbookAlpha = saturate(flipBookPixel.a * _FlipbookColor.a * _FlipbookReplace * flipBookMask * flipbookAlpha);
+				
+				if (_FlipbookAlphaControlsFinalAlpha == 2)
+				{
+					poiFragData.baseColor = flipBookPixel.rgb;
+					poiFragData.alpha = finalFlipbookAlpha;
+				}
+				else
+				{
+					poiFragData.baseColor = lerp(poiFragData.baseColor.rgb, customBlend(poiFragData.baseColor.rgb, flipBookPixel.rgb, _FlipbookBlendType), finalFlipbookAlpha);
+				}
 				
 				float flipbookEmissionStrength = _FlipbookEmissionStrength;
 				#ifdef POI_AUDIOLINK
@@ -41877,13 +41947,12 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 					flipbookEmissionStrength += max(lerp(_AudioLinkFlipbookEmission.x, _AudioLinkFlipbookEmission.y, poiMods.audioLink[_AudioLinkFlipbookEmissionBand]), 0);
 				}
 				#endif
-				
-				poiFragData.emission += lerp(0, flipBookPixel.rgb * flipbookEmissionStrength, flipBookPixel.a * _FlipbookColor.a * flipBookMask * flipbookAlpha);
+				poiFragData.emission += lerp(0, flipBookPixel.rgb * flipbookEmissionStrength, finalFlipbookAlpha);
 				
 				#endif
 				
 				UNITY_BRANCH
-				if (_FlipbookAlphaControlsFinalAlpha)
+				if (_FlipbookAlphaControlsFinalAlpha > 0 && _FlipbookAlphaControlsFinalAlpha != 2)
 				{
 					poiFragData.alpha = lerp(poiFragData.alpha, flipBookPixel.a * _FlipbookColor.a, flipBookMask);
 				}
@@ -43478,6 +43547,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			#ifdef POI_PATHING
 			void applyPathing(inout PoiFragData poiFragData, in PoiMesh poiMesh, in PoiMods poiMods)
 			{
+				// Sample path source: texture-based gradient or UV-derived
 				float4 pathSourceOrMask = float4(1, 1, 1, 1);
 				#if defined(PROP_PATHINGMAP) || !defined(OPTIMIZER_ENABLED)
 				if (_PathPointSampling)
@@ -43490,6 +43560,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				}
 				#endif
 				
+				// Determine path values based on source type
 				float4 path;
 				if (_PathSource == 0)
 				{
@@ -43502,36 +43573,40 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 					path = lerp(uv.xxxx, uv.yyyy, dirs);
 				}
 				
+				// Merge channels if selected for texture source
 				if (_PathSource == 0 && _PathGradientType == 1)
 				{
 					path = dot(path, 0.25);
 				}
 				
-				// MODIFICATION START
-				float4 pathRemapMask = 1.0; // Initialize mask to 1 (no effect)
+				// Apply remapping if enabled: mask outside range and normalize inside
+				float4 pathRemapMask = 1.0; // Default to full effect
 				if (_EnablePathRemapping)
 				{
 					float4 remapStarts = float4(_PathRemapR.x, _PathRemapG.x, _PathRemapB.x, _PathRemapA.x);
 					float4 remapEnds = float4(_PathRemapR.y, _PathRemapG.y, _PathRemapB.y, _PathRemapA.y);
 					
-					// Create a mask that is 1 ONLY inside the user-defined range from the original path values.
+					// Mask: 1 only within remap range
 					pathRemapMask.r = step(remapStarts.r, path.r) * (1.0 - step(remapEnds.r, path.r));
 					pathRemapMask.g = step(remapStarts.g, path.g) * (1.0 - step(remapEnds.g, path.g));
 					pathRemapMask.b = step(remapStarts.b, path.b) * (1.0 - step(remapEnds.b, path.b));
 					pathRemapMask.a = step(remapStarts.a, path.a) * (1.0 - step(remapEnds.a, path.a));
 					
-					// Now, remap the path value for the animation logic.
+					// Remap values within range to 0-1
 					path = saturate((path - remapStarts) / (remapEnds - remapStarts + 1e-6));
 				}
-				// MODIFICATION END
 				
+				// Sample color map for additional tinting/masking
 				#if defined(PROP_PATHINGCOLORMAP) || !defined(OPTIMIZER_ENABLED)
 				float4 pathColorMap = POI2D_SAMPLER_PAN(_PathingColorMap, _MainTex, poiUV(poiMesh.uv[_PathingColorMapUV], _PathingColorMap_ST), _PathingColorMapPan);
 				#else
 				float4 pathColorMap = float4(1, 1, 1, 1);
 				#endif
 				
-				float4 PathColor[4] = {_PathColorR, _PathColorG, _PathColorB, _PathColorA};
+				// Array of per-channel colors (RGBA includes alpha for opacity control)
+				float4 PathColor[4] = {
+					_PathColorR, _PathColorG, _PathColorB, _PathColorA
+				};
 				float4 pathTypes = float4(_PathTypeR, _PathTypeG, _PathTypeB, _PathTypeA);
 				float4 finalPathAlpha = 0;
 				float4 pathAudioLinkEmissionAdd = 0;
@@ -43598,6 +43673,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				[unroll]
 				for (int i = 0; i < 4; i++)
 				{
+					// Calculate time with potential AudioLink offsets
 					#ifdef POI_AUDIOLINK
 					float timeOffset = _PathALTimeOffset || _PathALChrono ? alTimeOffsets[i] : 0;
 					#else
@@ -43605,12 +43681,14 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 					#endif
 					float currentTime = frac((_PathTime[i] == -999.0f ? _Time.y * _PathSpeed[i] : _PathTime[i]) + _PathOffset[i] + timeOffset);
 					
+					// Segment time if enabled
 					float pathSegments = abs(_PathSegments[i]);
 					if (pathSegments > 0)
 					{
 						currentTime = (ceil(currentTime * pathSegments) - 0.5) * rcp(pathSegments);
 					}
 					
+					// Compute path width with potential AudioLink adjustment
 					#ifdef POI_AUDIOLINK
 					half pathWidth = _PathWidth[i] * 0.5 + (_PathALWidthOffset ? alWidthOffsets[i] : 0);
 					#else
@@ -43619,6 +43697,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 					half rcpPathWidth = rcp(pathWidth + 1e-6);
 					half softness = max(_PathSoftness[i], 0);
 					
+					// Compute alpha for Fill type
 					half fillAlpha;
 					if (softness > 1e-5)
 					{
@@ -43631,9 +43710,11 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 						fillAlpha = step(path[i], currentTime);
 					}
 					
+					// Compute alpha for Path and Loop types
 					half pathAlpha = saturate(1.0 - abs(lerp(-pathWidth, 1.0 + pathWidth, currentTime) - path[i]) * rcpPathWidth);
 					half loopAlpha = saturate(1.0 - min(abs(currentTime - path[i]), 1.0 - abs(currentTime - path[i])) * rcpPathWidth);
 					
+					// Compute alpha for Dashed type
 					half dashAlpha = 0;
 					float totalDashLength = _PathWidth[i] + _PathGapLengths[i];
 					if (totalDashLength > 1e-6)
@@ -43649,15 +43730,17 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 						dashAlpha = rise * fall;
 					}
 					
+					// Select alpha based on path type
 					half currentAlpha = 0;
 					if (pathTypes[i] == 0)      currentAlpha = fillAlpha;
 					else if (pathTypes[i] == 1) currentAlpha = pathAlpha;
 					else if (pathTypes[i] == 2) currentAlpha = loopAlpha;
 					else if (pathTypes[i] == 3) currentAlpha = dashAlpha;
 					
-					// MODIFICATION: Apply the remap mask here.
+					// Apply remap mask
 					currentAlpha *= pathRemapMask[i];
 					
+					// Avoid zero-path artifacts
 					currentAlpha *= step(1e-6, path[i]);
 					
 					#ifdef POI_AUDIOLINK
@@ -43668,8 +43751,12 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 							float4 historyToggles = float4(_PathALHistoryR, _PathALHistoryG, _PathALHistoryB, _PathALHistoryA);
 							if (historyToggles[i] > 0)
 							{
-								float historyBands[4] = {_PathALHistoryBandR, _PathALHistoryBandG, _PathALHistoryBandB, _PathALHistoryBandA};
-								float2 historyRanges[4] = {_PathALHistoryRangeR.xy, _PathALHistoryRangeG.xy, _PathALHistoryRangeB.xy, _PathALHistoryRangeA.xy};
+								float historyBands[4] = {
+									_PathALHistoryBandR, _PathALHistoryBandG, _PathALHistoryBandB, _PathALHistoryBandA
+								};
+								float2 historyRanges[4] = {
+									_PathALHistoryRangeR.xy, _PathALHistoryRangeG.xy, _PathALHistoryRangeB.xy, _PathALHistoryRangeA.xy
+								};
 								float historyUV = lerp(historyRanges[i].x, historyRanges[i].y, path[i]);
 								if (pathSegments > 0)
 								{
@@ -43682,10 +43769,15 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 						
 						if (_PathALAutoCorrelator)
 						{
-							float acTypes[4] = {_PathALAutoCorrelatorR, _PathALAutoCorrelatorG, _PathALAutoCorrelatorB, _PathALAutoCorrelatorA};
-							if (acTypes[i] > 0 && path[0] > 0)
+							float acTypes[4] = {
+								_PathALAutoCorrelatorR, _PathALAutoCorrelatorG, _PathALAutoCorrelatorB, _PathALAutoCorrelatorA
+							};
+							if (acTypes[i] > 0 && path[i] > 0)  // <-- Fixed: Changed path[0] to path[i]
+							
 							{
-								float2 acRanges[4] = {_PathALAutoCorrelatorRangeR.xy, _PathALAutoCorrelatorRangeG.xy, _PathALAutoCorrelatorRangeB.xy, _PathALAutoCorrelatorRangeA.xy};
+								float2 acRanges[4] = {
+									_PathALAutoCorrelatorRangeR.xy, _PathALAutoCorrelatorRangeG.xy, _PathALAutoCorrelatorRangeB.xy, _PathALAutoCorrelatorRangeA.xy
+								};
 								float acUV = lerp(acRanges[i].x, acRanges[i].y, path[i]);
 								if (acTypes[i] == 2) acUV = abs(1.0 - acUV * 2.0);
 								if (pathSegments > 0)
@@ -43693,14 +43785,15 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 									acUV = (ceil(acUV * pathSegments) - 0.5) * rcp(pathSegments);
 								}
 								float acValue = AudioLinkLerp(ALPASS_AUTOCORRELATOR + float2(acUV * AUDIOLINK_WIDTH, 0))[0];
-								//acValue = saturate(abs(acValue) * rcp(AudioLinkLerp(ALPASS_AUTOCORRELATOR)));
-								//acValue *= smoothstep(0.01, 0.2, AudioLinkData(ALPASS_FILTEREDVU_INTENSITY + uint2(0, 0)));
+								//acValue = saturate(abs(acValue) * rcp(AudioLinkLerp(ALPASS_AUTOCORRELATOR)));  // Optional: Uncomment if you want this normalization
+								//acValue *= smoothstep(0.01, 0.2, AudioLinkData(ALPASS_FILTEREDVU_INTENSITY + uint2(0, 0)));  // Optional: Uncomment for VU intensity gating
 								currentAlpha = lerp(currentAlpha * acValue, acValue, _PathALAutoCorrelatorMode);
 							}
 						}
 					}
 					#endif
 					
+					// Adjust alpha for Dash/Fill types vs. others
 					if (pathTypes[i] == 3 || pathTypes[i] == 0)
 					{
 						finalPathAlpha[i] = currentAlpha;
@@ -43711,11 +43804,13 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 					}
 				}
 				
+				// Multiply by source mask if UV-based
 				if (_PathSource == 1)
 				{
 					finalPathAlpha *= pathSourceOrMask;
 				}
 				
+				// Compute emission (ignores color alpha)
 				float3 pathEmission = 0;
 				pathEmission += finalPathAlpha.r * poiThemeColor(poiMods, PathColor[0].rgb, _PathColorRThemeIndex) * (_PathEmissionStrength.r + pathAudioLinkEmissionAdd.r);
 				pathEmission += finalPathAlpha.g * poiThemeColor(poiMods, PathColor[1].rgb, _PathColorGThemeIndex) * (_PathEmissionStrength.g + pathAudioLinkEmissionAdd.g);
@@ -43726,31 +43821,34 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				float3 finalPathColor = 0;
 				float finalAlpha = 0;
 				
+				// Apply themed color and scale opacity alphas by color alpha (affects color contribution and blending, but not emission)
 				float3 colorR = poiThemeColor(poiMods, PathColor[0].rgb, _PathColorRThemeIndex);
-				float alphaR = finalPathAlpha.r;
+				float alphaR = finalPathAlpha.r * PathColor[0].a;
 				finalPathColor = colorR * alphaR;
 				finalAlpha = alphaR;
 				
 				float3 colorG = poiThemeColor(poiMods, PathColor[1].rgb, _PathColorGThemeIndex);
-				float alphaG = finalPathAlpha.g;
+				float alphaG = finalPathAlpha.g * PathColor[1].a;
 				finalPathColor = (colorG * alphaG) + finalPathColor * (1.0 - alphaG);
 				finalAlpha = alphaG + finalAlpha * (1.0 - alphaG);
 				
 				float3 colorB = poiThemeColor(poiMods, PathColor[2].rgb, _PathColorBThemeIndex);
-				float alphaB = finalPathAlpha.b;
+				float alphaB = finalPathAlpha.b * PathColor[2].a;
 				finalPathColor = (colorB * alphaB) + finalPathColor * (1.0 - alphaB);
 				finalAlpha = alphaB + finalAlpha * (1.0 - alphaB);
 				
 				float3 colorA = poiThemeColor(poiMods, PathColor[3].rgb, _PathColorAThemeIndex);
-				float alphaA = finalPathAlpha.a;
+				float alphaA = finalPathAlpha.a * PathColor[3].a;
 				finalPathColor = (colorA * alphaA) + finalPathColor * (1.0 - alphaA);
 				finalAlpha = alphaA + finalAlpha * (1.0 - alphaA);
 				
+				// Apply color map to final color and alpha
 				finalPathColor *= pathColorMap.rgb;
 				finalAlpha *= pathColorMap.a;
 				finalPathColor *= pathColorMap.a;
 				pathEmission *= pathColorMap.rgb * pathColorMap.a;
 				
+				// Blend path color onto base albedo based on mode
 				if (_PathSurfaceBlendMode == 0)
 				{
 					albedo = albedo * (1.0 - finalAlpha) + finalPathColor;
@@ -43764,6 +43862,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 					albedo *= (finalPathColor + (1.0 - finalAlpha));
 				}
 				
+				// Override alpha if enabled
 				poiFragData.alpha = lerp(poiFragData.alpha, finalAlpha, _PathingOverrideAlpha);
 				poiFragData.baseColor = albedo;
 				poiFragData.emission += pathEmission;
@@ -60927,20 +61026,26 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				float cs = cos(theta);
 				float sn = sin(theta);
 				float2 spriteCenter = flipbookScaleOffset.zw + .5;
-				// 2d rotation
 				uv = float2((uv.x - spriteCenter.x) * cs - (uv.y - spriteCenter.y) * sn + spriteCenter.x, (uv.x - spriteCenter.x) * sn + (uv.y - spriteCenter.y) * cs + spriteCenter.y);
 				float4 sideOffset = float4( - (_FlipbookSideOffset.x), _FlipbookSideOffset.y, - (_FlipbookSideOffset.z), _FlipbookSideOffset.w);
 				float2 bottomLeft = float2(0, 0) + flipbookScaleOffset.xy / 2 + flipbookScaleOffset.zw + sideOffset.xz;
 				float2 topRight = float2(1, 1) - flipbookScaleOffset.xy / 2 + flipbookScaleOffset.zw + sideOffset.yw;
 				float2 newUV = remap(uv, bottomLeft, topRight, float2(0, 0), float2(1, 1));
 				
-				UNITY_BRANCH
+				float edgeAlpha = 1.0;
+				
 				if (_FlipbookTiled == 0)
 				{
-					if (max(newUV.x, newUV.y) > 1 || min(newUV.x, newUV.y) < 0)
-					{
-						return;
-					}
+					float2 pixelWidth = fwidth(newUV) + 1.0e-7;
+					float2 edgeFactor = (1.0 - abs(newUV * 2.0 - 1.0)) / pixelWidth;
+					edgeAlpha = saturate(min(edgeFactor.x, edgeFactor.y));
+				}
+				else if (_FlipbookTiled == 2)
+				{
+					float2 tiledUVs = frac(newUV);
+					float2 pixelWidth = fwidth(newUV) + 1.0e-7;
+					float2 edgeFactor = (1.0 - abs(tiledUVs * 2.0 - 1.0)) / pixelWidth;
+					edgeAlpha = saturate(min(edgeFactor.x, edgeFactor.y));
 				}
 				
 				float currentFrame = 0;
@@ -60985,7 +61090,11 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 					currentFrame %= totalFramesAL;
 				}
 				#endif
-				flipBookPixel = UNITY_SAMPLE_TEX2DARRAY(_FlipbookTexArray, float3(TRANSFORM_TEX(newUV, _FlipbookTexArray) + _Time.x * _FlipbookTexArrayPan, floor(currentFrame)));
+				
+				float2 finalUV = TRANSFORM_TEX(newUV, _FlipbookTexArray) + _Time.x * _FlipbookTexArrayPan;
+				float2 ddxUV = ddx(finalUV);
+				float2 ddyUV = ddy(finalUV);
+				flipBookPixel = _FlipbookTexArray.SampleGrad(sampler_FlipbookTexArray, float3(finalUV, floor(currentFrame)), ddxUV, ddyUV);
 				
 				UNITY_BRANCH
 				if (_FlipbookCrossfadeEnabled)
@@ -60995,9 +61104,11 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 					{
 						totalFramesCF += max(0, _FlipbookStartFrame);
 					}
-					float4 flipbookNextPixel = UNITY_SAMPLE_TEX2DARRAY(_FlipbookTexArray, float3(TRANSFORM_TEX(newUV, _FlipbookTexArray) + _Time.x * _FlipbookTexArrayPan, floor((currentFrame + 1) % totalFramesCF)));
+					float4 flipbookNextPixel = _FlipbookTexArray.SampleGrad(sampler_FlipbookTexArray, float3(finalUV, floor((currentFrame + 1) % totalFramesCF)), ddxUV, ddyUV);
 					flipBookPixel = lerp(flipBookPixel, flipbookNextPixel, smoothstep(_FlipbookCrossfadeRange.x, _FlipbookCrossfadeRange.y, frac(currentFrame)));
 				}
+				
+				flipBookPixel.a *= edgeAlpha;
 				
 				UNITY_BRANCH
 				if (_FlipbookIntensityControlsAlpha)
@@ -61029,7 +61140,17 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				
 				#if !defined(POI_PASS_OUTLINE) && !defined(UNITY_PASS_SHADOWCASTER)
 				
-				poiFragData.baseColor = lerp(poiFragData.baseColor.rgb, customBlend(poiFragData.baseColor.rgb, flipBookPixel.rgb, _FlipbookBlendType), flipBookPixel.a * _FlipbookColor.a * _FlipbookReplace * flipBookMask * flipbookAlpha);
+				float finalFlipbookAlpha = saturate(flipBookPixel.a * _FlipbookColor.a * _FlipbookReplace * flipBookMask * flipbookAlpha);
+				
+				if (_FlipbookAlphaControlsFinalAlpha == 2)
+				{
+					poiFragData.baseColor = flipBookPixel.rgb;
+					poiFragData.alpha = finalFlipbookAlpha;
+				}
+				else
+				{
+					poiFragData.baseColor = lerp(poiFragData.baseColor.rgb, customBlend(poiFragData.baseColor.rgb, flipBookPixel.rgb, _FlipbookBlendType), finalFlipbookAlpha);
+				}
 				
 				float flipbookEmissionStrength = _FlipbookEmissionStrength;
 				#ifdef POI_AUDIOLINK
@@ -61038,13 +61159,12 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 					flipbookEmissionStrength += max(lerp(_AudioLinkFlipbookEmission.x, _AudioLinkFlipbookEmission.y, poiMods.audioLink[_AudioLinkFlipbookEmissionBand]), 0);
 				}
 				#endif
-				
-				poiFragData.emission += lerp(0, flipBookPixel.rgb * flipbookEmissionStrength, flipBookPixel.a * _FlipbookColor.a * flipBookMask * flipbookAlpha);
+				poiFragData.emission += lerp(0, flipBookPixel.rgb * flipbookEmissionStrength, finalFlipbookAlpha);
 				
 				#endif
 				
 				UNITY_BRANCH
-				if (_FlipbookAlphaControlsFinalAlpha)
+				if (_FlipbookAlphaControlsFinalAlpha > 0 && _FlipbookAlphaControlsFinalAlpha != 2)
 				{
 					poiFragData.alpha = lerp(poiFragData.alpha, flipBookPixel.a * _FlipbookColor.a, flipBookMask);
 				}
@@ -63390,6 +63510,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			#ifdef POI_PATHING
 			void applyPathing(inout PoiFragData poiFragData, in PoiMesh poiMesh, in PoiMods poiMods)
 			{
+				// Sample path source: texture-based gradient or UV-derived
 				float4 pathSourceOrMask = float4(1, 1, 1, 1);
 				#if defined(PROP_PATHINGMAP) || !defined(OPTIMIZER_ENABLED)
 				if (_PathPointSampling)
@@ -63402,6 +63523,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				}
 				#endif
 				
+				// Determine path values based on source type
 				float4 path;
 				if (_PathSource == 0)
 				{
@@ -63414,36 +63536,40 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 					path = lerp(uv.xxxx, uv.yyyy, dirs);
 				}
 				
+				// Merge channels if selected for texture source
 				if (_PathSource == 0 && _PathGradientType == 1)
 				{
 					path = dot(path, 0.25);
 				}
 				
-				// MODIFICATION START
-				float4 pathRemapMask = 1.0; // Initialize mask to 1 (no effect)
+				// Apply remapping if enabled: mask outside range and normalize inside
+				float4 pathRemapMask = 1.0; // Default to full effect
 				if (_EnablePathRemapping)
 				{
 					float4 remapStarts = float4(_PathRemapR.x, _PathRemapG.x, _PathRemapB.x, _PathRemapA.x);
 					float4 remapEnds = float4(_PathRemapR.y, _PathRemapG.y, _PathRemapB.y, _PathRemapA.y);
 					
-					// Create a mask that is 1 ONLY inside the user-defined range from the original path values.
+					// Mask: 1 only within remap range
 					pathRemapMask.r = step(remapStarts.r, path.r) * (1.0 - step(remapEnds.r, path.r));
 					pathRemapMask.g = step(remapStarts.g, path.g) * (1.0 - step(remapEnds.g, path.g));
 					pathRemapMask.b = step(remapStarts.b, path.b) * (1.0 - step(remapEnds.b, path.b));
 					pathRemapMask.a = step(remapStarts.a, path.a) * (1.0 - step(remapEnds.a, path.a));
 					
-					// Now, remap the path value for the animation logic.
+					// Remap values within range to 0-1
 					path = saturate((path - remapStarts) / (remapEnds - remapStarts + 1e-6));
 				}
-				// MODIFICATION END
 				
+				// Sample color map for additional tinting/masking
 				#if defined(PROP_PATHINGCOLORMAP) || !defined(OPTIMIZER_ENABLED)
 				float4 pathColorMap = POI2D_SAMPLER_PAN(_PathingColorMap, _MainTex, poiUV(poiMesh.uv[_PathingColorMapUV], _PathingColorMap_ST), _PathingColorMapPan);
 				#else
 				float4 pathColorMap = float4(1, 1, 1, 1);
 				#endif
 				
-				float4 PathColor[4] = {_PathColorR, _PathColorG, _PathColorB, _PathColorA};
+				// Array of per-channel colors (RGBA includes alpha for opacity control)
+				float4 PathColor[4] = {
+					_PathColorR, _PathColorG, _PathColorB, _PathColorA
+				};
 				float4 pathTypes = float4(_PathTypeR, _PathTypeG, _PathTypeB, _PathTypeA);
 				float4 finalPathAlpha = 0;
 				float4 pathAudioLinkEmissionAdd = 0;
@@ -63510,6 +63636,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				[unroll]
 				for (int i = 0; i < 4; i++)
 				{
+					// Calculate time with potential AudioLink offsets
 					#ifdef POI_AUDIOLINK
 					float timeOffset = _PathALTimeOffset || _PathALChrono ? alTimeOffsets[i] : 0;
 					#else
@@ -63517,12 +63644,14 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 					#endif
 					float currentTime = frac((_PathTime[i] == -999.0f ? _Time.y * _PathSpeed[i] : _PathTime[i]) + _PathOffset[i] + timeOffset);
 					
+					// Segment time if enabled
 					float pathSegments = abs(_PathSegments[i]);
 					if (pathSegments > 0)
 					{
 						currentTime = (ceil(currentTime * pathSegments) - 0.5) * rcp(pathSegments);
 					}
 					
+					// Compute path width with potential AudioLink adjustment
 					#ifdef POI_AUDIOLINK
 					half pathWidth = _PathWidth[i] * 0.5 + (_PathALWidthOffset ? alWidthOffsets[i] : 0);
 					#else
@@ -63531,6 +63660,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 					half rcpPathWidth = rcp(pathWidth + 1e-6);
 					half softness = max(_PathSoftness[i], 0);
 					
+					// Compute alpha for Fill type
 					half fillAlpha;
 					if (softness > 1e-5)
 					{
@@ -63543,9 +63673,11 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 						fillAlpha = step(path[i], currentTime);
 					}
 					
+					// Compute alpha for Path and Loop types
 					half pathAlpha = saturate(1.0 - abs(lerp(-pathWidth, 1.0 + pathWidth, currentTime) - path[i]) * rcpPathWidth);
 					half loopAlpha = saturate(1.0 - min(abs(currentTime - path[i]), 1.0 - abs(currentTime - path[i])) * rcpPathWidth);
 					
+					// Compute alpha for Dashed type
 					half dashAlpha = 0;
 					float totalDashLength = _PathWidth[i] + _PathGapLengths[i];
 					if (totalDashLength > 1e-6)
@@ -63561,15 +63693,17 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 						dashAlpha = rise * fall;
 					}
 					
+					// Select alpha based on path type
 					half currentAlpha = 0;
 					if (pathTypes[i] == 0)      currentAlpha = fillAlpha;
 					else if (pathTypes[i] == 1) currentAlpha = pathAlpha;
 					else if (pathTypes[i] == 2) currentAlpha = loopAlpha;
 					else if (pathTypes[i] == 3) currentAlpha = dashAlpha;
 					
-					// MODIFICATION: Apply the remap mask here.
+					// Apply remap mask
 					currentAlpha *= pathRemapMask[i];
 					
+					// Avoid zero-path artifacts
 					currentAlpha *= step(1e-6, path[i]);
 					
 					#ifdef POI_AUDIOLINK
@@ -63580,8 +63714,12 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 							float4 historyToggles = float4(_PathALHistoryR, _PathALHistoryG, _PathALHistoryB, _PathALHistoryA);
 							if (historyToggles[i] > 0)
 							{
-								float historyBands[4] = {_PathALHistoryBandR, _PathALHistoryBandG, _PathALHistoryBandB, _PathALHistoryBandA};
-								float2 historyRanges[4] = {_PathALHistoryRangeR.xy, _PathALHistoryRangeG.xy, _PathALHistoryRangeB.xy, _PathALHistoryRangeA.xy};
+								float historyBands[4] = {
+									_PathALHistoryBandR, _PathALHistoryBandG, _PathALHistoryBandB, _PathALHistoryBandA
+								};
+								float2 historyRanges[4] = {
+									_PathALHistoryRangeR.xy, _PathALHistoryRangeG.xy, _PathALHistoryRangeB.xy, _PathALHistoryRangeA.xy
+								};
 								float historyUV = lerp(historyRanges[i].x, historyRanges[i].y, path[i]);
 								if (pathSegments > 0)
 								{
@@ -63594,10 +63732,15 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 						
 						if (_PathALAutoCorrelator)
 						{
-							float acTypes[4] = {_PathALAutoCorrelatorR, _PathALAutoCorrelatorG, _PathALAutoCorrelatorB, _PathALAutoCorrelatorA};
-							if (acTypes[i] > 0 && path[0] > 0)
+							float acTypes[4] = {
+								_PathALAutoCorrelatorR, _PathALAutoCorrelatorG, _PathALAutoCorrelatorB, _PathALAutoCorrelatorA
+							};
+							if (acTypes[i] > 0 && path[i] > 0)  // <-- Fixed: Changed path[0] to path[i]
+							
 							{
-								float2 acRanges[4] = {_PathALAutoCorrelatorRangeR.xy, _PathALAutoCorrelatorRangeG.xy, _PathALAutoCorrelatorRangeB.xy, _PathALAutoCorrelatorRangeA.xy};
+								float2 acRanges[4] = {
+									_PathALAutoCorrelatorRangeR.xy, _PathALAutoCorrelatorRangeG.xy, _PathALAutoCorrelatorRangeB.xy, _PathALAutoCorrelatorRangeA.xy
+								};
 								float acUV = lerp(acRanges[i].x, acRanges[i].y, path[i]);
 								if (acTypes[i] == 2) acUV = abs(1.0 - acUV * 2.0);
 								if (pathSegments > 0)
@@ -63605,14 +63748,15 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 									acUV = (ceil(acUV * pathSegments) - 0.5) * rcp(pathSegments);
 								}
 								float acValue = AudioLinkLerp(ALPASS_AUTOCORRELATOR + float2(acUV * AUDIOLINK_WIDTH, 0))[0];
-								//acValue = saturate(abs(acValue) * rcp(AudioLinkLerp(ALPASS_AUTOCORRELATOR)));
-								//acValue *= smoothstep(0.01, 0.2, AudioLinkData(ALPASS_FILTEREDVU_INTENSITY + uint2(0, 0)));
+								//acValue = saturate(abs(acValue) * rcp(AudioLinkLerp(ALPASS_AUTOCORRELATOR)));  // Optional: Uncomment if you want this normalization
+								//acValue *= smoothstep(0.01, 0.2, AudioLinkData(ALPASS_FILTEREDVU_INTENSITY + uint2(0, 0)));  // Optional: Uncomment for VU intensity gating
 								currentAlpha = lerp(currentAlpha * acValue, acValue, _PathALAutoCorrelatorMode);
 							}
 						}
 					}
 					#endif
 					
+					// Adjust alpha for Dash/Fill types vs. others
 					if (pathTypes[i] == 3 || pathTypes[i] == 0)
 					{
 						finalPathAlpha[i] = currentAlpha;
@@ -63623,11 +63767,13 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 					}
 				}
 				
+				// Multiply by source mask if UV-based
 				if (_PathSource == 1)
 				{
 					finalPathAlpha *= pathSourceOrMask;
 				}
 				
+				// Compute emission (ignores color alpha)
 				float3 pathEmission = 0;
 				pathEmission += finalPathAlpha.r * poiThemeColor(poiMods, PathColor[0].rgb, _PathColorRThemeIndex) * (_PathEmissionStrength.r + pathAudioLinkEmissionAdd.r);
 				pathEmission += finalPathAlpha.g * poiThemeColor(poiMods, PathColor[1].rgb, _PathColorGThemeIndex) * (_PathEmissionStrength.g + pathAudioLinkEmissionAdd.g);
@@ -63638,31 +63784,34 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				float3 finalPathColor = 0;
 				float finalAlpha = 0;
 				
+				// Apply themed color and scale opacity alphas by color alpha (affects color contribution and blending, but not emission)
 				float3 colorR = poiThemeColor(poiMods, PathColor[0].rgb, _PathColorRThemeIndex);
-				float alphaR = finalPathAlpha.r;
+				float alphaR = finalPathAlpha.r * PathColor[0].a;
 				finalPathColor = colorR * alphaR;
 				finalAlpha = alphaR;
 				
 				float3 colorG = poiThemeColor(poiMods, PathColor[1].rgb, _PathColorGThemeIndex);
-				float alphaG = finalPathAlpha.g;
+				float alphaG = finalPathAlpha.g * PathColor[1].a;
 				finalPathColor = (colorG * alphaG) + finalPathColor * (1.0 - alphaG);
 				finalAlpha = alphaG + finalAlpha * (1.0 - alphaG);
 				
 				float3 colorB = poiThemeColor(poiMods, PathColor[2].rgb, _PathColorBThemeIndex);
-				float alphaB = finalPathAlpha.b;
+				float alphaB = finalPathAlpha.b * PathColor[2].a;
 				finalPathColor = (colorB * alphaB) + finalPathColor * (1.0 - alphaB);
 				finalAlpha = alphaB + finalAlpha * (1.0 - alphaB);
 				
 				float3 colorA = poiThemeColor(poiMods, PathColor[3].rgb, _PathColorAThemeIndex);
-				float alphaA = finalPathAlpha.a;
+				float alphaA = finalPathAlpha.a * PathColor[3].a;
 				finalPathColor = (colorA * alphaA) + finalPathColor * (1.0 - alphaA);
 				finalAlpha = alphaA + finalAlpha * (1.0 - alphaA);
 				
+				// Apply color map to final color and alpha
 				finalPathColor *= pathColorMap.rgb;
 				finalAlpha *= pathColorMap.a;
 				finalPathColor *= pathColorMap.a;
 				pathEmission *= pathColorMap.rgb * pathColorMap.a;
 				
+				// Blend path color onto base albedo based on mode
 				if (_PathSurfaceBlendMode == 0)
 				{
 					albedo = albedo * (1.0 - finalAlpha) + finalPathColor;
@@ -63676,6 +63825,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 					albedo *= (finalPathColor + (1.0 - finalAlpha));
 				}
 				
+				// Override alpha if enabled
 				poiFragData.alpha = lerp(poiFragData.alpha, finalAlpha, _PathingOverrideAlpha);
 				poiFragData.baseColor = albedo;
 				poiFragData.emission += pathEmission;
@@ -78385,20 +78535,26 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				float cs = cos(theta);
 				float sn = sin(theta);
 				float2 spriteCenter = flipbookScaleOffset.zw + .5;
-				// 2d rotation
 				uv = float2((uv.x - spriteCenter.x) * cs - (uv.y - spriteCenter.y) * sn + spriteCenter.x, (uv.x - spriteCenter.x) * sn + (uv.y - spriteCenter.y) * cs + spriteCenter.y);
 				float4 sideOffset = float4( - (_FlipbookSideOffset.x), _FlipbookSideOffset.y, - (_FlipbookSideOffset.z), _FlipbookSideOffset.w);
 				float2 bottomLeft = float2(0, 0) + flipbookScaleOffset.xy / 2 + flipbookScaleOffset.zw + sideOffset.xz;
 				float2 topRight = float2(1, 1) - flipbookScaleOffset.xy / 2 + flipbookScaleOffset.zw + sideOffset.yw;
 				float2 newUV = remap(uv, bottomLeft, topRight, float2(0, 0), float2(1, 1));
 				
-				UNITY_BRANCH
+				float edgeAlpha = 1.0;
+				
 				if (_FlipbookTiled == 0)
 				{
-					if (max(newUV.x, newUV.y) > 1 || min(newUV.x, newUV.y) < 0)
-					{
-						return;
-					}
+					float2 pixelWidth = fwidth(newUV) + 1.0e-7;
+					float2 edgeFactor = (1.0 - abs(newUV * 2.0 - 1.0)) / pixelWidth;
+					edgeAlpha = saturate(min(edgeFactor.x, edgeFactor.y));
+				}
+				else if (_FlipbookTiled == 2)
+				{
+					float2 tiledUVs = frac(newUV);
+					float2 pixelWidth = fwidth(newUV) + 1.0e-7;
+					float2 edgeFactor = (1.0 - abs(tiledUVs * 2.0 - 1.0)) / pixelWidth;
+					edgeAlpha = saturate(min(edgeFactor.x, edgeFactor.y));
 				}
 				
 				float currentFrame = 0;
@@ -78443,7 +78599,11 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 					currentFrame %= totalFramesAL;
 				}
 				#endif
-				flipBookPixel = UNITY_SAMPLE_TEX2DARRAY(_FlipbookTexArray, float3(TRANSFORM_TEX(newUV, _FlipbookTexArray) + _Time.x * _FlipbookTexArrayPan, floor(currentFrame)));
+				
+				float2 finalUV = TRANSFORM_TEX(newUV, _FlipbookTexArray) + _Time.x * _FlipbookTexArrayPan;
+				float2 ddxUV = ddx(finalUV);
+				float2 ddyUV = ddy(finalUV);
+				flipBookPixel = _FlipbookTexArray.SampleGrad(sampler_FlipbookTexArray, float3(finalUV, floor(currentFrame)), ddxUV, ddyUV);
 				
 				UNITY_BRANCH
 				if (_FlipbookCrossfadeEnabled)
@@ -78453,9 +78613,11 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 					{
 						totalFramesCF += max(0, _FlipbookStartFrame);
 					}
-					float4 flipbookNextPixel = UNITY_SAMPLE_TEX2DARRAY(_FlipbookTexArray, float3(TRANSFORM_TEX(newUV, _FlipbookTexArray) + _Time.x * _FlipbookTexArrayPan, floor((currentFrame + 1) % totalFramesCF)));
+					float4 flipbookNextPixel = _FlipbookTexArray.SampleGrad(sampler_FlipbookTexArray, float3(finalUV, floor((currentFrame + 1) % totalFramesCF)), ddxUV, ddyUV);
 					flipBookPixel = lerp(flipBookPixel, flipbookNextPixel, smoothstep(_FlipbookCrossfadeRange.x, _FlipbookCrossfadeRange.y, frac(currentFrame)));
 				}
+				
+				flipBookPixel.a *= edgeAlpha;
 				
 				UNITY_BRANCH
 				if (_FlipbookIntensityControlsAlpha)
@@ -78487,7 +78649,17 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				
 				#if !defined(POI_PASS_OUTLINE) && !defined(UNITY_PASS_SHADOWCASTER)
 				
-				poiFragData.baseColor = lerp(poiFragData.baseColor.rgb, customBlend(poiFragData.baseColor.rgb, flipBookPixel.rgb, _FlipbookBlendType), flipBookPixel.a * _FlipbookColor.a * _FlipbookReplace * flipBookMask * flipbookAlpha);
+				float finalFlipbookAlpha = saturate(flipBookPixel.a * _FlipbookColor.a * _FlipbookReplace * flipBookMask * flipbookAlpha);
+				
+				if (_FlipbookAlphaControlsFinalAlpha == 2)
+				{
+					poiFragData.baseColor = flipBookPixel.rgb;
+					poiFragData.alpha = finalFlipbookAlpha;
+				}
+				else
+				{
+					poiFragData.baseColor = lerp(poiFragData.baseColor.rgb, customBlend(poiFragData.baseColor.rgb, flipBookPixel.rgb, _FlipbookBlendType), finalFlipbookAlpha);
+				}
 				
 				float flipbookEmissionStrength = _FlipbookEmissionStrength;
 				#ifdef POI_AUDIOLINK
@@ -78496,13 +78668,12 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 					flipbookEmissionStrength += max(lerp(_AudioLinkFlipbookEmission.x, _AudioLinkFlipbookEmission.y, poiMods.audioLink[_AudioLinkFlipbookEmissionBand]), 0);
 				}
 				#endif
-				
-				poiFragData.emission += lerp(0, flipBookPixel.rgb * flipbookEmissionStrength, flipBookPixel.a * _FlipbookColor.a * flipBookMask * flipbookAlpha);
+				poiFragData.emission += lerp(0, flipBookPixel.rgb * flipbookEmissionStrength, finalFlipbookAlpha);
 				
 				#endif
 				
 				UNITY_BRANCH
-				if (_FlipbookAlphaControlsFinalAlpha)
+				if (_FlipbookAlphaControlsFinalAlpha > 0 && _FlipbookAlphaControlsFinalAlpha != 2)
 				{
 					poiFragData.alpha = lerp(poiFragData.alpha, flipBookPixel.a * _FlipbookColor.a, flipBookMask);
 				}
@@ -80097,6 +80268,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			#ifdef POI_PATHING
 			void applyPathing(inout PoiFragData poiFragData, in PoiMesh poiMesh, in PoiMods poiMods)
 			{
+				// Sample path source: texture-based gradient or UV-derived
 				float4 pathSourceOrMask = float4(1, 1, 1, 1);
 				#if defined(PROP_PATHINGMAP) || !defined(OPTIMIZER_ENABLED)
 				if (_PathPointSampling)
@@ -80109,6 +80281,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				}
 				#endif
 				
+				// Determine path values based on source type
 				float4 path;
 				if (_PathSource == 0)
 				{
@@ -80121,36 +80294,40 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 					path = lerp(uv.xxxx, uv.yyyy, dirs);
 				}
 				
+				// Merge channels if selected for texture source
 				if (_PathSource == 0 && _PathGradientType == 1)
 				{
 					path = dot(path, 0.25);
 				}
 				
-				// MODIFICATION START
-				float4 pathRemapMask = 1.0; // Initialize mask to 1 (no effect)
+				// Apply remapping if enabled: mask outside range and normalize inside
+				float4 pathRemapMask = 1.0; // Default to full effect
 				if (_EnablePathRemapping)
 				{
 					float4 remapStarts = float4(_PathRemapR.x, _PathRemapG.x, _PathRemapB.x, _PathRemapA.x);
 					float4 remapEnds = float4(_PathRemapR.y, _PathRemapG.y, _PathRemapB.y, _PathRemapA.y);
 					
-					// Create a mask that is 1 ONLY inside the user-defined range from the original path values.
+					// Mask: 1 only within remap range
 					pathRemapMask.r = step(remapStarts.r, path.r) * (1.0 - step(remapEnds.r, path.r));
 					pathRemapMask.g = step(remapStarts.g, path.g) * (1.0 - step(remapEnds.g, path.g));
 					pathRemapMask.b = step(remapStarts.b, path.b) * (1.0 - step(remapEnds.b, path.b));
 					pathRemapMask.a = step(remapStarts.a, path.a) * (1.0 - step(remapEnds.a, path.a));
 					
-					// Now, remap the path value for the animation logic.
+					// Remap values within range to 0-1
 					path = saturate((path - remapStarts) / (remapEnds - remapStarts + 1e-6));
 				}
-				// MODIFICATION END
 				
+				// Sample color map for additional tinting/masking
 				#if defined(PROP_PATHINGCOLORMAP) || !defined(OPTIMIZER_ENABLED)
 				float4 pathColorMap = POI2D_SAMPLER_PAN(_PathingColorMap, _MainTex, poiUV(poiMesh.uv[_PathingColorMapUV], _PathingColorMap_ST), _PathingColorMapPan);
 				#else
 				float4 pathColorMap = float4(1, 1, 1, 1);
 				#endif
 				
-				float4 PathColor[4] = {_PathColorR, _PathColorG, _PathColorB, _PathColorA};
+				// Array of per-channel colors (RGBA includes alpha for opacity control)
+				float4 PathColor[4] = {
+					_PathColorR, _PathColorG, _PathColorB, _PathColorA
+				};
 				float4 pathTypes = float4(_PathTypeR, _PathTypeG, _PathTypeB, _PathTypeA);
 				float4 finalPathAlpha = 0;
 				float4 pathAudioLinkEmissionAdd = 0;
@@ -80217,6 +80394,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				[unroll]
 				for (int i = 0; i < 4; i++)
 				{
+					// Calculate time with potential AudioLink offsets
 					#ifdef POI_AUDIOLINK
 					float timeOffset = _PathALTimeOffset || _PathALChrono ? alTimeOffsets[i] : 0;
 					#else
@@ -80224,12 +80402,14 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 					#endif
 					float currentTime = frac((_PathTime[i] == -999.0f ? _Time.y * _PathSpeed[i] : _PathTime[i]) + _PathOffset[i] + timeOffset);
 					
+					// Segment time if enabled
 					float pathSegments = abs(_PathSegments[i]);
 					if (pathSegments > 0)
 					{
 						currentTime = (ceil(currentTime * pathSegments) - 0.5) * rcp(pathSegments);
 					}
 					
+					// Compute path width with potential AudioLink adjustment
 					#ifdef POI_AUDIOLINK
 					half pathWidth = _PathWidth[i] * 0.5 + (_PathALWidthOffset ? alWidthOffsets[i] : 0);
 					#else
@@ -80238,6 +80418,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 					half rcpPathWidth = rcp(pathWidth + 1e-6);
 					half softness = max(_PathSoftness[i], 0);
 					
+					// Compute alpha for Fill type
 					half fillAlpha;
 					if (softness > 1e-5)
 					{
@@ -80250,9 +80431,11 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 						fillAlpha = step(path[i], currentTime);
 					}
 					
+					// Compute alpha for Path and Loop types
 					half pathAlpha = saturate(1.0 - abs(lerp(-pathWidth, 1.0 + pathWidth, currentTime) - path[i]) * rcpPathWidth);
 					half loopAlpha = saturate(1.0 - min(abs(currentTime - path[i]), 1.0 - abs(currentTime - path[i])) * rcpPathWidth);
 					
+					// Compute alpha for Dashed type
 					half dashAlpha = 0;
 					float totalDashLength = _PathWidth[i] + _PathGapLengths[i];
 					if (totalDashLength > 1e-6)
@@ -80268,15 +80451,17 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 						dashAlpha = rise * fall;
 					}
 					
+					// Select alpha based on path type
 					half currentAlpha = 0;
 					if (pathTypes[i] == 0)      currentAlpha = fillAlpha;
 					else if (pathTypes[i] == 1) currentAlpha = pathAlpha;
 					else if (pathTypes[i] == 2) currentAlpha = loopAlpha;
 					else if (pathTypes[i] == 3) currentAlpha = dashAlpha;
 					
-					// MODIFICATION: Apply the remap mask here.
+					// Apply remap mask
 					currentAlpha *= pathRemapMask[i];
 					
+					// Avoid zero-path artifacts
 					currentAlpha *= step(1e-6, path[i]);
 					
 					#ifdef POI_AUDIOLINK
@@ -80287,8 +80472,12 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 							float4 historyToggles = float4(_PathALHistoryR, _PathALHistoryG, _PathALHistoryB, _PathALHistoryA);
 							if (historyToggles[i] > 0)
 							{
-								float historyBands[4] = {_PathALHistoryBandR, _PathALHistoryBandG, _PathALHistoryBandB, _PathALHistoryBandA};
-								float2 historyRanges[4] = {_PathALHistoryRangeR.xy, _PathALHistoryRangeG.xy, _PathALHistoryRangeB.xy, _PathALHistoryRangeA.xy};
+								float historyBands[4] = {
+									_PathALHistoryBandR, _PathALHistoryBandG, _PathALHistoryBandB, _PathALHistoryBandA
+								};
+								float2 historyRanges[4] = {
+									_PathALHistoryRangeR.xy, _PathALHistoryRangeG.xy, _PathALHistoryRangeB.xy, _PathALHistoryRangeA.xy
+								};
 								float historyUV = lerp(historyRanges[i].x, historyRanges[i].y, path[i]);
 								if (pathSegments > 0)
 								{
@@ -80301,10 +80490,15 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 						
 						if (_PathALAutoCorrelator)
 						{
-							float acTypes[4] = {_PathALAutoCorrelatorR, _PathALAutoCorrelatorG, _PathALAutoCorrelatorB, _PathALAutoCorrelatorA};
-							if (acTypes[i] > 0 && path[0] > 0)
+							float acTypes[4] = {
+								_PathALAutoCorrelatorR, _PathALAutoCorrelatorG, _PathALAutoCorrelatorB, _PathALAutoCorrelatorA
+							};
+							if (acTypes[i] > 0 && path[i] > 0)  // <-- Fixed: Changed path[0] to path[i]
+							
 							{
-								float2 acRanges[4] = {_PathALAutoCorrelatorRangeR.xy, _PathALAutoCorrelatorRangeG.xy, _PathALAutoCorrelatorRangeB.xy, _PathALAutoCorrelatorRangeA.xy};
+								float2 acRanges[4] = {
+									_PathALAutoCorrelatorRangeR.xy, _PathALAutoCorrelatorRangeG.xy, _PathALAutoCorrelatorRangeB.xy, _PathALAutoCorrelatorRangeA.xy
+								};
 								float acUV = lerp(acRanges[i].x, acRanges[i].y, path[i]);
 								if (acTypes[i] == 2) acUV = abs(1.0 - acUV * 2.0);
 								if (pathSegments > 0)
@@ -80312,14 +80506,15 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 									acUV = (ceil(acUV * pathSegments) - 0.5) * rcp(pathSegments);
 								}
 								float acValue = AudioLinkLerp(ALPASS_AUTOCORRELATOR + float2(acUV * AUDIOLINK_WIDTH, 0))[0];
-								//acValue = saturate(abs(acValue) * rcp(AudioLinkLerp(ALPASS_AUTOCORRELATOR)));
-								//acValue *= smoothstep(0.01, 0.2, AudioLinkData(ALPASS_FILTEREDVU_INTENSITY + uint2(0, 0)));
+								//acValue = saturate(abs(acValue) * rcp(AudioLinkLerp(ALPASS_AUTOCORRELATOR)));  // Optional: Uncomment if you want this normalization
+								//acValue *= smoothstep(0.01, 0.2, AudioLinkData(ALPASS_FILTEREDVU_INTENSITY + uint2(0, 0)));  // Optional: Uncomment for VU intensity gating
 								currentAlpha = lerp(currentAlpha * acValue, acValue, _PathALAutoCorrelatorMode);
 							}
 						}
 					}
 					#endif
 					
+					// Adjust alpha for Dash/Fill types vs. others
 					if (pathTypes[i] == 3 || pathTypes[i] == 0)
 					{
 						finalPathAlpha[i] = currentAlpha;
@@ -80330,11 +80525,13 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 					}
 				}
 				
+				// Multiply by source mask if UV-based
 				if (_PathSource == 1)
 				{
 					finalPathAlpha *= pathSourceOrMask;
 				}
 				
+				// Compute emission (ignores color alpha)
 				float3 pathEmission = 0;
 				pathEmission += finalPathAlpha.r * poiThemeColor(poiMods, PathColor[0].rgb, _PathColorRThemeIndex) * (_PathEmissionStrength.r + pathAudioLinkEmissionAdd.r);
 				pathEmission += finalPathAlpha.g * poiThemeColor(poiMods, PathColor[1].rgb, _PathColorGThemeIndex) * (_PathEmissionStrength.g + pathAudioLinkEmissionAdd.g);
@@ -80345,31 +80542,34 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				float3 finalPathColor = 0;
 				float finalAlpha = 0;
 				
+				// Apply themed color and scale opacity alphas by color alpha (affects color contribution and blending, but not emission)
 				float3 colorR = poiThemeColor(poiMods, PathColor[0].rgb, _PathColorRThemeIndex);
-				float alphaR = finalPathAlpha.r;
+				float alphaR = finalPathAlpha.r * PathColor[0].a;
 				finalPathColor = colorR * alphaR;
 				finalAlpha = alphaR;
 				
 				float3 colorG = poiThemeColor(poiMods, PathColor[1].rgb, _PathColorGThemeIndex);
-				float alphaG = finalPathAlpha.g;
+				float alphaG = finalPathAlpha.g * PathColor[1].a;
 				finalPathColor = (colorG * alphaG) + finalPathColor * (1.0 - alphaG);
 				finalAlpha = alphaG + finalAlpha * (1.0 - alphaG);
 				
 				float3 colorB = poiThemeColor(poiMods, PathColor[2].rgb, _PathColorBThemeIndex);
-				float alphaB = finalPathAlpha.b;
+				float alphaB = finalPathAlpha.b * PathColor[2].a;
 				finalPathColor = (colorB * alphaB) + finalPathColor * (1.0 - alphaB);
 				finalAlpha = alphaB + finalAlpha * (1.0 - alphaB);
 				
 				float3 colorA = poiThemeColor(poiMods, PathColor[3].rgb, _PathColorAThemeIndex);
-				float alphaA = finalPathAlpha.a;
+				float alphaA = finalPathAlpha.a * PathColor[3].a;
 				finalPathColor = (colorA * alphaA) + finalPathColor * (1.0 - alphaA);
 				finalAlpha = alphaA + finalAlpha * (1.0 - alphaA);
 				
+				// Apply color map to final color and alpha
 				finalPathColor *= pathColorMap.rgb;
 				finalAlpha *= pathColorMap.a;
 				finalPathColor *= pathColorMap.a;
 				pathEmission *= pathColorMap.rgb * pathColorMap.a;
 				
+				// Blend path color onto base albedo based on mode
 				if (_PathSurfaceBlendMode == 0)
 				{
 					albedo = albedo * (1.0 - finalAlpha) + finalPathColor;
@@ -80383,6 +80583,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 					albedo *= (finalPathColor + (1.0 - finalAlpha));
 				}
 				
+				// Override alpha if enabled
 				poiFragData.alpha = lerp(poiFragData.alpha, finalAlpha, _PathingOverrideAlpha);
 				poiFragData.baseColor = albedo;
 				poiFragData.emission += pathEmission;
@@ -91650,20 +91851,26 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				float cs = cos(theta);
 				float sn = sin(theta);
 				float2 spriteCenter = flipbookScaleOffset.zw + .5;
-				// 2d rotation
 				uv = float2((uv.x - spriteCenter.x) * cs - (uv.y - spriteCenter.y) * sn + spriteCenter.x, (uv.x - spriteCenter.x) * sn + (uv.y - spriteCenter.y) * cs + spriteCenter.y);
 				float4 sideOffset = float4( - (_FlipbookSideOffset.x), _FlipbookSideOffset.y, - (_FlipbookSideOffset.z), _FlipbookSideOffset.w);
 				float2 bottomLeft = float2(0, 0) + flipbookScaleOffset.xy / 2 + flipbookScaleOffset.zw + sideOffset.xz;
 				float2 topRight = float2(1, 1) - flipbookScaleOffset.xy / 2 + flipbookScaleOffset.zw + sideOffset.yw;
 				float2 newUV = remap(uv, bottomLeft, topRight, float2(0, 0), float2(1, 1));
 				
-				UNITY_BRANCH
+				float edgeAlpha = 1.0;
+				
 				if (_FlipbookTiled == 0)
 				{
-					if (max(newUV.x, newUV.y) > 1 || min(newUV.x, newUV.y) < 0)
-					{
-						return;
-					}
+					float2 pixelWidth = fwidth(newUV) + 1.0e-7;
+					float2 edgeFactor = (1.0 - abs(newUV * 2.0 - 1.0)) / pixelWidth;
+					edgeAlpha = saturate(min(edgeFactor.x, edgeFactor.y));
+				}
+				else if (_FlipbookTiled == 2)
+				{
+					float2 tiledUVs = frac(newUV);
+					float2 pixelWidth = fwidth(newUV) + 1.0e-7;
+					float2 edgeFactor = (1.0 - abs(tiledUVs * 2.0 - 1.0)) / pixelWidth;
+					edgeAlpha = saturate(min(edgeFactor.x, edgeFactor.y));
 				}
 				
 				float currentFrame = 0;
@@ -91708,7 +91915,11 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 					currentFrame %= totalFramesAL;
 				}
 				#endif
-				flipBookPixel = UNITY_SAMPLE_TEX2DARRAY(_FlipbookTexArray, float3(TRANSFORM_TEX(newUV, _FlipbookTexArray) + _Time.x * _FlipbookTexArrayPan, floor(currentFrame)));
+				
+				float2 finalUV = TRANSFORM_TEX(newUV, _FlipbookTexArray) + _Time.x * _FlipbookTexArrayPan;
+				float2 ddxUV = ddx(finalUV);
+				float2 ddyUV = ddy(finalUV);
+				flipBookPixel = _FlipbookTexArray.SampleGrad(sampler_FlipbookTexArray, float3(finalUV, floor(currentFrame)), ddxUV, ddyUV);
 				
 				UNITY_BRANCH
 				if (_FlipbookCrossfadeEnabled)
@@ -91718,9 +91929,11 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 					{
 						totalFramesCF += max(0, _FlipbookStartFrame);
 					}
-					float4 flipbookNextPixel = UNITY_SAMPLE_TEX2DARRAY(_FlipbookTexArray, float3(TRANSFORM_TEX(newUV, _FlipbookTexArray) + _Time.x * _FlipbookTexArrayPan, floor((currentFrame + 1) % totalFramesCF)));
+					float4 flipbookNextPixel = _FlipbookTexArray.SampleGrad(sampler_FlipbookTexArray, float3(finalUV, floor((currentFrame + 1) % totalFramesCF)), ddxUV, ddyUV);
 					flipBookPixel = lerp(flipBookPixel, flipbookNextPixel, smoothstep(_FlipbookCrossfadeRange.x, _FlipbookCrossfadeRange.y, frac(currentFrame)));
 				}
+				
+				flipBookPixel.a *= edgeAlpha;
 				
 				UNITY_BRANCH
 				if (_FlipbookIntensityControlsAlpha)
@@ -91752,7 +91965,17 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				
 				#if !defined(POI_PASS_OUTLINE) && !defined(UNITY_PASS_SHADOWCASTER)
 				
-				poiFragData.baseColor = lerp(poiFragData.baseColor.rgb, customBlend(poiFragData.baseColor.rgb, flipBookPixel.rgb, _FlipbookBlendType), flipBookPixel.a * _FlipbookColor.a * _FlipbookReplace * flipBookMask * flipbookAlpha);
+				float finalFlipbookAlpha = saturate(flipBookPixel.a * _FlipbookColor.a * _FlipbookReplace * flipBookMask * flipbookAlpha);
+				
+				if (_FlipbookAlphaControlsFinalAlpha == 2)
+				{
+					poiFragData.baseColor = flipBookPixel.rgb;
+					poiFragData.alpha = finalFlipbookAlpha;
+				}
+				else
+				{
+					poiFragData.baseColor = lerp(poiFragData.baseColor.rgb, customBlend(poiFragData.baseColor.rgb, flipBookPixel.rgb, _FlipbookBlendType), finalFlipbookAlpha);
+				}
 				
 				float flipbookEmissionStrength = _FlipbookEmissionStrength;
 				#ifdef POI_AUDIOLINK
@@ -91761,13 +91984,12 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 					flipbookEmissionStrength += max(lerp(_AudioLinkFlipbookEmission.x, _AudioLinkFlipbookEmission.y, poiMods.audioLink[_AudioLinkFlipbookEmissionBand]), 0);
 				}
 				#endif
-				
-				poiFragData.emission += lerp(0, flipBookPixel.rgb * flipbookEmissionStrength, flipBookPixel.a * _FlipbookColor.a * flipBookMask * flipbookAlpha);
+				poiFragData.emission += lerp(0, flipBookPixel.rgb * flipbookEmissionStrength, finalFlipbookAlpha);
 				
 				#endif
 				
 				UNITY_BRANCH
-				if (_FlipbookAlphaControlsFinalAlpha)
+				if (_FlipbookAlphaControlsFinalAlpha > 0 && _FlipbookAlphaControlsFinalAlpha != 2)
 				{
 					poiFragData.alpha = lerp(poiFragData.alpha, flipBookPixel.a * _FlipbookColor.a, flipBookMask);
 				}
@@ -100254,20 +100476,26 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				float cs = cos(theta);
 				float sn = sin(theta);
 				float2 spriteCenter = flipbookScaleOffset.zw + .5;
-				// 2d rotation
 				uv = float2((uv.x - spriteCenter.x) * cs - (uv.y - spriteCenter.y) * sn + spriteCenter.x, (uv.x - spriteCenter.x) * sn + (uv.y - spriteCenter.y) * cs + spriteCenter.y);
 				float4 sideOffset = float4( - (_FlipbookSideOffset.x), _FlipbookSideOffset.y, - (_FlipbookSideOffset.z), _FlipbookSideOffset.w);
 				float2 bottomLeft = float2(0, 0) + flipbookScaleOffset.xy / 2 + flipbookScaleOffset.zw + sideOffset.xz;
 				float2 topRight = float2(1, 1) - flipbookScaleOffset.xy / 2 + flipbookScaleOffset.zw + sideOffset.yw;
 				float2 newUV = remap(uv, bottomLeft, topRight, float2(0, 0), float2(1, 1));
 				
-				UNITY_BRANCH
+				float edgeAlpha = 1.0;
+				
 				if (_FlipbookTiled == 0)
 				{
-					if (max(newUV.x, newUV.y) > 1 || min(newUV.x, newUV.y) < 0)
-					{
-						return;
-					}
+					float2 pixelWidth = fwidth(newUV) + 1.0e-7;
+					float2 edgeFactor = (1.0 - abs(newUV * 2.0 - 1.0)) / pixelWidth;
+					edgeAlpha = saturate(min(edgeFactor.x, edgeFactor.y));
+				}
+				else if (_FlipbookTiled == 2)
+				{
+					float2 tiledUVs = frac(newUV);
+					float2 pixelWidth = fwidth(newUV) + 1.0e-7;
+					float2 edgeFactor = (1.0 - abs(tiledUVs * 2.0 - 1.0)) / pixelWidth;
+					edgeAlpha = saturate(min(edgeFactor.x, edgeFactor.y));
 				}
 				
 				float currentFrame = 0;
@@ -100312,7 +100540,11 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 					currentFrame %= totalFramesAL;
 				}
 				#endif
-				flipBookPixel = UNITY_SAMPLE_TEX2DARRAY(_FlipbookTexArray, float3(TRANSFORM_TEX(newUV, _FlipbookTexArray) + _Time.x * _FlipbookTexArrayPan, floor(currentFrame)));
+				
+				float2 finalUV = TRANSFORM_TEX(newUV, _FlipbookTexArray) + _Time.x * _FlipbookTexArrayPan;
+				float2 ddxUV = ddx(finalUV);
+				float2 ddyUV = ddy(finalUV);
+				flipBookPixel = _FlipbookTexArray.SampleGrad(sampler_FlipbookTexArray, float3(finalUV, floor(currentFrame)), ddxUV, ddyUV);
 				
 				UNITY_BRANCH
 				if (_FlipbookCrossfadeEnabled)
@@ -100322,9 +100554,11 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 					{
 						totalFramesCF += max(0, _FlipbookStartFrame);
 					}
-					float4 flipbookNextPixel = UNITY_SAMPLE_TEX2DARRAY(_FlipbookTexArray, float3(TRANSFORM_TEX(newUV, _FlipbookTexArray) + _Time.x * _FlipbookTexArrayPan, floor((currentFrame + 1) % totalFramesCF)));
+					float4 flipbookNextPixel = _FlipbookTexArray.SampleGrad(sampler_FlipbookTexArray, float3(finalUV, floor((currentFrame + 1) % totalFramesCF)), ddxUV, ddyUV);
 					flipBookPixel = lerp(flipBookPixel, flipbookNextPixel, smoothstep(_FlipbookCrossfadeRange.x, _FlipbookCrossfadeRange.y, frac(currentFrame)));
 				}
+				
+				flipBookPixel.a *= edgeAlpha;
 				
 				UNITY_BRANCH
 				if (_FlipbookIntensityControlsAlpha)
@@ -100356,7 +100590,17 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				
 				#if !defined(POI_PASS_OUTLINE) && !defined(UNITY_PASS_SHADOWCASTER)
 				
-				poiFragData.baseColor = lerp(poiFragData.baseColor.rgb, customBlend(poiFragData.baseColor.rgb, flipBookPixel.rgb, _FlipbookBlendType), flipBookPixel.a * _FlipbookColor.a * _FlipbookReplace * flipBookMask * flipbookAlpha);
+				float finalFlipbookAlpha = saturate(flipBookPixel.a * _FlipbookColor.a * _FlipbookReplace * flipBookMask * flipbookAlpha);
+				
+				if (_FlipbookAlphaControlsFinalAlpha == 2)
+				{
+					poiFragData.baseColor = flipBookPixel.rgb;
+					poiFragData.alpha = finalFlipbookAlpha;
+				}
+				else
+				{
+					poiFragData.baseColor = lerp(poiFragData.baseColor.rgb, customBlend(poiFragData.baseColor.rgb, flipBookPixel.rgb, _FlipbookBlendType), finalFlipbookAlpha);
+				}
 				
 				float flipbookEmissionStrength = _FlipbookEmissionStrength;
 				#ifdef POI_AUDIOLINK
@@ -100365,13 +100609,12 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 					flipbookEmissionStrength += max(lerp(_AudioLinkFlipbookEmission.x, _AudioLinkFlipbookEmission.y, poiMods.audioLink[_AudioLinkFlipbookEmissionBand]), 0);
 				}
 				#endif
-				
-				poiFragData.emission += lerp(0, flipBookPixel.rgb * flipbookEmissionStrength, flipBookPixel.a * _FlipbookColor.a * flipBookMask * flipbookAlpha);
+				poiFragData.emission += lerp(0, flipBookPixel.rgb * flipbookEmissionStrength, finalFlipbookAlpha);
 				
 				#endif
 				
 				UNITY_BRANCH
-				if (_FlipbookAlphaControlsFinalAlpha)
+				if (_FlipbookAlphaControlsFinalAlpha > 0 && _FlipbookAlphaControlsFinalAlpha != 2)
 				{
 					poiFragData.alpha = lerp(poiFragData.alpha, flipBookPixel.a * _FlipbookColor.a, flipBookMask);
 				}
