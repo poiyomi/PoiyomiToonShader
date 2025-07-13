@@ -2,7 +2,7 @@ Shader ".poiyomi/Poiyomi Toon"
 {
 	Properties
 	{
-		[HideInInspector] shader_master_label ("<color=#E75898ff>Poiyomi 9.2.65</color>", Float) = 0
+		[HideInInspector] shader_master_label ("<color=#E75898ff>Poiyomi 9.2.66</color>", Float) = 0
 		[HideInInspector] shader_is_using_thry_editor ("", Float) = 0
 		[HideInInspector] shader_locale ("0db0b86376c3dca4b9a6828ef8615fe0", Float) = 0
 		[HideInInspector] footer_youtube ("{texture:{name:icon-youtube,height:16},action:{type:URL,data:https://www.youtube.com/poiyomi},hover:YOUTUBE}", Float) = 0
@@ -25820,7 +25820,7 @@ Shader ".poiyomi/Poiyomi Toon"
 					
 					float3 v = float3(ab * tDotH, at * bDotH, a2 * nDotH);
 					float v2 = dot(v, v);
-					float w2 = a2 / v2;
+					float w2 = a2 / (v2+ 1e-5f);
 					float dotTerm = a2 * (w2 * w2 * UNITY_INV_PI);
 					
 					visibilityTerm *= dotTerm;
@@ -25839,7 +25839,7 @@ Shader ".poiyomi/Poiyomi Toon"
 					
 					visibilityTerm = 0.5f / (lambdaV + lambdaL + 1e-5f);
 					float a = nDotH * roughness;
-					float k = roughness / (1.0 - nDotH * nDotH + a * a);
+					float k = roughness / (1.0 - nDotH * nDotH + a * a+ 1e-5f);
 					float dotTerm = k * k * UNITY_INV_PI;
 					
 					visibilityTerm *= dotTerm;
@@ -26065,9 +26065,13 @@ Shader ".poiyomi/Poiyomi Toon"
 						float pbrVDotNH = lerp(poiLight.vertexVDotNH[index], poiLight.vDotNH[index], _PBRNormalSelect);
 						
 						#ifdef GGX_ANISOTROPICS
-						GetSpecFresTerm(pbrNDotL, pbrNDotV, pbrNDotH, poiLight.lDotH, specularTerm, fresnelTerm, specCol, brdfRoughness, pbrTDotV, pbrBDotV, pbrTDotL, pbrBDotL, pbrTDotH, pbrBDotH, adjustedAnisotropy);
+						float pbrTDotvL = dot(pbrTSelect, poiLight.vDirection[index]);
+						float pbrBDotvL = dot(pbrBSelect, poiLight.vDirection[index]);
+						float pbrTDotvH = dot(pbrTSelect, poiLight.vHalfDir[index]);
+						float pbrBDotvH = dot(pbrBSelect, poiLight.vHalfDir[index]);
+						GetSpecFresTerm(pbrVDotNL, pbrNDotV, pbrVDotNH, poiLight.vDotLH[index], specularTerm, fresnelTerm, specCol, brdfRoughness, pbrTDotV, pbrBDotV, pbrTDotvL, pbrBDotvL, pbrTDotvH, pbrBDotvH, adjustedAnisotropy);
 						#else
-						GetSpecFresTerm(pbrNDotL, pbrNDotV, pbrNDotH, poiLight.lDotH, specularTerm, fresnelTerm, specCol, brdfRoughness);
+						GetSpecFresTerm(pbrVDotNL, pbrNDotV, pbrVDotNH, poiLight.vDotLH[index], specularTerm, fresnelTerm, specCol, brdfRoughness);
 						#endif
 						vSpecular += poiLight.vColor[index] * specularTerm * fresnelTerm * specularMask * poiThemeColor(poiMods, _MochieSpecularTint, _MochieSpecularTintThemeIndex) * poiLight.occlusion;
 					}
@@ -42612,7 +42616,7 @@ Shader ".poiyomi/Poiyomi Toon"
 					
 					float3 v = float3(ab * tDotH, at * bDotH, a2 * nDotH);
 					float v2 = dot(v, v);
-					float w2 = a2 / v2;
+					float w2 = a2 / (v2+ 1e-5f);
 					float dotTerm = a2 * (w2 * w2 * UNITY_INV_PI);
 					
 					visibilityTerm *= dotTerm;
@@ -42631,7 +42635,7 @@ Shader ".poiyomi/Poiyomi Toon"
 					
 					visibilityTerm = 0.5f / (lambdaV + lambdaL + 1e-5f);
 					float a = nDotH * roughness;
-					float k = roughness / (1.0 - nDotH * nDotH + a * a);
+					float k = roughness / (1.0 - nDotH * nDotH + a * a+ 1e-5f);
 					float dotTerm = k * k * UNITY_INV_PI;
 					
 					visibilityTerm *= dotTerm;
@@ -42857,9 +42861,13 @@ Shader ".poiyomi/Poiyomi Toon"
 						float pbrVDotNH = lerp(poiLight.vertexVDotNH[index], poiLight.vDotNH[index], _PBRNormalSelect);
 						
 						#ifdef GGX_ANISOTROPICS
-						GetSpecFresTerm(pbrNDotL, pbrNDotV, pbrNDotH, poiLight.lDotH, specularTerm, fresnelTerm, specCol, brdfRoughness, pbrTDotV, pbrBDotV, pbrTDotL, pbrBDotL, pbrTDotH, pbrBDotH, adjustedAnisotropy);
+						float pbrTDotvL = dot(pbrTSelect, poiLight.vDirection[index]);
+						float pbrBDotvL = dot(pbrBSelect, poiLight.vDirection[index]);
+						float pbrTDotvH = dot(pbrTSelect, poiLight.vHalfDir[index]);
+						float pbrBDotvH = dot(pbrBSelect, poiLight.vHalfDir[index]);
+						GetSpecFresTerm(pbrVDotNL, pbrNDotV, pbrVDotNH, poiLight.vDotLH[index], specularTerm, fresnelTerm, specCol, brdfRoughness, pbrTDotV, pbrBDotV, pbrTDotvL, pbrBDotvL, pbrTDotvH, pbrBDotvH, adjustedAnisotropy);
 						#else
-						GetSpecFresTerm(pbrNDotL, pbrNDotV, pbrNDotH, poiLight.lDotH, specularTerm, fresnelTerm, specCol, brdfRoughness);
+						GetSpecFresTerm(pbrVDotNL, pbrNDotV, pbrVDotNH, poiLight.vDotLH[index], specularTerm, fresnelTerm, specCol, brdfRoughness);
 						#endif
 						vSpecular += poiLight.vColor[index] * specularTerm * fresnelTerm * specularMask * poiThemeColor(poiMods, _MochieSpecularTint, _MochieSpecularTintThemeIndex) * poiLight.occlusion;
 					}
