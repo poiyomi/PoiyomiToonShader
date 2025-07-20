@@ -2,7 +2,7 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 {
 	Properties
 	{
-		[HideInInspector] shader_master_label ("<color=#E75898ff>Poiyomi 9.2.66</color>", Float) = 0
+		[HideInInspector] shader_master_label ("<color=#E75898ff>Poiyomi 9.2.67</color>", Float) = 0
 		[HideInInspector] shader_is_using_thry_editor ("", Float) = 0
 		[HideInInspector] shader_locale ("0db0b86376c3dca4b9a6828ef8615fe0", Float) = 0
 		[HideInInspector] footer_youtube ("{texture:{name:icon-youtube,height:16},action:{type:URL,data:https://www.youtube.com/poiyomi},hover:YOUTUBE}", Float) = 0
@@ -1857,6 +1857,7 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 		_MochieReflectionStrength ("Reflection Visibility", Range(0, 1)) = 1
 		_MochieSpecularStrength ("Specular Visibility", Range(0, 5)) = 1
 		_RefSpecFresnelStrength ("Fresnel Strength", Range(0, 1)) = .5
+		_SFExposureOcclusion ("Exposure Occlusion", Range(0, 1)) = 0
 		[Space(10)]
 		[ThryTexture][NoScaleOffset]_MochieReflCube ("Cubemap", Cube) = "" { }
 		[ToggleUI]_MochieForceFallback ("Force Fallback", Int) = 0
@@ -1921,6 +1922,7 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 		_ClearCoatReflectionStrength ("Reflections Visibility", Range(0, 1)) = 1
 		_ClearCoatSpecularStrength ("Specular Visibility", Range(0, 1)) = 1
 		_ClearcoatFresnelStrength ("Fresnel Strength", Range(0, 1)) = .5
+		_ClearcoatExposureOcclusion ("Exposure Occlusion", Range(0, 1)) = 0
 		_ClearCoatReflectionTint ("Reflection Tint--{reference_property:_ClearCoatReflectionTintThemeIndex}", Color) = (1, 1, 1, 1)
 		[HideInInspector][ThryWideEnum(Off, 0, Theme Color 0, 1, Theme Color 1, 2, Theme Color 2, 3, Theme Color 3, 4, ColorChord 0, 5, ColorChord 1, 6, ColorChord 2, 7, ColorChord 3, 8, AL Theme 0, 9, AL Theme 1, 10, AL Theme 2, 11, AL Theme 3, 12)] _ClearCoatReflectionTintThemeIndex ("", Int) = 0
 		_ClearCoatSpecularTint ("Specular Tint--{reference_property:_ClearCoatSpecularTintThemeIndex}", Color) = (1, 1, 1, 1)
@@ -2095,6 +2097,7 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 		_LTCGI_SpecularColor ("Specular Tint--{reference_property:_LTCGI_SpecularColorThemeIndex}", Color) = (1, 1, 1, 1)
 		[HideInInspector][ThryWideEnum(Off, 0, Theme Color 0, 1, Theme Color 1, 2, Theme Color 2, 3, Theme Color 3, 4, ColorChord 0, 5, ColorChord 1, 6, ColorChord 2, 7, ColorChord 3, 8, AL Theme 0, 9, AL Theme 1, 10, AL Theme 2, 11, AL Theme 3, 12)] _LTCGI_SpecularColorThemeIndex ("", Int) = 0
 		[ToggleUI] _LTCGI_UsePBR ("Use Reflection and Specular's Settings", Int) = 1
+		[ToggleUI] _LTCGI_UseEO ("Use Exposure Occlusion--{condition_showS:(_LTCGI_UsePBR==1 && _MochieBRDF==1)}", Int) = 0
 		_LTCGI_Smoothness ("Smoothness--{condition_showS:(_LTCGI_UsePBR==0 || _MochieBRDF==0)}", Range(0, 1)) = 0.0
 		_LTCGI_Metallic ("Metallic--{condition_showS:(_LTCGI_UsePBR==0 || _MochieBRDF==0)}", Range(0, 1)) = 0.0
 		[HideInInspector] m_end_LTCGI ("LTCGI", Float) = 0
@@ -2127,10 +2130,10 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 		
 		[HideInInspector] s_start_OutlineColorAdjust ("Color Adjust--{reference_property:_OutlineHueShift,persistent_expand:true,default_expand:false}", Float) = 0
 		[HideInInspector][ThryToggleUI(true)]_OutlineHueShift ("Color Adjust", Float) = 0
-		_OutlineHue ("Hue", Range(0,1)) = 0
-		_OutlineSaturation ("Saturation", Range(0,2)) = 1
-		_OutlineValue ("Value", Range(0,2)) = 1
-		_OutlineGamma ("Gamma", Range(0.01,2)) = 1
+		_OutlineHue ("Hue", Range(0, 1)) = 0
+		_OutlineSaturation ("Saturation", Range(0, 2)) = 1
+		_OutlineValue ("Value", Range(0, 2)) = 1
+		_OutlineGamma ("Gamma", Range(0.01, 2)) = 1
 		_OutlineHueOffsetSpeed ("Shift Speed", Float) = 0
 		[HideInInspector] s_end_OutlineColorAdjust ("Color Adjust", Float) = 0
 		
@@ -2154,6 +2157,17 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 		_OutlineShadowStrength ("Shadow Strength", Range(0, 1)) = 0
 		[HideInInspector] s_end_OutlineLighting ("Lighting", Float) = 0
 		
+		[HideInInspector] s_start_OutlineZOffset ("Outline Z Offset--{persistent_expand:true,default_expand:false}", Float) = 0
+		_Offset_Z ("Overall Strength", Float) = 0
+		[Space(10)]
+		[Enum(R, 0, G, 1, B, 2, A, 3)]_OutlineZOffsetChannel ("Outline Mask Channel", Float) = 0
+		_OutlineZOffsetMaskStrength ("Mask Strength", Range(0, 1)) = 1
+		[ToggleUI]_OutlineZOffsetInvertMaskChannel ("Invert Mask Channel", Float) = 0
+		[Space(10)]
+		[Enum(Off, 0, R, 1, G, 2, B, 3, A, 4)]_OutlineZOffsetVertexColor ("Vertex Color Channel", Float) = 0
+		_OutlineZOffsetVertexColorStrength ("Vertex Color Strength", Range(0, 1)) = 1
+		[HideInInspector] s_end_OutlineZOffset ("", Float) = 0
+		
 		[HideInInspector] s_start_VertexColors ("Vertex Colors--{persistent_expand:true,default_expand:false}", Float) = 0
 		[ToggleUI]_OutlineUseVertexColorNormals ("Vertex Color Normals", Float) = 0
 		[Enum(Off, 0, R, 1, G, 2, B, 3, A, 4)]_OutlineVertexColorMask ("Vertex Color Mask", Float) = 0
@@ -2163,7 +2177,6 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 		[HideInInspector] s_start_OutlineRenderingOptions ("Rendering Options--{persistent_expand:true,default_expand:false}", Float) = 0
 		[ToggleUI]_OutlineClipAtZeroWidth ("Clip 0 Width", Float) = 1
 		[ToggleUI]_OutlineOverrideAlpha ("Override Base Alpha", Float) = 0
-		_Offset_Z ("Cam Z Offset", Float) = 0
 		[Enum(UnityEngine.Rendering.CullMode)] _OutlineCull ("Cull", Float) = 1
 		[Enum(Off, 0, On, 1)] _OutlineZWrite ("ZWrite", Int) = 1
 		[Enum(UnityEngine.Rendering.CompareFunction)] _OutlineZTest ("ZTest", Float) = 4
@@ -2973,10 +2986,6 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 		[VectorLabel(R, G, B, A)]_PathGapLengths ("Gap Length--{condition_showS:(_PathTypeR==3||_PathTypeG==3||_PathTypeB==3||_PathTypeA==3)}", Vector) = (0.1, 0.1, 0.1, 0.1)
 		[HideInInspector] s_end_PathAppearance ("Path Appearance", Float) = 0
 		
-		[MultiSlider]_PathRemapR ("R Range--{condition_showS:_EnablePathRemapping==1}", Vector) = (0, 1, 0, 1)
-		[MultiSlider]_PathRemapG ("G Range--{condition_showS:_EnablePathRemapping==1}", Vector) = (0, 1, 0, 1)
-		[MultiSlider]_PathRemapB ("B Range--{condition_showS:_EnablePathRemapping==1}", Vector) = (0, 1, 0, 1)
-		[MultiSlider]_PathRemapA ("A Range--{condition_showS:_EnablePathRemapping==1}", Vector) = (0, 1, 0, 1)
 		[HideInInspector] s_start_TimingOptions ("Timing Options--{persistent_expand:true, default_expand:true}", Float) = 1
 		[VectorLabel(R, G, B, A)]_PathTime ("Manual Timing", Vector) = (-999.0, -999.0, -999.0, -999.0)
 		[VectorLabel(R, G, B, A)]_PathOffset ("Timing Offset", Vector) = (0.0, 0.0, 0.0, 0.0)
@@ -8944,12 +8953,16 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				
 				//ifex _EnableOutlines!=1
 				#ifdef POI_PASS_OUTLINE
-				float outlineMask = tex2Dlod(_OutlineMask, float4(poiUV(vertexUV(v, _OutlineMaskUV), _OutlineMask_ST) + _Time.x * _OutlineMaskPan, 0, 0))[_OutlineMaskChannel];
-				
-				//UNITY_BRANCH
+				float4 outlineMaskTex = tex2Dlod(_OutlineMask, float4(poiUV(vertexUV(v, _OutlineMaskUV), _OutlineMask_ST) + _Time.x * _OutlineMaskPan, 0, 0));
+				float outlineMask = outlineMaskTex[_OutlineMaskChannel];
+				float outLineZOffset = abs(lerp(1, outlineMaskTex[_OutlineZOffsetChannel], _OutlineZOffsetMaskStrength) - _OutlineZOffsetInvertMaskChannel);
 				if (_OutlineVertexColorMask > 0)
 				{
 					outlineMask *= lerp(1, v.color[_OutlineVertexColorMask - 1], _OutlineVertexColorMaskStrength);
+				}
+				if (_OutlineZOffsetVertexColor)
+				{
+					outLineZOffset *= lerp(1, v.color[_OutlineZOffsetVertexColor - 1], _OutlineZOffsetVertexColorStrength);
 				}
 				
 				float3 outlineNormal = _OutlineSpace ? o.normal : v.normal;
@@ -9141,15 +9154,22 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				o.fogData.y = 0;
 				#endif
 				
+				//ifex _EnableOutlines!=1
+				#ifdef POI_PASS_OUTLINE
+				
 				#ifdef POI_PASS_OUTLINE
 				#if defined(UNITY_REVERSED_Z)
 				//DX
-				o.pos.z += _Offset_Z * - 0.01;
+				o.pos.z += _Offset_Z * outLineZOffset * - 0.0001;
 				#else
 				//OpenGL
-				o.pos.z += _Offset_Z * 0.01;
+				o.pos.z += _Offset_Z * outLineZOffset * 0.0001;
 				#endif
 				#endif
+				
+				#endif
+				//endex
+				
 				//o.grabPos = ComputeGrabScreenPos(o.pos);
 				
 				#ifndef FORWARD_META_PASS
@@ -9839,6 +9859,8 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 			#ifndef VRC_LIGHT_VOLUMES_INCLUDED
 			#define VRC_LIGHT_VOLUMES_INCLUDED
 			#define VRCLV_VERSION 2
+			#define VRCLV_MAX_VOLUMES_COUNT 32
+			#define VRCLV_MAX_LIGHTS_COUNT 128
 			
 			#ifndef SHADER_TARGET_SURFACE_ANALYSIS
 			cbuffer LightVolumeUniforms {
@@ -9866,25 +9888,25 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				uniform float _UdonLightVolumeSharpBounds;
 				
 				// World to Local (-0.5, 0.5) UVW Matrix 4x4
-				uniform float4x4 _UdonLightVolumeInvWorldMatrix[32];
+				uniform float4x4 _UdonLightVolumeInvWorldMatrix[VRCLV_MAX_VOLUMES_COUNT];
 				
 				// L1 SH quaternion rotation (relative to baked rotation)
 				//uniform float4 _UdonLightVolumeRotationQuaternion[32];
-				uniform float4 _UdonLightVolumeRotation[64]; // Legacy! Used in this version to have back compatibility with older worlds. Array commented above will be used in future releases! Legacy!
+				uniform float4 _UdonLightVolumeRotation[VRCLV_MAX_VOLUMES_COUNT * 2]; // Legacy! Used in this version to have back compatibility with older worlds. Array commented above will be used in future releases! Legacy!
 				
 				// Value that is needed to smoothly blend volumes ( BoundsScale / edgeSmooth )
-				uniform float3 _UdonLightVolumeInvLocalEdgeSmooth[32];
+				uniform float3 _UdonLightVolumeInvLocalEdgeSmooth[VRCLV_MAX_VOLUMES_COUNT];
 				
 				// AABB Bounds of islands on the 3D Texture atlas. XYZ: UvwMin, W: Scale per axis
 				// uniform float4 _UdonLightVolumeUvwScale[96];
-				uniform float3 _UdonLightVolumeUvw[192]; // Legacy! AABB Bounds of islands on the 3D Texture atlas. Array commented above will be used in future releases! Legacy!
+				uniform float3 _UdonLightVolumeUvw[VRCLV_MAX_VOLUMES_COUNT * 6]; // Legacy! AABB Bounds of islands on the 3D Texture atlas. Array commented above will be used in future releases! Legacy!
 				
-				// AABB Bounds of islands on the 3D Texture atlas storing occlusion.
+				// XYZ: AABB Bounds of islands on the 3D Texture atlas storing occlusion. W: Scale factor for the occlusion volume UVW
 				// This is optional data. If the volume has no occlusion, the value will be (-1, -1, -1, -1).
-				uniform float3 _UdonLightVolumeOcclusionUvw[32];
+				uniform float4 _UdonLightVolumeOcclusionUvw[VRCLV_MAX_VOLUMES_COUNT];
 				
 				// Color multiplier (RGB) | If we actually need to rotate L1 components at all (A)
-				uniform float4 _UdonLightVolumeColor[32];
+				uniform float4 _UdonLightVolumeColor[VRCLV_MAX_VOLUMES_COUNT];
 				
 				// Point Lights count
 				uniform float _UdonPointLightVolumeCount;
@@ -9895,17 +9917,17 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				// For point light: XYZ = Position, W = Inverse squared range
 				// For spot light: XYZ = Position, W = Inverse squared range, negated
 				// For area light: XYZ = Position, W = Width
-				uniform float4 _UdonPointLightVolumePosition[128];
+				uniform float4 _UdonPointLightVolumePosition[VRCLV_MAX_LIGHTS_COUNT];
 				
 				// For point light: XYZ = Color, W = Cos of angle (for LUT)
 				// For spot light: XYZ = Color, W = Cos of outer angle if no custom texture, tan of outer angle otherwise
 				// For area light: XYZ = Color, W = 2 + Height
-				uniform float4 _UdonPointLightVolumeColor[128];
+				uniform float4 _UdonPointLightVolumeColor[VRCLV_MAX_LIGHTS_COUNT];
 				
 				// For point light: XYZW = Rotation quaternion
 				// For spot light: XYZ = Direction, W = Cone falloff
 				// For area light: XYZW = Rotation quaternion
-				uniform float4 _UdonPointLightVolumeDirection[128];
+				uniform float4 _UdonPointLightVolumeDirection[VRCLV_MAX_LIGHTS_COUNT];
 				
 				// X = Custom ID:
 				//   If parametric: X stores 0
@@ -9913,7 +9935,7 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				//   If uses custom texture: X stores texture ID with negative sign
 				// Y = Shadowmask index. If light doesn't use shadowmask, the index will be negative.
 				// Z = Squared Culling Range. Just a precalculated culling range to not recalculate in in shader.
-				uniform float3 _UdonPointLightVolumeCustomID[128];
+				uniform float3 _UdonPointLightVolumeCustomID[VRCLV_MAX_LIGHTS_COUNT];
 				
 				// If we are far enough from a light that the irradiance
 				// is guaranteed lower than the threshold defined by this value,
@@ -10000,7 +10022,7 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				float3 absDir = abs(dir);
 				float2 uv;
 				uint face;
-				if (absDir.x >= absDir.y && absDir.x >= absDir.z) {
+				[branch] if (absDir.x >= absDir.y && absDir.x >= absDir.z) {
 					face = dir.x > 0 ? 0 : 1;
 					uv = float2((dir.x > 0 ? -dir.z : dir.z), -dir.y) * rcp(absDir.x);
 				} else if (absDir.y >= absDir.z) {
@@ -10020,7 +10042,7 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 			float4 LV_ProjectQuadLightIrradianceSH(float3 shadingPosition, float3 lightVertices[4]) {
 				// Transform the vertices into local space centered on the shading position,
 				// project, the polygon onto the unit sphere.
-				for (uint edge0 = 0; edge0 < 4; edge0++) {
+				[unroll] for (uint edge0 = 0; edge0 < 4; edge0++) {
 					lightVertices[edge0] = normalize(lightVertices[edge0] - shadingPosition);
 				}
 				
@@ -10127,8 +10149,7 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				// If the magnitude of L1 is greater than L0, we may get negative values
 				// when reconstructing. To avoid, normalize L1. This is effectively de-ringing.
 				float lenL1 = length(areaLightSH.xyz);
-				if (lenL1 > areaLightSH.w)
-				areaLightSH.xyz *= areaLightSH.w / lenL1;
+				if (lenL1 > areaLightSH.w) areaLightSH.xyz *= areaLightSH.w / lenL1;
 				
 				L0  += areaLightSH.w * color.rgb * occlusion;
 				L1r += areaLightSH.xyz * color.r * occlusion;
@@ -10175,7 +10196,7 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				float3 dirN = normalize(dir);
 				
 				float spotMask = dot(lightDir, -dirN) - cosAngle;
-				if (spotMask < 0) return; // Culling by spot angle
+				[branch] if (spotMask < 0) return; // Culling by spot angle
 				
 				float3 att = LV_PointLightAttenuation(sqdist, sqlightSize, color, _UdonLightBrightnessCutoff, sqMaxDist);
 				
@@ -10199,10 +10220,10 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				float3 dirN = normalize(dir);
 				
 				float3 localDir = LV_MultiplyVectorByQuaternion(-dirN, lightRot);
-				if (localDir.z <= 0.0) return; // Culling by direction
+				[branch] if (localDir.z <= 0.0) return; // Culling by direction
 				
 				float2 uv = localDir.xy * rcp(localDir.z * tanAngle);
-				if (abs(uv.x) > 1.0 || abs(uv.y) > 1.0) return; // Culling by UV
+				[branch] if (abs(uv.x) > 1.0 || abs(uv.y) > 1.0) return; // Culling by UV
 				
 				float3 att = LV_PointLightAttenuation(sqdist, sqlightSize, color, _UdonLightBrightnessCutoff, sqMaxDist);
 				
@@ -10234,24 +10255,22 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				float4 pos = _UdonPointLightVolumePosition[id]; // Light position and inversed squared range
 				float3 dir = pos.xyz - worldPos;
 				float sqlen = max(dot(dir, dir), 1e-6);
-				[branch] // Early distance based culling
-				if (sqlen > sqrRange) return;
+				[branch] if (sqlen > sqrRange) return; // Early distance based culling
 				
 				// Processing lights occlusion
 				float lightOcclusion = 1;
-				[branch]
-				if (_UdonLightVolumeOcclusionCount != 0 && shadowId >= 0) {
+				[branch] if (_UdonLightVolumeOcclusionCount != 0 && shadowId >= 0) {
 					lightOcclusion = dot(1, float4(shadowId == 0, shadowId == 1, shadowId == 2, shadowId == 3) * occlusion);
 				}
 				
 				float4 color = _UdonPointLightVolumeColor[id]; // Color, angle
 				
-				if (pos.w < 0) { // It is a spot light
+				[branch] if (pos.w < 0) { // It is a spot light
 					
 					float angle = color.w;
 					float4 ldir = _UdonPointLightVolumeDirection[id]; // Dir + falloff or Rotation
 					
-					if (customId > 0) {  // If it uses Attenuation LUT
+					[branch] if (customId > 0) {  // If it uses Attenuation LUT
 						
 						float invSqRange = abs(pos.w); // Sign of range defines if it's point light (positive) or a spot light (negative)
 						float3 dirN = dir * rsqrt(sqlen);
@@ -10282,7 +10301,7 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 					
 				} else if (color.w <= 1.5f) { // It is a point light
 					
-					if (customId < 0) { // If it uses a cubemap
+					[branch] if (customId < 0) { // If it uses a cubemap
 						
 						float4 ldir = _UdonPointLightVolumeDirection[id]; // Dir + falloff or Rotation
 						float3 dirN = dir * rsqrt(sqlen);
@@ -10390,10 +10409,9 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				LV_SampleLightVolumeTex(uvw0, uvw1, uvw2, l0, l1r, l1g, l1b);
 				
 				// Sample occlusion
-				float3 uvwOcclusion = _UdonLightVolumeOcclusionUvw[id].xyz;
-				[branch]
-				if (uvwOcclusion.x >= 0) {
-					occlusion = 1.0f - LV_SAMPLE(_UdonLightVolume, uvwOcclusion + uvwScaled);
+				float4 uvwOcclusion = _UdonLightVolumeOcclusionUvw[id];
+				[branch] if (uvwOcclusion.x >= 0) {
+					occlusion = 1.0f - LV_SAMPLE(_UdonLightVolume, uvwOcclusion.xyz + uvwScaled * uvwOcclusion.w);
 				} else {
 					occlusion = 1;
 				}
@@ -10429,10 +10447,9 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 			float4 LV_SampleVolumeOcclusion(uint id, float3 localUVW) {
 				
 				// Sample occlusion
-				float3 uvwOcclusion = _UdonLightVolumeOcclusionUvw[id].xyz;
+				float4 uvwOcclusion = _UdonLightVolumeOcclusionUvw[id];
 				
-				[branch]
-				if (uvwOcclusion.x >= 0) {
+				[branch] if (uvwOcclusion.x >= 0) {
 					//uint uvwID = id * 3;
 					//float4 uvwPos0 = _UdonLightVolumeUvwScale[uvwID];
 					//float4 uvwPos1 = _UdonLightVolumeUvwScale[uvwID + 1];
@@ -10444,7 +10461,7 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 					uint uvwID = id * 6;
 					float3 uvwScaled = saturate(localUVW + 0.5) * (_UdonLightVolumeUvw[uvwID + 1].xyz - _UdonLightVolumeUvw[uvwID].xyz);
 					
-					return 1.0f - LV_SAMPLE(_UdonLightVolume, uvwOcclusion + uvwScaled);
+					return 1.0f - LV_SAMPLE(_UdonLightVolume, uvwOcclusion.xyz + uvwScaled * uvwOcclusion.w);
 				} else {
 					return 1;
 				}
@@ -10454,15 +10471,18 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 			// Calculates L1 SH based on the world position and occlusion factor. Only samples point lights, not light volumes.
 			void LV_PointLightVolumeSH(float3 worldPos, float4 occlusion, inout float3 L0, inout float3 L1r, inout float3 L1g, inout float3 L1b) {
 				
-				uint pointCount = min((uint) _UdonPointLightVolumeCount, 128);
-				if (pointCount == 0) return;
+				uint pointCount = min((uint) _UdonPointLightVolumeCount, VRCLV_MAX_LIGHTS_COUNT);
+				[branch] if (pointCount == 0) return;
 				
-				uint maxOverdraw = min((uint) _UdonLightVolumeAdditiveMaxOverdraw, 32);
+				uint maxOverdraw = min((uint) _UdonLightVolumeAdditiveMaxOverdraw, VRCLV_MAX_LIGHTS_COUNT);
 				uint pcount = 0; // Point lights counter
 				
-				[loop]
-				for (uint pid = 0; pid < pointCount && pcount < maxOverdraw; pid++) {
-					LV_PointLight(pid, worldPos, occlusion, L0, L1r, L1g, L1b, pcount);
+				[loop] for (uint pid = 0; pid < VRCLV_MAX_LIGHTS_COUNT; pid++) {
+					[branch] if (pid < pointCount && pcount < maxOverdraw) {
+						LV_PointLight(pid, worldPos, occlusion, L0, L1r, L1g, L1b, pcount);
+					} else {
+						return; // Stop if we reached the end of lights or max overdraw count
+					}
 				}
 				
 			}
@@ -10472,18 +10492,19 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				
 				// Initializing output variables
 				occlusion = 1;
+				float4 mOcclusion = 1; // Multiplicative occlusion. Applies on top of regular occlusion
 				
 				// Clamping gloabal iteration counts
-				uint volumesCount = min((uint) _UdonLightVolumeCount, 32);
+				uint volumesCount = min((uint) _UdonLightVolumeCount, VRCLV_MAX_VOLUMES_COUNT);
 				
 				//if (_UdonLightVolumeVersion < VRCLV_VERSION || volumesCount == 0 ) { // Fallback to default light probes if Light Volume are not enabled or a version is too old to have a support
-				if (volumesCount == 0) { // Legacy! Fallback to default light probes if Light Volume are not enabled or a version is too old to have a support. Legacy!
+				[branch] if (volumesCount == 0) { // Legacy! Fallback to default light probes if Light Volume are not enabled or a version is too old to have a support. Legacy!
 					LV_SampleLightProbe(L0, L1r, L1g, L1b);
 					return;
 				}
 				
-				uint maxOverdraw = min((uint) _UdonLightVolumeAdditiveMaxOverdraw, 32);
-				uint additiveCount = min((uint) _UdonLightVolumeAdditiveCount, 32);
+				uint maxOverdraw = min((uint) _UdonLightVolumeAdditiveMaxOverdraw, VRCLV_MAX_VOLUMES_COUNT);
+				uint additiveCount = min((uint) _UdonLightVolumeAdditiveCount, VRCLV_MAX_VOLUMES_COUNT);
 				bool lightProbesBlend = _UdonLightVolumeProbesBlend;
 				
 				uint volumeID_A = -1; // Main, dominant volume ID
@@ -10501,14 +10522,15 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				uint addVolumesCount = 0;
 				
 				// Iterating through all light volumes with simplified algorithm requiring Light Volumes to be sorted by weight in descending order
-				[loop]
-				for (uint id = 0; id < volumesCount; id++) {
+				[loop] for (uint id = 0; id < VRCLV_MAX_VOLUMES_COUNT; id++) {
+					[branch] if (id >= volumesCount) break;
 					localUVW = LV_LocalFromVolume(id, worldPos);
-					if (LV_PointLocalAABB(localUVW)) { // Intersection test
-						if (id < additiveCount) { // Sampling additive volumes
-							if (addVolumesCount < maxOverdraw) {
-								float4 unusedOcclusion; // Will be stripped by compiler
-								LV_SampleVolume(id, localUVW, L0, L1r, L1g, L1b, unusedOcclusion);
+					[branch] if (LV_PointLocalAABB(localUVW)) { // Intersection test
+						[branch] if (id < additiveCount) { // Sampling additive volumes
+							[branch] if (addVolumesCount < maxOverdraw) {
+								float4 occ; // Multiplicative occlusion
+								LV_SampleVolume(id, localUVW, L0, L1r, L1g, L1b, occ);
+								mOcclusion *= occ;
 								addVolumesCount++;
 							}
 						} else if (isNoA) { // First, searching for volume A
@@ -10525,8 +10547,9 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				}
 				
 				// If no volumes found, using Light Probes as fallback
-				if (isNoA && lightProbesBlend) {
+				[branch] if (isNoA && lightProbesBlend) {
 					LV_SampleLightProbe(L0, L1r, L1g, L1b);
+					occlusion *= mOcclusion;
 					return;
 				}
 				
@@ -10545,12 +10568,13 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				LV_SampleVolume(volumeID_A, localUVW_A, L0_A, L1r_A, L1g_A, L1b_A, occlusion_A);
 				
 				float mask = LV_BoundsMask(localUVW_A, _UdonLightVolumeInvLocalEdgeSmooth[volumeID_A]);
-				if (mask == 1 || isNoA || (_UdonLightVolumeSharpBounds && isNoB)) { // Returning SH A result if it's the center of mask or out of bounds
+				[branch] if (mask == 1 || isNoA || (_UdonLightVolumeSharpBounds && isNoB)) { // Returning SH A result if it's the center of mask or out of bounds
 					L0  += L0_A;
 					L1r += L1r_A;
 					L1g += L1g_A;
 					L1b += L1b_A;
 					occlusion = occlusion_A;
+					occlusion *= mOcclusion;
 					return;
 				}
 				
@@ -10561,7 +10585,7 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				float3 L1b_B = 0;
 				float4 occlusion_B = 1;
 				
-				if (isNoB && lightProbesBlend) { // No Volume found and light volumes blending enabled
+				[branch] if (isNoB && lightProbesBlend) { // No Volume found and light volumes blending enabled
 					
 					// Sample Light Probes B
 					LV_SampleLightProbe(L0_B, L1r_B, L1g_B, L1b_B);
@@ -10579,6 +10603,7 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				
 				// Lerping occlusion
 				occlusion = lerp(occlusion_B, occlusion_A, mask);
+				occlusion *= mOcclusion;
 				
 				// Lerping SH components
 				L0  += lerp(L0_B,  L0_A,  mask);
@@ -10594,17 +10619,15 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				
 				// Initializing output variables
 				occlusion = 1;
+				float4 mOcclusion = 1; // Multiplicative occlusion. Applies on top of regular occlusion
 				
 				// Clamping gloabal iteration counts
-				uint pointCount = min((uint) _UdonPointLightVolumeCount, 128);
-				uint additiveCount = min((uint) _UdonLightVolumeAdditiveCount, 32);
-				
+				uint additiveCount = min((uint) _UdonLightVolumeAdditiveCount, VRCLV_MAX_VOLUMES_COUNT);
 				//if (_UdonLightVolumeVersion < VRCLV_VERSION || (additiveCount == 0 && pointCount == 0)) return;
-				if (additiveCount == 0 && pointCount == 0)
-				return; // Legacy!
+				[branch] if (additiveCount == 0 && (uint) _UdonPointLightVolumeCount == 0) return; // Legacy!
 				
-				uint volumesCount = min((uint) _UdonLightVolumeCount, 32);
-				uint maxOverdraw = min((uint) _UdonLightVolumeAdditiveMaxOverdraw, 32);
+				uint volumesCount = min((uint) _UdonLightVolumeCount, VRCLV_MAX_VOLUMES_COUNT);
+				uint maxOverdraw = min((uint) _UdonLightVolumeAdditiveMaxOverdraw, VRCLV_MAX_VOLUMES_COUNT);
 				
 				uint volumeID_A = -1; // Main, dominant volume ID
 				uint volumeID_B = -1; // Secondary volume ID to blend main with
@@ -10621,15 +10644,16 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				uint addVolumesCount = 0;
 				
 				// Iterating through all light volumes with simplified algorithm requiring Light Volumes to be sorted by weight in descending order
-				uint count = min(_UdonLightVolumeOcclusionCount == 0 ? additiveCount : volumesCount, 32); // Only use all volumes if occlusion volumes are enabled
-				[loop]
-				for (uint id = 0; id < count; id++) {
+				uint count = min(_UdonLightVolumeOcclusionCount == 0 ? additiveCount : volumesCount, VRCLV_MAX_VOLUMES_COUNT); // Only use all volumes if occlusion volumes are enabled
+				[loop] for (uint id = 0; id < VRCLV_MAX_VOLUMES_COUNT; id++) {
+					[branch] if(id >= count) break;
 					localUVW = LV_LocalFromVolume(id, worldPos);
-					if (LV_PointLocalAABB(localUVW)) { // Intersection test
-						if (id < additiveCount) { // Sampling additive volumes
-							if (addVolumesCount < maxOverdraw) {
-								float4 unusedOcclusion;
-								LV_SampleVolume(id, localUVW, L0, L1r, L1g, L1b, unusedOcclusion);
+					[branch] if (LV_PointLocalAABB(localUVW)) { // Intersection test
+						[branch] if (id < additiveCount) { // Sampling additive volumes
+							[branch] if (addVolumesCount < maxOverdraw) {
+								float4 occ; // Multiplicative occlusion
+								LV_SampleVolume(id, localUVW, L0, L1r, L1g, L1b, occ);
+								mOcclusion *= occ;
 								addVolumesCount++;
 							}
 						} else if (isNoA) { // First, searching for volume A
@@ -10646,7 +10670,10 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				}
 				
 				// If no volumes found, or we don't need the occlusion data, we are done
-				if (isNoA || _UdonLightVolumeOcclusionCount == 0) return;
+				[branch] if (isNoA || _UdonLightVolumeOcclusionCount == 0) {
+					occlusion *= mOcclusion;
+					return;
+				}
 				
 				// Fallback to lowest weight light volume if outside of every volume
 				localUVW_A = isNoA ? localUVW : localUVW_A;
@@ -10656,11 +10683,16 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				occlusion = LV_SampleVolumeOcclusion(volumeID_A, localUVW_A);
 				float mask = LV_BoundsMask(localUVW_A, _UdonLightVolumeInvLocalEdgeSmooth[volumeID_A]);
 				
-				if (mask == 1 || (_UdonLightVolumeSharpBounds && isNoB)) return; // Returning A result if it's the center of mask or out of bounds
+				[branch] if (mask == 1 || (_UdonLightVolumeSharpBounds && isNoB)) {
+					occlusion *= mOcclusion;
+					return; // Returning A result if it's the center of mask or out of bounds
+				}
 				
 				// Blending Volume A and Volume B
-				if (isNoB) occlusion = lerp(1, occlusion, mask);
+				[branch] if (isNoB) occlusion = lerp(1, occlusion, mask);
 				else occlusion = lerp(LV_SampleVolumeOcclusion(volumeID_B, localUVW_B), occlusion, mask);
+				
+				occlusion *= mOcclusion;
 				
 			}
 			
@@ -11288,8 +11320,16 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 			float4 _OutlinePersonaDirection;
 			float4 _OutlineDropShadowOffset;
 			float _OutlineUseVertexColorNormals;
+			
 			float _OutlineVertexColorMask;
 			float _OutlineVertexColorMaskStrength;
+			
+			float _OutlineZOffsetVertexColor;
+			float _OutlineZOffsetVertexColorStrength;
+			float _OutlineZOffsetChannel;
+			float _OutlineZOffsetMaskStrength;
+			float _OutlineZOffsetInvertMaskChannel;
+			
 			float _OutlineFixedSize;
 			float _OutlineFixWidth;
 			float _EnableOutlines;
@@ -15701,12 +15741,16 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				
 				//ifex _EnableOutlines!=1
 				#ifdef POI_PASS_OUTLINE
-				float outlineMask = tex2Dlod(_OutlineMask, float4(poiUV(vertexUV(v, _OutlineMaskUV), _OutlineMask_ST) + _Time.x * _OutlineMaskPan, 0, 0))[_OutlineMaskChannel];
-				
-				//UNITY_BRANCH
+				float4 outlineMaskTex = tex2Dlod(_OutlineMask, float4(poiUV(vertexUV(v, _OutlineMaskUV), _OutlineMask_ST) + _Time.x * _OutlineMaskPan, 0, 0));
+				float outlineMask = outlineMaskTex[_OutlineMaskChannel];
+				float outLineZOffset = abs(lerp(1, outlineMaskTex[_OutlineZOffsetChannel], _OutlineZOffsetMaskStrength) - _OutlineZOffsetInvertMaskChannel);
 				if (_OutlineVertexColorMask > 0)
 				{
 					outlineMask *= lerp(1, v.color[_OutlineVertexColorMask - 1], _OutlineVertexColorMaskStrength);
+				}
+				if (_OutlineZOffsetVertexColor)
+				{
+					outLineZOffset *= lerp(1, v.color[_OutlineZOffsetVertexColor - 1], _OutlineZOffsetVertexColorStrength);
 				}
 				
 				float3 outlineNormal = _OutlineSpace ? o.normal : v.normal;
@@ -15898,15 +15942,22 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				o.fogData.y = 0;
 				#endif
 				
+				//ifex _EnableOutlines!=1
+				#ifdef POI_PASS_OUTLINE
+				
 				#ifdef POI_PASS_OUTLINE
 				#if defined(UNITY_REVERSED_Z)
 				//DX
-				o.pos.z += _Offset_Z * - 0.01;
+				o.pos.z += _Offset_Z * outLineZOffset * - 0.0001;
 				#else
 				//OpenGL
-				o.pos.z += _Offset_Z * 0.01;
+				o.pos.z += _Offset_Z * outLineZOffset * 0.0001;
 				#endif
 				#endif
+				
+				#endif
+				//endex
+				
 				//o.grabPos = ComputeGrabScreenPos(o.pos);
 				
 				#ifndef FORWARD_META_PASS
@@ -16329,7 +16380,7 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				if (_OutlineHueShift)
 				{
 					//poiFragData.baseColor = hueShift(poiFragData.baseColor, _OutlineHueOffset +_OutlineHueOffsetSpeed * _Time.x);
-					float4 hsvg = float4(_OutlineHue ,_OutlineSaturation ,_OutlineValue ,_OutlineGamma);
+					float4 hsvg = float4(_OutlineHue, _OutlineSaturation, _OutlineValue, _OutlineGamma);
 					hsvg.r += _OutlineHueOffsetSpeed * _Time.x;
 					poiFragData.baseColor.rgb = lilToneCorrection(poiFragData.baseColor.rgb, hsvg);
 				}
@@ -20488,6 +20539,8 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 			#ifndef VRC_LIGHT_VOLUMES_INCLUDED
 			#define VRC_LIGHT_VOLUMES_INCLUDED
 			#define VRCLV_VERSION 2
+			#define VRCLV_MAX_VOLUMES_COUNT 32
+			#define VRCLV_MAX_LIGHTS_COUNT 128
 			
 			#ifndef SHADER_TARGET_SURFACE_ANALYSIS
 			cbuffer LightVolumeUniforms {
@@ -20515,25 +20568,25 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				uniform float _UdonLightVolumeSharpBounds;
 				
 				// World to Local (-0.5, 0.5) UVW Matrix 4x4
-				uniform float4x4 _UdonLightVolumeInvWorldMatrix[32];
+				uniform float4x4 _UdonLightVolumeInvWorldMatrix[VRCLV_MAX_VOLUMES_COUNT];
 				
 				// L1 SH quaternion rotation (relative to baked rotation)
 				//uniform float4 _UdonLightVolumeRotationQuaternion[32];
-				uniform float4 _UdonLightVolumeRotation[64]; // Legacy! Used in this version to have back compatibility with older worlds. Array commented above will be used in future releases! Legacy!
+				uniform float4 _UdonLightVolumeRotation[VRCLV_MAX_VOLUMES_COUNT * 2]; // Legacy! Used in this version to have back compatibility with older worlds. Array commented above will be used in future releases! Legacy!
 				
 				// Value that is needed to smoothly blend volumes ( BoundsScale / edgeSmooth )
-				uniform float3 _UdonLightVolumeInvLocalEdgeSmooth[32];
+				uniform float3 _UdonLightVolumeInvLocalEdgeSmooth[VRCLV_MAX_VOLUMES_COUNT];
 				
 				// AABB Bounds of islands on the 3D Texture atlas. XYZ: UvwMin, W: Scale per axis
 				// uniform float4 _UdonLightVolumeUvwScale[96];
-				uniform float3 _UdonLightVolumeUvw[192]; // Legacy! AABB Bounds of islands on the 3D Texture atlas. Array commented above will be used in future releases! Legacy!
+				uniform float3 _UdonLightVolumeUvw[VRCLV_MAX_VOLUMES_COUNT * 6]; // Legacy! AABB Bounds of islands on the 3D Texture atlas. Array commented above will be used in future releases! Legacy!
 				
-				// AABB Bounds of islands on the 3D Texture atlas storing occlusion.
+				// XYZ: AABB Bounds of islands on the 3D Texture atlas storing occlusion. W: Scale factor for the occlusion volume UVW
 				// This is optional data. If the volume has no occlusion, the value will be (-1, -1, -1, -1).
-				uniform float3 _UdonLightVolumeOcclusionUvw[32];
+				uniform float4 _UdonLightVolumeOcclusionUvw[VRCLV_MAX_VOLUMES_COUNT];
 				
 				// Color multiplier (RGB) | If we actually need to rotate L1 components at all (A)
-				uniform float4 _UdonLightVolumeColor[32];
+				uniform float4 _UdonLightVolumeColor[VRCLV_MAX_VOLUMES_COUNT];
 				
 				// Point Lights count
 				uniform float _UdonPointLightVolumeCount;
@@ -20544,17 +20597,17 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				// For point light: XYZ = Position, W = Inverse squared range
 				// For spot light: XYZ = Position, W = Inverse squared range, negated
 				// For area light: XYZ = Position, W = Width
-				uniform float4 _UdonPointLightVolumePosition[128];
+				uniform float4 _UdonPointLightVolumePosition[VRCLV_MAX_LIGHTS_COUNT];
 				
 				// For point light: XYZ = Color, W = Cos of angle (for LUT)
 				// For spot light: XYZ = Color, W = Cos of outer angle if no custom texture, tan of outer angle otherwise
 				// For area light: XYZ = Color, W = 2 + Height
-				uniform float4 _UdonPointLightVolumeColor[128];
+				uniform float4 _UdonPointLightVolumeColor[VRCLV_MAX_LIGHTS_COUNT];
 				
 				// For point light: XYZW = Rotation quaternion
 				// For spot light: XYZ = Direction, W = Cone falloff
 				// For area light: XYZW = Rotation quaternion
-				uniform float4 _UdonPointLightVolumeDirection[128];
+				uniform float4 _UdonPointLightVolumeDirection[VRCLV_MAX_LIGHTS_COUNT];
 				
 				// X = Custom ID:
 				//   If parametric: X stores 0
@@ -20562,7 +20615,7 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				//   If uses custom texture: X stores texture ID with negative sign
 				// Y = Shadowmask index. If light doesn't use shadowmask, the index will be negative.
 				// Z = Squared Culling Range. Just a precalculated culling range to not recalculate in in shader.
-				uniform float3 _UdonPointLightVolumeCustomID[128];
+				uniform float3 _UdonPointLightVolumeCustomID[VRCLV_MAX_LIGHTS_COUNT];
 				
 				// If we are far enough from a light that the irradiance
 				// is guaranteed lower than the threshold defined by this value,
@@ -20649,7 +20702,7 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				float3 absDir = abs(dir);
 				float2 uv;
 				uint face;
-				if (absDir.x >= absDir.y && absDir.x >= absDir.z) {
+				[branch] if (absDir.x >= absDir.y && absDir.x >= absDir.z) {
 					face = dir.x > 0 ? 0 : 1;
 					uv = float2((dir.x > 0 ? -dir.z : dir.z), -dir.y) * rcp(absDir.x);
 				} else if (absDir.y >= absDir.z) {
@@ -20669,7 +20722,7 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 			float4 LV_ProjectQuadLightIrradianceSH(float3 shadingPosition, float3 lightVertices[4]) {
 				// Transform the vertices into local space centered on the shading position,
 				// project, the polygon onto the unit sphere.
-				for (uint edge0 = 0; edge0 < 4; edge0++) {
+				[unroll] for (uint edge0 = 0; edge0 < 4; edge0++) {
 					lightVertices[edge0] = normalize(lightVertices[edge0] - shadingPosition);
 				}
 				
@@ -20776,8 +20829,7 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				// If the magnitude of L1 is greater than L0, we may get negative values
 				// when reconstructing. To avoid, normalize L1. This is effectively de-ringing.
 				float lenL1 = length(areaLightSH.xyz);
-				if (lenL1 > areaLightSH.w)
-				areaLightSH.xyz *= areaLightSH.w / lenL1;
+				if (lenL1 > areaLightSH.w) areaLightSH.xyz *= areaLightSH.w / lenL1;
 				
 				L0  += areaLightSH.w * color.rgb * occlusion;
 				L1r += areaLightSH.xyz * color.r * occlusion;
@@ -20824,7 +20876,7 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				float3 dirN = normalize(dir);
 				
 				float spotMask = dot(lightDir, -dirN) - cosAngle;
-				if (spotMask < 0) return; // Culling by spot angle
+				[branch] if (spotMask < 0) return; // Culling by spot angle
 				
 				float3 att = LV_PointLightAttenuation(sqdist, sqlightSize, color, _UdonLightBrightnessCutoff, sqMaxDist);
 				
@@ -20848,10 +20900,10 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				float3 dirN = normalize(dir);
 				
 				float3 localDir = LV_MultiplyVectorByQuaternion(-dirN, lightRot);
-				if (localDir.z <= 0.0) return; // Culling by direction
+				[branch] if (localDir.z <= 0.0) return; // Culling by direction
 				
 				float2 uv = localDir.xy * rcp(localDir.z * tanAngle);
-				if (abs(uv.x) > 1.0 || abs(uv.y) > 1.0) return; // Culling by UV
+				[branch] if (abs(uv.x) > 1.0 || abs(uv.y) > 1.0) return; // Culling by UV
 				
 				float3 att = LV_PointLightAttenuation(sqdist, sqlightSize, color, _UdonLightBrightnessCutoff, sqMaxDist);
 				
@@ -20883,24 +20935,22 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				float4 pos = _UdonPointLightVolumePosition[id]; // Light position and inversed squared range
 				float3 dir = pos.xyz - worldPos;
 				float sqlen = max(dot(dir, dir), 1e-6);
-				[branch] // Early distance based culling
-				if (sqlen > sqrRange) return;
+				[branch] if (sqlen > sqrRange) return; // Early distance based culling
 				
 				// Processing lights occlusion
 				float lightOcclusion = 1;
-				[branch]
-				if (_UdonLightVolumeOcclusionCount != 0 && shadowId >= 0) {
+				[branch] if (_UdonLightVolumeOcclusionCount != 0 && shadowId >= 0) {
 					lightOcclusion = dot(1, float4(shadowId == 0, shadowId == 1, shadowId == 2, shadowId == 3) * occlusion);
 				}
 				
 				float4 color = _UdonPointLightVolumeColor[id]; // Color, angle
 				
-				if (pos.w < 0) { // It is a spot light
+				[branch] if (pos.w < 0) { // It is a spot light
 					
 					float angle = color.w;
 					float4 ldir = _UdonPointLightVolumeDirection[id]; // Dir + falloff or Rotation
 					
-					if (customId > 0) {  // If it uses Attenuation LUT
+					[branch] if (customId > 0) {  // If it uses Attenuation LUT
 						
 						float invSqRange = abs(pos.w); // Sign of range defines if it's point light (positive) or a spot light (negative)
 						float3 dirN = dir * rsqrt(sqlen);
@@ -20931,7 +20981,7 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 					
 				} else if (color.w <= 1.5f) { // It is a point light
 					
-					if (customId < 0) { // If it uses a cubemap
+					[branch] if (customId < 0) { // If it uses a cubemap
 						
 						float4 ldir = _UdonPointLightVolumeDirection[id]; // Dir + falloff or Rotation
 						float3 dirN = dir * rsqrt(sqlen);
@@ -21039,10 +21089,9 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				LV_SampleLightVolumeTex(uvw0, uvw1, uvw2, l0, l1r, l1g, l1b);
 				
 				// Sample occlusion
-				float3 uvwOcclusion = _UdonLightVolumeOcclusionUvw[id].xyz;
-				[branch]
-				if (uvwOcclusion.x >= 0) {
-					occlusion = 1.0f - LV_SAMPLE(_UdonLightVolume, uvwOcclusion + uvwScaled);
+				float4 uvwOcclusion = _UdonLightVolumeOcclusionUvw[id];
+				[branch] if (uvwOcclusion.x >= 0) {
+					occlusion = 1.0f - LV_SAMPLE(_UdonLightVolume, uvwOcclusion.xyz + uvwScaled * uvwOcclusion.w);
 				} else {
 					occlusion = 1;
 				}
@@ -21078,10 +21127,9 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 			float4 LV_SampleVolumeOcclusion(uint id, float3 localUVW) {
 				
 				// Sample occlusion
-				float3 uvwOcclusion = _UdonLightVolumeOcclusionUvw[id].xyz;
+				float4 uvwOcclusion = _UdonLightVolumeOcclusionUvw[id];
 				
-				[branch]
-				if (uvwOcclusion.x >= 0) {
+				[branch] if (uvwOcclusion.x >= 0) {
 					//uint uvwID = id * 3;
 					//float4 uvwPos0 = _UdonLightVolumeUvwScale[uvwID];
 					//float4 uvwPos1 = _UdonLightVolumeUvwScale[uvwID + 1];
@@ -21093,7 +21141,7 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 					uint uvwID = id * 6;
 					float3 uvwScaled = saturate(localUVW + 0.5) * (_UdonLightVolumeUvw[uvwID + 1].xyz - _UdonLightVolumeUvw[uvwID].xyz);
 					
-					return 1.0f - LV_SAMPLE(_UdonLightVolume, uvwOcclusion + uvwScaled);
+					return 1.0f - LV_SAMPLE(_UdonLightVolume, uvwOcclusion.xyz + uvwScaled * uvwOcclusion.w);
 				} else {
 					return 1;
 				}
@@ -21103,15 +21151,18 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 			// Calculates L1 SH based on the world position and occlusion factor. Only samples point lights, not light volumes.
 			void LV_PointLightVolumeSH(float3 worldPos, float4 occlusion, inout float3 L0, inout float3 L1r, inout float3 L1g, inout float3 L1b) {
 				
-				uint pointCount = min((uint) _UdonPointLightVolumeCount, 128);
-				if (pointCount == 0) return;
+				uint pointCount = min((uint) _UdonPointLightVolumeCount, VRCLV_MAX_LIGHTS_COUNT);
+				[branch] if (pointCount == 0) return;
 				
-				uint maxOverdraw = min((uint) _UdonLightVolumeAdditiveMaxOverdraw, 32);
+				uint maxOverdraw = min((uint) _UdonLightVolumeAdditiveMaxOverdraw, VRCLV_MAX_LIGHTS_COUNT);
 				uint pcount = 0; // Point lights counter
 				
-				[loop]
-				for (uint pid = 0; pid < pointCount && pcount < maxOverdraw; pid++) {
-					LV_PointLight(pid, worldPos, occlusion, L0, L1r, L1g, L1b, pcount);
+				[loop] for (uint pid = 0; pid < VRCLV_MAX_LIGHTS_COUNT; pid++) {
+					[branch] if (pid < pointCount && pcount < maxOverdraw) {
+						LV_PointLight(pid, worldPos, occlusion, L0, L1r, L1g, L1b, pcount);
+					} else {
+						return; // Stop if we reached the end of lights or max overdraw count
+					}
 				}
 				
 			}
@@ -21121,18 +21172,19 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				
 				// Initializing output variables
 				occlusion = 1;
+				float4 mOcclusion = 1; // Multiplicative occlusion. Applies on top of regular occlusion
 				
 				// Clamping gloabal iteration counts
-				uint volumesCount = min((uint) _UdonLightVolumeCount, 32);
+				uint volumesCount = min((uint) _UdonLightVolumeCount, VRCLV_MAX_VOLUMES_COUNT);
 				
 				//if (_UdonLightVolumeVersion < VRCLV_VERSION || volumesCount == 0 ) { // Fallback to default light probes if Light Volume are not enabled or a version is too old to have a support
-				if (volumesCount == 0) { // Legacy! Fallback to default light probes if Light Volume are not enabled or a version is too old to have a support. Legacy!
+				[branch] if (volumesCount == 0) { // Legacy! Fallback to default light probes if Light Volume are not enabled or a version is too old to have a support. Legacy!
 					LV_SampleLightProbe(L0, L1r, L1g, L1b);
 					return;
 				}
 				
-				uint maxOverdraw = min((uint) _UdonLightVolumeAdditiveMaxOverdraw, 32);
-				uint additiveCount = min((uint) _UdonLightVolumeAdditiveCount, 32);
+				uint maxOverdraw = min((uint) _UdonLightVolumeAdditiveMaxOverdraw, VRCLV_MAX_VOLUMES_COUNT);
+				uint additiveCount = min((uint) _UdonLightVolumeAdditiveCount, VRCLV_MAX_VOLUMES_COUNT);
 				bool lightProbesBlend = _UdonLightVolumeProbesBlend;
 				
 				uint volumeID_A = -1; // Main, dominant volume ID
@@ -21150,14 +21202,15 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				uint addVolumesCount = 0;
 				
 				// Iterating through all light volumes with simplified algorithm requiring Light Volumes to be sorted by weight in descending order
-				[loop]
-				for (uint id = 0; id < volumesCount; id++) {
+				[loop] for (uint id = 0; id < VRCLV_MAX_VOLUMES_COUNT; id++) {
+					[branch] if (id >= volumesCount) break;
 					localUVW = LV_LocalFromVolume(id, worldPos);
-					if (LV_PointLocalAABB(localUVW)) { // Intersection test
-						if (id < additiveCount) { // Sampling additive volumes
-							if (addVolumesCount < maxOverdraw) {
-								float4 unusedOcclusion; // Will be stripped by compiler
-								LV_SampleVolume(id, localUVW, L0, L1r, L1g, L1b, unusedOcclusion);
+					[branch] if (LV_PointLocalAABB(localUVW)) { // Intersection test
+						[branch] if (id < additiveCount) { // Sampling additive volumes
+							[branch] if (addVolumesCount < maxOverdraw) {
+								float4 occ; // Multiplicative occlusion
+								LV_SampleVolume(id, localUVW, L0, L1r, L1g, L1b, occ);
+								mOcclusion *= occ;
 								addVolumesCount++;
 							}
 						} else if (isNoA) { // First, searching for volume A
@@ -21174,8 +21227,9 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				}
 				
 				// If no volumes found, using Light Probes as fallback
-				if (isNoA && lightProbesBlend) {
+				[branch] if (isNoA && lightProbesBlend) {
 					LV_SampleLightProbe(L0, L1r, L1g, L1b);
+					occlusion *= mOcclusion;
 					return;
 				}
 				
@@ -21194,12 +21248,13 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				LV_SampleVolume(volumeID_A, localUVW_A, L0_A, L1r_A, L1g_A, L1b_A, occlusion_A);
 				
 				float mask = LV_BoundsMask(localUVW_A, _UdonLightVolumeInvLocalEdgeSmooth[volumeID_A]);
-				if (mask == 1 || isNoA || (_UdonLightVolumeSharpBounds && isNoB)) { // Returning SH A result if it's the center of mask or out of bounds
+				[branch] if (mask == 1 || isNoA || (_UdonLightVolumeSharpBounds && isNoB)) { // Returning SH A result if it's the center of mask or out of bounds
 					L0  += L0_A;
 					L1r += L1r_A;
 					L1g += L1g_A;
 					L1b += L1b_A;
 					occlusion = occlusion_A;
+					occlusion *= mOcclusion;
 					return;
 				}
 				
@@ -21210,7 +21265,7 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				float3 L1b_B = 0;
 				float4 occlusion_B = 1;
 				
-				if (isNoB && lightProbesBlend) { // No Volume found and light volumes blending enabled
+				[branch] if (isNoB && lightProbesBlend) { // No Volume found and light volumes blending enabled
 					
 					// Sample Light Probes B
 					LV_SampleLightProbe(L0_B, L1r_B, L1g_B, L1b_B);
@@ -21228,6 +21283,7 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				
 				// Lerping occlusion
 				occlusion = lerp(occlusion_B, occlusion_A, mask);
+				occlusion *= mOcclusion;
 				
 				// Lerping SH components
 				L0  += lerp(L0_B,  L0_A,  mask);
@@ -21243,17 +21299,15 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				
 				// Initializing output variables
 				occlusion = 1;
+				float4 mOcclusion = 1; // Multiplicative occlusion. Applies on top of regular occlusion
 				
 				// Clamping gloabal iteration counts
-				uint pointCount = min((uint) _UdonPointLightVolumeCount, 128);
-				uint additiveCount = min((uint) _UdonLightVolumeAdditiveCount, 32);
-				
+				uint additiveCount = min((uint) _UdonLightVolumeAdditiveCount, VRCLV_MAX_VOLUMES_COUNT);
 				//if (_UdonLightVolumeVersion < VRCLV_VERSION || (additiveCount == 0 && pointCount == 0)) return;
-				if (additiveCount == 0 && pointCount == 0)
-				return; // Legacy!
+				[branch] if (additiveCount == 0 && (uint) _UdonPointLightVolumeCount == 0) return; // Legacy!
 				
-				uint volumesCount = min((uint) _UdonLightVolumeCount, 32);
-				uint maxOverdraw = min((uint) _UdonLightVolumeAdditiveMaxOverdraw, 32);
+				uint volumesCount = min((uint) _UdonLightVolumeCount, VRCLV_MAX_VOLUMES_COUNT);
+				uint maxOverdraw = min((uint) _UdonLightVolumeAdditiveMaxOverdraw, VRCLV_MAX_VOLUMES_COUNT);
 				
 				uint volumeID_A = -1; // Main, dominant volume ID
 				uint volumeID_B = -1; // Secondary volume ID to blend main with
@@ -21270,15 +21324,16 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				uint addVolumesCount = 0;
 				
 				// Iterating through all light volumes with simplified algorithm requiring Light Volumes to be sorted by weight in descending order
-				uint count = min(_UdonLightVolumeOcclusionCount == 0 ? additiveCount : volumesCount, 32); // Only use all volumes if occlusion volumes are enabled
-				[loop]
-				for (uint id = 0; id < count; id++) {
+				uint count = min(_UdonLightVolumeOcclusionCount == 0 ? additiveCount : volumesCount, VRCLV_MAX_VOLUMES_COUNT); // Only use all volumes if occlusion volumes are enabled
+				[loop] for (uint id = 0; id < VRCLV_MAX_VOLUMES_COUNT; id++) {
+					[branch] if(id >= count) break;
 					localUVW = LV_LocalFromVolume(id, worldPos);
-					if (LV_PointLocalAABB(localUVW)) { // Intersection test
-						if (id < additiveCount) { // Sampling additive volumes
-							if (addVolumesCount < maxOverdraw) {
-								float4 unusedOcclusion;
-								LV_SampleVolume(id, localUVW, L0, L1r, L1g, L1b, unusedOcclusion);
+					[branch] if (LV_PointLocalAABB(localUVW)) { // Intersection test
+						[branch] if (id < additiveCount) { // Sampling additive volumes
+							[branch] if (addVolumesCount < maxOverdraw) {
+								float4 occ; // Multiplicative occlusion
+								LV_SampleVolume(id, localUVW, L0, L1r, L1g, L1b, occ);
+								mOcclusion *= occ;
 								addVolumesCount++;
 							}
 						} else if (isNoA) { // First, searching for volume A
@@ -21295,7 +21350,10 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				}
 				
 				// If no volumes found, or we don't need the occlusion data, we are done
-				if (isNoA || _UdonLightVolumeOcclusionCount == 0) return;
+				[branch] if (isNoA || _UdonLightVolumeOcclusionCount == 0) {
+					occlusion *= mOcclusion;
+					return;
+				}
 				
 				// Fallback to lowest weight light volume if outside of every volume
 				localUVW_A = isNoA ? localUVW : localUVW_A;
@@ -21305,11 +21363,16 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				occlusion = LV_SampleVolumeOcclusion(volumeID_A, localUVW_A);
 				float mask = LV_BoundsMask(localUVW_A, _UdonLightVolumeInvLocalEdgeSmooth[volumeID_A]);
 				
-				if (mask == 1 || (_UdonLightVolumeSharpBounds && isNoB)) return; // Returning A result if it's the center of mask or out of bounds
+				[branch] if (mask == 1 || (_UdonLightVolumeSharpBounds && isNoB)) {
+					occlusion *= mOcclusion;
+					return; // Returning A result if it's the center of mask or out of bounds
+				}
 				
 				// Blending Volume A and Volume B
-				if (isNoB) occlusion = lerp(1, occlusion, mask);
+				[branch] if (isNoB) occlusion = lerp(1, occlusion, mask);
 				else occlusion = lerp(LV_SampleVolumeOcclusion(volumeID_B, localUVW_B), occlusion, mask);
+				
+				occlusion *= mOcclusion;
 				
 			}
 			
@@ -23042,6 +23105,7 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 			float _LTCGI_Smoothness;
 			float _LTCGI_Metallic;
 			int _LTCGI_UsePBR;
+			int _LTCGI_UseEO;
 			int _LTCGI_AnimToggle;
 			#endif
 			//endex
@@ -24939,6 +25003,7 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 			float _MochieSpecularStrength2;
 			float _MochieRoughnessMultiplier2;
 			float _RefSpecFresnelStrength;
+			float _SFExposureOcclusion;
 			samplerCUBE _MochieReflCube;
 			float4 _MochieReflCube_HDR;
 			float _MochieForceFallback;
@@ -25013,6 +25078,7 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 			float _ClearCoatGSAAVariance;
 			float _ClearCoatGSAAThreshold;
 			float _ClearcoatFresnelStrength;
+			float _ClearcoatExposureOcclusion;
 			
 			float _ClearCoatGlobalMask;
 			float _ClearCoatGlobalMaskBlendType;
@@ -28675,12 +28741,16 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				
 				//ifex _EnableOutlines!=1
 				#ifdef POI_PASS_OUTLINE
-				float outlineMask = tex2Dlod(_OutlineMask, float4(poiUV(vertexUV(v, _OutlineMaskUV), _OutlineMask_ST) + _Time.x * _OutlineMaskPan, 0, 0))[_OutlineMaskChannel];
-				
-				//UNITY_BRANCH
+				float4 outlineMaskTex = tex2Dlod(_OutlineMask, float4(poiUV(vertexUV(v, _OutlineMaskUV), _OutlineMask_ST) + _Time.x * _OutlineMaskPan, 0, 0));
+				float outlineMask = outlineMaskTex[_OutlineMaskChannel];
+				float outLineZOffset = abs(lerp(1, outlineMaskTex[_OutlineZOffsetChannel], _OutlineZOffsetMaskStrength) - _OutlineZOffsetInvertMaskChannel);
 				if (_OutlineVertexColorMask > 0)
 				{
 					outlineMask *= lerp(1, v.color[_OutlineVertexColorMask - 1], _OutlineVertexColorMaskStrength);
+				}
+				if (_OutlineZOffsetVertexColor)
+				{
+					outLineZOffset *= lerp(1, v.color[_OutlineZOffsetVertexColor - 1], _OutlineZOffsetVertexColorStrength);
 				}
 				
 				float3 outlineNormal = _OutlineSpace ? o.normal : v.normal;
@@ -28872,15 +28942,22 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				o.fogData.y = 0;
 				#endif
 				
+				//ifex _EnableOutlines!=1
+				#ifdef POI_PASS_OUTLINE
+				
 				#ifdef POI_PASS_OUTLINE
 				#if defined(UNITY_REVERSED_Z)
 				//DX
-				o.pos.z += _Offset_Z * - 0.01;
+				o.pos.z += _Offset_Z * outLineZOffset * - 0.0001;
 				#else
 				//OpenGL
-				o.pos.z += _Offset_Z * 0.01;
+				o.pos.z += _Offset_Z * outLineZOffset * 0.0001;
 				#endif
 				#endif
+				
+				#endif
+				//endex
+				
 				//o.grabPos = ComputeGrabScreenPos(o.pos);
 				
 				#ifndef FORWARD_META_PASS
@@ -36419,6 +36496,14 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				rough *= 1.7 - 0.7 * rough;
 				return rough;
 			}
+			
+			float SFVisibility(float brdfRoughness, float3 directColor, float NDotV, float ExposureOcclusion)
+			{
+				//Silent's exposure occlusion
+				float Visibility = saturate(length(directColor + EPSILON) * (1.0/(ExposureOcclusion))); //Using direct color because I think it should be generally more forgiving
+				// Lagarde and de Rousiers 2014, "Moving Frostbite to PBR"
+				return saturate(pow(NDotV + Visibility, exp2(-16.0 * brdfRoughness - 1.0)) - 1.0 + Visibility);
+			}
 			#endif
 			//endex
 			
@@ -36648,10 +36733,15 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 							specularTerm = 1;
 							float pbrVDotNL = lerp(poiLight.vertexVDotNL[index], poiLight.vDotNL[index], _PBRNormalSelect);
 							float pbrVDotNH = lerp(poiLight.vertexVDotNH[index], poiLight.vDotNH[index], _PBRNormalSelect);
+							
 							#ifdef GGX_ANISOTROPICS
-							GetSpecFresTerm(pbrNDotL, pbrNDotV, pbrNDotH, poiLight.lDotH, specularTerm, fresnelTerm, specCol, brdfRoughness, pbrTDotV, pbrBDotV, pbrTDotL, pbrBDotL, pbrTDotH, pbrBDotH, adjustedAnisotropy);
+							float pbrTDotvL = dot(pbrTSelect, poiLight.vDirection[index]);
+							float pbrBDotvL = dot(pbrBSelect, poiLight.vDirection[index]);
+							float pbrTDotvH = dot(pbrTSelect, poiLight.vHalfDir[index]);
+							float pbrBDotvH = dot(pbrBSelect, poiLight.vHalfDir[index]);
+							GetSpecFresTerm(pbrVDotNL, pbrNDotV, pbrVDotNH, poiLight.vDotLH[index], specularTerm, fresnelTerm, specCol, brdfRoughness2, pbrTDotV, pbrBDotV, pbrTDotvL, pbrBDotvL, pbrTDotvH, pbrBDotvH, adjustedAnisotropy);
 							#else
-							GetSpecFresTerm(pbrNDotL, pbrNDotV, pbrNDotH, poiLight.lDotH, specularTerm, fresnelTerm, specCol, brdfRoughness);
+							GetSpecFresTerm(pbrVDotNL, pbrNDotV, pbrVDotNH, poiLight.vDotLH[index], specularTerm, fresnelTerm, specCol, brdfRoughness2);
 							#endif
 							vSpecular2 += poiLight.vColor[index] * specularTerm * fresnelTerm * specularMask * poiThemeColor(poiMods, _MochieSpecularTint, _MochieSpecularTintThemeIndex) * poiLight.occlusion * _MochieSpecularStrength2;
 						}
@@ -36664,7 +36754,7 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				
 				float3 reflCol = GetReflections(poiCam, poiLight, poiMesh, roughness, _MochieForceFallback, _MochieLitFallback, _MochieReflCube, _MochieReflCube_HDR, pbrReflectionDir);
 				
-				reflections = surfaceReduction * reflCol * FresnelLerp(specCol, specCol + lerp(specCol, 1, _RefSpecFresnelStrength) * _RefSpecFresnelStrength, pbrNDotV);
+				reflections = surfaceReduction * reflCol * FresnelLerp(specCol, specCol + lerp(specCol, 1, _RefSpecFresnelStrength) * _RefSpecFresnelStrength, pbrNDotV) * SFVisibility(brdfRoughness, poiLight.directColor, pbrNDotV, _SFExposureOcclusion);
 				
 				reflections *= poiThemeColor(poiMods, _MochieReflectionTint, _MochieReflectionTintThemeIndex);
 				reflections *= reflectionMask;
@@ -36796,7 +36886,7 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				float surfaceReduction = (1.0 / (brdfRoughness * brdfRoughness + 1.0));
 				float grazingTerm = saturate(smoothness + (1 - omr));
 				float3 reflCol = GetReflections(poiCam, poiLight, poiMesh, roughness, _ClearCoatForceFallback, _ClearCoatLitFallback, _ClearCoatFallback, _ClearCoatFallback_HDR, clearcoatReflectionDir);
-				reflections = surfaceReduction * reflCol * FresnelLerp(specCol, specCol + lerp(specCol, 1, _ClearcoatFresnelStrength) * _ClearcoatFresnelStrength, clearcoatNDotV);
+				reflections = surfaceReduction * reflCol * FresnelLerp(specCol, specCol + lerp(specCol, 1, _ClearcoatFresnelStrength) * _ClearcoatFresnelStrength, clearcoatNDotV) * SFVisibility(brdfRoughness, poiLight.directColor, clearcoatNDotV, _ClearcoatExposureOcclusion);
 				reflections *= poiThemeColor(poiMods, _ClearCoatReflectionTint, _ClearCoatReflectionTintThemeIndex) * reflectionMask;
 				diffuse = lerp(diffuse, diffuse * omr, reflectionMask);
 				
@@ -40118,6 +40208,12 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 						if (_MochieSpecularStrengthGlobalMask > 0)
 						{
 							specularMask = customBlend(specularMask, poiMods.globalMask[_MochieSpecularStrengthGlobalMask - 1], _MochieSpecularStrengthGlobalMaskBlendType);
+						}
+						if (_LTCGI_UseEO)
+						{
+							//Not corectly calculated percivably roughness but good enough makes it look a bit better, consider putting into poilight occlusion to avoid reclaculating
+							//TODO: better intergration don't want touch all that stuff yet
+							specularMask *= SFVisibility(pow((1-smoothness),2), poiLight.directColor, poiLight.nDotV, _SFExposureOcclusion);
 						}
 						LTCGIsmoothness = smoothness;
 						LTCGImetalness = metallic;
@@ -43792,6 +43888,7 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 			float _MochieSpecularStrength2;
 			float _MochieRoughnessMultiplier2;
 			float _RefSpecFresnelStrength;
+			float _SFExposureOcclusion;
 			samplerCUBE _MochieReflCube;
 			float4 _MochieReflCube_HDR;
 			float _MochieForceFallback;
@@ -43866,6 +43963,7 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 			float _ClearCoatGSAAVariance;
 			float _ClearCoatGSAAThreshold;
 			float _ClearcoatFresnelStrength;
+			float _ClearcoatExposureOcclusion;
 			
 			float _ClearCoatGlobalMask;
 			float _ClearCoatGlobalMaskBlendType;
@@ -47463,12 +47561,16 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				
 				//ifex _EnableOutlines!=1
 				#ifdef POI_PASS_OUTLINE
-				float outlineMask = tex2Dlod(_OutlineMask, float4(poiUV(vertexUV(v, _OutlineMaskUV), _OutlineMask_ST) + _Time.x * _OutlineMaskPan, 0, 0))[_OutlineMaskChannel];
-				
-				//UNITY_BRANCH
+				float4 outlineMaskTex = tex2Dlod(_OutlineMask, float4(poiUV(vertexUV(v, _OutlineMaskUV), _OutlineMask_ST) + _Time.x * _OutlineMaskPan, 0, 0));
+				float outlineMask = outlineMaskTex[_OutlineMaskChannel];
+				float outLineZOffset = abs(lerp(1, outlineMaskTex[_OutlineZOffsetChannel], _OutlineZOffsetMaskStrength) - _OutlineZOffsetInvertMaskChannel);
 				if (_OutlineVertexColorMask > 0)
 				{
 					outlineMask *= lerp(1, v.color[_OutlineVertexColorMask - 1], _OutlineVertexColorMaskStrength);
+				}
+				if (_OutlineZOffsetVertexColor)
+				{
+					outLineZOffset *= lerp(1, v.color[_OutlineZOffsetVertexColor - 1], _OutlineZOffsetVertexColorStrength);
 				}
 				
 				float3 outlineNormal = _OutlineSpace ? o.normal : v.normal;
@@ -47660,15 +47762,22 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				o.fogData.y = 0;
 				#endif
 				
+				//ifex _EnableOutlines!=1
+				#ifdef POI_PASS_OUTLINE
+				
 				#ifdef POI_PASS_OUTLINE
 				#if defined(UNITY_REVERSED_Z)
 				//DX
-				o.pos.z += _Offset_Z * - 0.01;
+				o.pos.z += _Offset_Z * outLineZOffset * - 0.0001;
 				#else
 				//OpenGL
-				o.pos.z += _Offset_Z * 0.01;
+				o.pos.z += _Offset_Z * outLineZOffset * 0.0001;
 				#endif
 				#endif
+				
+				#endif
+				//endex
+				
 				//o.grabPos = ComputeGrabScreenPos(o.pos);
 				
 				#ifndef FORWARD_META_PASS
@@ -53215,6 +53324,14 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				rough *= 1.7 - 0.7 * rough;
 				return rough;
 			}
+			
+			float SFVisibility(float brdfRoughness, float3 directColor, float NDotV, float ExposureOcclusion)
+			{
+				//Silent's exposure occlusion
+				float Visibility = saturate(length(directColor + EPSILON) * (1.0/(ExposureOcclusion))); //Using direct color because I think it should be generally more forgiving
+				// Lagarde and de Rousiers 2014, "Moving Frostbite to PBR"
+				return saturate(pow(NDotV + Visibility, exp2(-16.0 * brdfRoughness - 1.0)) - 1.0 + Visibility);
+			}
 			#endif
 			//endex
 			
@@ -53444,10 +53561,15 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 							specularTerm = 1;
 							float pbrVDotNL = lerp(poiLight.vertexVDotNL[index], poiLight.vDotNL[index], _PBRNormalSelect);
 							float pbrVDotNH = lerp(poiLight.vertexVDotNH[index], poiLight.vDotNH[index], _PBRNormalSelect);
+							
 							#ifdef GGX_ANISOTROPICS
-							GetSpecFresTerm(pbrNDotL, pbrNDotV, pbrNDotH, poiLight.lDotH, specularTerm, fresnelTerm, specCol, brdfRoughness, pbrTDotV, pbrBDotV, pbrTDotL, pbrBDotL, pbrTDotH, pbrBDotH, adjustedAnisotropy);
+							float pbrTDotvL = dot(pbrTSelect, poiLight.vDirection[index]);
+							float pbrBDotvL = dot(pbrBSelect, poiLight.vDirection[index]);
+							float pbrTDotvH = dot(pbrTSelect, poiLight.vHalfDir[index]);
+							float pbrBDotvH = dot(pbrBSelect, poiLight.vHalfDir[index]);
+							GetSpecFresTerm(pbrVDotNL, pbrNDotV, pbrVDotNH, poiLight.vDotLH[index], specularTerm, fresnelTerm, specCol, brdfRoughness2, pbrTDotV, pbrBDotV, pbrTDotvL, pbrBDotvL, pbrTDotvH, pbrBDotvH, adjustedAnisotropy);
 							#else
-							GetSpecFresTerm(pbrNDotL, pbrNDotV, pbrNDotH, poiLight.lDotH, specularTerm, fresnelTerm, specCol, brdfRoughness);
+							GetSpecFresTerm(pbrVDotNL, pbrNDotV, pbrVDotNH, poiLight.vDotLH[index], specularTerm, fresnelTerm, specCol, brdfRoughness2);
 							#endif
 							vSpecular2 += poiLight.vColor[index] * specularTerm * fresnelTerm * specularMask * poiThemeColor(poiMods, _MochieSpecularTint, _MochieSpecularTintThemeIndex) * poiLight.occlusion * _MochieSpecularStrength2;
 						}
@@ -53460,7 +53582,7 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				
 				float3 reflCol = GetReflections(poiCam, poiLight, poiMesh, roughness, _MochieForceFallback, _MochieLitFallback, _MochieReflCube, _MochieReflCube_HDR, pbrReflectionDir);
 				
-				reflections = surfaceReduction * reflCol * FresnelLerp(specCol, specCol + lerp(specCol, 1, _RefSpecFresnelStrength) * _RefSpecFresnelStrength, pbrNDotV);
+				reflections = surfaceReduction * reflCol * FresnelLerp(specCol, specCol + lerp(specCol, 1, _RefSpecFresnelStrength) * _RefSpecFresnelStrength, pbrNDotV) * SFVisibility(brdfRoughness, poiLight.directColor, pbrNDotV, _SFExposureOcclusion);
 				
 				reflections *= poiThemeColor(poiMods, _MochieReflectionTint, _MochieReflectionTintThemeIndex);
 				reflections *= reflectionMask;
@@ -53592,7 +53714,7 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				float surfaceReduction = (1.0 / (brdfRoughness * brdfRoughness + 1.0));
 				float grazingTerm = saturate(smoothness + (1 - omr));
 				float3 reflCol = GetReflections(poiCam, poiLight, poiMesh, roughness, _ClearCoatForceFallback, _ClearCoatLitFallback, _ClearCoatFallback, _ClearCoatFallback_HDR, clearcoatReflectionDir);
-				reflections = surfaceReduction * reflCol * FresnelLerp(specCol, specCol + lerp(specCol, 1, _ClearcoatFresnelStrength) * _ClearcoatFresnelStrength, clearcoatNDotV);
+				reflections = surfaceReduction * reflCol * FresnelLerp(specCol, specCol + lerp(specCol, 1, _ClearcoatFresnelStrength) * _ClearcoatFresnelStrength, clearcoatNDotV) * SFVisibility(brdfRoughness, poiLight.directColor, clearcoatNDotV, _ClearcoatExposureOcclusion);
 				reflections *= poiThemeColor(poiMods, _ClearCoatReflectionTint, _ClearCoatReflectionTintThemeIndex) * reflectionMask;
 				diffuse = lerp(diffuse, diffuse * omr, reflectionMask);
 				
@@ -61769,12 +61891,16 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				
 				//ifex _EnableOutlines!=1
 				#ifdef POI_PASS_OUTLINE
-				float outlineMask = tex2Dlod(_OutlineMask, float4(poiUV(vertexUV(v, _OutlineMaskUV), _OutlineMask_ST) + _Time.x * _OutlineMaskPan, 0, 0))[_OutlineMaskChannel];
-				
-				//UNITY_BRANCH
+				float4 outlineMaskTex = tex2Dlod(_OutlineMask, float4(poiUV(vertexUV(v, _OutlineMaskUV), _OutlineMask_ST) + _Time.x * _OutlineMaskPan, 0, 0));
+				float outlineMask = outlineMaskTex[_OutlineMaskChannel];
+				float outLineZOffset = abs(lerp(1, outlineMaskTex[_OutlineZOffsetChannel], _OutlineZOffsetMaskStrength) - _OutlineZOffsetInvertMaskChannel);
 				if (_OutlineVertexColorMask > 0)
 				{
 					outlineMask *= lerp(1, v.color[_OutlineVertexColorMask - 1], _OutlineVertexColorMaskStrength);
+				}
+				if (_OutlineZOffsetVertexColor)
+				{
+					outLineZOffset *= lerp(1, v.color[_OutlineZOffsetVertexColor - 1], _OutlineZOffsetVertexColorStrength);
 				}
 				
 				float3 outlineNormal = _OutlineSpace ? o.normal : v.normal;
@@ -61966,15 +62092,22 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 				o.fogData.y = 0;
 				#endif
 				
+				//ifex _EnableOutlines!=1
+				#ifdef POI_PASS_OUTLINE
+				
 				#ifdef POI_PASS_OUTLINE
 				#if defined(UNITY_REVERSED_Z)
 				//DX
-				o.pos.z += _Offset_Z * - 0.01;
+				o.pos.z += _Offset_Z * outLineZOffset * - 0.0001;
 				#else
 				//OpenGL
-				o.pos.z += _Offset_Z * 0.01;
+				o.pos.z += _Offset_Z * outLineZOffset * 0.0001;
 				#endif
 				#endif
+				
+				#endif
+				//endex
+				
 				//o.grabPos = ComputeGrabScreenPos(o.pos);
 				
 				#ifndef FORWARD_META_PASS
