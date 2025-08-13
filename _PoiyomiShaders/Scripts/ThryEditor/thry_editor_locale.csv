@@ -22,7 +22,7 @@ requirements,Requirements,Voraussetzungen,必要バージョン,Requisitos,,Wequ
 add,Add,Hinzufügen,追加,Añadir,,Add,01000001 01100100 01100100,添加,
 delete,Delete,Löschen,削除,Borrar,,Dewete,01000100 01100101 01101100 01100101 01110100 01100101,删除,
 save,Save,Speichern,保存,Guardar,,Save,01010011 01100001 01110110 01100101,保存,
-colorSpaceWarningSRGB,"This texture is marked not as sRGB, but should be"
+colorSpaceWarningSRGB,"This texture is not marked as sRGB, but should be"
 colorSpaceWarningLinear,"This texture is marked as sRGB, but should be linear"
 ,,,,,,,,,
 loggingLevel,Logging Level,,,,,,,,
@@ -51,7 +51,7 @@ gradient_good_naming,Good naming.,Gute Benennung.,正常な名前です、いい
 autoMarkPropertiesAnimated,Automatically mark animated properties,,,,,,,,
 autoMarkPropertiesAnimated_tooltip,Automatically mark properties as animated when changed their value while in animation mode.,,,,,,,,
 ,,,,,,,,,
-auto_lock_dialog,"{0} material(s) have not been locked and will now be locked automatically. Locking in can dramatically improve runtime performance.\n\nDuring this time unity will remain unresponsive, please be patient.",,,,,,,,
+auto_lock_dialog,"{0} Material(s) are now being automatically locked and optimized for upload. This will only take a few seconds, please be patient.\n\nTo learn more about the auto-lock feature, click 'More information' below.\n\nPress OK to continue.",,,,,,,,
 lockin_button_single,Lock In Optimized Shader,Material optimieren und sperren,,,,,,,
 lockin_button_multi,Lock in Optimized Shaders ({0} materials),{0} Materialien optimieren und sperren,,,,,,,
 unlock_button_single,Unlock Shader,Material entsperren,,,,,,,
@@ -71,8 +71,8 @@ humanBoneAnchor,Human Bone Anchor,,,,,,,,
 humanBoneAnchor_tooltip,Humanoid bone to use as the anchor override if GameObject not found.,,,,,,,,
 anchorOverrideObjectName,Object Anchor Name,,,,,,,,
 anchorOverrideObjectName_tooltip,Name of a GameObject somewhere in your avatar's hierarchy to use as an anchor.\nIf not found the humanoid bone will be used.,,,,,,,,
-autoAnchorDialog_Title,Thry: Bad Lighting Fix,,,,,,,,
-autoAnchorDialog_Text,Your avatar's renderers don't all have an anchor override set.\nThis can cause flickering and uneven lighting on your avatar in some worlds.\n\nWould you like this to always be fixed automatically?\n\nYou can change this in Thry settings at any time.,,,,,,,,
+autoAnchorDialog_Title,Thry: Automatic Lighting Fix,,,,,,,,
+autoAnchorDialog_Text,"This script will set Anchor Overrides for every mesh on your Avatar, preventing your body from experiencing flickering or uneven lighting in the game. We highly recommend you enable this automatic fix.\n\nWould you like to turn it on now?\n\nYou can change this in Thry settings at any time.",,,,,,,,
 autoAnchorError_NotHumanoid,Auto Anchor Setter: Avatar {0} is not humanoid or is missing an Animator.,,,,,,,,
 forceAsyncCompilationPreview,Force Async Compilation In Preview (restart if disabling),,,,,,,,
 technical_header,Technical Settings,,,,,,,,

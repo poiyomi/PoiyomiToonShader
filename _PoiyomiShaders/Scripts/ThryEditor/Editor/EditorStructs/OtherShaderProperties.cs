@@ -46,7 +46,7 @@ namespace Thry.ThryEditor
     }
     public class VRCFallbackProperty : ShaderProperty
     {
-        static string[] s_fallbackShaderTypes = { "Standard", "Toon", "Unlit", "VertexLit", "Particle", "Sprite", "Matcap", "MobileToon" };
+        static string[] s_fallbackShaderTypes = { "Standard", "Toon", "Unlit", "VertexLit", "Particle", "Sprite", "Matcap", "MobileToon", "toonstandard", "toonstandardoutline" };
         static string[] s_fallbackRenderTypes = { "Opaque", "Cutout", "Transparent", "Fade" };
         static string[] s_fallbackRenderTypesValues = { "", "Cutout", "Transparent", "Fade" };
         static string[] s_fallbackCullTypes = { "OneSided", "DoubleSided" };

@@ -43,7 +43,8 @@ namespace Thry.ThryEditor
                     serialized1 = Parser.Serialize(obj);
                     obj2 = Parser.Deserialize(serialized1, test.t);
                     serialized2 = Parser.Serialize(obj2);
-                }catch(Exception e)
+                }
+                catch (Exception e)
                 {
                     Debug.LogError($"Failed to deserialize {test.t.Name} with error {e.Message}");
                     continue;

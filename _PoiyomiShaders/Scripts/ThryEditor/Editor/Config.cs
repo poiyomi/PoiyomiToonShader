@@ -11,7 +11,7 @@ namespace Thry.ThryEditor
     public class Config
     {
         private const string PATH_CONFIG_FILE = "Thry/Config.json";
-        private static readonly Version INSTALLED_VERSION = "2.66.11";
+        private static readonly Version INSTALLED_VERSION = "2.66.13";
 
         private static Config s_config;
 
@@ -54,7 +54,7 @@ namespace Thry.ThryEditor
         public string gradient_name = "gradient_<hash>.png";
         
         public bool autoSetAnchorOverride = true;
-        public HumanBodyBones humanBoneAnchor = HumanBodyBones.Spine;
+        public HumanBodyBones humanBoneAnchor = HumanBodyBones.Chest;
         public string anchorOverrideObjectName = "AutoAnchorObject";
         public bool autoSetAnchorAskedOnce = false;
         public bool enableDeveloperMode = false;

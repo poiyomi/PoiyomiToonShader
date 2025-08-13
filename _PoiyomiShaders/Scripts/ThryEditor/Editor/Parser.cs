@@ -59,7 +59,7 @@ namespace Thry.ThryEditor
         {
             try
             {
-                return ParseJsonPart(s, 0, s.Length, t);
+                return ParseJsonPart(s, 0, s.Length, t, t.Name);
             }
             catch (Exception e)
             {
@@ -70,16 +70,16 @@ namespace Thry.ThryEditor
         }
 
 #region Json to Object Parser
-        private static object ParseJsonPart(string input, int start, int end, Type t)
+        private static object ParseJsonPart(string input, int start, int end, Type t, string debugName)
         {
             if (input == null) return null;
             if (Helper.IsPrimitive(t)) return ParseToPrimitive(input, start, end, t);
-            if (t.IsGenericType && t.GetInterfaces().Contains(typeof(IList))) return ParseToList(input, start, end, t);
+            if (t.IsGenericType && t.GetInterfaces().Contains(typeof(IList))) return ParseToList(input, start, end, t, debugName);
             // if (t.IsGenericType && t.GetGenericTypeDefinition() == typeof(Dictionary<,>)) return ParseToDictionary(input, start, end, t);
-            if (t.IsArray) return ParseToArray(input, start, end, t);
+            if (t.IsArray) return ParseToArray(input, start, end, t, debugName);
             if (t.IsEnum) return ParseToEnum(input, start, end, t);
-            if (t.IsClass) return ParseToObject(input, start, end, t);
-            if (t.IsValueType && !t.IsEnum) return ParseToObject(input, start, end, t);
+            if (t.IsClass) return ParseToObject(input, start, end, t, debugName);
+            if (t.IsValueType && !t.IsEnum) return ParseToObject(input, start, end, t, debugName);
             return null;
         }
 
@@ -175,7 +175,7 @@ namespace Thry.ThryEditor
             return properties;
         }
 
-        private static object ParseToObject(string input, int start, int end, Type t)
+        private static object ParseToObject(string input, int start, int end, Type t, string debugName)
         {
             while (start < end && (input[start] == ' ' || input[start] == '\t' || input[start] == '\n' || input[start] == '\r'))
                 start++;
@@ -196,7 +196,7 @@ namespace Thry.ThryEditor
             // If type is abstract find concrete type that matches the most Fields/Properties
             if (t.IsAbstract)
             {
-                ThryLogger.LogDetail("ThryParser", "Cannot parse abstract type " + t.Name + ". Please use a concrete type instead.");
+                ThryLogger.LogDetail($"ThryParser", $"Cannot parse abstract type {t.Name}. Please use a concrete type instead. (Input: '{input.Substring(start, end - start)}' FieldName: {debugName})");
                 return null;
             }
 
@@ -224,13 +224,13 @@ namespace Thry.ThryEditor
                 string key = input.Substring(keyStart, keyEnd - keyStart);
                 if (fields.TryGetValue(key, out FieldInfo field))
                 {
-                    object value = ParseJsonPart(input, seperatorIndex + 1, varEnd, field.FieldType);
+                    object value = ParseJsonPart(input, seperatorIndex + 1, varEnd, field.FieldType, debugName + "." + field.Name);
                     if(value != null)
                         field.SetValue(returnObject, value);
                 }
                 else if (properties.TryGetValue(key, out PropertyInfo property))
                 {
-                    object value = ParseJsonPart(input, seperatorIndex + 1, varEnd, property.PropertyType);
+                    object value = ParseJsonPart(input, seperatorIndex + 1, varEnd, property.PropertyType, debugName + "." + property.Name);
                     if(value != null)
                         property.SetValue(returnObject, value, null);
                 }
@@ -289,12 +289,12 @@ namespace Thry.ThryEditor
             return true;
         }
 
-        private static object ParseToArray(string input, int start, int end, Type t)
+        private static object ParseToArray(string input, int start, int end, Type t, string debugName)
         {
             if(TryThryArrayParser(input, start, end, t, out object returnObject))
                 return returnObject;
 
-            IList list = (IList)ParseToList(input, start, end, t);
+            IList list = (IList)ParseToList(input, start, end, t, debugName);
             if(list == null) return null;
             object return_array = Activator.CreateInstance(t, list.Count);
             list.CopyTo(return_array as Array, 0);       
@@ -302,7 +302,7 @@ namespace Thry.ThryEditor
             return return_array;
         }
         
-        private static object ParseToList(string input, int start, int end, Type t)
+        private static object ParseToList(string input, int start, int end, Type t, string debugName)
         {
             while(start < end && input[start] != '[')
                 start++;
@@ -324,11 +324,11 @@ namespace Thry.ThryEditor
             {
                 if(depth == 0 && input[i] == ',' && (i == 0 || input[i - 1] != '\\'))
                 {
-                    list.Add(ParseJsonPart(input, variableStart, i, array_obj_type));
+                    list.Add(ParseJsonPart(input, variableStart, i, array_obj_type, debugName + "[" + (list.Count) + "]"));
                     variableStart = i + 1;
                 }else if(i == end - 1)
                 {
-                    list.Add(ParseJsonPart(input, variableStart, i + 1, array_obj_type));
+                    list.Add(ParseJsonPart(input, variableStart, i + 1, array_obj_type, debugName + "[" + (list.Count) + "]"));
                 }
                 else if (input[i] == '{' || input[i] == '[')
                     depth++;
@@ -399,6 +399,13 @@ namespace Thry.ThryEditor
 
         private static string SerializeClass(object obj, bool prettyPrint = false, int indent = 0)
         {
+            // if it has SerializeForThryParser method, use ToString method. Include methods out of parent classes
+            MethodInfo serializeMethod = obj.GetType().GetMethod("SerializeForThryParser", BindingFlags.NonPublic | BindingFlags.Instance);
+            if (serializeMethod != null)
+            {
+                return (string)serializeMethod.Invoke(obj, new object[] { });
+            }
+                
             indent += 1;
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.Append("{");

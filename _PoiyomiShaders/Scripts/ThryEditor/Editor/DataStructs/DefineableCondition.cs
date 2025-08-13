@@ -370,6 +370,11 @@ namespace Thry.ThryEditor
                     condition = new BooleanCondition(false);
                     return true;
                 }
+                if (s.Equals("none", StringComparison.OrdinalIgnoreCase) || string.IsNullOrWhiteSpace(s))
+                {
+                    condition = new BooleanCondition(null, BooleanCondition.BooleanType.NONE);
+                    return true;
+                }
                 condition = null;
                 return false;
             }
@@ -553,6 +558,11 @@ namespace Thry.ThryEditor
                 return booleanCondition;
             }
             return new BooleanCondition(s, BooleanCondition.BooleanType.NONE);
+        }
+
+        protected string SerializeForThryParser()
+        {
+            return this.ToString();
         }
     }
 }
