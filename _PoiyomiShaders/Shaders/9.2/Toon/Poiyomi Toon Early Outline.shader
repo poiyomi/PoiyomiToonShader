@@ -8230,9 +8230,10 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 					poiMods.globalColorTheme[9] = AudioLinkData(ALPASS_THEME_COLOR1);
 					poiMods.globalColorTheme[10] = AudioLinkData(ALPASS_THEME_COLOR2);
 					poiMods.globalColorTheme[11] = AudioLinkData(ALPASS_THEME_COLOR3);
-					return;
 				}
-				
+
+				// Even if world-supplied audiolink data was populated earlier, we want the overrides to take priority.
+				// But we keep any world-supplied global color themes, which are separate.
 				if (_AudioLinkBandOverridesEnabled)
 				{
 					poiMods.audioLinkAvailable = true;
@@ -8240,6 +8241,9 @@ Shader ".poiyomi/Poiyomi Toon Outline Early"
 					poiMods.audioLink[1] = _AudioLinkBandOverrideSliders.y;
 					poiMods.audioLink[2] = _AudioLinkBandOverrideSliders.z;
 					poiMods.audioLink[3] = _AudioLinkBandOverrideSliders.w;
+					// We don't expose an override slider for the volume band.
+					// To keep behavior consistent (no mixing sources), we don't retain world's value.
+					poiMods.audioLink[4] = 0;
 				}
 			}
 			
