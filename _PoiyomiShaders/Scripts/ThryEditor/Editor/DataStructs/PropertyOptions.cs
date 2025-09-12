@@ -14,6 +14,7 @@ namespace Thry.ThryEditor
         public string on_value;
         public DefineableAction[] actions;
         public ButtonData button_help;
+        public ButtonData button_author;
         public TextureData texture;
         public string[] reference_properties;
         public string reference_property;

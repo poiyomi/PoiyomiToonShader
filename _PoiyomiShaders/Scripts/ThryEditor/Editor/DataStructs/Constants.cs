@@ -32,5 +32,9 @@ namespace Thry.ThryEditor
         public const string RECT = "2329f8696fd09a743a5baf2a5f4986af";
         public const string ICON_LINK = "e85fd0a0e4e4fea46bb3fdeab5c3fb07";
         public const string ICON_THRY = "693aa4c2cdc578346a196469a06ddbba";
+        public const string ICON_GITHUB = "5c305f343c433b44d9346cd01c52be73";
+        public const string ICON_LINK_OFF = "25bc194689aa03c49b3c632ab4af0781";
+        public const string ICON_LINK_RATIO = "d0242b7a9ff59494da113c7559c3a824";
+        public const string ICON_LINK_DELTA = "344db1c76676f64489b9a2e2c28289ae";
     }
 }

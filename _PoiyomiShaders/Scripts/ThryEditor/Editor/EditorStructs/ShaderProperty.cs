@@ -349,7 +349,7 @@ namespace Thry.ThryEditor
             }
             else if (_doDrawTwoFields)
             {
-                Rect r = GUILayoutUtility.GetRect(content, Styles.vectorPropertyStyle);
+                Rect r = EditorGUILayout.GetControlRect(false, EditorGUIUtility.singleLineHeight);
                 float labelWidth = (r.width - EditorGUIUtility.labelWidth) / 2; ;
                 r.width -= labelWidth;
                 MyMaterialEditor.ShaderProperty(r, this.MaterialProperty, content);
