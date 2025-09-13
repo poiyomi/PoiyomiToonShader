@@ -34,7 +34,14 @@ namespace Thry.ThryEditor.Drawers
 
             for (int i = 0; i < _otherProperties.Length; i++)
             {
-                var sProp = ShaderEditor.Active.PropertyDictionary[_otherProperties[i]];
+                if (!ShaderEditor.Active.PropertyDictionary.TryGetValue(_otherProperties[i], out var sProp))
+                {
+                    // TODO: log error?
+                    _otherMaterialProps[i] = null;
+
+                    continue;
+                }
+
                 sProp.UpdatedMaterialPropertyReference();
                 _otherMaterialProps[i] = sProp.MaterialProperty;
             }
@@ -48,8 +55,11 @@ namespace Thry.ThryEditor.Drawers
                 {
                     PropGUI(prop, editor, contentR, 0);
                     editor.EndAnimatedCheck();
-                    for (int i = 0; i < _otherProperties.Length; i++)
+                    for (int i = 0; i < _otherMaterialProps.Length; i++)
                     {
+                        if (_otherMaterialProps[i] == null)
+                            continue;
+
                         PropGUI(_otherMaterialProps[i], editor, contentR, i + 1);
                     }
                     editor.BeginAnimatedCheck(prop);
@@ -66,14 +76,17 @@ namespace Thry.ThryEditor.Drawers
             bool animated = ShaderEditor.Active.CurrentProperty.IsAnimated;
             bool renamed = ShaderEditor.Active.CurrentProperty.IsRenaming;
             for (int i = 0; i < _otherProperties.Length; i++)
-                ShaderEditor.Active.PropertyDictionary[_otherProperties[i]].SetAnimated(animated, renamed);
+            {
+                if (ShaderEditor.Active.PropertyDictionary.TryGetValue(_otherProperties[i], out var sProp))
+                    sProp.SetAnimated(animated, renamed);
+            }
         }
 
         void PropGUI(MaterialProperty prop, MaterialEditor editor, Rect contentRect, int index)
         {
             contentRect.x += contentRect.width * index;
             contentRect.width -= 5;
-            
+
             using (new GUILib.AnimationScope(editor, prop))
             {
                 using(var change_scope = new EditorGUI.ChangeCheckScope())

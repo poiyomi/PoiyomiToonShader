@@ -132,7 +132,17 @@ namespace Thry.ThryEditor
 
         protected override void DrawDefault()
         {
-            MyShaderUI.Editor.EnableInstancingField();
+            // internal reference is stored within MaterialEditor.m_Shader and can be null during lock/unlock
+            // MyShaderUI.Editor.serializedObject.FindProperty("m_Shader").objectReferenceValue
+            // never failed a null check in my tests, so try/catch it is - Dor
+            
+            try
+            {
+                MyShaderUI.Editor.EnableInstancingField();
+            }
+            catch (System.ArgumentNullException) // internal shader reference was null
+            {
+            }
         }
     }
     public class GIProperty : ShaderProperty

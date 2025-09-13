@@ -1,0 +1,26 @@
+{
+    "name": "ThryExternal",
+    "rootNamespace": "",
+    "references": [
+        "GUID:1efbd8ef56fbc0146a62083b5af6074c",
+        "GUID:dde09067b7f7a054ca208a3c17c8f7c5",
+        "GUID:b4ae365a73764ee478adc74cb89832fe"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [
+        {
+            "name": "com.basis.sdk",
+            "expression": "0",
+            "define": "BASIS_SDK_EXISTS"
+        }
+    ],
+    "noEngineReferences": false
+}

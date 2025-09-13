@@ -2,7 +2,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 {
 	Properties
 	{
-		[HideInInspector] shader_master_label ("<color=#E75898ff>Poiyomi 9.2.73</color>", Float) = 0
+		[HideInInspector] shader_master_label ("<color=#E75898ff>Poiyomi 9.2.74</color>", Float) = 0
 		[HideInInspector] shader_is_using_thry_editor ("", Float) = 0
 		[HideInInspector] shader_locale ("0db0b86376c3dca4b9a6828ef8615fe0", Float) = 0
 		[HideInInspector] footer_youtube ("{texture:{name:icon-youtube,height:16},action:{type:URL,data:https://www.youtube.com/poiyomi},hover:YOUTUBE}", Float) = 0
@@ -19896,6 +19896,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				float2(_CurvatureU, _CurvatureV)
 				);
 				
+				//d4rkAO:require_constant(_ParallaxUV)
 				#if defined(OPTIMIZER_ENABLED)
 				poiMesh.uv[_ParallaxUV] = parallaxUV;
 				#else
@@ -23940,17 +23941,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				matcapUV = TRANSFORM_TEX(matcapUV, _Matcap);
 				//if(_Matcap0CircleMaskEnabled) matcapUV = clamp(matcapUV, 0, 1);
 				
-				float mipCount0 = 9;
-				if (_Matcap_TexelSize.z == 8192) mipCount0 = 13;
-				if (_Matcap_TexelSize.z == 4096) mipCount0 = 12;
-				if (_Matcap_TexelSize.z == 2048) mipCount0 = 11;
-				if (_Matcap_TexelSize.z == 1024) mipCount0 = 10;
-				if (_Matcap_TexelSize.z == 512) mipCount0 = 9;
-				if (_Matcap_TexelSize.z == 256) mipCount0 = 8;
-				if (_Matcap_TexelSize.z == 128) mipCount0 = 7;
-				if (_Matcap_TexelSize.z == 64) mipCount0 = 6;
-				if (_Matcap_TexelSize.z == 32) mipCount0 = 5;
-				
+				float mipCount0 = floor(log2(max(_Matcap_TexelSize.z, _Matcap_TexelSize.w)));
 				float matcapSmoothness = _MatcapSmoothness;
 				
 				if (_MatcapMaskSmoothnessApply)
@@ -38897,6 +38888,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				float2(_CurvatureU, _CurvatureV)
 				);
 				
+				//d4rkAO:require_constant(_ParallaxUV)
 				#if defined(OPTIMIZER_ENABLED)
 				poiMesh.uv[_ParallaxUV] = parallaxUV;
 				#else
@@ -41661,17 +41653,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				matcapUV = TRANSFORM_TEX(matcapUV, _Matcap);
 				//if(_Matcap0CircleMaskEnabled) matcapUV = clamp(matcapUV, 0, 1);
 				
-				float mipCount0 = 9;
-				if (_Matcap_TexelSize.z == 8192) mipCount0 = 13;
-				if (_Matcap_TexelSize.z == 4096) mipCount0 = 12;
-				if (_Matcap_TexelSize.z == 2048) mipCount0 = 11;
-				if (_Matcap_TexelSize.z == 1024) mipCount0 = 10;
-				if (_Matcap_TexelSize.z == 512) mipCount0 = 9;
-				if (_Matcap_TexelSize.z == 256) mipCount0 = 8;
-				if (_Matcap_TexelSize.z == 128) mipCount0 = 7;
-				if (_Matcap_TexelSize.z == 64) mipCount0 = 6;
-				if (_Matcap_TexelSize.z == 32) mipCount0 = 5;
-				
+				float mipCount0 = floor(log2(max(_Matcap_TexelSize.z, _Matcap_TexelSize.w)));
 				float matcapSmoothness = _MatcapSmoothness;
 				
 				if (_MatcapMaskSmoothnessApply)
@@ -57031,6 +57013,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				float2(_CurvatureU, _CurvatureV)
 				);
 				
+				//d4rkAO:require_constant(_ParallaxUV)
 				#if defined(OPTIMIZER_ENABLED)
 				poiMesh.uv[_ParallaxUV] = parallaxUV;
 				#else
@@ -61075,17 +61058,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				matcapUV = TRANSFORM_TEX(matcapUV, _Matcap);
 				//if(_Matcap0CircleMaskEnabled) matcapUV = clamp(matcapUV, 0, 1);
 				
-				float mipCount0 = 9;
-				if (_Matcap_TexelSize.z == 8192) mipCount0 = 13;
-				if (_Matcap_TexelSize.z == 4096) mipCount0 = 12;
-				if (_Matcap_TexelSize.z == 2048) mipCount0 = 11;
-				if (_Matcap_TexelSize.z == 1024) mipCount0 = 10;
-				if (_Matcap_TexelSize.z == 512) mipCount0 = 9;
-				if (_Matcap_TexelSize.z == 256) mipCount0 = 8;
-				if (_Matcap_TexelSize.z == 128) mipCount0 = 7;
-				if (_Matcap_TexelSize.z == 64) mipCount0 = 6;
-				if (_Matcap_TexelSize.z == 32) mipCount0 = 5;
-				
+				float mipCount0 = floor(log2(max(_Matcap_TexelSize.z, _Matcap_TexelSize.w)));
 				float matcapSmoothness = _MatcapSmoothness;
 				
 				if (_MatcapMaskSmoothnessApply)
@@ -76038,6 +76011,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				float2(_CurvatureU, _CurvatureV)
 				);
 				
+				//d4rkAO:require_constant(_ParallaxUV)
 				#if defined(OPTIMIZER_ENABLED)
 				poiMesh.uv[_ParallaxUV] = parallaxUV;
 				#else
@@ -78802,17 +78776,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				matcapUV = TRANSFORM_TEX(matcapUV, _Matcap);
 				//if(_Matcap0CircleMaskEnabled) matcapUV = clamp(matcapUV, 0, 1);
 				
-				float mipCount0 = 9;
-				if (_Matcap_TexelSize.z == 8192) mipCount0 = 13;
-				if (_Matcap_TexelSize.z == 4096) mipCount0 = 12;
-				if (_Matcap_TexelSize.z == 2048) mipCount0 = 11;
-				if (_Matcap_TexelSize.z == 1024) mipCount0 = 10;
-				if (_Matcap_TexelSize.z == 512) mipCount0 = 9;
-				if (_Matcap_TexelSize.z == 256) mipCount0 = 8;
-				if (_Matcap_TexelSize.z == 128) mipCount0 = 7;
-				if (_Matcap_TexelSize.z == 64) mipCount0 = 6;
-				if (_Matcap_TexelSize.z == 32) mipCount0 = 5;
-				
+				float mipCount0 = floor(log2(max(_Matcap_TexelSize.z, _Matcap_TexelSize.w)));
 				float matcapSmoothness = _MatcapSmoothness;
 				
 				if (_MatcapMaskSmoothnessApply)
@@ -101246,6 +101210,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				float2(_CurvatureU, _CurvatureV)
 				);
 				
+				//d4rkAO:require_constant(_ParallaxUV)
 				#if defined(OPTIMIZER_ENABLED)
 				poiMesh.uv[_ParallaxUV] = parallaxUV;
 				#else

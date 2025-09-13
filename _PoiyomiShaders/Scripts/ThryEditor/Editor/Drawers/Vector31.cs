@@ -2,7 +2,7 @@ using Thry.ThryEditor;
 using UnityEditor;
 using UnityEngine;
 
-namespace ThThry.ThryEditor.Drawersry
+namespace Thry.ThryEditor.Drawers
 {
     public class Vector31Drawer : MaterialPropertyDrawer
     {

@@ -994,6 +994,7 @@ namespace Thry.ThryEditor
                     prop.textureScaleAndOffset = new Vector4(1, 1, 0, 0);
                     break;
             }
+            RaisePropertyValueChanged();
         }
 #endif
 
