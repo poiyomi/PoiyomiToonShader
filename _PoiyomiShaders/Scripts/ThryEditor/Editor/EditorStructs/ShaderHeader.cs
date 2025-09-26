@@ -91,13 +91,15 @@ namespace Thry.ThryEditor
                         ShaderEditor.Active.Locale.Set(MaterialProperty.name, newTranslation);
                         ShaderEditor.Active.Locale.Save();
                     }
-                }else
+                }
+                else
                 {
                     GUI.Box(rect, new GUIContent("     " + content.text, content.tooltip), Styles.dropdownHeader);
-                    if(Config.Instance.showNotes && !string.IsNullOrWhiteSpace(Note))
+                    if (Config.Instance.showNotes && !string.IsNullOrWhiteSpace(Note))
                     {
                         Rect noteRect = new Rect(rect);
-                        noteRect.width -= 60;
+                        float reserved = NotesHelper.GetPackedRightReservation(rect, options, this.MaterialProperty.name, Styles.label_property_note);
+                        noteRect.width = Mathf.Max(0f, noteRect.width - reserved);
                         GUI.Label(noteRect, Note, Styles.label_property_note);
                     }
                 }
@@ -132,7 +134,8 @@ namespace Thry.ThryEditor
                 if(Config.Instance.showNotes && !string.IsNullOrWhiteSpace(Note))
                 {
                     Rect noteRect = new Rect(rect);
-                    noteRect.width -= 60;
+                    float reserved = NotesHelper.GetPackedRightReservation(rect, options, this.MaterialProperty.name, Styles.label_property_note);
+                    noteRect.width = Mathf.Max(0f, noteRect.width - reserved);
                     GUI.Label(noteRect, Note, Styles.label_property_note);
                 }
                 DrawIcons(rect, options, e);

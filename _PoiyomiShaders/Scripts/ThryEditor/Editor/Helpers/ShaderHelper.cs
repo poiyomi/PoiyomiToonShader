@@ -113,6 +113,16 @@ namespace Thry.ThryEditor.Helpers
                     else
                         list.Add((prop, keywords));
                 }
+                else if (s.GetPropertyType(i) == UnityEngine.Rendering.ShaderPropertyType.Texture)
+                {
+                    string prop = s.GetPropertyName(i);
+                    string textureKeyword = GetPropTextureKeywordFromAttributes(s, prop);
+                    if (string.IsNullOrEmpty(textureKeyword) == false)
+                    {
+                        // Use a single-element list to mark texture keyword association
+                        list.Add((prop, new List<string> { textureKeyword }));
+                    }
+                }
             }
 
             return list;
@@ -184,6 +194,35 @@ namespace Thry.ThryEditor.Helpers
                 }
             }
             return keywords;
+        }
+
+        // Reads [TextureKeyword] attribute, optionally with override name; returns PROP_ style keyword
+        private static string GetPropTextureKeywordFromAttributes(Shader shader, string propertyName)
+        {
+            int propertyIndex = shader.FindPropertyIndex(propertyName);
+            if (propertyIndex < 0) return null;
+            string[] attributes = shader.GetPropertyAttributes(propertyIndex);
+            if (attributes == null || attributes.Length == 0) return null;
+
+            foreach (string attribute in attributes)
+            {
+                // Match TextureKeyword or TextureKeyword(OVERRIDE)
+                const string regex = @"^\s*TextureKeyword\s*(?:\(\s*([^)]*)\s*\))?\s*$";
+                Match m = Regex.Match(attribute, regex);
+                if (m.Success)
+                {
+                    string overrideName = m.Groups[1].Success ? m.Groups[1].Value.Trim() : null;
+                    if (string.IsNullOrEmpty(overrideName) == false)
+                        return overrideName;
+
+                    // Build default PROP_ keyword from property name without leading underscores
+                    string n = propertyName;
+                    int i = 0; while (i < n.Length && n[i] == '_') i++;
+                    string trimmed = n.Substring(i);
+                    return ("PROP_" + trimmed).ToUpperInvariant();
+                }
+            }
+            return null;
         }
 
         // Logic from Unity defaults

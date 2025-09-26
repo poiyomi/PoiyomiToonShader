@@ -833,8 +833,8 @@ namespace Thry.ThryEditor
     {
         private GUIContent content;
         private bool isTextureContent;
-        const int texture_height = 40;
-        int texture_width;
+        int _buttonHeight = 40;
+        int _textureWidth;
         private ButtonData data;
 
         public FooterButton(ButtonData data)
@@ -842,6 +842,11 @@ namespace Thry.ThryEditor
             this.data = data;
             if (data != null)
             {
+                // Determine desired button height from template texture settings if provided
+                if (data.texture != null && data.texture.height > 0)
+                {
+                    _buttonHeight = data.texture.height;
+                }
                 if (data.texture == null)
                 {
                     content = new GUIContent(data.text, data.hover);
@@ -849,7 +854,9 @@ namespace Thry.ThryEditor
                 }
                 else
                 {
-                    texture_width = (int)((float)data.texture.loaded_texture.width / data.texture.loaded_texture.height * texture_height);
+                    int loadedHeight = data.texture.loaded_texture != null ? data.texture.loaded_texture.height : 0;
+                    int loadedWidth = data.texture.loaded_texture != null ? data.texture.loaded_texture.width : 0;
+                    _textureWidth = loadedHeight > 0 ? (int)((float)loadedWidth / loadedHeight * _buttonHeight) : _buttonHeight;
                     content = new GUIContent(data.texture.loaded_texture, data.hover);
                     isTextureContent = true;
                 }
@@ -865,7 +872,7 @@ namespace Thry.ThryEditor
             Rect cursorRect;
             if (isTextureContent)
             {
-                if(GUILayout.Button(content, new GUIStyle(), GUILayout.MaxWidth(texture_width), GUILayout.Height(texture_height))){
+                if(GUILayout.Button(content, new GUIStyle(), GUILayout.MaxWidth(_textureWidth), GUILayout.Height(_buttonHeight))){
                     data.action.Perform(ShaderEditor.Active?.Materials);
                 }
                 cursorRect = GUILayoutUtility.GetLastRect();
@@ -873,7 +880,7 @@ namespace Thry.ThryEditor
             }
             else
             {
-                if (GUILayout.Button(content, GUILayout.ExpandWidth(false), GUILayout.Height(texture_height)))
+                if (GUILayout.Button(content, GUILayout.ExpandWidth(false), GUILayout.Height(_buttonHeight)))
                     data.action.Perform(ShaderEditor.Active?.Materials);
                 cursorRect = GUILayoutUtility.GetLastRect();
                 GUILayout.Space(2);

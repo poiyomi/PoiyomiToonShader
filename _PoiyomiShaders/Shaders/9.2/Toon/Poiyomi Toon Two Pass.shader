@@ -2,14 +2,16 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 {
 	Properties
 	{
-		[HideInInspector] shader_master_label ("<color=#E75898ff>Poiyomi 9.2.76</color>", Float) = 0
+		[HideInInspector] shader_master_label ("<color=#E75898ff>Poiyomi 9.2.79</color>", Float) = 0
 		[HideInInspector] shader_is_using_thry_editor ("", Float) = 0
 		[HideInInspector] shader_locale ("0db0b86376c3dca4b9a6828ef8615fe0", Float) = 0
-		[HideInInspector] footer_youtube ("{texture:{name:icon-youtube,height:16},action:{type:URL,data:https://www.youtube.com/poiyomi},hover:YOUTUBE}", Float) = 0
-		[HideInInspector] footer_twitter ("{texture:{name:icon-twitter,height:16},action:{type:URL,data:https://twitter.com/poiyomi},hover:TWITTER}", Float) = 0
-		[HideInInspector] footer_patreon ("{texture:{name:icon-patreon,height:16},action:{type:URL,data:https://www.patreon.com/poiyomi},hover:PATREON}", Float) = 0
-		[HideInInspector] footer_discord ("{texture:{name:icon-discord,height:16},action:{type:URL,data:https://discord.gg/Ays52PY},hover:DISCORD}", Float) = 0
-		[HideInInspector] footer_github ("{texture:{name:icon-github,height:16},action:{type:URL,data:https://github.com/poiyomi/PoiyomiToonShader},hover:GITHUB}", Float) = 0
+		[HideInInspector] footer_website ("{texture:{name:icon-poilogo,height:24},action:{type:URL,data:https://www.poiyomi.com},hover:WEBSITE}", Float) = 0
+		[HideInInspector] footer_discord ("{texture:{name:icon-discord,height:24},action:{type:URL,data:https://discord.gg/Ays52PY},hover:DISCORD}", Float) = 0
+		[HideInInspector] footer_patreon ("{texture:{name:icon-patreon-new,height:24},action:{type:URL,data:https://www.patreon.com/poiyomi},hover:PATREON}", Float) = 0
+		[HideInInspector] footer_youtube ("{texture:{name:icon-youtube,height:24},action:{type:URL,data:https://www.youtube.com/poiyomi},hover:YOUTUBE}", Float) = 0
+		[HideInInspector] footer_github ("{texture:{name:icon-github,height:24},action:{type:URL,data:https://github.com/poiyomi/PoiyomiToonShader},hover:GITHUB}", Float) = 0
+		[HideInInspector] footer_bluesky ("{texture:{name:icon-bluesky,height:24},action:{type:URL,data:https://bsky.app/profile/poiyomi.com},hover:BLUESKY}", Float) = 0
+		[HideInInspector] footer_twitter ("{texture:{name:icon-twitter,height:24},action:{type:URL,data:https://x.com/poiyomi},hover:X}", Float) = 0
 		
 		// Warning that only shows up when ThryEditor hasn't loaded
 		[Header(POIYOMI SHADER UI FAILED TO LOAD)]
@@ -104,7 +106,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 		
 		[HideInInspector] s_start_ColorAdjustColorGrading ("Color Grading--{reference_property:_ColorGradingToggle, persistent_expand:true}", Float) = 0
 		[HideInInspector][ToggleUI] _ColorGradingToggle ("Color Grading", Float) = 0
-		[NoScaleOffset][Gradient] _MainGradationTex ("Gradation Map", 2D) = "white" { }
+		[TextureKeyword][NoScaleOffset][Gradient] _MainGradationTex ("Gradation Map", 2D) = "white" { }
 		_MainGradationStrength ("Gradation Strength", Range(0, 1)) = 0
 		[HideInInspector] s_end_ColorAdjustColorGrading ("Color Grading", Float) = 0
 		
@@ -232,7 +234,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 		// Decal Texture
 		//[HideInInspector] m_start_DecalSection ("Decals Group 0--{button_help:{text:Tutorial,action:{type:URL,data:https://www.poiyomi.com/color-and-normals/decals},hover:YouTube}}", Float) = 0
 		[HideInInspector] m_start_DecalSection ("Decals--{button_help:{text:Tutorial,action:{type:URL,data:https://www.poiyomi.com/color-and-normals/decals},hover:Documentation}}", Float) = 0
-		[sRGBWarning][ThryRGBAPacker(Decal 0 Mask, Decal 1 Mask, Decal 2 Mask, Decal 3 Mask, Linear, false)]_DecalMask ("RGBA Mask [Click to Expand]--{reference_properties:[_DecalMaskPan, _DecalMaskUV]}", 2D) = "white" { }
+		[TextureKeyword][sRGBWarning][ThryRGBAPacker(Decal 0 Mask, Decal 1 Mask, Decal 2 Mask, Decal 3 Mask, Linear, false)]_DecalMask ("RGBA Mask [Click to Expand]--{reference_properties:[_DecalMaskPan, _DecalMaskUV]}", 2D) = "white" { }
 		[HideInInspector][Vector2]_DecalMaskPan ("Panning", Vector) = (0, 0, 0, 0)
 		[HideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7, Matcap, 9)] _DecalMaskUV ("UV", Int) = 0
 		//ifex 0==0
@@ -654,11 +656,11 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 		[HideInInspector][ThryToggle(VIGNETTE)]_RGBMaskEnabled ("RGB Mask Enabled", Float) = 0
 		[ThryWideEnum(Texture, 0, Vertex Color, 1)]_RGBMaskType ("Mask Type", int) = 0
 		
-		[sRGBWarning][ThryRGBAPacker(R Mask, G Mask, B Mask, A Mask, Linear, false)]_RGBMask ("Masks [Click to Expand]--{reference_properties:[_RGBMaskPan, _RGBMaskUV], condition_showS:_RGBMaskType==0}", 2D) = "white" { }
+		[TextureKeyword][sRGBWarning][ThryRGBAPacker(R Mask, G Mask, B Mask, A Mask, Linear, false)]_RGBMask ("Masks [Click to Expand]--{reference_properties:[_RGBMaskPan, _RGBMaskUV], condition_showS:_RGBMaskType==0}", 2D) = "white" { }
 		[HideInInspector][Vector2]_RGBMaskPan ("Panning", Vector) = (0, 0, 0, 0)
 		[HideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7, Matcap, 9)]_RGBMaskUV ("UV", int) = 0
 		
-		[sRGBWarning][ThryRGBAPacker(Red Metallic, Green Metallic, Blue Metallic, Alpha Metallic, Linear, false)]_RGBAMetallicMaps ("Metallic Maps [Click to Expand]--{reference_properties:[_RGBAMetallicMapsPan, _RGBAMetallicMapsUV, _RGBAMetallicMapsStochastic, _RGBARedMetallicInvert, _RGBAGreenMetallicInvert, _RGBABlueMetallicInvert, _RGBAAlphaMetallicInvert]}", 2D) = "white" { }
+		[TextureKeyword][sRGBWarning][ThryRGBAPacker(Red Metallic, Green Metallic, Blue Metallic, Alpha Metallic, Linear, false)]_RGBAMetallicMaps ("Metallic Maps [Click to Expand]--{reference_properties:[_RGBAMetallicMapsPan, _RGBAMetallicMapsUV, _RGBAMetallicMapsStochastic, _RGBARedMetallicInvert, _RGBAGreenMetallicInvert, _RGBABlueMetallicInvert, _RGBAAlphaMetallicInvert]}", 2D) = "white" { }
 		[HideInInspector][Vector2]_RGBAMetallicMapsPan ("Panning", Vector) = (0, 0, 0, 0)
 		[HideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7, Matcap, 9)]_RGBAMetallicMapsUV ("UV", Int) = 0
 		[HideInInspector][ToggleUI]_RGBAMetallicMapsStochastic ("Stochastic Sampling", Float) = 0
@@ -667,7 +669,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 		[HideInInspector][ToggleUI]_RGBABlueMetallicInvert ("Invert B", Float) = 0
 		[HideInInspector][ToggleUI]_RGBAAlphaMetallicInvert ("Invert A", Float) = 0
 		
-		[sRGBWarning][ThryRGBAPacker(Red Smoothness, Green Smoothness, Blue Smoothness, Alpha Smoothness, Linear, false)]_RGBASmoothnessMaps ("Smoothness Maps [Click to Expand]--{reference_properties:[_RGBASmoothnessMapsPan, _RGBASmoothnessMapsUV, _RGBASmoothnessMapsStochastic, _RGBARedSmoothnessInvert, _RGBAGreenSmoothnessInvert, _RGBABlueSmoothnessInvert, _RGBAAlphaSmoothnessInvert]}", 2D) = "white" { }
+		[TextureKeyword][sRGBWarning][ThryRGBAPacker(Red Smoothness, Green Smoothness, Blue Smoothness, Alpha Smoothness, Linear, false)]_RGBASmoothnessMaps ("Smoothness Maps [Click to Expand]--{reference_properties:[_RGBASmoothnessMapsPan, _RGBASmoothnessMapsUV, _RGBASmoothnessMapsStochastic, _RGBARedSmoothnessInvert, _RGBAGreenSmoothnessInvert, _RGBABlueSmoothnessInvert, _RGBAAlphaSmoothnessInvert]}", 2D) = "white" { }
 		[HideInInspector][Vector2]_RGBASmoothnessMapsPan ("Panning", Vector) = (0, 0, 0, 0)
 		[HideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7, Matcap, 9)]_RGBASmoothnessMapsUV ("UV", Int) = 0
 		[HideInInspector][ToggleUI]_RGBASmoothnessMapsStochastic ("Stochastic Sampling", Float) = 0
@@ -679,10 +681,12 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 		[HideInInspector] s_start_RGBRed ("Red--{reference_property:_RGBARedEnable,persistent_expand:true,default_expand:false}", Float) = 0
 		[HideInInspector][ToggleUI]_RGBARedEnable ("Enable Red", Float) = 0
 		_RGBARedScaleOffset ("Scale & Offset", Vector) = (1, 1, 0, 0)
-		[ThryWideEnum(Replace, 0, Darken, 1, Multiply, 2, Lighten, 5, Screen, 6, Subtract, 7, Add, 8, Overlay, 9, Mixed, 20)]_RGBARedBlendType ("Blend Mode", Range(0, 1)) = 0
+		[ThryWideEnum(Replace, 0, Darken, 1, Multiply, 2, Lighten, 5, Screen, 6, Subtract, 7, Add, 8, Overlay, 9, Mixed, 20)]_RGBARedBlendType ("Color Blend", Range(0, 1)) = 0
+		[EnumVector(Base, NA, NA, NA)]_RgbNormalRBlendSources ("Normal Blend", Vector) = (0, 0, 0, 0)
+		[HideInInspector][Enum(Replace, 0, Blend All, 1, Blend Base Normal, 2)]_RgbNormalRedBlendMode ("Normal Blend (Legacy)", Int) = 0
 		_RedColor ("Color--{reference_property:_RedColorThemeIndex}", Color) = (1, 1, 1, 1)
 		[HideInInspector][ThryWideEnum(Off, 0, Theme Color 0, 1, Theme Color 1, 2, Theme Color 2, 3, Theme Color 3, 4, ColorChord 0, 5, ColorChord 1, 6, ColorChord 2, 7, ColorChord 3, 8, AL Theme 0, 9, AL Theme 1, 10, AL Theme 2, 11, AL Theme 3, 12)] _RedColorThemeIndex ("", Int) = 0
-		[sRGBWarning(true)]_RedTexture ("Texture--{reference_properties:[_RedTexturePan, _RedTextureUV, _RedTextureStochastic, _RedAlphaAdd, _RgbRedMaskChannel, _RgbRedGlobalMaskChannel]}", 2D) = "white" { }
+		[TextureKeyword][sRGBWarning(true)]_RedTexture ("Texture--{reference_properties:[_RedTexturePan, _RedTextureUV, _RedTextureStochastic, _RedAlphaAdd, _RgbRedMaskChannel, _RgbRedGlobalMaskChannel]}", 2D) = "white" { }
 		[HideInInspector][Vector2]_RedTexturePan ("Panning", Vector) = (0, 0, 0, 0)
 		[HideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7, Matcap, 9)]_RedTextureUV ("UV", int) = 0
 		[HideInInspector][ToggleUI]_RedTextureStochastic ("Stochastic Sampling", Float) = 0
@@ -691,12 +695,12 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 		[HideInInspector][ThryWideEnum(Off, 0, 1R, 1, 1G, 2, 1B, 3, 1A, 4, 2R, 5, 2G, 6, 2B, 7, 2A, 8, 3R, 9, 3G, 10, 3B, 11, 3A, 12, 4R, 13, 4G, 14, 4B, 15, 4A, 16)] _RgbRedGlobalMaskChannel ("Global Mask--{reference_property:_RgbRedGlobalMaskBlendType}", Int) = 0
 		[HideInInspector][ThryWideEnum(Add, 7, Subtract, 1, Multiply, 2, Divide, 3, Min, 4, Max, 5, Average, 6, Replace, 0)] _RgbRedGlobalMaskBlendType ("Blending", Range(0, 1)) = 2
 		
-		[Normal]_RgbNormalR ("Normal--{reference_properties:[_RgbNormalRPan, _RgbNormalRUV, _RgbNormalRStochastic, _RgbNormalRedBlendMode, _RgbNormalRMaskChannel, _RgbNormalRGlobalMaskChannel]}", 2D) = "bump" { }
+		[TextureKeyword][Normal]_RgbNormalR ("Normal--{reference_properties:[_RgbNormalRPan, _RgbNormalRUV, _RgbNormalRStochastic, _RgbNormalRMaskChannel, _RgbNormalRGlobalMaskChannel]}", 2D) = "bump" { }
 		[HideInInspector][Vector2]_RgbNormalRPan ("Pan", Vector) = (0, 0, 0, 0)
 		[HideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7, Matcap, 9)]_RgbNormalRUV ("UV", int) = 0
 		[HideInInspector][ToggleUI]_RgbNormalRStochastic ("Stochastic Sampling", Float) = 0
 		[HideInInspector][Enum(R, 0, G, 1, B, 2, A, 3)]_RgbNormalRMaskChannel ("Mask Channel", Int) = 0
-		[HideInInspector][Enum(Replace, 0, Blend All, 1, Blend Base Normal, 2)]_RgbNormalRedBlendMode ("Blend Mode", Int) = 0
+		
 		[HideInInspector][ThryWideEnum(Off, 0, 1R, 1, 1G, 2, 1B, 3, 1A, 4, 2R, 5, 2G, 6, 2B, 7, 2A, 8, 3R, 9, 3G, 10, 3B, 11, 3A, 12, 4R, 13, 4G, 14, 4B, 15, 4A, 16)] _RgbNormalRGlobalMaskChannel ("Global Mask--{reference_property:_RgbNormalRGlobalMaskBlendType}", Int) = 0
 		[HideInInspector][ThryWideEnum(Add, 7, Subtract, 1, Multiply, 2, Divide, 3, Min, 4, Max, 5, Average, 6, Replace, 0)] _RgbNormalRGlobalMaskBlendType ("Blending", Range(0, 1)) = 2
 		_RgbNormalRScale ("Normal Intensity", Range(0, 10)) = 0
@@ -713,10 +717,12 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 		[HideInInspector] s_start_RGBGreen ("Green--{reference_property:_RGBAGreenEnable,persistent_expand:true,default_expand:false}", Float) = 0
 		[HideInInspector][ToggleUI]_RGBAGreenEnable ("Enable Green", Float) = 0
 		_RGBAGreenScaleOffset ("Scale & Offset", Vector) = (1, 1, 0, 0)
-		[ThryWideEnum(Replace, 0, Darken, 1, Multiply, 2, Lighten, 5, Screen, 6, Subtract, 7, Add, 8, Overlay, 9, Mixed, 20)]_RGBAGreenBlendType ("Blend Mode", Range(0, 1)) = 0
+		[ThryWideEnum(Replace, 0, Darken, 1, Multiply, 2, Lighten, 5, Screen, 6, Subtract, 7, Add, 8, Overlay, 9, Mixed, 20)]_RGBAGreenBlendType ("Color Blend", Range(0, 1)) = 0
+		[EnumVector(Base, Red, NA, NA)]_RgbNormalGBlendSources ("Normal Blend", Vector) = (0, 0, 0, 0)
+		[HideInInspector][Enum(Replace, 0, Blend All, 1, Blend Base Normal, 2)]_RgbNormalGreenBlendMode ("Normal Blend (Legacy)", Int) = 0
 		_GreenColor ("Color--{reference_property:_GreenColorThemeIndex}", Color) = (1, 1, 1, 1)
 		[HideInInspector][ThryWideEnum(Off, 0, Theme Color 0, 1, Theme Color 1, 2, Theme Color 2, 3, Theme Color 3, 4, ColorChord 0, 5, ColorChord 1, 6, ColorChord 2, 7, ColorChord 3, 8, AL Theme 0, 9, AL Theme 1, 10, AL Theme 2, 11, AL Theme 3, 12)] _GreenColorThemeIndex ("", Int) = 0
-		[sRGBWarning(true)]_GreenTexture ("Texture--{reference_properties:[_GreenTexturePan, _GreenTextureUV, _GreenTextureStochastic, _GreenAlphaAdd, _RgbGreenMaskChannel, _RgbGreenGlobalMaskChannel]}", 2D) = "white" { }
+		[TextureKeyword][sRGBWarning(true)]_GreenTexture ("Texture--{reference_properties:[_GreenTexturePan, _GreenTextureUV, _GreenTextureStochastic, _GreenAlphaAdd, _RgbGreenMaskChannel, _RgbGreenGlobalMaskChannel]}", 2D) = "white" { }
 		[HideInInspector][Vector2]_GreenTexturePan ("Panning", Vector) = (0, 0, 0, 0)
 		[HideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7, Matcap, 9)]_GreenTextureUV ("UV", int) = 0
 		[HideInInspector][ToggleUI]_GreenTextureStochastic ("Stochastic Sampling", Float) = 0
@@ -725,12 +731,12 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 		[HideInInspector][ThryWideEnum(Off, 0, 1R, 1, 1G, 2, 1B, 3, 1A, 4, 2R, 5, 2G, 6, 2B, 7, 2A, 8, 3R, 9, 3G, 10, 3B, 11, 3A, 12, 4R, 13, 4G, 14, 4B, 15, 4A, 16)] _RgbGreenGlobalMaskChannel ("Global Mask--{reference_property:_RgbGreenGlobalMaskBlendType}", Int) = 0
 		[HideInInspector][ThryWideEnum(Add, 7, Subtract, 1, Multiply, 2, Divide, 3, Min, 4, Max, 5, Average, 6, Replace, 0)] _RgbGreenGlobalMaskBlendType ("Blending", Range(0, 1)) = 2
 		
-		[Normal]_RgbNormalG ("Normal--{reference_properties:[_RgbNormalGPan, _RgbNormalGUV, _RgbNormalGStochastic, _RgbNormalGreenBlendMode, _RgbNormalGMaskChannel, _RgbNormalGGlobalMaskChannel]}", 2D) = "bump" { }
+		[TextureKeyword][Normal]_RgbNormalG ("Normal--{reference_properties:[_RgbNormalGPan, _RgbNormalGUV, _RgbNormalGStochastic, _RgbNormalGMaskChannel, _RgbNormalGGlobalMaskChannel]}", 2D) = "bump" { }
 		[HideInInspector][Vector2]_RgbNormalGPan ("Pan", Vector) = (0, 0, 0, 0)
 		[HideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7, Matcap, 9)]_RgbNormalGUV ("UV", int) = 0
 		[HideInInspector][ToggleUI]_RgbNormalGStochastic ("Stochastic Sampling", Float) = 0
 		[HideInInspector][Enum(R, 0, G, 1, B, 2, A, 3)]_RgbNormalGMaskChannel ("Mask Channel", Int) = 1
-		[HideInInspector][Enum(Replace, 0, Blend All, 1, Blend Base Normal, 2)]_RgbNormalGreenBlendMode ("Blend Mode", Int) = 0
+		
 		[HideInInspector][ThryWideEnum(Off, 0, 1R, 1, 1G, 2, 1B, 3, 1A, 4, 2R, 5, 2G, 6, 2B, 7, 2A, 8, 3R, 9, 3G, 10, 3B, 11, 3A, 12, 4R, 13, 4G, 14, 4B, 15, 4A, 16)] _RgbNormalGGlobalMaskChannel ("Global Mask--{reference_property:_RgbNormalGGlobalMaskBlendType}", Int) = 0
 		[HideInInspector][ThryWideEnum(Add, 7, Subtract, 1, Multiply, 2, Divide, 3, Min, 4, Max, 5, Average, 6, Replace, 0)] _RgbNormalGGlobalMaskBlendType ("Blending", Range(0, 1)) = 2
 		_RgbNormalGScale ("Normal Intensity", Range(0, 10)) = 0
@@ -747,10 +753,12 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 		[HideInInspector] s_start_RGBBlue ("Blue--{reference_property:_RGBABlueEnable,persistent_expand:true,default_expand:false}", Float) = 0
 		[HideInInspector][ToggleUI]_RGBABlueEnable ("Enable Blue", Float) = 0
 		_RGBABlueScaleOffset ("Scale & Offset", Vector) = (1, 1, 0, 0)
-		[ThryWideEnum(Replace, 0, Darken, 1, Multiply, 2, Lighten, 5, Screen, 6, Subtract, 7, Add, 8, Overlay, 9, Mixed, 20)]_RGBABlueBlendType ("Blend Mode", Range(0, 1)) = 0
+		[ThryWideEnum(Replace, 0, Darken, 1, Multiply, 2, Lighten, 5, Screen, 6, Subtract, 7, Add, 8, Overlay, 9, Mixed, 20)]_RGBABlueBlendType ("Color Blend", Range(0, 1)) = 0
+		[EnumVector(Base, Red, Green, NA)]_RgbNormalBBlendSources ("Normal Blend", Vector) = (0, 0, 0, 0)
+		[HideInInspector][Enum(Replace, 0, Blend All, 1, Blend Base Normal, 2)]_RgbNormalBlueBlendMode ("Normal Blend (Legacy)", Int) = 0
 		_BlueColor ("Color--{reference_property:_BlueColorThemeIndex}", Color) = (1, 1, 1, 1)
 		[HideInInspector][ThryWideEnum(Off, 0, Theme Color 0, 1, Theme Color 1, 2, Theme Color 2, 3, Theme Color 3, 4, ColorChord 0, 5, ColorChord 1, 6, ColorChord 2, 7, ColorChord 3, 8, AL Theme 0, 9, AL Theme 1, 10, AL Theme 2, 11, AL Theme 3, 12)] _BlueColorThemeIndex ("", Int) = 0
-		[sRGBWarning(true)]_BlueTexture ("Texture--{reference_properties:[_BlueTexturePan, _BlueTextureUV, _BlueTextureStochastic, _BlueAlphaAdd, _RgbBlueMaskChannel, _RgbBlueGlobalMaskChannel]}", 2D) = "white" { }
+		[TextureKeyword][sRGBWarning(true)]_BlueTexture ("Texture--{reference_properties:[_BlueTexturePan, _BlueTextureUV, _BlueTextureStochastic, _BlueAlphaAdd, _RgbBlueMaskChannel, _RgbBlueGlobalMaskChannel]}", 2D) = "white" { }
 		[HideInInspector][Vector2]_BlueTexturePan ("Panning", Vector) = (0, 0, 0, 0)
 		[HideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7, Matcap, 9)]_BlueTextureUV ("UV", int) = 0
 		[HideInInspector][ToggleUI]_BlueTextureStochastic ("Stochastic Sampling", Float) = 0
@@ -759,12 +767,12 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 		[HideInInspector][ThryWideEnum(Off, 0, 1R, 1, 1G, 2, 1B, 3, 1A, 4, 2R, 5, 2G, 6, 2B, 7, 2A, 8, 3R, 9, 3G, 10, 3B, 11, 3A, 12, 4R, 13, 4G, 14, 4B, 15, 4A, 16)] _RgbBlueGlobalMaskChannel ("Global Mask--{reference_property:_RgbBlueGlobalMaskBlendType}", Int) = 0
 		[HideInInspector][ThryWideEnum(Add, 7, Subtract, 1, Multiply, 2, Divide, 3, Min, 4, Max, 5, Average, 6, Replace, 0)] _RgbBlueGlobalMaskBlendType ("Blending", Range(0, 1)) = 2
 		
-		[Normal]_RgbNormalB ("Normal--{reference_properties:[_RgbNormalBPan, _RgbNormalBUV, _RgbNormalBStochastic, _RgbNormalBlueBlendMode, _RgbNormalBMaskChannel, _RgbNormalBGlobalMaskChannel]}", 2D) = "bump" { }
+		[TextureKeyword][Normal]_RgbNormalB ("Normal--{reference_properties:[_RgbNormalBPan, _RgbNormalBUV, _RgbNormalBStochastic, _RgbNormalBMaskChannel, _RgbNormalBGlobalMaskChannel]}", 2D) = "bump" { }
 		[HideInInspector][Vector2]_RgbNormalBPan ("Pan", Vector) = (0, 0, 0, 0)
 		[HideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7, Matcap, 9)]_RgbNormalBUV ("UV", int) = 0
 		[HideInInspector][ToggleUI]_RgbNormalBStochastic ("Stochastic Sampling", Float) = 0
 		[HideInInspector][Enum(R, 0, G, 1, B, 2, A, 3)]_RgbNormalBMaskChannel ("Mask Channel", Int) = 2
-		[HideInInspector][Enum(Replace, 0, Blend All, 1, Blend Base Normal, 2)]_RgbNormalBlueBlendMode ("Blend Mode", Int) = 0
+		
 		[HideInInspector][ThryWideEnum(Off, 0, 1R, 1, 1G, 2, 1B, 3, 1A, 4, 2R, 5, 2G, 6, 2B, 7, 2A, 8, 3R, 9, 3G, 10, 3B, 11, 3A, 12, 4R, 13, 4G, 14, 4B, 15, 4A, 16)] _RgbNormalBGlobalMaskChannel ("Global Mask--{reference_property:_RgbNormalBGlobalMaskBlendType}", Int) = 0
 		[HideInInspector][ThryWideEnum(Add, 7, Subtract, 1, Multiply, 2, Divide, 3, Min, 4, Max, 5, Average, 6, Replace, 0)] _RgbNormalBGlobalMaskBlendType ("Blending", Range(0, 1)) = 2
 		_RgbNormalBScale ("Normal Intensity", Range(0, 10)) = 0
@@ -781,10 +789,12 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 		[HideInInspector] s_start_RGBAlpha ("Alpha--{reference_property:_RGBAAlphaEnable,persistent_expand:true,default_expand:false}", Float) = 0
 		[HideInInspector][ToggleUI]_RGBAAlphaEnable ("Enable Alpha", Float) = 0
 		_RGBAAlphaScaleOffset ("Scale & Offset", Vector) = (1, 1, 0, 0)
-		[ThryWideEnum(Replace, 0, Darken, 1, Multiply, 2, Lighten, 5, Screen, 6, Subtract, 7, Add, 8, Overlay, 9, Mixed, 20)]_RGBAAlphaBlendType ("Blend Mode", Range(0, 1)) = 0
+		[ThryWideEnum(Replace, 0, Darken, 1, Multiply, 2, Lighten, 5, Screen, 6, Subtract, 7, Add, 8, Overlay, 9, Mixed, 20)]_RGBAAlphaBlendType ("Color Blend", Range(0, 1)) = 0
+		[EnumVector(Base, Red, Green, Blue)]_RgbNormalABlendSources ("Normal Blend", Vector) = (0, 0, 0, 0)
+		[HideInInspector][Enum(Replace, 0, Blend All, 1, Blend Base Normal, 2)]_RgbNormalAlphaBlendMode ("Normal Blend (Legacy)", Int) = 0
 		_AlphaColor ("Color--{reference_property:_AlphaColorThemeIndex}", Color) = (1, 1, 1, 1)
 		[HideInInspector][ThryWideEnum(Off, 0, Theme Color 0, 1, Theme Color 1, 2, Theme Color 2, 3, Theme Color 3, 4, ColorChord 0, 5, ColorChord 1, 6, ColorChord 2, 7, ColorChord 3, 8, AL Theme 0, 9, AL Theme 1, 10, AL Theme 2, 11, AL Theme 3, 12)] _AlphaColorThemeIndex ("", Int) = 0
-		[sRGBWarning(true)]_AlphaTexture ("Texture--{reference_properties:[_AlphaTexturePan, _AlphaTextureUV, _AlphaTextureStochastic, _AlphaAlphaAdd, _RgbAlphaMaskChannel, _RgbAlphaGlobalMaskChannel]}", 2D) = "white" { }
+		[TextureKeyword][sRGBWarning(true)]_AlphaTexture ("Texture--{reference_properties:[_AlphaTexturePan, _AlphaTextureUV, _AlphaTextureStochastic, _AlphaAlphaAdd, _RgbAlphaMaskChannel, _RgbAlphaGlobalMaskChannel]}", 2D) = "white" { }
 		[HideInInspector][Vector2]_AlphaTexturePan ("Panning", Vector) = (0, 0, 0, 0)
 		[HideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7, Matcap, 9)]_AlphaTextureUV ("UV", int) = 0
 		[HideInInspector][ToggleUI]_AlphaTextureStochastic ("Stochastic Sampling", Float) = 0
@@ -793,12 +803,12 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 		[HideInInspector][ThryWideEnum(Off, 0, 1R, 1, 1G, 2, 1B, 3, 1A, 4, 2R, 5, 2G, 6, 2B, 7, 2A, 8, 3R, 9, 3G, 10, 3B, 11, 3A, 12, 4R, 13, 4G, 14, 4B, 15, 4A, 16)] _RgbAlphaGlobalMaskChannel ("Global Mask--{reference_property:_RgbAlphaGlobalMaskBlendType}", Int) = 0
 		[HideInInspector][ThryWideEnum(Add, 7, Subtract, 1, Multiply, 2, Divide, 3, Min, 4, Max, 5, Average, 6, Replace, 0)] _RgbAlphaGlobalMaskBlendType ("Blending", Range(0, 1)) = 2
 		
-		[Normal]_RgbNormalA ("Normal--{reference_properties:[_RgbNormalAPan, _RgbNormalAUV, _RgbNormalAStochastic, _RgbNormalAlphaBlendMode,_RgbNormalAMaskChannel, _RgbNormalAGlobalMaskChannel]}", 2D) = "bump" { }
+		[TextureKeyword][Normal]_RgbNormalA ("Normal--{reference_properties:[_RgbNormalAPan, _RgbNormalAUV, _RgbNormalAStochastic, _RgbNormalAMaskChannel, _RgbNormalAGlobalMaskChannel]}", 2D) = "bump" { }
 		[HideInInspector][Vector2]_RgbNormalAPan ("Pan", Vector) = (0, 0, 0, 0)
 		[HideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7, Matcap, 9)]_RgbNormalAUV ("UV", int) = 0
 		[HideInInspector][ToggleUI]_RgbNormalAStochastic ("Stochastic Sampling", Float) = 0
 		[HideInInspector][Enum(R, 0, G, 1, B, 2, A, 3)]_RgbNormalAMaskChannel ("Mask Channel", Int) = 3
-		[HideInInspector][Enum(Replace, 0, Blend All, 1, Blend Base Normal, 2)]_RgbNormalAlphaBlendMode ("Blend Mode", Int) = 0
+		
 		[HideInInspector][ThryWideEnum(Off, 0, 1R, 1, 1G, 2, 1B, 3, 1A, 4, 2R, 5, 2G, 6, 2B, 7, 2A, 8, 3R, 9, 3G, 10, 3B, 11, 3A, 12, 4R, 13, 4G, 14, 4B, 15, 4A, 16)] _RgbNormalAGlobalMaskChannel ("Global Mask--{reference_property:_RgbNormalAGlobalMaskBlendType}", Int) = 0
 		[HideInInspector][ThryWideEnum(Add, 7, Subtract, 1, Multiply, 2, Divide, 3, Min, 4, Max, 5, Average, 6, Replace, 0)] _RgbNormalAGlobalMaskBlendType ("Blending", Range(0, 1)) = 2
 		_RgbNormalAScale ("Normal Intensity", Range(0, 10)) = 0
@@ -852,7 +862,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 		
 		[HideInInspector] m_start_PoiLightData ("Light Data--{button_help:{text:Tutorial,action:{type:URL,data:https://www.poiyomi.com/shading/light-data},hover:Documentation}}", Float) = 0
 		// Lighting Data
-		[sRGBWarning][ThryRGBAPacker(R, G, B, A, Linear, false)]_LightingAOMaps ("AO Maps (expand)--{reference_properties:[_LightingAOMapsPan, _LightingAOMapsUV,_LightDataAOStrengthR,_LightDataAOStrengthG,_LightDataAOStrengthB,_LightDataAOStrengthA, _LightDataAOGlobalMaskR]}", 2D) = "white" { }
+		[TextureKeyword][sRGBWarning][ThryRGBAPacker(R, G, B, A, Linear, false)]_LightingAOMaps ("AO Maps (expand)--{reference_properties:[_LightingAOMapsPan, _LightingAOMapsUV,_LightDataAOStrengthR,_LightDataAOStrengthG,_LightDataAOStrengthB,_LightDataAOStrengthA, _LightDataAOGlobalMaskR]}", 2D) = "white" { }
 		[HideInInspector][Vector2]_LightingAOMapsPan ("Panning", Vector) = (0, 0, 0, 0)
 		[HideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7, Matcap, 9)] _LightingAOMapsUV ("UV", Int) = 0
 		[HideInInspector]_LightDataAOStrengthR ("R Strength", Range(0, 1)) = 1
@@ -861,7 +871,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 		[HideInInspector]_LightDataAOStrengthA ("A Strength", Range(0, 1)) = 0
 		[HideInInspector][ThryWideEnum(Off, 0, 1R, 1, 1G, 2, 1B, 3, 1A, 4, 2R, 5, 2G, 6, 2B, 7, 2A, 8, 3R, 9, 3G, 10, 3B, 11, 3A, 12, 4R, 13, 4G, 14, 4B, 15, 4A, 16)] _LightDataAOGlobalMaskR ("Global Mask--{reference_property:_LightDataAOGlobalMaskBlendTypeR}", Int) = 0
 		[HideInInspector][ThryWideEnum(Add, 7, Subtract, 1, Multiply, 2, Divide, 3, Min, 4, Max, 5, Average, 6, Replace, 0)] _LightDataAOGlobalMaskBlendTypeR ("Blending", Range(0, 1)) = 2
-		[sRGBWarning][ThryRGBAPacker(R, G, B, A, Linear, false)]_LightingDetailShadowMaps ("Shadow Map (expand)--{reference_properties:[_LightingDetailShadowMapsPan, _LightingDetailShadowMapsUV,_LightingDetailShadowStrengthR,_LightingDetailShadowStrengthG,_LightingDetailShadowStrengthB,_LightingDetailShadowStrengthA,_LightingAddDetailShadowStrengthR,_LightingAddDetailShadowStrengthG,_LightingAddDetailShadowStrengthB,_LightingAddDetailShadowStrengthA, _LightDataDetailShadowGlobalMaskR]}", 2D) = "white" { }
+		[TextureKeyword][sRGBWarning][ThryRGBAPacker(R, G, B, A, Linear, false)]_LightingDetailShadowMaps ("Shadow Map (expand)--{reference_properties:[_LightingDetailShadowMapsPan, _LightingDetailShadowMapsUV,_LightingDetailShadowStrengthR,_LightingDetailShadowStrengthG,_LightingDetailShadowStrengthB,_LightingDetailShadowStrengthA,_LightingAddDetailShadowStrengthR,_LightingAddDetailShadowStrengthG,_LightingAddDetailShadowStrengthB,_LightingAddDetailShadowStrengthA, _LightDataDetailShadowGlobalMaskR]}", 2D) = "white" { }
 		[HideInInspector][Vector2]_LightingDetailShadowMapsPan ("Panning", Vector) = (0, 0, 0, 0)
 		[HideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7, Matcap, 9)] _LightingDetailShadowMapsUV ("UV", Int) = 0
 		[HideInInspector]_LightingDetailShadowStrengthR ("R Strength", Range(0, 1)) = 1
@@ -874,7 +884,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 		[HideInInspector]_LightingAddDetailShadowStrengthA ("Additive A Strength", Range(0, 1)) = 0
 		[HideInInspector][ThryWideEnum(Off, 0, 1R, 1, 1G, 2, 1B, 3, 1A, 4, 2R, 5, 2G, 6, 2B, 7, 2A, 8, 3R, 9, 3G, 10, 3B, 11, 3A, 12, 4R, 13, 4G, 14, 4B, 15, 4A, 16)] _LightDataDetailShadowGlobalMaskR ("Global Mask--{reference_property:_LightDataDetailShadowGlobalMaskBlendTypeR}", Int) = 0
 		[HideInInspector][ThryWideEnum(Add, 7, Subtract, 1, Multiply, 2, Divide, 3, Min, 4, Max, 5, Average, 6, Replace, 0)] _LightDataDetailShadowGlobalMaskBlendTypeR ("Blending", Range(0, 1)) = 2
-		[sRGBWarning][ThryRGBAPacker(R, G, B, A, Linear, false)]_LightingShadowMasks ("Shadow Masks (expand)--{reference_properties:[_LightingShadowMasksPan, _LightingShadowMasksUV,_LightingShadowMaskStrengthR,_LightingShadowMaskStrengthG,_LightingShadowMaskStrengthB,_LightingShadowMaskStrengthA, _LightDataShadowMaskGlobalMaskR]}", 2D) = "white" { }
+		[TextureKeyword][sRGBWarning][ThryRGBAPacker(R, G, B, A, Linear, false)]_LightingShadowMasks ("Shadow Masks (expand)--{reference_properties:[_LightingShadowMasksPan, _LightingShadowMasksUV,_LightingShadowMaskStrengthR,_LightingShadowMaskStrengthG,_LightingShadowMaskStrengthB,_LightingShadowMaskStrengthA, _LightDataShadowMaskGlobalMaskR]}", 2D) = "white" { }
 		[HideInInspector][Vector2]_LightingShadowMasksPan ("Panning", Vector) = (0, 0, 0, 0)
 		[HideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7, Matcap, 9)] _LightingShadowMasksUV ("UV", Int) = 0
 		[HideInInspector]_LightingShadowMaskStrengthR ("R Strength", Range(0, 1)) = 1
@@ -889,7 +899,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 		[Enum(Poi Custom, 0, Normalized NDotL, 1, Saturated NDotL, 2, Casted Shadows Only, 3, SDF, 4)] _LightingMapMode ("Light Map Mode", Int) = 0
 		
 		[HideInInspector] s_start_LightDataSDF ("Signed Distance fields--{persistent_expand:true,default_expand:true, condition_showS:(_LightingMapMode==4)}", Float) = 1
-		[sRGBWarning][ThryRGBAPacker(R, G, Nothing, Nothing, Linear, false)]_LightDataSDFMap ("SDF Map (expand)--{reference_properties:[_LightDataSDFMapPan, _LightDataSDFMapUV]}", 2D) = "white" { }
+		[TextureKeyword][sRGBWarning][ThryRGBAPacker(R, G, Nothing, Nothing, Linear, false)]_LightDataSDFMap ("SDF Map (expand)--{reference_properties:[_LightDataSDFMapPan, _LightDataSDFMapUV]}", 2D) = "white" { }
 		[HideInInspector][Vector2]_LightDataSDFMapPan ("Panning", Vector) = (0, 0, 0, 0)
 		[HideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7, Matcap, 9)] _LightDataSDFMapUV ("UV", Int) = 0
 		_LightDataSDFMapLOD ("LOD", Range(0, 1)) = 0
@@ -949,7 +959,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 		//ifex _LightingMode!=1
 		// Multilayer Math
 		[HideInInspector] s_start_MultilayerMath1stLayer ("Shadow Layer 1--{persistent_expand:true,default_expand:true, condition_showS:(_LightingMode==1)}", Float) = 1
-		[sRGBWarning(true)]_ShadowColorTex ("Color Tex--{reference_properties:[_ShadowColorTexPan, _ShadowColorTexUV], condition_showS:(_LightingMode==1)}", 2D) = "black" { }
+		[TextureKeyword][sRGBWarning(true)]_ShadowColorTex ("Color Tex--{reference_properties:[_ShadowColorTexPan, _ShadowColorTexUV], condition_showS:(_LightingMode==1)}", 2D) = "black" { }
 		[HideInInspector][Vector2]_ShadowColorTexPan ("Panning", Vector) = (0, 0, 0, 0)
 		[HideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7, Matcap, 9)] _ShadowColorTexUV ("UV", Int) = 0
 		_ShadowColor ("Color--{condition_showS:(_LightingMode==1)}", Color) = (0.7, 0.75, 0.85, 1.0)
@@ -961,7 +971,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 		[HideInInspector] s_end_MultilayerMath1stLayer ("Shadow Layer 1}", Float) = 1
 		
 		[HideInInspector] s_start_MultilayerMath2ndLayer ("Shadow Layer 2--{persistent_expand:true,default_expand:false, condition_showS:(_LightingMode==1)}", Float) = 0
-		[sRGBWarning(true)]_Shadow2ndColorTex ("Color Tex--{reference_properties:[_Shadow2ndColorTexPan, _Shadow2ndColorTexUV], condition_showS:(_LightingMode==1)}", 2D) = "black" { }
+		[TextureKeyword][sRGBWarning(true)]_Shadow2ndColorTex ("Color Tex--{reference_properties:[_Shadow2ndColorTexPan, _Shadow2ndColorTexUV], condition_showS:(_LightingMode==1)}", 2D) = "black" { }
 		[HideInInspector][Vector2]_Shadow2ndColorTexPan ("Panning", Vector) = (0, 0, 0, 0)
 		[HideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7, Matcap, 9)] _Shadow2ndColorTexUV ("UV", Int) = 0
 		_Shadow2ndColor ("Color--{condition_showS:(_LightingMode==1)}", Color) = (0, 0, 0, 0)
@@ -971,7 +981,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 		[HideInInspector] s_end_MultilayerMath2ndLayer ("Shadow Layer 2", Float) = 0
 		
 		[HideInInspector] s_start_MultilayerMath3rdLayer ("Shadow Layer 3--{persistent_expand:true,default_expand:false, condition_showS:(_LightingMode==1)}", Float) = 0
-		[sRGBWarning(true)]_Shadow3rdColorTex ("Color Tex--{reference_properties:[_Shadow3rdColorTexPan, _Shadow3rdColorTexUV], condition_showS:(_LightingMode==1)}", 2D) = "black" { }
+		[TextureKeyword][sRGBWarning(true)]_Shadow3rdColorTex ("Color Tex--{reference_properties:[_Shadow3rdColorTexPan, _Shadow3rdColorTexUV], condition_showS:(_LightingMode==1)}", 2D) = "black" { }
 		[HideInInspector][Vector2]_Shadow3rdColorTexPan ("Panning", Vector) = (0, 0, 0, 0)
 		[HideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7, Matcap, 9)] _Shadow3rdColorTexUV ("UV", Int) = 0
 		_Shadow3rdColor ("Color--{condition_showS:(_LightingMode==1)}", Color) = (0, 0, 0, 0)
@@ -987,7 +997,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 		
 		[HideInInspector] s_start_MultilayerShadowMap ("Shadow Map--{persistent_expand:true,default_expand:false, condition_showS:(_LightingMode==1)}", Float) = 0
 		[ThryWideEnum(Strength, 0, Flat, 1)] _ShadowMaskType ("Map Type", Int) = 0
-		_ShadowStrengthMask ("Color Tex--{reference_properties:[_ShadowStrengthMaskPan, _ShadowStrengthMaskUV]}", 2D) = "white" { }
+		[TextureKeyword]_ShadowStrengthMask ("Color Tex--{reference_properties:[_ShadowStrengthMaskPan, _ShadowStrengthMaskUV]}", 2D) = "white" { }
 		[HideInInspector][Vector2]_ShadowStrengthMaskPan ("Panning", Vector) = (0, 0, 0, 0)
 		[HideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7, Matcap, 9)] _ShadowStrengthMaskUV ("UV", Int) = 0
 		_ShadowFlatBorder ("Border--{condition_showS:(_ShadowMaskType==1)}", Range(-2, 2)) = 1
@@ -997,7 +1007,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 		
 		[HideInInspector] s_start_MultilayerMathBorderMap ("Shadow Border Map--{reference_property:_ShadowBorderMapToggle, persistent_expand:true,default_expand:false, condition_showS:(_LightingMode==1)}", Float) = 0
 		[HideInInspector][ToggleUI] _ShadowBorderMapToggle ("Shadow Border Map Toggle", Float) = 0
-		_ShadowBorderMask ("AO Map--{reference_properties:[_ShadowBorderMaskPan, _ShadowBorderMaskUV]}", 2D) = "white" { }
+		[TextureKeyword]_ShadowBorderMask ("AO Map--{reference_properties:[_ShadowBorderMaskPan, _ShadowBorderMaskUV]}", 2D) = "white" { }
 		[HideInInspector][Vector2]_ShadowBorderMaskPan ("Panning", Vector) = (0, 0, 0, 0)
 		[HideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7, Matcap, 9)] _ShadowBorderMaskUV ("UV", Int) = 0
 		_ShadowBorderMaskLOD ("Border Map LOD", Range(0, 1)) = 0
@@ -1006,7 +1016,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 		[VectorToSliders(3rd Min, n0.01, p1.01, 3rd Max, n0.01, p1.01)]_ShadowAOShift2 ("Shadow AO Shift", Vector) = (0, 1, 0, 1)
 		[HideInInspector] s_end_MultilayerMathBorderMap ("Shadow Border Map", Float) = 1
 		
-		[sRGBWarning]_MultilayerMathBlurMap ("Blur Map--{reference_properties:[_MultilayerMathBlurMapPan, _MultilayerMathBlurMapUV], condition_showS:(_LightingMode==1)}", 2D) = "white" { }
+		[TextureKeyword][sRGBWarning]_MultilayerMathBlurMap ("Blur Map--{reference_properties:[_MultilayerMathBlurMapPan, _MultilayerMathBlurMapUV], condition_showS:(_LightingMode==1)}", 2D) = "white" { }
 		[ToggleUI]_LightingMulitlayerNonLinear ("Non Linear Lightmap--{condition_showS:(_LightingMode==1)}", Float) = 1
 		_ShadowMainStrength ("Base Color Blend--{condition_showS:(_LightingMode==1)}", Range(0, 1)) = 0
 		_ShadowEnvStrength ("Env Strength on Shadow Color--{condition_showS:(_LightingMode==1)}", Range(0, 1)) = 0
@@ -2296,7 +2306,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 		//endex
 		
 		//ifex _EnableDissolve==0
-		[HideInInspector] m_start_dissolve ("Dissolve--{reference_property:_EnableDissolve,button_help:{text:Tutorial,action:{type:URL,data:https://www.poiyomi.com/special-fx/dissolve},hover:Documentation}}", Float) = 0
+		[HideInInspector] m_start_dissolve (" Dissolve--{reference_property:_EnableDissolve,button_help:{text:Tutorial,action:{type:URL,data:https://www.poiyomi.com/special-fx/dissolve},hover:Documentation}}", Float) = 0
 		[HideInInspector][ThryToggle(DISTORT)]_EnableDissolve ("Enable Dissolve", Float) = 0
 		[Enum(Basic, 1, Point2Point, 2, Spherical, 3, CenterOut, 4)] _DissolveType ("Dissolve Type", Int) = 1
 		
@@ -2383,7 +2393,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 		_CenterOutDissolvePower ("Power", Range(.1, 5)) = 1
 		[HideInInspector] m_end_CenterOutDissolve ("CenterOut", Float) = 0
 		
-		[HideInInspector] m_start_dissolveHueShift ("Hue Shift--{reference_property:_DissolveHueShiftEnabled}", Float) = 0
+		[HideInInspector] m_start_dissolveHueShift (" Hue Shift--{reference_property:_DissolveHueShiftEnabled}", Float) = 0
 		[HideInInspector][ToggleUI]_DissolveHueShiftEnabled ("Dissolved Enabled", Float) = 0
 		[ThryWideEnum(OKLab, 0, HSV, 1)] _DissolveHueShiftColorSpace ("Color Space", Int) = 0
 		[ThryWideEnum(Hue Select, 0, Hue Shift, 1)] _DissolveHueSelectOrShift ("Select or Shift", Int) = 1
@@ -2397,7 +2407,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 		_DissolveEdgeHueShift ("Edge Shift", Range(0, 1)) = 0
 		[HideInInspector] m_end_dissolveHueShift ("Hue Shift", Float) = 0
 		
-		[HideInInspector] m_start_UVTileDissolve ("UV Tile Dissolve--{reference_property:_UVTileDissolveEnabled}", Float) = 0
+		[HideInInspector] m_start_UVTileDissolve (" UV Tile Dissolve--{reference_property:_UVTileDissolveEnabled}", Float) = 0
 		[HideInInspector][ToggleUI]_UVTileDissolveEnabled ("Enabled", Float) = 0
 		[ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3)]_UVTileDissolveUV ("UV Tile UV", Int) = 0
 		[ToggleUI]_UVTileDissolveDiscardAtMax ("Discard Tiles at Max", Float) = 1
@@ -3867,7 +3877,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 		//ifex _UzumoreEnabled==0 && isNotAnimated(_UzumoreEnabled)
 		[HideInInspector] m_start_Uzumore (" View Clip Prevention (Uzumore)--{reference_property:_UzumoreCategoryToggle,button_author:{text:sigmal00,action:{type:URL,data:https://github.com/sigmal00},hover:GitHub}}, button_help:{text:Tutorial,action:{type:URL,data:https://www.poiyomi.com/vertex-options/view-clip-prevention},hover:Documentation}}", Float) = 0
 		[HideInInspector][ThryToggle(POI_UZUMORE)] _UzumoreCategoryToggle (" View Clip Prevention (Uzumore)", Float) = 0
-		[Toggle] _UzumoreEnabled ("Animation Toggle", Float) = 1
+		[ToggleUI] _UzumoreEnabled ("Animation Toggle", Float) = 1
 		_UzumoreAmount ("Push Amount (m)", Float) = 0.1
 		_UzumoreBias ("Push Bias", Float) = 0.001
 		[sRGBWarning]_UzumoreMask ("Push Mask (A)", 2D) = "white" { }
@@ -4496,7 +4506,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 		//ifex _PostProcess==0
 		[HideInInspector] m_start_postprocess ("Post Processing--{reference_property:_PostProcess,button_help:{text:Tutorial,action:{type:URL,data:https://www.poiyomi.com/post-processing/main},hover:Documentation}}", Float) = 0
 		[HideInInspector][ThryToggle(POSTPROCESS)]_PostProcess ("Enable", Float) = 0
-		[sRGBWarning][ThryTexture] _PPMask ("Mask--{reference_properties:[_PPMaskPan, _PPMaskUV, _PPMaskChannel, _PPMaskInvert]}", 2D) = "white" { }
+		[TextureKeyword][sRGBWarning][ThryTexture] _PPMask ("Mask--{reference_properties:[_PPMaskPan, _PPMaskUV, _PPMaskChannel, _PPMaskInvert]}", 2D) = "white" { }
 		[HideInInspector][Vector2]_PPMaskPan ("Panning", Vector) = (0, 0, 0, 0)
 		[HideInInspector][Enum(R, 0, G, 1, B, 2, A, 3)]_PPMaskChannel ("Channel", Float) = 0
 		[HideInInspector][ToggleUI]_PPMaskInvert ("Invert", Float) = 0
@@ -4768,8 +4778,14 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			
 			#pragma shader_feature_local _STOCHASTICMODE_DELIOT_HEITZ _STOCHASTICMODE_HEXTILE _STOCHASTICMODE_NONE
 			
+			#pragma shader_feature_local PROP_LIGHTINGAOMAPS
+			#pragma shader_feature_local PROP_LIGHTINGDETAILSHADOWMAPS
+			#pragma shader_feature_local PROP_LIGHTINGSHADOWMASKS
+			#pragma shader_feature_local PROP_LIGHTDATASDFMAP
+			
 			//ifex _MainColorAdjustToggle==0
 			#pragma shader_feature COLOR_GRADING_HDR
+			#pragma shader_feature_local PROP_MAINGRADATIONTEX
 			//endex
 			
 			//#pragma shader_feature KEYWORD
@@ -4828,6 +4844,17 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			//ifex _RGBMaskEnabled==0
 			#pragma shader_feature VIGNETTE
 			#pragma shader_feature GEOM_TYPE_MESH
+			#pragma shader_feature PROP_RGBMASK
+			#pragma shader_feature PROP_RGBAMETALLICMAPS
+			#pragma shader_feature PROP_RGBASMOOTHNESSMAPS
+			#pragma shader_feature PROP_REDTEXTURE
+			#pragma shader_feature PROP_RGBNORMALR
+			#pragma shader_feature PROP_GREENTEXTURE
+			#pragma shader_feature PROP_RGBNORMALG
+			#pragma shader_feature PROP_BLUETEXTURE
+			#pragma shader_feature PROP_RGBNORMALB
+			#pragma shader_feature PROP_ALPHATEXTURE
+			#pragma shader_feature PROP_RGBNORMALA
 			//endex
 			
 			//ifex _DecalEnabled==0
@@ -4842,6 +4869,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			//ifex _DecalEnabled3==0
 			#pragma shader_feature DEPTH_OF_FIELD_COC_VIEW
 			//endex
+			#pragma shader_feature_local PROP_DECALMASK
 			
 			//ifex _EnableDissolve==0
 			#pragma shader_feature DISTORT
@@ -5220,7 +5248,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			float _MainGammaGlobalMask;
 			float _MainGammaGlobalMaskBlendType;
 			
-			#if defined(PROP_MAINGRADATIONTEX) || !defined(OPTIMIZER_ENABLED)
+			#if defined(PROP_MAINGRADATIONTEX)
 			Texture2D _MainGradationTex;
 			#endif
 			float _ColorGradingToggle;
@@ -6143,9 +6171,21 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				float2 uv1 : TEXCOORD1;
 				float2 uv2 : TEXCOORD2;
 				float2 uv3 : TEXCOORD3;
-				#ifndef POI_TESSELLATED
 				uint vertexId : SV_VertexID;
-				#endif
+				UNITY_VERTEX_INPUT_INSTANCE_ID
+			};
+			
+			struct tessellatedAppData
+			{
+				float4 vertex : POSITION;
+				float3 normal : NORMAL;
+				float4 tangent : TANGENT;
+				float4 color : COLOR;
+				float2 uv0 : TEXCOORD0;
+				float2 uv1 : TEXCOORD1;
+				float2 uv2 : TEXCOORD2;
+				float2 uv3 : TEXCOORD3;
+				uint vertexId : TEXCOORD4;
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
 			
@@ -9932,8 +9972,14 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			
 			#pragma shader_feature_local _STOCHASTICMODE_DELIOT_HEITZ _STOCHASTICMODE_HEXTILE _STOCHASTICMODE_NONE
 			
+			#pragma shader_feature_local PROP_LIGHTINGAOMAPS
+			#pragma shader_feature_local PROP_LIGHTINGDETAILSHADOWMAPS
+			#pragma shader_feature_local PROP_LIGHTINGSHADOWMASKS
+			#pragma shader_feature_local PROP_LIGHTDATASDFMAP
+			
 			//ifex _MainColorAdjustToggle==0
 			#pragma shader_feature COLOR_GRADING_HDR
+			#pragma shader_feature_local PROP_MAINGRADATIONTEX
 			//endex
 			
 			//#pragma shader_feature KEYWORD
@@ -9996,6 +10042,17 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			//ifex _RGBMaskEnabled==0
 			#pragma shader_feature VIGNETTE
 			#pragma shader_feature GEOM_TYPE_MESH
+			#pragma shader_feature PROP_RGBMASK
+			#pragma shader_feature PROP_RGBAMETALLICMAPS
+			#pragma shader_feature PROP_RGBASMOOTHNESSMAPS
+			#pragma shader_feature PROP_REDTEXTURE
+			#pragma shader_feature PROP_RGBNORMALR
+			#pragma shader_feature PROP_GREENTEXTURE
+			#pragma shader_feature PROP_RGBNORMALG
+			#pragma shader_feature PROP_BLUETEXTURE
+			#pragma shader_feature PROP_RGBNORMALB
+			#pragma shader_feature PROP_ALPHATEXTURE
+			#pragma shader_feature PROP_RGBNORMALA
 			//endex
 			
 			//ifex _LTCGIEnabled!=1
@@ -10005,6 +10062,12 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			//ifex _ShadingEnabled==0
 			#pragma shader_feature_local VIGNETTE_MASKED
 			#pragma shader_feature_local _LIGHTINGMODE_TEXTURERAMP _LIGHTINGMODE_MULTILAYER_MATH _LIGHTINGMODE_SHADEMAP _LIGHTINGMODE_REALISTIC _LIGHTINGMODE_WRAPPED _LIGHTINGMODE_SKIN _LIGHTINGMODE_FLAT _LIGHTINGMODE_CLOTH _LIGHTINGMODE_SDF
+			#pragma shader_feature_local PROP_MULTILAYERMATHBLURMAP
+			#pragma shader_feature_local PROP_SHADOWCOLORTEX
+			#pragma shader_feature_local PROP_SHADOW2NDCOLORTEX
+			#pragma shader_feature_local PROP_SHADOW3RDCOLORTEX
+			#pragma shader_feature_local PROP_SHADOWSTRENGTHMASK
+			#pragma shader_feature_local PROP_SHADOWBORDERMASK
 			//endex
 			
 			//ifex _DecalEnabled==0
@@ -10019,6 +10082,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			//ifex _DecalEnabled3==0
 			#pragma shader_feature DEPTH_OF_FIELD_COC_VIEW
 			//endex
+			#pragma shader_feature_local PROP_DECALMASK
 			
 			//ifex _EnableDissolve==0
 			#pragma shader_feature DISTORT
@@ -10132,6 +10196,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			
 			//ifex _PostProcess==0
 			#pragma shader_feature_local POSTPROCESS
+			#pragma shader_feature_local PROP_PPMASK
 			//endex
 			
 			//ifex _PoiInternalParallax==0
@@ -11366,7 +11431,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			#endif
 			//endex
 			
-			#if defined(PROP_LIGHTINGAOMAPS) || !defined(OPTIMIZER_ENABLED)
+			#if defined(PROP_LIGHTINGAOMAPS)
 			Texture2D _LightingAOMaps;
 			#endif
 			float4 _LightingAOMaps_ST;
@@ -11379,7 +11444,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			float _LightDataAOGlobalMaskR;
 			float _LightDataAOGlobalMaskBlendTypeR;
 			
-			#if defined(PROP_LIGHTINGDETAILSHADOWMAPS) || !defined(OPTIMIZER_ENABLED)
+			#if defined(PROP_LIGHTINGDETAILSHADOWMAPS)
 			Texture2D _LightingDetailShadowMaps;
 			#endif
 			float4 _LightingDetailShadowMaps_ST;
@@ -11396,7 +11461,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			float _LightDataDetailShadowGlobalMaskR;
 			float _LightDataDetailShadowGlobalMaskBlendTypeR;
 			
-			#if defined(PROP_LIGHTINGSHADOWMASKS) || !defined(OPTIMIZER_ENABLED)
+			#if defined(PROP_LIGHTINGSHADOWMASKS)
 			Texture2D _LightingShadowMasks;
 			#endif
 			float4 _LightingShadowMasks_ST;
@@ -11414,7 +11479,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			float _LightingColorMode;
 			float _LightingMapMode;
 			
-			#if defined(PROP_LIGHTDATASDFMAP) || !defined(OPTIMIZER_ENABLED)
+			#if defined(PROP_LIGHTDATASDFMAP)
 			Texture2D _LightDataSDFMap;
 			float4 _LightDataSDFMap_ST;
 			float2 _LightDataSDFMapPan;
@@ -11544,7 +11609,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			float _MainGammaGlobalMask;
 			float _MainGammaGlobalMaskBlendType;
 			
-			#if defined(PROP_MAINGRADATIONTEX) || !defined(OPTIMIZER_ENABLED)
+			#if defined(PROP_MAINGRADATIONTEX)
 			Texture2D _MainGradationTex;
 			#endif
 			float _ColorGradingToggle;
@@ -12537,14 +12602,14 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			
 			//ifex _RGBMaskEnabled==0
 			#ifdef VIGNETTE
-			#if defined(PROP_RGBMASK) || !defined(OPTIMIZER_ENABLED)
+			#if defined(PROP_RGBMASK)
 			Texture2D _RGBMask;
 			#endif
 			float4 _RGBMask_ST;
 			float2 _RGBMaskPan;
 			float _RGBMaskUV;
 			
-			#if defined(PROP_RGBAMETALLICMAPS) || !defined(OPTIMIZER_ENABLED)
+			#if defined(PROP_RGBAMETALLICMAPS)
 			Texture2D _RGBAMetallicMaps;
 			float4 _RGBAMetallicMaps_ST;
 			float2 _RGBAMetallicMapsPan;
@@ -12594,7 +12659,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			float _RGBAPBRBlueEnabled;
 			float _RGBAPBRAlphaEnabled;
 			
-			#if defined(PROP_RGBASMOOTHNESSMAPS) || !defined(OPTIMIZER_ENABLED)
+			#if defined(PROP_RGBASMOOTHNESSMAPS)
 			Texture2D _RGBASmoothnessMaps;
 			float4 _RGBASmoothnessMaps_ST;
 			float4 _RGBASmoothnessMapsPan;
@@ -12607,7 +12672,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			float _RGBAAlphaSmoothnessInvert;
 			
 			float _RGBARedEnable;
-			#if defined(PROP_REDTEXTURE) || !defined(OPTIMIZER_ENABLED)
+			#if defined(PROP_REDTEXTURE)
 			Texture2D _RedTexture;
 			#endif
 			float4 _RedTexture_ST;
@@ -12623,7 +12688,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			float _RedColorThemeIndex;
 			float _RGBARedEmissionStrength;
 			
-			#if defined(PROP_RGBNORMALR) || !defined(OPTIMIZER_ENABLED)
+			#if defined(PROP_RGBNORMALR)
 			Texture2D _RgbNormalR;
 			#endif
 			float4 _RgbNormalR_ST;
@@ -12635,9 +12700,10 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			float _RgbNormalRGlobalMaskChannel;
 			float _RgbNormalRGlobalMaskBlendType;
 			float _RgbNormalRedBlendMode;
+			float4 _RgbNormalRBlendSources;
 			
 			float _RGBAGreenEnable;
-			#if defined(PROP_GREENTEXTURE) || !defined(OPTIMIZER_ENABLED)
+			#if defined(PROP_GREENTEXTURE)
 			Texture2D _GreenTexture;
 			#endif
 			float4 _GreenTexture_ST;
@@ -12653,7 +12719,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			float _GreenColorThemeIndex;
 			float _RGBAGreenEmissionStrength;
 			
-			#if defined(PROP_RGBNORMALG) || !defined(OPTIMIZER_ENABLED)
+			#if defined(PROP_RGBNORMALG)
 			Texture2D _RgbNormalG;
 			#endif
 			float4 _RgbNormalG_ST;
@@ -12665,9 +12731,10 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			float _RgbNormalGGlobalMaskChannel;
 			float _RgbNormalGGlobalMaskBlendType;
 			float _RgbNormalGreenBlendMode;
+			float4 _RgbNormalGBlendSources;
 			
 			float _RGBABlueEnable;
-			#if defined(PROP_BLUETEXTURE) || !defined(OPTIMIZER_ENABLED)
+			#if defined(PROP_BLUETEXTURE)
 			Texture2D _BlueTexture;
 			#endif
 			float4 _BlueTexture_ST;
@@ -12683,7 +12750,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			float _BlueColorThemeIndex;
 			float _RGBABlueEmissionStrength;
 			
-			#if defined(PROP_RGBNORMALB) || !defined(OPTIMIZER_ENABLED)
+			#if defined(PROP_RGBNORMALB)
 			Texture2D _RgbNormalB;
 			#endif
 			float4 _RgbNormalB_ST;
@@ -12695,9 +12762,10 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			float _RgbNormalBGlobalMaskChannel;
 			float _RgbNormalBGlobalMaskBlendType;
 			float _RgbNormalBlueBlendMode;
+			float4 _RgbNormalBBlendSources;
 			
 			float _RGBAAlphaEnable;
-			#if defined(PROP_ALPHATEXTURE) || !defined(OPTIMIZER_ENABLED)
+			#if defined(PROP_ALPHATEXTURE)
 			Texture2D _AlphaTexture;
 			#endif
 			float4 _AlphaTexture_ST;
@@ -12713,7 +12781,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			float _AlphaColorThemeIndex;
 			float _RGBAAlphaEmissionStrength;
 			
-			#if defined(PROP_RGBNORMALA) || !defined(OPTIMIZER_ENABLED)
+			#if defined(PROP_RGBNORMALA)
 			Texture2D _RgbNormalA;
 			#endif
 			float4 _RgbNormalA_ST;
@@ -12725,6 +12793,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			float _RgbNormalAGlobalMaskChannel;
 			float _RgbNormalAGlobalMaskBlendType;
 			float _RgbNormalAlphaBlendMode;
+			float4 _RgbNormalABlendSources;
 			
 			float _RGBMaskType;
 			
@@ -12817,7 +12886,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			#endif
 			
 			#ifdef _LIGHTINGMODE_MULTILAYER_MATH
-			#if defined(PROP_SHADOWBORDERMASK) || !defined(OPTIMIZER_ENABLED)
+			#if defined(PROP_SHADOWBORDERMASK)
 			Texture2D _ShadowBorderMask;
 			float4 _ShadowBorderMask_ST;
 			float2 _ShadowBorderMaskPan;
@@ -12830,13 +12899,13 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			float _ShadowBorderMapToggle;
 			float4 _ShadowColor;
 			float _LightingMulitlayerNonLinear;
-			#if defined(PROP_SHADOWCOLORTEX) || !defined(OPTIMIZER_ENABLED)
+			#if defined(PROP_SHADOWCOLORTEX)
 			Texture2D _ShadowColorTex;
 			float4 _ShadowColorTex_ST;
 			float2 _ShadowColorTexPan;
 			float _ShadowColorTexUV;
 			#endif
-			#if defined(PROP_MULTILAYERMATHBLURMAP) || !defined(OPTIMIZER_ENABLED)
+			#if defined(PROP_MULTILAYERMATHBLURMAP)
 			Texture2D _MultilayerMathBlurMap;
 			float4 _MultilayerMathBlurMap_ST;
 			float2 _MultilayerMathBlurMapPan;
@@ -12846,7 +12915,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			float _ShadowBlur;
 			float _ShadowReceive;
 			float4 _Shadow2ndColor;
-			#if defined(PROP_SHADOW2NDCOLORTEX) || !defined(OPTIMIZER_ENABLED)
+			#if defined(PROP_SHADOW2NDCOLORTEX)
 			Texture2D _Shadow2ndColorTex;
 			float4 _Shadow2ndColorTex_ST;
 			float2 _Shadow2ndColorTexPan;
@@ -12856,7 +12925,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			float _Shadow2ndBlur;
 			float _Shadow2ndReceive;
 			float4 _Shadow3rdColor;
-			#if defined(PROP_SHADOW3RDCOLORTEX) || !defined(OPTIMIZER_ENABLED)
+			#if defined(PROP_SHADOW3RDCOLORTEX)
 			Texture2D _Shadow3rdColorTex;
 			float4 _Shadow3rdColorTex_ST;
 			float2 _Shadow3rdColorTexPan;
@@ -12870,7 +12939,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			float _ShadowEnvStrength;
 			float _ShadowMainStrength;
 			float _ShadowMaskType;
-			#if defined(PROP_SHADOWSTRENGTHMASK) || !defined(OPTIMIZER_ENABLED)
+			#if defined(PROP_SHADOWSTRENGTHMASK)
 			Texture2D _ShadowStrengthMask;
 			float4 _ShadowStrengthMask_ST;
 			float4 _ShadowStrengthMaskPan;
@@ -12925,7 +12994,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			
 			//ifex _DecalEnabled==0 && _DecalEnabled1==0 && _DecalEnabled2==0 && _DecalEnabled3==0
 			
-			#if defined(PROP_DECALMASK) || !defined(OPTIMIZER_ENABLED)
+			#if defined(PROP_DECALMASK)
 			Texture2D _DecalMask;
 			float4 _DecalMask_ST;
 			float2 _DecalMaskPan;
@@ -15133,7 +15202,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			
 			//ifex _PostProcess==0
 			#ifdef POSTPROCESS
-			#if defined(PROP_PPMASK) || !defined(OPTIMIZER_ENABLED)
+			#if defined(PROP_PPMASK)
 			Texture2D _PPMask;
 			#endif
 			float4 _PPMask_ST;
@@ -15429,9 +15498,21 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				float2 uv1 : TEXCOORD1;
 				float2 uv2 : TEXCOORD2;
 				float2 uv3 : TEXCOORD3;
-				#ifndef POI_TESSELLATED
 				uint vertexId : SV_VertexID;
-				#endif
+				UNITY_VERTEX_INPUT_INSTANCE_ID
+			};
+			
+			struct tessellatedAppData
+			{
+				float4 vertex : POSITION;
+				float3 normal : NORMAL;
+				float4 tangent : TANGENT;
+				float4 color : COLOR;
+				float2 uv0 : TEXCOORD0;
+				float2 uv1 : TEXCOORD1;
+				float2 uv2 : TEXCOORD2;
+				float2 uv3 : TEXCOORD3;
+				uint vertexId : TEXCOORD4;
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
 			
@@ -20092,11 +20173,11 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				}
 				else if (blendMode == 1)
 				{
-					tangentSpaceNormal = BlendNormals(tangentSpaceNormal, normalToBlendWith);
+					tangentSpaceNormal = lerp(tangentSpaceNormal, BlendNormals(tangentSpaceNormal, normalToBlendWith), maskValue);
 				}
 				else if (blendMode == 2)
 				{
-					tangentSpaceNormal = BlendNormals(originalNormal, normalToBlendWith);
+					tangentSpaceNormal = lerp(tangentSpaceNormal, BlendNormals(originalNormal, normalToBlendWith), maskValue);
 				}
 			}
 			
@@ -20105,10 +20186,10 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			void calculateRGBNormals(inout PoiMesh poiMesh, inout PoiMods poiMods)
 			{
 				// Only define this if we actually have any normal map textures. Can't do the same in color textures because users can tint
-				#if defined(PROP_RGBNORMALR) || defined(PROP_RGBNORMALG) || defined(PROP_RGBNORMALB) || defined(PROP_RGBNORMALA) || !defined(OPTIMIZER_ENABLED)
+				#if defined(PROP_RGBNORMALR) || defined(PROP_RGBNORMALG) || defined(PROP_RGBNORMALB) || defined(PROP_RGBNORMALA)
 				float4 rgbMask = 1;
 				
-				#if defined(PROP_RGBMASK) || !defined(OPTIMIZER_ENABLED)
+				#if defined(PROP_RGBMASK)
 				if (_RGBMaskType == 0)
 				{
 					rgbMask = POI2D_SAMPLER_PAN(_RGBMask, _trilinear_repeat, poiUV(poiMesh.uv[_RGBMaskUV], _RGBMask_ST), _RGBMaskPan);
@@ -20126,39 +20207,73 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				maskFinal.b = rgbMask[_RgbNormalBMaskChannel];
 				maskFinal.a = rgbMask[_RgbNormalAMaskChannel];
 				
-				if (_RgbNormalRGlobalMaskChannel > 0) maskFinal.r = customBlend(maskFinal.r, poiMods.globalMask[_RgbNormalRGlobalMaskChannel - 1], _RgbNormalRGlobalMaskBlendType);
-				if (_RgbNormalGGlobalMaskChannel > 0) maskFinal.g = customBlend(maskFinal.g, poiMods.globalMask[_RgbNormalGGlobalMaskChannel - 1], _RgbNormalGGlobalMaskBlendType);
-				if (_RgbNormalBGlobalMaskChannel > 0) maskFinal.b = customBlend(maskFinal.b, poiMods.globalMask[_RgbNormalBGlobalMaskChannel - 1], _RgbNormalBGlobalMaskBlendType);
-				if (_RgbNormalAGlobalMaskChannel > 0) maskFinal.a = customBlend(maskFinal.a, poiMods.globalMask[_RgbNormalAGlobalMaskChannel - 1], _RgbNormalAGlobalMaskBlendType);
+				if (_RgbNormalRGlobalMaskChannel > 0) maskFinal.r = globalMaskBlend(maskFinal.r, _RgbNormalRGlobalMaskChannel, _RgbNormalRGlobalMaskBlendType, poiMods);
+				if (_RgbNormalGGlobalMaskChannel > 0) maskFinal.g = globalMaskBlend(maskFinal.g, _RgbNormalGGlobalMaskChannel, _RgbNormalGGlobalMaskBlendType, poiMods);
+				if (_RgbNormalBGlobalMaskChannel > 0) maskFinal.b = globalMaskBlend(maskFinal.b, _RgbNormalBGlobalMaskChannel, _RgbNormalBGlobalMaskBlendType, poiMods);
+				if (_RgbNormalAGlobalMaskChannel > 0) maskFinal.a = globalMaskBlend(maskFinal.a, _RgbNormalAGlobalMaskChannel, _RgbNormalAGlobalMaskBlendType, poiMods);
 				
 				float3 originalNormal = poiMesh.tangentSpaceNormal;
+				const float3 neutralNormal = float3(0, 0, 1);
+				float3 nR = 0;
+				float3 nG = 0;
+				float3 nB = 0;
+				float hasR = 0;
+				float hasG = 0;
+				float hasB = 0;
 				
-				#if defined(PROP_RGBNORMALR) || !defined(OPTIMIZER_ENABLED)
+				#if defined(PROP_RGBNORMALR)
 				if (_RgbNormalRScale > 0 && _RGBARedEnable)
 				{
-					float3 normalToBlendWith = UnpackScaleNormal(POI2D_SAMPLER_PAN_STOCHASTIC(_RgbNormalR, _trilinear_repeat, poiUV(poiMesh.uv[_RgbNormalRUV], PoiUVMerge(_RgbNormalR_ST, _RGBARedScaleOffset )), _RgbNormalRPan, _RgbNormalRStochastic), _RgbNormalRedBlendMode == 0 ? _RgbNormalRScale : _RgbNormalRScale * maskFinal.r);
-					RGBABlendNormals(poiMesh.tangentSpaceNormal, originalNormal, normalToBlendWith, maskFinal.r, _RgbNormalRedBlendMode);
+					nR = UnpackScaleNormal(POI2D_SAMPLER_PAN_STOCHASTIC(_RgbNormalR, _trilinear_repeat, poiUV(poiMesh.uv[_RgbNormalRUV], PoiUVMerge(_RgbNormalR_ST, _RGBARedScaleOffset )), _RgbNormalRPan, _RgbNormalRStochastic), _RgbNormalRScale);
+					hasR = 1;
+					bool selBaseR = (_RgbNormalRBlendSources.x > 0.5);
+					int modeR = selBaseR ? 2 : 0; // selection empty => Replace
+					float3 fromNormalR = selBaseR ? originalNormal : neutralNormal;
+					RGBABlendNormals(poiMesh.tangentSpaceNormal, fromNormalR, nR, maskFinal.r, modeR);
 				}
 				#endif
-				#if defined(PROP_RGBNORMALG) || !defined(OPTIMIZER_ENABLED)
+				#if defined(PROP_RGBNORMALG)
 				if (_RgbNormalGScale > 0 && _RGBAGreenEnable)
 				{
-					float3 normalToBlendWith = UnpackScaleNormal(POI2D_SAMPLER_PAN_STOCHASTIC(_RgbNormalG, _trilinear_repeat, poiUV(poiMesh.uv[_RgbNormalGUV], PoiUVMerge(_RgbNormalG_ST, _RGBAGreenScaleOffset )), _RgbNormalGPan, _RgbNormalGStochastic), _RgbNormalGreenBlendMode == 0 ? _RgbNormalGScale : _RgbNormalGScale * maskFinal.g);
-					RGBABlendNormals(poiMesh.tangentSpaceNormal, originalNormal, normalToBlendWith, maskFinal.g, _RgbNormalGreenBlendMode);
+					nG = UnpackScaleNormal(POI2D_SAMPLER_PAN_STOCHASTIC(_RgbNormalG, _trilinear_repeat, poiUV(poiMesh.uv[_RgbNormalGUV], PoiUVMerge(_RgbNormalG_ST, _RGBAGreenScaleOffset )), _RgbNormalGPan, _RgbNormalGStochastic), _RgbNormalGScale);
+					hasG = 1;
+					bool selBaseG = (_RgbNormalGBlendSources.x > 0.5);
+					bool selRedG = (_RgbNormalGBlendSources.y > 0.5);
+					int modeG = (selBaseG || selRedG) ? 2 : 0;
+					float3 fromNormalG = selBaseG ? originalNormal : neutralNormal;
+					if (selRedG && hasR > 0.5) fromNormalG = lerp(fromNormalG, BlendNormals(fromNormalG, nR), maskFinal.r);
+					RGBABlendNormals(poiMesh.tangentSpaceNormal, fromNormalG, nG, maskFinal.g, modeG);
 				}
 				#endif
-				#if defined(PROP_RGBNORMALB) || !defined(OPTIMIZER_ENABLED)
+				#if defined(PROP_RGBNORMALB)
 				if (_RgbNormalBScale > 0 && _RGBABlueEnable)
 				{
-					float3 normalToBlendWith = UnpackScaleNormal(POI2D_SAMPLER_PAN_STOCHASTIC(_RgbNormalB, _trilinear_repeat, poiUV(poiMesh.uv[_RgbNormalBUV], PoiUVMerge(_RgbNormalB_ST, _RGBABlueScaleOffset)), _RgbNormalBPan, _RgbNormalBStochastic), _RgbNormalBlueBlendMode == 0 ? _RgbNormalBScale : _RgbNormalBScale * maskFinal.b);
-					RGBABlendNormals(poiMesh.tangentSpaceNormal, originalNormal, normalToBlendWith, maskFinal.b, _RgbNormalBlueBlendMode);
+					nB = UnpackScaleNormal(POI2D_SAMPLER_PAN_STOCHASTIC(_RgbNormalB, _trilinear_repeat, poiUV(poiMesh.uv[_RgbNormalBUV], PoiUVMerge(_RgbNormalB_ST, _RGBABlueScaleOffset)), _RgbNormalBPan, _RgbNormalBStochastic), _RgbNormalBScale);
+					hasB = 1;
+					bool selBaseB = (_RgbNormalBBlendSources.x > 0.5);
+					bool selRedB = (_RgbNormalBBlendSources.y > 0.5);
+					bool selGreenB = (_RgbNormalBBlendSources.z > 0.5);
+					int modeB = (selBaseB || selRedB || selGreenB) ? 2 : 0;
+					float3 fromNormalB = selBaseB ? originalNormal : neutralNormal;
+					if (selRedB && hasR > 0.5) fromNormalB = lerp(fromNormalB, BlendNormals(fromNormalB, nR), maskFinal.r);
+					if (selGreenB && hasG > 0.5) fromNormalB = lerp(fromNormalB, BlendNormals(fromNormalB, nG), maskFinal.g);
+					RGBABlendNormals(poiMesh.tangentSpaceNormal, fromNormalB, nB, maskFinal.b, modeB);
 				}
 				#endif
-				#if defined(PROP_RGBNORMALA) || !defined(OPTIMIZER_ENABLED)
+				#if defined(PROP_RGBNORMALA)
 				if (_RgbNormalAScale > 0 && _RGBAAlphaEnable)
 				{
-					float3 normalToBlendWith = UnpackScaleNormal(POI2D_SAMPLER_PAN_STOCHASTIC(_RgbNormalA, _trilinear_repeat, poiUV(poiMesh.uv[_RgbNormalAUV], PoiUVMerge(_RgbNormalA_ST, _RGBAAlphaScaleOffset)), _RgbNormalAPan, _RgbNormalAStochastic), _RgbNormalAlphaBlendMode == 0 ? _RgbNormalAScale : _RgbNormalAScale * maskFinal.a);
-					RGBABlendNormals(poiMesh.tangentSpaceNormal, originalNormal, normalToBlendWith, maskFinal.a, _RgbNormalAlphaBlendMode);
+					float3 normalToBlendWith = UnpackScaleNormal(POI2D_SAMPLER_PAN_STOCHASTIC(_RgbNormalA, _trilinear_repeat, poiUV(poiMesh.uv[_RgbNormalAUV], PoiUVMerge(_RgbNormalA_ST, _RGBAAlphaScaleOffset)), _RgbNormalAPan, _RgbNormalAStochastic), _RgbNormalAScale);
+					bool selBaseA = (_RgbNormalABlendSources.x > 0.5);
+					bool selRedA = (_RgbNormalABlendSources.y > 0.5);
+					bool selGreenA = (_RgbNormalABlendSources.z > 0.5);
+					bool selBlueA = (_RgbNormalABlendSources.w > 0.5);
+					int modeA = (selBaseA || selRedA || selGreenA || selBlueA) ? 2 : 0;
+					float3 fromNormalA = selBaseA ? originalNormal : neutralNormal;
+					if (selRedA && hasR > 0.5) fromNormalA = lerp(fromNormalA, BlendNormals(fromNormalA, nR), maskFinal.r);
+					if (selGreenA && hasG > 0.5) fromNormalA = lerp(fromNormalA, BlendNormals(fromNormalA, nG), maskFinal.g);
+					if (selBlueA && hasB > 0.5) fromNormalA = lerp(fromNormalA, BlendNormals(fromNormalA, nB), maskFinal.b);
+					RGBABlendNormals(poiMesh.tangentSpaceNormal, fromNormalA, normalToBlendWith, maskFinal.a, modeA);
 				}
 				#endif
 				#endif
@@ -20173,7 +20288,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				float4 blue = float4(poiThemeColor(poiMods, _BlueColor.rgb, _BlueColorThemeIndex), _BlueColor.a);
 				float4 alpha = float4(poiThemeColor(poiMods, _AlphaColor.rgb, _AlphaColorThemeIndex), _AlphaColor.a);
 				
-				#if defined(PROP_RGBMASK) || !defined(OPTIMIZER_ENABLED)
+				#if defined(PROP_RGBMASK)
 				if (_RGBMaskType == 0)
 				{
 					rgbMask = POI2D_SAMPLER_PAN(_RGBMask, _trilinear_repeat, poiUV(poiMesh.uv[_RGBMaskUV], _RGBMask_ST), _RGBMaskPan);
@@ -20185,16 +20300,16 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 					rgbMask = poiMesh.vertexColor;
 				}
 				
-				#if defined(PROP_REDTEXTURE) || !defined(OPTIMIZER_ENABLED)
+				#if defined(PROP_REDTEXTURE)
 				red *= POI2D_SAMPLER_PAN_STOCHASTIC(_RedTexture, _trilinear_repeat, poiUV(poiMesh.uv[_RedTextureUV], PoiUVMerge(_RedTexture_ST, _RGBARedScaleOffset)), _RedTexturePan.xy, _RedTextureStochastic);
 				#endif
-				#if defined(PROP_GREENTEXTURE) || !defined(OPTIMIZER_ENABLED)
+				#if defined(PROP_GREENTEXTURE)
 				green *= POI2D_SAMPLER_PAN_STOCHASTIC(_GreenTexture, _trilinear_repeat, poiUV(poiMesh.uv[_GreenTextureUV], PoiUVMerge(_GreenTexture_ST, _RGBAGreenScaleOffset)), _GreenTexturePan.xy, _GreenTextureStochastic);
 				#endif
-				#if defined(PROP_BLUETEXTURE) || !defined(OPTIMIZER_ENABLED)
+				#if defined(PROP_BLUETEXTURE)
 				blue *= POI2D_SAMPLER_PAN_STOCHASTIC(_BlueTexture, _trilinear_repeat, poiUV(poiMesh.uv[_BlueTextureUV], PoiUVMerge(_BlueTexture_ST, _RGBABlueScaleOffset)), _BlueTexturePan.xy, _BlueTextureStochastic);
 				#endif
-				#if defined(PROP_ALPHATEXTURE) || !defined(OPTIMIZER_ENABLED)
+				#if defined(PROP_ALPHATEXTURE)
 				alpha *= POI2D_SAMPLER_PAN_STOCHASTIC(_AlphaTexture, _trilinear_repeat, poiUV(poiMesh.uv[_AlphaTextureUV], PoiUVMerge(_AlphaTexture_ST, _RGBAAlphaScaleOffset)), _AlphaTexturePan.xy, _AlphaTextureStochastic);
 				#endif
 				
@@ -20205,7 +20320,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				
 				if (_RGBAPBRRedEnabled || _RGBAPBRGreenEnabled || _RGBAPBRBlueEnabled || _RGBAPBRAlphaEnabled)
 				{
-					#if defined(PROP_RGBASMOOTHNESSMAPS) || !defined(OPTIMIZER_ENABLED)
+					#if defined(PROP_RGBASMOOTHNESSMAPS)
 					float4 smoothnessMaps = 1;
 					if (!_RGBARedPBRSplitMaskSample || !_RGBAGreenPBRSplitMaskSample || !_RGBABluePBRSplitMaskSample || !_RGBAAlphaPBRSplitMaskSample)
 					{
@@ -20235,7 +20350,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 					poiFragData.smoothness = lerp(poiFragData.smoothness, poiInvertToggle(smoothnessMaps.a, _RGBAAlphaSmoothnessInvert), rgbMask[_RgbAlphaMaskChannel] * (_RGBAPBRAlphaEnabled && _RGBAAlphaEnable));
 					#endif
 					
-					#if defined(PROP_RGBAMETALLICMAPS) || !defined(OPTIMIZER_ENABLED)
+					#if defined(PROP_RGBAMETALLICMAPS)
 					float4 metallicMaps = 1;
 					if (!_RGBARedPBRSplitMaskSample || !_RGBAGreenPBRSplitMaskSample || !_RGBABluePBRSplitMaskSample || !_RGBAAlphaPBRSplitMaskSample)
 					{
@@ -22139,7 +22254,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				#endif
 				
 				#ifdef _LIGHTINGMODE_MULTILAYER_MATH
-				#if defined(PROP_MULTILAYERMATHBLURMAP) || !defined(OPTIMIZER_ENABLED)
+				#if defined(PROP_MULTILAYERMATHBLURMAP)
 				float4 blurMap = POI2D_SAMPLER_PAN(_MultilayerMathBlurMap, _MainTex, poiUV(poiMesh.uv[_MultilayerMathBlurMapUV], _MultilayerMathBlurMap_ST), _MultilayerMathBlurMapPan);
 				#else
 				float4 blurMap = 1;
@@ -22162,7 +22277,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				if (_ShadowBorderMapToggle)
 				{
 					
-					#if defined(PROP_SHADOWBORDERMASK) || !defined(OPTIMIZER_ENABLED)
+					#if defined(PROP_SHADOWBORDERMASK)
 					// This should be moved to ui but honestly if these are locked in the compiler should be able to resolve it at compile time
 					float2 shadowShift0 = float2(_ShadowAOShift.x, _ShadowAOShift.y);
 					float2 shadowShift1 = float2(_ShadowAOShift.z, _ShadowAOShift.w);
@@ -22180,7 +22295,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 					shadowShift1 = float2(1.0f / (shadowShift1.y - shadowShift1.x), shadowShift1.x / (shadowShift1.x - shadowShift1.y));
 					shadowShift2 = float2(1.0f / (shadowShift2.y - shadowShift2.x), shadowShift2.x / (shadowShift2.x - shadowShift2.y));
 					
-					#if defined(PROP_SHADOWBORDERMASK) || !defined(OPTIMIZER_ENABLED)
+					#if defined(PROP_SHADOWBORDERMASK)
 					float2 shadowBorderMaskUV = poiUV(poiMesh.uv[_ShadowBorderMaskUV], _ShadowBorderMask_ST);
 					if (_ShadowBorderMaskLOD)
 					{
@@ -22219,12 +22334,12 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 					lns.w = poiEdgeLinearNoSaturate(lightMap.x, _ShadowBorder, _ShadowBlur * blurMap.r, _ShadowBorderRange);
 				}
 				
-				#if defined(PROP_SHADOWBORDERMASK) || !defined(OPTIMIZER_ENABLED)
+				#if defined(PROP_SHADOWBORDERMASK)
 				lns = _ShadowPostAO ? lns * shadowBorderMask.rgbr : lns;
 				#endif
 				lns = saturate(lns);
 				
-				#if defined(PROP_SHADOWSTRENGTHMASK) || !defined(OPTIMIZER_ENABLED)
+				#if defined(PROP_SHADOWSTRENGTHMASK)
 				float4 shadowStrengthMask = POI2D_SAMPLER_PAN(_ShadowStrengthMask, _MainTex, poiUV(poiMesh.uv[_ShadowStrengthMaskUV], _ShadowStrengthMask_ST), _ShadowStrengthMaskPan);
 				#else
 				float4 shadowStrengthMask = 1;
@@ -22247,7 +22362,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				
 				if (_ShadowColor.a > 0)
 				{
-					#if defined(PROP_SHADOWCOLORTEX) || !defined(OPTIMIZER_ENABLED)
+					#if defined(PROP_SHADOWCOLORTEX)
 					float4 shadowColorTex = POI2D_SAMPLER_PAN(_ShadowColorTex, _MainTex, poiUV(poiMesh.uv[_ShadowColorTexUV], _ShadowColorTex_ST), _ShadowColorTexPan);
 					#else
 					float4 shadowColorTex = float4(1, 1, 1, 1);
@@ -22256,7 +22371,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				}
 				if (_Shadow2ndColor.a > 0)
 				{
-					#if defined(PROP_SHADOW2NDCOLORTEX) || !defined(OPTIMIZER_ENABLED)
+					#if defined(PROP_SHADOW2NDCOLORTEX)
 					float4 shadow2ndColorTex = POI2D_SAMPLER_PAN(_Shadow2ndColorTex, _MainTex, poiUV(poiMesh.uv[_Shadow2ndColorTexUV], _Shadow2ndColorTex_ST), _Shadow2ndColorTexPan);
 					#else
 					float4 shadow2ndColorTex = float4(1, 1, 1, 1);
@@ -22267,7 +22382,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				}
 				if (_Shadow3rdColor.a > 0)
 				{
-					#if defined(PROP_SHADOW3RDCOLORTEX) || !defined(OPTIMIZER_ENABLED)
+					#if defined(PROP_SHADOW3RDCOLORTEX)
 					float4 shadow3rdColorTex = POI2D_SAMPLER_PAN(_Shadow3rdColorTex, _MainTex, poiUV(poiMesh.uv[_Shadow3rdColorTexUV], _Shadow3rdColorTex_ST), _Shadow3rdColorTexPan);
 					#else
 					float4 shadow3rdColorTex = float4(1, 1, 1, 1);
@@ -22858,7 +22973,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				
 				float decalAlpha = 1;
 				float alphaOverride = 0;
-				#if defined(PROP_DECALMASK) || !defined(OPTIMIZER_ENABLED)
+				#if defined(PROP_DECALMASK)
 				float4 decalMask = POI2D_SAMPLER_PAN(_DecalMask, _MainTex, poiUV(poiMesh.uv[_DecalMaskUV], _DecalMask_ST), _DecalMaskPan);
 				#else
 				float4 decalMask = 1;
@@ -27939,7 +28054,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				col += _PPLightness;
 				
 				float ppMask = 1;
-				#if defined(PROP_PPMASK) || !defined(OPTIMIZER_ENABLED)
+				#if defined(PROP_PPMASK)
 				ppMask = POI2D_SAMPLER_PAN(_PPMask, _MainTex, poiUV(poiMesh.uv[_PPMaskUV], _PPMask_ST), _PPMaskPan)[_PPMaskChannel];
 				ppMask = lerp(ppMask, 1 - ppMask, _PPMaskInvert);
 				col = lerp(poiFragData.finalColor, col, ppMask);
@@ -28988,7 +29103,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				//endex
 				#endif
 				// Ambient Occlusion
-				#if defined(PROP_LIGHTINGAOMAPS) || !defined(OPTIMIZER_ENABLED)
+				#if defined(PROP_LIGHTINGAOMAPS)
 				float4 AOMaps = POI2D_SAMPLER_PAN(_LightingAOMaps, _MainTex, poiUV(poiMesh.uv[_LightingAOMapsUV], _LightingAOMaps_ST), _LightingAOMapsPan);
 				poiLight.occlusion = min(min(min(lerp(1, AOMaps.r, _LightDataAOStrengthR), lerp(1, AOMaps.g, _LightDataAOStrengthG)), lerp(1, AOMaps.b, _LightDataAOStrengthB)), lerp(1, AOMaps.a, _LightDataAOStrengthA));
 				#else
@@ -29001,7 +29116,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				}
 				
 				// Detail Shadows
-				#if defined(PROP_LIGHTINGDETAILSHADOWMAPS) || !defined(OPTIMIZER_ENABLED)
+				#if defined(PROP_LIGHTINGDETAILSHADOWMAPS)
 				float4 DetailShadows = POI2D_SAMPLER_PAN(_LightingDetailShadowMaps, _MainTex, poiUV(poiMesh.uv[_LightingDetailShadowMapsUV], _LightingDetailShadowMaps_ST), _LightingDetailShadowMapsPan);
 				#ifndef POI_PASS_ADD
 				poiLight.detailShadow = lerp(1, DetailShadows.r, _LightingDetailShadowStrengthR) * lerp(1, DetailShadows.g, _LightingDetailShadowStrengthG) * lerp(1, DetailShadows.b, _LightingDetailShadowStrengthB) * lerp(1, DetailShadows.a, _LightingDetailShadowStrengthA);
@@ -29018,7 +29133,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				}
 				
 				// Shadow Masks
-				#if defined(PROP_LIGHTINGSHADOWMASKS) || !defined(OPTIMIZER_ENABLED)
+				#if defined(PROP_LIGHTINGSHADOWMASKS)
 				float4 ShadowMasks = POI2D_SAMPLER_PAN(_LightingShadowMasks, _MainTex, poiUV(poiMesh.uv[_LightingShadowMasksUV], _LightingShadowMasks_ST), _LightingShadowMasksPan);
 				poiLight.shadowMask = lerp(1, ShadowMasks.r, _LightingShadowMaskStrengthR) * lerp(1, ShadowMasks.g, _LightingShadowMaskStrengthG) * lerp(1, ShadowMasks.b, _LightingShadowMaskStrengthB) * lerp(1, ShadowMasks.a, _LightingShadowMaskStrengthA);
 				#else
@@ -29160,7 +29275,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				//UNITY_BRANCH
 				if (_LightingDirectionMode == 0)
 				{
-					poiLight.direction = calculateluminance(_LightColor0.rgb) * _WorldSpaceLightPos0.xyz + 0.2 * PoiSHAr.xyz + 0.333333 * PoiSHAg.xyz + 0.333333 * PoiSHAb.xyz + 0.333333;
+					poiLight.direction = calculateluminance(_LightColor0.rgb) * _WorldSpaceLightPos0.xyz + (PoiSHAr.xyz + PoiSHAg.xyz + PoiSHAb.xyz) / 3.0;
 				}
 				if (_LightingDirectionMode == 1 || _LightingDirectionMode == 2)
 				{
@@ -29286,7 +29401,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				}
 				if (lightMapMode == 4)
 				{
-					#if defined(PROP_LIGHTDATASDFMAP) || !defined(OPTIMIZER_ENABLED)
+					#if defined(PROP_LIGHTDATASDFMAP)
 					float2 lightDataSDFMap = 1;
 					if (_LightDataSDFMapLOD > 0)
 					{
@@ -29573,7 +29688,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 					#else
 					float3 tempColor = poiFragData.baseColor;
 					#endif
-					#if defined(PROP_MAINGRADATIONTEX) || !defined(OPTIMIZER_ENABLED)
+					#if defined(PROP_MAINGRADATIONTEX)
 					tempColor.r = POI_SAMPLE_1D_X(_MainGradationTex, sampler_linear_clamp, tempColor.r).r;
 					tempColor.g = POI_SAMPLE_1D_X(_MainGradationTex, sampler_linear_clamp, tempColor.g).g;
 					tempColor.b = POI_SAMPLE_1D_X(_MainGradationTex, sampler_linear_clamp, tempColor.b).b;
@@ -30247,8 +30362,14 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			
 			#pragma shader_feature_local _STOCHASTICMODE_DELIOT_HEITZ _STOCHASTICMODE_HEXTILE _STOCHASTICMODE_NONE
 			
+			#pragma shader_feature_local PROP_LIGHTINGAOMAPS
+			#pragma shader_feature_local PROP_LIGHTINGDETAILSHADOWMAPS
+			#pragma shader_feature_local PROP_LIGHTINGSHADOWMASKS
+			#pragma shader_feature_local PROP_LIGHTDATASDFMAP
+			
 			//ifex _MainColorAdjustToggle==0
 			#pragma shader_feature COLOR_GRADING_HDR
+			#pragma shader_feature_local PROP_MAINGRADATIONTEX
 			//endex
 			
 			//#pragma shader_feature KEYWORD
@@ -30311,11 +30432,28 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			//ifex _RGBMaskEnabled==0
 			#pragma shader_feature VIGNETTE
 			#pragma shader_feature GEOM_TYPE_MESH
+			#pragma shader_feature PROP_RGBMASK
+			#pragma shader_feature PROP_RGBAMETALLICMAPS
+			#pragma shader_feature PROP_RGBASMOOTHNESSMAPS
+			#pragma shader_feature PROP_REDTEXTURE
+			#pragma shader_feature PROP_RGBNORMALR
+			#pragma shader_feature PROP_GREENTEXTURE
+			#pragma shader_feature PROP_RGBNORMALG
+			#pragma shader_feature PROP_BLUETEXTURE
+			#pragma shader_feature PROP_RGBNORMALB
+			#pragma shader_feature PROP_ALPHATEXTURE
+			#pragma shader_feature PROP_RGBNORMALA
 			//endex
 			
 			//ifex _ShadingEnabled==0
 			#pragma shader_feature_local VIGNETTE_MASKED
 			#pragma shader_feature_local _LIGHTINGMODE_TEXTURERAMP _LIGHTINGMODE_MULTILAYER_MATH _LIGHTINGMODE_SHADEMAP _LIGHTINGMODE_REALISTIC _LIGHTINGMODE_WRAPPED _LIGHTINGMODE_SKIN _LIGHTINGMODE_FLAT _LIGHTINGMODE_CLOTH _LIGHTINGMODE_SDF
+			#pragma shader_feature_local PROP_MULTILAYERMATHBLURMAP
+			#pragma shader_feature_local PROP_SHADOWCOLORTEX
+			#pragma shader_feature_local PROP_SHADOW2NDCOLORTEX
+			#pragma shader_feature_local PROP_SHADOW3RDCOLORTEX
+			#pragma shader_feature_local PROP_SHADOWSTRENGTHMASK
+			#pragma shader_feature_local PROP_SHADOWBORDERMASK
 			//endex
 			
 			//ifex _DecalEnabled==0
@@ -30330,6 +30468,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			//ifex _DecalEnabled3==0
 			#pragma shader_feature DEPTH_OF_FIELD_COC_VIEW
 			//endex
+			#pragma shader_feature_local PROP_DECALMASK
 			
 			//ifex _EnableDissolve==0
 			#pragma shader_feature DISTORT
@@ -30431,6 +30570,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			
 			//ifex _PostProcess==0
 			#pragma shader_feature_local POSTPROCESS
+			#pragma shader_feature_local PROP_PPMASK
 			//endex
 			
 			//ifex _PoiInternalParallax==0
@@ -30712,7 +30852,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			#endif
 			//endex
 			
-			#if defined(PROP_LIGHTINGAOMAPS) || !defined(OPTIMIZER_ENABLED)
+			#if defined(PROP_LIGHTINGAOMAPS)
 			Texture2D _LightingAOMaps;
 			#endif
 			float4 _LightingAOMaps_ST;
@@ -30725,7 +30865,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			float _LightDataAOGlobalMaskR;
 			float _LightDataAOGlobalMaskBlendTypeR;
 			
-			#if defined(PROP_LIGHTINGDETAILSHADOWMAPS) || !defined(OPTIMIZER_ENABLED)
+			#if defined(PROP_LIGHTINGDETAILSHADOWMAPS)
 			Texture2D _LightingDetailShadowMaps;
 			#endif
 			float4 _LightingDetailShadowMaps_ST;
@@ -30742,7 +30882,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			float _LightDataDetailShadowGlobalMaskR;
 			float _LightDataDetailShadowGlobalMaskBlendTypeR;
 			
-			#if defined(PROP_LIGHTINGSHADOWMASKS) || !defined(OPTIMIZER_ENABLED)
+			#if defined(PROP_LIGHTINGSHADOWMASKS)
 			Texture2D _LightingShadowMasks;
 			#endif
 			float4 _LightingShadowMasks_ST;
@@ -30760,7 +30900,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			float _LightingColorMode;
 			float _LightingMapMode;
 			
-			#if defined(PROP_LIGHTDATASDFMAP) || !defined(OPTIMIZER_ENABLED)
+			#if defined(PROP_LIGHTDATASDFMAP)
 			Texture2D _LightDataSDFMap;
 			float4 _LightDataSDFMap_ST;
 			float2 _LightDataSDFMapPan;
@@ -30890,7 +31030,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			float _MainGammaGlobalMask;
 			float _MainGammaGlobalMaskBlendType;
 			
-			#if defined(PROP_MAINGRADATIONTEX) || !defined(OPTIMIZER_ENABLED)
+			#if defined(PROP_MAINGRADATIONTEX)
 			Texture2D _MainGradationTex;
 			#endif
 			float _ColorGradingToggle;
@@ -31883,14 +32023,14 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			
 			//ifex _RGBMaskEnabled==0
 			#ifdef VIGNETTE
-			#if defined(PROP_RGBMASK) || !defined(OPTIMIZER_ENABLED)
+			#if defined(PROP_RGBMASK)
 			Texture2D _RGBMask;
 			#endif
 			float4 _RGBMask_ST;
 			float2 _RGBMaskPan;
 			float _RGBMaskUV;
 			
-			#if defined(PROP_RGBAMETALLICMAPS) || !defined(OPTIMIZER_ENABLED)
+			#if defined(PROP_RGBAMETALLICMAPS)
 			Texture2D _RGBAMetallicMaps;
 			float4 _RGBAMetallicMaps_ST;
 			float2 _RGBAMetallicMapsPan;
@@ -31940,7 +32080,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			float _RGBAPBRBlueEnabled;
 			float _RGBAPBRAlphaEnabled;
 			
-			#if defined(PROP_RGBASMOOTHNESSMAPS) || !defined(OPTIMIZER_ENABLED)
+			#if defined(PROP_RGBASMOOTHNESSMAPS)
 			Texture2D _RGBASmoothnessMaps;
 			float4 _RGBASmoothnessMaps_ST;
 			float4 _RGBASmoothnessMapsPan;
@@ -31953,7 +32093,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			float _RGBAAlphaSmoothnessInvert;
 			
 			float _RGBARedEnable;
-			#if defined(PROP_REDTEXTURE) || !defined(OPTIMIZER_ENABLED)
+			#if defined(PROP_REDTEXTURE)
 			Texture2D _RedTexture;
 			#endif
 			float4 _RedTexture_ST;
@@ -31969,7 +32109,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			float _RedColorThemeIndex;
 			float _RGBARedEmissionStrength;
 			
-			#if defined(PROP_RGBNORMALR) || !defined(OPTIMIZER_ENABLED)
+			#if defined(PROP_RGBNORMALR)
 			Texture2D _RgbNormalR;
 			#endif
 			float4 _RgbNormalR_ST;
@@ -31981,9 +32121,10 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			float _RgbNormalRGlobalMaskChannel;
 			float _RgbNormalRGlobalMaskBlendType;
 			float _RgbNormalRedBlendMode;
+			float4 _RgbNormalRBlendSources;
 			
 			float _RGBAGreenEnable;
-			#if defined(PROP_GREENTEXTURE) || !defined(OPTIMIZER_ENABLED)
+			#if defined(PROP_GREENTEXTURE)
 			Texture2D _GreenTexture;
 			#endif
 			float4 _GreenTexture_ST;
@@ -31999,7 +32140,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			float _GreenColorThemeIndex;
 			float _RGBAGreenEmissionStrength;
 			
-			#if defined(PROP_RGBNORMALG) || !defined(OPTIMIZER_ENABLED)
+			#if defined(PROP_RGBNORMALG)
 			Texture2D _RgbNormalG;
 			#endif
 			float4 _RgbNormalG_ST;
@@ -32011,9 +32152,10 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			float _RgbNormalGGlobalMaskChannel;
 			float _RgbNormalGGlobalMaskBlendType;
 			float _RgbNormalGreenBlendMode;
+			float4 _RgbNormalGBlendSources;
 			
 			float _RGBABlueEnable;
-			#if defined(PROP_BLUETEXTURE) || !defined(OPTIMIZER_ENABLED)
+			#if defined(PROP_BLUETEXTURE)
 			Texture2D _BlueTexture;
 			#endif
 			float4 _BlueTexture_ST;
@@ -32029,7 +32171,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			float _BlueColorThemeIndex;
 			float _RGBABlueEmissionStrength;
 			
-			#if defined(PROP_RGBNORMALB) || !defined(OPTIMIZER_ENABLED)
+			#if defined(PROP_RGBNORMALB)
 			Texture2D _RgbNormalB;
 			#endif
 			float4 _RgbNormalB_ST;
@@ -32041,9 +32183,10 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			float _RgbNormalBGlobalMaskChannel;
 			float _RgbNormalBGlobalMaskBlendType;
 			float _RgbNormalBlueBlendMode;
+			float4 _RgbNormalBBlendSources;
 			
 			float _RGBAAlphaEnable;
-			#if defined(PROP_ALPHATEXTURE) || !defined(OPTIMIZER_ENABLED)
+			#if defined(PROP_ALPHATEXTURE)
 			Texture2D _AlphaTexture;
 			#endif
 			float4 _AlphaTexture_ST;
@@ -32059,7 +32202,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			float _AlphaColorThemeIndex;
 			float _RGBAAlphaEmissionStrength;
 			
-			#if defined(PROP_RGBNORMALA) || !defined(OPTIMIZER_ENABLED)
+			#if defined(PROP_RGBNORMALA)
 			Texture2D _RgbNormalA;
 			#endif
 			float4 _RgbNormalA_ST;
@@ -32071,6 +32214,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			float _RgbNormalAGlobalMaskChannel;
 			float _RgbNormalAGlobalMaskBlendType;
 			float _RgbNormalAlphaBlendMode;
+			float4 _RgbNormalABlendSources;
 			
 			float _RGBMaskType;
 			
@@ -32149,7 +32293,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			#endif
 			
 			#ifdef _LIGHTINGMODE_MULTILAYER_MATH
-			#if defined(PROP_SHADOWBORDERMASK) || !defined(OPTIMIZER_ENABLED)
+			#if defined(PROP_SHADOWBORDERMASK)
 			Texture2D _ShadowBorderMask;
 			float4 _ShadowBorderMask_ST;
 			float2 _ShadowBorderMaskPan;
@@ -32162,13 +32306,13 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			float _ShadowBorderMapToggle;
 			float4 _ShadowColor;
 			float _LightingMulitlayerNonLinear;
-			#if defined(PROP_SHADOWCOLORTEX) || !defined(OPTIMIZER_ENABLED)
+			#if defined(PROP_SHADOWCOLORTEX)
 			Texture2D _ShadowColorTex;
 			float4 _ShadowColorTex_ST;
 			float2 _ShadowColorTexPan;
 			float _ShadowColorTexUV;
 			#endif
-			#if defined(PROP_MULTILAYERMATHBLURMAP) || !defined(OPTIMIZER_ENABLED)
+			#if defined(PROP_MULTILAYERMATHBLURMAP)
 			Texture2D _MultilayerMathBlurMap;
 			float4 _MultilayerMathBlurMap_ST;
 			float2 _MultilayerMathBlurMapPan;
@@ -32178,7 +32322,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			float _ShadowBlur;
 			float _ShadowReceive;
 			float4 _Shadow2ndColor;
-			#if defined(PROP_SHADOW2NDCOLORTEX) || !defined(OPTIMIZER_ENABLED)
+			#if defined(PROP_SHADOW2NDCOLORTEX)
 			Texture2D _Shadow2ndColorTex;
 			float4 _Shadow2ndColorTex_ST;
 			float2 _Shadow2ndColorTexPan;
@@ -32188,7 +32332,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			float _Shadow2ndBlur;
 			float _Shadow2ndReceive;
 			float4 _Shadow3rdColor;
-			#if defined(PROP_SHADOW3RDCOLORTEX) || !defined(OPTIMIZER_ENABLED)
+			#if defined(PROP_SHADOW3RDCOLORTEX)
 			Texture2D _Shadow3rdColorTex;
 			float4 _Shadow3rdColorTex_ST;
 			float2 _Shadow3rdColorTexPan;
@@ -32202,7 +32346,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			float _ShadowEnvStrength;
 			float _ShadowMainStrength;
 			float _ShadowMaskType;
-			#if defined(PROP_SHADOWSTRENGTHMASK) || !defined(OPTIMIZER_ENABLED)
+			#if defined(PROP_SHADOWSTRENGTHMASK)
 			Texture2D _ShadowStrengthMask;
 			float4 _ShadowStrengthMask_ST;
 			float4 _ShadowStrengthMaskPan;
@@ -32257,7 +32401,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			
 			//ifex _DecalEnabled==0 && _DecalEnabled1==0 && _DecalEnabled2==0 && _DecalEnabled3==0
 			
-			#if defined(PROP_DECALMASK) || !defined(OPTIMIZER_ENABLED)
+			#if defined(PROP_DECALMASK)
 			Texture2D _DecalMask;
 			float4 _DecalMask_ST;
 			float2 _DecalMaskPan;
@@ -34158,7 +34302,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			
 			//ifex _PostProcess==0
 			#ifdef POSTPROCESS
-			#if defined(PROP_PPMASK) || !defined(OPTIMIZER_ENABLED)
+			#if defined(PROP_PPMASK)
 			Texture2D _PPMask;
 			#endif
 			float4 _PPMask_ST;
@@ -34412,9 +34556,21 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				float2 uv1 : TEXCOORD1;
 				float2 uv2 : TEXCOORD2;
 				float2 uv3 : TEXCOORD3;
-				#ifndef POI_TESSELLATED
 				uint vertexId : SV_VertexID;
-				#endif
+				UNITY_VERTEX_INPUT_INSTANCE_ID
+			};
+			
+			struct tessellatedAppData
+			{
+				float4 vertex : POSITION;
+				float3 normal : NORMAL;
+				float4 tangent : TANGENT;
+				float4 color : COLOR;
+				float2 uv0 : TEXCOORD0;
+				float2 uv1 : TEXCOORD1;
+				float2 uv2 : TEXCOORD2;
+				float2 uv3 : TEXCOORD3;
+				uint vertexId : TEXCOORD4;
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
 			
@@ -39075,11 +39231,11 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				}
 				else if (blendMode == 1)
 				{
-					tangentSpaceNormal = BlendNormals(tangentSpaceNormal, normalToBlendWith);
+					tangentSpaceNormal = lerp(tangentSpaceNormal, BlendNormals(tangentSpaceNormal, normalToBlendWith), maskValue);
 				}
 				else if (blendMode == 2)
 				{
-					tangentSpaceNormal = BlendNormals(originalNormal, normalToBlendWith);
+					tangentSpaceNormal = lerp(tangentSpaceNormal, BlendNormals(originalNormal, normalToBlendWith), maskValue);
 				}
 			}
 			
@@ -39088,10 +39244,10 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			void calculateRGBNormals(inout PoiMesh poiMesh, inout PoiMods poiMods)
 			{
 				// Only define this if we actually have any normal map textures. Can't do the same in color textures because users can tint
-				#if defined(PROP_RGBNORMALR) || defined(PROP_RGBNORMALG) || defined(PROP_RGBNORMALB) || defined(PROP_RGBNORMALA) || !defined(OPTIMIZER_ENABLED)
+				#if defined(PROP_RGBNORMALR) || defined(PROP_RGBNORMALG) || defined(PROP_RGBNORMALB) || defined(PROP_RGBNORMALA)
 				float4 rgbMask = 1;
 				
-				#if defined(PROP_RGBMASK) || !defined(OPTIMIZER_ENABLED)
+				#if defined(PROP_RGBMASK)
 				if (_RGBMaskType == 0)
 				{
 					rgbMask = POI2D_SAMPLER_PAN(_RGBMask, _trilinear_repeat, poiUV(poiMesh.uv[_RGBMaskUV], _RGBMask_ST), _RGBMaskPan);
@@ -39109,39 +39265,73 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				maskFinal.b = rgbMask[_RgbNormalBMaskChannel];
 				maskFinal.a = rgbMask[_RgbNormalAMaskChannel];
 				
-				if (_RgbNormalRGlobalMaskChannel > 0) maskFinal.r = customBlend(maskFinal.r, poiMods.globalMask[_RgbNormalRGlobalMaskChannel - 1], _RgbNormalRGlobalMaskBlendType);
-				if (_RgbNormalGGlobalMaskChannel > 0) maskFinal.g = customBlend(maskFinal.g, poiMods.globalMask[_RgbNormalGGlobalMaskChannel - 1], _RgbNormalGGlobalMaskBlendType);
-				if (_RgbNormalBGlobalMaskChannel > 0) maskFinal.b = customBlend(maskFinal.b, poiMods.globalMask[_RgbNormalBGlobalMaskChannel - 1], _RgbNormalBGlobalMaskBlendType);
-				if (_RgbNormalAGlobalMaskChannel > 0) maskFinal.a = customBlend(maskFinal.a, poiMods.globalMask[_RgbNormalAGlobalMaskChannel - 1], _RgbNormalAGlobalMaskBlendType);
+				if (_RgbNormalRGlobalMaskChannel > 0) maskFinal.r = globalMaskBlend(maskFinal.r, _RgbNormalRGlobalMaskChannel, _RgbNormalRGlobalMaskBlendType, poiMods);
+				if (_RgbNormalGGlobalMaskChannel > 0) maskFinal.g = globalMaskBlend(maskFinal.g, _RgbNormalGGlobalMaskChannel, _RgbNormalGGlobalMaskBlendType, poiMods);
+				if (_RgbNormalBGlobalMaskChannel > 0) maskFinal.b = globalMaskBlend(maskFinal.b, _RgbNormalBGlobalMaskChannel, _RgbNormalBGlobalMaskBlendType, poiMods);
+				if (_RgbNormalAGlobalMaskChannel > 0) maskFinal.a = globalMaskBlend(maskFinal.a, _RgbNormalAGlobalMaskChannel, _RgbNormalAGlobalMaskBlendType, poiMods);
 				
 				float3 originalNormal = poiMesh.tangentSpaceNormal;
+				const float3 neutralNormal = float3(0, 0, 1);
+				float3 nR = 0;
+				float3 nG = 0;
+				float3 nB = 0;
+				float hasR = 0;
+				float hasG = 0;
+				float hasB = 0;
 				
-				#if defined(PROP_RGBNORMALR) || !defined(OPTIMIZER_ENABLED)
+				#if defined(PROP_RGBNORMALR)
 				if (_RgbNormalRScale > 0 && _RGBARedEnable)
 				{
-					float3 normalToBlendWith = UnpackScaleNormal(POI2D_SAMPLER_PAN_STOCHASTIC(_RgbNormalR, _trilinear_repeat, poiUV(poiMesh.uv[_RgbNormalRUV], PoiUVMerge(_RgbNormalR_ST, _RGBARedScaleOffset )), _RgbNormalRPan, _RgbNormalRStochastic), _RgbNormalRedBlendMode == 0 ? _RgbNormalRScale : _RgbNormalRScale * maskFinal.r);
-					RGBABlendNormals(poiMesh.tangentSpaceNormal, originalNormal, normalToBlendWith, maskFinal.r, _RgbNormalRedBlendMode);
+					nR = UnpackScaleNormal(POI2D_SAMPLER_PAN_STOCHASTIC(_RgbNormalR, _trilinear_repeat, poiUV(poiMesh.uv[_RgbNormalRUV], PoiUVMerge(_RgbNormalR_ST, _RGBARedScaleOffset )), _RgbNormalRPan, _RgbNormalRStochastic), _RgbNormalRScale);
+					hasR = 1;
+					bool selBaseR = (_RgbNormalRBlendSources.x > 0.5);
+					int modeR = selBaseR ? 2 : 0; // selection empty => Replace
+					float3 fromNormalR = selBaseR ? originalNormal : neutralNormal;
+					RGBABlendNormals(poiMesh.tangentSpaceNormal, fromNormalR, nR, maskFinal.r, modeR);
 				}
 				#endif
-				#if defined(PROP_RGBNORMALG) || !defined(OPTIMIZER_ENABLED)
+				#if defined(PROP_RGBNORMALG)
 				if (_RgbNormalGScale > 0 && _RGBAGreenEnable)
 				{
-					float3 normalToBlendWith = UnpackScaleNormal(POI2D_SAMPLER_PAN_STOCHASTIC(_RgbNormalG, _trilinear_repeat, poiUV(poiMesh.uv[_RgbNormalGUV], PoiUVMerge(_RgbNormalG_ST, _RGBAGreenScaleOffset )), _RgbNormalGPan, _RgbNormalGStochastic), _RgbNormalGreenBlendMode == 0 ? _RgbNormalGScale : _RgbNormalGScale * maskFinal.g);
-					RGBABlendNormals(poiMesh.tangentSpaceNormal, originalNormal, normalToBlendWith, maskFinal.g, _RgbNormalGreenBlendMode);
+					nG = UnpackScaleNormal(POI2D_SAMPLER_PAN_STOCHASTIC(_RgbNormalG, _trilinear_repeat, poiUV(poiMesh.uv[_RgbNormalGUV], PoiUVMerge(_RgbNormalG_ST, _RGBAGreenScaleOffset )), _RgbNormalGPan, _RgbNormalGStochastic), _RgbNormalGScale);
+					hasG = 1;
+					bool selBaseG = (_RgbNormalGBlendSources.x > 0.5);
+					bool selRedG = (_RgbNormalGBlendSources.y > 0.5);
+					int modeG = (selBaseG || selRedG) ? 2 : 0;
+					float3 fromNormalG = selBaseG ? originalNormal : neutralNormal;
+					if (selRedG && hasR > 0.5) fromNormalG = lerp(fromNormalG, BlendNormals(fromNormalG, nR), maskFinal.r);
+					RGBABlendNormals(poiMesh.tangentSpaceNormal, fromNormalG, nG, maskFinal.g, modeG);
 				}
 				#endif
-				#if defined(PROP_RGBNORMALB) || !defined(OPTIMIZER_ENABLED)
+				#if defined(PROP_RGBNORMALB)
 				if (_RgbNormalBScale > 0 && _RGBABlueEnable)
 				{
-					float3 normalToBlendWith = UnpackScaleNormal(POI2D_SAMPLER_PAN_STOCHASTIC(_RgbNormalB, _trilinear_repeat, poiUV(poiMesh.uv[_RgbNormalBUV], PoiUVMerge(_RgbNormalB_ST, _RGBABlueScaleOffset)), _RgbNormalBPan, _RgbNormalBStochastic), _RgbNormalBlueBlendMode == 0 ? _RgbNormalBScale : _RgbNormalBScale * maskFinal.b);
-					RGBABlendNormals(poiMesh.tangentSpaceNormal, originalNormal, normalToBlendWith, maskFinal.b, _RgbNormalBlueBlendMode);
+					nB = UnpackScaleNormal(POI2D_SAMPLER_PAN_STOCHASTIC(_RgbNormalB, _trilinear_repeat, poiUV(poiMesh.uv[_RgbNormalBUV], PoiUVMerge(_RgbNormalB_ST, _RGBABlueScaleOffset)), _RgbNormalBPan, _RgbNormalBStochastic), _RgbNormalBScale);
+					hasB = 1;
+					bool selBaseB = (_RgbNormalBBlendSources.x > 0.5);
+					bool selRedB = (_RgbNormalBBlendSources.y > 0.5);
+					bool selGreenB = (_RgbNormalBBlendSources.z > 0.5);
+					int modeB = (selBaseB || selRedB || selGreenB) ? 2 : 0;
+					float3 fromNormalB = selBaseB ? originalNormal : neutralNormal;
+					if (selRedB && hasR > 0.5) fromNormalB = lerp(fromNormalB, BlendNormals(fromNormalB, nR), maskFinal.r);
+					if (selGreenB && hasG > 0.5) fromNormalB = lerp(fromNormalB, BlendNormals(fromNormalB, nG), maskFinal.g);
+					RGBABlendNormals(poiMesh.tangentSpaceNormal, fromNormalB, nB, maskFinal.b, modeB);
 				}
 				#endif
-				#if defined(PROP_RGBNORMALA) || !defined(OPTIMIZER_ENABLED)
+				#if defined(PROP_RGBNORMALA)
 				if (_RgbNormalAScale > 0 && _RGBAAlphaEnable)
 				{
-					float3 normalToBlendWith = UnpackScaleNormal(POI2D_SAMPLER_PAN_STOCHASTIC(_RgbNormalA, _trilinear_repeat, poiUV(poiMesh.uv[_RgbNormalAUV], PoiUVMerge(_RgbNormalA_ST, _RGBAAlphaScaleOffset)), _RgbNormalAPan, _RgbNormalAStochastic), _RgbNormalAlphaBlendMode == 0 ? _RgbNormalAScale : _RgbNormalAScale * maskFinal.a);
-					RGBABlendNormals(poiMesh.tangentSpaceNormal, originalNormal, normalToBlendWith, maskFinal.a, _RgbNormalAlphaBlendMode);
+					float3 normalToBlendWith = UnpackScaleNormal(POI2D_SAMPLER_PAN_STOCHASTIC(_RgbNormalA, _trilinear_repeat, poiUV(poiMesh.uv[_RgbNormalAUV], PoiUVMerge(_RgbNormalA_ST, _RGBAAlphaScaleOffset)), _RgbNormalAPan, _RgbNormalAStochastic), _RgbNormalAScale);
+					bool selBaseA = (_RgbNormalABlendSources.x > 0.5);
+					bool selRedA = (_RgbNormalABlendSources.y > 0.5);
+					bool selGreenA = (_RgbNormalABlendSources.z > 0.5);
+					bool selBlueA = (_RgbNormalABlendSources.w > 0.5);
+					int modeA = (selBaseA || selRedA || selGreenA || selBlueA) ? 2 : 0;
+					float3 fromNormalA = selBaseA ? originalNormal : neutralNormal;
+					if (selRedA && hasR > 0.5) fromNormalA = lerp(fromNormalA, BlendNormals(fromNormalA, nR), maskFinal.r);
+					if (selGreenA && hasG > 0.5) fromNormalA = lerp(fromNormalA, BlendNormals(fromNormalA, nG), maskFinal.g);
+					if (selBlueA && hasB > 0.5) fromNormalA = lerp(fromNormalA, BlendNormals(fromNormalA, nB), maskFinal.b);
+					RGBABlendNormals(poiMesh.tangentSpaceNormal, fromNormalA, normalToBlendWith, maskFinal.a, modeA);
 				}
 				#endif
 				#endif
@@ -39156,7 +39346,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				float4 blue = float4(poiThemeColor(poiMods, _BlueColor.rgb, _BlueColorThemeIndex), _BlueColor.a);
 				float4 alpha = float4(poiThemeColor(poiMods, _AlphaColor.rgb, _AlphaColorThemeIndex), _AlphaColor.a);
 				
-				#if defined(PROP_RGBMASK) || !defined(OPTIMIZER_ENABLED)
+				#if defined(PROP_RGBMASK)
 				if (_RGBMaskType == 0)
 				{
 					rgbMask = POI2D_SAMPLER_PAN(_RGBMask, _trilinear_repeat, poiUV(poiMesh.uv[_RGBMaskUV], _RGBMask_ST), _RGBMaskPan);
@@ -39168,16 +39358,16 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 					rgbMask = poiMesh.vertexColor;
 				}
 				
-				#if defined(PROP_REDTEXTURE) || !defined(OPTIMIZER_ENABLED)
+				#if defined(PROP_REDTEXTURE)
 				red *= POI2D_SAMPLER_PAN_STOCHASTIC(_RedTexture, _trilinear_repeat, poiUV(poiMesh.uv[_RedTextureUV], PoiUVMerge(_RedTexture_ST, _RGBARedScaleOffset)), _RedTexturePan.xy, _RedTextureStochastic);
 				#endif
-				#if defined(PROP_GREENTEXTURE) || !defined(OPTIMIZER_ENABLED)
+				#if defined(PROP_GREENTEXTURE)
 				green *= POI2D_SAMPLER_PAN_STOCHASTIC(_GreenTexture, _trilinear_repeat, poiUV(poiMesh.uv[_GreenTextureUV], PoiUVMerge(_GreenTexture_ST, _RGBAGreenScaleOffset)), _GreenTexturePan.xy, _GreenTextureStochastic);
 				#endif
-				#if defined(PROP_BLUETEXTURE) || !defined(OPTIMIZER_ENABLED)
+				#if defined(PROP_BLUETEXTURE)
 				blue *= POI2D_SAMPLER_PAN_STOCHASTIC(_BlueTexture, _trilinear_repeat, poiUV(poiMesh.uv[_BlueTextureUV], PoiUVMerge(_BlueTexture_ST, _RGBABlueScaleOffset)), _BlueTexturePan.xy, _BlueTextureStochastic);
 				#endif
-				#if defined(PROP_ALPHATEXTURE) || !defined(OPTIMIZER_ENABLED)
+				#if defined(PROP_ALPHATEXTURE)
 				alpha *= POI2D_SAMPLER_PAN_STOCHASTIC(_AlphaTexture, _trilinear_repeat, poiUV(poiMesh.uv[_AlphaTextureUV], PoiUVMerge(_AlphaTexture_ST, _RGBAAlphaScaleOffset)), _AlphaTexturePan.xy, _AlphaTextureStochastic);
 				#endif
 				
@@ -39188,7 +39378,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				
 				if (_RGBAPBRRedEnabled || _RGBAPBRGreenEnabled || _RGBAPBRBlueEnabled || _RGBAPBRAlphaEnabled)
 				{
-					#if defined(PROP_RGBASMOOTHNESSMAPS) || !defined(OPTIMIZER_ENABLED)
+					#if defined(PROP_RGBASMOOTHNESSMAPS)
 					float4 smoothnessMaps = 1;
 					if (!_RGBARedPBRSplitMaskSample || !_RGBAGreenPBRSplitMaskSample || !_RGBABluePBRSplitMaskSample || !_RGBAAlphaPBRSplitMaskSample)
 					{
@@ -39218,7 +39408,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 					poiFragData.smoothness = lerp(poiFragData.smoothness, poiInvertToggle(smoothnessMaps.a, _RGBAAlphaSmoothnessInvert), rgbMask[_RgbAlphaMaskChannel] * (_RGBAPBRAlphaEnabled && _RGBAAlphaEnable));
 					#endif
 					
-					#if defined(PROP_RGBAMETALLICMAPS) || !defined(OPTIMIZER_ENABLED)
+					#if defined(PROP_RGBAMETALLICMAPS)
 					float4 metallicMaps = 1;
 					if (!_RGBARedPBRSplitMaskSample || !_RGBAGreenPBRSplitMaskSample || !_RGBABluePBRSplitMaskSample || !_RGBAAlphaPBRSplitMaskSample)
 					{
@@ -39842,7 +40032,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				#endif
 				
 				#ifdef _LIGHTINGMODE_MULTILAYER_MATH
-				#if defined(PROP_MULTILAYERMATHBLURMAP) || !defined(OPTIMIZER_ENABLED)
+				#if defined(PROP_MULTILAYERMATHBLURMAP)
 				float4 blurMap = POI2D_SAMPLER_PAN(_MultilayerMathBlurMap, _MainTex, poiUV(poiMesh.uv[_MultilayerMathBlurMapUV], _MultilayerMathBlurMap_ST), _MultilayerMathBlurMapPan);
 				#else
 				float4 blurMap = 1;
@@ -39865,7 +40055,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				if (_ShadowBorderMapToggle)
 				{
 					
-					#if defined(PROP_SHADOWBORDERMASK) || !defined(OPTIMIZER_ENABLED)
+					#if defined(PROP_SHADOWBORDERMASK)
 					// This should be moved to ui but honestly if these are locked in the compiler should be able to resolve it at compile time
 					float2 shadowShift0 = float2(_ShadowAOShift.x, _ShadowAOShift.y);
 					float2 shadowShift1 = float2(_ShadowAOShift.z, _ShadowAOShift.w);
@@ -39883,7 +40073,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 					shadowShift1 = float2(1.0f / (shadowShift1.y - shadowShift1.x), shadowShift1.x / (shadowShift1.x - shadowShift1.y));
 					shadowShift2 = float2(1.0f / (shadowShift2.y - shadowShift2.x), shadowShift2.x / (shadowShift2.x - shadowShift2.y));
 					
-					#if defined(PROP_SHADOWBORDERMASK) || !defined(OPTIMIZER_ENABLED)
+					#if defined(PROP_SHADOWBORDERMASK)
 					float2 shadowBorderMaskUV = poiUV(poiMesh.uv[_ShadowBorderMaskUV], _ShadowBorderMask_ST);
 					if (_ShadowBorderMaskLOD)
 					{
@@ -39922,12 +40112,12 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 					lns.w = poiEdgeLinearNoSaturate(lightMap.x, _ShadowBorder, _ShadowBlur * blurMap.r, _ShadowBorderRange);
 				}
 				
-				#if defined(PROP_SHADOWBORDERMASK) || !defined(OPTIMIZER_ENABLED)
+				#if defined(PROP_SHADOWBORDERMASK)
 				lns = _ShadowPostAO ? lns * shadowBorderMask.rgbr : lns;
 				#endif
 				lns = saturate(lns);
 				
-				#if defined(PROP_SHADOWSTRENGTHMASK) || !defined(OPTIMIZER_ENABLED)
+				#if defined(PROP_SHADOWSTRENGTHMASK)
 				float4 shadowStrengthMask = POI2D_SAMPLER_PAN(_ShadowStrengthMask, _MainTex, poiUV(poiMesh.uv[_ShadowStrengthMaskUV], _ShadowStrengthMask_ST), _ShadowStrengthMaskPan);
 				#else
 				float4 shadowStrengthMask = 1;
@@ -39950,7 +40140,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				
 				if (_ShadowColor.a > 0)
 				{
-					#if defined(PROP_SHADOWCOLORTEX) || !defined(OPTIMIZER_ENABLED)
+					#if defined(PROP_SHADOWCOLORTEX)
 					float4 shadowColorTex = POI2D_SAMPLER_PAN(_ShadowColorTex, _MainTex, poiUV(poiMesh.uv[_ShadowColorTexUV], _ShadowColorTex_ST), _ShadowColorTexPan);
 					#else
 					float4 shadowColorTex = float4(1, 1, 1, 1);
@@ -39959,7 +40149,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				}
 				if (_Shadow2ndColor.a > 0)
 				{
-					#if defined(PROP_SHADOW2NDCOLORTEX) || !defined(OPTIMIZER_ENABLED)
+					#if defined(PROP_SHADOW2NDCOLORTEX)
 					float4 shadow2ndColorTex = POI2D_SAMPLER_PAN(_Shadow2ndColorTex, _MainTex, poiUV(poiMesh.uv[_Shadow2ndColorTexUV], _Shadow2ndColorTex_ST), _Shadow2ndColorTexPan);
 					#else
 					float4 shadow2ndColorTex = float4(1, 1, 1, 1);
@@ -39970,7 +40160,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				}
 				if (_Shadow3rdColor.a > 0)
 				{
-					#if defined(PROP_SHADOW3RDCOLORTEX) || !defined(OPTIMIZER_ENABLED)
+					#if defined(PROP_SHADOW3RDCOLORTEX)
 					float4 shadow3rdColorTex = POI2D_SAMPLER_PAN(_Shadow3rdColorTex, _MainTex, poiUV(poiMesh.uv[_Shadow3rdColorTexUV], _Shadow3rdColorTex_ST), _Shadow3rdColorTexPan);
 					#else
 					float4 shadow3rdColorTex = float4(1, 1, 1, 1);
@@ -40561,7 +40751,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				
 				float decalAlpha = 1;
 				float alphaOverride = 0;
-				#if defined(PROP_DECALMASK) || !defined(OPTIMIZER_ENABLED)
+				#if defined(PROP_DECALMASK)
 				float4 decalMask = POI2D_SAMPLER_PAN(_DecalMask, _MainTex, poiUV(poiMesh.uv[_DecalMaskUV], _DecalMask_ST), _DecalMaskPan);
 				#else
 				float4 decalMask = 1;
@@ -44891,7 +45081,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				col += _PPLightness;
 				
 				float ppMask = 1;
-				#if defined(PROP_PPMASK) || !defined(OPTIMIZER_ENABLED)
+				#if defined(PROP_PPMASK)
 				ppMask = POI2D_SAMPLER_PAN(_PPMask, _MainTex, poiUV(poiMesh.uv[_PPMaskUV], _PPMask_ST), _PPMaskPan)[_PPMaskChannel];
 				ppMask = lerp(ppMask, 1 - ppMask, _PPMaskInvert);
 				col = lerp(poiFragData.finalColor, col, ppMask);
@@ -45880,7 +46070,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				//endex
 				#endif
 				// Ambient Occlusion
-				#if defined(PROP_LIGHTINGAOMAPS) || !defined(OPTIMIZER_ENABLED)
+				#if defined(PROP_LIGHTINGAOMAPS)
 				float4 AOMaps = POI2D_SAMPLER_PAN(_LightingAOMaps, _MainTex, poiUV(poiMesh.uv[_LightingAOMapsUV], _LightingAOMaps_ST), _LightingAOMapsPan);
 				poiLight.occlusion = min(min(min(lerp(1, AOMaps.r, _LightDataAOStrengthR), lerp(1, AOMaps.g, _LightDataAOStrengthG)), lerp(1, AOMaps.b, _LightDataAOStrengthB)), lerp(1, AOMaps.a, _LightDataAOStrengthA));
 				#else
@@ -45893,7 +46083,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				}
 				
 				// Detail Shadows
-				#if defined(PROP_LIGHTINGDETAILSHADOWMAPS) || !defined(OPTIMIZER_ENABLED)
+				#if defined(PROP_LIGHTINGDETAILSHADOWMAPS)
 				float4 DetailShadows = POI2D_SAMPLER_PAN(_LightingDetailShadowMaps, _MainTex, poiUV(poiMesh.uv[_LightingDetailShadowMapsUV], _LightingDetailShadowMaps_ST), _LightingDetailShadowMapsPan);
 				#ifndef POI_PASS_ADD
 				poiLight.detailShadow = lerp(1, DetailShadows.r, _LightingDetailShadowStrengthR) * lerp(1, DetailShadows.g, _LightingDetailShadowStrengthG) * lerp(1, DetailShadows.b, _LightingDetailShadowStrengthB) * lerp(1, DetailShadows.a, _LightingDetailShadowStrengthA);
@@ -45910,7 +46100,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				}
 				
 				// Shadow Masks
-				#if defined(PROP_LIGHTINGSHADOWMASKS) || !defined(OPTIMIZER_ENABLED)
+				#if defined(PROP_LIGHTINGSHADOWMASKS)
 				float4 ShadowMasks = POI2D_SAMPLER_PAN(_LightingShadowMasks, _MainTex, poiUV(poiMesh.uv[_LightingShadowMasksUV], _LightingShadowMasks_ST), _LightingShadowMasksPan);
 				poiLight.shadowMask = lerp(1, ShadowMasks.r, _LightingShadowMaskStrengthR) * lerp(1, ShadowMasks.g, _LightingShadowMaskStrengthG) * lerp(1, ShadowMasks.b, _LightingShadowMaskStrengthB) * lerp(1, ShadowMasks.a, _LightingShadowMaskStrengthA);
 				#else
@@ -46052,7 +46242,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				//UNITY_BRANCH
 				if (_LightingDirectionMode == 0)
 				{
-					poiLight.direction = calculateluminance(_LightColor0.rgb) * _WorldSpaceLightPos0.xyz + 0.2 * PoiSHAr.xyz + 0.333333 * PoiSHAg.xyz + 0.333333 * PoiSHAb.xyz + 0.333333;
+					poiLight.direction = calculateluminance(_LightColor0.rgb) * _WorldSpaceLightPos0.xyz + (PoiSHAr.xyz + PoiSHAg.xyz + PoiSHAb.xyz) / 3.0;
 				}
 				if (_LightingDirectionMode == 1 || _LightingDirectionMode == 2)
 				{
@@ -46178,7 +46368,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				}
 				if (lightMapMode == 4)
 				{
-					#if defined(PROP_LIGHTDATASDFMAP) || !defined(OPTIMIZER_ENABLED)
+					#if defined(PROP_LIGHTDATASDFMAP)
 					float2 lightDataSDFMap = 1;
 					if (_LightDataSDFMapLOD > 0)
 					{
@@ -46465,7 +46655,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 					#else
 					float3 tempColor = poiFragData.baseColor;
 					#endif
-					#if defined(PROP_MAINGRADATIONTEX) || !defined(OPTIMIZER_ENABLED)
+					#if defined(PROP_MAINGRADATIONTEX)
 					tempColor.r = POI_SAMPLE_1D_X(_MainGradationTex, sampler_linear_clamp, tempColor.r).r;
 					tempColor.g = POI_SAMPLE_1D_X(_MainGradationTex, sampler_linear_clamp, tempColor.g).g;
 					tempColor.b = POI_SAMPLE_1D_X(_MainGradationTex, sampler_linear_clamp, tempColor.b).b;
@@ -47029,8 +47219,14 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			
 			#pragma shader_feature_local _STOCHASTICMODE_DELIOT_HEITZ _STOCHASTICMODE_HEXTILE _STOCHASTICMODE_NONE
 			
+			#pragma shader_feature_local PROP_LIGHTINGAOMAPS
+			#pragma shader_feature_local PROP_LIGHTINGDETAILSHADOWMAPS
+			#pragma shader_feature_local PROP_LIGHTINGSHADOWMASKS
+			#pragma shader_feature_local PROP_LIGHTDATASDFMAP
+			
 			//ifex _MainColorAdjustToggle==0
 			#pragma shader_feature COLOR_GRADING_HDR
+			#pragma shader_feature_local PROP_MAINGRADATIONTEX
 			//endex
 			
 			//#pragma shader_feature KEYWORD
@@ -47093,6 +47289,17 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			//ifex _RGBMaskEnabled==0
 			#pragma shader_feature VIGNETTE
 			#pragma shader_feature GEOM_TYPE_MESH
+			#pragma shader_feature PROP_RGBMASK
+			#pragma shader_feature PROP_RGBAMETALLICMAPS
+			#pragma shader_feature PROP_RGBASMOOTHNESSMAPS
+			#pragma shader_feature PROP_REDTEXTURE
+			#pragma shader_feature PROP_RGBNORMALR
+			#pragma shader_feature PROP_GREENTEXTURE
+			#pragma shader_feature PROP_RGBNORMALG
+			#pragma shader_feature PROP_BLUETEXTURE
+			#pragma shader_feature PROP_RGBNORMALB
+			#pragma shader_feature PROP_ALPHATEXTURE
+			#pragma shader_feature PROP_RGBNORMALA
 			//endex
 			
 			//ifex _LTCGIEnabled!=1
@@ -47102,6 +47309,12 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			//ifex _ShadingEnabled==0
 			#pragma shader_feature_local VIGNETTE_MASKED
 			#pragma shader_feature_local _LIGHTINGMODE_TEXTURERAMP _LIGHTINGMODE_MULTILAYER_MATH _LIGHTINGMODE_SHADEMAP _LIGHTINGMODE_REALISTIC _LIGHTINGMODE_WRAPPED _LIGHTINGMODE_SKIN _LIGHTINGMODE_FLAT _LIGHTINGMODE_CLOTH _LIGHTINGMODE_SDF
+			#pragma shader_feature_local PROP_MULTILAYERMATHBLURMAP
+			#pragma shader_feature_local PROP_SHADOWCOLORTEX
+			#pragma shader_feature_local PROP_SHADOW2NDCOLORTEX
+			#pragma shader_feature_local PROP_SHADOW3RDCOLORTEX
+			#pragma shader_feature_local PROP_SHADOWSTRENGTHMASK
+			#pragma shader_feature_local PROP_SHADOWBORDERMASK
 			//endex
 			
 			//ifex _DecalEnabled==0
@@ -47116,6 +47329,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			//ifex _DecalEnabled3==0
 			#pragma shader_feature DEPTH_OF_FIELD_COC_VIEW
 			//endex
+			#pragma shader_feature_local PROP_DECALMASK
 			
 			//ifex _EnableDissolve==0
 			#pragma shader_feature DISTORT
@@ -47229,6 +47443,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			
 			//ifex _PostProcess==0
 			#pragma shader_feature_local POSTPROCESS
+			#pragma shader_feature_local PROP_PPMASK
 			//endex
 			
 			//ifex _PoiInternalParallax==0
@@ -48465,7 +48680,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			#endif
 			//endex
 			
-			#if defined(PROP_LIGHTINGAOMAPS) || !defined(OPTIMIZER_ENABLED)
+			#if defined(PROP_LIGHTINGAOMAPS)
 			Texture2D _LightingAOMaps;
 			#endif
 			float4 _LightingAOMaps_ST;
@@ -48478,7 +48693,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			float _LightDataAOGlobalMaskR;
 			float _LightDataAOGlobalMaskBlendTypeR;
 			
-			#if defined(PROP_LIGHTINGDETAILSHADOWMAPS) || !defined(OPTIMIZER_ENABLED)
+			#if defined(PROP_LIGHTINGDETAILSHADOWMAPS)
 			Texture2D _LightingDetailShadowMaps;
 			#endif
 			float4 _LightingDetailShadowMaps_ST;
@@ -48495,7 +48710,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			float _LightDataDetailShadowGlobalMaskR;
 			float _LightDataDetailShadowGlobalMaskBlendTypeR;
 			
-			#if defined(PROP_LIGHTINGSHADOWMASKS) || !defined(OPTIMIZER_ENABLED)
+			#if defined(PROP_LIGHTINGSHADOWMASKS)
 			Texture2D _LightingShadowMasks;
 			#endif
 			float4 _LightingShadowMasks_ST;
@@ -48513,7 +48728,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			float _LightingColorMode;
 			float _LightingMapMode;
 			
-			#if defined(PROP_LIGHTDATASDFMAP) || !defined(OPTIMIZER_ENABLED)
+			#if defined(PROP_LIGHTDATASDFMAP)
 			Texture2D _LightDataSDFMap;
 			float4 _LightDataSDFMap_ST;
 			float2 _LightDataSDFMapPan;
@@ -48643,7 +48858,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			float _MainGammaGlobalMask;
 			float _MainGammaGlobalMaskBlendType;
 			
-			#if defined(PROP_MAINGRADATIONTEX) || !defined(OPTIMIZER_ENABLED)
+			#if defined(PROP_MAINGRADATIONTEX)
 			Texture2D _MainGradationTex;
 			#endif
 			float _ColorGradingToggle;
@@ -49636,14 +49851,14 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			
 			//ifex _RGBMaskEnabled==0
 			#ifdef VIGNETTE
-			#if defined(PROP_RGBMASK) || !defined(OPTIMIZER_ENABLED)
+			#if defined(PROP_RGBMASK)
 			Texture2D _RGBMask;
 			#endif
 			float4 _RGBMask_ST;
 			float2 _RGBMaskPan;
 			float _RGBMaskUV;
 			
-			#if defined(PROP_RGBAMETALLICMAPS) || !defined(OPTIMIZER_ENABLED)
+			#if defined(PROP_RGBAMETALLICMAPS)
 			Texture2D _RGBAMetallicMaps;
 			float4 _RGBAMetallicMaps_ST;
 			float2 _RGBAMetallicMapsPan;
@@ -49693,7 +49908,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			float _RGBAPBRBlueEnabled;
 			float _RGBAPBRAlphaEnabled;
 			
-			#if defined(PROP_RGBASMOOTHNESSMAPS) || !defined(OPTIMIZER_ENABLED)
+			#if defined(PROP_RGBASMOOTHNESSMAPS)
 			Texture2D _RGBASmoothnessMaps;
 			float4 _RGBASmoothnessMaps_ST;
 			float4 _RGBASmoothnessMapsPan;
@@ -49706,7 +49921,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			float _RGBAAlphaSmoothnessInvert;
 			
 			float _RGBARedEnable;
-			#if defined(PROP_REDTEXTURE) || !defined(OPTIMIZER_ENABLED)
+			#if defined(PROP_REDTEXTURE)
 			Texture2D _RedTexture;
 			#endif
 			float4 _RedTexture_ST;
@@ -49722,7 +49937,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			float _RedColorThemeIndex;
 			float _RGBARedEmissionStrength;
 			
-			#if defined(PROP_RGBNORMALR) || !defined(OPTIMIZER_ENABLED)
+			#if defined(PROP_RGBNORMALR)
 			Texture2D _RgbNormalR;
 			#endif
 			float4 _RgbNormalR_ST;
@@ -49734,9 +49949,10 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			float _RgbNormalRGlobalMaskChannel;
 			float _RgbNormalRGlobalMaskBlendType;
 			float _RgbNormalRedBlendMode;
+			float4 _RgbNormalRBlendSources;
 			
 			float _RGBAGreenEnable;
-			#if defined(PROP_GREENTEXTURE) || !defined(OPTIMIZER_ENABLED)
+			#if defined(PROP_GREENTEXTURE)
 			Texture2D _GreenTexture;
 			#endif
 			float4 _GreenTexture_ST;
@@ -49752,7 +49968,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			float _GreenColorThemeIndex;
 			float _RGBAGreenEmissionStrength;
 			
-			#if defined(PROP_RGBNORMALG) || !defined(OPTIMIZER_ENABLED)
+			#if defined(PROP_RGBNORMALG)
 			Texture2D _RgbNormalG;
 			#endif
 			float4 _RgbNormalG_ST;
@@ -49764,9 +49980,10 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			float _RgbNormalGGlobalMaskChannel;
 			float _RgbNormalGGlobalMaskBlendType;
 			float _RgbNormalGreenBlendMode;
+			float4 _RgbNormalGBlendSources;
 			
 			float _RGBABlueEnable;
-			#if defined(PROP_BLUETEXTURE) || !defined(OPTIMIZER_ENABLED)
+			#if defined(PROP_BLUETEXTURE)
 			Texture2D _BlueTexture;
 			#endif
 			float4 _BlueTexture_ST;
@@ -49782,7 +49999,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			float _BlueColorThemeIndex;
 			float _RGBABlueEmissionStrength;
 			
-			#if defined(PROP_RGBNORMALB) || !defined(OPTIMIZER_ENABLED)
+			#if defined(PROP_RGBNORMALB)
 			Texture2D _RgbNormalB;
 			#endif
 			float4 _RgbNormalB_ST;
@@ -49794,9 +50011,10 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			float _RgbNormalBGlobalMaskChannel;
 			float _RgbNormalBGlobalMaskBlendType;
 			float _RgbNormalBlueBlendMode;
+			float4 _RgbNormalBBlendSources;
 			
 			float _RGBAAlphaEnable;
-			#if defined(PROP_ALPHATEXTURE) || !defined(OPTIMIZER_ENABLED)
+			#if defined(PROP_ALPHATEXTURE)
 			Texture2D _AlphaTexture;
 			#endif
 			float4 _AlphaTexture_ST;
@@ -49812,7 +50030,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			float _AlphaColorThemeIndex;
 			float _RGBAAlphaEmissionStrength;
 			
-			#if defined(PROP_RGBNORMALA) || !defined(OPTIMIZER_ENABLED)
+			#if defined(PROP_RGBNORMALA)
 			Texture2D _RgbNormalA;
 			#endif
 			float4 _RgbNormalA_ST;
@@ -49824,6 +50042,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			float _RgbNormalAGlobalMaskChannel;
 			float _RgbNormalAGlobalMaskBlendType;
 			float _RgbNormalAlphaBlendMode;
+			float4 _RgbNormalABlendSources;
 			
 			float _RGBMaskType;
 			
@@ -49916,7 +50135,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			#endif
 			
 			#ifdef _LIGHTINGMODE_MULTILAYER_MATH
-			#if defined(PROP_SHADOWBORDERMASK) || !defined(OPTIMIZER_ENABLED)
+			#if defined(PROP_SHADOWBORDERMASK)
 			Texture2D _ShadowBorderMask;
 			float4 _ShadowBorderMask_ST;
 			float2 _ShadowBorderMaskPan;
@@ -49929,13 +50148,13 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			float _ShadowBorderMapToggle;
 			float4 _ShadowColor;
 			float _LightingMulitlayerNonLinear;
-			#if defined(PROP_SHADOWCOLORTEX) || !defined(OPTIMIZER_ENABLED)
+			#if defined(PROP_SHADOWCOLORTEX)
 			Texture2D _ShadowColorTex;
 			float4 _ShadowColorTex_ST;
 			float2 _ShadowColorTexPan;
 			float _ShadowColorTexUV;
 			#endif
-			#if defined(PROP_MULTILAYERMATHBLURMAP) || !defined(OPTIMIZER_ENABLED)
+			#if defined(PROP_MULTILAYERMATHBLURMAP)
 			Texture2D _MultilayerMathBlurMap;
 			float4 _MultilayerMathBlurMap_ST;
 			float2 _MultilayerMathBlurMapPan;
@@ -49945,7 +50164,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			float _ShadowBlur;
 			float _ShadowReceive;
 			float4 _Shadow2ndColor;
-			#if defined(PROP_SHADOW2NDCOLORTEX) || !defined(OPTIMIZER_ENABLED)
+			#if defined(PROP_SHADOW2NDCOLORTEX)
 			Texture2D _Shadow2ndColorTex;
 			float4 _Shadow2ndColorTex_ST;
 			float2 _Shadow2ndColorTexPan;
@@ -49955,7 +50174,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			float _Shadow2ndBlur;
 			float _Shadow2ndReceive;
 			float4 _Shadow3rdColor;
-			#if defined(PROP_SHADOW3RDCOLORTEX) || !defined(OPTIMIZER_ENABLED)
+			#if defined(PROP_SHADOW3RDCOLORTEX)
 			Texture2D _Shadow3rdColorTex;
 			float4 _Shadow3rdColorTex_ST;
 			float2 _Shadow3rdColorTexPan;
@@ -49969,7 +50188,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			float _ShadowEnvStrength;
 			float _ShadowMainStrength;
 			float _ShadowMaskType;
-			#if defined(PROP_SHADOWSTRENGTHMASK) || !defined(OPTIMIZER_ENABLED)
+			#if defined(PROP_SHADOWSTRENGTHMASK)
 			Texture2D _ShadowStrengthMask;
 			float4 _ShadowStrengthMask_ST;
 			float4 _ShadowStrengthMaskPan;
@@ -50024,7 +50243,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			
 			//ifex _DecalEnabled==0 && _DecalEnabled1==0 && _DecalEnabled2==0 && _DecalEnabled3==0
 			
-			#if defined(PROP_DECALMASK) || !defined(OPTIMIZER_ENABLED)
+			#if defined(PROP_DECALMASK)
 			Texture2D _DecalMask;
 			float4 _DecalMask_ST;
 			float2 _DecalMaskPan;
@@ -52232,7 +52451,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			
 			//ifex _PostProcess==0
 			#ifdef POSTPROCESS
-			#if defined(PROP_PPMASK) || !defined(OPTIMIZER_ENABLED)
+			#if defined(PROP_PPMASK)
 			Texture2D _PPMask;
 			#endif
 			float4 _PPMask_ST;
@@ -52528,9 +52747,21 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				float2 uv1 : TEXCOORD1;
 				float2 uv2 : TEXCOORD2;
 				float2 uv3 : TEXCOORD3;
-				#ifndef POI_TESSELLATED
 				uint vertexId : SV_VertexID;
-				#endif
+				UNITY_VERTEX_INPUT_INSTANCE_ID
+			};
+			
+			struct tessellatedAppData
+			{
+				float4 vertex : POSITION;
+				float3 normal : NORMAL;
+				float4 tangent : TANGENT;
+				float4 color : COLOR;
+				float2 uv0 : TEXCOORD0;
+				float2 uv1 : TEXCOORD1;
+				float2 uv2 : TEXCOORD2;
+				float2 uv3 : TEXCOORD3;
+				uint vertexId : TEXCOORD4;
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
 			
@@ -57191,11 +57422,11 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				}
 				else if (blendMode == 1)
 				{
-					tangentSpaceNormal = BlendNormals(tangentSpaceNormal, normalToBlendWith);
+					tangentSpaceNormal = lerp(tangentSpaceNormal, BlendNormals(tangentSpaceNormal, normalToBlendWith), maskValue);
 				}
 				else if (blendMode == 2)
 				{
-					tangentSpaceNormal = BlendNormals(originalNormal, normalToBlendWith);
+					tangentSpaceNormal = lerp(tangentSpaceNormal, BlendNormals(originalNormal, normalToBlendWith), maskValue);
 				}
 			}
 			
@@ -57204,10 +57435,10 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			void calculateRGBNormals(inout PoiMesh poiMesh, inout PoiMods poiMods)
 			{
 				// Only define this if we actually have any normal map textures. Can't do the same in color textures because users can tint
-				#if defined(PROP_RGBNORMALR) || defined(PROP_RGBNORMALG) || defined(PROP_RGBNORMALB) || defined(PROP_RGBNORMALA) || !defined(OPTIMIZER_ENABLED)
+				#if defined(PROP_RGBNORMALR) || defined(PROP_RGBNORMALG) || defined(PROP_RGBNORMALB) || defined(PROP_RGBNORMALA)
 				float4 rgbMask = 1;
 				
-				#if defined(PROP_RGBMASK) || !defined(OPTIMIZER_ENABLED)
+				#if defined(PROP_RGBMASK)
 				if (_RGBMaskType == 0)
 				{
 					rgbMask = POI2D_SAMPLER_PAN(_RGBMask, _trilinear_repeat, poiUV(poiMesh.uv[_RGBMaskUV], _RGBMask_ST), _RGBMaskPan);
@@ -57225,39 +57456,73 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				maskFinal.b = rgbMask[_RgbNormalBMaskChannel];
 				maskFinal.a = rgbMask[_RgbNormalAMaskChannel];
 				
-				if (_RgbNormalRGlobalMaskChannel > 0) maskFinal.r = customBlend(maskFinal.r, poiMods.globalMask[_RgbNormalRGlobalMaskChannel - 1], _RgbNormalRGlobalMaskBlendType);
-				if (_RgbNormalGGlobalMaskChannel > 0) maskFinal.g = customBlend(maskFinal.g, poiMods.globalMask[_RgbNormalGGlobalMaskChannel - 1], _RgbNormalGGlobalMaskBlendType);
-				if (_RgbNormalBGlobalMaskChannel > 0) maskFinal.b = customBlend(maskFinal.b, poiMods.globalMask[_RgbNormalBGlobalMaskChannel - 1], _RgbNormalBGlobalMaskBlendType);
-				if (_RgbNormalAGlobalMaskChannel > 0) maskFinal.a = customBlend(maskFinal.a, poiMods.globalMask[_RgbNormalAGlobalMaskChannel - 1], _RgbNormalAGlobalMaskBlendType);
+				if (_RgbNormalRGlobalMaskChannel > 0) maskFinal.r = globalMaskBlend(maskFinal.r, _RgbNormalRGlobalMaskChannel, _RgbNormalRGlobalMaskBlendType, poiMods);
+				if (_RgbNormalGGlobalMaskChannel > 0) maskFinal.g = globalMaskBlend(maskFinal.g, _RgbNormalGGlobalMaskChannel, _RgbNormalGGlobalMaskBlendType, poiMods);
+				if (_RgbNormalBGlobalMaskChannel > 0) maskFinal.b = globalMaskBlend(maskFinal.b, _RgbNormalBGlobalMaskChannel, _RgbNormalBGlobalMaskBlendType, poiMods);
+				if (_RgbNormalAGlobalMaskChannel > 0) maskFinal.a = globalMaskBlend(maskFinal.a, _RgbNormalAGlobalMaskChannel, _RgbNormalAGlobalMaskBlendType, poiMods);
 				
 				float3 originalNormal = poiMesh.tangentSpaceNormal;
+				const float3 neutralNormal = float3(0, 0, 1);
+				float3 nR = 0;
+				float3 nG = 0;
+				float3 nB = 0;
+				float hasR = 0;
+				float hasG = 0;
+				float hasB = 0;
 				
-				#if defined(PROP_RGBNORMALR) || !defined(OPTIMIZER_ENABLED)
+				#if defined(PROP_RGBNORMALR)
 				if (_RgbNormalRScale > 0 && _RGBARedEnable)
 				{
-					float3 normalToBlendWith = UnpackScaleNormal(POI2D_SAMPLER_PAN_STOCHASTIC(_RgbNormalR, _trilinear_repeat, poiUV(poiMesh.uv[_RgbNormalRUV], PoiUVMerge(_RgbNormalR_ST, _RGBARedScaleOffset )), _RgbNormalRPan, _RgbNormalRStochastic), _RgbNormalRedBlendMode == 0 ? _RgbNormalRScale : _RgbNormalRScale * maskFinal.r);
-					RGBABlendNormals(poiMesh.tangentSpaceNormal, originalNormal, normalToBlendWith, maskFinal.r, _RgbNormalRedBlendMode);
+					nR = UnpackScaleNormal(POI2D_SAMPLER_PAN_STOCHASTIC(_RgbNormalR, _trilinear_repeat, poiUV(poiMesh.uv[_RgbNormalRUV], PoiUVMerge(_RgbNormalR_ST, _RGBARedScaleOffset )), _RgbNormalRPan, _RgbNormalRStochastic), _RgbNormalRScale);
+					hasR = 1;
+					bool selBaseR = (_RgbNormalRBlendSources.x > 0.5);
+					int modeR = selBaseR ? 2 : 0; // selection empty => Replace
+					float3 fromNormalR = selBaseR ? originalNormal : neutralNormal;
+					RGBABlendNormals(poiMesh.tangentSpaceNormal, fromNormalR, nR, maskFinal.r, modeR);
 				}
 				#endif
-				#if defined(PROP_RGBNORMALG) || !defined(OPTIMIZER_ENABLED)
+				#if defined(PROP_RGBNORMALG)
 				if (_RgbNormalGScale > 0 && _RGBAGreenEnable)
 				{
-					float3 normalToBlendWith = UnpackScaleNormal(POI2D_SAMPLER_PAN_STOCHASTIC(_RgbNormalG, _trilinear_repeat, poiUV(poiMesh.uv[_RgbNormalGUV], PoiUVMerge(_RgbNormalG_ST, _RGBAGreenScaleOffset )), _RgbNormalGPan, _RgbNormalGStochastic), _RgbNormalGreenBlendMode == 0 ? _RgbNormalGScale : _RgbNormalGScale * maskFinal.g);
-					RGBABlendNormals(poiMesh.tangentSpaceNormal, originalNormal, normalToBlendWith, maskFinal.g, _RgbNormalGreenBlendMode);
+					nG = UnpackScaleNormal(POI2D_SAMPLER_PAN_STOCHASTIC(_RgbNormalG, _trilinear_repeat, poiUV(poiMesh.uv[_RgbNormalGUV], PoiUVMerge(_RgbNormalG_ST, _RGBAGreenScaleOffset )), _RgbNormalGPan, _RgbNormalGStochastic), _RgbNormalGScale);
+					hasG = 1;
+					bool selBaseG = (_RgbNormalGBlendSources.x > 0.5);
+					bool selRedG = (_RgbNormalGBlendSources.y > 0.5);
+					int modeG = (selBaseG || selRedG) ? 2 : 0;
+					float3 fromNormalG = selBaseG ? originalNormal : neutralNormal;
+					if (selRedG && hasR > 0.5) fromNormalG = lerp(fromNormalG, BlendNormals(fromNormalG, nR), maskFinal.r);
+					RGBABlendNormals(poiMesh.tangentSpaceNormal, fromNormalG, nG, maskFinal.g, modeG);
 				}
 				#endif
-				#if defined(PROP_RGBNORMALB) || !defined(OPTIMIZER_ENABLED)
+				#if defined(PROP_RGBNORMALB)
 				if (_RgbNormalBScale > 0 && _RGBABlueEnable)
 				{
-					float3 normalToBlendWith = UnpackScaleNormal(POI2D_SAMPLER_PAN_STOCHASTIC(_RgbNormalB, _trilinear_repeat, poiUV(poiMesh.uv[_RgbNormalBUV], PoiUVMerge(_RgbNormalB_ST, _RGBABlueScaleOffset)), _RgbNormalBPan, _RgbNormalBStochastic), _RgbNormalBlueBlendMode == 0 ? _RgbNormalBScale : _RgbNormalBScale * maskFinal.b);
-					RGBABlendNormals(poiMesh.tangentSpaceNormal, originalNormal, normalToBlendWith, maskFinal.b, _RgbNormalBlueBlendMode);
+					nB = UnpackScaleNormal(POI2D_SAMPLER_PAN_STOCHASTIC(_RgbNormalB, _trilinear_repeat, poiUV(poiMesh.uv[_RgbNormalBUV], PoiUVMerge(_RgbNormalB_ST, _RGBABlueScaleOffset)), _RgbNormalBPan, _RgbNormalBStochastic), _RgbNormalBScale);
+					hasB = 1;
+					bool selBaseB = (_RgbNormalBBlendSources.x > 0.5);
+					bool selRedB = (_RgbNormalBBlendSources.y > 0.5);
+					bool selGreenB = (_RgbNormalBBlendSources.z > 0.5);
+					int modeB = (selBaseB || selRedB || selGreenB) ? 2 : 0;
+					float3 fromNormalB = selBaseB ? originalNormal : neutralNormal;
+					if (selRedB && hasR > 0.5) fromNormalB = lerp(fromNormalB, BlendNormals(fromNormalB, nR), maskFinal.r);
+					if (selGreenB && hasG > 0.5) fromNormalB = lerp(fromNormalB, BlendNormals(fromNormalB, nG), maskFinal.g);
+					RGBABlendNormals(poiMesh.tangentSpaceNormal, fromNormalB, nB, maskFinal.b, modeB);
 				}
 				#endif
-				#if defined(PROP_RGBNORMALA) || !defined(OPTIMIZER_ENABLED)
+				#if defined(PROP_RGBNORMALA)
 				if (_RgbNormalAScale > 0 && _RGBAAlphaEnable)
 				{
-					float3 normalToBlendWith = UnpackScaleNormal(POI2D_SAMPLER_PAN_STOCHASTIC(_RgbNormalA, _trilinear_repeat, poiUV(poiMesh.uv[_RgbNormalAUV], PoiUVMerge(_RgbNormalA_ST, _RGBAAlphaScaleOffset)), _RgbNormalAPan, _RgbNormalAStochastic), _RgbNormalAlphaBlendMode == 0 ? _RgbNormalAScale : _RgbNormalAScale * maskFinal.a);
-					RGBABlendNormals(poiMesh.tangentSpaceNormal, originalNormal, normalToBlendWith, maskFinal.a, _RgbNormalAlphaBlendMode);
+					float3 normalToBlendWith = UnpackScaleNormal(POI2D_SAMPLER_PAN_STOCHASTIC(_RgbNormalA, _trilinear_repeat, poiUV(poiMesh.uv[_RgbNormalAUV], PoiUVMerge(_RgbNormalA_ST, _RGBAAlphaScaleOffset)), _RgbNormalAPan, _RgbNormalAStochastic), _RgbNormalAScale);
+					bool selBaseA = (_RgbNormalABlendSources.x > 0.5);
+					bool selRedA = (_RgbNormalABlendSources.y > 0.5);
+					bool selGreenA = (_RgbNormalABlendSources.z > 0.5);
+					bool selBlueA = (_RgbNormalABlendSources.w > 0.5);
+					int modeA = (selBaseA || selRedA || selGreenA || selBlueA) ? 2 : 0;
+					float3 fromNormalA = selBaseA ? originalNormal : neutralNormal;
+					if (selRedA && hasR > 0.5) fromNormalA = lerp(fromNormalA, BlendNormals(fromNormalA, nR), maskFinal.r);
+					if (selGreenA && hasG > 0.5) fromNormalA = lerp(fromNormalA, BlendNormals(fromNormalA, nG), maskFinal.g);
+					if (selBlueA && hasB > 0.5) fromNormalA = lerp(fromNormalA, BlendNormals(fromNormalA, nB), maskFinal.b);
+					RGBABlendNormals(poiMesh.tangentSpaceNormal, fromNormalA, normalToBlendWith, maskFinal.a, modeA);
 				}
 				#endif
 				#endif
@@ -57272,7 +57537,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				float4 blue = float4(poiThemeColor(poiMods, _BlueColor.rgb, _BlueColorThemeIndex), _BlueColor.a);
 				float4 alpha = float4(poiThemeColor(poiMods, _AlphaColor.rgb, _AlphaColorThemeIndex), _AlphaColor.a);
 				
-				#if defined(PROP_RGBMASK) || !defined(OPTIMIZER_ENABLED)
+				#if defined(PROP_RGBMASK)
 				if (_RGBMaskType == 0)
 				{
 					rgbMask = POI2D_SAMPLER_PAN(_RGBMask, _trilinear_repeat, poiUV(poiMesh.uv[_RGBMaskUV], _RGBMask_ST), _RGBMaskPan);
@@ -57284,16 +57549,16 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 					rgbMask = poiMesh.vertexColor;
 				}
 				
-				#if defined(PROP_REDTEXTURE) || !defined(OPTIMIZER_ENABLED)
+				#if defined(PROP_REDTEXTURE)
 				red *= POI2D_SAMPLER_PAN_STOCHASTIC(_RedTexture, _trilinear_repeat, poiUV(poiMesh.uv[_RedTextureUV], PoiUVMerge(_RedTexture_ST, _RGBARedScaleOffset)), _RedTexturePan.xy, _RedTextureStochastic);
 				#endif
-				#if defined(PROP_GREENTEXTURE) || !defined(OPTIMIZER_ENABLED)
+				#if defined(PROP_GREENTEXTURE)
 				green *= POI2D_SAMPLER_PAN_STOCHASTIC(_GreenTexture, _trilinear_repeat, poiUV(poiMesh.uv[_GreenTextureUV], PoiUVMerge(_GreenTexture_ST, _RGBAGreenScaleOffset)), _GreenTexturePan.xy, _GreenTextureStochastic);
 				#endif
-				#if defined(PROP_BLUETEXTURE) || !defined(OPTIMIZER_ENABLED)
+				#if defined(PROP_BLUETEXTURE)
 				blue *= POI2D_SAMPLER_PAN_STOCHASTIC(_BlueTexture, _trilinear_repeat, poiUV(poiMesh.uv[_BlueTextureUV], PoiUVMerge(_BlueTexture_ST, _RGBABlueScaleOffset)), _BlueTexturePan.xy, _BlueTextureStochastic);
 				#endif
-				#if defined(PROP_ALPHATEXTURE) || !defined(OPTIMIZER_ENABLED)
+				#if defined(PROP_ALPHATEXTURE)
 				alpha *= POI2D_SAMPLER_PAN_STOCHASTIC(_AlphaTexture, _trilinear_repeat, poiUV(poiMesh.uv[_AlphaTextureUV], PoiUVMerge(_AlphaTexture_ST, _RGBAAlphaScaleOffset)), _AlphaTexturePan.xy, _AlphaTextureStochastic);
 				#endif
 				
@@ -57304,7 +57569,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				
 				if (_RGBAPBRRedEnabled || _RGBAPBRGreenEnabled || _RGBAPBRBlueEnabled || _RGBAPBRAlphaEnabled)
 				{
-					#if defined(PROP_RGBASMOOTHNESSMAPS) || !defined(OPTIMIZER_ENABLED)
+					#if defined(PROP_RGBASMOOTHNESSMAPS)
 					float4 smoothnessMaps = 1;
 					if (!_RGBARedPBRSplitMaskSample || !_RGBAGreenPBRSplitMaskSample || !_RGBABluePBRSplitMaskSample || !_RGBAAlphaPBRSplitMaskSample)
 					{
@@ -57334,7 +57599,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 					poiFragData.smoothness = lerp(poiFragData.smoothness, poiInvertToggle(smoothnessMaps.a, _RGBAAlphaSmoothnessInvert), rgbMask[_RgbAlphaMaskChannel] * (_RGBAPBRAlphaEnabled && _RGBAAlphaEnable));
 					#endif
 					
-					#if defined(PROP_RGBAMETALLICMAPS) || !defined(OPTIMIZER_ENABLED)
+					#if defined(PROP_RGBAMETALLICMAPS)
 					float4 metallicMaps = 1;
 					if (!_RGBARedPBRSplitMaskSample || !_RGBAGreenPBRSplitMaskSample || !_RGBABluePBRSplitMaskSample || !_RGBAAlphaPBRSplitMaskSample)
 					{
@@ -59238,7 +59503,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				#endif
 				
 				#ifdef _LIGHTINGMODE_MULTILAYER_MATH
-				#if defined(PROP_MULTILAYERMATHBLURMAP) || !defined(OPTIMIZER_ENABLED)
+				#if defined(PROP_MULTILAYERMATHBLURMAP)
 				float4 blurMap = POI2D_SAMPLER_PAN(_MultilayerMathBlurMap, _MainTex, poiUV(poiMesh.uv[_MultilayerMathBlurMapUV], _MultilayerMathBlurMap_ST), _MultilayerMathBlurMapPan);
 				#else
 				float4 blurMap = 1;
@@ -59261,7 +59526,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				if (_ShadowBorderMapToggle)
 				{
 					
-					#if defined(PROP_SHADOWBORDERMASK) || !defined(OPTIMIZER_ENABLED)
+					#if defined(PROP_SHADOWBORDERMASK)
 					// This should be moved to ui but honestly if these are locked in the compiler should be able to resolve it at compile time
 					float2 shadowShift0 = float2(_ShadowAOShift.x, _ShadowAOShift.y);
 					float2 shadowShift1 = float2(_ShadowAOShift.z, _ShadowAOShift.w);
@@ -59279,7 +59544,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 					shadowShift1 = float2(1.0f / (shadowShift1.y - shadowShift1.x), shadowShift1.x / (shadowShift1.x - shadowShift1.y));
 					shadowShift2 = float2(1.0f / (shadowShift2.y - shadowShift2.x), shadowShift2.x / (shadowShift2.x - shadowShift2.y));
 					
-					#if defined(PROP_SHADOWBORDERMASK) || !defined(OPTIMIZER_ENABLED)
+					#if defined(PROP_SHADOWBORDERMASK)
 					float2 shadowBorderMaskUV = poiUV(poiMesh.uv[_ShadowBorderMaskUV], _ShadowBorderMask_ST);
 					if (_ShadowBorderMaskLOD)
 					{
@@ -59318,12 +59583,12 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 					lns.w = poiEdgeLinearNoSaturate(lightMap.x, _ShadowBorder, _ShadowBlur * blurMap.r, _ShadowBorderRange);
 				}
 				
-				#if defined(PROP_SHADOWBORDERMASK) || !defined(OPTIMIZER_ENABLED)
+				#if defined(PROP_SHADOWBORDERMASK)
 				lns = _ShadowPostAO ? lns * shadowBorderMask.rgbr : lns;
 				#endif
 				lns = saturate(lns);
 				
-				#if defined(PROP_SHADOWSTRENGTHMASK) || !defined(OPTIMIZER_ENABLED)
+				#if defined(PROP_SHADOWSTRENGTHMASK)
 				float4 shadowStrengthMask = POI2D_SAMPLER_PAN(_ShadowStrengthMask, _MainTex, poiUV(poiMesh.uv[_ShadowStrengthMaskUV], _ShadowStrengthMask_ST), _ShadowStrengthMaskPan);
 				#else
 				float4 shadowStrengthMask = 1;
@@ -59346,7 +59611,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				
 				if (_ShadowColor.a > 0)
 				{
-					#if defined(PROP_SHADOWCOLORTEX) || !defined(OPTIMIZER_ENABLED)
+					#if defined(PROP_SHADOWCOLORTEX)
 					float4 shadowColorTex = POI2D_SAMPLER_PAN(_ShadowColorTex, _MainTex, poiUV(poiMesh.uv[_ShadowColorTexUV], _ShadowColorTex_ST), _ShadowColorTexPan);
 					#else
 					float4 shadowColorTex = float4(1, 1, 1, 1);
@@ -59355,7 +59620,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				}
 				if (_Shadow2ndColor.a > 0)
 				{
-					#if defined(PROP_SHADOW2NDCOLORTEX) || !defined(OPTIMIZER_ENABLED)
+					#if defined(PROP_SHADOW2NDCOLORTEX)
 					float4 shadow2ndColorTex = POI2D_SAMPLER_PAN(_Shadow2ndColorTex, _MainTex, poiUV(poiMesh.uv[_Shadow2ndColorTexUV], _Shadow2ndColorTex_ST), _Shadow2ndColorTexPan);
 					#else
 					float4 shadow2ndColorTex = float4(1, 1, 1, 1);
@@ -59366,7 +59631,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				}
 				if (_Shadow3rdColor.a > 0)
 				{
-					#if defined(PROP_SHADOW3RDCOLORTEX) || !defined(OPTIMIZER_ENABLED)
+					#if defined(PROP_SHADOW3RDCOLORTEX)
 					float4 shadow3rdColorTex = POI2D_SAMPLER_PAN(_Shadow3rdColorTex, _MainTex, poiUV(poiMesh.uv[_Shadow3rdColorTexUV], _Shadow3rdColorTex_ST), _Shadow3rdColorTexPan);
 					#else
 					float4 shadow3rdColorTex = float4(1, 1, 1, 1);
@@ -59957,7 +60222,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				
 				float decalAlpha = 1;
 				float alphaOverride = 0;
-				#if defined(PROP_DECALMASK) || !defined(OPTIMIZER_ENABLED)
+				#if defined(PROP_DECALMASK)
 				float4 decalMask = POI2D_SAMPLER_PAN(_DecalMask, _MainTex, poiUV(poiMesh.uv[_DecalMaskUV], _DecalMask_ST), _DecalMaskPan);
 				#else
 				float4 decalMask = 1;
@@ -65038,7 +65303,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				col += _PPLightness;
 				
 				float ppMask = 1;
-				#if defined(PROP_PPMASK) || !defined(OPTIMIZER_ENABLED)
+				#if defined(PROP_PPMASK)
 				ppMask = POI2D_SAMPLER_PAN(_PPMask, _MainTex, poiUV(poiMesh.uv[_PPMaskUV], _PPMask_ST), _PPMaskPan)[_PPMaskChannel];
 				ppMask = lerp(ppMask, 1 - ppMask, _PPMaskInvert);
 				col = lerp(poiFragData.finalColor, col, ppMask);
@@ -66087,7 +66352,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				//endex
 				#endif
 				// Ambient Occlusion
-				#if defined(PROP_LIGHTINGAOMAPS) || !defined(OPTIMIZER_ENABLED)
+				#if defined(PROP_LIGHTINGAOMAPS)
 				float4 AOMaps = POI2D_SAMPLER_PAN(_LightingAOMaps, _MainTex, poiUV(poiMesh.uv[_LightingAOMapsUV], _LightingAOMaps_ST), _LightingAOMapsPan);
 				poiLight.occlusion = min(min(min(lerp(1, AOMaps.r, _LightDataAOStrengthR), lerp(1, AOMaps.g, _LightDataAOStrengthG)), lerp(1, AOMaps.b, _LightDataAOStrengthB)), lerp(1, AOMaps.a, _LightDataAOStrengthA));
 				#else
@@ -66100,7 +66365,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				}
 				
 				// Detail Shadows
-				#if defined(PROP_LIGHTINGDETAILSHADOWMAPS) || !defined(OPTIMIZER_ENABLED)
+				#if defined(PROP_LIGHTINGDETAILSHADOWMAPS)
 				float4 DetailShadows = POI2D_SAMPLER_PAN(_LightingDetailShadowMaps, _MainTex, poiUV(poiMesh.uv[_LightingDetailShadowMapsUV], _LightingDetailShadowMaps_ST), _LightingDetailShadowMapsPan);
 				#ifndef POI_PASS_ADD
 				poiLight.detailShadow = lerp(1, DetailShadows.r, _LightingDetailShadowStrengthR) * lerp(1, DetailShadows.g, _LightingDetailShadowStrengthG) * lerp(1, DetailShadows.b, _LightingDetailShadowStrengthB) * lerp(1, DetailShadows.a, _LightingDetailShadowStrengthA);
@@ -66117,7 +66382,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				}
 				
 				// Shadow Masks
-				#if defined(PROP_LIGHTINGSHADOWMASKS) || !defined(OPTIMIZER_ENABLED)
+				#if defined(PROP_LIGHTINGSHADOWMASKS)
 				float4 ShadowMasks = POI2D_SAMPLER_PAN(_LightingShadowMasks, _MainTex, poiUV(poiMesh.uv[_LightingShadowMasksUV], _LightingShadowMasks_ST), _LightingShadowMasksPan);
 				poiLight.shadowMask = lerp(1, ShadowMasks.r, _LightingShadowMaskStrengthR) * lerp(1, ShadowMasks.g, _LightingShadowMaskStrengthG) * lerp(1, ShadowMasks.b, _LightingShadowMaskStrengthB) * lerp(1, ShadowMasks.a, _LightingShadowMaskStrengthA);
 				#else
@@ -66259,7 +66524,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				//UNITY_BRANCH
 				if (_LightingDirectionMode == 0)
 				{
-					poiLight.direction = calculateluminance(_LightColor0.rgb) * _WorldSpaceLightPos0.xyz + 0.2 * PoiSHAr.xyz + 0.333333 * PoiSHAg.xyz + 0.333333 * PoiSHAb.xyz + 0.333333;
+					poiLight.direction = calculateluminance(_LightColor0.rgb) * _WorldSpaceLightPos0.xyz + (PoiSHAr.xyz + PoiSHAg.xyz + PoiSHAb.xyz) / 3.0;
 				}
 				if (_LightingDirectionMode == 1 || _LightingDirectionMode == 2)
 				{
@@ -66385,7 +66650,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				}
 				if (lightMapMode == 4)
 				{
-					#if defined(PROP_LIGHTDATASDFMAP) || !defined(OPTIMIZER_ENABLED)
+					#if defined(PROP_LIGHTDATASDFMAP)
 					float2 lightDataSDFMap = 1;
 					if (_LightDataSDFMapLOD > 0)
 					{
@@ -66672,7 +66937,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 					#else
 					float3 tempColor = poiFragData.baseColor;
 					#endif
-					#if defined(PROP_MAINGRADATIONTEX) || !defined(OPTIMIZER_ENABLED)
+					#if defined(PROP_MAINGRADATIONTEX)
 					tempColor.r = POI_SAMPLE_1D_X(_MainGradationTex, sampler_linear_clamp, tempColor.r).r;
 					tempColor.g = POI_SAMPLE_1D_X(_MainGradationTex, sampler_linear_clamp, tempColor.g).g;
 					tempColor.b = POI_SAMPLE_1D_X(_MainGradationTex, sampler_linear_clamp, tempColor.b).b;
@@ -67350,8 +67615,14 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			
 			#pragma shader_feature_local _STOCHASTICMODE_DELIOT_HEITZ _STOCHASTICMODE_HEXTILE _STOCHASTICMODE_NONE
 			
+			#pragma shader_feature_local PROP_LIGHTINGAOMAPS
+			#pragma shader_feature_local PROP_LIGHTINGDETAILSHADOWMAPS
+			#pragma shader_feature_local PROP_LIGHTINGSHADOWMASKS
+			#pragma shader_feature_local PROP_LIGHTDATASDFMAP
+			
 			//ifex _MainColorAdjustToggle==0
 			#pragma shader_feature COLOR_GRADING_HDR
+			#pragma shader_feature_local PROP_MAINGRADATIONTEX
 			//endex
 			
 			//#pragma shader_feature KEYWORD
@@ -67414,11 +67685,28 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			//ifex _RGBMaskEnabled==0
 			#pragma shader_feature VIGNETTE
 			#pragma shader_feature GEOM_TYPE_MESH
+			#pragma shader_feature PROP_RGBMASK
+			#pragma shader_feature PROP_RGBAMETALLICMAPS
+			#pragma shader_feature PROP_RGBASMOOTHNESSMAPS
+			#pragma shader_feature PROP_REDTEXTURE
+			#pragma shader_feature PROP_RGBNORMALR
+			#pragma shader_feature PROP_GREENTEXTURE
+			#pragma shader_feature PROP_RGBNORMALG
+			#pragma shader_feature PROP_BLUETEXTURE
+			#pragma shader_feature PROP_RGBNORMALB
+			#pragma shader_feature PROP_ALPHATEXTURE
+			#pragma shader_feature PROP_RGBNORMALA
 			//endex
 			
 			//ifex _ShadingEnabled==0
 			#pragma shader_feature_local VIGNETTE_MASKED
 			#pragma shader_feature_local _LIGHTINGMODE_TEXTURERAMP _LIGHTINGMODE_MULTILAYER_MATH _LIGHTINGMODE_SHADEMAP _LIGHTINGMODE_REALISTIC _LIGHTINGMODE_WRAPPED _LIGHTINGMODE_SKIN _LIGHTINGMODE_FLAT _LIGHTINGMODE_CLOTH _LIGHTINGMODE_SDF
+			#pragma shader_feature_local PROP_MULTILAYERMATHBLURMAP
+			#pragma shader_feature_local PROP_SHADOWCOLORTEX
+			#pragma shader_feature_local PROP_SHADOW2NDCOLORTEX
+			#pragma shader_feature_local PROP_SHADOW3RDCOLORTEX
+			#pragma shader_feature_local PROP_SHADOWSTRENGTHMASK
+			#pragma shader_feature_local PROP_SHADOWBORDERMASK
 			//endex
 			
 			//ifex _DecalEnabled==0
@@ -67433,6 +67721,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			//ifex _DecalEnabled3==0
 			#pragma shader_feature DEPTH_OF_FIELD_COC_VIEW
 			//endex
+			#pragma shader_feature_local PROP_DECALMASK
 			
 			//ifex _EnableDissolve==0
 			#pragma shader_feature DISTORT
@@ -67534,6 +67823,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			
 			//ifex _PostProcess==0
 			#pragma shader_feature_local POSTPROCESS
+			#pragma shader_feature_local PROP_PPMASK
 			//endex
 			
 			//ifex _PoiInternalParallax==0
@@ -67817,7 +68107,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			#endif
 			//endex
 			
-			#if defined(PROP_LIGHTINGAOMAPS) || !defined(OPTIMIZER_ENABLED)
+			#if defined(PROP_LIGHTINGAOMAPS)
 			Texture2D _LightingAOMaps;
 			#endif
 			float4 _LightingAOMaps_ST;
@@ -67830,7 +68120,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			float _LightDataAOGlobalMaskR;
 			float _LightDataAOGlobalMaskBlendTypeR;
 			
-			#if defined(PROP_LIGHTINGDETAILSHADOWMAPS) || !defined(OPTIMIZER_ENABLED)
+			#if defined(PROP_LIGHTINGDETAILSHADOWMAPS)
 			Texture2D _LightingDetailShadowMaps;
 			#endif
 			float4 _LightingDetailShadowMaps_ST;
@@ -67847,7 +68137,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			float _LightDataDetailShadowGlobalMaskR;
 			float _LightDataDetailShadowGlobalMaskBlendTypeR;
 			
-			#if defined(PROP_LIGHTINGSHADOWMASKS) || !defined(OPTIMIZER_ENABLED)
+			#if defined(PROP_LIGHTINGSHADOWMASKS)
 			Texture2D _LightingShadowMasks;
 			#endif
 			float4 _LightingShadowMasks_ST;
@@ -67865,7 +68155,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			float _LightingColorMode;
 			float _LightingMapMode;
 			
-			#if defined(PROP_LIGHTDATASDFMAP) || !defined(OPTIMIZER_ENABLED)
+			#if defined(PROP_LIGHTDATASDFMAP)
 			Texture2D _LightDataSDFMap;
 			float4 _LightDataSDFMap_ST;
 			float2 _LightDataSDFMapPan;
@@ -67995,7 +68285,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			float _MainGammaGlobalMask;
 			float _MainGammaGlobalMaskBlendType;
 			
-			#if defined(PROP_MAINGRADATIONTEX) || !defined(OPTIMIZER_ENABLED)
+			#if defined(PROP_MAINGRADATIONTEX)
 			Texture2D _MainGradationTex;
 			#endif
 			float _ColorGradingToggle;
@@ -68988,14 +69278,14 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			
 			//ifex _RGBMaskEnabled==0
 			#ifdef VIGNETTE
-			#if defined(PROP_RGBMASK) || !defined(OPTIMIZER_ENABLED)
+			#if defined(PROP_RGBMASK)
 			Texture2D _RGBMask;
 			#endif
 			float4 _RGBMask_ST;
 			float2 _RGBMaskPan;
 			float _RGBMaskUV;
 			
-			#if defined(PROP_RGBAMETALLICMAPS) || !defined(OPTIMIZER_ENABLED)
+			#if defined(PROP_RGBAMETALLICMAPS)
 			Texture2D _RGBAMetallicMaps;
 			float4 _RGBAMetallicMaps_ST;
 			float2 _RGBAMetallicMapsPan;
@@ -69045,7 +69335,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			float _RGBAPBRBlueEnabled;
 			float _RGBAPBRAlphaEnabled;
 			
-			#if defined(PROP_RGBASMOOTHNESSMAPS) || !defined(OPTIMIZER_ENABLED)
+			#if defined(PROP_RGBASMOOTHNESSMAPS)
 			Texture2D _RGBASmoothnessMaps;
 			float4 _RGBASmoothnessMaps_ST;
 			float4 _RGBASmoothnessMapsPan;
@@ -69058,7 +69348,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			float _RGBAAlphaSmoothnessInvert;
 			
 			float _RGBARedEnable;
-			#if defined(PROP_REDTEXTURE) || !defined(OPTIMIZER_ENABLED)
+			#if defined(PROP_REDTEXTURE)
 			Texture2D _RedTexture;
 			#endif
 			float4 _RedTexture_ST;
@@ -69074,7 +69364,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			float _RedColorThemeIndex;
 			float _RGBARedEmissionStrength;
 			
-			#if defined(PROP_RGBNORMALR) || !defined(OPTIMIZER_ENABLED)
+			#if defined(PROP_RGBNORMALR)
 			Texture2D _RgbNormalR;
 			#endif
 			float4 _RgbNormalR_ST;
@@ -69086,9 +69376,10 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			float _RgbNormalRGlobalMaskChannel;
 			float _RgbNormalRGlobalMaskBlendType;
 			float _RgbNormalRedBlendMode;
+			float4 _RgbNormalRBlendSources;
 			
 			float _RGBAGreenEnable;
-			#if defined(PROP_GREENTEXTURE) || !defined(OPTIMIZER_ENABLED)
+			#if defined(PROP_GREENTEXTURE)
 			Texture2D _GreenTexture;
 			#endif
 			float4 _GreenTexture_ST;
@@ -69104,7 +69395,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			float _GreenColorThemeIndex;
 			float _RGBAGreenEmissionStrength;
 			
-			#if defined(PROP_RGBNORMALG) || !defined(OPTIMIZER_ENABLED)
+			#if defined(PROP_RGBNORMALG)
 			Texture2D _RgbNormalG;
 			#endif
 			float4 _RgbNormalG_ST;
@@ -69116,9 +69407,10 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			float _RgbNormalGGlobalMaskChannel;
 			float _RgbNormalGGlobalMaskBlendType;
 			float _RgbNormalGreenBlendMode;
+			float4 _RgbNormalGBlendSources;
 			
 			float _RGBABlueEnable;
-			#if defined(PROP_BLUETEXTURE) || !defined(OPTIMIZER_ENABLED)
+			#if defined(PROP_BLUETEXTURE)
 			Texture2D _BlueTexture;
 			#endif
 			float4 _BlueTexture_ST;
@@ -69134,7 +69426,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			float _BlueColorThemeIndex;
 			float _RGBABlueEmissionStrength;
 			
-			#if defined(PROP_RGBNORMALB) || !defined(OPTIMIZER_ENABLED)
+			#if defined(PROP_RGBNORMALB)
 			Texture2D _RgbNormalB;
 			#endif
 			float4 _RgbNormalB_ST;
@@ -69146,9 +69438,10 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			float _RgbNormalBGlobalMaskChannel;
 			float _RgbNormalBGlobalMaskBlendType;
 			float _RgbNormalBlueBlendMode;
+			float4 _RgbNormalBBlendSources;
 			
 			float _RGBAAlphaEnable;
-			#if defined(PROP_ALPHATEXTURE) || !defined(OPTIMIZER_ENABLED)
+			#if defined(PROP_ALPHATEXTURE)
 			Texture2D _AlphaTexture;
 			#endif
 			float4 _AlphaTexture_ST;
@@ -69164,7 +69457,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			float _AlphaColorThemeIndex;
 			float _RGBAAlphaEmissionStrength;
 			
-			#if defined(PROP_RGBNORMALA) || !defined(OPTIMIZER_ENABLED)
+			#if defined(PROP_RGBNORMALA)
 			Texture2D _RgbNormalA;
 			#endif
 			float4 _RgbNormalA_ST;
@@ -69176,6 +69469,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			float _RgbNormalAGlobalMaskChannel;
 			float _RgbNormalAGlobalMaskBlendType;
 			float _RgbNormalAlphaBlendMode;
+			float4 _RgbNormalABlendSources;
 			
 			float _RGBMaskType;
 			
@@ -69254,7 +69548,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			#endif
 			
 			#ifdef _LIGHTINGMODE_MULTILAYER_MATH
-			#if defined(PROP_SHADOWBORDERMASK) || !defined(OPTIMIZER_ENABLED)
+			#if defined(PROP_SHADOWBORDERMASK)
 			Texture2D _ShadowBorderMask;
 			float4 _ShadowBorderMask_ST;
 			float2 _ShadowBorderMaskPan;
@@ -69267,13 +69561,13 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			float _ShadowBorderMapToggle;
 			float4 _ShadowColor;
 			float _LightingMulitlayerNonLinear;
-			#if defined(PROP_SHADOWCOLORTEX) || !defined(OPTIMIZER_ENABLED)
+			#if defined(PROP_SHADOWCOLORTEX)
 			Texture2D _ShadowColorTex;
 			float4 _ShadowColorTex_ST;
 			float2 _ShadowColorTexPan;
 			float _ShadowColorTexUV;
 			#endif
-			#if defined(PROP_MULTILAYERMATHBLURMAP) || !defined(OPTIMIZER_ENABLED)
+			#if defined(PROP_MULTILAYERMATHBLURMAP)
 			Texture2D _MultilayerMathBlurMap;
 			float4 _MultilayerMathBlurMap_ST;
 			float2 _MultilayerMathBlurMapPan;
@@ -69283,7 +69577,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			float _ShadowBlur;
 			float _ShadowReceive;
 			float4 _Shadow2ndColor;
-			#if defined(PROP_SHADOW2NDCOLORTEX) || !defined(OPTIMIZER_ENABLED)
+			#if defined(PROP_SHADOW2NDCOLORTEX)
 			Texture2D _Shadow2ndColorTex;
 			float4 _Shadow2ndColorTex_ST;
 			float2 _Shadow2ndColorTexPan;
@@ -69293,7 +69587,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			float _Shadow2ndBlur;
 			float _Shadow2ndReceive;
 			float4 _Shadow3rdColor;
-			#if defined(PROP_SHADOW3RDCOLORTEX) || !defined(OPTIMIZER_ENABLED)
+			#if defined(PROP_SHADOW3RDCOLORTEX)
 			Texture2D _Shadow3rdColorTex;
 			float4 _Shadow3rdColorTex_ST;
 			float2 _Shadow3rdColorTexPan;
@@ -69307,7 +69601,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			float _ShadowEnvStrength;
 			float _ShadowMainStrength;
 			float _ShadowMaskType;
-			#if defined(PROP_SHADOWSTRENGTHMASK) || !defined(OPTIMIZER_ENABLED)
+			#if defined(PROP_SHADOWSTRENGTHMASK)
 			Texture2D _ShadowStrengthMask;
 			float4 _ShadowStrengthMask_ST;
 			float4 _ShadowStrengthMaskPan;
@@ -69362,7 +69656,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			
 			//ifex _DecalEnabled==0 && _DecalEnabled1==0 && _DecalEnabled2==0 && _DecalEnabled3==0
 			
-			#if defined(PROP_DECALMASK) || !defined(OPTIMIZER_ENABLED)
+			#if defined(PROP_DECALMASK)
 			Texture2D _DecalMask;
 			float4 _DecalMask_ST;
 			float2 _DecalMaskPan;
@@ -71263,7 +71557,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			
 			//ifex _PostProcess==0
 			#ifdef POSTPROCESS
-			#if defined(PROP_PPMASK) || !defined(OPTIMIZER_ENABLED)
+			#if defined(PROP_PPMASK)
 			Texture2D _PPMask;
 			#endif
 			float4 _PPMask_ST;
@@ -71517,9 +71811,21 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				float2 uv1 : TEXCOORD1;
 				float2 uv2 : TEXCOORD2;
 				float2 uv3 : TEXCOORD3;
-				#ifndef POI_TESSELLATED
 				uint vertexId : SV_VertexID;
-				#endif
+				UNITY_VERTEX_INPUT_INSTANCE_ID
+			};
+			
+			struct tessellatedAppData
+			{
+				float4 vertex : POSITION;
+				float3 normal : NORMAL;
+				float4 tangent : TANGENT;
+				float4 color : COLOR;
+				float2 uv0 : TEXCOORD0;
+				float2 uv1 : TEXCOORD1;
+				float2 uv2 : TEXCOORD2;
+				float2 uv3 : TEXCOORD3;
+				uint vertexId : TEXCOORD4;
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
 			
@@ -76180,11 +76486,11 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				}
 				else if (blendMode == 1)
 				{
-					tangentSpaceNormal = BlendNormals(tangentSpaceNormal, normalToBlendWith);
+					tangentSpaceNormal = lerp(tangentSpaceNormal, BlendNormals(tangentSpaceNormal, normalToBlendWith), maskValue);
 				}
 				else if (blendMode == 2)
 				{
-					tangentSpaceNormal = BlendNormals(originalNormal, normalToBlendWith);
+					tangentSpaceNormal = lerp(tangentSpaceNormal, BlendNormals(originalNormal, normalToBlendWith), maskValue);
 				}
 			}
 			
@@ -76193,10 +76499,10 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			void calculateRGBNormals(inout PoiMesh poiMesh, inout PoiMods poiMods)
 			{
 				// Only define this if we actually have any normal map textures. Can't do the same in color textures because users can tint
-				#if defined(PROP_RGBNORMALR) || defined(PROP_RGBNORMALG) || defined(PROP_RGBNORMALB) || defined(PROP_RGBNORMALA) || !defined(OPTIMIZER_ENABLED)
+				#if defined(PROP_RGBNORMALR) || defined(PROP_RGBNORMALG) || defined(PROP_RGBNORMALB) || defined(PROP_RGBNORMALA)
 				float4 rgbMask = 1;
 				
-				#if defined(PROP_RGBMASK) || !defined(OPTIMIZER_ENABLED)
+				#if defined(PROP_RGBMASK)
 				if (_RGBMaskType == 0)
 				{
 					rgbMask = POI2D_SAMPLER_PAN(_RGBMask, _trilinear_repeat, poiUV(poiMesh.uv[_RGBMaskUV], _RGBMask_ST), _RGBMaskPan);
@@ -76214,39 +76520,73 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				maskFinal.b = rgbMask[_RgbNormalBMaskChannel];
 				maskFinal.a = rgbMask[_RgbNormalAMaskChannel];
 				
-				if (_RgbNormalRGlobalMaskChannel > 0) maskFinal.r = customBlend(maskFinal.r, poiMods.globalMask[_RgbNormalRGlobalMaskChannel - 1], _RgbNormalRGlobalMaskBlendType);
-				if (_RgbNormalGGlobalMaskChannel > 0) maskFinal.g = customBlend(maskFinal.g, poiMods.globalMask[_RgbNormalGGlobalMaskChannel - 1], _RgbNormalGGlobalMaskBlendType);
-				if (_RgbNormalBGlobalMaskChannel > 0) maskFinal.b = customBlend(maskFinal.b, poiMods.globalMask[_RgbNormalBGlobalMaskChannel - 1], _RgbNormalBGlobalMaskBlendType);
-				if (_RgbNormalAGlobalMaskChannel > 0) maskFinal.a = customBlend(maskFinal.a, poiMods.globalMask[_RgbNormalAGlobalMaskChannel - 1], _RgbNormalAGlobalMaskBlendType);
+				if (_RgbNormalRGlobalMaskChannel > 0) maskFinal.r = globalMaskBlend(maskFinal.r, _RgbNormalRGlobalMaskChannel, _RgbNormalRGlobalMaskBlendType, poiMods);
+				if (_RgbNormalGGlobalMaskChannel > 0) maskFinal.g = globalMaskBlend(maskFinal.g, _RgbNormalGGlobalMaskChannel, _RgbNormalGGlobalMaskBlendType, poiMods);
+				if (_RgbNormalBGlobalMaskChannel > 0) maskFinal.b = globalMaskBlend(maskFinal.b, _RgbNormalBGlobalMaskChannel, _RgbNormalBGlobalMaskBlendType, poiMods);
+				if (_RgbNormalAGlobalMaskChannel > 0) maskFinal.a = globalMaskBlend(maskFinal.a, _RgbNormalAGlobalMaskChannel, _RgbNormalAGlobalMaskBlendType, poiMods);
 				
 				float3 originalNormal = poiMesh.tangentSpaceNormal;
+				const float3 neutralNormal = float3(0, 0, 1);
+				float3 nR = 0;
+				float3 nG = 0;
+				float3 nB = 0;
+				float hasR = 0;
+				float hasG = 0;
+				float hasB = 0;
 				
-				#if defined(PROP_RGBNORMALR) || !defined(OPTIMIZER_ENABLED)
+				#if defined(PROP_RGBNORMALR)
 				if (_RgbNormalRScale > 0 && _RGBARedEnable)
 				{
-					float3 normalToBlendWith = UnpackScaleNormal(POI2D_SAMPLER_PAN_STOCHASTIC(_RgbNormalR, _trilinear_repeat, poiUV(poiMesh.uv[_RgbNormalRUV], PoiUVMerge(_RgbNormalR_ST, _RGBARedScaleOffset )), _RgbNormalRPan, _RgbNormalRStochastic), _RgbNormalRedBlendMode == 0 ? _RgbNormalRScale : _RgbNormalRScale * maskFinal.r);
-					RGBABlendNormals(poiMesh.tangentSpaceNormal, originalNormal, normalToBlendWith, maskFinal.r, _RgbNormalRedBlendMode);
+					nR = UnpackScaleNormal(POI2D_SAMPLER_PAN_STOCHASTIC(_RgbNormalR, _trilinear_repeat, poiUV(poiMesh.uv[_RgbNormalRUV], PoiUVMerge(_RgbNormalR_ST, _RGBARedScaleOffset )), _RgbNormalRPan, _RgbNormalRStochastic), _RgbNormalRScale);
+					hasR = 1;
+					bool selBaseR = (_RgbNormalRBlendSources.x > 0.5);
+					int modeR = selBaseR ? 2 : 0; // selection empty => Replace
+					float3 fromNormalR = selBaseR ? originalNormal : neutralNormal;
+					RGBABlendNormals(poiMesh.tangentSpaceNormal, fromNormalR, nR, maskFinal.r, modeR);
 				}
 				#endif
-				#if defined(PROP_RGBNORMALG) || !defined(OPTIMIZER_ENABLED)
+				#if defined(PROP_RGBNORMALG)
 				if (_RgbNormalGScale > 0 && _RGBAGreenEnable)
 				{
-					float3 normalToBlendWith = UnpackScaleNormal(POI2D_SAMPLER_PAN_STOCHASTIC(_RgbNormalG, _trilinear_repeat, poiUV(poiMesh.uv[_RgbNormalGUV], PoiUVMerge(_RgbNormalG_ST, _RGBAGreenScaleOffset )), _RgbNormalGPan, _RgbNormalGStochastic), _RgbNormalGreenBlendMode == 0 ? _RgbNormalGScale : _RgbNormalGScale * maskFinal.g);
-					RGBABlendNormals(poiMesh.tangentSpaceNormal, originalNormal, normalToBlendWith, maskFinal.g, _RgbNormalGreenBlendMode);
+					nG = UnpackScaleNormal(POI2D_SAMPLER_PAN_STOCHASTIC(_RgbNormalG, _trilinear_repeat, poiUV(poiMesh.uv[_RgbNormalGUV], PoiUVMerge(_RgbNormalG_ST, _RGBAGreenScaleOffset )), _RgbNormalGPan, _RgbNormalGStochastic), _RgbNormalGScale);
+					hasG = 1;
+					bool selBaseG = (_RgbNormalGBlendSources.x > 0.5);
+					bool selRedG = (_RgbNormalGBlendSources.y > 0.5);
+					int modeG = (selBaseG || selRedG) ? 2 : 0;
+					float3 fromNormalG = selBaseG ? originalNormal : neutralNormal;
+					if (selRedG && hasR > 0.5) fromNormalG = lerp(fromNormalG, BlendNormals(fromNormalG, nR), maskFinal.r);
+					RGBABlendNormals(poiMesh.tangentSpaceNormal, fromNormalG, nG, maskFinal.g, modeG);
 				}
 				#endif
-				#if defined(PROP_RGBNORMALB) || !defined(OPTIMIZER_ENABLED)
+				#if defined(PROP_RGBNORMALB)
 				if (_RgbNormalBScale > 0 && _RGBABlueEnable)
 				{
-					float3 normalToBlendWith = UnpackScaleNormal(POI2D_SAMPLER_PAN_STOCHASTIC(_RgbNormalB, _trilinear_repeat, poiUV(poiMesh.uv[_RgbNormalBUV], PoiUVMerge(_RgbNormalB_ST, _RGBABlueScaleOffset)), _RgbNormalBPan, _RgbNormalBStochastic), _RgbNormalBlueBlendMode == 0 ? _RgbNormalBScale : _RgbNormalBScale * maskFinal.b);
-					RGBABlendNormals(poiMesh.tangentSpaceNormal, originalNormal, normalToBlendWith, maskFinal.b, _RgbNormalBlueBlendMode);
+					nB = UnpackScaleNormal(POI2D_SAMPLER_PAN_STOCHASTIC(_RgbNormalB, _trilinear_repeat, poiUV(poiMesh.uv[_RgbNormalBUV], PoiUVMerge(_RgbNormalB_ST, _RGBABlueScaleOffset)), _RgbNormalBPan, _RgbNormalBStochastic), _RgbNormalBScale);
+					hasB = 1;
+					bool selBaseB = (_RgbNormalBBlendSources.x > 0.5);
+					bool selRedB = (_RgbNormalBBlendSources.y > 0.5);
+					bool selGreenB = (_RgbNormalBBlendSources.z > 0.5);
+					int modeB = (selBaseB || selRedB || selGreenB) ? 2 : 0;
+					float3 fromNormalB = selBaseB ? originalNormal : neutralNormal;
+					if (selRedB && hasR > 0.5) fromNormalB = lerp(fromNormalB, BlendNormals(fromNormalB, nR), maskFinal.r);
+					if (selGreenB && hasG > 0.5) fromNormalB = lerp(fromNormalB, BlendNormals(fromNormalB, nG), maskFinal.g);
+					RGBABlendNormals(poiMesh.tangentSpaceNormal, fromNormalB, nB, maskFinal.b, modeB);
 				}
 				#endif
-				#if defined(PROP_RGBNORMALA) || !defined(OPTIMIZER_ENABLED)
+				#if defined(PROP_RGBNORMALA)
 				if (_RgbNormalAScale > 0 && _RGBAAlphaEnable)
 				{
-					float3 normalToBlendWith = UnpackScaleNormal(POI2D_SAMPLER_PAN_STOCHASTIC(_RgbNormalA, _trilinear_repeat, poiUV(poiMesh.uv[_RgbNormalAUV], PoiUVMerge(_RgbNormalA_ST, _RGBAAlphaScaleOffset)), _RgbNormalAPan, _RgbNormalAStochastic), _RgbNormalAlphaBlendMode == 0 ? _RgbNormalAScale : _RgbNormalAScale * maskFinal.a);
-					RGBABlendNormals(poiMesh.tangentSpaceNormal, originalNormal, normalToBlendWith, maskFinal.a, _RgbNormalAlphaBlendMode);
+					float3 normalToBlendWith = UnpackScaleNormal(POI2D_SAMPLER_PAN_STOCHASTIC(_RgbNormalA, _trilinear_repeat, poiUV(poiMesh.uv[_RgbNormalAUV], PoiUVMerge(_RgbNormalA_ST, _RGBAAlphaScaleOffset)), _RgbNormalAPan, _RgbNormalAStochastic), _RgbNormalAScale);
+					bool selBaseA = (_RgbNormalABlendSources.x > 0.5);
+					bool selRedA = (_RgbNormalABlendSources.y > 0.5);
+					bool selGreenA = (_RgbNormalABlendSources.z > 0.5);
+					bool selBlueA = (_RgbNormalABlendSources.w > 0.5);
+					int modeA = (selBaseA || selRedA || selGreenA || selBlueA) ? 2 : 0;
+					float3 fromNormalA = selBaseA ? originalNormal : neutralNormal;
+					if (selRedA && hasR > 0.5) fromNormalA = lerp(fromNormalA, BlendNormals(fromNormalA, nR), maskFinal.r);
+					if (selGreenA && hasG > 0.5) fromNormalA = lerp(fromNormalA, BlendNormals(fromNormalA, nG), maskFinal.g);
+					if (selBlueA && hasB > 0.5) fromNormalA = lerp(fromNormalA, BlendNormals(fromNormalA, nB), maskFinal.b);
+					RGBABlendNormals(poiMesh.tangentSpaceNormal, fromNormalA, normalToBlendWith, maskFinal.a, modeA);
 				}
 				#endif
 				#endif
@@ -76261,7 +76601,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				float4 blue = float4(poiThemeColor(poiMods, _BlueColor.rgb, _BlueColorThemeIndex), _BlueColor.a);
 				float4 alpha = float4(poiThemeColor(poiMods, _AlphaColor.rgb, _AlphaColorThemeIndex), _AlphaColor.a);
 				
-				#if defined(PROP_RGBMASK) || !defined(OPTIMIZER_ENABLED)
+				#if defined(PROP_RGBMASK)
 				if (_RGBMaskType == 0)
 				{
 					rgbMask = POI2D_SAMPLER_PAN(_RGBMask, _trilinear_repeat, poiUV(poiMesh.uv[_RGBMaskUV], _RGBMask_ST), _RGBMaskPan);
@@ -76273,16 +76613,16 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 					rgbMask = poiMesh.vertexColor;
 				}
 				
-				#if defined(PROP_REDTEXTURE) || !defined(OPTIMIZER_ENABLED)
+				#if defined(PROP_REDTEXTURE)
 				red *= POI2D_SAMPLER_PAN_STOCHASTIC(_RedTexture, _trilinear_repeat, poiUV(poiMesh.uv[_RedTextureUV], PoiUVMerge(_RedTexture_ST, _RGBARedScaleOffset)), _RedTexturePan.xy, _RedTextureStochastic);
 				#endif
-				#if defined(PROP_GREENTEXTURE) || !defined(OPTIMIZER_ENABLED)
+				#if defined(PROP_GREENTEXTURE)
 				green *= POI2D_SAMPLER_PAN_STOCHASTIC(_GreenTexture, _trilinear_repeat, poiUV(poiMesh.uv[_GreenTextureUV], PoiUVMerge(_GreenTexture_ST, _RGBAGreenScaleOffset)), _GreenTexturePan.xy, _GreenTextureStochastic);
 				#endif
-				#if defined(PROP_BLUETEXTURE) || !defined(OPTIMIZER_ENABLED)
+				#if defined(PROP_BLUETEXTURE)
 				blue *= POI2D_SAMPLER_PAN_STOCHASTIC(_BlueTexture, _trilinear_repeat, poiUV(poiMesh.uv[_BlueTextureUV], PoiUVMerge(_BlueTexture_ST, _RGBABlueScaleOffset)), _BlueTexturePan.xy, _BlueTextureStochastic);
 				#endif
-				#if defined(PROP_ALPHATEXTURE) || !defined(OPTIMIZER_ENABLED)
+				#if defined(PROP_ALPHATEXTURE)
 				alpha *= POI2D_SAMPLER_PAN_STOCHASTIC(_AlphaTexture, _trilinear_repeat, poiUV(poiMesh.uv[_AlphaTextureUV], PoiUVMerge(_AlphaTexture_ST, _RGBAAlphaScaleOffset)), _AlphaTexturePan.xy, _AlphaTextureStochastic);
 				#endif
 				
@@ -76293,7 +76633,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				
 				if (_RGBAPBRRedEnabled || _RGBAPBRGreenEnabled || _RGBAPBRBlueEnabled || _RGBAPBRAlphaEnabled)
 				{
-					#if defined(PROP_RGBASMOOTHNESSMAPS) || !defined(OPTIMIZER_ENABLED)
+					#if defined(PROP_RGBASMOOTHNESSMAPS)
 					float4 smoothnessMaps = 1;
 					if (!_RGBARedPBRSplitMaskSample || !_RGBAGreenPBRSplitMaskSample || !_RGBABluePBRSplitMaskSample || !_RGBAAlphaPBRSplitMaskSample)
 					{
@@ -76323,7 +76663,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 					poiFragData.smoothness = lerp(poiFragData.smoothness, poiInvertToggle(smoothnessMaps.a, _RGBAAlphaSmoothnessInvert), rgbMask[_RgbAlphaMaskChannel] * (_RGBAPBRAlphaEnabled && _RGBAAlphaEnable));
 					#endif
 					
-					#if defined(PROP_RGBAMETALLICMAPS) || !defined(OPTIMIZER_ENABLED)
+					#if defined(PROP_RGBAMETALLICMAPS)
 					float4 metallicMaps = 1;
 					if (!_RGBARedPBRSplitMaskSample || !_RGBAGreenPBRSplitMaskSample || !_RGBABluePBRSplitMaskSample || !_RGBAAlphaPBRSplitMaskSample)
 					{
@@ -76947,7 +77287,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				#endif
 				
 				#ifdef _LIGHTINGMODE_MULTILAYER_MATH
-				#if defined(PROP_MULTILAYERMATHBLURMAP) || !defined(OPTIMIZER_ENABLED)
+				#if defined(PROP_MULTILAYERMATHBLURMAP)
 				float4 blurMap = POI2D_SAMPLER_PAN(_MultilayerMathBlurMap, _MainTex, poiUV(poiMesh.uv[_MultilayerMathBlurMapUV], _MultilayerMathBlurMap_ST), _MultilayerMathBlurMapPan);
 				#else
 				float4 blurMap = 1;
@@ -76970,7 +77310,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				if (_ShadowBorderMapToggle)
 				{
 					
-					#if defined(PROP_SHADOWBORDERMASK) || !defined(OPTIMIZER_ENABLED)
+					#if defined(PROP_SHADOWBORDERMASK)
 					// This should be moved to ui but honestly if these are locked in the compiler should be able to resolve it at compile time
 					float2 shadowShift0 = float2(_ShadowAOShift.x, _ShadowAOShift.y);
 					float2 shadowShift1 = float2(_ShadowAOShift.z, _ShadowAOShift.w);
@@ -76988,7 +77328,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 					shadowShift1 = float2(1.0f / (shadowShift1.y - shadowShift1.x), shadowShift1.x / (shadowShift1.x - shadowShift1.y));
 					shadowShift2 = float2(1.0f / (shadowShift2.y - shadowShift2.x), shadowShift2.x / (shadowShift2.x - shadowShift2.y));
 					
-					#if defined(PROP_SHADOWBORDERMASK) || !defined(OPTIMIZER_ENABLED)
+					#if defined(PROP_SHADOWBORDERMASK)
 					float2 shadowBorderMaskUV = poiUV(poiMesh.uv[_ShadowBorderMaskUV], _ShadowBorderMask_ST);
 					if (_ShadowBorderMaskLOD)
 					{
@@ -77027,12 +77367,12 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 					lns.w = poiEdgeLinearNoSaturate(lightMap.x, _ShadowBorder, _ShadowBlur * blurMap.r, _ShadowBorderRange);
 				}
 				
-				#if defined(PROP_SHADOWBORDERMASK) || !defined(OPTIMIZER_ENABLED)
+				#if defined(PROP_SHADOWBORDERMASK)
 				lns = _ShadowPostAO ? lns * shadowBorderMask.rgbr : lns;
 				#endif
 				lns = saturate(lns);
 				
-				#if defined(PROP_SHADOWSTRENGTHMASK) || !defined(OPTIMIZER_ENABLED)
+				#if defined(PROP_SHADOWSTRENGTHMASK)
 				float4 shadowStrengthMask = POI2D_SAMPLER_PAN(_ShadowStrengthMask, _MainTex, poiUV(poiMesh.uv[_ShadowStrengthMaskUV], _ShadowStrengthMask_ST), _ShadowStrengthMaskPan);
 				#else
 				float4 shadowStrengthMask = 1;
@@ -77055,7 +77395,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				
 				if (_ShadowColor.a > 0)
 				{
-					#if defined(PROP_SHADOWCOLORTEX) || !defined(OPTIMIZER_ENABLED)
+					#if defined(PROP_SHADOWCOLORTEX)
 					float4 shadowColorTex = POI2D_SAMPLER_PAN(_ShadowColorTex, _MainTex, poiUV(poiMesh.uv[_ShadowColorTexUV], _ShadowColorTex_ST), _ShadowColorTexPan);
 					#else
 					float4 shadowColorTex = float4(1, 1, 1, 1);
@@ -77064,7 +77404,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				}
 				if (_Shadow2ndColor.a > 0)
 				{
-					#if defined(PROP_SHADOW2NDCOLORTEX) || !defined(OPTIMIZER_ENABLED)
+					#if defined(PROP_SHADOW2NDCOLORTEX)
 					float4 shadow2ndColorTex = POI2D_SAMPLER_PAN(_Shadow2ndColorTex, _MainTex, poiUV(poiMesh.uv[_Shadow2ndColorTexUV], _Shadow2ndColorTex_ST), _Shadow2ndColorTexPan);
 					#else
 					float4 shadow2ndColorTex = float4(1, 1, 1, 1);
@@ -77075,7 +77415,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				}
 				if (_Shadow3rdColor.a > 0)
 				{
-					#if defined(PROP_SHADOW3RDCOLORTEX) || !defined(OPTIMIZER_ENABLED)
+					#if defined(PROP_SHADOW3RDCOLORTEX)
 					float4 shadow3rdColorTex = POI2D_SAMPLER_PAN(_Shadow3rdColorTex, _MainTex, poiUV(poiMesh.uv[_Shadow3rdColorTexUV], _Shadow3rdColorTex_ST), _Shadow3rdColorTexPan);
 					#else
 					float4 shadow3rdColorTex = float4(1, 1, 1, 1);
@@ -77666,7 +78006,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				
 				float decalAlpha = 1;
 				float alphaOverride = 0;
-				#if defined(PROP_DECALMASK) || !defined(OPTIMIZER_ENABLED)
+				#if defined(PROP_DECALMASK)
 				float4 decalMask = POI2D_SAMPLER_PAN(_DecalMask, _MainTex, poiUV(poiMesh.uv[_DecalMaskUV], _DecalMask_ST), _DecalMaskPan);
 				#else
 				float4 decalMask = 1;
@@ -81996,7 +82336,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				col += _PPLightness;
 				
 				float ppMask = 1;
-				#if defined(PROP_PPMASK) || !defined(OPTIMIZER_ENABLED)
+				#if defined(PROP_PPMASK)
 				ppMask = POI2D_SAMPLER_PAN(_PPMask, _MainTex, poiUV(poiMesh.uv[_PPMaskUV], _PPMask_ST), _PPMaskPan)[_PPMaskChannel];
 				ppMask = lerp(ppMask, 1 - ppMask, _PPMaskInvert);
 				col = lerp(poiFragData.finalColor, col, ppMask);
@@ -82985,7 +83325,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				//endex
 				#endif
 				// Ambient Occlusion
-				#if defined(PROP_LIGHTINGAOMAPS) || !defined(OPTIMIZER_ENABLED)
+				#if defined(PROP_LIGHTINGAOMAPS)
 				float4 AOMaps = POI2D_SAMPLER_PAN(_LightingAOMaps, _MainTex, poiUV(poiMesh.uv[_LightingAOMapsUV], _LightingAOMaps_ST), _LightingAOMapsPan);
 				poiLight.occlusion = min(min(min(lerp(1, AOMaps.r, _LightDataAOStrengthR), lerp(1, AOMaps.g, _LightDataAOStrengthG)), lerp(1, AOMaps.b, _LightDataAOStrengthB)), lerp(1, AOMaps.a, _LightDataAOStrengthA));
 				#else
@@ -82998,7 +83338,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				}
 				
 				// Detail Shadows
-				#if defined(PROP_LIGHTINGDETAILSHADOWMAPS) || !defined(OPTIMIZER_ENABLED)
+				#if defined(PROP_LIGHTINGDETAILSHADOWMAPS)
 				float4 DetailShadows = POI2D_SAMPLER_PAN(_LightingDetailShadowMaps, _MainTex, poiUV(poiMesh.uv[_LightingDetailShadowMapsUV], _LightingDetailShadowMaps_ST), _LightingDetailShadowMapsPan);
 				#ifndef POI_PASS_ADD
 				poiLight.detailShadow = lerp(1, DetailShadows.r, _LightingDetailShadowStrengthR) * lerp(1, DetailShadows.g, _LightingDetailShadowStrengthG) * lerp(1, DetailShadows.b, _LightingDetailShadowStrengthB) * lerp(1, DetailShadows.a, _LightingDetailShadowStrengthA);
@@ -83015,7 +83355,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				}
 				
 				// Shadow Masks
-				#if defined(PROP_LIGHTINGSHADOWMASKS) || !defined(OPTIMIZER_ENABLED)
+				#if defined(PROP_LIGHTINGSHADOWMASKS)
 				float4 ShadowMasks = POI2D_SAMPLER_PAN(_LightingShadowMasks, _MainTex, poiUV(poiMesh.uv[_LightingShadowMasksUV], _LightingShadowMasks_ST), _LightingShadowMasksPan);
 				poiLight.shadowMask = lerp(1, ShadowMasks.r, _LightingShadowMaskStrengthR) * lerp(1, ShadowMasks.g, _LightingShadowMaskStrengthG) * lerp(1, ShadowMasks.b, _LightingShadowMaskStrengthB) * lerp(1, ShadowMasks.a, _LightingShadowMaskStrengthA);
 				#else
@@ -83157,7 +83497,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				//UNITY_BRANCH
 				if (_LightingDirectionMode == 0)
 				{
-					poiLight.direction = calculateluminance(_LightColor0.rgb) * _WorldSpaceLightPos0.xyz + 0.2 * PoiSHAr.xyz + 0.333333 * PoiSHAg.xyz + 0.333333 * PoiSHAb.xyz + 0.333333;
+					poiLight.direction = calculateluminance(_LightColor0.rgb) * _WorldSpaceLightPos0.xyz + (PoiSHAr.xyz + PoiSHAg.xyz + PoiSHAb.xyz) / 3.0;
 				}
 				if (_LightingDirectionMode == 1 || _LightingDirectionMode == 2)
 				{
@@ -83283,7 +83623,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				}
 				if (lightMapMode == 4)
 				{
-					#if defined(PROP_LIGHTDATASDFMAP) || !defined(OPTIMIZER_ENABLED)
+					#if defined(PROP_LIGHTDATASDFMAP)
 					float2 lightDataSDFMap = 1;
 					if (_LightDataSDFMapLOD > 0)
 					{
@@ -83570,7 +83910,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 					#else
 					float3 tempColor = poiFragData.baseColor;
 					#endif
-					#if defined(PROP_MAINGRADATIONTEX) || !defined(OPTIMIZER_ENABLED)
+					#if defined(PROP_MAINGRADATIONTEX)
 					tempColor.r = POI_SAMPLE_1D_X(_MainGradationTex, sampler_linear_clamp, tempColor.r).r;
 					tempColor.g = POI_SAMPLE_1D_X(_MainGradationTex, sampler_linear_clamp, tempColor.g).g;
 					tempColor.b = POI_SAMPLE_1D_X(_MainGradationTex, sampler_linear_clamp, tempColor.b).b;
@@ -84139,8 +84479,14 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			
 			#pragma shader_feature_local _STOCHASTICMODE_DELIOT_HEITZ _STOCHASTICMODE_HEXTILE _STOCHASTICMODE_NONE
 			
+			#pragma shader_feature_local PROP_LIGHTINGAOMAPS
+			#pragma shader_feature_local PROP_LIGHTINGDETAILSHADOWMAPS
+			#pragma shader_feature_local PROP_LIGHTINGSHADOWMASKS
+			#pragma shader_feature_local PROP_LIGHTDATASDFMAP
+			
 			//ifex _MainColorAdjustToggle==0
 			#pragma shader_feature COLOR_GRADING_HDR
+			#pragma shader_feature_local PROP_MAINGRADATIONTEX
 			//endex
 			
 			//#pragma shader_feature KEYWORD
@@ -84199,11 +84545,28 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			//ifex _RGBMaskEnabled==0
 			#pragma shader_feature VIGNETTE
 			#pragma shader_feature GEOM_TYPE_MESH
+			#pragma shader_feature PROP_RGBMASK
+			#pragma shader_feature PROP_RGBAMETALLICMAPS
+			#pragma shader_feature PROP_RGBASMOOTHNESSMAPS
+			#pragma shader_feature PROP_REDTEXTURE
+			#pragma shader_feature PROP_RGBNORMALR
+			#pragma shader_feature PROP_GREENTEXTURE
+			#pragma shader_feature PROP_RGBNORMALG
+			#pragma shader_feature PROP_BLUETEXTURE
+			#pragma shader_feature PROP_RGBNORMALB
+			#pragma shader_feature PROP_ALPHATEXTURE
+			#pragma shader_feature PROP_RGBNORMALA
 			//endex
 			
 			//ifex _ShadingEnabled==0
 			#pragma shader_feature_local VIGNETTE_MASKED
 			#pragma shader_feature_local _LIGHTINGMODE_TEXTURERAMP _LIGHTINGMODE_MULTILAYER_MATH _LIGHTINGMODE_SHADEMAP _LIGHTINGMODE_REALISTIC _LIGHTINGMODE_WRAPPED _LIGHTINGMODE_SKIN _LIGHTINGMODE_FLAT _LIGHTINGMODE_CLOTH _LIGHTINGMODE_SDF
+			#pragma shader_feature_local PROP_MULTILAYERMATHBLURMAP
+			#pragma shader_feature_local PROP_SHADOWCOLORTEX
+			#pragma shader_feature_local PROP_SHADOW2NDCOLORTEX
+			#pragma shader_feature_local PROP_SHADOW3RDCOLORTEX
+			#pragma shader_feature_local PROP_SHADOWSTRENGTHMASK
+			#pragma shader_feature_local PROP_SHADOWBORDERMASK
 			//endex
 			
 			//ifex _DecalEnabled==0
@@ -84218,6 +84581,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			//ifex _DecalEnabled3==0
 			#pragma shader_feature DEPTH_OF_FIELD_COC_VIEW
 			//endex
+			#pragma shader_feature_local PROP_DECALMASK
 			
 			//ifex _EnableDissolve==0
 			#pragma shader_feature DISTORT
@@ -85468,7 +85832,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			#endif
 			//endex
 			
-			#if defined(PROP_LIGHTINGAOMAPS) || !defined(OPTIMIZER_ENABLED)
+			#if defined(PROP_LIGHTINGAOMAPS)
 			Texture2D _LightingAOMaps;
 			#endif
 			float4 _LightingAOMaps_ST;
@@ -85481,7 +85845,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			float _LightDataAOGlobalMaskR;
 			float _LightDataAOGlobalMaskBlendTypeR;
 			
-			#if defined(PROP_LIGHTINGDETAILSHADOWMAPS) || !defined(OPTIMIZER_ENABLED)
+			#if defined(PROP_LIGHTINGDETAILSHADOWMAPS)
 			Texture2D _LightingDetailShadowMaps;
 			#endif
 			float4 _LightingDetailShadowMaps_ST;
@@ -85498,7 +85862,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			float _LightDataDetailShadowGlobalMaskR;
 			float _LightDataDetailShadowGlobalMaskBlendTypeR;
 			
-			#if defined(PROP_LIGHTINGSHADOWMASKS) || !defined(OPTIMIZER_ENABLED)
+			#if defined(PROP_LIGHTINGSHADOWMASKS)
 			Texture2D _LightingShadowMasks;
 			#endif
 			float4 _LightingShadowMasks_ST;
@@ -85516,7 +85880,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			float _LightingColorMode;
 			float _LightingMapMode;
 			
-			#if defined(PROP_LIGHTDATASDFMAP) || !defined(OPTIMIZER_ENABLED)
+			#if defined(PROP_LIGHTDATASDFMAP)
 			Texture2D _LightDataSDFMap;
 			float4 _LightDataSDFMap_ST;
 			float2 _LightDataSDFMapPan;
@@ -85646,7 +86010,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			float _MainGammaGlobalMask;
 			float _MainGammaGlobalMaskBlendType;
 			
-			#if defined(PROP_MAINGRADATIONTEX) || !defined(OPTIMIZER_ENABLED)
+			#if defined(PROP_MAINGRADATIONTEX)
 			Texture2D _MainGradationTex;
 			#endif
 			float _ColorGradingToggle;
@@ -86656,7 +87020,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			#endif
 			
 			#ifdef _LIGHTINGMODE_MULTILAYER_MATH
-			#if defined(PROP_SHADOWBORDERMASK) || !defined(OPTIMIZER_ENABLED)
+			#if defined(PROP_SHADOWBORDERMASK)
 			Texture2D _ShadowBorderMask;
 			float4 _ShadowBorderMask_ST;
 			float2 _ShadowBorderMaskPan;
@@ -86669,13 +87033,13 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			float _ShadowBorderMapToggle;
 			float4 _ShadowColor;
 			float _LightingMulitlayerNonLinear;
-			#if defined(PROP_SHADOWCOLORTEX) || !defined(OPTIMIZER_ENABLED)
+			#if defined(PROP_SHADOWCOLORTEX)
 			Texture2D _ShadowColorTex;
 			float4 _ShadowColorTex_ST;
 			float2 _ShadowColorTexPan;
 			float _ShadowColorTexUV;
 			#endif
-			#if defined(PROP_MULTILAYERMATHBLURMAP) || !defined(OPTIMIZER_ENABLED)
+			#if defined(PROP_MULTILAYERMATHBLURMAP)
 			Texture2D _MultilayerMathBlurMap;
 			float4 _MultilayerMathBlurMap_ST;
 			float2 _MultilayerMathBlurMapPan;
@@ -86685,7 +87049,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			float _ShadowBlur;
 			float _ShadowReceive;
 			float4 _Shadow2ndColor;
-			#if defined(PROP_SHADOW2NDCOLORTEX) || !defined(OPTIMIZER_ENABLED)
+			#if defined(PROP_SHADOW2NDCOLORTEX)
 			Texture2D _Shadow2ndColorTex;
 			float4 _Shadow2ndColorTex_ST;
 			float2 _Shadow2ndColorTexPan;
@@ -86695,7 +87059,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			float _Shadow2ndBlur;
 			float _Shadow2ndReceive;
 			float4 _Shadow3rdColor;
-			#if defined(PROP_SHADOW3RDCOLORTEX) || !defined(OPTIMIZER_ENABLED)
+			#if defined(PROP_SHADOW3RDCOLORTEX)
 			Texture2D _Shadow3rdColorTex;
 			float4 _Shadow3rdColorTex_ST;
 			float2 _Shadow3rdColorTexPan;
@@ -86709,7 +87073,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			float _ShadowEnvStrength;
 			float _ShadowMainStrength;
 			float _ShadowMaskType;
-			#if defined(PROP_SHADOWSTRENGTHMASK) || !defined(OPTIMIZER_ENABLED)
+			#if defined(PROP_SHADOWSTRENGTHMASK)
 			Texture2D _ShadowStrengthMask;
 			float4 _ShadowStrengthMask_ST;
 			float4 _ShadowStrengthMaskPan;
@@ -87246,9 +87610,21 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				float2 uv1 : TEXCOORD1;
 				float2 uv2 : TEXCOORD2;
 				float2 uv3 : TEXCOORD3;
-				#ifndef POI_TESSELLATED
 				uint vertexId : SV_VertexID;
-				#endif
+				UNITY_VERTEX_INPUT_INSTANCE_ID
+			};
+			
+			struct tessellatedAppData
+			{
+				float4 vertex : POSITION;
+				float3 normal : NORMAL;
+				float4 tangent : TANGENT;
+				float4 color : COLOR;
+				float2 uv0 : TEXCOORD0;
+				float2 uv1 : TEXCOORD1;
+				float2 uv2 : TEXCOORD2;
+				float2 uv3 : TEXCOORD3;
+				uint vertexId : TEXCOORD4;
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
 			
@@ -92142,7 +92518,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				#endif
 				
 				#ifdef _LIGHTINGMODE_MULTILAYER_MATH
-				#if defined(PROP_MULTILAYERMATHBLURMAP) || !defined(OPTIMIZER_ENABLED)
+				#if defined(PROP_MULTILAYERMATHBLURMAP)
 				float4 blurMap = POI2D_SAMPLER_PAN(_MultilayerMathBlurMap, _MainTex, poiUV(poiMesh.uv[_MultilayerMathBlurMapUV], _MultilayerMathBlurMap_ST), _MultilayerMathBlurMapPan);
 				#else
 				float4 blurMap = 1;
@@ -92165,7 +92541,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				if (_ShadowBorderMapToggle)
 				{
 					
-					#if defined(PROP_SHADOWBORDERMASK) || !defined(OPTIMIZER_ENABLED)
+					#if defined(PROP_SHADOWBORDERMASK)
 					// This should be moved to ui but honestly if these are locked in the compiler should be able to resolve it at compile time
 					float2 shadowShift0 = float2(_ShadowAOShift.x, _ShadowAOShift.y);
 					float2 shadowShift1 = float2(_ShadowAOShift.z, _ShadowAOShift.w);
@@ -92183,7 +92559,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 					shadowShift1 = float2(1.0f / (shadowShift1.y - shadowShift1.x), shadowShift1.x / (shadowShift1.x - shadowShift1.y));
 					shadowShift2 = float2(1.0f / (shadowShift2.y - shadowShift2.x), shadowShift2.x / (shadowShift2.x - shadowShift2.y));
 					
-					#if defined(PROP_SHADOWBORDERMASK) || !defined(OPTIMIZER_ENABLED)
+					#if defined(PROP_SHADOWBORDERMASK)
 					float2 shadowBorderMaskUV = poiUV(poiMesh.uv[_ShadowBorderMaskUV], _ShadowBorderMask_ST);
 					if (_ShadowBorderMaskLOD)
 					{
@@ -92222,12 +92598,12 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 					lns.w = poiEdgeLinearNoSaturate(lightMap.x, _ShadowBorder, _ShadowBlur * blurMap.r, _ShadowBorderRange);
 				}
 				
-				#if defined(PROP_SHADOWBORDERMASK) || !defined(OPTIMIZER_ENABLED)
+				#if defined(PROP_SHADOWBORDERMASK)
 				lns = _ShadowPostAO ? lns * shadowBorderMask.rgbr : lns;
 				#endif
 				lns = saturate(lns);
 				
-				#if defined(PROP_SHADOWSTRENGTHMASK) || !defined(OPTIMIZER_ENABLED)
+				#if defined(PROP_SHADOWSTRENGTHMASK)
 				float4 shadowStrengthMask = POI2D_SAMPLER_PAN(_ShadowStrengthMask, _MainTex, poiUV(poiMesh.uv[_ShadowStrengthMaskUV], _ShadowStrengthMask_ST), _ShadowStrengthMaskPan);
 				#else
 				float4 shadowStrengthMask = 1;
@@ -92250,7 +92626,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				
 				if (_ShadowColor.a > 0)
 				{
-					#if defined(PROP_SHADOWCOLORTEX) || !defined(OPTIMIZER_ENABLED)
+					#if defined(PROP_SHADOWCOLORTEX)
 					float4 shadowColorTex = POI2D_SAMPLER_PAN(_ShadowColorTex, _MainTex, poiUV(poiMesh.uv[_ShadowColorTexUV], _ShadowColorTex_ST), _ShadowColorTexPan);
 					#else
 					float4 shadowColorTex = float4(1, 1, 1, 1);
@@ -92259,7 +92635,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				}
 				if (_Shadow2ndColor.a > 0)
 				{
-					#if defined(PROP_SHADOW2NDCOLORTEX) || !defined(OPTIMIZER_ENABLED)
+					#if defined(PROP_SHADOW2NDCOLORTEX)
 					float4 shadow2ndColorTex = POI2D_SAMPLER_PAN(_Shadow2ndColorTex, _MainTex, poiUV(poiMesh.uv[_Shadow2ndColorTexUV], _Shadow2ndColorTex_ST), _Shadow2ndColorTexPan);
 					#else
 					float4 shadow2ndColorTex = float4(1, 1, 1, 1);
@@ -92270,7 +92646,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				}
 				if (_Shadow3rdColor.a > 0)
 				{
-					#if defined(PROP_SHADOW3RDCOLORTEX) || !defined(OPTIMIZER_ENABLED)
+					#if defined(PROP_SHADOW3RDCOLORTEX)
 					float4 shadow3rdColorTex = POI2D_SAMPLER_PAN(_Shadow3rdColorTex, _MainTex, poiUV(poiMesh.uv[_Shadow3rdColorTexUV], _Shadow3rdColorTex_ST), _Shadow3rdColorTexPan);
 					#else
 					float4 shadow3rdColorTex = float4(1, 1, 1, 1);
@@ -93989,7 +94365,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				//endex
 				#endif
 				// Ambient Occlusion
-				#if defined(PROP_LIGHTINGAOMAPS) || !defined(OPTIMIZER_ENABLED)
+				#if defined(PROP_LIGHTINGAOMAPS)
 				float4 AOMaps = POI2D_SAMPLER_PAN(_LightingAOMaps, _MainTex, poiUV(poiMesh.uv[_LightingAOMapsUV], _LightingAOMaps_ST), _LightingAOMapsPan);
 				poiLight.occlusion = min(min(min(lerp(1, AOMaps.r, _LightDataAOStrengthR), lerp(1, AOMaps.g, _LightDataAOStrengthG)), lerp(1, AOMaps.b, _LightDataAOStrengthB)), lerp(1, AOMaps.a, _LightDataAOStrengthA));
 				#else
@@ -94002,7 +94378,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				}
 				
 				// Detail Shadows
-				#if defined(PROP_LIGHTINGDETAILSHADOWMAPS) || !defined(OPTIMIZER_ENABLED)
+				#if defined(PROP_LIGHTINGDETAILSHADOWMAPS)
 				float4 DetailShadows = POI2D_SAMPLER_PAN(_LightingDetailShadowMaps, _MainTex, poiUV(poiMesh.uv[_LightingDetailShadowMapsUV], _LightingDetailShadowMaps_ST), _LightingDetailShadowMapsPan);
 				#ifndef POI_PASS_ADD
 				poiLight.detailShadow = lerp(1, DetailShadows.r, _LightingDetailShadowStrengthR) * lerp(1, DetailShadows.g, _LightingDetailShadowStrengthG) * lerp(1, DetailShadows.b, _LightingDetailShadowStrengthB) * lerp(1, DetailShadows.a, _LightingDetailShadowStrengthA);
@@ -94019,7 +94395,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				}
 				
 				// Shadow Masks
-				#if defined(PROP_LIGHTINGSHADOWMASKS) || !defined(OPTIMIZER_ENABLED)
+				#if defined(PROP_LIGHTINGSHADOWMASKS)
 				float4 ShadowMasks = POI2D_SAMPLER_PAN(_LightingShadowMasks, _MainTex, poiUV(poiMesh.uv[_LightingShadowMasksUV], _LightingShadowMasks_ST), _LightingShadowMasksPan);
 				poiLight.shadowMask = lerp(1, ShadowMasks.r, _LightingShadowMaskStrengthR) * lerp(1, ShadowMasks.g, _LightingShadowMaskStrengthG) * lerp(1, ShadowMasks.b, _LightingShadowMaskStrengthB) * lerp(1, ShadowMasks.a, _LightingShadowMaskStrengthA);
 				#else
@@ -94161,7 +94537,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				//UNITY_BRANCH
 				if (_LightingDirectionMode == 0)
 				{
-					poiLight.direction = calculateluminance(_LightColor0.rgb) * _WorldSpaceLightPos0.xyz + 0.2 * PoiSHAr.xyz + 0.333333 * PoiSHAg.xyz + 0.333333 * PoiSHAb.xyz + 0.333333;
+					poiLight.direction = calculateluminance(_LightColor0.rgb) * _WorldSpaceLightPos0.xyz + (PoiSHAr.xyz + PoiSHAg.xyz + PoiSHAb.xyz) / 3.0;
 				}
 				if (_LightingDirectionMode == 1 || _LightingDirectionMode == 2)
 				{
@@ -94287,7 +94663,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				}
 				if (lightMapMode == 4)
 				{
-					#if defined(PROP_LIGHTDATASDFMAP) || !defined(OPTIMIZER_ENABLED)
+					#if defined(PROP_LIGHTDATASDFMAP)
 					float2 lightDataSDFMap = 1;
 					if (_LightDataSDFMapLOD > 0)
 					{
@@ -94568,7 +94944,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 					#else
 					float3 tempColor = poiFragData.baseColor;
 					#endif
-					#if defined(PROP_MAINGRADATIONTEX) || !defined(OPTIMIZER_ENABLED)
+					#if defined(PROP_MAINGRADATIONTEX)
 					tempColor.r = POI_SAMPLE_1D_X(_MainGradationTex, sampler_linear_clamp, tempColor.r).r;
 					tempColor.g = POI_SAMPLE_1D_X(_MainGradationTex, sampler_linear_clamp, tempColor.g).g;
 					tempColor.b = POI_SAMPLE_1D_X(_MainGradationTex, sampler_linear_clamp, tempColor.b).b;
@@ -94851,8 +95227,14 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			
 			#pragma shader_feature_local _STOCHASTICMODE_DELIOT_HEITZ _STOCHASTICMODE_HEXTILE _STOCHASTICMODE_NONE
 			
+			#pragma shader_feature_local PROP_LIGHTINGAOMAPS
+			#pragma shader_feature_local PROP_LIGHTINGDETAILSHADOWMAPS
+			#pragma shader_feature_local PROP_LIGHTINGSHADOWMASKS
+			#pragma shader_feature_local PROP_LIGHTDATASDFMAP
+			
 			//ifex _MainColorAdjustToggle==0
 			#pragma shader_feature COLOR_GRADING_HDR
+			#pragma shader_feature_local PROP_MAINGRADATIONTEX
 			//endex
 			
 			//#pragma shader_feature KEYWORD
@@ -94911,11 +95293,28 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			//ifex _RGBMaskEnabled==0
 			#pragma shader_feature VIGNETTE
 			#pragma shader_feature GEOM_TYPE_MESH
+			#pragma shader_feature PROP_RGBMASK
+			#pragma shader_feature PROP_RGBAMETALLICMAPS
+			#pragma shader_feature PROP_RGBASMOOTHNESSMAPS
+			#pragma shader_feature PROP_REDTEXTURE
+			#pragma shader_feature PROP_RGBNORMALR
+			#pragma shader_feature PROP_GREENTEXTURE
+			#pragma shader_feature PROP_RGBNORMALG
+			#pragma shader_feature PROP_BLUETEXTURE
+			#pragma shader_feature PROP_RGBNORMALB
+			#pragma shader_feature PROP_ALPHATEXTURE
+			#pragma shader_feature PROP_RGBNORMALA
 			//endex
 			
 			//ifex _ShadingEnabled==0
 			#pragma shader_feature_local VIGNETTE_MASKED
 			#pragma shader_feature_local _LIGHTINGMODE_TEXTURERAMP _LIGHTINGMODE_MULTILAYER_MATH _LIGHTINGMODE_SHADEMAP _LIGHTINGMODE_REALISTIC _LIGHTINGMODE_WRAPPED _LIGHTINGMODE_SKIN _LIGHTINGMODE_FLAT _LIGHTINGMODE_CLOTH _LIGHTINGMODE_SDF
+			#pragma shader_feature_local PROP_MULTILAYERMATHBLURMAP
+			#pragma shader_feature_local PROP_SHADOWCOLORTEX
+			#pragma shader_feature_local PROP_SHADOW2NDCOLORTEX
+			#pragma shader_feature_local PROP_SHADOW3RDCOLORTEX
+			#pragma shader_feature_local PROP_SHADOWSTRENGTHMASK
+			#pragma shader_feature_local PROP_SHADOWBORDERMASK
 			//endex
 			
 			//ifex _DecalEnabled==0
@@ -94930,6 +95329,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			//ifex _DecalEnabled3==0
 			#pragma shader_feature DEPTH_OF_FIELD_COC_VIEW
 			//endex
+			#pragma shader_feature_local PROP_DECALMASK
 			
 			//ifex _EnableDissolve==0
 			#pragma shader_feature DISTORT
@@ -95327,7 +95727,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			float _MainGammaGlobalMask;
 			float _MainGammaGlobalMaskBlendType;
 			
-			#if defined(PROP_MAINGRADATIONTEX) || !defined(OPTIMIZER_ENABLED)
+			#if defined(PROP_MAINGRADATIONTEX)
 			Texture2D _MainGradationTex;
 			#endif
 			float _ColorGradingToggle;
@@ -96753,9 +97153,21 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				float2 uv1 : TEXCOORD1;
 				float2 uv2 : TEXCOORD2;
 				float2 uv3 : TEXCOORD3;
-				#ifndef POI_TESSELLATED
 				uint vertexId : SV_VertexID;
-				#endif
+				UNITY_VERTEX_INPUT_INSTANCE_ID
+			};
+			
+			struct tessellatedAppData
+			{
+				float4 vertex : POSITION;
+				float3 normal : NORMAL;
+				float4 tangent : TANGENT;
+				float4 color : COLOR;
+				float2 uv0 : TEXCOORD0;
+				float2 uv1 : TEXCOORD1;
+				float2 uv2 : TEXCOORD2;
+				float2 uv3 : TEXCOORD3;
+				uint vertexId : TEXCOORD4;
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
 			
@@ -102909,7 +103321,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 					#else
 					float3 tempColor = poiFragData.baseColor;
 					#endif
-					#if defined(PROP_MAINGRADATIONTEX) || !defined(OPTIMIZER_ENABLED)
+					#if defined(PROP_MAINGRADATIONTEX)
 					tempColor.r = POI_SAMPLE_1D_X(_MainGradationTex, sampler_linear_clamp, tempColor.r).r;
 					tempColor.g = POI_SAMPLE_1D_X(_MainGradationTex, sampler_linear_clamp, tempColor.g).g;
 					tempColor.b = POI_SAMPLE_1D_X(_MainGradationTex, sampler_linear_clamp, tempColor.b).b;

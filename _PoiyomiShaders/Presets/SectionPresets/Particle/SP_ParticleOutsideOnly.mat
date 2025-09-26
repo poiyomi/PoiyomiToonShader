@@ -3048,6 +3048,7 @@ Material:
     - _Use_BaseAs1st: 0
     - _UzumoreAmount: 0.1
     - _UzumoreBias: 0.001
+    - _UzumoreCategoryToggle: 0
     - _UzumoreEnabled: 0
     - _UzumoreMaskUV: 3
     - _VertexAudioLinkEnabled: 0
@@ -3169,10 +3170,12 @@ Material:
     - _ZWrite: 1
     - _ZWrite2: 1
     - _ppHueSelectOrShift: 1
+    - footer_bluesky: 0
     - footer_discord: 0
     - footer_github: 0
     - footer_patreon: 0
     - footer_twitter: 0
+    - footer_website: 0
     - footer_youtube: 0
     - g_end_tps_bezier: 0
     - g_end_tps_buldge: 0
@@ -3612,6 +3615,7 @@ Material:
     - s_end_MainHueShift: 0
     - s_end_MainHueShiftAL: 0
     - s_end_MainHueShiftGlobalMask: 0
+    - s_end_MaskingMenu: 0
     - s_end_Matcap0AudioLink: 0
     - s_end_Matcap0Blending: 0
     - s_end_Matcap0Masking: 0
@@ -3851,6 +3855,7 @@ Material:
     - s_start_MainHueShift: 1
     - s_start_MainHueShiftAL: 0
     - s_start_MainHueShiftGlobalMask: 0
+    - s_start_MaskingMenu: 0
     - s_start_Matcap0AudioLink: 0
     - s_start_Matcap0Blending: 1
     - s_start_Matcap0Masking: 1
