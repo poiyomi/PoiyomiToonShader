@@ -13,73 +13,30 @@ float Brightness;
 float2 Scale;
 float2 Offset;
 
-Texture2D<float4> R_Input_0;
-Texture2D<float4> R_Input_1;
-Texture2D<float4> R_Input_2;
-Texture2D<float4> R_Input_3;
-SamplerState sampler_R_Input_0;
-SamplerState sampler_R_Input_1;
-SamplerState sampler_R_Input_2;
-SamplerState sampler_R_Input_3;
-int R_Channel_0;
-int R_Channel_1;
-int R_Channel_2;
-int R_Channel_3;
-int R_Count;
-int R_BlendMode;
-float R_Fallback;
-bool R_Invert;
+Texture2D<float4> Inputs[16];
+SamplerState sampler_Inputs[16];
+float4 InputTextureIsValid[16];
 
-Texture2D<float4> G_Input_0;
-Texture2D<float4> G_Input_1;
-Texture2D<float4> G_Input_2;
-Texture2D<float4> G_Input_3;
-SamplerState sampler_G_Input_0;
-SamplerState sampler_G_Input_1;
-SamplerState sampler_G_Input_2;
-SamplerState sampler_G_Input_3;
-int G_Channel_0;
-int G_Channel_1;
-int G_Channel_2;
-int G_Channel_3;
-int G_Count;
-int G_BlendMode;
-float G_Fallback;
-bool G_Invert;
+struct Connection
+{
+	int FromTextureIndex;
+	int FromChannel;
+	int ToChannel;
+	int RemapMode;
+	float4 Remapping;
+};
 
-Texture2D<float4> B_Input_0;
-Texture2D<float4> B_Input_1;
-Texture2D<float4> B_Input_2;
-Texture2D<float4> B_Input_3;
-SamplerState sampler_B_Input_0;
-SamplerState sampler_B_Input_1;
-SamplerState sampler_B_Input_2;
-SamplerState sampler_B_Input_3;
-int B_Channel_0;
-int B_Channel_1;
-int B_Channel_2;
-int B_Channel_3;
-int B_Count;
-int B_BlendMode;
-float B_Fallback;
-bool B_Invert;
+StructuredBuffer<Connection> Connections;
+int ConnectionCount;
 
-Texture2D<float4> A_Input_0;
-Texture2D<float4> A_Input_1;
-Texture2D<float4> A_Input_2;
-Texture2D<float4> A_Input_3;
-SamplerState sampler_A_Input_0;
-SamplerState sampler_A_Input_1;
-SamplerState sampler_A_Input_2;
-SamplerState sampler_A_Input_3;
-int A_Channel_0;
-int A_Channel_1;
-int A_Channel_2;
-int A_Channel_3;
-int A_Count;
-int A_BlendMode;
-float A_Fallback;
-bool A_Invert;
+struct OutputChannel
+{
+	int BlendMode;
+	bool Invert;
+	float Fallback;
+};
+
+StructuredBuffer<OutputChannel> OutputChannels;
 
 // blendmodes
 // 0 = add
@@ -97,39 +54,16 @@ float SampleTexture(Texture2D<float4> tex, SamplerState texSampler, int channel,
 	else return max(pixelColor.r, max(pixelColor.g, pixelColor.b));
 }
 
-float SampleAndBlendTexture(float value, Texture2D<float4> tex, SamplerState texSampler, int blendMode, int channel, float2 uv)
+float SampleTexture(int textureIndex, int channel, float2 uv)
 {
-	float newValue = SampleTexture(tex, texSampler, channel, uv);
-	if (blendMode == 0) return value + newValue;
-	else if (blendMode == 1) return value * newValue;
-	else if (blendMode == 2) return max(value, newValue);
-	else if (blendMode == 3) return min(value, newValue);
-	else return newValue;
-}
-
-float SampleAndBlendTextures(Texture2D<float4> tex1, Texture2D<float4> tex2, Texture2D<float4> tex3, Texture2D<float4> tex4, 
-	int channel1, int channel2, int channel3, int channel4,
-	SamplerState texSampler1, SamplerState texSampler2, SamplerState texSampler3, SamplerState texSampler4, 
-	int count, int blendMode, float2 uv)
-{
-	float value = SampleTexture(tex1, texSampler1, channel1, uv);
-	if(count > 1) value = SampleAndBlendTexture(value, tex2, texSampler2, blendMode, channel2, uv);
-	if(count > 2) value = SampleAndBlendTexture(value, tex3, texSampler3, blendMode, channel3, uv);
-	if(count > 3) value = SampleAndBlendTexture(value, tex4, texSampler4, blendMode, channel4, uv);
-	return value;
-}
-
-float SampleInput(Texture2D<float4> tex1, Texture2D<float4> tex2, Texture2D<float4> tex3, Texture2D<float4> tex4,
-	int channel1, int channel2, int channel3, int channel4,
-	SamplerState texSampler1, SamplerState texSampler2, SamplerState texSampler3, SamplerState texSampler4,
-	int count, int blendMode, float fallback, bool doInvert, float2 uv) { 
-	float value = fallback;
-	if(count > 0)
+	float result = 0;
+	[unroll]
+	for (int i = 0; i < 16; i++)
 	{
-		value = SampleAndBlendTextures(tex1, tex2, tex3, tex4, channel1, channel2, channel3, channel4, texSampler1, texSampler2, texSampler3, texSampler4, count, blendMode, uv);
-		if(doInvert) value = 1 - value;
+		if (textureIndex == i)
+			result = SampleTexture(Inputs[i], sampler_Inputs[i], channel, uv);
 	}
-	return value;
+	return result;
 }
 
 float3 rgb2hsv(float3 rgb){
@@ -154,6 +88,43 @@ float4 ApplyHSV(float4 pixel, float hue, float saturation, float value){
 	return float4(hsv2rgb(hsv.rgb), pixel.a);
 }
 
+float Remap(float value, float2 from, float2 to)
+{
+	return lerp(to.x, to.y, saturate((value - from.x) / (from.y - from.x)));
+}
+
+float Remap(float value, float4 fromTo)
+{
+	return Remap(value, fromTo.xy, fromTo.zw);
+}
+
+float BlendValue(float base, float blend, int mode)
+{
+	if (mode == 0) return base + blend;
+	else if (mode == 1) return base * blend;
+	else if (mode == 2) return max(base, blend);
+	else if (mode == 3) return min(base, blend);
+	else return blend;
+}
+
+float4 SetChannelOnVec4(float4 vec, int channel, float value)
+{
+	if (channel == 0) vec.r = value;
+	else if (channel == 1) vec.g = value;
+	else if (channel == 2) vec.b = value;
+	else if (channel == 3) vec.a = value;
+	return vec;
+}
+
+int4 SetChannelOnVec4(int4 vec, int channel, int value)
+{
+	if (channel == 0) vec.r = value;
+	else if (channel == 1) vec.g = value;
+	else if (channel == 2) vec.b = value;
+	else if (channel == 3) vec.a = value;
+	return vec;
+}
+
 [numthreads(8, 8, 1)]
 void CSMain(uint3 id : SV_DispatchThreadID)
 {
@@ -167,10 +138,41 @@ void CSMain(uint3 id : SV_DispatchThreadID)
 	uv = rotated * Scale + center;
 
 	float4 pixel = float4(1, 1, 1, 1);
-	pixel.r = SampleInput(R_Input_0, R_Input_1, R_Input_2, R_Input_3, R_Channel_0, R_Channel_1, R_Channel_2, R_Channel_3, sampler_R_Input_0, sampler_R_Input_1, sampler_R_Input_2, sampler_R_Input_3, R_Count, R_BlendMode, R_Fallback, R_Invert, uv);
-	pixel.g = SampleInput(G_Input_0, G_Input_1, G_Input_2, G_Input_3, G_Channel_0, G_Channel_1, G_Channel_2, G_Channel_3, sampler_G_Input_0, sampler_G_Input_1, sampler_G_Input_2, sampler_G_Input_3, G_Count, G_BlendMode, G_Fallback, G_Invert, uv);
-	pixel.b = SampleInput(B_Input_0, B_Input_1, B_Input_2, B_Input_3, B_Channel_0, B_Channel_1, B_Channel_2, B_Channel_3, sampler_B_Input_0, sampler_B_Input_1, sampler_B_Input_2, sampler_B_Input_3, B_Count, B_BlendMode, B_Fallback, B_Invert, uv);
-	pixel.a = SampleInput(A_Input_0, A_Input_1, A_Input_2, A_Input_3, A_Channel_0, A_Channel_1, A_Channel_2, A_Channel_3, sampler_A_Input_0, sampler_A_Input_1, sampler_A_Input_2, sampler_A_Input_3, A_Count, A_BlendMode, A_Fallback, A_Invert, uv);
+	int4 pixelSet = int4(0, 0, 0, 0);
+	[loop] 
+	for(int i = 0; i < ConnectionCount; i++)
+	{
+		Connection conn = Connections[i];
+		if(conn.FromTextureIndex >= 0 && InputTextureIsValid[conn.FromTextureIndex].x == 1)
+		{
+			float value = SampleTexture(conn.FromTextureIndex, conn.FromChannel, uv);
+			if(conn.RemapMode == 1) // Range to Range
+			{
+				value = Remap(value, conn.Remapping);
+			}
+			if(pixelSet[conn.ToChannel] == 0)
+			{
+				pixelSet = SetChannelOnVec4(pixelSet, conn.ToChannel, 1);
+			}else
+			{
+				value = BlendValue(pixel[conn.ToChannel], value, OutputChannels[conn.ToChannel].BlendMode);
+			}
+			pixel = SetChannelOnVec4(pixel, conn.ToChannel, value);
+		}
+	}
+	for(int j = 0; j < 4; j++)
+	{
+		OutputChannel outCh = OutputChannels[j];
+		if(outCh.Invert)
+		{
+			pixel = SetChannelOnVec4(pixel, j, 1 - pixel[j]);
+		}
+		if(pixelSet[j] == 0)
+		{
+			pixel = SetChannelOnVec4(pixel, j, outCh.Fallback);
+		}
+	}
+	
 	pixel = ApplyHSV(pixel, Hue, Saturation, Brightness);
 	Result[id.xy] = pixel;
 }

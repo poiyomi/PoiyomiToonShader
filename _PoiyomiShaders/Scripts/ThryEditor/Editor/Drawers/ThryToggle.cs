@@ -33,13 +33,13 @@ namespace Thry.ThryEditor.Drawers
 
         protected void SetKeyword(MaterialProperty prop, bool on)
         {
-            if (ShaderOptimizer.IsMaterialLocked(prop.targets[0] as Material)) return;
+            if ((prop.targets[0] as Material).IsLocked()) return;
             SetKeywordInternal(prop, on, "_ON");
         }
 
         protected void CheckKeyword(MaterialProperty prop)
         {
-            if (ShaderEditor.Active != null && ShaderOptimizer.IsMaterialLocked(prop.targets[0] as Material)) return;
+            if (ShaderEditor.Active != null && (prop.targets[0] as Material).IsLocked()) return;
             if (prop.hasMixedValue)
             {
                 foreach (Material m in prop.targets)

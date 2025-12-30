@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Thry.ThryEditor.Helpers;
+using Thry.ThryEditor.TexturePacker;
 using UnityEditor;
 using UnityEngine;
-using static Thry.ThryEditor.TexturePacker;
 
 namespace Thry.ThryEditor.Drawers
 {
@@ -28,7 +28,7 @@ namespace Thry.ThryEditor.Drawers
             public int _overwriteShowInline;
 
             public TexturePacker.Connection[] _connections;
-            public TexturePacker.TextureSource[] _sources;
+            public TexturePacker.PackerSource[] _sources;
         }
 
         Dictionary<UnityEngine.Object, ThryRGBAPackerData> materialPackerData = new Dictionary<UnityEngine.Object, ThryRGBAPackerData>();
@@ -106,37 +106,24 @@ namespace Thry.ThryEditor.Drawers
                 else if (Event.current.type == EventType.Layout && _current._overwriteShowInline == 1)
                     _current._overwriteShowInline = 0;
             }
-            GUILib.SmallTextureProperty(position, prop, label, editor, true, TexturePackerGUI);
+            GUILib.SmallTextureProperty(position, prop, label, editor, true, InlineTexturePackerGUI);
             if (_prop.textureValue != _current._packedTexture) _current._previousTexture = _prop.textureValue;
         }
 
-        bool DidTextureGetEdit(InlinePackerChannelConfig data)
-        {
-            if (data.TextureSource.Texture == null) return false;
-            string path = AssetDatabase.GetAssetPath(data.TextureSource.Texture);
-            if (System.IO.File.Exists(path) == false) return false;
-            long lastEditTime = Helper.DatetimeToUnixSeconds(System.IO.File.GetLastWriteTime(path));
-            bool hasBeenEdited = lastEditTime > _current._lastConfirmTime && lastEditTime != data.TextureSource.LastHandledTextureEditTime;
-            data.TextureSource.LastHandledTextureEditTime = lastEditTime;
-            if (hasBeenEdited) TexturePacker.TextureSource.SetUncompressedTextureDirty(data.TextureSource.Texture);
-            return hasBeenEdited;
-        }
-
-        void TexturePackerGUI()
+        void InlineTexturePackerGUI()
         {
             Init();
             LoadLabels();
-            EditorGUI.BeginChangeCheck();
-            _current._input_r = TexturePackerSlotGUI(_current._input_r, _label1);
-            _current._input_g = TexturePackerSlotGUI(_current._input_g, _label2);
-            if (_label3 != null) _current._input_b = TexturePackerSlotGUI(_current._input_b, _label3);
-            if (_label4 != null) _current._input_a = TexturePackerSlotGUI(_current._input_a, _label4);
-            bool changeCheck = EditorGUI.EndChangeCheck();
-            changeCheck |= DidTextureGetEdit(_current._input_r);
-            changeCheck |= DidTextureGetEdit(_current._input_g);
-            changeCheck |= DidTextureGetEdit(_current._input_b);
-            changeCheck |= DidTextureGetEdit(_current._input_a);
-            if (changeCheck)
+            bool didChange = false;
+            didChange |= TexturePackerSlotGUI(_current._input_r, _label1);
+            didChange |= TexturePackerSlotGUI(_current._input_g, _label2);
+            if (_label3 != null) didChange |= TexturePackerSlotGUI(_current._input_b, _label3);
+            if (_label4 != null) didChange |= TexturePackerSlotGUI(_current._input_a, _label4);
+            didChange |= _current._input_r.Source.HasBeenModifiedExternally();
+            didChange |= _current._input_g.Source.HasBeenModifiedExternally();
+            didChange |= _current._input_b.Source.HasBeenModifiedExternally();
+            didChange |= _current._input_a.Source.HasBeenModifiedExternally();
+            if (didChange)
             {
                 _current._hasConfigChanged = true;
                 foreach (Material m in ShaderEditor.Active.Materials)
@@ -158,8 +145,11 @@ namespace Thry.ThryEditor.Drawers
             if (GUI.Button(buttonRect, "Advanced")) OpenFullTexturePacker();
         }
 
-        InlinePackerChannelConfig TexturePackerSlotGUI(InlinePackerChannelConfig input, string label)
+        bool TexturePackerSlotGUI(InlinePackerChannelConfig input, string label)
         {
+            bool didChange = false;
+            EditorGUI.BeginChangeCheck();
+
             Rect totalRect = EditorGUILayout.GetControlRect(false);
             totalRect = EditorGUI.IndentedRect(totalRect);
             Rect r = totalRect;
@@ -171,17 +161,17 @@ namespace Thry.ThryEditor.Drawers
             r.x = totalRect.x;
             r.width = 30;
             EditorGUI.BeginChangeCheck();
-            Texture2D changed = EditorGUI.ObjectField(r, input.TextureSource.Texture, typeof(Texture2D), false) as Texture2D;
+            Texture2D changed = EditorGUI.ObjectField(r, input.Source.Texture, typeof(Texture2D), false) as Texture2D;
             if (EditorGUI.EndChangeCheck())
             {
-                input.TextureSource.SetInputTexture(changed);
+                input.Source.SetInputTexture(changed);
             }
 
             r.x += r.width + 5;
             r.width = texWidth - 5;
             EditorGUI.LabelField(r, label);
 
-            if (input.TextureSource.Texture == null)
+            if (input.Source.Texture == null)
             {
                 r.width = 70;
                 r.x = totalRect.x + totalRect.width - r.width;
@@ -205,11 +195,21 @@ namespace Thry.ThryEditor.Drawers
                 r.width = 60;
                 r.x -= r.width;
                 EditorGUI.LabelField(r, "Inverted:");
+
+                // remap multi slider
+                didChange = EditorGUI.EndChangeCheck();
+                r.width = 150;
+                r.x -= r.width + 5;
+                EventType eventType = Event.current.type;
+                EditorGUI.MinMaxSlider(r, ref input.Remapping.x, ref input.Remapping.y, 0, 1);
+                input.Remapping.z = 0;
+                input.Remapping.w = 1;
+                didChange |= Event.current.type == EventType.Used && eventType == EventType.MouseUp;
             }
 
             EditorGUI.indentLevel = ind;
 
-            return input;
+            return didChange;
         }
 
         void Init()
@@ -254,49 +254,64 @@ namespace Thry.ThryEditor.Drawers
         {
             foreach (Material m in ShaderEditor.Active.Materials)
             {
-                if (input.TextureSource.Texture != null) m.SetOverrideTag(id + "_texPack_" + channel + "_guid", AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(input.TextureSource.Texture)));
+                if (input.Source.Texture != null) m.SetOverrideTag(id + "_texPack_" + channel + "_guid", AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(input.Source.Texture)));
                 else m.SetOverrideTag(id + "_texPack_" + channel + "_guid", "");
                 m.SetOverrideTag(id + "_texPack_" + channel + "_fallback", input.Fallback.ToString());
                 m.SetOverrideTag(id + "_texPack_" + channel + "_inverted", input.Invert.ToString());
                 m.SetOverrideTag(id + "_texPack_" + channel + "_channel", ((int)input.Channel).ToString());
+                m.SetOverrideTag(id + "_texPack_" + channel + "_srcRange", input.Remapping.ToString());
             }
         }
 
         InlinePackerChannelConfig LoadForChannel(Material m, string id, string channel)
         {
             InlinePackerChannelConfig packerChannelConfig = new InlinePackerChannelConfig();
-            packerChannelConfig.Fallback = float.Parse(m.GetTag(id + "_texPack_" + channel + "_fallback", false, "1"));
+            packerChannelConfig.Fallback = Parser.ParseFloat(m.GetTag(id + "_texPack_" + channel + "_fallback", false, "1"));
             packerChannelConfig.Invert = bool.Parse(m.GetTag(id + "_texPack_" + channel + "_inverted", false, "false"));
             packerChannelConfig.Channel = (TexturePacker.TextureChannelIn)int.Parse(m.GetTag(id + "_texPack_" + channel + "_channel", false, "4"));
+            packerChannelConfig.Remapping = Parser.ParseVector4(m.GetTag(id + "_texPack_" + channel + "_srcRange", false, "(0,1,0,1)"));
             string guid = m.GetTag(id + "_texPack_" + channel + "_guid", false, "");
             if (string.IsNullOrEmpty(guid) == false)
             {
                 string p = AssetDatabase.GUIDToAssetPath(guid);
                 if (p != null)
-                    packerChannelConfig.TextureSource.SetInputTexture(AssetDatabase.LoadAssetAtPath<Texture2D>(p));
+                    packerChannelConfig.Source.SetInputTexture(AssetDatabase.LoadAssetAtPath<Texture2D>(p));
             }
+            _ = packerChannelConfig.Source.ComputeShaderTexture; // to cache uncompressed texture
             return packerChannelConfig;
         }
 
         void Pack()
         {
-            _current._packedTexture = TexturePacker.Pack(GetTextureSources(), GetOutputConfigs(), GetConnections(), GetFiltermode(), _colorSpace, alphaIsTransparency: _alphaIsTransparency);
+            _current._packedTexture = Packer.Pack(GetConfig());
             _prop.textureValue = _current._packedTexture;
 
             _current._hasTextureChanged = true;
         }
 
-        TexturePacker.TextureSource[] GetTextureSources()
+        TexturePackerConfig GetConfig()
         {
-            // build sources array
-            return new TexturePacker.TextureSource[4]{
-                _current._input_r.TextureSource, _current._input_g.TextureSource, _current._input_b.TextureSource, _current._input_a.TextureSource };
+            TexturePackerConfig config = TexturePackerConfig.GetNewConfig();
+            config.Sources = GetTextureSources();
+            config.Targets = GetOutputConfigs();
+            config.Connections = GetConnections().ToList();
+            config.FileOutput.FilterMode = GetFiltermode();
+            config.FileOutput.ColorSpace = _colorSpace;
+            config.FileOutput.AlphaIsTransparency = _alphaIsTransparency;
+            return config;
         }
 
-        TexturePacker.OutputConfig[] GetOutputConfigs()
+        TexturePacker.PackerSource[] GetTextureSources()
+        {
+            // build sources array
+            return new TexturePacker.PackerSource[4]{
+                _current._input_r.Source, _current._input_g.Source, _current._input_b.Source, _current._input_a.Source };
+        }
+
+        TexturePacker.OutputTarget[] GetOutputConfigs()
         {
             // Build OutputConfig Array
-            TexturePacker.OutputConfig[] outputConfigs = new TexturePacker.OutputConfig[4];
+            TexturePacker.OutputTarget[] outputConfigs = new TexturePacker.OutputTarget[4];
 
             if (_firstTextureIsRGB)
             {
@@ -315,31 +330,30 @@ namespace Thry.ThryEditor.Drawers
             return outputConfigs;
         }
 
-        TexturePacker.Connection[] GetConnections()
+        Connection[] GetConnections()
         {
             // Build connections array
-            TexturePacker.Connection[] connections = new TexturePacker.Connection[4];
+            Connection[] connections = new Connection[4];
             if (_firstTextureIsRGB)
             {
-                connections[0] = TexturePacker.Connection.CreateFull(0, TexturePacker.TextureChannelIn.R, TexturePacker.TextureChannelOut.R);
-                connections[1] = TexturePacker.Connection.CreateFull(0, TexturePacker.TextureChannelIn.G, TexturePacker.TextureChannelOut.G);
-                connections[2] = TexturePacker.Connection.CreateFull(0, TexturePacker.TextureChannelIn.B, TexturePacker.TextureChannelOut.B);
-                connections[3] = TexturePacker.Connection.CreateFull(1, _current._input_g.Channel, TexturePacker.TextureChannelOut.A);
+                connections[0] = new Connection(0, TextureChannelIn.R, TextureChannelOut.R, _current._input_r.RemappingMode, _current._input_r.Remapping);
+                connections[1] = new Connection(0, TextureChannelIn.G, TextureChannelOut.G, _current._input_r.RemappingMode, _current._input_r.Remapping);
+                connections[2] = new Connection(0, TextureChannelIn.B, TextureChannelOut.B, _current._input_r.RemappingMode, _current._input_r.Remapping);
+                connections[3] = new Connection(1, _current._input_g.Channel, TextureChannelOut.A, _current._input_g.RemappingMode, _current._input_g.Remapping);
             }
             else
             {
-                connections[0] = TexturePacker.Connection.CreateFull(0, _current._input_r.Channel, TexturePacker.TextureChannelOut.R);
-                connections[1] = TexturePacker.Connection.CreateFull(1, _current._input_g.Channel, TexturePacker.TextureChannelOut.G);
-                connections[2] = TexturePacker.Connection.CreateFull(2, _current._input_b.Channel, TexturePacker.TextureChannelOut.B);
-                connections[3] = TexturePacker.Connection.CreateFull(3, _current._input_a.Channel, TexturePacker.TextureChannelOut.A);
+                connections[0] = new Connection(0, _current._input_r.Channel, TextureChannelOut.R, _current._input_r.RemappingMode, _current._input_r.Remapping);
+                connections[1] = new Connection(1, _current._input_g.Channel, TextureChannelOut.G, _current._input_g.RemappingMode, _current._input_g.Remapping);
+                connections[2] = new Connection(2, _current._input_b.Channel, TextureChannelOut.B, _current._input_b.RemappingMode, _current._input_b.Remapping);
+                connections[3] = new Connection(3, _current._input_a.Channel, TextureChannelOut.A, _current._input_a.RemappingMode, _current._input_a.Remapping);
             }
             return connections;
         }
 
         void OpenFullTexturePacker()
         {
-            TexturePacker packer = TexturePacker.ShowWindow();
-            packer.InitilizeWithData(GetTextureSources(), GetOutputConfigs(), GetConnections(), GetFiltermode(), _colorSpace, _alphaIsTransparency);
+            NodeGUI packer = NodeGUI.Open(GetConfig());
             packer.OnChange += FullTexturePackerOnChange;
             packer.OnSave += FullTexturePackerOnSave;
         }
@@ -351,27 +365,27 @@ namespace Thry.ThryEditor.Drawers
             _current._hasTextureChanged = false;
         }
 
-        void FullTexturePackerOnChange(Texture2D tex, TexturePacker.TextureSource[] sources, TexturePacker.OutputConfig[] configs, TexturePacker.Connection[] connections)
+        void FullTexturePackerOnChange(Texture2D tex, TexturePackerConfig config)
         {
-            TexturePacker.Connection connection_0 = connections.Where(c => c.FromTextureIndex == 0).FirstOrDefault();
-            TexturePacker.Connection connection_1 = connections.Where(c => c.FromTextureIndex == 1).FirstOrDefault();
-            TexturePacker.Connection connection_2 = connections.Where(c => c.FromTextureIndex == 2).FirstOrDefault();
-            TexturePacker.Connection connection_3 = connections.Where(c => c.FromTextureIndex == 3).FirstOrDefault();
+            Connection connection_0 = config.Connections.Where(c => c.FromTextureIndex == 0).FirstOrDefault();
+            Connection connection_1 = config.Connections.Where(c => c.FromTextureIndex == 1).FirstOrDefault();
+            Connection connection_2 = config.Connections.Where(c => c.FromTextureIndex == 2).FirstOrDefault();
+            Connection connection_3 = config.Connections.Where(c => c.FromTextureIndex == 3).FirstOrDefault();
 
-            _current._input_r.TextureSource = connection_0 != null ? sources[0] : new TextureSource();
-            _current._input_g.TextureSource = connection_1 != null ? sources[1] : new TextureSource();
-            _current._input_b.TextureSource = connection_2 != null ? sources[2] : new TextureSource();
-            _current._input_a.TextureSource = connection_3 != null ? sources[3] : new TextureSource();
+            _current._input_r.Source = connection_0.FromTextureIndex != -1 ? config.Sources[0] : new PackerSource();
+            _current._input_g.Source = connection_1.FromTextureIndex != -1 ? config.Sources[1] : new PackerSource();
+            _current._input_b.Source = connection_2.FromTextureIndex != -1 ? config.Sources[2] : new PackerSource();
+            _current._input_a.Source = connection_3.FromTextureIndex != -1 ? config.Sources[3] : new PackerSource();
 
-            _current._input_r.FromOutputConfig(configs[0]);
-            _current._input_g.FromOutputConfig(configs[1]);
-            _current._input_b.FromOutputConfig(configs[2]);
-            _current._input_a.FromOutputConfig(configs[3]);
+            _current._input_r.FromOutputConfig(config.Targets[0]);
+            _current._input_g.FromOutputConfig(config.Targets[1]);
+            _current._input_b.FromOutputConfig(config.Targets[2]);
+            _current._input_a.FromOutputConfig(config.Targets[3]);
 
-            _current._input_r.Channel = connection_0 != null ? connection_0.FromChannel : TexturePacker.TextureChannelIn.Max;
-            _current._input_g.Channel = connection_1 != null ? connection_1.FromChannel : TexturePacker.TextureChannelIn.Max;
-            _current._input_b.Channel = connection_2 != null ? connection_2.FromChannel : TexturePacker.TextureChannelIn.Max;
-            _current._input_a.Channel = connection_3 != null ? connection_3.FromChannel : TexturePacker.TextureChannelIn.Max;
+            _current._input_r.Channel = connection_0.FromTextureIndex != -1 ? connection_0.FromChannel : TextureChannelIn.Max;
+            _current._input_g.Channel = connection_1.FromTextureIndex != -1 ? connection_1.FromChannel : TextureChannelIn.Max;
+            _current._input_b.Channel = connection_2.FromTextureIndex != -1 ? connection_2.FromChannel : TextureChannelIn.Max;
+            _current._input_a.Channel = connection_3.FromTextureIndex != -1 ? connection_3.FromChannel : TextureChannelIn.Max;
 
             _current._packedTexture = tex;
             _prop.textureValue = _current._packedTexture;
@@ -443,32 +457,32 @@ namespace Thry.ThryEditor.Drawers
             return base.GetPropertyHeight(prop, label, editor);
         }
 
+        readonly static Vector4 s_RemappingDefault = new Vector4(0, 1, 0, 1);
+
         class InlinePackerChannelConfig
         {
-            public TexturePacker.TextureSource TextureSource = new TexturePacker.TextureSource();
+            public PackerSource Source = new PackerSource();
             public bool Invert;
             public float Fallback;
-            public TexturePacker.TextureChannelIn Channel = TexturePacker.TextureChannelIn.Max;
+            public TextureChannelIn Channel = TextureChannelIn.Max;
+            public Vector4 Remapping = s_RemappingDefault;
+            public RemapMode RemappingMode => Remapping == s_RemappingDefault ? RemapMode.None : RemapMode.RangeToRange;
 
-            public TexturePacker.OutputConfig ToOutputConfig()
+            public OutputTarget ToOutputConfig()
             {
-                TexturePacker.OutputConfig outputConfig = new TexturePacker.OutputConfig();
-                outputConfig.BlendMode = TexturePacker.BlendMode.Add;
-                outputConfig.Invert = Invert ? TexturePacker.InvertMode.Invert : TexturePacker.InvertMode.None;
-                outputConfig.Fallback = Fallback;
-                return outputConfig;
+                return new OutputTarget(BlendMode.Add, Invert ? InvertMode.Invert : InvertMode.None, Fallback);
             }
 
-            public void FromOutputConfig(TexturePacker.OutputConfig config)
+            public void FromOutputConfig(OutputTarget config)
             {
-                Invert = config.Invert == TexturePacker.InvertMode.Invert;
+                Invert = config.Invert == InvertMode.Invert;
                 Fallback = config.Fallback;
             }
 
             public Texture2D GetTexture()
             {
-                if (TextureSource == null) return null;
-                return TextureSource.Texture;
+                if (Source == null) return null;
+                return Source.Texture;
             }
         }
     }

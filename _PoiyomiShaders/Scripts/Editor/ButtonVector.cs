@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Thry.ThryEditor.Drawers
 {
-	public class EnumVectorDrawer : MaterialPropertyDrawer
+	public class ButtonVectorDrawer : MaterialPropertyDrawer
 	{
 		readonly string[] _labels = new string[4] { "X", "Y", "Z", "W" };
 		int _count = 0;
@@ -15,10 +15,10 @@ namespace Thry.ThryEditor.Drawers
 			_count = Mathf.Clamp(i, 1, 4);
 		}
 
-		public EnumVectorDrawer(string a) { Init(a); }
-		public EnumVectorDrawer(string a, string b) { Init(a, b); }
-		public EnumVectorDrawer(string a, string b, string c) { Init(a, b, c); }
-		public EnumVectorDrawer(string a, string b, string c, string d) { Init(a, b, c, d); }
+		public ButtonVectorDrawer(string a) { Init(a); }
+		public ButtonVectorDrawer(string a, string b) { Init(a, b); }
+		public ButtonVectorDrawer(string a, string b, string c) { Init(a, b, c); }
+		public ButtonVectorDrawer(string a, string b, string c, string d) { Init(a, b, c, d); }
 
 		public override void OnGUI(Rect position, MaterialProperty prop, GUIContent label, MaterialEditor editor)
 		{
@@ -30,7 +30,7 @@ namespace Thry.ThryEditor.Drawers
 			for (int i = 0; i < _count; i++)
 			{
 				Rect r = new Rect(field.x + i * (w + spacing), field.y, w, field.height);
-				bool disable = string.Equals(_labels[i], "NA", System.StringComparison.InvariantCultureIgnoreCase) || _labels[i] == "-";
+				bool disable = string.Equals(_labels[i], "NA", System.StringComparison.InvariantCultureIgnoreCase);
 				bool on = v[i] > 0.5f;
 				if (disable)
 				{
@@ -58,4 +58,5 @@ namespace Thry.ThryEditor.Drawers
 		}
 	}
 }
+
 

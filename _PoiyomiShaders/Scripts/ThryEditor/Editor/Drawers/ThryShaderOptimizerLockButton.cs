@@ -12,13 +12,10 @@ namespace Thry.ThryEditor.Drawers
         public override void OnGUI(Rect position, MaterialProperty shaderOptimizer, string label, MaterialEditor materialEditor)
         {
             Material material = shaderOptimizer.targets[0] as Material;
-            Shader shader = material.shader;
-            // The GetPropertyDefaultFloatValue is changed from 0 to 1 when the shader is locked in
-            bool isLocked = shader.name.StartsWith("Hidden/Locked/") ||
-                (shader.name.StartsWith("Hidden/") && material.GetTag("OriginalShader", false, "") != "" && shader.GetPropertyDefaultFloatValue(shader.FindPropertyIndex(shaderOptimizer.name)) == 1);
+            bool isLocked = material.IsLocked();
             //this will make sure the button is unlocked if you manually swap to an unlocked shader
             //shaders that have the ability to be locked shouldnt really be hidden themself. at least it wouldnt make too much sense
-            if (shaderOptimizer.hasMixedValue == false && shaderOptimizer.GetNumber() == 1 && isLocked == false)
+            if (shaderOptimizer.hasMixedValue == false && shaderOptimizer.GetNumber() == 1 && !isLocked)
             {
                 shaderOptimizer.SetNumber(0);
             }

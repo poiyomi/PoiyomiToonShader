@@ -106,6 +106,9 @@ namespace Poi.Tools.ShaderTranslator
             DoBeforeTranslation(context);
             RunAutomaticTranslations(context);
             DoAfterTranslation(context);
+
+            // Fix keywords to ensure they match property values
+            ShaderEditor.FixKeywords(new Material[] { sourceMaterial });
         }
 
         /// <summary>

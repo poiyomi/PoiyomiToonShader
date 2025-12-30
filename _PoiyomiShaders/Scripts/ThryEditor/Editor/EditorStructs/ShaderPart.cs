@@ -170,6 +170,12 @@ namespace Thry.ThryEditor
         public int ShaderPropertyId { protected set; get; } = -1;
         public int ShaderPropertyIndex { protected set; get; } = -1;
         private string[] ShaderPropertyAttributes = null;
+        
+        /// <summary>
+        /// Additional property names that should be checked when determining if this property is at default value.
+        /// Used by multi-property drawers like ThryMultiFloatButtons.
+        /// </summary>
+        public string[] AdditionalDefaultCheckProperties { get; set; }
         public Shader MyShader { protected set; get; } = null;
         public MaterialEditor MyMaterialEditor { protected set; get; } = null;
 
@@ -222,11 +228,13 @@ namespace Thry.ThryEditor
         static Func<Shader, int , Vector4> FastGetPropertyDefaultValue =
             (Func<Shader, int, Vector4>)Delegate.CreateDelegate(typeof(Func<Shader, int, Vector4>), s_fastGetPropertyDefaultValueMethod);
 
+#if UNITY_2022_1_OR_NEWER
         // private static extern int GetPropertyDefaultIntValue([NotNull("ArgumentNullException")] Shader shader, int propertyIndex);
         static MethodInfo s_fastGetPropertyDefaultIntValueMethod =
             typeof(Shader).GetMethod("GetPropertyDefaultIntValue", BindingFlags.NonPublic | BindingFlags.Static, null, new Type[] { typeof(Shader), typeof(int) }, null);
         static Func<Shader, int, int> FastGetPropertyDefaultIntValue = 
             (Func<Shader, int, int>)Delegate.CreateDelegate(typeof(Func<Shader, int, int>), s_fastGetPropertyDefaultIntValueMethod);
+#endif
 
         // private static extern string GetPropertyTextureDefaultName([NotNull("ArgumentNullException")] Shader shader, int propertyIndex);
         static MethodInfo s_fastGetPropertyTextureDefaultNameMethod =
@@ -316,6 +324,30 @@ namespace Thry.ThryEditor
                             break;
                     }
                     _isPropertyValueDefault = _isPropertyValueDefault.Value && !MaterialProperty.hasMixedValue;
+                    
+                    // Check additional properties (for multi-property drawers like ThryMultiFloatButtons)
+                    if (_isPropertyValueDefault.Value && AdditionalDefaultCheckProperties != null)
+                    {
+                        foreach (var propName in AdditionalDefaultCheckProperties)
+                        {
+                            if (string.IsNullOrEmpty(propName)) continue;
+                            if (MyShaderUI?.PropertyDictionary != null && 
+                                MyShaderUI.PropertyDictionary.TryGetValue(propName, out var otherProp))
+                            {
+                                // Temporarily clear AdditionalDefaultCheckProperties to avoid infinite recursion
+                                var savedAdditional = otherProp.AdditionalDefaultCheckProperties;
+                                otherProp.AdditionalDefaultCheckProperties = null;
+                                
+                                if (!otherProp.IsPropertyValueDefault)
+                                {
+                                    _isPropertyValueDefault = false;
+                                    otherProp.AdditionalDefaultCheckProperties = savedAdditional;
+                                    break;
+                                }
+                                otherProp.AdditionalDefaultCheckProperties = savedAdditional;
+                            }
+                        }
+                    }
                 }
                 return _isPropertyValueDefault.Value;
             }
@@ -968,22 +1000,45 @@ namespace Thry.ThryEditor
 
         void ResetMaterialProperties()
         {
-            MaterialProperty prop = MaterialProperty;
+            ResetSingleProperty(this);
+            
+            // Also reset additional properties (for multi-property drawers like ThryMultiFloatButtons)
+            if (AdditionalDefaultCheckProperties != null)
+            {
+                foreach (var propName in AdditionalDefaultCheckProperties)
+                {
+                    if (string.IsNullOrEmpty(propName)) continue;
+                    if (MyShaderUI?.PropertyDictionary != null && 
+                        MyShaderUI.PropertyDictionary.TryGetValue(propName, out var otherProp))
+                    {
+                        ResetSingleProperty(otherProp);
+                        // Invalidate the other property's cached default value check
+                        otherProp.CheckForValueChange();
+                    }
+                }
+            }
+            
+            RaisePropertyValueChanged();
+        }
+        
+        static void ResetSingleProperty(ShaderPart shaderPart)
+        {
+            MaterialProperty prop = shaderPart.MaterialProperty;
             Shader shader = ShaderEditor.Active.Shader;
             switch (prop.type)
             {
                 case MaterialProperty.PropType.Float:
                 case MaterialProperty.PropType.Range:
-                    prop.floatValue = shader.GetPropertyDefaultFloatValue(ShaderPropertyIndex);
+                    prop.floatValue = shader.GetPropertyDefaultFloatValue(shaderPart.ShaderPropertyIndex);
                     break;
                 case MaterialProperty.PropType.Vector:
-                    prop.vectorValue = shader.GetPropertyDefaultVectorValue(ShaderPropertyIndex);
+                    prop.vectorValue = shader.GetPropertyDefaultVectorValue(shaderPart.ShaderPropertyIndex);
                     break;
                 case MaterialProperty.PropType.Color:
-                    prop.colorValue = shader.GetPropertyDefaultVectorValue(ShaderPropertyIndex);
+                    prop.colorValue = shader.GetPropertyDefaultVectorValue(shaderPart.ShaderPropertyIndex);
                     break;
                 case MaterialProperty.PropType.Int:
-                    prop.intValue = shader.GetPropertyDefaultIntValue(ShaderPropertyIndex);
+                    prop.intValue = shader.GetPropertyDefaultIntValue(shaderPart.ShaderPropertyIndex);
                     break;
                 case MaterialProperty.PropType.Texture:
                     Texture texture = null;
@@ -994,7 +1049,6 @@ namespace Thry.ThryEditor
                     prop.textureScaleAndOffset = new Vector4(1, 1, 0, 0);
                     break;
             }
-            RaisePropertyValueChanged();
         }
 #endif
 

@@ -122,14 +122,61 @@ namespace Thry.ThryEditor
             }
         }
 
-        public static float ParseFloat(string s, float defaultF = 0)
+        /// <summary>
+        /// Parses a string into a float using global settings.
+        /// </summary>
+        /// <param name="input">The string to parse.</param>
+        /// <returns>A float parsed from the string.</returns>
+        public static float ParseFloat(string input, float defaultValue = 0)
         {
-            float f;
-            if(float.TryParse(s, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out f))
+            if (float.TryParse(input, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out float result))
             {
-                return f;
+                return result;
             }
-            return defaultF;
+            ThryLogger.LogWarn($"Unable to parse '{input}' as float. Returning default value: {defaultValue}");
+            return defaultValue;
+        }
+
+        /// <summary>
+        /// Parses a string into a Vector2 using global settings.
+        /// </summary>
+        /// <param name="input">The string to parse.</param>
+        /// <param name="defaultValue">The default value to return if parsing fails.</param>
+        /// <returns>A Vector2 parsed from the string.</returns>
+        public static Vector2 ParseVector2(string input, Vector2 defaultValue = default)
+        {
+            input = input.Trim('(', ')');
+            string[] parts = input.Split(',');
+            if (parts.Length == 2 &&
+                float.TryParse(parts[0], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out float x) &&
+                float.TryParse(parts[1], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out float y))
+            {
+                return new Vector2(x, y);
+            }
+            ThryLogger.LogWarn($"Unable to parse '{input}' as Vector2. Returning default value: {defaultValue}");
+            return defaultValue;
+        }
+
+        /// <summary>
+        /// Parses a string into a Vector4 using global settings.
+        /// </summary>
+        /// <param name="input">The string to parse.</param>
+        /// <param name="defaultValue">The default value to return if parsing fails.</param
+        /// <returns>A Vector4 parsed from the string.</returns>
+        public static Vector4 ParseVector4(string input, Vector4 defaultValue = default)
+        {
+            input = input.Trim('(', ')');
+            string[] parts = input.Split(',');
+            if (parts.Length == 4 &&
+                float.TryParse(parts[0], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out float x) &&
+                float.TryParse(parts[1], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out float y) &&
+                float.TryParse(parts[2], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out float z) &&
+                float.TryParse(parts[3], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out float w))
+            {
+                return new Vector4(x, y, z, w);
+            }
+            ThryLogger.LogWarn($"Unable to parse '{input}' as Vector4. Returning default value: {defaultValue}");
+            return defaultValue;
         }
 
         // Object

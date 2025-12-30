@@ -107,6 +107,17 @@ namespace Thry.ThryEditor.Drawers
         public override float GetPropertyHeight(MaterialProperty prop, string label, MaterialEditor editor)
         {
             ShaderProperty.RegisterDrawer(this);
+            
+            // Register additional properties for default value checking (for the * indicator feature)
+            // Must be done here (not in OnGUI) because Content is accessed before OnGUI runs
+            if (ShaderEditor.Active?.PropertyDictionary != null)
+            {
+                if (ShaderEditor.Active.PropertyDictionary.TryGetValue(prop.name, out var mainShaderProp))
+                {
+                    mainShaderProp.AdditionalDefaultCheckProperties = _otherProperties;
+                }
+            }
+            
             return base.GetPropertyHeight(prop, label, editor);
         }
     }

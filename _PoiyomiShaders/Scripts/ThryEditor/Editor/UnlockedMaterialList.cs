@@ -49,11 +49,16 @@ namespace Thry.ThryEditor
             foreach (string g in guids)
             {
                 Material m = AssetDatabase.LoadAssetAtPath<Material>(AssetDatabase.GUIDToAssetPath(g));
-                if (m != null && m.shader != null && ShaderOptimizer.IsShaderUsingThryOptimizer(m.shader))
+                if (m != null)
                 {
-                    if(ShaderOptimizer.IsMaterialLocked(m))
+                    if (m.IsLocked())
+                    {
                         lockedMaterials.Add(m);
-                    else
+
+                        continue;
+                    }
+
+                    if (!m.shader.IsBroken() && ShaderOptimizer.IsShaderUsingThryOptimizer(m.shader))
                         unlockedMaterials.Add(m);
                 }
                 f = f + step;

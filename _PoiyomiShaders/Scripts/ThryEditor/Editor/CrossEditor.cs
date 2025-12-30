@@ -59,10 +59,8 @@ namespace Thry.ThryEditor
 
         private void UpdateTargets()
         {
-            bool isShaderBroken(Shader s) => s == null || s.name == "Hidden/InternalErrorShader";
-
-            _targets = _materialList.Where(t => t != null && !isShaderBroken(t.shader)).ToList();
-            foreach(Material m in _materialList.Where(t => t != null && isShaderBroken(t.shader)))
+            _targets = _materialList.Where(t => t != null && !t.shader.IsBroken()).ToList();
+            foreach(Material m in _materialList.Where(t => t != null && t.shader.IsBroken()))
                 Debug.LogWarning("Material " + m.name + " has no shader assigned");
 
             _shaderEditor = null;

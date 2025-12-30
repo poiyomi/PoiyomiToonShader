@@ -220,6 +220,57 @@ namespace Thry.ThryEditor
 #endif
                 return mat.GetFloat(prop.name);
         }
+
+        /// <summary>
+        /// Retrieves the parent material of the specified material.
+        /// </summary>
+        /// <remarks>Returns <see cref="Material"/>.<c>parent</c>, which is available starting from Unity 2022.1.
+        /// On earlier versions of Unity, this method will always return <see langword="null"/>.</remarks>
+        public static Material GetParent(this Material mat)
+        {
+#if UNITY_2022_1_OR_NEWER
+            return mat.parent;
+#else
+            return null;
+#endif
+        }
+
+        public static Material GetRoot(this Material mat)
+        {
+            Material lastParent = mat, parent;
+            while ((parent = mat.GetParent()) != null && parent != lastParent)
+            {
+                lastParent = parent;
+            }
+
+            return lastParent;
+        }
+
+        /// <summary>
+        /// Determines whether the shader is broken.
+        /// </summary>
+        /// <returns><see langword="true"/> if the shader is <see langword="null"/> or its name is "Hidden/InternalErrorShader"; 
+        /// otherwise, <see langword="false"/>.</returns>
+        public static bool IsBroken(this Shader shader)
+        {
+            return ShaderOptimizer.IsShaderBroken(shader);
+        }
+
+        /// <summary>
+        /// Determines whether the specified shader is locked based on its optimizer property.
+        /// </summary>
+        public static bool IsLocked(this Shader shader)
+        {
+            return ShaderOptimizer.IsShaderLocked(shader);
+        }
+
+        /// <summary>
+        /// Check if a material's shader is locked, or if it's missing but the material indicates it was locked.
+        /// </summary>
+        public static bool IsLocked(this Material material)
+        {
+            return ShaderOptimizer.IsMaterialLocked(material);
+        }
     }
 
     public class UnityFixer

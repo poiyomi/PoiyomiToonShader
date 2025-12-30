@@ -18,6 +18,34 @@ namespace Poi.Tools.ShaderTranslator.Translations
             return sourceMaterial.shader.name.IndexOf("liltoon", StringComparison.CurrentCultureIgnoreCase) != -1;
         }
 
+        protected override Shader GetTargetShader(Material sourceMaterial, string newShaderName)
+        {
+            string sourceShaderName = sourceMaterial.shader.name;
+            bool isFurShader = sourceShaderName.IndexOf("fur", StringComparison.CurrentCultureIgnoreCase) != -1;
+            bool isTwoPassFur = sourceShaderName.IndexOf("twopass", StringComparison.CurrentCultureIgnoreCase) != -1 || 
+                                sourceShaderName.IndexOf("two pass", StringComparison.CurrentCultureIgnoreCase) != -1;
+
+            if (isFurShader)
+            {
+                if (newShaderName.Contains("Pro"))
+                {
+                    if (isTwoPassFur)
+                        return Shader.Find(".poiyomi/Poiyomi Pro + Lil Fur Two Pass");
+                    else
+                        return Shader.Find(".poiyomi/Poiyomi Pro + Lil Fur");
+                }
+                else if (newShaderName.Contains("Toon"))
+                {
+                    if (isTwoPassFur)
+                        return Shader.Find(".poiyomi/Poiyomi Toon + Lil Fur Two Pass");
+                    else
+                        return Shader.Find(".poiyomi/Poiyomi Toon + Lil Fur");
+                }
+            }
+
+            return base.GetTargetShader(sourceMaterial, newShaderName);
+        }
+
         protected override void DoBeforeTranslation(TranslationContext context)
         {
             // Set render mode dropdown based on liltoon shader name.
@@ -48,6 +76,24 @@ namespace Poi.Tools.ShaderTranslator.Translations
             if (hasOutline)
                 SetTargetPropertyValue(context, "_EnableOutlines", 1);
 
+            // Set fur rendering mode based on liltoon shader type
+            bool isFurShader = SourceShader.Shader.name.IndexOf("fur", StringComparison.CurrentCultureIgnoreCase) != -1;
+            if (isFurShader)
+            {
+                bool isTwoPassFur = SourceShader.Shader.name.IndexOf("twopass", StringComparison.CurrentCultureIgnoreCase) != -1 || 
+                                    SourceShader.Shader.name.IndexOf("two pass", StringComparison.CurrentCultureIgnoreCase) != -1;
+                bool isCutoutFur = SourceShader.Shader.name.IndexOf("cutout", StringComparison.CurrentCultureIgnoreCase) != -1;
+                
+                if (isTwoPassFur || !isCutoutFur)
+                {
+                    SetTargetPropertyValue(context, "_FurRenderingMode", 1f); // Transparent
+                }
+                else
+                {
+                    SetTargetPropertyValue(context, "_FurRenderingMode", 0f); // Cutout
+                }
+            }
+
             // Match liltoon lighting settings
             SetTargetPropertyValue(context, "_LightingColorMode", 3);
             SetTargetPropertyValue(context, "_LightingMapMode", 1);
@@ -71,7 +117,7 @@ namespace Poi.Tools.ShaderTranslator.Translations
 
         protected override List<PropertyTranslation> AddProperties()
         {
-            return new List<PropertyTranslation>()
+            var properties = new List<PropertyTranslation>()
             {
                 #region Main Color
                 new PropertyTranslation("_AlphaMaskMode", "_MainAlphaMaskMode"),
@@ -614,6 +660,9 @@ namespace Poi.Tools.ShaderTranslator.Translations
                 new PropertyTranslation("_StencilComp", "_StencilCompareFunction"),
                 #endregion
             };
+
+            properties.AddRange(LiltoonToPoiyomiFurTranslation.GetFurPropertyTranslations());
+            return properties;
         }
 
         bool TryGetDecalMirrorModes(TranslationContext context, string decalPropertyNameNumberPart, out PoiUvMirrorMode uvMirrorMode, out PoiUvSymmetryMode uvSymmetryMode)

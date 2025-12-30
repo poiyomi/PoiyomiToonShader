@@ -132,6 +132,16 @@ namespace Thry.ThryEditor.Helpers
             return ret;
         }
 
+        public static DateTime GetLastModifiedTime(Texture2D texture)
+        {
+            string path = AssetDatabase.GetAssetPath(texture);
+            if (File.Exists(path))
+            {
+                return File.GetLastWriteTime(path);
+            }
+            return DateTime.MinValue;
+        }
+
         //===============TGA Loader by aaro4130 https://forum.unity.com/threads/tga-loader-for-unity3d.172291/==============
 
         public static Texture2D LoadTGA(string TGAFile, bool displayProgressbar = false)

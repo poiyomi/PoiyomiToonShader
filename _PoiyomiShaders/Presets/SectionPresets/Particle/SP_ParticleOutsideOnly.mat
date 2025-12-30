@@ -18,6 +18,7 @@ Material:
   - _RIM2STYLE_POIYOMI
   - _RIMSTYLE_POIYOMI
   - _STOCHASTICMODE_DELIOT_HEITZ
+  - _STYLIZEDREFLECTIONMODE_UNITYCHAN
   m_InvalidKeywords:
   - _TPS_ANIMATEDTOGGLE_ON
   m_LightmapFlags: 4
@@ -151,6 +152,10 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _ClothMetallicSmoothnessMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _ConstellationMask:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
@@ -798,9 +803,11 @@ Material:
     - _Aniso1ToonMode: 0
     - _AnisoAdd: 1
     - _AnisoColorMapUV: 0
+    - _AnisoFadeByLightDirection: 0
     - _AnisoGlobalMask: 0
     - _AnisoGlobalMaskBlendType: 2
     - _AnisoHideInShadow: 1
+    - _AnisoNormalBlend: 1
     - _AnisoReplace: 0
     - _AnisoUseBaseColor: 0
     - _AnisoUseLightColor: 1
@@ -1020,6 +1027,26 @@ Material:
     - _ColorMask: 15
     - _ColorMask2: 15
     - _ColorThemeIndex: 0
+    - _ConstellationApplyGlobalMaskBlendType: 0
+    - _ConstellationApplyGlobalMaskIndex: 0
+    - _ConstellationBlendMode: 2
+    - _ConstellationColorThemeIndex: 0
+    - _ConstellationDensity: 10
+    - _ConstellationDepthFade: 0.8
+    - _ConstellationEmissionStrength: 5
+    - _ConstellationEnable: 0
+    - _ConstellationLineBrightness: 1
+    - _ConstellationLineThickness: 0.5
+    - _ConstellationLineThicknessVariation: 0.7
+    - _ConstellationMaskGlobalMask: 0
+    - _ConstellationMaskGlobalMaskBlendType: 2
+    - _ConstellationMaskInvert: 0
+    - _ConstellationMaskUV: 0
+    - _ConstellationStarBrightness: 1
+    - _ConstellationStarMovement: 0.5
+    - _ConstellationStarSize: 0.75
+    - _ConstellationTwinkleSpeed: 5
+    - _ConstellationUV: 0
     - _ContinuousDissolve: 0
     - _CubeMapBlendAmount: 1
     - _CubeMapBrightness: 0
@@ -1141,6 +1168,10 @@ Material:
     - _Decal3VideoEmissionStrength: 0
     - _Decal3VideoEnabled: 0
     - _Decal3VideoFitToScale: 1
+    - _DecalAlphaIntensity: 1
+    - _DecalAlphaIntensity1: 1
+    - _DecalAlphaIntensity2: 1
+    - _DecalAlphaIntensity3: 1
     - _DecalBlendAlpha: 1
     - _DecalBlendAlpha1: 1
     - _DecalBlendAlpha2: 1
@@ -1573,6 +1604,10 @@ Material:
     - _GITDEWorldOrMesh2: 0
     - _GITDEWorldOrMesh3: 0
     - _GSAAStrength: 0
+    - _GT7TM_ChromaFadeEnd: 1.16
+    - _GT7TM_ChromaFadeStart: 0.98
+    - _GT7TM_ColorAccuracy: 0.6
+    - _GT7ToneMapping: 0
     - _GlitterALAlphaAddBand: 0
     - _GlitterALChronoRotationSpeed: 0
     - _GlitterALChronoRotationSpeedBand: 0
@@ -2793,11 +2828,15 @@ Material:
     - _ShadingShadeMapBlendType: 0
     - _Shadow2ndBlur: 0.3
     - _Shadow2ndBorder: 0.5
+    - _Shadow2ndColorTexAddition: 0
     - _Shadow2ndColorTexUV: 0
+    - _Shadow2ndNormalStrength: 1
     - _Shadow2ndReceive: 0
     - _Shadow3rdBlur: 0.1
     - _Shadow3rdBorder: 0.25
+    - _Shadow3rdColorTexAddition: 0
     - _Shadow3rdColorTexUV: 0
+    - _Shadow3rdNormalStrength: 1
     - _Shadow3rdReceive: 0
     - _ShadowBlur: 0.1
     - _ShadowBorder: 0.5
@@ -2805,12 +2844,14 @@ Material:
     - _ShadowBorderMaskLOD: 0
     - _ShadowBorderMaskUV: 0
     - _ShadowBorderRange: 0
+    - _ShadowColorTexAddition: 0
     - _ShadowColorTexUV: 0
     - _ShadowEnvStrength: 0
     - _ShadowFlatBlur: 1
     - _ShadowFlatBorder: 1
     - _ShadowMainStrength: 0
     - _ShadowMaskType: 0
+    - _ShadowNormalStrength: 1
     - _ShadowOffset: 0
     - _ShadowPostAO: 0
     - _ShadowReceive: 0
@@ -2914,6 +2955,7 @@ Material:
     - _TPS_SmoothStart: 1
     - _TPS_Squeeze: 0.3
     - _TPS_SqueezeDistance: 0.2
+    - _TPS_TwoSidedRings: 1
     - _TextEnabled: 0
     - _TextFPSColorThemeIndex: 0
     - _TextFPSEmissionStrength: 0
@@ -3202,6 +3244,7 @@ Material:
     - m_end_CRT: 0
     - m_end_CenterOutDissolve: 0
     - m_end_ColorAdjust: 0
+    - m_end_Constellation: 0
     - m_end_CubeMap: 0
     - m_end_Decal0: 0
     - m_end_Decal0AudioLink: 0
@@ -3308,6 +3351,7 @@ Material:
     - m_end_emissionOptions: 0
     - m_end_flipBook: 0
     - m_end_glitter: 0
+    - m_end_gt7tonemapping: 0
     - m_end_internalparallax: 0
     - m_end_matcap: 0
     - m_end_mirrorOptions: 0
@@ -3361,6 +3405,7 @@ Material:
     - m_start_CRT: 0
     - m_start_CenterOutDissolve: 0
     - m_start_ColorAdjust: 0
+    - m_start_Constellation: 0
     - m_start_CubeMap: 0
     - m_start_Decal0: 0
     - m_start_Decal0AudioLink: 0
@@ -3467,6 +3512,7 @@ Material:
     - m_start_emissionOptions: 0
     - m_start_flipBook: 0
     - m_start_glitter: 0
+    - m_start_gt7tonemapping: 0
     - m_start_internalparallax: 0
     - m_start_matcap: 0
     - m_start_mirrorOptions: 0
@@ -3659,6 +3705,7 @@ Material:
     - s_end_OutlineZOffset: 0
     - s_end_PBRSecondSpecular: 0
     - s_end_PBRSplitMaskSample: 0
+    - s_end_PPPosterization: 0
     - s_end_ParallaxInternalHueShift: 0
     - s_end_ParallaxInternalLayerColoring: 0
     - s_end_ParallaxInternalLayerControls: 0
@@ -3899,6 +3946,7 @@ Material:
     - s_start_OutlineZOffset: 0
     - s_start_PBRSecondSpecular: 0
     - s_start_PBRSplitMaskSample: 0
+    - s_start_PPPosterization: 0
     - s_start_ParallaxInternalHueShift: 0
     - s_start_ParallaxInternalLayerColoring: 1
     - s_start_ParallaxInternalLayerControls: 1
@@ -4094,6 +4142,11 @@ Material:
     - _ClearCoatSpecularTint: {r: 1, g: 1, b: 1, a: 1}
     - _ClothMetallicSmoothnessMapPan: {r: 0, g: 0, b: 0, a: 0}
     - _Color: {r: 0.23584908, g: 0.23584908, b: 0.23584908, a: 1}
+    - _ConstellationCenter: {r: 0.5, g: 0.5, b: 0, a: 0}
+    - _ConstellationColor: {r: 1, g: 1, b: 1, a: 1}
+    - _ConstellationMaskPan: {r: 0, g: 0, b: 0, a: 0}
+    - _ConstellationOffset: {r: 0, g: 0, b: 0, a: 0}
+    - _ConstellationPanSpeed: {r: 0, g: 0, b: 0, a: 0}
     - _CubeMapColor: {r: 1, g: 1, b: 1, a: 1}
     - _CubeMapMaskPan: {r: 0, g: 0, b: 0, a: 0}
     - _CubeMapRotation: {r: 0, g: 0, b: 0, a: 0}
@@ -4411,9 +4464,13 @@ Material:
     - _RedTexturePan: {r: 0, g: 0, b: 0, a: 0}
     - _ReflectionColor: {r: 1, g: 1, b: 1, a: 1}
     - _ReflectionCubeColor: {r: 0, g: 0, b: 0, a: 1}
+    - _RgbNormalABlendSources: {r: 0, g: 0, b: 0, a: 0}
     - _RgbNormalAPan: {r: 0, g: 0, b: 0, a: 0}
+    - _RgbNormalBBlendSources: {r: 0, g: 0, b: 0, a: 0}
     - _RgbNormalBPan: {r: 0, g: 0, b: 0, a: 0}
+    - _RgbNormalGBlendSources: {r: 0, g: 0, b: 0, a: 0}
     - _RgbNormalGPan: {r: 0, g: 0, b: 0, a: 0}
+    - _RgbNormalRBlendSources: {r: 0, g: 0, b: 0, a: 0}
     - _RgbNormalRPan: {r: 0, g: 0, b: 0, a: 0}
     - _Rim2Color: {r: 0.65999997, g: 0.5, b: 0.47999996, a: 1}
     - _Rim2ColorTexPan: {r: 0, g: 0, b: 0, a: 0}

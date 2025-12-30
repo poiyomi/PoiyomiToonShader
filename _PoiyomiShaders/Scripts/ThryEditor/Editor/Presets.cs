@@ -526,9 +526,32 @@ namespace Thry.ThryEditor
             }
             if (s_appliedPresets.ContainsKey(shaderEditor.Materials[0]))
             {
-                if(GUILayout.Button(EditorLocale.editor.Get("preset_revert")+s_appliedPresets[shaderEditor.Materials[0]].name))
+                const float rowHeight = 20f;
+                var rowRect = EditorGUILayout.GetControlRect(false, rowHeight);
+
+                float pad = 2f;
+                float gap = 4f;
+
+                var inner = new Rect(rowRect.x + pad, rowRect.y, rowRect.width - pad * 2, rowHeight);
+                float half = (inner.width - gap) * 0.5f;
+
+                var left = new Rect(inner.x, inner.y, half, inner.height);
+                var right = new Rect(inner.x + half + gap, inner.y, half, inner.height);
+
+                var applied = s_appliedPresets[shaderEditor.Materials[0]];
+                string revertLabel = EditorLocale.editor.Get("preset_revert") + applied.name;
+                string dismissLabel = EditorLocale.editor.Get("preset_dismiss");
+
+                if (GUI.Button(left, revertLabel))
                 {
                     Revert(shaderEditor);
+                    shaderEditor.Repaint();
+                }
+
+                if (GUI.Button(right, dismissLabel))
+                {
+                    Dismiss(shaderEditor);
+                    shaderEditor.Repaint();
                 }
             }
         }
@@ -557,9 +580,18 @@ namespace Thry.ThryEditor
             s_appliedPresets.Remove(key);
         }
 
+        static void Dismiss(ShaderEditor shaderEditor)
+        {
+            Material key = shaderEditor.Materials[0];
+            if (s_appliedPresets.Remove(key))
+            {
+                ThryLogger.Log($"Dismissed revert state for '{key.name}'");
+            }
+        }
+
         public static void ApplyFullList(ShaderEditor shaderEditor, Material[] originals, List<Material> presets)
         {
-            for(int i=0;i<shaderEditor.Materials.Length && i < originals.Length;i++)
+            for (int i = 0; i < shaderEditor.Materials.Length && i < originals.Length; i++)
                 shaderEditor.Materials[i].CopyPropertiesFromMaterial(originals[i]);
             shaderEditor.UpdatePropertyReferences();
             foreach (Material preset in presets)
