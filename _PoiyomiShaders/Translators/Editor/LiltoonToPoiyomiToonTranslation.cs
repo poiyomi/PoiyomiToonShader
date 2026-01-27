@@ -21,6 +21,11 @@ namespace Poi.Tools.ShaderTranslator.Translations
         protected override Shader GetTargetShader(Material sourceMaterial, string newShaderName)
         {
             string sourceShaderName = sourceMaterial.shader.name;
+            
+            bool isFakeShadow = sourceShaderName.IndexOf("fakeshadow", StringComparison.CurrentCultureIgnoreCase) != -1;
+            if (isFakeShadow)
+                return Shader.Find(".poiyomi/Extras/Poiyomi Fake Shadow");
+            
             bool isFurShader = sourceShaderName.IndexOf("fur", StringComparison.CurrentCultureIgnoreCase) != -1;
             bool isTwoPassFur = sourceShaderName.IndexOf("twopass", StringComparison.CurrentCultureIgnoreCase) != -1 || 
                                 sourceShaderName.IndexOf("two pass", StringComparison.CurrentCultureIgnoreCase) != -1;
@@ -658,6 +663,15 @@ namespace Poi.Tools.ShaderTranslator.Translations
                 new PropertyTranslation("_StencilFail", "_StencilFailOp"),
                 new PropertyTranslation("_StencilZFail", "_StencilZFailOp"),
                 new PropertyTranslation("_StencilComp", "_StencilCompareFunction"),
+                #endregion
+
+                #region Fake Shadow
+                new PropertyTranslation("_FakeShadowVector", (prop, context) =>
+                {
+                    Vector4 fakeShadowVector = GetSourcePropertyValue<Vector4>(context, prop);
+                    SetTargetPropertyValue(context, "_ShadowDirectionBias", new Vector4(fakeShadowVector.x, fakeShadowVector.y, fakeShadowVector.z, 0));
+                    SetTargetPropertyValue(context, "_ShadowDistance", fakeShadowVector.w);
+                }),
                 #endregion
             };
 
