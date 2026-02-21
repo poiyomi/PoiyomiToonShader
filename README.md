@@ -100,7 +100,7 @@ Poiyomi relies on [ThryEditor](https://github.com/Thryrallo/ThryEditor) to displ
 
 ## Compatibility
 
-Poiyomi Shaders are designed for use with the **Built-In Render Pipeline (BIRP)** on **DirectX 11**. We target VRChat's [currently supported Unity version](https://docs.vrchat.com/docs/current-unity-version), **2019.4.31f1** at time of writing. Higher Unity versions have been tested and are known to work, but we primarily target the latest Unity version that VRChat supports.
+Poiyomi Shaders are designed for use with the **Built-In Render Pipeline (BIRP)** on **DirectX 11**. We target VRChat's [currently supported Unity version](https://docs.vrchat.com/docs/current-unity-version), **2022.3.22f1** at time of writing. Higher Unity versions have been tested and are known to work, but we primarily target the latest Unity version that VRChat supports.
 
 Poiyomi shaders are currently **not compatible** with Unity's Scriptable Rendering Pipelines (URP, HDRP, SRP). Non-DirectX 11 platforms (e.g. OpenGL, Metal, Vulkan, etc.) are also not supported, and may not work at all.
 
