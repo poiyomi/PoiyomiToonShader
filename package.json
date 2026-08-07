@@ -10,7 +10,7 @@
   "changelogUrl": "https://www.poiyomi.com/changelog",
   "gitDependencies": {},
   "vpmDependencies": {
-    "com.poiyomi.thryeditor": ">=2.73.0"
+    "com.poiyomi.thryeditor": ">=2.73.2"
   },
   "legacyFolders": {
     "Assets\\_PoiyomiShaders": ""
