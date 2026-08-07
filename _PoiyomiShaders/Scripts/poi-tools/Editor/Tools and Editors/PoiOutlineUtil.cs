@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using UnityEditor;
 using UnityEngine;
+using Thry.ThryEditor.Helpers;
 
 namespace Poi.Tools
 {
@@ -142,7 +143,7 @@ namespace Poi.Tools
             foreach(SkinnedMeshRenderer skinnedMeshRenderer in skinnedMeshRenderers)
             {
                 EditorGUILayout.LabelField(skinnedMeshRenderer.gameObject.name, EditorStyles.boldLabel);
-                int id = skinnedMeshRenderer.gameObject.GetInstanceID();
+                int id = skinnedMeshRenderer.gameObject.GetObjectId();
                 Mesh sharedMesh = skinnedMeshRenderer.sharedMesh;
                 Material[] materials = skinnedMeshRenderer.sharedMaterials;
                 EditorGUI.indentLevel++;
@@ -158,7 +159,7 @@ namespace Poi.Tools
                     continue;
                 }
                 EditorGUILayout.LabelField(meshRenderer.gameObject.name, EditorStyles.boldLabel);
-                int id = meshRenderer.gameObject.GetInstanceID();
+                int id = meshRenderer.gameObject.GetObjectId();
                 Mesh sharedMesh = meshFilter.sharedMesh;
                 Material[] materials = meshRenderer.sharedMaterials;
                 EditorGUI.indentLevel++;
@@ -311,7 +312,7 @@ namespace Poi.Tools
                     continue;
                 }
 
-                int id = skinnedMeshRenderer.gameObject.GetInstanceID();
+                int id = skinnedMeshRenderer.gameObject.GetObjectId();
                 Mesh sharedMesh = skinnedMeshRenderer.sharedMesh;
                 Mesh bakedMesh = bakedSkinnedMeshRenderer.sharedMesh;
                 if(bakedMesh == null || !bakedMesh.name.Contains("(Clone)"))
@@ -349,7 +350,7 @@ namespace Poi.Tools
                     continue;
                 }
 
-                int id = meshRenderer.gameObject.GetInstanceID();
+                int id = meshRenderer.gameObject.GetObjectId();
                 Mesh sharedMesh = meshFilter.sharedMesh;
                 Mesh bakedMesh = bakedMeshFilter.sharedMesh;
                 if(bakedMesh == null || !bakedMesh.name.Contains("(Clone)"))

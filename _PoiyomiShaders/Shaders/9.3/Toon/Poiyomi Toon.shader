@@ -2,7 +2,7 @@ Shader ".poiyomi/Poiyomi Toon"
 {
 	Properties
 	{
-		[HideInInspector] shader_master_label ("<color=#E75898ff>Poiyomi 9.3.64</color>", Float) = 0
+		[HideInInspector] shader_master_label ("<color=#E75898ff>Poiyomi 9.3.67</color>", Float) = 0
 		[HideInInspector] shader_is_using_thry_editor ("", Float) = 0
 		[HideInInspector] shader_locale ("0db0b86376c3dca4b9a6828ef8615fe0", Float) = 0
 		[HideInInspector] footer_website ("{texture:{name:icon-poilogo,height:24},action:{type:URL,data:https://www.poiyomi.com},hover:WEBSITE}", Float) = 0
@@ -628,6 +628,7 @@ Shader ".poiyomi/Poiyomi Toon"
 		// Back Face Textures and Emission
 		[HideInInspector] m_start_backFace (" Back Face--{reference_property:_BackFaceEnabled,button_help:{text:Tutorial,action:{type:URL,data:https://www.poiyomi.com/color-and-normals/back-face},hover:Documentation}}", Float) = 0
 		[HideInInspector][ThryToggle(POI_BACKFACE)]_BackFaceEnabled ("Backface Enabled", Float) = 0
+		[Helpbox(1, 2, 3)] _BackfaceReminder ("This feature requires Cull in Rendering to be set to Off in order for this to work!--{condition_show:(_Cull==2)}", Int) = 0
 		_BackFaceColor ("Color--{reference_property:_BackFaceColorThemeIndex}", Color) = (1, 1, 1, 1)
 		[HideInInspector][ThryWideEnum(Off, 0, Theme Color 0, 1, Theme Color 1, 2, Theme Color 2, 3, Theme Color 3, 4, ColorChord 0, 5, ColorChord 1, 6, ColorChord 2, 7, ColorChord 3, 8, AL Theme 0, 9, AL Theme 1, 10, AL Theme 2, 11, AL Theme 3, 12)] _BackFaceColorThemeIndex ("", Int) = 0
 		[sRGBWarning(true)]_BackFaceTexture ("Texture--{reference_properties:[_BackFaceTexturePan, _BackFaceTextureUV]}", 2D) = "white" { }
@@ -2102,7 +2103,7 @@ Shader ".poiyomi/Poiyomi Toon"
 		//ifex _LTCGIEnabled!=1
 		[HideInInspector] m_start_LTCGI (" LTCGI--{reference_property:_LTCGIEnabled, button_help:{text:Tutorial,action:{type:URL,data:https://www.poiyomi.com/shading/ltcgi},hover:Documentation}}", Float) = 0
 		[HideInInspector] [ThryToggle(POI_LTCGI)]_LTCGIEnabled ("LTCGI Enabled", Float) = 0
-		[Helpbox(1)] _LTCGI_Attribution ("This section uses LTCGI by _pi_, click for 'github.com/pimaker/ltcgi'--{onClick:{type:URL,data:https://github.com/pimaker/ltcgi}}", Float) = 0
+		[ThryDescription] LTCGI_Attribution ("This section uses LTCGI by _pi_, click for 'github.com/pimaker/ltcgi'--{onClick:{type:URL,data:https://github.com/pimaker/ltcgi}}", Int) = 0
 		[ToggleUI] _LTCGI_AnimToggle ("Anim Toggle", Int) = 1
 		_LTCGI_DiffuseColor ("Diffuse Tint--{reference_property:_LTCGI_DiffuseColorThemeIndex}", Color) = (1, 1, 1, 1)
 		[HideInInspector][ThryWideEnum(Off, 0, Theme Color 0, 1, Theme Color 1, 2, Theme Color 2, 3, Theme Color 3, 4, ColorChord 0, 5, ColorChord 1, 6, ColorChord 2, 7, ColorChord 3, 8, AL Theme 0, 9, AL Theme 1, 10, AL Theme 2, 11, AL Theme 3, 12)] _LTCGI_DiffuseColorThemeIndex ("", Int) = 0
@@ -2217,53 +2218,61 @@ Shader ".poiyomi/Poiyomi Toon"
 		// UDIM Discard
 		[HideInInspector] m_start_udimdiscardOptions (" UV Tile Discard--{reference_property:_EnableUDIMDiscardOptions,button_help:{text:Tutorial,action:{type:URL,data:https://www.poiyomi.com/special-fx/udim-discard},hover:Documentation}}", Float) = 0
 		[HideInInspector][ThryToggle(POI_UDIMDISCARD)]_EnableUDIMDiscardOptions ("Enable UDIM Discard Options", Float) = 0
-		[Helpbox(1)]_UDIMDiscardHelpbox ("UV Tile Discard requires special model setup. Place object UVs on different UV Tiles.", Int) = 0
+		[Helpbox(1, 2, 1)] _UDIMDiscardHelpbox ("UV Tile Discard requires special model setup. Click for Tutorial on the Documentation.--{onClick:{type:URL,data:https://www.poiyomi.com/special-fx/uv-tile-discard#uv-tile-setup}}", Int) = 0
 		[ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3)]_UDIMDiscardUV ("Discard UV", Int) = 0
 		[Enum(Vertex (Faster), 0, Pixel (Slower), 1)] _UDIMDiscardMode ("Discard Mode", Int) = 0
 		
-		[ThryMultiFloatButtons(u0, u1, u2, u3, _UDIMDiscardRow3_1, _UDIMDiscardRow3_2, _UDIMDiscardRow3_3)] _UDIMDiscardRow3_0("v3", Float) = 0
-		[HideInInspector] _UDIMDiscardRow3_1("", Float) = 0
-		[HideInInspector] _UDIMDiscardRow3_2("", Float) = 0
-		[HideInInspector] _UDIMDiscardRow3_3("", Float) = 0
-		
-		[ThryMultiFloatButtons(u0, u1, u2, u3, _UDIMDiscardRow2_1, _UDIMDiscardRow2_2, _UDIMDiscardRow2_3)] _UDIMDiscardRow2_0("v2", Float) = 0
-		[HideInInspector] _UDIMDiscardRow2_1("", Float) = 0
-		[HideInInspector] _UDIMDiscardRow2_2("", Float) = 0
-		[HideInInspector] _UDIMDiscardRow2_3("", Float) = 0
-		
-		[ThryMultiFloatButtons(u0, u1, u2, u3, _UDIMDiscardRow1_1, _UDIMDiscardRow1_2, _UDIMDiscardRow1_3)] _UDIMDiscardRow1_0("v1", Float) = 0
-		[HideInInspector] _UDIMDiscardRow1_1("", Float) = 0
-		[HideInInspector] _UDIMDiscardRow1_2("", Float) = 0
-		[HideInInspector] _UDIMDiscardRow1_3("", Float) = 0
-		
-		[ThryMultiFloatButtons(u0, u1, u2, u3, _UDIMDiscardRow0_1, _UDIMDiscardRow0_2, _UDIMDiscardRow0_3)] _UDIMDiscardRow0_0("v0", Float) = 0
-		[HideInInspector] _UDIMDiscardRow0_1("", Float) = 0
-		[HideInInspector] _UDIMDiscardRow0_2("", Float) = 0
-		[HideInInspector] _UDIMDiscardRow0_3("", Float) = 0
+		[Space(7)]
+		[DoNotAnimate][ThryMultiFloatHeaderDrawer(Column 0, Column 1, Column 2, Column 3)] _UDIMDiscardHeader("UDIM", Float) = 0
+
+		[ThryMultiFloatButtons(u0v3, u1v3, u2v3, u3v3, _UDIMDiscardRow3_1, _UDIMDiscardRow3_2, _UDIMDiscardRow3_3)] _UDIMDiscardRow3_0("Row 3", Float) = 0
+		[ThryHideInInspector] _UDIMDiscardRow3_1("Row 3 Col 1", Float) = 0
+		[ThryHideInInspector] _UDIMDiscardRow3_2("Row 3 Col 2", Float) = 0
+		[ThryHideInInspector] _UDIMDiscardRow3_3("Row 3 Col 3", Float) = 0
+
+		[ThryMultiFloatButtons(u0v2, u1v2, u2v2, u3v2, _UDIMDiscardRow2_1, _UDIMDiscardRow2_2, _UDIMDiscardRow2_3)] _UDIMDiscardRow2_0("Row 2", Float) = 0
+		[ThryHideInInspector] _UDIMDiscardRow2_1("Row 2 Col 1", Float) = 0
+		[ThryHideInInspector] _UDIMDiscardRow2_2("Row 2 Col 2", Float) = 0
+		[ThryHideInInspector] _UDIMDiscardRow2_3("Row 2 Col 3", Float) = 0
+
+		[ThryMultiFloatButtons(u0v1, u1v1, u2v1, u3v1, _UDIMDiscardRow1_1, _UDIMDiscardRow1_2, _UDIMDiscardRow1_3)] _UDIMDiscardRow1_0("Row 1", Float) = 0
+		[ThryHideInInspector] _UDIMDiscardRow1_1("Row 1 Col 1", Float) = 0
+		[ThryHideInInspector] _UDIMDiscardRow1_2("Row 1 Col 2", Float) = 0
+		[ThryHideInInspector] _UDIMDiscardRow1_3("Row 1 Col 3", Float) = 0
+
+		[ThryMultiFloatButtons(u0v0, u1v0, u2v0, u3v0, _UDIMDiscardRow0_1, _UDIMDiscardRow0_2, _UDIMDiscardRow0_3)] _UDIMDiscardRow0_0("Row 0", Float) = 0
+		[ThryHideInInspector] _UDIMDiscardRow0_1("Row 0 Col 1", Float) = 0
+		[ThryHideInInspector] _UDIMDiscardRow0_2("Row 0 Col 2", Float) = 0
+		[ThryHideInInspector] _UDIMDiscardRow0_3("Row 0 Col 3", Float) = 0
 		
 		[HideInInspector] m_start_udimfacediscardOptions ("Face Discard--{reference_property:_EnableUDIMFaceDiscardOptions}", Float) = 0
 		[HideInInspector][ToggleUI]_EnableUDIMFaceDiscardOptions ("Enabled", Float) = 0
 		[ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3)]_UDIMFaceDiscardUV ("Face Discard UV", Int) = 0
 		[Enum(Back, 0, Front, 1)] _UDIMFaceDiscardFace ("Face to Discard", Int) = 0
-		[ThryMultiFloatButtons(u0, u1, u2, u3, _UDIMFaceDiscardRow3_1, _UDIMFaceDiscardRow3_2, _UDIMFaceDiscardRow3_3)] _UDIMFaceDiscardRow3_0("v3", Float) = 0
-		[HideInInspector] _UDIMFaceDiscardRow3_1("", Float) = 0
-		[HideInInspector] _UDIMFaceDiscardRow3_2("", Float) = 0
-		[HideInInspector] _UDIMFaceDiscardRow3_3("", Float) = 0
 		
-		[ThryMultiFloatButtons(u0, u1, u2, u3, _UDIMFaceDiscardRow2_1, _UDIMFaceDiscardRow2_2, _UDIMFaceDiscardRow2_3)] _UDIMFaceDiscardRow2_0("v2", Float) = 0
-		[HideInInspector] _UDIMFaceDiscardRow2_1("", Float) = 0
-		[HideInInspector] _UDIMFaceDiscardRow2_2("", Float) = 0
-		[HideInInspector] _UDIMFaceDiscardRow2_3("", Float) = 0
+		[Space(7)]
+		[ThryMultiFloatHeaderDrawer(Column 0, Column 1, Column 2, Column 3)] _FaceDiscardHeader("UDIM", Float) = 0
+
+		[ThryMultiFloatButtons(u0v3, u1v3, u2v3, u3v3, _UDIMFaceDiscardRow3_1, _UDIMFaceDiscardRow3_2, _UDIMFaceDiscardRow3_3)] _UDIMFaceDiscardRow3_0("Row 3", Float) = 0
+		[ThryHideInInspector] _UDIMFaceDiscardRow3_1("Face Row 3 Col 1", Float) = 0
+		[ThryHideInInspector] _UDIMFaceDiscardRow3_2("Face Row 3 Col 2", Float) = 0
+		[ThryHideInInspector] _UDIMFaceDiscardRow3_3("Face Row 3 Col 3", Float) = 0
+
+		[ThryMultiFloatButtons(u0v2, u1v2, u2v2, u3v2, _UDIMFaceDiscardRow2_1, _UDIMFaceDiscardRow2_2, _UDIMFaceDiscardRow2_3)] _UDIMFaceDiscardRow2_0("Row 2", Float) = 0
+		[ThryHideInInspector] _UDIMFaceDiscardRow2_1("Face Row 2 Col 1", Float) = 0
+		[ThryHideInInspector] _UDIMFaceDiscardRow2_2("Face Row 2 Col 2", Float) = 0
+		[ThryHideInInspector] _UDIMFaceDiscardRow2_3("Face Row 2 Col 3", Float) = 0
+
+		[ThryMultiFloatButtons(u0v1, u1v1, u2v1, u3v1, _UDIMFaceDiscardRow1_1, _UDIMFaceDiscardRow1_2, _UDIMFaceDiscardRow1_3)] _UDIMFaceDiscardRow1_0("Row 1", Float) = 0
+		[ThryHideInInspector] _UDIMFaceDiscardRow1_1("Face Row 1 Col 1", Float) = 0
+		[ThryHideInInspector] _UDIMFaceDiscardRow1_2("Face Row 1 Col 2", Float) = 0
+		[ThryHideInInspector] _UDIMFaceDiscardRow1_3("Face Row 1 Col 3", Float) = 0
+
+		[ThryMultiFloatButtons(u0v0, u1v0, u2v0, u3v0, _UDIMFaceDiscardRow0_1, _UDIMFaceDiscardRow0_2, _UDIMFaceDiscardRow0_3)] _UDIMFaceDiscardRow0_0("Row 0", Float) = 0
+		[ThryHideInInspector] _UDIMFaceDiscardRow0_1("Face Row 0 Col 1", Float) = 0
+		[ThryHideInInspector] _UDIMFaceDiscardRow0_2("Face Row 0 Col 2", Float) = 0
+		[ThryHideInInspector] _UDIMFaceDiscardRow0_3("Face Row 0 Col 3", Float) = 0
 		
-		[ThryMultiFloatButtons(u0, u1, u2, u3, _UDIMFaceDiscardRow1_1, _UDIMFaceDiscardRow1_2, _UDIMFaceDiscardRow1_3)] _UDIMFaceDiscardRow1_0("v1", Float) = 0
-		[HideInInspector] _UDIMFaceDiscardRow1_1("", Float) = 0
-		[HideInInspector] _UDIMFaceDiscardRow1_2("", Float) = 0
-		[HideInInspector] _UDIMFaceDiscardRow1_3("", Float) = 0
-		
-		[ThryMultiFloatButtons(u0, u1, u2, u3, _UDIMFaceDiscardRow0_1, _UDIMFaceDiscardRow0_2, _UDIMFaceDiscardRow0_3)] _UDIMFaceDiscardRow0_0("v0", Float) = 0
-		[HideInInspector] _UDIMFaceDiscardRow0_1("", Float) = 0
-		[HideInInspector] _UDIMFaceDiscardRow0_2("", Float) = 0
-		[HideInInspector] _UDIMFaceDiscardRow0_3("", Float) = 0
 		[HideInInspector] m_end_udimfacediscardOptions ("Row 3", Float) = 0
 		
 		[HideInInspector] m_end_udimdiscardOptions ("UV Tile Discard", Float) = 0
@@ -2516,6 +2525,7 @@ Shader ".poiyomi/Poiyomi Toon"
 		[HideInInspector] m_start_emissionOptions (" Emission 0--{reference_property:_EnableEmission,button_help:{text:Tutorial,action:{type:URL,data:https://www.poiyomi.com/special-fx/emission},hover:Documentation}}", Float) = 0
 		[HideInInspector][ThryToggle(_EMISSION)]
 		_EnableEmission ("Enable Emission 0", Float) = 0
+		[Helpbox(1, 3, 1)] _EmissionFallbackHelp ("Emission 0 controls Emission Strength in Fallback Shaders. Fallback Shaders do not support Emission Masks. Refer to the Documentation for detailed information.--{onClick:{type:URL,data:https://www.poiyomi.com/special-fx/emission#emission-mask}}", Int) = 0
 		[sRGBWarning]_EmissionMask ("Emission Mask--{reference_properties:[_EmissionMaskPan, _EmissionMaskUV, _EmissionMaskChannel, _EmissionMaskInvert, _EmissionMask0GlobalMask]}", 2D) = "white" { }
 		[HideInInspector][Vector2]_EmissionMaskPan ("Panning", Vector) = (0, 0, 0, 0)
 		[HideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7, Matcap, 9)] _EmissionMaskUV ("UV", Int) = 0
@@ -3447,7 +3457,7 @@ Shader ".poiyomi/Poiyomi Toon"
 		[HideInInspector] m_AudioLinkCategory (" Audio Link--{reference_property:_EnableAudioLink, button_help:{text:Tutorial,action:{type:URL,data:https://www.poiyomi.com/audio-link/},hover:Documentation}}", Float) = 0
 		[HideInInspector] m_start_audioLink ("Audio Link", Float) = 0
 		[HideInInspector][ThryToggle(POI_AUDIOLINK)] _EnableAudioLink ("Enabled", Float) = 0
-		[Helpbox(1)] _AudioLinkHelp ("This section houses the global controls for audio link. Controls for individual features are in their respective sections. (Emission, Dissolve, etc...)", Int) = 0
+		[Helpbox(1, 3, 1)] _AudioLinkHelp ("This section houses the global controls for Audio Link. When activating this feature, controls for individual configurations will be exposed under their respective sections (Emission, Dissolve, etc.)", Int) = 0
 		[ToggleUI] _AudioLinkAnimToggle ("Anim Toggle", Float) = 1
 		/*
 		_AudioLinkDelay ("Delay", Range(0, 1)) = 0
@@ -4561,7 +4571,7 @@ Shader ".poiyomi/Poiyomi Toon"
 		
 		//ifex _RenderingAOBlockerEnabled==0
 		[HideInInspector] m_start_WorldAOBlocker (" World AO Blocker--{reference_property:_RenderingAOBlockerEnabled}", Float) = 0
-		[Helpbox(1)] _RenderingAOBlockerNote ("Meshes in this UV space render only to depth and act as a blocking volume for effects like ambient occlusion. This section effects the uv tile directly to the left of the default uv. (U -1→0, V 0→1)", Int) = 0
+		[Helpbox(1, 2, 2)] _RenderingAOBlockerNote ("Meshes in this UV space render only to depth and act as a blocking volume for effects like ambient occlusion. This section affects the UV Tile directly to the left of the default UV. (U -1→0, V 0→1)", Int) = 0
 		[HideInInspector][ToggleUI] _RenderingAOBlockerEnabled ("Enabled", Float) = 0
 		[ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3)]_RenderingAOBlockerUVChannel ("UV Channel", Int) = 0
 		[ToggleUI] _RenderingAOBlockerFlipNormal ("Flip Normal", Float) = 0
@@ -4616,7 +4626,7 @@ Shader ".poiyomi/Poiyomi Toon"
 		[Enum(UnityEngine.Rendering.CompareFunction)] _StencilCompareFunction ("Stencil Compare Function--{condition_showS:(_StencilType==0)}", Float) = 8
 		
 		[HideInInspector] m_start_StencilPassBackOptions("Back--{condition_showS:(_StencilType==1)}", Float) = 0
-		[Helpbox(1)] _FFBFStencilHelp0 ("Front Face and Back Face Stencils only work when locked in due to Unity's Stencil managment", Int) = 0
+		[Helpbox(1, 2, 1)] _FFBFStencilHelp0 ("Front Face and Back Face Stencils only work when locked in due to Unity's Stencil management", Int) = 0
 		[Enum(UnityEngine.Rendering.StencilOp)] _StencilBackPassOp ("Back Pass Op", Float) = 0
 		[Enum(UnityEngine.Rendering.StencilOp)] _StencilBackFailOp ("Back Fail Op", Float) = 0
 		[Enum(UnityEngine.Rendering.StencilOp)] _StencilBackZFailOp ("Back ZFail Op", Float) = 0
@@ -4624,7 +4634,7 @@ Shader ".poiyomi/Poiyomi Toon"
 		[HideInInspector] m_end_StencilPassBackOptions("Back", Float) = 0
 		
 		[HideInInspector] m_start_StencilPassFrontOptions("Front--{condition_showS:(_StencilType==1)}", Float) = 0
-		[Helpbox(1)] _FFBFStencilHelp1 ("Front Face and Back Face Stencils only work when locked in due to Unity's Stencil managment", Int) = 0
+		[Helpbox(1, 2, 1)] _FFBFStencilHelp1 ("Front Face and Back Face Stencils only work when locked in due to Unity's Stencil management", Int) = 0
 		[Enum(UnityEngine.Rendering.StencilOp)] _StencilFrontPassOp ("Front Pass Op", Float) = 0
 		[Enum(UnityEngine.Rendering.StencilOp)] _StencilFrontFailOp ("Front Fail Op", Float) = 0
 		[Enum(UnityEngine.Rendering.StencilOp)] _StencilFrontZFailOp ("Front ZFail Op", Float) = 0

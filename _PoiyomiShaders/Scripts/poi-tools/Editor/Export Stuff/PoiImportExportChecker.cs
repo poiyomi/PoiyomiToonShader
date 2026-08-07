@@ -2,16 +2,25 @@
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using Thry;
 using UnityEditor;
 using UnityEngine;
 using Thry.ThryEditor.Helpers;
+using System.Collections.Generic;
 
 namespace Poi.Tools
 {
     [InitializeOnLoad]
     public class PoiImportExportChecker
     {
+        private static readonly string[] KnownPoiRoots = { "Packages/com.poiyomi.toon", "Assets/_PoiyomiShaders" };
+
+        private const string DefaultPoiPath = "Assets/_PoiyomiShaders";
+        private const string DefaultPoiFolderGUID = "62039c2d546096c4185a32a9e0647fcd";
+
+        private const string WarningDialogTitle = "Bad Import Warning";
+        private const string WarningDialogMessage = "You already have Poiyomi Shaders in your project! It is located at:\n{0}\n\n" + "You must delete the existing _PoiyomiShaders folder(s) " + "before importing a different version or using the VCC version.";
+        private const string WarningDialogOk = "I Understand";
+        
         static readonly string[] PackageStartsWithNames = new[]
         {
             "poiyomiToon",
@@ -24,11 +33,8 @@ namespace Poi.Tools
             "poiyomiPro"
         };
 
-        const string warningDialogTitle = "Bad Import Warning";
-        const string warningDialogMessage = "You already have Poiyomi Shaders in your project.\n\nTo update the shader you have to delete the old folder located at:\n{0}";
-        const string warningDialogOk = "I Understand";
-
-        static string PoiPath
+        private static string _poiPath = DefaultPoiPath;
+        private static string PoiPath
         {
             get
             {
@@ -38,115 +44,269 @@ namespace Poi.Tools
             }
         }
 
-        static string _poiPath = DefaultPoiPath;
+        private static string FindPoiFolder()
+        {
+            // 1) Canonical Location
+            if (AssetDatabase.IsValidFolder(DefaultPoiPath)) return DefaultPoiPath;
 
-        const string DefaultPoiPath = "Assets/_PoiyomiShaders";
-        const string DefaultPoiFolderGUID = "62039c2d546096c4185a32a9e0647fcd";
+            // 2) GUI Lookup
+            string path = AssetDatabase.GUIDToAssetPath(DefaultPoiFolderGUID);
+            if (!string.IsNullOrWhiteSpace(path)) return path;
 
-        static readonly Type importWindowType;
-        static readonly MethodInfo hasOpenInstancesMethod;
-        static readonly Type PackageExport_Type;
-        static readonly Type PackageExport_ExportPackageItemType;
-        static readonly FieldInfo PackageExport_AssetPathField;
-        static readonly FieldInfo PackageExport_ExportPackageItemsField;
-        static readonly MethodInfo PackageExport_ExportMethod;
-        static readonly MethodInfo CustomExport_Method;
+            // 3) Nuclear (and probably slow) option - search entire Assets tree
+            string[] dirs = Directory.GetDirectories(Application.dataPath, "_PoiyomiShaders", SearchOption.AllDirectories);
+
+            return dirs.Length > 0 ? AbsolutePathToLocalAssetsPath(dirs[0]) : null;
+        }
+
+        private static string AbsolutePathToLocalAssetsPath(string path)
+        {
+            if (string.IsNullOrEmpty(path)) return path;
+            
+            if (path.StartsWith(Application.dataPath)) path = "Assets" + path.Substring(Application.dataPath.Length);
+
+            return path.Replace('\\', '/');
+        }
+
+        private static readonly Type PackageImportWindowType;
+        private static readonly Type ImportPackageItemType;
+        private static readonly FieldInfo ImportPackageItemsField;
+        private static readonly FieldInfo ImportPackageItem_AssetPathField;
+        private static readonly FieldInfo PackageImport_TreeField;
+        private static readonly FieldInfo PackageImport_TreeViewStateField;
+
+        private static EditorWindow _lastCheckedImportWindow;
+
+
+        private static readonly Type importWindowType;
+        private static readonly MethodInfo hasOpenInstancesMethod;
+        private static readonly Type PackageExport_Type;
+        private static readonly Type PackageExport_ExportPackageItemType;
+        private static readonly FieldInfo PackageExport_AssetPathField;
+        private static readonly FieldInfo PackageExport_ExportPackageItemsField;
+        private static readonly MethodInfo PackageExport_ExportMethod;
+        private static readonly MethodInfo CustomExport_Method;
 
         static PoiImportExportChecker()
         {
-            AssetDatabase.importPackageStarted -= AssetDatabaseOnimportPackageStarted;
-            AssetDatabase.importPackageStarted += AssetDatabaseOnimportPackageStarted;
+            var editorAsm = typeof(EditorWindow).Assembly;
 
-            importWindowType = typeof(EditorWindow).Assembly.GetType("UnityEditor.PackageImport");
-            hasOpenInstancesMethod = typeof(EditorWindow).GetMethod(nameof(EditorWindow.HasOpenInstances), BindingFlags.Static | BindingFlags.Public)?.MakeGenericMethod(importWindowType);
+            PackageImportWindowType = editorAsm.GetType("UnityEditor.PackageImport");
+            ImportPackageItemType = editorAsm.GetType("UnityEditor.ImportPackageItem");
 
-            PackageExport_Type = typeof(EditorWindow).Assembly.GetType("UnityEditor.PackageExport");
-            PackageExport_ExportPackageItemType = typeof(EditorWindow).Assembly.GetType("UnityEditor.ExportPackageItem");
-            PackageExport_AssetPathField = PackageExport_ExportPackageItemType.GetField("assetPath", BindingFlags.Public | BindingFlags.Instance);
-            PackageExport_ExportPackageItemsField = PackageExport_Type.GetField("m_ExportPackageItems", BindingFlags.NonPublic | BindingFlags.Instance);
-            PackageExport_ExportMethod = PackageExport_Type.GetMethod("Export", BindingFlags.NonPublic | BindingFlags.Instance);
+            if (PackageImportWindowType != null)
+            {
+                ImportPackageItemsField = PackageImportWindowType.GetField("m_ImportPackageItems", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                PackageImport_TreeField = PackageImportWindowType.GetField("m_Tree", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                PackageImport_TreeViewStateField = PackageImportWindowType.GetField("m_TreeViewState", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+            }
 
-            CustomExport_Method = typeof(PoiImportExportChecker).GetMethod(nameof(CustomExport));
-            //DetourExportMethod();
+            if (ImportPackageItemType != null)
+            {
+                ImportPackageItem_AssetPathField = ImportPackageItemType.GetField("exportedAssetPath", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+            }
+
+            EditorApplication.update -= CheckImportWindow;
+            EditorApplication.update += CheckImportWindow;
+
+            PackageExport_Type = editorAsm.GetType("UnityEditor.PackageExport");
+            PackageExport_ExportPackageItemType = editorAsm.GetType("UnityEditor.ExportPackageItem");
+            PackageExport_AssetPathField = PackageExport_ExportPackageItemType?.GetField("assetPath", BindingFlags.Public | BindingFlags.Instance);
+            PackageExport_ExportPackageItemsField = PackageExport_Type?.GetField("m_ExportPackageItems", BindingFlags.NonPublic | BindingFlags.Instance);
+            PackageExport_ExportMethod = PackageExport_Type?.GetMethod("Export", BindingFlags.NonPublic | BindingFlags.Instance);
+
+            CustomExport_Method = typeof(PoiImportExportChecker).GetMethod(nameof(CustomExport), BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
+
+            // DetourExportMethod();
         }
+
+        private static void CheckImportWindow()
+        {
+            if (PackageImportWindowType == null || ImportPackageItemType == null || ImportPackageItemsField == null || ImportPackageItem_AssetPathField == null)
+            {
+                EditorApplication.update -= CheckImportWindow;
+                return;
+            }
+
+            var importWindow = EditorWindow.focusedWindow;
+            if (importWindow == null || !PackageImportWindowType.IsInstanceOfType(importWindow)) return;
+
+            if (importWindow == _lastCheckedImportWindow) return;
+
+            _lastCheckedImportWindow = importWindow;
+
+            var rawItems = ImportPackageItemsField.GetValue(importWindow) as Array;
+            if (rawItems == null || rawItems.Length == 0) return;
+
+            var allProjectPaths = AssetDatabase.FindAssets("").Select(AssetDatabase.GUIDToAssetPath).Where(p => !string.IsNullOrEmpty(p)).SelectMany(WithDirectories).Distinct(StringComparer.OrdinalIgnoreCase).OrderBy(p => p).ToArray();
+
+            var allPackagePaths = new List<string>();
+            foreach (var item in rawItems)
+            {
+                var path = ImportPackageItem_AssetPathField.GetValue(item) as string;
+                if (string.IsNullOrEmpty(path)) continue;
+
+                allPackagePaths.AddRange(WithDirectories(path));
+            }
+
+            var allPackagePathsArray = allPackagePaths.Distinct(StringComparer.OrdinalIgnoreCase).OrderBy(p => p).ToArray();
+
+            var poiProjectPaths = GetPoiyomiPaths(allProjectPaths);
+            if (poiProjectPaths.Length == 0) return;
+
+            var poiPackagePaths = GetPoiyomiPaths(allPackagePathsArray);
+            if (poiPackagePaths.Length == 0) return;
+
+            var packageIncludesPoiShaderFile = allPackagePathsArray.Any(packagePath => packagePath.EndsWith(".shader", StringComparison.OrdinalIgnoreCase) && poiPackagePaths.Any(p => packagePath.StartsWith(p + "/", StringComparison.OrdinalIgnoreCase)));
+
+            if (!packageIncludesPoiShaderFile) return;
+
+            var newItems = new List<object>();
+            var removedPoiFile = false;
+
+            foreach (var item in rawItems)
+            {
+                var path = ImportPackageItem_AssetPathField.GetValue(item) as string;
+                if (string.IsNullOrEmpty(path))
+                {
+                    newItems.Add(item);
+                    continue;
+                }
+
+                bool isPoiFile = poiPackagePaths.Any(p => string.Equals(path, p, StringComparison.OrdinalIgnoreCase) || path.StartsWith(p + "/", StringComparison.OrdinalIgnoreCase));
+
+                if (isPoiFile)
+                {
+                    removedPoiFile = true;
+                    continue;
+                }
+
+                newItems.Add(item);
+            }
+
+            if (!removedPoiFile) return;
+
+            int removedCount = rawItems.Length - newItems.Count;
+
+            if (newItems.Count == 0)
+            {
+                Debug.LogWarning($"[<color=#E75898ff>Poiyomi Import/Export Checker</color>] Blocked attempted double-import of Poiyomi Shaders because it is already installed in this project! Please make sure you delete your existing Poiyomi Shaders installation before importing a new version.\nCurrent Poiyomi Installation Path: {string.Join(", ", poiProjectPaths)}\n");
+            }
+            else
+            {
+                Debug.LogWarning($"[<color=#E75898ff>Poiyomi Import/Export Checker</color>] Automatically removed {removedCount} conflicting item(s) from the package importer because Poiyomi Shaders is already installed in this project! See Console for more details.\nIf you received this message while importing an Avatar's Unity Package, the original author attempted to include a copy of Poiyomi Shaders with it. This is bad practice and would have broken this project entirely if this safeguard didn't exist!\n\nItems Removed: {removedCount}\nCurrent Poiyomi Installation Path: {string.Join(", ", poiProjectPaths)}\n");
+            }
+
+            var arr = Array.CreateInstance(ImportPackageItemType, newItems.Count);
+            newItems.ToArray().CopyTo(arr, 0);
+            ImportPackageItemsField.SetValue(importWindow, arr);
+
+            PackageImport_TreeViewStateField?.SetValue(importWindow, null);
+            PackageImport_TreeField?.SetValue(importWindow, null);
+
+            if (newItems.Count == 0)
+            {
+                importWindow.Close();
+
+                EditorApplication.delayCall += () =>
+                {
+                    var poiLocations = poiProjectPaths.Length > 0 ? string.Join("\n", poiProjectPaths) : PoiPath ?? "(unknown location)";
+
+                    EditorUtility.DisplayDialog(WarningDialogTitle,string.Format(WarningDialogMessage, poiLocations), WarningDialogOk);
+                };
+            }
+        }
+
+        private static IEnumerable<string> WithDirectories(string path)
+        {
+            if (string.IsNullOrEmpty(path)) yield break;
+
+            path = path.Replace('\\', '/');
+
+            while (!string.IsNullOrEmpty(path))
+            {
+                yield return path;
+
+                var parent = Path.GetDirectoryName(path);
+                if (string.IsNullOrEmpty(parent) || string.Equals(parent, path, StringComparison.Ordinal)) break;
+
+                path = parent.Replace('\\', '/');
+            }
+        }
+
+        private static string[] GetPoiyomiPaths(IEnumerable<string> allPathsEnumerable)
+        {
+            if (allPathsEnumerable == null) return Array.Empty<string>();
+
+            var allPaths = allPathsEnumerable.Where(p => !string.IsNullOrEmpty(p)).Select(p => p.Replace('\\', '/')).Distinct(StringComparer.OrdinalIgnoreCase).ToArray();
+            var result = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+            foreach (var root in KnownPoiRoots)
+            {
+                if (allPaths.Any(p => string.Equals(p, root, StringComparison.OrdinalIgnoreCase))) result.Add(root);
+            }
+
+            foreach (var path in allPaths)
+            {
+                if (!path.EndsWith("poiToonPresets.txt", StringComparison.OrdinalIgnoreCase)) continue;
+
+                var parent = Path.GetDirectoryName(path);
+                if (string.IsNullOrEmpty(parent)) continue;
+
+                var leaf = Path.GetFileName(parent);
+                if (!string.IsNullOrEmpty(leaf) && leaf.IndexOf("poiyomi", StringComparison.OrdinalIgnoreCase) >= 0) result.Add(parent.Replace('\\', '/'));
+            }
+
+            return result.ToArray();
+        }
+
         public static void CustomExport()
         {
-            var PackageExport_Window = EditorWindow.GetWindow(PackageExport_Type);
-            var m_ExportPackageItemsArray = PackageExport_ExportPackageItemsField.GetValue(PackageExport_Window) as object[];
-            if (m_ExportPackageItemsArray != null)
+            if (PackageExport_Type == null || PackageExport_ExportPackageItemType == null || PackageExport_ExportPackageItemsField == null || PackageExport_AssetPathField == null || PackageExport_ExportMethod == null) return;
+
+            var packageExportWindow = EditorWindow.GetWindow(PackageExport_Type);
+            var exportItems = PackageExport_ExportPackageItemsField.GetValue(packageExportWindow) as object[];
+            if (exportItems == null) return;
+
+            var newList = new List<object>();
+
+            for (int i = 0; i < exportItems.Length; i++)
             {
-                var newList = new System.Collections.Generic.List<object>();
-                for (int i = 0; i < m_ExportPackageItemsArray.Length; i++)
+                var assetPath = PackageExport_AssetPathField.GetValue(exportItems[i]) as string;
+                if (string.IsNullOrEmpty(assetPath))
                 {
-                    var assetPath = PackageExport_AssetPathField.GetValue(m_ExportPackageItemsArray[i]) as string;
-                    if (assetPath.Contains("_PoiyomiShaders")) continue;
-                    var obj = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(assetPath);
-                    if (obj != null)
-                    {
-                        if (obj is Shader shader && ShaderHelper.IsShaderUsingThryEditor(shader))
-                        {
-                            if(ShaderHelper.IsShaderUsingThryEditor(shader) && shader.name.ToLowerInvariant().Contains("poiyomi pro"))
-                                continue;
-                        }
-                    }
-                    newList.Add(m_ExportPackageItemsArray[i]);
+                    newList.Add(exportItems[i]);
+                    continue;
                 }
-                if (newList.Count == m_ExportPackageItemsArray.Length) return;
-                var newListArray = System.Array.CreateInstance(PackageExport_ExportPackageItemType, newList.Count);
-                newList.ToArray().CopyTo(newListArray, 0);
-                PackageExport_ExportPackageItemsField.SetValue(PackageExport_Window, newListArray);
+
+                if (assetPath.Contains("_PoiyomiShaders")) continue;
+
+                var obj = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(assetPath);
+                if (obj is Shader shader && ShaderHelper.IsShaderUsingThryEditor(shader))
+                {
+                    if (shader.name.ToLowerInvariant().Contains("poiyomi pro")) continue;
+                }
+
+                newList.Add(exportItems[i]);
             }
+
+            if (newList.Count == exportItems.Length) return;
+
+            var newArray = Array.CreateInstance(PackageExport_ExportPackageItemType, newList.Count);
+            newList.ToArray().CopyTo(newArray, 0);
+            PackageExport_ExportPackageItemsField.SetValue(packageExportWindow, newArray);
+
             Helper.RestoreDetour(PackageExport_ExportMethod);
             EditorApplication.delayCall += DetourExportMethod;
-            // Delay needed because the Invoke below likely exits somewhere
-            // causing this method to stop calling (I think?!)
-            PackageExport_ExportMethod.Invoke(PackageExport_Window, null);
+
+            PackageExport_ExportMethod.Invoke(packageExportWindow, null);
         }
 
         private static void DetourExportMethod()
         {
+            if (PackageExport_ExportMethod == null || CustomExport_Method == null) return;
+            
             Helper.TryDetourFromTo(PackageExport_ExportMethod, CustomExport_Method);
-        }
-
-        static void AssetDatabaseOnimportPackageStarted(string packagename)
-        {
-            if (!PackageStartsWithNames.Any(name => packagename.StartsWith(name, StringComparison.OrdinalIgnoreCase)) || !AssetDatabase.IsValidFolder(PoiPath))
-                return;
-
-            EditorUtility.DisplayDialog(warningDialogTitle, string.Format(warningDialogMessage, _poiPath), warningDialogOk);
-
-            EditorApplication.update -= WaitForImportWindow;
-            EditorApplication.update += WaitForImportWindow;
-        }
-
-        static void WaitForImportWindow()
-        {
-            if (!(bool)hasOpenInstancesMethod.Invoke(null, null))
-                return;
-
-            EditorApplication.update -= WaitForImportWindow;
-            EditorWindow.GetWindow(importWindowType).Close();
-        }
-
-        static string FindPoiFolder()
-        {
-            if (AssetDatabase.IsValidFolder(DefaultPoiPath))
-                return DefaultPoiPath;
-
-            string path = AssetDatabase.GUIDToAssetPath(DefaultPoiFolderGUID);
-            if (!string.IsNullOrWhiteSpace(path))
-                return path;
-
-            // Nuclear (and probably slow) option
-            string[] dirs = Directory.GetDirectories(Application.dataPath, "_PoiyomiShaders", SearchOption.AllDirectories);
-            return dirs.Length > 0 ? AbsolutePathToLocalAssetsPath(dirs[0]) : null;
-        }
-
-        static string AbsolutePathToLocalAssetsPath(string path)
-        {
-            if (path.StartsWith(Application.dataPath))
-                path = "Assets" + path.Substring(Application.dataPath.Length);
-            return path;
         }
     }
 }

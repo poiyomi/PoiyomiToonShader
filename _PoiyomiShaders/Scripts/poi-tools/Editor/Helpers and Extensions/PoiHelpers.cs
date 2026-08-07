@@ -124,8 +124,13 @@ namespace Poi.Tools
         /// <param name="path"></param>
         public static void PingAssetAtPath(string path)
         {
+#if UNITY_6000_5_OR_NEWER
+            var obj = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(path);
+            EditorGUIUtility.PingObject(obj);
+#else
             var inst = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(path).GetInstanceID();
             EditorGUIUtility.PingObject(inst);
+#endif
         }
 
         public static void DrawWithLabelWidth(float width, Action action)
@@ -273,6 +278,75 @@ namespace Poi.Tools
         {
             var matSwapKeyframes = materialSwapCurveBindings.SelectMany(binding => AnimationUtility.GetObjectReferenceCurve(animationClip, binding));
             return matSwapKeyframes.Select(frame => frame.value as Material).Distinct();
+        }
+
+        /// <summary>
+        /// Collects all materials from a GameObject's renderers and optionally from material swap animations.
+        /// Shows a dialog if animations are detected.
+        /// </summary>
+        /// <param name="gameObject">The root GameObject to collect materials from</param>
+        /// <param name="promptForAnimations">If true, shows dialog when animations are found. If false, silently includes them.</param>
+        /// <param name="dialogTitle">Title for the animation detection dialog</param>
+        /// <param name="dialogMessage">Message format for the dialog. Use {0} for animation names.</param>
+        /// <returns>Distinct list of materials</returns>
+        public static List<Material> CollectMaterialsFromGameObject(GameObject gameObject, bool promptForAnimations = true,
+            string dialogTitle = "Material Swap Animations Detected",
+            string dialogMessage = "Animations that swap materials on your avatar were detected. Would you like materials inside those animations to be included as well?\n\nAffected animations:\n{0}")
+        {
+            var allMaterials = gameObject.GetComponentsInChildren<Renderer>(true)
+                .SelectMany(r => r.sharedMaterials)
+                .Where(m => m != null)
+                .ToList();
+
+            if (TryGetAnimationsWithMaterialSwapsInAvatar(gameObject, out var animClipAndCurveBindings))
+            {
+                bool includeAnimMaterials = !promptForAnimations;
+                if (promptForAnimations)
+                {
+                    string clipNames = string.Join("\n", animClipAndCurveBindings.Keys.Select(clip => clip.name));
+                    includeAnimMaterials = EditorUtility.DisplayDialog(dialogTitle, string.Format(dialogMessage, clipNames), "Yes", "No");
+                }
+
+                if (includeAnimMaterials)
+                {
+                    foreach (var animationAndCurveBinding in animClipAndCurveBindings)
+                        allMaterials.AddRange(GetMaterialsFromMaterialSwapCurveBindings(animationAndCurveBinding.Key, animationAndCurveBinding.Value));
+                }
+            }
+
+            return allMaterials.Where(m => m != null).Distinct().ToList();
+        }
+
+        /// <summary>
+        /// Checks if a GameObject has any materials (including in animations) matching a predicate
+        /// </summary>
+        public static bool HasMaterialsMatching(GameObject gameObject, Func<Material, bool> predicate)
+        {
+            var allMaterials = gameObject.GetComponentsInChildren<Renderer>(true)
+                .SelectMany(r => r.sharedMaterials)
+                .Where(m => m != null)
+                .ToList();
+
+            if (TryGetAnimationsWithMaterialSwapsInAvatar(gameObject, out var animClipAndCurveBindings))
+            {
+                foreach (var animationAndCurveBinding in animClipAndCurveBindings)
+                    allMaterials.AddRange(GetMaterialsFromMaterialSwapCurveBindings(animationAndCurveBinding.Key, animationAndCurveBinding.Value));
+            }
+
+            return allMaterials.Any(m => m != null && predicate(m));
+        }
+
+        public static bool IsURP()
+        {
+            UnityEngine.Rendering.RenderPipelineAsset graphicPipelineAsset = UnityEngine.Rendering.GraphicsSettings.currentRenderPipeline;
+            if (graphicPipelineAsset != null)
+            {
+                if (graphicPipelineAsset.GetType().Name.IndexOf("UniversalRenderPipelineAsset", StringComparison.OrdinalIgnoreCase) >= 0)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }

@@ -73,21 +73,24 @@ If **distributing** an avatar or other asset that uses Poiyomi shaders, **do not
 
 Poiyomi Shaders include multiple released versions for backwards compatibility. The latest version is always the most up-to-date, and is recommended for use in new projects. Older versions are provided for compatibility with older models - we include the last release for each minor version (e.g. 8.0.426 for v8.0, 7.3.050 for v7.3).
 
-Currently, Poiyomi v7 is included for backwards compatibility with older models, and is no longer being updated. **It's not recommended to use v7 for new projects.**
+Currently, Poiyomi v7 is included for backwards compatibility with older models, and is no longer being updated. **It's not recommended to use v7 for new projects.** In the future, older versions may be removed without prior warning in order to ensure compatibility with newer pipelines, so it's highly advised to use the latest version available!
 
-When matching a version to a model, generally, the major and minor versions must match, but the patch version can be newer. For example, if a model specifies 8.0.295, one can use 8.0.426 (included in the latest release) without issue. For v7, generally, 7.3.050 is the last version, and should be used for all v7 models.
+When matching a version to a model, generally, the major and minor versions must match, but the patch version can be newer. Poiyomi Shaders are forgiving with various patch versions. For example, if a model specifies 9.3.15, one can use 9.3.67 (included in the latest release) without issue. For v7, generally, 7.3.050 is the last version, and should be used for all v7 models.
 
 ## Pro Shader
 
 [Poiyomi Pro](https://patreon.com/poiyomi) offers additional features and functionality, and always has the latest developments. It contains everything in the free version, plus features like:
 - Grabpass shading effects, like Refraction and Blur
-- Fur shader, supporting all of the main shader's feature plus fluffy fur
+- Fur Shader, supporting all of the main shader's feature plus fluffy fur
 - Tessellation and Geometry Shader effects, like a geometric dissolve
 - Modular shader system support, for installing third-party shader modules
 - TPS (8.1+)
 - DPS Support (7.3, 8.2+)
+- SSAO
+- Contact Shadows
+- and more!
 
-To get access to Poiyomi Pro, [support Poiyomi on Patreon](https://patreon.com/poiyomi) at the $10 tier or higher, [link your Discord to your Patreon](https://support.patreon.com/hc/en-us/articles/212052266-Get-my-Discord-role), and join the [Poiyomi Discord](https://discord.gg/poiyomi) to get the Pro version of the shader.
+To get access to Poiyomi Pro, [support Poiyomi on Patreon](https://patreon.com/poiyomi) at the $10 tier or higher, then use the VCC package `Poiyomi Pro` to authenticate with your Patreon account to download and install Poiyomi Pro into your project. Optionally, you can install Poiyomi Pro manually by accessing the downloads on our [Poiyomi Pro Website](https://pro.poiyomi.com/) by logging in with your Patreon account. For more information, refer to our Documentation [here](https://www.poiyomi.com/download#poiyomi-pro).
 
 ---
 
@@ -95,22 +98,22 @@ To get access to Poiyomi Pro, [support Poiyomi on Patreon](https://patreon.com/p
 
 ## ThryEditor
 
-Poiyomi relies on [ThryEditor](https://github.com/Thryrallo/ThryEditor) to display its inspector properly and lock the shader to ensure optimal performance. ThryEditor is included in the repository, and should not be updated separately.
-
+Poiyomi relies on [ThryEditor](https://github.com/poiyomi/ThryEditor) to display its inspector properly and lock the shader to ensure optimal performance. ThryEditor is provided as a separate VCC Package available in the same repository notated above and will be auto-installed when adding Poiyomi Toon Shader to your project via VCC.
 
 ## Compatibility
 
-Poiyomi Shaders are designed for use with the **Built-In Render Pipeline (BIRP)** on **DirectX 11**. We target VRChat's [currently supported Unity version](https://docs.vrchat.com/docs/current-unity-version), **2019.4.31f1** at time of writing. Higher Unity versions have been tested and are known to work, but we primarily target the latest Unity version that VRChat supports.
+Poiyomi Shaders are designed for use with the **Built-In Render Pipeline (BIRP)** on **DirectX 11**. We target VRChat's [currently supported Unity version](https://docs.vrchat.com/docs/current-unity-version), **2022.3.22f1** at time of writing. Higher Unity versions have been tested and are known to work, but we primarily target the latest Unity version that VRChat supports.
 
-Poiyomi shaders are currently **not compatible** with Unity's Scriptable Rendering Pipelines (URP, HDRP, SRP). Non-DirectX 11 platforms (e.g. OpenGL, Metal, Vulkan, etc.) are also not supported, and may not work at all.
+Compatibility with the Universal Rendering Pipeline is currently limited, but available. For more information, joing the [Discord](https://discord.gg/poiyomi).
+
+Poiyomi Shaders are currently **not compatible** with Unity's Scriptable Rendering Pipelines (HDRP, SRP). Non-DirectX 11 platforms (e.g. OpenGL, Metal, Vulkan, etc.) are not guaranteed to work either.
 
 The shaders can be used for games outside of VRChat, but may not be ideal due to materials being unable to share a common shader. For non-VRChat usage, make sure to use the [Locking](https://www.poiyomi.com/general/locking) functionality provided by ThryEditor to create optimized shaders for each material.
 
 ## Contributing
 
-Active development happens on the Pro shader in a private repository, with free releases happening periodically. If you'd like to contribute code to the shader, join the [Discord](https://discord.gg/poiyomi) and inquire. For the Editor code side, you can contribute to [ThryEditor](https://github.com/Thryrallo/ThryEditor), as it's MIT-licensed and accepts pull requests.
+Active development happens on the Pro shader in a private repository, with free releases happening periodically. If you'd like to contribute code to the shader, join the [Discord](https://discord.gg/poiyomi) and inquire. For the Editor code side, you can contribute to [ThryEditor](https://github.com/poiyomi/ThryEditor), as it's MIT-licensed and accepts pull requests.
 
 We're always looking for help with [documentation](https://poiyomi.com/). If you'd like to contribute, you can do so by [in the docs repository](https://github.com/poiyomi/PoiyomiDocs) - we accept pull requests! Docs are written in Markdown, and are built using [Docusaurus](https://docusaurus.io/).
 
 To report a bug or request a feature, you can do so either by [opening an issue](https://github.com/poiyomi/PoiyomiToonShader/issues) or by joining the [Discord](https://discord.gg/poiyomi) and asking. Please make sure to include as much information as possible, including screenshots and/or videos if applicable. Ensure you're using the latest version of the shader, and that the issue is not already reported.
-

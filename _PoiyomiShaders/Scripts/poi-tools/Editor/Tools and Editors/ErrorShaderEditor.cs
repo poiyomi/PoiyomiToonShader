@@ -122,8 +122,9 @@ namespace Poi.Tools
                 else if(!isProMaterial)
                 {
                     EditorGUILayout.HelpBox(UnlockedMaterialText, MessageType.Warning);
+                    string URP = PoiHelpers.IsURP() ? "URP" : "";
                     if(GUILayout.Button("Switch to latest Toon"))
-                        SwitchShader(".poiyomi/Poiyomi Toon");
+                        SwitchShader($".poiyomi/Poiyomi Toon {URP}".Trim());
                 }
             }
 

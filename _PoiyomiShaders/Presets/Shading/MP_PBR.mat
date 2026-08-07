@@ -14,14 +14,12 @@ Material:
   m_ValidKeywords: []
   m_InvalidKeywords:
   - BSSBLOOMFOGTYPE_HEIGHT
-  - MOCHIE_PBR
   - VIGNETTE_MASKED
   - _LIGHTINGMODE_REALISTIC
   - _RIM2STYLE_POIYOMI
   - _RIMSTYLE_POIYOMI
   - _STOCHASTICMODE_DELIOT_HEITZ
   - _STYLIZEDREFLECTIONMODE_UNITYCHAN
-  - _TPS_ANIMATEDTOGGLE_ON
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -47,9 +45,6 @@ Material:
     _LightingMonochromatic_isPreset: true
     _LightingShadowColor_isPreset: true
     _LightingVertexLightingEnabled_isPreset: true
-    _MochieBRDF_isPreset: true
-    _MochieMetallicMultiplier_isPreset: true
-    _MochieRoughnessMultiplier_isPreset: true
     _ShadingEnabled_isPreset: true
     isPreset: true
     presetName: PBR+GI Compatibility
@@ -199,11 +194,11 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _DistortionFlowTexture:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: 07f0a54a3a4e7754eabc8ced70d7b30c, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _DistortionFlowTexture1:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: 70cd704e7a9550241b8a8b51fffc1a68, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _DistortionMask:
@@ -1924,7 +1919,7 @@ Material:
     - _LightingAdditiveType: 0
     - _LightingCap: 10
     - _LightingCapEnabled: 0
-    - _LightingCastedShadows: 0
+    - _LightingCastedShadows: 1
     - _LightingColorMode: 1
     - _LightingDebugVisualize: 0
     - _LightingDetailShadowMapsUV: 0
@@ -2227,7 +2222,7 @@ Material:
     - _MirrorTextureEnabled: 0
     - _MirrorTextureForceEnabled: 0
     - _MirrorTextureUV: 0
-    - _MochieBRDF: 1
+    - _MochieBRDF: 0
     - _MochieForceFallback: 0
     - _MochieGSAAEnabled: 1
     - _MochieLitFallback: 1
@@ -3382,9 +3377,9 @@ Material:
     - m_start_audioLinkOverrides: 0
     - m_start_backFace: 0
     - m_start_backlight: 0
-    - m_start_bakedLighting: 0
+    - m_start_bakedLighting: 1
     - m_start_blending: 1
-    - m_start_brdf: 1
+    - m_start_brdf: 0
     - m_start_clearCoat: 0
     - m_start_clearcoatadvanced: 0
     - m_start_clearcoatglobalmask: 0

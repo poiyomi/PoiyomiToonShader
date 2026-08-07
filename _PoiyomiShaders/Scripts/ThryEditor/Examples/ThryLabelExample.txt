@@ -1,6 +1,0 @@
-m_start_Lighting:=Light and Shadow--{reference_property:_EnableLighting,button_right:{text:Tutorial,action:{type:URL,data:https://youtu.be/2B-EJutVjs8},hover:YouTube}}
-_EnableLighting:=Enable Lighting--{hide_in_inspector:true}
-g_start_l:=--{condition_enable:{type:PROPERTY_BOOL,data:_EnableLighting}}
-
-footer_website:={texture:{name:thry_settings_icon,height:32},action:{type:URL,data:https://www.ShaderEditor.thryrallo.de},hover:Website}
-footer_github:={text:Github,action:{type:URL,data:https://github.com/thryrallo/ShaderEditor}}

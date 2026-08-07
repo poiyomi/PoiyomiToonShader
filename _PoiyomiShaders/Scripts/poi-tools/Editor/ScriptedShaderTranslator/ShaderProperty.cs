@@ -10,12 +10,16 @@ namespace Poi.Tools.ShaderTranslator
     {
         public string name;
         public string description;
+#if UNITY_6000_2_OR_NEWER
+        public UnityEngine.Rendering.ShaderPropertyType type;
+#else
         public MaterialProperty.PropType type;
+#endif
         public string[] attributes;
 
         public float defaultFloatValue;
         public int defaultIntValue;
-        public Vector2 defaultVector2Value;
+        public Vector4 defaultVectorValue;
         public string defaultTextureName;
         public Vector2 rangeLimits;
 

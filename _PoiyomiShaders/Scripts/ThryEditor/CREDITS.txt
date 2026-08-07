@@ -1,6 +1,0 @@
-Shader Optimizer : Kaj (https://github.com/DarthShader)
-sRGBWarningDrawer : z3y (https://github.com/z3y)
-Auto Anchor Feature : Pumkin (https://github.com/rurre)
-
-Shader Optimizer - Property Renaming : RequiDev (https://github.com/RequiDev)
-Shader Optimizer - Shared Locked Shaders : 3 (https://github.com/Float3)

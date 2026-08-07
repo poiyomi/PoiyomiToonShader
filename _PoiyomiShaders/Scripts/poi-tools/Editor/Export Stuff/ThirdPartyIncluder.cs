@@ -44,15 +44,23 @@ namespace Poi.Tools
             if (!File.Exists(sourcePath))
             {
                 if (!string.IsNullOrEmpty(sourceGUID))
-                {
                     return AssetDatabase.GUIDToAssetPath(sourceGUID);
-                }
-                else
-                {
-                    return string.Empty;
-                }
+                return string.Empty;
             }
             return sourcePath;
+        }
+        public static string ResolveDestinationPath(string destinationPath, string destinationGUID)
+        {
+            string fullPath = Path.Combine(projectPath, destinationPath);
+            if (File.Exists(fullPath))
+                return fullPath;
+            if (!string.IsNullOrEmpty(destinationGUID))
+            {
+                string guidPath = AssetDatabase.GUIDToAssetPath(destinationGUID);
+                if (!string.IsNullOrEmpty(guidPath))
+                    return Path.Combine(projectPath, guidPath);
+            }
+            return fullPath;
         }
         public static bool CopyIfGood(string sourcePath, string sourceGUID, string destinationPath)
         {
@@ -99,20 +107,16 @@ namespace Poi.Tools
                     foreach (var thirdPartyInclude in thirdPartyIncluder.ThirdPartyIncludes)
                     {
                         string sourcePath = Path.Combine(projectPath, thirdPartyInclude.sourcePath);
-                        string destinationPath = Path.Combine(projectPath, thirdPartyInclude.destinationPath);
+                        string destinationPath = ResolveDestinationPath(thirdPartyInclude.destinationPath, thirdPartyInclude.destinationGUID);
                         if (thirdPartyInclude.type == ThirdPartyIncluderAsset.ThirdPartyIncludeType.FileCopy)
                         {
                             if (CopyIfGood(sourcePath, thirdPartyInclude.sourceGUID, destinationPath))
-                            {
                                 i++;
-                            }
                         }
                         else if (thirdPartyInclude.type == ThirdPartyIncluderAsset.ThirdPartyIncludeType.DefineIfExists)
                         {
                             if (WriteDefineIfExists(sourcePath, thirdPartyInclude.sourceGUID, destinationPath, thirdPartyInclude.defineName))
-                            {
                                 i++;
-                            }
                         }
                     }
                     if (i > 0) Debug.Log($"[ThirdPartyIncluder] Found {thirdPartyIncluder.name} and did {i}/{thirdPartyIncluder.ThirdPartyIncludes.Length} actions", thirdPartyIncluder);
@@ -149,11 +153,10 @@ namespace Poi.Tools
                 {
                     foreach (var include in includer.ThirdPartyIncludes)
                     {
-                        // only clear if user checked “Clear Contents”
                         if (!include.clearContents)
                             continue;
 
-                        string destPath = Path.Combine(projectPath, include.destinationPath);
+                        string destPath = ResolveDestinationPath(include.destinationPath, include.destinationGUID);
                         if (File.Exists(destPath))
                             File.WriteAllText(destPath, string.Empty);
                     }
@@ -197,15 +200,11 @@ namespace Poi.Tools
                     foreach (var thirdPartyInclude in found)
                     {
                         string sourcePath = Path.Combine(ThirdPartyIncluder.projectPath, thirdPartyInclude.sourcePath);
-                        string destinationPath = Path.Combine(ThirdPartyIncluder.projectPath, thirdPartyInclude.destinationPath);
+                        string destinationPath = ThirdPartyIncluder.ResolveDestinationPath(thirdPartyInclude.destinationPath, thirdPartyInclude.destinationGUID);
                         if (thirdPartyInclude.type == ThirdPartyIncluderAsset.ThirdPartyIncludeType.FileCopy)
-                        {
                             ThirdPartyIncluder.CopyIfGood(sourcePath, thirdPartyInclude.sourceGUID, destinationPath);
-                        }
                         else if (thirdPartyInclude.type == ThirdPartyIncluderAsset.ThirdPartyIncludeType.DefineIfExists)
-                        {
                             ThirdPartyIncluder.WriteDefineIfExists(sourcePath, thirdPartyInclude.sourceGUID, destinationPath, thirdPartyInclude.defineName);
-                        }
                     }
                 }
                 finally

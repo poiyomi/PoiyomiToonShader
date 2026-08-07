@@ -22,9 +22,8 @@ namespace Poi.Tools
             public string sourcePath;
             public string sourceGUID;
             public string destinationPath;
+            public string destinationGUID;
             public string defineName;
-
-            // New clear contents flag
             public bool clearContents;
         }
 
@@ -95,11 +94,11 @@ namespace Poi.Tools
                         return EditorGUIUtility.singleLineHeight;
 
                     var typeIndex = element.FindPropertyRelative("type").enumValueIndex;
-                    int lines = 5; // default fallback
+                    int lines = 6; // default fallback
                     if (CompareType(typeIndex, ThirdPartyIncluderAsset.ThirdPartyIncludeType.FileCopy))
-                        lines = 6;           // + clearContents
+                        lines = 7;           // + clearContents
                     else if (CompareType(typeIndex, ThirdPartyIncluderAsset.ThirdPartyIncludeType.DefineIfExists))
-                        lines = 7;           // + defineName + clearContents
+                        lines = 8;           // + defineName + clearContents
 
                     return EditorGUIUtility.singleLineHeight * 1.1f * lines;
                 };
@@ -108,12 +107,12 @@ namespace Poi.Tools
                 {
                     var element = list.serializedProperty.GetArrayElementAtIndex(index);
                     var typeProp = element.FindPropertyRelative(nameof(ThirdPartyIncluderAsset.ThirdPartyInclude.type));
-                    var destProp = element.FindPropertyRelative(nameof(ThirdPartyIncluderAsset.ThirdPartyInclude.destinationPath));
+                    var destPathPropHeader = element.FindPropertyRelative(nameof(ThirdPartyIncluderAsset.ThirdPartyInclude.destinationPath));
 
                     // Foldout header
-                    string destName = string.IsNullOrEmpty(destProp.stringValue)
+                    string destName = string.IsNullOrEmpty(destPathPropHeader.stringValue)
                         ? ""
-                        : System.IO.Path.GetFileName(destProp.stringValue);
+                        : System.IO.Path.GetFileName(destPathPropHeader.stringValue);
                     string title = $"{index} ({typeProp.enumDisplayNames[typeProp.enumValueIndex]}) {destName}";
                     element.isExpanded = EditorGUI.Foldout(
                         new Rect(rect.x + 10f, rect.y, rect.width, EditorGUIUtility.singleLineHeight),
@@ -153,12 +152,28 @@ namespace Poi.Tools
 
                     // 4) DestinationPath
                     y += lineH;
+                    var destPathProp = element.FindPropertyRelative(nameof(ThirdPartyIncluderAsset.ThirdPartyInclude.destinationPath));
+                    EditorGUI.BeginChangeCheck();
                     EditorGUI.PropertyField(new Rect(rect.x, y, width, EditorGUIUtility.singleLineHeight),
-                        destProp,
+                        destPathProp,
                         new GUIContent("Destination Path")
                     );
+                    if (EditorGUI.EndChangeCheck())
+                    {
+                        var destGuidProp = element.FindPropertyRelative(nameof(ThirdPartyIncluderAsset.ThirdPartyInclude.destinationGUID));
+                        string newGUID = AssetDatabase.AssetPathToGUID(destPathProp.stringValue);
+                        if (!string.IsNullOrEmpty(newGUID))
+                            destGuidProp.stringValue = newGUID;
+                    }
 
-                    // 5) DefineName (if DefineIfExists)
+                    // 5) DestinationGUID
+                    y += lineH;
+                    EditorGUI.PropertyField(new Rect(rect.x, y, width, EditorGUIUtility.singleLineHeight),
+                        element.FindPropertyRelative(nameof(ThirdPartyIncluderAsset.ThirdPartyInclude.destinationGUID)),
+                        new GUIContent("Destination GUID")
+                    );
+
+                    // 7) DefineName (if DefineIfExists)
                     if (CompareType(typeProp.enumValueIndex, ThirdPartyIncluderAsset.ThirdPartyIncludeType.DefineIfExists))
                     {
                         y += lineH;
@@ -168,7 +183,7 @@ namespace Poi.Tools
                         );
                     }
 
-                    // 6) ClearContents toggle
+                    // 8) ClearContents toggle
                     y += lineH;
                     EditorGUI.PropertyField(new Rect(rect.x, y, width, EditorGUIUtility.singleLineHeight),
                         element.FindPropertyRelative(nameof(ThirdPartyIncluderAsset.ThirdPartyInclude.clearContents)),

@@ -1,1 +1,0 @@
-This is for scripts that need to be outside the ThryEditor Assembly
