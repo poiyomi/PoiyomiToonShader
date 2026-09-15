@@ -1,0 +1,25 @@
+#T#PoiGeomQuestFallback
+// Meta quest fallback for geometry shaders
+#if defined(POI_DEVICE_QUEST)
+    [unroll(2)]
+    for (int j = 0; j < 2; j++)
+    {
+        [unroll(3)]
+        for (int i = 0; i < 3; i++)
+        {
+            #ifdef POI_PASS_LILFUR
+                // Barycentric weight selecting input vertex i.
+                float3 fallbackFactor = float3(i == 0, i == 1, i == 2);
+                PoiGeoToFragLilFur fallbackOutput = SetupFurOutputStructs(output, input, furVectors, fallbackFactor);
+            #else
+                VertexOut fallbackOutput = input[i];
+            #endif
+            float4x4 MVP = unity_StereoMatrixVP[j];
+            fallbackOutput.pos = mul(MVP, float4(fallbackOutput.worldPos.xyz, 1.0));
+            fallbackOutput.gl_Layer = j;
+            outStream.Append(fallbackOutput);
+        }
+        outStream.RestartStrip();
+    }
+    return;
+#endif

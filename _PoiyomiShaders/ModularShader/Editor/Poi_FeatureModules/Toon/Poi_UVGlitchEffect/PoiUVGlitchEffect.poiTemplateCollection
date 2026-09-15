@@ -1,0 +1,217 @@
+#T#PoiUVGlitchEffectProperties
+//ifex _UVGlitchEffectEnabled==0
+[HideInInspector] m_start_uvGlitchEffect ("UV Glitch Effect--{reference_property:_UVGlitchEffectEnabled}", Float) = 0
+[HideInInspector][ThryToggle(POI_UV_GLITCH_EFFECT)]_UVGlitchEffectEnabled ("Enabled", Float) = 0
+[Vector2]_UVGlitchEffectDirection ("Direction of the Effect", Vector) = (0,1,0)
+[Vector2]_UVGlitchEffectCenter ("Center of the Effect", Vector) = (0.5,0.5,0)
+[ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos XZ, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7, Matcap, 9, Screen Space, 10)] _UVGlitchEffectToDistort ("Glitch UV", Int) = 0
+[sRGBWarning]_UVGlitchEffectMask ("Mask--{reference_properties:[_UVGlitchEffectMaskPan,_UVGlitchEffectMaskChannel]}", 2D) = "white" { }
+[ThryHideInInspector][Vector2]_UVGlitchEffectMaskPan ("Panning", Vector) = (0, 0, 0, 0)
+[ThryHideInInspector][Enum(R, 0, G, 1, B, 2, A, 3)]_UVGlitchEffectMaskChannel ("Channel", Int) = 0
+
+[HideInInspector] s_start_UVGlitchEffectLarge ("Main Glitch Effect--{reference_property:_UVGlitchEffectLargeEnabled,persistent_expand:true,default_expand:true}", Float) = 0
+[HideInInspector][ThryToggle(POI_UV_GLITCH_EFFECT_LARGE, true)]_UVGlitchEffectLargeEnabled ("Enabled", Float) = 0
+_UVGlitchEffectLargeInterval ("Glitch Interval Hint", Float) = 1
+_UVGlitchEffectWindowFalloff ("Glitch Falloff", Range(0,1)) = 0
+[ThryIntRange]_UVGlitchEffectLargeActiveSinusPeriods ("Glitch Wave Number", Range(1, 10)) = 3
+_UVGlitchEffectLargeStrength ("Glitch Strength", Range(0, 10)) = 1
+_UVGlitchEffectLargeSpikeStrength ("Spike Strength", Range(0,10)) = 2
+_UVGlitchEffectLargeDensity ("Glitch Density", Range(0, 100)) = 20
+_UVGlitchEffectLargeHardness ("Glitch Hardness", Range(1,10)) = 5
+_UVGlitchEffectLargeSpeed ("Glitch Speed", Range(0,10)) = 10
+[ThryToggle]_UVGlitchEffectLargeOverrideOn ("Time Override--{reference_property:_UVGlitchEffectLargeOverride}", Float) = 0
+[ThryHideInInspector]_UVGlitchEffectLargeOverride ("", Range(0,1)) = 0
+
+[HideInInspector] s_start_UVGlitchEffectHueShift ("Hue Shift--{reference_property:_UVGlitchEffectLargeHueShiftEnabled,persistent_expand:true,default_expand:true}", Float) = 0
+[HideInInspector][ThryToggle(POI_UV_GLITCH_EFFECT_LARGE_HUESHIFT,true)]_UVGlitchEffectLargeHueShiftEnabled ("Enabled", Float) = 0
+[ThryWideEnum(OKLab, 0, HSV, 1)] _UVGlitchEffectLargeHueShiftColorSpace ("Color Space", Int) = 0
+_UVGlitchEffectHueShiftRight ("Hue Shift Right", Range(0,1)) = 0
+_UVGlitchEffectHueShiftRightAlpha ("Coverage", Range(0,1)) = 0.5
+_UVGlitchEffectHueShiftLeft ("Hue Shift Left", Range(0,1)) = 0
+_UVGlitchEffectHueShiftLeftAlpha ("Coverage", Range(0,1)) = 0.5
+[HideInInspector] s_end_UVGlitchEffectHueShift ("Hue Shift", Float) = 0
+
+[HideInInspector] s_end_UVGlitchEffectLarge ("Main Glitch Effect", Float) = 0
+
+[HideInInspector] s_start_UVGlitchEffectSmall ("Small Glitch Effect--{reference_property:_UVGlitchEffectSmallEnabled,persistent_expand:true,default_expand:true}", Float) = 0
+[HideInInspector][ThryToggle(POI_UV_GLITCH_EFFECT_SMALL, true)]_UVGlitchEffectSmallEnabled ("Enabled", Float) = 0
+_UVGlitchEffectSmallInterval ("Glitch Interval", Float) = 1
+_UVGlitchEffectSmallSpeed ("Glitch Speed", Range(0.01,1)) = 1
+_UVGlitchEffectSmallStrength ("Glitch Strength", Range(0, 2)) = 0.5
+_UVGlitchEffectSmallSize ("Glitch Size", Range(0,0.25)) = 0.1
+[ThryToggle]_UVGlitchEffectSmallOverrideOn ("Time Override--{reference_property:_UVGlitchEffectSmallOverride}", Float) = 0
+[ThryHideInInspector]_UVGlitchEffectSmallOverride ("", Range(0,1)) = 0
+[HideInInspector] s_end_UVGlitchEffectSmall ("Small Glitch Effect", Float) = 0
+
+
+[HideInInspector] s_start_UVGlitchEffectMirror ("Mirror--{reference_property:_UVGlitchEffectMirrorEnable,persistent_expand:true}", Float) = 0
+[HideInInspector][ThryToggleUI(true)]_UVGlitchEffectMirrorEnable ("Mirror", Float) = 0
+[ThryWideEnum(Show In Both, 0, Show Only In Mirror, 1, Dont Show In Mirror, 2)] _UVGlitchEffectMirror ("Show in mirror", Int) = 0
+[HideInInspector] s_end_UVGlitchEffectMirror ("Mirror", Float) = 0
+
+[HideInInspector] m_end_uvGlitchEffect ("Glitch Effect", Float) = 0
+//endex
+
+#T#PoiUVGlitchEffectKeywords
+//ifex _UVGlitchEffectEnabled==0
+#pragma shader_feature_local POI_UV_GLITCH_EFFECT
+#pragma shader_feature_local POI_UV_GLITCH_EFFECT_LARGE
+#pragma shader_feature_local POI_UV_GLITCH_EFFECT_LARGE_HUESHIFT
+#pragma shader_feature_local POI_UV_GLITCH_EFFECT_SMALL
+//endex
+
+#T#PoiUVGlitchEffectVariables
+//ifex _UVGlitchEffectEnabled==0
+#ifdef POI_UV_GLITCH_EFFECT
+    float2 _UVGlitchEffectDirection;
+	float2 _UVGlitchEffectCenter;
+	int _UVGlitchEffectToDistort;
+
+	#if defined(PROP_UVGLITCHEFFECTMASK) || !defined(OPTIMIZER_ENABLED)
+		Texture2D _UVGlitchEffectMask;
+	#endif
+	float2 _UVGlitchEffectMaskPan;
+	int _UVGlitchEffectMaskChannel;
+	float4 _UVGlitchEffectMask_ST;
+
+	float _UVGlitchEffectMirrorEnable;
+	float _UVGlitchEffectMirror;
+
+	float _UVGlitchEffectLargeEnabled;
+	float _UVGlitchEffectLargeHueShiftEnabled;
+	float _UVGlitchEffectSmallEnabled;
+
+	#if defined(POI_UV_GLITCH_EFFECT_LARGE)
+		float _UVGlitchEffectLargeInterval;
+		float _UVGlitchEffectWindowFalloff;
+		float _UVGlitchEffectLargeStrength;
+		float _UVGlitchEffectLargeSpikeStrength;
+		float _UVGlitchEffectLargeDensity;
+    	float _UVGlitchEffectLargeHardness;
+    	float _UVGlitchEffectLargeSpeed;
+    	float _UVGlitchEffectLargeActiveSinusPeriods;
+		float _UVGlitchEffectLargeOverrideOn;
+		float _UVGlitchEffectLargeOverride;
+		#if defined(POI_UV_GLITCH_EFFECT_LARGE_HUESHIFT)
+			int _UVGlitchEffectLargeHueShiftColorSpace;
+			float _UVGlitchEffectHueShiftRight;
+			float _UVGlitchEffectHueShiftRightAlpha;
+			float _UVGlitchEffectHueShiftLeft;
+			float _UVGlitchEffectHueShiftLeftAlpha;
+		#endif
+	#endif
+
+	#if defined(POI_UV_GLITCH_EFFECT_SMALL)
+		float _UVGlitchEffectSmallInterval;
+		float _UVGlitchEffectSmallSpeed;
+		float _UVGlitchEffectSmallStrength;
+		float _UVGlitchEffectSmallSize;
+		float _UVGlitchEffectSmallOverrideOn;
+		float _UVGlitchEffectSmallOverride;
+	#endif
+
+#endif
+//endex
+
+#T#PoiUVGlitchEffectFragLateInit
+//ifex _UVGlitchEffectEnabled==0
+#if defined(POI_UV_GLITCH_EFFECT)
+
+	bool uvCanGlitch = true;
+	if (_UVGlitchEffectMirrorEnable >= 0.5 && _UVGlitchEffectMirror > 0)
+	{
+		bool inMirror = IsInMirror();
+		if (_UVGlitchEffectMirror == 1 && !inMirror)	uvCanGlitch = false;
+		if (_UVGlitchEffectMirror == 2 && inMirror)	uvCanGlitch = false;
+	}
+	float largeGlitchShiftAmount = 0;
+	float largeGlitchActiveModifier = 0;
+	if (uvCanGlitch)
+	{
+		float2 effectDirectionNorm = normalize(_UVGlitchEffectDirection);
+		
+		float2 glitchDirectionNorm = effectDirectionNorm.yx * float2(-1,1);
+		
+		float positionFarAwayAlongDirection = dot(poiMesh.uv[_UVGlitchEffectToDistort]+2*effectDirectionNorm, effectDirectionNorm);
+
+		float2 uvshift = 0;
+
+		#if defined(POI_UV_GLITCH_EFFECT_SMALL)
+			float shiftDistanceModifier = dot(_UVGlitchEffectCenter - poiMesh.uv[_UVGlitchEffectToDistort], glitchDirectionNorm);
+			if(abs(shiftDistanceModifier) > 0.01)
+			{
+				float intervalElapsedPerc = lerp(frac(POI_TIME.y / _UVGlitchEffectSmallInterval), _UVGlitchEffectSmallOverride, step(0.1,_UVGlitchEffectSmallOverrideOn));
+
+				float distancePerPeak = _UVGlitchEffectSmallSpeed * _UVGlitchEffectSmallInterval;
+
+				float fractionalDistance = frac((positionFarAwayAlongDirection + distancePerPeak * intervalElapsedPerc) / distancePerPeak);
+
+				float strength = (smoothstep(1-_UVGlitchEffectSmallSize,1,fractionalDistance) + smoothstep(-_UVGlitchEffectSmallSize,0,-fractionalDistance)) * _UVGlitchEffectSmallStrength * 0.1;
+
+				uvshift += shiftDistanceModifier * strength * glitchDirectionNorm;
+			}
+		#endif
+
+		#if defined(POI_UV_GLITCH_EFFECT_LARGE)
+			float sinTimeMultiplicator = (2 + _UVGlitchEffectLargeSpeed * 5);
+
+			//Pi and not 2*Pi, since we use POI_TIME.z which is time in seconds*2
+			float sinPeriodTimeInSec = UNITY_PI/sinTimeMultiplicator;
+			float sinPeriodDistance = 2*UNITY_PI/_UVGlitchEffectLargeDensity;
+			int sinFullPeriodsPerGlitchInterval = floor(_UVGlitchEffectLargeInterval/sinPeriodTimeInSec);
+			float sinFullPeriodsPerGlitchIntervalDistance = sinFullPeriodsPerGlitchInterval * sinPeriodDistance;
+			float adjustedGlitchInterval = sinFullPeriodsPerGlitchInterval * sinPeriodTimeInSec;
+
+			largeGlitchShiftAmount = clamp(sin(POI_TIME.z * sinTimeMultiplicator + positionFarAwayAlongDirection * _UVGlitchEffectLargeDensity) * _UVGlitchEffectLargeHardness, -1, 1)
+								* (1 + _UVGlitchEffectLargeSpikeStrength * step(0.9, sin((POI_TIME.y * sinTimeMultiplicator - positionFarAwayAlongDirection * _UVGlitchEffectLargeDensity)/3)));
+			
+			float adjustedIntervalElapsedPerc = lerp(frac(POI_TIME.y / adjustedGlitchInterval),_UVGlitchEffectLargeOverride, step(0.1,_UVGlitchEffectLargeOverrideOn));
+
+			float modDistance = (positionFarAwayAlongDirection + adjustedIntervalElapsedPerc * sinFullPeriodsPerGlitchIntervalDistance) % sinFullPeriodsPerGlitchIntervalDistance;
+			float activeSizeFromEnd = sinFullPeriodsPerGlitchIntervalDistance - _UVGlitchEffectLargeActiveSinusPeriods*sinPeriodDistance;
+			float falloffDist = _UVGlitchEffectWindowFalloff * _UVGlitchEffectLargeActiveSinusPeriods*sinPeriodDistance;
+			largeGlitchActiveModifier = saturate(
+											smoothstep(activeSizeFromEnd, activeSizeFromEnd + falloffDist, modDistance)
+											+ smoothstep(-sinFullPeriodsPerGlitchIntervalDistance, -sinFullPeriodsPerGlitchIntervalDistance + falloffDist, - modDistance)
+											- 1);
+			
+			uvshift += largeGlitchShiftAmount * glitchDirectionNorm * (_UVGlitchEffectLargeStrength * .01) * largeGlitchActiveModifier;
+		#endif
+
+		#if defined(PROP_UVGLITCHEFFECTMASK) || !defined(OPTIMIZER_ENABLED)
+			half maskValue = POI2D_SAMPLER_PAN(_UVGlitchEffectMask, _MainTex, poiUV(poiMesh.uv[_UVGlitchEffectToDistort], _UVGlitchEffectMask_ST), _UVGlitchEffectMaskPan)[_UVGlitchEffectMaskChannel];
+		#else
+			half maskValue = 1;
+		#endif
+		uvshift *= maskValue;
+		largeGlitchActiveModifier *= maskValue;
+
+		[flatten] switch(_UVGlitchEffectToDistort)
+		{
+			case 0: { poiMesh.uv[0] += uvshift; break; }
+			case 1: { poiMesh.uv[1] += uvshift; break; }
+			case 2: { poiMesh.uv[2] += uvshift; break; }
+			case 3: { poiMesh.uv[3] += uvshift; break; }
+			case 4: { poiMesh.uv[4] += uvshift; break; }
+			case 5: { poiMesh.uv[5] += uvshift; break; }
+			case 6: { poiMesh.uv[6] += uvshift; break; }
+			case 7: { poiMesh.uv[7] += uvshift; break; }
+			case 8: { poiMesh.uv[8] += uvshift; break; }
+			case 9: { poiMesh.uv[9] += uvshift; break; }
+			case 10: { poiMesh.uv[10] += uvshift; break; }
+		}
+	}
+#endif
+//endex
+
+#T#PoiUVGlitchEffectFragColorFunctionCalls
+//ifex _UVGlitchEffectEnabled==0 || _UVGlitchEffectLargeHueShiftEnabled==0 || _UVGlitchEffectLargeEnabled==0
+#if defined(POI_UV_GLITCH_EFFECT) && defined(POI_UV_GLITCH_EFFECT_LARGE) && defined(POI_UV_GLITCH_EFFECT_LARGE_HUESHIFT)
+	if (uvCanGlitch)
+	{		
+		largeGlitchActiveModifier = saturate(largeGlitchActiveModifier * 2);
+
+		poiFragData.baseColor = lerp(poiFragData.baseColor ,hueShift(poiFragData.baseColor, frac(lerp(_UVGlitchEffectHueShiftLeft, _UVGlitchEffectHueShiftRight,step(0,largeGlitchShiftAmount))), _UVGlitchEffectLargeHueShiftColorSpace), largeGlitchActiveModifier * lerp(_UVGlitchEffectHueShiftLeftAlpha, _UVGlitchEffectHueShiftRightAlpha,step(0,largeGlitchShiftAmount)));
+	}
+#endif
+//endex

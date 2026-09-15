@@ -1,0 +1,138 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4139f4797952904db2e5c0882637222, type: 3}
+  m_Name: PoiModulesTogglesModuleDictionary
+  m_EditorClassIdentifier: 
+  shaderModules:
+  - {fileID: 11400000, guid: e5ae0185c825d94429015d9bd4b67352, type: 2}
+  - {fileID: 11400000, guid: c4fd319e47cec1c45a221ca15c8291fe, type: 2}
+  - {fileID: 11400000, guid: 0862acd689c6edb4f998fed9e8007969, type: 2}
+  - {fileID: 11400000, guid: 0862acd689c6edb4f998fed9e8007969, type: 2}
+  - {fileID: 11400000, guid: 2ca66876a62414e43b9b15693a23537e, type: 2}
+  - {fileID: 11400000, guid: 5b74769abf3a4f840970029f5136c298, type: 2}
+  - {fileID: 11400000, guid: 5b74769abf3a4f840970029f5136c298, type: 2}
+  - {fileID: 11400000, guid: 5b74769abf3a4f840970029f5136c298, type: 2}
+  - {fileID: 11400000, guid: 5b74769abf3a4f840970029f5136c298, type: 2}
+  - {fileID: 11400000, guid: 5b74769abf3a4f840970029f5136c298, type: 2}
+  - {fileID: 11400000, guid: 9517bd1cad1457744acd511156823aff, type: 2}
+  - {fileID: 11400000, guid: eca31a3b9b86b4b4d8ff5cff9f135f36, type: 2}
+  - {fileID: 11400000, guid: 043008fa06fb38b4992021bf79cbf726, type: 2}
+  - {fileID: 11400000, guid: 87ca4a92adfc6d24f8f9bef432acf14a, type: 2}
+  - {fileID: 11400000, guid: 883f6564ee1d11544ab7c82b2438e3d5, type: 2}
+  - {fileID: 11400000, guid: 026aae78de33b444185dc631aad07608, type: 2}
+  - {fileID: 11400000, guid: 24577e7ddd2003a4dad2c8994d4d66a2, type: 2}
+  - {fileID: 11400000, guid: 4ee7e9ca2445a9943818297c16031dc3, type: 2}
+  - {fileID: 11400000, guid: 2b39ca163cdc5544793d775714022874, type: 2}
+  - {fileID: 11400000, guid: 4a4ba4e31a5f2294289339f643c597ec, type: 2}
+  - {fileID: 11400000, guid: 1e5f5acfca7186c42ad0956d45397b4f, type: 2}
+  - {fileID: 11400000, guid: 5d4c7f67c175e0f4ea39ab2469736a5f, type: 2}
+  - {fileID: 11400000, guid: bc1e9f74ebdbaaf439f73301d59c16aa, type: 2}
+  - {fileID: 11400000, guid: a8fd22f54e96edd478df063aebadd55f, type: 2}
+  - {fileID: 11400000, guid: 15d0dbfc16740a6458f40abedce1e247, type: 2}
+  - {fileID: 11400000, guid: 15d0dbfc16740a6458f40abedce1e247, type: 2}
+  - {fileID: 11400000, guid: 15d0dbfc16740a6458f40abedce1e247, type: 2}
+  - {fileID: 11400000, guid: 15d0dbfc16740a6458f40abedce1e247, type: 2}
+  - {fileID: 11400000, guid: 7c64362992ed75347a83d003eed92e0f, type: 2}
+  - {fileID: 11400000, guid: 7a72b1acd760c1848b31ff719e6d6e6d, type: 2}
+  - {fileID: 11400000, guid: 3f43a4e8f8b031949b76535ca295e1c2, type: 2}
+  - {fileID: 11400000, guid: 3f43a4e8f8b031949b76535ca295e1c2, type: 2}
+  - {fileID: 11400000, guid: 3f43a4e8f8b031949b76535ca295e1c2, type: 2}
+  - {fileID: 11400000, guid: 3f43a4e8f8b031949b76535ca295e1c2, type: 2}
+  - {fileID: 11400000, guid: b7107bd37b2093f499c145a305820813, type: 2}
+  - {fileID: 11400000, guid: 383407afc98e84c41ab2156f362de87c, type: 2}
+  - {fileID: 11400000, guid: ba8ca7621544dc74f813f9664afd8b7e, type: 2}
+  - {fileID: 11400000, guid: fa6a8182af062384f8a7269b3b977701, type: 2}
+  - {fileID: 11400000, guid: 13aeab2df0d8ca648a80161f45bd33e7, type: 2}
+  - {fileID: 11400000, guid: 13aeab2df0d8ca648a80161f45bd33e7, type: 2}
+  - {fileID: 11400000, guid: 13aeab2df0d8ca648a80161f45bd33e7, type: 2}
+  - {fileID: 11400000, guid: cc0df58e896264c4ba4596bdcbe5bc4f, type: 2}
+  - {fileID: 11400000, guid: cc0df58e896264c4ba4596bdcbe5bc4f, type: 2}
+  - {fileID: 11400000, guid: f89d06203af8e16489bd8bc5a48643f4, type: 2}
+  - {fileID: 11400000, guid: 4064ea730840a5d478e92b13b02cc0aa, type: 2}
+  - {fileID: 11400000, guid: c4fdd443c7b16f54e8a16680c09d467c, type: 2}
+  - {fileID: 11400000, guid: c023dffc58a8dce41948529003e1d1e6, type: 2}
+  - {fileID: 11400000, guid: c023dffc58a8dce41948529003e1d1e6, type: 2}
+  - {fileID: 11400000, guid: 323595f0f7b6edf4cb15bb2efb502b1e, type: 2}
+  - {fileID: 11400000, guid: 5f9bd413584522542a784451a29f24e8, type: 2}
+  - {fileID: 11400000, guid: 72833ee6f6673a74591288f51c29a1a5, type: 2}
+  - {fileID: 11400000, guid: c32b683e3283a8b4f988b0e9a73227d4, type: 2}
+  - {fileID: 11400000, guid: c5fe86ecf8c4b374fa356e6fa5b843f7, type: 2}
+  - {fileID: 11400000, guid: 30935ff7d770ce64089fad5d256845d2, type: 2}
+  - {fileID: 11400000, guid: 22a2f2c5201a35a4b8de4655a6b2a49e, type: 2}
+  - {fileID: 11400000, guid: 9474e8294d5143c41943a89f4bda71fd, type: 2}
+  - {fileID: 11400000, guid: 38117acd601e0a04f8526bda9342b594, type: 2}
+  - {fileID: 11400000, guid: 0d6b81a017d50284b9874a8d5da6e81f, type: 2}
+  - {fileID: 11400000, guid: 39a772a68824e5842955ec40afcb7e79, type: 2}
+  - {fileID: 11400000, guid: eef7be30d866ea6488f9d1a3ea96ab7d, type: 2}
+  - {fileID: 11400000, guid: a91ad61d74db3d4469cade1646abcad6, type: 2}
+  propertyToggles:
+  - _TPSPenetratorEnabled
+  - _EnableTruchet
+  - _PenetratorEnabled
+  - _OrifaceEnabled
+  - _VoronoiEnabled
+  - _GlobalMaskTexturesEnable
+  - _GlobalMaskModifiersBackfaceEnable
+  - _GlobalMaskModifiersMirrorEnable
+  - _GlobalMaskModifiersCameraEnable
+  - _GlobalMaskModifiersDistanceEnable
+  - _EnableUDIMDiscardOptions
+  - _EnableDistortion
+  - _PoiParallax
+  - _EnableAudioLink
+  - _BlackLightMaskingEnabled
+  - _DetailEnabled
+  - _VertexManipulationsEnabled
+  - _VertexGlitchingEnabled
+  - _EnableDepthBulge
+  - _MainVertexColoringEnabled
+  - _BackFaceEnabled
+  - _RGBMaskEnabled
+  - _LTCGIEnabled
+  - _ShadingEnabled
+  - _DecalEnabled
+  - _DecalEnabled1
+  - _DecalEnabled2
+  - _DecalEnabled3
+  - _EnableDissolve
+  - _EnableAniso
+  - _MatcapEnable
+  - _Matcap2Enable
+  - _Matcap3Enable
+  - _Matcap4Enable
+  - _CubeMapEnabled
+  - _EnableALDecal
+  - _EnableVolumeColor
+  - _EnableEmission
+  - _EnableEmission1
+  - _EnableEmission2
+  - _EnableEmission3
+  - _EnableRimLighting
+  - _EnableRim2Lighting
+  - _EnableDepthRimLighting
+  - _GlitterEnable
+  - _SubsurfaceScattering
+  - _MochieBRDF
+  - _ClearCoatBRDF
+  - _EnableEnvironmentalRim
+  - _StylizedSpecular
+  - _EnablePathing
+  - _EnableMirrorOptions
+  - _EnableTouchGlow
+  - _TextEnabled
+  - _FXProximityColor
+  - _PostProcess
+  - _PoiInternalParallax
+  - _NormalCorrect
+  - _VideoEffectsEnable
+  - _BacklightEnabled
+  - _BSSEnabled

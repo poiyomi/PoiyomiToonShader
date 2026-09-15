@@ -1,0 +1,146 @@
+#T#PoiVertexGlitchingProperties
+//ifex _VertexGlitchingEnabled==0
+[HideInInspector] m_start_vertexGlitching (" Glitching--{reference_property:_VertexGlitchingEnabled,button_help:{text:Tutorial,action:{type:URL,data:https://www.poiyomi.com/color-and-normals/vertex-glitching},hover:Documentation}}", Float) = 0
+[HideInInspector][ThryToggle(POI_VERTEX_GLITCHING)]_VertexGlitchingEnabled ("Enabled", Float) = 0
+// _VertexGlitchMap ("Glitch Map", 2D) = "white" { }
+_VertexGlitchingMask ("Glitch Mask--{reference_properties:[_VertexGlitchingMaskUV]}", 2D) = "white" { }
+[ThryHideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3)] _VertexGlitchingMaskUV ("UV", Int) = 0
+_VertexGlitchFrequency ("Glitch Interval", Float) = 1
+_VertexGlitchThreshold ("Glitch Threshold", Range(0, 1)) = 1
+_VertexGlitchStrength ("Glitch Strength", Range(0, 10)) = 1
+[HideInInspector] s_start_VertexGlitchTexture ("Glitch Texture--{reference_property:_VertexGlitchUseMap,persistent_expand:true,default_expand:true}", Float) = 1
+[HideInInspector][ThryToggleUI(true)]_VertexGlitchUseMap ("Use Glitch Map", Float) = 0
+[sRGBWarning][ThryRGBAPacker(R Both, G Right, B Left, A unused, linear, false)]_VertexGlitchMap ("Glitch Map [Click to Expand]", 2D) = "white" { }
+_VertexGlitchDensity ("Glitch Density", Range(0, 50)) = 10
+_VertexGlitchMapPanSpeed ("Glitch Map Pan Speed", Range(0, 100)) = 10
+[HideInInspector] s_end_VertexGlitchTexture ("Glitch Texture", Float) = 0
+
+[HideInInspector] s_start_VertexGlitchMirror ("Mirror--{reference_property:_VertexGlitchMirrorEnable,persistent_expand:true}", Float) = 0
+[HideInInspector][ThryToggleUI(true)]_VertexGlitchMirrorEnable ("Mirror", Float) = 0
+[ThryWideEnum(Show In Both, 0, Show Only In Mirror, 1, Dont Show In Mirror, 2)] _VertexGlitchMirror ("Show in mirror", Int) = 0
+[HideInInspector] s_end_VertexGlitchMirror ("Mirror", Float) = 0
+
+[HideInInspector] s_start_ALVertexGlitching ("Audio Link ♫--{reference_property:_VertexGlitchingAudioLinkEnabled,persistent_expand:true,default_expand:false, condition_showS:(_EnableAudioLink==1)}", Float) = 0
+[HideInInspector][ThryToggleUI(true)]_VertexGlitchingAudioLinkEnabled ("Audio Link", Float) = 0
+[Enum(Bass, 0, Low Mid, 1, High Mid, 2, Treble, 3, VU Intensity, 4)] _VertexGlitchingAudioLinkBand ("Glitch Band", Int) = 0
+[ThryToggleUI(true)]_VertexGlitchingAudiolinkOverride ("Override Glitch Intensity with Audiolink", Float) = 1
+[HideInInspector] s_end_ALVertexGlitching ("Audio Link", Float) = 0
+[HideInInspector] m_end_vertexGlitching ("Vertex Glitching", Float) = 0
+//endex
+
+#T#PoiVertexGlitchingKeywords
+//ifex _VertexGlitchingEnabled==0
+#pragma shader_feature_local POI_VERTEX_GLITCHING
+//endex
+
+#T#PoiVertexGlitchingVariablesExposed
+//ifex _VertexGlitchingEnabled==0
+#ifdef POI_VERTEX_GLITCHING
+	//Vertex Glitching
+	float4 _VertexGlitchMap_ST;
+	float4 _VertexGlitchingMask_ST;
+	float _VertexGlitchingMaskUV;
+	float _VertexGlitchUseMap;
+	float _VertexGlitchThreshold;
+	float _VertexGlitchFrequency;
+	float _VertexGlitchStrength;
+	float _VertexGlitchDensity;
+
+	float _VertexGlitchMirrorEnable;
+	float _VertexGlitchMirror;
+
+	float _VertexGlitchMapPanSpeed;
+	float _VertexGlitchingAudioLinkEnabled;
+	float _VertexGlitchingAudioLinkBand;
+	float _VertexGlitchingAudiolinkOverride;
+#endif
+//endex
+
+#T#PoiVertexGlitchingVariables
+//ifex _VertexGlitchingEnabled==0
+#ifdef POI_VERTEX_GLITCHING
+	Texture2D _VertexGlitchMap;
+	Texture2D _VertexGlitchingMask;
+#endif
+//endex
+
+
+#T#PoiVertexGlitchingFunctionCalls
+//ifex _VertexGlitchingEnabled==0
+#if defined(POI_VERTEX_GLITCHING)
+
+	bool canGlitch = true;
+	if (_VertexGlitchMirrorEnable >= 0.5 && _VertexGlitchMirror > 0)
+	{
+		bool inMirror = IsInMirror();
+		if (_VertexGlitchMirror == 1 && !inMirror)	canGlitch = false;
+		if (_VertexGlitchMirror == 2 && inMirror)	canGlitch = false;
+	}
+	if (canGlitch)
+	{
+		float3 forward = getCameraPosition() - mul(unity_ObjectToWorld, float4(0, 0, 0, 1)).xyz;
+		forward.y = 0;
+		forward = normalize(forward);
+		float3 glitchDirection = normalize(cross(float3(0, 1, 0), forward));
+		
+		float glitchAmount = 0;
+
+		if (_VertexGlitchUseMap >= 0.5)
+		{
+			float uvl = o.worldPos.y * _VertexGlitchDensity + POI_TIME.x * _VertexGlitchMapPanSpeed;
+			float uvr = o.worldPos.y * _VertexGlitchDensity - POI_TIME.x * _VertexGlitchMapPanSpeed;
+			
+			float3 glitchTextureL = _VertexGlitchMap.SampleLevel(sampler_linear_repeat, float2(uvl, uvl), 0).rgb;
+			float3 glitchTextureR = _VertexGlitchMap.SampleLevel(sampler_linear_repeat, float2(uvr, uvr), 0).rgb;
+
+			glitchAmount += (glitchTextureL.r - 0.5) * 2;
+			glitchAmount += - (glitchTextureR.r - 0.5) * 2;
+
+			glitchAmount += (glitchTextureL.g - 0.5) * 2;
+			glitchAmount += - (glitchTextureR.b - 0.5) * 2;
+		}
+		else
+		{
+			glitchAmount += frac(sin(dot(POI_TIME.xy + o.worldPos.y, float2(12.9898, 78.233))) * 43758.5453123) * 2 - 1;
+		}
+		
+		float time = POI_TIME.y * _VertexGlitchFrequency;
+
+		float randomGlitch = (sin(time) + sin(2.2 * time + 5.52) + sin(2.9 * time + 0.93) + sin(4.6 * time + 8.94)) / 4;
+		float3 glitchOffset = 0;
+
+		#ifdef POI_AUDIOLINK
+			if (AudioLinkIsAvailable() && _VertexGlitchingAudioLinkEnabled >= 0.5)
+			{
+				// float4 audioLinkData = AudioLinkData(ALPASS_AUDIOBASS);
+
+				half audioIntensity = 
+						AudioLinkData(ALPASS_AUDIOBASS).r 		* (_VertexGlitchingAudioLinkBand == 0) +
+						AudioLinkData(ALPASS_AUDIOLOWMIDS).r 	* (_VertexGlitchingAudioLinkBand == 1) +
+						AudioLinkData(ALPASS_AUDIOHIGHMIDS).r	* (_VertexGlitchingAudioLinkBand == 2) +
+						AudioLinkData(ALPASS_AUDIOTREBLE).r 	* (_VertexGlitchingAudioLinkBand == 3) +
+						AudioLinkData(ALPASS_FILTEREDVU_INTENSITY).r * (_VertexGlitchingAudioLinkBand == 4);
+
+				if(_VertexGlitchingAudiolinkOverride >= 0.5)
+				{
+					glitchOffset = glitchAmount * glitchDirection * (_VertexGlitchStrength * .01) * audioIntensity;
+					// glitchOffset += glitchAmount * glitchDirection * (_VertexGlitchStrength * .01) * audioIntensity;
+				} else {
+					glitchOffset = glitchAmount * glitchDirection * (_VertexGlitchStrength * .01) * step(_VertexGlitchThreshold, randomGlitch);
+					glitchOffset += glitchAmount * glitchDirection * (_VertexGlitchStrength * .01) * audioIntensity;
+				}
+			} else {
+				glitchOffset = glitchAmount * glitchDirection * (_VertexGlitchStrength * .01) * step(_VertexGlitchThreshold, randomGlitch);
+			}
+		#else
+			glitchOffset = glitchAmount * glitchDirection * (_VertexGlitchStrength * .01) * step(_VertexGlitchThreshold, randomGlitch);
+		#endif
+
+		half glitchMask = UNITY_SAMPLE_TEX2D_SAMPLER_LOD(_VertexGlitchingMask, _linear_repeat, poiUV(vertexUV(v, _VertexGlitchingMaskUV), _VertexGlitchingMask_ST), 0).r;
+		glitchOffset *= glitchMask;
+
+		localOffset += glitchOffset;
+		worldOffset += mul((float3x3)unity_ObjectToWorld, glitchOffset);
+	}
+#endif
+//endex

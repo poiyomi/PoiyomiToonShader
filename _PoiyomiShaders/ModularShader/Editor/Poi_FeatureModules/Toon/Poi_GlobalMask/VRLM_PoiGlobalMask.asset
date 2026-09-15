@@ -1,0 +1,86 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1039f25740a92fc4292bb1d94d07ad19, type: 3}
+  m_Name: VRLM_PoiGlobalMask
+  m_EditorClassIdentifier: 
+  Id: PoiGlobalMask
+  Name: Poi Global Masking
+  Version: 1.0
+  Author: Poiyomi
+  Description: 
+  AllowDuplicates: 0
+  ForceDuplicateLogic: 0
+  EnableProperties: []
+  Properties: []
+  ModuleDependencies: []
+  IncompatibleWith: []
+  Templates:
+  - Template: {fileID: -6809450012500214887, guid: 0012cb3bb421fe24e87efe2994e29db1, type: 3}
+    Keywords:
+    - GLOBAL_PROPERTIES
+    NeedsVariant: 0
+    Queue: 102
+  - Template: {fileID: -5459214280953384411, guid: 0012cb3bb421fe24e87efe2994e29db1, type: 3}
+    Keywords:
+    - DEPTH_PASS_KEYWORDS
+    - OUTLINE_PASS_KEYWORDS
+    - BASE_PASS_KEYWORDS
+    - ADD_PASS_KEYWORDS
+    - META_PASS_KEYWORDS
+    - SHADOW_PASS_KEYWORDS
+    - MOTION_VECTORS_PASS_KEYWORDS
+    - LILFUR_PASS_KEYWORDS
+    NeedsVariant: 0
+    Queue: 100
+  - Template: {fileID: -5722686740599599983, guid: 0012cb3bb421fe24e87efe2994e29db1, type: 3}
+    Keywords:
+    - BASE_PROPERTY_VARIABLES
+    - ADD_PROPERTY_VARIABLES
+    - SHADOW_PROPERTY_VARIABLES
+    - META_PROPERTY_VARIABLES
+    - OUTLINE_PROPERTY_VARIABLES
+    - DEPTH_PROPERTY_VARIABLES
+    - MOTION_VECTORS_PROPERTY_VARIABLES
+    - LILFUR_PROPERTY_VARIABLES
+    NeedsVariant: 0
+    Queue: 100
+  - Template: {fileID: 6559430959691068609, guid: 0012cb3bb421fe24e87efe2994e29db1, type: 3}
+    Keywords:
+    - BASE_PROPERTY_VARIABLES_EXPOSED
+    - ADD_PROPERTY_VARIABLES_EXPOSED
+    - SHADOW_PROPERTY_VARIABLES_EXPOSED
+    - META_PROPERTY_VARIABLES_EXPOSED
+    - OUTLINE_PROPERTY_VARIABLES_EXPOSED
+    - DEPTH_PROPERTY_VARIABLES_EXPOSED
+    - MOTION_VECTORS_PROPERTY_VARIABLES_EXPOSED
+    - LILFUR_PROPERTY_VARIABLES_EXPOSED
+    NeedsVariant: 0
+    Queue: 100
+  - Template: {fileID: 3412220371511209895, guid: 0012cb3bb421fe24e87efe2994e29db1, type: 3}
+    Keywords:
+    - FRAGMENT_BASE_FUNCTIONS
+    - FRAGMENT_ADD_FUNCTIONS
+    - FRAGMENT_SHADOW_FUNCTIONS
+    - FRAGMENT_META_FUNCTIONS
+    - FRAGMENT_OUTLINE_FUNCTIONS
+    - FRAGMENT_DEPTH_FUNCTIONS
+    - FRAGMENT_MOTION_VECTORS_FUNCTIONS
+    - FRAGMENT_LILFUR_FUNCTIONS
+    NeedsVariant: 0
+    Queue: 100
+  - Template: {fileID: 1124918087490827335, guid: 0012cb3bb421fe24e87efe2994e29db1, type: 3}
+    Keywords:
+    - MESH_DATA_INIT
+    NeedsVariant: 0
+    Queue: 102
+  Functions: []
+  AdditionalSerializedData: 

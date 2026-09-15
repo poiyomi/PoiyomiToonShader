@@ -1,0 +1,86 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1039f25740a92fc4292bb1d94d07ad19, type: 3}
+  m_Name: VRLM_PoiVertexLookAt
+  m_EditorClassIdentifier: 
+  Id: PoiVertexLookAt
+  Name: Poi Vertex Lookat
+  Version: 1.0
+  Author: Poiyomi
+  Description: 
+  AllowDuplicates: 1
+  ForceDuplicateLogic: 0
+  EnableProperties: []
+  Properties: []
+  ModuleDependencies: []
+  IncompatibleWith: []
+  Templates:
+  - Template: {fileID: -2700508531863041988, guid: ee37cccd97e89354fb7654af175d6b35, type: 3}
+    Keywords:
+    - VERTEX_PROPERTIES
+    NeedsVariant: 0
+    Queue: 100
+  - Template: {fileID: 1783498236325426166, guid: ee37cccd97e89354fb7654af175d6b35, type: 3}
+    Keywords:
+    - DEPTH_PASS_KEYWORDS
+    - BASE_PASS_KEYWORDS
+    - ADD_PASS_KEYWORDS
+    - SHADOW_PASS_KEYWORDS
+    - META_PASS_KEYWORDS
+    - OUTLINE_PASS_KEYWORDS
+    - MOTION_VECTORS_PASS_KEYWORDS
+    - LILFUR_PASS_KEYWORDS
+    NeedsVariant: 0
+    Queue: 100
+  - Template: {fileID: 1804432564950902065, guid: ee37cccd97e89354fb7654af175d6b35, type: 3}
+    Keywords:
+    - DEPTH_PROPERTY_VARIABLES
+    - BASE_PROPERTY_VARIABLES
+    - ADD_PROPERTY_VARIABLES
+    - SHADOW_PROPERTY_VARIABLES
+    - META_PROPERTY_VARIABLES
+    - OUTLINE_PROPERTY_VARIABLES
+    - MOTION_VECTORS_PROPERTY_VARIABLES
+    - LILFUR_PROPERTY_VARIABLES
+    NeedsVariant: 0
+    Queue: 100
+  - Template: {fileID: -7500579896981406853, guid: ee37cccd97e89354fb7654af175d6b35, type: 3}
+    Keywords:
+    - DEPTH_PROPERTY_VARIABLES_EXPOSED
+    - BASE_PROPERTY_VARIABLES_EXPOSED
+    - ADD_PROPERTY_VARIABLES_EXPOSED
+    - SHADOW_PROPERTY_VARIABLES_EXPOSED
+    - META_PROPERTY_VARIABLES_EXPOSED
+    - OUTLINE_PROPERTY_VARIABLES_EXPOSED
+    - MOTION_VECTORS_PROPERTY_VARIABLES_EXPOSED
+    - LILFUR_PROPERTY_VARIABLES_EXPOSED
+    NeedsVariant: 0
+    Queue: 100
+  - Template: {fileID: 6569507974569866245, guid: ee37cccd97e89354fb7654af175d6b35, type: 3}
+    Keywords:
+    - VERTEX_DEPTH_FUNCTIONS
+    - VERTEX_BASE_FUNCTIONS
+    - VERTEX_ADD_FUNCTIONS
+    - VERTEX_SHADOW_FUNCTIONS
+    - VERTEX_OUTLINE_FUNCTIONS
+    - VERTEX_META_FUNCTIONS
+    - VERTEX_MOTION_VECTORS_FUNCTIONS
+    - VERTEX_LILFUR_FUNCTIONS
+    NeedsVariant: 0
+    Queue: 100
+  - Template: {fileID: 2425293239280917418, guid: ee37cccd97e89354fb7654af175d6b35, type: 3}
+    Keywords:
+    - VERTEX_INPUT_MODS
+    NeedsVariant: 0
+    Queue: 100
+  Functions: []
+  AdditionalSerializedData: 

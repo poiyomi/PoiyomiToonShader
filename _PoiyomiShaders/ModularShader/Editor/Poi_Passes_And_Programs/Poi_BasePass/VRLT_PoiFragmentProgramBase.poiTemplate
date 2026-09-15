@@ -1,0 +1,59 @@
+// Poi fragement program from PoiFragmentProgramBase.poiTemplate
+float4 frag(VertexOut i, bool facing : SV_IsFrontFace) : SV_Target
+/*
+#ifdef
+, out float depth : SV_DEPTH
+#endif
+*/
+{
+	UNITY_SETUP_INSTANCE_ID(i);
+	UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(i);
+
+	#K#FRAGMENT_BASE_DECLARATIONS
+
+	#K#FRAGMENT_BASE_INIT_EARLY
+	#K#FRAGMENT_BASE_INIT
+	#K#FRAGMENT_BASE_INIT_LATE
+
+	#K#FRAGMENT_BASE_COLOR_EARLY
+	#K#FRAGMENT_BASE_COLOR
+	#K#FRAGMENT_BASE_COLOR_LATE
+
+	UNITY_BRANCH
+	if (_AlphaPremultiply >= 0.5)
+	{
+		poiFragData.baseColor *= saturate(poiFragData.alpha);
+	}
+	poiFragData.finalColor = poiFragData.baseColor;
+
+	#K#FRAGMENT_BASE_LIGHTING_EARLY
+	#K#FRAGMENT_BASE_LIGHTING
+	#K#FRAGMENT_BASE_LIGHTING_LATE
+
+	#K#FRAGMENT_BASE_LIGHTING_ADD
+
+	#K#FRAGMENT_BASE_EMISSION_EARLY
+	#K#FRAGMENT_BASE_EMISSION
+	#K#FRAGMENT_BASE_EMISSION_LATE
+
+	#K#FRAGMENT_BASE_RETURN
+
+	if (_Mode == POI_MODE_OPAQUE)
+	{
+		//poiFragData.alpha = 1;
+	}
+	
+	clip(poiFragData.alpha - _Cutoff);
+	
+	if (_Mode == POI_MODE_CUTOUT && _AlphaToCoverage < 0.5)
+	{
+		poiFragData.alpha = 1;
+	}
+	
+	#K#FRAGMENT_BASE_ALPHA_LATE
+	
+	poiFragData.finalColor += poiFragData.emission * poiMods.globalEmission;
+	applyUnityFog(poiFragData.finalColor, i.fogData, _IgnoreFog);
+
+	return float4(poiFragData.finalColor, poiFragData.alpha) + POI_SAFE_RGB0;
+}

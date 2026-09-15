@@ -1,0 +1,30 @@
+#T#RenderPipelineDefines
+#define POI_BIRP 1
+#define POI_URP 2
+
+#T#RenderPipelineBIRP
+#define POI_PIPE POI_BIRP
+#ifndef BUILTIN_TARGET_API
+    #define BUILTIN_TARGET_API
+#endif
+
+#T#RenderPipelineURP
+#define POI_PIPE POI_URP
+
+#T#IncludeStartBIRP
+CGINCLUDE
+
+#T#IncludeStartURP
+HLSLINCLUDE
+
+#T#CodeBlockStartBIRP
+CGPROGRAM
+
+#T#CodeBlockStartURP
+HLSLPROGRAM
+
+#T#CodeBlockEndBIRP
+ENDCG
+
+#T#CodeBlockEndURP
+ENDHLSL

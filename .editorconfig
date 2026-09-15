@@ -1,0 +1,33 @@
+# EditorConfig helps maintain consistent coding styles across different editors and IDEs
+# editorconfig.org
+root = true
+
+[*]
+end_of_line = lf
+insert_final_newline = true
+charset = utf-8
+trim_trailing_whitespace = true
+
+# Unity shader files
+[*.{shader,cginc,hlsl,compute}]
+indent_style = tab
+indent_size = 4
+
+# C# files
+[*.cs]
+indent_style = tab
+indent_size = 4
+
+# Template files
+[*.{poiTemplate,poiTemplateCollection}]
+indent_style = tab
+indent_size = 4
+
+# Config files
+[*.{json,yaml,yml}]
+indent_style = tab
+indent_size = 4
+
+# Markdown files
+[*.md]
+trim_trailing_whitespace = false

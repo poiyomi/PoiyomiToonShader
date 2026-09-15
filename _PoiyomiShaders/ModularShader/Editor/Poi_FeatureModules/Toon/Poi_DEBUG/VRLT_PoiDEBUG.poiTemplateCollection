@@ -1,0 +1,309 @@
+#T#PoiDEBUGProperties
+//ifex _DEBUG_PersistDuringLock==0
+[HideInInspector] m_start_DEBUG ("DEBUG--{reference_property:_DEBUGEnabled}", Float) = 0
+[ThryHideInInspector][ToggleUI]_DEBUGEnabled ("DEBUG Enabled", Float) = 0
+[NonModifiableTextureData][ThryHideInInspector]_DEBUG_PersistDuringLock ("Persist Debug During Lock", Float) = 0
+[Helpbox(1, 2, 3)] _DEBUG_ErrorText ("This module will be removed when locked--{condition_showS:(_DEBUG_PersistDuringLock==0)}", Int) = 0
+[Helpbox(1, 2, 2)] _DEBUG_WarningText ("This module will NOT be removed when locked--{condition_showS:(_DEBUG_PersistDuringLock==1)}", Int) = 0
+[ThryWideEnum(RGB, 0, R, 1, G, 2, B, 3, A, 4)] _DEBUG_ChannelSelect ("Channel Select", Int) = 0
+[ToggleUI] _DEBUG_Remap ("Remap", Int) = 0
+[ThryWideEnum(Off, 0, baseColor, 1, finalColor, 2, alpha, 3, emission, 4)]
+_DEBUG_PoiFragData ("PoiFragData", Int) = 0
+[ThryWideEnum(Off, 0, normals, 1, normals_bumped, 2, objNormal, 3, tangentSpaceNormal, 4, binormal, 5, binormal_bumped, 6, tangent, 7, tangent_bumped, 8, worldPos, 9, localPos, 10, objectPosition, 11, isFrontFace, 12, vertexColor, 13)]
+_DEBUG_PoiMesh0 ("PoiMesh0", Int) = 0
+[ThryWideEnum(Off, 0, lightmapUV, 1, uv0, 2, uv1, 3, uv2, 4, uv3, 5, uv_panosphere, 6, uv_worldposxz, 7, uv_polar, 8, uv_distorted, 9, parallaxUV, 10)]
+_DEBUG_PoiMesh1 ("PoiMesh1", Int) = 0
+[ThryWideEnum(Off, 0, viewDir, 1, forwardDir, 2, worldPos, 3, distanceToVert, 4, clipPos, 5, reflectionDir, 6, vertexReflectionDir, 7, tangentViewDir, 8, grabPos, 9, screenUV, 10, vDotN, 11, worldDirection, 12)]
+_DEBUG_PoiCam ("PoiCam", Int) = 0
+[ThryWideEnum(Off, 0, direction, 1, attenuation, 2, attenuationStrength, 3, directColor, 4, indirectColor, 5, occlusion, 6, shadowMask, 7, detailShadow, 8, halfDir, 9, lightMap, 10, rampedLightMap, 11, additiveShadow, 12, finalLighting, 13, finalLightAdd, 14)]
+_DEBUG_PoiLight ("PoiLight", Int) = 0
+[ThryWideEnum(Off, 0, vDotNL, 1, vertexVDotNL, 2, vColor, 3, vCorrectedDotNL, 4, vAttenuation, 5, vSaturatedDotNL, 6, vPosition, 7, vDirection, 8, vFinalLighting, 9, vHalfDir, 10, vDotNH, 11, vertexVDotNH, 12, vDotLH, 13)]
+_DEBUG_PoiLightVertex ("PoiLightVertex", Int) = 0
+[ThryWideEnum(Off, 0, Mask, 1, audioLink, 2, audioLinkAvailable, 3, audioLinkVersion, 4, audioLinkTexture, 5, detailMask, 7, backFaceDetailIntensity, 8, globalEmission, 9)]
+_DEBUG_PoiMods ("PoiMods", Int) = 0
+[ThryWideEnum(Off, 0, Theme Color 0, 1, Theme Color 1, 2, Theme Color 2, 3, Theme Color 3, 4, ColorChord 0, 5, ColorChord 1, 6, ColorChord 2, 7, ColorChord 3, 8, AL Theme 0, 9, AL Theme 1, 10, AL Theme 2, 11, AL Theme 3, 12)]
+_DEBUG_globalColorTheme ("globalColorTheme", Int) = 0
+[ThryWideEnum(Off, 0, 1R, 1, 1G, 2, 1B, 3, 1A, 4, 2R, 5, 2G, 6, 2B, 7, 2A, 8, 3R, 9, 3G, 10, 3B, 11, 3A, 12, 4R, 13, 4G, 14, 4B, 15, 4A, 16)]
+_DEBUG_globalMask ("globalMask", Int) = 0
+[ToggleUI]_DEBUG_uvUnwrap ("UV Unwrap", Int) = 0
+[ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3)]
+_DEBUG_uvUnwrap_select ("UV Unwrap select", Int) = 0
+_DEBUG_uvUnwrap_scale ("UV Unwrap scale", Float) = 1
+[ThryWideEnum(Object, 0, Screen, 1)]_DEBUG_uvUnwrap_space ("UV Unwrap space", Int) = 0
+[HideInInspector] m_end_DEBUG ("DEBUG", Float) = 0
+//endex
+#T#PoiDEBUGVariables
+//ifex _DEBUG_PersistDuringLock==0
+int _DEBUGEnabled;
+int _DEBUG_ChannelSelect;
+int _DEBUG_Remap;
+int _DEBUG_PoiFragData;
+int _DEBUG_PoiMesh0;
+int _DEBUG_PoiMesh1;
+int _DEBUG_PoiCam;
+int _DEBUG_PoiLight;
+int _DEBUG_PoiLightVertex;
+int _DEBUG_PoiMods;
+int _DEBUG_globalColorTheme;
+int _DEBUG_globalMask;
+int _DEBUG_uvUnwrap;
+int _DEBUG_uvUnwrap_select;
+float _DEBUG_uvUnwrap_scale;
+int _DEBUG_uvUnwrap_space;
+//endex
+#T#PoiDEBUGFunction
+//ifex _DEBUG_PersistDuringLock==0
+float4 debugreturn (float x, int cs, int remap)
+{
+	return float4(x.xxx * lerp(1, 0.5, remap) + lerp(0, 0.5, remap), 1);
+}
+float4 debugreturn (float2 xy, int cs, int remap)
+{
+	float f = 0;
+	if (cs > 0)
+	{
+		xy = f = xy[cs - 1];
+	}
+	return float4(xy.xy * lerp(1, float2(0.5, 0.5), remap) + lerp(0, float2(0.5, 0.5), remap), f * lerp(1, 0.5, remap) + lerp(0, 0.5, remap), 1);
+}
+float4 debugreturn (float3 xyz, int cs, int remap)
+{
+	if (cs > 0)
+	{
+		xyz = xyz[cs - 1];
+	}
+	return float4(xyz.xyz * lerp(1, float3(0.5, 0.5, 0.5), remap) + lerp(0, float3(0.5, 0.5, 0.5), remap), 1);
+}
+float4 debugreturn (float4 xyzw, int cs, int remap)
+{
+	if (cs > 0)
+	{
+		xyzw = xyzw[cs - 1];
+	}
+	return float4(xyzw.xyz * lerp(1, float3(0.5, 0.5, 0.5), remap) + lerp(0, float3(0.5, 0.5, 0.5), remap), 1);
+}
+//endex
+#T#PoiDEBUGVertFunctionCall
+//ifex _DEBUG_PersistDuringLock==0
+if (_DEBUGEnabled >= 0.5)
+{
+	if (_DEBUG_uvUnwrap >= 0.5 && _DEBUG_uvUnwrap_space == 0)
+	{
+		if (_DEBUG_uvUnwrap_select == 0) v.vertex.xyz = float3((1 - v.uv0.x / _DEBUG_uvUnwrap_scale) - .5, (v.uv0.y / _DEBUG_uvUnwrap_scale) - .5, 0);
+		if (_DEBUG_uvUnwrap_select == 1) v.vertex.xyz = float3((1 - v.uv1.x / _DEBUG_uvUnwrap_scale) - .5, (v.uv1.y / _DEBUG_uvUnwrap_scale) - .5, 0);
+		if (_DEBUG_uvUnwrap_select == 2) v.vertex.xyz = float3((1 - v.uv2.x / _DEBUG_uvUnwrap_scale) - .5, (v.uv2.y / _DEBUG_uvUnwrap_scale) - .5, 0);
+		if (_DEBUG_uvUnwrap_select == 3) v.vertex.xyz = float3((1 - v.uv3.x / _DEBUG_uvUnwrap_scale) - .5, (v.uv3.y / _DEBUG_uvUnwrap_scale) - .5, 0);
+	}
+}
+//endex
+#T#PoiDEBUGVert2FunctionCall
+//ifex _DEBUG_PersistDuringLock==0
+if (_DEBUGEnabled >= 0.5)
+{
+	if (_DEBUG_uvUnwrap >= 0.5 && _DEBUG_uvUnwrap_space == 1)
+	{
+		if (_DEBUG_uvUnwrap_select == 0) o.pos.xyzw = float4((v.uv0.x / _DEBUG_uvUnwrap_scale) * 2 - 1, (1 - v.uv0.y / _DEBUG_uvUnwrap_scale) * 2 - 1, 1, 1);
+		if (_DEBUG_uvUnwrap_select == 1) o.pos.xyzw = float4((v.uv1.x / _DEBUG_uvUnwrap_scale) * 2 - 1, (1 - v.uv1.y / _DEBUG_uvUnwrap_scale) * 2 - 1, 1, 1);
+		if (_DEBUG_uvUnwrap_select == 2) o.pos.xyzw = float4((v.uv2.x / _DEBUG_uvUnwrap_scale) * 2 - 1, (1 - v.uv2.y / _DEBUG_uvUnwrap_scale) * 2 - 1, 1, 1);
+		if (_DEBUG_uvUnwrap_select == 3) o.pos.xyzw = float4((v.uv3.x / _DEBUG_uvUnwrap_scale) * 2 - 1, (1 - v.uv3.y / _DEBUG_uvUnwrap_scale) * 2 - 1, 1, 1);
+	}
+}
+//endex
+#T#PoiDEBUGFragFunctionCall
+//ifex _DEBUG_PersistDuringLock==0
+if (_DEBUGEnabled >= 0.5)
+{
+	if (_DEBUG_PoiFragData > 0)
+	{
+		switch(_DEBUG_PoiFragData)
+		{
+			case 1: return debugreturn (poiFragData.baseColor, _DEBUG_ChannelSelect, _DEBUG_Remap) + POI_SAFE_RGB0; break;
+			case 2: return debugreturn (poiFragData.finalColor, _DEBUG_ChannelSelect, _DEBUG_Remap) + POI_SAFE_RGB0; break;
+			case 3: return debugreturn (poiFragData.alpha, _DEBUG_ChannelSelect, _DEBUG_Remap) + POI_SAFE_RGB0; break;
+			case 4: return debugreturn (poiFragData.emission, _DEBUG_ChannelSelect, _DEBUG_Remap) + POI_SAFE_RGB0; break;
+			default:
+				return float4(POI_ERROR(poiMesh, 5), 1) + POI_SAFE_RGB0; break;
+		}
+	}
+	if (_DEBUG_PoiMesh0 > 0)
+	{
+		switch(_DEBUG_PoiMesh0)
+		{
+			case 1: return debugreturn (poiMesh.normals[0], _DEBUG_ChannelSelect, _DEBUG_Remap) + POI_SAFE_RGB0; break;
+			case 2: return debugreturn (poiMesh.normals[1], _DEBUG_ChannelSelect, _DEBUG_Remap) + POI_SAFE_RGB0; break;
+			case 3: return debugreturn (poiMesh.objNormal, _DEBUG_ChannelSelect, _DEBUG_Remap) + POI_SAFE_RGB0; break;
+			case 4: return debugreturn (poiMesh.tangentSpaceNormal, _DEBUG_ChannelSelect, _DEBUG_Remap) + POI_SAFE_RGB0; break;
+			case 5: return debugreturn (poiMesh.binormal[0], _DEBUG_ChannelSelect, _DEBUG_Remap) + POI_SAFE_RGB0; break;
+			case 6: return debugreturn (poiMesh.binormal[1], _DEBUG_ChannelSelect, _DEBUG_Remap) + POI_SAFE_RGB0; break;
+			case 7: return debugreturn (poiMesh.tangent[0], _DEBUG_ChannelSelect, _DEBUG_Remap) + POI_SAFE_RGB0; break;
+			case 8: return debugreturn (poiMesh.tangent[1], _DEBUG_ChannelSelect, _DEBUG_Remap) + POI_SAFE_RGB0; break;
+			case 9: return debugreturn (frac(poiMesh.worldPos), _DEBUG_ChannelSelect, _DEBUG_Remap) + POI_SAFE_RGB0; break;
+			case 10: return debugreturn (frac(poiMesh.localPos), _DEBUG_ChannelSelect, _DEBUG_Remap) + POI_SAFE_RGB0; break;
+			case 11: return debugreturn (frac(poiMesh.objectPosition), _DEBUG_ChannelSelect, _DEBUG_Remap) + POI_SAFE_RGB0; break;
+			case 12: return debugreturn (poiMesh.isFrontFace, _DEBUG_ChannelSelect, _DEBUG_Remap) + POI_SAFE_RGB0; break;
+			case 13: return debugreturn (poiMesh.vertexColor, _DEBUG_ChannelSelect, _DEBUG_Remap) + POI_SAFE_RGB0; break;
+			default:
+				return float4(POI_ERROR(poiMesh, 5), 1) + POI_SAFE_RGB0; break;
+		}
+	}
+	if (_DEBUG_PoiMesh1 > 0)
+	{
+		switch(_DEBUG_PoiMesh1)
+		{
+			case 1: return debugreturn (poiMesh.lightmapUV, _DEBUG_ChannelSelect, _DEBUG_Remap) + POI_SAFE_RGB0; break;
+			case 2: return debugreturn (frac(poiMesh.uv[0]), _DEBUG_ChannelSelect, _DEBUG_Remap) + POI_SAFE_RGB0; break;
+			case 3: return debugreturn (frac(poiMesh.uv[1]), _DEBUG_ChannelSelect, _DEBUG_Remap) + POI_SAFE_RGB0; break;
+			case 4: return debugreturn (frac(poiMesh.uv[2]), _DEBUG_ChannelSelect, _DEBUG_Remap) + POI_SAFE_RGB0; break;
+			case 5: return debugreturn (frac(poiMesh.uv[3]), _DEBUG_ChannelSelect, _DEBUG_Remap) + POI_SAFE_RGB0; break;
+			case 6: return debugreturn (poiMesh.uv[4], _DEBUG_ChannelSelect, _DEBUG_Remap) + POI_SAFE_RGB0; break;
+			case 7: return debugreturn (poiMesh.uv[5], _DEBUG_ChannelSelect, _DEBUG_Remap) + POI_SAFE_RGB0; break;
+			case 8: return debugreturn (poiMesh.uv[6], _DEBUG_ChannelSelect, _DEBUG_Remap) + POI_SAFE_RGB0; break;
+			case 9: return debugreturn (poiMesh.uv[7], _DEBUG_ChannelSelect, _DEBUG_Remap) + POI_SAFE_RGB0; break;
+			case 10: return debugreturn (poiMesh.parallaxUV, _DEBUG_ChannelSelect, _DEBUG_Remap) + POI_SAFE_RGB0; break;
+			default:
+				return float4(POI_ERROR(poiMesh, 5), 1) + POI_SAFE_RGB0; break;
+		}
+	}
+	if (_DEBUG_PoiCam > 0)
+	{
+		switch(_DEBUG_PoiCam)
+		{
+			case 1: return debugreturn (poiCam.viewDir, _DEBUG_ChannelSelect, _DEBUG_Remap) + POI_SAFE_RGB0; break;
+			case 2: return debugreturn (poiCam.forwardDir, _DEBUG_ChannelSelect, _DEBUG_Remap) + POI_SAFE_RGB0; break;
+			case 3: return debugreturn (frac(poiCam.worldPos), _DEBUG_ChannelSelect, _DEBUG_Remap) + POI_SAFE_RGB0; break;
+			case 4: return debugreturn (poiCam.distanceToVert, _DEBUG_ChannelSelect, _DEBUG_Remap) + POI_SAFE_RGB0; break;
+			case 5: return debugreturn (poiCam.clipPos, _DEBUG_ChannelSelect, _DEBUG_Remap) + POI_SAFE_RGB0; break;
+			case 6: return debugreturn (poiCam.reflectionDir, _DEBUG_ChannelSelect, _DEBUG_Remap) + POI_SAFE_RGB0; break;
+			case 7: return debugreturn (poiCam.vertexReflectionDir, _DEBUG_ChannelSelect, _DEBUG_Remap) + POI_SAFE_RGB0; break;
+			case 8: return debugreturn (poiCam.tangentViewDir, _DEBUG_ChannelSelect, _DEBUG_Remap) + POI_SAFE_RGB0; break;
+			case 9: return debugreturn (poiCam.posScreenSpace, _DEBUG_ChannelSelect, _DEBUG_Remap) + POI_SAFE_RGB0; break;
+			case 10: return debugreturn (poiCam.screenUV, _DEBUG_ChannelSelect, _DEBUG_Remap) + POI_SAFE_RGB0; break;
+			case 11: return debugreturn (poiCam.vDotN, _DEBUG_ChannelSelect, _DEBUG_Remap) + POI_SAFE_RGB0; break;
+			case 12: return debugreturn (poiCam.worldDirection, _DEBUG_ChannelSelect, _DEBUG_Remap) + POI_SAFE_RGB0; break;
+			default:
+				return float4(POI_ERROR(poiMesh, 5), 1) + POI_SAFE_RGB0; break;
+		}
+	}
+	if (_DEBUG_PoiLight > 0)
+	{
+		switch(_DEBUG_PoiLight)
+		{
+			case 1: return debugreturn (poiLight.direction, _DEBUG_ChannelSelect, _DEBUG_Remap) + POI_SAFE_RGB0; break;
+			case 2: return debugreturn (poiLight.attenShadows * poiLight.attenDistance, _DEBUG_ChannelSelect, _DEBUG_Remap) + POI_SAFE_RGB0; break;
+			case 3: return debugreturn (poiLight.attenStrength, _DEBUG_ChannelSelect, _DEBUG_Remap) + POI_SAFE_RGB0; break;
+			case 4: return debugreturn (poiLight.directColor, _DEBUG_ChannelSelect, _DEBUG_Remap) + POI_SAFE_RGB0; break;
+			case 5: return debugreturn (poiLight.indirectColor, _DEBUG_ChannelSelect, _DEBUG_Remap) + POI_SAFE_RGB0; break;
+			case 6: return debugreturn (poiLight.occlusion, _DEBUG_ChannelSelect, _DEBUG_Remap) + POI_SAFE_RGB0; break;
+			case 7: return debugreturn (poiLight.toonShadowMask, _DEBUG_ChannelSelect, _DEBUG_Remap) + POI_SAFE_RGB0; break;
+			case 8: return debugreturn (poiLight.detailShadow, _DEBUG_ChannelSelect, _DEBUG_Remap) + POI_SAFE_RGB0; break;
+			case 9: return debugreturn (poiLight.halfDir, _DEBUG_ChannelSelect, _DEBUG_Remap) + POI_SAFE_RGB0; break;
+			case 10: return debugreturn (poiLight.lightMap, _DEBUG_ChannelSelect, _DEBUG_Remap) + POI_SAFE_RGB0; break;
+			case 11: return debugreturn (poiLight.rampedLightMap, _DEBUG_ChannelSelect, _DEBUG_Remap) + POI_SAFE_RGB0; break;
+			#ifdef POI_PASS_ADD
+				case 12: return debugreturn (poiLight.attenShadows * poiLight.attenDistance, _DEBUG_ChannelSelect, _DEBUG_Remap) + POI_SAFE_RGB0; break;
+			#endif
+			case 13: return debugreturn (poiLight.finalLighting, _DEBUG_ChannelSelect, _DEBUG_Remap) + POI_SAFE_RGB0; break;
+			case 14: return debugreturn (poiLight.finalLightAdd, _DEBUG_ChannelSelect, _DEBUG_Remap) + POI_SAFE_RGB0; break;
+			default:
+				return float4(POI_ERROR(poiMesh, 5), 1) + POI_SAFE_RGB0; break;
+		}
+	}
+	if (_DEBUG_PoiLightVertex > 0)
+	{
+		#if defined(VERTEXLIGHT_ON)
+			if (_DEBUG_ChannelSelect == 0)
+			{
+				float4 output = 0;
+				int c = 0;
+				for (int index = 0; index < 4; index++)
+				{
+					if (!any(poiLight.vPosition[index])) continue;
+					c++;
+					switch(_DEBUG_PoiLightVertex)
+					{
+						case 1: output.rgb += debugreturn (poiLight.vDotNL[index], _DEBUG_ChannelSelect, _DEBUG_Remap) + POI_SAFE_RGB0; break;
+						case 2: output.rgb += debugreturn (poiLight.vertexVDotNL[index], _DEBUG_ChannelSelect, _DEBUG_Remap) + POI_SAFE_RGB0; break;
+						case 3: output.rgb += debugreturn (poiLight.vColor[index], _DEBUG_ChannelSelect, _DEBUG_Remap) + POI_SAFE_RGB0; break;
+						case 4: output.rgb += debugreturn (poiLight.vCorrectedDotNL[index], _DEBUG_ChannelSelect, _DEBUG_Remap) + POI_SAFE_RGB0; break;
+						case 5: output.rgb += debugreturn (poiLight.vAttenuation[index], _DEBUG_ChannelSelect, _DEBUG_Remap) + POI_SAFE_RGB0; break;
+						case 6: output.rgb += debugreturn (poiLight.vSaturatedDotNL[index], _DEBUG_ChannelSelect, _DEBUG_Remap) + POI_SAFE_RGB0; break;
+						case 7: output.rgb += debugreturn (poiLight.vPosition[index], _DEBUG_ChannelSelect, _DEBUG_Remap) + POI_SAFE_RGB0; break;
+						case 8: output.rgb += debugreturn (poiLight.vDirection[index], _DEBUG_ChannelSelect, _DEBUG_Remap) + POI_SAFE_RGB0; break;
+						case 9: output.rgb += debugreturn (poiLight.vFinalLighting[index], _DEBUG_ChannelSelect, _DEBUG_Remap) + POI_SAFE_RGB0; break;
+						case 10: output.rgb += debugreturn (poiLight.vHalfDir[index], _DEBUG_ChannelSelect, _DEBUG_Remap) + POI_SAFE_RGB0; break;
+						case 11: output.rgb += debugreturn (poiLight.vDotNH[index], _DEBUG_ChannelSelect, _DEBUG_Remap) + POI_SAFE_RGB0; break;
+						case 12: output.rgb += debugreturn (poiLight.vertexVDotNH[index], _DEBUG_ChannelSelect, _DEBUG_Remap) + POI_SAFE_RGB0; break;
+						case 13: output.rgb += debugreturn (poiLight.vDotLH[index], _DEBUG_ChannelSelect, _DEBUG_Remap) + POI_SAFE_RGB0; break;
+						default:
+							return float4(POI_ERROR(poiMesh, 5), 1) + POI_SAFE_RGB0; break;
+					}
+				}
+				output.rgb = output.rgb / c;
+				return output + POI_SAFE_RGB0;
+			}
+			else
+			{
+				switch(_DEBUG_PoiLightVertex)
+				{
+					case 1: return debugreturn (poiLight.vDotNL[_DEBUG_ChannelSelect - 1], 0, _DEBUG_Remap) + POI_SAFE_RGB0; break;
+					case 2: return debugreturn (poiLight.vertexVDotNL[_DEBUG_ChannelSelect - 1], 0, _DEBUG_Remap) + POI_SAFE_RGB0; break;
+					case 3: return debugreturn (poiLight.vColor[_DEBUG_ChannelSelect - 1], 0, _DEBUG_Remap) + POI_SAFE_RGB0; break;
+					case 4: return debugreturn (poiLight.vCorrectedDotNL[_DEBUG_ChannelSelect - 1], 0, _DEBUG_Remap) + POI_SAFE_RGB0; break;
+					case 5: return debugreturn (poiLight.vAttenuation[_DEBUG_ChannelSelect - 1], 0, _DEBUG_Remap) + POI_SAFE_RGB0; break;
+					case 6: return debugreturn (poiLight.vSaturatedDotNL[_DEBUG_ChannelSelect - 1], 0, _DEBUG_Remap) + POI_SAFE_RGB0; break;
+					case 7: return debugreturn (poiLight.vPosition[_DEBUG_ChannelSelect - 1], 0, _DEBUG_Remap) + POI_SAFE_RGB0; break;
+					case 8: return debugreturn (poiLight.vDirection[_DEBUG_ChannelSelect - 1], 0, _DEBUG_Remap) + POI_SAFE_RGB0; break;
+					case 9: return debugreturn (poiLight.vFinalLighting[_DEBUG_ChannelSelect - 1], 0, _DEBUG_Remap) + POI_SAFE_RGB0; break;
+					case 10: return debugreturn (poiLight.vHalfDir[_DEBUG_ChannelSelect - 1], 0, _DEBUG_Remap) + POI_SAFE_RGB0; break;
+					case 11: return debugreturn (poiLight.vDotNH[_DEBUG_ChannelSelect - 1], 0, _DEBUG_Remap) + POI_SAFE_RGB0; break;
+					case 12: return debugreturn (poiLight.vertexVDotNH[_DEBUG_ChannelSelect - 1], 0, _DEBUG_Remap) + POI_SAFE_RGB0; break;
+					case 13: return debugreturn (poiLight.vDotLH[_DEBUG_ChannelSelect - 1], 0, _DEBUG_Remap) + POI_SAFE_RGB0; break;
+					default:
+						return float4(POI_ERROR(poiMesh, 5), 1) + POI_SAFE_RGB0; break;
+				}
+			}
+		#endif
+	}
+	if (_DEBUG_PoiMods > 0)
+	{
+		switch(_DEBUG_PoiMods)
+		{
+			case 1: return debugreturn (poiMods.Mask, _DEBUG_ChannelSelect, _DEBUG_Remap) + POI_SAFE_RGB0; break;
+			case 2: return debugreturn (poiMods.audioLink[_DEBUG_ChannelSelect - 1], 0, _DEBUG_Remap) + POI_SAFE_RGB0; break;
+			case 3: return debugreturn (poiMods.audioLinkAvailable, _DEBUG_ChannelSelect, _DEBUG_Remap) + POI_SAFE_RGB0; break;
+			case 4: return debugreturn (poiMods.audioLinkVersion, _DEBUG_ChannelSelect, _DEBUG_Remap) + POI_SAFE_RGB0; break;
+			case 5: return debugreturn (poiMods.audioLinkTexture, _DEBUG_ChannelSelect, _DEBUG_Remap) + POI_SAFE_RGB0; break;
+			case 7: return debugreturn (poiMods.detailMask, _DEBUG_ChannelSelect, _DEBUG_Remap) + POI_SAFE_RGB0; break;
+			case 8: return debugreturn (poiMods.backFaceDetailIntensity, _DEBUG_ChannelSelect, _DEBUG_Remap) + POI_SAFE_RGB0; break;
+			case 9: return debugreturn (poiMods.globalEmission, _DEBUG_ChannelSelect, _DEBUG_Remap) + POI_SAFE_RGB0; break;
+			default:
+				return float4(POI_ERROR(poiMesh, 5), 1) + POI_SAFE_RGB0; break;
+		}
+	}
+	if (_DEBUG_PoiMods > 0)
+	{
+		switch(_DEBUG_PoiMods)
+		{
+			case 1: return debugreturn (poiMods.Mask, _DEBUG_ChannelSelect, _DEBUG_Remap) + POI_SAFE_RGB0; break;
+			case 2: return debugreturn (poiMods.audioLink[_DEBUG_ChannelSelect - 1], 0, _DEBUG_Remap) + POI_SAFE_RGB0; break;
+			case 3: return debugreturn (poiMods.audioLinkAvailable, _DEBUG_ChannelSelect, _DEBUG_Remap) + POI_SAFE_RGB0; break;
+			case 4: return debugreturn (poiMods.audioLinkVersion, _DEBUG_ChannelSelect, _DEBUG_Remap) + POI_SAFE_RGB0; break;
+			case 5: return debugreturn (poiMods.audioLinkTexture, _DEBUG_ChannelSelect, _DEBUG_Remap) + POI_SAFE_RGB0; break;
+			case 7: return debugreturn (poiMods.detailMask, _DEBUG_ChannelSelect, _DEBUG_Remap) + POI_SAFE_RGB0; break;
+			case 8: return debugreturn (poiMods.backFaceDetailIntensity, _DEBUG_ChannelSelect, _DEBUG_Remap) + POI_SAFE_RGB0; break;
+			case 9: return debugreturn (poiMods.globalEmission, _DEBUG_ChannelSelect, _DEBUG_Remap) + POI_SAFE_RGB0; break;
+			default:
+				return float4(POI_ERROR(poiMesh, 5), 1) + POI_SAFE_RGB0; break;
+		}
+	}
+	if (_DEBUG_globalColorTheme > 0)
+	{
+		return debugreturn (poiMods.globalColorTheme[_DEBUG_globalColorTheme - 1], _DEBUG_ChannelSelect, _DEBUG_Remap) + POI_SAFE_RGB0; break;
+	}
+	if (_DEBUG_globalMask > 0)
+	{
+		return debugreturn (poiMods.globalMask[_DEBUG_globalMask - 1], _DEBUG_ChannelSelect, _DEBUG_Remap) + POI_SAFE_RGB0; break;
+	}
+}
+//endex
+

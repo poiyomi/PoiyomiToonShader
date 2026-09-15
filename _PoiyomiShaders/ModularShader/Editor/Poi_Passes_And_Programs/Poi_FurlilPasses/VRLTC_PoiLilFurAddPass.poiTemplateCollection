@@ -1,0 +1,103 @@
+#T#LilFurAddPassTags
+//Fur AddPass
+Name "Add"
+Tags { "LightMode" = "ForwardAdd" }
+
+#T#LilFurAddPassStencil
+Stencil
+{
+	Ref [_FurStencilRef]
+	ReadMask [_FurStencilReadMask]
+	WriteMask [_FurStencilWriteMask]
+//ifex _FurStencilType==1
+	Comp [_FurStencilComp]
+	Pass [_FurStencilPass]
+	Fail [_FurStencilFail]
+	ZFail [_FurStencilZFail]
+//endex
+
+//ifex _FurStencilType==0
+	CompBack [_FurStencilBackComp]
+	PassBack [_FurStencilBackPass]
+	FailBack [_FurStencilBackFail]
+	ZFailBack [_FurStencilBackZFail]
+
+	CompFront [_FurStencilFrontComp]
+	PassFront [_FurStencilFrontPass]
+	FailFront [_FurStencilFrontFail]
+	ZFailFront [_FurStencilFrontZFail]
+//endex
+}
+
+#T#LilFurAddPassBlendSettings
+ZWrite Off
+ZClip [_FurZClip]
+Cull [_FurCull]
+//ifex _FurAlphaToMask==0
+AlphaToMask [_FurAlphaToMask]
+//endex
+ZTest LEqual
+ColorMask [_FurColorMask]
+Offset [_FurOffsetFactor], [_FurOffsetUnits]
+
+BlendOp [_FurBlendOpFA], [_FurBlendOpAlphaFA]
+Blend [_FurSrcBlendFA] [_FurDstBlendFA], Zero One
+
+#T#LilFurPreAddPassBlendSettings
+ZWrite Off
+ZClip [_FurZClip]
+Cull [_FurCull]
+AlphaToMask On
+ZTest LEqual
+ColorMask [_FurColorMask]
+Offset [_FurOffsetFactor], [_FurOffsetUnits]
+
+BlendOp [_FurBlendOpFA], [_FurBlendOpAlphaFA]
+Blend [_FurSrcBlendFA] [_FurDstBlendFA], Zero One
+
+#T#LilFurAddPassOnlyKeywords
+#pragma multi_compile_fwdadd_fullshadows
+#pragma multi_compile_instancing
+#pragma dynamic_branch _ FOG_LINEAR
+#pragma dynamic_branch _ FOG_EXP
+#pragma dynamic_branch _ FOG_EXP2
+#define POI_PASS_ADD
+#define POI_PASS_LILFUR
+//#define LIL_ONEPASS_FUR
+
+#T#LilFurPreAddPassOnlyKeywords
+#pragma multi_compile_fwdadd_fullshadows
+#pragma multi_compile_instancing
+#pragma dynamic_branch _ FOG_LINEAR
+#pragma dynamic_branch _ FOG_EXP
+#pragma dynamic_branch _ FOG_EXP2
+#define POI_PASS_ADD
+#define POI_PASS_LILFUR
+#define LIL_ONEPASS_FUR
+#define LIL_FUR_PRE
+
+#T#LilFurAddPassKeywords
+#K#LILFUR_PASS_KEYWORDS
+
+#K#LILFUR_PASS_PRAGMA_PROGRAMS
+
+#T#LilFurAddPassPropertyVariables
+#K#LILFUR_PROPERTY_VARIABLES
+#K#LILFUR_PROPERTY_VARIABLES_EXPOSED
+
+#T#LilFurAddPassPrograms
+#K#VERTEX_LILFUR_DATA_STRUCTURES
+#K#VERTEX_LILFUR_FUNCTIONS_EARLY
+#K#VERTEX_LILFUR_FUNCTIONS
+#K#VERTEX_LILFUR_FUNCTIONS_LATE
+#K#VERTEX_LILFUR_PROGRAM
+
+#K#HULLDOMAIN_LILFUR_ADD_PROGRAM
+#K#GEOMETRY_LILFUR_PROGRAM
+
+#K#FRAGMENT_LILFUR_DATA_STRUCTURES
+#K#FRAGMENT_LILFUR_FUNCTIONS_EARLY
+#K#FRAGMENT_LILFUR_FUNCTIONS
+#K#FRAGMENT_LILFUR_FUNCTIONS_LATE
+#K#FRAGMENT_LILFUR_PROGRAM
+

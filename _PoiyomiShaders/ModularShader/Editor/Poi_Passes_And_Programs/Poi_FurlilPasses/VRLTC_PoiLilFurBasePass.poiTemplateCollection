@@ -1,0 +1,142 @@
+#T#LilFurPassTags
+//Fur pass
+Name "Base"
+Tags { "LightMode" = "ForwardBase" }
+
+#T#LilFurPassTagsURP
+//Fur pass
+Name "ForwardLit"
+Tags { "LightMode" = "SRPDefaultUnlit" }
+
+#T#LilFurPassStencil
+Stencil
+{
+	Ref [_FurStencilRef]
+	ReadMask [_FurStencilReadMask]
+	WriteMask [_FurStencilWriteMask]
+	//ifex _FurStencilType==1
+	Comp [_FurStencilComp]
+	Pass [_FurStencilPass]
+	Fail [_FurStencilFail]
+	ZFail [_FurStencilZFail]
+	//endex
+
+	//ifex _FurStencilType==0
+	CompBack [_FurStencilBackComp]
+	PassBack [_FurStencilBackPass]
+	FailBack [_FurStencilBackFail]
+	ZFailBack [_FurStencilBackZFail]
+
+	CompFront [_FurStencilFrontComp]
+	PassFront [_FurStencilFrontPass]
+	FailFront [_FurStencilFrontFail]
+	ZFailFront [_FurStencilFrontZFail]
+	//endex
+
+}
+#T#LilFurPrePassBlendSettings
+ZWrite On
+ZClip [_FurZClip]
+Cull [_FurCull]
+AlphaToMask On
+ZTest [_FurZTest]
+ColorMask [_FurColorMask]
+Offset [_FurOffsetFactor], [_FurOffsetUnits]
+
+BlendOp Add, Add
+Blend One Zero, One OneMinusSrcAlpha
+
+#T#LilFurPassBlendSettings
+ZWrite [_FurZWrite]
+ZClip [_FurZClip]
+Cull [_FurCull]
+//ifex _FurAlphaToMask==0
+AlphaToMask [_FurAlphaToMask]
+//endex
+ZTest [_FurZTest]
+ColorMask [_FurColorMask]
+Offset [_FurOffsetFactor], [_FurOffsetUnits]
+
+BlendOp [_FurBlendOp], [_FurBlendOpAlpha]
+Blend [_FurSrcBlend] [_FurDstBlend], [_FurSrcBlendAlpha] [_FurDstBlendAlpha]
+
+#T#LilFurPassOnlyKeywords
+#if POI_PIPE == POI_URP
+    #pragma multi_compile _ _MAIN_LIGHT_SHADOWS _MAIN_LIGHT_SHADOWS_CASCADE _MAIN_LIGHT_SHADOWS_SCREEN
+
+    #if UNITY_VERSION >= 600000
+        #pragma multi_compile _ _CLUSTER_LIGHT_LOOP
+    #else
+        #pragma multi_compile _ _FORWARD_PLUS
+    #endif
+
+    #pragma multi_compile_fragment _ _ADDITIONAL_LIGHTS
+    #pragma multi_compile_fragment _ _ADDITIONAL_LIGHT_SHADOWS
+    #pragma multi_compile_fragment _ _LIGHT_LAYERS
+    #pragma multi_compile_fragment _ _SHADOWS_SOFT
+    #pragma multi_compile_fragment _ _REFLECTION_PROBE_BLENDING
+    #pragma multi_compile_fragment _ _REFLECTION_PROBE_BOX_PROJECTION
+
+    #pragma multi_compile_fragment _ _LIGHT_COOKIES
+
+    #pragma dynamic_branch _ FOG_LINEAR
+    #pragma dynamic_branch _ FOG_EXP
+    #pragma dynamic_branch _ FOG_EXP2
+#endif
+
+#if POI_PIPE == POI_BIRP
+    #pragma dynamic_branch _ FOG_LINEAR
+    #pragma dynamic_branch _ FOG_EXP
+    #pragma dynamic_branch _ FOG_EXP2
+    #pragma multi_compile_fwdbase
+    #pragma multi_compile_fragment _ VERTEXLIGHT_ON
+#endif
+
+#pragma multi_compile_instancing
+
+#define POI_PASS_BASE
+#define POI_PASS_LILFUR
+//#define LIL_ONEPASS_FUR
+
+#T#LilFurPrePassOnlyKeywords
+#pragma multi_compile_fwdbase
+#pragma multi_compile_instancing
+#pragma dynamic_branch _ FOG_LINEAR
+#pragma dynamic_branch _ FOG_EXP
+#pragma dynamic_branch _ FOG_EXP2
+#pragma multi_compile_fragment _ VERTEXLIGHT_ON
+#define POI_PASS_BASE
+#define POI_PASS_LILFUR
+#define LIL_ONEPASS_FUR
+#define LIL_FUR_PRE
+
+#T#LilFurPassKeywords
+#K#LILFUR_PASS_KEYWORDS
+
+#K#LILFUR_PASS_PRAGMA_PROGRAMS
+
+#T#LilFurPassPropertyVariablesURP
+CBUFFER_START(UnityPerMaterial)
+#K#LILFUR_PROPERTY_VARIABLES_EXPOSED
+CBUFFER_END
+#K#LILFUR_PROPERTY_VARIABLES
+
+#T#LilFurPassPropertyVariables
+#K#LILFUR_PROPERTY_VARIABLES_EXPOSED
+#K#LILFUR_PROPERTY_VARIABLES
+
+#T#LilFurPassPrograms
+#K#VERTEX_LILFUR_DATA_STRUCTURES
+#K#VERTEX_LILFUR_FUNCTIONS_EARLY
+#K#VERTEX_LILFUR_FUNCTIONS
+#K#VERTEX_LILFUR_FUNCTIONS_LATE
+#K#VERTEX_LILFUR_PROGRAM
+
+#K#HULLDOMAIN_LILFUR_PROGRAM
+#K#GEOMETRY_LILFUR_PROGRAM
+
+#K#FRAGMENT_LILFUR_DATA_STRUCTURES
+#K#FRAGMENT_LILFUR_FUNCTIONS_EARLY
+#K#FRAGMENT_LILFUR_FUNCTIONS
+#K#FRAGMENT_LILFUR_FUNCTIONS_LATE
+#K#FRAGMENT_LILFUR_PROGRAM

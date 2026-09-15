@@ -1,0 +1,44 @@
+#KI#PASS_DISABLE_PREFIX
+Pass
+{
+    #KI#PASS_TAGS
+
+    #KI#STENCIL
+
+    #KI#BLEND_SETTINGS
+
+    #K#CODE_BLOCK_START
+    /*
+    // Disable warnings we aren't interested in
+    #if defined(UNITY_COMPILER_HLSL)
+        #pragma warning(disable : 3205) // conversion of larger type to smaller
+        #pragma warning(disable : 3568) // unknown pragma ignored
+        #pragma warning(disable : 3571) // "pow(f,e) will not work for negative f"; however in majority of our calls to pow we know f is not negative
+        #pragma warning(disable : 3206) // implicit truncation of vector type
+    #endif
+    */
+    #pragma target 5.0
+    #K#PRAGMA_DIRECTIVES
+
+    #K#REQUIREMENTS
+
+    #K#SHADER_KEYWORDS
+    #KI#PASS_ONLY_SHADER_KEYWORDS
+
+    #KI#SHADER_INCLUDES
+
+    #KI#SHADER_PROGRAMS
+
+    #K#MACROS_AND_DEFINES
+
+    #KI#PROPERTY_VARIABLES
+
+    #KI#PASS_ONLY_INCLUDES
+    #K#INCLUDES
+
+    #KI#PASS_PROGRAMS
+
+    #K#CODE_BLOCK_END
+}
+
+#KI#PASS_DISABLE_SUFFIX

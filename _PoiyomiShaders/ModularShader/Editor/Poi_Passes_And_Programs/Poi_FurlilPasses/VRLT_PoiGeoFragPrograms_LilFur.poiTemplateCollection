@@ -1,0 +1,874 @@
+#T#PoiLilFurProperties
+[HideInInspector] m_lilFurCategory ("LilFur--{button_author:{text:lilxyzw,action:{type:URL,data:https://github.com/lilxyzw/lilToon},hover:GitHub},button_help:{text:Tutorial,action:{type:URL,data:https://www.poiyomi.com/extended-features/lilfur},hover:Documentation}}", Float) = 0
+
+[DoNotAnimate][ThryWideEnum(Cutout, 0, Transparent, 1)]_FurRenderingMode ("Fur Mode--{on_value_actions:[
+{value:0,actions:[{type:SET_PROPERTY,data:_FurSrcBlend=1}, {type:SET_PROPERTY,data:_FurDstBlend=0}, {type:SET_PROPERTY,data:_FurSrcBlendAlpha=1}, {type:SET_PROPERTY,data:_FurDstBlendAlpha=10}, {type:SET_PROPERTY,data:_FurBlendOp=0}, {type:SET_PROPERTY,data:_FurBlendOpAlpha=0}, {type:SET_PROPERTY,data:_FurSrcBlendFA=1}, {type:SET_PROPERTY,data:_FurDstBlendFA=1}, {type:SET_PROPERTY,data:_FurSrcBlendAlphaFA=0}, {type:SET_PROPERTY,data:_FurDstBlendAlphaFA=1}, {type:SET_PROPERTY,data:_FurBlendOpFA=4}, {type:SET_PROPERTY,data:_FurBlendOpAlphaFA=4}, {type:SET_PROPERTY,data:_FurZWrite=1}, {type:SET_PROPERTY,data:_FurAlphaToMask=1}, {type:SET_TAG,data:RenderType=TransparentCutout}, {type:SET_TAG,data:Queue=AlphaTest}]},
+{value:1,actions:[{type:SET_PROPERTY,data:_FurSrcBlend=5}, {type:SET_PROPERTY,data:_FurDstBlend=10}, {type:SET_PROPERTY,data:_FurSrcBlendAlpha=1}, {type:SET_PROPERTY,data:_FurDstBlendAlpha=10}, {type:SET_PROPERTY,data:_FurBlendOp=0}, {type:SET_PROPERTY,data:_FurBlendOpAlpha=0}, {type:SET_PROPERTY,data:_FurSrcBlendFA=1}, {type:SET_PROPERTY,data:_FurDstBlendFA=1}, {type:SET_PROPERTY,data:_FurSrcBlendAlphaFA=0}, {type:SET_PROPERTY,data:_FurDstBlendAlphaFA=1}, {type:SET_PROPERTY,data:_FurBlendOpFA=4}, {type:SET_PROPERTY,data:_FurBlendOpAlphaFA=4}, {type:SET_PROPERTY,data:_FurZWrite=0}, {type:SET_PROPERTY,data:_FurAlphaToMask=0}, {type:SET_TAG,data:RenderType=TransparentCutout}, {type:SET_TAG,data:Queue=Transparent}]}
+]}]}", Int) = 0
+
+[TextureKeyword][sRGBWarning][ThryRGBAPacker(R Mask, G Mask, B Mask, A Mask, Linear, false)]_FurMask ("Fur Mask (RGBA)--{reference_properties:[_FurMaskPan, _FurMaskUV, _FurMaskStrengthR, _FurMaskStrengthG, _FurMaskStrengthB, _FurMaskStrengthA]}", 2D) = "white" { }
+[ThryHideInInspector][Vector2]_FurMaskPan ("Panning", Vector) = (0, 0, 0, 0)
+[ThryHideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7, Matcap, 9, Screen Space, 10)]_FurMaskUV ("UV", Int) = 0
+[ThryHideInInspector]_FurMaskStrengthR ("R Strength", Range(0, 1)) = 1
+[ThryHideInInspector]_FurMaskStrengthG ("G Strength", Range(0, 1)) = 1
+[ThryHideInInspector]_FurMaskStrengthB ("B Strength", Range(0, 1)) = 1
+[ThryHideInInspector]_FurMaskStrengthA ("A Strength", Range(0, 1)) = 1
+
+[HideInInspector] s_start_FurVector ("Fur--{persistent_expand:true,default_expand:true}", Float) = 1
+[TextureKeyword][Normal]_FurVectorTex ("Normal Map--{reference_property:_FurVectorScale, reference_properties:[_FurVectorPan]}", 2D) = "bump" { }
+[ThryHideInInspector]_FurVectorScale ("Vector Scale", Range(0, 10)) = 1
+[ThryHideInInspector][Vector2]_FurVectorPan ("Panning", Vector) = (0, 0, 0, 0)
+
+[Vector3Slider(0, 0.5, 1)] _FurVector ("Vector|Length", Vector) = (0.0, 0.0, 1.0, 0.02)
+[Enum(Off, 4, R, 0, G, 1, B, 2, A, 3)]_FurLengthChannel ("Length Mask", Int) = 4
+#K#LILFUR_TWO_PASS_PROPS
+[ToggleUI] _VertexColor2FurVector ("Use Vertex Colors", Int) = 0
+_FurGravity ("Gravity", Range(0, 1)) = 0.25
+_FurRandomize ("Randomize", Float) = 0
+[HideInInspector] s_end_FurVector ("Fur", Float) = 0
+
+[HideInInspector] s_start_FurAppearance ("Appearance--{persistent_expand:true,default_expand:true}", Float) = 1
+[TextureKeyword][sRGBWarning][ThryForceTexOpen] _FurNoiseMask ("Noise--{reference_properties:[_FurNoiseMaskPan, _FurNoiseMaskUV]}", 2D) = "white" { }
+[ThryHideInInspector][Vector2]_FurNoiseMaskPan ("Panning", Vector) = (0, 0, 0, 0)
+[ThryHideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7, Matcap, 9, Screen Space, 10)]_FurNoiseMaskUV ("UV", Int) = 0
+[Enum(Off, 4, R, 0, G, 1, B, 2, A, 3)] _FurAlphaChannel ("Alpha Mask", Int) = 4
+_FurAO ("AO", Range(0, 1)) = 0
+[HideInInspector] s_end_FurAppearance ("Appearance", Float) = 0
+
+[HideInInspector] s_start_FurLayers ("Layers--{persistent_expand:true,default_expand:true}", Float) = 1
+[IntRange] _FurLayerNum ("Layer Count", Range(1, 3)) = 2
+[InvertedSlider]_FurRootOffset ("Root Width", Range(0, 1)) = 0
+_FurWidth ("Width", Range(0, 1)) = 0.15
+// _FurTouchStrength ("Touch strength", Range(0, 1)) = 0
+[HideInInspector] s_end_FurLayers ("Layers", Float) = 0
+
+//ifex isNotAnimated(_FurWindEnabled) && _FurWindEnabled==0
+[HideInInspector] s_start_FurWind ("Wind--{reference_property:_FurWindEnabled,persistent_expand:true,default_expand:false}", Float) = 0
+[ThryHideInInspector][ToggleUI]_FurWindEnabled ("Enabled", Float) = 0
+[ThryHeaderLabel(Primary Wave, 13)]
+_FurWindPrimaryDirection ("Direction", Vector) = (1, 0, 0, 0)
+_FurWindPrimaryAmplitude ("Amplitude", Range(0, 2)) = 0.2
+_FurWindPrimarySpeed ("Speed", Float) = 1
+_FurWindPrimaryFrequency ("Frequency", Float) = 1
+[Space(10)]
+[ThryHeaderLabel(Detail Wave, 13)]
+_FurWindDetailDirection ("Direction", Vector) = (0, 0, 1, 0)
+_FurWindDetailAmplitude ("Amplitude", Range(0, 2)) = 0.1
+_FurWindDetailSpeed ("Speed", Float) = 2.5
+_FurWindDetailFrequency ("Frequency", Float) = 5
+[HideInInspector] s_end_FurWind ("Wind", Float) = 0
+//endex
+
+[HideInInspector] s_start_FurRimLight ("Rim Light--{persistent_expand:true,default_expand:true}", Float) = 1
+_FurRimColor ("Color", Color) = (0.0, 0.0, 0.0, 1.0)
+[PowerSlider(3.0)]_FurRimFresnelPower ("Fresnel Power", Range(0.01, 50)) = 3.0
+_FurRimAntiLight ("Anti Light", Range(0, 1)) = 0.5
+[HideInInspector] s_end_FurRimLight ("Rim Light", Float) = 0
+
+[HideInInspector] m_start_LilFurRendering ("LilFur Rendering", Float) = 0
+
+[HideInInspector] s_start_LilFurRenderingCullDepth ("Culling and Depth--{persistent_expand:true,default_expand:true}", Float) = 1
+[DoNotAnimate][Enum(UnityEngine.Rendering.CullMode)] _FurCull ("Cull", Float) = 0
+[DoNotAnimate][Enum(UnityEngine.Rendering.CompareFunction)] _FurZTest ("ZTest", Float) = 4
+[DoNotAnimate][ToggleUI] _FurZWrite ("ZWrite", Float) = 1
+[DoNotAnimate][ToggleUI] _FurZClip ("ZClip", Float) = 1
+[DoNotAnimate] _FurOffsetFactor ("Offset Factor", Float) = 0
+[DoNotAnimate] _FurOffsetUnits ("Offset Units", Float) = 0
+[HideInInspector] s_end_LilFurRenderingCullDepth ("Culling and Depth", Float) = 0
+
+[HideInInspector] s_start_LilFurRenderingColor ("Color--{persistent_expand:true,default_expand:true}", Float) = 1
+[DoNotAnimate][ThryMask(Thry.ColorMaskFlags)] _FurColorMask ("Color Mask", Int) = 15
+[DoNotAnimate][ToggleUI] _FurAlphaToMask ("Alpha To Mask", Float) = 1
+[HideInInspector] s_end_LilFurRenderingColor ("Color", Float) = 0
+
+[HideInInspector] m_start_LilFurBlending ("LilFur Blending", Float) = 0
+[DoNotAnimate][Enum(UnityEngine.Rendering.BlendOp)] _FurBlendOp ("RGB Blend Op", Float) = 0
+[DoNotAnimate][Enum(UnityEngine.Rendering.BlendMode)] _FurSrcBlend ("RGB Source Blend", Float) = 1
+[DoNotAnimate][Enum(UnityEngine.Rendering.BlendMode)] _FurDstBlend ("RGB Destination Blend", Float) = 0
+[Space(10)]
+[ThryHeaderLabel(Forward Add, 13)]
+[DoNotAnimate][Enum(UnityEngine.Rendering.BlendOp)] _FurBlendOpFA ("RGB Blend Op", Float) = 4
+[DoNotAnimate][Enum(UnityEngine.Rendering.BlendMode)] _FurSrcBlendFA ("RGB Source Blend", Float) = 1
+[DoNotAnimate][Enum(UnityEngine.Rendering.BlendMode)] _FurDstBlendFA ("RGB Destination Blend", Float) = 1
+[HideInInspector] m_start_LilFurAlphaBlending ("Alpha Blending", Float) = 0
+[DoNotAnimate][Enum(UnityEngine.Rendering.BlendOp)] _FurBlendOpAlpha ("Alpha Blend Op", Float) = 0
+[DoNotAnimate][Enum(UnityEngine.Rendering.BlendMode)] _FurSrcBlendAlpha ("Alpha Source Blend", Float) = 1
+[DoNotAnimate][Enum(UnityEngine.Rendering.BlendMode)] _FurDstBlendAlpha ("Alpha Destination Blend", Float) = 10
+[Space(10)]
+[ThryHeaderLabel(Forward Add, 13)]
+[DoNotAnimate][Enum(UnityEngine.Rendering.BlendOp)] _FurBlendOpAlphaFA ("Alpha Blend Op", Float) = 4
+[DoNotAnimate][Enum(UnityEngine.Rendering.BlendMode)] _FurSrcBlendAlphaFA ("Alpha Source Blend", Float) = 0
+[DoNotAnimate][Enum(UnityEngine.Rendering.BlendMode)] _FurDstBlendAlphaFA ("Alpha Destination Blend", Float) = 1
+[HideInInspector] m_end_LilFurAlphaBlending ("Alpha Blending", Float) = 0
+[HideInInspector] m_end_LilFurBlending ("LilFur Blending", Float) = 0
+
+[HideInInspector] m_start_LilFurStencil ("LilFur Stencil", Float) = 0
+[ThryWideEnum(Simple, 0, Front Face vs Back Face, 1)] _FurStencilType ("Stencil Type", Float) = 0
+[ByteSlider] _FurStencilRef ("Stencil Reference Value", Range(0, 255)) = 0
+[ByteSlider] _FurStencilReadMask ("Stencil ReadMask Value", Range(0, 255)) = 255
+[ByteSlider] _FurStencilWriteMask ("Stencil WriteMask Value", Range(0, 255)) = 255
+[Enum(UnityEngine.Rendering.StencilOp)] _FurStencilPass ("Stencil Pass Op--{condition_showS:(_FurStencilType==0)}", Float) = 0
+[Enum(UnityEngine.Rendering.StencilOp)] _FurStencilFail ("Stencil Fail Op--{condition_showS:(_FurStencilType==0)}", Float) = 0
+[Enum(UnityEngine.Rendering.StencilOp)] _FurStencilZFail ("Stencil ZFail Op--{condition_showS:(_FurStencilType==0)}", Float) = 0
+[Enum(UnityEngine.Rendering.CompareFunction)] _FurStencilComp ("Stencil Compare Function--{condition_showS:(_FurStencilType==0)}", Float) = 8
+
+[HideInInspector] s_start_LilFurStencilBack ("Back--{condition_showS:(_FurStencilType==1),margin_top:0,border_top:0,border_bottom:0,border_width_bottom:0}", Float) = 1
+[Helpbox(1, 2, 1)] _FurFFBFStencilHelp0 ("Front Face and Back Face Stencils only work when locked in due to Unity's Stencil management", Int) = 0
+[Enum(UnityEngine.Rendering.StencilOp)] _FurStencilBackPass ("Back Pass Op", Float) = 0
+[Enum(UnityEngine.Rendering.StencilOp)] _FurStencilBackFail ("Back Fail Op", Float) = 0
+[Enum(UnityEngine.Rendering.StencilOp)] _FurStencilBackZFail ("Back ZFail Op", Float) = 0
+[Enum(UnityEngine.Rendering.CompareFunction)] _FurStencilBackComp ("Back Compare Function", Float) = 8
+[HideInInspector] s_end_LilFurStencilBack ("Back", Float) = 0
+
+[HideInInspector] s_start_LilFurStencilFront ("Front--{condition_showS:(_FurStencilType==1),margin_top:0,border_top:0,border_bottom:0}", Float) = 1
+[Helpbox(1, 2, 1)] _FurFFBFStencilHelp1 ("Front Face and Back Face Stencils only work when locked in due to Unity's Stencil management", Int) = 0
+[Enum(UnityEngine.Rendering.StencilOp)] _FurStencilFrontPass ("Front Pass Op", Float) = 0
+[Enum(UnityEngine.Rendering.StencilOp)] _FurStencilFrontFail ("Front Fail Op", Float) = 0
+[Enum(UnityEngine.Rendering.StencilOp)] _FurStencilFrontZFail ("Front ZFail Op", Float) = 0
+[Enum(UnityEngine.Rendering.CompareFunction)] _FurStencilFrontComp ("Front Compare Function", Float) = 8
+[HideInInspector] s_end_LilFurStencilFront ("Front", Float) = 0
+
+[HideInInspector] m_start_LilFurStencilCalculator ("LilFur Stencil Calculator--{persistent_expand:true,default_expand:false}", Float) = 0
+
+[ToggleUI(true)] _FurStencilIsOccluded ("Simulate ZFail", Float) = 0
+[HideInInspector] s_start_LilFurStencilCalcSimple ("Calculator--{condition_showS:(_FurStencilType==0),persistent_expand:true,default_expand:true}", Float) = 1
+[HideInInspector][IntRange] _FurStencilBufferValue ("Existing Buffer Value", Range(0, 255)) = 0
+[HideInInspector] ss_start_LilFurStencilGridSimple ("Bit Grid--{persistent_expand:true,default_expand:true}", Float) = 1
+[ThryStencilCalculator(_FurStencilBufferValue, _FurStencilRef, _FurStencilReadMask, _FurStencilWriteMask, _FurStencilComp, _FurStencilPass, _FurStencilFail, _FurStencilZFail, _FurStencilCheckResult, _FurStencilIsOccluded)]
+[ThryRichLabel(10)] _FurStencilCheckResult ("<i>Simulated in the editor. The GPU performs its own stencil test.</i>", Float) = 0
+[HideInInspector] ss_end_LilFurStencilGridSimple ("Bit Grid", Float) = 0
+[HideInInspector] ss_start_LilFurStencilSummarySimple ("Summary--{tooltip:Shows the stencil test and the operation selected by its outcome.,persistent_expand:true,default_expand:true}", Float) = 1
+[ThryStencilSummary(_FurStencilBufferValue, _FurStencilRef, _FurStencilReadMask, _FurStencilWriteMask, _FurStencilComp, _FurStencilPass, _FurStencilFail, _FurStencilZFail, _FurStencilCheckResult, _FurStencilIsOccluded)]
+[ThryRichLabel(10)] _FurStencilSummaryNote ("<i>Editing these dropdowns writes to the properties above.</i>", Float) = 0
+[Helpbox(1, 0, 5)] _FurStencilCheckFailed ("The pixel's stencil check would have failed--{condition_showS:(_FurStencilType==0 && _FurStencilCheckResult==0)}", Int) = 0
+[Helpbox(1, 0, 4)] _FurStencilCheckPassed ("The pixel's stencil check would have passed--{condition_showS:(_FurStencilType==0 && _FurStencilCheckResult==1)}", Int) = 0
+[HideInInspector] ss_end_LilFurStencilSummarySimple ("Summary", Float) = 0
+[HideInInspector] s_end_LilFurStencilCalcSimple ("Calculator", Float) = 0
+
+[HideInInspector] s_start_LilFurStencilCalcFront ("Front Faces--{condition_showS:(_FurStencilType==1),persistent_expand:true,default_expand:false}", Float) = 0
+[HideInInspector] ss_start_LilFurStencilGridFront ("Bit Grid--{persistent_expand:true,default_expand:false}", Float) = 0
+[ThryStencilCalculator(_FurStencilBufferValue, _FurStencilRef, _FurStencilReadMask, _FurStencilWriteMask, _FurStencilFrontComp, _FurStencilFrontPass, _FurStencilFrontFail, _FurStencilFrontZFail, _FurStencilFrontCheckResult, _FurStencilIsOccluded)]
+[ThryRichLabel(10)] _FurStencilFrontCheckResult ("<i>Front face simulation.</i>", Float) = 0
+[HideInInspector] ss_end_LilFurStencilGridFront ("Bit Grid", Float) = 0
+[HideInInspector] ss_start_LilFurStencilSummaryFront ("Summary--{persistent_expand:true,default_expand:false}", Float) = 0
+[ThryStencilSummary(_FurStencilBufferValue, _FurStencilRef, _FurStencilReadMask, _FurStencilWriteMask, _FurStencilFrontComp, _FurStencilFrontPass, _FurStencilFrontFail, _FurStencilFrontZFail, _FurStencilFrontCheckResult, _FurStencilIsOccluded)]
+[ThryRichLabel(10)] _FurStencilFrontSummaryNote ("<i>Front face test and selected operation.</i>", Float) = 0
+[HideInInspector] ss_end_LilFurStencilSummaryFront ("Summary", Float) = 0
+[HideInInspector] s_end_LilFurStencilCalcFront ("Front Faces", Float) = 0
+
+[HideInInspector] s_start_LilFurStencilCalcBack ("Back Faces--{condition_showS:(_FurStencilType==1),persistent_expand:true,default_expand:false}", Float) = 0
+[HideInInspector] ss_start_LilFurStencilGridBack ("Bit Grid--{persistent_expand:true,default_expand:false}", Float) = 0
+[ThryStencilCalculator(_FurStencilBufferValue, _FurStencilRef, _FurStencilReadMask, _FurStencilWriteMask, _FurStencilBackComp, _FurStencilBackPass, _FurStencilBackFail, _FurStencilBackZFail, _FurStencilBackCheckResult, _FurStencilIsOccluded)]
+[ThryRichLabel(10)] _FurStencilBackCheckResult ("<i>Back face simulation.</i>", Float) = 0
+[HideInInspector] ss_end_LilFurStencilGridBack ("Bit Grid", Float) = 0
+[HideInInspector] ss_start_LilFurStencilSummaryBack ("Summary--{persistent_expand:true,default_expand:false}", Float) = 0
+[ThryStencilSummary(_FurStencilBufferValue, _FurStencilRef, _FurStencilReadMask, _FurStencilWriteMask, _FurStencilBackComp, _FurStencilBackPass, _FurStencilBackFail, _FurStencilBackZFail, _FurStencilBackCheckResult, _FurStencilIsOccluded)]
+[ThryRichLabel(10)] _FurStencilBackSummaryNote ("<i>Back face test and selected operation.</i>", Float) = 0
+[HideInInspector] ss_end_LilFurStencilSummaryBack ("Summary", Float) = 0
+[HideInInspector] s_end_LilFurStencilCalcBack ("Back Faces", Float) = 0
+
+[HideInInspector] m_end_LilFurStencilCalculator ("LilFur Stencil Calculator", Float) = 0
+
+[HideInInspector] m_end_LilFurStencil ("LilFur Stencil", Float) = 0
+
+[HideInInspector] m_end_LilFurRendering ("LilFur Rendering", Float) = 0
+
+#T#TwoPassFurShaderSwapToProp
+[HideInInspector] shader_on_swap_to ("--{actions:[{type:SET_PROPERTY,data:_FurRenderingMode=1}, {type:SET_PROPERTY,data:_FurSrcBlend=5}, {type:SET_PROPERTY,data:_FurDstBlend=10}, {type:SET_PROPERTY,data:_FurSrcBlendAlpha=1}, {type:SET_PROPERTY,data:_FurDstBlendAlpha=10}, {type:SET_PROPERTY,data:_FurBlendOp=0}, {type:SET_PROPERTY,data:_FurBlendOpAlpha=0}, {type:SET_PROPERTY,data:_FurSrcBlendFA=1}, {type:SET_PROPERTY,data:_FurDstBlendFA=1}, {type:SET_PROPERTY,data:_FurSrcBlendAlphaFA=0}, {type:SET_PROPERTY,data:_FurDstBlendAlphaFA=1}, {type:SET_PROPERTY,data:_FurBlendOpFA=4}, {type:SET_PROPERTY,data:_FurBlendOpAlphaFA=4}, {type:SET_PROPERTY,data:_FurZWrite=0}, {type:SET_PROPERTY,data:_FurAlphaToMask=0}, {type:SET_TAG,data:RenderType=TransparentCutout}, {type:SET_TAG,data:Queue=Transparent}]}", Float) = 0
+_FurCutoutLength ("Cutout Length", Float) = 0.8
+
+#T#PoiLilFurStencilImplementation
+Stencil
+{
+	Ref [_FurStencilRef]
+	ReadMask [_FurStencilReadMask]
+	WriteMask [_FurStencilWriteMask]
+	//ifex _FurStencilType==1
+	Comp [_FurStencilComp]
+	Pass [_FurStencilPass]
+	Fail [_FurStencilFail]
+	ZFail [_FurStencilZFail]
+	//endex
+
+	//ifex _FurStencilType==0
+	CompBack [_FurStencilBackComp]
+	PassBack [_FurStencilBackPass]
+	FailBack [_FurStencilBackFail]
+	ZFailBack [_FurStencilBackZFail]
+
+	CompFront [_FurStencilFrontComp]
+	PassFront [_FurStencilFrontPass]
+	FailFront [_FurStencilFrontFail]
+	ZFailFront [_FurStencilFrontZFail]
+	//endex
+
+}
+
+#T#PoiLilFurKeywords
+//#pragma shader_feature_local PROP_FURVECTORTEX
+//#pragma shader_feature_local PROP_FURNOISEMASK
+//#pragma shader_feature_local PROP_FURMASK
+
+
+#T#PoiLilFurVariables
+#if defined(PROP_FURNOISEMASK) || !defined(OPTIMIZER_ENABLED)
+	Texture2D _FurNoiseMask;
+#endif
+#if defined(PROP_FURMASK) || !defined(OPTIMIZER_ENABLED)
+	Texture2D _FurMask;
+#endif
+#if defined(PROP_FURVECTORTEX) || !defined(OPTIMIZER_ENABLED)
+	Texture2D _FurVectorTex;
+#endif
+
+#ifdef POI_PASS_LILFUR
+	#define _Mode _RenderingReduceClipDistance
+#endif
+
+#T#PoiLilFurVariablesExposed
+float4 _FurVector;
+float4 _FurVectorPan;
+float4 _FurVectorTex_ST;
+float _FurVectorScale;
+float _FurGravity;
+float _FurRandomize;
+float _FurWindEnabled;
+float4 _FurWindPrimaryDirection;
+half _FurWindPrimaryAmplitude;
+float _FurWindPrimarySpeed;
+float _FurWindPrimaryFrequency;
+float4 _FurWindDetailDirection;
+float _FurWindDetailAmplitude;
+float _FurWindDetailSpeed;
+float _FurWindDetailFrequency;
+float4 _FurNoiseMaskPan;
+int _FurNoiseMaskUV;
+float4 _FurNoiseMask_ST;
+float4 _FurMaskPan;
+int _FurMaskUV;
+float4 _FurMask_ST;
+int _FurLengthChannel;
+int _FurAlphaChannel;
+float _FurMaskStrengthR;
+float _FurMaskStrengthG;
+float _FurMaskStrengthB;
+float _FurMaskStrengthA;
+float _FurAO;
+float _FurLayerNum;
+float _FurRootOffset;
+float _FurWidth;
+half4 _FurRimColor;
+half _FurRimFresnelPower;
+half _FurRimAntiLight;
+float _FurCutoutLength;
+float _VertexColor2FurVector;
+// float _FurTouchStrength;
+float _FurRenderingMode;
+
+// Fur Rendering & Stencil Properties
+float _FurCull;
+float _FurSrcBlend;
+float _FurDstBlend;
+half _FurSrcBlendAlpha;
+half _FurDstBlendAlpha;
+float _FurBlendOp;
+half _FurBlendOpAlpha;
+float _FurSrcBlendFA;
+float _FurDstBlendFA;
+half _FurSrcBlendAlphaFA;
+half _FurDstBlendAlphaFA;
+float _FurBlendOpFA;
+half _FurBlendOpAlphaFA;
+float _FurZClip;
+float _FurZWrite;
+float _FurZTest;
+float _FurOffsetFactor;
+float _FurOffsetUnits;
+half _FurColorMask;
+half _FurAlphaToMask;
+float _FurStencilType;
+float _FurStencilRef;
+half _FurStencilReadMask;
+half _FurStencilWriteMask;
+float _FurStencilComp;
+float _FurStencilPass;
+float _FurStencilFail;
+float _FurStencilZFail;
+float _FurStencilBackComp;
+float _FurStencilBackPass;
+float _FurStencilBackFail;
+float _FurStencilBackZFail;
+float _FurStencilFrontComp;
+float _FurStencilFrontPass;
+float _FurStencilFrontFail;
+float _FurStencilFrontZFail;
+
+#T#PoiInterpolatorsLilFur
+#ifdef POI_PASS_LILFUR
+	struct PoiVertToGeoLilFur
+	{
+		float4 uv[2] : TEXCOORD0;
+		float3 worldPos : TEXCOORD2;
+		// xyz: world space normal
+		// w:   renderer scale
+		float4 normal : TEXCOORD3;
+		uint vertexId : TEXCOORD4;
+		float3 furVector : TEXCOORD5;
+		float fogData : TEXCOORD6;
+		float4 tangent : TEXCOORD9;
+		float4 lightmapUV : TEXCOORD10;
+		half4 vertexColor : TEXCOORD11;
+		#ifdef POI_SQUISH
+			float squishAmount : TEXCOORD7;
+		#endif
+		#ifdef POIBS_BLOOMFOG
+			float2 bsFogScreenUV : TEXCOORD8;
+		#endif
+		UNITY_VERTEX_INPUT_INSTANCE_ID
+	};
+
+	struct PoiGeoToFragLilFur
+	{
+		float4 pos : SV_POSITION;
+		float4 uv[2] : TEXCOORD0;
+		float3 worldPos : TEXCOORD2;
+		// xyz: world space normal
+		// w:   renderer scale
+		float4 normal : TEXCOORD3;
+		float furLayer : TEXCOORD5;
+		float fogData : TEXCOORD6;
+		float4 tangent : TEXCOORD9;
+		float4 lightmapUV : TEXCOORD10;
+		half4 vertexColor : TEXCOORD12;
+		POI_SHADOW_COORDS(11)
+		#ifdef POI_SQUISH
+			float squishAmount : TEXCOORD7;
+		#endif
+		#ifdef POIBS_BLOOMFOG
+			float2 bsFogScreenUV : TEXCOORD8;
+		#endif
+		UNITY_VERTEX_INPUT_INSTANCE_ID
+		UNITY_VERTEX_OUTPUT_STEREO
+		#if defined(POI_DEVICE_QUEST)
+			uint gl_Layer : SV_RenderTargetArrayIndex;
+		#endif
+	};
+#endif
+
+#T#PoiLilFurVertexProgram
+PoiVertToGeoLilFur vert(appdata v)
+{
+	UNITY_SETUP_INSTANCE_ID(v);
+	PoiVertToGeoLilFur o;
+	PoiInitStruct(PoiVertToGeoLilFur, o);
+
+	// FXC on mobile doesn't like (PoiVertToGeoLilFur)POI_NAN return
+	// if o.worldPos NaN does not get overwritten, it's discarded
+	#if defined(SHADER_API_MOBILE)
+		o.worldPos = float3(POI_NAN, POI_NAN, POI_NAN);
+		UNITY_TRANSFER_INSTANCE_ID(v, o);
+	#endif
+
+	#ifdef POI_AUDIOLINK
+		float vertexAudioLink[5];
+		vertexAudioLink[0] = _AudioLinkSmoothingBass == 0 ? AudioLinkData(ALPASS_AUDIOLINK + float2(0, 0))[0] : AudioLinkData(ALPASS_FILTEREDAUDIOLINK + float2((1 - _AudioLinkSmoothingBass) * 15.95, 0))[0];
+		vertexAudioLink[1] = _AudioLinkSmoothingLowMid == 0 ? AudioLinkData(ALPASS_AUDIOLINK + float2(0, 1))[0] : AudioLinkData(ALPASS_FILTEREDAUDIOLINK + float2((1 - _AudioLinkSmoothingLowMid) * 15.95, 1))[0];
+		vertexAudioLink[2] = _AudioLinkSmoothingHighMid == 0 ? AudioLinkData(ALPASS_AUDIOLINK + float2(0, 2))[0] : AudioLinkData(ALPASS_FILTEREDAUDIOLINK + float2((1 - _AudioLinkSmoothingHighMid) * 15.95, 2))[0];
+		vertexAudioLink[3] = _AudioLinkSmoothingTreble == 0 ? AudioLinkData(ALPASS_AUDIOLINK + float2(0, 3))[0] : AudioLinkData(ALPASS_FILTEREDAUDIOLINK + float2((1 - _AudioLinkSmoothingTreble) * 15.95, 3))[0];
+		vertexAudioLink[4] = AudioLinkData(ALPASS_GENERALVU + float2(8, 0))[0];
+	#endif
+
+	o.normal.w = length(mul((float3x3)unity_ObjectToWorld, v.normal));
+
+	#K#VERTEX_INPUT_MODS
+
+	#if POI_PIPE == POI_BIRP
+		o.normal.xyz = PoiObjectToWorldNormal(v.normal);
+		o.tangent.xyz = UnityObjectToWorldDir(v.tangent.xyz);
+	#elif  POI_PIPE == POI_URP
+		VertexNormalInputs vertexNormalInput = GetVertexNormalInputs(v.normal, v.tangent);
+		o.normal.xyz = vertexNormalInput.normalWS;
+		o.tangent.xyz = vertexNormalInput.tangentWS;
+	#endif
+	o.tangent.w = v.tangent.w;
+
+	o.uv[0] = float4(v.uv0.xy, v.uv1.xy);
+	o.uv[1] = float4(v.uv2.xy, v.uv3.xy);
+
+	o.vertexColor = v.color;
+	o.vertexId = v.vertexId;
+
+	#if defined(LIGHTMAP_ON)
+		o.lightmapUV.xy = v.uv1.xy * unity_LightmapST.xy + unity_LightmapST.zw;
+	#endif
+	#ifdef DYNAMICLIGHTMAP_ON
+		o.lightmapUV.zw = v.uv2.xy * unity_DynamicLightmapST.xy + unity_DynamicLightmapST.zw;
+	#endif
+
+	o.worldPos = mul(unity_ObjectToWorld, v.vertex);
+
+	float3 localOffset = float3(0, 0, 0);
+	float3 worldOffset = float3(0, 0, 0);
+
+	#K#VERTEX_MODS_EARLY
+	#K#VERTEX_MODS
+	#K#VERTEX_MODS_LATE
+
+	v.vertex.rgb += localOffset;
+	o.worldPos.rgb += worldOffset;
+
+	#K#VERTEX_MODS_PENETRATION
+	#K#VERTEX_MODS_PRE_CLIPPOS
+
+	// Calculate clip space position (need for fog later)
+	float4 clipPos = PoiObjectToClipPos(v.vertex);
+	o.fogData = clipPos.z;
+
+	#K#VERTEX_MODS_POST_CLIPPOS
+
+	// #ifdef POI_PASS_META
+	// 	o.pos = UnityMetaVertexPosition(v.vertex, v.uv1.xy, v.uv2.xy, unity_LightmapST, unity_DynamicLightmapST);
+	// #endif
+
+	#ifdef POI_PASS_LILFUR
+		// Calculate fur vector
+		float3 bitangentOS = normalize(cross(v.normal, v.tangent.xyz)) * v.tangent.w;
+		float3x3 tbnOS = float3x3(v.tangent.xyz, bitangentOS, v.normal);
+		o.furVector = _FurVector.xyz + float3(0, 0, 0.001);
+		
+		if(_VertexColor2FurVector >= 0.5) o.furVector = float3(o.furVector.xy + (v.color.xyz * 2.0 - 1.0).xy, o.furVector.z * (v.color.xyz * 2.0 - 1.0).z);
+		
+		#if defined(PROP_FURVECTORTEX) || !defined(OPTIMIZER_ENABLED)
+			float3 furVectorTex = PoiUnpackNormalScale(_FurVectorTex.SampleLevel(sampler_linear_repeat, POI_PAN_UV(poiUV(v.uv0.xy, _FurVectorTex_ST), _FurVectorPan), 0), _FurVectorScale);
+			o.furVector = float3(o.furVector.xy + furVectorTex.xy, o.furVector.z * furVectorTex.z);
+		#endif
+		
+		o.furVector = mul(normalize(o.furVector), tbnOS);
+		o.furVector *= _FurVector.w;
+		
+		#ifdef LIL_FUR_PRE
+			o.furVector *= _FurCutoutLength;
+		#endif
+		
+		o.furVector = lilTransformDirOStoWS(o.furVector, false);
+		float furLength = length(o.furVector);
+		o.furVector.y -= _FurGravity * furLength;
+
+		//ifex isNotAnimated(_FurWindEnabled) && _FurWindEnabled==0
+		UNITY_BRANCH
+		if (_FurWindEnabled >= 0.5)
+		{
+			float3 furWindPrimaryDir = normalize(_FurWindPrimaryDirection.xyz);
+			float3 furWindDetailDir = normalize(_FurWindDetailDirection.xyz);
+			half furWindPrimaryWave = sin(POI_TIME.y * _FurWindPrimarySpeed + dot(o.worldPos, furWindPrimaryDir) * _FurWindPrimaryFrequency);
+			float furWindDetailWave = sin(POI_TIME.y * _FurWindDetailSpeed + dot(o.worldPos, furWindDetailDir) * _FurWindDetailFrequency);
+			float3 furWindOffset = furWindPrimaryWave * furWindPrimaryDir * _FurWindPrimaryAmplitude
+				+ furWindDetailWave * furWindDetailDir * _FurWindDetailAmplitude;
+			o.furVector += furWindOffset * furLength;
+		}
+		//endex
+		
+		#K#VERTEX_MODS_LILFUR
+	#endif
+
+	#K#VERTEX_MODS_FINAL
+
+	return o;
+}
+
+#T#PoiLilFurGeometryProgram
+// Helper function for reduce clip distance in geometry shader
+void applyReducedRenderClipDistanceGeoFur(inout float4 pos)
+{
+	//ifex _RenderingReduceClipDistance==0
+	if (_RenderingReduceClipDistance >= 0.5)
+	{
+		if (pos.w < _ProjectionParams.y * 1.01 && pos.w > 0)
+		{
+			#if defined(UNITY_REVERSED_Z) // DirectX
+				pos.z = pos.z * 0.0001 + pos.w * 0.999;
+			#else // OpenGL
+				pos.z = pos.z * 0.0001 - pos.w * 0.999;
+			#endif
+		}
+	}
+	//endex
+}
+
+float lilLerpFloat(float a, float b, float c, float3 factor)
+{
+	return a * factor.x + b * factor.y + c * factor.z;
+}
+float2 lilLerpFloat2(float2 a, float2 b, float2 c, float3 factor)
+{
+	return a * factor.x + b * factor.y + c * factor.z;
+}
+float3 lilLerpFloat3(float3 a, float3 b, float3 c, float3 factor)
+{
+	return a * factor.x + b * factor.y + c * factor.z;
+}
+float4 lilLerpFloat4(float4 a, float4 b, float4 c, float3 factor)
+{
+	return a * factor.x + b * factor.y + c * factor.z;
+}
+
+half lilLerpMask(half a, half b, half c, half3 factor)
+{
+	return a * factor.x + b * factor.y + c * factor.z;
+}
+
+// Compute the main-light shadow coordinate once at the fur ROOT and reuse it for the whole strand.
+#if POI_PIPE == POI_BIRP && defined(SHADOWS_SCREEN)
+	#if defined(UNITY_NO_SCREENSPACE_SHADOWS)
+		#define POI_FUR_TRANSFER_SHADOW(o, wPos) o._ShadowCoord = mul(unity_WorldToShadow[0], float4(wPos, 1));
+	#else
+		#define POI_FUR_TRANSFER_SHADOW(o, wPos) o._ShadowCoord = ComputeScreenPos(o.pos);
+	#endif
+#else
+	#define POI_FUR_TRANSFER_SHADOW(o, wPos)
+#endif
+
+PoiGeoToFragLilFur SetupFurOutputStructs(inout PoiGeoToFragLilFur output, PoiVertToGeoLilFur input[3], float3 furVectors[3], float3 factor)
+{
+	output.uv[0] = lilLerpFloat4(input[0].uv[0], input[1].uv[0], input[2].uv[0], factor);
+	output.uv[1] = lilLerpFloat4(input[0].uv[1], input[1].uv[1], input[2].uv[1], factor);
+	output.lightmapUV = lilLerpFloat4(input[0].lightmapUV, input[1].lightmapUV, input[2].lightmapUV, factor);
+	output.vertexColor = lilLerpFloat4(input[0].vertexColor, input[1].vertexColor, input[2].vertexColor, factor);
+	output.normal.xyz = normalize(lilLerpFloat3(input[0].normal.xyz, input[1].normal.xyz, input[2].normal.xyz, factor));
+	output.normal.w = input[0].normal.w;
+	output.tangent.xyz = normalize(lilLerpFloat3(input[0].tangent.xyz, input[1].tangent.xyz, input[2].tangent.xyz, factor));
+	output.tangent.w = input[0].tangent.w;
+
+	output.fogData = lilLerpFloat(input[0].fogData, input[1].fogData, input[2].fogData, factor);
+	#ifdef POI_SQUISH
+		output.squishAmount = lilLerpFloat(input[0].squishAmount, input[1].squishAmount, input[2].squishAmount, factor);
+	#endif
+	#ifdef POIBS_BLOOMFOG
+		output.bsFogScreenUV = input[0].bsFogScreenUV; // Screen UV is same for all vertices in a triangle
+	#endif
+
+	float3 posWS = lilLerpFloat3(input[0].worldPos, input[1].worldPos, input[2].worldPos, factor);
+	
+	output.worldPos = posWS;
+	output.pos = PoiWorldToClipPos(posWS);
+	output.furLayer = 0;
+	
+	// Apply reduce clip distance to base layer
+	applyReducedRenderClipDistanceGeoFur(output.pos);
+	
+	#ifdef LIL_FUR_PRE
+		#if defined(UNITY_REVERSED_Z)
+			output.pos.z -= 0.0000001;
+		#else
+			output.pos.z += 0.0000001;
+		#endif
+	#endif
+	
+	POI_FUR_TRANSFER_SHADOW(output, posWS);
+	
+	PoiGeoToFragLilFur baseStruct = output;
+	
+	float3 furVec = lilLerpFloat3(furVectors[0], furVectors[1], furVectors[2], factor);
+	posWS += furVec;
+	output.worldPos = posWS;
+	output.pos = PoiWorldToClipPos(posWS);
+	output.furLayer = 1;
+	
+	// Apply reduce clip distance to fur tip layer
+	applyReducedRenderClipDistanceGeoFur(output.pos);
+	
+	#ifdef LIL_FUR_PRE
+		#if defined(UNITY_REVERSED_Z)
+			output.pos.z -= 0.000001;
+		#else
+			output.pos.z += 0.000001;
+		#endif
+	#endif
+
+	return baseStruct;
+}
+
+[poi_maxvertexcount(26)]
+void geom(triangle PoiVertToGeoLilFur input[3], inout TriangleStream<PoiGeoToFragLilFur> outStream)
+{
+	PoiGeoToFragLilFur output;
+	PoiInitStruct(PoiGeoToFragLilFur, output);
+
+	#if defined(SHADER_API_MOBILE)
+		if (any(isnan(input[0].worldPos)) || any(isnan(input[1].worldPos)) || any(isnan(input[2].worldPos)))
+			return;
+	#endif
+
+	UNITY_SETUP_INSTANCE_ID(input[0]);
+	UNITY_SETUP_INSTANCE_ID(input[1]);
+	UNITY_SETUP_INSTANCE_ID(input[2]);
+
+	UNITY_TRANSFER_INSTANCE_ID(input[0], output);
+	POI_INITIALIZE_VERTEX_OUTPUT_STEREO(output);
+
+	float3 furVectors[3] = { input[0].furVector, input[1].furVector, input[2].furVector };
+
+	#K#GEOMETRY_INPUT_MODS
+
+	float randScale = _FurVector.w * _FurRandomize * (2.0 / float(0xffffffffU));
+	float randBias  = _FurVector.w * _FurRandomize;
+
+	float3 randOS0 = float3((input[0].vertexId * 3u + input[1].vertexId + input[2].vertexId) * uint3(1597334677U, 3812015801U, 2912667907U)) * randScale - randBias;
+	float3 randOS1 = float3((input[1].vertexId * 3u + input[2].vertexId + input[0].vertexId) * uint3(1597334677U, 3812015801U, 2912667907U)) * randScale - randBias;
+	float3 randOS2 = float3((input[2].vertexId * 3u + input[0].vertexId + input[1].vertexId) * uint3(1597334677U, 3812015801U, 2912667907U)) * randScale - randBias;
+	furVectors[0] += lilTransformDirOStoWS(randOS0, false);
+	furVectors[1] += lilTransformDirOStoWS(randOS1, false);
+	furVectors[2] += lilTransformDirOStoWS(randOS2, false);
+
+	#if defined(PROP_FURMASK) || !defined(OPTIMIZER_ENABLED)
+	if (_FurLengthChannel <= 3)
+	{
+		half lenStrength = float4(_FurMaskStrengthR, _FurMaskStrengthG, _FurMaskStrengthB, _FurMaskStrengthA)[_FurLengthChannel];
+		float2 lmUV0 = POI_PAN_UV(poiUV(input[0].uv[0].xy, _FurMask_ST), _FurMaskPan);
+		float2 lmUV1 = POI_PAN_UV(poiUV(input[1].uv[0].xy, _FurMask_ST), _FurMaskPan);
+		float2 lmUV2 = POI_PAN_UV(poiUV(input[2].uv[0].xy, _FurMask_ST), _FurMaskPan);
+		half lenMask0 = lerp(1.0, _FurMask.SampleLevel(sampler_linear_repeat, lmUV0, 0)[_FurLengthChannel], lenStrength);
+		half lenMask1 = lerp(1.0, _FurMask.SampleLevel(sampler_linear_repeat, lmUV1, 0)[_FurLengthChannel], lenStrength);
+		half lenMask2 = lerp(1.0, _FurMask.SampleLevel(sampler_linear_repeat, lmUV2, 0)[_FurLengthChannel], lenStrength);
+		furVectors[0] *= lenMask0;
+		furVectors[1] *= lenMask1;
+		furVectors[2] *= lenMask2;
+	}
+	#endif
+
+	int furLayerCount = min(max((int)_FurLayerNum, 1), 3);
+	if (furLayerCount == 1)
+	{
+		outStream.Append(SetupFurOutputStructs(output, input, furVectors, float3(1.0, 0.0, 0.0) / 1.0));
+		outStream.Append(output);
+		outStream.Append(SetupFurOutputStructs(output, input, furVectors, float3(0.0, 1.0, 0.0) / 1.0));
+		outStream.Append(output);
+		outStream.Append(SetupFurOutputStructs(output, input, furVectors, float3(0.0, 0.0, 1.0) / 1.0));
+		outStream.Append(output);
+	}
+	else if (furLayerCount >= 2)
+	{
+		outStream.Append(SetupFurOutputStructs(output, input, furVectors, float3(1.0, 0.0, 0.0) / 1.0));
+		outStream.Append(output);
+		outStream.Append(SetupFurOutputStructs(output, input, furVectors, float3(0.0, 1.0, 1.0) / 2.0));
+		outStream.Append(output);
+		outStream.Append(SetupFurOutputStructs(output, input, furVectors, float3(0.0, 1.0, 0.0) / 1.0));
+		outStream.Append(output);
+		outStream.Append(SetupFurOutputStructs(output, input, furVectors, float3(1.0, 0.0, 1.0) / 2.0));
+		outStream.Append(output);
+		outStream.Append(SetupFurOutputStructs(output, input, furVectors, float3(0.0, 0.0, 1.0) / 1.0));
+		outStream.Append(output);
+		outStream.Append(SetupFurOutputStructs(output, input, furVectors, float3(1.0, 1.0, 0.0) / 2.0));
+		outStream.Append(output);
+	}
+	if (furLayerCount >= 3)
+	{
+		outStream.Append(SetupFurOutputStructs(output, input, furVectors, float3(1.0, 4.0, 1.0) / 6.0));
+		outStream.Append(output);
+		outStream.Append(SetupFurOutputStructs(output, input, furVectors, float3(0.0, 1.0, 1.0) / 2.0));
+		outStream.Append(output);
+		outStream.Append(SetupFurOutputStructs(output, input, furVectors, float3(1.0, 1.0, 4.0) / 6.0));
+		outStream.Append(output);
+		outStream.Append(SetupFurOutputStructs(output, input, furVectors, float3(1.0, 0.0, 1.0) / 2.0));
+		outStream.Append(output);
+		outStream.Append(SetupFurOutputStructs(output, input, furVectors, float3(4.0, 1.0, 1.0) / 6.0));
+		outStream.Append(output);
+		outStream.Append(SetupFurOutputStructs(output, input, furVectors, float3(1.0, 1.0, 0.0) / 2.0));
+		outStream.Append(output);
+	}
+	outStream.Append(SetupFurOutputStructs(output, input, furVectors, float3(1.0, 0.0, 0.0) / 1.0));
+	outStream.Append(output);
+	outStream.RestartStrip();
+}
+
+#T#PoiLilFurFragmentProgram
+float4 frag(PoiGeoToFragLilFur i, bool facing : SV_IsFrontFace) : SV_Target
+{
+	UNITY_SETUP_INSTANCE_ID(i);
+	UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(i);
+
+	#K#FRAGMENT_LILFUR_DECLARATIONS
+
+	#K#FRAGMENT_LILFUR_INIT_EARLY
+	#K#FRAGMENT_LILFUR_INIT
+	#K#FRAGMENT_LILFUR_INIT_LATE
+
+	#K#FRAGMENT_LILFUR_COLOR_EARLY
+	#K#FRAGMENT_LILFUR_COLOR
+	#K#FRAGMENT_LILFUR_COLOR_LATE
+
+	//UNITY_BRANCH
+	//if (_AlphaPremultiply)
+	//{
+	//	poiFragData.baseColor *= saturate(poiFragData.alpha);
+	//}
+	poiFragData.finalColor = poiFragData.baseColor;
+
+	#K#FRAGMENT_LILFUR_LIGHTING_EARLY
+	#K#FRAGMENT_LILFUR_LIGHTING
+	#K#FRAGMENT_LILFUR_LIGHTING_LATE
+
+	#K#FRAGMENT_LILFUR_LIGHTING_ADD
+
+	#K#FRAGMENT_LILFUR_EMISSION_EARLY
+	#K#FRAGMENT_LILFUR_EMISSION
+	#K#FRAGMENT_LILFUR_EMISSION_LATE
+	
+	// Fur Rim Lighting (from liltoon)
+	// invLighting = (1.0 - directColor) * sqrt(directColor) - smooth inverse curve from direct light only
+	// grayscale using simple 1/3 average, then lerp based on antiLight
+	half3 furRimInvLighting = saturate((1.0 - poiLight.directColor) * sqrt(poiLight.directColor));
+	half furRimAntiLightValue = lerp(1, dot(furRimInvLighting, float3(1.0/3.0, 1.0/3.0, 1.0/3.0)), _FurRimAntiLight);
+	poiFragData.finalColor += i.furLayer * pow((1 - abs(dot(i.normal.xyz, poiCam.viewDir))), _FurRimFresnelPower) * furRimAntiLightValue * _FurRimColor.rgb * poiLight.directColor;
+
+	// Multiply color by alpha in ForwardAdd pass for transparent mode (same as liltoon)
+	#if defined(POI_PASS_ADD) && !defined(LIL_FUR_PRE)
+		if (_FurRenderingMode == 1)
+		{
+			poiFragData.finalColor.rgb *= saturate(poiFragData.alpha * _AlphaBoostFA);
+		}
+	#endif
+
+	#K#FRAGMENT_LILFUR_RETURN
+
+	//clip(poiFragData.alpha - _Cutoff);
+	//float debugValue = ceil(pow(poiFragData.alpha,5) * 10) / 10;
+	//return float4(debugValue,debugValue,debugValue,1);
+	#if defined(LIL_FUR_PRE)
+		// Cutout
+		poiFragData.alpha = saturate(poiFragData.alpha * 5.0 - 2.0);
+		if (poiFragData.alpha == 0) discard;
+	#else
+		if (_FurRenderingMode == 0)
+		{
+			// Cutout
+			poiFragData.alpha = saturate(poiFragData.alpha * 5.0 - 2.0);
+			if (poiFragData.alpha == 0) discard;
+		}
+		else
+		{
+			// Transparent
+			clip(poiFragData.alpha - _Cutoff);
+		}
+	#endif
+	//clip(poiFragData.alpha - .5f);
+	#K#FRAGMENT_LILFUR_ALPHA_LATE
+
+	poiFragData.finalColor += poiFragData.emission * poiMods.globalEmission;
+
+	// Apply Poiyomi fog system (handles all fog types without keywords)
+	applyUnityFog(poiFragData.finalColor, i.fogData, _IgnoreFog);
+
+	return float4(poiFragData.finalColor, poiFragData.alpha) + POI_SAFE_RGB0;
+}
+
+#T#PoiLilFurFragmentFunctions
+half3 applyFurAO(half3 color, half furLayer, half furNoiseMask, half furLayerGradient)
+{
+	half curvedFurLayer = saturate(furLayer);
+	#if defined(LIL_FUR_PRE)
+		half furAO = _FurAO * saturate(1.0h - furLayerGradient);
+		return color * (curvedFurLayer * furAO * 2.0 + 1.0 - furAO);
+	#else
+		if (_FurRenderingMode == 0)
+		{
+			float furAO = _FurAO * saturate(1.0 - furLayerGradient);
+			return color * (curvedFurLayer * furAO * 2.0 + 1.0 - furAO);
+		}
+		else
+		{
+			return color * (saturate(1.0 - furNoiseMask + furNoiseMask * curvedFurLayer) * _FurAO * 1.25 + 1.0 - _FurAO);
+		}
+	#endif
+}
+
+void lilFur(inout PoiFragData poiFragData, in PoiMods poiMods, in PoiMesh poiMesh, PoiGeoToFragLilFur i, float4 mainTex)
+{
+	float furLayer = i.furLayer;
+	float furLayerShift = furLayer - furLayer * (_FurRootOffset) + (_FurRootOffset);
+	float furLayerAbs = abs(furLayerShift);
+	half furNoiseMask = 1.0h;
+	
+	#if defined(PROP_FURNOISEMASK) || !defined(OPTIMIZER_ENABLED)
+		furNoiseMask = _FurNoiseMask.Sample(sampler_linear_repeat, POI_PAN_UV(poiUV(poiMesh.uv[_FurNoiseMaskUV], _FurNoiseMask_ST), _FurNoiseMaskPan)).r;
+	#endif
+	
+	#if defined(LIL_FUR_PRE)
+		half furAlpha = saturate(furNoiseMask - furLayerShift * furLayerAbs * furLayerAbs * furLayerAbs + 0.25 + _FurWidth);
+	#else
+		half furAlpha;
+		if (_FurRenderingMode == 0)
+		{
+			furAlpha = saturate(furNoiseMask - furLayerShift * furLayerAbs * furLayerAbs * furLayerAbs + 0.25 + _FurWidth);
+		}
+		else
+		{
+			furAlpha = saturate(furNoiseMask - furLayerShift * furLayerAbs * furLayerAbs + _FurWidth);
+		}
+	#endif
+	
+	#if defined(PROP_FURMASK) || !defined(OPTIMIZER_ENABLED)
+	if (_FurAlphaChannel <= 3)
+	{
+		half alphaStrength = float4(_FurMaskStrengthR, _FurMaskStrengthG, _FurMaskStrengthB, _FurMaskStrengthA)[_FurAlphaChannel];
+		furAlpha *= lerp(1.0, _FurMask.Sample(sampler_linear_repeat, POI_PAN_UV(poiUV(poiMesh.uv[_FurMaskUV], _FurMask_ST), _FurMaskPan))[_FurAlphaChannel], alphaStrength);
+	}
+	#endif
+	
+	poiFragData.alpha = mainTex.a * _Color.a * furAlpha;
+}
+
+#T#PoiLilFurFragmentFunctionCalls
+lilFur(poiFragData, poiMods, poiMesh, i, mainTexture);
+
+#T#PoiLilFurBasePassAOFunction
+void applyFurAOSimple(inout PoiFragData poiFragData, in PoiMesh poiMesh)
+{
+	half mask = 1.0;
+	#if defined(PROP_FURMASK) || !defined(OPTIMIZER_ENABLED)
+	if (_FurAlphaChannel <= 3)
+	{
+		half alphaStrength = float4(_FurMaskStrengthR, _FurMaskStrengthG, _FurMaskStrengthB, _FurMaskStrengthA)[_FurAlphaChannel];
+		mask = lerp(1.0, _FurMask.Sample(sampler_linear_repeat, POI_PAN_UV(poiUV(poiMesh.uv[_FurMaskUV], _FurMask_ST), _FurMaskPan))[_FurAlphaChannel], alphaStrength);
+	}
+	#endif
+	poiFragData.finalColor *= (1.0 - _FurAO * mask);
+}
+
+#T#PoiLilFurBasePassAOFunctionCall
+// Apply the fur AO after all fragment modules have contributed to the color
+#if defined(POI_PASS_LILFUR)
+	{
+		half furAONoiseMask = 1.0h;
+		#if defined(PROP_FURNOISEMASK) || !defined(OPTIMIZER_ENABLED)
+			furAONoiseMask = _FurNoiseMask.Sample(sampler_linear_repeat, POI_PAN_UV(poiUV(poiMesh.uv[_FurNoiseMaskUV], _FurNoiseMask_ST), _FurNoiseMaskPan)).r;
+		#endif
+		poiFragData.finalColor = applyFurAO(poiFragData.finalColor, i.furLayer, furAONoiseMask, fwidth(i.furLayer));
+	}
+#else
+	if(_FurRenderingMode == 0)
+	{
+		applyFurAOSimple(poiFragData, poiMesh);
+	}
+#endif
+
+#T#PoiLilFurFragmentInit
+poiMesh.objectPosition = mul(unity_ObjectToWorld, float4(0, 0, 0, 1)).xyz;
+poiMesh.objNormal = mul(unity_WorldToObject, i.normal.xyz);
+poiMesh.normals[0] = i.normal.xyz;
+poiMesh.normals[1] = i.normal.xyz;
+poiMesh.objectScale = i.normal.w;
+poiMesh.worldPos = i.worldPos;
+poiMesh.isFrontFace = facing;
+poiMesh.uv[0] = i.uv[0].xy;
+poiMesh.uv[1] = i.uv[0].zw;
+poiMesh.uv[2] = i.uv[1].xy;
+poiMesh.uv[3] = i.uv[1].zw;
+
+poiCam.eyeViewDir = !IsOrthographicCamera() ? (getCameraPosition(false) - i.worldPos.xyz) : UNITY_MATRIX_I_V._m02_m12_m22;
+poiCam.eyeViewDir = normalize(poiCam.eyeViewDir);
+poiCam.viewDir = !IsOrthographicCamera() ? (getCameraPosition() - i.worldPos.xyz) : UNITY_MATRIX_I_V._m02_m12_m22;
+poiCam.viewDir = normalize(poiCam.viewDir);
+poiCam.worldPos = getCameraPosition();
+poiCam.vDotN = abs(dot(poiCam.eyeViewDir, i.normal.xyz));
+poiCam.vDotNCentered = abs(dot(poiCam.viewDir, i.normal.xyz));

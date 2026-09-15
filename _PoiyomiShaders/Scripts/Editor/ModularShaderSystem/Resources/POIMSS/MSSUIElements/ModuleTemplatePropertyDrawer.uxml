@@ -1,0 +1,6 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
+    <uie:PropertyField binding-path="Template" label="Template" focusable="true" />
+    <uie:PropertyField binding-path="Queue" label="Queue" focusable="true" />
+    <ui:Toggle binding-path="NeedsVariant" label="Generates variant" />
+    <Poiyomi.ModularShaderSystem.UI.InspectorList show-elements-text="false" binding-path="Keywords" />
+</ui:UXML>

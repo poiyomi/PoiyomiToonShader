@@ -1,0 +1,173 @@
+TimelineContainer
+{
+    flex-grow: 1;
+}
+
+TimelineRoot
+{
+    border-width: 1px;
+    border-color: black;
+    overflow: hidden;
+}
+
+TimelineRow
+{
+    border-width: 1px;
+    border-color: black;
+    flex-direction: row-reverse;
+    background-color: #303030;
+    overflow: hidden;
+}
+
+FunctionItem
+{
+    border-color: black;
+    border-width: 1px;
+    border-radius: 7px;
+    margin: 4px;
+    background-color: darkslategrey;
+    position: absolute;
+    flex-direction: row;
+    align-content: stretch;
+}
+
+CodeViewElement
+{
+    margin: 6px;
+}
+
+.function-header-queue
+{
+    -unity-font-style: italic;
+    color: grey;
+    -unity-text-align: middle-right;
+}
+
+.function-header-name
+{
+    align-self: center;
+    flex-grow: 1;
+    margin: 4px;
+    -unity-text-align: middle-left;
+}
+
+.timeline-title
+{
+    position: initial;
+    width: 200px;
+    border-width: 0 2px 0 0;
+    border-color: black;
+    background-color: #484848;
+    align-content: center;
+    flex-shrink: 0;
+    overflow: hidden;
+}
+.timeline-title>Label
+{
+    flex-grow: 1;
+    -unity-text-align: middle-right;
+    margin: 3px;
+}
+
+.timeline-content
+{
+    flex-grow: 1;
+}
+
+.timeline-content-row
+{
+    flex-direction: row;
+}
+
+VariablesViewer
+{
+    width: 30%;
+    border-width: 2px;
+    border-color: #282828;
+    margin: 2px;
+}
+
+FunctionViewer
+{
+    width: 35%;
+    border-width: 2px;
+    border-color: #282828;
+    margin: 2px;
+}
+
+FunctionTemplateViewer
+{
+    flex-grow: 1;
+    border-width: 2px;
+    border-color: #282828;
+    margin: 2px;
+}
+
+ModuleViewer
+{
+    width: 35%;
+    border-width: 2px;
+    border-color: #282828;
+    margin: 2px;
+}
+
+.contains-variable
+{
+    border-color: yellow;
+}
+
+.contains-variable-global
+{
+    border-color: #ff002f;
+}
+
+.selected-function
+{
+    border-color: aqua;
+}
+
+.area-title
+{
+    margin: 0;
+    padding: 4px;
+    background-color: #282828;
+    -unity-font-style: bold;
+}
+
+Foldout > Toggle
+{
+    margin-left: -11px;
+}
+
+.area-content>VisualElement, .area-content>VisualElement>VisualElement
+{
+    overflow: visible;
+}
+
+.area-content
+{
+    margin: 4px 4px 4px 4px;
+    padding: 0 0 0 11px;
+    overflow: hidden;
+}
+
+.variable-type-text
+{
+    color: grey;
+}
+
+.selected-variable
+{
+    background-color: rgba(255,255,0,0.2);
+}
+
+.selected-variable-global
+{
+    background-color: rgba(255, 0, 0, 0.2);
+}
+
+.label-field-value
+{
+    white-space: normal;
+    flex-shrink: 1;
+}

@@ -1,0 +1,615 @@
+#T#UVModifierProperties
+[HideInInspector] m_start_uvSettings ("UV Settings--{button_help:{text:Tutorial,action:{type:URL,data:https://www.poiyomi.com/modifiers/uvs/uv-settings},hover:Documentation}}", Float) = 0
+[HideInInspector] s_start_uvSettingsUV0 ("UV0--{persistent_expand:true,default_expand:false}", Float) = 0
+[VectorLabel(X, Y)]_UVSettingsTiling0 ("Tiling", Vector) = (1, 1, 0, 0)
+[VectorLabel(X, Y)]_UVSettingsOffset0 ("Offset", Vector) = (0, 0, 0, 0)
+_UVSettingsAngle0 ("Angle", Range(-180, 180)) = 0
+[VectorLabel(X, Y)]_UVSettingsPan0 ("Pan", Vector) = (0, 0, 0, 0)
+_UVSettingsRotate0 ("Rotate", Float) = 0
+[HideInInspector] s_end_uvSettingsUV0 ("UV0", Float) = 0
+[HideInInspector] s_start_uvSettingsUV1 ("UV1--{persistent_expand:true,default_expand:false}", Float) = 0
+[VectorLabel(X, Y)]_UVSettingsTiling1 ("Tiling", Vector) = (1, 1, 0, 0)
+[VectorLabel(X, Y)]_UVSettingsOffset1 ("Offset", Vector) = (0, 0, 0, 0)
+_UVSettingsAngle1 ("Angle", Range(-180, 180)) = 0
+[VectorLabel(X, Y)]_UVSettingsPan1 ("Pan", Vector) = (0, 0, 0, 0)
+_UVSettingsRotate1 ("Rotate", Float) = 0
+[HideInInspector] s_end_uvSettingsUV1 ("UV1", Float) = 0
+[HideInInspector] s_start_uvSettingsUV2 ("UV2--{persistent_expand:true,default_expand:false}", Float) = 0
+[VectorLabel(X, Y)]_UVSettingsTiling2 ("Tiling", Vector) = (1, 1, 0, 0)
+[VectorLabel(X, Y)]_UVSettingsOffset2 ("Offset", Vector) = (0, 0, 0, 0)
+_UVSettingsAngle2 ("Angle", Range(-180, 180)) = 0
+[VectorLabel(X, Y)]_UVSettingsPan2 ("Pan", Vector) = (0, 0, 0, 0)
+_UVSettingsRotate2 ("Rotate", Float) = 0
+[HideInInspector] s_end_uvSettingsUV2 ("UV2", Float) = 0
+[HideInInspector] s_start_uvSettingsUV3 ("UV3--{persistent_expand:true,default_expand:false}", Float) = 0
+[VectorLabel(X, Y)]_UVSettingsTiling3 ("Tiling", Vector) = (1, 1, 0, 0)
+[VectorLabel(X, Y)]_UVSettingsOffset3 ("Offset", Vector) = (0, 0, 0, 0)
+_UVSettingsAngle3 ("Angle", Range(-180, 180)) = 0
+[VectorLabel(X, Y)]_UVSettingsPan3 ("Pan", Vector) = (0, 0, 0, 0)
+_UVSettingsRotate3 ("Rotate", Float) = 0
+[HideInInspector] s_end_uvSettingsUV3 ("UV3", Float) = 0
+[ToggleUI] _UVSettingsShiftBackfaceUV ("Shift Backface UV", Float) = 0
+[HideInInspector] m_end_uvSettings ("UV Settings", Float) = 0
+
+//ifex _EnableDistortion==0
+[HideInInspector] m_start_uvDistortion (" Distortion UV--{reference_property:_EnableDistortion, button_help:{text:Tutorial,action:{type:URL,data:https://www.poiyomi.com/modifiers/uvs/distortion-uv},hover:Documentation}}", Float) = 0
+[HideInInspector][ThryToggle(USER_LUT)] _EnableDistortion ("Enabled", Float) = 0
+[ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos XZ, 5, Local Pos, 8, Polar UV, 6, Matcap, 9, Screen Space, 10)] _DistortionUvToDistort ("Distorted UV", Int) = 0
+[sRGBWarning]_DistortionMask ("Mask--{reference_properties:[_DistortionMaskPan, _DistortionMaskUV, _DistortionMaskChannel]}", 2D) = "white" { }
+[ThryHideInInspector][Vector2]_DistortionMaskPan ("Panning", Vector) = (0, 0, 0, 0)
+[ThryHideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos XZ, 5, Local Pos, 8, Polar UV, 6, Matcap, 9, Screen Space, 10)] _DistortionMaskUV ("UV", Int) = 0
+[ThryHideInInspector][Enum(R, 0, G, 1, B, 2, A, 3)]_DistortionMaskChannel ("Channel", Float) = 0
+[ThryWideEnum(Texture, 0, Gerstner Waves, 1, Simplex Noise, 2, Voronoi, 3, Curl Noise, 4, Fractal Brownian Motion, 5)] _DistortionMode ("Distortion Mode", Int) = 0
+[VectorLabel(X, Y)]_DistortionTiling ("Tiling--{condition_showS:_DistortionMode>0}", Vector) = (1, 1, 0, 0)
+[VectorLabel(X, Y)]_DistortionPanSpeed ("Pan Speed--{condition_showS:_DistortionMode>0}", Vector) = (0, 0, 0, 0)
+[HideInInspector] s_start_DistortionTexture ("Texture Mode--{persistent_expand:true,default_expand:true,condition_showS:_DistortionMode==0}", Float) = 1
+[sRGBWarning]_DistortionFlowTexture ("Distortion Texture 1--{reference_properties:[_DistortionFlowTexturePan, _DistortionFlowTextureUV]}", 2D) = "black" { }
+[ThryHideInInspector][Vector2]_DistortionFlowTexturePan ("Panning", Vector) = (0, 2, 0, 0)
+[ThryHideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos XZ, 5, Local Pos, 8, Polar UV, 6, Matcap, 9, Screen Space, 10)] _DistortionFlowTextureUV ("UV", Int) = 0
+[sRGBWarning]_DistortionFlowTexture1 ("Distortion Texture 2--{reference_properties:[_DistortionFlowTexture1Pan, _DistortionFlowTexture1UV]}", 2D) = "black" { }
+[ThryHideInInspector][Vector2]_DistortionFlowTexture1Pan ("Panning", Vector) = (2, 0, 0, 0)
+[ThryHideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos XZ, 5, Local Pos, 8, Polar UV, 6, Matcap, 9, Screen Space, 10)] _DistortionFlowTexture1UV ("UV", Int) = 0
+_DistortionStrength ("Strength1", Float) = 0.05
+_DistortionStrength1 ("Strength2", Float) = 0.02
+[HideInInspector] s_end_DistortionTexture ("Texture Mode", Float) = 0
+[HideInInspector] s_start_DistortionGerstner ("Gerstner Waves--{persistent_expand:true,default_expand:true,condition_showS:_DistortionMode==1}", Float) = 1
+_DistortionGerstnerSpeed ("Wave Speed", Range(0.1, 5)) = 1.0
+_DistortionGerstnerScale ("Wave Density", Range(0.01, 100)) = 1.0
+_DistortionGerstnerStrength ("Flow Strength", Range(0, 1)) = 0.15
+_DistortionGerstnerSteepness ("Wave Steepness", Range(0, 1)) = 0.5
+[HideInInspector] ss_start_DistortionGerstnerWave1 ("Wave 1--{persistent_expand:true,default_expand:false}", Float) = 0
+[VectorToSliders(Direction, 0, 360, Amplitude, 0, 1, Wavelength, 0.5, 20, Speed Mult, 0, 10)]_DistortionGerstnerWave1 ("Wave 1", Vector) = (0, 0.2, 10, 1)
+[HideInInspector] ss_end_DistortionGerstnerWave1 ("Wave 1", Float) = 0
+[HideInInspector] ss_start_DistortionGerstnerWave2 ("Wave 2--{persistent_expand:true,default_expand:false}", Float) = 0
+[VectorToSliders(Direction, 0, 360, Amplitude, 0, 1, Wavelength, 0.5, 20, Speed Mult, 0, 10)]_DistortionGerstnerWave2 ("Wave 2", Vector) = (45, 0.15, 6, 1)
+[HideInInspector] ss_end_DistortionGerstnerWave2 ("Wave 2", Float) = 0
+[HideInInspector] ss_start_DistortionGerstnerWave3 ("Wave 3--{persistent_expand:true,default_expand:false}", Float) = 0
+[VectorToSliders(Direction, 0, 360, Amplitude, 0, 1, Wavelength, 0.5, 20, Speed Mult, 0, 10)]_DistortionGerstnerWave3 ("Wave 3", Vector) = (120, 0.1, 4, 1)
+[HideInInspector] ss_end_DistortionGerstnerWave3 ("Wave 3", Float) = 0
+[HideInInspector] ss_start_DistortionGerstnerWave4 ("Wave 4--{persistent_expand:true,default_expand:false}", Float) = 0
+[VectorToSliders(Direction, 0, 360, Amplitude, 0, 1, Wavelength, 0.5, 20, Speed Mult, 0, 10)]_DistortionGerstnerWave4 ("Wave 4", Vector) = (200, 0.08, 2.5, 1)
+[HideInInspector] ss_end_DistortionGerstnerWave4 ("Wave 4", Float) = 0
+[HideInInspector] s_end_DistortionGerstner ("Gerstner Waves", Float) = 0
+[HideInInspector] s_start_DistortionSimplex ("Simplex Noise--{persistent_expand:true,default_expand:true,condition_showS:_DistortionMode==2}", Float) = 1
+_DistortionSimplexScale ("Scale", Range(0.01, 50)) = 1
+_DistortionSimplexStrength ("Strength", Range(0, 1)) = 0.01
+_DistortionSimplexSpeed ("Speed", Range(0, 5)) = 1.0
+[HideInInspector] s_end_DistortionSimplex ("Simplex Noise", Float) = 0
+[HideInInspector] s_start_DistortionVoronoi ("Voronoi--{persistent_expand:true,default_expand:true,condition_showS:_DistortionMode==3}", Float) = 1
+_DistortionVoronoiScale ("Scale", Range(0.1, 50)) = 1.0
+_DistortionVoronoiStrength ("Strength", Range(0, 1)) = 0.1
+_DistortionVoronoiSpeed ("Speed", Range(0, 5)) = 2
+_DistortionVoronoiEdgeBlend ("Edge Blend", Range(0, 1)) = 1
+[HideInInspector] s_end_DistortionVoronoi ("Voronoi", Float) = 0
+[HideInInspector] s_start_DistortionCurl ("Curl Noise--{persistent_expand:true,default_expand:true,condition_showS:_DistortionMode==4}", Float) = 1
+_DistortionCurlScale ("Scale", Range(0.01, 1)) = 0.3
+_DistortionCurlStrength ("Strength", Range(0, .5)) = 0.01
+_DistortionCurlSpeed ("Speed", Range(0, 5)) = .2
+[HideInInspector] s_end_DistortionCurl ("Curl Noise", Float) = 0
+[HideInInspector] s_start_DistortionFBM ("Fractal Brownian Motion--{persistent_expand:true,default_expand:true,condition_showS:_DistortionMode==5}", Float) = 1
+_DistortionFBMScale ("Scale", Range(0.01, 2)) = 0.2
+_DistortionFBMStrength ("Strength", Range(0, 1)) = 0.025
+_DistortionFBMSpeed ("Speed", Range(0, 5)) = 1.0
+_DistortionFBMOctaves ("Octaves", Range(1, 8)) = 4
+_DistortionFBMLacunarity ("Lacunarity", Range(1, 4)) = 2.0
+_DistortionFBMGain ("Gain", Range(0, 1)) = 0.5
+[HideInInspector] s_end_DistortionFBM ("Fractal Brownian Motion", Float) = 0
+[HideInInspector] m_start_DistortionAudioLink ("Audio Link ♫--{reference_property:_EnableDistortionAudioLink, condition_showS:_EnableAudioLink==1}", Float) = 0
+[ThryHideInInspector][ToggleUI] _EnableDistortionAudioLink ("Enabled", Float) = 0
+[Enum(Bass, 0, Low Mid, 1, High Mid, 2, Treble, 3, Volume, 4)] _DistortionStrengthAudioLinkBand ("Strength 1 Band", Int) = 0
+[VectorLabel(Min, Max)]_DistortionStrengthAudioLink ("Strength 1 Offset Range", Vector) = (0, 0, 0, 0)
+[Space(7)]
+[Enum(Bass, 0, Low Mid, 1, High Mid, 2, Treble, 3, Volume, 4)] _DistortionStrength1AudioLinkBand ("Strength 2 Band", Int) = 0
+[VectorLabel(Min, Max)]_DistortionStrength1AudioLink ("Strength 2 Offset Range", Vector) = (0, 0, 0, 0)
+[HideInInspector] m_end_DistortionAudioLink ("Audio Link", Float) = 0
+[HideInInspector] m_end_uvDistortion ("Distortion UV", Float) = 0
+//endex
+
+[HideInInspector] m_start_uvLocalWorld ("Local World UV--{button_help:{text:Tutorial,action:{type:URL,data:https://www.poiyomi.com/modifiers/uvs/local-world-uv},hover:Documentation}}", Float) = 0
+[ThryWideEnum(X, 0, Y, 1, Z, 2, Zero, 3, VColor R, 4, VColor G, 5, VColor B, 6, VColor A, 7)] _UVModLocalPos0 ("Local X", Int) = 0
+[ThryWideEnum(X, 0, Y, 1, Z, 2, Zero, 3, VColor R, 4, VColor G, 5, VColor B, 6, VColor A, 7)] _UVModLocalPos1 ("Local Y", Int) = 1
+[Space(10)]
+[ThryWideEnum(X, 0, Y, 1, Z, 2, Zero, 3)] _UVModWorldPos0 ("World X", Int) = 0
+[ThryWideEnum(X, 0, Y, 1, Z, 2, Zero, 3)] _UVModWorldPos1 ("World Y", Int) = 2
+[HideInInspector] m_end_uvLocalWorld ("Local World UV", Float) = 0
+
+[HideInInspector] m_start_uvPanosphere ("Panosphere UV--{button_help:{text:Tutorial,action:{type:URL,data:https://www.poiyomi.com/modifiers/uvs/panosphere-uv},hover:Documentation}}", Float) = 0
+[ThryWideEnum(Mono, 0, Top Bottom, 1, Side by Side, 2)] _StereoEnabled ("Stereo Layout", Float) = 0
+[ToggleUI] _PanoUseBothEyes ("Perspective Correct (VR)", Float) = 1
+[HideInInspector] m_end_uvPanosphere ("Panosphere UV", Float) = 0
+
+[HideInInspector] m_start_uvPolar ("Polar UV--{button_help:{text:Tutorial,action:{type:URL,data:https://www.poiyomi.com/modifiers/uvs/polar-uv},hover:Documentation}}", Float) = 0
+[ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Matcap, 9, Screen Space, 10)] _PolarUV ("UV", Int) = 0
+[ThryWideEnum(Standard, 0, Log Polar, 1, Square Polar, 2)] _PolarMode ("Mode", Int) = 0
+[Vector2]_PolarCenter ("Center Coordinate", Vector) = (.5, .5, 0, 0)
+_PolarRadialScale ("Radial Scale", Float) = 1
+_PolarLengthScale ("Length Scale", Float) = 1
+_PolarSpiralPower ("Spiral Power", Float) = 0
+[HideInInspector] m_end_uvPolar ("Polar UV", Float) = 0
+#T#UVModifierKeywords
+//ifex _EnableDistortion==0
+#pragma shader_feature_fragment USER_LUT
+//endex
+
+#T#UVModifierVariablesExposed
+//ifex _EnableDistortion==0
+#ifdef USER_LUT
+	#if defined(PROP_DISTORTIONFLOWTEXTURE) || !defined(OPTIMIZER_ENABLED)
+		float4 _DistortionFlowTexture_ST;
+		float2 _DistortionFlowTexturePan;
+		float _DistortionFlowTextureUV;
+	#endif
+
+	#if defined(PROP_DISTORTIONFLOWTEXTURE1) || !defined(OPTIMIZER_ENABLED)
+		float4 _DistortionFlowTexture1_ST;
+		float2 _DistortionFlowTexture1Pan;
+		float _DistortionFlowTexture1UV;
+	#endif
+
+	#if defined(PROP_DISTORTIONMASK) || !defined(OPTIMIZER_ENABLED)
+		float4 _DistortionMask_ST;
+		float2 _DistortionMaskPan;
+		float _DistortionMaskUV;
+		float _DistortionMaskChannel;
+	#endif
+
+	float _DistortionUvToDistort;
+	float _DistortionMode;
+	float _DistortionStrength;
+	float _DistortionStrength1;
+	float2 _DistortionTiling;
+	float2 _DistortionPanSpeed;
+	float _DistortionGerstnerSpeed;
+	float _DistortionGerstnerScale;
+	float _DistortionGerstnerStrength;
+	float _DistortionGerstnerSteepness;
+	float4 _DistortionGerstnerWave1;
+	float4 _DistortionGerstnerWave2;
+	float4 _DistortionGerstnerWave3;
+	float4 _DistortionGerstnerWave4;
+	float _DistortionSimplexScale;
+	float _DistortionSimplexStrength;
+	float _DistortionSimplexSpeed;
+	float _DistortionVoronoiScale;
+	float _DistortionVoronoiStrength;
+	float _DistortionVoronoiSpeed;
+	float _DistortionVoronoiEdgeBlend;
+	float _DistortionCurlScale;
+	float _DistortionCurlStrength;
+	float _DistortionCurlSpeed;
+	float _DistortionFBMScale;
+	float _DistortionFBMStrength;
+	float _DistortionFBMSpeed;
+	float _DistortionFBMOctaves;
+	float _DistortionFBMLacunarity;
+	float _DistortionFBMGain;
+	#ifdef POI_AUDIOLINK
+		half _EnableDistortionAudioLink;
+		half2 _DistortionStrengthAudioLink;
+		half _DistortionStrengthAudioLinkBand;
+		half2 _DistortionStrength1AudioLink;
+		half _DistortionStrength1AudioLinkBand;
+	#endif
+#endif
+//endex
+float2 _UVSettingsTiling0;
+float2 _UVSettingsOffset0;
+float _UVSettingsAngle0;
+float2 _UVSettingsPan0;
+float _UVSettingsRotate0;
+float2 _UVSettingsTiling1;
+float2 _UVSettingsOffset1;
+float _UVSettingsAngle1;
+float2 _UVSettingsPan1;
+float _UVSettingsRotate1;
+float2 _UVSettingsTiling2;
+float2 _UVSettingsOffset2;
+float _UVSettingsAngle2;
+float2 _UVSettingsPan2;
+float _UVSettingsRotate2;
+float2 _UVSettingsTiling3;
+float2 _UVSettingsOffset3;
+float _UVSettingsAngle3;
+float2 _UVSettingsPan3;
+float _UVSettingsRotate3;
+float _UVSettingsShiftBackfaceUV;
+
+int _StereoEnabled;
+int _PanoUseBothEyes;
+float _PolarUV;
+float _PolarMode;
+float2 _PolarCenter;
+float _PolarRadialScale;
+float _PolarLengthScale;
+float _PolarSpiralPower;
+float _UVModWorldPos0;
+float _UVModWorldPos1;
+float _UVModLocalPos0;
+float _UVModLocalPos1;
+
+#T#UVModifierVariables
+//ifex _EnableDistortion==0
+#ifdef USER_LUT
+	#if defined(PROP_DISTORTIONFLOWTEXTURE) || !defined(OPTIMIZER_ENABLED)
+		Texture2D _DistortionFlowTexture;
+	#endif
+	#if defined(PROP_DISTORTIONFLOWTEXTURE1) || !defined(OPTIMIZER_ENABLED)
+		Texture2D _DistortionFlowTexture1;
+	#endif
+	#if defined(PROP_DISTORTIONMASK) || !defined(OPTIMIZER_ENABLED)
+		Texture2D _DistortionMask;
+	#endif
+#endif
+//endex
+
+
+#T#UVModifierFunctions
+float2 applyUVSettings(float2 uv, float2 tiling, float2 offset, float angle, float2 pan, float rotate)
+{
+	uv = uv * tiling + offset;
+
+	float angleRad = angle * (UNITY_PI / 180.0);
+	float rotateRad = rotate * (UNITY_PI / 180.0);
+	float totalAngle = angleRad + rotateRad * POI_TIME.y;
+
+	if (totalAngle != 0)
+	{
+		float2 pivot = float2(0.5, 0.5);
+		float cosA = cos(totalAngle);
+		float sinA = sin(totalAngle);
+		uv -= pivot;
+		uv = float2(
+			uv.x * cosA - uv.y * sinA,
+			uv.x * sinA + uv.y * cosA
+		);
+		uv += pivot;
+	}
+
+	uv += pan * POI_TIME.y;
+
+	return uv;
+}
+
+float2 calculatePolarCoordinate(in PoiMesh poiMesh)
+{
+	float2 delta = poiMesh.uv[_PolarUV] - _PolarCenter;
+	float dist = length(delta);
+	float radius;
+	
+	// Calculate radius based on mode
+	UNITY_BRANCH
+	if (_PolarMode == 0) // Standard
+	{
+		radius = dist * 2 * _PolarRadialScale;
+	}
+	else if (_PolarMode == 1) // Log Polar - preserves texture scale
+	{
+		radius = log(dist + 0.001) * _PolarRadialScale + 1;
+	}
+	else // Square Polar
+	{
+		radius = max(abs(delta.x), abs(delta.y)) * 2 * _PolarRadialScale;
+	}
+	
+	// Calculate angle
+	float angle = atan2(delta.x, delta.y);
+	float phi = angle / (UNITY_PI * 2.0);
+	float phi_frac = frac(phi);
+	angle = fwidth(phi) - 0.0001 < fwidth(phi_frac) ? phi : phi_frac;
+	angle *= _PolarLengthScale;
+
+	return float2(radius, angle + dist * _PolarSpiralPower);
+}
+
+float2 MonoPanoProjection(float3 coords)
+{
+	float3 normalizedCoords = normalize(coords);
+	float latitude = acos(normalizedCoords.y);
+	float longitude = atan2(normalizedCoords.z, normalizedCoords.x);
+	float phi = longitude / (UNITY_PI * 2.0);
+	float phi_frac = frac(phi);
+	longitude = fwidth(phi) - 0.0001 < fwidth(phi_frac) ? phi : phi_frac;
+	longitude *= 2;
+	float2 sphereCoords = float2(longitude, latitude) * float2(1.0, 1.0 / UNITY_PI);
+	return float2(1.0, 1.0) - sphereCoords;
+}
+
+float2 StereoPanoProjection(float3 coords, int stereoLayout)
+{
+	float3 normalizedCoords = normalize(coords);
+	float latitude = acos(normalizedCoords.y);
+	float longitude = atan2(normalizedCoords.z, normalizedCoords.x);
+	float phi = longitude / (UNITY_PI * 2.0);
+	float phi_frac = frac(phi);
+	longitude = fwidth(phi) - 0.0001 < fwidth(phi_frac) ? phi : phi_frac;
+	longitude *= 2;
+	float2 sphereCoords = float2(longitude, latitude) * float2(0.5, 1.0 / UNITY_PI);
+	sphereCoords = float2(0.5, 1.0) - sphereCoords;
+	if (stereoLayout == 2)
+		return float2(sphereCoords.x * 0.5 + unity_StereoEyeIndex * 0.5, sphereCoords.y);
+	return float2(sphereCoords.x, sphereCoords.y * 0.5 + (1 - unity_StereoEyeIndex) * 0.5);
+}
+
+float2 calculateWorldUV(in PoiMesh poiMesh)
+{
+	return float2(_UVModWorldPos0 != 3 ? poiMesh.worldPos[ _UVModWorldPos0] : 0.0f, _UVModWorldPos1 != 3 ? poiMesh.worldPos[_UVModWorldPos1] : 0.0f);
+}
+
+float2 calculatelocalUV(in PoiMesh poiMesh)
+{
+	float localUVs[8];
+	localUVs[0] = poiMesh.localPos.x;
+	localUVs[1] = poiMesh.localPos.y;
+	localUVs[2] = poiMesh.localPos.z;
+	localUVs[3] = 0;
+	localUVs[4] = poiMesh.vertexColor.r;
+	localUVs[5] = poiMesh.vertexColor.g;
+	localUVs[6] = poiMesh.vertexColor.b;
+	localUVs[7] = poiMesh.vertexColor.a;
+
+	return float2(localUVs[_UVModLocalPos0],localUVs[_UVModLocalPos1]);
+}
+
+float2 calculatePanosphereUV(in PoiMesh poiMesh, int panoUseBothEyes, int stereoLayout)
+{
+	bool useCenterEye = panoUseBothEyes <= 0;
+	float3 panoCameraPosition = getCameraPosition(useCenterEye);
+
+	float3 viewDirection = normalize(poiMesh.worldPos.xyz - panoCameraPosition);
+	if (stereoLayout != 0)
+		return StereoPanoProjection(viewDirection, stereoLayout);
+	else
+		return MonoPanoProjection(viewDirection);
+}
+
+float2 calculateViewNormalUV(in PoiMesh poiMesh, in PoiCam poiCam)
+{
+	float3 worldViewUp = normalize(float3(0, 1, 0) - poiCam.viewDir * dot(poiCam.viewDir, float3(0, 1, 0)));
+	float3 worldViewRight = normalize(cross(poiCam.viewDir, worldViewUp));
+	return float2(dot(worldViewRight, poiMesh.normals[0]), dot(worldViewUp, poiMesh.normals[0])) * 0.5 + 0.5;
+}
+
+float2 calculateScreenSpaceUV(float4 clipPos)
+{
+	float4 poiScreenSpaceUV = poiTransformClipSpacetoScreenSpaceFrag(clipPos);
+	float2 screenUV = poiScreenSpaceUV.xy / poiScreenSpaceUV.w;
+
+	#ifdef UNITY_SINGLE_PASS_STEREO
+		screenUV.x -= unity_StereoEyeIndex;
+	#endif
+
+	// Per-eye optical center (projection principal point) in UV. Centering the square
+	// here instead of the raw screen center (0.5) anchors the texture center to the
+	// same forward direction in both eyes so it FUSES in stereo.
+	float2 poiEyeOpticalCenter = 0.5 - 0.5 * float2(UNITY_MATRIX_P._m02, UNITY_MATRIX_P._m12);
+	#if UNITY_UV_STARTS_AT_TOP
+		poiEyeOpticalCenter.y = 1.0 - poiEyeOpticalCenter.y;
+	#endif
+
+	// Stretch the long axis from eye space so the UV stays square.
+	float poiViewAspect = abs(UNITY_MATRIX_P._m11) / max(abs(UNITY_MATRIX_P._m00), 0.000001);
+	float2 poiScreenSquareScale = float2(1.0 / max(poiViewAspect, 1.0), min(poiViewAspect, 1.0));
+
+	screenUV = (screenUV - poiEyeOpticalCenter) / poiScreenSquareScale + 0.5;
+
+	return screenUV;
+}
+
+//ifex _EnableDistortion==0
+#ifdef USER_LUT
+	float2 gerstnerWaveDisplacement(float2 pos, float2 dir, float amplitude, float wavelength, float speedMult, float steepness, float time)
+	{
+		float w = UNITY_TWO_PI / wavelength;
+		float phase = _DistortionGerstnerSpeed * speedMult * w;
+		float theta = w * dot(dir, pos) + phase * time;
+		return steepness * amplitude * dir * cos(theta);
+	}
+
+	float2 computeGerstnerFlow(float2 pos, float time)
+	{
+		float2 flow = 0;
+		float deg2rad = UNITY_PI / 180.0;
+		float2 dir1 = float2(cos(_DistortionGerstnerWave1.x * deg2rad), sin(_DistortionGerstnerWave1.x * deg2rad));
+		float2 dir2 = float2(cos(_DistortionGerstnerWave2.x * deg2rad), sin(_DistortionGerstnerWave2.x * deg2rad));
+		float2 dir3 = float2(cos(_DistortionGerstnerWave3.x * deg2rad), sin(_DistortionGerstnerWave3.x * deg2rad));
+		float2 dir4 = float2(cos(_DistortionGerstnerWave4.x * deg2rad), sin(_DistortionGerstnerWave4.x * deg2rad));
+		flow += gerstnerWaveDisplacement(pos, dir1, _DistortionGerstnerWave1.y, _DistortionGerstnerWave1.z, _DistortionGerstnerWave1.w, _DistortionGerstnerSteepness, time);
+		flow += gerstnerWaveDisplacement(pos, dir2, _DistortionGerstnerWave2.y, _DistortionGerstnerWave2.z, _DistortionGerstnerWave2.w, _DistortionGerstnerSteepness, time);
+		flow += gerstnerWaveDisplacement(pos, dir3, _DistortionGerstnerWave3.y, _DistortionGerstnerWave3.z, _DistortionGerstnerWave3.w, _DistortionGerstnerSteepness, time);
+		flow += gerstnerWaveDisplacement(pos, dir4, _DistortionGerstnerWave4.y, _DistortionGerstnerWave4.z, _DistortionGerstnerWave4.w, _DistortionGerstnerSteepness, time);
+		return flow;
+	}
+
+	float2 computeSimplexFlow(float2 pos, float time)
+	{
+		float2 samplePos = pos + _DistortionPanSpeed * time;
+		float n1 = snoise(samplePos + float2(time * _DistortionSimplexSpeed, 0));
+		float n2 = snoise(samplePos + float2(0, time * _DistortionSimplexSpeed) + 100);
+		return float2(n1, n2) * _DistortionSimplexStrength;
+	}
+
+	// Voronoi noise
+	float2 poiUVD_voronoiHash(float2 p)
+	{
+		p = float2(dot(p, float2(127.1, 311.7)), dot(p, float2(269.5, 183.3)));
+		return frac(sin(p) * 43758.5453);
+	}
+
+	float2 computeVoronoiFlow(float2 pos, float time)
+	{
+		float2 samplePos = pos + _DistortionPanSpeed * time;
+		float2 n = floor(samplePos);
+		float2 f = frac(samplePos);
+		float2 mg, mr;
+		float md = 8.0;
+		for (int j = -1; j <= 1; j++)
+		{
+			for (int i = -1; i <= 1; i++)
+			{
+				float2 g = float2(float(i), float(j));
+				float2 o = poiUVD_voronoiHash(n + g);
+				o = 0.5 + 0.5 * sin(time * _DistortionVoronoiSpeed + 6.2831 * o);
+				float2 r = g + o - f;
+				float d = dot(r, r);
+				if (d < md)
+				{
+					md = d;
+					mr = r;
+					mg = g;
+				}
+			}
+		}
+		md = 8.0;
+		for (int j2 = -2; j2 <= 2; j2++)
+		{
+			for (int i2 = -2; i2 <= 2; i2++)
+			{
+				float2 g = mg + float2(float(i2), float(j2));
+				float2 o = poiUVD_voronoiHash(n + g);
+				o = 0.5 + 0.5 * sin(time * _DistortionVoronoiSpeed + 6.2831 * o);
+				float2 r = g + o - f;
+				if (dot(mr - r, mr - r) > 0.00001)
+					md = min(md, dot(0.5 * (mr + r), normalize(r - mr)));
+			}
+		}
+		float edge = md;
+		float2 flow = mr * lerp(1.0, edge, _DistortionVoronoiEdgeBlend);
+		return flow * _DistortionVoronoiStrength;
+	}
+
+	// Curl noise (derived from simplex)
+	float2 computeCurlFlow(float2 pos, float time)
+	{
+		float2 samplePos = pos + _DistortionPanSpeed * time;
+		float eps = 0.01;
+		float n1 = snoise(samplePos + float2(eps, 0) + time * _DistortionCurlSpeed);
+		float n2 = snoise(samplePos - float2(eps, 0) + time * _DistortionCurlSpeed);
+		float n3 = snoise(samplePos + float2(0, eps) + time * _DistortionCurlSpeed);
+		float n4 = snoise(samplePos - float2(0, eps) + time * _DistortionCurlSpeed);
+		float2 curl = float2((n3 - n4) / (2.0 * eps), -(n1 - n2) / (2.0 * eps));
+		return curl * _DistortionCurlStrength;
+	}
+
+	// FBM (Fractal Brownian Motion)
+	float2 computeFBMFlow(float2 pos, float time)
+	{
+		float2 samplePos = pos + _DistortionPanSpeed * time;
+		float2 flow = 0;
+		float amplitude = 1.0;
+		float frequency = 1.0;
+		float totalAmplitude = 0;
+		int octaveCount = min((int)_DistortionFBMOctaves, 8);
+		for (int i = 0; i < octaveCount; i++)
+		{
+			float2 p = samplePos * frequency + time * _DistortionFBMSpeed * (i + 1) * 0.5;
+			float n1 = snoise(p);
+			float n2 = snoise(p + 100);
+			flow += float2(n1, n2) * amplitude;
+			totalAmplitude += amplitude;
+			frequency *= _DistortionFBMLacunarity;
+			amplitude *= _DistortionFBMGain;
+		}
+		return (flow / totalAmplitude) * _DistortionFBMStrength;
+	}
+
+	float2 distortedUV(in PoiMesh poiMesh)
+	{
+		#if defined(PROP_DISTORTIONMASK) || !defined(OPTIMIZER_ENABLED)
+			half distortionMask = POI2D_SAMPLER_PAN(_DistortionMask, _MainTex, poiMesh.uv[_DistortionMaskUV], _DistortionMaskPan)[_DistortionMaskChannel];
+		#else
+			half distortionMask = 1;
+		#endif
+
+		float2 flowOffset = 0;
+
+		UNITY_BRANCH
+		if (_DistortionMode == 0)
+		{
+			#if defined(PROP_DISTORTIONFLOWTEXTURE) || !defined(OPTIMIZER_ENABLED)
+				float4 flowVector = POI2D_SAMPLER_PAN(_DistortionFlowTexture, _MainTex, poiUV(poiMesh.uv[_DistortionFlowTextureUV], _DistortionFlowTexture_ST), _DistortionFlowTexturePan) * 2 - 1;
+			#else
+				float4 flowVector = -1;
+			#endif
+
+			#if defined(PROP_DISTORTIONFLOWTEXTURE1) || !defined(OPTIMIZER_ENABLED)
+				float4 flowVector1 = POI2D_SAMPLER_PAN(_DistortionFlowTexture1, _MainTex, poiUV(poiMesh.uv[_DistortionFlowTexture1UV], _DistortionFlowTexture1_ST), _DistortionFlowTexture1Pan) * 2 - 1;
+			#else
+				float4 flowVector1 = -1;
+			#endif
+
+			half distortionStrength = _DistortionStrength;
+			half distortionStrength1 = _DistortionStrength1;
+
+			#ifdef POI_AUDIOLINK
+				UNITY_BRANCH
+				if (AudioLinkIsAvailable() && _EnableDistortionAudioLink >= 0.5 && _AudioLinkAnimToggle >= 0.5)
+				{
+					distortionStrength += lerp(_DistortionStrengthAudioLink.x, _DistortionStrengthAudioLink.y, AudioLinkData(uint2(0, uint(_DistortionStrengthAudioLinkBand))).r);
+					distortionStrength1 += lerp(_DistortionStrength1AudioLink.x, _DistortionStrength1AudioLink.y, AudioLinkData(uint2(0, uint(_DistortionStrength1AudioLinkBand))).r);
+				}
+			#endif
+
+			flowVector *= distortionStrength;
+			flowVector1 *= distortionStrength1;
+			flowOffset = (flowVector.xy + flowVector1.xy) / 2;
+		}
+		else if (_DistortionMode == 1)
+		{
+			float2 samplePos = poiMesh.worldPos.xz * _DistortionTiling * _DistortionGerstnerScale + _DistortionPanSpeed * POI_TIME.y;
+			flowOffset = computeGerstnerFlow(samplePos, POI_TIME.y) * _DistortionGerstnerStrength;
+		}
+		else if (_DistortionMode == 2)
+		{
+			float2 samplePos = poiMesh.worldPos.xz * _DistortionTiling * _DistortionSimplexScale;
+			flowOffset = computeSimplexFlow(samplePos, POI_TIME.y);
+		}
+		else if (_DistortionMode == 3)
+		{
+			float2 samplePos = poiMesh.worldPos.xz * _DistortionTiling * _DistortionVoronoiScale;
+			flowOffset = computeVoronoiFlow(samplePos, POI_TIME.y);
+		}
+		else if (_DistortionMode == 4)
+		{
+			float2 samplePos = poiMesh.worldPos.xz * _DistortionTiling * _DistortionCurlScale;
+			flowOffset = computeCurlFlow(samplePos, POI_TIME.y);
+		}
+		else if (_DistortionMode == 5)
+		{
+			float2 samplePos = poiMesh.worldPos.xz * _DistortionTiling * _DistortionFBMScale;
+			flowOffset = computeFBMFlow(samplePos, POI_TIME.y);
+		}
+
+		return poiMesh.uv[_DistortionUvToDistort] + flowOffset * distortionMask;
+	}
+#endif
+//endex
+
+#T#UVModifierFunctionCalls
+poiMesh.uv[0] = applyUVSettings(poiMesh.uv[0], _UVSettingsTiling0, _UVSettingsOffset0, _UVSettingsAngle0, _UVSettingsPan0, _UVSettingsRotate0);
+poiMesh.uv[1] = applyUVSettings(poiMesh.uv[1], _UVSettingsTiling1, _UVSettingsOffset1, _UVSettingsAngle1, _UVSettingsPan1, _UVSettingsRotate1);
+poiMesh.uv[2] = applyUVSettings(poiMesh.uv[2], _UVSettingsTiling2, _UVSettingsOffset2, _UVSettingsAngle2, _UVSettingsPan2, _UVSettingsRotate2);
+poiMesh.uv[3] = applyUVSettings(poiMesh.uv[3], _UVSettingsTiling3, _UVSettingsOffset3, _UVSettingsAngle3, _UVSettingsPan3, _UVSettingsRotate3);
+
+if (_UVSettingsShiftBackfaceUV >= 0.5 && !poiMesh.isFrontFace)
+{
+	poiMesh.uv[0].x += 1.0;
+	poiMesh.uv[1].x += 1.0;
+	poiMesh.uv[2].x += 1.0;
+	poiMesh.uv[3].x += 1.0;
+}
+
+poiMesh.uv[4] = calculatePanosphereUV(poiMesh, _PanoUseBothEyes, _StereoEnabled);
+poiMesh.uv[5] = calculateWorldUV(poiMesh);
+poiMesh.uv[8] = calculatelocalUV(poiMesh);
+
+poiMesh.uv[9] = calculateViewNormalUV(poiMesh, poiCam);
+poiMesh.uv[10] = calculateScreenSpaceUV(i.pos);
+
+// Polar is computed last
+poiMesh.uv[6] = calculatePolarCoordinate(poiMesh);
+
+//ifex _EnableDistortion==0
+#ifdef USER_LUT
+	poiMesh.uv[7] = distortedUV(poiMesh);
+#endif
+//endex

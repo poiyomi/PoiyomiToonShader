@@ -1,0 +1,39 @@
+#K#INCLUDE_BLOCK_START
+
+#K#PIPELINE_INIT
+
+// cnlohr says dxc does not work with multi-view stereo
+#if !defined(SHADER_API_MOBILE) && !defined(SHADER_API_GLES3)
+    #pragma use_dxc vulkan
+#endif
+
+// #pragma enable_d3d11_debug_symbols
+
+// UNITY Includes
+#if POI_PIPE == POI_BIRP
+    #include "UnityCG.cginc"
+    #include "AutoLight.cginc"
+    //#include "UnityStandardUtils.cginc"
+    //#include "UnityLightingCommon.cginc"
+    //#include "UnityPBSLighting.cginc"
+#elif POI_PIPE == POI_URP
+    #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+    #if defined(SHADER_API_VULKAN)
+        #undef TEXTURE3D
+        #define TEXTURE3D(textureName) TEXTURE3D_FLOAT(textureName)
+    #endif
+    #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
+#endif
+
+#K#GLOBAL_MACROS_AND_DEFINES_EARLY
+#K#GLOBAL_MACROS_AND_DEFINES
+#K#GLOBAL_MACROS_AND_DEFINES_LATE
+
+#K#GLOBAL_INCLUDES
+#K#GLOBAL_DATA_STRUCTURES
+
+#K#GLOBAL_FUNCTIONS_INCLUDE_EARLY
+#K#GLOBAL_FUNCTIONS_INCLUDE
+#K#GLOBAL_FUNCTIONS_INCLUDE_LATE
+
+#K#CODE_BLOCK_END

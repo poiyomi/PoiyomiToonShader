@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1039f25740a92fc4292bb1d94d07ad19, type: 3}
+  m_Name: VRLM_PoiGlobalIncludes
+  m_EditorClassIdentifier: Poiyomi.ModularShaderSystem::Poiyomi.ModularShaderSystem.ShaderModule
+  Id: PoiGlobalIncludes
+  Name: Global Shader Includes
+  Version: 
+  Author: 
+  Description: 
+  AllowDuplicates: 0
+  ForceDuplicateLogic: 0
+  EnableProperties: []
+  Properties: []
+  ModuleDependencies: []
+  IncompatibleWith: []
+  Templates:
+  - Template: {fileID: -544282384758852595, guid: f83a2b3b9a465f5498a52232ade99e9a, type: 3}
+    Keywords:
+    - INCLUDE_BLOCK
+    NeedsVariant: 0
+    Queue: 0
+  Functions: []
+  AdditionalSerializedData: 

@@ -1,0 +1,116 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1039f25740a92fc4292bb1d94d07ad19, type: 3}
+  m_Name: VRLM_AlphaOptions
+  m_EditorClassIdentifier: 
+  Id: PoiAlphaOptions
+  Name: Alpha Options
+  Version: 1.0
+  Author: Poiyomi
+  Description: 
+  AllowDuplicates: 0
+  ForceDuplicateLogic: 0
+  EnableProperties: []
+  Properties: []
+  ModuleDependencies: []
+  IncompatibleWith: []
+  Templates:
+  - Template: {fileID: 257055857157848321, guid: 6c6bcf2ea34623741a36552a6c678ea3, type: 3}
+    Keywords:
+    - MAIN_PROPERTIES
+    NeedsVariant: 0
+    Queue: 99
+  - Template: {fileID: 7896923665127700555, guid: 6c6bcf2ea34623741a36552a6c678ea3, type: 3}
+    Keywords:
+    - DEPTH_PASS_KEYWORDS
+    - OUTLINE_PASS_KEYWORDS
+    - BASE_PASS_KEYWORDS
+    - ADD_PASS_KEYWORDS
+    - META_PASS_KEYWORDS
+    - SHADOW_PASS_KEYWORDS
+    - LILFUR_PASS_KEYWORDS
+    NeedsVariant: 0
+    Queue: 0
+  - Template: {fileID: -1719228656036149803, guid: 6c6bcf2ea34623741a36552a6c678ea3, type: 3}
+    Keywords:
+    - BASE_PROPERTY_VARIABLES_EXPOSED
+    - ADD_PROPERTY_VARIABLES_EXPOSED
+    - SHADOW_PROPERTY_VARIABLES_EXPOSED
+    - META_PROPERTY_VARIABLES_EXPOSED
+    - OUTLINE_PROPERTY_VARIABLES_EXPOSED
+    - DEPTH_PROPERTY_VARIABLES_EXPOSED
+    - MOTION_VECTORS_PROPERTY_VARIABLES_EXPOSED
+    - LILFUR_PROPERTY_VARIABLES_EXPOSED
+    NeedsVariant: 0
+    Queue: 0
+  - Template: {fileID: 6382579130851865620, guid: 6c6bcf2ea34623741a36552a6c678ea3, type: 3}
+    Keywords:
+    - FRAGMENT_BASE_FUNCTIONS
+    - FRAGMENT_ADD_FUNCTIONS
+    - FRAGMENT_SHADOW_FUNCTIONS
+    - FRAGMENT_META_FUNCTIONS
+    - FRAGMENT_OUTLINE_FUNCTIONS
+    - FRAGMENT_DEPTH_FUNCTIONS
+    - FRAGMENT_MOTION_VECTORS_FUNCTIONS
+    - FRAGMENT_LILFUR_FUNCTIONS
+    NeedsVariant: 0
+    Queue: 0
+  - Template: {fileID: 7046177447067330403, guid: 6c6bcf2ea34623741a36552a6c678ea3, type: 3}
+    Keywords:
+    - FRAGMENT_BASE_COLOR
+    - FRAGMENT_ADD_COLOR
+    - FRAGMENT_SHADOW_COLOR
+    - FRAGMENT_META_COLOR
+    - FRAGMENT_OUTLINE_COLOR
+    - FRAGMENT_DEPTH_COLOR
+    - FRAGMENT_MOTION_VECTORS_COLOR
+    - FRAGMENT_LILFUR_COLOR
+    NeedsVariant: 0
+    Queue: 0
+  - Template: {fileID: -9026782082732213869, guid: 6c6bcf2ea34623741a36552a6c678ea3, type: 3}
+    Keywords:
+    - FRAGMENT_BASE_RETURN
+    - FRAGMENT_ADD_RETURN
+    - FRAGMENT_SHADOW_RETURN
+    - FRAGMENT_META_RETURN
+    - FRAGMENT_OUTLINE_RETURN
+    - FRAGMENT_DEPTH_RETURN
+    - FRAGMENT_MOTION_VECTORS_RETURN
+    - FRAGMENT_LILFUR_RETURN
+    NeedsVariant: 0
+    Queue: 0
+  - Template: {fileID: 4379745813462220173, guid: 6c6bcf2ea34623741a36552a6c678ea3, type: 3}
+    Keywords:
+    - FRAGMENT_BASE_RETURN
+    - FRAGMENT_ADD_RETURN
+    - FRAGMENT_SHADOW_RETURN
+    - FRAGMENT_META_RETURN
+    - FRAGMENT_OUTLINE_RETURN
+    - FRAGMENT_DEPTH_RETURN
+    - FRAGMENT_MOTION_VECTORS_RETURN
+    - FRAGMENT_LILFUR_RETURN
+    NeedsVariant: 0
+    Queue: 0
+  - Template: {fileID: 4466012173581799560, guid: 6c6bcf2ea34623741a36552a6c678ea3, type: 3}
+    Keywords:
+    - FRAGMENT_BASE_RETURN
+    - FRAGMENT_ADD_RETURN
+    - FRAGMENT_SHADOW_RETURN
+    - FRAGMENT_META_RETURN
+    - FRAGMENT_OUTLINE_RETURN
+    - FRAGMENT_DEPTH_RETURN
+    - FRAGMENT_MOTION_VECTORS_RETURN
+    - FRAGMENT_LILFUR_RETURN
+    NeedsVariant: 0
+    Queue: 0
+  Functions: []
+  AdditionalSerializedData: 

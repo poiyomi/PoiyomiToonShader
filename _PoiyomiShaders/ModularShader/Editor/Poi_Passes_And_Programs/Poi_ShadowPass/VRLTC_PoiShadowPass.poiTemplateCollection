@@ -1,0 +1,118 @@
+#T#ShadowPassTags
+Name "ShadowCaster"
+Tags { "LightMode" = "ShadowCaster" }
+
+#T#ShadowPassStencil
+#K#SHADOW_PASS_STENCIL
+
+#T#ShadowPassBlendSettings
+ZWrite [_ZWrite]
+Cull [_Cull]
+ZClip [_ZClip]
+AlphaToMask Off
+ZTest [_ZTest]
+ColorMask [_ColorMask]
+Offset [_OffsetFactor], [_OffsetUnits]
+
+BlendOp [_BlendOp], [_BlendOpAlpha]
+Blend [_SrcBlend] [_DstBlend], [_SrcBlendAlpha] [_DstBlendAlpha]
+
+#T#ShadowPassOnlyKeywords
+#if POI_PIPE == POI_URP
+    #pragma skip_variants FOG_LINEAR FOG_EXP FOG_EXP2
+    // https://issuetracker.unity3d.com/issues/number-pragma-skip-variants-fog-linear-does-not-remove-fog-linear-keyword-declared-keyword
+    // Skip variants not working for fog in URP
+    #define FOG_LINEAR 0
+    #define FOG_EXP 0
+    #define FOG_EXP2 0
+    #pragma multi_compile_vertex _ _CASTING_PUNCTUAL_LIGHT_SHADOW
+    #ifdef POI_WORLD
+        #pragma multi_compile _ LOD_FADE_CROSSFADE
+    #endif
+#else
+    #pragma dynamic_branch _ FOG_LINEAR
+    #pragma dynamic_branch _ FOG_EXP
+    #pragma dynamic_branch _ FOG_EXP2
+    #pragma multi_compile_shadowcaster
+    #ifdef POI_WORLD
+        #pragma multi_compile _ LOD_FADE_CROSSFADE
+    #endif
+#endif
+#pragma multi_compile_instancing
+#define POI_PASS_SHADOW
+
+#T#ShadowPassKeywords
+#K#SHADOW_PASS_KEYWORDS
+
+#K#SHADOW_PASS_PRAGMA_PROGRAMS
+
+#T#ShadowPassPropertyVariablesURP
+CBUFFER_START(UnityPerMaterial)
+#K#SHADOW_PROPERTY_VARIABLES_EXPOSED
+CBUFFER_END
+#K#SHADOW_PROPERTY_VARIABLES
+float3 _LightDirection;
+float3 _LightPosition;
+
+#T#ShadowPassPropertyVariables
+#K#SHADOW_PROPERTY_VARIABLES
+#K#SHADOW_PROPERTY_VARIABLES_EXPOSED
+
+#T#ShadowPassPrograms
+#K#VERTEX_SHADOW_DATA_STRUCTURES
+#K#VERTEX_SHADOW_FUNCTIONS_EARLY
+#K#VERTEX_SHADOW_FUNCTIONS
+
+#if POI_PIPE == POI_URP
+    #if UNITY_VERSION < 600000
+        half IsDirectionalLight()
+        {
+            return round(_ShadowBias.z) == 1.0 ? 1 : 0;
+        }
+
+        float4 ApplyShadowClamping(float4 positionCS)
+        {
+            #if UNITY_REVERSED_Z
+                float clamped = min(positionCS.z, positionCS.w * UNITY_NEAR_CLIP_VALUE);
+            #else
+                float clamped = max(positionCS.z, positionCS.w * UNITY_NEAR_CLIP_VALUE);
+            #endif
+            positionCS.z = lerp(positionCS.z, clamped, IsDirectionalLight());
+
+            return positionCS;
+        }
+    #endif
+
+    float4 GetShadowPositionHClip(float3 positionWS, float3 normalWS)
+    {
+    #if _CASTING_PUNCTUAL_LIGHT_SHADOW
+        float3 lightDirectionWS = normalize(_LightPosition - positionWS);
+    #else
+        float3 lightDirectionWS = _LightDirection;
+    #endif
+
+        float4 positionCS = TransformWorldToHClip(ApplyShadowBias(positionWS, normalWS, lightDirectionWS));
+        positionCS = ApplyShadowClamping(positionCS);
+        return positionCS;
+    }
+#endif
+
+#K#VERTEX_SHADOW_FUNCTIONS_LATE
+#K#VERTEX_SHADOW_PROGRAM
+
+#K#HULLDOMAIN_SHADOW_PROGRAM
+#K#GEOMETRY_SHADOW_PROGRAM
+
+#K#FRAGMENT_SHADOW_DATA_STRUCTURES
+#K#FRAGMENT_SHADOW_FUNCTIONS_EARLY
+#K#FRAGMENT_SHADOW_FUNCTIONS
+#K#FRAGMENT_SHADOW_FUNCTIONS_LATE
+#K#FRAGMENT_SHADOW_PROGRAM
+
+#T#ShadowPassIncludesURP
+#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Shadows.hlsl"
+#if UNITY_VERSION >= 2022000
+    #if defined(LOD_FADE_CROSSFADE)
+        #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/LODCrossFade.hlsl"
+    #endif
+#endif

@@ -1,0 +1,436 @@
+#T#PoiVertexLookAtProperties
+//ifex _VertexLookAtEnabled==0
+[HideInInspector] m_start_vertexLookAt (" LookAt--{reference_property:_VertexLookAtEnabled, button_help:{text:Tutorial,action:{type:URL,data:https://www.poiyomi.com/vertex-options/look-at},hover:Documentation}}}", Float) = 0
+[HideInInspector][ThryToggle(POI_VERTEX_LOOKAT)]_VertexLookAtEnabled ("Enabled", Float) = 0
+
+_LookAtMask ("Look-At Mask--{reference_properties:[_LookAtMaskPan, _LookAtMaskUV]}", 2D) = "white" { }
+[ThryHideInInspector][Vector2]_LookAtMaskPan ("Mask Pan", Vector) = (0, 0, 0, 0)
+[ThryHideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3)] _LookAtMaskUV ("UV", Int) = 0
+
+// LookAt Red Mask
+[HideInInspector] s_start_LookAtRedMask ("Controls (Red Mask)--{reference_property:_LookAtRedMaskEnabled, persistent_expand:true,default_expand:true}", Float) = 1
+[ThryHideInInspector][ToggleUI] _LookAtRedMaskEnabled ("Red Mask Enabled", Int) = 1
+_LookAtRedAlpha ("Alpha", Range(0, 1)) = 1
+[ThryWideEnum(View Dir Up, 0, World Up, 1, Camera Up, 2, Model Up, 3)] _LookAtRedTargetUp ("Target Up Direction", Float) = 0
+[Vector3]_LookAtRedForwardDirection ("Forward Direction", Vector) = (0, 0, 1)
+[Vector3]_LookAtRedUpDirection ("Up Direction", Vector) = (0, 1, 0)
+[Space(5)]
+[Vector3] _LookAtRedPivotOffset ("Pivot Position", Vector) = (0, 0, 0)
+[Vector3]_LookAtRedOriginOffset ("View From Position", Vector) = (0, 0, 0)
+[Vector2] _LookAtRedDistanceFalloff ("Distance Falloff", Vector) = (0, 0, 0, 0)
+[Vector2] _LookAtRedFoV ("FoV Falloff", Vector) = (0, 0, 0, 0)
+[Space(5)]
+[MultiSlider]_LookAtRedMaxPitchAngle ("Max Pitch (X)", Vector) = (-180, 180, -180, 180)
+[MultiSlider]_LookAtRedMaxYawAngle ("Max Yaw (Y)", Vector) = (-180, 180, -180, 180)
+[MultiSlider]_LookAtRedMaxRollAngle ("Max Roll (Z)", Vector) = (-180, 180, -180, 180)
+[HideInInspector] s_end_LookAtRedMask ("Green Mask Channel", Float) = 0
+
+[HideInInspector] s_start_LookAtVisibility ("Visibility--{reference_property:_LookAtVisibilityEnabled, persistent_expand:true,default_expand:false}", Float) = 0
+[ThryHideInInspector][ToggleUI] _LookAtVisibilityEnabled ("LookAt Visibility Enabled", Int) = 0
+[ThryWideEnum(Generic, 0, VRC, 1)] _LookAtVisibilityMode ("Mode", Int) = 1
+[ThryWideEnum(Show In Both, 0, Show Only In Mirror, 1, Dont Show In Mirror, 2)] _LookAtVisibilityMirror ("Mirror Visibility--{condition_showS:(_VisibilityMode==0)}", Int) = 0
+[ThryToggleUI(True)]_LookAtVisibilityVRCRegular ("Normal (Outside Mirror/Camera)--{condition_showS:(_VisibilityMode==1)}", Int) = 1
+[ThryToggleUI(True)]_LookAtVisibilityVRCMirrorVR ("Mirror (VR)--{condition_showS:(_VisibilityMode==1)}", Int) = 1
+[ThryToggleUI(True)]_LookAtVisibilityVRCMirrorDesktop ("Mirror (Desktop)--{condition_showS:(_VisibilityMode==1)}", Int) = 1
+[ThryToggleUI(True)]_LookAtVisibilityVRCCameraVR ("Camera (VR)--{condition_showS:(_VisibilityMode==1)}", Int) = 1
+[ThryToggleUI(True)]_LookAtVisibilityVRCCameraDesktop ("Camera (Desktop)--{condition_showS:(_VisibilityMode==1)}", Int) = 1
+[ThryToggleUI(True)]_LookAtVisibilityVRCCameraScreenshot ("Screenshot--{condition_showS:(_VisibilityMode==1)}", Int) = 1
+[HideInInspector] s_end_LookAtVisibility ("Visibility", Float) = 0
+
+// LookAt Green Mask
+[HideInInspector] s_start_LookAtGreenMask ("Controls (Green Mask)--{reference_property:_LookAtGreenMaskEnabled, persistent_expand:true,default_expand:false}", Float) = 0
+[ThryHideInInspector][ToggleUI] _LookAtGreenMaskEnabled ("Green Mask Enabled", Int) = 0
+_LookAtGreenAlpha ("Alpha", Range(0, 1)) = 1
+[ThryWideEnum(View Dir Up, 0, World Up, 1, Camera Up, 2, Model Up, 3)] _LookAtGreenTargetUp ("Target Up Direction", Float) = 0
+[Vector3]_LookAtGreenForwardDirection ("Forward Direction", Vector) = (0, 0, 1)
+[Vector3]_LookAtGreenUpDirection ("Up Direction", Vector) = (0, 1, 0)
+[Space(5)]
+[Vector3]_LookAtGreenPivotOffset ("Pivot Position", Vector) = (0, 0, 0)
+[Vector3]_LookAtGreenOriginOffset ("View From Position", Vector) = (0, 0, 0)
+[Vector2]_LookAtGreenDistanceFalloff ("Distance Falloff", Vector) = (0, 0, 0, 0)
+[Vector2]_LookAtGreenFoV ("FoV Falloff", Vector) = (0, 0, 0, 0)
+[Space(5)]
+[MultiSlider]_LookAtGreenMaxPitchAngle ("Max Pitch (X)", Vector) = (-180, 180, -180, 180)
+[MultiSlider]_LookAtGreenMaxYawAngle ("Max Yaw (Y)", Vector) = (-180, 180, -180, 180)
+[MultiSlider]_LookAtGreenMaxRollAngle ("Max Roll (Z)", Vector) = (-180, 180, -180, 180)
+[HideInInspector] s_end_LookAtGreenMask ("LookAt Green Mask", Float) = 0
+
+// LookAt Blue Mask
+[HideInInspector] s_start_LookAtBlueMask ("Controls (Blue Mask)--{reference_property:_LookAtBlueMaskEnabled, persistent_expand:true,default_expand:false}", Float) = 0
+[ThryHideInInspector][ToggleUI] _LookAtBlueMaskEnabled ("Blue Mask Enabled", Int) = 0
+_LookAtBlueAlpha ("Alpha", Range(0, 1)) = 1
+[ThryWideEnum(View Dir Up, 0, World Up, 1, Camera Up, 2, Model Up, 3)] _LookAtBlueTargetUp ("Target Up Direction", Float) = 0
+[Vector3]_LookAtBlueForwardDirection ("Forward Direction", Vector) = (0, 0, 1)
+[Vector3]_LookAtBlueUpDirection ("Up Direction", Vector) = (0, 1, 0)
+[Space(5)]
+[Vector3]_LookAtBluePivotOffset ("Pivot Position", Vector) = (0, 0, 0)
+[Vector3]_LookAtBlueOriginOffset ("View From Position", Vector) = (0, 0, 0)
+[Vector2]_LookAtBlueDistanceFalloff ("Distance Falloff", Vector) = (0, 0, 0, 0)
+[Vector2]_LookAtBlueFoV ("FoV Falloff", Vector) = (0, 0, 0, 0)
+[Space(5)]
+[MultiSlider]_LookAtBlueMaxPitchAngle ("Max Pitch (X)", Vector) = (-180, 180, -180, 180)
+[MultiSlider]_LookAtBlueMaxYawAngle ("Max Yaw (Y)", Vector) = (-180, 180, -180, 180)
+[MultiSlider]_LookAtBlueMaxRollAngle ("Max Roll (Z)", Vector) = (-180, 180, -180, 180)
+[HideInInspector] s_end_LookAtBlueMask ("LookAt Blue Mask", Float) = 0
+
+// LookAt Alpha Mask
+[HideInInspector] s_start_LookAtAlphaMask ("Controls (Alpha Mask)--{reference_property:_LookAtAlphaMaskEnabled, persistent_expand:true,default_expand:false}", Float) = 0
+[ThryHideInInspector][ToggleUI] _LookAtAlphaMaskEnabled ("Alpha Mask Enabled", Int) = 0
+_LookAtAlphaAlpha ("Alpha", Range(0, 1)) = 1
+[ThryWideEnum(View Dir Up, 0, World Up, 1, Camera Up, 2, Model Up, 3)] _LookAtAlphaTargetUp ("Target Up Direction", Float) = 0
+[Vector3]_LookAtAlphaForwardDirection ("Forward Direction", Vector) = (0, 0, 1)
+[Vector3]_LookAtAlphaUpDirection ("Up Direction", Vector) = (0, 1, 0)
+[Space(5)]
+[Vector3]_LookAtAlphaPivotOffset ("Pivot Position", Vector) = (0, 0, 0)
+[Vector3]_LookAtAlphaOriginOffset ("View From Position", Vector) = (0, 0, 0)
+[Vector2]_LookAtAlphaDistanceFalloff ("Distance Falloff", Vector) = (0, 0, 0, 0)
+[Vector2]_LookAtAlphaFoV ("FoV Falloff", Vector) = (0, 0, 0, 0)
+[Space(5)]
+[MultiSlider]_LookAtAlphaMaxPitchAngle ("Max Pitch (X)", Vector) = (-180, 180, -180, 180)
+[MultiSlider]_LookAtAlphaMaxYawAngle ("Max Yaw (Y)", Vector) = (-180, 180, -180, 180)
+[MultiSlider]_LookAtAlphaMaxRollAngle ("Max Roll (Z)", Vector) = (-180, 180, -180, 180)
+[HideInInspector] s_end_LookAtAlphaMask ("LookAt Alpha Mask", Float) = 0
+
+[HideInInspector] s_start_ALVertexLookAtAL ("Audio Link ♫--{reference_property:_VertexLookAtAudioLinkEnabled,persistent_expand:true,default_expand:false, condition_showS:(_EnableAudioLink==1)}", Float) = 0
+[HideInInspector][ThryToggleUI(true)]_VertexLookAtAudioLinkEnabled ("Audio Link", Float) = 0
+[Enum(Bass, 0, Low Mid, 1, High Mid, 2, Treble, 3, VU Intensity, 4)] _VertexLookAtAudioLinkBand ("Alpha Band", Int) = 0
+[VectorLabel(Off, On)]_VertexLookAtAlphaAudiolink ("Alpha Audiolink", Vector) = (0, 0, 0, 0)
+[HideInInspector] s_end_ALVertexLookAtAL ("Audio Link", Float) = 0
+[HideInInspector] m_end_vertexLookAt ("Vertex LookAt", Float) = 0
+//endex
+
+#T#PoiVertexLookAtKeywords
+//ifex _VertexLookAtEnabled==0
+#pragma shader_feature_local POI_VERTEX_LOOKAT
+//endex
+
+#T#PoiVertexLookAtVariablesExposed
+//ifex _VertexLookAtEnabled==0
+#ifdef POI_VERTEX_LOOKAT
+
+	#if defined(PROP_LOOKATMASK) || !defined(OPTIMIZER_ENABLED)
+		float4 _LookAtMask_ST;
+		float2 _LookAtMaskPan;
+		float _LookAtMaskUV;
+	#endif
+
+	//ifex isNotAnimated(_VertexLookAtAudioLinkEnabled) && _VertexLookAtAudioLinkEnabled==0
+	float _VertexLookAtAudioLinkEnabled;
+	float4 _VertexLookAtAlphaAudiolink;
+	float _VertexLookAtAudioLinkBand;
+	//endex
+
+	//ifex isNotAnimated(_LookAtVisibilityEnabled) && _LookAtVisibilityEnabled==0
+	float _LookAtVisibilityEnabled;
+	float _LookAtVisibilityMode;
+	float _LookAtVisibilityMirror;
+	float _LookAtVisibilityVRCRegular;
+	float _LookAtVisibilityVRCMirrorVR;
+	float _LookAtVisibilityVRCMirrorDesktop;
+	float _LookAtVisibilityVRCCameraVR;
+	float _LookAtVisibilityVRCCameraDesktop;
+	float _LookAtVisibilityVRCCameraScreenshot;
+	//endex
+
+	//ifex isNotAnimated(_LookAtRedMaskEnabled) && _LookAtRedMaskEnabled==0
+	half _LookAtRedMaskEnabled;
+	half _LookAtRedAlpha;
+	float _LookAtRedTargetUp;
+	float4 _LookAtRedUpDirection;
+	float4 _LookAtRedForwardDirection;
+	float4 _LookAtRedPivotOffset;
+	float4 _LookAtRedOriginOffset;
+	float4 _LookAtRedFoV;
+	float4 _LookAtRedDistanceFalloff;
+	float4 _LookAtRedMaxPitchAngle;
+	float4 _LookAtRedMaxYawAngle;
+	float4 _LookAtRedMaxRollAngle;
+	//endex
+
+	//ifex isNotAnimated(_LookAtGreenMaskEnabled) && _LookAtGreenMaskEnabled==0
+	half _LookAtGreenMaskEnabled;
+	half _LookAtGreenAlpha;
+	float _LookAtGreenTargetUp;
+	float4 _LookAtGreenForwardDirection;
+	float4 _LookAtGreenUpDirection;
+	float4 _LookAtGreenPivotOffset;
+	float4 _LookAtGreenOriginOffset;
+	float4 _LookAtGreenFoV;
+	float4 _LookAtGreenDistanceFalloff;
+	float4 _LookAtGreenMaxPitchAngle;
+	float4 _LookAtGreenMaxYawAngle;
+	float4 _LookAtGreenMaxRollAngle;
+	//endex
+
+	//ifex isNotAnimated(_LookAtBlueMaskEnabled) && _LookAtBlueMaskEnabled==0
+	half _LookAtBlueMaskEnabled;
+	half _LookAtBlueAlpha;
+	float _LookAtBlueTargetUp;
+	float4 _LookAtBlueUpDirection;
+	float4 _LookAtBlueForwardDirection;
+	float4 _LookAtBluePivotOffset;
+	float4 _LookAtBlueOriginOffset;
+	float4 _LookAtBlueFoV;
+	float4 _LookAtBlueDistanceFalloff;
+	float4 _LookAtBlueMaxPitchAngle;
+	float4 _LookAtBlueMaxYawAngle;
+	float4 _LookAtBlueMaxRollAngle;
+	//endex
+
+	//ifex isNotAnimated(_LookAtAlphaMaskEnabled) && _LookAtAlphaMaskEnabled==0
+	half _LookAtAlphaMaskEnabled;
+	half _LookAtAlphaAlpha;
+	half _LookAtAlphaTargetUp;
+	float4 _LookAtAlphaUpDirection;
+	float4 _LookAtAlphaForwardDirection;
+	float4 _LookAtAlphaPivotOffset;
+	float4 _LookAtAlphaOriginOffset;
+	half4 _LookAtAlphaFoV;
+	float4 _LookAtAlphaDistanceFalloff;
+	float4 _LookAtAlphaMaxPitchAngle;
+	float4 _LookAtAlphaMaxYawAngle;
+	float4 _LookAtAlphaMaxRollAngle;
+	//endex
+#endif
+//endex
+
+#T#PoiVertexLookAtVariables
+//ifex _VertexLookAtEnabled==0
+#ifdef POI_VERTEX_LOOKAT
+	#if defined(PROP_LOOKATMASK) || !defined(OPTIMIZER_ENABLED)
+		Texture2D _LookAtMask;
+	#endif
+#endif
+//endex
+
+#T#PoiVertexLookAtFunctions
+//ifex _VertexLookAtEnabled==0
+#if defined(POI_VERTEX_LOOKAT)
+	float4 ComputeLookAtQuat(
+		half alpha,
+		float3 lookAtOriginOffset,
+		float3 forwardDirectionOS,
+		float3 upDirectionOS,
+		float targetUp,
+		float2 fovAngles,
+		float2 distanceFalloff,
+		float2 maxPitchAngle,
+		float2 maxYawAngle,
+		float2 maxRollAngle
+	)
+	{
+		maxPitchAngle.x = min(maxPitchAngle.x, 0);
+		maxPitchAngle.y = max(maxPitchAngle.y, 0);
+		maxYawAngle.x = min(maxYawAngle.x, 0);
+		maxYawAngle.y = max(maxYawAngle.y, 0);
+		maxRollAngle.x = min(maxRollAngle.x, 0);
+		maxRollAngle.y = max(maxRollAngle.y, 0);
+
+		forwardDirectionOS = normalize(forwardDirectionOS);
+		upDirectionOS = normalize(upDirectionOS);
+		
+		float3 originOS = lookAtOriginOffset;
+		float3 EyeWS = mul(unity_ObjectToWorld, float4(originOS, 1)).xyz;
+		
+		float3 camPos = getCameraPosition();
+		float3 viewDirWS = normalize(camPos - EyeWS);
+		
+		float dotDeg = dotToDegrees(viewDirWS, normalize(mul((float3x3)unity_ObjectToWorld, forwardDirectionOS)));
+		alpha *= smoothstep(fovAngles.y, fovAngles.x, dotDeg);
+		alpha *= smoothstep(distanceFalloff.y, distanceFalloff.x, length(camPos - EyeWS));
+		if (alpha <= 0) return float4(0, 0, 0, 1);
+
+		float3 targetFwdOS = normalize(mul((float3x3)unity_WorldToObject, viewDirWS));
+		
+		float3 targetUpOS = float3(0, 1, 0);
+		switch((targetUp))
+		{
+			//View Dir Up, 0, World Up, 1, Camera Up, 2, Model Up, 3
+			case 0:
+			{
+				float3 worldUpOS = normalize(mul((float3x3)unity_WorldToObject, float3(0, 1, 0)));
+				float proj = dot(worldUpOS, targetFwdOS);
+				targetUpOS = normalize(worldUpOS - proj * targetFwdOS);
+				break;
+			}
+			case 1: { targetUpOS = normalize(mul((float3x3)unity_WorldToObject, float3(0, 1, 0))); break; }
+			case 2: { targetUpOS = normalize(mul((float3x3)unity_WorldToObject, normalize(UNITY_MATRIX_V[1].xyz))); break; }
+			case 3: { targetUpOS = float3(0, 1, 0); break; } // Model Up
+			default: { targetUpOS = float3(0, 1, 0); break; } // Model Up
+
+		}
+		
+		float4 qOriginal = BuildQuatFromForwardUp(float3(0, 0, 1), float3(0, 1, 0));
+		float4 qSrc = BuildQuatFromForwardUp(forwardDirectionOS, upDirectionOS);
+		float4 qSrcInv = float4(-qSrc.x, -qSrc.y, -qSrc.z, qSrc.w);
+		float4 qTgt = BuildQuatFromForwardUp(targetFwdOS, targetUpOS);
+
+		float4 deltaQ = MulQuat(qTgt, qSrcInv);
+		float4 blendedQ = SlerpQuaternion(qOriginal, deltaQ, alpha);
+
+		float3 e = QuaternionToEuler(blendedQ);
+		e.x = clamp(e.x, maxPitchAngle.x, maxPitchAngle.y);
+		e.y = clamp(e.y, maxYawAngle.x, maxYawAngle.y);
+		e.z = clamp(e.z, maxRollAngle.x, maxRollAngle.y);
+
+		return EulerToQuaternion(e);
+	}
+
+	void ApplyQuaternionRotation(inout appdata v, float4 quaternion, float3 pivotOffset)
+	{
+		v.vertex.xyz -= pivotOffset;
+		v.vertex.xyz = RotateByQuaternion(quaternion, v.vertex.xyz);
+		v.vertex.xyz += pivotOffset;
+		v.normal = RotateByQuaternion(quaternion, normalize(v.normal));
+		v.tangent = float4(RotateByQuaternion(quaternion, normalize(v.tangent.xyz)), v.tangent.w);
+	}
+
+#endif
+//endex
+
+#T#PoiVertexLookAtFunctionCalls
+//ifex _VertexLookAtEnabled==0
+#if defined(POI_VERTEX_LOOKAT)
+
+	half4 alpha = 1;
+	half4 lookAtMask = float4(1, 1, 1, 1);
+
+	//ifex isNotAnimated(_VertexLookAtAudioLinkEnabled) && _VertexLookAtAudioLinkEnabled==0
+	#ifdef POI_AUDIOLINK
+		if (_VertexLookAtAudioLinkEnabled >= 0.5)
+		{
+			if (AudioLinkIsAvailable())
+			{
+				alpha = saturate(alpha + lerp(_VertexLookAtAlphaAudiolink.x, _VertexLookAtAlphaAudiolink.y, vertexAudioLink[_VertexLookAtAudioLinkBand]) * _VertexLookAtAudioLinkEnabled);
+			}
+		}
+	#endif
+	//endex
+
+	//ifex isNotAnimated(_LookAtVisibilityEnabled) && _LookAtVisibilityEnabled==0
+	if (_LookAtVisibilityEnabled >= 0.5)
+	{
+		float notVisible = 0;
+		if (_LookAtVisibilityMode == 1) // VRC
+
+		{
+			float mirrorMode = VRCMirrorMode();
+			float cameraMode = VRCCameraMode();
+			
+			notVisible += (_LookAtVisibilityVRCRegular < 0.5 && ((mirrorMode == 0) && (cameraMode == 0)));
+			notVisible += (_LookAtVisibilityVRCMirrorVR < 0.5 && (mirrorMode == 1));
+			notVisible += (_LookAtVisibilityVRCMirrorDesktop < 0.5 && (mirrorMode == 2));
+			notVisible += (_LookAtVisibilityVRCCameraVR < 0.5 && (cameraMode == 1));
+			notVisible += (_LookAtVisibilityVRCCameraDesktop < 0.5 && (cameraMode == 2));
+			notVisible += (_LookAtVisibilityVRCCameraScreenshot < 0.5 && (cameraMode == 3));
+		}
+		else if (_LookAtVisibilityMirror != 0) // Generic (CVR, etc)
+
+		{
+			notVisible += (_LookAtVisibilityMirror == 1) ^ IsInMirror();
+		}
+		
+		if (notVisible)
+		{
+			alpha = 0;
+		}
+	}
+	//endex
+
+	#if defined(PROP_LOOKATMASK) || !defined(OPTIMIZER_ENABLED)
+		lookAtMask = UNITY_SAMPLE_TEX2D_SAMPLER_LOD(_LookAtMask, _linear_repeat, poiUV(vertexUV(v, _LookAtMaskUV), _LookAtMask_ST) + POI_TIME.x * _LookAtMaskPan, 0);
+	#endif
+	lookAtMask *= alpha;
+
+	float4 qFinal = float4(0, 0, 0, 1);
+	half lookAtAlphaMask = 1;
+
+	//ifex isNotAnimated(_LookAtRedMaskEnabled) && _LookAtRedMaskEnabled==0
+	lookAtAlphaMask = _LookAtRedAlpha * lookAtMask.r;
+	if (_LookAtRedMaskEnabled >= 0.5 && lookAtAlphaMask > 0)
+	{
+		qFinal = ComputeLookAtQuat(
+			lookAtAlphaMask,
+			_LookAtRedOriginOffset.xyz,
+			_LookAtRedForwardDirection.xyz,
+			_LookAtRedUpDirection.xyz,
+			_LookAtRedTargetUp,
+			_LookAtRedFoV.xy,
+			_LookAtRedDistanceFalloff.xy,
+			_LookAtRedMaxPitchAngle.xy,
+			_LookAtRedMaxYawAngle.xy,
+			_LookAtRedMaxRollAngle.xy
+		);
+		
+		ApplyQuaternionRotation(v, qFinal, _LookAtRedPivotOffset.xyz);
+	}
+	//endex
+
+	//ifex isNotAnimated(_LookAtGreenMaskEnabled) && _LookAtGreenMaskEnabled==0
+	lookAtAlphaMask = _LookAtGreenAlpha * lookAtMask.g;
+	if (_LookAtGreenMaskEnabled >= 0.5 && lookAtAlphaMask > 0)
+	{
+		
+		float4 q = ComputeLookAtQuat(
+			lookAtAlphaMask,
+			RotateByQuaternion(qFinal, _LookAtGreenOriginOffset.xyz),
+			RotateByQuaternion(qFinal, _LookAtGreenForwardDirection.xyz),
+			RotateByQuaternion(qFinal, _LookAtGreenUpDirection.xyz),
+			_LookAtGreenTargetUp,
+			_LookAtGreenFoV.xy,
+			_LookAtGreenDistanceFalloff.xy,
+			_LookAtGreenMaxPitchAngle.xy,
+			_LookAtGreenMaxYawAngle.xy,
+			_LookAtGreenMaxRollAngle.xy
+		);
+		
+		ApplyQuaternionRotation(v, q, RotateByQuaternion(qFinal, _LookAtGreenPivotOffset.xyz));
+		qFinal = MulQuat(q, qFinal);
+	}
+	//endex
+
+	//ifex isNotAnimated(_LookAtBlueMaskEnabled) && _LookAtBlueMaskEnabled==0
+	lookAtAlphaMask = _LookAtBlueAlpha * lookAtMask.b;
+	if (_LookAtBlueMaskEnabled >= 0.5 && lookAtAlphaMask > 0)
+	{
+		float4 q = ComputeLookAtQuat(
+			lookAtAlphaMask,
+			RotateByQuaternion(qFinal, _LookAtBlueOriginOffset.xyz),
+			RotateByQuaternion(qFinal, _LookAtBlueForwardDirection.xyz),
+			RotateByQuaternion(qFinal, _LookAtBlueUpDirection.xyz),
+			_LookAtBlueTargetUp,
+			_LookAtBlueFoV.xy,
+			_LookAtBlueDistanceFalloff.xy,
+			_LookAtBlueMaxPitchAngle.xy,
+			_LookAtBlueMaxYawAngle.xy,
+			_LookAtBlueMaxRollAngle.xy
+		);
+		
+		ApplyQuaternionRotation(v, q, RotateByQuaternion(qFinal, _LookAtBluePivotOffset.xyz));
+		qFinal = MulQuat(q, qFinal);
+	}
+	//endex
+
+	//ifex isNotAnimated(_LookAtAlphaMaskEnabled) && _LookAtAlphaMaskEnabled==0
+	lookAtAlphaMask = _LookAtAlphaAlpha * lookAtMask.a;
+	if (_LookAtAlphaMaskEnabled >= 0.5 && lookAtAlphaMask > 0)
+	{
+		float4 q = ComputeLookAtQuat(
+			lookAtAlphaMask,
+			RotateByQuaternion(qFinal, _LookAtAlphaOriginOffset.xyz),
+			RotateByQuaternion(qFinal, _LookAtAlphaForwardDirection.xyz),
+			RotateByQuaternion(qFinal, _LookAtAlphaUpDirection.xyz),
+			_LookAtAlphaTargetUp,
+			_LookAtAlphaFoV.xy,
+			_LookAtAlphaDistanceFalloff.xy,
+			_LookAtAlphaMaxPitchAngle.xy,
+			_LookAtAlphaMaxYawAngle.xy,
+			_LookAtAlphaMaxRollAngle.xy
+		);
+		
+		ApplyQuaternionRotation(v, q, RotateByQuaternion(qFinal, _LookAtAlphaPivotOffset.xyz));
+	}
+	//endex
+
+#endif
+//endex

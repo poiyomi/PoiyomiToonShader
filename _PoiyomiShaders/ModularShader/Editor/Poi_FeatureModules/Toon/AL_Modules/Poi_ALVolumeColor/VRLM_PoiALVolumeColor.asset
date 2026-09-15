@@ -1,0 +1,61 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1039f25740a92fc4292bb1d94d07ad19, type: 3}
+  m_Name: VRLM_PoiALVolumeColor
+  m_EditorClassIdentifier: 
+  Id: PoiALVolumeColor
+  Name: PoiALVolumeColor
+  Version: 1.0
+  Author: Poiyomi
+  Description: 
+  AllowDuplicates: 0
+  ForceDuplicateLogic: 0
+  EnableProperties: []
+  Properties: []
+  ModuleDependencies: []
+  IncompatibleWith: []
+  Templates:
+  - Template: {fileID: -4432645273540307082, guid: 64dc3c69662940d4b9ed9100e21beea8, type: 3}
+    Keywords:
+    - AUDIOLINK_PROPERTIES
+    NeedsVariant: 0
+    Queue: 100
+  - Template: {fileID: 6346029674210517224, guid: 64dc3c69662940d4b9ed9100e21beea8, type: 3}
+    Keywords:
+    - BASE_PASS_KEYWORDS
+    - META_PASS_KEYWORDS
+    - LILFUR_PASS_KEYWORDS
+    NeedsVariant: 0
+    Queue: 100
+  - Template: {fileID: -6309791261029026687, guid: 64dc3c69662940d4b9ed9100e21beea8, type: 3}
+    Keywords:
+    - BASE_PROPERTY_VARIABLES_EXPOSED
+    - META_PROPERTY_VARIABLES_EXPOSED
+    - LILFUR_PROPERTY_VARIABLES_EXPOSED
+    NeedsVariant: 0
+    Queue: 100
+  - Template: {fileID: 8219168899949994472, guid: 64dc3c69662940d4b9ed9100e21beea8, type: 3}
+    Keywords:
+    - FRAGMENT_BASE_FUNCTIONS
+    - FRAGMENT_META_FUNCTIONS
+    - FRAGMENT_LILFUR_FUNCTIONS
+    NeedsVariant: 0
+    Queue: 100
+  - Template: {fileID: -6389303596870294039, guid: 64dc3c69662940d4b9ed9100e21beea8, type: 3}
+    Keywords:
+    - FRAGMENT_BASE_COLOR
+    - FRAGMENT_META_COLOR
+    - FRAGMENT_LILFUR_COLOR
+    NeedsVariant: 0
+    Queue: 100
+  Functions: []
+  AdditionalSerializedData: 

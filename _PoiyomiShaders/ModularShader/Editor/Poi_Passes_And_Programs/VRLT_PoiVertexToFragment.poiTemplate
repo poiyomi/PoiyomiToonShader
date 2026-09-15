@@ -1,0 +1,38 @@
+struct VertexOut
+{
+	float4 pos : SV_POSITION;
+	float4 uv[2] : TEXCOORD0;
+	// xyz: world space normal
+	// w:   renderer scale
+	half4 normal : TEXCOORD2;
+	half4 tangent : TEXCOORD3;
+	float4 worldPos : TEXCOORD4;
+	float4 localPos : TEXCOORD5;
+	half4 vertexColor : TEXCOORD6;
+	float4 lightmapUV : TEXCOORD7;
+	float worldDir : TEXCOORD8;
+	float fogData: TEXCOORD10;
+	POI_SHADOW_COORDS(9)
+	#ifdef POI_SQUISH
+		half squishAmount : TEXCOORD11;
+	#endif
+	#ifdef POIBS_BLOOMFOG
+		float2 bsFogScreenUV : TEXCOORD12;
+	#endif
+	#ifdef EDITOR_VISUALIZATION
+		float2 VizUV : TEXCOORD13;
+		float4 LightCoord : TEXCOORD14;
+	#endif
+	#ifdef POI_PASS_MOTION_VECTORS
+		#if UNITY_VERSION >= 202100
+			float4 positionCSNoJitter         : POSITION_CS_NO_JITTER;
+			float4 previousPositionCSNoJitter : PREV_POSITION_CS_NO_JITTER;
+		#endif
+	#endif
+	#K#vertexOutData
+	UNITY_VERTEX_INPUT_INSTANCE_ID
+	UNITY_VERTEX_OUTPUT_STEREO
+	#if defined(POI_DEVICE_QUEST)
+		uint gl_Layer : SV_RenderTargetArrayIndex;
+	#endif
+};

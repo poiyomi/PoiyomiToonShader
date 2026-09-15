@@ -29,16 +29,16 @@ namespace Poi.Tools
             if (material.GetFloat("_MainColorAdjustToggle") == 0)
                 return false;
 
-            bool hueShiftActive = material.GetFloat("_MainHueShiftToggle") == 1 &&
-                                  material.GetFloat("_MainHueShift") != 0;
-            bool satChanged = material.GetFloat("_Saturation") != 0;
-            bool brightChanged = material.GetFloat("_MainBrightness") != 0;
-            bool gammaChanged = Mathf.Abs(material.GetFloat("_MainGamma") - 1f) > 0.001f;
-            bool chromatizeChanged = material.GetFloat("_MainChromatize") != 0;
-            bool tintActive = material.GetColor("_MainTintColor").a > 0;
+            bool hueShiftActive = GetFloatOr(material, "_MainHueShiftToggle", 0f) == 1 &&
+                                  GetFloatOr(material, "_MainHueShift", 0f) != 0;
+            bool satChanged = GetFloatOr(material, "_Saturation", 0f) != 0;
+            bool brightChanged = GetFloatOr(material, "_MainBrightness", 0f) != 0;
+            bool gammaChanged = Mathf.Abs(GetFloatOr(material, "_MainGamma", 1f) - 1f) > 0.001f;
+            bool chromatizeChanged = GetFloatOr(material, "_MainChromatize", 0f) != 0;
+            bool tintActive = GetColorOr(material, "_MainTintColor", new Color(1, 1, 1, 0)).a > 0;
             bool gradationActive = material.HasProperty("_ColorGradingToggle") &&
                                    material.GetFloat("_ColorGradingToggle") > 0 &&
-                                   material.GetFloat("_MainGradationStrength") > 0;
+                                   GetFloatOr(material, "_MainGradationStrength", 0f) > 0;
 
             return hueShiftActive || satChanged || brightChanged || gammaChanged ||
                    chromatizeChanged || tintActive || gradationActive;
@@ -58,7 +58,7 @@ namespace Poi.Tools
                 return;
             }
 
-            Texture mainTex = material.GetTexture("_MainTex");
+            Texture mainTex = material.HasProperty("_MainTex") ? material.GetTexture("_MainTex") : null;
             if (mainTex == null)
             {
                 EditorUtility.DisplayDialog("Bake Error",
@@ -255,6 +255,19 @@ namespace Poi.Tools
             if (index < 1 || index > 16)
                 return;
             needed[(index - 1) / 4] = true;
+        }
+
+        // Locking renames properties marked RA, so their base name is no longer on the material, and
+        // Material.GetFloat/GetColor log an error for a property that isn't there. The fallbacks match
+        // the defaults in ResetColorAdjustProperties, so a renamed or absent property reads as unchanged.
+        static float GetFloatOr(Material material, string prop, float fallback)
+        {
+            return material.HasProperty(prop) ? material.GetFloat(prop) : fallback;
+        }
+
+        static Color GetColorOr(Material material, string prop, Color fallback)
+        {
+            return material.HasProperty(prop) ? material.GetColor(prop) : fallback;
         }
 
         static void SetFloatIfExists(Material baker, Material source, string prop)

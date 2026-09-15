@@ -1,0 +1,130 @@
+#T#PoiVertexProgram
+VertexOut vert(appdata v)
+{
+	UNITY_SETUP_INSTANCE_ID(v);
+	VertexOut o;
+	PoiInitStruct(VertexOut, o);
+	UNITY_TRANSFER_INSTANCE_ID(v, o);
+	// if geom shader present, geom shader will handle stereo initialization
+	POI_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
+
+	#if defined(POI_PASS_OUTLINETWO)
+		// Render Feature outline pass: discard unless Render Feature mode is active
+		if (_EnableOutlinesRenderFeature < 0.5)
+		{
+			return (VertexOut)POI_NAN;
+		}
+	#elif defined(POI_PASS_OUTLINE)
+		// SRPDefaultUnlit outline pass: discard when Render Feature mode is active
+		if (_EnableOutlinesRenderFeature > 0.5)
+		{
+			return (VertexOut)POI_NAN;
+		}
+	#endif
+
+	#ifdef POI_AUDIOLINK
+		float vertexAudioLink[5];
+		vertexAudioLink[0] = _AudioLinkSmoothingBass == 0 ? AudioLinkData(ALPASS_AUDIOLINK + float2(0, 0))[0] : AudioLinkData(ALPASS_FILTEREDAUDIOLINK + float2((1 - _AudioLinkSmoothingBass) * 15.95, 0))[0];
+		vertexAudioLink[1] = _AudioLinkSmoothingLowMid == 0 ? AudioLinkData(ALPASS_AUDIOLINK + float2(0, 1))[0] : AudioLinkData(ALPASS_FILTEREDAUDIOLINK + float2((1 - _AudioLinkSmoothingLowMid) * 15.95, 1))[0];
+		vertexAudioLink[2] = _AudioLinkSmoothingHighMid == 0 ? AudioLinkData(ALPASS_AUDIOLINK + float2(0, 2))[0] : AudioLinkData(ALPASS_FILTEREDAUDIOLINK + float2((1 - _AudioLinkSmoothingHighMid) * 15.95, 2))[0];
+		vertexAudioLink[3] = _AudioLinkSmoothingTreble == 0 ? AudioLinkData(ALPASS_AUDIOLINK + float2(0, 3))[0] : AudioLinkData(ALPASS_FILTEREDAUDIOLINK + float2((1 - _AudioLinkSmoothingTreble) * 15.95, 3))[0];
+		vertexAudioLink[4] = AudioLinkData(ALPASS_GENERALVU + float2(8, 0))[0];
+	#endif
+
+	o.uv[0] = float4(v.uv0.xy, v.uv1.xy);
+	o.uv[1] = float4(v.uv2.xy, v.uv3.xy);
+
+	o.normal.w = length(mul((float3x3)unity_ObjectToWorld, v.normal));
+
+	#K#VERTEX_INPUT_MODS
+	#if POI_PIPE == POI_BIRP
+		o.normal.xyz = PoiObjectToWorldNormal(v.normal);
+		o.tangent.xyz = UnityObjectToWorldDir(v.tangent);
+	#elif  POI_PIPE == POI_URP
+		VertexNormalInputs vertexNormalInput = GetVertexNormalInputs(v.normal, v.tangent);
+		o.normal.xyz = vertexNormalInput.normalWS;
+		o.tangent.xyz = vertexNormalInput.tangentWS;
+	#endif
+	o.tangent.w = v.tangent.w;
+	o.vertexColor = v.color;
+
+	#if defined(LIGHTMAP_ON)
+		// o.lightmapUV.xy = v.uv1.xy * unity_LightmapST.xy + unity_LightmapST.zw;
+		OUTPUT_LIGHTMAP_UV(v.uv1.xy, unity_LightmapST, o.lightmapUV.xy);
+	#endif
+	#ifdef DYNAMICLIGHTMAP_ON
+		o.lightmapUV.zw = v.uv2.xy * unity_DynamicLightmapST.xy + unity_DynamicLightmapST.zw;
+	#endif
+
+	o.localPos = v.vertex;
+	o.worldPos = mul(unity_ObjectToWorld, o.localPos);
+
+	float3 localOffset = float3(0, 0, 0);
+	float3 worldOffset = float3(0, 0, 0);
+
+	#K#VERTEX_MODS_EARLY
+	#K#VERTEX_MODS
+	#K#VERTEX_MODS_LATE
+
+	o.localPos.xyz += localOffset;
+	o.worldPos.xyz += worldOffset;
+
+	#K#VERTEX_MODS_PENETRATION
+	#K#VERTEX_MODS_PRE_CLIPPOS
+
+	o.pos = PoiObjectToClipPos(o.localPos.xyz);
+	o.fogData = o.pos.z;
+
+	#K#VERTEX_MODS_POST_CLIPPOS
+	//o.grabPos = ComputeGrabScreenPos(o.pos);
+
+	#if !defined(POI_PASS_SHADOW)
+		POI_TRANSFER_SHADOW(o, o.uv[0].xy);
+	#else
+		v.vertex.xyz = o.localPos.xyz;
+		POI_TRANSFER_SHADOW_CASTER_NOPOS(o, o.pos);
+	#endif
+
+	o.worldDir = dot(o.pos, CalculateFrustumCorrection());
+
+	if (_RenderingReduceClipDistance >= 0.5)
+	{
+		applyReducedRenderClipDistance(o);
+	}
+
+	#ifdef POI_PASS_META
+		o.pos = UnityMetaVertexPosition(v.vertex, v.uv1.xy, v.uv2.xy, unity_LightmapST, unity_DynamicLightmapST);
+		#ifdef EDITOR_VISUALIZATION
+			UnityEditorVizData(v.vertex.xyz, o.uv[0].xy, o.uv[0].zw, o.uv[1].xy, o.VizUV, o.LightCoord);
+		#endif
+	#endif
+
+	#ifdef POI_PASS_MOTION_VECTORS
+		#if UNITY_VERSION >= 202100
+			#if defined(APPLICATION_SPACE_WARP_MOTION)
+				// We do not need jittered position in ASW
+				o.positionCSNoJitter = mul(_NonJitteredViewProjMatrix, mul(UNITY_MATRIX_M, o.localPos));
+				o.pos = o.positionCSNoJitter;
+			#else
+				// Jittered. Match the frame.
+				o.positionCSNoJitter = mul(_NonJitteredViewProjMatrix, mul(UNITY_MATRIX_M, o.localPos));
+			#endif
+
+			float4 prevPos = (unity_MotionVectorsParams.x == 1) ? float4(v.positionOld, 1) : o.localPos;
+
+			#if _ADD_PRECOMPUTED_VELOCITY
+				prevPos = prevPos - float4(v.alembicMotionVector, 0);
+			#endif
+
+			o.previousPositionCSNoJitter = mul(_PrevViewProjMatrix, mul(UNITY_PREV_MATRIX_M, prevPos));
+		#endif
+	#endif
+
+	#ifdef POI_PASS_LILFUR
+		#K#VERTEX_MODS_LILFUR
+	#endif
+
+	#K#VERTEX_MODS_FINAL
+
+	return o;
+}

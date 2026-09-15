@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1039f25740a92fc4292bb1d94d07ad19, type: 3}
+  m_Name: VRLM_PoiStencilTwoPass
+  m_EditorClassIdentifier: 
+  Id: PoiStencilTwoPass
+  Name: Poi Stencil Two Pass
+  Version: 
+  Author: 
+  Description: 
+  AllowDuplicates: 0
+  ForceDuplicateLogic: 0
+  EnableProperties: []
+  Properties: []
+  ModuleDependencies: []
+  IncompatibleWith: []
+  Templates:
+  - Template: {fileID: 4498648522856964495, guid: 32ded4667257b3f4e93d2d3058e89155,
+      type: 3}
+    Keywords:
+    - RENDERING_PROPERTIES
+    NeedsVariant: 0
+    Queue: 102
+  - Template: {fileID: -8545981536984775487, guid: 32ded4667257b3f4e93d2d3058e89155,
+      type: 3}
+    Keywords:
+    - BASETWO_PASS_STENCIL
+    NeedsVariant: 0
+    Queue: 101
+  Functions: []
+  AdditionalSerializedData: 

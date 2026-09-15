@@ -1,0 +1,28 @@
+struct appdata
+{
+	float4 vertex : POSITION;
+	float3 normal : NORMAL;
+	float4 tangent : TANGENT;
+	half4 color : COLOR;
+	float2 uv0 : TEXCOORD0;
+	float2 uv1 : TEXCOORD1;
+	float2 uv2 : TEXCOORD2;
+	float2 uv3 : TEXCOORD3;
+	#ifdef POI_PASS_MOTION_VECTORS
+		float3 positionOld : TEXCOORD4;
+		#if _ADD_PRECOMPUTED_VELOCITY
+			float3 alembicMotionVector : TEXCOORD5;
+		#endif
+	#endif
+	#ifdef POI_RAYMARCHING_DATA
+		float4 poiBindPosition : TEXCOORD5;
+		half4 poiBindNormal : TEXCOORD6;
+		half4 poiBindTangent : TEXCOORD7;
+	#endif
+	#ifdef POI_TESSELLATED
+		uint vertexId : TEXCOORD6;
+	#else
+		uint vertexId : SV_VertexID;
+	#endif
+	UNITY_VERTEX_INPUT_INSTANCE_ID
+};

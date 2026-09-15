@@ -1,0 +1,86 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1039f25740a92fc4292bb1d94d07ad19, type: 3}
+  m_Name: VRLM_PoiAudioLink
+  m_EditorClassIdentifier: 
+  Id: PoiAudioLink
+  Name: Poi Audio Link
+  Version: 
+  Author: 
+  Description: 
+  AllowDuplicates: 0
+  ForceDuplicateLogic: 0
+  EnableProperties: []
+  Properties: []
+  ModuleDependencies: []
+  IncompatibleWith: []
+  Templates:
+  - Template: {fileID: -7419410332106174641, guid: 1be7b43adb0e07543b4687f3e0f50e1f, type: 3}
+    Keywords:
+    - EXTRAS_PROPERTIES
+    NeedsVariant: 0
+    Queue: 100
+  - Template: {fileID: -4077475223260929287, guid: 1be7b43adb0e07543b4687f3e0f50e1f, type: 3}
+    Keywords:
+    - DEPTH_PASS_KEYWORDS
+    - OUTLINE_PASS_KEYWORDS
+    - BASE_PASS_KEYWORDS
+    - LILFUR_PASS_KEYWORDS
+    - ADD_PASS_KEYWORDS
+    - META_PASS_KEYWORDS
+    - SHADOW_PASS_KEYWORDS
+    - MOTION_VECTORS_PASS_KEYWORDS
+    NeedsVariant: 0
+    Queue: 100
+  - Template: {fileID: 4910312744796953162, guid: 1be7b43adb0e07543b4687f3e0f50e1f, type: 3}
+    Keywords:
+    - MACROS_AND_DEFINES
+    NeedsVariant: 0
+    Queue: 100
+  - Template: {fileID: -1134625460632349209, guid: 1be7b43adb0e07543b4687f3e0f50e1f, type: 3}
+    Keywords:
+    - DEPTH_PROPERTY_VARIABLES
+    - OUTLINE_PROPERTY_VARIABLES
+    - BASE_PROPERTY_VARIABLES
+    - ADD_PROPERTY_VARIABLES
+    - SHADOW_PROPERTY_VARIABLES
+    - META_PROPERTY_VARIABLES
+    - LILFUR_PROPERTY_VARIABLES
+    - MOTION_VECTORS_PROPERTY_VARIABLES
+    NeedsVariant: 0
+    Queue: 100
+  - Template: {fileID: 8714289124560104235, guid: 1be7b43adb0e07543b4687f3e0f50e1f, type: 3}
+    Keywords:
+    - VERTEX_DEPTH_FUNCTIONS_EARLY
+    - VERTEX_OUTLINE_FUNCTIONS_EARLY
+    - VERTEX_BASE_FUNCTIONS_EARLY
+    - VERTEX_ADD_FUNCTIONS_EARLY
+    - VERTEX_SHADOW_FUNCTIONS_EARLY
+    - VERTEX_META_FUNCTIONS_EARLY
+    - VERTEX_LILFUR_FUNCTIONS_EARLY
+    - VERTEX_MOTION_VECTORS_FUNCTIONS_EARLY
+    NeedsVariant: 0
+    Queue: 100
+  - Template: {fileID: -2835084315498978105, guid: 1be7b43adb0e07543b4687f3e0f50e1f, type: 3}
+    Keywords:
+    - FRAGMENT_DEPTH_INIT
+    - FRAGMENT_OUTLINE_INIT
+    - FRAGMENT_BASE_INIT
+    - FRAGMENT_ADD_INIT
+    - FRAGMENT_SHADOW_INIT
+    - FRAGMENT_META_INIT
+    - FRAGMENT_LILFUR_INIT
+    - FRAGMENT_MOTION_VECTORS_INIT
+    NeedsVariant: 0
+    Queue: 100
+  Functions: []
+  AdditionalSerializedData: 

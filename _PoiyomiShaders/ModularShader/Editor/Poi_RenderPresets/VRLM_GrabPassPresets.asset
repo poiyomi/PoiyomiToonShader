@@ -1,0 +1,44 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1039f25740a92fc4292bb1d94d07ad19, type: 3}
+  m_Name: VRLM_GrabPassPresets
+  m_EditorClassIdentifier: 
+  Id: RenderPresetsPro
+  Name: 
+  Version: 
+  Author: 
+  Description: 
+  AllowDuplicates: 0
+  ForceDuplicateLogic: 0
+  EnableProperties: []
+  Properties: []
+  ModuleDependencies: []
+  IncompatibleWith: []
+  Templates:
+  - Template: {fileID: -1337740319945477378, guid: 1dd8665fccdb73a4883771ca4f5b6367, type: 3}
+    Keywords:
+    - TOP_PROPERTIES
+    NeedsVariant: 0
+    Queue: 0
+  - Template: {fileID: 6961689172257707690, guid: 1dd8665fccdb73a4883771ca4f5b6367, type: 3}
+    Keywords:
+    - BASE_PROPERTY_VARIABLES_EXPOSED
+    - ADD_PROPERTY_VARIABLES_EXPOSED
+    - SHADOW_PROPERTY_VARIABLES_EXPOSED
+    - OUTLINE_PROPERTY_VARIABLES_EXPOSED
+    - META_PROPERTY_VARIABLES_EXPOSED
+    - DEPTH_PROPERTY_VARIABLES_EXPOSED
+    - MOTION_VECTORS_PROPERTY_VARIABLES_EXPOSED
+    NeedsVariant: 0
+    Queue: 0
+  Functions: []
+  AdditionalSerializedData: 

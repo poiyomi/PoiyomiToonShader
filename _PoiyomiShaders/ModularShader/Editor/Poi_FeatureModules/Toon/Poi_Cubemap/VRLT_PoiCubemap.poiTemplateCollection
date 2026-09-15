@@ -1,0 +1,204 @@
+#T#PoiCubeMapProperties
+//ifex _CubeMapEnabled==0
+[HideInInspector] m_start_CubeMap (" CubeMap--{reference_property:_CubeMapEnabled,button_help:{text:Tutorial,action:{type:URL,data:https://www.poiyomi.com/shading/cubemap},hover:Documentation}}", Float) = 0
+[HideInInspector][ThryToggle(_CUBEMAP)]_CubeMapEnabled ("Enable CubeMap", Float) = 0
+[ThryWideEnum(Skybox, 0, Reflection, 1, World Normal Direction, 2, Local Normal Direction, 3)] _CubeMapUVMode ("UV Mode", Int) = 1
+_CubeMapWorldNormalsStrength ("Normals Strength--{condition_showS:(_CubeMapUVMode==2)}", Range(0, 1)) = 1
+_CubeMapColor ("Color--{reference_property:_CubeMapColorThemeIndex}", Color) = (1, 1, 1, 1)
+[ThryHideInInspector][ThryWideEnum(Off, 0, Theme Color 0, 1, Theme Color 1, 2, Theme Color 2, 3, Theme Color 3, 4, ColorChord 0, 5, ColorChord 1, 6, ColorChord 2, 7, ColorChord 3, 8, AL Theme 0, 9, AL Theme 1, 10, AL Theme 2, 11, AL Theme 3, 12)] _CubeMapColorThemeIndex ("", Int) = 0
+[NoScaleOffset]_CubeMap ("CubeMap--{reference_properties:[_CubeMapRotation, _CubeMapRotationPan]}", Cube) = "" { }
+[HideInInspector][Vector3]_CubeMapRotation ("Rotation in Degrees", Vector) = (0, 0, 0, 0)
+[HideInInspector][Vector3]_CubeMapRotationPan ("Panning in Degrees", Vector) = (0, 0, 0, 0)
+[ThryWideEnum(Replace, 0, Multiply, 1, Add, 2)]_CubemapBlendType ("Blending", Float) = 0
+_CubeMapBlendAmount ("Blend Alpha", Range(0, 1)) = 1
+
+_CubeMapIntensity ("Brightness", Range(0, 5)) = 1
+_CubeMapEmissionStrength ("Emission Strength", Range(0, 20)) = 0
+_CubeMapSmoothness ("Smoothness", Range(0, 1)) = 1
+[Enum(Vertex, 0, Pixel, 1)] _CubeMapNormal ("Normal to use", Int) = 1
+
+
+[HideInInspector] s_start_CubeMapMasking ("Masking--{persistent_expand:true,default_expand:true}", Float) = 1
+[sRGBWarning]_CubeMapMask ("Mask--{reference_properties:[_CubeMapMaskPan, _CubeMapMaskUV, _CubeMapMaskChannel, _CubeMapMaskInvert]}", 2D) = "white" { }
+[ThryHideInInspector][Vector2]_CubeMapMaskPan ("Panning", Vector) = (0, 0, 0, 0)
+[ThryHideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7, Matcap, 9, Screen Space, 10)] _CubeMapMaskUV ("UV", Int) = 0
+[ThryHideInInspector][Enum(R, 0, G, 1, B, 2, A, 3)]_CubeMapMaskChannel ("Channel", Float) = 0
+[ThryHideInInspector][ToggleUI]_CubeMapMaskInvert ("Invert", Float) = 0
+_CubeMapLightMask ("Hide in Shadow", Range(0, 1)) = 0
+[ThryWideEnum(Off, 0, 1R, 1, 1G, 2, 1B, 3, 1A, 4, 2R, 5, 2G, 6, 2B, 7, 2A, 8, 3R, 9, 3G, 10, 3B, 11, 3A, 12, 4R, 13, 4G, 14, 4B, 15, 4A, 16)] _CubeMapMaskGlobalMask ("Global Mask--{reference_property:_CubeMapMaskGlobalMaskBlendType}", Int) = 0
+[ThryHideInInspector][ThryWideEnum(Add, 7, Subtract, 1, Multiply, 2, Divide, 3, Min, 4, Max, 5, Average, 6, Replace, 0)]_CubeMapMaskGlobalMaskBlendType ("Blending", Range(0, 1)) = 2
+[HideInInspector] s_end_CubeMapMasking ("Masking", Float) = 0
+
+[HideInInspector] s_start_CubeMapColorAdjust ("Color Adjust--{reference_property:_CubeMapHueShiftEnabled,persistent_expand:true,default_expand:false}", Float) = 0
+[ThryHideInInspector][ToggleUI]_CubeMapHueShiftEnabled ("Enabled", Float) = 0
+[ThryWideEnum(OKLab, 0, HSV, 1)] _CubeMapHueShiftColorSpace ("Color Space", Int) = 0
+[ThryWideEnum(Hue Select, 0, Hue Shift, 1)] _CubeMapHueSelectOrShift ("Select or Shift", Int) = 1
+_CubeMapHueShiftSpeed ("Hue Shift Speed", Float) = 0
+_CubeMapHueShift ("Hue Shift", Range(0, 1)) = 0
+_CubeMapBrightness ("Brightness", Range(-1, 1)) = 0
+_CubeMapContrast ("Contrast", Range(-1, 10)) = 1
+_CubeMapSaturation ("Saturation", Range(-1, 10)) = 1
+[HideInInspector] s_end_CubeMapColorAdjust ("", Float) = 0
+
+
+[HideInInspector] m_end_CubeMap ("CubeMap", Float) = 0
+//endex
+
+#T#PoiCubeMap_Keyword
+//ifex _CubeMapEnabled==0
+#pragma shader_feature_local _CUBEMAP
+//endex
+
+#T#PoiCubeMapVariablesExposed
+//ifex _CubeMapEnabled==0
+#ifdef _CUBEMAP
+    #if defined(PROP_CUBEMAP) || !defined(OPTIMIZER_ENABLED)
+        float3 _CubeMapRotation;
+        float3 _CubeMapRotationPan;
+    #endif
+    #if defined(PROP_CUBEMAPMASK) || !defined(OPTIMIZER_ENABLED)
+        float4 _CubeMapMask_ST;
+        float2 _CubeMapMaskPan;
+        float _CubeMapMaskUV;
+        float _CubeMapMaskChannel;
+    #endif
+    float _CubeMapUVMode;
+    half _CubeMapWorldNormalsStrength;
+    half _CubeMapMaskInvert;
+    half _CubeMapMaskGlobalMask;
+    float _CubeMapMaskGlobalMaskBlendType;
+    half4 _CubeMapColor;
+    float _CubeMapColorThemeIndex;
+    half _CubeMapIntensity;
+    float _CubemapBlendType;
+    half _CubeMapBlendAmount;
+    float _CubeMapEnable;
+    half _CubeMapLightMask;
+    half _CubeMapEmissionStrength;
+    float _CubeMapNormal;
+    float _CubeMapHueShiftEnabled;
+    float _CubeMapHueShiftSpeed;
+    half _CubeMapHueShift;
+    half _CubeMapHueShiftColorSpace;
+    float _CubeMapHueSelectOrShift;
+    half _CubeMapSaturation;
+    half _CubeMapBrightness;
+    half _CubeMapContrast;
+    half _CubeMapSmoothness;
+#endif
+//endex
+
+#T#PoiCubeMapVariables
+//ifex _CubeMapEnabled==0
+#ifdef _CUBEMAP
+    #if defined(PROP_CUBEMAP) || !defined(OPTIMIZER_ENABLED)
+        TextureCube _CubeMap;
+    #endif
+    #if defined(PROP_CUBEMAPMASK) || !defined(OPTIMIZER_ENABLED)
+        Texture2D _CubeMapMask;
+    #endif
+#endif
+//endex
+
+#T#PoiCubeMapFunctions
+//ifex _CubeMapEnabled==0
+#ifdef _CUBEMAP
+    #if defined(PROP_CUBEMAP) || !defined(OPTIMIZER_ENABLED)
+        // From Unity's MIT'd Skybox-Cubed.shader
+        float3 RotateAroundYInDegrees(float3 dir, float degrees)
+        {
+            half alpha = degrees * UNITY_PI / 180.0;
+            float sina, cosa;
+            sincos(alpha, sina, cosa);
+            float2x2 m = float2x2(cosa, -sina, sina, cosa);
+            return float3(mul(m, dir.xz), dir.y).xzy;
+        }
+    #endif
+    void applyCubemap(inout PoiFragData poiFragData, in PoiCam poiCam, in PoiMesh poiMesh, in PoiLight poiLight, in PoiMods poiMods)
+    {
+        float3 CubeMapUV = 0;
+
+        switch(_CubeMapUVMode)
+        {
+            case 0: // Skybox
+            {
+                CubeMapUV = -poiCam.eyeViewDir;
+                break;
+            }
+            case 1: // Reflection
+            {
+                CubeMapUV = lerp(poiCam.vertexReflectionDir, poiCam.reflectionDir, _CubeMapNormal);
+                break;
+            }
+            case 2: // World Normal Direction
+            {
+                CubeMapUV = lerp(poiMesh.normals[0], poiMesh.normals[1], _CubeMapWorldNormalsStrength);
+                break;
+            }
+            case 3: // Local Normal Direction
+            {
+                CubeMapUV = poiMesh.objNormal;
+                break;
+            }
+        }
+
+        #if defined(PROP_CUBEMAP) || !defined(OPTIMIZER_ENABLED)
+            if (any(_CubeMapRotation.xyz) || any(_CubeMapRotationPan.xyz))
+            {
+                // Do funny swizzle so we don't have to make a new function for every direction
+                CubeMapUV = RotateAroundYInDegrees(CubeMapUV.yxz, _CubeMapRotation.x + (_CubeMapRotationPan.x * POI_TIME.y)).yxz;
+                CubeMapUV = RotateAroundYInDegrees(CubeMapUV.xyz, _CubeMapRotation.y + (_CubeMapRotationPan.y * POI_TIME.y)).xyz;
+                CubeMapUV = RotateAroundYInDegrees(CubeMapUV.xzy, _CubeMapRotation.z + (_CubeMapRotationPan.z * POI_TIME.y)).xzy;
+            }
+            //float4 cubeMap = texCUBElod(_CubeMap, float4(CubeMapUV, (1 - _CubeMapSmoothness) * (1 - _CubeMapSmoothness) * 8));
+            float mipLevel = (1 - _CubeMapSmoothness) * (1 - _CubeMapSmoothness) * 8;
+            float4 cubeMap = POI_SAMPLE_TEXCUBE_LOD(_CubeMap, sampler_linear_clamp, CubeMapUV, mipLevel);
+
+
+            cubeMap.rgb *= poiThemeColor(poiMods, _CubeMapColor.rgb, _CubeMapColorThemeIndex);
+        #else
+            float4 cubeMap = float4(0.21763764082, 0.21763764082, 0.21763764082, .5) * float4(poiThemeColor(poiMods, _CubeMapColor.rgb, _CubeMapColorThemeIndex), 1);
+        #endif
+
+        cubeMap.rgb *= _CubeMapIntensity;
+        #if defined(PROP_CUBEMAPMASK) || !defined(OPTIMIZER_ENABLED)
+            half CubeMapMask = POI2D_SAMPLER_PAN(_CubeMapMask, _MainTex, poiUV(poiMesh.uv[_CubeMapMaskUV], _CubeMapMask_ST), _CubeMapMaskPan)[_CubeMapMaskChannel];
+        #else
+            half CubeMapMask = 1;
+        #endif
+
+        if (_CubeMapMaskGlobalMask > 0)
+        {
+            CubeMapMask = maskBlend(CubeMapMask, poiMods.globalMask[_CubeMapMaskGlobalMask - 1], _CubeMapMaskGlobalMaskBlendType);
+        }
+        
+        if (_CubeMapMaskInvert >= 0.5)
+        {
+            CubeMapMask = 1 - CubeMapMask;
+        }
+        
+        //UNITY_BRANCH
+        if (_CubeMapHueShiftEnabled >= 0.5)
+        {
+            cubeMap.rgb = hueShift(cubeMap.rgb, _CubeMapHueShift + POI_TIME.x * _CubeMapHueShiftSpeed, _CubeMapHueShiftColorSpace, _CubeMapHueSelectOrShift);
+            cubeMap = PoiColorBCS(cubeMap, _CubeMapBrightness, _CubeMapContrast, _CubeMapSaturation);
+            //cubeMap.rgb = ModifyViaHSV(cubeMap.rgb, _CubeMapHueShift + POI_TIME.x * _CubeMapHueShiftSpeed, _CubeMapSaturation, _CubeMapValue);
+
+        }
+        CubeMapMask = min(CubeMapMask, lerp(1, poiLight.rampedLightMap * poiLight.lightMap, _CubeMapLightMask));
+        half cubeMapAlpha = CubeMapMask * cubeMap.a * _CubeMapBlendAmount;
+        poiFragData.baseColor.rgb = lerp(poiFragData.baseColor.rgb, cubeMap.rgb, cubeMapAlpha * (_CubemapBlendType == 0));
+        poiFragData.baseColor.rgb *= lerp(1, cubeMap.rgb, cubeMapAlpha * (_CubemapBlendType == 1));
+        poiFragData.baseColor.rgb += cubeMap.rgb * cubeMapAlpha * (_CubemapBlendType == 2);
+        poiFragData.emission += cubeMap.rgb * _CubeMapEmissionStrength * CubeMapMask * cubeMap.a;
+    }
+#endif
+//endex
+
+#T#PoiCubeMapFunctionCalls
+//ifex _CubeMapEnabled==0
+#ifdef _CUBEMAP
+    applyCubemap(poiFragData, poiCam, poiMesh, poiLight, poiMods);
+    #K#CUBEMAP_HOOK
+#endif
+//endex

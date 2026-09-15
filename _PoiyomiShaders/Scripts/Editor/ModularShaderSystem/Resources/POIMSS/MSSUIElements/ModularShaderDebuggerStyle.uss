@@ -1,0 +1,37 @@
+.button-tab-area
+{
+    flex-direction: row;
+    margin: 0;
+}
+
+.top-area
+{
+    flex-direction: row;
+    margin: 0;
+}
+
+.refresh-button
+{
+    background-image: resource("Refresh@2X");
+    background-color: transparent;
+    border-width: 0;
+    margin: 2px;
+    width: 18px;
+    height: 18px;
+}
+
+.button-tab
+{
+    flex-grow: 1;
+    height: 24px;
+    margin: 4px 0 0 0;
+    border-radius: 0;
+    border-width: 1px 1px 0 1px;
+    background-color: #484848;
+}
+
+.button-tab-selected
+{
+    background-color: #303030;
+}
+

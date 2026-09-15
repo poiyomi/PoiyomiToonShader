@@ -1,0 +1,118 @@
+#T#PoiBacklightProperties
+//ifex _BacklightEnabled!=1
+[HideInInspector] m_start_backlight (" Backlight--{reference_property:_BacklightEnabled, button_help:{text:Tutorial,action:{type:URL,data:https://www.poiyomi.com/shading/backlight},hover:Documentation}}", Float) = 0
+[HideInInspector][ThryToggle(POI_BACKLIGHT)]_BacklightEnabled ("Backlight Enabled", Float) = 0
+[HDR][Gamma] _BacklightColor ("Color", Color) = (0.85, 0.8, 0.7, 1.0)
+[sRGBWarning(true)] _BacklightColorTex ("Texture--{reference_properties:[_BacklightColorTexPan, _BacklightColorTexUV]}", 2D) = "white" { }
+[ThryHideInInspector][Vector2] _BacklightColorTexPan ("Panning", Vector) = (0, 0, 0, 0)
+[ThryHideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7, Matcap, 9, Screen Space, 10)] _BacklightColorTexUV ("UV", Int) = 0
+_BacklightMainStrength ("Main Color Power", Range(0, 1)) = 0
+[ToggleUI] _BacklightReceiveShadow ("Receive Shadow", Int) = 1
+[ToggleUI] _BacklightBackfaceMask ("Backface Mask", Int) = 1
+[HideInInspector] s_start_backlightOptions ("Backlight Options--{persistent_expand:true,default_expand:true}", Float) = 1
+_BacklightNormalStrength ("Normal Strength", Range(0, 1)) = 1.0
+_BacklightBorder ("Border", Range(0, 1)) = 0.65
+_BacklightBlur ("Blur", Range(0, 1)) = 0.05
+_BacklightDirectivity ("Directivity", Float) = 5.0
+_BacklightViewStrength ("View Direction Strength", Range(0, 1)) = 1
+[HideInInspector] s_end_backlightOptions ("Backlight Options", Float) = 0
+
+[HideInInspector] s_start_backlightMasking ("Masking--{persistent_expand:true,default_expand:false}", Float) = 0
+[ThryWideEnum(Off, 0, 1R, 1, 1G, 2, 1B, 3, 1A, 4, 2R, 5, 2G, 6, 2B, 7, 2A, 8, 3R, 9, 3G, 10, 3B, 11, 3A, 12, 4R, 13, 4G, 14, 4B, 15, 4A, 16)] _BacklightGlobalMask ("Global Mask--{reference_property:_BacklightGlobalMaskBlendType}", Int) = 0
+[ThryHideInInspector][ThryWideEnum(Add, 7, Subtract, 1, Multiply, 2, Divide, 3, Min, 4, Max, 5, Average, 6, Replace, 0)] _BacklightGlobalMaskBlendType ("Blending", Int) = 2
+[ThryWideEnum(Off, 0, 1R, 1, 1G, 2, 1B, 3, 1A, 4, 2R, 5, 2G, 6, 2B, 7, 2A, 8, 3R, 9, 3G, 10, 3B, 11, 3A, 12, 4R, 13, 4G, 14, 4B, 15, 4A, 16)] _BacklightApplyGlobalMaskIndex ("Apply to Global Mask--{reference_property:_BacklightApplyGlobalMaskBlendType}", Int) = 0
+[ThryHideInInspector][ThryWideEnum(Add, 7, Subtract, 1, Multiply, 2, Divide, 3, Min, 4, Max, 5, Average, 6, Replace, 0)] _BacklightApplyGlobalMaskBlendType ("Blending", Int) = 2
+[HideInInspector] s_end_backlightMasking ("Masking", Float) = 0
+
+[HideInInspector] m_end_backlight ("Backlight", Float) = 0
+//endex
+#T#PoiBacklightKeywords
+//ifex _BacklightEnabled!=1
+#pragma shader_feature_local POI_BACKLIGHT
+//endex
+#T#PoiBacklightVariablesExposed
+//ifex _BacklightEnabled!=1
+#ifdef POI_BACKLIGHT
+    half4 _BacklightColor;
+    #if defined(PROP_BACKLIGHTCOLORTEX) || !defined(OPTIMIZER_ENABLED)
+        float4 _BacklightColorTex_ST;
+        float2 _BacklightColorTexPan;
+        float _BacklightColorTexUV;
+    #endif
+    half _BacklightMainStrength;
+    half _BacklightNormalStrength;
+    half _BacklightBorder;
+    half _BacklightBlur;
+    half _BacklightDirectivity;
+    half _BacklightViewStrength;
+    int _BacklightReceiveShadow;
+    int _BacklightBackfaceMask;
+    half _BacklightGlobalMask;
+    float _BacklightGlobalMaskBlendType;
+    float _BacklightApplyGlobalMaskIndex;
+    float _BacklightApplyGlobalMaskBlendType;
+#endif
+//endex
+
+#T#PoiBacklightVariables
+//ifex _BacklightEnabled!=1
+#ifdef POI_BACKLIGHT
+    #if defined(PROP_BACKLIGHTCOLORTEX) || !defined(OPTIMIZER_ENABLED)
+        Texture2D _BacklightColorTex;
+    #endif
+#endif
+//endex
+
+#T#PoiBacklightFunction
+//ifex _BacklightEnabled!=1
+#ifdef POI_BACKLIGHT
+    void ApplyBacklight(inout PoiFragData poiFragData, in PoiMesh poiMesh, inout PoiLight poiLight, in PoiCam poiCam, inout PoiMods poiMods)
+    {
+
+        // Color
+        half3 backlightColor = _BacklightColor.rgb;
+        #if defined(PROP_BACKLIGHTCOLORTEX) || !defined(OPTIMIZER_ENABLED)
+            backlightColor *= POI2D_SAMPLER_PAN(_BacklightColorTex, _MainTex, poiUV(poiMesh.uv[_BacklightColorTexUV], _BacklightColorTex_ST), _BacklightColorTexPan).rgb;
+        #endif
+
+        float3 normal = lerp(poiMesh.normals[0], poiMesh.normals[1], _BacklightNormalStrength);
+        // Factor
+        float3 headDir = normalize(getCameraPosition() - poiMesh.worldPos.xyz);
+        half headDotLight = dot(headDir, poiLight.direction);
+        half backlightFactor = pow(saturate(-headDotLight * 0.5 + 0.5), max(0, _BacklightDirectivity));
+        half backlightLN = dot(normalize(-headDir * _BacklightViewStrength + poiLight.direction), normal) * 0.5 + 0.5;
+
+        if (_BacklightReceiveShadow >= 0.5)
+            backlightLN *= poiLight.lightMap;
+
+        backlightLN = poiEdgeLinear(backlightLN, _BacklightBorder, _BacklightBlur);
+        half backlight = saturate(backlightFactor * backlightLN);
+        backlight = !poiMesh.isFrontFace && _BacklightBackfaceMask >= 0.5 ? 0.0 : backlight;
+
+        // Global Masking
+        half backlightMask = 1;
+
+        if (_BacklightGlobalMask > 0)
+        {
+            backlightMask = maskBlend(backlightMask, poiMods.globalMask[_BacklightGlobalMask - 1], _BacklightGlobalMaskBlendType);
+        }
+
+        backlight *= backlightMask;
+
+        if (_BacklightApplyGlobalMaskIndex > 0)
+        {
+            applyToGlobalMask(poiMods, _BacklightApplyGlobalMaskIndex - 1, _BacklightApplyGlobalMaskBlendType, backlight);
+        }
+
+        // Blend
+        backlightColor = lerp(backlightColor, backlightColor * poiFragData.baseColor, _BacklightMainStrength);
+        poiLight.finalLightAdd += backlight * backlightColor * poiLight.directColor;
+    }
+#endif
+//endex
+#T#PoiBacklightFunctionCall
+//ifex _BacklightEnabled!=1
+#ifdef POI_BACKLIGHT
+    ApplyBacklight(poiFragData, poiMesh, poiLight, poiCam, poiMods);
+#endif
+//endex

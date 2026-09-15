@@ -1,0 +1,80 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1039f25740a92fc4292bb1d94d07ad19, type: 3}
+  m_Name: VRLM_PoiOutline
+  m_EditorClassIdentifier: 
+  Id: PoiOutline
+  Name: Poi Outline Options
+  Version: 
+  Author: 
+  Description: 
+  AllowDuplicates: 0
+  ForceDuplicateLogic: 0
+  EnableProperties: []
+  Properties: []
+  ModuleDependencies: []
+  IncompatibleWith: []
+  Templates:
+  - Template: {fileID: -4903798584879128224, guid: 0afda4a341794f34799f57933c326c0f, type: 3}
+    Keywords:
+    - OUTLINE_PROPERTIES
+    NeedsVariant: 0
+    Queue: 100
+  - Template: {fileID: 2936901643020672187, guid: 0afda4a341794f34799f57933c326c0f, type: 3}
+    Keywords:
+    - RENDERING_PROPERTIES
+    NeedsVariant: 0
+    Queue: 100
+  - Template: {fileID: 7443870826643623366, guid: 0afda4a341794f34799f57933c326c0f, type: 3}
+    Keywords:
+    - RENDERING_PROPERTIES
+    NeedsVariant: 0
+    Queue: 101
+  - Template: {fileID: 2331320928318850917, guid: 0afda4a341794f34799f57933c326c0f, type: 3}
+    Keywords:
+    - OUTLINE_PROPERTY_VARIABLES
+    - BASE_PROPERTY_VARIABLES
+    NeedsVariant: 0
+    Queue: 100
+  - Template: {fileID: 5783549116126852164, guid: 0afda4a341794f34799f57933c326c0f, type: 3}
+    Keywords:
+    - OUTLINE_PROPERTY_VARIABLES_EXPOSED
+    - BASE_PROPERTY_VARIABLES_EXPOSED
+    NeedsVariant: 0
+    Queue: 100
+  - Template: {fileID: 3653031401299456880, guid: 0afda4a341794f34799f57933c326c0f, type: 3}
+    Keywords:
+    - FRAGMENT_OUTLINE_FUNCTIONS
+    NeedsVariant: 0
+    Queue: 100
+  - Template: {fileID: -7582676733983041614, guid: 0afda4a341794f34799f57933c326c0f, type: 3}
+    Keywords:
+    - OUTLINE_LIGHT_NO_LOOP_EARLY
+    NeedsVariant: 0
+    Queue: 100
+  - Template: {fileID: 3269725437333061151, guid: 0afda4a341794f34799f57933c326c0f, type: 3}
+    Keywords:
+    - VERTEX_MODS
+    NeedsVariant: 0
+    Queue: 100
+  - Template: {fileID: 2140364123699222201, guid: 0afda4a341794f34799f57933c326c0f, type: 3}
+    Keywords:
+    - FRAGMENT_NORMAL_CALCULATION
+    NeedsVariant: 0
+    Queue: 100
+  - Template: {fileID: -5351682270234075264, guid: 0afda4a341794f34799f57933c326c0f, type: 3}
+    Keywords:
+    - VERTEX_MODS_POST_CLIPPOS
+    NeedsVariant: 0
+    Queue: 100
+  Functions: []
+  AdditionalSerializedData: 

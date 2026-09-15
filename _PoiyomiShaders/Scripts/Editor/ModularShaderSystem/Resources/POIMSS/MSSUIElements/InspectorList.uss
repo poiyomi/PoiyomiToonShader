@@ -1,0 +1,147 @@
+.inspector-list-item-container
+{
+    flex-direction: row;
+}
+
+.inspector-list-buttons-container-horizontal
+{
+    flex-direction: row;
+    background-color: rgba(93,93,93,0.1);
+    border-left-color: rgba(82,82,82,0.4);
+    border-right-color: rgba(0,0,0,0.4);
+    border-top-color: rgba(0,0,0,0.4);
+    border-bottom-color: rgba(0,0,0,0.4);
+    margin-top: 1px;
+    padding-top: 1px;
+    padding-right: 1px;
+    margin-left: -1px;
+    margin-bottom: 1px;
+    border-width: 1px;
+    
+    width: 75px;
+    min-width: 75px;
+    max-width: 75px;
+    flex-shrink: 0;
+}
+
+.inspector-list-buttons-container-vertical
+{
+    flex-direction: column;
+    height: 74px;
+    background-color: rgba(93,93,93,0.1);
+    border-left-color: rgba(82,82,82,0.4);
+    border-right-color: rgba(0,0,0,0.4);
+    border-top-color: rgba(0,0,0,0.4);
+    border-bottom-color: rgba(0,0,0,0.4);
+    padding-top: 1px;
+    padding-right: 1px;
+    margin-top: 1px;
+    margin-left: -1px;
+    margin-bottom: 1px;
+    border-width: 1px;
+    width: 21px;
+    min-width: 21px;
+    max-width: 21px;
+    flex-shrink: 0;
+}
+
+.inspector-list-item
+{
+    flex-grow: 1;
+    flex-shrink: 1;
+    min-width: 0;
+    overflow: hidden;
+
+    margin-left: -15px;
+    margin-top: 1px;
+    margin-bottom: 1px;
+    padding-left: 15px;
+    padding-bottom: 0px;
+    background-color: rgba(93,93,93,0.1);
+    border-left-color: rgba(0,0,0,0.4);
+    border-right-color: rgba(0,0,0,0.4);
+    border-top-color: rgba(0,0,0,0.4);
+    border-bottom-color: rgba(0,0,0,0.4);
+    border-width: 1px;
+}
+
+.inspector-list-add-button
+{
+    align-self: flex-end;
+    width: 52px;
+    height: 22px;
+    margin: 1px;
+}
+
+.inspector-list-up-button, .inspector-list-down-button, .inspector-list-remove-button, .inspector-list-duplicate-button
+{
+    height: 16px;
+    width: 16px;
+    background-color: rgba(0,0,0,0);
+    margin: 1px;
+    border-left-width: 0;
+    border-right-width: 0;
+    border-top-width: 0;
+    border-bottom-width: 0;
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.inspector-list-drag-handle
+{
+    width: 10px;
+    margin-top: 2px;
+    margin-bottom: 2px;
+    margin-right: 17px;
+    padding-right: 2px;
+    background-color: rgba(150,150,150,0.2);
+    border-color: rgba(0,0,0,0.4);
+    border-width: 1px;
+    border-radius: 5px;
+}
+
+.inspector-list-drag-enabled
+{
+    background-color: rgba(100, 100, 150, 0.5);
+}
+
+.inspector-list-drop-area
+{
+    height: 5px;
+    border-radius: 4px;
+
+}
+
+.inspector-list-drop-area-highlight
+{
+    background-color: rgba(128, 128, 190, 0.5);
+}
+
+.inspector-list-drop-area-selected
+{
+    background-color: rgba(160, 160, 220, 0.5);
+}
+
+.error-background
+{
+    background-color: rgba(255,0,0,0.5);
+}
+
+.info-background
+{
+    background-color: rgba(0,200,200,0.5);
+}
+
+.inspector-list-item > Label
+{
+    white-space: normal;
+}
+
+.module-search-match
+{
+    background-color: rgba(0, 255, 0, 0.2);
+}
+
+.module-search-no-match
+{
+    opacity: 0.3;
+}

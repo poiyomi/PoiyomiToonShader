@@ -1,0 +1,65 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1039f25740a92fc4292bb1d94d07ad19, type: 3}
+  m_Name: VRLM_PoiProximityColor
+  m_EditorClassIdentifier: 
+  Id: PoiProximityColor
+  Name: Poi Proximity Color
+  Version: 
+  Author: Poiyomi
+  Description: 
+  AllowDuplicates: 0
+  ForceDuplicateLogic: 0
+  EnableProperties: []
+  Properties: []
+  ModuleDependencies: []
+  IncompatibleWith: []
+  Templates:
+  - Template: {fileID: -5734044529675659931, guid: ac61fd0e96f23e44faaa36536fc5a82d,
+      type: 3}
+    Keywords:
+    - SPECIALFX_PROPERTIES
+    NeedsVariant: 0
+    Queue: 100
+  - Template: {fileID: -1855999962137962039, guid: ac61fd0e96f23e44faaa36536fc5a82d,
+      type: 3}
+    Keywords:
+    - BASE_PROPERTY_VARIABLES_EXPOSED
+    - OUTLINE_PROPERTY_VARIABLES_EXPOSED
+    - ADD_PROPERTY_VARIABLES_EXPOSED
+    - LILFUR_PROPERTY_VARIABLES_EXPOSED
+    - DEPTH_PROPERTY_VARIABLES_EXPOSED
+    - SHADOW_PROPERTY_VARIABLES_EXPOSED
+    NeedsVariant: 0
+    Queue: 100
+  - Template: {fileID: -6215187891678303771, guid: ac61fd0e96f23e44faaa36536fc5a82d,
+      type: 3}
+    Keywords:
+    - FRAGMENT_BASE_LIGHTING_ADD
+    - FRAGMENT_OUTLINE_LIGHTING_ADD
+    - FRAGMENT_ADD_LIGHTING_ADD
+    - FRAGMENT_LILFUR_LIGHTING_ADD
+    NeedsVariant: 0
+    Queue: 100
+  - Template: {fileID: 2429154066155404906, guid: ac61fd0e96f23e44faaa36536fc5a82d,
+      type: 3}
+    Keywords:
+    - FRAGMENT_BASE_RETURN
+    - FRAGMENT_OUTLINE_RETURN
+    - FRAGMENT_ADD_RETURN
+    - FRAGMENT_LILFUR_RETURN
+    - FRAGMENT_DEPTH_RETURN
+    - FRAGMENT_SHADOW_RETURN
+    NeedsVariant: 0
+    Queue: 100
+  Functions: []
+  AdditionalSerializedData: 

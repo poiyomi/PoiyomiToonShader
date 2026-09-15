@@ -1,0 +1,79 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1039f25740a92fc4292bb1d94d07ad19, type: 3}
+  m_Name: VRLM_PoiDecals
+  m_EditorClassIdentifier: 
+  Id: PoiDecals
+  Name: 
+  Version: 1.0
+  Author: Poiyomi
+  Description: 'One decal slot. Add the module to the collection again for another decal - the
+    group header, its enable checkbox list and the shared RGBA mask all follow automatically.'
+  AllowDuplicates: 1
+  ForceDuplicateLogic: 1
+  EnableProperties: []
+  Properties: []
+  ModuleDependencies: []
+  IncompatibleWith: []
+  Templates:
+  - Template: {fileID: 8428600710535791143, guid: 41f9db446eef137408ffc08139ce8d01, type: 3}
+    Keywords:
+    - MAIN_PROPERTIES
+    NeedsVariant: 0
+    Queue: 100
+  - Template: {fileID: -5811997720698039619, guid: 41f9db446eef137408ffc08139ce8d01, type: 3}
+    Keywords:
+    - BASE_PASS_KEYWORDS
+    - ADD_PASS_KEYWORDS
+    - META_PASS_KEYWORDS
+    - OUTLINE_PASS_KEYWORDS
+    - LILFUR_PASS_KEYWORDS
+    NeedsVariant: 0
+    Queue: 100
+  - Template: {fileID: -9183495692868678764, guid: 41f9db446eef137408ffc08139ce8d01, type: 3}
+    Keywords:
+    - BASE_PROPERTY_VARIABLES
+    - ADD_PROPERTY_VARIABLES
+    - META_PROPERTY_VARIABLES
+    - OUTLINE_PROPERTY_VARIABLES
+    - LILFUR_PROPERTY_VARIABLES
+    NeedsVariant: 0
+    Queue: 100
+  - Template: {fileID: -2870537720570980514, guid: 41f9db446eef137408ffc08139ce8d01, type: 3}
+    Keywords:
+    - BASE_PROPERTY_VARIABLES_EXPOSED
+    - ADD_PROPERTY_VARIABLES_EXPOSED
+    - META_PROPERTY_VARIABLES_EXPOSED
+    - OUTLINE_PROPERTY_VARIABLES_EXPOSED
+    - LILFUR_PROPERTY_VARIABLES_EXPOSED
+    NeedsVariant: 0
+    Queue: 100
+  - Template: {fileID: 5444516229790824447, guid: 41f9db446eef137408ffc08139ce8d01, type: 3}
+    Keywords:
+    - FRAGMENT_BASE_FUNCTIONS
+    - FRAGMENT_ADD_FUNCTIONS
+    - FRAGMENT_META_FUNCTIONS
+    - FRAGMENT_OUTLINE_FUNCTIONS
+    - FRAGMENT_LILFUR_FUNCTIONS
+    NeedsVariant: 0
+    Queue: 100
+  - Template: {fileID: -1670893242210294853, guid: 41f9db446eef137408ffc08139ce8d01, type: 3}
+    Keywords:
+    - BASE_LIGHT_NO_LOOP
+    - ADD_LIGHT_NO_LOOP
+    - META_LIGHT_NO_LOOP
+    - OUTLINE_LIGHT_NO_LOOP
+    - LILFUR_LIGHT_NO_LOOP
+    NeedsVariant: 0
+    Queue: 0
+  Functions: []
+  AdditionalSerializedData: 

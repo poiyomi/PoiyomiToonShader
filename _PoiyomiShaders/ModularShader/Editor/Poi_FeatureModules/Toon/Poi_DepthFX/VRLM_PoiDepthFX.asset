@@ -1,0 +1,89 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1039f25740a92fc4292bb1d94d07ad19, type: 3}
+  m_Name: VRLM_PoiDepthFX
+  m_EditorClassIdentifier: 
+  Id: PoiTouchFX
+  Name: 
+  Version: 1.0
+  Author: Poiyomi
+  Description: 
+  AllowDuplicates: 0
+  ForceDuplicateLogic: 0
+  EnableProperties: []
+  Properties: []
+  ModuleDependencies: []
+  IncompatibleWith: []
+  Templates:
+  - Template: {fileID: -7772069551757908154, guid: 416990b27a9487d40a62123ecca5a2f1, type: 3}
+    Keywords:
+    - SPECIALFX_PROPERTIES
+    NeedsVariant: 0
+    Queue: 100
+  - Template: {fileID: 2728699451086678995, guid: 416990b27a9487d40a62123ecca5a2f1, type: 3}
+    Keywords:
+    - DEPTH_PASS_KEYWORDS
+    - OUTLINE_PASS_KEYWORDS
+    - BASE_PASS_KEYWORDS
+    - ADD_PASS_KEYWORDS
+    - SHADOW_PASS_KEYWORDS
+    - MOTION_VECTORS_PASS_KEYWORDS
+    - LILFUR_PASS_KEYWORDS
+    NeedsVariant: 0
+    Queue: 100
+  - Template: {fileID: -3504185731099954628, guid: 416990b27a9487d40a62123ecca5a2f1, type: 3}
+    Keywords:
+    - BASE_PROPERTY_VARIABLES
+    - ADD_PROPERTY_VARIABLES
+    - DEPTH_PROPERTY_VARIABLES
+    - MOTION_VECTORS_PROPERTY_VARIABLES
+    - LILFUR_PROPERTY_VARIABLES
+    - OUTLINE_PROPERTY_VARIABLES
+    NeedsVariant: 0
+    Queue: 100
+  - Template: {fileID: 7299493321468416930, guid: 416990b27a9487d40a62123ecca5a2f1, type: 3}
+    Keywords:
+    - BASE_PROPERTY_VARIABLES_EXPOSED
+    - ADD_PROPERTY_VARIABLES_EXPOSED
+    - DEPTH_PROPERTY_VARIABLES_EXPOSED
+    - MOTION_VECTORS_PROPERTY_VARIABLES_EXPOSED
+    - LILFUR_PROPERTY_VARIABLES_EXPOSED
+    - OUTLINE_PROPERTY_VARIABLES_EXPOSED
+    NeedsVariant: 0
+    Queue: 100
+  - Template: {fileID: -1354598148198089868, guid: 416990b27a9487d40a62123ecca5a2f1, type: 3}
+    Keywords:
+    - FRAGMENT_BASE_FUNCTIONS
+    - FRAGMENT_ADD_FUNCTIONS
+    - FRAGMENT_DEPTH_FUNCTIONS
+    - FRAGMENT_MOTION_VECTORS_FUNCTIONS
+    - FRAGMENT_LILFUR_FUNCTIONS
+    - FRAGMENT_OUTLINE_FUNCTIONS
+    NeedsVariant: 0
+    Queue: 100
+  - Template: {fileID: 6827594594127180737, guid: 416990b27a9487d40a62123ecca5a2f1, type: 3}
+    Keywords:
+    - FRAGMENT_BASE_COLOR
+    - FRAGMENT_ADD_COLOR
+    - FRAGMENT_DEPTH_COLOR
+    - FRAGMENT_MOTION_VECTORS_COLOR
+    - FRAGMENT_LILFUR_COLOR
+    - FRAGMENT_OUTLINE_COLOR
+    NeedsVariant: 0
+    Queue: 0
+  - Template: {fileID: -4458247281684517588, guid: 416990b27a9487d40a62123ecca5a2f1, type: 3}
+    Keywords:
+    - FRAGMENT_SHADOW_FIRSTLINE
+    NeedsVariant: 0
+    Queue: 100
+  Functions: []
+  AdditionalSerializedData: 

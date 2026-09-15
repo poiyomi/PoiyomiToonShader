@@ -1,0 +1,416 @@
+#T#PoiFragDataVariables
+#K#GLOBAL_STRUCTS_ADDITIONAL
+
+struct PoiMesh
+{
+    #K#POI_MESH_PROPERTIES
+    // 0 Vertex normal
+    // 1 Fragment normal
+    half3 normals[2];
+    half3 objNormal;
+    half3 tangentSpaceNormal;
+    half3 bentNormal;
+    half hasBentNormal;
+    half3 binormal[2];
+    half3 tangent[2];
+    float3 worldPos;
+    float3 localPos;
+    float3 objectPosition;
+    float objectScale;
+    half isFrontFace;
+    half4 vertexColor;
+    float4 lightmapUV;
+    // 0-3 UV0-UV3
+    // 4 Panosphere UV
+    // 5 world pos xz
+    // 6 Polar UV
+    // 7 Distorted UV
+    // 8 Local pos
+    // 9 Matcap UV
+    // 10 Screen Space UV
+    float2 uv[11];
+    float2 parallaxUV;
+    float2 dx;
+    float2 dy;
+    uint isRightHand;
+};
+
+struct PoiCam
+{
+    #K#POI_CAM_PROPERTIES
+    // eyeViewDir is reserved for stereo-sensitive effects.
+    // viewDir is centered for stable shading.
+    half3 eyeViewDir;
+    half3 viewDir;
+    half3 forwardDir;
+    float3 worldPos;
+    float distanceToVert;
+    float4 clipPos;
+    float4 screenSpacePosition;
+    half3 reflectionDir;
+    half3 vertexReflectionDir;
+    half3 tangentViewDir;
+    float4 posScreenSpace;
+    float2 posScreenPixels;
+    float2 screenUV;
+    half vDotN;
+    // Center-eye view-dot-normal for stereo-stable rim/alpha masks.
+    half vDotNCentered;
+    float4 worldDirection;
+};
+
+struct PoiMods
+{
+    half4 Mask;
+    float audioLink[5];
+    float audioLinkAvailable;
+    float audioLinkVersion;
+    float4 audioLinkTexture;
+    half2 detailMask;
+    half2 backFaceDetailIntensity;
+    half globalEmission;
+    half4 globalColorTheme[12];
+    half globalMask[16];
+    float ALTime[8];
+};
+
+#if POI_PIPE == POI_BIRP
+    struct Light
+    {
+        half3   direction;
+        half3   color;
+        half    distanceAttenuation;
+        half    shadowAttenuation;
+    };
+
+    struct BRDFData
+    {
+        half3 albedo;
+        half3 diffuse;
+        half3 specular;
+        half reflectivity;
+        half perceptualRoughness;
+        half roughness;
+        half roughness2;
+        half grazingTerm;
+        half normalizationTerm;
+        half roughness2MinusOne;
+    };
+#endif
+
+struct PoiLight
+{
+    #K#POI_LIGHT_PROPERTIES
+    half3 direction;
+    // Center-eye value for stereo-stable masks and non-physical effects.
+    half nDotVCentered;
+    float attenDistance;
+    half attenShadows;
+    half attenStrength;
+    half attenShadowsStrength; // = attenShadows * attenStrength
+    // Backwards compatibility, not referenced in 10.0 shading,
+    // use the atten variables above or the light map
+    half attenuation;
+    half additiveShadow;
+    // End compatibility section
+    half3 lightCookie;
+    half3 directColor;
+    half3 indirectColor;
+    half occlusion;
+    half toonShadowMask;
+    half detailShadow;
+    // Per-eye lighting half-vector.
+    half3 halfDir;
+    half lightMap;
+    half lightMapNoAttenuation;
+    half3 rampedLightMap;
+    half vertexNDotL;
+    half nDotL;
+    // Per-eye view-dependent lighting values.
+    half nDotV;
+    half vertexNDotV;
+    half nDotH;
+    half vertexNDotH;
+    half lDotv;
+    half lDotH;
+    half nDotVSaturated;
+    half nDotLSaturated;
+    half nDotLNormalized;
+    half3 finalLighting;
+    half3 finalLightAdd;
+    //ifex _LTCGIEnabled!=1
+    half3 LTCGISpecular;
+    half3 LTCGIDiffuse;
+    //endex
+    half directLuminance;
+    half indirectLuminance;
+    half finalLuminance;
+    half lightingMinLightBrightness;
+    half lightingCapEnabled;
+    half lightingMonochromatic;
+    int lightType;
+    int isAdditive;
+    Light unityLight;
+    #if POI_PIPE == POI_URP
+        BRDFData brdfData;
+        BRDFData brdfDataClearCoat;
+        AmbientOcclusionFactor aoFactor;
+    #endif
+
+    #if defined(VERTEXLIGHT_ON)
+        // Non Important Lights
+        half4 vDotNL;
+        half4 vertexVDotNL;
+        half3 vColor[4];
+        half4 vCorrectedDotNL;
+        half4 vAttenuation;
+        half4 vSaturatedDotNL;
+        float3 vPosition[4];
+        half3 vDirection[4];
+        half3 vFinalLighting;
+        half3 vHalfDir[4];
+        half4 vDotNH;
+        half4 vertexVDotNH;
+        half4 vDotLH;
+    #endif
+};
+
+#if POI_PIPE == POI_URP
+    struct PoiLightOut
+    {
+        half3 totalLighting;
+        half3 totalLightAdd;
+        half totalLightMap;
+        half3 totalRampedLightMap;
+    };
+#endif
+
+struct PoiShadingParams
+{
+	half4 debugColor;
+	uint lightIndex;
+	uint exitCode;
+};
+
+struct PoiFragData
+{
+    #K#POI_FRAGDATA_PROPERTIES
+    half smoothness;
+    half smoothness2;
+    half metallic;
+    half specularMask;
+    half reflectionMask;
+
+    half3 baseColor;
+    half3 finalColor;
+    half alpha;
+    half3 emission;
+    half toggleVertexLights;
+};
+
+static half4 PoiSHAr = 0;
+static half4 PoiSHAg = 0;
+static half4 PoiSHAb = 0;
+static half4 PoiSHBr = 0;
+static half4 PoiSHBg = 0;
+static half4 PoiSHBb = 0;
+static half4 PoiSHC  = 0;
+
+float4 poiTransformClipSpacetoScreenSpaceFrag(float4 clipPos)
+{
+    float4 positionSS = float4(clipPos.xyz * clipPos.w, clipPos.w);
+    positionSS.xy = positionSS.xy / _ScreenParams.xy;
+    return positionSS;
+}
+
+half3 PoiSHEval_L0L1(half4 normal)
+{
+    half3 x;
+    x.r = dot(PoiSHAr, normal);
+    x.g = dot(PoiSHAg, normal);
+    x.b = dot(PoiSHAb, normal);
+    return x;
+}
+
+half3 PoiSHEval_L2(half4 normal)
+{
+    half3 x1, x2;
+    half4 vB = normal.xyzz * normal.yzzx;
+    x1.r = dot(PoiSHBr, vB);
+    x1.g = dot(PoiSHBg, vB);
+    x1.b = dot(PoiSHBb, vB);
+    half  vC = normal.x*normal.x - normal.y*normal.y;
+    x2    = PoiSHC.rgb * vC;
+    return x1 + x2;
+}
+
+half3 PoiShadeSH9 (half4 normal)
+{
+    half3 res = PoiSHEval_L0L1(normal);
+    res += PoiSHEval_L2(normal);
+
+#ifdef UNITY_COLORSPACE_GAMMA
+    res = LinearToGammaSpace(res);
+#endif
+
+    return res;
+}
+
+#T#PoiFragDataDeclarations
+
+PoiSHAr = unity_SHAr;
+PoiSHAg = unity_SHAg;
+PoiSHAb = unity_SHAb;
+PoiSHBr = unity_SHBr;
+PoiSHBg = unity_SHBg;
+PoiSHBb = unity_SHBb;
+PoiSHC =  unity_SHC;
+
+PoiMesh poiMesh;
+PoiInitStruct(PoiMesh, poiMesh);
+
+PoiLight poiLight;
+PoiInitStruct(PoiLight, poiLight);
+
+PoiCam poiCam;
+PoiInitStruct(PoiCam, poiCam);
+
+PoiMods poiMods;
+PoiInitStruct(PoiMods, poiMods);
+
+poiMods.globalEmission = 1;
+
+#if POI_PIPE == POI_URP
+    PoiLightOut poiLightOut;
+    PoiInitStruct(PoiLightOut, poiLightOut);
+#endif
+
+PoiFragData poiFragData;
+PoiInitStruct(PoiFragData, poiFragData);
+
+poiFragData.smoothness = 1;
+poiFragData.smoothness2 = 1;
+poiFragData.metallic = 1;
+poiFragData.specularMask = 1;
+poiFragData.reflectionMask = 1;
+poiFragData.alpha = 1;
+
+#K#FRAGMENT_DECLARATIONS_ADDITIONAL
+
+#T#PoiFragDataImplementation
+// Mesh Data
+//poiMesh.objectPosition = mul(unity_ObjectToWorld, float3(0, 0, 0)).xyz;
+poiMesh.objectPosition = mul(unity_ObjectToWorld, float4(0, 0, 0, 1)).xyz;
+poiMesh.objNormal = mul((float3x3)unity_WorldToObject, i.normal.xyz);
+poiMesh.normals[0] = i.normal.xyz;
+poiMesh.objectScale = i.normal.w;
+poiMesh.worldPos = i.worldPos.xyz;
+poiMesh.vertexColor = i.vertexColor;
+
+#if defined(POI_PASS_LILFUR)
+    float3 newTan = i.tangent.xyz - poiMesh.normals[0] * dot(poiMesh.normals[0], i.tangent.xyz);
+    poiMesh.tangent[0] = normalize(newTan);
+    poiMesh.binormal[0] = normalize(cross(poiMesh.normals[0], poiMesh.tangent[0])) * (i.tangent.w * unity_WorldTransformParams.w);
+    poiMesh.isRightHand = (i.tangent.w * unity_WorldTransformParams.w) > 0.0;
+    poiMesh.localPos = mul(unity_WorldToObject, float4(i.worldPos.xyz, 1)).xyz;
+#else
+    poiMesh.tangent[0] = i.tangent.xyz;
+    poiMesh.binormal[0] = cross(i.normal.xyz, i.tangent.xyz) * (i.tangent.w * unity_WorldTransformParams.w);
+    poiMesh.isRightHand = i.tangent.w > 0.0;
+    poiMesh.localPos = i.localPos.xyz;
+#endif
+
+poiMesh.isFrontFace = facing;
+
+#ifndef POI_PASS_OUTLINE
+    if (!poiMesh.isFrontFace && _FlipBackfaceNormals >= 0.5)
+    {
+        poiMesh.normals[0] *= -1;
+        poiMesh.tangent[0] *= -1;
+        poiMesh.binormal[0] *= -1;
+    }
+#endif
+
+poiCam.eyeViewDir = !IsOrthographicCamera() ? (getCameraPosition(false) - i.worldPos.xyz) : UNITY_MATRIX_I_V._m02_m12_m22;
+poiCam.eyeViewDir = normalize(poiCam.eyeViewDir);
+float3 poiCenterCameraPosition = getCameraPosition();
+float3 poiCenterViewDelta = poiCenterCameraPosition - i.worldPos.xyz;
+float poiCenterViewDistanceSq = dot(poiCenterViewDelta, poiCenterViewDelta);
+float poiCenterViewInvDistance = rsqrt(max(poiCenterViewDistanceSq, 1e-12));
+poiCam.viewDir = !IsOrthographicCamera() ? poiCenterViewDelta * poiCenterViewInvDistance : normalize(UNITY_MATRIX_I_V._m02_m12_m22);
+half3 tanToWorld0 = half3(poiMesh.tangent[0].x, poiMesh.binormal[0].x, poiMesh.normals[0].x);
+half3 tanToWorld1 = half3(poiMesh.tangent[0].y, poiMesh.binormal[0].y, poiMesh.normals[0].y);
+half3 tanToWorld2 = half3(poiMesh.tangent[0].z, poiMesh.binormal[0].z, poiMesh.normals[0].z);
+half3 ase_tanViewDir = tanToWorld0 * poiCam.eyeViewDir.x + tanToWorld1 * poiCam.eyeViewDir.y + tanToWorld2 * poiCam.eyeViewDir.z;
+poiCam.tangentViewDir = normalize(ase_tanViewDir);
+
+// 0-3 UV0-UV3
+// 4 Panosphere UV
+// 5 world pos xz
+// 6 Polar UV
+// 6 Distorted UV
+#if defined(LIGHTMAP_ON) || defined(DYNAMICLIGHTMAP_ON)
+    poiMesh.lightmapUV = i.lightmapUV;
+#endif
+poiMesh.parallaxUV = poiCam.tangentViewDir.xy / max(poiCam.tangentViewDir.z, 0.0001);
+poiMesh.uv[0] = i.uv[0].xy;
+poiMesh.uv[1] = i.uv[0].zw;
+poiMesh.uv[2] = i.uv[1].xy;
+poiMesh.uv[3] = i.uv[1].zw;
+poiMesh.uv[4] = poiMesh.uv[0];
+poiMesh.uv[5] = poiMesh.uv[0];
+poiMesh.uv[6] = poiMesh.uv[0];
+poiMesh.uv[7] = poiMesh.uv[0];
+poiMesh.uv[8] = poiMesh.uv[0];
+
+poiMesh.dx = ddx(poiMesh.uv[0]);
+poiMesh.dy = ddy(poiMesh.uv[0]);
+
+#K#MESH_DATA_INIT
+
+#K#MESH_DATA_POST_INIT
+
+#K#MAIN_TEXTURE_SAMPLE
+
+#K#FRAGMENT_NORMAL_CALCULATION
+
+#K#CAMERA_DATA_BEGIN
+
+// Camera data
+poiCam.forwardDir = getCameraForward();
+poiCam.worldPos = poiCenterCameraPosition;
+poiCam.reflectionDir = reflect(-poiCam.eyeViewDir, poiMesh.normals[1]);
+poiCam.vertexReflectionDir = reflect(-poiCam.eyeViewDir, poiMesh.normals[0]);
+//poiCam.distanceToModel = distance(poiMesh.modelPos, poiCam.worldPos);
+poiCam.clipPos = i.pos;
+poiCam.distanceToVert = poiCenterViewDistanceSq * poiCenterViewInvDistance;
+poiCam.posScreenSpace = poiTransformClipSpacetoScreenSpaceFrag(poiCam.clipPos);
+#ifdef UNITY_SINGLE_PASS_STEREO
+    poiCam.posScreenSpace.x = poiCam.posScreenSpace.x * 0.5;
+#endif
+poiCam.screenUV = poiCam.posScreenSpace.xy / poiCam.posScreenSpace.w;
+
+poiCam.posScreenPixels = calcPixelScreenUVs(poiCam.posScreenSpace);
+poiCam.vDotN = abs(dot(poiCam.eyeViewDir, poiMesh.normals[1]));
+poiCam.vDotNCentered = abs(dot(poiCam.viewDir, poiMesh.normals[1]));
+
+poiCam.worldDirection.xyz = poiMesh.worldPos.xyz - poiCam.worldPos;
+#if defined(POI_PASS_LILFUR)
+    poiCam.worldDirection.w = dot(PoiWorldToClipPos(poiMesh.worldPos.xyz), CalculateFrustumCorrection());
+#else
+    poiCam.worldDirection.w = i.worldDir;
+#endif
+
+#K#CAMERA_DATA_INIT
+
+#if POI_PIPE == POI_URP
+    // The Forward+ light loop (LIGHT_LOOP_BEGIN) requires the InputData struct to be in its scope.
+    InputData inputData;
+    PoiInitStruct(InputData, inputData);
+    inputData.positionWS = poiMesh.worldPos;
+    inputData.normalWS = poiMesh.normals[1];
+    inputData.viewDirectionWS = poiCam.eyeViewDir;
+    inputData.normalizedScreenSpaceUV = GetNormalizedScreenSpaceUV(i.pos);
+#endif
+
+#K#CAMERA_DATA_END

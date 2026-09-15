@@ -1,0 +1,186 @@
+#T#PoiSkinProperties
+//ifex _PoiSkinEnabled==0
+[HideInInspector] m_start_PoiSkin (" Skin (Experimental)--{reference_property:_PoiSkinEnabled,button_help:{text:Tutorial,action:{type:URL,data:https://www.poiyomi.com/color-and-normals/skin},hover:Documentation}}", Float) = 0
+[HideInInspector][ThryToggle(POI_SKIN)]_PoiSkinEnabled ("Enable", Float) = 0
+[ThryWideEnum(None, 0, Porcelain, 1, Light, 2, Golden, 3, Medium, 4, Olive, 5, Tan, 6, Brown, 7, Dark Brown, 8, Deep, 9)]_PoiSkinPreset ("Skin Tone Preset--{on_value_actions:[{value:1,actions:[{type:SET_PROPERTY,data:_PoiSkinMelanin=0.0},{type:SET_PROPERTY,data:_PoiSkinMelaninRedness=0.5},{type:SET_PROPERTY,data:_PoiSkinHemoglobin=0.05}]},{value:2,actions:[{type:SET_PROPERTY,data:_PoiSkinMelanin=0.2},{type:SET_PROPERTY,data:_PoiSkinMelaninRedness=0.5},{type:SET_PROPERTY,data:_PoiSkinHemoglobin=0.05}]},{value:3,actions:[{type:SET_PROPERTY,data:_PoiSkinMelanin=0.25},{type:SET_PROPERTY,data:_PoiSkinMelaninRedness=0.75},{type:SET_PROPERTY,data:_PoiSkinHemoglobin=0.0}]},{value:4,actions:[{type:SET_PROPERTY,data:_PoiSkinMelanin=0.3},{type:SET_PROPERTY,data:_PoiSkinMelaninRedness=0.5},{type:SET_PROPERTY,data:_PoiSkinHemoglobin=0.0}]},{value:5,actions:[{type:SET_PROPERTY,data:_PoiSkinMelanin=0.35},{type:SET_PROPERTY,data:_PoiSkinMelaninRedness=0.25},{type:SET_PROPERTY,data:_PoiSkinHemoglobin=0.0}]},{value:6,actions:[{type:SET_PROPERTY,data:_PoiSkinMelanin=0.4},{type:SET_PROPERTY,data:_PoiSkinMelaninRedness=0.75},{type:SET_PROPERTY,data:_PoiSkinHemoglobin=0.0}]},{value:7,actions:[{type:SET_PROPERTY,data:_PoiSkinMelanin=0.5},{type:SET_PROPERTY,data:_PoiSkinMelaninRedness=0.5},{type:SET_PROPERTY,data:_PoiSkinHemoglobin=0.0}]},{value:8,actions:[{type:SET_PROPERTY,data:_PoiSkinMelanin=0.65},{type:SET_PROPERTY,data:_PoiSkinMelaninRedness=0.5},{type:SET_PROPERTY,data:_PoiSkinHemoglobin=0.0}]},{value:9,actions:[{type:SET_PROPERTY,data:_PoiSkinMelanin=0.85},{type:SET_PROPERTY,data:_PoiSkinMelaninRedness=0.5},{type:SET_PROPERTY,data:_PoiSkinHemoglobin=0.0}]}]}", Int) = 0
+[sRGBWarning][ThryRGBAPacker(Mask, Freckles, Tan, Unused, Linear, false)]_PoiSkinDetailMap ("Skin Detail Map--{tooltip:R = Mask  G = Freckles  B = Tan}", 2D) = "black" {}
+
+[HideInInspector] s_start_PoiSkinPigment ("Pigment--{default_expand:true}", Float) = 0
+_PoiSkinLUT ("Skin Color LUT--{tooltip:Monte Carlo skin color lookup table}", 2D) = "white" {}
+_PoiSkinMelanin ("Melanin--{tooltip:Overall melanin concentration. Controls skin darkness from pale to deep}", Range(0, 1)) = 0.2
+_PoiSkinMelaninRedness ("Melanin Redness--{tooltip:Pheomelanin to eumelanin ratio. 0 = brown/black (eumelanin) 1 = red/yellow (pheomelanin)}", Range(0, 1)) = 0.5
+_PoiSkinHemoglobin ("Hemoglobin--{tooltip:Blood fraction in dermis. Adds warm red tones from subsurface blood}", Range(0, 1)) = 0.5
+[HideInInspector] s_end_PoiSkinPigment ("", Float) = 0
+
+[HideInInspector] s_start_PoiSkinFreckles ("Freckles--{reference_property:_PoiSkinFrecklesEnabled,default_expand:false}", Float) = 0
+[ThryHideInInspector][ToggleUI]_PoiSkinFrecklesEnabled ("Enable", Float) = 0
+[ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7, Matcap, 9, Screen Space, 10)] _PoiSkinFreckleMapUV ("UV", Int) = 0
+[Vector2]_PoiSkinFreckleMapTiling ("Tiling", Vector) = (1, 1, 0, 0)
+_PoiSkinFreckleStrength ("Strength--{tooltip:How much additional melanin freckles contribute}", Range(0, 1)) = 0.5
+_PoiSkinFreckleSharpness ("Sharpness--{tooltip:Controls freckle edge hardness. Higher = sharper dots}", Range(1, 10)) = 3.0
+_PoiSkinFreckleRedness ("Redness Shift--{tooltip:Shifts freckle melanin toward pheomelanin for warmer freckle tones}", Range(-0.5, 0.5)) = 0.1
+[HideInInspector] s_end_PoiSkinFreckles ("", Float) = 0
+
+
+[HideInInspector] s_start_PoiSkinTan ("Tan--{reference_property:_PoiSkinTanEnabled,default_expand:false}", Float) = 0
+[ThryHideInInspector][ToggleUI]_PoiSkinTanEnabled ("Enable", Float) = 0
+[ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7, Matcap, 9, Screen Space, 10)] _PoiSkinTanMapUV ("UV", Int) = 0
+[Vector2]_PoiSkinTanMapTiling ("Tiling", Vector) = (1, 1, 0, 0)
+_PoiSkinTanAmount ("Amount--{tooltip:How much additional melanin the tan adds. Simulates increased eumelanin production from UV exposure}", Range(0, 0.5)) = 0.15
+_PoiSkinTanRednessShift ("Redness Shift--{tooltip:Shifts melanin toward eumelanin (brown/black). Negative values give a realistic tan shift}", Range(-0.5, 0.5)) = -0.1
+[HideInInspector] s_end_PoiSkinTan ("", Float) = 0
+
+_PoiSkinBrightness ("Brightness", Range(0.5, 2.0)) = 1.0
+_PoiSkinColorTint ("Tint", Color) = (1, 1, 1, 1)
+[ThryHideInInspector][ThryWideEnum(Off, 0, Theme Color 0, 1, Theme Color 1, 2, Theme Color 2, 3, Theme Color 3, 4, ColorChord 0, 5, ColorChord 1, 6, ColorChord 2, 7, ColorChord 3, 8, AL Theme 0, 9, AL Theme 1, 10, AL Theme 2, 11, AL Theme 3, 12)] _PoiSkinColorTintThemeIndex ("", Int) = 0
+[Enum(Replace, 0, Multiply, 1)] _PoiSkinBlendMode ("Blend Mode--{tooltip:Replace overwrites base color. Multiply tints the existing base texture}", Int) = 0
+_PoiSkinBlend ("Blend", Range(0, 1)) = 1.0
+[HideInInspector] m_end_PoiSkin ("", Float) = 0
+//endex
+
+#T#PoiSkinKeywords
+//ifex _PoiSkinEnabled==0
+#pragma shader_feature_local POI_SKIN
+//endex
+
+#T#PoiSkinVariablesExposed
+//ifex _PoiSkinEnabled==0
+#ifdef POI_SKIN
+float _PoiSkinMelanin;
+float _PoiSkinMelaninRedness;
+float _PoiSkinHemoglobin;
+half _PoiSkinBrightness;
+half4 _PoiSkinColorTint;
+float _PoiSkinColorTintThemeIndex;
+float _PoiSkinBlendMode;
+half _PoiSkinBlend;
+float _PoiSkinFrecklesEnabled;
+float _PoiSkinFreckleMapUV;
+float4 _PoiSkinFreckleMapTiling;
+float _PoiSkinFreckleStrength;
+half _PoiSkinFreckleSharpness;
+float _PoiSkinFreckleRedness;
+float _PoiSkinTanEnabled;
+float _PoiSkinTanMapUV;
+float4 _PoiSkinTanMapTiling;
+float _PoiSkinTanAmount;
+float _PoiSkinTanRednessShift;
+#endif
+//endex
+
+#T#PoiSkinVariables
+//ifex _PoiSkinEnabled==0
+#ifdef POI_SKIN
+	#if defined(PROP_POISKINLUT) || !defined(OPTIMIZER_ENABLED)
+		Texture2D _PoiSkinLUT;
+	#endif
+	#if defined(PROP_POISKINDETAILMAP) || !defined(OPTIMIZER_ENABLED)
+		Texture2D _PoiSkinDetailMap;
+	#endif
+#endif
+//endex
+
+#T#PoiSkinFunctions
+//ifex _PoiSkinEnabled==0
+#ifdef POI_SKIN
+float3 PoiSampleSkinLUT(Texture2D lut, float melanin, float melaninRedness, float hemoglobin)
+{
+	// Skip non-monotonic zones at LUT edges
+	melanin = lerp(0.08, 0.92, melanin);
+
+	float blend = (1.0 - melaninRedness) * 2.0;
+	int panelA = min((int)blend, 1);
+	int panelB = panelA + 1;
+	float panelLerp = blend - (float)panelA;
+
+	float margin = 1.0 / 384.0;
+	float pw = 1.0 / 3.0;
+
+	float uA = panelA * pw + margin + (pw - 2.0 * margin) * melanin;
+	float uB = panelB * pw + margin + (pw - 2.0 * margin) * melanin;
+
+	float v = 1.0 - hemoglobin;
+
+	half3 colorA = lut.SampleLevel(sampler_linear_clamp, float2(uA, v), 0).rgb;
+	half3 colorB = lut.SampleLevel(sampler_linear_clamp, float2(uB, v), 0).rgb;
+	return lerp(colorA, colorB, panelLerp);
+}
+
+void applySkin(inout PoiFragData poiFragData, in PoiMesh poiMesh, in PoiMods poiMods)
+{
+	float localMelanin = _PoiSkinMelanin;
+	float localMelaninRedness = _PoiSkinMelaninRedness;
+	float localHemoglobin = _PoiSkinHemoglobin;
+
+	#if defined(PROP_POISKINDETAILMAP) || !defined(OPTIMIZER_ENABLED)
+	{
+		// Freckles (R channel) - adds localized melanin
+		if (_PoiSkinFrecklesEnabled >= 0.5)
+		{
+			float2 freckleUV = poiMesh.uv[_PoiSkinFreckleMapUV].xy * _PoiSkinFreckleMapTiling.xy;
+			half freckleMask = _PoiSkinDetailMap.Sample(sampler_MainTex, freckleUV).g;
+			freckleMask = pow(freckleMask, _PoiSkinFreckleSharpness) * _PoiSkinFreckleStrength;
+			localMelanin += freckleMask;
+			localMelaninRedness += freckleMask * _PoiSkinFreckleRedness;
+		}
+
+	}
+	#endif
+
+	// Tan - increases melanin, shifts redness toward eumelanin
+	if (_PoiSkinTanEnabled >= 0.5)
+	{
+		half tanMask = 1.0;
+		#if defined(PROP_POISKINDETAILMAP) || !defined(OPTIMIZER_ENABLED)
+		{
+			float2 tanUV = poiMesh.uv[_PoiSkinTanMapUV].xy * _PoiSkinTanMapTiling.xy;
+			tanMask = _PoiSkinDetailMap.Sample(sampler_MainTex, tanUV).b;
+		}
+		#endif
+		localMelanin += _PoiSkinTanAmount * tanMask;
+		localMelaninRedness += _PoiSkinTanRednessShift * tanMask;
+	}
+
+	localMelanin = saturate(localMelanin);
+	localMelaninRedness = saturate(localMelaninRedness);
+	localHemoglobin = saturate(localHemoglobin);
+
+	half3 skinColor = float3(1, 1, 1);
+	#if defined(PROP_POISKINLUT) || !defined(OPTIMIZER_ENABLED)
+	{
+		skinColor = PoiSampleSkinLUT(_PoiSkinLUT, localMelanin, localMelaninRedness, localHemoglobin);
+	}
+	#endif
+
+	skinColor *= _PoiSkinBrightness;
+	skinColor *= poiThemeColor(poiMods, _PoiSkinColorTint.rgb, _PoiSkinColorTintThemeIndex);
+
+	// Mask (R channel) - black = no masking (full effect), white = masked out
+	float skinBlend = _PoiSkinBlend;
+	#if defined(PROP_POISKINDETAILMAP) || !defined(OPTIMIZER_ENABLED)
+	{
+		half mask = 1.0 - _PoiSkinDetailMap.Sample(sampler_MainTex, poiMesh.uv[0].xy).r;
+		skinBlend *= mask;
+	}
+	#endif
+
+	UNITY_BRANCH
+	if (_PoiSkinBlendMode == 0)
+	{
+		poiFragData.baseColor = lerp(poiFragData.baseColor, skinColor, skinBlend);
+	}
+	else
+	{
+		poiFragData.baseColor = lerp(poiFragData.baseColor, poiFragData.baseColor * skinColor, skinBlend);
+	}
+}
+#endif
+//endex
+
+#T#PoiSkinFunctionCall
+//ifex _PoiSkinEnabled==0
+#ifdef POI_SKIN
+	applySkin(poiFragData, poiMesh, poiMods);
+	#K#SKIN_HOOK
+#endif
+//endex

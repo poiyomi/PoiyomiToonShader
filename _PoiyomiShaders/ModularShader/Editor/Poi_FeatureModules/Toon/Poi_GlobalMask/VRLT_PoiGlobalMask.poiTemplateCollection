@@ -1,0 +1,1227 @@
+#T#PoiGlobalMaskProperties
+[HideInInspector] m_start_GlobalMask ("Global Mask--{button_help:{text:Tutorial,action:{type:URL,data:https://www.poiyomi.com/modifiers/global-masks},hover:Documentation}}", Float) = 0
+
+//ifex _GlobalMaskTexturesEnable==0
+[HideInInspector] m_start_GlobalMaskTextures (" Textures--{reference_property:_GlobalMaskTexturesEnable}", Float) = 0
+[HideInInspector][ThryToggle(POI_GLOBALMASK_TEXTURES)] _GlobalMaskTexturesEnable ("Global Mask Textures Enable", Float) = 0
+
+[sRGBWarning][ThryRGBAPacker(R, G, B, A, linear, false)]_GlobalMaskTexture0 ("Global Mask Texture 1--{reference_properties:[_GlobalMaskTexture0Pan, _GlobalMaskTexture0SplitTilingOffset_G, _GlobalMaskTexture0SplitPan_G, _GlobalMaskTexture0SplitTilingOffset_B, _GlobalMaskTexture0SplitPan_B, _GlobalMaskTexture0SplitTilingOffset_A, _GlobalMaskTexture0SplitPan_A, _GlobalMaskTexture0Split, _GlobalMaskTexture0UV]}", 2D) = "white" { }
+[ThryHideInInspector][Vector2]_GlobalMaskTexture0Pan ("Panning", Vector) = (0, 0, 0, 0)
+[ThryHeaderLabel(G Channel)]
+[HideInInspector][VectorLabel(tX, tY, oX, oY)]_GlobalMaskTexture0SplitTilingOffset_G ("Tiling/Offset--{condition_showS:(_GlobalMaskTexture0Split==1)}", Vector) = (1, 1, 0, 0)
+[ThryHideInInspector][Vector2]_GlobalMaskTexture0SplitPan_G ("Panning--{condition_showS:(_GlobalMaskTexture0Split==1)}", Vector) = (0, 0, 0, 0)
+[ThryHeaderLabel(B Channel)]
+[HideInInspector][VectorLabel(tX, tY, oX, oY)]_GlobalMaskTexture0SplitTilingOffset_B ("Tiling/Offset--{condition_showS:(_GlobalMaskTexture0Split==1)}", Vector) = (1, 1, 0, 0)
+[ThryHideInInspector][Vector2]_GlobalMaskTexture0SplitPan_B ("Panning--{condition_showS:(_GlobalMaskTexture0Split==1)}", Vector) = (0, 0, 0, 0)
+[ThryHeaderLabel(A Channel)]
+[HideInInspector][VectorLabel(tX, tY, oX, oY)]_GlobalMaskTexture0SplitTilingOffset_A ("Tiling/Offset--{condition_showS:(_GlobalMaskTexture0Split==1)}", Vector) = (1, 1, 0, 0)
+[ThryHideInInspector][Vector2]_GlobalMaskTexture0SplitPan_A ("Panning--{condition_showS:(_GlobalMaskTexture0Split==1)}", Vector) = (0, 0, 0, 0)
+[ThryHideInInspector][ToggleUI] _GlobalMaskTexture0Split ("Split Sampling", Int) = 0
+[ThryHideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7, Matcap, 9, Screen Space, 10)]_GlobalMaskTexture0UV ("UV", Int) = 0
+
+[sRGBWarning][ThryRGBAPacker(R, G, B, A, linear, false)]_GlobalMaskTexture1 ("Global Mask Texture 2--{reference_properties:[_GlobalMaskTexture1Pan, _GlobalMaskTexture1SplitTilingOffset_G, _GlobalMaskTexture1SplitPan_G, _GlobalMaskTexture1SplitTilingOffset_B, _GlobalMaskTexture1SplitPan_B, _GlobalMaskTexture1SplitTilingOffset_A, _GlobalMaskTexture1SplitPan_A, _GlobalMaskTexture1Split, _GlobalMaskTexture1UV]}", 2D) = "white" { }
+[ThryHideInInspector][Vector2]_GlobalMaskTexture1Pan ("Panning", Vector) = (0, 0, 0, 0)
+[ThryHeaderLabel(G Channel)]
+[HideInInspector][VectorLabel(tX, tY, oX, oY)]_GlobalMaskTexture1SplitTilingOffset_G ("Tiling/Offset--{condition_showS:(_GlobalMaskTexture1Split==1)}", Vector) = (1, 1, 0, 0)
+[ThryHideInInspector][Vector2]_GlobalMaskTexture1SplitPan_G ("Panning--{condition_showS:(_GlobalMaskTexture1Split==1)}", Vector) = (0, 0, 0, 0)
+[ThryHeaderLabel(B Channel)]
+[HideInInspector][VectorLabel(tX, tY, oX, oY)]_GlobalMaskTexture1SplitTilingOffset_B ("Tiling/Offset--{condition_showS:(_GlobalMaskTexture1Split==1)}", Vector) = (1, 1, 0, 0)
+[ThryHideInInspector][Vector2]_GlobalMaskTexture1SplitPan_B ("Panning--{condition_showS:(_GlobalMaskTexture1Split==1)}", Vector) = (0, 0, 0, 0)
+[ThryHeaderLabel(A Channel)]
+[HideInInspector][VectorLabel(tX, tY, oX, oY)]_GlobalMaskTexture1SplitTilingOffset_A ("Tiling/Offset--{condition_showS:(_GlobalMaskTexture1Split==1)}", Vector) = (1, 1, 0, 0)
+[ThryHideInInspector][Vector2]_GlobalMaskTexture1SplitPan_A ("Panning--{condition_showS:(_GlobalMaskTexture1Split==1)}", Vector) = (0, 0, 0, 0)
+[ThryHideInInspector][ToggleUI] _GlobalMaskTexture1Split ("Split Sampling", Int) = 0
+[ThryHideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7, Matcap, 9, Screen Space, 10)]_GlobalMaskTexture1UV ("UV", Int) = 0
+
+[sRGBWarning][ThryRGBAPacker(R, G, B, A, linear, false)]_GlobalMaskTexture2 ("Global Mask Texture 3--{reference_properties:[_GlobalMaskTexture2Pan, _GlobalMaskTexture2SplitTilingOffset_G, _GlobalMaskTexture2SplitPan_G, _GlobalMaskTexture2SplitTilingOffset_B, _GlobalMaskTexture2SplitPan_B, _GlobalMaskTexture2SplitTilingOffset_A, _GlobalMaskTexture2SplitPan_A, _GlobalMaskTexture2Split, _GlobalMaskTexture2UV]}", 2D) = "white" { }
+[ThryHideInInspector][Vector2]_GlobalMaskTexture2Pan ("Panning", Vector) = (0, 0, 0, 0)
+[ThryHeaderLabel(G Channel)]
+[HideInInspector][VectorLabel(tX, tY, oX, oY)]_GlobalMaskTexture2SplitTilingOffset_G ("Tiling/Offset--{condition_showS:(_GlobalMaskTexture2Split==1)}", Vector) = (1, 1, 0, 0)
+[ThryHideInInspector][Vector2]_GlobalMaskTexture2SplitPan_G ("Panning--{condition_showS:(_GlobalMaskTexture2Split==1)}", Vector) = (0, 0, 0, 0)
+[ThryHeaderLabel(B Channel)]
+[HideInInspector][VectorLabel(tX, tY, oX, oY)]_GlobalMaskTexture2SplitTilingOffset_B ("Tiling/Offset--{condition_showS:(_GlobalMaskTexture2Split==1)}", Vector) = (1, 1, 0, 0)
+[ThryHideInInspector][Vector2]_GlobalMaskTexture2SplitPan_B ("Panning--{condition_showS:(_GlobalMaskTexture2Split==1)}", Vector) = (0, 0, 0, 0)
+[ThryHeaderLabel(A Channel)]
+[HideInInspector][VectorLabel(tX, tY, oX, oY)]_GlobalMaskTexture2SplitTilingOffset_A ("Tiling/Offset--{condition_showS:(_GlobalMaskTexture2Split==1)}", Vector) = (1, 1, 0, 0)
+[ThryHideInInspector][Vector2]_GlobalMaskTexture2SplitPan_A ("Panning--{condition_showS:(_GlobalMaskTexture2Split==1)}", Vector) = (0, 0, 0, 0)
+[ThryHideInInspector][ToggleUI] _GlobalMaskTexture2Split ("Split Sampling", Int) = 0
+[ThryHideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7, Matcap, 9, Screen Space, 10)]_GlobalMaskTexture2UV ("UV", Int) = 0
+
+[sRGBWarning][ThryRGBAPacker(R, G, B, A, linear, false)]_GlobalMaskTexture3 ("Global Mask Texture 4--{reference_properties:[_GlobalMaskTexture3Pan, _GlobalMaskTexture3SplitTilingOffset_G, _GlobalMaskTexture3SplitPan_G, _GlobalMaskTexture3SplitTilingOffset_B, _GlobalMaskTexture3SplitPan_B, _GlobalMaskTexture3SplitTilingOffset_A, _GlobalMaskTexture3SplitPan_A, _GlobalMaskTexture3Split, _GlobalMaskTexture3UV]}", 2D) = "white" { }
+[ThryHideInInspector][Vector2]_GlobalMaskTexture3Pan ("Panning", Vector) = (0, 0, 0, 0)
+[ThryHeaderLabel(G Channel)]
+[HideInInspector][VectorLabel(tX, tY, oX, oY)]_GlobalMaskTexture3SplitTilingOffset_G ("Tiling/Offset--{condition_showS:(_GlobalMaskTexture3Split==1)}", Vector) = (1, 1, 0, 0)
+[ThryHideInInspector][Vector2]_GlobalMaskTexture3SplitPan_G ("Panning--{condition_showS:(_GlobalMaskTexture3Split==1)}", Vector) = (0, 0, 0, 0)
+[ThryHeaderLabel(B Channel)]
+[HideInInspector][VectorLabel(tX, tY, oX, oY)]_GlobalMaskTexture3SplitTilingOffset_B ("Tiling/Offset--{condition_showS:(_GlobalMaskTexture3Split==1)}", Vector) = (1, 1, 0, 0)
+[ThryHideInInspector][Vector2]_GlobalMaskTexture3SplitPan_B ("Panning--{condition_showS:(_GlobalMaskTexture3Split==1)}", Vector) = (0, 0, 0, 0)
+[ThryHeaderLabel(A Channel)]
+[HideInInspector][VectorLabel(tX, tY, oX, oY)]_GlobalMaskTexture3SplitTilingOffset_A ("Tiling/Offset--{condition_showS:(_GlobalMaskTexture3Split==1)}", Vector) = (1, 1, 0, 0)
+[ThryHideInInspector][Vector2]_GlobalMaskTexture3SplitPan_A ("Panning--{condition_showS:(_GlobalMaskTexture3Split==1)}", Vector) = (0, 0, 0, 0)
+[ThryHideInInspector][ToggleUI] _GlobalMaskTexture3Split ("Split Sampling", Int) = 0
+[ThryHideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7, Matcap, 9, Screen Space, 10)]_GlobalMaskTexture3UV ("UV", Int) = 0
+
+[HideInInspector] m_end_GlobalMaskTextures ("Global Mask Textures", Float) = 0
+//endex
+
+//ifex _GlobalMaskVertexColorRed==0 && _GlobalMaskVertexColorGreen==0 && _GlobalMaskVertexColorBlue==0 && _GlobalMaskVertexColorAlpha==0 && isNotAnimated(_GlobalMaskVertexColorRed) && isNotAnimated(_GlobalMaskVertexColorGreen) && isNotAnimated(_GlobalMaskVertexColorBlue) && isNotAnimated(_GlobalMaskVertexColorAlpha)
+[HideInInspector] m_start_GlobalMaskVertexColors ("Vertex Colors", Int) = 0
+[ToggleUI] _GlobalMaskVertexColorLinearSpace ("Linear Colors", Float) = 1
+[ThryWideEnum(Off, 0, 1R, 1, 1G, 2, 1B, 3, 1A, 4, 2R, 5, 2G, 6, 2B, 7, 2A, 8, 3R, 9, 3G, 10, 3B, 11, 3A, 12, 4R, 13, 4G, 14, 4B, 15, 4A, 16)] _GlobalMaskVertexColorRed ("Red--{reference_property:_GlobalMaskVertexColorRedBlendType}", Int) = 0
+[ThryHideInInspector][ThryWideEnum(Add, 7, Subtract, 1, Multiply, 2, Divide, 3, Min, 4, Max, 5, Average, 6, Replace, 0)] _GlobalMaskVertexColorRedBlendType ("Blending", Int) = 2
+[ThryWideEnum(Off, 0, 1R, 1, 1G, 2, 1B, 3, 1A, 4, 2R, 5, 2G, 6, 2B, 7, 2A, 8, 3R, 9, 3G, 10, 3B, 11, 3A, 12, 4R, 13, 4G, 14, 4B, 15, 4A, 16)] _GlobalMaskVertexColorGreen ("Green--{reference_property:_GlobalMaskVertexColorGreenBlendType}", Int) = 0
+[ThryHideInInspector][ThryWideEnum(Add, 7, Subtract, 1, Multiply, 2, Divide, 3, Min, 4, Max, 5, Average, 6, Replace, 0)] _GlobalMaskVertexColorGreenBlendType ("Blending", Int) = 2
+[ThryWideEnum(Off, 0, 1R, 1, 1G, 2, 1B, 3, 1A, 4, 2R, 5, 2G, 6, 2B, 7, 2A, 8, 3R, 9, 3G, 10, 3B, 11, 3A, 12, 4R, 13, 4G, 14, 4B, 15, 4A, 16)] _GlobalMaskVertexColorBlue ("Blue--{reference_property:_GlobalMaskVertexColorBlueBlendType}", Int) = 0
+[ThryHideInInspector][ThryWideEnum(Add, 7, Subtract, 1, Multiply, 2, Divide, 3, Min, 4, Max, 5, Average, 6, Replace, 0)] _GlobalMaskVertexColorBlueBlendType ("Blending", Int) = 2
+[ThryWideEnum(Off, 0, 1R, 1, 1G, 2, 1B, 3, 1A, 4, 2R, 5, 2G, 6, 2B, 7, 2A, 8, 3R, 9, 3G, 10, 3B, 11, 3A, 12, 4R, 13, 4G, 14, 4B, 15, 4A, 16)] _GlobalMaskVertexColorAlpha ("Alpha--{reference_property:_GlobalMaskVertexColorAlphaBlendType}", Int) = 0
+[ThryHideInInspector][ThryWideEnum(Add, 7, Subtract, 1, Multiply, 2, Divide, 3, Min, 4, Max, 5, Average, 6, Replace, 0)] _GlobalMaskVertexColorAlphaBlendType ("Blending", Int) = 2
+[HideInInspector] m_end_GlobalMaskVertexColors ("Vertex Colors", Int) = 0
+//endex
+
+[HideInInspector] m_start_GlobalMaskModifiers ("Modifiers", Float) = 0
+
+//ifex _GlobalMaskModifiersBackfaceEnable==0
+[HideInInspector] m_start_GlobalMaskModifiersBackface (" Backface Masking--{reference_property:_GlobalMaskModifiersBackfaceEnable}", Float) = 0
+[HideInInspector][DoNotAnimate][ThryToggleUI(true)] _GlobalMaskModifiersBackfaceEnable ("Global Mask Backface Enable", Float) = 0
+[Enum(Both, 0, Back Only, 1, Front Only, 2)] _GlobalMaskBackface_0 ("1R", Int) = 0
+[Enum(Both, 0, Back Only, 1, Front Only, 2)] _GlobalMaskBackface_1 ("1G", Int) = 0
+[Enum(Both, 0, Back Only, 1, Front Only, 2)] _GlobalMaskBackface_2 ("1B", Int) = 0
+[Enum(Both, 0, Back Only, 1, Front Only, 2)] _GlobalMaskBackface_3 ("1A", Int) = 0
+[Enum(Both, 0, Back Only, 1, Front Only, 2)] _GlobalMaskBackface_4 ("2R", Int) = 0
+[Enum(Both, 0, Back Only, 1, Front Only, 2)] _GlobalMaskBackface_5 ("2G", Int) = 0
+[Enum(Both, 0, Back Only, 1, Front Only, 2)] _GlobalMaskBackface_6 ("2B", Int) = 0
+[Enum(Both, 0, Back Only, 1, Front Only, 2)] _GlobalMaskBackface_7 ("2A", Int) = 0
+[Enum(Both, 0, Back Only, 1, Front Only, 2)] _GlobalMaskBackface_8 ("3R", Int) = 0
+[Enum(Both, 0, Back Only, 1, Front Only, 2)] _GlobalMaskBackface_9 ("3G", Int) = 0
+[Enum(Both, 0, Back Only, 1, Front Only, 2)] _GlobalMaskBackface_10 ("3B", Int) = 0
+[Enum(Both, 0, Back Only, 1, Front Only, 2)] _GlobalMaskBackface_11 ("3A", Int) = 0
+[Enum(Both, 0, Back Only, 1, Front Only, 2)] _GlobalMaskBackface_12 ("4R", Int) = 0
+[Enum(Both, 0, Back Only, 1, Front Only, 2)] _GlobalMaskBackface_13 ("4G", Int) = 0
+[Enum(Both, 0, Back Only, 1, Front Only, 2)] _GlobalMaskBackface_14 ("4B", Int) = 0
+[Enum(Both, 0, Back Only, 1, Front Only, 2)] _GlobalMaskBackface_15 ("4A", Int) = 0
+[HideInInspector] m_end_GlobalMaskModifiersBackface ("", Float) = 0
+//endex
+
+//ifex _GlobalMaskModifiersMirrorEnable==0
+[HideInInspector] m_start_GlobalMaskModifiersMirror (" Mirror Masking--{reference_property:_GlobalMaskModifiersMirrorEnable}", Float) = 0
+[HideInInspector][DoNotAnimate][ThryToggleUI(true)] _GlobalMaskModifiersMirrorEnable ("Global Mask Mirror Enable", Float) = 0
+[Enum(Generic, 0, VRC, 1)] _GlobalMaskMirrorVisibilityMode ("Mirror Detection Mode", Int) = 1
+[Enum(Both, 0, Only Outside Mirror, 1, Only In Mirror, 2)] _GlobalMaskMirror_0 ("1R", Int) = 0
+[Enum(Both, 0, Only Outside Mirror, 1, Only In Mirror, 2)] _GlobalMaskMirror_1 ("1G", Int) = 0
+[Enum(Both, 0, Only Outside Mirror, 1, Only In Mirror, 2)] _GlobalMaskMirror_2 ("1B", Int) = 0
+[Enum(Both, 0, Only Outside Mirror, 1, Only In Mirror, 2)] _GlobalMaskMirror_3 ("1A", Int) = 0
+[Enum(Both, 0, Only Outside Mirror, 1, Only In Mirror, 2)] _GlobalMaskMirror_4 ("2R", Int) = 0
+[Enum(Both, 0, Only Outside Mirror, 1, Only In Mirror, 2)] _GlobalMaskMirror_5 ("2G", Int) = 0
+[Enum(Both, 0, Only Outside Mirror, 1, Only In Mirror, 2)] _GlobalMaskMirror_6 ("2B", Int) = 0
+[Enum(Both, 0, Only Outside Mirror, 1, Only In Mirror, 2)] _GlobalMaskMirror_7 ("2A", Int) = 0
+[Enum(Both, 0, Only Outside Mirror, 1, Only In Mirror, 2)] _GlobalMaskMirror_8 ("3R", Int) = 0
+[Enum(Both, 0, Only Outside Mirror, 1, Only In Mirror, 2)] _GlobalMaskMirror_9 ("3G", Int) = 0
+[Enum(Both, 0, Only Outside Mirror, 1, Only In Mirror, 2)] _GlobalMaskMirror_10 ("3B", Int) = 0
+[Enum(Both, 0, Only Outside Mirror, 1, Only In Mirror, 2)] _GlobalMaskMirror_11 ("3A", Int) = 0
+[Enum(Both, 0, Only Outside Mirror, 1, Only In Mirror, 2)] _GlobalMaskMirror_12 ("4R", Int) = 0
+[Enum(Both, 0, Only Outside Mirror, 1, Only In Mirror, 2)] _GlobalMaskMirror_13 ("4G", Int) = 0
+[Enum(Both, 0, Only Outside Mirror, 1, Only In Mirror, 2)] _GlobalMaskMirror_14 ("4B", Int) = 0
+[Enum(Both, 0, Only Outside Mirror, 1, Only In Mirror, 2)] _GlobalMaskMirror_15 ("4A", Int) = 0
+[HideInInspector] m_end_GlobalMaskModifiersMirror ("", Float) = 0
+//endex
+
+//ifex _GlobalMaskModifiersCameraEnable==0
+[HideInInspector] m_start_GlobalMaskModifiersCamera (" Camera Masking--{reference_property:_GlobalMaskModifiersCameraEnable}", Float) = 0
+[HideInInspector][DoNotAnimate][ThryToggleUI(true)] _GlobalMaskModifiersCameraEnable ("Global Mask Camera Enable", Float) = 0
+[Helpbox(1, 2)] _GlobalMaskModifiersCameraInfo ("Camera Masking only works in VRChat.", Int) = 0
+[Enum(Both, 0, Only Outside Camera, 1, Only In Camera, 2)] _GlobalMaskCamera_0 ("1R", Int) = 0
+[Enum(Both, 0, Only Outside Camera, 1, Only In Camera, 2)] _GlobalMaskCamera_1 ("1G", Int) = 0
+[Enum(Both, 0, Only Outside Camera, 1, Only In Camera, 2)] _GlobalMaskCamera_2 ("1B", Int) = 0
+[Enum(Both, 0, Only Outside Camera, 1, Only In Camera, 2)] _GlobalMaskCamera_3 ("1A", Int) = 0
+[Enum(Both, 0, Only Outside Camera, 1, Only In Camera, 2)] _GlobalMaskCamera_4 ("2R", Int) = 0
+[Enum(Both, 0, Only Outside Camera, 1, Only In Camera, 2)] _GlobalMaskCamera_5 ("2G", Int) = 0
+[Enum(Both, 0, Only Outside Camera, 1, Only In Camera, 2)] _GlobalMaskCamera_6 ("2B", Int) = 0
+[Enum(Both, 0, Only Outside Camera, 1, Only In Camera, 2)] _GlobalMaskCamera_7 ("2A", Int) = 0
+[Enum(Both, 0, Only Outside Camera, 1, Only In Camera, 2)] _GlobalMaskCamera_8 ("3R", Int) = 0
+[Enum(Both, 0, Only Outside Camera, 1, Only In Camera, 2)] _GlobalMaskCamera_9 ("3G", Int) = 0
+[Enum(Both, 0, Only Outside Camera, 1, Only In Camera, 2)] _GlobalMaskCamera_10 ("3B", Int) = 0
+[Enum(Both, 0, Only Outside Camera, 1, Only In Camera, 2)] _GlobalMaskCamera_11 ("3A", Int) = 0
+[Enum(Both, 0, Only Outside Camera, 1, Only In Camera, 2)] _GlobalMaskCamera_12 ("4R", Int) = 0
+[Enum(Both, 0, Only Outside Camera, 1, Only In Camera, 2)] _GlobalMaskCamera_13 ("4G", Int) = 0
+[Enum(Both, 0, Only Outside Camera, 1, Only In Camera, 2)] _GlobalMaskCamera_14 ("4B", Int) = 0
+[Enum(Both, 0, Only Outside Camera, 1, Only In Camera, 2)] _GlobalMaskCamera_15 ("4A", Int) = 0
+[HideInInspector] m_end_GlobalMaskModifiersCamera ("", Float) = 0
+//endex
+
+//ifex _GlobalMaskModifiersDistanceEnable==0
+[HideInInspector] m_start_GlobalMaskModifiersDistance (" Distance Masking--{reference_property:_GlobalMaskModifiersDistanceEnable}", Float) = 0
+[HideInInspector][DoNotAnimate][ThryToggleUI(true)] _GlobalMaskModifiersDistanceEnable ("Global Mask Camera Enable", Float) = 0
+
+//ifex _GlobalMaskDistanceEnable_0==0
+// [Vector2] _GlobalMaskDistance_0 ("1R", Vector) = (1,2,0,0)
+[HideInInspector] m_start_GlobalMaskDistanceM_0 (" 1R--{reference_property:_GlobalMaskDistanceEnable_0}", Float) = 0
+[HideInInspector][ThryToggleUI(true)] _GlobalMaskDistanceEnable_0 ("", Int) = 0
+[Enum(Object Position, 0, Pixel Position, 1)] _GlobalMaskDistanceType_0 ("Pos To Use", Int) = 1
+_GlobalMaskDistanceMin_0 ("Min Distance", Float) = 1
+_GlobalMaskDistanceMax_0 ("Max Distance", Float) = 2
+_GlobalMaskDistanceMinAlpha_0 ("Min Distance Alpha", Range(0, 1)) = 0
+_GlobalMaskDistanceMaxAlpha_0 ("Max Distance Alpha", Range(0, 1)) = 1
+[ThryWideEnum(Replace, 0, Multiply, 2)] _GlobalMaskDistanceBlendType_0 ("Blending", Int) = 0
+[HideInInspector] m_end_GlobalMaskDistanceM_0 ("", Float) = 0
+//endex
+
+//ifex _GlobalMaskDistanceEnable_1==0
+[HideInInspector] m_start_GlobalMaskDistanceM_1 (" 1G--{reference_property:_GlobalMaskDistanceEnable_1}", Float) = 0
+[HideInInspector][ThryToggleUI(true)] _GlobalMaskDistanceEnable_1 ("", Int) = 0
+[Enum(Object Position, 0, Pixel Position, 1)] _GlobalMaskDistanceType_1 ("Pos To Use", Int) = 1
+_GlobalMaskDistanceMin_1 ("Min Distance", Float) = 1
+_GlobalMaskDistanceMax_1 ("Max Distance", Float) = 2
+_GlobalMaskDistanceMinAlpha_1 ("Min Distance Alpha", Range(0, 1)) = 0
+_GlobalMaskDistanceMaxAlpha_1 ("Max Distance Alpha", Range(0, 1)) = 1
+[ThryWideEnum(Replace, 0, Multiply, 2)] _GlobalMaskDistanceBlendType_1 ("Blending", Int) = 0
+[HideInInspector] m_end_GlobalMaskDistanceM_1 ("", Float) = 0
+//endex
+
+//ifex _GlobalMaskDistanceEnable_2==0
+[HideInInspector] m_start_GlobalMaskDistanceM_2 (" 1B--{reference_property:_GlobalMaskDistanceEnable_2}", Float) = 0
+[HideInInspector][ThryToggleUI(true)] _GlobalMaskDistanceEnable_2 ("", Int) = 0
+[Enum(Object Position, 0, Pixel Position, 1)] _GlobalMaskDistanceType_2 ("Pos To Use", Int) = 1
+_GlobalMaskDistanceMin_2 ("Min Distance", Float) = 1
+_GlobalMaskDistanceMax_2 ("Max Distance", Float) = 2
+_GlobalMaskDistanceMinAlpha_2 ("Min Distance Alpha", Range(0, 1)) = 0
+_GlobalMaskDistanceMaxAlpha_2 ("Max Distance Alpha", Range(0, 1)) = 1
+[ThryWideEnum(Replace, 0, Multiply, 2)] _GlobalMaskDistanceBlendType_2 ("Blending", Int) = 0
+[HideInInspector] m_end_GlobalMaskDistanceM_2 ("", Float) = 0
+//endex
+
+//ifex _GlobalMaskDistanceEnable_3==0
+[HideInInspector] m_start_GlobalMaskDistanceM_3 (" 1A--{reference_property:_GlobalMaskDistanceEnable_3}", Float) = 0
+[HideInInspector][ThryToggleUI(true)] _GlobalMaskDistanceEnable_3 ("", Int) = 0
+[Enum(Object Position, 0, Pixel Position, 1)] _GlobalMaskDistanceType_3 ("Pos To Use", Int) = 1
+_GlobalMaskDistanceMin_3 ("Min Distance", Float) = 1
+_GlobalMaskDistanceMax_3 ("Max Distance", Float) = 2
+_GlobalMaskDistanceMinAlpha_3 ("Min Distance Alpha", Range(0, 1)) = 0
+_GlobalMaskDistanceMaxAlpha_3 ("Max Distance Alpha", Range(0, 1)) = 1
+[ThryWideEnum(Replace, 0, Multiply, 2)] _GlobalMaskDistanceBlendType_3 ("Blending", Int) = 0
+[HideInInspector] m_end_GlobalMaskDistanceM_3 ("", Float) = 0
+//endex
+
+//ifex _GlobalMaskDistanceEnable_4==0
+[HideInInspector] m_start_GlobalMaskDistanceM_4 (" 2R--{reference_property:_GlobalMaskDistanceEnable_4}", Float) = 0
+[HideInInspector][ThryToggleUI(true)] _GlobalMaskDistanceEnable_4 ("", Int) = 0
+[Enum(Object Position, 0, Pixel Position, 1)] _GlobalMaskDistanceType_4 ("Pos To Use", Int) = 1
+_GlobalMaskDistanceMin_4 ("Min Distance", Float) = 1
+_GlobalMaskDistanceMax_4 ("Max Distance", Float) = 2
+_GlobalMaskDistanceMinAlpha_4 ("Min Distance Alpha", Range(0, 1)) = 0
+_GlobalMaskDistanceMaxAlpha_4 ("Max Distance Alpha", Range(0, 1)) = 1
+[ThryWideEnum(Replace, 0, Multiply, 2)] _GlobalMaskDistanceBlendType_4 ("Blending", Int) = 0
+[HideInInspector] m_end_GlobalMaskDistanceM_4 ("", Float) = 0
+//endex
+
+//ifex _GlobalMaskDistanceEnable_5==0
+[HideInInspector] m_start_GlobalMaskDistanceM_5 (" 2G--{reference_property:_GlobalMaskDistanceEnable_5}", Float) = 0
+[HideInInspector][ThryToggleUI(true)] _GlobalMaskDistanceEnable_5 ("", Int) = 0
+[Enum(Object Position, 0, Pixel Position, 1)] _GlobalMaskDistanceType_5 ("Pos To Use", Int) = 1
+_GlobalMaskDistanceMin_5 ("Min Distance", Float) = 1
+_GlobalMaskDistanceMax_5 ("Max Distance", Float) = 2
+_GlobalMaskDistanceMinAlpha_5 ("Min Distance Alpha", Range(0, 1)) = 0
+_GlobalMaskDistanceMaxAlpha_5 ("Max Distance Alpha", Range(0, 1)) = 1
+[ThryWideEnum(Replace, 0, Multiply, 2)] _GlobalMaskDistanceBlendType_5 ("Blending", Int) = 0
+[HideInInspector] m_end_GlobalMaskDistanceM_5 ("", Float) = 0
+//endex
+
+//ifex _GlobalMaskDistanceEnable_6==0
+[HideInInspector] m_start_GlobalMaskDistanceM_6 (" 2B--{reference_property:_GlobalMaskDistanceEnable_6}", Float) = 0
+[HideInInspector][ThryToggleUI(true)] _GlobalMaskDistanceEnable_6 ("", Int) = 0
+[Enum(Object Position, 0, Pixel Position, 1)] _GlobalMaskDistanceType_6 ("Pos To Use", Int) = 1
+_GlobalMaskDistanceMin_6 ("Min Distance", Float) = 1
+_GlobalMaskDistanceMax_6 ("Max Distance", Float) = 2
+_GlobalMaskDistanceMinAlpha_6 ("Min Distance Alpha", Range(0, 1)) = 0
+_GlobalMaskDistanceMaxAlpha_6 ("Max Distance Alpha", Range(0, 1)) = 1
+[ThryWideEnum(Replace, 0, Multiply, 2)] _GlobalMaskDistanceBlendType_6 ("Blending", Int) = 0
+[HideInInspector] m_end_GlobalMaskDistanceM_6 ("", Float) = 0
+//endex
+
+//ifex _GlobalMaskDistanceEnable_7==0
+[HideInInspector] m_start_GlobalMaskDistanceM_7 (" 2A--{reference_property:_GlobalMaskDistanceEnable_7}", Float) = 0
+[HideInInspector][ThryToggleUI(true)] _GlobalMaskDistanceEnable_7 ("", Int) = 0
+[Enum(Object Position, 0, Pixel Position, 1)] _GlobalMaskDistanceType_7 ("Pos To Use", Int) = 1
+_GlobalMaskDistanceMin_7 ("Min Distance", Float) = 1
+_GlobalMaskDistanceMax_7 ("Max Distance", Float) = 2
+_GlobalMaskDistanceMinAlpha_7 ("Min Distance Alpha", Range(0, 1)) = 0
+_GlobalMaskDistanceMaxAlpha_7 ("Max Distance Alpha", Range(0, 1)) = 1
+[ThryWideEnum(Replace, 0, Multiply, 2)] _GlobalMaskDistanceBlendType_7 ("Blending", Int) = 0
+[HideInInspector] m_end_GlobalMaskDistanceM_7 ("", Float) = 0
+//endex
+
+//ifex _GlobalMaskDistanceEnable_8==0
+[HideInInspector] m_start_GlobalMaskDistanceM_8 (" 3R--{reference_property:_GlobalMaskDistanceEnable_8}", Float) = 0
+[HideInInspector][ThryToggleUI(true)] _GlobalMaskDistanceEnable_8 ("", Int) = 0
+[Enum(Object Position, 0, Pixel Position, 1)] _GlobalMaskDistanceType_8 ("Pos To Use", Int) = 1
+_GlobalMaskDistanceMin_8 ("Min Distance", Float) = 1
+_GlobalMaskDistanceMax_8 ("Max Distance", Float) = 2
+_GlobalMaskDistanceMinAlpha_8 ("Min Distance Alpha", Range(0, 1)) = 0
+_GlobalMaskDistanceMaxAlpha_8 ("Max Distance Alpha", Range(0, 1)) = 1
+[ThryWideEnum(Replace, 0, Multiply, 2)] _GlobalMaskDistanceBlendType_8 ("Blending", Int) = 0
+[HideInInspector] m_end_GlobalMaskDistanceM_8 ("", Float) = 0
+//endex
+
+//ifex _GlobalMaskDistanceEnable_9==0
+[HideInInspector] m_start_GlobalMaskDistanceM_9 (" 3G--{reference_property:_GlobalMaskDistanceEnable_9}", Float) = 0
+[HideInInspector][ThryToggleUI(true)] _GlobalMaskDistanceEnable_9 ("", Int) = 0
+[Enum(Object Position, 0, Pixel Position, 1)] _GlobalMaskDistanceType_9 ("Pos To Use", Int) = 1
+_GlobalMaskDistanceMin_9 ("Min Distance", Float) = 1
+_GlobalMaskDistanceMax_9 ("Max Distance", Float) = 2
+_GlobalMaskDistanceMinAlpha_9 ("Min Distance Alpha", Range(0, 1)) = 0
+_GlobalMaskDistanceMaxAlpha_9 ("Max Distance Alpha", Range(0, 1)) = 1
+[ThryWideEnum(Replace, 0, Multiply, 2)] _GlobalMaskDistanceBlendType_9 ("Blending", Int) = 0
+[HideInInspector] m_end_GlobalMaskDistanceM_9 ("", Float) = 0
+//endex
+
+//ifex _GlobalMaskDistanceEnable_10==0
+[HideInInspector] m_start_GlobalMaskDistanceM_10 (" 3B--{reference_property:_GlobalMaskDistanceEnable_10}", Float) = 0
+[HideInInspector][ThryToggleUI(true)] _GlobalMaskDistanceEnable_10 ("", Int) = 0
+[Enum(Object Position, 0, Pixel Position, 1)] _GlobalMaskDistanceType_10 ("Pos To Use", Int) = 1
+_GlobalMaskDistanceMin_10 ("Min Distance", Float) = 1
+_GlobalMaskDistanceMax_10 ("Max Distance", Float) = 2
+_GlobalMaskDistanceMinAlpha_10 ("Min Distance Alpha", Range(0, 1)) = 0
+_GlobalMaskDistanceMaxAlpha_10 ("Max Distance Alpha", Range(0, 1)) = 1
+[ThryWideEnum(Replace, 0, Multiply, 2)] _GlobalMaskDistanceBlendType_10 ("Blending", Int) = 0
+[HideInInspector] m_end_GlobalMaskDistanceM_10 ("", Float) = 0
+//endex
+
+//ifex _GlobalMaskDistanceEnable_11==0
+[HideInInspector] m_start_GlobalMaskDistanceM_11 (" 3A--{reference_property:_GlobalMaskDistanceEnable_11}", Float) = 0
+[HideInInspector][ThryToggleUI(true)] _GlobalMaskDistanceEnable_11 ("", Int) = 0
+[Enum(Object Position, 0, Pixel Position, 1)] _GlobalMaskDistanceType_11 ("Pos To Use", Int) = 1
+_GlobalMaskDistanceMin_11 ("Min Distance", Float) = 1
+_GlobalMaskDistanceMax_11 ("Max Distance", Float) = 2
+_GlobalMaskDistanceMinAlpha_11 ("Min Distance Alpha", Range(0, 1)) = 0
+_GlobalMaskDistanceMaxAlpha_11 ("Max Distance Alpha", Range(0, 1)) = 1
+[ThryWideEnum(Replace, 0, Multiply, 2)] _GlobalMaskDistanceBlendType_11 ("Blending", Int) = 0
+[HideInInspector] m_end_GlobalMaskDistanceM_11 ("", Float) = 0
+//endex
+
+//ifex _GlobalMaskDistanceEnable_12==0
+[HideInInspector] m_start_GlobalMaskDistanceM_12 (" 4R--{reference_property:_GlobalMaskDistanceEnable_12}", Float) = 0
+[HideInInspector][ThryToggleUI(true)] _GlobalMaskDistanceEnable_12 ("", Int) = 0
+[Enum(Object Position, 0, Pixel Position, 1)] _GlobalMaskDistanceType_12 ("Pos To Use", Int) = 1
+_GlobalMaskDistanceMin_12 ("Min Distance", Float) = 1
+_GlobalMaskDistanceMax_12 ("Max Distance", Float) = 2
+_GlobalMaskDistanceMinAlpha_12 ("Min Distance Alpha", Range(0, 1)) = 0
+_GlobalMaskDistanceMaxAlpha_12 ("Max Distance Alpha", Range(0, 1)) = 1
+[ThryWideEnum(Replace, 0, Multiply, 2)] _GlobalMaskDistanceBlendType_12 ("Blending", Int) = 0
+[HideInInspector] m_end_GlobalMaskDistanceM_12 ("", Float) = 0
+//endex
+
+//ifex _GlobalMaskDistanceEnable_13==0
+[HideInInspector] m_start_GlobalMaskDistanceM_13 (" 4G--{reference_property:_GlobalMaskDistanceEnable_13}", Float) = 0
+[HideInInspector][ThryToggleUI(true)] _GlobalMaskDistanceEnable_13 ("", Int) = 0
+[Enum(Object Position, 0, Pixel Position, 1)] _GlobalMaskDistanceType_13 ("Pos To Use", Int) = 1
+_GlobalMaskDistanceMin_13 ("Min Distance", Float) = 1
+_GlobalMaskDistanceMax_13 ("Max Distance", Float) = 2
+_GlobalMaskDistanceMinAlpha_13 ("Min Distance Alpha", Range(0, 1)) = 0
+_GlobalMaskDistanceMaxAlpha_13 ("Max Distance Alpha", Range(0, 1)) = 1
+[ThryWideEnum(Replace, 0, Multiply, 2)] _GlobalMaskDistanceBlendType_13 ("Blending", Int) = 0
+[HideInInspector] m_end_GlobalMaskDistanceM_13 ("", Float) = 0
+//endex
+
+//ifex _GlobalMaskDistanceEnable_14==0
+[HideInInspector] m_start_GlobalMaskDistanceM_14 (" 4B--{reference_property:_GlobalMaskDistanceEnable_14}", Float) = 0
+[HideInInspector][ThryToggleUI(true)] _GlobalMaskDistanceEnable_14 ("", Int) = 0
+[Enum(Object Position, 0, Pixel Position, 1)] _GlobalMaskDistanceType_14 ("Pos To Use", Int) = 1
+_GlobalMaskDistanceMin_14 ("Min Distance", Float) = 1
+_GlobalMaskDistanceMax_14 ("Max Distance", Float) = 2
+_GlobalMaskDistanceMinAlpha_14 ("Min Distance Alpha", Range(0, 1)) = 0
+_GlobalMaskDistanceMaxAlpha_14 ("Max Distance Alpha", Range(0, 1)) = 1
+[ThryWideEnum(Replace, 0, Multiply, 2)] _GlobalMaskDistanceBlendType_14 ("Blending", Int) = 0
+[HideInInspector] m_end_GlobalMaskDistanceM_14 ("", Float) = 0
+//endex
+
+//ifex _GlobalMaskDistanceEnable_15==0
+[HideInInspector] m_start_GlobalMaskDistanceM_15 (" 4A--{reference_property:_GlobalMaskDistanceEnable_15}", Float) = 0
+[HideInInspector][ThryToggleUI(true)] _GlobalMaskDistanceEnable_15 ("", Int) = 0
+[Enum(Object Position, 0, Pixel Position, 1)] _GlobalMaskDistanceType_15 ("Pos To Use", Int) = 1
+_GlobalMaskDistanceMin_15 ("Min Distance", Float) = 1
+_GlobalMaskDistanceMax_15 ("Max Distance", Float) = 2
+_GlobalMaskDistanceMinAlpha_15 ("Min Distance Alpha", Range(0, 1)) = 0
+_GlobalMaskDistanceMaxAlpha_15 ("Max Distance Alpha", Range(0, 1)) = 1
+[ThryWideEnum(Replace, 0, Multiply, 2)] _GlobalMaskDistanceBlendType_15 ("Blending", Int) = 0
+[HideInInspector] m_end_GlobalMaskDistanceM_15 ("", Float) = 0
+//endex
+
+[HideInInspector] m_end_GlobalMaskModifiersDistance ("", Float) = 0
+//endex
+
+[HideInInspector] m_end_GlobalMaskModifiers ("", Float) = 0
+
+//ifex _GlobalMaskOptionsEnable==0
+[HideInInspector] m_start_GlobalMaskOptions (" Options--{reference_property:_GlobalMaskOptionsEnable}", Float) = 0
+[HideInInspector][DoNotAnimate][ThryToggleUI(true)] _GlobalMaskOptionsEnable ("Global Mask Options Enable", Float) = 0
+[Enum(Sliders, 0, Min Max Sliders, 1, Force Toggles, 2)] _GlobalMaskOptionsType ("Type", Int) = 0
+
+//ifex _GlobalMaskOptionsType!=0
+[HideInInspector] s_start_GlobalMaskOptionsSliders ("Options--{persistent_expand:true,default_expand:false,condition_showS:_GlobalMaskOptionsType==0}", Int) = 0
+_GlobalMaskSlider_0 ("1R", Range(-1, 1)) = 0
+_GlobalMaskSlider_1 ("1G", Range(-1, 1)) = 0
+_GlobalMaskSlider_2 ("1B", Range(-1, 1)) = 0
+_GlobalMaskSlider_3 ("1A", Range(-1, 1)) = 0
+_GlobalMaskSlider_4 ("2R", Range(-1, 1)) = 0
+_GlobalMaskSlider_5 ("2G", Range(-1, 1)) = 0
+_GlobalMaskSlider_6 ("2B", Range(-1, 1)) = 0
+_GlobalMaskSlider_7 ("2A", Range(-1, 1)) = 0
+_GlobalMaskSlider_8 ("3R", Range(-1, 1)) = 0
+_GlobalMaskSlider_9 ("3G", Range(-1, 1)) = 0
+_GlobalMaskSlider_10 ("3B", Range(-1, 1)) = 0
+_GlobalMaskSlider_11 ("3A", Range(-1, 1)) = 0
+_GlobalMaskSlider_12 ("4R", Range(-1, 1)) = 0
+_GlobalMaskSlider_13 ("4G", Range(-1, 1)) = 0
+_GlobalMaskSlider_14 ("4B", Range(-1, 1)) = 0
+_GlobalMaskSlider_15 ("4A", Range(-1, 1)) = 0
+[HideInInspector] s_end_GlobalMaskOptionsSliders ("", Int) = 0
+//endex
+
+//ifex _GlobalMaskOptionsType!=1
+[HideInInspector] s_start_GlobalMaskOptionsMinMaxSliders ("Options--{persistent_expand:true,default_expand:false,condition_showS:_GlobalMaskOptionsType==1}", Int) = 0
+[MultiSlider] _GlobalMaskMinMaxSlider_0 ("1R", Vector) = (0, 1, 0, 1)
+[MultiSlider] _GlobalMaskMinMaxSlider_1 ("1G", Vector) = (0, 1, 0, 1)
+[MultiSlider] _GlobalMaskMinMaxSlider_2 ("1B", Vector) = (0, 1, 0, 1)
+[MultiSlider] _GlobalMaskMinMaxSlider_3 ("1A", Vector) = (0, 1, 0, 1)
+[MultiSlider] _GlobalMaskMinMaxSlider_4 ("2R", Vector) = (0, 1, 0, 1)
+[MultiSlider] _GlobalMaskMinMaxSlider_5 ("2G", Vector) = (0, 1, 0, 1)
+[MultiSlider] _GlobalMaskMinMaxSlider_6 ("2B", Vector) = (0, 1, 0, 1)
+[MultiSlider] _GlobalMaskMinMaxSlider_7 ("2A", Vector) = (0, 1, 0, 1)
+[MultiSlider] _GlobalMaskMinMaxSlider_8 ("3R", Vector) = (0, 1, 0, 1)
+[MultiSlider] _GlobalMaskMinMaxSlider_9 ("3G", Vector) = (0, 1, 0, 1)
+[MultiSlider] _GlobalMaskMinMaxSlider_10 ("3B", Vector) = (0, 1, 0, 1)
+[MultiSlider] _GlobalMaskMinMaxSlider_11 ("3A", Vector) = (0, 1, 0, 1)
+[MultiSlider] _GlobalMaskMinMaxSlider_12 ("4R", Vector) = (0, 1, 0, 1)
+[MultiSlider] _GlobalMaskMinMaxSlider_13 ("4G", Vector) = (0, 1, 0, 1)
+[MultiSlider] _GlobalMaskMinMaxSlider_14 ("4B", Vector) = (0, 1, 0, 1)
+[MultiSlider] _GlobalMaskMinMaxSlider_15 ("4A", Vector) = (0, 1, 0, 1)
+[HideInInspector] s_end_GlobalMaskOptionsMinMaxSliders ("", Int) = 0
+//endex
+
+//ifex _GlobalMaskOptionsType!=2
+[HideInInspector] s_start_GlobalMaskOptionsForceToggles ("Options--{persistent_expand:true,default_expand:false,condition_showS:_GlobalMaskOptionsType==2}", Int) = 0
+[ThryHeaderLabel(Force On)]
+[ToggleUI] _GlobalMaskToggleOn_0 ("1R", Int) = 0
+[ToggleUI] _GlobalMaskToggleOn_1 ("1G", Int) = 0
+[ToggleUI] _GlobalMaskToggleOn_2 ("1B", Int) = 0
+[ToggleUI] _GlobalMaskToggleOn_3 ("1A", Int) = 0
+[ToggleUI] _GlobalMaskToggleOn_4 ("2R", Int) = 0
+[ToggleUI] _GlobalMaskToggleOn_5 ("2G", Int) = 0
+[ToggleUI] _GlobalMaskToggleOn_6 ("2B", Int) = 0
+[ToggleUI] _GlobalMaskToggleOn_7 ("2A", Int) = 0
+[ToggleUI] _GlobalMaskToggleOn_8 ("3R", Int) = 0
+[ToggleUI] _GlobalMaskToggleOn_9 ("3G", Int) = 0
+[ToggleUI] _GlobalMaskToggleOn_10 ("3B", Int) = 0
+[ToggleUI] _GlobalMaskToggleOn_11 ("3A", Int) = 0
+[ToggleUI] _GlobalMaskToggleOn_12 ("4R", Int) = 0
+[ToggleUI] _GlobalMaskToggleOn_13 ("4G", Int) = 0
+[ToggleUI] _GlobalMaskToggleOn_14 ("4B", Int) = 0
+[ToggleUI] _GlobalMaskToggleOn_15 ("4A", Int) = 0
+[Space(8)]
+[ThryHeaderLabel(Force Off)]
+[ToggleUI] _GlobalMaskToggleOff_0 ("1R", Int) = 0
+[ToggleUI] _GlobalMaskToggleOff_1 ("1G", Int) = 0
+[ToggleUI] _GlobalMaskToggleOff_2 ("1B", Int) = 0
+[ToggleUI] _GlobalMaskToggleOff_3 ("1A", Int) = 0
+[ToggleUI] _GlobalMaskToggleOff_4 ("2R", Int) = 0
+[ToggleUI] _GlobalMaskToggleOff_5 ("2G", Int) = 0
+[ToggleUI] _GlobalMaskToggleOff_6 ("2B", Int) = 0
+[ToggleUI] _GlobalMaskToggleOff_7 ("2A", Int) = 0
+[ToggleUI] _GlobalMaskToggleOff_8 ("3R", Int) = 0
+[ToggleUI] _GlobalMaskToggleOff_9 ("3G", Int) = 0
+[ToggleUI] _GlobalMaskToggleOff_10 ("3B", Int) = 0
+[ToggleUI] _GlobalMaskToggleOff_11 ("3A", Int) = 0
+[ToggleUI] _GlobalMaskToggleOff_12 ("4R", Int) = 0
+[ToggleUI] _GlobalMaskToggleOff_13 ("4G", Int) = 0
+[ToggleUI] _GlobalMaskToggleOff_14 ("4B", Int) = 0
+[ToggleUI] _GlobalMaskToggleOff_15 ("4A", Int) = 0
+[HideInInspector] s_end_GlobalMaskOptionsForceToggles ("", Int) = 0
+//endex
+
+[HideInInspector] m_end_GlobalMaskOptions ("Global Mask Options", Float) = 0
+//endex
+
+[HideInInspector] m_end_GlobalMask ("Global Mask", Float) = 0
+
+#T#PoiGlobalMaskKeywords
+//ifex _GlobalMaskTexturesEnable==0
+#pragma shader_feature_local POI_GLOBALMASK_TEXTURES
+//endex
+
+#T#PoiGlobalMaskVariablesExposed
+//ifex _GlobalMaskTexturesEnable==0
+#ifdef POI_GLOBALMASK_TEXTURES
+    float4 _GlobalMaskTexture0_ST;
+    float2 _GlobalMaskTexture0Pan;
+    float _GlobalMaskTexture0UV;
+    int _GlobalMaskTexture0Split;
+    float4 _GlobalMaskTexture0SplitTilingOffset_G;
+    half4 _GlobalMaskTexture0SplitPan_G;
+    float4 _GlobalMaskTexture0SplitTilingOffset_B;
+    half4 _GlobalMaskTexture0SplitPan_B;
+    float4 _GlobalMaskTexture0SplitTilingOffset_A;
+    half4 _GlobalMaskTexture0SplitPan_A;
+    float4 _GlobalMaskTexture1_ST;
+    float2 _GlobalMaskTexture1Pan;
+    float _GlobalMaskTexture1UV;
+    int _GlobalMaskTexture1Split;
+    float4 _GlobalMaskTexture1SplitTilingOffset_G;
+    half4 _GlobalMaskTexture1SplitPan_G;
+    float4 _GlobalMaskTexture1SplitTilingOffset_B;
+    half4 _GlobalMaskTexture1SplitPan_B;
+    float4 _GlobalMaskTexture1SplitTilingOffset_A;
+    half4 _GlobalMaskTexture1SplitPan_A;
+    float4 _GlobalMaskTexture2_ST;
+    float2 _GlobalMaskTexture2Pan;
+    float _GlobalMaskTexture2UV;
+    int _GlobalMaskTexture2Split;
+    float4 _GlobalMaskTexture2SplitTilingOffset_G;
+    half4 _GlobalMaskTexture2SplitPan_G;
+    float4 _GlobalMaskTexture2SplitTilingOffset_B;
+    half4 _GlobalMaskTexture2SplitPan_B;
+    float4 _GlobalMaskTexture2SplitTilingOffset_A;
+    half4 _GlobalMaskTexture2SplitPan_A;
+    float4 _GlobalMaskTexture3_ST;
+    float2 _GlobalMaskTexture3Pan;
+    float _GlobalMaskTexture3UV;
+    int _GlobalMaskTexture3Split;
+    float4 _GlobalMaskTexture3SplitTilingOffset_G;
+    half4 _GlobalMaskTexture3SplitPan_G;
+    float4 _GlobalMaskTexture3SplitTilingOffset_B;
+    half4 _GlobalMaskTexture3SplitPan_B;
+    float4 _GlobalMaskTexture3SplitTilingOffset_A;
+    half4 _GlobalMaskTexture3SplitPan_A;
+#endif
+//endex
+//ifex _GlobalMaskOptionsEnable==0
+half _GlobalMaskOptionsEnable;
+int _GlobalMaskOptionsType;
+
+//ifex _GlobalMaskOptionsType!=0
+half _GlobalMaskSlider_0;
+half _GlobalMaskSlider_1;
+half _GlobalMaskSlider_2;
+half _GlobalMaskSlider_3;
+half _GlobalMaskSlider_4;
+half _GlobalMaskSlider_5;
+half _GlobalMaskSlider_6;
+half _GlobalMaskSlider_7;
+half _GlobalMaskSlider_8;
+half _GlobalMaskSlider_9;
+half _GlobalMaskSlider_10;
+half _GlobalMaskSlider_11;
+half _GlobalMaskSlider_12;
+half _GlobalMaskSlider_13;
+half _GlobalMaskSlider_14;
+half _GlobalMaskSlider_15;
+//endex
+
+//ifex _GlobalMaskOptionsType!=1
+half2 _GlobalMaskMinMaxSlider_0;
+half2 _GlobalMaskMinMaxSlider_1;
+half2 _GlobalMaskMinMaxSlider_2;
+half2 _GlobalMaskMinMaxSlider_3;
+half2 _GlobalMaskMinMaxSlider_4;
+half2 _GlobalMaskMinMaxSlider_5;
+half2 _GlobalMaskMinMaxSlider_6;
+half2 _GlobalMaskMinMaxSlider_7;
+half2 _GlobalMaskMinMaxSlider_8;
+half2 _GlobalMaskMinMaxSlider_9;
+half2 _GlobalMaskMinMaxSlider_10;
+half2 _GlobalMaskMinMaxSlider_11;
+half2 _GlobalMaskMinMaxSlider_12;
+half2 _GlobalMaskMinMaxSlider_13;
+half2 _GlobalMaskMinMaxSlider_14;
+half2 _GlobalMaskMinMaxSlider_15;
+//endex
+
+//ifex _GlobalMaskOptionsType!=2
+int _GlobalMaskToggleOn_0;
+int _GlobalMaskToggleOff_0;
+int _GlobalMaskToggleOn_1;
+int _GlobalMaskToggleOff_1;
+int _GlobalMaskToggleOn_2;
+int _GlobalMaskToggleOff_2;
+int _GlobalMaskToggleOn_3;
+int _GlobalMaskToggleOff_3;
+int _GlobalMaskToggleOn_4;
+int _GlobalMaskToggleOff_4;
+int _GlobalMaskToggleOn_5;
+int _GlobalMaskToggleOff_5;
+int _GlobalMaskToggleOn_6;
+int _GlobalMaskToggleOff_6;
+int _GlobalMaskToggleOn_7;
+int _GlobalMaskToggleOff_7;
+int _GlobalMaskToggleOn_8;
+int _GlobalMaskToggleOff_8;
+int _GlobalMaskToggleOn_9;
+int _GlobalMaskToggleOff_9;
+int _GlobalMaskToggleOn_10;
+int _GlobalMaskToggleOff_10;
+int _GlobalMaskToggleOn_11;
+int _GlobalMaskToggleOff_11;
+int _GlobalMaskToggleOn_12;
+int _GlobalMaskToggleOff_12;
+int _GlobalMaskToggleOn_13;
+int _GlobalMaskToggleOff_13;
+int _GlobalMaskToggleOn_14;
+int _GlobalMaskToggleOff_14;
+int _GlobalMaskToggleOn_15;
+int _GlobalMaskToggleOff_15;
+//endex
+//endex
+//ifex _GlobalMaskModifiersBackfaceEnable==0
+half _GlobalMaskModifiersBackfaceEnable;
+half _GlobalMaskBackface_0;
+half _GlobalMaskBackface_1;
+half _GlobalMaskBackface_2;
+half _GlobalMaskBackface_3;
+half _GlobalMaskBackface_4;
+half _GlobalMaskBackface_5;
+half _GlobalMaskBackface_6;
+half _GlobalMaskBackface_7;
+half _GlobalMaskBackface_8;
+half _GlobalMaskBackface_9;
+half _GlobalMaskBackface_10;
+half _GlobalMaskBackface_11;
+half _GlobalMaskBackface_12;
+half _GlobalMaskBackface_13;
+half _GlobalMaskBackface_14;
+half _GlobalMaskBackface_15;
+//endex
+
+//ifex _GlobalMaskModifiersMirrorEnable==0
+half _GlobalMaskModifiersMirrorEnable;
+float _GlobalMaskMirrorVisibilityMode;
+half _GlobalMaskMirror_0;
+half _GlobalMaskMirror_1;
+half _GlobalMaskMirror_2;
+half _GlobalMaskMirror_3;
+half _GlobalMaskMirror_4;
+half _GlobalMaskMirror_5;
+half _GlobalMaskMirror_6;
+half _GlobalMaskMirror_7;
+half _GlobalMaskMirror_8;
+half _GlobalMaskMirror_9;
+half _GlobalMaskMirror_10;
+half _GlobalMaskMirror_11;
+half _GlobalMaskMirror_12;
+half _GlobalMaskMirror_13;
+half _GlobalMaskMirror_14;
+half _GlobalMaskMirror_15;
+//endex
+
+//ifex _GlobalMaskModifiersCameraEnable==0
+half _GlobalMaskModifiersCameraEnable;
+half _GlobalMaskCamera_0;
+half _GlobalMaskCamera_1;
+half _GlobalMaskCamera_2;
+half _GlobalMaskCamera_3;
+half _GlobalMaskCamera_4;
+half _GlobalMaskCamera_5;
+half _GlobalMaskCamera_6;
+half _GlobalMaskCamera_7;
+half _GlobalMaskCamera_8;
+half _GlobalMaskCamera_9;
+half _GlobalMaskCamera_10;
+half _GlobalMaskCamera_11;
+half _GlobalMaskCamera_12;
+half _GlobalMaskCamera_13;
+half _GlobalMaskCamera_14;
+half _GlobalMaskCamera_15;
+//endex
+
+//ifex _GlobalMaskModifiersDistanceEnable==0
+int _GlobalMaskModifiersDistanceEnable;
+
+//ifex _GlobalMaskDistanceEnable_0==0
+int _GlobalMaskDistanceEnable_0;
+int _GlobalMaskDistanceType_0;
+float _GlobalMaskDistanceMin_0;
+float _GlobalMaskDistanceMax_0;
+half _GlobalMaskDistanceMinAlpha_0;
+half _GlobalMaskDistanceMaxAlpha_0;
+int _GlobalMaskDistanceBlendType_0;
+//endex
+
+//ifex _GlobalMaskDistanceEnable_1==0
+int _GlobalMaskDistanceEnable_1;
+int _GlobalMaskDistanceType_1;
+float _GlobalMaskDistanceMin_1;
+float _GlobalMaskDistanceMax_1;
+half _GlobalMaskDistanceMinAlpha_1;
+half _GlobalMaskDistanceMaxAlpha_1;
+int _GlobalMaskDistanceBlendType_1;
+//endex
+
+//ifex _GlobalMaskDistanceEnable_2==0
+int _GlobalMaskDistanceEnable_2;
+int _GlobalMaskDistanceType_2;
+float _GlobalMaskDistanceMin_2;
+float _GlobalMaskDistanceMax_2;
+half _GlobalMaskDistanceMinAlpha_2;
+half _GlobalMaskDistanceMaxAlpha_2;
+int _GlobalMaskDistanceBlendType_2;
+//endex
+
+//ifex _GlobalMaskDistanceEnable_3==0
+int _GlobalMaskDistanceEnable_3;
+int _GlobalMaskDistanceType_3;
+float _GlobalMaskDistanceMin_3;
+float _GlobalMaskDistanceMax_3;
+half _GlobalMaskDistanceMinAlpha_3;
+half _GlobalMaskDistanceMaxAlpha_3;
+int _GlobalMaskDistanceBlendType_3;
+//endex
+
+//ifex _GlobalMaskDistanceEnable_4==0
+int _GlobalMaskDistanceEnable_4;
+int _GlobalMaskDistanceType_4;
+float _GlobalMaskDistanceMin_4;
+float _GlobalMaskDistanceMax_4;
+half _GlobalMaskDistanceMinAlpha_4;
+half _GlobalMaskDistanceMaxAlpha_4;
+int _GlobalMaskDistanceBlendType_4;
+//endex
+
+//ifex _GlobalMaskDistanceEnable_5==0
+int _GlobalMaskDistanceEnable_5;
+int _GlobalMaskDistanceType_5;
+float _GlobalMaskDistanceMin_5;
+float _GlobalMaskDistanceMax_5;
+half _GlobalMaskDistanceMinAlpha_5;
+half _GlobalMaskDistanceMaxAlpha_5;
+int _GlobalMaskDistanceBlendType_5;
+//endex
+
+//ifex _GlobalMaskDistanceEnable_6==0
+int _GlobalMaskDistanceEnable_6;
+int _GlobalMaskDistanceType_6;
+float _GlobalMaskDistanceMin_6;
+float _GlobalMaskDistanceMax_6;
+half _GlobalMaskDistanceMinAlpha_6;
+half _GlobalMaskDistanceMaxAlpha_6;
+int _GlobalMaskDistanceBlendType_6;
+//endex
+
+//ifex _GlobalMaskDistanceEnable_7==0
+int _GlobalMaskDistanceEnable_7;
+int _GlobalMaskDistanceType_7;
+float _GlobalMaskDistanceMin_7;
+float _GlobalMaskDistanceMax_7;
+half _GlobalMaskDistanceMinAlpha_7;
+half _GlobalMaskDistanceMaxAlpha_7;
+int _GlobalMaskDistanceBlendType_7;
+//endex
+
+//ifex _GlobalMaskDistanceEnable_8==0
+int _GlobalMaskDistanceEnable_8;
+int _GlobalMaskDistanceType_8;
+float _GlobalMaskDistanceMin_8;
+float _GlobalMaskDistanceMax_8;
+half _GlobalMaskDistanceMinAlpha_8;
+half _GlobalMaskDistanceMaxAlpha_8;
+int _GlobalMaskDistanceBlendType_8;
+//endex
+
+//ifex _GlobalMaskDistanceEnable_9==0
+int _GlobalMaskDistanceEnable_9;
+int _GlobalMaskDistanceType_9;
+float _GlobalMaskDistanceMin_9;
+float _GlobalMaskDistanceMax_9;
+half _GlobalMaskDistanceMinAlpha_9;
+half _GlobalMaskDistanceMaxAlpha_9;
+int _GlobalMaskDistanceBlendType_9;
+//endex
+
+//ifex _GlobalMaskDistanceEnable_10==0
+int _GlobalMaskDistanceEnable_10;
+int _GlobalMaskDistanceType_10;
+float _GlobalMaskDistanceMin_10;
+float _GlobalMaskDistanceMax_10;
+half _GlobalMaskDistanceMinAlpha_10;
+half _GlobalMaskDistanceMaxAlpha_10;
+int _GlobalMaskDistanceBlendType_10;
+//endex
+
+//ifex _GlobalMaskDistanceEnable_11==0
+int _GlobalMaskDistanceEnable_11;
+int _GlobalMaskDistanceType_11;
+float _GlobalMaskDistanceMin_11;
+float _GlobalMaskDistanceMax_11;
+half _GlobalMaskDistanceMinAlpha_11;
+half _GlobalMaskDistanceMaxAlpha_11;
+int _GlobalMaskDistanceBlendType_11;
+//endex
+
+//ifex _GlobalMaskDistanceEnable_12==0
+int _GlobalMaskDistanceEnable_12;
+int _GlobalMaskDistanceType_12;
+float _GlobalMaskDistanceMin_12;
+float _GlobalMaskDistanceMax_12;
+half _GlobalMaskDistanceMinAlpha_12;
+half _GlobalMaskDistanceMaxAlpha_12;
+int _GlobalMaskDistanceBlendType_12;
+//endex
+
+//ifex _GlobalMaskDistanceEnable_13==0
+int _GlobalMaskDistanceEnable_13;
+int _GlobalMaskDistanceType_13;
+float _GlobalMaskDistanceMin_13;
+float _GlobalMaskDistanceMax_13;
+half _GlobalMaskDistanceMinAlpha_13;
+half _GlobalMaskDistanceMaxAlpha_13;
+int _GlobalMaskDistanceBlendType_13;
+//endex
+
+//ifex _GlobalMaskDistanceEnable_14==0
+int _GlobalMaskDistanceEnable_14;
+int _GlobalMaskDistanceType_14;
+float _GlobalMaskDistanceMin_14;
+float _GlobalMaskDistanceMax_14;
+half _GlobalMaskDistanceMinAlpha_14;
+half _GlobalMaskDistanceMaxAlpha_14;
+int _GlobalMaskDistanceBlendType_14;
+//endex
+
+//ifex _GlobalMaskDistanceEnable_15==0
+int _GlobalMaskDistanceEnable_15;
+int _GlobalMaskDistanceType_15;
+float _GlobalMaskDistanceMin_15;
+float _GlobalMaskDistanceMax_15;
+half _GlobalMaskDistanceMinAlpha_15;
+half _GlobalMaskDistanceMaxAlpha_15;
+int _GlobalMaskDistanceBlendType_15;
+//endex
+//endex
+
+int _GlobalMaskVertexColorLinearSpace;
+//ifex _GlobalMaskVertexColorRed==0 && isNotAnimated(_GlobalMaskVertexColorRed)
+int _GlobalMaskVertexColorRed;
+int _GlobalMaskVertexColorRedBlendType;
+//endex
+//ifex _GlobalMaskVertexColorGreen==0 && isNotAnimated(_GlobalMaskVertexColorGreen)
+int _GlobalMaskVertexColorGreen;
+int _GlobalMaskVertexColorGreenBlendType;
+//endex
+//ifex _GlobalMaskVertexColorBlue==0 && isNotAnimated(_GlobalMaskVertexColorBlue)
+int _GlobalMaskVertexColorBlue;
+int _GlobalMaskVertexColorBlueBlendType;
+//endex
+//ifex _GlobalMaskVertexColorAlpha==0 && isNotAnimated(_GlobalMaskVertexColorAlpha)
+int _GlobalMaskVertexColorAlpha;
+int _GlobalMaskVertexColorAlphaBlendType;
+//endex
+
+#T#PoiGlobalMaskVariables
+//ifex _GlobalMaskTexturesEnable==0
+#ifdef POI_GLOBALMASK_TEXTURES
+    #if defined(PROP_GLOBALMASKTEXTURE0) || !defined(OPTIMIZER_ENABLED)
+        Texture2D _GlobalMaskTexture0;
+    #endif
+    #if defined(PROP_GLOBALMASKTEXTURE1) || !defined(OPTIMIZER_ENABLED)
+        Texture2D _GlobalMaskTexture1;
+    #endif
+    #if defined(PROP_GLOBALMASKTEXTURE2) || !defined(OPTIMIZER_ENABLED)
+        Texture2D _GlobalMaskTexture2;
+    #endif
+    #if defined(PROP_GLOBALMASKTEXTURE3) || !defined(OPTIMIZER_ENABLED)
+        Texture2D _GlobalMaskTexture3;
+    #endif
+#endif
+//endex
+
+
+#T#PoiGlobalMaskFunction
+//ifex _GlobalMaskTexturesEnable==0
+#ifdef POI_GLOBALMASK_TEXTURES
+    void ApplyGlobalMaskTextures(in PoiMesh poiMesh, inout PoiMods poiMods)
+    {
+        #if defined(PROP_GLOBALMASKTEXTURE0) || !defined(OPTIMIZER_ENABLED)
+            float4 gmcol0 = POI2D_SAMPLER_PAN(_GlobalMaskTexture0, _MainTex, poiUV(poiMesh.uv[_GlobalMaskTexture0UV], _GlobalMaskTexture0_ST), _GlobalMaskTexture0Pan);
+            if (_GlobalMaskTexture0Split >= 0.5)
+            {
+                poiMods.globalMask[0] = gmcol0.r;
+                poiMods.globalMask[1] = POI2D_SAMPLER_PAN(_GlobalMaskTexture0, _MainTex, poiUV(poiMesh.uv[_GlobalMaskTexture0UV], _GlobalMaskTexture0SplitTilingOffset_G), _GlobalMaskTexture0SplitPan_G).g;
+                poiMods.globalMask[2] = POI2D_SAMPLER_PAN(_GlobalMaskTexture0, _MainTex, poiUV(poiMesh.uv[_GlobalMaskTexture0UV], _GlobalMaskTexture0SplitTilingOffset_B), _GlobalMaskTexture0SplitPan_B).b;
+                poiMods.globalMask[3] = POI2D_SAMPLER_PAN(_GlobalMaskTexture0, _MainTex, poiUV(poiMesh.uv[_GlobalMaskTexture0UV], _GlobalMaskTexture0SplitTilingOffset_A), _GlobalMaskTexture0SplitPan_A).a;
+            }
+            else
+            {
+                poiMods.globalMask[0] = gmcol0[0];
+                poiMods.globalMask[1] = gmcol0[1];
+                poiMods.globalMask[2] = gmcol0[2];
+                poiMods.globalMask[3] = gmcol0[3];
+            }
+        #endif
+
+        #if defined(PROP_GLOBALMASKTEXTURE1) || !defined(OPTIMIZER_ENABLED)
+            float4 gmcol1 = POI2D_SAMPLER_PAN(_GlobalMaskTexture1, _MainTex, poiUV(poiMesh.uv[_GlobalMaskTexture1UV], _GlobalMaskTexture1_ST), _GlobalMaskTexture1Pan);
+            if (_GlobalMaskTexture1Split >= 0.5)
+            {
+                poiMods.globalMask[4] = gmcol1.r;
+                poiMods.globalMask[5] = POI2D_SAMPLER_PAN(_GlobalMaskTexture1, _MainTex, poiUV(poiMesh.uv[_GlobalMaskTexture1UV], _GlobalMaskTexture1SplitTilingOffset_G), _GlobalMaskTexture1SplitPan_G).g;
+                poiMods.globalMask[6] = POI2D_SAMPLER_PAN(_GlobalMaskTexture1, _MainTex, poiUV(poiMesh.uv[_GlobalMaskTexture1UV], _GlobalMaskTexture1SplitTilingOffset_B), _GlobalMaskTexture1SplitPan_B).b;
+                poiMods.globalMask[7] = POI2D_SAMPLER_PAN(_GlobalMaskTexture1, _MainTex, poiUV(poiMesh.uv[_GlobalMaskTexture1UV], _GlobalMaskTexture1SplitTilingOffset_A), _GlobalMaskTexture1SplitPan_A).a;
+            }
+            else
+            {
+                poiMods.globalMask[4] = gmcol1[0];
+                poiMods.globalMask[5] = gmcol1[1];
+                poiMods.globalMask[6] = gmcol1[2];
+                poiMods.globalMask[7] = gmcol1[3];
+            }
+        #endif
+
+        #if defined(PROP_GLOBALMASKTEXTURE2) || !defined(OPTIMIZER_ENABLED)
+            float4 gmcol2 = POI2D_SAMPLER_PAN(_GlobalMaskTexture2, _MainTex, poiUV(poiMesh.uv[_GlobalMaskTexture2UV], _GlobalMaskTexture2_ST), _GlobalMaskTexture2Pan);
+            if (_GlobalMaskTexture2Split >= 0.5)
+            {
+                poiMods.globalMask[8] = gmcol2.r;
+                poiMods.globalMask[9] = POI2D_SAMPLER_PAN(_GlobalMaskTexture2, _MainTex, poiUV(poiMesh.uv[_GlobalMaskTexture2UV], _GlobalMaskTexture2SplitTilingOffset_G), _GlobalMaskTexture2SplitPan_G).g;
+                poiMods.globalMask[10] = POI2D_SAMPLER_PAN(_GlobalMaskTexture2, _MainTex, poiUV(poiMesh.uv[_GlobalMaskTexture2UV], _GlobalMaskTexture2SplitTilingOffset_B), _GlobalMaskTexture2SplitPan_B).b;
+                poiMods.globalMask[11] = POI2D_SAMPLER_PAN(_GlobalMaskTexture2, _MainTex, poiUV(poiMesh.uv[_GlobalMaskTexture2UV], _GlobalMaskTexture2SplitTilingOffset_A), _GlobalMaskTexture2SplitPan_A).a;
+            }
+            else
+            {
+                poiMods.globalMask[8] = gmcol2[0];
+                poiMods.globalMask[9] = gmcol2[1];
+                poiMods.globalMask[10] = gmcol2[2];
+                poiMods.globalMask[11] = gmcol2[3];
+            }
+        #endif
+
+        #if defined(PROP_GLOBALMASKTEXTURE3) || !defined(OPTIMIZER_ENABLED)
+            float4 gmcol3 = POI2D_SAMPLER_PAN(_GlobalMaskTexture3, _MainTex, poiUV(poiMesh.uv[_GlobalMaskTexture3UV], _GlobalMaskTexture3_ST), _GlobalMaskTexture3Pan);
+            if (_GlobalMaskTexture3Split >= 0.5)
+            {
+                poiMods.globalMask[12] = gmcol3.r;
+                poiMods.globalMask[13] = POI2D_SAMPLER_PAN(_GlobalMaskTexture3, _MainTex, poiUV(poiMesh.uv[_GlobalMaskTexture3UV], _GlobalMaskTexture3SplitTilingOffset_G), _GlobalMaskTexture3SplitPan_G).g;
+                poiMods.globalMask[14] = POI2D_SAMPLER_PAN(_GlobalMaskTexture3, _MainTex, poiUV(poiMesh.uv[_GlobalMaskTexture3UV], _GlobalMaskTexture3SplitTilingOffset_B), _GlobalMaskTexture3SplitPan_B).b;
+                poiMods.globalMask[15] = POI2D_SAMPLER_PAN(_GlobalMaskTexture3, _MainTex, poiUV(poiMesh.uv[_GlobalMaskTexture3UV], _GlobalMaskTexture3SplitTilingOffset_A), _GlobalMaskTexture3SplitPan_A).a;
+            }
+            else
+            {
+                poiMods.globalMask[12] = gmcol3[0];
+                poiMods.globalMask[13] = gmcol3[1];
+                poiMods.globalMask[14] = gmcol3[2];
+                poiMods.globalMask[15] = gmcol3[3];
+            }
+        #endif
+    }
+#endif
+//endex
+//ifex _GlobalMaskOptionsEnable==0
+void ApplyGlobalMaskOptions(inout PoiMods poiMods)
+{
+    //ifex _GlobalMaskOptionsType!=0
+    if (_GlobalMaskOptionsType == 0)
+    {
+        poiMods.globalMask[0] = saturate(poiMods.globalMask[0] + _GlobalMaskSlider_0);
+        poiMods.globalMask[1] = saturate(poiMods.globalMask[1] + _GlobalMaskSlider_1);
+        poiMods.globalMask[2] = saturate(poiMods.globalMask[2] + _GlobalMaskSlider_2);
+        poiMods.globalMask[3] = saturate(poiMods.globalMask[3] + _GlobalMaskSlider_3);
+        poiMods.globalMask[4] = saturate(poiMods.globalMask[4] + _GlobalMaskSlider_4);
+        poiMods.globalMask[5] = saturate(poiMods.globalMask[5] + _GlobalMaskSlider_5);
+        poiMods.globalMask[6] = saturate(poiMods.globalMask[6] + _GlobalMaskSlider_6);
+        poiMods.globalMask[7] = saturate(poiMods.globalMask[7] + _GlobalMaskSlider_7);
+        poiMods.globalMask[8] = saturate(poiMods.globalMask[8] + _GlobalMaskSlider_8);
+        poiMods.globalMask[9] = saturate(poiMods.globalMask[9] + _GlobalMaskSlider_9);
+        poiMods.globalMask[10] = saturate(poiMods.globalMask[10] + _GlobalMaskSlider_10);
+        poiMods.globalMask[11] = saturate(poiMods.globalMask[11] + _GlobalMaskSlider_11);
+        poiMods.globalMask[12] = saturate(poiMods.globalMask[12] + _GlobalMaskSlider_12);
+        poiMods.globalMask[13] = saturate(poiMods.globalMask[13] + _GlobalMaskSlider_13);
+        poiMods.globalMask[14] = saturate(poiMods.globalMask[14] + _GlobalMaskSlider_14);
+        poiMods.globalMask[15] = saturate(poiMods.globalMask[15] + _GlobalMaskSlider_15);
+    }
+    //endex
+    //ifex _GlobalMaskOptionsType!=1
+    if (_GlobalMaskOptionsType == 1)
+    {
+        poiMods.globalMask[0] = lerp(_GlobalMaskMinMaxSlider_0.x, _GlobalMaskMinMaxSlider_0.y, poiMods.globalMask[0]);
+        poiMods.globalMask[1] = lerp(_GlobalMaskMinMaxSlider_1.x, _GlobalMaskMinMaxSlider_1.y, poiMods.globalMask[1]);
+        poiMods.globalMask[2] = lerp(_GlobalMaskMinMaxSlider_2.x, _GlobalMaskMinMaxSlider_2.y, poiMods.globalMask[2]);
+        poiMods.globalMask[3] = lerp(_GlobalMaskMinMaxSlider_3.x, _GlobalMaskMinMaxSlider_3.y, poiMods.globalMask[3]);
+        poiMods.globalMask[4] = lerp(_GlobalMaskMinMaxSlider_4.x, _GlobalMaskMinMaxSlider_4.y, poiMods.globalMask[4]);
+        poiMods.globalMask[5] = lerp(_GlobalMaskMinMaxSlider_5.x, _GlobalMaskMinMaxSlider_5.y, poiMods.globalMask[5]);
+        poiMods.globalMask[6] = lerp(_GlobalMaskMinMaxSlider_6.x, _GlobalMaskMinMaxSlider_6.y, poiMods.globalMask[6]);
+        poiMods.globalMask[7] = lerp(_GlobalMaskMinMaxSlider_7.x, _GlobalMaskMinMaxSlider_7.y, poiMods.globalMask[7]);
+        poiMods.globalMask[8] = lerp(_GlobalMaskMinMaxSlider_8.x, _GlobalMaskMinMaxSlider_8.y, poiMods.globalMask[8]);
+        poiMods.globalMask[9] = lerp(_GlobalMaskMinMaxSlider_9.x, _GlobalMaskMinMaxSlider_9.y, poiMods.globalMask[9]);
+        poiMods.globalMask[10] = lerp(_GlobalMaskMinMaxSlider_10.x, _GlobalMaskMinMaxSlider_10.y, poiMods.globalMask[10]);
+        poiMods.globalMask[11] = lerp(_GlobalMaskMinMaxSlider_11.x, _GlobalMaskMinMaxSlider_11.y, poiMods.globalMask[11]);
+        poiMods.globalMask[12] = lerp(_GlobalMaskMinMaxSlider_12.x, _GlobalMaskMinMaxSlider_12.y, poiMods.globalMask[12]);
+        poiMods.globalMask[13] = lerp(_GlobalMaskMinMaxSlider_13.x, _GlobalMaskMinMaxSlider_13.y, poiMods.globalMask[13]);
+        poiMods.globalMask[14] = lerp(_GlobalMaskMinMaxSlider_14.x, _GlobalMaskMinMaxSlider_14.y, poiMods.globalMask[14]);
+        poiMods.globalMask[15] = lerp(_GlobalMaskMinMaxSlider_15.x, _GlobalMaskMinMaxSlider_15.y, poiMods.globalMask[15]);
+    }
+    //endex
+    //ifex _GlobalMaskOptionsType!=2
+    if (_GlobalMaskOptionsType == 2)
+    {
+        if (_GlobalMaskToggleOn_0 >= 0.5)  poiMods.globalMask[0] = 1;
+        if (_GlobalMaskToggleOn_1 >= 0.5)  poiMods.globalMask[1] = 1;
+        if (_GlobalMaskToggleOn_2 >= 0.5)  poiMods.globalMask[2] = 1;
+        if (_GlobalMaskToggleOn_3 >= 0.5)  poiMods.globalMask[3] = 1;
+        if (_GlobalMaskToggleOn_4 >= 0.5)  poiMods.globalMask[4] = 1;
+        if (_GlobalMaskToggleOn_5 >= 0.5)  poiMods.globalMask[5] = 1;
+        if (_GlobalMaskToggleOn_6 >= 0.5)  poiMods.globalMask[6] = 1;
+        if (_GlobalMaskToggleOn_7 >= 0.5)  poiMods.globalMask[7] = 1;
+        if (_GlobalMaskToggleOn_8 >= 0.5)  poiMods.globalMask[8] = 1;
+        if (_GlobalMaskToggleOn_9 >= 0.5)  poiMods.globalMask[9] = 1;
+        if (_GlobalMaskToggleOn_10 >= 0.5) poiMods.globalMask[10] = 1;
+        if (_GlobalMaskToggleOn_11 >= 0.5) poiMods.globalMask[11] = 1;
+        if (_GlobalMaskToggleOn_12 >= 0.5) poiMods.globalMask[12] = 1;
+        if (_GlobalMaskToggleOn_13 >= 0.5) poiMods.globalMask[13] = 1;
+        if (_GlobalMaskToggleOn_14 >= 0.5) poiMods.globalMask[14] = 1;
+        if (_GlobalMaskToggleOn_15 >= 0.5) poiMods.globalMask[15] = 1;
+
+        poiMods.globalMask[0] *= (1 - _GlobalMaskToggleOff_0);
+        poiMods.globalMask[1] *= (1 - _GlobalMaskToggleOff_1);
+        poiMods.globalMask[2] *= (1 - _GlobalMaskToggleOff_2);
+        poiMods.globalMask[3] *= (1 - _GlobalMaskToggleOff_3);
+        poiMods.globalMask[4] *= (1 - _GlobalMaskToggleOff_4);
+        poiMods.globalMask[5] *= (1 - _GlobalMaskToggleOff_5);
+        poiMods.globalMask[6] *= (1 - _GlobalMaskToggleOff_6);
+        poiMods.globalMask[7] *= (1 - _GlobalMaskToggleOff_7);
+        poiMods.globalMask[8] *= (1 - _GlobalMaskToggleOff_8);
+        poiMods.globalMask[9] *= (1 - _GlobalMaskToggleOff_9);
+        poiMods.globalMask[10] *= (1 - _GlobalMaskToggleOff_10);
+        poiMods.globalMask[11] *= (1 - _GlobalMaskToggleOff_11);
+        poiMods.globalMask[12] *= (1 - _GlobalMaskToggleOff_12);
+        poiMods.globalMask[13] *= (1 - _GlobalMaskToggleOff_13);
+        poiMods.globalMask[14] *= (1 - _GlobalMaskToggleOff_14);
+        poiMods.globalMask[15] *= (1 - _GlobalMaskToggleOff_15);
+    }
+    //endex
+
+}
+//endex
+
+//ifex _GlobalMaskModifiersDistanceEnable==0
+half customDistanceBlend(half base, half blend, half blendType)
+{
+    switch(blendType)
+    {
+        case 0: { return blendNormal(base, blend); break; }
+        case 2: { return blendMultiply(base, blend); break; }
+        default: { return 0; break; }
+    }
+}
+
+void handleGlobalMaskDistance(int index, bool enable, bool type, float minAlpha, float maxAlpha, float min, float max, int blendType, in PoiMesh poiMesh, inout PoiMods poiMods)
+{
+    if (enable)
+    {
+        float3 position = type ? poiMesh.worldPos : poiMesh.objectPosition;
+        float val = lerp(minAlpha, maxAlpha, smoothstep(min, max, distance(position, getCameraPosition())));
+        poiMods.globalMask[index] = saturate(customDistanceBlend(poiMods.globalMask[index], val, blendType));
+    }
+}
+//endex
+
+void ApplyGlobalMaskModifiers(in PoiMesh poiMesh, inout PoiMods poiMods, in PoiCam poiCam)
+{
+    //ifex _GlobalMaskModifiersBackfaceEnable==0
+    if (_GlobalMaskModifiersBackfaceEnable >= 0.5)
+    {
+        float facingMode = saturate(poiMesh.isFrontFace) + 1;
+        // _GlobalMaskBackface is 0 for ignore, 1 for back only, 2 for front only
+        poiMods.globalMask[0] *= _GlobalMaskBackface_0 == 0 ? 1 : (facingMode == (_GlobalMaskBackface_0));
+        poiMods.globalMask[1] *= _GlobalMaskBackface_1 == 0 ? 1 : (facingMode == (_GlobalMaskBackface_1));
+        poiMods.globalMask[2] *= _GlobalMaskBackface_2 == 0 ? 1 : (facingMode == (_GlobalMaskBackface_2));
+        poiMods.globalMask[3] *= _GlobalMaskBackface_3 == 0 ? 1 : (facingMode == (_GlobalMaskBackface_3));
+        poiMods.globalMask[4] *= _GlobalMaskBackface_4 == 0 ? 1 : (facingMode == (_GlobalMaskBackface_4));
+        poiMods.globalMask[5] *= _GlobalMaskBackface_5 == 0 ? 1 : (facingMode == (_GlobalMaskBackface_5));
+        poiMods.globalMask[6] *= _GlobalMaskBackface_6 == 0 ? 1 : (facingMode == (_GlobalMaskBackface_6));
+        poiMods.globalMask[7] *= _GlobalMaskBackface_7 == 0 ? 1 : (facingMode == (_GlobalMaskBackface_7));
+        poiMods.globalMask[8] *= _GlobalMaskBackface_8 == 0 ? 1 : (facingMode == (_GlobalMaskBackface_8));
+        poiMods.globalMask[9] *= _GlobalMaskBackface_9 == 0 ? 1 : (facingMode == (_GlobalMaskBackface_9));
+        poiMods.globalMask[10] *= _GlobalMaskBackface_10 == 0 ? 1 : (facingMode == (_GlobalMaskBackface_10));
+        poiMods.globalMask[11] *= _GlobalMaskBackface_11 == 0 ? 1 : (facingMode == (_GlobalMaskBackface_11));
+        poiMods.globalMask[12] *= _GlobalMaskBackface_12 == 0 ? 1 : (facingMode == (_GlobalMaskBackface_12));
+        poiMods.globalMask[13] *= _GlobalMaskBackface_13 == 0 ? 1 : (facingMode == (_GlobalMaskBackface_13));
+        poiMods.globalMask[14] *= _GlobalMaskBackface_14 == 0 ? 1 : (facingMode == (_GlobalMaskBackface_14));
+        poiMods.globalMask[15] *= _GlobalMaskBackface_15 == 0 ? 1 : (facingMode == (_GlobalMaskBackface_15));
+    }
+    //endex
+
+    //ifex _GlobalMaskModifiersMirrorEnable==0
+    if (_GlobalMaskModifiersMirrorEnable >= 0.5)
+    {
+        float mirrorMode = 0;
+        if (_GlobalMaskMirrorVisibilityMode == 1) // VRC
+        mirrorMode = VRCMirrorMode() > 0;
+        else // Generic (CVR, etc)
+            mirrorMode = IsInMirror();
+        
+        mirrorMode += 1;
+        // _GlobalMaskMirror is 0 for ignore, 1 for outside mirror only, 2 for in mirror only
+        poiMods.globalMask[0] *= _GlobalMaskMirror_0 == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_0));
+        poiMods.globalMask[1] *= _GlobalMaskMirror_1 == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_1));
+        poiMods.globalMask[2] *= _GlobalMaskMirror_2 == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_2));
+        poiMods.globalMask[3] *= _GlobalMaskMirror_3 == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_3));
+        poiMods.globalMask[4] *= _GlobalMaskMirror_4 == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_4));
+        poiMods.globalMask[5] *= _GlobalMaskMirror_5 == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_5));
+        poiMods.globalMask[6] *= _GlobalMaskMirror_6 == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_6));
+        poiMods.globalMask[7] *= _GlobalMaskMirror_7 == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_7));
+        poiMods.globalMask[8] *= _GlobalMaskMirror_8 == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_8));
+        poiMods.globalMask[9] *= _GlobalMaskMirror_9 == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_9));
+        poiMods.globalMask[10] *= _GlobalMaskMirror_10 == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_10));
+        poiMods.globalMask[11] *= _GlobalMaskMirror_11 == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_11));
+        poiMods.globalMask[12] *= _GlobalMaskMirror_12 == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_12));
+        poiMods.globalMask[13] *= _GlobalMaskMirror_13 == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_13));
+        poiMods.globalMask[14] *= _GlobalMaskMirror_14 == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_14));
+        poiMods.globalMask[15] *= _GlobalMaskMirror_15 == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_15));
+    }
+    //endex
+
+    //ifex _GlobalMaskModifiersCameraEnable==0
+    if (_GlobalMaskModifiersCameraEnable >= 0.5)
+    {
+        float isCamera = VRCCameraMode() > 0;
+        isCamera += 1;
+        // _GlobalMaskCamera is 0 for ignore, 1 for outside camera only, 2 for in camera only
+        poiMods.globalMask[0] *= _GlobalMaskCamera_0 == 0 ? 1 : (isCamera == (_GlobalMaskCamera_0));
+        poiMods.globalMask[1] *= _GlobalMaskCamera_1 == 0 ? 1 : (isCamera == (_GlobalMaskCamera_1));
+        poiMods.globalMask[2] *= _GlobalMaskCamera_2 == 0 ? 1 : (isCamera == (_GlobalMaskCamera_2));
+        poiMods.globalMask[3] *= _GlobalMaskCamera_3 == 0 ? 1 : (isCamera == (_GlobalMaskCamera_3));
+        poiMods.globalMask[4] *= _GlobalMaskCamera_4 == 0 ? 1 : (isCamera == (_GlobalMaskCamera_4));
+        poiMods.globalMask[5] *= _GlobalMaskCamera_5 == 0 ? 1 : (isCamera == (_GlobalMaskCamera_5));
+        poiMods.globalMask[6] *= _GlobalMaskCamera_6 == 0 ? 1 : (isCamera == (_GlobalMaskCamera_6));
+        poiMods.globalMask[7] *= _GlobalMaskCamera_7 == 0 ? 1 : (isCamera == (_GlobalMaskCamera_7));
+        poiMods.globalMask[8] *= _GlobalMaskCamera_8 == 0 ? 1 : (isCamera == (_GlobalMaskCamera_8));
+        poiMods.globalMask[9] *= _GlobalMaskCamera_9 == 0 ? 1 : (isCamera == (_GlobalMaskCamera_9));
+        poiMods.globalMask[10] *= _GlobalMaskCamera_10 == 0 ? 1 : (isCamera == (_GlobalMaskCamera_10));
+        poiMods.globalMask[11] *= _GlobalMaskCamera_11 == 0 ? 1 : (isCamera == (_GlobalMaskCamera_11));
+        poiMods.globalMask[12] *= _GlobalMaskCamera_12 == 0 ? 1 : (isCamera == (_GlobalMaskCamera_12));
+        poiMods.globalMask[13] *= _GlobalMaskCamera_13 == 0 ? 1 : (isCamera == (_GlobalMaskCamera_13));
+        poiMods.globalMask[14] *= _GlobalMaskCamera_14 == 0 ? 1 : (isCamera == (_GlobalMaskCamera_14));
+        poiMods.globalMask[15] *= _GlobalMaskCamera_15 == 0 ? 1 : (isCamera == (_GlobalMaskCamera_15));
+    }
+    //endex
+    //ifex _GlobalMaskModifiersDistanceEnable==0
+    if (_GlobalMaskModifiersDistanceEnable >= 0.5)
+    {
+        //ifex _GlobalMaskDistanceEnable_0==0
+        handleGlobalMaskDistance(0, _GlobalMaskDistanceEnable_0, _GlobalMaskDistanceType_0, _GlobalMaskDistanceMinAlpha_0, _GlobalMaskDistanceMaxAlpha_0, _GlobalMaskDistanceMin_0, _GlobalMaskDistanceMax_0, _GlobalMaskDistanceBlendType_0, poiMesh, poiMods);
+        //endex
+        //ifex _GlobalMaskDistanceEnable_1==0
+        handleGlobalMaskDistance(1, _GlobalMaskDistanceEnable_1, _GlobalMaskDistanceType_1, _GlobalMaskDistanceMinAlpha_1, _GlobalMaskDistanceMaxAlpha_1, _GlobalMaskDistanceMin_1, _GlobalMaskDistanceMax_1, _GlobalMaskDistanceBlendType_1, poiMesh, poiMods);
+        //endex
+        //ifex _GlobalMaskDistanceEnable_2==0
+        handleGlobalMaskDistance(2, _GlobalMaskDistanceEnable_2, _GlobalMaskDistanceType_2, _GlobalMaskDistanceMinAlpha_2, _GlobalMaskDistanceMaxAlpha_2, _GlobalMaskDistanceMin_2, _GlobalMaskDistanceMax_2, _GlobalMaskDistanceBlendType_2, poiMesh, poiMods);
+        //endex
+        //ifex _GlobalMaskDistanceEnable_3==0
+        handleGlobalMaskDistance(3, _GlobalMaskDistanceEnable_3, _GlobalMaskDistanceType_3, _GlobalMaskDistanceMinAlpha_3, _GlobalMaskDistanceMaxAlpha_3, _GlobalMaskDistanceMin_3, _GlobalMaskDistanceMax_3, _GlobalMaskDistanceBlendType_3, poiMesh, poiMods);
+        //endex
+        //ifex _GlobalMaskDistanceEnable_4==0
+        handleGlobalMaskDistance(4, _GlobalMaskDistanceEnable_4, _GlobalMaskDistanceType_4, _GlobalMaskDistanceMinAlpha_4, _GlobalMaskDistanceMaxAlpha_4, _GlobalMaskDistanceMin_4, _GlobalMaskDistanceMax_4, _GlobalMaskDistanceBlendType_4, poiMesh, poiMods);
+        //endex
+        //ifex _GlobalMaskDistanceEnable_5==0
+        handleGlobalMaskDistance(5, _GlobalMaskDistanceEnable_5, _GlobalMaskDistanceType_5, _GlobalMaskDistanceMinAlpha_5, _GlobalMaskDistanceMaxAlpha_5, _GlobalMaskDistanceMin_5, _GlobalMaskDistanceMax_5, _GlobalMaskDistanceBlendType_5, poiMesh, poiMods);
+        //endex
+        //ifex _GlobalMaskDistanceEnable_6==0
+        handleGlobalMaskDistance(6, _GlobalMaskDistanceEnable_6, _GlobalMaskDistanceType_6, _GlobalMaskDistanceMinAlpha_6, _GlobalMaskDistanceMaxAlpha_6, _GlobalMaskDistanceMin_6, _GlobalMaskDistanceMax_6, _GlobalMaskDistanceBlendType_6, poiMesh, poiMods);
+        //endex
+        //ifex _GlobalMaskDistanceEnable_7==0
+        handleGlobalMaskDistance(7, _GlobalMaskDistanceEnable_7, _GlobalMaskDistanceType_7, _GlobalMaskDistanceMinAlpha_7, _GlobalMaskDistanceMaxAlpha_7, _GlobalMaskDistanceMin_7, _GlobalMaskDistanceMax_7, _GlobalMaskDistanceBlendType_7, poiMesh, poiMods);
+        //endex
+        //ifex _GlobalMaskDistanceEnable_8==0
+        handleGlobalMaskDistance(8, _GlobalMaskDistanceEnable_8, _GlobalMaskDistanceType_8, _GlobalMaskDistanceMinAlpha_8, _GlobalMaskDistanceMaxAlpha_8, _GlobalMaskDistanceMin_8, _GlobalMaskDistanceMax_8, _GlobalMaskDistanceBlendType_8, poiMesh, poiMods);
+        //endex
+        //ifex _GlobalMaskDistanceEnable_9==0
+        handleGlobalMaskDistance(9, _GlobalMaskDistanceEnable_9, _GlobalMaskDistanceType_9, _GlobalMaskDistanceMinAlpha_9, _GlobalMaskDistanceMaxAlpha_9, _GlobalMaskDistanceMin_9, _GlobalMaskDistanceMax_9, _GlobalMaskDistanceBlendType_9, poiMesh, poiMods);
+        //endex
+        //ifex _GlobalMaskDistanceEnable_10==0
+        handleGlobalMaskDistance(10, _GlobalMaskDistanceEnable_10, _GlobalMaskDistanceType_10, _GlobalMaskDistanceMinAlpha_10, _GlobalMaskDistanceMaxAlpha_10, _GlobalMaskDistanceMin_10, _GlobalMaskDistanceMax_10, _GlobalMaskDistanceBlendType_10, poiMesh, poiMods);
+        //endex
+        //ifex _GlobalMaskDistanceEnable_11==0
+        handleGlobalMaskDistance(11, _GlobalMaskDistanceEnable_11, _GlobalMaskDistanceType_11, _GlobalMaskDistanceMinAlpha_11, _GlobalMaskDistanceMaxAlpha_11, _GlobalMaskDistanceMin_11, _GlobalMaskDistanceMax_11, _GlobalMaskDistanceBlendType_11, poiMesh, poiMods);
+        //endex
+        //ifex _GlobalMaskDistanceEnable_12==0
+        handleGlobalMaskDistance(12, _GlobalMaskDistanceEnable_12, _GlobalMaskDistanceType_12, _GlobalMaskDistanceMinAlpha_12, _GlobalMaskDistanceMaxAlpha_12, _GlobalMaskDistanceMin_12, _GlobalMaskDistanceMax_12, _GlobalMaskDistanceBlendType_12, poiMesh, poiMods);
+        //endex
+        //ifex _GlobalMaskDistanceEnable_13==0
+        handleGlobalMaskDistance(13, _GlobalMaskDistanceEnable_13, _GlobalMaskDistanceType_13, _GlobalMaskDistanceMinAlpha_13, _GlobalMaskDistanceMaxAlpha_13, _GlobalMaskDistanceMin_13, _GlobalMaskDistanceMax_13, _GlobalMaskDistanceBlendType_13, poiMesh, poiMods);
+        //endex
+        //ifex _GlobalMaskDistanceEnable_14==0
+        handleGlobalMaskDistance(14, _GlobalMaskDistanceEnable_14, _GlobalMaskDistanceType_14, _GlobalMaskDistanceMinAlpha_14, _GlobalMaskDistanceMaxAlpha_14, _GlobalMaskDistanceMin_14, _GlobalMaskDistanceMax_14, _GlobalMaskDistanceBlendType_14, poiMesh, poiMods);
+        //endex
+        //ifex _GlobalMaskDistanceEnable_15==0
+        handleGlobalMaskDistance(15, _GlobalMaskDistanceEnable_15, _GlobalMaskDistanceType_15, _GlobalMaskDistanceMinAlpha_15, _GlobalMaskDistanceMaxAlpha_15, _GlobalMaskDistanceMin_15, _GlobalMaskDistanceMax_15, _GlobalMaskDistanceBlendType_15, poiMesh, poiMods);
+        //endex
+
+    }
+    //endex
+
+}
+
+//ifex _GlobalMaskVertexColorRed==0 && _GlobalMaskVertexColorGreen==0 && _GlobalMaskVertexColorBlue==0 && _GlobalMaskVertexColorAlpha==0 && isNotAnimated(_GlobalMaskVertexColorRed) && isNotAnimated(_GlobalMaskVertexColorGreen) && isNotAnimated(_GlobalMaskVertexColorBlue) && isNotAnimated(_GlobalMaskVertexColorAlpha)
+void ApplyGlobalMaskVertexColors(in PoiMesh poiMesh, inout PoiMods poiMods)
+{
+    float4 vcol = poiMesh.vertexColor;
+    if (_GlobalMaskVertexColorLinearSpace >= 0.5)
+    {
+        vcol.rgb = GammaToLinearSpace(vcol.rgb);
+    }
+    //ifex _GlobalMaskVertexColorRed==0 && isNotAnimated(_GlobalMaskVertexColorRed)
+    if (_GlobalMaskVertexColorRed > 0)
+    {
+        applyToGlobalMask(poiMods, _GlobalMaskVertexColorRed - 1, _GlobalMaskVertexColorRedBlendType, vcol.r);
+    }
+    //endex
+    //ifex _GlobalMaskVertexColorGreen==0 && isNotAnimated(_GlobalMaskVertexColorGreen)
+    if (_GlobalMaskVertexColorGreen > 0)
+    {
+        applyToGlobalMask(poiMods, _GlobalMaskVertexColorGreen - 1, _GlobalMaskVertexColorGreenBlendType, vcol.g);
+    }
+    //endex
+    //ifex _GlobalMaskVertexColorBlue==0 && isNotAnimated(_GlobalMaskVertexColorBlue)
+    if (_GlobalMaskVertexColorBlue > 0)
+    {
+        applyToGlobalMask(poiMods, _GlobalMaskVertexColorBlue - 1, _GlobalMaskVertexColorBlueBlendType, vcol.b);
+    }
+    //endex
+    //ifex _GlobalMaskVertexColorAlpha==0 && isNotAnimated(_GlobalMaskVertexColorAlpha)
+    if (_GlobalMaskVertexColorAlpha > 0)
+    {
+        applyToGlobalMask(poiMods, _GlobalMaskVertexColorAlpha - 1, _GlobalMaskVertexColorAlphaBlendType, vcol.a);
+    }
+    //endex
+}
+//endex
+
+#T#PoiGlobalMaskFunctionCall
+/*poi-section-shared-begin*/
+poiMods.globalMask[0] = 1;
+poiMods.globalMask[1] = 1;
+poiMods.globalMask[2] = 1;
+poiMods.globalMask[3] = 1;
+poiMods.globalMask[4] = 1;
+poiMods.globalMask[5] = 1;
+poiMods.globalMask[6] = 1;
+poiMods.globalMask[7] = 1;
+poiMods.globalMask[8] = 1;
+poiMods.globalMask[9] = 1;
+poiMods.globalMask[10] = 1;
+poiMods.globalMask[11] = 1;
+poiMods.globalMask[12] = 1;
+poiMods.globalMask[13] = 1;
+poiMods.globalMask[14] = 1;
+poiMods.globalMask[15] = 1;
+/*poi-section-shared-end*/
+//ifex _GlobalMaskTexturesEnable==0
+#ifdef POI_GLOBALMASK_TEXTURES
+    ApplyGlobalMaskTextures(poiMesh, poiMods);
+#endif
+//endex
+//ifex _GlobalMaskVertexColorRed==0 && _GlobalMaskVertexColorGreen==0 && _GlobalMaskVertexColorBlue==0 && _GlobalMaskVertexColorAlpha==0
+ApplyGlobalMaskVertexColors(poiMesh, poiMods);
+//endex
+ApplyGlobalMaskModifiers(poiMesh, poiMods, poiCam);
+//ifex _GlobalMaskOptionsEnable==0
+if (_GlobalMaskOptionsEnable >= 0.5)
+{
+    ApplyGlobalMaskOptions(poiMods);
+}
+//endex

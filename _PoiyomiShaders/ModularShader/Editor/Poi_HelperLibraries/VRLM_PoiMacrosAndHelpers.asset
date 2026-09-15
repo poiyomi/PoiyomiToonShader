@@ -1,0 +1,65 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1039f25740a92fc4292bb1d94d07ad19, type: 3}
+  m_Name: VRLM_PoiMacrosAndHelpers
+  m_EditorClassIdentifier: 
+  Id: PoiHelpers
+  Name: Poi Helper Functions
+  Version: 
+  Author: 
+  Description: 
+  AllowDuplicates: 0
+  ForceDuplicateLogic: 0
+  EnableProperties: []
+  Properties: []
+  ModuleDependencies: []
+  IncompatibleWith: []
+  Templates:
+  - Template: {fileID: -544282384758852595, guid: 9d151ec0fb75338468f0890fd2186a97, type: 3}
+    Keywords:
+    - GLOBAL_MACROS_AND_DEFINES
+    NeedsVariant: 0
+    Queue: 0
+  - Template: {fileID: -3683925754466882931, guid: 42ccf2a798e8b9843b19197ed214d2b8, type: 3}
+    Keywords:
+    - GLOBAL_MACROS_AND_DEFINES
+    NeedsVariant: 0
+    Queue: 0
+  - Template: {fileID: -4518698416699504929, guid: 42ccf2a798e8b9843b19197ed214d2b8, type: 3}
+    Keywords:
+    - GLOBAL_FUNCTIONS_INCLUDE_EARLY
+    NeedsVariant: 0
+    Queue: 0
+  - Template: {fileID: -2604644623368428884, guid: 42ccf2a798e8b9843b19197ed214d2b8, type: 3}
+    Keywords:
+    - GLOBAL_DATA_STRUCTURES
+    NeedsVariant: 0
+    Queue: 0
+  - Template: {fileID: -4810097266775938368, guid: 59eaf6cb2991bd041b918f1085a4948f, type: 3}
+    Keywords:
+    - GLOBAL_FUNCTIONS_INCLUDE_EARLY
+    NeedsVariant: 0
+    Queue: 0
+  - Template: {fileID: -1315915326444912292, guid: 59eaf6cb2991bd041b918f1085a4948f, type: 3}
+    Keywords:
+    - VERTEX_BASE_FUNCTIONS_EARLY
+    - VERTEX_ADD_FUNCTIONS_EARLY
+    - VERTEX_SHADOW_FUNCTIONS_EARLY
+    - VERTEX_OUTLINE_FUNCTIONS_EARLY
+    - VERTEX_META_FUNCTIONS_EARLY
+    - VERTEX_DEPTH_FUNCTIONS_EARLY
+    - VERTEX_MOTION_VECTORS_FUNCTIONS_EARLY
+    - VERTEX_LILFUR_FUNCTIONS_EARLY
+    NeedsVariant: 0
+    Queue: 0
+  Functions: []
+  AdditionalSerializedData: 

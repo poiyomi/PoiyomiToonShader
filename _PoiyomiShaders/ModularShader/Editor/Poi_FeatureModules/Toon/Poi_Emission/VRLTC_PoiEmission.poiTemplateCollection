@@ -1,0 +1,492 @@
+#T#Emission0Properties
+<ms_include_in_first>
+{
+// Group header, emitted once however many Emission modules are installed. The enable checkbox list
+// is accumulated from every instance, so it grows on its own when another one is registered.
+//ifex <ms_stringwriter::AllEmissionDisabled>
+[HideInInspector] m_start_EmissionSection ("Emissions--{reference_properties:[<ms_stringwriter::EmissionEnableList>],button_help:{text:Tutorial,action:{type:URL,data:https://www.poiyomi.com/special-fx/emission},hover:Documentation}}", Float) = 0
+//endex
+}
+
+//ifex _EnableEmission__mIDx__==0
+[HideInInspector] m_start_emission__mIDx__Options (" Emission [IDX_Emission++]--{reference_property:_EnableEmission__mIDx__}", Float) = 0
+<ms_include_in_first>{     [HideInInspector][ThryToggle(_EMISSION)]            }
+<ms_include_in_not_first>{ [HideInInspector][ThryToggle(POI_EMISSION___mID__)] }
+_EnableEmission__mIDx__ ("Enable Emission [IDX_Emission]", Float) = 0
+<ms_include_in_first>{ [Helpbox(1, 3, 1)] _EmissionFallbackHelp ("Emission 0 controls Emission Strength in Fallback Shaders. Fallback Shaders do not support Emission Masks. Refer to the Documentation for detailed information.--{onClick:{type:URL,data:https://www.poiyomi.com/special-fx/emission#emission-mask}}", Int) = 0 }
+[sRGBWarning]_EmissionMask__mIDx__ ("Emission Mask--{reference_properties:[_EmissionMask__mIDx__Pan, _EmissionMask__mIDx__UV, _EmissionMask__mIDx__Channel, _EmissionMaskInvert__mIDx__, _EmissionMask__mID__GlobalMask]}", 2D) = "white" { }
+[ThryHideInInspector][Vector2]_EmissionMask__mIDx__Pan ("Panning", Vector) = (0, 0, 0, 0)
+[ThryHideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7, Matcap, 9, Screen Space, 10)] _EmissionMask__mIDx__UV ("UV", Int) = 0
+[ThryHideInInspector][Enum(R, 0, G, 1, B, 2, A, 3)]_EmissionMask__mIDx__Channel ("Channel", Float) = 0
+[ThryHideInInspector][ToggleUI]_EmissionMaskInvert__mIDx__ ("Invert", Float) = 0
+[ThryHideInInspector][ThryWideEnum(Off, 0, 1R, 1, 1G, 2, 1B, 3, 1A, 4, 2R, 5, 2G, 6, 2B, 7, 2A, 8, 3R, 9, 3G, 10, 3B, 11, 3A, 12, 4R, 13, 4G, 14, 4B, 15, 4A, 16)] _EmissionMask__mID__GlobalMask ("Global Mask--{reference_property:_EmissionMask__mID__GlobalMaskBlendType}", Int) = 0
+[ThryHideInInspector][ThryWideEnum(Add, 7, Subtract, 1, Multiply, 2, Divide, 3, Min, 4, Max, 5, Average, 6, Replace, 0)]_EmissionMask__mID__GlobalMaskBlendType ("Blending", Range(0, 1)) = 2
+
+[HDR]_EmissionColor__mIDx__ ("Emission Color--{reference_property:_EmissionColor__mIDx__ThemeIndex}", Color) = (1, 1, 1, 1)
+[ThryHideInInspector][ThryWideEnum(Off, 0, Theme Color 0, 1, Theme Color 1, 2, Theme Color 2, 3, Theme Color 3, 4, ColorChord 0, 5, ColorChord 1, 6, ColorChord 2, 7, ColorChord 3, 8, AL Theme 0, 9, AL Theme 1, 10, AL Theme 2, 11, AL Theme 3, 12)] _EmissionColor__mIDx__ThemeIndex ("Color Theme Index", Int) = 0
+[sRGBWarning(true)][Gradient]_EmissionMap__mIDx__ ("Emission Map--{reference_properties:[_EmissionMap__mIDx__Pan, _EmissionMap__mIDx__UV]}", 2D) = "white" { }
+[ThryHideInInspector][Vector2]_EmissionMap__mIDx__Pan ("Panning", Vector) = (0, 0, 0, 0)
+[ThryHideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7, Matcap, 9, Screen Space, 10)] _EmissionMap__mIDx__UV ("UV", Int) = 0
+_EmissionStrength__mIDx__ ("Emission Strength", Range(0, 20)) = 0
+[ToggleUI]_EmissionBaseColorAsMap__mIDx__ ("Use Base Colors", Float) = 0
+[ToggleUI]_EmissionReplace__mID__ ("Override Base Color", Float) = 0
+_EmissionFluorescence__mIDx__ ("Fluorescence--{tooltip:Emission fades out in darkness and bright light}", Range(0, 1)) = 0
+
+[HideInInspector] s_start_EmissionHueShift__mID__ ("Color Adjust--{reference_property:_EmissionHueShiftEnabled__mIDx__,persistent_expand:true,default_expand:false}", Float) = 0
+[ThryHideInInspector][ToggleUI]_EmissionHueShiftEnabled__mIDx__ ("Hue Shift", Float) = 0
+[ThryWideEnum(OKLab, 0, HSV, 1)] _EmissionHueShiftColorSpace__mIDx__ ("Color Space", Int) = 0
+[ThryWideEnum(Hue Select, 0, Hue Shift, 1)] _EmissionHueSelectOrShift__mIDx__ ("Select or Shift", Int) = 1
+_EmissionSaturation__mIDx__ ("Saturation", Range(-1, 10)) = 0
+_EmissionHueShift__mIDx__ ("Hue Shift", Range(0, 1)) = 0
+_EmissionHueShiftSpeed__mIDx__ ("Hue Shift Speed", Float) = 0
+[HideInInspector] s_end_EmissionHueShift__mID__ ("", Float) = 0
+
+// Center out emission
+[HideInInspector] s_start_EmissionCenterOut__mID__ ("Center Out--{reference_property:_EmissionCenterOutEnabled__mIDx__,persistent_expand:true,default_expand:false}", Float) = 0
+[ThryHideInInspector][ToggleUI]_EmissionCenterOutEnabled__mIDx__ ("Center Out", Float) = 0
+_EmissionCenterOutSpeed__mIDx__ ("Flow Speed", Float) = 5
+[ToggleUI]_EmissionCenterOutLinear__mIDx__ ("Linear", Float) = 0
+[HideInInspector] s_end_EmissionCenterOut__mID__ ("", Float) = 0
+
+// Glow in the dark Emission
+[HideInInspector] s_start_EmissionLightBased__mID__ ("Light Based--{reference_property:_EnableGITDEmission__mIDx__,persistent_expand:true,default_expand:false}", Float) = 0
+[ThryHideInInspector][ToggleUI]_EnableGITDEmission__mIDx__ ("Light Based", Float) = 0
+[ThryWideEnum(World, 0, Mesh, 1)] _GITDEWorldOrMesh__mIDx__ ("Lighting Type", Int) = 0
+_GITDEMinEmissionMultiplier__mIDx__ ("Min Emission Multiplier", Range(0, 1)) = 1
+_GITDEMaxEmissionMultiplier__mIDx__ ("Max Emission Multiplier", Range(0, 1)) = 0
+_GITDEMinLight__mIDx__ ("Min Lighting", Range(0, 1)) = 0
+_GITDEMaxLight__mIDx__ ("Max Lighting", Range(0, 1)) = 1
+[HideInInspector] s_end_EmissionLightBased__mID__ ("", Float) = 0
+
+// Blinking Emission
+[HideInInspector] s_start_EmissionBlinking__mID__ ("Blinking--{reference_property:_EmissionBlinkingEnabled__mIDx__,persistent_expand:true,default_expand:false}", Float) = 0
+[ThryHideInInspector][ToggleUI]_EmissionBlinkingEnabled__mIDx__ ("Blinking", Float) = 0
+[ThryWideEnum(Smooth, 0, Flashing, 1)]_EmissiveBlink_Mode__mIDx__ ("Mode", Int) = 0
+_EmissiveBlink_Min__mIDx__ ("Emissive Blink Min", Float) = 0
+_EmissiveBlink_Max__mIDx__ ("Emissive Blink Max", Float) = 1
+_EmissiveBlink_Velocity__mIDx__ ("Emissive Blink Velocity", Float) = 4
+_EmissionBlinkingOffset__mIDx__ ("Offset", Float) = 0
+_EmissiveBlink_Duty__mIDx__ ("Flashing Interval--{condition_showS:(_EmissiveBlink_Mode__mIDx__==1)}", Range(0.05, 0.95)) = 0.5
+[HideInInspector] s_end_EmissionBlinking__mID__ ("", Float) = 0
+
+// Scrolling Emission
+[HideInInspector] s_start_ScrollingEmission__mID__ ("Scrolling--{reference_property:_ScrollingEmission__mIDx__,persistent_expand:true,default_expand:false}", Float) = 0
+[ThryHideInInspector][ToggleUI] _ScrollingEmission__mIDx__ ("Scrolling", Float) = 0
+[ToggleUI]_EmissionScrollingUseCurve__mIDx__ ("Use Curve", float) = 0
+[Curve]_EmissionScrollingCurve__mIDx__ ("Curve--{condition_showS:(_EmissionScrollingUseCurve__mIDx__==1)}", 2D) = "white" { }
+[ToggleUI]_EmissionScrollingVertexColor__mIDx__ ("VColor as position", float) = 0
+_EmissiveScroll_Direction__mIDx__ ("Direction", Vector) = (0, -10, 0, 0)
+_EmissiveScroll_Width__mIDx__ ("Width", Float) = 10
+_EmissiveScroll_Velocity__mIDx__ ("Velocity", Float) = 10
+_EmissiveScroll_Interval__mIDx__ ("Interval", Float) = 20
+_EmissionScrollingOffset__mIDx__ ("Offset", Float) = 0
+[HideInInspector] s_end_ScrollingEmission__mID__ ("", Float) = 0
+
+[Space(4)]
+
+[HideInInspector] s_start_EmissionAL__mID__Section ("Audio Link ♫--{condition_showS:_EnableAudioLink==1, reference_property:_EmissionAL__mID__Enabled, persistent:expand:true, default_expand:false}", Float) = 0
+[ThryHideInInspector][ThryToggleUI(true)] _EmissionAL__mID__Enabled ("Audio Link ♫", Float) = 0
+
+[HideInInspector] ss_start_EmissionAL__mID__Multiply ("Strength Multiply--{persistent_expand:true,default_expand:false", Float) = 0
+[Enum(Bass, 0, Low Mid, 1, High Mid, 2, Treble, 3, Volume, 4)] _EmissionAL__mID__MultipliersBand ("Band", Int) = 0
+[VectorLabel(Min, Max)]_EmissionAL__mID__Multipliers ("Multiplier", Vector) = (1, 1, 0, 0)
+[HideInInspector] ss_end_EmissionAL__mID__Multiply ("Strength Multiply", Float) = 0
+
+[HideInInspector] ss_start_EmissionAL__mID__Add ("Strength Add--{persistent_expand:true,default_expand:false", Float) = 0
+[Enum(Bass, 0, Low Mid, 1, High Mid, 2, Treble, 3, Volume, 4)] _EmissionAL__mID__StrengthBand ("Band", Int) = 0
+[VectorLabel(Min, Max)]_EmissionAL__mID__StrengthMod ("Strength", Vector) = (0, 0, 0, 0)
+[HideInInspector] ss_end_EmissionAL__mID__Add ("Strength Add", Float) = 0
+
+[HideInInspector] ss_start_EmissionAL__mID__COut ("Center Out--{persistent_expand:true,default_expand:false", Float) = 0
+[Enum(Bass, 0, Low Mid, 1, High Mid, 2, Treble, 3, Volume, 4)] _AudioLinkEmission__mID__CenterOutBand ("Band", Int) = 0
+[VectorLabel(Min, Max)] _AudioLinkEmission__mID__CenterOut ("Strength", Vector) = (0, 0, 0, 0)
+_AudioLinkEmission__mID__CenterOutSize ("Intensity Threshold", Range(0, 1)) = 0
+_AudioLinkEmission__mID__CenterOutDuration ("Duration", Range(-1, 1)) = 1
+[HideInInspector] ss_end_EmissionAL__mID__COut ("Center Out", Float) = 0
+
+[HideInInspector] ss_start_EmissionAL__mID__ColorOverride ("Color Override--{reference_property:_EmissionAL__mID__ColorOverrideEnabled,persistent_expand:true,default_expand:false}", Float) = 0
+[ThryHideInInspector][ToggleUI] _EmissionAL__mID__ColorOverrideEnabled ("Toggle", Float) = 0
+_EmissionAL__mID__ColorOverride ("Color Override", Color) = (1,1,1,1)
+[ThryWideEnum(Off, 0, Theme Color 0, 1, Theme Color 1, 2, Theme Color 2, 3, Theme Color 3, 4, ColorChord 0, 5, ColorChord 1, 6, ColorChord 2, 7, ColorChord 3, 8, AL Theme 0, 9, AL Theme 1, 10, AL Theme 2, 11, AL Theme 3, 12)] _EmissionAL__mID__ColorOverrideThemeIndex ("Theme Color", Int) = 0
+[Enum(Bass, 0, Low Mid, 1, High Mid, 2, Treble, 3, Volume, 4)] _EmissionAL__mID__ColorOverrideBand ("Color Override Band", Int) = 0
+[Ramp4(normalized)]_EmissionAL__mID__ColorOverrideRamp ("Color Override Ramp", Vector) = (0, 1, 0, 1)
+[HideInInspector] ss_end_EmissionAL__mID__ColorOverride ("Color Override", Float) = 0
+[HideInInspector] s_end_EmissionAL__mID__Section ("", Float) = 0
+[HideInInspector] m_end_emission__mIDx__Options ("", Float) = 0
+//endex
+
+<ms_include_in_last>
+{
+// Closes the group after the last instance. The name picks up that instance's duplicate suffix,
+// which is fine - Thry closes a header on the m_end prefix alone, it never compares names.
+//ifex <ms_stringwriter::AllEmissionDisabled>
+[HideInInspector] m_end_EmissionSection ("Emission", Float) = 0
+//endex
+}
+
+#T#Emission0Keywords
+//ifex _EnableEmission__mIDx__==0
+<ms_include_in_first>    { #pragma shader_feature       _EMISSION            }
+<ms_include_in_not_first>{ #pragma shader_feature_local POI_EMISSION___mID__ }
+//endex
+
+<ms_include_in_first>
+{
+	<ms_stringbuilder::_ANY_EMISSION_KEYWORD>defined(_EMISSION) 
+	<ms_stringbuilder::AllEmissionDisabled>_EnableEmission__mIDx__ == 0 
+	<ms_stringbuilder::EmissionEnableList>_EnableEmission__mIDx__ 
+}
+<ms_include_in_not_first>
+{
+	<ms_stringbuilder::_ANY_EMISSION_KEYWORD>|| defined(POI_EMISSION___mID__) 
+	<ms_stringbuilder::AllEmissionDisabled> && _EnableEmission__mIDx__ == 0 
+	<ms_stringbuilder::EmissionEnableList>,_EnableEmission__mIDx__ 
+}
+
+#T#Emission0VariablesExposed
+//ifex _EnableEmission__mIDx__==0
+<ms_include_in_first>    { #ifdef _EMISSION }
+<ms_include_in_not_first>{ #ifdef POI_EMISSION___mID__ }
+	float4 _EmissionMap__mIDx___ST;
+	float2 _EmissionMap__mIDx__Pan;
+	float _EmissionMap__mIDx__UV;
+	float4 _EmissionMask__mIDx___ST;
+	float2 _EmissionMask__mIDx__Pan;
+	float _EmissionMask__mIDx__UV;
+	half _EmissionMaskInvert__mIDx__;
+	float _EmissionMask__mIDx__Channel;
+	half _EmissionMask__mID__GlobalMask;
+	float _EmissionMask__mID__GlobalMaskBlendType;
+	float4 _EmissionScrollingCurve__mIDx___ST;
+
+	half _EmissionFluorescence__mIDx__;
+	half4 _EmissionColor__mIDx__;
+	half _EmissionBaseColorAsMap__mIDx__;
+	half _EmissionStrength__mIDx__;
+	half _EmissionHueShiftEnabled__mIDx__;
+	half _EmissionHueShiftColorSpace__mIDx__;
+	half _EmissionHueSelectOrShift__mIDx__;
+	half _EmissionSaturation__mIDx__;
+	half _EmissionHueShift__mIDx__;
+	float _EmissionHueShiftSpeed__mIDx__;
+	half _EmissionCenterOutEnabled__mIDx__;
+	float _EmissionCenterOutSpeed__mIDx__;
+	half _EmissionCenterOutLinear__mIDx__;
+	half _EnableGITDEmission__mIDx__;
+	float _GITDEWorldOrMesh__mIDx__;
+	half _GITDEMinEmissionMultiplier__mIDx__;
+	half _GITDEMaxEmissionMultiplier__mIDx__;
+	float _GITDEMinLight__mIDx__;
+	float _GITDEMaxLight__mIDx__;
+	half _EmissionBlinkingEnabled__mIDx__;
+	half _EmissiveBlink_Min__mIDx__;
+	half _EmissiveBlink_Max__mIDx__;
+	half _EmissiveBlink_Velocity__mIDx__;
+	float _EmissionBlinkingOffset__mIDx__;
+	float _EmissiveBlink_Mode__mIDx__;
+	half _EmissiveBlink_Duty__mIDx__;
+	half _ScrollingEmission__mIDx__;
+	float4 _EmissiveScroll_Direction__mIDx__;
+	half _EmissiveScroll_Width__mIDx__;
+	half _EmissiveScroll_Velocity__mIDx__;
+	half _EmissiveScroll_Interval__mIDx__;
+	float _EmissionScrollingOffset__mIDx__;
+
+	half _EmissionReplace__mID__;
+	float _EmissionScrollingVertexColor__mIDx__;
+	half _EmissionScrollingUseCurve__mIDx__;
+	float _EmissionColor__mIDx__ThemeIndex;
+
+	// Audio Link
+	half _EmissionAL__mID__Enabled;
+	half2 _EmissionAL__mID__StrengthMod;
+	float _EmissionAL__mID__StrengthBand;
+	half2 _AudioLinkEmission__mID__CenterOut;
+	float _AudioLinkEmission__mID__CenterOutSize;
+	float _AudioLinkEmission__mID__CenterOutBand;
+	half _AudioLinkEmission__mID__CenterOutDuration;
+	half2 _EmissionAL__mID__Multipliers;
+	float _EmissionAL__mID__MultipliersBand;
+	half _EmissionAL__mID__ColorOverrideEnabled;
+	half4 _EmissionAL__mID__ColorOverride;
+	float _EmissionAL__mID__ColorOverrideThemeIndex;
+	float _EmissionAL__mID__ColorOverrideBand;
+	half4 _EmissionAL__mID__ColorOverrideRamp;
+#endif
+//endex
+
+#T#Emission0Variables
+//ifex _EnableEmission__mIDx__==0
+<ms_include_in_first>    { #ifdef _EMISSION }
+<ms_include_in_not_first>{ #ifdef POI_EMISSION___mID__ }
+	#if defined(PROP_EMISSIONMAP__mIDx__) || !defined(OPTIMIZER_ENABLED)
+		Texture2D _EmissionMap__mIDx__;
+	#endif
+	#if defined(PROP_EMISSIONMASK__mIDx__) || !defined(OPTIMIZER_ENABLED)
+		Texture2D _EmissionMask__mIDx__;
+	#endif
+	#if defined(PROP_EMISSIONSCROLLINGCURVE__mIDx__) || !defined(OPTIMIZER_ENABLED)
+		Texture2D _EmissionScrollingCurve__mIDx__;
+	#endif
+#endif
+//endex
+
+
+#T#Emission0Function
+//ifex _EnableEmission__mIDx__==0
+float calculateGlowInTheDark(in float minLight, in float maxLight, in float minEmissionMultiplier, in float maxEmissionMultiplier, in float enabled, in float worldOrMesh, in PoiLight poiLight)
+{
+	float glowInTheDarkMultiplier = 1;
+	//UNITY_BRANCH
+	if (enabled)
+	{
+		float3 lightValue = worldOrMesh ? CalculateLuminance(poiLight.finalLighting.rgb) : CalculateLuminance(poiLight.directColor.rgb);
+		half gitdeAlpha = saturate(inverseLerp(minLight, maxLight, dot(lightValue, float3(0.299, 0.587, 0.114))));
+		glowInTheDarkMultiplier = lerp(minEmissionMultiplier, maxEmissionMultiplier, gitdeAlpha);
+	}
+	return glowInTheDarkMultiplier;
+}
+
+half calculateScrollingEmission(in half3 direction, in half velocity, in half interval, in half scrollWidth, float offset, float3 position)
+{
+	scrollWidth = max(scrollWidth, 0);
+	float phase = 0;
+	phase = dot(position, direction);
+	phase -= (POI_TIME.y + offset) * velocity;
+	phase /= interval;
+	phase -= floor(phase);
+	phase = saturate(phase);
+	return (pow(phase, scrollWidth) + pow(1 - phase, scrollWidth * 4)) * 0.5;
+}
+
+half calculateBlinkingEmission(in half blinkMin, in half blinkMax, in half blinkVelocity, in half offset, in half mode, in half duty)
+{
+	if (mode == 1)
+	{
+		float phase = frac((POI_TIME.y + offset) * blinkVelocity / (2.0 * UNITY_PI));
+		float on = step(phase, duty);
+		return lerp(blinkMin, blinkMax, on);
+	}
+	float amplitude = (blinkMax - blinkMin) * 0.5f;
+	float base = blinkMin + amplitude;
+	return sin((POI_TIME.y + offset) * blinkVelocity) * amplitude + base;
+}
+
+void applyALEmmissionStrength(in PoiMods poiMods, inout float emissionStrength, in float2 emissionStrengthMod, in float emissionStrengthBand, in float2 _EmissionALMultipliers, in float _EmissionALMultipliersBand, in float enabled)
+{
+	#ifdef POI_AUDIOLINK
+		if (poiMods.audioLinkAvailable && enabled)
+		{
+			emissionStrength += lerp(emissionStrengthMod.x, emissionStrengthMod.y, poiMods.audioLink[emissionStrengthBand]);
+			emissionStrength *= lerp(_EmissionALMultipliers.x, _EmissionALMultipliers.y, poiMods.audioLink[_EmissionALMultipliersBand]);
+		}
+	#endif
+}
+
+void applyALCenterOutEmission(in PoiMods poiMods, in float nDotV, inout float emissionStrength, in float size, in float band, in float2 emissionToAdd, in float enabled, in float duration)
+{
+	#ifdef POI_AUDIOLINK
+		if (poiMods.audioLinkAvailable && enabled)
+		{
+			half intensity;
+			[flatten]
+			if (duration >= 0)
+			{
+				intensity = getBandAtTime(band, saturate(remap(nDotV, 1, 0, 0, duration)), size);
+			}
+			else
+			{
+				duration *= -1;
+				intensity = getBandAtTime(band, saturate(remap(pow(nDotV, 2), 0, 1 + duration, 0, duration)), size);
+			}
+			emissionStrength += lerp(emissionToAdd[0], emissionToAdd[1], intensity);
+		}
+	#endif
+}
+//endex
+
+//ifex _EnableEmission__mIDx__==0
+<ms_include_in_first>     {#ifdef _EMISSION}
+<ms_include_in_not_first> {#ifdef POI_EMISSION___mID__}
+	half3 applyEmission(inout PoiFragData poiFragData, in PoiMesh poiMesh, in PoiLight poiLight, in PoiCam poiCam, in PoiMods poiMods)
+	{
+
+		// First Emission
+		half3 emission0 = 0;
+		half emissionAlpha = _EmissionColor__mIDx__.a;
+		half emissionStrength0 = _EmissionStrength__mIDx__;
+		half3 emissionColor0 = 0;
+		applyALEmmissionStrength(poiMods, emissionStrength0, _EmissionAL__mID__StrengthMod, _EmissionAL__mID__StrengthBand, _EmissionAL__mID__Multipliers, _EmissionAL__mID__MultipliersBand, _EmissionAL__mID__Enabled);
+		applyALCenterOutEmission(poiMods, poiLight.nDotVCentered, emissionStrength0, _AudioLinkEmission__mID__CenterOutSize, _AudioLinkEmission__mID__CenterOutBand, _AudioLinkEmission__mID__CenterOut, _EmissionAL__mID__Enabled, _AudioLinkEmission__mID__CenterOutDuration);
+		
+		#K#POI_EMISSION0_MODS
+
+		float glowInTheDarkMultiplier0 = calculateGlowInTheDark(_GITDEMinLight__mIDx__, _GITDEMaxLight__mIDx__, _GITDEMinEmissionMultiplier__mIDx__, _GITDEMaxEmissionMultiplier__mIDx__, _EnableGITDEmission__mIDx__, _GITDEWorldOrMesh__mIDx__, poiLight);
+		
+		#ifdef POI_GRABPASS
+			half mixBaseColor = 0;
+		#else
+			half mixBaseColor = _EmissionBaseColorAsMap__mIDx__;
+		#endif
+
+		emissionColor0 = lerp(1, poiFragData.baseColor, mixBaseColor).rgb * poiThemeColor(poiMods, _EmissionColor__mIDx__.rgb, _EmissionColor__mIDx__ThemeIndex);
+		#if defined(PROP_EMISSIONMAP__mIDx__) || !defined(OPTIMIZER_ENABLED)
+			half4 emissionTex = 0;
+			//UNITY_BRANCH
+			if (_EmissionCenterOutEnabled__mIDx__ < 0.5)
+			{
+				emissionTex = POI2D_SAMPLER_PAN(_EmissionMap__mIDx__, _MainTex, poiUV(poiMesh.uv[_EmissionMap__mIDx__UV], _EmissionMap__mIDx___ST), _EmissionMap__mIDx__Pan);
+			}
+			else
+			{
+				half centerOutValue = poiLight.nDotVCentered;
+				centerOutValue = _EmissionCenterOutLinear__mIDx__ ? 1 - acos(centerOutValue) * 0.63662 : centerOutValue;
+				emissionTex = UNITY_SAMPLE_TEX2D_SAMPLER(_EmissionMap__mIDx__, _MainTex, ((.5 + centerOutValue * .5) * _EmissionMap__mIDx___ST.xy) + POI_TIME.x * _EmissionCenterOutSpeed__mIDx__);
+			}
+			emissionColor0 = emissionTex.rgb * lerp(1, poiFragData.baseColor, mixBaseColor).rgb * poiThemeColor(poiMods, _EmissionColor__mIDx__.rgb, _EmissionColor__mIDx__ThemeIndex);
+			emissionAlpha = emissionAlpha * emissionTex.a;
+		#else
+			emissionColor0 = lerp(1, poiFragData.baseColor, mixBaseColor).rgb * poiThemeColor(poiMods, _EmissionColor__mIDx__.rgb, _EmissionColor__mIDx__ThemeIndex);
+		#endif
+
+		half3 inverseLighting = saturate((1.0 - poiLight.directColor) * sqrt(poiLight.directColor));
+		emissionColor0 = lerp(emissionColor0.rgb, emissionColor0.rgb * inverseLighting, _EmissionFluorescence__mIDx__);
+		
+		emissionStrength0 *= emissionAlpha;
+		
+		//UNITY_BRANCH
+		if (_ScrollingEmission__mIDx__ >= 0.5)
+		{
+			float3 pos = poiMesh.localPos;
+			//UNITY_BRANCH
+			if (_EmissionScrollingVertexColor__mIDx__ >= 0.5)
+			{
+				pos = poiMesh.vertexColor.rgb;
+			}
+			
+			//UNITY_BRANCH
+			if (_EmissionScrollingUseCurve__mIDx__ >= 0.5)
+			{
+				#if defined(PROP_EMISSIONSCROLLINGCURVE__mIDx__) || !defined(OPTIMIZER_ENABLED)
+					emissionStrength0 *= UNITY_SAMPLE_TEX2D_SAMPLER(_EmissionScrollingCurve__mIDx__, _MainTex, poiUV(poiMesh.uv[_EmissionMap__mIDx__UV], _EmissionScrollingCurve__mIDx___ST) + (dot(pos, _EmissiveScroll_Direction__mIDx__.xyz) * _EmissiveScroll_Interval__mIDx__) + POI_TIME.x * _EmissiveScroll_Velocity__mIDx__).r;
+				#endif
+			}
+			else
+			{
+				emissionStrength0 *= calculateScrollingEmission(_EmissiveScroll_Direction__mIDx__.xyz, _EmissiveScroll_Velocity__mIDx__, _EmissiveScroll_Interval__mIDx__, _EmissiveScroll_Width__mIDx__, _EmissionScrollingOffset__mIDx__, pos);
+			}
+		}
+		
+		//UNITY_BRANCH
+		if (_EmissionBlinkingEnabled__mIDx__ >= 0.5)
+		{
+			emissionStrength0 *= calculateBlinkingEmission(_EmissiveBlink_Min__mIDx__, _EmissiveBlink_Max__mIDx__, _EmissiveBlink_Velocity__mIDx__, _EmissionBlinkingOffset__mIDx__, _EmissiveBlink_Mode__mIDx__, _EmissiveBlink_Duty__mIDx__);
+		}
+		if(_EmissionHueShiftEnabled__mIDx__ >= 0.5)
+		{
+			emissionColor0 = hueShift(emissionColor0, frac(_EmissionHueShift__mIDx__ + _EmissionHueShiftSpeed__mIDx__ * POI_TIME.x), _EmissionHueShiftColorSpace__mIDx__, _EmissionHueSelectOrShift__mIDx__);
+			emissionColor0 = lerp(emissionColor0, dot(emissionColor0, float3(0.3, 0.59, 0.11)), - (_EmissionSaturation__mIDx__));
+		}
+
+		#ifdef POI_AUDIOLINK
+			if(poiMods.audioLinkAvailable && _EmissionAL__mID__Enabled >= 0.5 && _EmissionAL__mID__ColorOverrideEnabled >= 0.5)
+			{
+				half alColorOverrideIntensity = poiMods.audioLink[_EmissionAL__mID__ColorOverrideBand];
+				half alColorOverrideBlend = evalRamp4(alColorOverrideIntensity, _EmissionAL__mID__ColorOverrideRamp);
+				if(alColorOverrideBlend > 0)
+				{
+					half3 alOverrideColor = _EmissionAL__mID__ColorOverride.rgb;
+					if(_EmissionAL__mID__ColorOverrideThemeIndex > 0)
+					{
+						alOverrideColor = poiThemeColor(poiMods, alOverrideColor, _EmissionAL__mID__ColorOverrideThemeIndex);
+					}
+					emissionColor0 = lerp(emissionColor0, alOverrideColor, alColorOverrideBlend);
+				}
+			}
+		#endif
+
+		#if defined(PROP_EMISSIONMASK__mIDx__) || !defined(OPTIMIZER_ENABLED)
+			half emissionMask0 = UNITY_SAMPLE_TEX2D_SAMPLER(_EmissionMask__mIDx__, _MainTex, poiUV(poiMesh.uv[_EmissionMask__mIDx__UV], _EmissionMask__mIDx___ST) + POI_TIME.x * _EmissionMask__mIDx__Pan)[_EmissionMask__mIDx__Channel];
+		#else
+			half emissionMask0 = 1;
+		#endif
+		
+		if (_EmissionMaskInvert__mIDx__ >= 0.5)
+		{
+			emissionMask0 = 1 - emissionMask0;
+		}
+		
+		if (_EmissionMask__mID__GlobalMask > 0)
+		{
+			emissionMask0 = maskBlend(emissionMask0, poiMods.globalMask[_EmissionMask__mID__GlobalMask - 1], _EmissionMask__mID__GlobalMaskBlendType);
+		}
+		
+		emissionStrength0 *= glowInTheDarkMultiplier0 * emissionMask0;
+		emission0 = max(emissionStrength0 * emissionColor0, 0);
+
+		#ifdef POI_DISSOLVE
+			//UNITY_BRANCH
+			if (_DissolveEmissionSide != 2)
+			{
+				emission0 *= lerp(1 - dissolveAlpha, dissolveAlpha, _DissolveEmissionSide);
+			}
+		#endif
+
+		// poiFragData.finalColor.rgb = lerp(poiFragData.finalColor.rgb, saturate(emission0 + emission1), _EmissionReplace * poiMax(emission0 + emission1));
+
+		poiFragData.emission += emission0;
+		return emission0 * _EmissionReplace__mID__;
+	}
+#endif
+//endex
+
+#T#Emission0FunctionCall
+
+<ms_include_in_first>
+{
+	//ifex <ms_stringwriter::AllEmissionDisabled>
+	#if <ms_stringwriter::_ANY_EMISSION_KEYWORD>
+	half3 emissionBaseReplace = 0;//<ms_no_postfix>
+		#ifdef TRIPLANAR_PROJECTION
+			half3 emissionBaseReplace2 = 0;//<ms_no_postfix>
+			half3 emissionBaseReplace3 = 0;//<ms_no_postfix>
+		#endif
+	#endif
+	//endex
+
+	//ifex _EnableEmission__mIDx__==0
+	#ifdef _EMISSION
+	emissionBaseReplace += applyEmission(poiFragData, poiMesh, poiLight, poiCam, poiMods);
+		#ifdef TRIPLANAR_PROJECTION
+			emissionBaseReplace2 += applyEmission(poiFragData2, poiMesh2, poiLight, poiCam, poiMods);
+			emissionBaseReplace3 += applyEmission(poiFragData3, poiMesh3, poiLight, poiCam, poiMods);
+		#endif
+	#endif
+	//endex
+}
+
+<ms_include_in_not_first>
+{
+	//ifex _EnableEmission__mIDx__==0
+	#ifdef POI_EMISSION___mID__
+	emissionBaseReplace += applyEmission(poiFragData, poiMesh, poiLight, poiCam, poiMods);
+		#ifdef TRIPLANAR_PROJECTION
+			emissionBaseReplace2 += applyEmission(poiFragData2, poiMesh2, poiLight, poiCam, poiMods);
+			emissionBaseReplace3 += applyEmission(poiFragData3, poiMesh3, poiLight, poiCam, poiMods);
+		#endif
+	#endif
+	//endex
+}
+
+<ms_include_in_last>
+{
+	//ifex <ms_stringwriter::AllEmissionDisabled>
+	#if <ms_stringwriter::_ANY_EMISSION_KEYWORD>
+	poiFragData.baseColor.rgb = lerp(poiFragData.baseColor.rgb, saturate(emissionBaseReplace), poiMax(emissionBaseReplace));
+		#ifdef TRIPLANAR_PROJECTION
+			poiFragData2.baseColor.rgb = lerp(poiFragData2.baseColor.rgb, saturate(emissionBaseReplace2), poiMax(emissionBaseReplace2));
+			poiFragData3.baseColor.rgb = lerp(poiFragData3.baseColor.rgb, saturate(emissionBaseReplace3), poiMax(emissionBaseReplace3));
+		#endif
+	#endif
+	//endex
+}

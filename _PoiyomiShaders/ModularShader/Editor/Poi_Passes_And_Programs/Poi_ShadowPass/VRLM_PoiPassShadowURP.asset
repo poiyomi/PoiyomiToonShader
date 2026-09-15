@@ -1,0 +1,73 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1039f25740a92fc4292bb1d94d07ad19, type: 3}
+  m_Name: VRLM_PoiPassShadowURP
+  m_EditorClassIdentifier: 
+  Id: PoiShadowPass
+  Name: Shadow Pass URP
+  Version: 
+  Author: 
+  Description: 
+  AllowDuplicates: 0
+  ForceDuplicateLogic: 0
+  EnableProperties: []
+  Properties: []
+  ModuleDependencies: []
+  IncompatibleWith: []
+  Templates:
+  - Template: {fileID: -544282384758852595, guid: febbce3298c3c0c4d992438299863f92, type: 3}
+    Keywords:
+    - SHADOW_PASS
+    NeedsVariant: 0
+    Queue: 0
+  - Template: {fileID: 6116132723928259032, guid: 1850680e37d251e4d96b0c8211901345, type: 3}
+    Keywords:
+    - PASS_TAGS
+    NeedsVariant: 0
+    Queue: 0
+  - Template: {fileID: -1036405390127914732, guid: 1850680e37d251e4d96b0c8211901345, type: 3}
+    Keywords:
+    - BLEND_SETTINGS
+    NeedsVariant: 0
+    Queue: 0
+  - Template: {fileID: -1699974006295229349, guid: 1850680e37d251e4d96b0c8211901345, type: 3}
+    Keywords:
+    - PASS_ONLY_SHADER_KEYWORDS
+    NeedsVariant: 0
+    Queue: 0
+  - Template: {fileID: -1619541393495208201, guid: 1850680e37d251e4d96b0c8211901345, type: 3}
+    Keywords:
+    - PASS_ONLY_SHADER_KEYWORDS
+    NeedsVariant: 0
+    Queue: 10
+  - Template: {fileID: 4047106488761561769, guid: 1850680e37d251e4d96b0c8211901345, type: 3}
+    Keywords:
+    - PROPERTY_VARIABLES
+    NeedsVariant: 0
+    Queue: 0
+  - Template: {fileID: -5626686756405220246, guid: 1850680e37d251e4d96b0c8211901345, type: 3}
+    Keywords:
+    - PASS_PROGRAMS
+    NeedsVariant: 0
+    Queue: 0
+  - Template: {fileID: -796571026530097982, guid: 1850680e37d251e4d96b0c8211901345, type: 3}
+    Keywords:
+    - STENCIL
+    NeedsVariant: 0
+    Queue: 0
+  - Template: {fileID: 5248768105315269382, guid: 1850680e37d251e4d96b0c8211901345, type: 3}
+    Keywords:
+    - SHADER_INCLUDES
+    NeedsVariant: 0
+    Queue: 0
+  Functions: []
+  AdditionalSerializedData: 

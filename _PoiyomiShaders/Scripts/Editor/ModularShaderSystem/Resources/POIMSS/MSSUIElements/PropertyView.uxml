@@ -1,0 +1,6 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
+    <ui:VisualElement style="flex-direction: row; margin-top: 1px; margin-bottom: 1px;">
+        <ui:Label name="PropertyLabel" class="property-label" />
+        <ui:Label name="TypeLabel" class="type-label" />
+    </ui:VisualElement>
+</ui:UXML>

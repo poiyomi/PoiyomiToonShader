@@ -1,0 +1,112 @@
+#T#PoiSubsurfaceScatteringProperties
+//ifex _SubsurfaceScattering==0
+[HideInInspector] m_start_subsurfaceScattering (" Subsurface Scattering--{reference_property:_SubsurfaceScattering,button_help:{text:Tutorial,action:{type:URL,data:https://www.poiyomi.com/shading/subsurface-scattering},hover:Documentation}}}", Float) = 0
+[HideInInspector][ThryToggle(POI_SUBSURFACESCATTERING)]_SubsurfaceScattering ("Enable", Float) = 0
+
+[hdr]_SSSColor ("Subsurface Color", Color) = (1, 0, 0, 1)
+[sRGBWarning(true)][ThryRGBAPacker(RGB Color, A Thickness, linear, false)]_SSSThicknessMap ("Color & Thickness--{reference_properties:[_SSSThicknessMapPan, _SSSThicknessMapUV, _SSSThicknessMapChannel]}", 2D) = "white" { }
+[ThryHideInInspector][Vector2]_SSSThicknessMapPan ("Panning", Vector) = (0, 0, 0, 0)
+[ThryHideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7, Matcap, 9, Screen Space, 10)] _SSSThicknessMapUV ("UV", Int) = 0
+[ThryHideInInspector][Enum(R, 0, G, 1, B, 2, A, 3)] _SSSThicknessMapChannel ("Channel", Int) = 0
+_SSSThicknessMod ("Thickness mod", Range(-1, 1)) = -1
+_SSSStrength ("Light Strength", Range(0, 1)) = 0.5
+_SSSSpread ("Light Spread", Range(1, 100)) = 2
+_SSSDistortion ("Light Distortion", Range(0, 1)) = 1
+_SSSLightColorMix ("Light Color Mix", Range(0, 1)) = 0
+_SSSBaseColorMix ("Base Color Mix", Range(0, 1)) = 0
+_SSSShadowStrength ("Shadow Strength", Range(0, 1)) = 0.25
+
+[HideInInspector] s_start_SSSGlobalMasks ("Global Masks--{persistent_expand:true, default_expand:false}", Float) = 0
+[ThryWideEnum(Off, 0, 1R, 1, 1G, 2, 1B, 3, 1A, 4, 2R, 5, 2G, 6, 2B, 7, 2A, 8, 3R, 9, 3G, 10, 3B, 11, 3A, 12, 4R, 13, 4G, 14, 4B, 15, 4A, 16)] _SSSGlobalMaskIndex (" Apply From Global Mask--{reference_property:_SSSGlobalMaskBlendType}", Int) = 0
+[ThryHideInInspector][ThryWideEnum(Add, 7, Subtract, 1, Multiply, 2, Divide, 3, Min, 4, Max, 5, Average, 6, Replace, 0)]_SSSGlobalMaskBlendType ("Blending", Range(0, 1)) = 2
+[HideInInspector] s_end_SSSGlobalMasks ("", Float) = 0
+
+[HideInInspector] m_end_subsurfaceScattering ("", Float) = 0
+//endex
+
+#T#PoiSubsurfaceScatteringKeywords
+//ifex _SubsurfaceScattering==0
+#pragma shader_feature_local POI_SUBSURFACESCATTERING
+//endex
+
+#T#PoiSubsurfaceScatteringVariablesExposed
+//ifex _SubsurfaceScattering==0
+#ifdef POI_SUBSURFACESCATTERING
+    half4 _SSSColor;
+    float4 _SSSThicknessMap_ST;
+    float2 _SSSThicknessMapPan;
+    float _SSSThicknessMapUV;
+    float _SSSThicknessMapChannel;
+    half _SSSThicknessMod;
+    half _SSSStrength;
+    half _SSSSpread;
+    half _SSSDistortion;
+    half _SSSLightColorMix;
+    half _SSSBaseColorMix;
+    half _SSSShadowStrength;
+    float _SSSGlobalMaskIndex;
+    float _SSSGlobalMaskBlendType;
+#endif
+//endex
+
+#T#PoiSubsurfaceScatteringVariables
+//ifex _SubsurfaceScattering==0
+#ifdef POI_SUBSURFACESCATTERING
+    #if defined(PROP_SSSTHICKNESSMAP) || !defined(OPTIMIZER_ENABLED)
+        Texture2D _SSSThicknessMap;
+    #endif
+#endif
+//endex
+
+
+#T#PoiSubsurfaceScatteringFunctions
+//ifex _SubsurfaceScattering==0
+#ifdef POI_SUBSURFACESCATTERING
+    void applySubsurfaceScattering(in PoiCam poiCam, inout PoiLight poiLight, in PoiMesh poiMesh, in PoiFragData poiFragData, in PoiMods poiMods)
+    {
+        float4 SSS = 1;
+        #if defined(PROP_SSSTHICKNESSMAP) || !defined(OPTIMIZER_ENABLED)
+            SSS = POI2D_SAMPLER_PAN(_SSSThicknessMap, _MainTex, poiUV(poiMesh.uv[_SSSThicknessMapUV], _SSSThicknessMap_ST), _SSSThicknessMapPan);
+        #endif
+        SSS.a = 1 - SSS.a;
+
+        float3 sssLightDir = poiLight.direction;
+        #if POI_PIPE == POI_BIRP
+            if (poiLight.lightType == POI_POINT_SPOT)
+                sssLightDir = normalize(_WorldSpaceLightPos0.xyz - poiMesh.worldPos.xyz);
+        #endif
+
+        // directColor hard-clips the transmitted light for point/spot, don't use the shadowAtten
+        half3 sssLightColor = poiLight.directColor;
+        float sssReach = 1;
+        if (poiLight.lightType == POI_POINT_SPOT)
+        {
+            sssLightColor = poiLight.unityLight.color.rgb;
+            sssReach = poiLight.attenDistance * CalculateLuminance(poiLight.lightCookie);
+        }
+
+        float3 vLTLight = sssLightDir + poiMesh.normals[1] * _SSSDistortion;
+		float flTDot = pow(saturate(dot(poiCam.eyeViewDir, -vLTLight)), _SSSSpread) * _SSSStrength;
+        float3 fLT = (flTDot) * saturate(SSS.a + - 1 * _SSSThicknessMod);
+
+        half sssLightMap = poiLight.lightMap;
+        half sssShadow = lerp(1, sssLightMap, _SSSShadowStrength);
+
+        half sssMask = 1;
+        if (_SSSGlobalMaskIndex > 0)
+            sssMask = maskBlend(sssMask, poiMods.globalMask[_SSSGlobalMaskIndex - 1], _SSSGlobalMaskBlendType);
+
+        half3 sssTint = _SSSColor.rgb * SSS.rgb;
+        float3 sssLight = lerp(1, sssLightColor, _SSSLightColorMix);
+
+        poiLight.finalLightAdd += fLT * sssReach * sssLight * sssTint * sssShadow  * lerp(1, poiFragData.baseColor, _SSSBaseColorMix) * sssMask;
+    }
+#endif
+//endex
+
+#T#PoiSubsurfaceScatteringFunctionCalls
+//ifex _SubsurfaceScattering==0
+#ifdef POI_SUBSURFACESCATTERING
+    applySubsurfaceScattering(poiCam, poiLight, poiMesh, poiFragData, poiMods);
+#endif
+//endex

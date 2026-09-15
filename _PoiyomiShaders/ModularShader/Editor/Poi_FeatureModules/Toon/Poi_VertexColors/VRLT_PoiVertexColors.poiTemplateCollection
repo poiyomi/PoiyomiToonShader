@@ -1,0 +1,36 @@
+#T#PoiVertexColorsProperties
+//ifex _MainVertexColoringEnabled==0
+[HideInInspector] m_start_MainVertexColors (" Vertex Colors--{reference_property:_MainVertexColoringEnabled,button_help:{text:Tutorial,action:{type:URL,data:https://www.poiyomi.com/vertex-options/vertex-colors},hover:Documentation}}", Float) = 0
+[ThryHideInInspector][ToggleUI]_MainVertexColoringEnabled ("Enable", Float) = 0
+[ToggleUI]_MainVertexColoringLinearSpace ("Linear Colors", Float) = 1
+_MainVertexColoring ("Use Vertex Color", Range(0, 1)) = 0
+_MainUseVertexColorAlpha ("Use Vertex Color Alpha", Range(0, 1)) = 0
+[HideInInspector] m_end_MainVertexColors ("Vertex Colors", Float) = 0
+//endex
+
+#T#PoiVertexColorsVariablesExposed
+//ifex _MainVertexColoringEnabled==0
+float _MainVertexColoringEnabled;
+float _MainVertexColoringLinearSpace;
+float _MainVertexColoring;
+float _MainUseVertexColorAlpha;
+//endex
+
+#T#PoiVertexColorsFunctions
+//ifex _MainVertexColoringEnabled==0
+void applyVertexColor(inout PoiFragData poiFragData, PoiMesh poiMesh)
+{
+	if (_MainVertexColoringEnabled >= 0.5)
+	{
+		#ifndef POI_PASS_OUTLINE
+			float3 vertCol = lerp(poiMesh.vertexColor.rgb, GammaToLinearSpace(poiMesh.vertexColor.rgb), _MainVertexColoringLinearSpace);
+			poiFragData.baseColor *= lerp(1, vertCol, _MainVertexColoring);
+		#endif
+		poiFragData.alpha *= lerp(1, poiMesh.vertexColor.a, _MainUseVertexColorAlpha);
+	}
+}
+//endex
+#T#PoiVertexColorsFunctionCalls
+//ifex _MainVertexColoringEnabled==0
+applyVertexColor(poiFragData, poiMesh);
+//endex

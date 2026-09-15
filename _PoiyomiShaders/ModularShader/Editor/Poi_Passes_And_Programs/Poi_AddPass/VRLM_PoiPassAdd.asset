@@ -1,0 +1,68 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1039f25740a92fc4292bb1d94d07ad19, type: 3}
+  m_Name: VRLM_PoiPassAdd
+  m_EditorClassIdentifier: 
+  Id: PoiAddPass
+  Name: Additive Pass
+  Version: 
+  Author: 
+  Description: 
+  AllowDuplicates: 0
+  ForceDuplicateLogic: 0
+  EnableProperties: []
+  Properties: []
+  ModuleDependencies: []
+  IncompatibleWith: []
+  Templates:
+  - Template: {fileID: -544282384758852595, guid: febbce3298c3c0c4d992438299863f92, type: 3}
+    Keywords:
+    - ADD_PASS
+    NeedsVariant: 0
+    Queue: 0
+  - Template: {fileID: -3240189840891472907, guid: a9f4aa9c839a6de4baa470342ef2febc, type: 3}
+    Keywords:
+    - PASS_TAGS
+    NeedsVariant: 0
+    Queue: 0
+  - Template: {fileID: -2174316723555253114, guid: a9f4aa9c839a6de4baa470342ef2febc, type: 3}
+    Keywords:
+    - BLEND_SETTINGS
+    NeedsVariant: 0
+    Queue: 0
+  - Template: {fileID: 3801199042521936713, guid: a9f4aa9c839a6de4baa470342ef2febc, type: 3}
+    Keywords:
+    - PASS_ONLY_SHADER_KEYWORDS
+    NeedsVariant: 0
+    Queue: 0
+  - Template: {fileID: 4540729029592200931, guid: a9f4aa9c839a6de4baa470342ef2febc, type: 3}
+    Keywords:
+    - PASS_ONLY_SHADER_KEYWORDS
+    NeedsVariant: 0
+    Queue: 10
+  - Template: {fileID: 3034014944662824268, guid: a9f4aa9c839a6de4baa470342ef2febc, type: 3}
+    Keywords:
+    - PROPERTY_VARIABLES
+    NeedsVariant: 0
+    Queue: 0
+  - Template: {fileID: -4546188019848176897, guid: a9f4aa9c839a6de4baa470342ef2febc, type: 3}
+    Keywords:
+    - PASS_PROGRAMS
+    NeedsVariant: 0
+    Queue: 0
+  - Template: {fileID: -4255684877832018038, guid: a9f4aa9c839a6de4baa470342ef2febc, type: 3}
+    Keywords:
+    - STENCIL
+    NeedsVariant: 0
+    Queue: 0
+  Functions: []
+  AdditionalSerializedData: 

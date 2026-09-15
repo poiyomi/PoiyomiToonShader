@@ -1,0 +1,82 @@
+#T#PoiVolumeColorProperties
+//ifex _EnableVolumeColor==0
+[HideInInspector] m_start_ALVolumeColor (" AL ♫ Volume Color--{reference_property:_EnableVolumeColor, button_help:{text:Tutorial,action:{type:URL,data:https://www.poiyomi.com/audio-link/volume-color},hover:Documentation}}", Float) = 0
+[HideInInspector][ThryToggle(POI_AL_VOLUMECOLOR)]_EnableVolumeColor ("Enable AL Volume Color", Float) = 0
+[Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3)] _ALVolumeColorUV ("UV", Int) = 0
+[Enum(X, 0, Y, 1)] _ALVolumeColorDirection ("UV Direction", Int) = 0
+
+[HideInInspector] s_start_ALVolumeColorsAndBlending ("Colors and Blending--{persistent_expand:true, default_expand:true}", Float) = 1
+_ALVolumeColorLow ("Volume Color Low--{reference_property:_ALVolumeColorLowThemeIndex}", Color) = (0, 0, 1)
+[ThryHideInInspector][ThryWideEnum(Off, 0, Theme Color 0, 1, Theme Color 1, 2, Theme Color 2, 3, Theme Color 3, 4, ColorChord 0, 5, ColorChord 1, 6, ColorChord 2, 7, ColorChord 3, 8, AL Theme 0, 9, AL Theme 1, 10, AL Theme 2, 11, AL Theme 3, 12)] _ALVolumeColorLowThemeIndex ("", Int) = 0
+_ALLowEmission ("Low Emission", Range(0, 20)) = 0
+_ALVolumeColorMid ("Volume Color Mid--{reference_property:_ALVolumeColorMidThemeIndex}", Color) = (0, 1, 0)
+[ThryHideInInspector][ThryWideEnum(Off, 0, Theme Color 0, 1, Theme Color 1, 2, Theme Color 2, 3, Theme Color 3, 4, ColorChord 0, 5, ColorChord 1, 6, ColorChord 2, 7, ColorChord 3, 8, AL Theme 0, 9, AL Theme 1, 10, AL Theme 2, 11, AL Theme 3, 12)] _ALVolumeColorMidThemeIndex ("", Int) = 0
+_ALMidEmission ("Mid Emission", Range(0, 20)) = 0
+_ALVolumeColorHigh ("Volume Color High--{reference_property:_ALVolumeColorHighThemeIndex}", Color) = (1, 0, 0)
+[ThryHideInInspector][ThryWideEnum(Off, 0, Theme Color 0, 1, Theme Color 1, 2, Theme Color 2, 3, Theme Color 3, 4, ColorChord 0, 5, ColorChord 1, 6, ColorChord 2, 7, ColorChord 3, 8, AL Theme 0, 9, AL Theme 1, 10, AL Theme 2, 11, AL Theme 3, 12)] _ALVolumeColorHighThemeIndex ("", Int) = 0
+_ALHighEmission ("High Emission", Range(0, 20)) = 0
+[ThryWideEnum(Replace, 0, Darken, 1, Multiply, 2, Lighten, 5, Screen, 6, Subtract, 7, Add, 8, Overlay, 9, Mixed, 20)]_ALVolumeColorBlendType ("Blend Type", Range(0, 1)) = 0
+_ALVolumeColorBlendAlpha ("Alpha", Range(0,1)) = 1
+[HideInInspector] s_end_ALVolumeColorsAndBlending ("Colors and Blending", Float) = 0
+
+[HideInInspector] m_end_ALVolumeColor ("AL ♫ Volume Color", Float) = 0
+//endex
+
+#T#PoiVolumeColorKeywords
+//ifex _EnableVolumeColor==0
+#pragma shader_feature_local POI_AL_VOLUMECOLOR
+//endex
+#T#PoiVolumeColorVariablesExposed
+//ifex _EnableVolumeColor==0
+#ifdef POI_AUDIOLINK
+	#ifdef POI_AL_VOLUMECOLOR
+		float _ALVolumeColorUV;
+		float _ALVolumeColorDirection;
+		float _ALVolumeColorBlendType;
+        half _ALVolumeColorBlendAlpha;
+		half3 _ALVolumeColorLow;
+		float _ALVolumeColorLowThemeIndex;
+		half3 _ALVolumeColorMid;
+		float _ALVolumeColorMidThemeIndex;
+		half3 _ALVolumeColorHigh;
+		float _ALVolumeColorHighThemeIndex;
+		half _ALLowEmission;
+		half _ALMidEmission;
+		half _ALHighEmission;
+	#endif
+#endif
+//endex
+
+#T#PoiVolumeColorFunctions
+//ifex _EnableVolumeColor==0
+#ifdef POI_AUDIOLINK
+	#ifdef POI_AL_VOLUMECOLOR
+		void ApplyAudioLinkVolumeColor(in PoiMesh poiMesh, inout PoiFragData poiFragData, in PoiMods poiMods)
+		{
+			float volume = AudioLinkLerpMultiline(ALPASS_DFT + float2(poiMesh.uv[_ALVolumeColorUV][_ALVolumeColorDirection] * AUDIOLINK_ETOTALBINS, 0.0)).b;
+
+			half3 lowColor = _ALVolumeColorLow.rgb * poiThemeColor(poiMods, _ALVolumeColorLow.rgb, _ALVolumeColorLowThemeIndex);
+			half3 midColor = _ALVolumeColorMid.rgb * poiThemeColor(poiMods, _ALVolumeColorMid.rgb, _ALVolumeColorMidThemeIndex);
+			half3 highColor = _ALVolumeColorHigh.rgb * poiThemeColor(poiMods, _ALVolumeColorHigh.rgb, _ALVolumeColorHighThemeIndex);
+			
+			half3 volumeColor = lerp(lowColor, midColor, saturate(volume * 2));
+			volumeColor = lerp(volumeColor, highColor, saturate(volume * 2 - 1));
+
+			half3 emissionColor = lerp(lowColor * _ALLowEmission, midColor * _ALMidEmission, saturate(volume * 2));
+			emissionColor = lerp(emissionColor, highColor * _ALHighEmission, saturate(volume * 2 - 1));
+
+			poiFragData.emission += emissionColor * poiMods.audioLinkAvailable;
+			poiFragData.baseColor.rgb = lerp(poiFragData.baseColor, customBlend(poiFragData.baseColor, volumeColor, _ALVolumeColorBlendType), saturate(_ALVolumeColorBlendAlpha * poiMods.audioLinkAvailable));
+		}
+	#endif
+#endif
+//endex
+#T#PoiVolumeColorFunctionCalls
+//ifex _EnableVolumeColor==0
+#ifdef POI_AUDIOLINK
+	#if defined(POI_AL_VOLUMECOLOR) && (defined(POI_PASS_BASE) || defined(POI_PASS_META))
+		ApplyAudioLinkVolumeColor(poiMesh, poiFragData, poiMods);
+		#K#AUDIOLINK_VOLUME_COLOR_HOOK
+	#endif
+#endif
+//endex

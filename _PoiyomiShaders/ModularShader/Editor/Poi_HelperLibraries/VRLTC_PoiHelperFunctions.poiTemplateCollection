@@ -1,0 +1,2258 @@
+#T#PoiGlobalHelperFunctions
+// glsl_mod behaves better on negative numbers, and
+// in some situations actually outperforms HLSL's fmod()
+#ifndef glsl_mod
+#define glsl_mod(x, y) (((x) - (y) * floor((x) / (y))))
+#endif
+
+// sin/cos handling for large values
+#ifndef mod2pi
+#define mod2pi(x) (frac((x) / UNITY_TWO_PI) * UNITY_TWO_PI)
+#endif
+
+uniform float random_uniform_float_only_used_to_stop_compiler_warnings = 0.0f;
+
+// Missing functions for URP
+#if POI_PIPE == POI_URP
+	inline float Linear01Depth( float z )
+	{
+		return 1.0 / (_ZBufferParams.x * z + _ZBufferParams.y);
+	}
+
+	inline half3 LinearToGammaSpace (half3 linRGB)
+	{
+		linRGB = max(linRGB, half3(0.h, 0.h, 0.h));
+		// An almost-perfect approximation from http://chilliant.blogspot.com.au/2012/08/srgb-approximations-for-hlsl.html?m=1
+		return max(1.055h * pow(linRGB, 0.416666667h) - 0.055h, 0.h);
+
+		// Exact version, useful for debugging.
+		//return half3(LinearToGammaSpaceExact(linRGB.r), LinearToGammaSpaceExact(linRGB.g), LinearToGammaSpaceExact(linRGB.b));
+	}
+
+	inline half3 GammaToLinearSpace (half3 sRGB)
+	{
+		// Approximate version from http://chilliant.blogspot.com.au/2012/08/srgb-approximations-for-hlsl.html?m=1
+		return sRGB * (sRGB * (sRGB * 0.305306011h + 0.682171111h) + 0.012522878h);
+
+		// Precise version, useful for debugging.
+		//return half3(GammaToLinearSpaceExact(sRGB.r), GammaToLinearSpaceExact(sRGB.g), GammaToLinearSpaceExact(sRGB.b));
+	}
+
+	half4 PoiCalculateShadowMask(float2 shadowCoords)
+	{
+		// To ensure backward compatibility we have to avoid using shadowMask input, as it is not present in older shaders
+		#if defined(SHADOWS_SHADOWMASK) && defined(LIGHTMAP_ON)
+		half4 shadowMask = SAMPLE_SHADOWMASK(shadowCoords); // Shadowmask was sampled from lightmap
+		#elif !defined(LIGHTMAP_ON) && (defined(PROBE_VOLUMES_L1) || defined(PROBE_VOLUMES_L2))
+		half4 shadowMask = SAMPLE_SHADOWMASK(shadowCoords); // Shadowmask (probe occlusion) was sampled from APV
+		#elif !defined (LIGHTMAP_ON)
+		half4 shadowMask = unity_ProbesOcclusion; // Sample shadowmask (probe occlusion) from legacy probes
+		#else
+		half4 shadowMask = half4(1, 1, 1, 1); // Fallback shadowmask, fully unoccluded
+		#endif
+
+		return shadowMask;
+	}
+
+	// normal should be normalized, w=1.0
+	half3 SHEvalLinearL2 (half4 normal)
+	{
+		half3 x1, x2;
+		// 4 of the quadratic (L2) polynomials
+		half4 vB = normal.xyzz * normal.yzzx;
+
+		x1.r = dot(PoiSHBr,vB);
+		x1.g = dot(PoiSHBg,vB);
+		x1.b = dot(PoiSHBb,vB);
+
+		// Final (5th) quadratic (L2) polynomial
+		half vC = normal.x*normal.x - normal.y*normal.y;
+
+		x2 = PoiSHC.rgb * vC;
+
+		return x1 + x2;
+	}
+
+	half3 PoiGlossyEnvironmentReflection(half3 reflectVector, float3 positionWS, half perceptualRoughness, half occlusion, float2 normalizedScreenSpaceUV)
+	{
+		#if UNITY_VERSION >= 202200
+			return GlossyEnvironmentReflection(reflectVector, positionWS, perceptualRoughness, occlusion, normalizedScreenSpaceUV);
+		#elif UNITY_VERSION >= 202100
+			return GlossyEnvironmentReflection(reflectVector, positionWS, perceptualRoughness, occlusion);
+		#else
+			return GlossyEnvironmentReflection(reflectVector, perceptualRoughness, occlusion);
+		#endif
+	}
+
+	half3 PoiGlobalIllumination(BRDFData brdfData, BRDFData brdfDataClearCoat, half clearCoatMask,
+		half3 bakedGI, half occlusion, float3 positionWS,
+		half3 normalWS, half3 viewDirectionWS, float2 normalizedScreenSpaceUV)
+	{
+		#if UNITY_VERSION >= 202200
+			return GlobalIllumination(brdfData, brdfDataClearCoat, clearCoatMask, bakedGI, occlusion, positionWS, normalWS, viewDirectionWS, normalizedScreenSpaceUV);
+		#elif UNITY_VERSION >= 202100
+			return GlobalIllumination(brdfData, brdfDataClearCoat, clearCoatMask, bakedGI, occlusion, positionWS, normalWS, viewDirectionWS);
+		#else
+			return GlobalIllumination(brdfData, brdfDataClearCoat, clearCoatMask, bakedGI, occlusion, normalWS, viewDirectionWS);
+		#endif
+	}
+
+	// URP shading functions light cookie removed
+	Light PoiGetMainLight(float4 shadowCoord, float3 positionWS, half4 shadowMask)
+	{
+		Light light = GetMainLight();
+		light.shadowAttenuation = MainLightShadow(shadowCoord, positionWS, shadowMask, _MainLightOcclusionProbes);
+		return light;
+	}
+
+	Light PoiGetMainLight(float4 shadowCoord, float3 positionWS, half4 shadowMask, AmbientOcclusionFactor aoFactor)
+	{
+		Light light = PoiGetMainLight(shadowCoord, positionWS, shadowMask);
+
+		#if defined(_SCREEN_SPACE_OCCLUSION) && !defined(_SURFACE_TYPE_TRANSPARENT)
+		if (IsLightingFeatureEnabled(DEBUGLIGHTINGFEATUREFLAGS_AMBIENT_OCCLUSION))
+		{
+			light.color *= aoFactor.directAmbientOcclusion;
+		}
+		#endif
+
+		return light;
+	}
+
+	Light PoiGetAdditionalLight(uint i, float3 positionWS, half4 shadowMask)
+	{
+	#if USE_CLUSTER_LIGHT_LOOP
+		int lightIndex = i;
+	#else
+		int lightIndex = GetPerObjectLightIndex(i);
+	#endif
+		Light light = GetAdditionalPerObjectLight(lightIndex, positionWS);
+
+	#if USE_STRUCTURED_BUFFER_FOR_LIGHT_DATA
+		half4 occlusionProbeChannels = _AdditionalLightsBuffer[lightIndex].occlusionProbeChannels;
+	#else
+		half4 occlusionProbeChannels = _AdditionalLightsOcclusionProbes[lightIndex];
+	#endif
+		light.shadowAttenuation = AdditionalLightShadow(lightIndex, positionWS, light.direction, shadowMask, occlusionProbeChannels);
+
+		return light;
+	}
+
+	Light PoiGetAdditionalLight(uint i, InputData inputData, half4 shadowMask, AmbientOcclusionFactor aoFactor)
+	{
+		Light light = PoiGetAdditionalLight(i, inputData.positionWS, shadowMask);
+
+		#if defined(_SCREEN_SPACE_OCCLUSION) && !defined(_SURFACE_TYPE_TRANSPARENT)
+		if (IsLightingFeatureEnabled(DEBUGLIGHTINGFEATUREFLAGS_AMBIENT_OCCLUSION))
+		{
+			light.color *= aoFactor.directAmbientOcclusion;
+		}
+		#endif
+
+		return light;
+	}
+
+	// SLZ's MarrowSDK URP overload for LightingPhysicallyBased
+	#if defined(SLZ_LightingExtend)
+	half3 LightingPhysicallyBased(BRDFData brdfData, BRDFData brdfDataClearCoat, half3 lightColor, half3 lightDirectionWS, half lightAttenuation, half3 normalWS, half3 viewDirectionWS, half clearCoatMask, bool specularHighlightsOff)
+	{
+		Light light;
+		light.color = half4(lightColor, 1);
+		light.direction = lightDirectionWS;
+		light.distanceAttenuation = lightAttenuation;
+		light.shadowAttenuation = 1;
+		return LightingPhysicallyBased(brdfData, brdfDataClearCoat, light, normalWS, viewDirectionWS, clearCoatMask, specularHighlightsOff);
+	}
+	#endif
+
+	half3 SampleAPV(float3 positionWS, float3 normalWS, float3 viewDirWS)
+	{
+		#if defined(PROBE_VOLUMES_L1) || defined(PROBE_VOLUMES_L2)
+
+		// Important:
+		// Do not pass zero as vertexValue. In some evaluation modes,
+		// SampleProbeVolumePixel can return the vertex value directly.
+		// float4 vertexProbeOcclusion;
+		half3 vertexValue = SampleProbeSHVertex(
+			positionWS,
+			normalWS,
+			viewDirWS
+		);
+
+		return vertexValue;
+
+		// float4 pixelProbeOcclusion;
+		// return SampleProbeVolumePixel(
+		// 	vertexValue,
+		// 	positionWS,
+		// 	normalWS,
+		// 	viewDirWS,
+		// 	positionSS,
+		// 	vertexProbeOcclusion,
+		// 	pixelProbeOcclusion
+		// );
+
+		#else
+			return 0;
+		#endif
+	}
+
+	half CalculateLuminance(half3 color);
+
+	half3 EstimateAPVDominantDirection(float3 positionWS, half3 viewDirWS)
+	{
+		const half3 n0 = half3( 1.0h,  1.0h,  1.0h);
+		const half3 n1 = half3(-1.0h, -1.0h,  1.0h);
+		const half3 n2 = half3(-1.0h,  1.0h, -1.0h);
+		const half3 n3 = half3( 1.0h, -1.0h, -1.0h);
+
+		half l0 = CalculateLuminance(SampleAPV(positionWS, n0, viewDirWS));
+		half l1 = CalculateLuminance(SampleAPV(positionWS, n1, viewDirWS));
+		half l2 = CalculateLuminance(SampleAPV(positionWS, n2, viewDirWS));
+		half l3 = CalculateLuminance(SampleAPV(positionWS, n3, viewDirWS));
+
+		return half3
+		(
+			n0 * l0 +
+			n1 * l1 +
+			n2 * l2 +
+			n3 * l3
+		);
+	}
+
+#endif
+
+half3 PoiUnpackNormalScale(half4 packedNormal, half bumpScale)
+{
+	#if POI_PIPE == POI_BIRP
+		return UnpackScaleNormal(packedNormal, bumpScale);
+	#elif POI_PIPE == POI_URP
+		return UnpackNormalScale(packedNormal, bumpScale);
+	#endif
+}
+
+half3 PoiObjectToWorldNormal(half3 normal, bool doNormalize = true)
+{
+	#if POI_PIPE == POI_BIRP
+		return UnityObjectToWorldNormal(normal);
+	#elif POI_PIPE == POI_URP
+		return TransformObjectToWorldNormal(normal, doNormalize);
+	#endif
+}
+
+float4 PoiObjectToClipPos(in float3 pos)
+{
+	#if POI_PIPE == POI_BIRP
+		return UnityObjectToClipPos(pos);
+	#elif POI_PIPE == POI_URP
+		return TransformObjectToHClip(pos);
+	#endif
+}
+
+float4 PoiWorldToClipPos(in float3 pos)
+{
+	#if POI_PIPE == POI_BIRP
+		return UnityWorldToClipPos(pos);
+	#elif POI_PIPE == POI_URP
+		return TransformWorldToHClip(pos);
+	#endif
+}
+
+float4 PoiComputeScreenPos(in float4 pos)
+{
+	#if POI_PIPE == POI_BIRP
+		return ComputeGrabScreenPos(pos);
+	#elif POI_PIPE == POI_URP
+		return ComputeScreenPos(pos);
+	#endif
+}
+
+half3 PoiDecodeHDR(half4 data, half4 decodeInstructions)
+{
+	#if POI_PIPE == POI_BIRP
+		return DecodeHDR(data, decodeInstructions);
+	#elif POI_PIPE == POI_URP
+		return DecodeHDREnvironment(data, decodeInstructions);
+	#endif
+}
+
+float3 PoiWorldSpaceViewDir(float3 worldPos)
+{
+	#if POI_PIPE == POI_BIRP
+		return UnityWorldSpaceViewDir(worldPos);
+	#elif POI_PIPE == POI_URP
+		return GetWorldSpaceViewDir(worldPos);
+	#endif
+}
+
+float3 PoiObjSpaceViewDir(float4 v)
+{
+	#if POI_PIPE == POI_BIRP
+		return ObjSpaceViewDir(v);
+	#elif POI_PIPE == POI_URP
+		return mul(unity_WorldToObject, float4(_WorldSpaceCameraPos, 1.0)).xyz - v.xyz;
+	#endif
+}
+
+float2 poiUV(float2 uv, float4 tex_st)
+{
+	return uv * tex_st.xy + tex_st.zw;
+}
+
+//Lighting Helpers
+half CalculateLuminance(half3 color)
+{
+	return color.r * 0.299 + color.g * 0.587 + color.b * 0.114;
+}
+
+half AverageLuminance(half3 color)
+{
+	return (color.r + color.g + color.b) / 3.0;
+}
+
+half3 PoiMinBrightness(half3 color, half minBrightness)
+{
+	half linearMinBrightness = minBrightness;
+	half noiseFloor = max(linearMinBrightness * 0.01h, 0.005h);
+	half lum = CalculateLuminance(color);
+	half3 scaled = color * (max(lum, linearMinBrightness) / max(lum, 1e-4h));
+	return lerp(max(color, linearMinBrightness.xxx), scaled, smoothstep(noiseFloor * 0.5, noiseFloor, lum));
+}
+
+void PoiApplyMinBrightnessToSH(half minBrightness)
+{
+	half linearMinBrightness = minBrightness;
+	half3 dc = max(half3(PoiSHAr.w, PoiSHAg.w, PoiSHAb.w)
+		+ half3(PoiSHBr.z, PoiSHBg.z, PoiSHBb.z) / 3.0h, 0.0h);
+	// Conservative estimate of the darkest direction: DC minus the L1 lobe magnitude.
+	half3 l1mag = half3(length(PoiSHAr.xyz), length(PoiSHAg.xyz), length(PoiSHAb.xyz));
+	half floorLum = CalculateLuminance(max(dc - l1mag, 0.0h));
+	// Single scalar, identical for every normal, so there is no crossover surface to band on.
+	half deficit = max(linearMinBrightness - floorLum, 0.0h);
+
+	half dcLum = CalculateLuminance(dc);
+	half3 tint = dcLum > 1e-4h ? dc / dcLum : 1.0h;
+
+	PoiSHAr.w += deficit * tint.r;
+	PoiSHAg.w += deficit * tint.g;
+	PoiSHAb.w += deficit * tint.b;
+}
+
+float dotToDegrees(float dot)
+{
+	dot = clamp(dot, -1.0, 1.0);
+	return degrees(acos(dot));
+}
+
+// Convenience overload: compute dot for you
+float dotToDegrees(float3 a, float3 b)
+{
+	return dotToDegrees(dot(normalize(a), normalize(b)));
+}
+
+// Fast approximation of arctangent function
+// From Heitz et al. 2016, "Real-Time Polygonal-Light Shading with Linearly Transformed Cosines"
+float poiFastAtan(float x)
+{
+	return x * (abs(x) * (1.5707963 * abs(x) - 0.00507668) + 0.420691) /
+		   (abs(x) * (abs(x) * (0.633387806 + abs(x)) + 0.671041944) + 0.215192627);
+}
+
+// Set by VRChat (as of open beta 1245)
+// _VRChatCameraMode: 0 => Normal, 1 => VR HandCam, 2 => Desktop Handcam, 3 => Screenshot/Photo
+// _VRChatMirrorMode: 0 => Normal, 1 => Mirror (VR), 2 => Mirror (Deskie)
+float _VRChatCameraMode;
+float _VRChatMirrorMode;
+
+// VRChat Time Variables
+uint _VRChatTimeNetworkMs;
+uint _VRChatTimeUTCUnixSeconds;
+
+// Time Source: 0 = Unity Default, 1 = VRChat Network Time, 2 = VRChat UTC
+// VRChat UTC updates too slowly for smooth animations, not used
+// Falls back to _Time when VRChat variables are not populated (e.g. in Editor)
+// d4rkpl4y3r suggests removing top 6 bits for uint -> fp precision 
+float _PoiTimeSource;
+static float4 POI_TIME = (_PoiTimeSource == 1 && _VRChatTimeNetworkMs != 0) ? (((_VRChatTimeNetworkMs << 6) >> 6) * float4(0.00005, 0.001, 0.002, 0.003))
+			 			: _Time;
+
+float VRCCameraMode()
+{
+	return _VRChatCameraMode;
+}
+
+float VRCMirrorMode()
+{
+	return _VRChatMirrorMode;
+}
+
+bool IsInMirror()
+{
+	return unity_CameraProjection[2][0] != 0.f || unity_CameraProjection[2][1] != 0.f;
+}
+
+// Works with generic oblique-projection mirrors.
+bool PoiIsMirrorCamera()
+{
+	return IsInMirror() || VRCMirrorMode() > 0;
+}
+
+bool IsOrthographicCamera()
+{
+	return unity_OrthoParams.w == 1 || UNITY_MATRIX_P[3][3] == 1;
+}
+
+float shEvaluateDiffuseL1Geomerics_local(float L0, float3 L1, float3 n)
+{
+	// average energy
+	float R0 = max(0, L0);
+	
+	// avg direction of incoming light
+	float3 R1 = 0.5f * L1;
+	
+	// directional brightness
+	float lenR1 = length(R1);
+	
+	// linear angle between normal and direction 0-1
+	//float q = 0.5f * (1.0f + dot(R1 / lenR1, n));
+	//float q = dot(R1 / lenR1, n) * 0.5 + 0.5;
+	float q = dot(normalize(R1), n) * 0.5 + 0.5;
+	q = saturate(q); // Thanks to ScruffyRuffles for the bug identity.
+	
+	// power for q
+	// lerps from 1 (linear) to 3 (cubic) based on directionality
+	float p = 1.0f + 2.0f * lenR1 / R0;
+	
+	// dynamic range constant
+	// should vary between 4 (highly directional) and 0 (ambient)
+	float a = (1.0f - lenR1 / R0) / (1.0f + lenR1 / R0);
+	
+	return R0 * (a + (1.0f - a) * (p + 1.0f) * pow(q, p));
+}
+
+half3 BetterSH9(half4 normal)
+{
+	half3 indirect;
+	half3 L0 = half3(PoiSHAr.w, PoiSHAg.w, PoiSHAb.w) + half3(PoiSHBr.z, PoiSHBg.z, PoiSHBb.z) / 3.0h;
+	indirect.r = shEvaluateDiffuseL1Geomerics_local(L0.r, PoiSHAr.xyz, normal.xyz);
+	indirect.g = shEvaluateDiffuseL1Geomerics_local(L0.g, PoiSHAg.xyz, normal.xyz);
+	indirect.b = shEvaluateDiffuseL1Geomerics_local(L0.b, PoiSHAb.xyz, normal.xyz);
+	indirect = max(0, indirect);
+	indirect += SHEvalLinearL2(normal);
+	return indirect;
+}
+
+// Silent's code ends here
+
+half3 BetterSH9(half3 normal)
+{
+	return BetterSH9(half4(normal, 1.0h));
+}
+
+float3 getCameraForward()
+{
+	float3 forward = float3(0, 0, 1);
+	if (PoiIsMirrorCamera())
+	{
+		float3 mirrorForwardPoint = mul(unity_CameraToWorld, float4(0, 0, 1, 1)).xyz;
+		float3 mirrorCameraPosition = mul(unity_CameraToWorld, float4(0, 0, 0, 1)).xyz;
+		forward = normalize(mirrorCameraPosition - mirrorForwardPoint);
+	}
+	else
+	{
+		#if UNITY_SINGLE_PASS_STEREO
+			float3 p1 = mul(unity_StereoCameraToWorld[0], float4(0, 0, 1, 1)).xyz;
+			float3 p2 = mul(unity_StereoCameraToWorld[0], float4(0, 0, 0, 1)).xyz;
+		#else
+			float3 p1 = mul(unity_CameraToWorld, float4(0, 0, 1, 1)).xyz;
+			float3 p2 = mul(unity_CameraToWorld, float4(0, 0, 0, 1)).xyz;
+		#endif
+		forward = normalize(p2 - p1);
+	}
+	return forward;
+}
+
+half3 GetSHLength()
+{
+	half3 x, x1;
+	x.r = length(PoiSHAr);
+	x.g = length(PoiSHAg);
+	x.b = length(PoiSHAb);
+	x1.r = length(PoiSHBr);
+	x1.g = length(PoiSHBg);
+	x1.b = length(PoiSHBb);
+	return x + x1;
+}
+
+float3 BoxProjection(float3 direction, float3 position, float4 cubemapPosition, float3 boxMin, float3 boxMax)
+{
+	#if UNITY_SPECCUBE_BOX_PROJECTION
+		//UNITY_BRANCH
+		if (cubemapPosition.w > 0)
+		{
+			float3 factors = ((direction > 0 ? boxMax : boxMin) - position) / direction;
+			float scalar = min(min(factors.x, factors.y), factors.z);
+			direction = direction * scalar + (position - cubemapPosition.xyz);
+		}
+	#endif
+	return direction;
+}
+
+float poiMax(float2 i)
+{
+	return max(i.x, i.y);
+}
+
+float poiMax(float3 i)
+{
+	return max(max(i.x, i.y), i.z);
+}
+
+float poiMax(float4 i)
+{
+	return max(max(max(i.x, i.y), i.z), i.w);
+}
+
+half3 calculateNormal(in half3 baseNormal, in PoiMesh poiMesh, in Texture2D normalTexture, in SamplerState mainSampler, in float4 normal_ST, in float2 normalPan, in float normalUV, in half normalIntensity)
+{
+	half3 normal = PoiUnpackNormalScale(normalTexture.Sample(mainSampler, POI_PAN_UV(poiUV(poiMesh.uv[normalUV], normal_ST), normalPan)), normalIntensity);
+	return normalize(
+		normal.x * poiMesh.tangent[0] +
+		normal.y * poiMesh.binormal[0] +
+		normal.z * baseNormal
+	);
+}
+
+float remap(float x, float minOld, float maxOld, float minNew = 0, float maxNew = 1)
+{
+	return minNew + (x - minOld) * (maxNew - minNew) / (maxOld - minOld);
+}
+
+float2 remap(float2 x, float2 minOld, float2 maxOld, float2 minNew = 0, float2 maxNew = 1)
+{
+	return minNew + (x - minOld) * (maxNew - minNew) / (maxOld - minOld);
+}
+
+float3 remap(float3 x, float3 minOld, float3 maxOld, float3 minNew = 0, float3 maxNew = 1)
+{
+	return minNew + (x - minOld) * (maxNew - minNew) / (maxOld - minOld);
+}
+
+float4 remap(float4 x, float4 minOld, float4 maxOld, float4 minNew = 0, float4 maxNew = 1)
+{
+	return minNew + (x - minOld) * (maxNew - minNew) / (maxOld - minOld);
+}
+
+float remapClamped(float minOld, float maxOld, float x, float minNew = 0, float maxNew = 1)
+{
+	return clamp(minNew + (x - minOld) * (maxNew - minNew) / (maxOld - minOld), minNew, maxNew);
+}
+
+float2 remapClamped(float2 minOld, float2 maxOld, float2 x, float2 minNew, float2 maxNew)
+{
+	return clamp(minNew + (x - minOld) * (maxNew - minNew) / (maxOld - minOld), minNew, maxNew);
+}
+
+float3 remapClamped(float3 minOld, float3 maxOld, float3 x, float3 minNew, float3 maxNew)
+{
+	return clamp(minNew + (x - minOld) * (maxNew - minNew) / (maxOld - minOld), minNew, maxNew);
+}
+
+float4 remapClamped(float4 minOld, float4 maxOld, float4 x, float4 minNew, float4 maxNew)
+{
+	return clamp(minNew + (x - minOld) * (maxNew - minNew) / (maxOld - minOld), minNew, maxNew);
+}
+float2 calcParallax(in float height, in PoiCam poiCam)
+{
+	return ((height * - 1) + 1) * (poiCam.tangentViewDir.xy / poiCam.tangentViewDir.z);
+}
+
+
+/*
+0: Zero	                float4(0.0, 0.0, 0.0, 0.0),
+1: One	                float4(1.0, 1.0, 1.0, 1.0),
+2: DstColor	            destinationColor,
+3: SrcColor	            sourceColor,
+4: OneMinusDstColor	    float4(1.0, 1.0, 1.0, 1.0) - destinationColor,
+5: SrcAlpha	            sourceColor.aaaa,
+6: OneMinusSrcColor	    float4(1.0, 1.0, 1.0, 1.0) - sourceColor,
+7: DstAlpha	            destinationColor.aaaa,
+8: OneMinusDstAlpha	    float4(1.0, 1.0, 1.0, 1.0) - destinationColor.,
+9: SrcAlphaSaturate     saturate(sourceColor.aaaa),
+10: OneMinusSrcAlpha	float4(1.0, 1.0, 1.0, 1.0) - sourceColor.aaaa,
+*/
+
+half4 poiBlend(const half sourceFactor, const half4 sourceColor, const half destinationFactor, const half4 destinationColor, const half4 blendFactor)
+{
+	half4 sA = 1.0h - blendFactor;
+	const half4 blendData[11] = {
+		half4(0.0h, 0.0h, 0.0h, 0.0h),
+		half4(1.0h, 1.0h, 1.0h, 1.0h),
+		destinationColor,
+		sourceColor,
+		half4(1.0h, 1.0h, 1.0h, 1.0h) - destinationColor,
+		sA,
+		half4(1.0h, 1.0h, 1.0h, 1.0h) - sourceColor,
+		sA,
+		float4(1.0, 1.0, 1.0, 1.0) - sA,
+		saturate(sourceColor.aaaa),
+		1 - sA,
+	};
+	
+	return lerp(blendData[sourceFactor] * sourceColor + blendData[destinationFactor] * destinationColor, sourceColor, sA);
+}
+
+// Color burn
+half blendColorBurn(half base, half blend)
+{
+	return (blend == 0.0) ? blend : max((1.0 - ((1.0 - base) * rcp(random_uniform_float_only_used_to_stop_compiler_warnings + blend))), 0.0);
+}
+
+half3 blendColorBurn(half3 base, half3 blend)
+{
+	return float3(blendColorBurn(base.r, blend.r), blendColorBurn(base.g, blend.g), blendColorBurn(base.b, blend.b));
+}
+
+// Color Dodge
+half blendColorDodge(half base, half blend)
+{
+	return (blend == 1.0) ? blend : min(base / (1.0 - blend), 1.0);
+}
+
+half3 blendColorDodge(half3 base, half3 blend)
+{
+	return float3(blendColorDodge(base.r, blend.r), blendColorDodge(base.g, blend.g), blendColorDodge(base.b, blend.b));
+}
+
+// Darken
+half blendDarken(half base, half blend)
+{
+	return min(blend, base);
+}
+
+half3 blendDarken(half3 base, half3 blend)
+{
+	return half3(blendDarken(base.r, blend.r), blendDarken(base.g, blend.g), blendDarken(base.b, blend.b));
+}
+
+// Overlay
+half blendOverlay(half base, half blend)
+{
+	return base < 0.5 ? (2.0 * base * blend) : (1.0 - 2.0 * (1.0 - base) * (1.0 - blend));
+}
+
+half3 blendOverlay(half3 base, half3 blend)
+{
+	return half3(blendOverlay(base.r, blend.r), blendOverlay(base.g, blend.g), blendOverlay(base.b, blend.b));
+}
+
+// Lighten
+half blendLighten(half base, half blend)
+{
+	return max(blend, base);
+}
+
+half3 blendLighten(half3 base, half3 blend)
+{
+	return half3(blendLighten(base.r, blend.r), blendLighten(base.g, blend.g), blendLighten(base.b, blend.b));
+}
+
+// Linear Dodge
+half blendLinearDodge(half base, half blend)
+{
+	// Note : Same implementation as BlendAddf
+	return min(base + blend, 1.0);
+}
+
+half3 blendLinearDodge(half3 base, half3 blend)
+{
+	// Note : Same implementation as BlendAdd
+	return base + blend;
+}
+// Multiply
+half blendMultiply(half base, half blend)
+{
+	return base * blend;
+}
+half3 blendMultiply(half3 base, half3 blend)
+{
+	return base * blend;
+}
+// Normal
+half blendNormal(half base, half blend)
+{
+	return blend;
+}
+half3 blendNormal(half3 base, half3 blend)
+{
+	return blend;
+}
+
+// Screen
+half blendScreen(half base, half blend)
+{
+	return 1.0 - ((1.0 - base) * (1.0 - blend));
+}
+
+half3 blendScreen(half3 base, half3 blend)
+{
+	return half3(blendScreen(base.r, blend.r), blendScreen(base.g, blend.g), blendScreen(base.b, blend.b));
+}
+
+// Subtract
+half blendSubtract(half base, half blend)
+{
+	return max(base - blend, 0.0);
+}
+
+half3 blendSubtract(half3 base, half3 blend)
+{
+	return max(base - blend, 0.0);
+}
+
+half blendMixed(half base, half blend)
+{
+	return base + base * blend;
+}
+
+half3 blendMixed(half3 base, half3 blend)
+{
+	return base + base * blend;
+}
+
+half3 customBlend(half3 base, half3 blend, half blendType, half alpha = 1)
+{
+	// Compute all blend results
+	half3 r0 = lerp(base, blend, alpha);                        // Normal (0)
+	half3 r1 = lerp(base, blendDarken(base, blend), alpha);     // Darken (1)
+	half3 r2 = base * lerp(1.0h, blend, alpha);                 // Multiply (2)
+	half3 r5 = lerp(base, blendLighten(base, blend), alpha);    // Lighten (5)
+	half3 r6 = lerp(base, blendScreen(base, blend), alpha);     // Screen (6)
+	half3 r7 = blendSubtract(base, blend * alpha);              // Subtract (7)
+	half3 r8 = lerp(base, blendLinearDodge(base, blend), alpha);// Linear Dodge (8)
+	half3 r9 = lerp(base, blendOverlay(base, blend), alpha);    // Overlay (9)
+	half3 r20 = lerp(base, blendMixed(base, blend), alpha);     // Mixed (20)
+	
+	// Branchless selection
+	half t = blendType;
+	half w0 = saturate(1.0h - abs(t - 0.0h));
+	half w1 = saturate(1.0h - abs(t - 1.0h));
+	half w2 = saturate(1.0h - abs(t - 2.0h));
+	half w5 = saturate(1.0h - abs(t - 5.0h));
+	half w6 = saturate(1.0h - abs(t - 6.0h));
+	half w7 = saturate(1.0h - abs(t - 7.0h));
+	half w8 = saturate(1.0h - abs(t - 8.0h));
+	half w9 = saturate(1.0h - abs(t - 9.0h));
+	half w20 = saturate(1.0h - abs(t - 20.0h));
+	
+	return r0*w0 + r1*w1 + r2*w2 + r5*w5 + r6*w6 + r7*w7 + r8*w8 + r9*w9 + r20*w20;
+}
+
+half customBlend(half base, half blend, half blendType, half alpha = 1)
+{
+	// Compute all blend results
+	half r0 = lerp(base, blend, alpha);                        // Normal (0)
+	half r2 = base * lerp(1.0h, blend, alpha);                // Multiply (2)
+	half r5 = lerp(base, blendLighten(base, blend), alpha);   // Lighten (5)
+	half r6 = lerp(base, blendScreen(base, blend), alpha);    // Screen (6)
+	half r7 = blendSubtract(base, blend * alpha);             // Subtract (7)
+	half r8 = lerp(base, blendLinearDodge(base, blend), alpha);// Linear Dodge (8)
+	half r9 = lerp(base, blendOverlay(base, blend), alpha);   // Overlay (9)
+	half r20 = lerp(base, blendMixed(base, blend), alpha);    // Mixed (20)
+	
+	// Branchless selection
+	half t = blendType;
+	half w0 = saturate(1.0h - abs(t - 0.0h));
+	half w2 = saturate(1.0h - abs(t - 2.0h));
+	half w5 = saturate(1.0h - abs(t - 5.0h));
+	half w6 = saturate(1.0h - abs(t - 6.0h));
+	half w7 = saturate(1.0h - abs(t - 7.0h));
+	half w8 = saturate(1.0h - abs(t - 8.0h));
+	half w9 = saturate(1.0h - abs(t - 9.0h));
+	half w20 = saturate(1.0h - abs(t - 20.0h));
+	
+	return r0*w0 + r2*w2 + r5*w5 + r6*w6 + r7*w7 + r8*w8 + r9*w9 + r20*w20;
+}
+
+#define REPLACE 0
+#define SUBSTRACT 1
+#define MULTIPLY 2
+#define DIVIDE 3
+#define MIN 4
+#define MAX 5
+#define AVERAGE 6
+#define ADD 7
+
+half maskBlend(half baseMask, half blendMask, half blendType)
+{
+	// Compute all blend results (GPU parallelism)
+	half replace = blendMask;
+	half subtract = baseMask - blendMask;
+	half multiply = baseMask * blendMask;
+	half divide = baseMask / max(blendMask, 0.0001h);
+	half minVal = min(baseMask, blendMask);
+	half maxVal = max(baseMask, blendMask);
+	half average = (baseMask + blendMask) * 0.5h;
+	half add = baseMask + blendMask;
+	
+	// Branchless selection using step functions
+	half t = blendType + 0.5h;
+	half w0 = step(t, 1.0h);
+	half w1 = step(1.0h, t) * step(t, 2.0h);
+	half w2 = step(2.0h, t) * step(t, 3.0h);
+	half w3 = step(3.0h, t) * step(t, 4.0h);
+	half w4 = step(4.0h, t) * step(t, 5.0h);
+	half w5 = step(5.0h, t) * step(t, 6.0h);
+	half w6 = step(6.0h, t) * step(t, 7.0h);
+	half w7 = step(7.0h, t);
+	
+	half output = replace * w0 + subtract * w1 + multiply * w2 + divide * w3 + minVal * w4 + maxVal * w5 + average * w6 + add * w7;
+	return saturate(output);
+}
+
+half globalMaskBlend(half baseMask, half globalMaskIndex, half blendType, PoiMods poiMods)
+{
+	if (globalMaskIndex == 0)
+	{
+		return baseMask;
+	}
+	else
+	{
+		return maskBlend(baseMask, poiMods.globalMask[globalMaskIndex - 1], blendType);
+	}
+}
+
+// Standardized mask processing with channel blending, remapping, gamma, and inversion
+half poiSampleMask(half4 sampledTexture, half4 channelStrengths, half blendMode, half invert, half2 remapMinMax, half gamma, half strength, half offset)
+{
+	// Start with R channel weighted by its strength
+	half mask = sampledTexture.r * channelStrengths.x;
+
+	// Sequentially blend G, B, A channels
+	mask = lerp(mask, maskBlend(mask, sampledTexture.g, blendMode), channelStrengths.y);
+	mask = lerp(mask, maskBlend(mask, sampledTexture.b, blendMode), channelStrengths.z);
+	mask = lerp(mask, maskBlend(mask, sampledTexture.a, blendMode), channelStrengths.w);
+
+	// Min/Max remapping (remap [min,max] to [0,1])
+	mask = saturate((mask - remapMinMax.x) / max(remapMinMax.y - remapMinMax.x, 0.0001));
+
+	// Gamma curve
+	mask = pow(mask, gamma);
+
+	// Strength and offset
+	mask = saturate(mask * strength + offset);
+
+	// Branchless inversion
+	mask = lerp(mask, 1.0 - mask, invert);
+
+	return mask;
+}
+
+// Single channel selection overload (backward compatible)
+half poiSampleMask(half4 sampledTexture, half channel, half invert)
+{
+	half4 channelStrengths = half4(
+		channel < 0.5 ? 1 : 0,
+		channel >= 0.5 && channel < 1.5 ? 1 : 0,
+		channel >= 1.5 && channel < 2.5 ? 1 : 0,
+		channel >= 2.5 ? 1 : 0
+	);
+	return poiSampleMask(sampledTexture, channelStrengths, 0.0h, invert, half2(0.0h, 1.0h), 1.0h, 1.0h, 0.0h);
+}
+
+// Single channel with strength and offset overload
+half poiSampleMask(half4 sampledTexture, half channel, half invert, half strength, half offset)
+{
+	half4 channelStrengths = half4(
+		channel < 0.5 ? 1 : 0,
+		channel >= 0.5 && channel < 1.5 ? 1 : 0,
+		channel >= 1.5 && channel < 2.5 ? 1 : 0,
+		channel >= 2.5 ? 1 : 0
+	);
+	return poiSampleMask(sampledTexture, channelStrengths, 0.0h, invert, half2(0.0h, 1.0h), 1.0h, strength, offset);
+}
+
+// Removed legacy random/random2/random3/randomFloat3/Range helpers after migration.
+// Use poiRand/poiRand2/poiRand3/poiRand4/poiRand3Range instead.
+
+
+// Generic Poiyomi RNG helpers (deterministic across stages)
+inline float poiRand(float2 co)
+{
+	float3 p3 = frac(float3(co.xyx) * 0.1031);
+	p3 += dot(p3, p3.yzx + 33.33);
+	return frac((p3.x + p3.y) * p3.z);
+}
+
+inline float4 poiRand4(float2 seed)
+{
+	float3 p3 = frac(float3(seed.xyx) * 0.1031);
+	p3 += dot(p3, p3.yzx + 33.33);
+	float2 a = frac((p3.xx + p3.yz) * p3.zy);
+	float2 s2 = seed + 37.0;
+	float3 q3 = frac(float3(s2.xyx) * 0.1031);
+	q3 += dot(q3, q3.yzx + 33.33);
+	float2 b = frac((q3.xx + q3.yz) * q3.zy);
+	return float4(a, b);
+}
+
+inline float2 poiRand2(float seed)
+{
+	float2 x = float2(seed, seed * 1.3);
+	float3 p3 = frac(float3(x.xyx) * 0.1031);
+	p3 += dot(p3, p3.yzx + 33.33);
+	return frac((p3.xx + p3.yz) * p3.zy);
+}
+
+inline float2 poiRand2(float2 seed)
+{
+	float3 p3 = frac(float3(seed.xyx) * 0.1031);
+	p3 += dot(p3, p3.yzx + 33.33);
+	return frac((p3.xx + p3.yz) * p3.zy);
+}
+
+inline float poiRand3(float seed)
+{
+	float p = frac(seed * 0.1031);
+	p *= p + 33.33;
+	p *= p + p;
+	return frac(p);
+}
+
+inline float3 poiRand3(float2 seed)
+{
+	float3 p3 = frac(float3(seed.xyx) * 0.1031);
+	p3 += dot(p3, p3.yzx + 33.33);
+	return frac((p3.xxy + p3.yzz) * p3.zyx);
+}
+
+inline float3 poiRand3(float3 seed)
+{
+	float3 p3 = frac(seed * 0.1031);
+	p3 += dot(p3, p3.zyx + 31.32);
+	return frac((p3.xxy + p3.yzz) * p3.zyx);
+}
+
+inline float3 poiRand3Range(float2 Seed, float Range)
+{
+	float3 r = poiRand3(Seed);
+	return (r * 2.0 - 1.0) * Range;
+}
+
+
+
+// Deprecated: use poiRand3Range instead of randomFloat3Range
+float3 randomFloat3WiggleRange(float2 Seed, float Range, float wiggleSpeed, float timeOffset)
+{
+	float3 rando = (float3(
+		frac(sin(dot(Seed.xy, float2(12.9898, 78.233))) * 43758.5453),
+		frac(sin(dot(Seed.yx, float2(12.9898, 78.233))) * 43758.5453),
+		frac(sin(dot(float2(Seed.x * Seed.y, Seed.y + Seed.x), float2(12.9898, 78.233))) * 43758.5453)
+	) * 2 - 1);
+	float speed = 1 + wiggleSpeed;
+	return float3(sin(((POI_TIME.x + timeOffset) + rando.x * UNITY_PI) * speed), sin(((POI_TIME.x + timeOffset) + rando.y * UNITY_PI) * speed), sin(((POI_TIME.x + timeOffset) + rando.z * UNITY_PI) * speed)) * Range;
+}
+
+
+// The weights of RGB contributions to luminance.
+// Should sum to unity.
+static const half3 HCYwts = half3(0.299h, 0.587h, 0.114h);
+static const float HCLgamma = 3;
+static const float HCLy0 = 100;
+static const float HCLmaxL = 0.530454533953517; // == exp(HCLgamma / HCLy0) - 0.5
+static const half3 wref = half3(1.0h, 1.0h, 1.0h);
+#define TAU 6.28318531
+
+half3 HUEtoRGB(in half H)
+{
+	half R = abs(H * 6.0h - 3.0h) - 1.0h;
+	half G = 2.0h - abs(H * 6.0h - 2.0h);
+	half B = 2.0h - abs(H * 6.0h - 4.0h);
+	return saturate(half3(R, G, B));
+}
+
+half3 RGBtoHCV(in half3 RGB)
+{
+	// Based on work by Sam Hocevar and Emil Persson
+	half4 P = (RGB.g < RGB.b) ? half4(RGB.bg, -1.0h, 2.0h / 3.0h) : half4(RGB.gb, 0.0h, -1.0h / 3.0h);
+	half4 Q = (RGB.r < P.x) ? half4(P.xyw, RGB.r) : half4(RGB.r, P.yzx);
+	half C = Q.x - min(Q.w, Q.y);
+	half H = abs((Q.w - Q.y) / (6.0h * C + EPSILON) + Q.z);
+	return half3(H, C, Q.x);
+}
+
+half3 RGBtoHSV(half3 c)
+{
+	half4 K = half4(0.0h, -1.0h / 3.0h, 2.0h / 3.0h, -1.0h);
+	half4 p = lerp(half4(c.bg, K.wz), half4(c.gb, K.xy), step(c.b, c.g));
+	half4 q = lerp(half4(p.xyw, c.r), half4(c.r, p.yzx), step(p.x, c.r));
+
+	half d = q.x - min(q.w, q.y);
+	const half e = 1.0e-4h;
+	return half3(abs(q.z + (q.w - q.y) / (6.0h * d + e)), d / (q.x + e), q.x);
+}
+
+half3 HSVtoRGB(half3 c)
+{
+	half4 K = half4(1.0h, 2.0h / 3.0h, 1.0h / 3.0h, 3.0h);
+	half3 p = abs(frac(c.xxx + K.xyz) * 6.0h - K.www);
+	return c.z * lerp(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
+}
+
+void DecomposeHDRColor(in half3 linearColorHDR, out half3 baseLinearColor, out half exposure)
+{
+	// Optimization/adaptation of https://github.com/Unity-Technologies/UnityCsReference/blob/master/Editor/Mono/GUI/ColorMutator.cs#L23 but skips weird photoshop stuff
+	half maxColorComponent = max(linearColorHDR.r, max(linearColorHDR.g, linearColorHDR.b));
+	bool isSDR = maxColorComponent <= 1.0;
+
+	half scaleFactor = isSDR ? 1.0h : (1.0h / maxColorComponent);
+	exposure = isSDR ? 0.0 : log(maxColorComponent) * 1.44269504089; // ln(2)
+	
+	baseLinearColor = scaleFactor * linearColorHDR;
+}
+
+half3 ApplyHDRExposure(half3 linearColor, half exposure)
+{
+	return linearColor * pow(2, exposure);
+}
+
+// Transforms an RGB color using a matrix. Note that S and V are absolute values here
+half3 ModifyViaHSV(half3 color, half h, half s, half v)
+{
+	half3 colorHSV = RGBtoHSV(color);
+	colorHSV.x = frac(colorHSV.x + h);
+	colorHSV.y = saturate(colorHSV.y + s);
+	colorHSV.z = saturate(colorHSV.z + v);
+	return HSVtoRGB(colorHSV);
+}
+
+half3 ModifyViaHSV(half3 color, half3 HSVMod)
+{
+	return ModifyViaHSV(color, HSVMod.x, HSVMod.y, HSVMod.z);
+}
+
+half4x4 brightnessMatrix(half brightness)
+{
+	return half4x4(
+		1, 0, 0, 0,
+		0, 1, 0, 0,
+		0, 0, 1, 0,
+		brightness, brightness, brightness, 1
+	);
+}
+
+half4x4 contrastMatrix(half contrast)
+{
+	half t = (1.0h - contrast) / 2.0h;
+	
+	return half4x4(
+		contrast, 0, 0, 0,
+		0, contrast, 0, 0,
+		0, 0, contrast, 0,
+		t, t, t, 1
+	);
+}
+
+half4x4 saturationMatrix(half saturation)
+{
+	half3 luminance = half3(0.3086h, 0.6094h, 0.0820h);
+	
+	half oneMinusSat = 1.0h - saturation;
+	
+	half3 red = luminance.x * oneMinusSat;
+	red += half3(saturation, 0.0h, 0.0h);
+	
+	half3 green = luminance.y * oneMinusSat;
+	green += half3(0.0h, saturation, 0.0h);
+	
+	half3 blue = luminance.z * oneMinusSat;
+	blue += half3(0.0h, 0.0h, saturation);
+	
+	return half4x4(
+		red, 0,
+		green, 0,
+		blue, 0,
+		0, 0, 0, 1
+	);
+}
+
+half4 PoiColorBCS(half4 color, half brightness, half contrast, half saturation)
+{
+	return mul(color, mul(brightnessMatrix(brightness), mul(contrastMatrix(contrast), saturationMatrix(saturation))));
+}
+half3 PoiColorBCS(half3 color, half brightness, half contrast, half saturation)
+{
+	return mul(half4(color, 1.0h), mul(brightnessMatrix(brightness), mul(contrastMatrix(contrast), saturationMatrix(saturation)))).rgb;
+}
+
+
+float3 linear_srgb_to_oklab(float3 c)
+{
+	float l = 0.4122214708 * c.x + 0.5363325363 * c.y + 0.0514459929 * c.z;
+	float m = 0.2119034982 * c.x + 0.6806995451 * c.y + 0.1073969566 * c.z;
+	float s = 0.0883024619 * c.x + 0.2817188376 * c.y + 0.6299787005 * c.z;
+
+	float l_ = pow(l, 1.0 / 3.0);
+	float m_ = pow(m, 1.0 / 3.0);
+	float s_ = pow(s, 1.0 / 3.0);
+
+	return float3(
+		0.2104542553 * l_ + 0.7936177850 * m_ - 0.0040720468 * s_,
+		1.9779984951 * l_ - 2.4285922050 * m_ + 0.4505937099 * s_,
+		0.0259040371 * l_ + 0.7827717662 * m_ - 0.8086757660 * s_
+	);
+}
+
+float3 oklab_to_linear_srgb(float3 c)
+{
+	float l_ = c.x + 0.3963377774 * c.y + 0.2158037573 * c.z;
+	float m_ = c.x - 0.1055613458 * c.y - 0.0638541728 * c.z;
+	float s_ = c.x - 0.0894841775 * c.y - 1.2914855480 * c.z;
+
+	float l = l_ * l_ * l_;
+	float m = m_ * m_ * m_;
+	float s = s_ * s_ * s_;
+
+	return float3(
+		+ 4.0767416621 * l - 3.3077115913 * m + 0.2309699292 * s,
+		- 1.2684380046 * l + 2.6097574011 * m - 0.3413193965 * s,
+		- 0.0041960863 * l - 0.7034186147 * m + 1.7076147010 * s
+	);
+}
+
+half3 PoiApplyChromatize(half3 linearColor, half chromatize)
+{
+	float minRgb = min(linearColor.r, min(linearColor.g, linearColor.b));
+	float maxRgb = max(linearColor.r, max(linearColor.g, linearColor.b));
+	float rangeRgb = maxRgb - minRgb;
+	float3 saturatedRef = (rangeRgb > 0.0001) ? (linearColor - minRgb) / rangeRgb : float3(1, 0, 0);
+	float3 saturatedOklab = linear_srgb_to_oklab(saturatedRef);
+	float maxChroma = length(saturatedOklab.yz);
+
+	float3 oklab = linear_srgb_to_oklab(linearColor);
+	float chroma = length(oklab.yz);
+	float hue = atan2(oklab.z, oklab.y);
+	chroma = min(chroma * (1.0 + chromatize), maxChroma);
+	oklab.y = chroma * cos(hue);
+	oklab.z = chroma * sin(hue);
+	return oklab_to_linear_srgb(oklab);
+}
+
+half3 hueShiftOKLab(half3 color, half shift, half selectOrShift)
+{
+	float3 oklab = linear_srgb_to_oklab(color);
+	float chroma = length(oklab.yz);
+	
+	oklab.y = selectOrShift > 0.5 ? oklab.y : chroma;
+	oklab.z = selectOrShift > 0.5 ? oklab.z : 0;
+	float s, c;
+	sincos(shift * UNITY_TWO_PI, s, c);
+	oklab.yz = float2(c * oklab.y - s * oklab.z, s * oklab.y + c * oklab.z);
+	
+	return oklab_to_linear_srgb(oklab);
+}
+
+half3 hueShiftHSV(half3 color, half hueOffset, half selectOrShift)
+{
+	half3 hsvCol = RGBtoHSV(color);
+	hsvCol.x = hsvCol.x * selectOrShift + hueOffset;
+	return HSVtoRGB(hsvCol);
+}
+
+half3 hueShift(half3 color, half shift, half ColorSpace, half selectOrShift = 0.0h)
+{
+	half3 oklab = hueShiftOKLab(color, shift, selectOrShift);
+	half3 hsv = hueShiftHSV(color, shift, selectOrShift);
+	half w = saturate(ColorSpace);
+	return lerp(oklab, hsv, w);
+}
+
+half4 hueShift(half4 color, half shift, half ColorSpace, half selectOrShift = 0.0h)
+{
+	return half4(hueShift(color.rgb, shift, ColorSpace, selectOrShift), color.a);
+}
+
+
+float4x4 poiRotationMatrixFromAngles(float x, float y, float z)
+{
+	float angleX = radians(x);
+	float c = cos(angleX);
+	float s = sin(angleX);
+	float4x4 rotateXMatrix = float4x4(1, 0, 0, 0,
+	0, c, -s, 0,
+	0, s, c, 0,
+	0, 0, 0, 1);
+	
+	float angleY = radians(y);
+	c = cos(angleY);
+	s = sin(angleY);
+	float4x4 rotateYMatrix = float4x4(c, 0, s, 0,
+	0, 1, 0, 0,
+	- s, 0, c, 0,
+	0, 0, 0, 1);
+	
+	float angleZ = radians(z);
+	c = cos(angleZ);
+	s = sin(angleZ);
+	float4x4 rotateZMatrix = float4x4(c, -s, 0, 0,
+	s, c, 0, 0,
+	0, 0, 1, 0,
+	0, 0, 0, 1);
+	
+	return mul(mul(rotateXMatrix, rotateYMatrix), rotateZMatrix);
+}
+
+float4x4 poiRotationMatrixFromAngles(float3 angles)
+{
+	float angleX = radians(angles.x);
+	float c = cos(angleX);
+	float s = sin(angleX);
+	float4x4 rotateXMatrix = float4x4(1, 0, 0, 0,
+	0, c, -s, 0,
+	0, s, c, 0,
+	0, 0, 0, 1);
+	
+	float angleY = radians(angles.y);
+	c = cos(angleY);
+	s = sin(angleY);
+	float4x4 rotateYMatrix = float4x4(c, 0, s, 0,
+	0, 1, 0, 0,
+	- s, 0, c, 0,
+	0, 0, 0, 1);
+	
+	float angleZ = radians(angles.z);
+	c = cos(angleZ);
+	s = sin(angleZ);
+	float4x4 rotateZMatrix = float4x4(c, -s, 0, 0,
+	s, c, 0, 0,
+	0, 0, 1, 0,
+	0, 0, 0, 1);
+	
+	return mul(mul(rotateXMatrix, rotateYMatrix), rotateZMatrix);
+}
+
+float3 _VRChatMirrorCameraPos;
+float3 _VRChatScreenCameraPos;
+float3 getCameraPosition(bool useCenterEye = true)
+{
+	if (VRCMirrorMode() > 0 && useCenterEye)
+		return _VRChatMirrorCameraPos;
+
+	float3 camPosWS = _WorldSpaceCameraPos;
+	#ifdef USING_STEREO_MATRICES
+		float3 centerEyePos = unity_StereoWorldSpaceCameraPos[0] * .5 + unity_StereoWorldSpaceCameraPos[1] * .5;
+		camPosWS = useCenterEye ? centerEyePos : unity_StereoWorldSpaceCameraPos[unity_StereoEyeIndex];
+	#endif
+	return camPosWS;
+}
+
+float2 calcPixelScreenUVs(half4 grabPos)
+{
+	half2 uv = grabPos.xy / (grabPos.w + 0.0000000001);
+	#if UNITY_SINGLE_PASS_STEREO
+		uv.xy *= half2(_ScreenParams.x * 2, _ScreenParams.y);
+	#else
+		uv.xy *= _ScreenParams.xy;
+	#endif
+	
+	return uv;
+}
+
+float CalcMipLevel(float2 texture_coord)
+{
+	float2 dx = ddx(texture_coord);
+	float2 dy = ddy(texture_coord);
+	float delta_max_sqr = max(dot(dx, dx), dot(dy, dy));
+	
+	return 0.5 * log2(delta_max_sqr);
+}
+
+float inverseLerp(float A, float B, float T)
+{
+	return (T - A) / (B - A);
+}
+
+float inverseLerp2(float2 a, float2 b, float2 value)
+{
+	float2 AB = b - a;
+	float2 AV = value - a;
+	return dot(AV, AB) / dot(AB, AB);
+}
+
+float inverseLerp3(float3 a, float3 b, float3 value)
+{
+	float3 AB = b - a;
+	float3 AV = value - a;
+	return dot(AV, AB) / dot(AB, AB);
+}
+
+float inverseLerp4(float4 a, float4 b, float4 value)
+{
+	float4 AB = b - a;
+	float4 AV = value - a;
+	return dot(AV, AB) / dot(AB, AB);
+}
+
+float4 QuaternionFromMatrix(
+	float m00, float m01, float m02,
+	float m10, float m11, float m12,
+	float m20, float m21, float m22)
+{
+	float4 q;
+	float trace = m00 + m11 + m22;
+	if (trace > 0)
+	{
+		float s = sqrt(trace + 1) * 2;
+		q.w = 0.25 * s;
+		q.x = (m21 - m12) / s;
+		q.y = (m02 - m20) / s;
+		q.z = (m10 - m01) / s;
+	}
+	else if (m00 > m11 && m00 > m22)
+	{
+		float s = sqrt(1 + m00 - m11 - m22) * 2;
+		q.w = (m21 - m12) / s;
+		q.x = 0.25 * s;
+		q.y = (m01 + m10) / s;
+		q.z = (m02 + m20) / s;
+	}
+	else if (m11 > m22)
+	{
+		float s = sqrt(1 + m11 - m00 - m22) * 2;
+		q.w = (m02 - m20) / s;
+		q.x = (m01 + m10) / s;
+		q.y = 0.25 * s;
+		q.z = (m12 + m21) / s;
+	}
+	else
+	{
+		float s = sqrt(1 + m22 - m00 - m11) * 2;
+		q.w = (m10 - m01) / s;
+		q.x = (m02 + m20) / s;
+		q.y = (m12 + m21) / s;
+		q.z = 0.25 * s;
+	}
+	return q;
+}
+
+float4 MulQuat(float4 a, float4 b)
+{
+	return float4(
+		a.w * b.x + a.x * b.w + a.y * b.z - a.z * b.y,
+		a.w * b.y - a.x * b.z + a.y * b.w + a.z * b.x,
+		a.w * b.z + a.x * b.y - a.y * b.x + a.z * b.w,
+		a.w * b.w - a.x * b.x - a.y * b.y - a.z * b.z
+	);
+}
+
+float4 QuaternionFromBasis(float3 sx, float3 sy, float3 sz)
+{
+	return QuaternionFromMatrix(
+		sx.x, sy.x, sz.x,
+		sx.y, sy.y, sz.y,
+		sx.z, sy.z, sz.z
+	);
+}
+
+float4 BuildQuatFromForwardUp(float3 forward, float3 up)
+{
+	float3 f = normalize(forward);
+	float3 u = normalize(up);
+	float3 x = normalize(cross(u, f));
+	float3 y = cross(f, x);
+	return QuaternionFromBasis(x, y, f);
+}
+
+float3 QuaternionToEuler(float4 q)
+{
+	float3 euler;
+	
+	float sinr_cosp = 2 * (q.w * q.z + q.x * q.y);
+	float cosr_cosp = 1 - 2 * (q.z * q.z + q.x * q.x);
+	euler.z = atan2(sinr_cosp, cosr_cosp) * 57.2958;
+	
+	float sinp = 2 * (q.w * q.x - q.y * q.z);
+	if (abs(sinp) >= 1)
+		euler.x = (sinp >= 0 ? 1 : - 1) * 90;
+	else
+		euler.x = asin(sinp) * 57.2958;
+	
+	float siny_cosp = 2 * (q.w * q.y + q.z * q.x);
+	float cosy_cosp = 1 - 2 * (q.x * q.x + q.y * q.y);
+	euler.y = atan2(siny_cosp, cosy_cosp) * 57.2958;
+	
+	return euler;
+}
+
+float4 EulerToQuaternion(float3 euler)
+{
+	float3 eulerRad = euler * 0.0174533;
+	
+	float cx = cos(eulerRad.x * 0.5);
+	float sx = sin(eulerRad.x * 0.5);
+	float cy = cos(eulerRad.y * 0.5);
+	float sy = sin(eulerRad.y * 0.5);
+	float cz = cos(eulerRad.z * 0.5);
+	float sz = sin(eulerRad.z * 0.5);
+	
+	float4 q;
+	q.w = cx * cy * cz + sx * sy * sz;
+	q.x = sx * cy * cz - cx * sy * sz;
+	q.y = cx * sy * cz + sx * cy * sz;
+	q.z = cx * cy * sz - sx * sy * cz;
+	
+	return q;
+}
+
+/*
+MIT License
+
+Copyright (c) 2019 wraikny
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+VertexTransformShader is dependent on:
+*/
+
+float4 quaternion_conjugate(float4 v)
+{
+	return float4(
+		v.x, -v.yzw
+	);
+}
+
+float4 quaternion_mul(float4 v1, float4 v2)
+{
+	float4 result1 = (v1.x * v2 + v1 * v2.x);
+	
+	float4 result2 = float4(
+		- dot(v1.yzw, v2.yzw),
+		cross(v1.yzw, v2.yzw)
+	);
+	
+	return float4(result1 + result2);
+}
+
+// angle : radians
+float4 get_quaternion_from_angle(float3 axis, float angle)
+{
+	float sn = sin(angle * 0.5);
+	float cs = cos(angle * 0.5);
+	return float4(axis * sn, cs);
+}
+
+float4 quaternion_from_vector(float3 inVec)
+{
+	return float4(0.0, inVec);
+}
+
+float degree_to_radius(float degree)
+{
+	return (
+		degree / 180.0 * UNITY_PI
+	);
+}
+
+float3 rotate_with_quaternion(float3 inVec, float3 rotation)
+{
+	float4 qx = get_quaternion_from_angle(float3(1, 0, 0), radians(rotation.x));
+	float4 qy = get_quaternion_from_angle(float3(0, 1, 0), radians(rotation.y));
+	float4 qz = get_quaternion_from_angle(float3(0, 0, 1), radians(rotation.z));
+	
+	#define MUL3(A, B, C) quaternion_mul(quaternion_mul((A), (B)), (C))
+	float4 quaternion = normalize(MUL3(qx, qy, qz));
+	float4 conjugate = quaternion_conjugate(quaternion);
+	
+	float4 inVecQ = quaternion_from_vector(inVec);
+	
+	float3 rotated = (
+		MUL3(quaternion, inVecQ, conjugate)
+	).yzw;
+	
+	return rotated;
+}
+
+float3 RotateByQuaternion(float4 q, float3 v)
+{
+	float3 u = q.xyz;
+	float s = q.w;
+	return 2.0 * dot(u, v) * u
+	+ (s * s - dot(u, u)) * v
+	+ 2.0 * s * cross(u, v);
+}
+
+
+
+
+float4 SlerpQuaternion(float4 qa, float4 qb, float t)
+{
+	float cosHalfTheta = dot(qa, qb);
+	// take shortest path
+	if (cosHalfTheta < 0.0)
+	{
+		qb = -qb;
+		cosHalfTheta = -cosHalfTheta;
+	}
+	if (cosHalfTheta > 0.9995)
+	{
+		// almost parallel — use lerp
+		float4 qr = normalize(qa * (1 - t) + qb * t);
+		return qr;
+	}
+	float halfTheta = acos(cosHalfTheta);
+	float sinHalfTheta = sqrt(1.0 - cosHalfTheta * cosHalfTheta);
+	float a = sin((1 - t) * halfTheta) / sinHalfTheta;
+	float b = sin(t * halfTheta) / sinHalfTheta;
+	return qa * a + qb * b;
+}
+
+float4 transform(float4 input, float4 pos, float4 rotation, float4 scale)
+{
+	input.rgb *= (scale.xyz * scale.w);
+	input = float4(rotate_with_quaternion(input.xyz, rotation.xyz * rotation.w) + (pos.xyz * pos.w), input.w);
+	return input;
+}
+/*
+MIT END
+*/
+
+float2 RotateUV(float2 _uv, float _radian, float2 _piv, float _time)
+{
+	float RotateUV_ang = _radian;
+	float RotateUV_cos = cos(_time * RotateUV_ang);
+	float RotateUV_sin = sin(_time * RotateUV_ang);
+	return (mul(_uv - _piv, float2x2(RotateUV_cos, -RotateUV_sin, RotateUV_sin, RotateUV_cos)) + _piv);
+}
+
+float3 RotateAroundAxis(float3 original, float3 axis, float radian)
+{
+	float s = sin(radian);
+	float c = cos(radian);
+	float one_minus_c = 1.0 - c;
+
+	axis = normalize(axis);
+	float3x3 rot_mat = {
+		one_minus_c * axis.x * axis.x + c, one_minus_c * axis.x * axis.y - axis.z * s, one_minus_c * axis.z * axis.x + axis.y * s,
+		one_minus_c * axis.x * axis.y + axis.z * s, one_minus_c * axis.y * axis.y + c, one_minus_c * axis.y * axis.z - axis.x * s,
+		one_minus_c * axis.z * axis.x - axis.y * s, one_minus_c * axis.y * axis.z + axis.x * s, one_minus_c * axis.z * axis.z + c
+	};
+	return mul(rot_mat, original);
+}
+
+half3 lilToneCorrection(half3 c, half4 hsvg)
+{
+	// gamma
+	c = pow(abs(c), hsvg.w);
+	// rgb - > hsv
+	half4 p = (c.b > c.g) ? half4(c.bg, -1.0h, 2.0h / 3.0h) : half4(c.gb, 0.0h, -1.0h / 3.0h);
+	half4 q = (p.x > c.r) ? half4(p.xyw, c.r) : half4(c.r, p.yzx);
+	half d = q.x - min(q.w, q.y);
+	const half e = 1.0e-4h;
+	half3 hsv = half3(abs(q.z + (q.w - q.y) / (6.0h * d + e)), d / (q.x + e), q.x);
+	// shift
+	hsv = half3(hsv.x + hsvg.x, saturate(hsv.y * hsvg.y), saturate(hsv.z * hsvg.z));
+	// hsv - > rgb
+	return hsv.z - hsv.z * hsv.y + hsv.z * hsv.y * saturate(abs(frac(hsv.x + half3(1.0h, 2.0h / 3.0h, 1.0h / 3.0h)) * 6.0h - 3.0h) - 1.0h);
+}
+
+half3 lilBlendColor(half3 dstCol, half3 srcCol, half3 srcA, int blendMode)
+{
+	half3 ad = dstCol + srcCol;
+	half3 mu = dstCol * srcCol;
+	half3 outCol = half3(0.0h, 0.0h, 0.0h);
+	if (blendMode == 0) outCol = srcCol; // Normal
+	if (blendMode == 1) outCol = ad; // Add
+	if (blendMode == 2) outCol = max(ad - mu, dstCol); // Screen
+	if (blendMode == 3) outCol = mu; // Multiply
+	return lerp(dstCol, outCol, srcA);
+}
+
+float lilIsIn0to1(float f)
+{
+	float value = 0.5 - abs(f - 0.5);
+	return saturate(value / clamp(fwidth(value), 0.0001, 1.0));
+}
+
+float lilIsIn0to1(float f, float nv)
+{
+	float value = 0.5 - abs(f - 0.5);
+	return saturate(value / clamp(fwidth(value), 0.0001, nv));
+}
+
+float poiEdgeLinearNoSaturate(float value, float border)
+{
+	return (value - border) / clamp(fwidth(value), 0.0001, 1.0);
+}
+
+float3 poiEdgeLinearNoSaturate(float value, float3 border)
+{
+	return float3(
+		(value - border.x) / clamp(fwidth(value), 0.0001, 1.0),
+		(value - border.y) / clamp(fwidth(value), 0.0001, 1.0),
+		(value - border.z) / clamp(fwidth(value), 0.0001, 1.0)
+	);
+}
+
+float poiEdgeLinearNoSaturate(float value, float border, float blur)
+{
+	float borderMin = saturate(border - blur * 0.5);
+	float borderMax = saturate(border + blur * 0.5);
+	return (value - borderMin) / max(saturate(borderMax - borderMin + fwidth(value)), .0001);
+}
+
+float poiEdgeLinearNoSaturate(float value, float border, float blur, float borderRange)
+{
+	float borderMin = saturate(border - blur * 0.5 - borderRange);
+	float borderMax = saturate(border + blur * 0.5);
+	return (value - borderMin) / max(saturate(borderMax - borderMin + fwidth(value)), .0001);
+}
+
+float poiEdgeNonLinearNoSaturate(float value, float border)
+{
+	// return (value - border) / clamp(fwidth(value), 0.0001, 1.0);
+
+	float fwidthValue = fwidth(value);
+	return smoothstep(border - fwidthValue, border + fwidthValue, value);
+}
+
+float poiEdgeNonLinearNoSaturate(float value, float border, float blur)
+{
+	float fwidthValue = fwidth(value);
+	float borderMin = saturate(border - blur * 0.5);
+	float borderMax = saturate(border + blur * 0.5);
+	return smoothstep(borderMin - fwidthValue, borderMax + fwidthValue, value);
+}
+
+float poiEdgeNonLinearNoSaturate(float value, float border, float blur, float borderRange)
+{
+	float fwidthValue = fwidth(value);
+	float borderMin = saturate(border - blur * 0.5 - borderRange);
+	float borderMax = saturate(border + blur * 0.5);
+	return smoothstep(borderMin - fwidthValue, borderMax + fwidthValue, value);
+}
+
+float poiEdgeNonLinear(float value, float border)
+{
+	return saturate(poiEdgeNonLinearNoSaturate(value, border));
+}
+
+float poiEdgeNonLinear(float value, float border, float blur)
+{
+	return saturate(poiEdgeNonLinearNoSaturate(value, border, blur));
+}
+
+float poiEdgeNonLinear(float value, float border, float blur, float borderRange)
+{
+	return saturate(poiEdgeNonLinearNoSaturate(value, border, blur, borderRange));
+}
+
+float poiEdgeLinear(float value, float border)
+{
+	return saturate(poiEdgeLinearNoSaturate(value, border));
+}
+
+float poiEdgeLinear(float value, float border, float blur)
+{
+	return saturate(poiEdgeLinearNoSaturate(value, border, blur));
+}
+
+float poiEdgeLinear(float value, float border, float blur, float borderRange)
+{
+	return saturate(poiEdgeLinearNoSaturate(value, border, blur, borderRange));
+}
+// From https : // github.com / lilxyzw / OpenLit / blob / main / Assets / OpenLit / core.hlsl
+half3 OpenLitLinearToSRGB(half3 col)
+{
+	return LinearToGammaSpace(col);
+}
+
+half3 OpenLitSRGBToLinear(half3 col)
+{
+	return GammaToLinearSpace(col);
+}
+
+half OpenLitLuminance(half3 rgb)
+{
+	#if defined(UNITY_COLORSPACE_GAMMA)
+		return dot(rgb, half3(0.22h, 0.707h, 0.071h));
+	#else
+		return dot(rgb, half3(0.0396819152h, 0.458021790h, 0.00609653955h));
+	#endif
+}
+
+half3 AdjustLitLuminance(half3 rgb, half targetLuminance)
+{
+	half currentLuminance;
+	#if defined(UNITY_COLORSPACE_GAMMA)
+		currentLuminance = dot(rgb, float3(0.22, 0.707, 0.071));
+	#else
+		currentLuminance = dot(rgb, float3(0.0396819152, 0.458021790, 0.00609653955));
+	#endif
+
+	half luminanceRatio = targetLuminance / currentLuminance;
+	return rgb * luminanceRatio;
+}
+
+half3 ClampLuminance(half3 rgb, half minLuminance, half maxLuminance)
+{
+	half currentLuminance = dot(rgb, float3(0.299, 0.587, 0.114));
+	float minRatio = (currentLuminance != 0) ? minLuminance / currentLuminance : 1.0;
+	float maxRatio = (currentLuminance != 0) ? maxLuminance / currentLuminance : 1.0;
+	half luminanceRatio = clamp(min(maxRatio, max(minRatio, 1.0)), 0.0, 1.0);
+	return lerp(rgb, rgb * luminanceRatio, luminanceRatio < 1.0);
+}
+
+half3 MaxLuminance(half3 rgb, half maxLuminance)
+{
+	half currentLuminance = dot(rgb, float3(0.299, 0.587, 0.114));
+	half luminanceRatio = (currentLuminance != 0) ? maxLuminance / max(currentLuminance, 0.00001) : 1.0;
+	return lerp(rgb, rgb * luminanceRatio, currentLuminance > maxLuminance);
+}
+
+half OpenLitGray(half3 rgb)
+{
+	return dot(rgb, float3(1.0 / 3.0, 1.0 / 3.0, 1.0 / 3.0));
+}
+
+void OpenLitShadeSH9ToonDouble(half3 lightDirection, out half3 shMax, out half3 shMin)
+{
+	#if !defined(LIGHTMAP_ON)
+		half3 N = lightDirection * 0.666666;
+		half4 vB = N.xyzz * N.yzzx;
+		// L0 L2
+		half3 res = half3(PoiSHAr.w, PoiSHAg.w, PoiSHAb.w);
+		res.r += dot(PoiSHBr, vB);
+		res.g += dot(PoiSHBg, vB);
+		res.b += dot(PoiSHBb, vB);
+		res += PoiSHC.rgb * (N.x * N.x - N.y * N.y);
+		// L1
+		half3 l1;
+		l1.r = dot(PoiSHAr.rgb, N);
+		l1.g = dot(PoiSHAg.rgb, N);
+		l1.b = dot(PoiSHAb.rgb, N);
+		shMax = res + l1;
+		shMin = res - l1;
+		#if defined(UNITY_COLORSPACE_GAMMA)
+			shMax = OpenLitLinearToSRGB(shMax);
+			shMin = OpenLitLinearToSRGB(shMin);
+		#endif
+	#else
+		shMax = 0.0;
+		shMin = 0.0;
+	#endif
+}
+
+half3 OpenLitComputeCustomLightDirection(half4 lightDirectionOverride)
+{
+	half3 customDir = length(lightDirectionOverride.xyz) * normalize(mul((float3x3)unity_ObjectToWorld, lightDirectionOverride.xyz));
+	return lightDirectionOverride.w ? customDir : lightDirectionOverride.xyz; // .w isn't doc'd anywhere and is always 0 unless end user changes it
+
+}
+
+half3 OpenLitLightingDirectionForSH9(half3 mainDir)
+{
+	#if !defined(LIGHTMAP_ON)
+		half3 sh9Dir = PoiSHAr.xyz * 0.333333 + PoiSHAg.xyz * 0.333333 + PoiSHAb.xyz * 0.333333;
+		half3 sh9DirAbs = half3(sh9Dir.x, abs(sh9Dir.y), sh9Dir.z);
+	#else
+		half3 sh9Dir = 0;
+		half3 sh9DirAbs = 0;
+	#endif
+
+	half3 lightDirectionForSH9 = sh9Dir + mainDir;
+	lightDirectionForSH9 = dot(lightDirectionForSH9, lightDirectionForSH9) < 0.000001 ? 0 : normalize(lightDirectionForSH9);
+	return lightDirectionForSH9;
+}
+
+half3 OpenLitLightingDirectionForSH9(Light light)
+{
+	half3 mainDir = light.direction * OpenLitLuminance(light.color);
+	return OpenLitLightingDirectionForSH9(mainDir);
+}
+
+half3 OpenLitLightingDirection(half4 lightDirectionOverride, half3 mainDir)
+{
+	#if !defined(LIGHTMAP_ON) && UNITY_SHOULD_SAMPLE_SH
+		half3 sh9Dir = PoiSHAr.xyz * 0.333333 + PoiSHAg.xyz * 0.333333 + PoiSHAb.xyz * 0.333333;
+		half3 sh9DirAbs = half3(sh9Dir.x, abs(sh9Dir.y), sh9Dir.z);
+	#else
+		half3 sh9Dir = 0;
+		half3 sh9DirAbs = 0;
+	#endif
+	half3 customDir = OpenLitComputeCustomLightDirection(lightDirectionOverride);
+
+	return normalize(sh9DirAbs + mainDir + customDir);
+}
+
+half3 OpenLitLightingDirection(half4 lightDirectionOverride, Light light)
+{
+	half3 mainDir = light.direction.xyz * OpenLitLuminance(light.color);
+	return OpenLitLightingDirection(lightDirectionOverride, mainDir);
+}
+
+half3 OpenLitLightingDirection(Light light)
+{
+	half4 customDir = half4(0.001, 0.002, 0.001, 0.0);
+	return OpenLitLightingDirection(customDir, light);
+}
+
+inline float4 CalculateFrustumCorrection()
+{
+	float x1 = -UNITY_MATRIX_P._31 / (UNITY_MATRIX_P._11 * UNITY_MATRIX_P._34);
+	float x2 = -UNITY_MATRIX_P._32 / (UNITY_MATRIX_P._22 * UNITY_MATRIX_P._34);
+	return float4(x1, x2, 0, UNITY_MATRIX_P._33 / UNITY_MATRIX_P._34 + x1 * UNITY_MATRIX_P._13 + x2 * UNITY_MATRIX_P._23);
+}
+
+inline float CorrectedLinearEyeDepth(float z, float correctionFactor)
+{
+	return 1.f / (z / UNITY_MATRIX_P._34 + correctionFactor);
+}
+
+inline float GetFOVScale()
+{
+	return abs(UNITY_MATRIX_P._m11) * 0.5;
+}
+
+inline float GetAspectRatio()
+{
+	return _ScreenParams.y / _ScreenParams.x;
+}
+
+inline float WorldToScreenScale(float worldRadius, float distance)
+{
+	return (worldRadius / max(distance, 0.001)) * GetFOVScale();
+}
+
+inline float2 GetScreenAspectCorrection()
+{
+	return float2(_ScreenParams.y / _ScreenParams.x, 1.0);
+}
+
+float evalRamp4(float time, float4 ramp)
+{
+	return lerp(ramp.x, ramp.y, smoothstep(ramp.z, ramp.w, time));
+}
+
+// Silent's code
+float2 sharpSample(float4 texelSize, float2 p)
+{
+	p = p * texelSize.zw;
+	float2 c = max(0.0, fwidth(p));
+	p = floor(p) + saturate(frac(p) / c);
+	p = (p - 0.5) * texelSize.xy;
+	return p;
+}
+
+// Quantize a UV to the center of its cell on a resolution x resolution grid.
+// Pair with poiSnapUVGradients + SampleGrad.
+float2 poiSnapUVToGrid(float2 uv, float2 resolution)
+{
+	return (floor(uv * resolution) + 0.5) / resolution;
+}
+
+void poiSnapUVGradients(float2 continuousUV, float2 cellSize, out float2 dx, out float2 dy)
+{
+	dx = max(abs(ddx(continuousUV)), float2(cellSize.x, 0));
+	dy = max(abs(ddy(continuousUV)), float2(0, cellSize.y));
+}
+
+// Quantize sampleUV to a grid that lives in a *different* UV space.
+//
+// poiSnapUVToGrid snaps a UV on its own grid, which is what you want when that UV is fixed to the
+// surface. It is wrong when the sampled UV is view dependent (panosphere, matcap, screen space): the
+// cells are then anchored to the camera, so the content swims across the mesh instead of sitting on
+// it. Here the grid is quantized in gridUV, and the screen space Jacobian dSample/dGrid carries the
+// sample to that cell's center, so every fragment sharing a cell resolves to one sample and the
+// quantization stays welded to whatever gridUV is welded to.
+//
+// The Jacobian comes from inverting the grid's screen derivatives: with columns dx and dy,
+// [dSdx dSdy] = J * [dGdx dGdy], so J = [dSdx dSdy] * inverse([dGdx dGdy]).
+//
+// Linear, so exact for a flat surface and progressively looser on strongly curved ones. Where gridUV
+// does not vary across the quad the Jacobian is singular and there is no cell to step to, so it falls
+// back to snapping in place.
+// cellFootprint returns how much of sampleUV one grid cell spans, for the gradient floor that picks
+// the mip. The caller cannot assume 1/resolution here the way it can for a same space snap: the two
+// UVs carry different scales, so a cell can cover far more or less of sampleUV than of gridUV, and
+// guessing low means every cell samples a sharper mip than it covers and the result shimmers.
+float2 poiSnapUVToForeignGrid(float2 sampleUV, float2 gridUV, float2 resolution, out float2 cellFootprint)
+{
+	// Every derivative is taken before the branch below; ddx/ddy under divergent flow is undefined.
+	float2 dGdx = ddx(gridUV);
+	float2 dGdy = ddy(gridUV);
+	float2 dSdx = ddx(sampleUV);
+	float2 dSdy = ddy(sampleUV);
+
+	float det = dGdx.x * dGdy.y - dGdy.x * dGdx.y;
+	if (abs(det) < 1e-12)
+	{
+		cellFootprint = rcp(resolution);
+		return poiSnapUVToGrid(sampleUV, resolution);
+	}
+
+	float2 toCellCenter = poiSnapUVToGrid(gridUV, resolution) - gridUV;
+
+	float rcpDet = rcp(det);
+	float2 dSdu = (dGdy.y * dSdx - dGdx.y * dSdy) * rcpDet;
+	float2 dSdv = (dGdx.x * dSdy - dGdy.x * dSdx) * rcpDet;
+
+	// One cell steps 1/resolution along each grid axis; both axes can move both components of
+	// sampleUV, so the footprint is their summed magnitude.
+	cellFootprint = abs(dSdu) / resolution.x + abs(dSdv) / resolution.y;
+
+	return sampleUV + toCellCenter.x * dSdu + toCellCenter.y * dSdv;
+}
+
+void applyToGlobalMask(inout PoiMods poiMods, int index, int blendType, half val)
+{
+	// Compute blended values for all 16 masks
+	half v0 = saturate(maskBlend(poiMods.globalMask[0], val, blendType));
+	half v1 = saturate(maskBlend(poiMods.globalMask[1], val, blendType));
+	half v2 = saturate(maskBlend(poiMods.globalMask[2], val, blendType));
+	half v3 = saturate(maskBlend(poiMods.globalMask[3], val, blendType));
+	half v4 = saturate(maskBlend(poiMods.globalMask[4], val, blendType));
+	half v5 = saturate(maskBlend(poiMods.globalMask[5], val, blendType));
+	half v6 = saturate(maskBlend(poiMods.globalMask[6], val, blendType));
+	half v7 = saturate(maskBlend(poiMods.globalMask[7], val, blendType));
+	half v8 = saturate(maskBlend(poiMods.globalMask[8], val, blendType));
+	half v9 = saturate(maskBlend(poiMods.globalMask[9], val, blendType));
+	half v10 = saturate(maskBlend(poiMods.globalMask[10], val, blendType));
+	half v11 = saturate(maskBlend(poiMods.globalMask[11], val, blendType));
+	half v12 = saturate(maskBlend(poiMods.globalMask[12], val, blendType));
+	half v13 = saturate(maskBlend(poiMods.globalMask[13], val, blendType));
+	half v14 = saturate(maskBlend(poiMods.globalMask[14], val, blendType));
+	half v15 = saturate(maskBlend(poiMods.globalMask[15], val, blendType));
+	
+	// Branchless weights
+	half i = index;
+	half w0 = saturate(1.0h - abs(i - 0.0h));
+	half w1 = saturate(1.0h - abs(i - 1.0h));
+	half w2 = saturate(1.0h - abs(i - 2.0h));
+	half w3 = saturate(1.0h - abs(i - 3.0h));
+	half w4 = saturate(1.0h - abs(i - 4.0h));
+	half w5 = saturate(1.0h - abs(i - 5.0h));
+	half w6 = saturate(1.0h - abs(i - 6.0h));
+	half w7 = saturate(1.0h - abs(i - 7.0h));
+	half w8 = saturate(1.0h - abs(i - 8.0h));
+	half w9 = saturate(1.0h - abs(i - 9.0h));
+	half w10 = saturate(1.0h - abs(i - 10.0h));
+	half w11 = saturate(1.0h - abs(i - 11.0h));
+	half w12 = saturate(1.0h - abs(i - 12.0h));
+	half w13 = saturate(1.0h - abs(i - 13.0h));
+	half w14 = saturate(1.0h - abs(i - 14.0h));
+	half w15 = saturate(1.0h - abs(i - 15.0h));
+	
+	// Branchless conditional writes
+	poiMods.globalMask[0] = lerp(poiMods.globalMask[0], v0, w0);
+	poiMods.globalMask[1] = lerp(poiMods.globalMask[1], v1, w1);
+	poiMods.globalMask[2] = lerp(poiMods.globalMask[2], v2, w2);
+	poiMods.globalMask[3] = lerp(poiMods.globalMask[3], v3, w3);
+	poiMods.globalMask[4] = lerp(poiMods.globalMask[4], v4, w4);
+	poiMods.globalMask[5] = lerp(poiMods.globalMask[5], v5, w5);
+	poiMods.globalMask[6] = lerp(poiMods.globalMask[6], v6, w6);
+	poiMods.globalMask[7] = lerp(poiMods.globalMask[7], v7, w7);
+	poiMods.globalMask[8] = lerp(poiMods.globalMask[8], v8, w8);
+	poiMods.globalMask[9] = lerp(poiMods.globalMask[9], v9, w9);
+	poiMods.globalMask[10] = lerp(poiMods.globalMask[10], v10, w10);
+	poiMods.globalMask[11] = lerp(poiMods.globalMask[11], v11, w11);
+	poiMods.globalMask[12] = lerp(poiMods.globalMask[12], v12, w12);
+	poiMods.globalMask[13] = lerp(poiMods.globalMask[13], v13, w13);
+	poiMods.globalMask[14] = lerp(poiMods.globalMask[14], v14, w14);
+	poiMods.globalMask[15] = lerp(poiMods.globalMask[15], v15, w15);
+}
+
+void assignValueToVectorFromIndex(inout half4 vec, int index, half value)
+{
+	float i = clamp(index, 0, 3);
+	float w0 = saturate(1 - abs(i - 0));
+	float w1 = saturate(1 - abs(i - 1));
+	float w2 = saturate(1 - abs(i - 2));
+	float w3 = saturate(1 - abs(i - 3));
+	vec[0] = lerp(vec[0], value, w0);
+	vec[1] = lerp(vec[1], value, w1);
+	vec[2] = lerp(vec[2], value, w2);
+	vec[3] = lerp(vec[3], value, w3);
+}
+
+// SNose
+float3 mod289(float3 x)
+{
+	return x - floor(x * (1.0 / 289.0)) * 289.0;
+}
+float2 mod289(float2 x)
+{
+	return x - floor(x * (1.0 / 289.0)) * 289.0;
+}
+float3 permute(float3 x)
+{
+	return mod289(((x * 34.0) + 1.0) * x);
+}
+
+float snoise(float2 v)
+{
+	const float4 C = float4(0.211324865405187, // (3.0 - sqrt(3.0)) / 6.0
+	0.366025403784439, // 0.5 * (sqrt(3.0) - 1.0)
+	- 0.577350269189626, // - 1.0 + 2.0 * C.x
+	0.024390243902439); // 1.0 / 41.0
+	float2 i = floor(v + dot(v, C.yy));
+	float2 x0 = v - i + dot(i, C.xx);
+	float2 i1;
+	i1 = (x0.x > x0.y) ? float2(1.0, 0.0) : float2(0.0, 1.0);
+	float4 x12 = x0.xyxy + C.xxzz;
+	x12.xy -= i1;
+	i = mod289(i); // Avoid truncation effects in permutation
+	float3 p = permute(permute(i.y + float3(0.0, i1.y, 1.0))
+	+ i.x + float3(0.0, i1.x, 1.0));
+
+	float3 m = max(0.5 - float3(dot(x0, x0), dot(x12.xy, x12.xy), dot(x12.zw, x12.zw)), 0.0);
+	m = m * m ;
+	m = m * m ;
+	float3 x = 2.0 * frac(p * C.www) - 1.0;
+	float3 h = abs(x) - 0.5;
+	float3 ox = floor(x + 0.5);
+	float3 a0 = x - ox;
+	m *= 1.79284291400159 - 0.85373472095314 * (a0 * a0 + h * h);
+	float3 g;
+	g.x = a0.x * x0.x + h.x * x0.y;
+	g.yz = a0.yz * x12.xz + h.yz * x12.yw;
+	return 130.0 * dot(m, g);
+}
+
+// 8x8 ordered (Bayer) dither in [0,1). Bit/sin-free -> Quest/Adreno safe.
+float PoiBayer2(float2 a) { a = floor(a); return frac(a.x * 0.5 + a.y * a.y * 0.75); }
+float PoiBayer8(float2 a) { return PoiBayer2(a * 0.25) * 0.0625 + PoiBayer2(a * 0.5) * 0.25 + PoiBayer2(a); }
+
+half poiInvertToggle(in half value, in half toggle)
+{
+	return (toggle == 0 ? value : 1 - value);
+}
+
+half3 PoiBlendNormal(half3 dstNormal, half3 srcNormal)
+{
+	return float3(dstNormal.xy + srcNormal.xy, dstNormal.z * srcNormal.z);
+}
+
+float3 lilTransformDirOStoWS(float3 directionOS, bool doNormalize)
+{
+	if (doNormalize) return normalize(mul((float3x3)unity_ObjectToWorld, directionOS));
+	else            return mul((float3x3)unity_ObjectToWorld, directionOS);
+}
+
+float2 poiGetWidthAndHeight(Texture2D tex)
+{
+	uint width, height;
+	tex.GetDimensions(width, height);
+	return float2(width, height);
+}
+
+float2 poiGetWidthAndHeight(Texture2DArray tex)
+{
+	uint width, height, element;
+	tex.GetDimensions(width, height, element);
+	return float2(width, height);
+}
+
+bool SceneHasReflections()
+{
+	bool hasReflection = false;
+	float width, height;
+	unity_SpecCube0.GetDimensions(width, height);
+	hasReflection = !(width * height < 2);
+
+	#if CLUSTER_HAS_REFLECTION_PROBES
+		urp_ReflProbes_Atlas.GetDimensions(width, height);
+		hasReflection = hasReflection | !(width * height < 2);
+	#endif
+	
+	return hasReflection;
+}
+
+void applyUnityFog(inout half3 col, float fogCoord, half ignoreFog)
+{
+	if (ignoreFog > 0.5) return;
+	float z = UNITY_Z_0_FAR_FROM_CLIPSPACE(fogCoord);
+
+	half fogIntensity = 1.0;
+	// Linear fog: unity_FogParams.z and .w differ
+	if (unity_FogParams.z != unity_FogParams.w)
+	{
+		fogIntensity = saturate(z * unity_FogParams.z + unity_FogParams.w);
+	}
+	// Exp/Exp2 fog: treat as Exp2
+	else if (unity_FogParams.x != 0.0)
+	{
+		half fogFactor = unity_FogParams.x * z;
+		fogIntensity = saturate(exp2(-fogFactor * fogFactor));
+	}
+
+	half3 appliedFogColor = unity_FogColor.rgb;
+
+	#if defined(POI_PASS_ADD)
+		appliedFogColor = half3(0.0h, 0.0h, 0.0h);
+	#endif
+
+	col.rgb = lerp(appliedFogColor, col.rgb, fogIntensity);
+}
+
+float poiSampleCurve4(float4 curve, float value)
+{
+    float3 weights = saturate(value * 3.0 - float3(0.0, 1.0, 2.0));
+    return saturate(curve.x + dot(weights, curve.yzw - curve.xyz));
+}
+
+#T#PoiPassSpecificHelperFunctions
+
+float2 vertexUV(in VertexOut o, int index)
+{
+	float i = index;
+	float w0 = saturate(1 - abs(i - 0));
+	float w1 = saturate(1 - abs(i - 1));
+	float w2 = saturate(1 - abs(i - 2));
+	float w3 = saturate(1 - abs(i - 3));
+	return o.uv[0].xy * w0 + o.uv[0].zw * w1 + o.uv[1].xy * w2 + o.uv[1].zw * w3;
+}
+
+float2 vertexUV(in appdata v, int index)
+{
+	float i = index;
+	float w0 = saturate(1 - abs(i - 0));
+	float w1 = saturate(1 - abs(i - 1));
+	float w2 = saturate(1 - abs(i - 2));
+	float w3 = saturate(1 - abs(i - 3));
+	return v.uv0.xy * w0 + v.uv1.xy * w1 + v.uv2.xy * w2 + v.uv3.xy * w3;
+}
+
+#ifdef POI_PASS_LILFUR
+float2 vertexUV(in PoiGeoToFragLilFur o, int index)
+{
+	float i = index;
+	float w0 = saturate(1 - abs(i - 0));
+	float w1 = saturate(1 - abs(i - 1));
+	float w2 = saturate(1 - abs(i - 2));
+	float w3 = saturate(1 - abs(i - 3));
+	return o.uv[0].xy * w0 + o.uv[0].zw * w1 + o.uv[1].xy * w2 + o.uv[1].zw * w3;
+}
+
+float2 vertexUV(in PoiVertToGeoLilFur o, int index)
+{
+	float i = index;
+	float w0 = saturate(1 - abs(i - 0));
+	float w1 = saturate(1 - abs(i - 1));
+	float w2 = saturate(1 - abs(i - 2));
+	float w3 = saturate(1 - abs(i - 3));
+	return o.uv[0].xy * w0 + o.uv[0].zw * w1 + o.uv[1].xy * w2 + o.uv[1].zw * w3;
+}
+#endif
+
+half3 poiThemeColor(in PoiMods poiMods, in half3 srcColor, in half themeIndex)
+{
+	half3 outputColor = srcColor;
+	if (themeIndex != 0)
+	{
+		themeIndex = max(themeIndex - 1, 0);
+		
+		if (themeIndex <= 3)
+		{
+			outputColor = poiMods.globalColorTheme[themeIndex].rgb;
+		}
+		else
+		{
+			#ifdef POI_AUDIOLINK
+				if (poiMods.audioLinkAvailable)
+				{
+					outputColor = poiMods.globalColorTheme[themeIndex].rgb;
+				}
+			#endif
+		}
+	}
+	return outputColor;
+}
+
+struct PoiSpriteSheetConfig
+{
+	float columns;
+	float rows;
+	float totalFrames;
+	float frameSelection;
+	float fps;
+	float randomStart;
+	float inset;
+	float2 textureST;
+};
+
+float poiSpriteSheetFrameIndex(PoiSpriteSheetConfig config, float progress, float seed)
+{
+	float totalFrames = (config.totalFrames > 0) ? config.totalFrames : (config.columns * config.rows);
+	float frameIndex = 0;
+	
+	if (config.frameSelection == 0)
+		frameIndex = floor(seed * totalFrames);
+	else if (config.frameSelection == 1)
+		frameIndex = floor(progress * totalFrames);
+	else if (config.frameSelection == 2)
+	{
+		float timeOffset = config.randomStart ? seed * totalFrames : 0;
+		frameIndex = floor(fmod(POI_TIME.y * config.fps + timeOffset, totalFrames));
+	}
+	
+	return clamp(frameIndex, 0, totalFrames - 1);
+}
+
+float poiSpriteSheetFrameIndex(float columns, float rows, float configTotalFrames, float frameSelection, float fps, float randomStart, float progress, float seed)
+{
+	float totalFrames = (configTotalFrames > 0) ? configTotalFrames : (columns * rows);
+	float frameIndex = 0;
+	
+	if (frameSelection == 0)
+		frameIndex = floor(seed * totalFrames);
+	else if (frameSelection == 1)
+		frameIndex = floor(progress * totalFrames);
+	else if (frameSelection == 2)
+	{
+		float timeOffset = randomStart ? seed * totalFrames : 0;
+		frameIndex = floor(fmod(POI_TIME.y * fps + timeOffset, totalFrames));
+	}
+	
+	return clamp(frameIndex, 0, totalFrames - 1);
+}
+
+float2 poiSpriteSheetUV(float2 uv, float columns, float rows, float frameIndex, float inset, float2 textureST)
+{
+	float invCols = 1.0 / columns;
+	float invRows = 1.0 / rows;
+	float2 frameSize = float2(invCols, invRows);
+	
+	float column = fmod(frameIndex, columns);
+	float row = floor(frameIndex * invCols);
+	row = rows - 1 - row;
+	
+	float2 lookupUV = (uv * frameSize) + float2(column, row) * frameSize;
+	if (inset > 0)
+	{
+		float2 texelInset = inset * frameSize / max(textureST, 1e-6);
+		lookupUV = lerp(lookupUV, float2(column + 1, row + 1) * frameSize, texelInset);
+	}
+	
+	return lookupUV;
+}
+
+float2 poiSpriteSheetUV(float2 uv, PoiSpriteSheetConfig config, float frameIndex)
+{
+	return poiSpriteSheetUV(uv, config.columns, config.rows, frameIndex, config.inset, config.textureST);
+}

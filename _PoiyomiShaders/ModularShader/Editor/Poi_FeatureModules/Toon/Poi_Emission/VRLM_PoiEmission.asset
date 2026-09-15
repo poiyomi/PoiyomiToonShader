@@ -1,0 +1,74 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1039f25740a92fc4292bb1d94d07ad19, type: 3}
+  m_Name: VRLM_PoiEmission
+  m_EditorClassIdentifier: 
+  Id: PoiEmission0
+  Name: 
+  Version: 
+  Author: 
+  Description: 
+  AllowDuplicates: 1
+  ForceDuplicateLogic: 1
+  EnableProperties: []
+  Properties: []
+  ModuleDependencies: []
+  IncompatibleWith: []
+  Templates:
+  - Template: {fileID: 4633628742237707381, guid: e886f03f2c324ad42a9a8bea4c883146,
+      type: 3}
+    Keywords:
+    - SPECIALFX_PROPERTIES
+    NeedsVariant: 0
+    Queue: 100
+  - Template: {fileID: -2098697834357393301, guid: e886f03f2c324ad42a9a8bea4c883146,
+      type: 3}
+    Keywords:
+    - BASE_PASS_KEYWORDS
+    - META_PASS_KEYWORDS
+    - LILFUR_PASS_KEYWORDS
+    NeedsVariant: 0
+    Queue: 100
+  - Template: {fileID: 1752193264802858942, guid: e886f03f2c324ad42a9a8bea4c883146,
+      type: 3}
+    Keywords:
+    - BASE_PROPERTY_VARIABLES
+    - META_PROPERTY_VARIABLES
+    - LILFUR_PROPERTY_VARIABLES
+    NeedsVariant: 0
+    Queue: 100
+  - Template: {fileID: 7324238685877961261, guid: e886f03f2c324ad42a9a8bea4c883146,
+      type: 3}
+    Keywords:
+    - BASE_PROPERTY_VARIABLES_EXPOSED
+    - META_PROPERTY_VARIABLES_EXPOSED
+    - LILFUR_PROPERTY_VARIABLES_EXPOSED
+    NeedsVariant: 0
+    Queue: 100
+  - Template: {fileID: -1515435547313068798, guid: e886f03f2c324ad42a9a8bea4c883146,
+      type: 3}
+    Keywords:
+    - FRAGMENT_BASE_FUNCTIONS
+    - FRAGMENT_META_FUNCTIONS
+    - FRAGMENT_LILFUR_FUNCTIONS
+    NeedsVariant: 0
+    Queue: 100
+  - Template: {fileID: -2563234616383982032, guid: e886f03f2c324ad42a9a8bea4c883146,
+      type: 3}
+    Keywords:
+    - FRAGMENT_BASE_COLOR_LATE
+    - FRAGMENT_META_COLOR_LATE
+    - FRAGMENT_LILFUR_COLOR_LATE
+    NeedsVariant: 0
+    Queue: 100
+  Functions: []
+  AdditionalSerializedData: 

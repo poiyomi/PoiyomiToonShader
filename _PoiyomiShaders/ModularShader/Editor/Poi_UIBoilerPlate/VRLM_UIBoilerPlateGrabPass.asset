@@ -1,0 +1,106 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1039f25740a92fc4292bb1d94d07ad19, type: 3}
+  m_Name: VRLM_UIBoilerPlateGrabPass
+  m_EditorClassIdentifier: 
+  Id: UIBoilerPlateGrabPass
+  Name: 
+  Version: 
+  Author: 
+  Description: 
+  AllowDuplicates: 0
+  ForceDuplicateLogic: 0
+  EnableProperties: []
+  Properties: []
+  ModuleDependencies: []
+  IncompatibleWith: []
+  Templates:
+  - Template: {fileID: -544282384758852595, guid: d92b17ab89beff64fa1b112405eac110,
+      type: 3}
+    Keywords:
+    - SHADER_PROPERTIES
+    NeedsVariant: 0
+    Queue: -110
+  - Template: {fileID: 1126301513621564112, guid: 3ac1b37527ecb8d4eaea13e5f38d042d,
+      type: 3}
+    Keywords:
+    - SHADER_PROPERTIES
+    NeedsVariant: 0
+    Queue: -100
+  - Template: {fileID: 3851405518941286267, guid: 3ac1b37527ecb8d4eaea13e5f38d042d,
+      type: 3}
+    Keywords:
+    - SHADER_PROPERTIES
+    NeedsVariant: 0
+    Queue: -95
+  - Template: {fileID: -1760774314392892198, guid: 3ac1b37527ecb8d4eaea13e5f38d042d,
+      type: 3}
+    Keywords:
+    - SHADER_PROPERTIES
+    NeedsVariant: 0
+    Queue: -90
+  - Template: {fileID: -1591444715006847334, guid: 3ac1b37527ecb8d4eaea13e5f38d042d,
+      type: 3}
+    Keywords:
+    - SHADER_PROPERTIES
+    NeedsVariant: 0
+    Queue: -80
+  - Template: {fileID: 7186489797681024674, guid: 3ac1b37527ecb8d4eaea13e5f38d042d,
+      type: 3}
+    Keywords:
+    - SHADER_PROPERTIES
+    NeedsVariant: 0
+    Queue: -70
+  - Template: {fileID: 1823955708936180714, guid: 3ac1b37527ecb8d4eaea13e5f38d042d,
+      type: 3}
+    Keywords:
+    - SHADER_PROPERTIES
+    NeedsVariant: 0
+    Queue: -50
+  - Template: {fileID: -6767754565972530110, guid: 3ac1b37527ecb8d4eaea13e5f38d042d,
+      type: 3}
+    Keywords:
+    - SHADER_PROPERTIES
+    NeedsVariant: 0
+    Queue: -40
+  - Template: {fileID: 5145368162628775138, guid: 3ac1b37527ecb8d4eaea13e5f38d042d,
+      type: 3}
+    Keywords:
+    - SHADER_PROPERTIES
+    NeedsVariant: 0
+    Queue: -60
+  - Template: {fileID: 7221052497735660734, guid: 3ac1b37527ecb8d4eaea13e5f38d042d,
+      type: 3}
+    Keywords:
+    - SHADER_PROPERTIES
+    NeedsVariant: 0
+    Queue: -30
+  - Template: {fileID: -2144583304199416996, guid: 3ac1b37527ecb8d4eaea13e5f38d042d,
+      type: 3}
+    Keywords:
+    - SHADER_PROPERTIES
+    NeedsVariant: 0
+    Queue: -20
+  - Template: {fileID: 5232395528088337387, guid: 3ac1b37527ecb8d4eaea13e5f38d042d,
+      type: 3}
+    Keywords:
+    - SHADER_PROPERTIES
+    NeedsVariant: 0
+    Queue: -10
+  - Template: {fileID: 1878476789853068956, guid: 3ac1b37527ecb8d4eaea13e5f38d042d,
+      type: 3}
+    Keywords:
+    - SHADER_PROPERTIES
+    NeedsVariant: 0
+    Queue: 0
+  Functions: []
+  AdditionalSerializedData: 

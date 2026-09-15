@@ -1,0 +1,59 @@
+#T#MAIN_PROPERTIES
+[HideInInspector] m_mainCategory ("Color & Normals--{button_help:{text:Tutorial,action:{type:URL,data:https://www.poiyomi.com/color-and-normals/},hover:Documentation}}", Float) = 0
+#K#MAIN_PROPERTIES
+
+#T#2NDPASS_PROPERTIES
+[HideInInspector] m_2ndPassCategory ("2nd Pass--{button_help:{text:Tutorial,action:{type:URL,data:https://www.poiyomi.com/extended-features/two-pass},hover:Documentation}}", Float) = 0
+#K#2NDPASS_PROPERTIES
+
+#T#OUTLINE_PROPERTIES
+[HideInInspector] m_OutlineCategory (" Outlines--{reference_property:_EnableOutlines,button_help:{text:Tutorial,action:{type:URL,data:https://www.poiyomi.com/outlines/},hover:Documentation}}", Float) = 0
+#K#OUTLINE_PROPERTIES
+
+#T#LIGHTING_PROPERTIES
+[HideInInspector] m_lightingCategory ("Shading", Float) = 0
+#K#LIGHTING_PROPERTIES
+ 
+#T#SPECIALFX_PROPERTIES
+[HideInInspector] m_specialFXCategory ("Special FX", Float) = 0
+#K#SPECIALFX_PROPERTIES
+
+#T#RAYMARCHING_PROPERTIES
+[HideInInspector] m_raymarchingCategory ("Raymarching", Float) = 0
+#K#RAYMARCHING_PROPERTIES
+
+#T#VERTEX_PROPERTIES
+[HideInInspector] m_vertexCategory ("Vertex Options", Float) = 0
+#K#VERTEX_PROPERTIES
+
+#T#GRABPASS_PROPERTIES
+[HideInInspector] m_grabPassCategory (" Grab Pass--{button_help:{text:Tutorial,action:{type:URL,data:https://www.poiyomi.com/extended-features/grabpass},hover:Documentation},reference_property:_EnableGrabpass}", Float) = 0
+[HideInInspector][ToggleUI] _EnableGrabpass ("Enable GrabPass", Float) = 1
+#K#GRABPASS_PROPERTIES
+
+#T#MODIFIER_PROPERTIES
+[HideInInspector] m_modifierCategory ("Global Modifiers & Data", Float) = 0
+[HideInInspector] m_start_PoiGlobalCategory ("Global Data and Masks", Float) = 0
+[HideInInspector] m_start_PoiTimeOptions ("Time Source--{button_help:{text:Tutorial,action:{type:URL,data:https://www.poiyomi.com/modifiers/time-source},hover:Documentation}}", Float) = 0
+[ThryWideEnum(Unity Default, 0, VRChat Network Time, 1)] _PoiTimeSource ("Time Source", Int) = 1
+[HideInInspector] m_end_PoiTimeOptions ("Time Source", Float) = 0
+#K#GLOBAL_PROPERTIES
+[HideInInspector] m_end_PoiGlobalCategory ("Global Data and Masks ", Float) = 0
+[HideInInspector] m_start_PoiUVCategory ("UVs", Float) = 0
+#K#UV_PROPERTIES
+[HideInInspector] m_end_PoiUVCategory ("UVs ", Float) = 0
+[HideInInspector] m_start_PoiPostProcessingCategory ("Post Processing", Float) = 0
+#K#POSTPROCESSING_PROPERTIES
+[HideInInspector] m_end_PoiPostProcessingCategory ("Post Processing ", Float) = 0
+#K#MODIFIER_PROPERTIES
+
+#T#EXTRAS_PROPERTIES
+#K#EXTRAS_PROPERTIES
+
+#T#THIRDPARTY_PROPERTIES
+[HideInInspector] m_thirdpartyCategory ("Third Party", Float) = 0
+#K#THIRDPARTY_PROPERTIES
+
+#T#RENDERING_PROPERTIES
+[HideInInspector] m_renderingCategory ("Rendering--{button_help:{text:Tutorial,action:{type:URL,data:https://www.poiyomi.com/rendering/},hover:Documentation}}", Float) = 0
+#K#RENDERING_PROPERTIES

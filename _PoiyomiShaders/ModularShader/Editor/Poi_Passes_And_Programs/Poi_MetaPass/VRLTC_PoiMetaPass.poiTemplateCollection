@@ -1,0 +1,64 @@
+#T#MetaPassTags
+Name "META"
+Tags { "LightMode" = "Meta" }
+
+#T#MetaPassStencil
+#K#META_PASS_STENCIL
+
+#T#MetaPassBlendSettings
+ZWrite [_ZWrite]
+Cull Off
+//ifex _AlphaToCoverage==0
+AlphaToMask [_AlphaToCoverage]
+//endex
+ZTest [_ZTest]
+ColorMask [_ColorMask]
+Offset [_OffsetFactor], [_OffsetUnits]
+
+BlendOp [_BlendOp], [_BlendOpAlpha]
+Blend [_SrcBlend] [_DstBlend], [_SrcBlendAlpha] [_DstBlendAlpha]
+
+#T#MetaPassOnlyKeywords
+#pragma multi_compile_instancing
+#if POI_PIPE == POI_BIRP
+    #pragma multi_compile_fragment _ VERTEXLIGHT_ON
+#endif
+
+#define POI_PASS_META
+
+#T#MetaPassKeywords
+#K#META_PASS_KEYWORDS
+
+#K#META_PASS_PRAGMA_PROGRAMS
+
+#T#MetaPassPropertyVariables
+#K#META_PROPERTY_VARIABLES
+#K#META_PROPERTY_VARIABLES_EXPOSED
+
+#T#MetaPropertyVariablesURP
+CBUFFER_START(UnityPerMaterial)
+#K#META_PROPERTY_VARIABLES_EXPOSED
+CBUFFER_END
+#K#META_PROPERTY_VARIABLES
+
+#T#MetaPassPrograms
+#K#VERTEX_META_DATA_STRUCTURES
+#K#VERTEX_META_FUNCTIONS_EARLY
+#K#VERTEX_META_FUNCTIONS
+#K#VERTEX_META_FUNCTIONS_LATE
+#K#VERTEX_META_PROGRAM
+
+#K#HULLDOMAIN_META_PROGRAM
+#K#GEOMETRY_META_PROGRAM
+
+#K#FRAGMENT_META_DATA_STRUCTURES
+#K#FRAGMENT_META_FUNCTIONS_EARLY
+#K#FRAGMENT_META_FUNCTIONS
+#K#FRAGMENT_META_FUNCTIONS_LATE
+#K#FRAGMENT_META_PROGRAM
+
+#T#MetaPassIncludes
+#include "UnityMetaPass.cginc"
+
+#T#MetaPassIncludesURP
+#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/MetaPass.hlsl"

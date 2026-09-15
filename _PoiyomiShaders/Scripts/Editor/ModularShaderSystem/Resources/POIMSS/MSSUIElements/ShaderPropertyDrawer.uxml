@@ -1,0 +1,9 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
+    <ui:TextField name="Name" label="Name" binding-path="Name" />
+    <ui:TextField label="Display Name" binding-path="DisplayName" />
+    <uie:EnumField name="TypeField" label="Type"/>
+    <ui:VisualElement name="ValueContainer" />
+    <!--<ui:TextField label="Type" binding-path="Type" readonly="true" focusable="false" />
+    <ui:TextField label="Default Value" binding-path="DefaultValue" readonly="true" focusable="false" />-->
+    <Poiyomi.ModularShaderSystem.UI.InspectorList show-elements-text="false" binding-path="Attributes" />
+</ui:UXML>

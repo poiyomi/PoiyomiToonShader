@@ -1,0 +1,59 @@
+//#T#BasePassTags
+//Name "Base"
+//Tags { "LightMode" = "ForwardBase" }
+
+#T#BaseTwoPassStencil
+#K#BASETWO_PASS_STENCIL
+
+#T#BaseTwoPassBlendSettings
+ZWrite [_ZWrite2]
+Cull [_Cull2]
+ZClip [_ZClip2]
+////ifex _AlphaToCoverage==0
+AlphaToMask [_AlphaToCoverage]
+////endex
+ZTest [_ZTest2]
+ColorMask [_ColorMask2]
+Offset [_OffsetFactor2], [_OffsetUnits2]
+//
+BlendOp [_BlendOp2], [_BlendOpAlpha2]
+Blend [_SrcBlend2] [_DstBlend2], [_SrcBlendAlpha2] [_DstBlendAlpha2]
+//
+#T#BaseTwoPassOnlyKeywords
+#pragma multi_compile_fwdbase
+#pragma multi_compile_fragment _ VERTEXLIGHT_ON
+#pragma multi_compile_instancing
+#pragma dynamic_branch _ FOG_LINEAR
+#pragma dynamic_branch _ FOG_EXP
+#pragma dynamic_branch _ FOG_EXP2
+#define POI_PASS_BASE
+#define POI_PASS_BASETWO
+
+#T#BaseTwoPassKeywords
+#K#BASE_PASS_KEYWORDS
+#K#BASE_PASS_TWO_KEYWORDS
+
+
+#K#BASE_PASS_TWO_PRAGMA_PROGRAMS
+
+#T#BaseTwoPassPropertyVariables
+#K#BASE_PROPERTY_VARIABLES
+#K#BASE_PROPERTY_VARIABLES_EXPOSED
+#K#BASETWO_PROPERTY_VARIABLES
+#K#BASETWO_PROPERTY_VARIABLES_EXPOSED
+
+#T#BasePassTwoPrograms
+#K#VERTEX_BASE_DATA_STRUCTURES
+#K#VERTEX_BASE_FUNCTIONS_EARLY
+#K#VERTEX_BASE_FUNCTIONS
+#K#VERTEX_BASE_FUNCTIONS_LATE
+#K#VERTEX_BASE_PROGRAM
+
+#K#HULLDOMAIN_BASE_PROGRAM
+#K#GEOMETRY_BASE_PROGRAM
+
+#K#FRAGMENT_BASE_DATA_STRUCTURES
+#K#FRAGMENT_BASE_FUNCTIONS_EARLY
+#K#FRAGMENT_BASE_FUNCTIONS
+#K#FRAGMENT_BASE_FUNCTIONS_LATE
+#K#FRAGMENT_BASETWO_PROGRAM

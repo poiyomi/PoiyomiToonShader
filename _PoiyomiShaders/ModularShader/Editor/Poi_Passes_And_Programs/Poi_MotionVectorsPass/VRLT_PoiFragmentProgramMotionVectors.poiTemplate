@@ -1,0 +1,73 @@
+float4 frag(VertexOut i, bool facing : SV_IsFrontFace) : SV_Target
+{
+	UNITY_SETUP_INSTANCE_ID(i);
+	UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(i);
+
+	bool forceNoMotion = unity_MotionVectorsParams.y == 0.0;
+	if (forceNoMotion)
+	{
+		return float4(0.0, 0.0, 0.0, 0.0);
+	}
+
+    #K#FRAGMENT_MOTION_VECTORS_DECLARATIONS
+
+	#K#FRAGMENT_MOTION_VECTORS_INIT_EARLY
+	#K#FRAGMENT_MOTION_VECTORS_INIT
+	#K#FRAGMENT_MOTION_VECTORS_INIT_LATE
+
+	#K#FRAGMENT_MOTION_VECTORS_COLOR_EARLY
+	#K#FRAGMENT_MOTION_VECTORS_COLOR
+	#K#FRAGMENT_MOTION_VECTORS_COLOR_LATE
+
+    #K#FRAGMENT_MOTION_VECTORS_RETURN
+
+	clip(poiFragData.alpha - _Cutoff);
+	
+	#if defined(POI_PASS_MOTION_VECTORS)
+		#if UNITY_VERSION >= 202300
+			#if defined(APPLICATION_SPACE_WARP_MOTION)
+				return float4(CalcAswNdcMotionVectorFromCsPositions(i.positionCSNoJitter, i.previousPositionCSNoJitter), 1);
+			#else
+				return float4(CalcNdcMotionVectorFromCsPositions(i.positionCSNoJitter, i.previousPositionCSNoJitter), 0, 0);
+			#endif
+		#else
+			float4 posCS = i.positionCSNoJitter;
+			float4 prevPosCS = i.previousPositionCSNoJitter;
+
+			float2 posNDC = posCS.xy * rcp(posCS.w);
+			float2 prevPosNDC = prevPosCS.xy * rcp(prevPosCS.w);
+
+			half2 velocity;
+			#if defined(SUPPORTS_FOVEATED_RENDERING_NON_UNIFORM_RASTER)
+			UNITY_BRANCH if (_FOVEATED_RENDERING_NON_UNIFORM_RASTER)
+			{
+				// Convert velocity from NDC space (-1..1) to screen UV 0..1 space since FoveatedRendering remap needs that range.
+				half2 posUV = RemapFoveatedRenderingLinearToNonUniform(posNDC * 0.5 + 0.5);
+				half2 prevPosUV = RemapFoveatedRenderingPrevFrameLinearToNonUniform(prevPosNDC * 0.5 + 0.5);
+
+				// Calculate forward velocity
+				velocity = (posUV - prevPosUV);
+				#if UNITY_UV_STARTS_AT_TOP
+					velocity.y = -velocity.y;
+				#endif
+			}
+			else
+			#endif
+			{
+				// Calculate forward velocity
+				velocity = (posNDC.xy - prevPosNDC.xy);
+				#if UNITY_UV_STARTS_AT_TOP
+					velocity.y = -velocity.y;
+				#endif
+
+				// Convert velocity from NDC space (-1..1) to UV 0..1 space
+				// Note: It doesn't mean we don't have negative values, we store negative or positive offset in UV space.
+				// Note: ((posNDC * 0.5 + 0.5) - (prevPosNDC * 0.5 + 0.5)) = (velocity * 0.5)
+				velocity.xy *= 0.5;
+			}
+
+			return half4(velocity, 0, 0);
+		#endif
+	#endif
+	return float4(0.0, 0.0, 0.0, 0.0);
+}

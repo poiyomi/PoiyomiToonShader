@@ -1,0 +1,326 @@
+#T#PoiShatterWaveProperties
+[HideInInspector] m_start_shatterWave (" ShatterWave--{reference_property:_ShatterWaveEnabled,button_help:{text:Tutorial,action:{type:URL,data:https://www.poiyomi.com/extended-features/shatterwave},hover:Documentation}}", Float) = 1
+[HideInInspector][ThryToggle(false)]_ShatterWaveEnabled ("ShatterWave Enabled", Float) = 1
+
+[HideInInspector] s_start_ShatterWaveMasking ("Masking & Global Masks--{persistent_expand:true,default_expand:true}", Float) = 1
+[sRGBWarning]_WaveMask ("Wave Mask--{reference_properties:[_WaveMaskPan, _WaveMaskUV, _WaveMaskChannel]}", 2D) = "white" {}
+[ThryHideInInspector][Vector2]_WaveMaskPan ("Panning", Vector) = (0, 0, 0, 0)
+[ThryHideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3)]_WaveMaskUV ("UV", Int) = 0
+[ThryHideInInspector][Enum(R, 0, G, 1, B, 2, A, 3)] _WaveMaskChannel ("Channel", Float) = 0
+[Enum(Off, 0, R, 1, G, 2, B, 3, A, 4)] _WaveVertexMask ("Vertex Color Mask", Int) = 0
+[ThryWideEnum(Off, 0, 1R, 1, 1G, 2, 1B, 3, 1A, 4, 2R, 5, 2G, 6, 2B, 7, 2A, 8, 3R, 9, 3G, 10, 3B, 11, 3A, 12, 4R, 13, 4G, 14, 4B, 15, 4A, 16)] _WaveGlobalMaskIndex ("Wave Global Mask--{reference_property:_WaveGlobalMaskBlendType}", Int) = 0
+[ThryHideInInspector][ThryWideEnum(Add, 7, Subtract, 1, Multiply, 2, Divide, 3, Min, 4, Max, 5, Average, 6, Replace, 0)]_WaveGlobalMaskBlendType ("Blending", Range(0, 1)) = 0
+[ThryWideEnum(Off, 0, 1R, 1, 1G, 2, 1B, 3, 1A, 4, 2R, 5, 2G, 6, 2B, 7, 2A, 8, 3R, 9, 3G, 10, 3B, 11, 3A, 12, 4R, 13, 4G, 14, 4B, 15, 4A, 16)] _UnderWaveGlobalMaskIndex ("Under Wave Global Mask--{reference_property:_UnderWaveGlobalMaskBlendType}", Int) = 0
+[ThryHideInInspector][ThryWideEnum(Add, 7, Subtract, 1, Multiply, 2, Divide, 3, Min, 4, Max, 5, Average, 6, Replace, 0)]_UnderWaveGlobalMaskBlendType ("Blending", Range(0, 1)) = 0
+[HideInInspector] s_end_ShatterWaveMasking ("", Float) = 0
+
+[HideInInspector] s_start_ShatterWaveAppearance ("Wave Appearance--{persistent_expand:true,default_expand:true}", Float) = 1
+_WaveColor ("Wave Color", Color) = (1, 1, 1, 1)
+[sRGBWarning(true)]_WaveTexture ("Wave Texture--{reference_properties:[_WaveTexturePan, _WaveTextureUV]}", 2D) = "white" {}
+[ThryHideInInspector][Vector2]_WaveTexturePan ("Panning", Vector) = (0, 0, 0, 0)
+[ThryHideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7, Matcap, 9, Screen Space, 10)]_WaveTextureUV ("UV", Int) = 0
+_WaveEmission ("Wave Emission", Range(0, 10)) = 1
+[HideInInspector] s_end_ShatterWaveAppearance ("", Float) = 0
+
+[HideInInspector] s_start_ShatterWaveUnderWave ("Under Wave--{reference_property:_ShowUnderWave,persistent_expand:true,default_expand:true}", Float) = 1
+[ThryHideInInspector][ThryToggleUI(true)]_ShowUnderWave ("Show Under Wave", Float) = 1
+_UnderWaveColor ("Under Wave Color", Color) = (1, 1, 1, 1)
+[sRGBWarning(true)]_UnderWaveTexture ("Under Wave Texture--{reference_properties:[_UnderWaveTexturePan, _UnderWaveTextureUV]}", 2D) = "white" {}
+[ThryHideInInspector][Vector2]_UnderWaveTexturePan ("Panning", Vector) = (0, 0, 0, 0)
+[ThryHideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7, Matcap, 9, Screen Space, 10)]_UnderWaveTextureUV ("UV", Int) = 0
+_UnderWaveEmission ("Under Wave Emission", Range(0, 10)) = 1
+[HideInInspector] s_end_ShatterWaveUnderWave ("", Float) = 0
+
+[HideInInspector] s_start_ShatterWaveShapeMotion ("Shape & Motion--{persistent_expand:true,default_expand:true}", Float) = 1
+[Vector3]_WaveSpeed ("Speed", Vector) = (0.5, 0.6, 0.7, 0)
+[Vector3]_WaveSlope ("Slope", Vector) = (2, 2, 2, 0)
+[Vector3]_WaveDensity ("Density", Vector) = (10, 8, 9, 0)
+_WaveHeightThreshold ("Wave Width", Range(0, 1)) = 0.98
+_WaveHeight ("Wave Height", Range(0, 1)) = 0.01
+[HideInInspector] s_end_ShatterWaveShapeMotion ("", Float) = 0
+
+[HideInInspector] s_start_shatterWaveAudioLink ("Audio Link ♫--{reference_property:_ShatterWaveAudioLinkEnabled,persistent_expand:true,default_expand:false,condition_showS:(_EnableAudioLink==1)}", Float) = 0
+[HideInInspector][ThryToggle(false)]_ShatterWaveAudioLinkEnabled ("Audio Link", Float) = 0
+
+[Enum(Bass, 0, Low Mid, 1, High Mid, 2, Treble, 3, Volume, 4)] _WaveEmissionALMultiplierBand ("Emission Multiplier Band", Int) = 0
+[VectorLabel(Min, Max)]_WaveEmissionALMultiplier ("Emission Multiplier", Vector) = (1, 1, 0, 0)
+[Space(10)]
+[Enum(Bass, 0, Low Mid, 1, High Mid, 2, Treble, 3, Volume, 4)] _WaveEmissionALAddBand ("Emission Add Band", Int) = 0
+[VectorLabel(Min, Max)]_WaveEmissionALAdd ("Emission Add", Vector) = (0, 0, 0, 0)
+[Space(10)]
+[Enum(Bass, 0, Low Mid, 1, High Mid, 2, Treble, 3, Volume, 4)] _WaveHeightALMultiplierBand ("Height Multiplier Band", Int) = 0
+[VectorLabel(Min, Max)]_WaveHeightALMultiplier ("Height Multiplier", Vector) = (1, 1, 0, 0)
+[Space(10)]
+[Enum(Bass, 0, Low Mid, 1, High Mid, 2, Treble, 3, Volume, 4)] _WaveHeightALAddBand ("Height Add Band", Int) = 0
+[VectorLabel(Min, Max)]_WaveHeightALAdd ("Height Add", Vector) = (0, 0, 0, 0)
+[Space(10)]
+[Enum(Bass, 0, Low Mid, 1, High Mid, 2, Treble, 3, Volume, 4)] _WaveHeightThresholdALMultiplierBand ("Width Multiplier Band", Int) = 0
+[VectorLabel(Min, Max)]_WaveHeightThresholdALMultiplier ("Width Multiplier", Vector) = (1, 1, 0, 0)
+[Space(10)]
+[Enum(Bass, 0, Low Mid, 1, High Mid, 2, Treble, 3, Volume, 4)] _WaveHeightThresholdALAddBand ("Width Add Band", Int) = 0
+[VectorLabel(Min, Max)]_WaveHeightThresholdALAdd ("Width Add", Vector) = (0, 0, 0, 0)
+[Space(10)]
+[Enum(Bass, 0, Low Mid, 1, High Mid, 2, Treble, 3, Volume, 4)] _WaveChronoBand ("ChronoTime Band", Int) = 0
+[ThryWideEnum(Motion increases as intensity of band increases, 0, Above but Smooth, 1, Motion moves back and forth as a function of intensity, 2, Above but Smoooth, 3, Fixed speed increase when the band is dark Stationary when light, 4, Above but Smooooth, 5, Fixed speed increase when the band is dark Fixed speed decrease when light, 6, Above but Smoooooth, 7)]_WaveChronoType ("ChronoTime Motion Type", Int) = 0
+_WaveChronoSpeed ("ChronoTime Speed", Float) = 0.5
+_WaveChronoIntensity ("ChronoTime Intensity", Range(0,1)) = 0
+
+[HideInInspector] s_end_shatterWaveAudioLink ("", Float) = 0
+[HideInInspector] m_end_shatterWave ("ShatterWave", Float) = 0
+
+#T#PoiShatterWaveKeywords
+// #pragma shader_feature_local POI_SHATTERWAVE
+
+#T#PoiShatterWaveVariablesExposed
+float _ShatterWaveEnabled;
+#if defined(PROP_WAVEMASK) || !defined(OPTIMIZER_ENABLED)
+    float4 _WaveMask_ST;
+    float2 _WaveMaskPan;
+    float _WaveMaskUV;
+    float _WaveMaskChannel;
+#endif
+#if defined(PROP_WAVETEXTURE) || !defined(OPTIMIZER_ENABLED)
+    float4 _WaveTexture_ST;
+    float2 _WaveTexturePan;
+    float _WaveTextureUV;
+#endif
+int _WaveVertexMask;
+half4 _WaveColor;
+half _WaveEmission;
+#if defined(PROP_UNDERWAVETEXTURE) || !defined(OPTIMIZER_ENABLED)
+    float4 _UnderWaveTexture_ST;
+    float2 _UnderWaveTexturePan;
+    float _UnderWaveTextureUV;
+#endif
+half _UnderWaveEmission;
+half4 _UnderWaveColor;
+float _UnderWaveGlobalMaskIndex;
+float _UnderWaveGlobalMaskBlendType;
+
+float _ShowUnderWave;
+float4 _WaveSpeed;
+float4 _WaveSlope;
+float4 _WaveDensity;
+
+float _WaveHeightThreshold;
+float _WaveHeight;
+
+float _WaveGlobalMaskIndex;
+float _WaveGlobalMaskBlendType;
+
+//ifex _ShatterWaveAudioLinkEnabled==0
+#ifdef POI_AUDIOLINK
+    float _ShatterWaveAudioLinkEnabled;
+
+    float _WaveEmissionALMultiplierBand;
+    half2 _WaveEmissionALMultiplier;
+    float _WaveEmissionALAddBand;
+    half2 _WaveEmissionALAdd;
+
+    float _WaveHeightALMultiplierBand;
+    float2 _WaveHeightALMultiplier;
+    float _WaveHeightALAddBand;
+    float2 _WaveHeightALAdd;
+
+    float _WaveHeightThresholdALMultiplierBand;
+    float2 _WaveHeightThresholdALMultiplier;
+    float _WaveHeightThresholdALAddBand;
+    float2 _WaveHeightThresholdALAdd;
+
+    float _WaveChronoBand;
+    float _WaveChronoType;
+    float _WaveChronoSpeed;
+    half _WaveChronoIntensity;
+#endif
+//endex
+
+#T#PoiShatterWaveVariables
+#if defined(PROP_WAVEMASK) || !defined(OPTIMIZER_ENABLED)
+    Texture2D _WaveMask;
+#endif
+#if defined(PROP_WAVETEXTURE) || !defined(OPTIMIZER_ENABLED)
+    Texture2D _WaveTexture;
+#endif
+#if defined(PROP_UNDERWAVETEXTURE) || !defined(OPTIMIZER_ENABLED)
+    Texture2D _UnderWaveTexture;
+#endif
+
+#T#PoiShatterWaveVertexOutVariable
+float4 waveSettings : TEXCOORD18;
+
+#T#PoiShatterWaveGeom
+float3 WaveHeight(float3 position, float time)
+{
+    return(sin(
+        2 * pow(((sin((position.x + (time/20) * _WaveSpeed.x) * _WaveDensity.x + sin(time * _WaveSpeed.x)) + 1) / 2), _WaveSlope.x) +
+        2 * pow(((sin((position.y + (time/20) * _WaveSpeed.y) * _WaveDensity.y + sin(time * _WaveSpeed.y)) + 1) / 2), _WaveSlope.y) +
+        2 * pow(((sin((position.z + (time/20) * _WaveSpeed.z) * _WaveDensity.z + sin(time * _WaveSpeed.z)) + 1) / 2), _WaveSlope.z)
+    ) + 1) / 2;
+}
+
+[poi_maxvertexcount(6)]
+void geom(triangle VertexOut input[3], inout TriangleStream <VertexOut> outStream)
+{
+    UNITY_SETUP_INSTANCE_ID(input[0]);
+    UNITY_SETUP_INSTANCE_ID(input[1]);
+    UNITY_SETUP_INSTANCE_ID(input[2]);
+
+    #K#GEOMETRY_INPUT_MODS
+    
+    float2 maskUVs = (vertexUV(input[0], _WaveMaskUV) + vertexUV(input[1], _WaveMaskUV) + vertexUV(input[2], _WaveMaskUV)) / 3;
+    #if defined(PROP_WAVEMASK) || !defined(OPTIMIZER_ENABLED)
+        half mask = _WaveMask.SampleLevel(sampler_linear_repeat, poiUV(maskUVs, _WaveMask_ST) + POI_TIME.x * _WaveMaskPan, 0)[_WaveMaskChannel];
+    #else
+        half mask = 1;
+    #endif
+    if (_WaveVertexMask > 0)
+    {
+        mask *= input[0].vertexColor[saturate(_WaveVertexMask-1)];
+        mask *= input[1].vertexColor[saturate(_WaveVertexMask-1)];
+        mask *= input[2].vertexColor[saturate(_WaveVertexMask-1)];
+    }
+    mask *= step(0.5, _ShatterWaveEnabled);
+
+    UNITY_BRANCH
+    if (mask > 0)
+    {
+        float3 mid = (input[0].localPos + input[1].localPos + input[2].localPos) / 3;
+        float waveHeight = _WaveHeight;
+        waveHeight *= mask;
+        float heightThreshold = _WaveHeightThreshold;
+        float time = POI_TIME.y;
+
+        //ifex _ShatterWaveAudioLinkEnabled==0
+        #ifdef POI_AUDIOLINK
+            if (AudioLinkIsAvailable() && _AudioLinkAnimToggle >= 0.5 && _ShatterWaveAudioLinkEnabled >= 0.5)
+            {
+                waveHeight += lerp(_WaveHeightALAdd.x, _WaveHeightALAdd.y, AudioLinkData(uint2(0, _WaveHeightALAddBand)).r);
+                waveHeight *= lerp(_WaveHeightALMultiplier.x, _WaveHeightALMultiplier.y, AudioLinkData(uint2(0, _WaveHeightALMultiplierBand)).r);
+                heightThreshold += lerp(_WaveHeightThresholdALAdd.x, _WaveHeightThresholdALAdd.y, AudioLinkData(uint2(0, _WaveHeightThresholdALAddBand)).r);
+                heightThreshold *= lerp(_WaveHeightThresholdALMultiplier.x, _WaveHeightThresholdALMultiplier.y, AudioLinkData(uint2(0, _WaveHeightThresholdALMultiplierBand)).r);
+                time = lerp(time, AudioLinkGetChronoTime(_WaveChronoType, _WaveChronoBand) * -(_WaveChronoSpeed), _WaveChronoIntensity);
+            }
+        #endif
+        //endex
+
+        heightThreshold = clamp(heightThreshold, 0, 1);
+        
+        float distanceToWave = clamp(WaveHeight(mid, time), 0, 1);
+        if (distanceToWave <= heightThreshold)
+        {
+            distanceToWave = 0;
+        }
+        
+        float range = 1 - heightThreshold;
+        float delta = 1 - distanceToWave;
+        float percent = delta / range;
+        percent = saturate(percent);
+        
+        // if(percent == 0)
+        //     return;
+        
+        float count = 0;
+        
+        float3 edgeA = input[1].localPos - input[0].localPos;
+        float3 edgeB = input[2].localPos - input[0].localPos;
+        float3 c = cross(edgeA, edgeB);
+        float3 normalDir = normalize(c);
+        float4 pos = float4(0, 0, 0, 0);
+        
+        float3 over = cos(input[1].localPos * 1234.56);
+        VertexOut underWaves[3];
+        for (int i = 0; i < 3; i ++)
+        {
+            VertexOut o = input[i];
+            UNITY_TRANSFER_INSTANCE_ID(input[i], o);
+            POI_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
+            underWaves[i] = input[i];
+            pos.xyz = (lerp(over, 0, percent) + normalDir) * waveHeight * (1 - percent);
+            o.localPos += pos;
+            o.worldPos = mul(unity_ObjectToWorld, o.localPos);
+            o.pos = PoiObjectToClipPos(o.localPos.xyz);
+            // r = wave height percentage
+            // g = isUnderside?
+            o.waveSettings = float4(0, 0, 0, 0);
+            
+            if (distanceToWave > 0)
+            {
+                o.waveSettings = float4(1-percent, 0, 0, 0);
+                underWaves[i].waveSettings = float4(1-percent, 1, 0, 0);
+            }
+            outStream.Append(o);
+        }
+        if(_ShowUnderWave >= 0.5)
+        {
+            if (distanceToWave > 0)
+            {
+                outStream.RestartStrip();
+                for (int i = 0; i < 3; i ++)
+                {
+                    UNITY_TRANSFER_INSTANCE_ID(input[i], underWaves[i]);
+                    POI_INITIALIZE_VERTEX_OUTPUT_STEREO(underWaves[i]);
+                    underWaves[i].pos = PoiWorldToClipPos(underWaves[i].worldPos.xyz);
+                    outStream.Append(underWaves[i]);
+                }
+            }
+        }
+    }
+    else
+    {
+        for (int i = 0; i < 3; i ++)
+        {
+            input[i].pos = PoiWorldToClipPos(input[i].worldPos.xyz);
+            outStream.Append(input[i]);
+        }
+    }
+}
+
+#T#PoiShatterWaveFragFunctions
+void applyShatterWave(in float4 waveSettings, inout PoiFragData poiFragData, in PoiMesh poiMesh, in PoiMods poiMods)
+{
+    #if defined(PROP_WAVETEXTURE) || !defined(OPTIMIZER_ENABLED)
+        float4 waveTexture = POI2D_SAMPLER_PAN(_WaveTexture, _MainTex, poiUV(poiMesh.uv[_WaveTextureUV], _WaveTexture_ST), _WaveTexturePan);
+    #else
+        float4 waveTexture = 1;
+    #endif
+    waveTexture *= _WaveColor;
+    half waveEmission = _WaveEmission;
+    //ifex _ShatterWaveAudioLinkEnabled==0
+    #ifdef POI_AUDIOLINK
+        if (poiMods.audioLinkAvailable && _ShatterWaveAudioLinkEnabled >= 0.5)
+        {
+            waveEmission += lerp(_WaveEmissionALAdd.x, _WaveEmissionALAdd.y, poiMods.audioLink[_WaveEmissionALAddBand]);
+            waveEmission *= lerp(_WaveEmissionALMultiplier.x, _WaveEmissionALMultiplier.y, poiMods.audioLink[_WaveEmissionALMultiplierBand]);
+        }
+    #endif
+    //endex
+    if (waveSettings.r > 0)
+    {
+        poiFragData.baseColor = lerp(poiFragData.baseColor, waveTexture, waveSettings.r * waveTexture.a * (waveSettings.g == 0));
+        poiFragData.emission += waveEmission * waveTexture.rgb * (waveSettings.g == 0) * waveTexture.a;
+    }
+    if (waveSettings.g > 0)
+    {
+        #if defined(PROP_UNDERWAVETEXTURE) || !defined(OPTIMIZER_ENABLED)
+            float4 underWaveTexture = POI2D_SAMPLER_PAN(_UnderWaveTexture, _MainTex, poiUV(poiMesh.uv[_UnderWaveTextureUV], _UnderWaveTexture_ST), _UnderWaveTexturePan);
+        #else
+            float4 underWaveTexture = 1;
+        #endif
+        underWaveTexture *= _UnderWaveColor;
+        poiFragData.baseColor = lerp(poiFragData.baseColor, underWaveTexture.rgb, underWaveTexture.a);
+        poiFragData.emission += _UnderWaveEmission * underWaveTexture.rgb * underWaveTexture.a;
+    }
+}
+
+#T#PoiShatterWaveFragFunctionCalls
+applyShatterWave(i.waveSettings, poiFragData, poiMesh, poiMods);
+
+#T#PoiShatterWaveGlobalMask
+if (_WaveGlobalMaskIndex > 0)
+{
+    applyToGlobalMask(poiMods, _WaveGlobalMaskIndex-1, _WaveGlobalMaskBlendType, i.waveSettings.r * (i.waveSettings.g == 0));
+}
+if (_UnderWaveGlobalMaskIndex > 0)
+{
+    applyToGlobalMask(poiMods, _UnderWaveGlobalMaskIndex-1, _UnderWaveGlobalMaskBlendType, i.waveSettings.g > 0);
+}

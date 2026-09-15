@@ -1,0 +1,13 @@
+
+ModularShader/Editor/Poi_Passes_And_Programs/TODO.txt
+/.vs
+
+_PoiyomiShaders/Scripts/ThryEditor
+_PoiyomiShaders/Scripts/ThryEditor.meta
+
+.claude/
+
+# ide (VSCode template tooling)
+.ide/node_modules/
+.ide/out/
+.ide/*.vsix

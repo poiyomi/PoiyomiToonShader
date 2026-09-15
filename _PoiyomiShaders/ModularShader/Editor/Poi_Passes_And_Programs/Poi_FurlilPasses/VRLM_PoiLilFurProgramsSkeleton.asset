@@ -1,0 +1,48 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1039f25740a92fc4292bb1d94d07ad19, type: 3}
+  m_Name: VRLM_PoiLilFurProgramsSkeleton
+  m_EditorClassIdentifier: 
+  Id: PoiLilFurProgramsSkeleton
+  Name: Lil Fur Programs Skeleton
+  Version: 
+  Author: Poiyomi
+  Description: 
+  AllowDuplicates: 0
+  ForceDuplicateLogic: 0
+  EnableProperties: []
+  Properties: []
+  ModuleDependencies: []
+  IncompatibleWith: []
+  Templates:
+  - Template: {fileID: 3200447725568536266, guid: b74d0e4505930a042af3cf0f050a3e61, type: 3}
+    Keywords:
+    - INCLUDES
+    NeedsVariant: 0
+    Queue: 0
+  - Template: {fileID: -8802465425789106436, guid: b74d0e4505930a042af3cf0f050a3e61, type: 3}
+    Keywords:
+    - VERTEX_LILFUR_PROGRAM
+    NeedsVariant: 0
+    Queue: 0
+  - Template: {fileID: 8608951546081597636, guid: b74d0e4505930a042af3cf0f050a3e61, type: 3}
+    Keywords:
+    - FRAGMENT_LILFUR_PROGRAM
+    NeedsVariant: 0
+    Queue: 0
+  - Template: {fileID: -8351690360321849176, guid: b74d0e4505930a042af3cf0f050a3e61, type: 3}
+    Keywords:
+    - FRAGMENT_LILFUR_PROGRAM
+    NeedsVariant: 0
+    Queue: 0
+  Functions: []
+  AdditionalSerializedData: 

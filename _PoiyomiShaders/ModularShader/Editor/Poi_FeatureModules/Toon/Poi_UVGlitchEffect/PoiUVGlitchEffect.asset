@@ -1,0 +1,65 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1039f25740a92fc4292bb1d94d07ad19, type: 3}
+  m_Name: PoiUVGlitchEffect
+  m_EditorClassIdentifier: 
+  Id: PoiUVGlitchEffect
+  Name: Poi UV Glitch Effect
+  Version: 1.0
+  Author: TeaBucket
+  Description: 
+  AllowDuplicates: 0
+  EnableProperties: []
+  Properties: []
+  ModuleDependencies: []
+  IncompatibleWith: []
+  Templates:
+  - Template: {fileID: 4968837181919597263, guid: 7118086109290df48819c63cd74dd9c0, type: 3}
+    Keywords:
+    - MAIN_PROPERTIES
+    NeedsVariant: 0
+    Queue: 100
+  - Template: {fileID: 1546256929481455542, guid: 7118086109290df48819c63cd74dd9c0, type: 3}
+    Keywords:
+    - DEPTH_PASS_KEYWORDS
+    - OUTLINE_PASS_KEYWORDS
+    - BASE_PASS_KEYWORDS
+    - ADD_PASS_KEYWORDS
+    - META_PASS_KEYWORDS
+    - SHADOW_PASS_KEYWORDS
+    NeedsVariant: 0
+    Queue: 100
+  - Template: {fileID: -2230025399475892113, guid: 7118086109290df48819c63cd74dd9c0, type: 3}
+    Keywords:
+    - BASE_PROPERTY_VARIABLES
+    - ADD_PROPERTY_VARIABLES
+    - SHADOW_PROPERTY_VARIABLES
+    - META_PROPERTY_VARIABLES
+    - OUTLINE_PROPERTY_VARIABLES
+    - DEPTH_PROPERTY_VARIABLES
+    NeedsVariant: 0
+    Queue: 100
+  - Template: {fileID: 6894580989924391327, guid: 7118086109290df48819c63cd74dd9c0, type: 3}
+    Keywords:
+    - MESH_DATA_POST_INIT
+    NeedsVariant: 0
+    Queue: 100
+  - Template: {fileID: -5041352269393678884, guid: 7118086109290df48819c63cd74dd9c0, type: 3}
+    Keywords:
+    - FRAGMENT_BASE_COLOR
+    - FRAGMENT_ADD_COLOR
+    - FRAGMENT_OUTLINE_COLOR
+    - FRAGMENT_META_COLOR
+    NeedsVariant: 0
+    Queue: 100
+  Functions: []
+  AdditionalSerializedData: 

@@ -1,0 +1,96 @@
+#T#PoiStencilProperties
+// Stencils
+[HideInInspector] m_start_StencilPassOptions ("Stencil--{button_help:{text:Tutorial,action:{type:URL,data:https://www.poiyomi.com/rendering/stencil},hover:Documentation}}", Float) = 0
+[ThryWideEnum(Simple, 0, Front Face vs Back Face, 1)] _StencilType ("Stencil Type", Float) = 0
+[ByteSlider] _StencilRef ("Stencil Reference Value", Range(0, 255)) = 0
+[ByteSlider] _StencilReadMask ("Stencil ReadMask Value", Range(0, 255)) = 255
+[ByteSlider] _StencilWriteMask ("Stencil WriteMask Value", Range(0, 255)) = 255
+[Enum(UnityEngine.Rendering.StencilOp)] _StencilPassOp ("Stencil Pass Op--{condition_showS:(_StencilType==0)}", Float) = 0
+[Enum(UnityEngine.Rendering.StencilOp)] _StencilFailOp ("Stencil Fail Op--{condition_showS:(_StencilType==0)}", Float) = 0
+[Enum(UnityEngine.Rendering.StencilOp)] _StencilZFailOp ("Stencil ZFail Op--{condition_showS:(_StencilType==0)}", Float) = 0
+[Enum(UnityEngine.Rendering.CompareFunction)] _StencilCompareFunction ("Stencil Compare Function--{condition_showS:(_StencilType==0)}", Float) = 8
+
+[HideInInspector] s_start_StencilPassBackOptions("Back--{condition_showS:(_StencilType==1)}", Float) = 0
+[Helpbox(1, 2, 1)] _FFBFStencilHelp0 ("Front Face and Back Face Stencils only work when locked in due to Unity's Stencil management", Int) = 0
+[Enum(UnityEngine.Rendering.StencilOp)] _StencilBackPassOp ("Back Pass Op", Float) = 0
+[Enum(UnityEngine.Rendering.StencilOp)] _StencilBackFailOp ("Back Fail Op", Float) = 0
+[Enum(UnityEngine.Rendering.StencilOp)] _StencilBackZFailOp ("Back ZFail Op", Float) = 0
+[Enum(UnityEngine.Rendering.CompareFunction)] _StencilBackCompareFunction ("Back Compare Function", Float) = 8
+[HideInInspector] s_end_StencilPassBackOptions("Back", Float) = 0
+
+[HideInInspector] s_start_StencilPassFrontOptions("Front--{condition_showS:(_StencilType==1)}", Float) = 0
+[Helpbox(1, 2, 1)] _FFBFStencilHelp1 ("Front Face and Back Face Stencils only work when locked in due to Unity's Stencil management", Int) = 0
+[Enum(UnityEngine.Rendering.StencilOp)] _StencilFrontPassOp ("Front Pass Op", Float) = 0
+[Enum(UnityEngine.Rendering.StencilOp)] _StencilFrontFailOp ("Front Fail Op", Float) = 0
+[Enum(UnityEngine.Rendering.StencilOp)] _StencilFrontZFailOp ("Front ZFail Op", Float) = 0
+[Enum(UnityEngine.Rendering.CompareFunction)] _StencilFrontCompareFunction ("Front Compare Function", Float) = 8
+[HideInInspector] s_end_StencilPassFrontOptions("Front", Float) = 0
+
+[HideInInspector] m_start_StencilCalculator ("Stencil Calculator--{persistent_expand:true,default_expand:false}", Float) = 0
+
+[ToggleUI(true)] _StencilIsOccluded ("Simulate ZFail", Float) = 0
+[HideInInspector] s_start_StencilCalcSimple ("Calculator--{condition_showS:(_StencilType==0),persistent_expand:true,default_expand:true}", Float) = 1
+[HideInInspector][IntRange] _StencilBufferValue ("Existing Buffer Value", Range(0, 255)) = 0
+[HideInInspector] ss_start_StencilGridSimple ("Bit Grid--{persistent_expand:true,default_expand:true}", Float) = 1
+[ThryStencilCalculator]
+[ThryRichLabel(10)] _StencilCheckResult ("<i>Simulated in the editor. The GPU performs its own stencil test.</i>", Float) = 0
+[HideInInspector] ss_end_StencilGridSimple ("Bit Grid", Float) = 0
+[HideInInspector] ss_start_StencilSummarySimple ("Summary--{tooltip:Shows the stencil test and the operation selected by its outcome.,persistent_expand:true,default_expand:true}", Float) = 1
+[ThryStencilSummary]
+[ThryRichLabel(10)] _StencilSummaryNote ("<i>Editing these dropdowns writes to the properties above.</i>", Float) = 0
+[Helpbox(1, 0, 5)] _StencilCheckFailed ("The pixel's stencil check would have failed--{condition_showS:(_StencilType==0 && _StencilCheckResult==0)}", Int) = 0
+[Helpbox(1, 0, 4)] _StencilCheckPassed ("The pixel's stencil check would have passed--{condition_showS:(_StencilType==0 && _StencilCheckResult==1)}", Int) = 0
+[HideInInspector] ss_end_StencilSummarySimple ("Summary", Float) = 0
+[HideInInspector] s_end_StencilCalcSimple ("Calculator", Float) = 0
+
+[HideInInspector] s_start_StencilCalcFront ("Front Faces--{condition_showS:(_StencilType==1),persistent_expand:true,default_expand:false}", Float) = 0
+[HideInInspector] ss_start_StencilGridFront ("Bit Grid--{persistent_expand:true,default_expand:false}", Float) = 0
+[ThryStencilCalculator(Front)]
+[ThryRichLabel(10)] _StencilFrontCheckResult ("<i>Front face simulation.</i>", Float) = 0
+[HideInInspector] ss_end_StencilGridFront ("Bit Grid", Float) = 0
+[HideInInspector] ss_start_StencilSummaryFront ("Summary--{persistent_expand:true,default_expand:false}", Float) = 0
+[ThryStencilSummary(Front)]
+[ThryRichLabel(10)] _StencilFrontSummaryNote ("<i>Front face test and selected operation.</i>", Float) = 0
+[HideInInspector] ss_end_StencilSummaryFront ("Summary", Float) = 0
+[HideInInspector] s_end_StencilCalcFront ("Front Faces", Float) = 0
+
+[HideInInspector] s_start_StencilCalcBack ("Back Faces--{condition_showS:(_StencilType==1),persistent_expand:true,default_expand:false}", Float) = 0
+[HideInInspector] ss_start_StencilGridBack ("Bit Grid--{persistent_expand:true,default_expand:false}", Float) = 0
+[ThryStencilCalculator(Back)]
+[ThryRichLabel(10)] _StencilBackCheckResult ("<i>Back face simulation.</i>", Float) = 0
+[HideInInspector] ss_end_StencilGridBack ("Bit Grid", Float) = 0
+[HideInInspector] ss_start_StencilSummaryBack ("Summary--{persistent_expand:true,default_expand:false}", Float) = 0
+[ThryStencilSummary(Back)]
+[ThryRichLabel(10)] _StencilBackSummaryNote ("<i>Back face test and selected operation.</i>", Float) = 0
+[HideInInspector] ss_end_StencilSummaryBack ("Summary", Float) = 0
+[HideInInspector] s_end_StencilCalcBack ("Back Faces", Float) = 0
+
+[HideInInspector] m_end_StencilCalculator ("Stencil Calculator", Float) = 0
+
+[HideInInspector] m_end_StencilPassOptions ("Stencil", Float) = 0
+
+#T#PoiStencilImplementation
+Stencil
+{
+    Ref [_StencilRef]
+    ReadMask [_StencilReadMask]
+    WriteMask [_StencilWriteMask]
+//ifex _StencilType==1
+    Comp [_StencilCompareFunction]
+    Pass [_StencilPassOp]
+    Fail [_StencilFailOp]
+    ZFail [_StencilZFailOp]
+//endex
+
+//ifex _StencilType==0
+    CompBack [_StencilBackCompareFunction]
+    PassBack [_StencilBackPassOp]
+    FailBack [_StencilBackFailOp]
+    ZFailBack [_StencilBackZFailOp]
+
+    CompFront [_StencilFrontCompareFunction]
+    PassFront [_StencilFrontPassOp]
+    FailFront [_StencilFrontFailOp]
+    ZFailFront [_StencilFrontZFailOp]
+//endex
+}

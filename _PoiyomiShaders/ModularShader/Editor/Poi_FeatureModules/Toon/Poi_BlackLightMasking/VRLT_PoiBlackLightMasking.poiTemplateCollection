@@ -1,0 +1,141 @@
+#T#PoiBlackLightMaskingProperties
+//ifex _BlackLightMaskingEnabled==0
+[HideInInspector] m_start_BlackLightMasking (" BlackLight Masking--{reference_property:_BlackLightMaskingEnabled, button_help:{text:Tutorial,action:{type:URL,data:https://www.poiyomi.com/modifiers/blacklight-masking},hover:Documentation}}", Float) = 0
+[HideInInspector][ThryToggle(POI_BLACKLIGHTMASKING)] _BlackLightMaskingEnabled ("BlackLight Masking Enabled", Float) = 0
+
+[HideInInspector] s_start_BLMOne ("One--{persistent_expand:true,default_expand:true}", Float) = 1
+_BlackLightMasking0Key ("Key", Float) = 1
+[Vector2] _BlackLightMasking0Range ("Range", Vector) = (0.1, 0.5, 0, 0)
+[ThryWideEnum(Off, 0, 1R, 1, 1G, 2, 1B, 3, 1A, 4, 2R, 5, 2G, 6, 2B, 7, 2A, 8, 3R, 9, 3G, 10, 3B, 11, 3A, 12, 4R, 13, 4G, 14, 4B, 15, 4A, 16)] _BlackLightMasking0GlobalMaskIndex ("Apply to Global Mask--{reference_property:_BlackLightMasking0GlobalMaskBlendType}", Int) = 0
+[ThryHideInInspector][ThryWideEnum(Add, 7, Subtract, 1, Multiply, 2, Divide, 3, Min, 4, Max, 5, Average, 6, Replace, 0)]_BlackLightMasking0GlobalMaskBlendType ("Blending", Range(0, 1)) = 0
+[HideInInspector] s_end_BLMOne ("", Float) = 0
+
+[HideInInspector] s_start_BLMTwo ("Two--{persistent_expand:true,default_expand:true}", Float) = 1
+_BlackLightMasking1Key ("Key", Float) = 2
+[Vector2] _BlackLightMasking1Range ("Range", Vector) = (0.1, 0.5, 0, 0)
+[ThryWideEnum(Off, 0, 1R, 1, 1G, 2, 1B, 3, 1A, 4, 2R, 5, 2G, 6, 2B, 7, 2A, 8, 3R, 9, 3G, 10, 3B, 11, 3A, 12, 4R, 13, 4G, 14, 4B, 15, 4A, 16)] _BlackLightMasking1GlobalMaskIndex ("Apply to Global Mask--{reference_property:_BlackLightMasking1GlobalMaskBlendType}", Int) = 0
+[ThryHideInInspector][ThryWideEnum(Add, 7, Subtract, 1, Multiply, 2, Divide, 3, Min, 4, Max, 5, Average, 6, Replace, 0)]_BlackLightMasking1GlobalMaskBlendType ("Blending", Range(0, 1)) = 0
+[HideInInspector] s_end_BLMTwo ("", Float) = 0
+
+[HideInInspector] s_start_BLMThree ("Three--{persistent_expand:true,default_expand:true}", Float) = 1
+_BlackLightMasking2Key ("Key", Float) = 3
+[Vector2] _BlackLightMasking2Range ("Range", Vector) = (0.1, 0.5, 0, 0)
+[ThryWideEnum(Off, 0, 1R, 1, 1G, 2, 1B, 3, 1A, 4, 2R, 5, 2G, 6, 2B, 7, 2A, 8, 3R, 9, 3G, 10, 3B, 11, 3A, 12, 4R, 13, 4G, 14, 4B, 15, 4A, 16)] _BlackLightMasking2GlobalMaskIndex ("Apply to Global Mask--{reference_property:_BlackLightMasking2GlobalMaskBlendType}", Int) = 0
+[ThryHideInInspector][ThryWideEnum(Add, 7, Subtract, 1, Multiply, 2, Divide, 3, Min, 4, Max, 5, Average, 6, Replace, 0)]_BlackLightMasking2GlobalMaskBlendType ("Blending", Range(0, 1)) = 0
+[HideInInspector] s_end_BLMThree ("", Float) = 0
+
+[HideInInspector] s_start_BLMFour ("Four--{persistent_expand:true,default_expand:true}", Float) = 1
+_BlackLightMasking3Key ("Key", Float) = 4
+[Vector2] _BlackLightMasking3Range ("Range", Vector) = (0.1, 0.5, 0, 0)
+[ThryWideEnum(Off, 0, 1R, 1, 1G, 2, 1B, 3, 1A, 4, 2R, 5, 2G, 6, 2B, 7, 2A, 8, 3R, 9, 3G, 10, 3B, 11, 3A, 12, 4R, 13, 4G, 14, 4B, 15, 4A, 16)] _BlackLightMasking3GlobalMaskIndex ("Apply to Global Mask--{reference_property:_BlackLightMasking3GlobalMaskBlendType}", Int) = 0
+[ThryHideInInspector][ThryWideEnum(Add, 7, Subtract, 1, Multiply, 2, Divide, 3, Min, 4, Max, 5, Average, 6, Replace, 0)]_BlackLightMasking3GlobalMaskBlendType ("Blending", Range(0, 1)) = 0
+[HideInInspector] s_end_BLMFour ("", Float) = 0
+
+[HideInInspector] m_end_BlackLightMasking ("BlackLight Masking", Float) = 0
+//endex
+
+#T#PoiBlackLightMaskingKeywords
+//ifex _BlackLightMaskingEnabled==0
+#pragma shader_feature_local POI_BLACKLIGHTMASKING
+//endex
+
+#T#PoiBlackLightMaskingVariablesExposed
+//ifex _BlackLightMaskingEnabled==0
+#ifdef POI_BLACKLIGHTMASKING
+    half _BlackLightMasking0Key;
+    half2 _BlackLightMasking0Range;
+    float _BlackLightMasking0GlobalMaskIndex;
+    float _BlackLightMasking0GlobalMaskBlendType;
+
+    half _BlackLightMasking1Key;
+    half2 _BlackLightMasking1Range;
+    float _BlackLightMasking1GlobalMaskIndex;
+    float _BlackLightMasking1GlobalMaskBlendType;
+
+    half _BlackLightMasking2Key;
+    half2 _BlackLightMasking2Range;
+    float _BlackLightMasking2GlobalMaskIndex;
+    float _BlackLightMasking2GlobalMaskBlendType;
+
+    half _BlackLightMasking3Key;
+    half2 _BlackLightMasking3Range;
+    float _BlackLightMasking3GlobalMaskIndex;
+    float _BlackLightMasking3GlobalMaskBlendType;
+#endif
+//endex
+
+#T#PoiBlackLightMaskingFunctions
+//ifex _BlackLightMaskingEnabled==0
+#ifdef POI_BLACKLIGHTMASKING
+    void calculateBlackLightMasks(in PoiMesh poiMesh, inout PoiMods poiMods)
+    {
+        #if defined(VERTEXLIGHT_ON)
+            for (int lightIndex = 0; lightIndex < 4; lightIndex++)
+            {
+                float3 lightPos = float3(unity_4LightPosX0[lightIndex], unity_4LightPosY0[lightIndex], unity_4LightPosZ0[lightIndex]);
+                if (!distance(unity_LightColor[lightIndex].rgb, float3(0, 0, 0)))
+                {
+                    if (_BlackLightMasking0GlobalMaskIndex > 0)
+                    {
+                        if (unity_LightColor[lightIndex].a == _BlackLightMasking0Key)
+                        {
+                            applyToGlobalMask(poiMods, _BlackLightMasking0GlobalMaskIndex - 1, _BlackLightMasking0GlobalMaskBlendType, smoothstep(_BlackLightMasking0Range.y, _BlackLightMasking0Range.x, distance(poiMesh.worldPos, lightPos)));
+                        }
+                    }
+                    
+                    if (_BlackLightMasking1GlobalMaskIndex > 0)
+                    {
+                        if (unity_LightColor[lightIndex].a == _BlackLightMasking1Key)
+                        {
+                            applyToGlobalMask(poiMods, _BlackLightMasking1GlobalMaskIndex - 1, _BlackLightMasking1GlobalMaskBlendType, smoothstep(_BlackLightMasking1Range.y, _BlackLightMasking1Range.x, distance(poiMesh.worldPos, lightPos)));
+                        }
+                    }
+                    
+                    if (_BlackLightMasking2GlobalMaskIndex > 0)
+                    {
+                        if (unity_LightColor[lightIndex].a == _BlackLightMasking2Key)
+                        {
+                            applyToGlobalMask(poiMods, _BlackLightMasking2GlobalMaskIndex - 1, _BlackLightMasking2GlobalMaskBlendType, smoothstep(_BlackLightMasking0Range.y, _BlackLightMasking0Range.x, distance(poiMesh.worldPos, lightPos)));
+                        }
+                    }
+                    
+                    if (_BlackLightMasking3GlobalMaskIndex > 0)
+                    {
+                        if (unity_LightColor[lightIndex].a == _BlackLightMasking3Key)
+                        {
+                            applyToGlobalMask(poiMods, _BlackLightMasking3GlobalMaskIndex - 1, _BlackLightMasking3GlobalMaskBlendType, smoothstep(_BlackLightMasking0Range.y, _BlackLightMasking0Range.x, distance(poiMesh.worldPos, lightPos)));
+                        }
+                    }
+                }
+            }
+        #else
+            if (_BlackLightMasking0GlobalMaskIndex > 0)
+            {
+                applyToGlobalMask(poiMods, _BlackLightMasking0GlobalMaskIndex - 1, _BlackLightMasking0GlobalMaskBlendType, 0);
+            }
+            
+            if (_BlackLightMasking1GlobalMaskIndex > 0)
+            {
+                applyToGlobalMask(poiMods, _BlackLightMasking1GlobalMaskIndex - 1, _BlackLightMasking1GlobalMaskBlendType, 0);
+            }
+            
+            if (_BlackLightMasking2GlobalMaskIndex > 0)
+            {
+                applyToGlobalMask(poiMods, _BlackLightMasking2GlobalMaskIndex - 1, _BlackLightMasking2GlobalMaskBlendType, 0);
+            }
+            
+            if (_BlackLightMasking3GlobalMaskIndex > 0)
+            {
+                applyToGlobalMask(poiMods, _BlackLightMasking3GlobalMaskIndex - 1, _BlackLightMasking3GlobalMaskBlendType, 0);
+            }
+        #endif
+    }
+#endif
+//endex
+
+#T#PoiBlackLightMaskingFunctionCalls
+//ifex _BlackLightMaskingEnabled==0
+#ifdef POI_BLACKLIGHTMASKING
+    calculateBlackLightMasks(poiMesh, poiMods);
+#endif
+//endex

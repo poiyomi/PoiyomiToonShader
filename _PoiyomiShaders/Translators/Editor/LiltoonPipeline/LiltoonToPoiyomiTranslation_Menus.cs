@@ -29,37 +29,15 @@ namespace Poi.Tools.ShaderTranslator.Translations.Menu
         }
         static string[] _allShaderNames;
 
-        static LiltoonToPoiyomiToonTranslation ToonInstance
-        {
-            get
-            {
-                if(_toonInstance == null)
-                    _toonInstance = new LiltoonToPoiyomiToonTranslation();
-                return _toonInstance;
-            }
-        }
-        static LiltoonToPoiyomiToonTranslation _toonInstance;
-
-        static LiltoonToPoiyomiProTranslation ProInstance
-        {
-            get
-            {
-                if(_proInstance == null)
-                    _proInstance = new LiltoonToPoiyomiProTranslation();
-                return _proInstance;
-            }
-        }
-        static LiltoonToPoiyomiProTranslation _proInstance;
-
         #region Context - Material
 
-        [MenuItem("CONTEXT/Material/Poiyomi/Translate to Poiyomi Toon", false, PoiContextMenus.ContextMaterialBase)]
+        [MenuItem("CONTEXT/Material/Poiyomi/Translate to Poiyomi Toon", false, PoiContextMenus.ContextMaterialBase + PoiContextMenus.TranslateOffset)]
         static void TranslateSelectedMaterialToPoiToon(MenuCommand command)
         {
             _TranslateSelectedMaterialContext((Material)command.context, false);
         }
 
-        [MenuItem("CONTEXT/Material/Poiyomi/Translate Copy to Poiyomi Toon", false, PoiContextMenus.ContextMaterialBase + 1)]
+        [MenuItem("CONTEXT/Material/Poiyomi/Translate Copy to Poiyomi Toon", false, PoiContextMenus.ContextMaterialBase + PoiContextMenus.TranslateOffset + 1)]
         static void TranslateCopyToPoiyomiToon(MenuCommand command)
         {
             var material = command.context as Material;
@@ -71,13 +49,13 @@ namespace Poi.Tools.ShaderTranslator.Translations.Menu
             EditorGUIUtility.PingObject(newMaterial);
         }
 
-        [MenuItem("CONTEXT/Material/Poiyomi/Translate to Poiyomi Pro", false, PoiContextMenus.ContextMaterialBase + 14)]
+        [MenuItem("CONTEXT/Material/Poiyomi/Translate to Poiyomi Pro", false, PoiContextMenus.ContextMaterialBase + PoiContextMenus.TranslateOffset + 2)]
         static void TranslateSelectedMaterialToPoiPro(MenuCommand command)
         {
             _TranslateSelectedMaterialContext((Material)command.context, true);
         }
 
-        [MenuItem("CONTEXT/Material/Poiyomi/Translate Copy to Poiyomi Pro", false, PoiContextMenus.ContextMaterialBase + 15)]
+        [MenuItem("CONTEXT/Material/Poiyomi/Translate Copy to Poiyomi Pro", false, PoiContextMenus.ContextMaterialBase + PoiContextMenus.TranslateOffset + 3)]
         static void TranslateSelectedMaterialCopyToPoiPro(MenuCommand command)
         {
             var material = command.context as Material;
@@ -90,14 +68,14 @@ namespace Poi.Tools.ShaderTranslator.Translations.Menu
         }
 
         [MenuItem("CONTEXT/Material/Poiyomi/Translate to Poiyomi Pro", true)]
-        [MenuItem("CONTEXT/Material/Poiyomi/Translate Copy To Poiyomi Pro", true)]
+        [MenuItem("CONTEXT/Material/Poiyomi/Translate Copy to Poiyomi Pro", true)]
         static bool TranslateMaterialToPro_Validate() => _ProjectHasPro();
 
         #endregion
 
         #region Context - Renderer
 
-        [MenuItem("CONTEXT/Renderer/Poiyomi/Translate Materials to Poiyomi Toon", false, PoiContextMenus.ContextRendererBase)]
+        [MenuItem("CONTEXT/Renderer/Poiyomi/Translate to Poiyomi Toon", false, PoiContextMenus.ContextRendererBase + PoiContextMenus.TranslateOffset)]
         static void TranslateMaterialsToPoiyomiToon(MenuCommand command)
         {
             Undo.SetCurrentGroupName($"Translate <b>{command.context.name}</b>'s Materials to <b>Poiyomi Toon</b>");
@@ -116,7 +94,7 @@ namespace Poi.Tools.ShaderTranslator.Translations.Menu
             }
         }
 
-        [MenuItem("CONTEXT/Renderer/Poiyomi/Translate Material Copies to Poiyomi Toon", false, PoiContextMenus.ContextRendererBase + 1)]
+        [MenuItem("CONTEXT/Renderer/Poiyomi/Translate Copy to Poiyomi Toon", false, PoiContextMenus.ContextRendererBase + PoiContextMenus.TranslateOffset + 1)]
         static void TranslateRendererMaterialCopiesToPoiyomiToon(MenuCommand command)
         {
             Renderer renderer = command.context as Renderer;
@@ -130,7 +108,7 @@ namespace Poi.Tools.ShaderTranslator.Translations.Menu
             Undo.CollapseUndoOperations(undoIndex);
         }
 
-        [MenuItem("CONTEXT/Renderer/Poiyomi/Translate Materials to Poiyomi Pro", false, PoiContextMenus.ContextRendererBase + 20)]
+        [MenuItem("CONTEXT/Renderer/Poiyomi/Translate to Poiyomi Pro", false, PoiContextMenus.ContextRendererBase + PoiContextMenus.TranslateOffset + 2)]
         static void TranslateMaterialsToPoiyomiPro(MenuCommand command)
         {
             Undo.SetCurrentGroupName($"Translate <b>{command.context.name}</b>'s Materials to <b>Poiyomi Pro</b>");
@@ -149,7 +127,7 @@ namespace Poi.Tools.ShaderTranslator.Translations.Menu
             }
         }
 
-        [MenuItem("CONTEXT/Renderer/Poiyomi/Translate Material Copies to Poiyomi Pro", false, PoiContextMenus.ContextRendererBase + 21)]
+        [MenuItem("CONTEXT/Renderer/Poiyomi/Translate Copy to Poiyomi Pro", false, PoiContextMenus.ContextRendererBase + PoiContextMenus.TranslateOffset + 3)]
         static void TranslateRendererMaterialCopiesToPoiyomiPro(MenuCommand command)
         {
             Renderer renderer = command.context as Renderer;
@@ -163,8 +141,8 @@ namespace Poi.Tools.ShaderTranslator.Translations.Menu
             Undo.CollapseUndoOperations(undoIndex);
         }
 
-        [MenuItem("CONTEXT/Renderer/Poiyomi/Translate Materials to Poiyomi Pro", true)]
-        [MenuItem("CONTEXT/Renderer/Poiyomi/Translate Material Copies to Poiyomi Pro", true)]
+        [MenuItem("CONTEXT/Renderer/Poiyomi/Translate to Poiyomi Pro", true)]
+        [MenuItem("CONTEXT/Renderer/Poiyomi/Translate Copy to Poiyomi Pro", true)]
         static bool TranslateMaterialsToPoiyomiPro_Validate() => _ProjectHasPro();
 
         #endregion
@@ -281,7 +259,7 @@ namespace Poi.Tools.ShaderTranslator.Translations.Menu
 
         #region Assets
 
-        [MenuItem("Assets/Poiyomi/Materials/Translate to Poiyomi Toon", false, PoiContextMenus.AssetsMenuBase + 20)]
+        [MenuItem("Assets/Poiyomi/Materials/Translate to Poiyomi Toon", false, PoiContextMenus.AssetsMenuBase + PoiContextMenus.TranslateOffset)]
         static void TranslateSelectedMaterialsInAssetsToToon()
         {
             int undoIndex = Undo.GetCurrentGroup();
@@ -292,7 +270,7 @@ namespace Poi.Tools.ShaderTranslator.Translations.Menu
             Undo.CollapseUndoOperations(undoIndex);
         }
 
-        [MenuItem("Assets/Poiyomi/Materials/Translate Copy to Poiyomi Toon", false, PoiContextMenus.AssetsMenuBase + 21)]
+        [MenuItem("Assets/Poiyomi/Materials/Translate Copy to Poiyomi Toon", false, PoiContextMenus.AssetsMenuBase + PoiContextMenus.TranslateOffset + 1)]
         static void TranslateSelectedMaterialCopyInAssetsToToon()
         {
             var materials = _GetSelectedMaterials();
@@ -306,7 +284,7 @@ namespace Poi.Tools.ShaderTranslator.Translations.Menu
             EditorGUIUtility.PingObject(materials.Last());
         }
 
-        [MenuItem("Assets/Poiyomi/Materials/Translate to Poiyomi Pro", false, PoiContextMenus.AssetsMenuBase + 32)]
+        [MenuItem("Assets/Poiyomi/Materials/Translate to Poiyomi Pro", false, PoiContextMenus.AssetsMenuBase + PoiContextMenus.TranslateOffset + 2)]
         static void TranslateSelectedMaterialsInAssetsToPro()
         {
             int undoIndex = Undo.GetCurrentGroup();
@@ -317,7 +295,7 @@ namespace Poi.Tools.ShaderTranslator.Translations.Menu
             Undo.CollapseUndoOperations(undoIndex);
         }
 
-        [MenuItem("Assets/Poiyomi/Materials/Translate Copy to Poiyomi Pro", false, PoiContextMenus.AssetsMenuBase + 33)]
+        [MenuItem("Assets/Poiyomi/Materials/Translate Copy to Poiyomi Pro", false, PoiContextMenus.AssetsMenuBase + PoiContextMenus.TranslateOffset + 3)]
         static void TranslateSelectedMaterialCopyInAssetsToPro()
         {
             var materials = _GetSelectedMaterials();
@@ -377,14 +355,17 @@ namespace Poi.Tools.ShaderTranslator.Translations.Menu
                 return;
             }
 
+            var translator = PoiyomiTranslatorRegistry.GetTranslator(material, isPro);
+            if(translator == null)
+                return;
+
             string URP = PoiHelpers.IsURP() ? "URP" : "";
             string suffix = isPro ? "Pro" : "Toon";
             string shaderName = $"{ShaderNameBase} {suffix} {URP}".Trim();
 
             Undo.RegisterCompleteObjectUndo(material, $"Translate material {material.name} to {shaderName}");
 
-            var instance = isPro ? ProInstance : ToonInstance;
-            instance.Translate(material, shaderName);
+            translator.Translate(material, shaderName);
         }
 
         static void _TranslateSelectedMaterialsInAssets(bool isPro)
@@ -440,13 +421,16 @@ namespace Poi.Tools.ShaderTranslator.Translations.Menu
                 return;
             }
 
+            var translator = PoiyomiTranslatorRegistry.GetTranslator(material, isPro);
+            if(translator == null)
+                return;
+
             string URP = PoiHelpers.IsURP() ? "URP" : "";
             string shaderSuffix = isPro ? "Pro" : "Toon";
             string shaderName = $"{ShaderNameBase} {shaderSuffix} {URP}".Trim();
             Undo.RegisterFullObjectHierarchyUndo(material, $"Translate {material.name} to Poiyomi {shaderSuffix}");
 
-            var instance = isPro ? ProInstance : ToonInstance;
-            instance.Translate(material, shaderName);
+            translator.Translate(material, shaderName);
         }
 
         static void _TranslateMaterialsInFolderAndItsSubfolders(string folderPath, bool isPro)
@@ -469,9 +453,8 @@ namespace Poi.Tools.ShaderTranslator.Translations.Menu
                 if(material == null)
                     continue;
 
-                // Skip material if it's not using liltoon
-                var translator = isPro ? ProInstance : ToonInstance;
-                if(!translator.CanTranslateMaterial(material))
+                // Skip material if no translation supports its shader
+                if(PoiyomiTranslatorRegistry.GetTranslator(material, isPro) == null)
                     continue;
 
                 PoiHelpers.TryDuplicateMaterialAsset(material, $"{material.name}_{(isPro ? "PoiPro" : "PoiToon")}", out string newAssetPath);
@@ -502,9 +485,8 @@ namespace Poi.Tools.ShaderTranslator.Translations.Menu
                     continue;
                 }
 
-                // Skip material if it's not using liltoon
-                var translator = isPro ? ProInstance : ToonInstance;
-                if(!translator.CanTranslateMaterial(material))
+                // Skip material if no translation supports its shader
+                if(PoiyomiTranslatorRegistry.GetTranslator(material, isPro) == null)
                     continue;
 
                 if(!PoiHelpers.TryDuplicateMaterialAsset(material, $"{material.name}_Poi{(isPro ? "Pro" : "Toon")}", out string newPath))

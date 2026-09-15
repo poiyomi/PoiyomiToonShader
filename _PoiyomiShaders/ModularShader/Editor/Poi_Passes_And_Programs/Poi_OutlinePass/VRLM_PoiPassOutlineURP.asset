@@ -1,0 +1,78 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1039f25740a92fc4292bb1d94d07ad19, type: 3}
+  m_Name: VRLM_PoiPassOutlineURP
+  m_EditorClassIdentifier: 
+  Id: PoiPassOutline
+  Name: Outline Pass URP
+  Version: 
+  Author: 
+  Description: 
+  AllowDuplicates: 0
+  ForceDuplicateLogic: 0
+  EnableProperties: []
+  Properties: []
+  ModuleDependencies: []
+  IncompatibleWith: []
+  Templates:
+  - Template: {fileID: -544282384758852595, guid: febbce3298c3c0c4d992438299863f92, type: 3}
+    Keywords:
+    - OUTLINE_PASS
+    NeedsVariant: 0
+    Queue: 0
+  - Template: {fileID: -2782560827830483219, guid: 73a86ad89b001944fb681707661c44ca, type: 3}
+    Keywords:
+    - PASS_TAGS
+    NeedsVariant: 0
+    Queue: 0
+  - Template: {fileID: 5537174700405361558, guid: 73a86ad89b001944fb681707661c44ca, type: 3}
+    Keywords:
+    - BLEND_SETTINGS
+    NeedsVariant: 0
+    Queue: 0
+  - Template: {fileID: -2027026212328545675, guid: 73a86ad89b001944fb681707661c44ca, type: 3}
+    Keywords:
+    - PASS_ONLY_SHADER_KEYWORDS
+    NeedsVariant: 0
+    Queue: 0
+  - Template: {fileID: -4693249131991614365, guid: 73a86ad89b001944fb681707661c44ca, type: 3}
+    Keywords:
+    - PASS_ONLY_SHADER_KEYWORDS
+    NeedsVariant: 0
+    Queue: 10
+  - Template: {fileID: -808208580545901984, guid: 73a86ad89b001944fb681707661c44ca, type: 3}
+    Keywords:
+    - PROPERTY_VARIABLES
+    NeedsVariant: 0
+    Queue: 0
+  - Template: {fileID: 6962958329821255724, guid: 73a86ad89b001944fb681707661c44ca, type: 3}
+    Keywords:
+    - PASS_PROGRAMS
+    NeedsVariant: 0
+    Queue: 0
+  - Template: {fileID: -4214999151408658396, guid: 73a86ad89b001944fb681707661c44ca, type: 3}
+    Keywords:
+    - STENCIL
+    NeedsVariant: 0
+    Queue: 0
+  - Template: {fileID: -8104175900710680423, guid: 73a86ad89b001944fb681707661c44ca, type: 3}
+    Keywords:
+    - PASS_DISABLE_PREFIX
+    NeedsVariant: 0
+    Queue: 0
+  - Template: {fileID: 3395381062124625698, guid: 73a86ad89b001944fb681707661c44ca, type: 3}
+    Keywords:
+    - PASS_DISABLE_SUFFIX
+    NeedsVariant: 0
+    Queue: 0
+  Functions: []
+  AdditionalSerializedData: 

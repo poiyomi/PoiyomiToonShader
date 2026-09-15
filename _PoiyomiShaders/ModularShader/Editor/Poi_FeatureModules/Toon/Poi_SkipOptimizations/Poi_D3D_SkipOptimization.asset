@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1039f25740a92fc4292bb1d94d07ad19, type: 3}
+  m_Name: Poi_D3D_SkipOptimization
+  m_EditorClassIdentifier: 
+  Id: D3DSkipOptimization
+  Name: D3D Skip Optimization
+  Version: 1.0
+  Author: Poiyomi
+  Description: Speeds up compilation by skipping DirectX optimizations but this can
+    cause texture limit crashes to occur faster
+  EnableProperties: []
+  Properties: []
+  ModuleDependencies: []
+  IncompatibleWith: []
+  Templates:
+  - Template: {fileID: -544282384758852595, guid: 20c6cf9d25138cb49b23da4470268b19,
+      type: 3}
+    Keywords:
+    - PRAGMA_DIRECTIVES
+    NeedsVariant: 0
+    Queue: 0
+  Functions: []
+  AdditionalSerializedData: 

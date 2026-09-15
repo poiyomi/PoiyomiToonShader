@@ -1,0 +1,196 @@
+#T#PoiWorldProps
+[HideInInspector] m_start_bakedLighting ("Baked Lighting--{button_help:{text:Tutorial,action:{type:URL,data:https://www.poiyomi.com/shading/baked-lighting},hover:Documentation}}", Float) = 0
+[Helpbox(1, 5, 3)] _GIWarning ("Poiyomi Shaders is not designed to be used as a general-purpose World shader and should be reserved only for specialized features that typical World shaders do not have. Additionally, Static Batching is unsupported! For this reason, you should keep your usage of Poiyomi World to a minimum.", Int) = 0
+//_SpecularLMOcclusion ("Specular Occlusion", Range(0, 1)) = 0
+//_SpecLMOcclusionAdjust ("Spec Occlusion Sensitiviy", Range(0, 1)) = 0.2
+[DoNotAnimate] _GIEmissionMultiplier ("GI Emission Multiplier", Float) = 1
+[HideInInspector][HDR]_EmissionColor ("Emission Color", Color) = (0, 0, 0, 1) // Fallback for Unity GI - overridden by emission module when enabled
+[HideInInspector][DoNotAnimate] DSGI ("DSGI", Float) = 0 //add this property for double sided illumination settings to be shown
+[HideInInspector][DoNotAnimate] LightmapFlags ("Lightmap Flags", Float) = 0 //add this property for lightmap flags settings to be shown
+[DoNotAnimate][ThryWideEnum(None, 0, SH, 1, RNM, 2, MonoSH, 3)] _BakeryMode ("Bakery Mode", Float) = 0
+//ifex _BakeryMode!=1 && _BakeryMode!=2
+[DoNotAnimate][NoScaleOffset] _RNM0 ("RNM0--{condition_showS:(_BakeryMode==1 || _BakeryMode==2)}", 2D) = "black" {}
+[DoNotAnimate][NoScaleOffset] _RNM1 ("RNM1--{condition_showS:(_BakeryMode==1 || _BakeryMode==2)}", 2D) = "black" {}
+[DoNotAnimate][NoScaleOffset] _RNM2 ("RNM2--{condition_showS:(_BakeryMode==1 || _BakeryMode==2)}", 2D) = "black" {}
+//endex
+[DoNotAnimate][Toggle(_LIGHTMAP_BICUBIC)] _LightmapBicubic ("Use Bicubic Filtering", Float) = 0
+[HideInInspector] m_end_bakedLighting ("Baked Lighting", Float) = 0
+
+#T#PoiWorldDefine
+#define POI_WORLD
+//#pragma shader_feature_local _BAKERYMODE_NONE _BAKERYMODE_SH _BAKERYMODE_RNM _BAKERYMODE_MONOSH
+#pragma shader_feature_local _ _LIGHTMAP_BICUBIC
+
+#T#PoiWorldVariablesExposed
+#ifdef POI_WORLD
+    half _GIEmissionMultiplier;
+    half _BakeryMode;
+#endif
+
+#T#PoiWorldVariables
+//ifex _BakeryMode!=1 && _BakeryMode!=2
+#ifdef POI_WORLD
+    UNITY_DECLARE_TEX2D(_RNM0);
+    UNITY_DECLARE_TEX2D_NOSAMPLER(_RNM1);
+    UNITY_DECLARE_TEX2D_NOSAMPLER(_RNM2);
+#endif
+//endex
+
+#T#PoiWorldFunctions
+#ifdef POI_WORLD
+    float4 PoiCubicWeights(float v)
+    {
+        float4 n = float4(1.0, 2.0, 3.0, 4.0) - v;
+        float4 s = n * n * n;
+        float x = s.x;
+        float y = s.y - 4.0 * s.x;
+        float z = s.z - 4.0 * s.y + 6.0 * s.x;
+        float w = 6.0 - x - y - z;
+        return float4(x, y, z, w);
+    }
+
+    float4 PoiSampleTex2DBicubic(Texture2D tex, SamplerState smp, float2 uv)
+    {
+        float texW, texH;
+        tex.GetDimensions(texW, texH);
+        float2 texSize = float2(texW, texH);
+        float2 invTexSize = 1.0 / texSize;
+
+        float2 coord = uv * texSize - 0.5;
+        float2 f = frac(coord);
+        coord -= f;
+
+        float4 xcubic = PoiCubicWeights(f.x);
+        float4 ycubic = PoiCubicWeights(f.y);
+
+        float4 c = float4(coord.x - 0.5, coord.x + 1.5, coord.y - 0.5, coord.y + 1.5);
+        float4 s = float4(xcubic.x + xcubic.y, xcubic.z + xcubic.w, ycubic.x + ycubic.y, ycubic.z + ycubic.w);
+        float4 offset = c + float4(xcubic.y, xcubic.w, ycubic.y, ycubic.w) / s;
+
+        float4 sample0 = tex.Sample(smp, float2(offset.x, offset.z) * invTexSize);
+        float4 sample1 = tex.Sample(smp, float2(offset.y, offset.z) * invTexSize);
+        float4 sample2 = tex.Sample(smp, float2(offset.x, offset.w) * invTexSize);
+        float4 sample3 = tex.Sample(smp, float2(offset.y, offset.w) * invTexSize);
+
+        float sx = s.x / (s.x + s.y);
+        float sy = s.z / (s.z + s.w);
+
+        return lerp(lerp(sample3, sample2, sx), lerp(sample1, sample0, sx), sy);
+    }
+
+    float3 PoiSampleBakedLightmap(float2 lightmapUV, float3 worldNormal, float3 tangentNormal)
+    {
+        #if defined(_LIGHTMAP_BICUBIC)
+            float4 rawLM = PoiSampleTex2DBicubic(unity_Lightmap, samplerunity_Lightmap, lightmapUV);
+        #else
+            float4 rawLM = UNITY_SAMPLE_TEX2D(unity_Lightmap, lightmapUV);
+        #endif
+        float3 L0 = DecodeLightmap(rawLM);
+
+        //ifex _BakeryMode!=3
+        UNITY_BRANCH
+        if (_BakeryMode == 3)
+        {
+            // Bakery MonoSH repurposes unity_LightmapInd (the standard directional slot)
+            // to store the remapped L1 dominant direction. Requires DIRLIGHTMAP_COMBINED.
+            #if defined(DIRLIGHTMAP_COMBINED)
+                #if defined(_LIGHTMAP_BICUBIC)
+                    float3 nL1 = PoiSampleTex2DBicubic(unity_LightmapInd, samplerunity_Lightmap, lightmapUV).xyz * 2.0 - 1.0;
+                #else
+                    float3 nL1 = UNITY_SAMPLE_TEX2D_SAMPLER(unity_LightmapInd, unity_Lightmap, lightmapUV).xyz * 2.0 - 1.0;
+                #endif
+                float3 L1x = nL1.x * L0 * 2.0;
+                float3 L1y = nL1.y * L0 * 2.0;
+                float3 L1z = nL1.z * L0 * 2.0;
+                return L0 + worldNormal.x * L1x + worldNormal.y * L1y + worldNormal.z * L1z;
+            #else
+                return L0;
+            #endif
+        }
+        //endex
+
+        //ifex _BakeryMode!=1
+        UNITY_BRANCH
+        if (_BakeryMode == 1)
+        {
+            // Full L1 spherical harmonics: per-axis L1 stored in _RNM0/_RNM1/_RNM2.
+            #if defined(_LIGHTMAP_BICUBIC)
+                float3 nL1x = PoiSampleTex2DBicubic(_RNM0, sampler_RNM0, lightmapUV).xyz;
+                float3 nL1y = PoiSampleTex2DBicubic(_RNM1, sampler_RNM0, lightmapUV).xyz;
+                float3 nL1z = PoiSampleTex2DBicubic(_RNM2, sampler_RNM0, lightmapUV).xyz;
+            #else
+                float3 nL1x = UNITY_SAMPLE_TEX2D(_RNM0, lightmapUV).xyz;
+                float3 nL1y = UNITY_SAMPLE_TEX2D_SAMPLER(_RNM1, _RNM0, lightmapUV).xyz;
+                float3 nL1z = UNITY_SAMPLE_TEX2D_SAMPLER(_RNM2, _RNM0, lightmapUV).xyz;
+            #endif
+            nL1x = nL1x * 2.0 - 1.0;
+            nL1y = nL1y * 2.0 - 1.0;
+            nL1z = nL1z * 2.0 - 1.0;
+            float3 L1x = nL1x * L0 * 2.0;
+            float3 L1y = nL1y * L0 * 2.0;
+            float3 L1z = nL1z * L0 * 2.0;
+            return L0 + worldNormal.x * L1x + worldNormal.y * L1y + worldNormal.z * L1z;
+        }
+        //endex
+
+        //ifex _BakeryMode!=2
+        UNITY_BRANCH
+        if (_BakeryMode == 2)
+        {
+            // Radiosity Normal Mapping: 3 lightmaps along fixed tangent-space basis directions.
+            const float3 rnmBasis0 = float3(0.816496580927726, 0.0, 0.5773502691896258);
+            const float3 rnmBasis1 = float3(-0.4082482904638631, 0.7071067811865475, 0.5773502691896258);
+            const float3 rnmBasis2 = float3(-0.4082482904638631, -0.7071067811865475, 0.5773502691896258);
+            #if defined(_LIGHTMAP_BICUBIC)
+                float3 rnm0 = DecodeLightmap(PoiSampleTex2DBicubic(_RNM0, sampler_RNM0, lightmapUV));
+                float3 rnm1 = DecodeLightmap(PoiSampleTex2DBicubic(_RNM1, sampler_RNM0, lightmapUV));
+                float3 rnm2 = DecodeLightmap(PoiSampleTex2DBicubic(_RNM2, sampler_RNM0, lightmapUV));
+            #else
+                float3 rnm0 = DecodeLightmap(UNITY_SAMPLE_TEX2D(_RNM0, lightmapUV));
+                float3 rnm1 = DecodeLightmap(UNITY_SAMPLE_TEX2D_SAMPLER(_RNM1, _RNM0, lightmapUV));
+                float3 rnm2 = DecodeLightmap(UNITY_SAMPLE_TEX2D_SAMPLER(_RNM2, _RNM0, lightmapUV));
+            #endif
+            float3 nT = tangentNormal;
+            nT.g *= -1.0; // Unity tangent convention
+            return saturate(dot(rnmBasis0, nT)) * rnm0 + saturate(dot(rnmBasis1, nT)) * rnm1 + saturate(dot(rnmBasis2, nT)) * rnm2;
+        }
+        //endex
+
+        //ifex _BakeryMode!=0
+        #if defined(DIRLIGHTMAP_COMBINED)
+            #if defined(_LIGHTMAP_BICUBIC)
+                float4 dirLM = PoiSampleTex2DBicubic(unity_LightmapInd, samplerunity_Lightmap, lightmapUV);
+            #else
+                float4 dirLM = UNITY_SAMPLE_TEX2D_SAMPLER(unity_LightmapInd, unity_Lightmap, lightmapUV);
+            #endif
+            return DecodeDirectionalLightmap(L0, dirLM, worldNormal);
+        #else
+            return L0;
+        #endif
+        //endex
+
+        // Safety fallback for unlocked/out-of-range material values and specialized locked branches.
+        return L0;
+    }
+
+    float3 PoiSampleDynamicLightmap(float2 lightmapUV, float3 worldNormal)
+    {
+        #if defined(_LIGHTMAP_BICUBIC)
+            float4 rawDyn = PoiSampleTex2DBicubic(unity_DynamicLightmap, samplerunity_DynamicLightmap, lightmapUV);
+        #else
+            float4 rawDyn = UNITY_SAMPLE_TEX2D(unity_DynamicLightmap, lightmapUV);
+        #endif
+        half3 dynDiffuse = DecodeRealtimeLightmap(rawDyn);
+
+        #if defined(DIRLIGHTMAP_COMBINED)
+            #if defined(_LIGHTMAP_BICUBIC)
+                float4 dirDyn = PoiSampleTex2DBicubic(unity_DynamicDirectionality, samplerunity_DynamicLightmap, lightmapUV);
+            #else
+                float4 dirDyn = UNITY_SAMPLE_TEX2D_SAMPLER(unity_DynamicDirectionality, unity_DynamicLightmap, lightmapUV);
+            #endif
+            return DecodeDirectionalLightmap(dynDiffuse, dirDyn, worldNormal);
+        #else
+            return dynDiffuse;
+        #endif
+    }
+#endif

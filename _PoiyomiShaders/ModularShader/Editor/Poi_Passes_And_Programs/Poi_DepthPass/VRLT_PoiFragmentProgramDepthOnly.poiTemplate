@@ -1,0 +1,36 @@
+#if POI_PIPE == POI_BIRP
+	float4 frag( VertexOut i, bool facing : SV_IsFrontFace ) : SV_Target
+#else
+	void frag( VertexOut i, bool facing : SV_IsFrontFace, out half outDepth: SV_Target0 )
+#endif
+{
+	#if POI_PIPE == POI_BIRP
+		clip(_RenderingEarlyZEnabled - 1.0);
+	#endif
+	UNITY_SETUP_INSTANCE_ID(i);
+	UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(i);
+	
+    #K#FRAGMENT_DEPTH_DECLARATIONS
+
+	#K#FRAGMENT_DEPTH_INIT_EARLY
+	#K#FRAGMENT_DEPTH_INIT
+	#K#FRAGMENT_DEPTH_INIT_LATE
+
+	#K#FRAGMENT_DEPTH_COLOR_EARLY
+	#K#FRAGMENT_DEPTH_COLOR
+	#K#FRAGMENT_DEPTH_COLOR_LATE
+
+    #K#FRAGMENT_DEPTH_RETURN
+
+	clip(poiFragData.alpha - _Cutoff);
+
+	#if POI_PIPE == POI_URP
+    	outDepth = i.pos.z + POI_SAFE_RGB0.r;
+	#endif
+
+	#if POI_PIPE == POI_BIRP
+		return float4(1, 1, 1, 1);
+	#else
+		return;
+	#endif
+}

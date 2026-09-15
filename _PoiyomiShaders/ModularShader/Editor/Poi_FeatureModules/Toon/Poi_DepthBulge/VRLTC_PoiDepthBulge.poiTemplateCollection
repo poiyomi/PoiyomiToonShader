@@ -1,0 +1,104 @@
+#T#PoiDepthBulgeProperties
+//ifex _EnableDepthBulge==0
+[HideInInspector] m_start_DepthBulge (" Depth Bulge--{reference_property:_EnableDepthBulge,button_help:{text:Tutorial,action:{type:URL,data:https://www.poiyomi.com/special-fx/depth-bulge},hover:Documentation}}", Float) = 0
+[HideInInspector][ThryToggle(POI_DEPTHBULGE)] _EnableDepthBulge ("Bulge", Float) = 0
+[Helpbox(1, 3, 2)]_DepthBulgeWarning ("Depth Bulge doesn't write to depth, which can break certain transparent effects like custom fog and raymarching.", Int) = 0
+[Helpbox(1, 2, 1)]_DepthBulgeDepthGetWarning ("Depth Bulge requires the depth buffer. Put the DepthGet.prefab on your avatar so it'll work in every world.", Int) = 0
+[PoiPrefabSpawner(23c61f8f4d0a87243a36c937bd3e1393)] _DepthBulgeSpawnDepthGet ("Add DepthGet Prefab to Scene", Float) = 0
+_DepthBulgeMask ("Bulge Mask--{reference_properties:[_DepthBulgeMaskUV, _DepthBulgeMaskChannel]}", 2D) = "white" { }
+[ThryHideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3)] _DepthBulgeMaskUV ("UV", Int) = 0
+[ThryHideInInspector][Enum(R, 0, G, 1, B, 2, A, 3)] _DepthBulgeMaskChannel ("Channel", Float) = 0
+_DepthBulgeFadeLength ("Touch Distance", Range(0, 1.0)) = 0.02
+_DepthBulgeHeight ("Bulge Height", Range(-0.2, 0.2)) = 0.02
+[HideInInspector] m_end_DepthBulge ("Depth Bulge", Float) = 0
+//endex
+#T#PoiDepthBulgeKeywords
+//ifex _EnableDepthBulge==0
+#pragma shader_feature_local POI_DEPTHBULGE
+//endex
+
+#T#PoiDepthBulgeVariablesExposed
+//ifex _EnableDepthBulge==0
+#ifdef POI_DEPTHBULGE
+	float _DepthBulgeFadeLength;
+	float _DepthBulgeHeight;
+	float _DepthBulgeMaskUV;
+	float4 _DepthBulgeMask_ST;
+	float _DepthBulgeMaskChannel;
+#endif
+//endex
+
+#T#PoiDepthBulgeVariables
+//ifex _EnableDepthBulge==0
+#ifdef POI_DEPTHBULGE
+	#if defined(PROP_DEPTHBULGEMASK) || !defined(OPTIMIZER_ENABLED)
+		Texture2D _DepthBulgeMask;
+	#endif
+#endif
+//endex
+
+
+#T#PoiDepthBulgeFunctions
+//ifex _EnableDepthBulge==0
+#if defined(POI_DEPTHBULGE)
+	#ifdef POI_PASS_LILFUR
+	void applyDepthBulgeFX(inout PoiVertToGeoLilFur o)
+	#else
+	void applyDepthBulgeFX(inout VertexOut o)
+	#endif
+	{
+		#ifdef POI_PASS_LILFUR
+			float4 pos = PoiWorldToClipPos(o.worldPos.xyz);
+		#else
+			float4 pos = PoiObjectToClipPos(o.localPos.xyz);
+		#endif
+		float4 grabPos = PoiComputeScreenPos(pos);
+
+		if(!DepthTextureExists()) return;
+		float depth = SampleScreenDepth(float2(grabPos.xy / grabPos.w));
+
+		#if defined(PROP_DEPTHBULGEMASK) || !defined(OPTIMIZER_ENABLED)
+			float depthBulgeMask = UNITY_SAMPLE_TEX2D_SAMPLER_LOD(_DepthBulgeMask, _linear_repeat, poiUV(vertexUV(o, _DepthBulgeMaskUV), _DepthBulgeMask_ST), 0)[_DepthBulgeMaskChannel];
+		#else
+			float depthBulgeMask = 1.0;
+		#endif
+
+		depth = Linear01Depth(depth);
+		float bulgeScale = o.normal.w;
+
+		float intersect = 0;
+		if (depth != 1)
+		{
+			float diff = distance(depth, Linear01Depth(pos.z / pos.w));
+			if (diff > 0)
+			{
+				intersect = 1 - smoothstep(0, _ProjectionParams.w * _DepthBulgeFadeLength * bulgeScale, diff);
+			}
+		}
+		float4 offset = intersect * _DepthBulgeHeight * bulgeScale * float4(o.normal.xyz, 0);
+
+		offset = IsInMirror() ? 0 : offset;
+		offset *= depthBulgeMask;
+
+		o.worldPos.xyz += offset.xyz;
+		#ifndef POI_PASS_LILFUR
+			o.localPos.xyz += mul(unity_WorldToObject, float4(offset.xyz, 0)).xyz;
+		#endif
+	}
+#endif
+//endex
+
+#T#PoiDepthBulgeFunctionCalls
+//ifex _EnableDepthBulge==0
+#if defined(POI_DEPTHBULGE) && !defined(POI_PASS_SHADOW) && !defined(POI_PASS_DEPTH_ONLY) && !defined(POI_PASS_DEPTH_NORMALS) && !defined(POI_PASS_META) && !defined(POI_PASS_MOTION_VECTORS)
+	applyDepthBulgeFX(o);
+#endif
+//endex
+
+#T#PoiDepthBulgeKillShadow
+//ifex _EnableDepthBulge==0
+#ifdef POI_DEPTHBULGE
+	clip(-1);
+	return 0;
+#endif
+//endex

@@ -1,0 +1,88 @@
+#T#PoiBentNormalProperties
+//ifex _EnableBentNormal==0
+[HideInInspector] m_start_BentNormal (" Bent Normal Map--{reference_property:_EnableBentNormal,button_help:{text:Tutorial,action:{type:URL,data:https://www.poiyomi.com/color-and-normals/bent-normal-map},hover:Documentation}}", Float) = 0
+[HideInInspector][ThryToggle(POI_BENTNORMALMAP)]_EnableBentNormal ("Enable", Int) = 0
+[Normal]_BentNormalMap ("Bent Normal Map--{reference_properties:[_BentNormalMapPan, _BentNormalMapUV, _BentNormalMapStochastic]}", 2D) = "bump" { }
+[ThryHideInInspector][Vector2]_BentNormalMapPan ("Panning", Vector) = (0, 0, 0, 0)
+[ThryHideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7, Matcap, 9, Screen Space, 10)] _BentNormalMapUV ("UV", Int) = 0
+[ThryHideInInspector][ToggleUI]_BentNormalMapStochastic ("Stochastic Sampling", Float) = 0
+_BentNormalSpecOccStrength ("Specular Occlusion Strength", Range(0, 1)) = 1
+[ToggleUI]_BentNormalIndirectDiffuse ("Use for Indirect Diffuse", Float) = 1
+[HideInInspector] m_end_BentNormal ("", Float) = 0
+//endex
+
+#T#PoiBentNormalKeywords
+//ifex _EnableBentNormal==0
+#pragma shader_feature_local POI_BENTNORMALMAP
+//endex
+
+#T#PoiBentNormalVariablesExposed
+//ifex _EnableBentNormal==0
+#ifdef POI_BENTNORMALMAP
+	float4 _BentNormalMap_ST;
+	float2 _BentNormalMapPan;
+	float _BentNormalMapUV;
+	float _BentNormalMapStochastic;
+	half _BentNormalSpecOccStrength;
+	float _BentNormalIndirectDiffuse;
+#endif
+//endex
+
+#T#PoiBentNormalVariables
+//ifex _EnableBentNormal==0
+#ifdef POI_BENTNORMALMAP
+	#if defined(PROP_BENTNORMALMAP) || !defined(OPTIMIZER_ENABLED)
+		Texture2D _BentNormalMap;
+	#endif
+#endif
+//endex
+
+#T#PoiBentNormalFunctions
+//ifex _EnableBentNormal==0
+#ifdef POI_BENTNORMALMAP
+	// Jimenez 2016, "Practical Realtime Strategies for Accurate Indirect Occlusion"
+	// Cone intersection for specular occlusion using bent normal
+	half PoiSpecularOcclusionBentNormal(half3 reflectionDir, half3 bentNormal, half occlusion, half roughness)
+	{
+		roughness = max(roughness, 0.01);
+
+		// Unoccluded cone angle from scalar AO
+		float cosUnoccludedAngle = sqrt(1.0 - occlusion);
+		float unoccludedAngle = acos(cosUnoccludedAngle);
+
+		// Specular cone angle from roughness
+		float cosSpecularAngle = exp2(-3.32192809489 * (roughness * roughness));
+		float specularAngle = acos(cosSpecularAngle);
+
+		// Angle between bent normal and reflection direction
+		float angleBentToReflection = acos(saturate(dot(bentNormal, reflectionDir)));
+
+		// Cone intersection (smoothstep approximation)
+		float angleSum = unoccludedAngle + specularAngle;
+		float angleDiff = abs(unoccludedAngle - specularAngle);
+		float intersection = 1.0 - smoothstep(0.0, 1.0, saturate((angleBentToReflection - angleDiff) / max(angleSum - angleDiff, 0.0001)));
+
+		return min(intersection, occlusion);
+	}
+#endif
+//endex
+
+#T#PoiBentNormalSample
+//ifex _EnableBentNormal==0
+#if defined(POI_BENTNORMALMAP) && !defined(POI_PASS_SHADOW) && !defined(POI_PASS_MOTION_VECTORS)
+	#if defined(PROP_BENTNORMALMAP) || !defined(OPTIMIZER_ENABLED)
+		float3 bentNormalTS = PoiUnpackNormalScale(
+			POI2D_SAMPLER_PAN_STOCHASTIC(_BentNormalMap, _MainTex,
+				poiUV(poiMesh.uv[_BentNormalMapUV].xy, _BentNormalMap_ST),
+				_BentNormalMapPan, _BentNormalMapStochastic), 1.0);
+		// Convert from tangent space to world space using vertex TBN frame
+		// (bent normals are baked relative to geometric normal, not detail normal)
+		poiMesh.bentNormal = normalize(
+			bentNormalTS.x * poiMesh.tangent[0] +
+			bentNormalTS.y * poiMesh.binormal[0] +
+			bentNormalTS.z * poiMesh.normals[0]
+		);
+		poiMesh.hasBentNormal = 1.0;
+	#endif
+#endif
+//endex

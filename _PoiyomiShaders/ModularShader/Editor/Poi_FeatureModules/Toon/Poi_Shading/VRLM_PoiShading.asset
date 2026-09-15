@@ -1,0 +1,161 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1039f25740a92fc4292bb1d94d07ad19, type: 3}
+  m_Name: VRLM_PoiShading
+  m_EditorClassIdentifier: 
+  Id: PoiShading
+  Name: 
+  Version: 
+  Author: 
+  Description: 
+  AllowDuplicates: 0
+  ForceDuplicateLogic: 0
+  EnableProperties: []
+  Properties:
+  - Name: _ClothDFG
+    DisplayName: dfg
+    Type: 2D
+    DefaultValue: '"black" {}'
+    DefaultTextureAsset: {fileID: 2800000, guid: 76d65cbce584df7449699fb8406f60ea, type: 3}
+    Attributes:
+    - NonModifiableTextureData
+    - NoScaleOffset
+  - Name: _SkinLUT
+    DisplayName: skinlut
+    Type: 2D
+    DefaultValue: '"white" {}'
+    DefaultTextureAsset: {fileID: 2800000, guid: d13510bb2be49aa40a66a0101efb6a36, type: 3}
+    Attributes:
+    - NoScaleOffset
+  - Name: _ToonRamp
+    DisplayName: Lighting Ramp
+    Type: 2D
+    DefaultValue: '"white" {}'
+    DefaultTextureAsset: {fileID: 2800000, guid: 61bd594533da4fc42bd46ef93ba5a4f6, type: 3}
+    Attributes:
+    - Gradient
+    - NoScaleOffset
+  ModuleDependencies: []
+  IncompatibleWith: []
+  Templates:
+  - Template: {fileID: -6259013273614755871, guid: cdaebb04eaf8cc542849582fbf47c200, type: 3}
+    Keywords:
+    - LIGHTING_PROPERTIES
+    NeedsVariant: 0
+    Queue: 100
+  - Template: {fileID: -1282086300987554519, guid: cdaebb04eaf8cc542849582fbf47c200, type: 3}
+    Keywords:
+    - BASE_PASS_KEYWORDS
+    - ADD_PASS_KEYWORDS
+    - OUTLINE_PASS_KEYWORDS
+    - META_PASS_KEYWORDS
+    - LILFUR_PASS_KEYWORDS
+    NeedsVariant: 0
+    Queue: 100
+  - Template: {fileID: 6644858586408048110, guid: cdaebb04eaf8cc542849582fbf47c200, type: 3}
+    Keywords:
+    - BASE_PROPERTY_VARIABLES
+    - ADD_PROPERTY_VARIABLES
+    - OUTLINE_PROPERTY_VARIABLES
+    - META_PROPERTY_VARIABLES
+    - LILFUR_PROPERTY_VARIABLES
+    NeedsVariant: 0
+    Queue: 100
+  - Template: {fileID: -1016063369117882689, guid: cdaebb04eaf8cc542849582fbf47c200, type: 3}
+    Keywords:
+    - BASE_PROPERTY_VARIABLES_EXPOSED
+    - ADD_PROPERTY_VARIABLES_EXPOSED
+    - OUTLINE_PROPERTY_VARIABLES_EXPOSED
+    - META_PROPERTY_VARIABLES_EXPOSED
+    - LILFUR_PROPERTY_VARIABLES_EXPOSED
+    NeedsVariant: 0
+    Queue: 100
+  - Template: {fileID: -5102879639948164799, guid: cdaebb04eaf8cc542849582fbf47c200, type: 3}
+    Keywords:
+    - FRAGMENT_BASE_FUNCTIONS
+    - FRAGMENT_ADD_FUNCTIONS
+    - FRAGMENT_OUTLINE_FUNCTIONS
+    - FRAGMENT_LILFUR_FUNCTIONS
+    - FRAGMENT_META_FUNCTIONS
+    NeedsVariant: 0
+    Queue: 100
+  - Template: {fileID: -8003877868991691674, guid: cdaebb04eaf8cc542849582fbf47c200, type: 3}
+    Keywords:
+    - FRAGMENT_BASE_LIGHTING
+    - FRAGMENT_ADD_LIGHTING
+    - FRAGMENT_OUTLINE_LIGHTING
+    - FRAGMENT_META_LIGHTING
+    - FRAGMENT_LILFUR_LIGHTING
+    NeedsVariant: 0
+    Queue: 100
+  - Template: {fileID: -5386411766019591273, guid: cdaebb04eaf8cc542849582fbf47c200, type: 3}
+    Keywords:
+    - FRAGMENT_BASE_COLOR
+    - FRAGMENT_ADD_COLOR
+    - FRAGMENT_OUTLINE_COLOR
+    - FRAGMENT_META_COLOR
+    - FRAGMENT_LILFUR_COLOR
+    NeedsVariant: 0
+    Queue: 48
+  - Template: {fileID: -1135440906463919864, guid: cdaebb04eaf8cc542849582fbf47c200, type: 3}
+    Keywords:
+    - FRAGMENT_BASE_COLOR
+    - FRAGMENT_ADD_COLOR
+    - FRAGMENT_OUTLINE_COLOR
+    - FRAGMENT_META_COLOR
+    - FRAGMENT_LILFUR_COLOR
+    NeedsVariant: 0
+    Queue: 50
+  - Template: {fileID: 7275857427995838505, guid: cdaebb04eaf8cc542849582fbf47c200, type: 3}
+    Keywords:
+    - FRAGMENT_BASE_COLOR
+    - FRAGMENT_OUTLINE_COLOR
+    - FRAGMENT_META_COLOR
+    - FRAGMENT_LILFUR_COLOR
+    NeedsVariant: 0
+    Queue: 51
+  - Template: {fileID: 451498688061864456, guid: cdaebb04eaf8cc542849582fbf47c200, type: 3}
+    Keywords:
+    - FRAGMENT_BASE_LIGHTING_ADD
+    - FRAGMENT_ADD_LIGHTING_ADD
+    - FRAGMENT_OUTLINE_LIGHTING_ADD
+    - FRAGMENT_META_LIGHTING_ADD
+    - FRAGMENT_LILFUR_LIGHTING_ADD
+    NeedsVariant: 0
+    Queue: 100
+  - Template: {fileID: -7434686915960736934, guid: 82acf9c7488ca6845b3001ae505214f1, type: 3}
+    Keywords:
+    - FRAGMENT_BASE_FUNCTIONS_LATE
+    NeedsVariant: 0
+    Queue: 0
+  - Template: {fileID: 8104921814460037259, guid: 82acf9c7488ca6845b3001ae505214f1, type: 3}
+    Keywords:
+    - FRAGMENT_OUTLINE_FUNCTIONS_LATE
+    NeedsVariant: 0
+    Queue: 0
+  - Template: {fileID: -2185772837700013953, guid: 82acf9c7488ca6845b3001ae505214f1, type: 3}
+    Keywords:
+    - FRAGMENT_ADD_FUNCTIONS_LATE
+    NeedsVariant: 0
+    Queue: 0
+  - Template: {fileID: -4089379834844603917, guid: 82acf9c7488ca6845b3001ae505214f1, type: 3}
+    Keywords:
+    - FRAGMENT_META_FUNCTIONS_LATE
+    NeedsVariant: 0
+    Queue: 0
+  - Template: {fileID: -2266338664178561036, guid: 82acf9c7488ca6845b3001ae505214f1, type: 3}
+    Keywords:
+    - FRAGMENT_LILFUR_FUNCTIONS_LATE
+    NeedsVariant: 0
+    Queue: 0
+  Functions: []
+  AdditionalSerializedData: 

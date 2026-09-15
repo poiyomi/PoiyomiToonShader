@@ -1,0 +1,17 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
+    <ui:Label text="Base Information" style="-unity-font-style: bold; font-size: 12px; margin-bottom: 4px;" />
+    <ui:TextField picking-mode="Ignore" label="Id" binding-path="Id" />
+    <ui:TextField label="Name" binding-path="Name" />
+    <ui:TextField label="Author" binding-path="Author" />
+    <ui:TextField label="Version" value="f" binding-path="Version" />
+    <ui:TextField label="Description" binding-path="Description" multiline="true" />
+    <ui:Label text="Settings" style="-unity-font-style: bold; margin-top: 20px; margin-bottom: 4px;" />
+    <uie:ObjectField label="Shader Template" binding-path="ShaderTemplate" name="ShaderTemplateField" allow-scene-objects="false" />
+    <ui:TextField label="Shader Path" value="filler text" text="filler text" binding-path="ShaderPath" />
+    <ui:TextField label="Custom Editor" binding-path="CustomEditor" />
+    <Poiyomi.ModularShaderSystem.UI.InspectorList binding-path="Properties" show-elements-text="false" />
+    <ui:Toggle binding-path="UseTemplatesForProperties" label="Properties from templates" name="UseTemplatesForPropertiesField" />
+    <uie:ObjectField label="Shader Properties Template" binding-path="ShaderPropertiesTemplate" name="ShaderPropertiesTemplateField" allow-scene-objects="false" />
+    <Poiyomi.ModularShaderSystem.UI.ModuleInspectorList name="BaseModulesField" binding-path="BaseModules" show-elements-text="false" />
+    <ui:Button name="RegenerateShaderButton" text="Generate Shader"/>
+</ui:UXML>

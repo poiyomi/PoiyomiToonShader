@@ -1,0 +1,156 @@
+#T#PoiMirrorProperties
+
+//ifex _EnableMirrorOptions==0
+[HideInInspector] m_start_mirrorOptions (" Mirror/Camera Visibility--{reference_property:_EnableMirrorOptions,button_help:{text:Tutorial,action:{type:URL,data:https://www.poiyomi.com/special-fx/mirror},hover:Documentation}}", Float) = 0
+[HideInInspector][ThryToggle(POI_MIRROR)]_EnableMirrorOptions ("Enable Mirror Options", Float) = 0
+[ThryWideEnum(Generic, 0, VRC, 1)] _VisibilityMode ("Mode", Int) = 1
+[ThryWideEnum(Show In Both, 0, Show Only In Mirror, 1, Dont Show In Mirror, 2)] _Mirror ("Mirror Visibility--{condition_showS:(_VisibilityMode==0)}", Int) = 0
+[ThryToggleUI(True)]_VisibilityVRCRegular ("Normal (Outside Mirror/Camera)--{condition_showS:(_VisibilityMode==1)}", Int) = 1
+
+[HideInInspector] s_start_MirrorVisibilityVRC ("In Mirror--{condition_showS:(_VisibilityMode==1),persistent_expand:true,default_expand:true}", Float) = 1
+[ThryToggleUI(True)]_VisibilityVRCMirrorVR ("VR", Int) = 1
+[ThryToggleUI(True)]_VisibilityVRCMirrorDesktop ("Desktop", Int) = 1
+[HideInInspector] s_end_MirrorVisibilityVRC ("", Float) = 0
+
+[HideInInspector] s_start_CameraVisibilityVRC ("In Camera--{condition_showS:(_VisibilityMode==1),persistent_expand:true,default_expand:true}", Float) = 1
+[ThryToggleUI(True)]_VisibilityVRCCameraVR ("VR", Int) = 1
+[ThryToggleUI(True)]_VisibilityVRCCameraDesktop ("Desktop", Int) = 1
+[ThryToggleUI(True)]_VisibilityVRCCameraScreenshot ("Screenshot", Int) = 1
+[HideInInspector] s_end_CameraVisibilityVRC ("", Float) = 0
+
+
+[HideInInspector] s_start_MirrorTexture ("Mirror Texture & Color--{reference_property:_MirrorTextureEnabled,persistent_expand:true,default_expand:true}", Float) = 1
+[HideInInspector][ThryToggle(POI_MIRROR_TEXTURE)]_MirrorTextureEnabled ("Enable", Float) = 0
+[ThryWideEnum(Replace, 0, Darken, 1, Multiply, 2, Lighten, 5, Screen, 6, Subtract, 7, Add, 8, Overlay, 9, Mixed, 20)]_MirrorTextureBlendType ("Blending", Range(0, 1)) = 0
+_MirrorColor ("Color--{reference_property:_MirrorColorThemeIndex}", Color) = (1, 1, 1, 1)
+[ThryHideInInspector][ThryWideEnum(Off, 0, Theme Color 0, 1, Theme Color 1, 2, Theme Color 2, 3, Theme Color 3, 4, ColorChord 0, 5, ColorChord 1, 6, ColorChord 2, 7, ColorChord 3, 8, AL Theme 0, 9, AL Theme 1, 10, AL Theme 2, 11, AL Theme 3, 12)] _MirrorColorThemeIndex ("", Int) = 0
+[sRGBWarning(true)]_MirrorTexture ("Texture--{reference_properties:[_MirrorTexturePan, _MirrorTextureUV]}", 2D) = "white" { }
+[ThryHideInInspector][Vector2]_MirrorTexturePan ("Panning", Vector) = (0, 0, 0, 0)
+[ThryHideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7, Matcap, 9, Screen Space, 10)] _MirrorTextureUV ("UV", Int) = 0
+[ThryToggleUI(True)]_MirrorTextureForceEnabled ("Force Show (Preview)", Float) = 0
+[HideInInspector] s_end_MirrorTexture ("", Float) = 0
+
+[HideInInspector] m_end_mirrorOptions ("Mirror", Float) = 0
+//endex
+
+#T#PoiMirrorKeywords
+//ifex _EnableMirrorOptions==0
+#pragma shader_feature_local POI_MIRROR
+#pragma shader_feature_local POI_MIRROR_TEXTURE
+//endex
+
+#T#PoiMirrorVariablesExposed
+//ifex _EnableMirrorOptions==0
+#ifdef POI_MIRROR
+    float _VisibilityMode;
+    float _Mirror;
+    float _MirrorTextureEnabled;
+	float _MirrorTextureForceEnabled;
+    float _VisibilityVRCRegular;
+    float _VisibilityVRCMirrorVR;
+    float _VisibilityVRCMirrorDesktop;
+    float _VisibilityVRCCameraVR;
+    float _VisibilityVRCCameraDesktop;
+    float _VisibilityVRCCameraScreenshot;
+    #ifdef POI_MIRROR_TEXTURE
+        half4 _MirrorColor;
+        float _MirrorColorThemeIndex;
+        float _MirrorTextureBlendType;
+        float4 _MirrorTexture_ST;
+        float2 _MirrorTexturePan;
+        float _MirrorTextureUV;
+    #endif
+#endif
+//endex
+
+#T#PoiMirrorVariables
+//ifex _EnableMirrorOptions==0
+#ifdef POI_MIRROR
+    #ifdef POI_MIRROR_TEXTURE
+        #if defined(PROP_MIRRORTEXTURE) || !defined(OPTIMIZER_ENABLED)
+            Texture2D _MirrorTexture;
+        #endif
+    #endif
+#endif
+//endex
+
+
+#T#PoiMirrorFunctions
+//ifex _EnableMirrorOptions==0
+#ifdef POI_MIRROR
+    void applyMirror(inout PoiFragData poiFragData, in PoiMesh poiMesh, in PoiMods poiMods)
+    {
+        float inMirror = 0;
+        // VRC
+        if (_VisibilityMode == 1)
+        {
+            inMirror = VRCMirrorMode() > 0;
+        }
+        // Generic (CVR, etc)
+        else
+        {
+            inMirror = IsInMirror();
+        }
+
+        #if (defined(POI_PASS_BASE) || defined(POI_PASS_ADD))
+            #ifdef POI_MIRROR_TEXTURE
+                if (inMirror || _MirrorTextureForceEnabled >= 0.5)
+                {
+                    #if defined(PROP_MIRRORTEXTURE) || !defined(OPTIMIZER_ENABLED)
+                        float4 mirrorTexture = POI2D_SAMPLER_PAN(_MirrorTexture, _MainTex, poiUV(poiMesh.uv[_MirrorTextureUV], _MirrorTexture_ST), _MirrorTexturePan);
+                        poiFragData.baseColor.rgb = lerp(poiFragData.baseColor.rgb, customBlend(poiFragData.baseColor.rgb, mirrorTexture.rgb, _MirrorTextureBlendType), mirrorTexture.a * _MirrorColor.a);
+                    #endif
+                    poiFragData.baseColor.rgb *= lerp(1, poiThemeColor(poiMods, _MirrorColor.rgb, _MirrorColorThemeIndex), _MirrorColor.a);
+                }
+            #endif
+        #endif
+    }
+#endif
+//endex
+
+#T#PoiMirrorVertexImplementation
+//ifex _EnableMirrorOptions==0
+#ifdef POI_MIRROR
+    float notVisible = 0;
+
+    if (_VisibilityMode == 1) // VRC
+
+    {
+        float mirrorMode = VRCMirrorMode();
+        float cameraMode = VRCCameraMode();
+
+        notVisible += (_VisibilityVRCRegular < 0.5 && ((mirrorMode == 0) && (cameraMode == 0)));
+        notVisible += (_VisibilityVRCMirrorVR < 0.5 && (mirrorMode == 1));
+        notVisible += (_VisibilityVRCMirrorDesktop < 0.5 && (mirrorMode == 2));
+        notVisible += (_VisibilityVRCCameraVR < 0.5 && (cameraMode == 1));
+        notVisible += (_VisibilityVRCCameraDesktop < 0.5 && (cameraMode == 2));
+        notVisible += (_VisibilityVRCCameraScreenshot < 0.5 && (cameraMode == 3));
+    }
+    else if (_Mirror != 0) // Generic (CVR, etc)
+
+    {
+        notVisible += (_Mirror == 1) ^ IsInMirror();
+    }
+
+    if (notVisible) // Early Return skips rest of vertex shader
+
+    {
+        #ifdef POI_PASS_LILFUR
+            #if defined(SHADER_API_MOBILE)
+                return o;
+            #else
+                return (PoiVertToGeoLilFur)POI_NAN;
+            #endif
+        #else
+            return (VertexOut)POI_NAN;
+        #endif
+    }
+#endif
+//endex
+
+#T#PoiMirrorFunctionCalls
+//ifex _EnableMirrorOptions==0
+#ifdef POI_MIRROR
+    applyMirror(poiFragData, poiMesh, poiMods);
+#endif
+//endex

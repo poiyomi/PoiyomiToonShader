@@ -1,0 +1,706 @@
+#T#PoiStylizedSpecularProperties
+//ifex _StylizedSpecular==0
+[HideInInspector] m_start_stylizedSpec (" Stylized Reflections--{reference_property:_StylizedSpecular,button_help:{text:Tutorial,action:{type:URL,data:https://www.poiyomi.com/shading/stylized-reflections},hover:Documentation}}", Float) = 0
+[HideInInspector][ThryToggle(POI_STYLIZED_StylizedSpecular)]_StylizedSpecular ("Enable", Float) = 0
+
+[DoNotAnimate][KeywordEnum(UnityChan, LilToon)]_StylizedReflectionMode ("Mode", Float) = 0
+
+[HideInInspector] s_start_StylizedReflectionMode0 ("Unity Chan Specular--{persistent_expand:true,default_expand:true, condition_showS:(_StylizedReflectionMode==0)}", Float) = 1
+[sRGBWarning(true)][ThryTexture]_HighColor_Tex ("Specular Map--{reference_properties:[_HighColor_TexPan, _HighColor_TexUV]}", 2D) = "white" { }
+[ThryHideInInspector][Vector2]_HighColor_TexPan ("Panning", Vector) = (0, 0, 0, 0)
+[ThryHideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7, Matcap, 9, Screen Space, 10)]_HighColor_TexUV ("UV", Int) = 0
+_HighColor ("Tint--{reference_property:_HighColorThemeIndex}", Color) = (1, 1, 1, 1)
+[ThryHideInInspector][ThryWideEnum(Off, 0, Theme Color 0, 1, Theme Color 1, 2, Theme Color 2, 3, Theme Color 3, 4, ColorChord 0, 5, ColorChord 1, 6, ColorChord 2, 7, ColorChord 3, 8, AL Theme 0, 9, AL Theme 1, 10, AL Theme 2, 11, AL Theme 3, 12)] _HighColorThemeIndex ("", Int) = 0
+[sRGBWarning]_Set_HighColorMask ("Mask--{reference_properties:[_Set_HighColorMaskPan, _Set_HighColorMaskUV, _Set_HighColorMaskChannel, _Tweak_HighColorMaskLevel, _StylizedSpecularInvertMask]}", 2D) = "white" { }
+[ThryHideInInspector][Vector2]_Set_HighColorMaskPan ("Panning", Vector) = (0, 0, 0, 0)
+[ThryHideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7, Matcap, 9, Screen Space, 10)]_Set_HighColorMaskUV ("UV", Int) = 0
+[ThryHideInInspector][Enum(R, 0, G, 1, B, 2, A, 3)]_Set_HighColorMaskChannel ("Channel", Float) = 1
+[ThryHideInInspector]_Tweak_HighColorMaskLevel ("Mask Level", Range(-1, 1)) = 0
+[ThryHideInInspector][ToggleUI]_StylizedSpecularInvertMask ("Invert Mask", Float) = 0
+[ThryWideEnum(Toon, 0, Realistic, 1)]_Is_SpecularToHighColor ("Specular Mode", Float) = 0
+[ThryWideEnum(Replace, 0, Add, 1, Screen, 2, Multiply, 3)]_Is_BlendAddToHiColor ("Color Blend Mode", Int) = 0
+_StylizedSpecularStrength ("Strength", Float) = 1
+[ToggleUI] _UseLightColor ("Use Light Color", Float) = 1
+_StylizedSpecularNormalStrength ("Normal Strength", Range(0, 1)) = 1
+
+[HideInInspector] ss_start_StylizedSpecularLayer0 ("Layer 1--{persistent_expand:true,default_expand:true}", Float) = 1
+_HighColor_Power ("Size", Range(0, 1)) = 0.2
+_StylizedSpecularFeather ("Feather--{condition_showS:(_Is_SpecularToHighColor==0)}", Range(0, 1)) = 0
+_Layer1Strength ("Strength", Range(0, 1)) = 1
+[HideInInspector] ss_end_StylizedSpecularLayer0 ("Layer 1", Float) = 0
+
+[HideInInspector] ss_start_StylizedSpecularLayer1 ("Layer 2--{persistent_expand:true,default_expand:true}", Float) = 1
+_Layer2Size ("Size", Range(0, 1)) = 0
+_StylizedSpecular2Feather ("Feather--{condition_showS:(_Is_SpecularToHighColor==0)}", Range(0, 1)) = 0
+_Layer2Strength ("Strength", Range(0, 1)) = 0
+[HideInInspector] ss_end_StylizedSpecularLayer1 ("Layer 2", Float) = 0
+
+[HideInInspector] ss_start_StylizedSpecularAdvanced ("Advanced--{persistent_expand:true,default_expand:true}", Float) = 0
+[ToggleUI] _StylizedSpecularIgnoreNormal ("Show on back", Float) = 0
+[ToggleUI] _StylizedSpecularIgnoreShadow ("Ignore Shadow", Float) = 0
+[ToggleUI]_SSIgnoreCastedShadows ("Ignore Casted Shadows", Float) = 0
+[HideInInspector] ss_end_StylizedSpecularAdvanced ("Advanced", Float) = 0
+[HideInInspector] s_end_StylizedReflectionMode0 ("", Float) = 1
+
+[HideInInspector] s_start_StylizedReflectionMode1 ("Lil Reflections--{persistent_expand:true,default_expand:true, condition_showS:(_StylizedReflectionMode==1)}", Float) = 1
+[ToggleUI] _UseReflection ("sReflection", Int) = 1
+_SmoothnessTex ("Smoothness--{reference_property:_Smoothness, reference_properties:[_SmoothnessTexPan, _SmoothnessTexUV]}", 2D) = "white" { }
+[ThryHideInInspector]_Smoothness ("Smoothness", Range(0, 1)) = 1
+[ThryHideInInspector][Vector2]_SmoothnessTexPan ("Panning", Vector) = (0, 0, 0, 0)
+[ThryHideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7, Matcap, 9, Screen Space, 10)]_SmoothnessTexUV ("UV", Int) = 0
+_GSAAStrength ("GSAA", Range(0, 1)) = 0
+_MetallicGlossMap ("Metallic--{reference_property:_Metallic, reference_properties:[_MetallicGlossMapPan, _MetallicGlossMapUV]}", 2D) = "white" { }
+[ThryHideInInspector]_Metallic ("Metallic", Range(0, 1)) = 0
+[ThryHideInInspector][Vector2]_MetallicGlossMapPan ("Panning", Vector) = (0, 0, 0, 0)
+[ThryHideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7, Matcap, 9, Screen Space, 10)]_MetallicGlossMapUV ("UV", Int) = 0
+_ReflectionColorTex ("Color / Mask--{reference_property:_ReflectionColor, reference_properties:[_ReflectionColorTexPan, _ReflectionColorTexUV]}", 2D) = "white" { }
+[ThryHideInInspector][HDR] _ReflectionColor ("Color", Color) = (1, 1, 1, 1)
+[ThryHideInInspector][Vector2]_ReflectionColorTexPan ("Panning", Vector) = (0, 0, 0, 0)
+[ThryHideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7, Matcap, 9, Screen Space, 10)]_ReflectionColorTexUV ("UV", Int) = 0
+_Reflectance ("Reflectance", Range(0, 1)) = 0.04
+[HideInInspector] ss_start_StylizedReflectionLilSpecular ("Specular--{persistent_expand:true,default_expand:true,reference_property:_ApplySpecular}", Float) = 1
+[ThryWideEnum(Realistic, 0, Toon, 1)] _SpecularToon ("Specular Mode", Int) = 1
+[ThryHideInInspector][ToggleUI] _ApplySpecular ("Apply Specular", Int) = 1
+_SpecularNormalStrength ("Normal Map Strength", Range(0, 1)) = 1.0
+_SpecularBorder ("Border--{condition_showS:(_SpecularToon==1)}", Range(0, 1)) = 0.5
+_SpecularBlur ("Blur--{condition_showS:(_SpecularToon==1)}", Range(0, 1)) = 0.0
+[ToggleUI] _ApplySpecularFA ("Multi Light Specular", Int) = 1
+[HideInInspector] ss_end_StylizedReflectionLilSpecular ("", Float) = 1
+[HideInInspector] ss_start_StylizedReflectionLilEnviroReflections ("Environment Reflections--{persistent_expand:true,default_expand:true,reference_property:_ApplyReflection}", Float) = 1
+[ThryHideInInspector][ToggleUI] _ApplyReflection ("Enviro Reflections", Int) = 0
+_ReflectionNormalStrength ("Normal Map Strength", Range(0, 1)) = 1.0
+_ReflectionCubeTex ("Cubemap Fallback--{reference_property:_ReflectionCubeColor}", Cube) = "black" { }
+[ThryHideInInspector][HDR] _ReflectionCubeColor ("Color", Color) = (0, 0, 0, 1)
+[ToggleUI] _ReflectionCubeOverride ("Override", Int) = 0
+_ReflectionCubeEnableLighting ("Enable Lighting (Fallback)", Range(0, 1)) = 1
+[HideInInspector] ss_end_StylizedReflectionLilEnviroReflections ("", Float) = 1
+[ThrySeperator(2, 5, 5)]
+[ToggleUI] _ReflectionApplyTransparency ("Apply Transparency", Int) = 1
+[ThryWideEnum(Replace, 0, Add, 1, Screen, 2, Multiply, 3)] _ReflectionBlendMode ("Blending Mode", Int) = 1
+[HideInInspector] s_end_StylizedReflectionMode1 ("", Float) = 1
+
+[HideInInspector] m_end_stylizedSpec ("", Float) = 0
+//endex
+#T#PoiStylizedSpecularKeywords
+//ifex _StylizedSpecular==0
+#pragma shader_feature_local_fragment POI_STYLIZED_StylizedSpecular
+#pragma shader_feature_local_fragment _STYLIZEDREFLECTIONMODE_UNITYCHAN _STYLIZEDREFLECTIONMODE_LILTOON
+//endex
+
+#T#PoiStylizedSpecularVariablesExposed
+//ifex _StylizedSpecular==0
+#ifdef POI_STYLIZED_StylizedSpecular
+	float _StylizedReflectionMode;
+
+	#ifdef _STYLIZEDREFLECTIONMODE_UNITYCHAN
+		float4 _HighColor_Tex_ST;
+		float2 _HighColor_TexPan;
+		float _HighColor_TexUV;
+
+		float4 _Set_HighColorMask_ST;
+		float2 _Set_HighColorMaskPan;
+		float _Set_HighColorMaskUV;
+		float _Set_HighColorMaskChannel;
+		half _Tweak_HighColorMaskLevel;
+		half _StylizedSpecularInvertMask;
+		half _StylizedSpecularNormalStrength;
+
+		half4 _HighColor;
+		half _UseLightColor;
+		half _HighColor_Power;
+		half _StylizedSpecularFeather;
+		half _Layer1Strength;
+		half _Layer2Size;
+		half _StylizedSpecular2Feather;
+		half _Layer2Strength;
+		half _StylizedSpecularStrength;
+		float _HighColorThemeIndex;
+		half _Is_BlendAddToHiColor;
+		half _Is_SpecularToHighColor;
+		half _StylizedSpecularIgnoreNormal;
+		half _StylizedSpecularIgnoreShadow;
+		half _SSIgnoreCastedShadows;
+		half _UseSpecularOptMap2;
+	#endif
+
+	#ifdef _STYLIZEDREFLECTIONMODE_LILTOON
+		float _UseReflection;
+		half _Smoothness;
+		float4 _SmoothnessTex_ST;
+		float2 _SmoothnessTexPan;
+		float _SmoothnessTexUV;
+		half _Metallic;
+		float4 _MetallicGlossMap_ST;
+		float2 _MetallicGlossMapPan;
+		float _MetallicGlossMapUV;
+		half _Reflectance;
+		half _GSAAStrength;
+		half _ApplySpecular;
+		half _ApplySpecularFA;
+		half _SpecularToon;
+		half _SpecularNormalStrength;
+		half _SpecularBorder;
+		half _SpecularBlur;
+		float _ApplyReflection;
+		half _ReflectionNormalStrength;
+		half4 _ReflectionColor;
+		float4 _ReflectionColorTex_ST;
+		float2 _ReflectionColorTexPan;
+		float _ReflectionColorTexUV;
+		float _ReflectionApplyTransparency;
+		half4 _ReflectionCubeColor;
+		#if defined(PROP_REFLECTIONCUBETEX) || !defined(OPTIMIZER_ENABLED)
+			float4 _ReflectionCubeTex_HDR;
+		#endif
+		float _ReflectionCubeOverride;
+		float _ReflectionCubeEnableLighting;
+		float _ReflectionBlendMode;
+	#endif
+#endif
+//endex
+
+#T#PoiStylizedSpecularVariables
+//ifex _StylizedSpecular==0
+#ifdef POI_STYLIZED_StylizedSpecular
+	#ifdef _STYLIZEDREFLECTIONMODE_UNITYCHAN
+		#if defined(PROP_HIGHCOLOR_TEX) || !defined(OPTIMIZER_ENABLED)
+			Texture2D _HighColor_Tex;
+		#endif
+		#if defined(PROP_SET_HIGHCOLORMASK) || !defined(OPTIMIZER_ENABLED)
+			Texture2D _Set_HighColorMask;
+		#endif
+	#endif
+	#ifdef _STYLIZEDREFLECTIONMODE_LILTOON
+		#if defined(PROP_SMOOTHNESSTEX) || !defined(OPTIMIZER_ENABLED)
+			Texture2D _SmoothnessTex;
+		#endif
+		#if defined(PROP_METALLICGLOSSMAP) || !defined(OPTIMIZER_ENABLED)
+			Texture2D _MetallicGlossMap;
+		#endif
+		#if defined(PROP_REFLECTIONCOLORTEX) || !defined(OPTIMIZER_ENABLED)
+			Texture2D _ReflectionColorTex;
+		#endif
+		#if defined(PROP_REFLECTIONCUBETEX) || !defined(OPTIMIZER_ENABLED)
+			TextureCube _ReflectionCubeTex;
+		#endif
+	#endif
+#endif
+//endex
+
+
+#T#PoiStylizedSpecularFunctions
+//ifex _StylizedSpecular==0
+#ifdef POI_STYLIZED_StylizedSpecular
+	#ifdef _STYLIZEDREFLECTIONMODE_UNITYCHAN
+	void CalculateUTSSpecular(inout PoiFragData poiFragData, in PoiCam poiCam, inout PoiLight poiLight, in PoiMesh poiMesh, in PoiMods poiMods)
+	{
+		float3 blendedNormal = lerp(poiMesh.normals[0], poiMesh.normals[1], _StylizedSpecularNormalStrength);
+		float nDotH = dot(blendedNormal, poiLight.halfDir);
+		float specArea = 0.5 * nDotH + 0.5;
+		#if defined(PROP_HIGHCOLOR_TEX) || !defined(OPTIMIZER_ENABLED)
+			half3 specularMap = POI2D_SAMPLER_PAN(_HighColor_Tex, _MainTex, poiUV(poiMesh.uv[_HighColor_TexUV], _HighColor_Tex_ST), _HighColor_TexPan);
+		#else
+			half3 specularMap = 1;
+		#endif
+
+		float layer1Exp = exp2(lerp(11, 1, _HighColor_Power));
+		float layer2Exp = exp2(lerp(11, 1, _Layer2Size));
+		float layer1Thresh = 1.0 - pow(_HighColor_Power, 5);
+		float layer2Thresh = 1.0 - pow(_Layer2Size, 5);
+		half specMask1 = 0;
+		half specMask2 = 0;
+		if (_Is_SpecularToHighColor)
+		{
+			specMask1 += pow(specArea, layer1Exp) * _Layer1Strength;
+			specMask2 += pow(specArea, layer2Exp) * _Layer2Strength;
+		}
+		else
+		{
+			specMask1 += poiEdgeNonLinear(specArea, layer1Thresh, _StylizedSpecularFeather) * _Layer1Strength;
+			specMask2 += poiEdgeNonLinear(specArea, layer2Thresh, _StylizedSpecular2Feather) * _Layer2Strength;
+		}
+
+		#if defined(PROP_SET_HIGHCOLORMASK) || !defined(OPTIMIZER_ENABLED)
+			half specularMask = POI2D_SAMPLER_PAN(_Set_HighColorMask, _MainTex, poiUV(poiMesh.uv[_Set_HighColorMaskUV], _Set_HighColorMask_ST), _Set_HighColorMaskPan)[_Set_HighColorMaskChannel];
+		#else
+			half specularMask = 1;
+		#endif
+		if (_StylizedSpecularInvertMask >= 0.5)
+		{
+			specularMask = 1 - specularMask;
+		}
+		specularMask = saturate(specularMask + _Tweak_HighColorMaskLevel);
+
+		half specMask = saturate(specMask1 + specMask2) * specularMask * lerp(poiLight.rampedLightMap, 1, _StylizedSpecularIgnoreShadow);
+		half specLightMap = poiLight.lightMap;
+		half attenuation = min(lerp(poiLight.nDotLSaturated, 1, _StylizedSpecularIgnoreNormal), lerp(lerp(specLightMap, 1, _SSIgnoreCastedShadows), 1, _StylizedSpecularIgnoreShadow));
+
+		half finalSpecMask = min(min(specMask, poiLight.occlusion), attenuation) * _StylizedSpecularStrength;
+		half3 specColorBase = specularMap * poiThemeColor(poiMods, _HighColor.rgb, _HighColorThemeIndex);
+		half3 finalSpecColor = specColorBase * lerp(1, poiLight.directColor, _UseLightColor);
+		switch (_Is_BlendAddToHiColor)
+		{
+			case 0:
+			{
+				poiFragData.baseColor = lerp(poiFragData.baseColor, finalSpecColor, finalSpecMask);
+				break;
+			}
+			case 1:
+			{
+				poiLight.finalLightAdd += max(0, finalSpecColor * finalSpecMask);
+				break;
+			}
+			case 2:
+			{
+				poiFragData.baseColor = lerp(poiFragData.baseColor, blendScreen(poiFragData.baseColor, finalSpecColor), finalSpecMask);
+				break;
+			}
+			case 3:
+			{
+				poiFragData.baseColor = lerp(poiFragData.baseColor, poiFragData.baseColor * finalSpecColor, finalSpecMask);
+				break;
+			}
+		}
+
+		//ifex (_LightingEnableLightVolumes==0 && isNotAnimated(_LightingEnableLightVolumes)) || (_LightingLightVolumesSpecular==0 && isNotAnimated(_LightingLightVolumesSpecular))
+		#if (POI_PIPE == POI_BIRP) && defined(POI_PASS_BASE)
+		if (_UdonLightVolumeEnabled && _LightingEnableLightVolumes >= 0.5 && _LightingLightVolumesSpecular > 0)
+		{
+			poiLight.finalLightAdd += LightVolumeSpecularDominant(specColorBase, saturate(_HighColor_Power), normalize(blendedNormal), poiCam.eyeViewDir, float3(PoiSHAr.w, PoiSHAg.w, PoiSHAb.w), PoiSHAr.xyz, PoiSHAg.xyz, PoiSHAb.xyz) * specularMask * _StylizedSpecularStrength * _LightingLightVolumesSpecular;
+		}
+		#endif
+		//endex
+		half vSpecMask = 0;
+		if (poiFragData.toggleVertexLights)
+		{
+			#if defined(VERTEXLIGHT_ON)
+				for (int index = 0; index < 4; index++)
+				{
+					if (!any(poiLight.vPosition[index])) continue;
+					specArea = 0.5 * dot(blendedNormal, poiLight.vHalfDir[index]) + 0.5;
+					if (_Is_SpecularToHighColor)
+					{
+						vSpecMask = pow(specArea, layer1Exp) * _Layer1Strength * poiLight.vAttenuation[index];
+						vSpecMask = max(vSpecMask, pow(specArea, layer2Exp) * _Layer2Strength * poiLight.vAttenuation[index]);
+					}
+					else
+					{
+						vSpecMask = poiEdgeNonLinear(specArea, layer1Thresh, _StylizedSpecularFeather) * _Layer1Strength * poiLight.vAttenuation[index];
+						vSpecMask = max(vSpecMask, poiEdgeNonLinear(specArea, layer2Thresh, _StylizedSpecular2Feather) * _Layer2Strength * poiLight.vAttenuation[index]);
+					}
+
+					vSpecMask *= specularMask;
+					half vLightAttenuation = lerp(poiLight.vertexVDotNL[index], 1, _StylizedSpecularIgnoreNormal);
+					half finalSpecMask = min(min(vSpecMask, poiLight.occlusion), vLightAttenuation) * _StylizedSpecularStrength;
+					half3 vFinalSpecColor = specColorBase * lerp(1, poiLight.vColor[index], _UseLightColor);
+					switch (_Is_BlendAddToHiColor)
+					{
+						case 0:
+						{
+							poiFragData.baseColor = lerp(poiFragData.baseColor, vFinalSpecColor, finalSpecMask);
+							break;
+						}
+						case 1:
+						{
+							poiLight.finalLightAdd += max(0, vFinalSpecColor * finalSpecMask);
+							break;
+						}
+						case 2:
+						{
+							poiFragData.baseColor = lerp(poiFragData.baseColor, blendScreen(poiFragData.baseColor, vFinalSpecColor), finalSpecMask);
+							break;
+						}
+						case 3:
+						{
+							poiFragData.baseColor = lerp(poiFragData.baseColor, poiFragData.baseColor * vFinalSpecColor, finalSpecMask);
+							break;
+						}
+					}
+				}
+			#endif
+		}
+	}
+	#endif
+
+	#ifdef _STYLIZEDREFLECTIONMODE_LILTOON
+		void GSAA(inout float roughness, float3 N, float strength)
+		{
+			float3 dx = abs(ddx(N));
+			float3 dy = abs(ddy(N));
+			float dxy = max(dot(dx, dx), dot(dy, dy));
+			half roughnessGSAA = dxy / (dxy * 5 + 0.002) * strength;
+			roughness = max(roughness, roughnessGSAA);
+		}
+
+		float GSAAForSmoothness(float smoothness, float3 N, float strength)
+		{
+			half roughness = 0;
+			GSAA(roughness, N, strength);
+			smoothness = min(smoothness, saturate(1 - roughness));
+			return smoothness;
+		}
+
+		float3 lilDecodeHDR(float4 data, float4 hdr)
+		{
+			half alpha = hdr.w * (data.a - 1.0) + 1.0;
+
+			#if defined(UNITY_COLORSPACE_GAMMA)
+				return (hdr.x * alpha) * data.rgb;
+			#elif defined(UNITY_USE_NATIVE_HDR)
+				return hdr.x * data.rgb;
+			#else
+				return (hdr.x * pow(abs(alpha), hdr.y)) * data.rgb;
+			#endif
+		}
+
+		half3 lilFresnelTerm(half3 F0, half cosA)
+		{
+			float a = 1.0 - cosA;
+			float a2 = a * a;
+			return F0 + (1 - F0) * a2 * a2 * a;
+		}
+
+		half3 lilFresnelLerp(half3 F0, half3 F90, half cosA)
+		{
+			float a = 1.0 - cosA;
+			float a2 = a * a;
+			return lerp(F0, F90, a2 * a2 * a);
+		}
+
+		// lilToon tags _Metallic and _Reflectance [Gamma] and uses the raw value, letting Unity
+		// convert on upload. We cannot use [Gamma] here: ShaderOptimizer bakes Float/Range
+		// constants without applying the flag, so a locked material would inline the unconverted
+		// value and diverge from the same material unlocked. Convert in-shader instead, matching
+		// Mathf.GammaToLinearSpace exactly rather than the pow(x, 2.2) approximation.
+		half lilGammaToLinear(half v)
+		{
+			#if defined(UNITY_COLORSPACE_GAMMA)
+				return v;
+			#else
+				return v <= 0.04045h ? v / 12.92h : pow((v + 0.055h) / 1.055h, 2.4h);
+			#endif
+		}
+
+		#if POI_PIPE == POI_BIRP
+			Unity_GlossyEnvironmentData lilSetupGlossyEnvironmentData(float3 viewDirection, float3 normalDirection, float perceptualRoughness)
+			{
+				Unity_GlossyEnvironmentData glossIn;
+				glossIn.roughness = perceptualRoughness;
+				glossIn.reflUVW = reflect(-viewDirection, normalDirection);
+				return glossIn;
+			}
+
+			UnityGIInput lilSetupGIInput(float3 positionWS)
+			{
+				UnityGIInput data;
+				PoiInitStruct(UnityGIInput, data);
+				data.worldPos = positionWS;
+				data.probeHDR[0] = unity_SpecCube0_HDR;
+				data.probeHDR[1] = unity_SpecCube1_HDR;
+				#if defined(UNITY_SPECCUBE_BLENDING) || defined(UNITY_SPECCUBE_BOX_PROJECTION)
+					data.boxMin[0] = unity_SpecCube0_BoxMin;
+				#endif
+				#ifdef UNITY_SPECCUBE_BOX_PROJECTION
+					data.boxMax[0] = unity_SpecCube0_BoxMax;
+					data.probePosition[0] = unity_SpecCube0_ProbePosition;
+					data.boxMax[1] = unity_SpecCube1_BoxMax;
+					data.boxMin[1] = unity_SpecCube1_BoxMin;
+					data.probePosition[1] = unity_SpecCube1_ProbePosition;
+				#endif
+				return data;
+			}
+
+			float3 lilGetEnvReflection(float3 viewDirection, float3 normalDirection, float perceptualRoughness, float3 positionWS)
+			{
+				UnityGIInput data = lilSetupGIInput(positionWS);
+				Unity_GlossyEnvironmentData glossIn = lilSetupGlossyEnvironmentData(viewDirection, normalDirection, perceptualRoughness);
+				return UnityGI_IndirectSpecular(data, 1.0, glossIn);
+			}
+		#endif
+
+		float3 lilCustomReflection(TextureCube tex, float4 hdr, float3 viewDirection, float3 normalDirection, float perceptualRoughness)
+		{
+			float mip = perceptualRoughness * (10.2 - 4.2 * perceptualRoughness);
+			float3 refl = reflect(-viewDirection, normalDirection);
+			return lilDecodeHDR(POI_SAMPLE_TEXCUBE_LOD(tex, sampler_linear_repeat, refl, mip), hdr);
+		}
+
+		float3 lilCalcSpecular(PoiMesh poiMesh, PoiCam poiCam, float3 L, float3 specular, float attenuation, float roughness, float3 N, float nv)
+		{
+			float3 H = normalize(poiCam.eyeViewDir + L);
+			float nh = saturate(dot(N, H));
+
+			if (_SpecularToon)
+			{
+				return poiEdgeLinear(pow(nh, 1.0 / max(roughness, 0.0001)), _SpecularBorder, _SpecularBlur);
+			}
+
+			float nl = saturate(dot(N, L));
+			float lh = saturate(dot(L, H));
+
+			float ggx, sjggx = 0.0;
+			float lambdaV = 0.0;
+			float lambdaL = 0.0;
+			float d = 1.0;
+			#if defined(LIL_FEATURE_ANISOTROPY)
+				if (isAnisotropy)
+				{
+					half roughnessT = max(roughness * (1.0 + fd.anisotropy), 0.002);
+					half roughnessB = max(roughness * (1.0 - fd.anisotropy), 0.002);
+
+					float tv = dot(fd.T, fd.V);
+					float bv = dot(fd.B, fd.V);
+					float tl = dot(fd.T, L);
+					float bl = dot(fd.B, L);
+
+					lambdaV = nl * length(float3(roughnessT * tv, roughnessB * bv, nv));
+					lambdaL = nv * length(float3(roughnessT * tl, roughnessB * bl, nl));
+
+					half roughnessT1 = roughnessT * _AnisotropyTangentWidth;
+					half roughnessB1 = roughnessB * _AnisotropyBitangentWidth;
+					half roughnessT2 = roughnessT * _Anisotropy2ndTangentWidth;
+					half roughnessB2 = roughnessB * _Anisotropy2ndBitangentWidth;
+
+					float anisotropyShiftNoise = 0.5;
+					#if defined(LIL_FEATURE_AnisotropyShiftNoiseMask)
+						anisotropyShiftNoise = POI2D_SAMPLER(_AnisotropyShiftNoiseMask, _linear_repeat, fd.uvMain).r - 0.5;
+					#endif
+					float anisotropyShift = anisotropyShiftNoise * _AnisotropyShiftNoiseScale + _AnisotropyShift;
+					float anisotropy2ndShift = anisotropyShiftNoise * _Anisotropy2ndShiftNoiseScale + _Anisotropy2ndShift;
+					float3 T1 = normalize(fd.T - N * anisotropyShift);
+					float3 B1 = normalize(fd.B - N * anisotropyShift);
+					float3 T2 = normalize(fd.T - N * anisotropy2ndShift);
+					float3 B2 = normalize(fd.B - N * anisotropy2ndShift);
+
+					float th1 = dot(T1, H);
+					float bh1 = dot(B1, H);
+					float th2 = dot(T2, H);
+					float bh2 = dot(B2, H);
+
+					float r1 = roughnessT1 * roughnessB1;
+					float r2 = roughnessT2 * roughnessB2;
+					float3 v1 = float3(th1 * roughnessB1, bh1 * roughnessT1, nh * r1);
+					float3 v2 = float3(th2 * roughnessB2, bh2 * roughnessT2, nh * r2);
+					float w1 = r1 / dot(v1, v1);
+					float w2 = r2 / dot(v2, v2);
+					ggx = r1 * w1 * w1 * _AnisotropySpecularStrength + r2 * w2 * w2 * _Anisotropy2ndSpecularStrength;
+				}
+				else
+			#endif
+			{
+				half roughness2 = max(roughness, 0.002);
+				lambdaV = nl * (nv * (1.0 - roughness2) + roughness2);
+				lambdaL = nv * (nl * (1.0 - roughness2) + roughness2);
+
+				float r2 = roughness2 * roughness2;
+				d = (nh * r2 - nh) * nh + 1.0;
+				ggx = r2 / (d * d + 1e-7f);
+			}
+
+			#if defined(SHADER_API_MOBILE) || defined(SHADER_API_SWITCH)
+				sjggx = 0.5 / (lambdaV + lambdaL + 1e-4f);
+			#else
+				sjggx = 0.5 / (lambdaV + lambdaL + 1e-5f);
+			#endif
+
+			half specularTerm = sjggx * ggx;
+			#ifdef LIL_COLORSPACE_GAMMA
+				specularTerm = sqrt(max(1e-4h, specularTerm));
+			#endif
+			specularTerm *= nl * attenuation;
+
+			#if defined(LIL_FEATURE_ANISOTROPY)
+				if (_SpecularToon) return poiEdgeLinear(specularTerm, 0.5);
+			#endif
+			return specularTerm * lilFresnelTerm(specular, lh);
+		}
+
+		void lilReflection(inout PoiFragData poiFragData, PoiCam poiCam, PoiLight poiLight, PoiMesh poiMesh, PoiMods poiMods)
+		{
+			half perceptualRoughness = 1.0;
+			half roughness = 1.0;
+			half smoothness = 1.0;
+
+			smoothness = _Smoothness;
+			#if defined(PROP_SMOOTHNESSTEX) || !defined(OPTIMIZER_ENABLED)
+				smoothness *= POI2D_SAMPLER_PAN(_SmoothnessTex, _linear_repeat, poiUV(poiMesh.uv[_SmoothnessTexUV], _SmoothnessTex_ST), _SmoothnessTexPan).r;
+			#endif
+			smoothness = GSAAForSmoothness(smoothness, poiMesh.normals[1], _GSAAStrength);
+			perceptualRoughness *= (1.0 - smoothness);
+			roughness = perceptualRoughness * perceptualRoughness;
+
+			half metallic = lilGammaToLinear(_Metallic);
+			#if defined(PROP_METALLICGLOSSMAP) || !defined(OPTIMIZER_ENABLED)
+				metallic *= POI2D_SAMPLER_PAN(_MetallicGlossMap, _linear_repeat, poiUV(poiMesh.uv[_MetallicGlossMapUV], _MetallicGlossMap_ST), _MetallicGlossMapPan).r;
+			#endif
+			half3 specular = lerp(lilGammaToLinear(_Reflectance), poiFragData.baseColor, metallic);
+
+			half3 specularN = lerp(poiMesh.normals[0], poiMesh.normals[1], _SpecularNormalStrength);
+			half specularNV = saturate(dot(specularN, poiCam.eyeViewDir));
+
+			half4 reflectionColor = _ReflectionColor;
+			#if defined(PROP_REFLECTIONCOLORTEX) || !defined(OPTIMIZER_ENABLED)
+				reflectionColor *= POI2D_SAMPLER_PAN(_ReflectionColorTex, _linear_repeat, poiUV(poiMesh.uv[_ReflectionColorTexUV], _ReflectionColorTex_ST), _ReflectionColorTexPan);
+			#endif
+			if (_ReflectionApplyTransparency >= 0.5) reflectionColor.a *= poiFragData.alpha;
+
+			#if POI_PIPE == POI_BIRP
+				#if defined(POI_PASS_ADD)
+					if (_UseReflection >= 0.5 && _ApplySpecular >= 0.5 && _ApplySpecularFA >= 0.5)
+				#else
+					if (_UseReflection >= 0.5)
+				#endif
+			#else
+				bool skipBlock = true;
+				if (poiLight.isAdditive && (_UseReflection >= 0.5 && _ApplySpecular >= 0.5 && _ApplySpecularFA >= 0.5))
+					skipBlock = false;
+				if (!poiLight.isAdditive && _UseReflection >= 0.5)
+					skipBlock = false;
+				if (!skipBlock)
+			#endif
+			{
+				float3 reflectCol = 0;
+
+				// lilToon subtracts this once per pass, unconditionally (lil_common_frag.hlsl).
+				// The old `lightType == POI_DIRECTIONAL` gate was meant to read "base pass only",
+				// but lightType is POI_POINT_SPOT only for point/spot ForwardAdd lights. A fully
+				// metallic surface therefore kept its whole albedo in the add pass and popped it
+				// back over the colored-out base pass, re-picked by Unity every frame.
+				#if POI_PIPE == POI_BIRP
+					poiFragData.baseColor = poiFragData.baseColor - metallic * poiFragData.baseColor;
+				#else
+					// URP calls this function once per light, so guard against compounding.
+					if (!poiLight.isAdditive)
+					{
+						poiFragData.baseColor = poiFragData.baseColor - metallic * poiFragData.baseColor;
+					}
+				#endif
+
+				// Specular
+				#if POI_PIPE == POI_BIRP
+					#if !defined(POI_PASS_ADD)
+						if (_ApplySpecular >= 0.5)
+					#endif
+				#else
+					if (poiLight.isAdditive || _ApplySpecular >= 0.5)
+				#endif
+				{
+					float3 lightDirectionSpc = poiLight.direction;
+					half3 lightColorSpc = poiLight.directColor;
+
+					#if defined(POI_PASS_ADD)
+						reflectCol = lilCalcSpecular(poiMesh, poiCam, lightDirectionSpc, specular, poiLight.lightMapNoAttenuation, roughness, specularN, specularNV);
+					#elif defined(SHADOWS_SCREEN)
+						reflectCol = lilCalcSpecular(poiMesh, poiCam, lightDirectionSpc, specular, poiLight.rampedLightMap, roughness, specularN, specularNV);
+					#else
+						reflectCol = lilCalcSpecular(poiMesh, poiCam, lightDirectionSpc, specular, 1.0, roughness, specularN, specularNV);
+					#endif
+					poiFragData.baseColor = lilBlendColor(poiFragData.baseColor, reflectionColor.rgb * lightColorSpc, reflectCol * reflectionColor.a, _ReflectionBlendMode);
+				}
+
+				// Reflection
+				// lilToon strips this block from ForwardAdd entirely, it does not just drop the
+				// condition there (lil_common_frag.hlsl: #if !defined(LIL_PASS_FORWARDADD)).
+				#if !defined(POI_PASS_ADD)
+				#if POI_PIPE == POI_BIRP
+					if (_ApplyReflection >= 0.5)
+				#else
+					if (!poiLight.isAdditive && _ApplyReflection >= 0.5)
+				#endif
+				{
+					float3 N = lerp(poiMesh.normals[0], poiMesh.normals[1], _ReflectionNormalStrength);
+
+					#if POI_PIPE == POI_BIRP
+						// lilToon: IsEmpty(unity_SpecCube0) || unity_SpecCube0_HDR.x == 0.
+						// IsEmpty rejects anything narrower than 15px, catching Unity's placeholder
+						// probes, where SceneHasReflections() only rejects 1x1. The HDR term catches
+						// a probe bound at full size whose decode multiplier is 0, which renders
+						// pure color and is per-frame state, so it flickers.
+						float probeWidth, probeHeight;
+						unity_SpecCube0.GetDimensions(probeWidth, probeHeight);
+						bool probeIsUsable = probeWidth >= 15 && unity_SpecCube0_HDR.x != 0;
+					#else
+						bool probeIsUsable = SceneHasReflections();
+					#endif
+
+					half3 envReflectionColor = 0;
+					if (!probeIsUsable || _ReflectionCubeOverride >= 0.5)
+					{
+						#if defined(PROP_REFLECTIONCUBETEX) || !defined(OPTIMIZER_ENABLED)
+							envReflectionColor = lilCustomReflection(_ReflectionCubeTex, _ReflectionCubeTex_HDR, poiCam.eyeViewDir, N, perceptualRoughness);
+						#else
+							envReflectionColor = float4(0, 0, 0, 1);
+						#endif
+						envReflectionColor *= _ReflectionCubeColor.rgb * lerp(1.0, poiLight.directColor, _ReflectionCubeEnableLighting);
+					}
+					#if POI_PIPE == POI_BIRP
+					else
+					{
+						envReflectionColor = lilGetEnvReflection(poiCam.eyeViewDir, N, perceptualRoughness, poiMesh.worldPos);
+					}
+					#elif POI_PIPE == POI_URP
+					else
+					{
+						float3 reflectionDir = reflect(-poiCam.eyeViewDir, N);
+						envReflectionColor = PoiGlossyEnvironmentReflection(reflectionDir, poiMesh.worldPos.xyz, perceptualRoughness, 1, poiCam.screenUV);
+					}
+					#endif
+					
+					float oneMinusReflectivity = DielectricSpec.a - metallic * DielectricSpec.a;
+					float grazingTerm = saturate(smoothness + (1.0 - oneMinusReflectivity));
+					#if defined(UNITY_COLORSPACE_GAMMA)
+						float surfaceReduction = 1.0 - 0.28 * roughness * perceptualRoughness;
+					#else
+						float surfaceReduction = 1.0 / (roughness * roughness + 1.0);
+					#endif
+
+					reflectCol = surfaceReduction * envReflectionColor * lilFresnelLerp(specular, grazingTerm, poiLight.nDotV);
+					poiFragData.baseColor = lilBlendColor(poiFragData.baseColor, reflectionColor.rgb, reflectCol * reflectionColor.a, _ReflectionBlendMode);
+				}
+				#endif
+			}
+
+			//ifex (_LightingEnableLightVolumes==0 && isNotAnimated(_LightingEnableLightVolumes)) || (_LightingLightVolumesSpecular==0 && isNotAnimated(_LightingLightVolumesSpecular))
+			#if (POI_PIPE == POI_BIRP) && defined(POI_PASS_BASE)
+			if (_UdonLightVolumeEnabled && _LightingEnableLightVolumes >= 0.5 && _LightingLightVolumesSpecular > 0)
+			{
+				poiFragData.baseColor += LightVolumeSpecularDominant(specular, smoothness, normalize(specularN), poiCam.eyeViewDir, float3(PoiSHAr.w, PoiSHAg.w, PoiSHAb.w), PoiSHAr.xyz, PoiSHAg.xyz, PoiSHAb.xyz) * reflectionColor.rgb * reflectionColor.a * _LightingLightVolumesSpecular;
+			}
+			#endif
+			//endex
+
+			// Vertex light specular
+			#if defined(VERTEXLIGHT_ON)
+			if (poiFragData.toggleVertexLights && _UseReflection >= 0.5 && _ApplySpecular >= 0.5 && _ApplySpecularFA >= 0.5)
+			{
+					[unroll]
+					for (int vIdx = 0; vIdx < 4; vIdx++)
+					{
+						if (!any(poiLight.vPosition[vIdx])) continue;
+						float3 vReflectCol = lilCalcSpecular(poiMesh, poiCam, poiLight.vDirection[vIdx], specular, poiLight.vAttenuation[vIdx], roughness, specularN, specularNV);
+						poiFragData.baseColor = lilBlendColor(poiFragData.baseColor, reflectionColor.rgb * poiLight.vColor[vIdx], vReflectCol * reflectionColor.a, _ReflectionBlendMode);
+					}
+			}
+			#endif
+		}
+	#endif
+#endif
+//endex
+
+#T#PoiStylizedSpecularFunctionCalls
+//ifex _StylizedSpecular==0
+#ifdef POI_STYLIZED_StylizedSpecular
+	#ifdef _STYLIZEDREFLECTIONMODE_UNITYCHAN
+		CalculateUTSSpecular(poiFragData, poiCam, poiLight, poiMesh, poiMods);
+	#endif
+#endif
+//endex
+
+#T#PoiStylizedSpecularLilFunctionCall
+//ifex _StylizedSpecular==0
+#ifdef POI_STYLIZED_StylizedSpecular
+	#ifdef _STYLIZEDREFLECTIONMODE_LILTOON
+		lilReflection(poiFragData, poiCam, poiLight, poiMesh, poiMods);
+	#endif
+#endif
+//endex

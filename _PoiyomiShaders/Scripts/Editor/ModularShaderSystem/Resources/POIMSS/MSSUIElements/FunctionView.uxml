@@ -1,0 +1,9 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
+    <ui:VisualElement style="margin-top: 1px; margin-bottom: 1px;">
+        <ui:Foldout name="FoldoutArea" class="hierarchy-foldout" />
+        <ui:Label name="FunctionLabel" class="function-label" />
+        <ui:VisualElement style="position: absolute; width: 100%;">
+            <ui:Label name="PriorityLabel" class="priority-label" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

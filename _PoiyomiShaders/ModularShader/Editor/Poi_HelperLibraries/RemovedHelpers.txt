@@ -1,0 +1,173 @@
+// Average
+float blendAverage(float base, float blend)
+{
+    return (base + blend) / 2.0;
+}
+float3 blendAverage(float3 base, float3 blend)
+{
+    return (base + blend) / 2.0;
+} 
+
+// Exclusion
+float blendExclusion(float base, float blend)
+{
+    return base + blend - 2.0 * base * blend;
+}
+float3 blendExclusion(float3 base, float3 blend)
+{
+    return base + blend - 2.0 * base * blend;
+}
+
+// Reflect
+float blendReflect(float base, float blend)
+{
+    return (blend == 1.0) ? blend : min(base * base / (1.0 - blend), 1.0);
+}
+
+float3 blendReflect(float3 base, float3 blend)
+{
+    return float3(blendReflect(base.r, blend.r), blendReflect(base.g, blend.g), blendReflect(base.b, blend.b));
+}
+
+// Glow
+float blendGlow(float base, float blend)
+{
+    return blendReflect(blend, base);
+}
+float3 blendGlow(float3 base, float3 blend)
+{
+    return blendReflect(blend, base);
+}
+
+// Hard Light
+float blendHardLight(float base, float blend)
+{
+    return blendOverlay(blend, base);
+}
+float3 blendHardLight(float3 base, float3 blend)
+{
+    return blendOverlay(blend, base);
+}
+
+// Vivid light
+float blendVividLight(float base, float blend)
+{
+    return (blend < 0.5) ? blendColorBurn(base, (2.0 * blend)) : blendColorDodge(base, (2.0 * (blend - 0.5)));
+}
+
+float3 blendVividLight(float3 base, float3 blend)
+{
+    return float3(blendVividLight(base.r, blend.r), blendVividLight(base.g, blend.g), blendVividLight(base.b, blend.b));
+}
+
+// Hard mix
+float blendHardMix(float base, float blend)
+{
+    return (blendVividLight(base, blend) < 0.5) ? 0.0 : 1.0;
+}
+
+float3 blendHardMix(float3 base, float3 blend)
+{
+    return float3(blendHardMix(base.r, blend.r), blendHardMix(base.g, blend.g), blendHardMix(base.b, blend.b));
+}
+
+// Linear Burn
+float blendLinearBurn(float base, float blend)
+{
+    // Note : Same implementation as BlendSubtractf
+    return max(base + blend - 1.0, 0.0);
+}
+
+float3 blendLinearBurn(float3 base, float3 blend)
+{
+    // Note : Same implementation as BlendSubtract
+    return max(base + blend - float3(1.0, 1.0, 1.0), float3(0.0, 0.0, 0.0));
+}
+
+// Linear light
+float blendLinearLight(float base, float blend)
+{
+    return blend < 0.5 ? blendLinearBurn(base, (2.0 * blend)) : blendLinearDodge(base, (2.0 * (blend - 0.5)));
+}
+
+float3 blendLinearLight(float3 base, float3 blend)
+{
+    return float3(blendLinearLight(base.r, blend.r), blendLinearLight(base.g, blend.g), blendLinearLight(base.b, blend.b));
+}
+
+// Negation
+float blendNegation(float base, float blend)
+{
+    return 1.0 - abs(1.0 - base - blend);
+}
+float3 blendNegation(float3 base, float3 blend)
+{
+    return float3(1.0, 1.0, 1.0) - abs(float3(1.0, 1.0, 1.0) - base - blend);
+}
+
+// Phoenix
+float blendPhoenix(float base, float blend)
+{
+    return min(base, blend) - max(base, blend) + 1.0;
+}
+float3 blendPhoenix(float3 base, float3 blend)
+{
+    return min(base, blend) - max(base, blend) + float3(1.0, 1.0, 1.0);
+}
+
+// Pin light
+float blendPinLight(float base, float blend)
+{
+	return (blend < 0.5) ? blendDarken(base, (2.0 * blend)) : blendLighten(base, (2.0 * (blend - 0.5)));
+}
+
+float3 blendPinLight(float3 base, float3 blend)
+{
+	return float3(blendPinLight(base.r, blend.r), blendPinLight(base.g, blend.g), blendPinLight(base.b, blend.b));
+}
+
+// Soft Light
+float blendSoftLight(float base, float blend)
+{
+	return (blend < 0.5) ? (2.0 * base * blend + base * base * (1.0 - 2.0 * blend)) : (sqrt(base) * (2.0 * blend - 1.0) + 2.0 * base * (1.0 - blend));
+}
+
+float3 blendSoftLight(float3 base, float3 blend)
+{
+	return float3(blendSoftLight(base.r, blend.r), blendSoftLight(base.g, blend.g), blendSoftLight(base.b, blend.b));
+}
+
+// Difference
+float blendDifference(float base, float blend)
+{
+	return abs(base - blend);
+}
+
+float3 blendDifference(float3 base, float3 blend)
+{
+	return abs(base - blend);
+}
+
+// Divide
+float blendDivide(float base, float blend)
+{
+	return base / max(blend, 0.0001);
+}
+
+float3 blendDivide(float3 base, float3 blend)
+{
+	return base / max(blend, 0.0001);
+}
+
+void poiDither(float4 In, float4 ScreenPosition, out float4 Out)
+{
+	float2 uv = ScreenPosition.xy * _ScreenParams.xy;
+	float DITHER_THRESHOLDS[16] = {
+		1.0 / 17.0, 9.0 / 17.0, 3.0 / 17.0, 11.0 / 17.0,
+		13.0 / 17.0, 5.0 / 17.0, 15.0 / 17.0, 7.0 / 17.0,
+		4.0 / 17.0, 12.0 / 17.0, 2.0 / 17.0, 10.0 / 17.0,
+		16.0 / 17.0, 8.0 / 17.0, 14.0 / 17.0, 6.0 / 17.0
+	};
+	uint index = (uint(uv.x) % 4) * 4 + uint(uv.y) % 4;
+	Out = In - DITHER_THRESHOLDS[index];
+}

@@ -1,0 +1,52 @@
+#T#PoiNormalCorrectProperties
+//ifex _NormalCorrect==0
+[HideInInspector] m_start_normalCorrect (" Normal Correct--{reference_property:_NormalCorrect, button_help:{text:Tutorial,action:{type:URL,data:https://www.poiyomi.com/color-and-normals/normal-correct},hover:Documentation}}", Float) = 0
+[HideInInspector][DoNotAnimate][ThryToggleUI(true)]_NormalCorrect ("Enable", Float) = 0
+_NormalCorrectAmount ("Correct Amount", Range(0,1)) = 0.9
+[VectorToSliders(X, n1, p1, Y, n1, p1, Z, n1, p1)]_NormalCorrectOrigin ("Origin--{tooltip:Object-space point that normals are pushed away from.}", Vector) = (0,0.4,-0.025)
+[HideInInspector] m_end_normalCorrect ("", Float) = 0
+//endex
+
+#T#PoiNormalCorrectKeywords
+//ifex _NormalCorrect==0
+//#pragma shader_feature_local POI_NORMALCORRECT
+//endex
+
+#T#PoiNormalCorrectVariablesExposed
+//ifex _NormalCorrect==0
+half _NormalCorrect;
+half _NormalCorrectAmount;
+float3 _NormalCorrectOrigin;
+//endex
+
+#T#PoiNormalCorrectFunctions
+// normal correct code from https://github.com/yoship1639/UniToon (MIT)
+//ifex _NormalCorrect==0
+#ifdef POI_PASS_LILFUR
+	void applyNormalCorrect(inout PoiGeoToFragLilFur i)
+#else
+    void applyNormalCorrect(inout VertexOut i)
+#endif
+    {
+        #ifdef POI_PASS_LILFUR
+            float3 posOS = mul(unity_WorldToObject, float4(i.worldPos, 1)).xyz;
+        #else
+            float3 posOS = i.localPos.xyz;
+        #endif
+        float3 normalCorrectObject = posOS - _NormalCorrectOrigin;
+        normalCorrectObject.y = 0;
+        normalCorrectObject = normalize(normalCorrectObject);
+        float3 normalCorrectWorld = mul((float3x3)unity_ObjectToWorld, normalCorrectObject).xyz;
+        i.normal.xyz = normalize(lerp(i.normal.xyz, normalCorrectWorld, _NormalCorrectAmount));
+        //i.objNormal.xyz = normalize(lerp(i.objNormal.xyz, normalCorrectObject, _NormalCorrectAmount));
+    }
+//endex
+
+#T#PoiNormalCorrectFunctionCalls
+//ifex _NormalCorrect==0
+UNITY_BRANCH
+if (_NormalCorrect >= 0.5)
+{
+    applyNormalCorrect(i);
+}
+//endex

@@ -1,0 +1,234 @@
+
+#T#PoiOKLabFunctions
+// sRGB Transfer Function (Linear RGB to sRGB)
+float srgb_transfer_function(float c)
+{
+    return (c <= 0.0031308f) ? c * 12.92f : 1.055f * pow(c, 1.0f / 2.4f) - 0.055f;
+}
+
+// Inverse sRGB Transfer Function (sRGB to Linear RGB)
+float srgb_transfer_function_inv(float c)
+{
+    return (c <= 0.04045f) ? c / 12.92f : pow((c + 0.055f) / 1.055f, 2.4f);
+}
+
+// Finds the maximum saturation possible for a given hue that fits in sRGB
+// Saturation here is defined as S = C/L
+// a and b must be normalized so a^2 + b^2 == 1
+float compute_max_saturation(float a, float b)
+{
+    // Max saturation will be when one of r, g or b goes below zero.
+
+    // Select different coefficients depending on which component goes below zero first
+    float k0, k1, k2, k3, k4, wl, wm, ws;
+
+    if (-1.88170328f * a - 0.80936493f * b > 1)
+    {
+        // Red component
+        k0 = +1.19086277f; k1 = +1.76576728f; k2 = +0.59662641f; k3 = +0.75515197f; k4 = +0.56771245f;
+        wl = +4.0767416621f; wm = -3.3077115913f; ws = +0.2309699292f;
+    }
+    else if (1.81444104f * a - 1.19445276f * b > 1)
+    {
+        // Green component
+        k0 = +0.73956515f; k1 = -0.45954404f; k2 = +0.08285427f; k3 = +0.12541070f; k4 = +0.14503204f;
+        wl = -1.2684380046f; wm = +2.6097574011f; ws = -0.3413193965f;
+    }
+    else
+    {
+        // Blue component
+        k0 = +1.35733652f; k1 = -0.00915799f; k2 = -1.15130210f; k3 = -0.50559606f; k4 = +0.00692167f;
+        wl = -0.0041960863f; wm = -0.7034186147f; ws = +1.7076147010f;
+    }
+
+    // Approximate max saturation using a polynomial:
+    float S = k0 + k1 * a + k2 * b + k3 * a * a + k4 * a * b;
+
+    // Do one step Halley's method to get closer
+    // this gives an error less than 10e6, except for some blue hues where the dS/dh is close to infinite
+    // this should be sufficient for most applications, otherwise do two/three steps
+
+    float k_l = +0.3963377774f * a + 0.2158037573f * b;
+    float k_m = -0.1055613458f * a - 0.0638541728f * b;
+    float k_s = -0.0894841775f * a - 1.2914855480f * b;
+    {
+        float l_ = 1.f + S * k_l;
+        float m_ = 1.f + S * k_m;
+        float s_ = 1.f + S * k_s;
+
+        float l = l_ * l_ * l_;
+        float m = m_ * m_ * m_;
+        float s = s_ * s_ * s_;
+
+        float l_dS = 3.f * k_l * l_ * l_;
+        float m_dS = 3.f * k_m * m_ * m_;
+        float s_dS = 3.f * k_s * s_ * s_;
+
+        float l_dS2 = 6.f * k_l * k_l * l_;
+        float m_dS2 = 6.f * k_m * k_m * m_;
+        float s_dS2 = 6.f * k_s * k_s * s_;
+
+        float f = wl * l + wm * m + ws * s;
+        float f1 = wl * l_dS + wm * m_dS + ws * s_dS;
+        float f2 = wl * l_dS2 + wm * m_dS2 + ws * s_dS2;
+
+        S = S - f * f1 / (f1 * f1 - 0.5f * f * f2);
+    }
+
+    return S;
+}
+
+float cbrt(float x)
+{
+    float y = sign(x) * asfloat(asuint(abs(x)) / 3u + 0x2a514067u);
+
+    for (int i = 0; i < 1; ++i)
+    y = (2. * y + x / (y * y)) * .333333333;
+
+    float y3 = y * y * y;
+    y *= (y3 + 2. * x) / (2. * y3 + x);
+    
+    return y;
+}
+// finds L_cusp and C_cusp for a given hue
+// a and b must be normalized so a^2 + b^2 == 1
+float2 find_cusp(float a, float b)
+{
+    // First, find the maximum saturation (saturation S = C/L)
+    float S_cusp = compute_max_saturation(a, b);
+
+    // Convert to linear sRGB to find the first point where at least one of r,g or b >= 1:
+    float3 rgb_at_max = oklab_to_linear_srgb(float3(1, S_cusp * a, S_cusp * b));
+    float L_cusp = cbrt(1.f / max(max(rgb_at_max.r, rgb_at_max.g), rgb_at_max.b));
+    float C_cusp = L_cusp * S_cusp;
+
+    return float2(L_cusp, C_cusp);
+}
+// toe function for L_r
+float toe(float x)
+{
+    float k_1 = 0.206f;
+    float k_2 = 0.03f;
+    float k_3 = (1.f + k_1) / (1.f + k_2);
+    return 0.5f * (k_3 * x - k_1 + sqrt((k_3 * x - k_1) * (k_3 * x - k_1) + 4 * k_2 * k_3 * x));
+}
+
+// inverse toe function for L_r
+float toe_inv(float x)
+{
+    float k_1 = 0.206f;
+    float k_2 = 0.03f;
+    float k_3 = (1.f + k_1) / (1.f + k_2);
+    return (x * x + k_1 * x) / (k_3 * (x + k_2));
+}
+
+float2 to_ST(float2 cusp)
+{
+    return cusp.y / cusp.x, cusp.y / (1 - cusp.x);
+}
+float3 okhsv_to_srgb(float3 hsv)
+{
+    float h = hsv.x;
+    float s = hsv.y;
+    float v = hsv.z;
+
+    float a_ = cos(2.f * UNITY_PI * h);
+    float b_ = sin(2.f * UNITY_PI * h);
+
+    float2 cusp = find_cusp(a_, b_);
+    float2 ST_max = to_ST(cusp);
+    float S_max = ST_max.x;
+    float T_max = ST_max.y;
+    float S_0 = 0.5f;
+    float k = 1.f - S_0 / S_max;
+
+    // First, compute L and C as if the gamut is a perfect triangle
+    float L_v = 1.f - s * S_0 / (S_0 + T_max - T_max * k * s);
+    float C_v = s * T_max * S_0 / (S_0 + T_max - T_max * k * s);
+
+    float L = v * L_v;
+    float C = v * C_v;
+
+    // Compensate for the toe and the curved top part of the triangle
+    float L_vt = toe_inv(L_v);
+    float C_vt = C_v * L_vt / L_v;
+
+    float L_new = toe_inv(L);
+    C = C * L_new / L;
+    L = L_new;
+
+    float3 rgb_scale = oklab_to_linear_srgb(float3(L_vt, a_ * C_vt, b_ * C_vt));
+    float scale_L = cbrt(1.f / max(max(rgb_scale.r, rgb_scale.g), max(rgb_scale.b, 0.f)));
+
+    L = L * scale_L;
+    C = C * scale_L;
+
+    float3 rgb = oklab_to_linear_srgb(float3(L, C * a_, C * b_));
+    rgb.r = srgb_transfer_function(rgb.r);
+    rgb.g = srgb_transfer_function(rgb.g);
+    rgb.b = srgb_transfer_function(rgb.b);
+
+    return rgb;
+}
+
+float3 srgb_to_okhsv(float3 rgb)
+{
+    // Convert sRGB to linear sRGB
+    rgb.r = srgb_transfer_function_inv(rgb.r);
+    rgb.g = srgb_transfer_function_inv(rgb.g);
+    rgb.b = srgb_transfer_function_inv(rgb.b);
+
+    // Convert linear sRGB to Oklab
+    float3 lab = linear_srgb_to_oklab(rgb);
+
+    float C = sqrt(lab.y * lab.y + lab.z * lab.z);
+    float a_ = lab.y / C;
+    float b_ = lab.z / C;
+
+    float L = lab.x;
+    float h = 0.5f + 0.5f * atan2(-lab.z, -lab.y) / UNITY_PI;
+
+    float2 cusp = find_cusp(a_, b_);
+    float2 ST_max = to_ST(cusp);
+    float S_max = ST_max.x;
+    float T_max = ST_max.y;
+    float S_0 = 0.5f;
+    float k = 1.f - S_0 / S_max;
+
+    // First, find L_v, C_v, L_vt, and C_vt
+    float t = T_max / (C + L * T_max);
+    float L_v = t * L;
+    float C_v = t * C;
+
+    float L_vt = toe_inv(L_v);
+    float C_vt = C_v * L_vt / L_v;
+
+    // Invert the compensation for toe and the curved top part of the triangle
+    float3 rgb_scale = oklab_to_linear_srgb(float3(L_vt, a_ * C_vt, b_ * C_vt));
+    float scale_L = cbrt(1.f / max(max(rgb_scale.r, rgb_scale.g), max(rgb_scale.b, 0.f)));
+
+    L = L / scale_L;
+    C = C / scale_L;
+
+    C = C * toe(L) / L;
+    L = toe(L);
+
+    // Compute v and s
+    float v = L / L_v;
+    float s = (S_0 + T_max) * C_v / ((T_max * S_0) + T_max * k * C_v);
+
+    return float3(h, s, v);
+}
+
+float3 OKHSV(float3 color, float HueShift, float SaturationShift, float ValueShift)
+{
+    color = srgb_to_okhsv(color);
+    color = float3(frac(color.x + HueShift), saturate(color.y + SaturationShift), saturate(color.z + ValueShift));
+    color = okhsv_to_srgb(color);
+    return color;
+}
+
+float4 OKHSV(float4 color, float HueShift, float SaturationShift, float ValueShift)
+{
+    return float4(OKHSV(color.rgb, HueShift, SatjsonurationShift, ValueShift), color.a);
+}

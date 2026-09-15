@@ -1,0 +1,201 @@
+SamplerState sampler_linear_clamp;
+SamplerState sampler_linear_repeat;
+SamplerState sampler_trilinear_clamp;
+SamplerState sampler_trilinear_repeat;
+SamplerState sampler_point_clamp;
+SamplerState sampler_point_repeat;
+
+#define DielectricSpec half4(0.04h, 0.04h, 0.04h, 1.0h - 0.04h)
+#define PI_OVER_2 1.5707963f
+#define PI_OVER_4 0.785398f
+#define EPSILON 0.000001f
+
+#if POI_PIPE == POI_BIRP
+    #define HALF_PI float(1.5707964)
+    #define PI float(3.14159265359)
+    #define TWO_PI float(6.28318530718)
+    #define INV_PI 0.31830988618f
+    #define INV_TWO_PI 0.15915494309f
+
+    #ifdef LIGHTMAP_ON
+        #define OUTPUT_LIGHTMAP_UV(lightmapUV, lightmapScaleOffset, OUT) OUT.xy = lightmapUV.xy * lightmapScaleOffset.xy + lightmapScaleOffset.zw;
+    #else
+        #define OUTPUT_LIGHTMAP_UV(lightmapUV, lightmapScaleOffset, OUT)
+    #endif
+#elif POI_PIPE == POI_URP
+    #define UNITY_PI 3.14159265359f
+    #define UNITY_INV_PI 0.31830988618f
+    #define UNITY_TWO_PI 6.28318530718f
+    #define UNITY_INV_TWO_PI 0.15915494309f
+    
+    #define UNITY_DECLARE_TEX2D(tex) Texture2D tex; SamplerState sampler##tex
+    #define UNITY_DECLARE_TEX2D_NOSAMPLER(tex) Texture2D tex
+    #define UNITY_SAMPLE_TEX2D(tex,coord) tex.Sample (sampler##tex,coord)
+    #define UNITY_SAMPLE_TEX2D_LOD(tex, coord, lod) tex.SampleLevel (sampler##tex, coord, lod)
+    #define UNITY_SAMPLE_TEX2D_SAMPLER(tex,samplertex,coord) tex.Sample (sampler##samplertex,coord)
+    #define UNITY_SAMPLE_TEX2D_SAMPLER_LOD(tex, samplertex, coord, lod) tex.SampleLevel (sampler##samplertex, coord, lod)
+
+    #define UNITY_SAMPLE_TEXCUBE_LOD(tex,coord,lod) tex.SampleLevel (sampler##tex,coord, lod)
+    #define UNITY_SAMPLE_TEXCUBE_SAMPLER_LOD(tex, samplertex, coord, lod) tex.SampleLevel (sampler##samplertex, coord, lod)
+
+    #define UNITY_DECLARE_TEX2DARRAY(tex) TEXTURE2D_ARRAY(tex); SAMPLER(sampler##tex)
+    #define UNITY_DECLARE_TEX2DARRAY_NOSAMPLER(tex) Texture2DArray tex
+
+    #define UNITY_SAMPLE_TEX2DARRAY(tex,coord) SAMPLE_TEXTURE2D_ARRAY(tex, sampler##tex, coord.xy, coord.z)
+    #define UNITY_SAMPLE_TEX2DARRAY_SAMPLER_LOD(tex,samplertex,coord,lod) tex.SampleLevel (sampler##samplertex,coord,lod)
+
+    #ifdef UNITY_COLORSPACE_GAMMA
+        #define unity_ColorSpaceGrey half4(0.5h, 0.5h, 0.5h, 0.5h)
+        #define unity_ColorSpaceDouble half4(2.0h, 2.0h, 2.0h, 2.0h)
+        #define unity_ColorSpaceDielectricSpec half4(0.220916301, 0.220916301, 0.220916301, 1.0 - 0.220916301)
+        #define unity_ColorSpaceLuminance half4(0.22, 0.707, 0.071, 0.0) // Legacy: alpha is set to 0.0 to specify gamma mode
+    #else // Linear values
+        #define unity_ColorSpaceGrey half4(0.214041144h, 0.214041144h, 0.214041144h, 0.5h)
+        #define unity_ColorSpaceDouble half4(4.59479380h, 4.59479380h, 4.59479380h, 2.0h)
+        #define unity_ColorSpaceDielectricSpec half4(0.04, 0.04, 0.04, 1.0 - 0.04) // standard dielectric reflectivity coef at incident angle (= 4%)
+        #define unity_ColorSpaceLuminance half4(0.0396819152, 0.458021790, 0.00609653955, 1.0) // Legacy: alpha is set to 1.0 to specify linear mode
+    #endif
+
+    real3 DecodeLightmap(real4 encodedIlluminance)
+    {
+        return DecodeLightmap(encodedIlluminance, real4(LIGHTMAP_HDR_MULTIPLIER, LIGHTMAP_HDR_EXPONENT, 0.0, 0.0));
+    }
+
+    real3 DecodeRealtimeLightmap(real4 encodedIlluminance)
+    {
+        return encodedIlluminance.rgb;
+    }
+
+    real3 DecodeDirectionalLightmap(real3 color, real4 dirTex, real3 normalWS)
+    {
+        real halfLambert = dot(normalWS, dirTex.xyz - 0.5) + 0.5;
+        return color * halfLambert / max(1e-4, dirTex.w);
+    }
+
+    #if UNITY_VERSION < 202100
+        #if defined(UNITY_PLATFORM_META_QUEST) && META_QUEST_LIGHTUNROLL
+            #define UNROLL_ONELIGHT [unroll(1)]
+        #else
+            #define UNROLL_ONELIGHT
+        #endif
+
+        #define LIGHT_LOOP_BEGIN(lightCount) \
+        UNROLL_ONELIGHT \
+        for (uint lightIndex = 0u; lightIndex < lightCount; ++lightIndex) {
+        #define LIGHT_LOOP_END }
+    #endif
+#endif
+
+#if POI_PIPE == POI_BIRP
+    #define POI_SHADOW_COORDS(idx) UNITY_SHADOW_COORDS(idx)
+    #define POI_TRANSFER_SHADOW(a, coord) UNITY_TRANSFER_SHADOW(a, coord)
+    #define POI_TRANSFER_SHADOW_CASTER_NOPOS(o, opos) TRANSFER_SHADOW_CASTER_NOPOS(o, opos)
+    #define POI_SAMPLE_TEXCUBE_LOD(tex,sample,coord,lod) tex.SampleLevel(sample,coord,lod)
+    #define POI_SAMPLE_TEX2DARRAY_SAMPLERGRAD(tex, samplertex, coord, dx, dy) tex.SampleGrad(sampler##samplertex, coord, dx, dy)
+#elif POI_PIPE == POI_URP
+    #define POI_SHADOW_COORDS(idx) float4 shadowCoord : TEXCOORD##idx;
+    #define POI_TRANSFER_SHADOW(a, coord) a.shadowCoord = TransformWorldToShadowCoord(a.worldPos.rgb);
+    #define POI_TRANSFER_SHADOW_CASTER_NOPOS(o, opos) opos = GetShadowPositionHClip(o.worldPos.rgb, o.normal.rgb);
+    #define POI_SAMPLE_TEXCUBE_LOD(tex,sample,coord,lod) SAMPLE_TEXTURECUBE_LOD(tex,sample,coord,lod)
+    #define POI_SAMPLE_TEX2DARRAY_SAMPLERGRAD(tex, samplertex, coord, dx, dy) SAMPLE_TEXTURE2D_ARRAY_GRAD(tex, sampler##samplertex, coord.xy, floor(coord.z), dx, dy);
+#endif
+
+// Ignore unity_LightAtten for now
+#if POI_PIPE == POI_URP
+    static half4 unity_4LightAtten0 = 0;
+#endif
+
+#if POI_PIPE == POI_BIRP
+    #define POI_VERTEXLIGHT_ON
+#endif
+
+#define POI2D_SAMPLE_TEX2D_SAMPLERGRAD(tex, samplertex, coord, dx, dy) tex.SampleGrad(sampler##samplertex, coord, dx, dy)
+#define POI2D_SAMPLE_TEX2D_SAMPLERGRADD(tex, samp, uv, pan, dx, dy) tex.SampleGrad(samp, POI_PAN_UV(uv, pan), dx, dy)
+
+#define POI_PAN_UV(uv, pan) (uv + POI_TIME.x * pan)
+#define POI2D_SAMPLER_PAN(tex, texSampler, uv, pan) (UNITY_SAMPLE_TEX2D_SAMPLER(tex, texSampler, POI_PAN_UV(uv, pan)))
+#define POI2D_SAMPLER_PANGRAD(tex, texSampler, uv, pan, dx, dy) (POI2D_SAMPLE_TEX2D_SAMPLERGRAD(tex, texSampler, POI_PAN_UV(uv, pan), dx, dy))
+#define POI2D_SAMPLER(tex, texSampler, uv) (UNITY_SAMPLE_TEX2D_SAMPLER(tex, texSampler, uv))
+#define POI_SAMPLE_1D_X(tex, samp, uv) tex.Sample(samp, float2(uv, 0.5))
+#define POI2D_SAMPLER_GRAD(tex, texSampler, uv, dx, dy) (POI2D_SAMPLE_TEX2D_SAMPLERGRAD(tex, texSampler, uv, dx, dy))
+#define POI2D_SAMPLER_GRADD(tex, texSampler, uv, dx, dy) tex.SampleGrad(texSampler, uv, dx, dy)
+#define POI2D_PAN(tex, uv, pan) (tex2D(tex, POI_PAN_UV(uv, pan)))
+#define POI2D(tex, uv) (tex2D(tex, uv))
+#define POI_SAMPLE_TEX2D(tex, uv) (UNITY_SAMPLE_TEX2D(tex, uv))
+#define POI_SAMPLE_TEX2D_PAN(tex, uv, pan) (UNITY_SAMPLE_TEX2D(tex, POI_PAN_UV(uv, pan)))
+#define POI_SAMPLE_CUBE_LOD(tex, sampler, coord, lod) tex.SampleLevel(sampler, coord, lod)
+
+#if defined(UNITY_STEREO_INSTANCING_ENABLED) || defined(UNITY_STEREO_MULTIVIEW_ENABLED)
+    #ifndef UNITY_DECLARE_SCREENSPACE_TEXTURE
+        #define UNITY_DECLARE_SCREENSPACE_TEXTURE UNITY_DECLARE_TEX2DARRAY
+    #endif
+    #define POI_SAMPLE_SCREEN(tex, samp, uv)          tex.Sample(samp, float3(uv, unity_StereoEyeIndex))
+#else
+    #ifndef UNITY_DECLARE_SCREENSPACE_TEXTURE
+        #define UNITY_DECLARE_SCREENSPACE_TEXTURE(tex) sampler2D tex;
+    #endif
+    #define POI_SAMPLE_SCREEN(tex, samp, uv)          tex.Sample(samp, uv)
+#endif
+
+// When using, properties won't properly lock at optimize time; needs macro evaluation implemented
+// #define POI2D_MAINTEX_SAMPLER_PAN_INLINED(tex, poiMesh) (POI2D_SAMPLER_PAN(tex, _MainTex, poiUV(poiMesh.uv[tex##UV], tex##_ST), tex##Pan))
+
+#define POI_SAFE_RGB0 half4(mainTexture.rgb * .0001h, 0.0h)
+#define POI_SAFE_RGB1 half4(mainTexture.rgb * .0001h, 1.0h)
+#define POI_SAFE_RGBA mainTexture
+
+#if POI_PIPE == POI_URP || defined(UNITY_COMPILER_HLSL) || defined(SHADER_API_PSSL) || defined(UNITY_COMPILER_HLSLCC)
+    #define PoiInitStruct(type,name) name = (type)0;
+#else
+    #define PoiInitStruct(type,name)
+#endif
+
+#define POI_ERROR(poiMesh, gridSize) lerp(float3(1, 0, 1), float3(0, 0, 0), fmod(floor((poiMesh.worldPos.x) * gridSize) + floor((poiMesh.worldPos.y) * gridSize) + floor((poiMesh.worldPos.z) * gridSize), 2) == 0)
+#define POI_NAN (asfloat(-1))
+
+#define POI_MODE_OPAQUE 0
+#define POI_MODE_CUTOUT 1
+#define POI_MODE_FADE 2
+#define POI_MODE_TRANSPARENT 3
+#define POI_MODE_ADDITIVE 4
+#define POI_MODE_SOFTADDITIVE 5
+#define POI_MODE_MULTIPLICATIVE 6
+#define POI_MODE_2XMULTIPLICATIVE 7
+#define POI_MODE_TRANSCLIPPING 9
+
+#if defined(SHADER_API_MOBILE) && defined(STEREO_MULTIVIEW_ON) && (defined(SHADER_API_GLES3) || defined(SHADER_API_VULKAN))
+    #define POI_DEVICE_QUEST
+#endif
+
+#if defined(POI_DEVICE_QUEST)
+    #define POI_INITIALIZE_VERTEX_OUTPUT_STEREO(output)
+#else
+    #define POI_INITIALIZE_VERTEX_OUTPUT_STEREO(output) UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(output)
+#endif
+
+#if defined(POI_DEVICE_QUEST)
+    #define poi_maxvertexcount(x) maxvertexcount(6)
+    #define poi_instance(x) instance(1)
+#else
+    #define poi_maxvertexcount(x) maxvertexcount(x)
+    #define poi_instance(x) instance(x)
+#endif
+
+#if !defined(POI_DEVICE_QUEST)
+    #define POI_MAX_VISIBLE_LIGHTS 16
+#else
+    #define POI_MAX_VISIBLE_LIGHTS 4
+#endif
+
+#define POI_DIRECTIONAL 1
+#define POI_POINT_SPOT 2
+
+/*
+Texture2D ;
+float4 _ST;
+float2 Pan;
+float UV;
+float Stochastic;
+
+[HideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7, Matcap, 9, Screen Space, 10)]
+*/

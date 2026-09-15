@@ -1,0 +1,144 @@
+#T#PoiDetailsProperties
+//ifex _DetailEnabled==0
+[HideInInspector] m_start_DetailOptions (" Detail Normals & Texture--{reference_property:_DetailEnabled,button_help:{text:Tutorial,action:{type:URL,data:https://www.poiyomi.com/color-and-normals/details},hover:Documentation}}", Float) = 0
+[HideInInspector][ThryToggle(FINALPASS)]_DetailEnabled ("Enable", Float) = 0
+[sRGBWarning][ThryRGBAPacker(R Texture Mask, G Normal Mask, B Nothing, A Nothing, linear, false)]_DetailMask ("Detail Mask (Expand)--{reference_properties:[_DetailMaskPan, _DetailMaskUV, _DetailMaskStochastic]}", 2D) = "white" { }
+[ThryHideInInspector][Vector2]_DetailMaskPan ("Panning", Vector) = (0, 0, 0, 0)
+[ThryHideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7, Matcap, 9, Screen Space, 10)] _DetailMaskUV ("UV", Int) = 0
+[ThryHideInInspector][ToggleUI]_DetailMaskStochastic ("Stochastic Sampling", Float) = 0
+
+[HideInInspector] s_start_DetailTexture ("Detail Texture--{persistent_expand:false,default_expand:true}", Float) = 0
+_DetailTint ("Tint--{reference_property:_DetailTintThemeIndex}", Color) = (1, 1, 1)
+[ThryHideInInspector][ThryWideEnum(Off, 0, Theme Color 0, 1, Theme Color 1, 2, Theme Color 2, 3, Theme Color 3, 4, ColorChord 0, 5, ColorChord 1, 6, ColorChord 2, 7, ColorChord 3, 8, AL Theme 0, 9, AL Theme 1, 10, AL Theme 2, 11, AL Theme 3, 12)] _DetailTintThemeIndex ("", Int) = 0
+[sRGBWarning(true)]_DetailTex ("Detail Texture--{reference_properties:[_DetailTexPan, _DetailTexUV, _DetailTexStochastic]}", 2D) = "gray" { }
+[ThryHideInInspector][Vector2]_DetailTexPan ("Panning", Vector) = (0, 0, 0, 0)
+[ThryHideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7, Matcap, 9, Screen Space, 10)] _DetailTexUV ("UV", Int) = 0
+[ThryHideInInspector][ToggleUI]_DetailTexStochastic ("Stochastic Sampling", Float) = 0
+_DetailTexIntensity ("Intensity", Range(0, 10)) = 1
+_DetailBrightness ("Brightness", Range(0, 2)) = 1
+[ThryWideEnum(Off, 0, 1R, 1, 1G, 2, 1B, 3, 1A, 4, 2R, 5, 2G, 6, 2B, 7, 2A, 8, 3R, 9, 3G, 10, 3B, 11, 3A, 12, 4R, 13, 4G, 14, 4B, 15, 4A, 16)] _DetailTexGlobalMask ("Global Mask--{reference_property:_DetailTexGlobalMaskBlendType}", Int) = 0
+[ThryHideInInspector][ThryWideEnum(Add, 7, Subtract, 1, Multiply, 2, Divide, 3, Min, 4, Max, 5, Average, 6, Replace, 0)]_DetailTexGlobalMaskBlendType ("Blending", Range(0, 1)) = 2
+[HideInInspector] s_end_DetailTexture ("Detail Texture", Float) = 0
+
+[HideInInspector] s_start_DetailNormal ("Detail Normal--{persistent_expand:false,default_expand:true}", Float) = 0
+[Normal]_DetailNormalMap ("Detail Normal--{reference_properties:[_DetailNormalMapPan, _DetailNormalMapUV, _DetailNormalMapScale, _DetailNormalMapStochastic]}", 2D) = "bump" { }
+[ThryHideInInspector]_DetailNormalMapScale ("Intensity", Range(0, 10)) = 1
+[ThryHideInInspector][Vector2]_DetailNormalMapPan ("Panning", Vector) = (0, 0, 0, 0)
+[ThryHideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7, Matcap, 9, Screen Space, 10)] _DetailNormalMapUV ("UV", Int) = 0
+[ThryHideInInspector][ToggleUI]_DetailNormalMapStochastic ("Stochastic Sampling", Float) = 0
+[ThryWideEnum(Off, 0, 1R, 1, 1G, 2, 1B, 3, 1A, 4, 2R, 5, 2G, 6, 2B, 7, 2A, 8, 3R, 9, 3G, 10, 3B, 11, 3A, 12, 4R, 13, 4G, 14, 4B, 15, 4A, 16)] _DetailNormalGlobalMask ("Global Mask--{reference_property:_DetailNormalGlobalMaskBlendType}", Int) = 0
+[ThryHideInInspector][ThryWideEnum(Add, 7, Subtract, 1, Multiply, 2, Divide, 3, Min, 4, Max, 5, Average, 6, Replace, 0)]_DetailNormalGlobalMaskBlendType ("Blending", Range(0, 1)) = 2
+[HideInInspector] s_end_DetailNormal ("Detail Normal", Float) = 0
+[HideInInspector] m_end_DetailOptions ("Details", Float) = 0
+//endex
+
+#T#PoiDetailsKeywords
+//ifex _DetailEnabled==0
+#pragma shader_feature FINALPASS
+//endex
+
+#T#PoiDetailsVariablesExposed
+//ifex _DetailEnabled==0
+#ifdef FINALPASS
+	float4 _DetailMask_ST;
+	float2 _DetailMaskPan;
+	float _DetailMaskUV;
+	half _DetailMaskStochastic;
+	float4 _DetailNormalMap_ST;
+	float2 _DetailNormalMapPan;
+	float _DetailNormalMapUV;
+	half _DetailNormalMapScale;
+	float _DetailNormalMapStochastic;
+	half _DetailNormalGlobalMask;
+	float _DetailNormalGlobalMaskBlendType;
+	float4 _DetailTex_ST;
+	float2 _DetailTexPan;
+	float _DetailTexUV;
+	float _DetailTexStochastic;
+	half3 _DetailTint;
+	float _DetailTintThemeIndex;
+	half _DetailTexIntensity;
+	half _DetailBrightness;
+	half _DetailTexGlobalMask;
+	float _DetailTexGlobalMaskBlendType;
+#endif
+//endex
+
+#T#PoiDetailsVariables
+//ifex _DetailEnabled==0
+#ifdef FINALPASS
+	#if defined(PROP_DETAILMASK) || !defined(OPTIMIZER_ENABLED)
+		Texture2D _DetailMask;
+	#endif
+	#if defined(PROP_DETAILNORMALMAP) || !defined(OPTIMIZER_ENABLED)
+		Texture2D _DetailNormalMap;
+	#endif
+	#if defined(PROP_DETAILTEX) || !defined(OPTIMIZER_ENABLED)
+		Texture2D _DetailTex;
+	#endif
+#endif
+//endex
+
+
+#T#PoiDetailsFunctions
+//ifex _DetailEnabled==0
+#ifdef FINALPASS
+	void ApplyDetailColor(inout PoiFragData poiFragData, in PoiMesh poiMesh, in PoiMods poiMods)
+	{
+		#if defined(PROP_DETAILTEX) || !defined(OPTIMIZER_ENABLED)
+			half3 detailTexture = POI2D_SAMPLER_PAN_STOCHASTIC(_DetailTex, _MainTex, poiUV(poiMesh.uv[_DetailTexUV], _DetailTex_ST), _DetailTexPan, _DetailTexStochastic).rgb * poiThemeColor(poiMods, _DetailTint.rgb, _DetailTintThemeIndex);
+		#else
+			half3 detailTexture = 0.21763764082 * poiThemeColor(poiMods, _DetailTint.rgb, _DetailTintThemeIndex);
+		#endif
+
+		poiFragData.baseColor.rgb *= LerpWhiteTo(detailTexture * _DetailBrightness * unity_ColorSpaceDouble.rgb, poiMods.detailMask.r * _DetailTexIntensity);
+	}
+
+	void ApplyDetailNormal(inout PoiMods poiMods, inout PoiMesh poiMesh)
+	{
+		#if defined(PROP_DETAILMASK) || !defined(OPTIMIZER_ENABLED)
+			poiMods.detailMask = POI2D_SAMPLER_PAN_STOCHASTIC(_DetailMask, _MainTex, poiUV(poiMesh.uv[_DetailMaskUV], _DetailMask_ST), _DetailMaskPan, _DetailMaskStochastic).rg;
+		#else
+			poiMods.detailMask = 1;
+		#endif
+
+		#ifdef POI_BACKFACE
+			if (!poiMesh.isFrontFace)
+			{
+				poiMods.detailMask.rg *= _BackFaceDetailIntensity;
+			}
+		#endif
+
+		if (_DetailTexGlobalMask > 0)
+		{
+			poiMods.detailMask.r = maskBlend(poiMods.detailMask.r, poiMods.globalMask[_DetailTexGlobalMask - 1], _DetailTexGlobalMaskBlendType);
+		}
+		if (_DetailNormalGlobalMask > 0)
+		{
+			poiMods.detailMask.g = maskBlend(poiMods.detailMask.g, poiMods.globalMask[_DetailNormalGlobalMask - 1], _DetailNormalGlobalMaskBlendType);
+		}
+
+		#if defined(PROP_DETAILNORMALMAP) || !defined(OPTIMIZER_ENABLED)
+			half3 detailNormal = PoiUnpackNormalScale(POI2D_SAMPLER_PAN_STOCHASTIC(_DetailNormalMap, _MainTex, poiUV(poiMesh.uv[_DetailNormalMapUV], _DetailNormalMap_ST), _DetailNormalMapPan, _DetailNormalMapStochastic), _DetailNormalMapScale * poiMods.detailMask.g);
+			poiMesh.tangentSpaceNormal = PoiBlendNormal(detailNormal, poiMesh.tangentSpaceNormal);
+		#endif
+	}
+#endif
+//endex
+#T#PoiDetailColorFunctionCall
+//ifex _DetailEnabled==0
+#ifdef FINALPASS
+	ApplyDetailColor(poiFragData, poiMesh, poiMods);
+	#K#DETAIL_COLOR_HOOK
+#endif
+//endex
+
+#T#PoiDetailNormalFunctionCall
+//ifex _DetailEnabled==0
+#ifdef FINALPASS
+	#if (defined(POI_PASS_BASE) || defined(POI_PASS_ADD) || defined(POI_PASS_META) || defined(POI_PASS_DEPTH_NORMALS) || defined(POI_PASS_DEPTH_ONLY) || defined(POI_PASS_LILFUR))
+		ApplyDetailNormal(poiMods, poiMesh);
+		#K#DETAIL_NORMAL_HOOK
+	#endif
+#endif
+//endex

@@ -1,0 +1,12 @@
+fileFormatVersion: 2
+guid: d92b17ab89beff64fa1b112405eac110
+labels:
+- PoiTemplate
+ScriptedImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 2
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+  script: {fileID: 11500000, guid: 836627ab161102f4caef6d73aab2391d, type: 3}

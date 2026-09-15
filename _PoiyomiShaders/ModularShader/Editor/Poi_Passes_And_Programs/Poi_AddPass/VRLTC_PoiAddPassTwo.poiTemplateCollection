@@ -1,0 +1,58 @@
+#T#AddTwoPassTags
+Name "Add"
+Tags { "LightMode" = "ForwardAdd" }
+
+#T#AddTwoPassStencil
+#K#ADDTWO_PASS_STENCIL
+
+#T#AddTwoPassBlendSettings
+ZWrite [_ZWrite2]
+Cull [_Cull2]
+ZClip [_ZClip2]
+//ifex _AlphaToCoverage==0
+AlphaToMask [_AlphaToCoverage]
+//endex
+ZTest [_ZTest2]
+ColorMask [_ColorMask2]
+Offset [_OffsetFactor2], [_OffsetUnits2]
+
+BlendOp [_AddBlendOp2], [_AddBlendOpAlpha2]
+Blend [_AddSrcBlend2] [_AddDstBlend2], [_AddSrcBlendAlpha2] [_AddDstBlendAlpha2]
+
+#T#AddTwoPassOnlyKeywords
+#pragma multi_compile_fwdadd_fullshadows
+#pragma multi_compile_instancing
+#pragma dynamic_branch _ FOG_LINEAR
+#pragma dynamic_branch _ FOG_EXP
+#pragma dynamic_branch _ FOG_EXP2
+#define POI_PASS_ADD
+#define POI_PASS_ADDTWO
+
+
+#T#AddTwoPassKeywords
+#K#ADD_PASS_KEYWORDS
+#K#ADD_PASS_TWO_KEYWORDS
+
+#K#ADD_PASS_TWO_PRAGMA_PROGRAMS
+
+#T#AddTwoPassPropertyVariables
+#K#ADD_PROPERTY_VARIABLES
+#K#ADD_PROPERTY_VARIABLES_EXPOSED
+#K#ADDTWO_PROPERTY_VARIABLES
+#K#ADDTWO_PROPERTY_VARIABLES_EXPOSED
+
+#T#AddTwoPassPrograms
+#K#VERTEX_ADD_DATA_STRUCTURES
+#K#VERTEX_ADD_FUNCTIONS_EARLY
+#K#VERTEX_ADD_FUNCTIONS
+#K#VERTEX_ADD_FUNCTIONS_LATE
+#K#VERTEX_ADD_PROGRAM
+
+#K#HULLDOMAIN_ADD_PROGRAM
+#K#GEOMETRY_ADD_PROGRAM
+
+#K#FRAGMENT_ADD_DATA_STRUCTURES
+#K#FRAGMENT_ADD_FUNCTIONS_EARLY
+#K#FRAGMENT_ADD_FUNCTIONS
+#K#FRAGMENT_ADD_FUNCTIONS_LATE
+#K#FRAGMENT_ADDTWO_PROGRAM

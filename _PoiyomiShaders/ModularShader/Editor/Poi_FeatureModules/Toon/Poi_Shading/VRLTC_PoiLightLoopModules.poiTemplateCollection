@@ -1,0 +1,94 @@
+#T#PoiBaseLightLoopModules
+void PoiLightingNoLoopModules(inout PoiLight poiLight, inout PoiFragData poiFragData,
+	in PoiMesh poiMesh, in PoiCam poiCam, inout PoiMods poiMods)
+{
+	#K#BASE_LIGHT_NO_LOOP_INIT
+	#K#BASE_LIGHT_NO_LOOP_EARLY
+	#K#BASE_LIGHT_NO_LOOP
+	#K#BASE_LIGHT_NO_LOOP_LATE
+}
+
+void PoiLightingDependantModules(inout PoiLight poiLight, inout PoiFragData poiFragData, inout MochieBRDFData mochieBRDFData,
+	in PoiMesh poiMesh, in PoiCam poiCam, inout PoiMods poiMods)
+{
+	#K#BASE_LIGHT_LOOP_INIT
+	#K#BASE_LIGHT_LOOP_EARLY
+	#K#BASE_LIGHT_LOOP
+	#K#BASE_LIGHT_LOOP_LATE
+}
+
+#T#PoiAddLightLoopModules
+void PoiLightingNoLoopModules(inout PoiLight poiLight, inout PoiFragData poiFragData,
+	in PoiMesh poiMesh, in PoiCam poiCam, inout PoiMods poiMods)
+{
+	#K#ADD_LIGHT_NO_LOOP_INIT
+	#K#ADD_LIGHT_NO_LOOP_EARLY
+	#K#ADD_LIGHT_NO_LOOP
+	#K#ADD_LIGHT_NO_LOOP_LATE
+}
+
+void PoiLightingDependantModules(inout PoiLight poiLight, inout PoiFragData poiFragData, inout MochieBRDFData mochieBRDFData,
+	in PoiMesh poiMesh, in PoiCam poiCam, inout PoiMods poiMods)
+{
+	#K#ADD_LIGHT_LOOP_INIT
+	#K#ADD_LIGHT_LOOP_EARLY
+	#K#ADD_LIGHT_LOOP
+	#K#ADD_LIGHT_LOOP_LATE
+}
+
+#T#PoiOutlineLightLoopModules
+void PoiLightingNoLoopModules(inout PoiLight poiLight, inout PoiFragData poiFragData,
+	in PoiMesh poiMesh, in PoiCam poiCam, inout PoiMods poiMods)
+{
+	#K#OUTLINE_LIGHT_NO_LOOP_INIT
+	#K#OUTLINE_LIGHT_NO_LOOP_EARLY
+	#K#OUTLINE_LIGHT_NO_LOOP
+	#K#OUTLINE_LIGHT_NO_LOOP_LATE
+}
+
+void PoiLightingDependantModules(inout PoiLight poiLight, inout PoiFragData poiFragData, inout MochieBRDFData mochieBRDFData,
+	in PoiMesh poiMesh, in PoiCam poiCam, inout PoiMods poiMods)
+{
+	#K#OUTLINE_LIGHT_LOOP_INIT
+	#K#OUTLINE_LIGHT_LOOP_EARLY
+	#K#OUTLINE_LIGHT_LOOP
+	#K#OUTLINE_LIGHT_LOOP_LATE
+}
+
+#T#PoiMetaLightLoopModules
+void PoiLightingNoLoopModules(inout PoiLight poiLight, inout PoiFragData poiFragData,
+	in PoiMesh poiMesh, in PoiCam poiCam, inout PoiMods poiMods)
+{
+	#K#META_LIGHT_NO_LOOP_INIT
+	#K#META_LIGHT_NO_LOOP_EARLY
+	#K#META_LIGHT_NO_LOOP
+	#K#META_LIGHT_NO_LOOP_LATE
+}
+
+void PoiLightingDependantModules(inout PoiLight poiLight, inout PoiFragData poiFragData, inout MochieBRDFData mochieBRDFData,
+	in PoiMesh poiMesh, in PoiCam poiCam, inout PoiMods poiMods)
+{
+	#K#META_LIGHT_LOOP_INIT
+	#K#META_LIGHT_LOOP_EARLY
+	#K#META_LIGHT_LOOP
+	#K#META_LIGHT_LOOP_LATE
+}
+
+#T#PoiLilFurLightLoopModules
+void PoiLightingNoLoopModules(inout PoiLight poiLight, inout PoiFragData poiFragData,
+	in PoiMesh poiMesh, in PoiCam poiCam, inout PoiMods poiMods)
+{
+	#K#LILFUR_LIGHT_NO_LOOP_INIT
+	#K#LILFUR_LIGHT_NO_LOOP_EARLY
+	#K#LILFUR_LIGHT_NO_LOOP
+	#K#LILFUR_LIGHT_NO_LOOP_LATE
+}
+
+void PoiLightingDependantModules(inout PoiLight poiLight, inout PoiFragData poiFragData, inout MochieBRDFData mochieBRDFData,
+	in PoiMesh poiMesh, in PoiCam poiCam, inout PoiMods poiMods)
+{
+	#K#LILFUR_LIGHT_LOOP_INIT
+	#K#LILFUR_LIGHT_LOOP_EARLY
+	#K#LILFUR_LIGHT_LOOP
+	#K#LILFUR_LIGHT_LOOP_LATE
+}

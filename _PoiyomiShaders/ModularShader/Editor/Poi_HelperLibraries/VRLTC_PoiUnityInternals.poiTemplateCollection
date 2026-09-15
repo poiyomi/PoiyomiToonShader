@@ -1,0 +1,285 @@
+#T#PoiUnityMacrosAndDefines
+#ifndef UNITY_SPECCUBE_LOD_STEPS
+	#define UNITY_SPECCUBE_LOD_STEPS (6)
+#endif
+
+#ifndef UNITY_LIGHTING_COMMON_INCLUDED
+	#define UNITY_LIGHTING_COMMON_INCLUDED
+
+	half4 _LightColor0;
+	half4 _SpecColor;
+
+	struct UnityLight
+	{
+		half3 color;
+		half3 dir;
+		half ndotl;
+	};
+
+	struct UnityIndirect
+	{
+		half3 diffuse;
+		half3 specular;
+	};
+
+	struct UnityGI
+	{
+		UnityLight light;
+		UnityIndirect indirect;
+	};
+
+	struct UnityGIInput
+	{
+		UnityLight light;
+
+		float3 worldPos;
+		half3 worldViewDir;
+		half atten;
+		half3 ambient;
+
+
+		#if defined(UNITY_SPECCUBE_BLENDING) || defined(UNITY_SPECCUBE_BOX_PROJECTION) || defined(UNITY_ENABLE_REFLECTION_BUFFERS)
+			float4 boxMin[2];
+		#endif
+		#ifdef UNITY_SPECCUBE_BOX_PROJECTION
+			float4 boxMax[2];
+			float4 probePosition[2];
+		#endif
+		float4 probeHDR[2];
+	};
+
+#endif
+
+#T#PoiUnityUniforms
+struct Unity_GlossyEnvironmentData
+{
+	half roughness;
+	half3 reflUVW;
+};
+
+#T#PoiUnityFunctions
+inline half Pow5(half x)
+{
+	return x * x * x * x * x;
+}
+
+inline half3 FresnelLerp(half3 F0, half3 F90, half cosA)
+{
+	half t = Pow5((1 - cosA));   // ala Schlick interpoliation
+	return lerp(F0, F90, t);
+}
+
+inline half3 FresnelTerm(half3 F0, half cosA)
+{
+	half t = Pow5((1 - cosA));   // ala Schlick interpoliation
+	return F0 + (1 - F0) * t;
+}
+
+half perceptualRoughnessToMipmapLevel(half perceptualRoughness)
+{
+	return perceptualRoughness * UNITY_SPECCUBE_LOD_STEPS;
+}
+
+half3 UnpackScaleNormalDXT5nm(half4 packednormal, half bumpScale)
+{
+	half3 normal;
+	normal.xy = (packednormal.wy * 2 - 1);
+	#if (SHADER_TARGET >= 30)
+		normal.xy *= bumpScale;
+	#endif
+	normal.z = sqrt(1.0 - saturate(dot(normal.xy, normal.xy)));
+	return normal;
+}
+
+#ifdef BUILTIN_TARGET_API
+half3 LerpWhiteTo(half3 b, half t)
+{
+	half oneMinusT = 1 - t;
+	return half3(oneMinusT, oneMinusT, oneMinusT) + b * t;
+}
+#endif
+
+inline float GGXTerm(float NdotH, float roughness)
+{
+	float a2 = roughness * roughness;
+	float d = (NdotH * a2 - NdotH) * NdotH + 1.0f; // 2 mad
+	return UNITY_INV_PI * a2 / (d * d + 1e-7f); // This function is not intended to be running on Mobile,
+	// therefore epsilon is smaller than what can be represented by half
+
+}
+
+Unity_GlossyEnvironmentData UnityGlossyEnvironmentSetup(half Smoothness, half3 worldViewDir, half3 Normal, half3 fresnel0)
+{
+	Unity_GlossyEnvironmentData g;
+
+	g.roughness /* perceptualRoughness */ = 1 - Smoothness;
+	g.reflUVW = reflect(-worldViewDir, Normal);
+
+	return g;
+}
+
+half3 UnpackScaleNormalRGorAG(half4 packednormal, half bumpScale)
+{
+	#if defined(UNITY_NO_DXT5nm)
+		half3 normal = packednormal.xyz * 2 - 1;
+		#if (SHADER_TARGET >= 30)
+			normal.xy *= bumpScale;
+		#endif
+		return normal;
+	#elif defined(UNITY_ASTC_NORMALMAP_ENCODING)
+		half3 normal;
+		normal.xy = (packednormal.wy * 2 - 1);
+		normal.z = sqrt(1.0 - saturate(dot(normal.xy, normal.xy)));
+		normal.xy *= bumpScale;
+		return normal;
+	#else
+		packednormal.x *= packednormal.w;
+
+		half3 normal;
+		normal.xy = (packednormal.xy * 2 - 1);
+		#if (SHADER_TARGET >= 30)
+			normal.xy *= bumpScale;
+		#endif
+		normal.z = sqrt(1.0 - saturate(dot(normal.xy, normal.xy)));
+		return normal;
+	#endif
+}
+
+half3 UnpackScaleNormal(half4 packednormal, half bumpScale)
+{
+	return UnpackScaleNormalRGorAG(packednormal, bumpScale);
+}
+
+half3 BlendNormals(half3 n1, half3 n2)
+{
+	return normalize(half3(n1.xy + n2.xy, n1.z * n2.z));
+}
+
+inline float2 Pow4(float2 x)
+{
+	return x * x * x * x;
+}
+
+inline float3 Unity_SafeNormalize(float3 inVec)
+{
+	float dp3 = max(0.001f, dot(inVec, inVec));
+	return inVec * rsqrt(dp3);
+}
+
+inline float3 BoxProjectedCubemapDirection(float3 worldRefl, float3 worldPos, float4 cubemapCenter, float4 boxMin, float4 boxMax)
+{
+	// Do we have a valid reflection probe?
+	UNITY_BRANCH
+	if (cubemapCenter.w > 0.0)
+	{
+		float3 nrdir = normalize(worldRefl);
+
+		#if 1
+			float3 rbmax = (boxMax.xyz - worldPos) / nrdir;
+			float3 rbmin = (boxMin.xyz - worldPos) / nrdir;
+
+			float3 rbminmax = (nrdir > 0.0f) ? rbmax : rbmin;
+
+		#else // Optimized version
+			float3 rbmax = (boxMax.xyz - worldPos);
+			float3 rbmin = (boxMin.xyz - worldPos);
+
+			float3 select = step(float3(0, 0, 0), nrdir);
+			float3 rbminmax = lerp(rbmax, rbmin, select);
+			rbminmax /= nrdir;
+		#endif
+
+		float fa = min(min(rbminmax.x, rbminmax.y), rbminmax.z);
+
+		worldPos -= cubemapCenter.xyz;
+		worldRefl = worldPos + nrdir * fa;
+	}
+	return worldRefl;
+}
+
+#if POI_PIPE == POI_BIRP
+
+	half3 Unity_GlossyEnvironment(UNITY_ARGS_TEXCUBE(tex), half4 hdr, Unity_GlossyEnvironmentData glossIn)
+	{
+		half perceptualRoughness = glossIn.roughness /* perceptualRoughness */ ;
+
+		// TODO: CAUTION: remap from Morten may work only with offline convolution, see impact with runtime convolution!
+		// For now disabled
+		#if 0
+			float m = PerceptualRoughnessToRoughness(perceptualRoughness); // m is the real roughness parameter
+			const float fEps = 1.192092896e-07F;        // smallest such that 1.0+FLT_EPSILON != 1.0  (+1e-4h is NOT good here. is visibly very wrong)
+			float n = (2.0 / max(fEps, m * m)) - 2.0;        // remap to spec power. See eq. 21 in --> https://dl.dropboxusercontent.com/u/55891920/papers/mm_brdf.pdf
+
+			n /= 4;                                     // remap from n_dot_h formulatino to n_dot_r. See section "Pre-convolved Cube Maps vs Path Tracers" --> https://s3.amazonaws.com/docs.knaldtech.com/knald/1.0.0/lys_power_drops.html
+
+			perceptualRoughness = pow(2 / (n + 2), 0.25);      // remap back to square root of real roughness (0.25 include both the sqrt root of the conversion and sqrt for going from roughness to perceptualRoughness)
+		#else
+			// MM: came up with a surprisingly close approximation to what the #if 0'ed out code above does.
+			perceptualRoughness = perceptualRoughness * (1.7 - 0.7 * perceptualRoughness);
+		#endif
+
+
+		half mip = perceptualRoughnessToMipmapLevel(perceptualRoughness);
+		half3 R = glossIn.reflUVW;
+		half4 rgbm = UNITY_SAMPLE_TEXCUBE_LOD(tex, R, mip);
+
+		return DecodeHDR(rgbm, hdr);
+	}
+
+	inline half3 UnityGI_IndirectSpecular(UnityGIInput data, half occlusion, Unity_GlossyEnvironmentData glossIn)
+	{
+		half3 specular;
+
+		#ifdef UNITY_SPECCUBE_BOX_PROJECTION
+			// we will tweak reflUVW in glossIn directly (as we pass it to Unity_GlossyEnvironment twice for probe0 and probe1), so keep original to pass into BoxProjectedCubemapDirection
+			half3 originalReflUVW = glossIn.reflUVW;
+			glossIn.reflUVW = BoxProjectedCubemapDirection(originalReflUVW, data.worldPos, data.probePosition[0], data.boxMin[0], data.boxMax[0]);
+		#endif
+
+		// Do not branch on _GLOSSYREFLECTIONS_OFF here
+		// Rim Lighting toggle ([ThryToggle(_GLOSSYREFLECTIONS_OFF)]_EnableRimLighting)
+		// Poiyomi reuses Unity's Standard-shader keyword name 
+		half3 env0 = Unity_GlossyEnvironment(UNITY_PASS_TEXCUBE(unity_SpecCube0), data.probeHDR[0], glossIn);
+		#ifdef UNITY_SPECCUBE_BLENDING
+			const half kBlendFactor = 0.99999h;
+			half blendLerp = data.boxMin[0].w;
+			UNITY_BRANCH
+			if (blendLerp < kBlendFactor)
+			{
+				#ifdef UNITY_SPECCUBE_BOX_PROJECTION
+					glossIn.reflUVW = BoxProjectedCubemapDirection(originalReflUVW, data.worldPos, data.probePosition[1], data.boxMin[1], data.boxMax[1]);
+				#endif
+
+				half3 env1 = Unity_GlossyEnvironment(UNITY_PASS_TEXCUBE_SAMPLER(unity_SpecCube1, unity_SpecCube0), data.probeHDR[1], glossIn);
+				specular = lerp(env1, env0, blendLerp);
+			}
+			else
+			{
+				specular = env0;
+			}
+		#else
+			specular = env0;
+		#endif
+
+		return specular * occlusion;
+	}
+
+	// Deprecated old prototype but can't be move to Deprecated.cginc file due to order dependency
+	inline half3 UnityGI_IndirectSpecular(UnityGIInput data, half occlusion, half3 normalWorld, Unity_GlossyEnvironmentData glossIn)
+	{
+		// normalWorld is not used
+		return UnityGI_IndirectSpecular(data, occlusion, glossIn);
+	}
+
+#endif
+
+#if POI_PIPE == POI_URP
+
+	// Convert rgb to luminance
+	// with rgb in linear space with sRGB primaries and D65 white point
+	half LinearRgbToLuminance(half3 linearRgb)
+	{
+		return dot(linearRgb, half3(0.2126729f,  0.7151522f, 0.0721750f));
+	}
+
+#endif

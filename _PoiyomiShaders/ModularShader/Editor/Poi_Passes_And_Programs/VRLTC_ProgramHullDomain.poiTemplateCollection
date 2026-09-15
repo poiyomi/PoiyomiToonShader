@@ -1,0 +1,265 @@
+#T#PoiTessellationDefines
+#define POI_TESSELLATED
+#define POI_TESSELLATION_MAX_FACTOR 5.0
+
+#T#PoiVertHullDomainStructs
+
+
+#T#PoiTessellationProperties
+[HideInInspector] m_tessellationCategory ("Tessellation", Float) = 0
+[Helpbox(1, 2, 3)]_TessellationAMDMoment ("Tessellation can cause issues on some AMD GPUs - be careful when using high factors.", Int) = 0
+[ThryWideEnum(Uniform, 0, Edge Length, 1, Distance, 2)] _TessellationType ("Tessellation Type", Int) = 1
+_TessellationUniform ("Uniform Factor--{condition_showS:(_TessellationType==0||_TessellationType==2)}", Range(1, 5)) = 2.5
+[VectorLabel(Min, Max)] _TessellationDistance ("Distance--{condition_showS:(_TessellationType==2)}", Vector) = (2, 8, 0, 0)
+_TessellationEdgeLength ("Edge Length (px)--{condition_showS:(_TessellationType==1)}", Range(10, 60)) = 30
+_TessellationPhong ("Phong--{tooltip:''Smooths tessellated geometry using the vertex normals, best value is usually 0.5 or below''}", Range(0, 1)) = 0.0
+
+#T#PoiTessellationVariablesExposed
+float _TessellationType;
+float _TessellationUniform;
+float2 _TessellationDistance;
+float _TessellationEdgeLength;
+float _TessellationPhong;
+
+#T#PoiTessellationVariables
+#if POI_PIPE == POI_URP
+    #define UNITY_domain                 domain
+    #define UNITY_partitioning           partitioning
+    #define UNITY_outputtopology         outputtopology
+    #define UNITY_patchconstantfunc      patchconstantfunc
+    #define UNITY_outputcontrolpoints    outputcontrolpoints
+#endif
+
+#T#PoiVertHullDomainProgram
+struct TessellationFactors
+{
+    float edge[3] : SV_TessFactor;
+    float inside : SV_InsideTessFactor;
+};
+
+// Modified from Unity's Tessellation.cginc
+// Culling
+float UnityDistanceFromPlane (float3 pos, float4 plane)
+{
+    float d = dot (float4(pos,1.0f), plane);
+    return d;
+}
+
+// Returns true if triangle with given 3 world positions is outside of camera's view frustum.
+// cullEps is distance outside of frustum that is still considered to be inside (i.e. max displacement)
+bool UnityWorldViewFrustumCull (float3 wpos0, float3 wpos1, float3 wpos2, float cullEps = 0)
+{
+    // Stereo-correct version of unity_CameraWorldClipPlanes (thank you lox9973!), equivalent to:
+    // normalizePlane(mul(float4(+-1,0,0,1), UNITY_MATRIX_VP)) (+left/-right, elements 0,1)
+    // normalizePlane(mul(float4(0,+-1,0,1), UNITY_MATRIX_VP)) (+top/-bottom, elements 2,3)
+    // normalizePlane(mul(float4(0,0,+-1,1), UNITY_MATRIX_VP)) (+near/-far,   elements 4,5)
+    // This compiles better than using mul, ending up a bit faster due to compiler quirks.
+    #define VP UNITY_MATRIX_VP
+    float4 cameraWorldClipPlanes[6] = {
+        float4(VP[3][0] + VP[0][0], VP[3][1] + VP[0][1], VP[3][2] + VP[0][2], VP[3][3] + VP[0][3]),
+        float4(VP[3][0] - VP[0][0], VP[3][1] - VP[0][1], VP[3][2] - VP[0][2], VP[3][3] - VP[0][3]),
+        float4(VP[3][0] + VP[1][0], VP[3][1] + VP[1][1], VP[3][2] + VP[1][2], VP[3][3] + VP[1][3]),
+        float4(VP[3][0] - VP[1][0], VP[3][1] - VP[1][1], VP[3][2] - VP[1][2], VP[3][3] - VP[1][3]),
+        float4(VP[3][0] + VP[2][0], VP[3][1] + VP[2][1], VP[3][2] + VP[2][2], VP[3][3] + VP[2][3]),
+        float4(VP[3][0] - VP[2][0], VP[3][1] - VP[2][1], VP[3][2] - VP[2][2], VP[3][3] - VP[2][3])
+    };
+    #undef VP
+
+    // x -> left, y -> right, z -> top, w -> bottom
+    float4 planeTest;
+    planeTest.x = ( saturate(UnityDistanceFromPlane(wpos0, cameraWorldClipPlanes[0]) + cullEps * length(cameraWorldClipPlanes[0].xyz)) + 
+                    saturate(UnityDistanceFromPlane(wpos1, cameraWorldClipPlanes[0]) + cullEps * length(cameraWorldClipPlanes[0].xyz)) + 
+                    saturate(UnityDistanceFromPlane(wpos2, cameraWorldClipPlanes[0]) + cullEps * length(cameraWorldClipPlanes[0].xyz)) );
+    planeTest.y = ( saturate(UnityDistanceFromPlane(wpos0, cameraWorldClipPlanes[1]) + cullEps * length(cameraWorldClipPlanes[1].xyz)) + 
+                    saturate(UnityDistanceFromPlane(wpos1, cameraWorldClipPlanes[1]) + cullEps * length(cameraWorldClipPlanes[1].xyz)) + 
+                    saturate(UnityDistanceFromPlane(wpos2, cameraWorldClipPlanes[1]) + cullEps * length(cameraWorldClipPlanes[1].xyz)) );
+    planeTest.z = ( saturate(UnityDistanceFromPlane(wpos0, cameraWorldClipPlanes[2]) + cullEps * length(cameraWorldClipPlanes[2].xyz)) + 
+                    saturate(UnityDistanceFromPlane(wpos1, cameraWorldClipPlanes[2]) + cullEps * length(cameraWorldClipPlanes[2].xyz)) + 
+                    saturate(UnityDistanceFromPlane(wpos2, cameraWorldClipPlanes[2]) + cullEps * length(cameraWorldClipPlanes[2].xyz)) );
+    planeTest.w = ( saturate(UnityDistanceFromPlane(wpos0, cameraWorldClipPlanes[3]) + cullEps * length(cameraWorldClipPlanes[3].xyz)) + 
+                    saturate(UnityDistanceFromPlane(wpos1, cameraWorldClipPlanes[3]) + cullEps * length(cameraWorldClipPlanes[3].xyz)) + 
+                    saturate(UnityDistanceFromPlane(wpos2, cameraWorldClipPlanes[3]) + cullEps * length(cameraWorldClipPlanes[3].xyz)) );
+
+    // has to pass all 4 plane tests to be visible
+    return !all(planeTest);
+}
+
+// Distance based tessellation
+// Tessellation level is "tess" before "minDist" from camera, and linearly decreases to 1 up to "maxDist" from camera.
+float UnityCalcDistanceTessFactor (float3 wpos, float minDist, float maxDist, float tess)
+{
+    float dist = distance(wpos, getCameraPosition());
+    float f = clamp(1.0 - (dist - minDist) / (maxDist - minDist), 0.01, 1.0) * tess;
+    return f;
+}
+
+TessellationFactors UnityCalcTriEdgeTessFactors (float3 triVertexFactors)
+{
+    TessellationFactors f;
+    f.edge[0] = 0.5 * (triVertexFactors.y + triVertexFactors.z);
+    f.edge[1] = 0.5 * (triVertexFactors.x + triVertexFactors.z);
+    f.edge[2] = 0.5 * (triVertexFactors.x + triVertexFactors.y);
+    f.inside  = (triVertexFactors.x + triVertexFactors.y + triVertexFactors.z) * rcp(3.0);
+    return f;
+}
+
+TessellationFactors UnityDistanceBasedTess (float3 v0, float3 v1, float3 v2, float minDist, float maxDist, float tess)
+{
+    float3 f;
+    f.x = UnityCalcDistanceTessFactor (v0, minDist, maxDist, tess);
+    f.y = UnityCalcDistanceTessFactor (v1, minDist, maxDist, tess);
+    f.z = UnityCalcDistanceTessFactor (v2, minDist, maxDist, tess);
+
+    return UnityCalcTriEdgeTessFactors (f);
+}
+
+// Edge length based tessellation
+// Tessellation level is determined from nominal edge length (in pixels)
+float UnityCalcEdgeTessFactor (float3 wpos0, float3 wpos1, float edgeLen)
+{
+    // distance to edge center
+    float dist = distance(0.5 * (wpos0 + wpos1), getCameraPosition());
+    // length of the edge
+    float len = distance(wpos0, wpos1);
+    // edgeLen is approximate desired size in pixels
+    float f = max(len * _ScreenParams.y / (edgeLen * dist), 1.0);
+    // Clamp to a max factor
+    return min(f, 9.0f);
+}
+
+TessellationFactors EdgeLengthBasedTess (float3 wpos0, float3 wpos1, float3 wpos2, float edgeLen)
+{
+    TessellationFactors f;
+    f.edge[0] = UnityCalcEdgeTessFactor(wpos1, wpos2, edgeLen);
+    f.edge[1] = UnityCalcEdgeTessFactor(wpos2, wpos0, edgeLen);
+    f.edge[2] = UnityCalcEdgeTessFactor(wpos0, wpos1, edgeLen);
+    f.inside = (f.edge[0] + f.edge[1] + f.edge[2]) * rcp(3.0f);
+    return f;
+}
+// End of (Modified) Unity's Tessellation.cginc
+
+// Pre-tess vertex: capture SV_VertexID and pack into TEXCOORD on appdata
+appdata vertPrePass(appdata v)
+{
+    appdata t;
+    UNITY_SETUP_INSTANCE_ID(v);
+    PoiInitStruct(appdata, t);
+    UNITY_TRANSFER_INSTANCE_ID(v, t);
+
+    t.vertex = v.vertex;
+    t.normal = v.normal;
+    t.tangent = v.tangent;
+    t.color = v.color;
+    t.uv0 = v.uv0;
+    t.uv1 = v.uv1;
+    t.uv2 = v.uv2;
+    t.uv3 = v.uv3;
+    // Pack original SV_VertexID into texcoord channel for tessellation stages
+    t.vertexId = (uint)v.vertexId;
+	
+    #ifdef POI_PASS_MOTION_VECTORS
+		t.positionOld = v.positionOld;
+		#if _ADD_PRECOMPUTED_VELOCITY
+			t.alembicMotionVector = v.alembicMotionVector;
+		#endif
+	#endif
+    
+    return t;
+}
+
+TessellationFactors PatchConstFunc(InputPatch < appdata, 3 > patch)
+{
+    float3 pos0 = mul(unity_ObjectToWorld, patch[0].vertex).xyz;
+    float3 pos1 = mul(unity_ObjectToWorld, patch[1].vertex).xyz;
+    float3 pos2 = mul(unity_ObjectToWorld, patch[2].vertex).xyz;
+    TessellationFactors f;
+    if (UnityWorldViewFrustumCull(pos0, pos1, pos2, 0))
+        return (TessellationFactors)0;
+
+    switch (_TessellationType)
+    {
+        case 0:
+        {
+            // Uniform factor
+            f = (TessellationFactors)_TessellationUniform;
+            break;
+        }
+        case 1:
+        {
+            // Screen-space edge length
+            f = EdgeLengthBasedTess(pos0, pos1, pos2, _TessellationEdgeLength);
+            break;
+        }
+        case 2:
+        {
+            // Distance-based lerp from max factor to no tess
+            f = UnityDistanceBasedTess(pos0, pos1, pos2, _TessellationDistance.x, _TessellationDistance.y, _TessellationUniform);
+            break;
+        }
+        default:
+        {
+            // No Tessellation
+            f = (TessellationFactors)1;
+            break;
+        }
+    }
+
+    f.edge[0] = min(f.edge[0], POI_TESSELLATION_MAX_FACTOR);
+    f.edge[1] = min(f.edge[1], POI_TESSELLATION_MAX_FACTOR);
+    f.edge[2] = min(f.edge[2], POI_TESSELLATION_MAX_FACTOR);
+    f.inside = min(f.inside, POI_TESSELLATION_MAX_FACTOR);
+    return f;
+}
+
+[UNITY_domain("tri")]
+[UNITY_outputcontrolpoints(3)]
+[UNITY_outputtopology("triangle_cw")]
+[UNITY_partitioning("fractional_odd")]
+[UNITY_patchconstantfunc("PatchConstFunc")]
+appdata hull(InputPatch < appdata, 3 > patch,
+uint id : SV_OutputControlPointID)
+{
+    return patch[id];
+}
+
+[UNITY_domain("tri")]
+VertexOut domain(
+    TessellationFactors factors,
+    OutputPatch < appdata, 3 > patch,
+    float3 barycentrCoords : SV_DomainLocation,
+    uint pid : SV_PrimitiveID
+)
+{
+    appdata data;
+    PoiInitStruct(appdata, data);
+    UNITY_TRANSFER_INSTANCE_ID(patch[0], data);
+    #define DOMAIN_INTERPOLATE(fieldName) data.fieldName = \
+            patch[0].fieldName * barycentrCoords.x + \
+            patch[1].fieldName * barycentrCoords.y + \
+            patch[2].fieldName * barycentrCoords.z;
+
+    // Choose the dominant corner's vertexId using barycentric coordinates
+    uint selectedId = patch[0].vertexId;
+    float maxBary = barycentrCoords.x;
+    if (barycentrCoords.y > maxBary) { maxBary = barycentrCoords.y; selectedId = patch[1].vertexId; }
+    if (barycentrCoords.z > maxBary) { /*maxBary = barycentrCoords.z;*/ selectedId = patch[2].vertexId; }
+    data.vertexId = selectedId;
+    DOMAIN_INTERPOLATE(vertex);
+    float3 vertex[3];
+    [unroll(3)]
+    for (int i = 0; i < 3; ++ i)
+    {
+        vertex[i] = data.vertex.xyz - normalize(patch[i].normal) * (dot(data.vertex.xyz, normalize(patch[i].normal)) - dot(patch[i].vertex.xyz, normalize(patch[i].normal)));
+    }
+    data.vertex.xyz = _TessellationPhong * (vertex[0] * barycentrCoords.x + vertex[1] * barycentrCoords.y + vertex[2] * barycentrCoords.z) + (1.0f - _TessellationPhong) * data.vertex.xyz;
+
+    DOMAIN_INTERPOLATE(normal);
+    DOMAIN_INTERPOLATE(tangent);
+    DOMAIN_INTERPOLATE(color);
+    DOMAIN_INTERPOLATE(uv0);
+    DOMAIN_INTERPOLATE(uv1);
+    DOMAIN_INTERPOLATE(uv2);
+    DOMAIN_INTERPOLATE(uv3);
+    
+    return vert(data);
+}

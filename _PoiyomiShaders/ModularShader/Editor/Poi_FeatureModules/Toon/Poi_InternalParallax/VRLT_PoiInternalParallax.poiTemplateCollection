@@ -1,0 +1,406 @@
+#T#PoiInternalParallaxProperties
+//ifex _PoiInternalParallax==0
+[HideInInspector] m_start_internalparallax (" Internal Parallax--{reference_property:_PoiInternalParallax,button_help:{text:Tutorial,action:{type:URL,data:https://www.poiyomi.com/special-fx/internal-parallax},hover:Documentation}}", Float) = 0
+[HideInInspector][ThryToggle(POI_INTERNALPARALLAX)]_PoiInternalParallax ("Enable", Float) = 0
+
+[Enum(Basic, 0, HeightMap, 1)] _ParallaxInternalHeightmapMode ("Parallax Mode", Int) = 0
+
+[ThryRGBAPacker(RGB Color, A Height, sRGB, false)]_ParallaxInternalMap ("Internal Map--{reference_properties:[_ParallaxInternalMapUV, _ParallaxInternalPerLevelOffset, _ParallaxInternalMapPan, _ParallaxInternalHeightFromAlpha]}", 2D) = "black" { }
+[ThryHideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7, Matcap, 9, Screen Space, 10)] _ParallaxInternalMapUV ("UV", Int) = 0
+[ThryHideInInspector][Vector2]_ParallaxInternalPerLevelOffset ("Per Level Offset", Vector) = (0, 0, 0, 0)
+[ThryHideInInspector][Vector2]_ParallaxInternalMapPan ("Panning", Vector) = (0, 0, 1, 1)
+[ThryHideInInspector][ToggleUI]_ParallaxInternalHeightFromAlpha ("Height From Alpha", Float) = 0
+
+[HideInInspector] s_start_ParallaxInternalPositioning ("Positioning--{persistent_expand:true,default_expand:false}", Float) = 1
+[Helpbox(1, 2, 1)] _ParallaxInternalPosHelp ("To apply Positioning using Raycast, edit this Material directly from your Mesh in the Scene. Click for video tutorial.--{onClick:{type:URL,data:https://www.poiyomi.com/color-and-normals/decals#positioning}}", Int) = 0
+[ThryDecalPositioning(_ParallaxInternalMap, _ParallaxInternalMapUV, _ParallaxInternalPosition, _ParallaxInternalRotation, _ParallaxInternalScale, _ParallaxInternalSideOffset)]
+[Vector2]_ParallaxInternalPosition ("Position", Vector) = (.5, .5, 0, 0)
+_ParallaxInternalRotation ("Rotation", Range(0, 360)) = 0
+[VectorLabel(X, Y, link)]_ParallaxInternalScale ("Scale", Vector) = (1, 1, 1, 0)
+[VectorLabel(L, R, D, U)]_ParallaxInternalSideOffset ("Side Offset", Vector) = (0, 0, 0, 0)
+[ToggleUI]_ParallaxInternalTiled ("Tiled", Float) = 1
+[HideInInspector] s_end_ParallaxInternalPositioning ("Positioning", Float) = 0
+
+[sRGBWarning][ThryTexture]_ParallaxInternalMapMask ("Mask--{reference_properties:[_ParallaxInternalMapMaskPan, _ParallaxInternalMapMaskUV, _ParallaxInternalMapMaskChannel, _ParallaxInternalMapMaskInvert, _ParallaxInternalMapMaskGlobalMask, _ParallaxInternalMapMaskGlobalMaskBlendType]}", 2D) = "white" { }
+[ThryHideInInspector][Vector2]_ParallaxInternalMapMaskPan ("Panning", Vector) = (0, 0, 0, 0)
+[ThryHideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7, Matcap, 9, Screen Space, 10)] _ParallaxInternalMapMaskUV ("UV", Int) = 0
+[ThryHideInInspector][Enum(R, 0, G, 1, B, 2, A, 3)]_ParallaxInternalMapMaskChannel ("Channel", Float) = 0
+[ThryHideInInspector][ToggleUI]_ParallaxInternalMapMaskInvert ("Invert", Float) = 0
+[ThryHideInInspector][ThryWideEnum(Off, 0, 1R, 1, 1G, 2, 1B, 3, 1A, 4, 2R, 5, 2G, 6, 2B, 7, 2A, 8, 3R, 9, 3G, 10, 3B, 11, 3A, 12, 4R, 13, 4G, 14, 4B, 15, 4A, 16)]_ParallaxInternalMapMaskGlobalMask ("Global Mask--{reference_property:_ParallaxInternalMapMaskGlobalMaskBlendType}", Int) = 0
+[ThryHideInInspector][ThryWideEnum(Add, 7, Subtract, 1, Multiply, 2, Divide, 3, Min, 4, Max, 5, Average, 6, Replace, 0)]_ParallaxInternalMapMaskGlobalMaskBlendType ("Blending", Range(0, 1)) = 2
+
+[HideInInspector] s_start_ParallaxInternalLayerControls ("Layer Controls--{persistent_expand:true,default_expand:true}", Float) = 1
+[IntRange]_ParallaxInternalIterations ("Parallax Internal Iterations", Range(1, 50)) = 4
+[IntRange]_ParallaxInternalIterationsMin ("Min Iterations", Range(1, 50)) = 1
+[VectorLabel(Near, Far)]_ParallaxInternalIterationsDistance ("Distance Falloff", Vector) = (5, 15, 0, 0)
+_ParallaxInternalMinDepth ("Min Depth", Float) = 0
+_ParallaxInternalMaxDepth ("Max Depth", Float) = 0.1
+[HideInInspector] s_end_ParallaxInternalLayerControls ("", Float) = 0
+
+[HideInInspector] s_start_ParallaxInternalLayerColoring ("Layer Colors--{persistent_expand:true,default_expand:true}", Float) = 1
+_ParallaxInternalMinFade ("Min Depth Brightness", Range(0, 5)) = 1.0
+_ParallaxInternalMaxFade ("Max Depth Brightness", Range(0, 5)) = 0.1
+_ParallaxInternalMinColor ("Min Depth Color--{reference_property:_ParallaxInternalMinColorThemeIndex}", Color) = (1, 1, 1, 1)
+[ThryHideInInspector][ThryWideEnum(Off, 0, Theme Color 0, 1, Theme Color 1, 2, Theme Color 2, 3, Theme Color 3, 4, ColorChord 0, 5, ColorChord 1, 6, ColorChord 2, 7, ColorChord 3, 8, AL Theme 0, 9, AL Theme 1, 10, AL Theme 2, 11, AL Theme 3, 12)] _ParallaxInternalMinColorThemeIndex ("", Int) = 0
+_ParallaxInternalMaxColor ("Max Depth Color--{reference_property:_ParallaxInternalMaxColorThemeIndex}", Color) = (1, 1, 1, 1)
+[ThryHideInInspector][ThryWideEnum(Off, 0, Theme Color 0, 1, Theme Color 1, 2, Theme Color 2, 3, Theme Color 3, 4, ColorChord 0, 5, ColorChord 1, 6, ColorChord 2, 7, ColorChord 3, 8, AL Theme 0, 9, AL Theme 1, 10, AL Theme 2, 11, AL Theme 3, 12)] _ParallaxInternalMaxColorThemeIndex ("", Int) = 0
+[Enum(Add, 0, Max, 1)] _ParallaxInternalBlendMode ("Internal Blend Mode", Int) = 0
+[ThryWideEnum(Replace, 0, Darken, 1, Multiply, 2, Lighten, 5, Screen, 6, Subtract, 7, Add, 8, Overlay, 9, Mixed, 20)] _ParallaxInternalSurfaceBlendMode ("Surface Blend Mode", Int) = 8
+[HideInInspector] s_end_ParallaxInternalLayerColoring ("", Float) = 0
+// [Vector2]_ParallaxInternalPanSpeed ("Pan Speed", Vector) = (0, 0, 0, 0)
+
+[HideInInspector] s_start_ParallaxInternalHueShift ("Hue Shift--{reference_property:_ParallaxInternalHueShiftEnabled,persistent_expand:true,default_expand:false}", Float) = 0
+[ThryHideInInspector][ToggleUI]_ParallaxInternalHueShiftEnabled ("Hue Shift", Float) = 0
+[ThryWideEnum(OKLab, 0, HSV, 1)] _ParallaxInternalHueShiftColorSpace ("Color Space", Int) = 0
+[ThryWideEnum(Hue Select, 0, Hue Shift, 1)] _ParallaxInternalHueSelectOrShift ("Select or Shift", Int) = 1
+_ParallaxInternalHueShift ("Hue Shift", Range(0, 1)) = 0
+_ParallaxInternalHueShiftSpeed ("Hue Shift Speed", Float) = 0
+_ParallaxInternalHueShiftPerLevel ("Hue Shift Per Level", Float) = 0
+[HideInInspector] s_end_ParallaxInternalHueShift ("", Float) = 0
+// _ParallaxInternalHueShiftPerLevelSpeed ("Hue Shift Per Level Speed", Float) = 0
+
+[HideInInspector] s_start_ParallaxInternalAudioLink ("Audio Link ♫--{reference_property:_ParallaxInternalAudioLinkEnabled,persistent_expand:true,default_expand:false,condition_showS:(_EnableAudioLink==1)}", Float) = 0
+[ThryHideInInspector][ToggleUI]_ParallaxInternalAudioLinkEnabled ("Enable", Float) = 0
+[Enum(Bass, 0, Low Mid, 1, High Mid, 2, Treble, 3, Volume, 4)] _ParallaxInternalALEmissionBand ("Emission Band", Int) = 0
+[VectorLabel(Min, Max)]_ParallaxInternalALEmissionMod ("Emission Mod", Vector) = (0, 0, 0, 0)
+[ThrySeperator(2, 2, 2)]
+[Enum(Bass, 0, Low Mid, 1, High Mid, 2, Treble, 3, Volume, 4)] _ParallaxInternalALMinDepthBand ("Min Depth Band", Int) = 0
+[VectorLabel(Min, Max)]_ParallaxInternalALMinDepthMod ("Min Depth Mod", Vector) = (0, 0, 0, 0)
+[ThrySeperator(2, 2, 2)]
+[Enum(Bass, 0, Low Mid, 1, High Mid, 2, Treble, 3, Volume, 4)] _ParallaxInternalALMaxDepthBand ("Max Depth Band", Int) = 0
+[VectorLabel(Min, Max)]_ParallaxInternalALMaxDepthMod ("Max Depth Mod", Vector) = (0, 0, 0, 0)
+[ThrySeperator(2, 2, 2)]
+[ThryWideEnum(Motion increases as intensity of band increases, 0, Above but Smooth, 1, Motion moves back and forth as a function of intensity, 2, Above but Smoooth, 3, Fixed speed increase when the band is dark Stationary when light, 4, Above but Smooooth, 5, Fixed speed increase when the band is dark Fixed speed decrease when light, 6, Above but Smoooooth, 7)]_ParallaxInternalALPanType ("Pan Motion Type", Int) = 0
+[Enum(Bass, 0, Low Mid, 1, High Mid, 2, Treble, 3, Volume, 4)] _ParallaxInternalALPanBand ("Pan Band", Int) = 0
+[Vector2]_ParallaxInternalALPanSpeed ("Pan Speed", Vector) = (0, 0, 0, 0)
+[ThrySeperator(2, 2, 2)]
+[ThryWideEnum(Motion increases as intensity of band increases, 0, Above but Smooth, 1, Motion moves back and forth as a function of intensity, 2, Above but Smoooth, 3, Fixed speed increase when the band is dark Stationary when light, 4, Above but Smooooth, 5, Fixed speed increase when the band is dark Fixed speed decrease when light, 6, Above but Smoooooth, 7)]_ParallaxInternalALHueShiftType ("Hue Shift Motion Type", Int) = 0
+[Enum(Bass, 0, Low Mid, 1, High Mid, 2, Treble, 3, Volume, 4)] _ParallaxInternalALHueShiftBand ("Hue Shift Band", Int) = 0
+_ParallaxInternalALHueShiftSpeed ("Hue Shift Speed", Float) = 0
+[ThrySeperator(2, 2, 2)]
+[HideInInspector] ss_start_ParallaxInternalALHistorySS ("Spatial History--{reference_property:_ParallaxInternalALHistoryEnabled,persistent_expand:true,default_expand:false}", Float) = 0
+[ThryHideInInspector][ToggleUI]_ParallaxInternalALHistoryEnabled ("Spatial History", Float) = 0
+[Enum(Bass, 0, Low Mid, 1, High Mid, 2, Treble, 3, Volume, 4)] _ParallaxInternalALHistoryBand ("History Band", Int) = 0
+_ParallaxInternalALHistoryDepth ("History Depth", Range(1, 127)) = 64
+_ParallaxInternalALHistoryEmission ("History Emission", Range(0, 10)) = 1
+_ParallaxInternalALHistoryColor ("History Color--{reference_property:_ParallaxInternalALHistoryColorThemeIndex}", Color) = (1, 1, 1, 1)
+[ThryHideInInspector][ThryWideEnum(Off, 0, Theme Color 0, 1, Theme Color 1, 2, Theme Color 2, 3, Theme Color 3, 4, ColorChord 0, 5, ColorChord 1, 6, ColorChord 2, 7, ColorChord 3, 8, AL Theme 0, 9, AL Theme 1, 10, AL Theme 2, 11, AL Theme 3, 12)] _ParallaxInternalALHistoryColorThemeIndex ("", Int) = 0
+[Vector2]_ParallaxInternalALHistoryBump ("History UV Bump", Vector) = (0, 0, 0, 0)
+[HideInInspector] ss_end_ParallaxInternalALHistorySS ("Spatial History", Float) = 0
+[ThrySeperator(2, 2, 2)]
+[HideInInspector] ss_start_ParallaxInternalALMinColorOverrideSS ("Min Color Override--{reference_property:_ParallaxInternalALMinColorOverrideEnabled,persistent_expand:true,default_expand:false}", Float) = 0
+[ThryHideInInspector][ToggleUI] _ParallaxInternalALMinColorOverrideEnabled ("Min Depth Color Override", Float) = 0
+_ParallaxInternalALMinColorOverride ("Color", Color) = (1, 1, 1, 1)
+[ThryWideEnum(Off, 0, Theme Color 0, 1, Theme Color 1, 2, Theme Color 2, 3, Theme Color 3, 4, ColorChord 0, 5, ColorChord 1, 6, ColorChord 2, 7, ColorChord 3, 8, AL Theme 0, 9, AL Theme 1, 10, AL Theme 2, 11, AL Theme 3, 12)] _ParallaxInternalALMinColorOverrideThemeIndex ("Theme Color", Int) = 0
+[Enum(Bass, 0, Low Mid, 1, High Mid, 2, Treble, 3, Volume, 4)] _ParallaxInternalALMinColorOverrideBand ("Color Override Band", Int) = 0
+[Ramp4(normalized)]_ParallaxInternalALMinColorOverrideRamp ("Color Override Ramp", Vector) = (0, 1, 0, 1)
+[HideInInspector] ss_end_ParallaxInternalALMinColorOverrideSS ("Min Depth Color Override", Float) = 0
+[ThrySeperator(2, 2, 2)]
+[HideInInspector] ss_start_ParallaxInternalALMaxColorOverrideSS ("Max Color Override--{reference_property:_ParallaxInternalALMaxColorOverrideEnabled,persistent_expand:true,default_expand:false}", Float) = 0
+[ThryHideInInspector][ToggleUI] _ParallaxInternalALMaxColorOverrideEnabled ("Max Depth Color Override", Float) = 0
+_ParallaxInternalALMaxColorOverride ("Color", Color) = (1, 1, 1, 1)
+[ThryWideEnum(Off, 0, Theme Color 0, 1, Theme Color 1, 2, Theme Color 2, 3, Theme Color 3, 4, ColorChord 0, 5, ColorChord 1, 6, ColorChord 2, 7, ColorChord 3, 8, AL Theme 0, 9, AL Theme 1, 10, AL Theme 2, 11, AL Theme 3, 12)] _ParallaxInternalALMaxColorOverrideThemeIndex ("Theme Color", Int) = 0
+[Enum(Bass, 0, Low Mid, 1, High Mid, 2, Treble, 3, Volume, 4)] _ParallaxInternalALMaxColorOverrideBand ("Color Override Band", Int) = 0
+[Ramp4(normalized)]_ParallaxInternalALMaxColorOverrideRamp ("Color Override Ramp", Vector) = (0, 1, 0, 1)
+[HideInInspector] ss_end_ParallaxInternalALMaxColorOverrideSS ("Max Depth Color Override", Float) = 0
+[HideInInspector] s_end_ParallaxInternalAudioLink ("Audio Link", Float) = 0
+
+[HideInInspector] m_end_internalparallax ("Internal Parallax", Float) = 0
+//endex
+
+#T#PoiInternalParallaxKeywords
+//ifex _PoiInternalParallax==0
+#pragma shader_feature_local POI_INTERNALPARALLAX
+//endex
+
+#T#PoiInternalParallaxVariablesExposed
+//ifex _PoiInternalParallax==0
+#ifdef POI_INTERNALPARALLAX
+	float4 _ParallaxInternalMap_ST;
+	float _ParallaxInternalMapUV;
+	float2 _ParallaxInternalMapPan;
+	float4 _ParallaxInternalPosition;
+	float _ParallaxInternalRotation;
+	float4 _ParallaxInternalScale;
+	float4 _ParallaxInternalSideOffset;
+	float _ParallaxInternalTiled;
+	float4 _ParallaxInternalMapMask_ST;
+	float2 _ParallaxInternalMapMaskPan;
+	float _ParallaxInternalMapMaskUV;
+	float _ParallaxInternalMapMaskChannel;
+	half _ParallaxInternalMapMaskInvert;
+	half _ParallaxInternalMapMaskGlobalMask;
+	float _ParallaxInternalMapMaskGlobalMaskBlendType;
+
+	float _ParallaxInternalIterations;
+	float _ParallaxInternalIterationsMin;
+	float4 _ParallaxInternalIterationsDistance;
+	float _ParallaxInternalMinDepth;
+	float _ParallaxInternalMaxDepth;
+	half _ParallaxInternalMinFade;
+	half _ParallaxInternalMaxFade;
+	half4 _ParallaxInternalMinColor;
+	half4 _ParallaxInternalMaxColor;
+	float _ParallaxInternalMinColorThemeIndex;
+	float _ParallaxInternalMaxColorThemeIndex;
+	// float4 _ParallaxInternalPanSpeed;
+	float2 _ParallaxInternalPerLevelOffset;
+	float _ParallaxInternalHeightmapMode;
+	half _ParallaxInternalHeightFromAlpha;
+
+	float _ParallaxInternalHueShiftEnabled;
+	half _ParallaxInternalHueShift;
+	float _ParallaxInternalHueShiftSpeed;
+	half _ParallaxInternalHueShiftPerLevel;
+	half _ParallaxInternalHueShiftColorSpace;
+	float _ParallaxInternalHueSelectOrShift;
+	float _ParallaxInternalSurfaceBlendMode;
+	float _ParallaxInternalBlendMode;
+	// float _ParallaxInternalHueShiftPerLevelSpeed;
+
+	//ifex _EnableAudioLink==0
+	#ifdef POI_AUDIOLINK
+		float _ParallaxInternalAudioLinkEnabled;
+		float _ParallaxInternalALEmissionBand;
+		half4 _ParallaxInternalALEmissionMod;
+		float _ParallaxInternalALMinDepthBand;
+		float4 _ParallaxInternalALMinDepthMod;
+		float _ParallaxInternalALMaxDepthBand;
+		float4 _ParallaxInternalALMaxDepthMod;
+		float _ParallaxInternalALPanType;
+		float _ParallaxInternalALPanBand;
+		float4 _ParallaxInternalALPanSpeed;
+		float _ParallaxInternalALHueShiftType;
+		float _ParallaxInternalALHueShiftBand;
+		float _ParallaxInternalALHueShiftSpeed;
+		half _ParallaxInternalALMinColorOverrideEnabled;
+		half4 _ParallaxInternalALMinColorOverride;
+		float _ParallaxInternalALMinColorOverrideThemeIndex;
+		float _ParallaxInternalALMinColorOverrideBand;
+		half4 _ParallaxInternalALMinColorOverrideRamp;
+		half _ParallaxInternalALMaxColorOverrideEnabled;
+		half4 _ParallaxInternalALMaxColorOverride;
+		float _ParallaxInternalALMaxColorOverrideThemeIndex;
+		float _ParallaxInternalALMaxColorOverrideBand;
+		half4 _ParallaxInternalALMaxColorOverrideRamp;
+		float _ParallaxInternalALHistoryEnabled;
+		float _ParallaxInternalALHistoryBand;
+		float _ParallaxInternalALHistoryDepth;
+		half _ParallaxInternalALHistoryEmission;
+		half4 _ParallaxInternalALHistoryColor;
+		float _ParallaxInternalALHistoryColorThemeIndex;
+		float4 _ParallaxInternalALHistoryBump;
+	#endif
+	//endex
+#endif
+//endex
+
+#T#PoiInternalParallaxVariables
+//ifex _PoiInternalParallax==0
+#ifdef POI_INTERNALPARALLAX
+	#if defined(PROP_PARALLAXINTERNALMAP) || !defined(OPTIMIZER_ENABLED)
+		Texture2D _ParallaxInternalMap;
+	#endif
+	#if defined(PROP_PARALLAXINTERNALMAPMASK) || !defined(OPTIMIZER_ENABLED)
+		Texture2D _ParallaxInternalMapMask;
+	#endif
+#endif
+//endex
+
+
+#T#PoiInternalParallaxFunctions
+//ifex _PoiInternalParallax==0
+#ifdef POI_INTERNALPARALLAX
+	float2 internalParallaxUV(float uvNumber, float2 position, half rotation, half2 scale, float4 sideOffset, in PoiMesh poiMesh)
+	{
+		sideOffset = float4(-sideOffset.x, sideOffset.y, -sideOffset.z, sideOffset.w);
+		float2 centerOffset = float2((sideOffset.x + sideOffset.y) / 2, (sideOffset.z + sideOffset.w) / 2);
+		float2 uv = poiMesh.uv[uvNumber];
+		float2 center = position + centerOffset;
+		float cs, sn;
+		sincos(radians(rotation), sn, cs);
+		uv = float2((uv.x - center.x) * cs - (uv.y - center.y) * sn + center.x, (uv.x - center.x) * sn + (uv.y - center.y) * cs + center.y);
+		uv = remap(uv, position - scale / 2 + sideOffset.xz, position + scale / 2 + sideOffset.yw, float2(0, 0), float2(1, 1));
+		return uv;
+	}
+
+	void applyInternalParallax(inout PoiFragData poiFragData, in PoiMesh poiMesh, in PoiCam poiCam, in PoiMods poiMods)
+	{
+		half parallaxMask = 1;
+		#if defined(PROP_PARALLAXINTERNALMAPMASK) || !defined(OPTIMIZER_ENABLED)
+			parallaxMask = POI2D_SAMPLER_PAN(_ParallaxInternalMapMask, _MainTex, poiUV(poiMesh.uv[_ParallaxInternalMapMaskUV], _ParallaxInternalMapMask_ST), _ParallaxInternalMapMaskPan)[_ParallaxInternalMapMaskChannel];
+		#endif
+
+		parallaxMask = _ParallaxInternalMapMaskInvert ? 1.0 - parallaxMask : parallaxMask;
+		if (_ParallaxInternalMapMaskGlobalMask > 0)
+		{
+			parallaxMask = maskBlend(parallaxMask, poiMods.globalMask[_ParallaxInternalMapMaskGlobalMask - 1], _ParallaxInternalMapMaskGlobalMaskBlendType);
+		}
+
+		// Decal style placement of the map in the selected UV set
+		float2 placedUV = internalParallaxUV(_ParallaxInternalMapUV, _ParallaxInternalPosition.xy, _ParallaxInternalRotation, _ParallaxInternalScale.xy, _ParallaxInternalSideOffset, poiMesh);
+
+		if (parallaxMask <= 0) return;
+
+		// Hoist loop-invariants out of the iteration loop.
+		half3 minColor = poiThemeColor(poiMods, _ParallaxInternalMinColor.rgb, _ParallaxInternalMinColorThemeIndex);
+		half3 maxColor = poiThemeColor(poiMods, _ParallaxInternalMaxColor.rgb, _ParallaxInternalMaxColorThemeIndex);
+		float2 panBase = POI_TIME.y * _ParallaxInternalMapPan;
+		float hueShiftAmount = _ParallaxInternalHueShift + _ParallaxInternalHueShiftSpeed * POI_TIME.x;
+		//ifex _EnableAudioLink==0
+		#ifdef POI_AUDIOLINK
+			half alEmissionMod = 0;
+			float alMinDepthMod = 0;
+			float alMaxDepthMod = 0;
+			float2 alPanMod = float2(0, 0);
+			half alMinColorOverrideBlend = 0;
+			half3 alMinColorOverrideColor = float3(1, 1, 1);
+			half alMaxColorOverrideBlend = 0;
+			half3 alMaxColorOverrideColor = float3(1, 1, 1);
+			if (poiMods.audioLinkAvailable && _ParallaxInternalAudioLinkEnabled >= 0.5)
+			{
+				alEmissionMod = lerp(_ParallaxInternalALEmissionMod.x, _ParallaxInternalALEmissionMod.y, poiMods.audioLink[_ParallaxInternalALEmissionBand]);
+				alMinDepthMod = lerp(_ParallaxInternalALMinDepthMod.x, _ParallaxInternalALMinDepthMod.y, poiMods.audioLink[_ParallaxInternalALMinDepthBand]);
+				alMaxDepthMod = lerp(_ParallaxInternalALMaxDepthMod.x, _ParallaxInternalALMaxDepthMod.y, poiMods.audioLink[_ParallaxInternalALMaxDepthBand]);
+				alPanMod = AudioLinkGetChronoTime(_ParallaxInternalALPanType, _ParallaxInternalALPanBand) * _ParallaxInternalALPanSpeed.xy;
+				hueShiftAmount += AudioLinkGetChronoTime(_ParallaxInternalALHueShiftType, _ParallaxInternalALHueShiftBand) * _ParallaxInternalALHueShiftSpeed;
+				if (_ParallaxInternalALMinColorOverrideEnabled >= 0.5)
+				{
+					half alMinIntensity = poiMods.audioLink[_ParallaxInternalALMinColorOverrideBand];
+					alMinColorOverrideBlend = evalRamp4(alMinIntensity, _ParallaxInternalALMinColorOverrideRamp);
+					alMinColorOverrideColor = poiThemeColor(poiMods, _ParallaxInternalALMinColorOverride.rgb, _ParallaxInternalALMinColorOverrideThemeIndex);
+				}
+				if (_ParallaxInternalALMaxColorOverrideEnabled >= 0.5)
+				{
+					half alMaxIntensity = poiMods.audioLink[_ParallaxInternalALMaxColorOverrideBand];
+					alMaxColorOverrideBlend = evalRamp4(alMaxIntensity, _ParallaxInternalALMaxColorOverrideRamp);
+					alMaxColorOverrideColor = poiThemeColor(poiMods, _ParallaxInternalALMaxColorOverride.rgb, _ParallaxInternalALMaxColorOverrideThemeIndex);
+				}
+			}
+			minColor = lerp(minColor, alMinColorOverrideColor, alMinColorOverrideBlend);
+			maxColor = lerp(maxColor, alMaxColorOverrideColor, alMaxColorOverrideBlend);
+			panBase += alPanMod;
+		#endif
+		//endex
+
+		float minFade = _ParallaxInternalMinFade;
+		float maxFade = _ParallaxInternalMaxFade;
+
+		float2 viewOffset = 0;
+		float2 invMapTiling = 1;
+		#if defined(PROP_PARALLAXINTERNALMAP) || !defined(OPTIMIZER_ENABLED)
+			float grazingBias = 0.3;
+			float tangentZ = poiCam.tangentViewDir.z < 0 ? poiCam.tangentViewDir.z - grazingBias : poiCam.tangentViewDir.z + grazingBias;
+			viewOffset = -(poiCam.tangentViewDir.xy * (1 + grazingBias) / tangentZ);
+			// Layer offsets are authored in tiled map space, this brings them back to placement space
+			float2 mapTiling = abs(_ParallaxInternalMap_ST.xy) < 1e-5 ? 1.0 : _ParallaxInternalMap_ST.xy;
+			invMapTiling = 1.0 / mapTiling;
+		#endif
+
+		//ifex _EnableAudioLink==0
+		#ifdef POI_AUDIOLINK
+			bool historyEnabled = poiMods.audioLinkAvailable && _ParallaxInternalAudioLinkEnabled >= 0.5 && _ParallaxInternalALHistoryEnabled >= 0.5;
+			half3 historyColor = float3(1, 1, 1);
+			if (historyEnabled)
+			{
+				historyColor = poiThemeColor(poiMods, _ParallaxInternalALHistoryColor.rgb, _ParallaxInternalALHistoryColorThemeIndex);
+			}
+			half3 historyEmission = 0;
+		#endif
+		//endex
+
+		float distanceToCamera = distance(poiMesh.objectPosition, poiCam.worldPos);
+		float distanceFalloff = saturate((distanceToCamera - _ParallaxInternalIterationsDistance.x) / max(_ParallaxInternalIterationsDistance.y - _ParallaxInternalIterationsDistance.x, 1e-5));
+		float minIterations = min(_ParallaxInternalIterationsMin, _ParallaxInternalIterations);
+		int iterations = (int)round(lerp(_ParallaxInternalIterations, minIterations, distanceFalloff));
+		iterations = max(iterations, 1);
+
+		float3 parallax = 0;
+		[loop]
+		for (int j = iterations - 1; j >= 0; j--)
+		{
+			float ratio = saturate((float)j / max(iterations - 1, 1));
+			float2 parallaxOffset = panBase + ratio * _ParallaxInternalPerLevelOffset;
+			float fade = lerp(minFade, maxFade, ratio);
+			fade = pow(max(fade, 0), 2.2);
+			//ifex _EnableAudioLink==0
+			#ifdef POI_AUDIOLINK
+				half historyIntensity = 0;
+				if (historyEnabled)
+				{
+					uint historyT = (uint)floor(ratio * _ParallaxInternalALHistoryDepth);
+					historyIntensity = AudioLinkData(uint2(historyT, (uint)_ParallaxInternalALHistoryBand)).r;
+					parallaxOffset += historyIntensity * _ParallaxInternalALHistoryBump.xy * 0.01;
+				}
+			#endif
+			//endex
+			#if defined(PROP_PARALLAXINTERNALMAP) || !defined(OPTIMIZER_ENABLED)
+				float depth = lerp(_ParallaxInternalMinDepth, _ParallaxInternalMaxDepth, ratio);
+				//ifex _EnableAudioLink==0
+				#ifdef POI_AUDIOLINK
+					depth = lerp(_ParallaxInternalMinDepth + alMinDepthMod, _ParallaxInternalMaxDepth + alMaxDepthMod, ratio);
+				#endif
+				//endex
+				float2 layerOffset = depth * viewOffset + parallaxOffset;
+				float2 layerUV = placedUV + layerOffset * invMapTiling;
+				layerUV = _ParallaxInternalTiled >= 0.5 ? layerUV : clamp(layerUV, 0, 1);
+				half4 parallaxColor = UNITY_SAMPLE_TEX2D_SAMPLER_LOD(_ParallaxInternalMap, _MainTex, layerUV * _ParallaxInternalMap_ST.xy + _ParallaxInternalMap_ST.zw, 0);
+			#else
+				half4 parallaxColor = 0;
+			#endif
+			half3 parallaxTint = lerp(minColor, maxColor, ratio);
+			float parallaxHeight;
+			if (_ParallaxInternalHeightFromAlpha >= 0.5)
+			{
+				parallaxTint *= parallaxColor.rgb;
+				parallaxHeight = parallaxColor.a;
+			}
+			else
+			{
+				parallaxHeight = parallaxColor.r;
+			}
+			UNITY_BRANCH
+			if (_ParallaxInternalHueShiftEnabled >= 0.5 && _ParallaxInternalHueShiftPerLevel != 0)
+			{
+				parallaxTint = hueShift(parallaxTint, frac(ratio * _ParallaxInternalHueShiftPerLevel), _ParallaxInternalHueShiftColorSpace, _ParallaxInternalHueSelectOrShift);
+			}
+			float3 contrib = parallaxTint * fade;
+			if (_ParallaxInternalHeightmapMode == 1)
+			{
+				parallax = lerp(parallax, contrib, parallaxHeight >= 1 - ratio);
+			}
+			else
+			{
+				contrib *= parallaxHeight;
+				if (_ParallaxInternalBlendMode == 0) parallax += contrib;
+				else parallax = max(parallax, contrib);
+			}
+			//ifex _EnableAudioLink==0
+			#ifdef POI_AUDIOLINK
+				if (historyIntensity > 0)
+				{
+					historyEmission += parallaxTint * historyColor * historyIntensity * parallaxHeight * fade;
+				}
+			#endif
+			//endex
+		}
+		parallax = hueShift(parallax, frac(hueShiftAmount) * _ParallaxInternalHueShiftEnabled, _ParallaxInternalHueShiftColorSpace, _ParallaxInternalHueSelectOrShift);
+		//parallax /= _ParallaxInternalIterations;
+
+		poiFragData.baseColor.rgb = customBlend(poiFragData.baseColor.rgb, parallax.rgb, _ParallaxInternalSurfaceBlendMode, parallaxMask);
+		//ifex _EnableAudioLink==0
+		#ifdef POI_AUDIOLINK
+			poiFragData.emission.rgb += parallax.rgb * alEmissionMod * parallaxMask;
+			poiFragData.emission.rgb += historyEmission * _ParallaxInternalALHistoryEmission * parallaxMask;
+		#endif
+		//endex
+	}
+#endif
+//endex
+
+#T#PoiInternalParallaxFunctionCalls
+//ifex _PoiInternalParallax==0
+#ifdef POI_INTERNALPARALLAX
+	applyInternalParallax(poiFragData, poiMesh, poiCam, poiMods);
+#endif
+//endex

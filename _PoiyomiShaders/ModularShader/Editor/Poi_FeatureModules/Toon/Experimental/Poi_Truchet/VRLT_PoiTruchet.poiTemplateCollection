@@ -1,0 +1,265 @@
+#T#PoiTruchetProperties
+//ifex _EnableTruchet!=1
+[HideInInspector] m_start_truchet (" Truchet--{reference_property:_EnableTruchet,button_help:{text:Tutorial,action:{type:URL,data:https://www.poiyomi.com/special-fx/truchet},hover:Documentation}}", Float) = 0
+[HideInInspector][ThryToggle(POI_TRUCHET)] _EnableTruchet ("Enable Truchet", Float) = 0
+[ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7, Matcap, 9, Screen Space, 10)] _TruchetUV ("UV", Int) = 0
+[ThryWideEnum(Replace, 0, Darken, 1, Multiply, 2, Lighten, 5, Screen, 6, Subtract, 7, Add, 8, Overlay, 9, Mixed, 20)]_TruchetBlendType ("Blending", Range(0, 1)) = 0
+_TruchetColor ("Color--{reference_property:_TruchetColorThemeIndex}", Color) = (1, 1, 1, 1)
+[ThryHideInInspector][ThryWideEnum(Off, 0, Theme Color 0, 1, Theme Color 1, 2, Theme Color 2, 3, Theme Color 3, 4, ColorChord 0, 5, ColorChord 1, 6, ColorChord 2, 7, ColorChord 3, 8, AL Theme 0, 9, AL Theme 1, 10, AL Theme 2, 11, AL Theme 3, 12)] _TruchetColorThemeIndex ("", Int) = 0
+[sRGBWarning(true)]_TruchetTex ("TruchetTex--{reference_properties:[_TruchetTexPan]}", 2D) = "white" { }
+[ThryHideInInspector][Vector2]_TruchetTexPan ("Panning", Vector) = (0, 0, 0, 0)
+_TruchetEmissionStrength ("Emission Strength", Range(0, 20)) = 0
+
+[HideInInspector] s_start_TruchetPattern ("Pattern--{persistent_expand:true,default_expand:true}", Float) = 1
+[VectorLabel(PanX, PanY, OffX, OffY)]_TruchetPanOffset ("Pan & Offset", Vector) = (0, 0, 0, 0)
+_TruchetDensity ("Density", Float) = 10
+_TruchetThiccness ("Thiccness", Range(0, .5)) = .1
+_TruchetEdgeSharpness ("Edge Sharpness", Range(0, 1)) = 1
+[HideInInspector] s_end_TruchetPattern ("", Float) = 0
+
+[HideInInspector] s_start_TruchetAlpha ("Alpha--{persistent_expand:true,default_expand:true}", Float) = 1
+_TruchetAlpha ("Alpha", Range(0, 1)) = 1
+[ToggleUI]_TruchetOverrideAlpha ("Override Alpha", Float) = 0
+[HideInInspector] s_end_TruchetAlpha ("", Float) = 0
+
+[HideInInspector] s_start_TruchetMasking ("Masking--{persistent_expand:true,default_expand:false}", Float) = 0
+[sRGBWarning]_TruchetMask ("Truchet Mask--{reference_properties:[_TruchetMaskPan, _TruchetMaskUV, _TruchetMaskChannel, _TruchetMaskInvert, _TruchetMaskIntensity, _TruchetMaskGlobalMask, _TruchetMaskGlobalMaskBlendType]}", 2D) = "white" { }
+[ThryHideInInspector][Vector2]_TruchetMaskPan ("Panning", Vector) = (0, 0, 0, 0)
+[ThryHideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7, Matcap, 9, Screen Space, 10)] _TruchetMaskUV ("UV", Int) = 0
+[ThryHideInInspector][Enum(R, 0, G, 1, B, 2, A, 3)]_TruchetMaskChannel ("Channel", Float) = 0
+[ThryHideInInspector][ToggleUI]_TruchetMaskInvert ("Invert", Float) = 0
+[ThryHideInInspector][ThryWideEnum(Off, 0, 1R, 1, 1G, 2, 1B, 3, 1A, 4, 2R, 5, 2G, 6, 2B, 7, 2A, 8, 3R, 9, 3G, 10, 3B, 11, 3A, 12, 4R, 13, 4G, 14, 4B, 15, 4A, 16)] _TruchetMaskGlobalMask ("Global Mask--{reference_property:_TruchetMaskGlobalMaskBlendType}", Int) = 0
+[ThryHideInInspector][ThryWideEnum(Add, 7, Subtract, 1, Multiply, 2, Divide, 3, Min, 4, Max, 5, Average, 6, Replace, 0)]_TruchetMaskGlobalMaskBlendType ("Blending", Range(0, 1)) = 2
+[ThryHideInInspector]_TruchetMaskIntensity ("Intensity", Range(0, 1)) = 1
+[HideInInspector] s_end_TruchetMasking ("", Float) = 0
+
+[HideInInspector] s_start_TruchetAudioLink ("Audio Link ♫--{ condition_showS:_EnableAudioLink==1}", Float) = 0
+[ToggleUI]_TruchetHideWhenNoAL ("Hide When No AL", Float) = 0
+// AL Emission
+[HideInInspector] ss_start_TruchetALEmission ("AL Emission--{reference_property:_TruchetALEmissionToggle,persistent_expand:true,default_expand:false}", Float) = 0
+[ThryHideInInspector][ThryToggleUI(true)] _TruchetALEmissionToggle ("Toggle", Float) = 0
+[Enum(Bass, 0, Low Mid, 1, High Mid, 2, Treble, 3, Volume, 4)] _TruchetALEmissionBand ("Emission Band", Int) = 0
+[VectorLabel(Min, Max)] _TruchetALEmission ("Emission Add", Vector) = (0, 0, 0, 0)
+[HideInInspector] ss_end_TruchetALEmission ("AL Emission", Float) = 0
+// AL Alpha
+[HideInInspector] ss_start_TruchetALAlpha ("AL Alpha--{reference_property:_TruchetALAlphaToggle,persistent_expand:true,default_expand:false}", Float) = 0
+[ThryHideInInspector][ThryToggleUI(true)] _TruchetALAlphaToggle ("Toggle", Float) = 0
+[Enum(Bass, 0, Low Mid, 1, High Mid, 2, Treble, 3, Volume, 4)] _TruchetALAlphaBand ("Alpha Band", Int) = 0
+[VectorLabel(Min, Max)] _TruchetALAlpha ("Alpha Multiply", Vector) = (0, 0, 0, 0)
+[HideInInspector] ss_end_TruchetALAlpha ("AL Alpha", Float) = 0
+// Chrono Pan
+[HideInInspector] ss_start_TruchetChronoPan ("Chrono Pan--{reference_property:_TruchetChronoPanToggle,persistent_expand:true,default_expand:false}", Float) = 0
+[ThryHideInInspector][ThryToggleUI(true)] _TruchetChronoPanToggle ("Toggle", Float) = 0
+[Enum(Bass, 0, Low Mid, 1, High Mid, 2, Treble, 3, Volume, 4)] _TruchetChronoPanBand ("Band", Int) = 0
+[ThryWideEnum(Motion increases as intensity of band increases, 0, Above but Smooth, 1, Motion moves back and forth as a function of intensity, 2, Above but Smoooth, 3, Fixed speed increase when the band is dark Stationary when light, 4, Above but Smooooth, 5, Fixed speed increase when the band is dark Fixed speed decrease when light, 6, Above but Smoooooth, 7)]_TruchetChronoPanType ("Chrono Motion Type", Int) = 0
+[Vector2]_TruchetChronoPanSpeed ("Pan Speed", Vector) = (0, 0, 0, 0)
+[HideInInspector] ss_end_TruchetChronoPan ("Chrono Pan", Float) = 0
+// Color Override
+[HideInInspector] ss_start_TruchetColorOverride ("Color Override--{reference_property:_TruchetALColorOverrideEnabled,persistent_expand:true,default_expand:false}", Float) = 0
+[ThryHideInInspector][ToggleUI] _TruchetALColorOverrideEnabled ("Toggle", Float) = 0
+_TruchetALColorOverride ("Color", Color) = (1,1,1,1)
+[ThryWideEnum(Off, 0, Theme Color 0, 1, Theme Color 1, 2, Theme Color 2, 3, Theme Color 3, 4, ColorChord 0, 5, ColorChord 1, 6, ColorChord 2, 7, ColorChord 3, 8, AL Theme 0, 9, AL Theme 1, 10, AL Theme 2, 11, AL Theme 3, 12)] _TruchetALColorOverrideThemeIndex ("Theme Color", Int) = 0
+[Enum(Bass, 0, Low Mid, 1, High Mid, 2, Treble, 3, Volume, 4)] _TruchetALColorOverrideBand ("Color Override Band", Int) = 0
+[Ramp4(normalized)]_TruchetALColorOverrideRamp ("Color Override Ramp", Vector) = (0, 1, 0, 1)
+[HideInInspector] ss_end_TruchetColorOverride ("Color Override", Float) = 0
+
+[HideInInspector] s_end_TruchetAudioLink ("Audio Link", Float) = 0
+[HideInInspector] m_end_truchet ("", Float) = 0
+
+//endex
+#T#PoiTruchetKeywords
+//ifex _EnableTruchet!=1
+#pragma shader_feature_local_fragment POI_TRUCHET
+//endex
+
+#T#PoiTruchetVariablesExposed
+//ifex _EnableTruchet!=1
+#ifdef POI_TRUCHET
+    float _TruchetUV;
+    float _TruchetBlendType;
+    float _TruchetDensity;
+    half _TruchetThiccness;
+    half4 _TruchetColor;
+    float _TruchetColorThemeIndex;
+    float4 _TruchetTex_ST;
+    float4 _TruchetTexPan;
+    float4 _TruchetPanOffset;
+    half _TruchetAlpha;
+    half _TruchetEdgeSharpness;
+    half _TruchetEmissionStrength;
+    float _TruchetHideWhenNoAL;
+    float4 _TruchetMask_ST;
+    float4 _TruchetMaskPan;
+    float _TruchetMaskUV;
+    float _TruchetMaskChannel;
+    half _TruchetMaskInvert;
+    half _TruchetMaskGlobalMask;
+    float _TruchetMaskGlobalMaskBlendType;
+    half _TruchetMaskIntensity;
+    half _TruchetOverrideAlpha;
+
+    //ifex _EnableAudioLink==0
+    #ifdef POI_AUDIOLINK
+        half _TruchetALEmissionToggle;
+        float _TruchetALEmissionBand;
+        half4 _TruchetALEmission;
+        half _TruchetALAlphaToggle;
+        float _TruchetALAlphaBand;
+        half4 _TruchetALAlpha;
+        float _TruchetChronoPanToggle;
+        float _TruchetChronoPanType;
+        float4 _TruchetChronoPanSpeed;
+        float _TruchetChronoPanBand;
+        half _TruchetALColorOverrideEnabled;
+        half4 _TruchetALColorOverride;
+        float _TruchetALColorOverrideThemeIndex;
+        float _TruchetALColorOverrideBand;
+        half4 _TruchetALColorOverrideRamp;
+    #endif
+    //endex
+#endif
+//endex
+
+#T#PoiTruchetVariables
+//ifex _EnableTruchet!=1
+#ifdef POI_TRUCHET
+    #if defined(PROP_TRUCHETTEX) || !defined(OPTIMIZER_ENABLED)
+        Texture2D _TruchetTex;
+    #endif
+    #if defined(PROP_TRUCHETMASK) || !defined(OPTIMIZER_ENABLED)
+        Texture2D _TruchetMask;
+    #endif
+#endif
+//endex
+
+#T#PoiTruchetFunctions
+//ifex _EnableTruchet!=1
+#ifdef POI_TRUCHET
+    float Hash21(float2 value)
+    {
+        value = frac(value * float2(923.34, 567.345));
+        value += dot(value, value + 34.23);
+        return frac(value.x * value.y);
+    }
+
+    void applyTruchet(inout PoiFragData poiFragData, in PoiMesh poiMesh, in PoiMods poiMods)
+    {
+        float2 uv = poiMesh.uv[_TruchetUV] * _TruchetDensity + _TruchetPanOffset.xy * POI_TIME.x + _TruchetPanOffset.zw;
+        float2 gridUV = frac(uv) - .5;
+        float2 id = floor(uv);
+        float2 dx = ddx(uv);
+        float2 dy = ddy(uv);
+
+        // Random # 0-1
+        float randomID = Hash21(id);
+
+        if (randomID < .5)
+        {
+            gridUV.x *= -1;
+        }
+        half mask = 0;
+        float distance = 0;
+        float side = sign(gridUV.x + gridUV.y + .001);
+        float checker = glsl_mod(id.x + id.y, 2.0) * 2 - 1;
+        float2 pathUV = float2(0, 0);
+
+        pathUV = gridUV - side * 0.5;
+        distance = length(pathUV);
+        
+        float fwidthDistance = fwidth(abs(distance - 0.5)) + 0.0001; // Add epsilon to prevent division by zero
+        mask = saturate((_TruchetThiccness - abs(distance - 0.5)) / fwidthDistance);
+        mask *= smoothstep(0, 1 - _TruchetEdgeSharpness, (_TruchetThiccness - abs(distance - 0.5)));
+
+        #if defined(PROP_TRUCHETMASK) || !defined(OPTIMIZER_ENABLED)
+            half maskTex = UNITY_SAMPLE_TEX2D_SAMPLER(_TruchetMask, _MainTex, poiUV(poiMesh.uv[_TruchetMaskUV], _TruchetMask_ST) + POI_TIME.x * _TruchetMaskPan)[_TruchetMaskChannel];
+        #else
+            half maskTex = 1;
+        #endif
+
+        maskTex = saturate(maskTex * _TruchetMaskIntensity);
+
+        if (_TruchetMaskInvert >= 0.5)
+        {
+            maskTex = 1 - maskTex;
+        }
+
+        if (_TruchetMaskGlobalMask > 0)
+        {
+            maskTex = maskBlend(maskTex, poiMods.globalMask[_TruchetMaskGlobalMask - 1], _TruchetMaskGlobalMaskBlendType);
+        }
+        mask *= maskTex;
+
+        // -pi to pi
+        float angle = atan2(pathUV.x, pathUV.y);
+
+        pathUV.x = checker * angle / 1.57;
+        pathUV.y = (distance - (.5 - _TruchetThiccness)) / (2 * _TruchetThiccness);
+        if (randomID < .5 ^ checker > 0)
+        {
+            pathUV.y = 1 - pathUV.y;
+        }
+        half emission = _TruchetEmissionStrength;
+        float2 uvOffset = float2(0, 0);
+
+        //ifex _EnableAudioLink==0
+        #ifdef POI_AUDIOLINK
+            if (poiMods.audioLinkAvailable)
+            {
+                if (_TruchetChronoPanToggle >= 0.5)
+                {
+                    uvOffset = AudioLinkGetChronoTime(_TruchetChronoPanType, _TruchetChronoPanBand) * _TruchetChronoPanSpeed.xy;
+                }
+                if (_TruchetALEmissionToggle >= 0.5)
+                {
+                    emission += lerp(_TruchetALEmission.x, _TruchetALEmission.y, poiMods.audioLink[_TruchetALEmissionBand]);
+                }
+                if (_TruchetALAlphaToggle >= 0.5)
+                {
+                    mask = saturate(mask * lerp(_TruchetALAlpha.x, _TruchetALAlpha.y, poiMods.audioLink[_TruchetALAlphaBand]));
+                }
+            }
+            
+            if (!poiMods.audioLinkAvailable && _TruchetHideWhenNoAL >= 0.5)
+            {
+                mask = 0;
+            }
+        #endif
+        //endex
+
+        #if defined(PROP_TRUCHETTEX) || !defined(OPTIMIZER_ENABLED)
+            float4 TruchetTex = POI2D_SAMPLER_PANGRAD(_TruchetTex, _MainTex, poiUV(pathUV, _TruchetTex_ST) + uvOffset, _TruchetTexPan.xy, dx, dy);
+        #else
+            float4 TruchetTex = 1;
+        #endif
+        half3 truchetColor = poiThemeColor(poiMods, _TruchetColor.rgb, _TruchetColorThemeIndex);
+        //ifex _EnableAudioLink==0
+        #ifdef POI_AUDIOLINK
+            if (poiMods.audioLinkAvailable && _TruchetALColorOverrideEnabled >= 0.5)
+            {
+                half alColorOverrideIntensity = poiMods.audioLink[_TruchetALColorOverrideBand];
+                half alColorOverrideBlend = evalRamp4(alColorOverrideIntensity, _TruchetALColorOverrideRamp);
+                if(alColorOverrideBlend > 0)
+                {
+                    half3 alOverrideColor = _TruchetALColorOverride.rgb;
+                    if(_TruchetALColorOverrideThemeIndex > 0)
+                    {
+                        alOverrideColor = poiThemeColor(poiMods, alOverrideColor, _TruchetALColorOverrideThemeIndex);
+                    }
+                    truchetColor = lerp(truchetColor, alOverrideColor, alColorOverrideBlend);
+                }
+            }
+        #endif
+        //endex
+        poiFragData.emission += lerp(0, TruchetTex.rgb * truchetColor, min(mask, TruchetTex.a) * emission * _TruchetAlpha);
+        poiFragData.baseColor.rgb = lerp(poiFragData.baseColor.rgb, customBlend(poiFragData.baseColor.rgb, TruchetTex.rgb * truchetColor, _TruchetBlendType), min(mask, TruchetTex.a) * _TruchetAlpha);
+        poiFragData.alpha *= lerp(1, min(mask, TruchetTex.a) * _TruchetAlpha, _TruchetOverrideAlpha);
+    }
+#endif
+//endex
+#T#PoiTruchetFunctionCalls
+//ifex _EnableTruchet!=1
+#ifdef POI_TRUCHET
+    applyTruchet(poiFragData, poiMesh, poiMods);
+    #K#TRUCHET_HOOK
+#endif
+//endex

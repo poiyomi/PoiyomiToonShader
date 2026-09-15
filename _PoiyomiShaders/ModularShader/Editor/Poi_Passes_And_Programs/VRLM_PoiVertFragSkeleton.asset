@@ -1,0 +1,100 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1039f25740a92fc4292bb1d94d07ad19, type: 3}
+  m_Name: VRLM_PoiVertFragSkeleton
+  m_EditorClassIdentifier: 
+  Id: PoiTempPasses
+  Name: Temp Passes
+  Version: 1.0
+  Author: Poiyomi
+  Description: 
+  AllowDuplicates: 0
+  ForceDuplicateLogic: 0
+  EnableProperties: []
+  Properties: []
+  ModuleDependencies: []
+  IncompatibleWith: []
+  Templates:
+  - Template: {fileID: -544282384758852595, guid: c093efc96b83cb942adcf2248540ca07, type: 3}
+    Keywords:
+    - INCLUDES
+    NeedsVariant: 0
+    Queue: 0
+  - Template: {fileID: -544282384758852595, guid: 903b94286dca3b64cab202482d7b4a70, type: 3}
+    Keywords:
+    - INCLUDES
+    NeedsVariant: 0
+    Queue: 0
+  - Template: {fileID: 1584899311542343876, guid: 39c30d32225906e4485becba0aab7230, type: 3}
+    Keywords:
+    - VERTEX_BASE_PROGRAM
+    - VERTEX_ADD_PROGRAM
+    - VERTEX_SHADOW_PROGRAM
+    - VERTEX_OUTLINE_PROGRAM
+    - VERTEX_META_PROGRAM
+    - VERTEX_DEPTH_ONLY_PROGRAM
+    - VERTEX_DEPTH_NORMALS_PROGRAM
+    - VERTEX_MOTION_VECTORS_PROGRAM
+    NeedsVariant: 0
+    Queue: 0
+  - Template: {fileID: -544282384758852595, guid: f54d51f65e140634aa87249deef0018b, type: 3}
+    Keywords:
+    - FRAGMENT_BASE_PROGRAM
+    NeedsVariant: 0
+    Queue: 0
+  - Template: {fileID: -544282384758852595, guid: 98f88e8f9adbcaf48833cccf89938bd1, type: 3}
+    Keywords:
+    - FRAGMENT_ADD_PROGRAM
+    NeedsVariant: 0
+    Queue: 0
+  - Template: {fileID: -544282384758852595, guid: 8f322479ea35535428018ca139f41ff9, type: 3}
+    Keywords:
+    - FRAGMENT_SHADOW_PROGRAM
+    NeedsVariant: 0
+    Queue: 0
+  - Template: {fileID: -544282384758852595, guid: 76ec1741da6f1084b969474e2ba3873f, type: 3}
+    Keywords:
+    - FRAGMENT_OUTLINE_PROGRAM
+    NeedsVariant: 0
+    Queue: 0
+  - Template: {fileID: -544282384758852595, guid: c6d05ea7f9a76bd46bcd8453840fb2fc, type: 3}
+    Keywords:
+    - FRAGMENT_META_PROGRAM
+    NeedsVariant: 0
+    Queue: 0
+  - Template: {fileID: -544282384758852595, guid: ecf29785c32bad3429b36d9764521e35, type: 3}
+    Keywords:
+    - FRAGMENT_DEPTH_ONLY_PROGRAM
+    NeedsVariant: 0
+    Queue: 0
+  - Template: {fileID: -544282384758852595, guid: c470a8001a46e2148b58483651769e05, type: 3}
+    Keywords:
+    - FRAGMENT_DEPTH_NORMALS_PROGRAM
+    NeedsVariant: 0
+    Queue: 0
+  - Template: {fileID: -544282384758852595, guid: b85ce809768dc3d488cf7d6d0bcc258f, type: 3}
+    Keywords:
+    - FRAGMENT_MOTION_VECTORS_PROGRAM
+    NeedsVariant: 0
+    Queue: 0
+  - Template: {fileID: -544282384758852595, guid: 452e629b10f0f0b409438782ac736613, type: 3}
+    Keywords:
+    - FRAGMENT_BASETWO_PROGRAM
+    NeedsVariant: 0
+    Queue: 0
+  - Template: {fileID: -544282384758852595, guid: 31f9fe488f178a044a054a906c65d6b4, type: 3}
+    Keywords:
+    - FRAGMENT_ADDTWO_PROGRAM
+    NeedsVariant: 0
+    Queue: 0
+  Functions: []
+  AdditionalSerializedData: 

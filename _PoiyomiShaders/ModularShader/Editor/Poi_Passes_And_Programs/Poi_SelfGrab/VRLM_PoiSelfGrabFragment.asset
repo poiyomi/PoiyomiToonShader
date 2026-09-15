@@ -1,0 +1,58 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1039f25740a92fc4292bb1d94d07ad19, type: 3}
+  m_Name: VRLM_PoiSelfGrabFragment
+  m_EditorClassIdentifier: 
+  Id: PoiSelfGrabBlending
+  Name: Self Grab Blending
+  Version: 1.0
+  Author: SCRN
+  Description: 
+  AllowDuplicates: 0
+  ForceDuplicateLogic: 0
+  EnableProperties: []
+  Properties: []
+  ModuleDependencies: []
+  IncompatibleWith: []
+  Templates:
+  - Template: {fileID: -8569073471433149719, guid: 01ea791aea70edf4ca86b6cfd7d62803, type: 3}
+    Keywords:
+    - GRABPASS_PROPERTIES
+    NeedsVariant: 0
+    Queue: 0
+  - Template: {fileID: 4027773651112422098, guid: 01ea791aea70edf4ca86b6cfd7d62803, type: 3}
+    Keywords:
+    - SELF_GRAB_PASS_KEYWORDS
+    NeedsVariant: 0
+    Queue: 100
+  - Template: {fileID: -5388903981470398056, guid: 01ea791aea70edf4ca86b6cfd7d62803, type: 3}
+    Keywords:
+    - BASE_PROPERTY_VARIABLES
+    NeedsVariant: 0
+    Queue: 100
+  - Template: {fileID: -7563176495391639268, guid: d7f94ab234db4d0daf298ee581467643, type: 3}
+    Keywords:
+    - SELF_GRAB_PROPERTY_VARIABLES
+    NeedsVariant: 0
+    Queue: 100
+  - Template: {fileID: -5693624181038966058, guid: 01ea791aea70edf4ca86b6cfd7d62803, type: 3}
+    Keywords:
+    - SELF_GRAB_FRAGMENT_FUNCTIONS
+    NeedsVariant: 0
+    Queue: 100
+  - Template: {fileID: -4122015681100295154, guid: d7f94ab234db4d0daf298ee581467643, type: 3}
+    Keywords:
+    - SELF_GRAB_FRAGMENT_PROGRAM
+    NeedsVariant: 0
+    Queue: 1001
+  Functions: []
+  AdditionalSerializedData: 

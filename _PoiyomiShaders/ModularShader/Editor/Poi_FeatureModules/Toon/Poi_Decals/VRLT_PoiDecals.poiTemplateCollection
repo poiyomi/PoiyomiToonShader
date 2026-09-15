@@ -1,0 +1,955 @@
+#T#PoiDecalsProperties
+<ms_include_in_first>
+{
+// Emitted once, however many Poi Decals modules are installed: the group header, whose enable
+// checkbox list is accumulated from every instance, and the RGBA mask they all share.
+//ifex <ms_stringwriter::AllDecalsDisabled>
+[HideInInspector] m_start_DecalSection ("Decals--{reference_properties:[<ms_stringwriter::DecalEnableList>],button_help:{text:Tutorial,action:{type:URL,data:https://www.poiyomi.com/color-and-normals/decals},hover:Documentation}}", Float) = 0
+[TextureKeyword][sRGBWarning][ThryRGBAPacker(Decal 0 Mask, Decal 1 Mask, Decal 2 Mask, Decal 3 Mask, Linear, false)]_DecalMask ("RGBA Mask [Click to Expand]--{reference_properties:[_DecalMaskPan, _DecalMaskUV]}", 2D) = "white" { }
+[ThryHideInInspector][Vector2]_DecalMaskPan ("Panning", Vector) = (0, 0, 0, 0)
+[ThryHideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7, Matcap, 9, Screen Space, 10)] _DecalMaskUV ("UV", Int) = 0
+//endex
+}
+
+//ifex _DecalEnabled__mIDx__==0
+[HideInInspector] m_start_Decal__mID__ (" Decal [IDX_Decal++]--{reference_property:_DecalEnabled__mIDx__}", Float) = 0
+<ms_include_in_first>{     [HideInInspector][ThryToggle(GEOM_TYPE_BRANCH)] }
+<ms_include_in_not_first>{ [HideInInspector][ThryToggle(POI_DECAL___mID__)] }
+_DecalEnabled__mIDx__ ("Enable", Float) = 0
+[HideInInspector] s_start_Decal__mID__Position ("Positioning--{persistent_expand:true,default_expand:true}", Float) = 1
+[Helpbox(1, 2, 1)] _Decal__mID__PosHelp ("To apply Positioning using Raycast, edit this Material directly from your Mesh in the Scene. Click for video tutorial.--{onClick:{type:URL,data:https://www.poiyomi.com/color-and-normals/decals#positioning}}", Int) = 0
+[ThryDecalPositioning(_DecalTexture__mIDx__, _DecalTexture__mIDx__UV, _DecalPosition__mIDx__, _DecalRotation__mIDx__, _DecalScale__mIDx__, _DecalSideOffset__mIDx__)]
+[Vector2]_DecalPosition__mIDx__ ("Position", Vector) = (.5, .5, 0, 0)
+_DecalRotation__mIDx__ ("Rotation", Range(0, 360)) = 0
+_DecalRotationSpeed__mIDx__ ("Rotation Speed", Float) = 0
+[VectorLabel(X, Y, link)]_DecalScale__mIDx__ ("Scale", Vector) = (1, 1, 1, 0)
+[VectorLabel(L, R, D, U)]_DecalSideOffset__mIDx__ ("Side Offset", Vector) = (0, 0, 0, 0)
+[ThryWideEnum(Off, 0, Shrink to Fit, 1, Grow to Fit, 2)] _Decal__mID__AspectRatioMode ("Aspect Ratio", Int) = 0
+[ThryWideEnum(Off, 0, Flip, 1, Left Only, 2, Right Only, 3, Flip Right Only, 4)] _DecalMirroredUVMode__mIDx__ ("Mirrored UV Mode", Int) = 0
+[ThryWideEnum(Off, 0, Symmetry, 1, Flipped, 2)] _DecalSymmetryMode__mIDx__ ("Symmetry Mode", Int) = 0
+[ToggleUI]_DecalTiled__mIDx__ ("Tiled", Float) = 0
+[HideInInspector] s_end_Decal__mID__Position ("Positioning", Float) = 0
+
+_DecalColor__mIDx__ ("Color--{reference_property:_DecalColor__mIDx__ThemeIndex}", Color) = (1, 1, 1, 1)
+[ThryHideInInspector][ThryWideEnum(Off, 0, Theme Color 0, 1, Theme Color 1, 2, Theme Color 2, 3, Theme Color 3, 4, ColorChord 0, 5, ColorChord 1, 6, ColorChord 2, 7, ColorChord 3, 8, AL Theme 0, 9, AL Theme 1, 10, AL Theme 2, 11, AL Theme 3, 12)] _DecalColor__mIDx__ThemeIndex ("", Int) = 0
+[sRGBWarning(true)]_DecalTexture__mIDx__ ("Decal--{reference_properties:[_DecalTexture__mIDx__Pan, _DecalTexture__mIDx__UV, _Decal__mID__MaskChannel]}", 2D) = "white" { }
+[ThryHideInInspector][Vector2]_DecalTexture__mIDx__Pan ("Panning", Vector) = (0, 0, 0, 0)
+[ThryHideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7, Matcap, 9, Screen Space, 10)] _DecalTexture__mIDx__UV ("UV", Int) = 0
+// R, G, B, A by decal index. The shared mask only has those four channels, so the fifth decal
+// onwards gets a constant-false show condition - [IDX_] resolves per instance, so this reads
+// (0<4)...(3<4) for the first four and (4<4), (5<4)... after, hiding the dropdown entirely.
+//
+// The _DecalMask can only cover Decals 0-3 for this reason. If you need to mask a Decal on slots
+// 4 or higher, use Global Masks.
+[ThryHideInInspector][Enum(R, 0, G, 1, B, 2, A, 3)] _Decal__mID__MaskChannel ("Mask Channel--{condition_showS:([IDX_DecalMaskSlot++]<4)}", Int) = [IDX_DecalMaskChannel++]
+
+_DecalEmissionStrength__mIDx__ ("Emission Strength", Range(0, 20)) = 0
+[ThryWideEnum(Replace, 0, Darken, 1, Multiply, 2, Lighten, 5, Screen, 6, Subtract, 7, Add, 8, Overlay, 9, Mixed, 20)]_DecalBlendType__mIDx__ ("Color Blend Mode", Range(0, 1)) = 0
+[ThryWideEnum(Off, 0, Replace, 1, Multiply, 2, Add, 3, Subtract, 4, Min, 5, Max, 6)]_DecalOverrideAlpha__mIDx__ ("Alpha Blend Mode--{reference_property:_Decal__mID__OverrideAlphaMode}", Float) = 0
+[ThryHideInInspector][Enum(Everywhere, 0, Decal Bounds, 1, Everywhere Masked, 2, Bounds Masked, 3)] _Decal__mID__OverrideAlphaMode ("Mode", Int) = 0
+_DecalBlendAlpha__mIDx__ ("Alpha", Range(0, 1)) = 1
+_DecalAlphaIntensity__mIDx__ ("Alpha Intensity", Range(0, 10)) = 1
+[ToggleUI]_Decal__mID__UseVideoEffects ("Apply Video Effect--{condition_showS:_VideoEffectsEnable==1}", Float) = 1
+_Decal__mID__Depth ("Depth", Range(-0.5, 2)) = 0
+
+[HideInInspector] s_start_Decal__mID__ColorAdjust ("Color Adjust--{reference_property:_DecalColorAdjustEnabled__mIDx__, persistent_expand:true, default_expand:false}", Float) = 0
+[HideInInspector][ThryToggleUI(true)]_DecalColorAdjustEnabled__mIDx__ ("Color Adjust", Float) = 0
+_DecalSaturation__mIDx__ ("Saturation", Range(-1, 10)) = 0
+_DecalChromatize__mIDx__ ("Chromatize", Range(-1, 10)) = 0
+_DecalBrightness__mIDx__ ("Brightness", Range(-1, 2)) = 0
+_DecalGamma__mIDx__ ("Gamma", Range(0.01, 5)) = 1
+[HideInInspector] ss_start_Decal__mID__HueShift ("Hue Shift--{reference_property:_DecalHueShiftEnabled__mIDx__, persistent_expand:true, default_expand:false}", Float) = 0
+[HideInInspector][ThryToggleUI(true)]_DecalHueShiftEnabled__mIDx__ ("Hue Shift", Float) = 0
+[ThryWideEnum(OKLab, 0, HSV, 1)] _DecalHueShiftColorSpace__mIDx__ ("Color Space", Int) = 0
+[ThryWideEnum(Hue Select, 0, Hue Shift, 1)] _DecalHueShiftSelectOrShift__mIDx__ ("Select or Shift", Int) = 1
+_DecalHueShiftSpeed__mIDx__ ("Shift Speed", Float) = 0
+_DecalHueShift__mIDx__ ("Hue Shift", Range(0, 1)) = 0
+_Decal__mID__HueAngleStrength ("Hue Angle Power", Float) = 0
+[HideInInspector] ss_end_Decal__mID__HueShift ("Hue Shift", Float) = 0
+[HideInInspector] s_end_Decal__mID__ColorAdjust ("Color Adjust", Float) = 0
+
+[HideInInspector] s_start_Decal__mID__Video ("Video Texture--{reference_property:_Decal__mID__VideoEnabled, persistent_expand:true, default_expand:false}", Float) = 0
+[ThryHideInInspector][ToggleUI] _Decal__mID__VideoEnabled ("Video Texture", Float) = 0
+[ThryWideEnum(Shrink2Fit, 0, Grow2Fit, 1, Off, 2)] _Decal__mID__VideoAspectFix ("Aspect Ratio", Int) = 0
+[ToggleUI] _Decal__mID__VideoFitToScale ("Fit To Scale--{condition_showS:(_Decal__mID__VideoAspectFix==0||_Decal__mID__VideoAspectFix==1)}", Float) = 1
+[ToggleUI] _Decal__mID__UseDecalAlpha ("Use Decal Alpha", Float) = 0
+[ToggleUI] _Decal__mID__OnlyVideo ("Only Show Video", Float) = 0
+_Decal__mID__VideoEmissionStrength ("Emission", Range(0, 20)) = 0
+[HideInInspector] s_end_Decal__mID__Video ("Video Texture", Float) = 0
+
+[HideInInspector] s_start_Decal__mID__ChannelSeparation ("Chromatic Aberration--{reference_property:_Decal__mID__ChannelSeparationEnable, persistent_expand:true, default_expand:false}", Int) = 0
+[HideInInspector][DoNotAnimate][ThryToggle(true)]_Decal__mID__ChannelSeparationEnable ("Chromatic Aberration", Float) = 0
+_Decal__mID__ChannelSeparation ("Intensity", Float) = 0
+_Decal__mID__ChannelSeparationAngleStrength ("Surface Angle Intensity", Float) = 0
+_Decal__mID__ChannelSeparationHue ("Hue", Range(-1, 1)) = 0
+_Decal__mID__ChannelSeparationVertical ("Direction", Range(-3.142, 3.142)) = 0
+[ToggleUI]_Decal__mID__ChannelSeparationPremultiply ("Premultiply Alpha--{tooltip:''Fixes Chromatic Aberration issues on some decal textures''}", Float) = 0
+[HideInInspector] s_end_Decal__mID__ChannelSeparation ("", Int) = 0
+
+[HideInInspector] s_start_Decal__mID__GlobalMasking ("Masking--{persistent_expand:false, default_expand:false}", Float) = 0
+[ThryWideEnum(Off, 0, Front Only, 1, Back Only, 2)] _Decal__mID__FaceMask ("Face Mask", Int) = 0
+[ThryWideEnum(Off, 0, 1R, 1, 1G, 2, 1B, 3, 1A, 4, 2R, 5, 2G, 6, 2B, 7, 2A, 8, 3R, 9, 3G, 10, 3B, 11, 3A, 12, 4R, 13, 4G, 14, 4B, 15, 4A, 16)] _Decal__mID__GlobalMask (" Apply From Global Mask--{reference_property:_Decal__mID__GlobalMaskBlendType}", Int) = 0
+[ThryHideInInspector][ThryWideEnum(Add, 7, Subtract, 1, Multiply, 2, Divide, 3, Min, 4, Max, 5, Average, 6, Replace, 0)]_Decal__mID__GlobalMaskBlendType ("Blending", Range(0, 1)) = 2
+[ThryWideEnum(Off, 0, 1R, 1, 1G, 2, 1B, 3, 1A, 4, 2R, 5, 2G, 6, 2B, 7, 2A, 8, 3R, 9, 3G, 10, 3B, 11, 3A, 12, 4R, 13, 4G, 14, 4B, 15, 4A, 16)] _Decal__mID__ApplyGlobalMaskIndex (" Apply to Global Mask--{reference_property:_Decal__mID__ApplyGlobalMaskBlendType}", Int) = 0
+[ThryHideInInspector][ThryWideEnum(Add, 7, Subtract, 1, Multiply, 2, Divide, 3, Min, 4, Max, 5, Average, 6, Replace, 0)] _Decal__mID__ApplyGlobalMaskBlendType ("Blending", Int) = 0
+[ToggleUI]_Decal__mID__OnOutlines ("Show on Outlines", Float) = 0
+[HideInInspector] s_end_Decal__mID__GlobalMasking ("Masking", Float) = 0
+// Decal 0 Audio Link
+[HideInInspector] s_start_Decal__mID__AudioLink ("Audio Link ♫--{ condition_showS:_EnableAudioLink==1}", Float) = 0
+[Enum(Bass, 0, Low Mid, 1, High Mid, 2, Treble, 3, Volume, 4)] _AudioLinkDecal__mID__ScaleBand ("Scale Band", Int) = 0
+[VectorLabel(Xmin, Ymin, Xmax, Ymax)]_AudioLinkDecal__mID__Scale ("Scale Mod", Vector) = (0, 0, 0, 0)
+[ThrySeperator(2, 2, 2)]
+[Enum(Bass, 0, Low Mid, 1, High Mid, 2, Treble, 3, Volume, 4)] _AudioLinkDecal__mID__SideBand ("Side Band", Int) = 0
+[VectorLabel(L, R, D, U)]_AudioLinkDecal__mID__SideMin ("Side Mod Min", Vector) = (0, 0, 0, 0)
+[VectorLabel(L, R, D, U)]_AudioLinkDecal__mID__SideMax ("Side Mod Max", Vector) = (0, 0, 0, 0)
+[ThrySeperator(2, 2, 2)]
+[Enum(Bass, 0, Low Mid, 1, High Mid, 2, Treble, 3, Volume, 4)] _AudioLinkDecal__mID__RotationBand ("Rotation Band", Int) = 0
+[VectorLabel(Min, Max)]_AudioLinkDecal__mID__Rotation ("Rotation Mod", Vector) = (0, 0, 0, 0)
+[ThrySeperator(2, 2, 2)]
+[Enum(Bass, 0, Low Mid, 1, High Mid, 2, Treble, 3, Volume, 4)] _AudioLinkDecal__mID__AlphaBand ("Alpha Band", Int) = 0
+[VectorLabel(Min, Max)]_AudioLinkDecal__mID__Alpha ("Alpha Mod", Vector) = (0, 0, 0, 0)
+[ThrySeperator(2, 2, 2)]
+[Enum(Bass, 0, Low Mid, 1, High Mid, 2, Treble, 3, Volume, 4)] _AudioLinkDecal__mID__EmissionBand ("Emission Band", Int) = 0
+[VectorLabel(Min, Max)]_AudioLinkDecal__mID__Emission ("Emission Mod", Vector) = (0, 0, 0, 0)
+[ToggleUI]_AudioLinkDecalCC__mID__ ("CC Strip", Float) = 0
+[ThrySeperator(2, 2, 2)]
+[Enum(Bass, 0, Low Mid, 1, High Mid, 2, Treble, 3, Volume, 4)] _DecalRotationCTALBand__mID__ ("Chrono Rotation Band", Int) = 0
+[ThryWideEnum(Motion increases as intensity of band increases, 0, Above but Smooth, 1, Motion moves back and forth as a function of intensity, 2, Above but Smoooth, 3, Fixed speed increase when the band is dark Stationary when light, 4, Above but Smooooth, 5, Fixed speed increase when the band is dark Fixed speed decrease when light, 6, Above but Smoooooth, 7)]_DecalRotationCTALType__mID__ ("Chrono Motion Type", Int) = 0
+_DecalRotationCTALSpeed__mID__ ("Chrono Rotation Speed", Float) = 0
+[ThrySeperator(2, 2, 2)]
+[Enum(Bass, 0, Low Mid, 1, High Mid, 2, Treble, 3, Volume, 4)] _AudioLinkDecal__mID__ChannelSeparationBand ("Chromatic Aberration Band--{condition_showS:(_Decal__mID__ChannelSeparationEnable==1)}", Int) = 0
+[VectorLabel(Min, Max)]_AudioLinkDecal__mID__ChannelSeparation ("Chromatic Aberration--{condition_showS:(_Decal__mID__ChannelSeparationEnable==1)}", Vector) = (0, 0, 0, 0)
+[ThrySeperator(2, 2, 2)]
+[HideInInspector] ss_start_Decal__mID__ALColorOverrideS ("Color Override--{reference_property:_AudioLinkDecal__mID__ColorOverrideEnabled, persistent_expand:true, default_expand:false}", Float) = 0
+[ThryHideInInspector][ToggleUI] _AudioLinkDecal__mID__ColorOverrideEnabled ("Color Override", Float) = 0
+_AudioLinkDecal__mID__ColorOverride ("Color", Color) = (1,1,1,1)
+[ThryWideEnum(Off, 0, Theme Color 0, 1, Theme Color 1, 2, Theme Color 2, 3, Theme Color 3, 4, ColorChord 0, 5, ColorChord 1, 6, ColorChord 2, 7, ColorChord 3, 8, AL Theme 0, 9, AL Theme 1, 10, AL Theme 2, 11, AL Theme 3, 12)] _AudioLinkDecal__mID__ColorOverrideThemeIndex ("Theme Color", Int) = 0
+[Enum(Bass, 0, Low Mid, 1, High Mid, 2, Treble, 3, Volume, 4)] _AudioLinkDecal__mID__ColorOverrideBand ("Color Override Band", Int) = 0
+[Ramp4(normalized)]_AudioLinkDecal__mID__ColorOverrideRamp ("Color Override Ramp", Vector) = (0, 1, 0, 1)
+[HideInInspector] ss_end_Decal__mID__ALColorOverrideS ("", Float) = 0
+[HideInInspector] s_end_Decal__mID__AudioLink ("Audio Link", Float) = 0
+[HideInInspector] m_end_Decal__mID__ ("Decal", Float) = 0
+//endex
+
+<ms_include_in_last>
+{
+// Emitted by the last instance, so the group closes after every decal. The name picks up that
+// instance's duplicate suffix, which is fine - Thry closes a header on the m_end prefix alone.
+//ifex <ms_stringwriter::AllDecalsDisabled>
+[HideInInspector] m_end_DecalSection ("Decals", Float) = 0
+//endex
+}
+
+#T#PoiDecalsKeywords
+//ifex _DecalEnabled__mIDx__==0
+<ms_include_in_first>{     #pragma shader_feature_fragment GEOM_TYPE_BRANCH }
+<ms_include_in_not_first>{ #pragma shader_feature_local POI_DECAL___mID__ }
+//endex
+
+<ms_include_in_first>
+{
+#pragma shader_feature_local_fragment PROP_DECALMASK
+	<ms_stringbuilder::_ANY_DECAL_KEYWORD>defined(GEOM_TYPE_BRANCH) 
+	<ms_stringbuilder::AllDecalsDisabled>_DecalEnabled__mIDx__==0 
+	<ms_stringbuilder::DecalEnableList>_DecalEnabled__mIDx__ 
+}
+<ms_include_in_not_first>
+{
+	<ms_stringbuilder::_ANY_DECAL_KEYWORD>|| defined(POI_DECAL___mID__) 
+	<ms_stringbuilder::AllDecalsDisabled> && _DecalEnabled__mIDx__==0 
+	<ms_stringbuilder::DecalEnableList>,_DecalEnabled__mIDx__ 
+}
+
+#T#PoiDecalsVariablesExposed
+<ms_include_in_first>
+{
+//ifex <ms_stringwriter::AllDecalsDisabled>
+#if defined(PROP_DECALMASK)
+	float4 _DecalMask_ST;
+	float2 _DecalMaskPan;
+	float _DecalMaskUV;
+#endif
+//endex
+}
+
+//ifex _DecalEnabled__mIDx__==0
+<ms_include_in_first>{     #ifdef GEOM_TYPE_BRANCH }
+<ms_include_in_not_first>{ #ifdef POI_DECAL___mID__ }
+	float _Decal__mID__VideoFitToScale;
+	float _Decal__mID__VideoAspectFix;
+	half _Decal__mID__VideoEmissionStrength;
+	float _Decal__mID__VideoEnabled;
+	half _Decal__mID__UseDecalAlpha;
+	float _Decal__mID__OnlyVideo;
+	half _Decal__mID__FaceMask;
+	float _Decal__mID__MaskChannel;
+	half _Decal__mID__GlobalMask;
+	float _Decal__mID__GlobalMaskBlendType;
+	float _Decal__mID__ApplyGlobalMaskIndex;
+	float _Decal__mID__ApplyGlobalMaskBlendType;
+	float4 _DecalTexture__mIDx___ST;
+	float4 _DecalTexture__mIDx___TexelSize;
+	float2 _DecalTexture__mIDx__Pan;
+	float _DecalTexture__mIDx__UV;
+	half4 _DecalColor__mIDx__;
+	float _DecalColor__mIDx__ThemeIndex;
+	float _DecalTiled__mIDx__;
+	float _DecalMirroredUVMode__mIDx__;
+	float _DecalSymmetryMode__mIDx__;
+	float _Decal__mID__AspectRatioMode;
+	float _DecalBlendType__mIDx__;
+	half _DecalRotation__mIDx__;
+	half3 _DecalScale__mIDx__;
+	float4 _DecalSideOffset__mIDx__;
+	half2 _DecalPosition__mIDx__;
+	half _DecalRotationSpeed__mIDx__;
+	half _DecalEmissionStrength__mIDx__;
+	half _DecalBlendAlpha__mIDx__;
+	half _DecalAlphaIntensity__mIDx__;
+	half _DecalOverrideAlpha__mIDx__;
+	half _DecalHueShiftColorSpace__mIDx__;
+	float _DecalHueShiftSelectOrShift__mIDx__;
+	float _DecalHueShiftEnabled__mIDx__;
+	half _DecalHueShift__mIDx__;
+	float _DecalHueShiftSpeed__mIDx__;
+	half _DecalColorAdjustEnabled__mIDx__;
+	half _DecalSaturation__mIDx__;
+	half _DecalChromatize__mIDx__;
+	half _DecalBrightness__mIDx__;
+	half _DecalGamma__mIDx__;
+	float _Decal__mID__Depth;
+	half _Decal__mID__HueAngleStrength;
+	float _Decal__mID__ChannelSeparationEnable;
+	float _Decal__mID__ChannelSeparation;
+	float _Decal__mID__ChannelSeparationPremultiply;
+	float _Decal__mID__ChannelSeparationHue;
+	float _Decal__mID__ChannelSeparationVertical;
+	float _Decal__mID__ChannelSeparationAngleStrength;
+	float _Decal__mID__OverrideAlphaMode;
+	float _Decal__mID__UseVideoEffects;
+	int _Decal__mID__OnOutlines;
+	#ifdef POI_AUDIOLINK
+		// Audio Link
+		half _AudioLinkDecal__mID__ScaleBand;
+		float4 _AudioLinkDecal__mID__Scale;
+		half _AudioLinkDecal__mID__RotationBand;
+		float2 _AudioLinkDecal__mID__Rotation;
+		half _AudioLinkDecal__mID__AlphaBand;
+		half2 _AudioLinkDecal__mID__Alpha;
+		half _AudioLinkDecal__mID__EmissionBand;
+		half2 _AudioLinkDecal__mID__Emission;
+		float _DecalRotationCTALBand__mID__;
+		float _DecalRotationCTALSpeed__mID__;
+		float _DecalRotationCTALType__mID__;
+		float _AudioLinkDecalCC__mID__;
+		float _AudioLinkDecal__mID__SideBand;
+		float4 _AudioLinkDecal__mID__SideMin;
+		float4 _AudioLinkDecal__mID__SideMax;
+		float2 _AudioLinkDecal__mID__ChannelSeparation;
+		float _AudioLinkDecal__mID__ChannelSeparationBand;
+		half _AudioLinkDecal__mID__ColorOverrideEnabled;
+		half4 _AudioLinkDecal__mID__ColorOverride;
+		float _AudioLinkDecal__mID__ColorOverrideThemeIndex;
+		float _AudioLinkDecal__mID__ColorOverrideBand;
+		half4 _AudioLinkDecal__mID__ColorOverrideRamp;
+	#endif
+#endif
+//endex
+
+#T#PoiDecalsVariables
+<ms_include_in_first>
+{
+//ifex <ms_stringwriter::AllDecalsDisabled>
+#if defined(PROP_DECALMASK)
+	Texture2D _DecalMask;
+#endif
+sampler2D _Udon_VideoTex;//<ms_no_postfix>
+float4 _Udon_VideoTex_TexelSize;//<ms_no_postfix>
+//endex
+}
+
+//ifex _DecalEnabled__mIDx__==0
+<ms_include_in_first>{     #ifdef GEOM_TYPE_BRANCH }
+<ms_include_in_not_first>{ #ifdef POI_DECAL___mID__ }
+	sampler2D _DecalTexture__mIDx__;
+#endif
+//endex
+
+#T#PoiDecalsFunctions
+<ms_include_in_first>
+{
+//ifex <ms_stringwriter::AllDecalsDisabled>
+#if <ms_stringwriter::_ANY_DECAL_KEYWORD>
+	float2 decalUV(float uvNumber, float2 position, half rotation, half rotationSpeed, half2 scale, float4 scaleOffset, float depth, in float symmetryMode, in float mirroredUVMode, in PoiMesh poiMesh, in PoiCam poiCam)
+	{
+		scaleOffset = float4(-scaleOffset.x, scaleOffset.y, -scaleOffset.z, scaleOffset.w);
+		float2 centerOffset = float2((scaleOffset.x + scaleOffset.y) / 2, (scaleOffset.z + scaleOffset.w) / 2);
+		float2 uv = poiMesh.uv[uvNumber];
+		// Copy
+		if (symmetryMode == 1) uv.x = abs(uv.x - 0.5) + 0.5;
+		// Flip
+		if (symmetryMode == 2 && uv.x < 0.5) uv.x = uv.x + 0.5;
+		if ((mirroredUVMode == 1 || mirroredUVMode == 4) && poiMesh.isRightHand) uv.x = 1.0 - uv.x;
+		// Hide
+		if (mirroredUVMode == 2 && poiMesh.isRightHand) uv.x = -1.0;
+		if ((mirroredUVMode == 3 || mirroredUVMode == 4) && !poiMesh.isRightHand) uv.x = -1.0;
+
+		uv += calcParallax(depth + 1, poiCam);
+		float2 decalCenter = position + centerOffset;
+		float theta = radians(rotation + POI_TIME.z * rotationSpeed);
+		float cs, sn;
+		sincos(theta, sn, cs);
+		uv = float2((uv.x - decalCenter.x) * cs - (uv.y - decalCenter.y) * sn + decalCenter.x, (uv.x - decalCenter.x) * sn + (uv.y - decalCenter.y) * cs + decalCenter.y);
+		uv = remap(uv, float2(0, 0) - scale / 2 + position + scaleOffset.xz, scale / 2 + position + scaleOffset.yw, float2(0, 0), float2(1, 1));
+		return uv;
+	}
+	inline float3 decalHueShift(float enabled, float3 color, float shift, float shiftSpeed, float colorSpace, float selectOrShift)
+	{
+		//UNITY_BRANCH
+		if (enabled)
+		{
+			color = hueShift(color, shift + POI_TIME.x * shiftSpeed, colorSpace, selectOrShift);
+		}
+		return color;
+	}
+
+	inline half3 decalColorAdjust(half enabled, half3 color, half saturation, half chromatize, half brightness, half gamma)
+	{
+		if (!enabled)
+		{
+			return color;
+		}
+		if (gamma != 1)
+			color = sign(color) * pow(abs(color), gamma);
+		if (saturation != 0)
+			color = lerp(color, dot(color, float3(0.3, 0.59, 0.11)), -saturation);
+		if (chromatize != 0)
+		{
+			#if !defined(UNITY_COLORSPACE_GAMMA)
+				float3 chromaLinear = color;
+			#else
+				float3 chromaLinear = OpenLitSRGBToLinear(color);
+			#endif
+			chromaLinear = PoiApplyChromatize(chromaLinear, chromatize);
+
+			#if !defined(UNITY_COLORSPACE_GAMMA)
+				color = saturate(chromaLinear);
+			#else
+				color = saturate(OpenLitLinearToSRGB(chromaLinear));
+			#endif
+		}
+		if (brightness != 0)
+			color = color * (brightness + 1);
+		color = saturate(color);
+		return color;
+	}
+
+	inline float applyTilingClipping(float enabled, float2 uv)
+	{
+		float ret = 1;
+		//UNITY_BRANCH
+		if (!enabled)
+		{
+			if (uv.x > 1 || uv.y > 1 || uv.x < 0 || uv.y < 0)
+			{
+				ret = 0;
+			}
+		}
+		return ret;
+	}
+
+	struct PoiDecal
+	{
+		half m_DecalFaceMask;
+		half m_DecalMaskChannel;
+		half m_DecalGlobalMask;
+		half m_DecalGlobalMaskBlendType;
+		float m_DecalApplyGlobalMaskIndex;
+		half m_DecalApplyGlobalMaskBlendType;
+		float4 m_DecalTexture_ST;
+		float2 m_DecalTexturePan;
+		float m_DecalTextureUV;
+		half4 m_DecalColor;
+		float m_DecalColorThemeIndex;
+		float m_DecalTiled;
+		float m_DecalBlendType;
+		half m_DecalRotation;
+		half3 m_DecalScale;
+		float4 m_DecalSideOffset;
+		half2 m_DecalPosition;
+		half m_DecalRotationSpeed;
+		half m_DecalEmissionStrength;
+		half m_DecalBlendAlpha;
+		half m_DecalAlphaIntensity;
+		half m_DecalAlphaBlendMode;
+		half m_DecalHueShiftColorSpace;
+		float m_DecalHueShiftSelectOrShift;
+		float m_DecalHueShiftEnabled;
+		float m_DecalHueShift;
+		float m_DecalHueShiftSpeed;
+		half m_DecalColorAdjustEnabled;
+		half m_DecalSaturation;
+		float m_DecalChromatize;
+		half m_DecalBrightness;
+		float m_DecalGamma;
+		float m_DecalDepth;
+		float m_DecalHueAngleStrength;
+		float m_DecalChannelSeparationEnable;
+		float m_DecalChannelSeparation;
+		float m_DecalChannelSeparationPremultiply;
+		float m_DecalChannelSeparationHue;
+		float m_DecalChannelSeparationVertical;
+		float m_DecalChannelSeparationAngleStrength;
+		half m_DecalOverrideAlphaMode;
+		half m_DecalOverrideAlpha;
+		float m_DecalSymmetryMode;
+		float m_DecalMirroredUVMode;
+		float m_DecalAspectRatioMode;
+
+		#if defined(POI_AUDIOLINK)
+			half m_AudioLinkDecalScaleBand;
+			float4 m_AudioLinkDecalScale;
+			half m_AudioLinkDecalRotationBand;
+			float2 m_AudioLinkDecalRotation;
+			half m_AudioLinkDecalAlphaBand;
+			half2 m_AudioLinkDecalAlpha;
+			half m_AudioLinkDecalEmissionBand;
+			half2 m_AudioLinkDecalEmission;
+			float m_DecalRotationCTALBand;
+			float m_DecalRotationCTALSpeed;
+			float m_DecalRotationCTALType;
+			half m_AudioLinkDecalColorChord;
+			float m_AudioLinkDecalSideBand;
+			float4 m_AudioLinkDecalSideMin;
+			float4 m_AudioLinkDecalSideMax;
+			float2 m_AudioLinkDecalChannelSeparation;
+			float m_AudioLinkDecalChannelSeparationBand;
+			half m_AudioLinkDecalColorOverrideEnabled;
+			half4 m_AudioLinkDecalColorOverride;
+			float m_AudioLinkDecalColorOverrideThemeIndex;
+			half m_AudioLinkDecalColorOverrideBand;
+			half4 m_AudioLinkDecalColorOverrideRamp;
+		#endif
+
+		half4 decalColor;
+		float2 decalScale;
+		float decalRotation;
+		float2 uv;
+		float4 dduv;
+		float4 sideMod;
+		float decalChannelOffset;
+		half4 decalMask;
+		half3 screenEmission;
+		float useScreenEffect;
+		
+		void Init(in float4 DecalMask)
+		{
+			// Only the first four decals map onto the shared RGBA mask; the rest have no channel of
+			// their own and are left unmasked rather than falling back onto someone else's.
+			decalMask = m_DecalMaskChannel > 3 ? 1 : DecalMask;
+			m_DecalMaskChannel = min(m_DecalMaskChannel, 3);
+			decalScale = m_DecalScale.xy;
+		}
+
+		void ApplyAspectRatio(float2 texDimensions)
+		{
+			if (m_DecalAspectRatioMode == 1) // Shrink to Fit
+			{
+				if (texDimensions.x > texDimensions.y)
+					decalScale *= float2(1, texDimensions.y / texDimensions.x);
+				else
+					decalScale *= float2(texDimensions.x / texDimensions.y, 1);
+			}
+			else if (m_DecalAspectRatioMode == 2) // Grow to Fit
+			{
+				if (texDimensions.x > texDimensions.y)
+					decalScale *= float2(1 / (texDimensions.y / texDimensions.x), 1);
+				else
+					decalScale *= float2(1, 1 / (texDimensions.x / texDimensions.y));
+			}
+		}
+
+		void InitAudiolink(in PoiMods poiMods)
+		{
+			#ifdef POI_AUDIOLINK
+			if (poiMods.audioLinkAvailable)
+			{
+				decalScale += lerp(m_AudioLinkDecalScale.xy, m_AudioLinkDecalScale.zw, poiMods.audioLink[m_AudioLinkDecalScaleBand]);
+				sideMod += lerp(m_AudioLinkDecalSideMin, m_AudioLinkDecalSideMax, poiMods.audioLink[m_AudioLinkDecalSideBand]);
+				decalRotation += lerp(m_AudioLinkDecalRotation.x, m_AudioLinkDecalRotation.y, poiMods.audioLink[m_AudioLinkDecalRotationBand]);
+				decalRotation += AudioLinkGetChronoTime(m_DecalRotationCTALType, m_DecalRotationCTALBand) * m_DecalRotationCTALSpeed * 360;
+				decalChannelOffset += lerp(m_AudioLinkDecalChannelSeparation[0], m_AudioLinkDecalChannelSeparation[1], poiMods.audioLink[m_AudioLinkDecalChannelSeparationBand]);
+			}
+			#endif
+		}
+
+		
+
+		void SampleDecalNoTexture(in PoiMods poiMods, in PoiLight poiLight, in PoiMesh poiMesh, in PoiCam poiCam)
+		{
+			uv = decalUV(m_DecalTextureUV, m_DecalPosition, m_DecalRotation + decalRotation, m_DecalRotationSpeed, decalScale, m_DecalSideOffset +sideMod, m_DecalDepth, m_DecalSymmetryMode, m_DecalMirroredUVMode, poiMesh, poiCam);
+			decalColor = float4(poiThemeColor(poiMods, m_DecalColor.rgb, m_DecalColorThemeIndex), m_DecalColor.a);
+			decalColor.rgb = decalHueShift(m_DecalHueShiftEnabled, decalColor.rgb, m_DecalHueShift + poiLight.nDotVCentered * m_DecalHueAngleStrength, m_DecalHueShiftSpeed, m_DecalHueShiftColorSpace, m_DecalHueShiftSelectOrShift);
+			decalColor.rgb = decalColorAdjust(m_DecalColorAdjustEnabled, decalColor.rgb, m_DecalSaturation, m_DecalChromatize, m_DecalBrightness, m_DecalGamma);
+			decalColor.a *= decalMask[m_DecalMaskChannel] * applyTilingClipping(m_DecalTiled, uv);
+		}
+
+		void SampleDecal(sampler2D decalTexture, in PoiMods poiMods, in PoiLight poiLight, in PoiMesh poiMesh, in PoiCam poiCam, float2 scaleMultiplier = float2(1, 1))
+		{
+			uv = decalUV(m_DecalTextureUV, m_DecalPosition, m_DecalRotation + decalRotation, m_DecalRotationSpeed, decalScale * scaleMultiplier, m_DecalSideOffset +sideMod, m_DecalDepth, m_DecalSymmetryMode, m_DecalMirroredUVMode, poiMesh, poiCam);
+			// Adjust derivatives for _ST of decal texture
+			float4 dduv = any(fwidth(uv) > .5) ? 0.001 : float4(ddx(uv) * m_DecalTexture_ST.x, ddy(uv) * m_DecalTexture_ST.y);
+			decalColor = tex2D(decalTexture, poiUV(uv, m_DecalTexture_ST) + m_DecalTexturePan * POI_TIME.x, dduv.xy, dduv.zw) * float4(poiThemeColor(poiMods, m_DecalColor.rgb, m_DecalColorThemeIndex), m_DecalColor.a);
+			decalColor.rgb = decalHueShift(m_DecalHueShiftEnabled, decalColor.rgb, m_DecalHueShift + poiLight.nDotVCentered * m_DecalHueAngleStrength, m_DecalHueShiftSpeed, m_DecalHueShiftColorSpace, m_DecalHueShiftSelectOrShift);
+			decalColor.rgb = decalColorAdjust(m_DecalColorAdjustEnabled, decalColor.rgb, m_DecalSaturation, m_DecalChromatize, m_DecalBrightness, m_DecalGamma);
+			decalColor.a *= decalMask[m_DecalMaskChannel] * applyTilingClipping(m_DecalTiled, uv);
+		}
+
+		void SampleDecalNoAlpha(sampler2D decalTexture, in PoiMods poiMods, in PoiLight poiLight, in PoiMesh poiMesh, in PoiCam poiCam, float2 scaleMultiplier = float2(1, 1))
+		{
+			uv = decalUV(m_DecalTextureUV, m_DecalPosition, m_DecalRotation + decalRotation, m_DecalRotationSpeed, decalScale * scaleMultiplier, m_DecalSideOffset +sideMod, m_DecalDepth, m_DecalSymmetryMode, m_DecalMirroredUVMode, poiMesh, poiCam);
+			// Adjust derivatives for _ST of decal texture
+			float4 dduv = any(fwidth(uv) > .5) ? 0.001 : float4(ddx(uv) * m_DecalTexture_ST.x, ddy(uv) * m_DecalTexture_ST.y);
+			decalColor.rgb = tex2D(decalTexture, poiUV(uv, m_DecalTexture_ST) + m_DecalTexturePan * POI_TIME.x, dduv.xy, dduv.zw) * float4(poiThemeColor(poiMods, m_DecalColor.rgb, m_DecalColorThemeIndex), m_DecalColor.a).rgb;
+			decalColor.rgb = decalHueShift(m_DecalHueShiftEnabled, decalColor.rgb, m_DecalHueShift + poiLight.nDotVCentered * m_DecalHueAngleStrength, m_DecalHueShiftSpeed, m_DecalHueShiftColorSpace, m_DecalHueShiftSelectOrShift);
+			decalColor.rgb = decalColorAdjust(m_DecalColorAdjustEnabled, decalColor.rgb, m_DecalSaturation, m_DecalChromatize, m_DecalBrightness, m_DecalGamma);
+			decalColor.a *= decalMask[m_DecalMaskChannel] * applyTilingClipping(m_DecalTiled, uv);
+		}
+
+		void SampleDecalAlphaOnly(sampler2D decalTexture, in PoiMods poiMods, in PoiLight poiLight, in PoiMesh poiMesh, in PoiCam poiCam, float2 scaleMultiplier = float2(1, 1))
+		{
+			uv = decalUV(m_DecalTextureUV, m_DecalPosition, m_DecalRotation + decalRotation, m_DecalRotationSpeed, decalScale * scaleMultiplier, m_DecalSideOffset +sideMod, m_DecalDepth, m_DecalSymmetryMode, m_DecalMirroredUVMode, poiMesh, poiCam);
+			// Adjust derivatives for _ST of decal texture
+			float4 dduv = any(fwidth(uv) > .5) ? 0.001 : float4(ddx(uv) * m_DecalTexture_ST.x, ddy(uv) * m_DecalTexture_ST.y);
+			decalColor = tex2D(decalTexture, poiUV(uv, m_DecalTexture_ST) + m_DecalTexturePan * POI_TIME.x, dduv.xy, dduv.zw) * float4(poiThemeColor(poiMods, m_DecalColor.rgb, m_DecalColorThemeIndex), m_DecalColor.a);
+			decalColor.rgb = decalColorAdjust(m_DecalColorAdjustEnabled, decalColor.rgb, m_DecalSaturation, m_DecalChromatize, m_DecalBrightness, m_DecalGamma);
+			decalColor.a *= decalMask[m_DecalMaskChannel] * applyTilingClipping(m_DecalTiled, uv);
+		}
+
+		void SampleDecalChannelSeparation(sampler2D decalTexture, in PoiMods poiMods, in PoiLight poiLight, in PoiMesh poiMesh, in PoiCam poiCam)
+		{
+			decalColor = float4(0, 0, 0, 1);
+			decalChannelOffset += m_DecalChannelSeparation + m_DecalChannelSeparationAngleStrength * (m_DecalChannelSeparationAngleStrength > 0 ? (1 - poiLight.nDotVCentered) : poiLight.nDotVCentered);
+			float2 positionOffset = decalChannelOffset * 0.01 * (decalScale.x + decalScale.y) * float2(cos(m_DecalChannelSeparationVertical), sin(m_DecalChannelSeparationVertical));
+			float2 uvSample0 = decalUV(m_DecalTextureUV, m_DecalPosition + positionOffset, m_DecalRotation + decalRotation, m_DecalRotationSpeed, decalScale, m_DecalSideOffset +sideMod, m_DecalDepth, m_DecalSymmetryMode, m_DecalMirroredUVMode, poiMesh, poiCam);
+			float2 uvSample1 = decalUV(m_DecalTextureUV, m_DecalPosition - positionOffset, m_DecalRotation + decalRotation, m_DecalRotationSpeed, decalScale, m_DecalSideOffset +sideMod, m_DecalDepth, m_DecalSymmetryMode, m_DecalMirroredUVMode, poiMesh, poiCam);
+
+			float4 dduvSample0 = any(fwidth(uvSample0) > .5) ? 0.001 : float4(ddx(uvSample0) * m_DecalTexture_ST.x, ddy(uvSample0) * m_DecalTexture_ST.y);
+			float4 dduvSample1 = any(fwidth(uvSample1) > .5) ? 0.001 : float4(ddx(uvSample1) * m_DecalTexture_ST.x, ddy(uvSample1) * m_DecalTexture_ST.y);
+
+			half4 decalTint = float4(poiThemeColor(poiMods, m_DecalColor.rgb, m_DecalColorThemeIndex), m_DecalColor.a);
+			float4 sample0 = tex2D(decalTexture, poiUV(uvSample0, m_DecalTexture_ST) + m_DecalTexturePan * POI_TIME.x, dduvSample0.xy, dduvSample0.zw) * decalTint;
+			float4 sample1 = tex2D(decalTexture, poiUV(uvSample1, m_DecalTexture_ST) + m_DecalTexturePan * POI_TIME.x, dduvSample1.xy, dduvSample1.zw) * decalTint;
+
+			sample0.rgb = decalHueShift(m_DecalHueShiftEnabled, sample0.rgb, m_DecalHueShift + poiLight.nDotVCentered * m_DecalHueAngleStrength, m_DecalHueShiftSpeed, m_DecalHueShiftColorSpace, m_DecalHueShiftSelectOrShift);
+			sample1.rgb = decalHueShift(m_DecalHueShiftEnabled, sample1.rgb, m_DecalHueShift + poiLight.nDotVCentered * m_DecalHueAngleStrength, m_DecalHueShiftSpeed, m_DecalHueShiftColorSpace, m_DecalHueShiftSelectOrShift);
+			sample0.rgb = decalColorAdjust(m_DecalColorAdjustEnabled, sample0.rgb, m_DecalSaturation, m_DecalChromatize, m_DecalBrightness, m_DecalGamma);
+			sample1.rgb = decalColorAdjust(m_DecalColorAdjustEnabled, sample1.rgb, m_DecalSaturation, m_DecalChromatize, m_DecalBrightness, m_DecalGamma);
+
+			half3 channelSeparationColor = HUEtoRGB(frac(m_DecalChannelSeparationHue));
+
+			if (m_DecalChannelSeparationPremultiply)
+			{
+				decalColor.rgb = lerp(sample0 * sample0.a, sample1 * sample1.a, channelSeparationColor);
+			}
+			else
+			{
+				decalColor.rgb = lerp(sample0, sample1, channelSeparationColor);
+			}
+			decalColor.a = 0.5 * (sample0.a + sample1.a);
+			decalColor.a *= decalMask[m_DecalMaskChannel] * max(applyTilingClipping(m_DecalTiled, uvSample0), applyTilingClipping(m_DecalTiled, uvSample1));
+		}
+
+		void Apply(inout float alphaOverride, inout float decalAlpha, inout PoiFragData poiFragData, in PoiMesh poiMesh, in PoiCam poiCam, inout PoiMods poiMods, in PoiLight poiLight)
+		{
+			if (m_DecalGlobalMask > 0)
+			{
+				decalColor.a = maskBlend(decalColor.a, poiMods.globalMask[m_DecalGlobalMask - 1], m_DecalGlobalMaskBlendType);
+			}
+
+			// Hide
+			if (m_DecalMirroredUVMode == 2 && poiMesh.isRightHand) decalColor.a = 0;
+			if ((m_DecalMirroredUVMode == 3 || m_DecalMirroredUVMode == 4) && !poiMesh.isRightHand) decalColor.a = 0;
+
+			half audioLinkDecalAlpha = 0;
+			half audioLinkDecalEmission = 0;
+			#ifdef POI_AUDIOLINK
+			audioLinkDecalEmission = lerp(m_AudioLinkDecalEmission.x, m_AudioLinkDecalEmission.y, poiMods.audioLink[m_AudioLinkDecalEmissionBand]) * poiMods.audioLinkAvailable;
+
+			if (m_AudioLinkDecalColorChord)
+			{
+				if (poiMods.audioLinkAvailable)
+				{
+					decalColor.rgb *= AudioLinkLerp(ALPASS_CCSTRIP + float2(uv.x * AUDIOLINK_WIDTH, 0)).rgb;
+				}
+				else
+				{
+					decalAlpha = 0;
+				}
+			}
+			audioLinkDecalAlpha = lerp(m_AudioLinkDecalAlpha.x, m_AudioLinkDecalAlpha.y, poiMods.audioLink[m_AudioLinkDecalAlphaBand]) * poiMods.audioLinkAvailable;
+
+			if (poiMods.audioLinkAvailable && m_AudioLinkDecalColorOverrideEnabled)
+			{
+				half alColorOverrideIntensity = poiMods.audioLink[m_AudioLinkDecalColorOverrideBand];
+				half alColorOverrideBlend = evalRamp4(alColorOverrideIntensity, m_AudioLinkDecalColorOverrideRamp);
+				if(alColorOverrideBlend > 0)
+				{
+					half3 alOverrideColor = m_AudioLinkDecalColorOverride.rgb;
+					if(m_AudioLinkDecalColorOverrideThemeIndex > 0)
+					{
+						alOverrideColor = poiThemeColor(poiMods, alOverrideColor, m_AudioLinkDecalColorOverrideThemeIndex);
+					}
+					decalColor.rgb = lerp(decalColor.rgb, alOverrideColor, alColorOverrideBlend);
+				}
+			}
+			#endif
+
+			bool faceMaskedOut = false;
+			if (m_DecalFaceMask > 0)
+			{
+				if (m_DecalFaceMask == 1 && !poiMesh.isFrontFace)
+				{
+					decalColor.a *= 0;
+					faceMaskedOut = true;
+				}
+				else if (m_DecalFaceMask == 2 && poiMesh.isFrontFace)
+				{
+					decalColor.a *= 0;
+					faceMaskedOut = true;
+				}
+			}
+
+			half decalAlphaMixed = decalColor.a * saturate(m_DecalBlendAlpha + audioLinkDecalAlpha);
+
+			if (m_DecalOverrideAlpha && !faceMaskedOut)
+			{
+				half finalAlpha = decalAlphaMixed;
+				half maskWeight = decalMask[m_DecalMaskChannel];
+				
+				// Apply global mask if set
+				if (m_DecalGlobalMask > 0)
+				{
+					maskWeight = maskBlend(maskWeight, poiMods.globalMask[m_DecalGlobalMask - 1], m_DecalGlobalMaskBlendType);
+				}
+				
+				// Mode 0: Everywhere, Mode 1: Bounds, Mode 2: Everywhere Masked, Mode 3: Bounds Masked
+				bool applyMask = (m_DecalOverrideAlphaMode == 2 || m_DecalOverrideAlphaMode == 3);
+				bool checkBounds = (m_DecalOverrideAlphaMode == 1 || m_DecalOverrideAlphaMode == 3) && !m_DecalTiled;
+				
+				if (!checkBounds || (uv.x >= 0 && uv.x <= 1 && uv.y >= 0 && uv.y <= 1))
+				{
+					half weight = applyMask ? maskWeight : 1.0;
+					
+					if (m_DecalOverrideAlpha == 1) poiFragData.alpha = lerp(poiFragData.alpha, finalAlpha, weight);
+					if (m_DecalOverrideAlpha == 2) poiFragData.alpha = lerp(poiFragData.alpha, saturate(poiFragData.alpha * finalAlpha), weight);
+					if (m_DecalOverrideAlpha == 3) poiFragData.alpha = lerp(poiFragData.alpha, saturate(poiFragData.alpha + finalAlpha), weight);
+					if (m_DecalOverrideAlpha == 4) poiFragData.alpha = lerp(poiFragData.alpha, saturate(poiFragData.alpha - finalAlpha), weight);
+					if (m_DecalOverrideAlpha == 5) poiFragData.alpha = lerp(poiFragData.alpha, min(poiFragData.alpha, finalAlpha), weight);
+					if (m_DecalOverrideAlpha == 6) poiFragData.alpha = lerp(poiFragData.alpha, max(poiFragData.alpha, finalAlpha), weight);
+				}
+			}
+
+			decalAlphaMixed = saturate(m_DecalAlphaIntensity * decalAlphaMixed);
+
+			if (m_DecalApplyGlobalMaskIndex > 0)
+			{
+				applyToGlobalMask(poiMods, m_DecalApplyGlobalMaskIndex - 1, m_DecalApplyGlobalMaskBlendType, decalAlphaMixed);
+			}
+
+			poiFragData.baseColor.rgb = lerp(poiFragData.baseColor.rgb, customBlend(poiFragData.baseColor.rgb, decalColor.rgb, m_DecalBlendType), decalAlphaMixed);
+			if (useScreenEffect)
+			{
+				// Opaque screen decal occludes emission already on the surface (the main Video Effects glow of
+				// the texture below) so it can't bleed through. Then conributes it's own screen glow.
+				poiFragData.emission = lerp(poiFragData.emission, screenEmission, decalAlphaMixed);
+			}
+			else
+			{
+				// Mix the incoming emission so it doesn't bleed through
+				poiFragData.emission *= (1.0 - decalAlphaMixed);
+				poiFragData.emission += decalColor.rgb * decalColor.a * max(m_DecalEmissionStrength + audioLinkDecalEmission, 0);
+			}
+			
+		}
+		float2 GetVideoAspectRatio(float2 videoDimensions, float CorrectionType, float fitToScale)
+		{
+			float2 AspectRatioMultiplier = float2(1, 1);
+			if (fitToScale)
+			{
+				float2 decalScale = m_DecalScale.xy + float2(m_DecalSideOffset.x + m_DecalSideOffset.y, m_DecalSideOffset.z + m_DecalSideOffset.w);
+				if (decalScale.x > decalScale.y)
+				{
+					videoDimensions.xy *= float2((decalScale.y / decalScale.x), 1);
+				}
+				else
+				{
+					videoDimensions.xy *= float2(1, (decalScale.x / decalScale.y));
+				}
+			}
+
+			if (CorrectionType != 2)
+			{
+				if (CorrectionType == 0)
+				{
+					if (videoDimensions.x > videoDimensions.y)
+					{
+						AspectRatioMultiplier = float2(1, videoDimensions.y / videoDimensions.x);
+					}
+					else
+					{
+						AspectRatioMultiplier = float2(videoDimensions.x / videoDimensions.y, 1);
+					}
+				}
+				else if (CorrectionType == 1)
+				{
+					if (videoDimensions.x > videoDimensions.y)
+					{
+						AspectRatioMultiplier = float2(1 / (videoDimensions.y / videoDimensions.x), 1);
+					}
+					else
+					{
+						AspectRatioMultiplier = float2(1, 1 / (videoDimensions.x / videoDimensions.y));
+					}
+				}
+			}
+			return AspectRatioMultiplier;
+		}
+
+		void ApplyVideoEffects(float useVideoEffects, in PoiCam poiCam, in PoiMesh poiMesh)
+		{
+			#if defined(POI_VIDEO_EFFECTS) && (defined(POI_PASS_BASE) || defined(POI_PASS_ADD) || defined(POI_PASS_META))
+			if (useVideoEffects && _VideoEffectsEnable >= 0.5)
+			{
+				PoiScreenEffect decalSE;
+				decalSE.type = _VideoType;
+				decalSE.backlight = _VideoBacklight;
+				decalSE.contrast = _VideoContrast;
+				decalSE.saturation = _VideoSaturation;
+				decalSE.resolution = _VideoResolution;
+				decalSE.crtRefreshRate = _VideoCRTRefreshRate;
+				decalSE.crtPixelEnergizedTime = _VideoCRTPixelEnergizedTime;
+
+				half3 decalScreenPixels = 1.0h;
+				#if defined(PROP_VIDEOPIXELTEXTURE) || !defined(OPTIMIZER_ENABLED)
+					decalScreenPixels = POI2D_SAMPLER(_VideoPixelTexture, _MainTex, poiUV(poiMesh.uv[_VideoPixelTextureUV], _VideoPixelTexture_ST) * decalSE.resolution);
+				#endif
+
+				// Drive the screen UV from the mesh's main-tex UV (scale-independent), matching the main effect.
+				float2 screenUV = poiMesh.uv[_MainTexUV];
+				if (_VideoPixelateToResolution >= 0.5)
+				{
+					screenUV = poiSnapUVToGrid(screenUV, _VideoResolution);
+				}
+				screenUV = poiUV(screenUV, _MainTex_ST) + POI_TIME.x * _MainTexPan;
+
+				poiApplyScreenEffect(decalColor, decalSE, decalScreenPixels, screenUV, poiCam, poiMesh);
+
+				useScreenEffect = 1;
+				screenEmission = _VideoEmissionEnabled ? decalColor.rgb : (float3)0;
+			}
+			#endif
+		}
+	};
+#endif
+//endex
+}
+
+//ifex _DecalEnabled__mIDx__==0
+<ms_include_in_first>{     #ifdef GEOM_TYPE_BRANCH }
+<ms_include_in_not_first>{ #ifdef POI_DECAL___mID__ }
+	void applyDecals(in half4 decalMask, inout PoiFragData poiFragData, in PoiMesh poiMesh, in PoiCam poiCam, inout PoiMods poiMods, in PoiLight poiLight)
+	{
+		// check if _Udon_VideoTex is greater than 16 pixels in width
+		float udonVideoTexAvailable = 0;
+		float2 udonVideoAspectRatio = 1;
+		if (_Udon_VideoTex_TexelSize.z > 16)
+		{
+			udonVideoTexAvailable = 1;
+		}
+
+		half decalAlpha = 1;
+		half alphaOverride = 0;
+
+		PoiDecal decalData;
+		PoiInitStruct(PoiDecal, decalData)
+		decalData.m_DecalFaceMask = _Decal__mID__FaceMask;
+		decalData.m_DecalMaskChannel = _Decal__mID__MaskChannel;
+		decalData.m_DecalGlobalMask = _Decal__mID__GlobalMask;
+		decalData.m_DecalGlobalMaskBlendType = _Decal__mID__GlobalMaskBlendType;
+		decalData.m_DecalApplyGlobalMaskIndex = _Decal__mID__ApplyGlobalMaskIndex;
+		decalData.m_DecalApplyGlobalMaskBlendType = _Decal__mID__ApplyGlobalMaskBlendType;
+		decalData.m_DecalTexture_ST = _DecalTexture__mIDx___ST;
+		decalData.m_DecalTexturePan = _DecalTexture__mIDx__Pan;
+		decalData.m_DecalTextureUV = _DecalTexture__mIDx__UV;
+		decalData.m_DecalColor = _DecalColor__mIDx__;
+		decalData.m_DecalColorThemeIndex = _DecalColor__mIDx__ThemeIndex;
+		decalData.m_DecalTiled = _DecalTiled__mIDx__;
+		decalData.m_DecalBlendType = _DecalBlendType__mIDx__;
+		decalData.m_DecalRotation = _DecalRotation__mIDx__;
+		decalData.m_DecalScale = _DecalScale__mIDx__;
+		decalData.m_DecalSideOffset = _DecalSideOffset__mIDx__;
+		decalData.m_DecalPosition = _DecalPosition__mIDx__;
+		decalData.m_DecalRotationSpeed = _DecalRotationSpeed__mIDx__;
+		decalData.m_DecalEmissionStrength = _DecalEmissionStrength__mIDx__;
+		decalData.m_DecalBlendAlpha = _DecalBlendAlpha__mIDx__;
+		decalData.m_DecalAlphaIntensity = _DecalAlphaIntensity__mIDx__;
+		decalData.m_DecalOverrideAlpha = _DecalOverrideAlpha__mIDx__;
+		decalData.m_DecalHueShiftEnabled = _DecalHueShiftEnabled__mIDx__;
+		decalData.m_DecalHueShiftColorSpace = _DecalHueShiftColorSpace__mIDx__;
+		decalData.m_DecalHueShiftSelectOrShift = _DecalHueShiftSelectOrShift__mIDx__;
+		decalData.m_DecalHueShift = _DecalHueShift__mIDx__;
+		decalData.m_DecalHueShiftSpeed = _DecalHueShiftSpeed__mIDx__;
+		decalData.m_DecalColorAdjustEnabled = _DecalColorAdjustEnabled__mIDx__;
+		decalData.m_DecalSaturation = _DecalSaturation__mIDx__;
+		decalData.m_DecalChromatize = _DecalChromatize__mIDx__;
+		decalData.m_DecalBrightness = _DecalBrightness__mIDx__;
+		decalData.m_DecalGamma = _DecalGamma__mIDx__;
+		decalData.m_DecalDepth = _Decal__mID__Depth;
+		decalData.m_DecalHueAngleStrength = _Decal__mID__HueAngleStrength;
+		decalData.m_DecalChannelSeparationEnable = _Decal__mID__ChannelSeparationEnable;
+		decalData.m_DecalChannelSeparation = _Decal__mID__ChannelSeparation;
+		decalData.m_DecalChannelSeparationPremultiply = _Decal__mID__ChannelSeparationPremultiply;
+		decalData.m_DecalChannelSeparationHue = _Decal__mID__ChannelSeparationHue;
+		decalData.m_DecalChannelSeparationVertical = _Decal__mID__ChannelSeparationVertical;
+		decalData.m_DecalChannelSeparationAngleStrength = _Decal__mID__ChannelSeparationAngleStrength;
+		decalData.m_DecalOverrideAlphaMode = _Decal__mID__OverrideAlphaMode;
+		decalData.m_DecalMirroredUVMode = _DecalMirroredUVMode__mIDx__;
+		decalData.m_DecalSymmetryMode = _DecalSymmetryMode__mIDx__;
+		decalData.m_DecalAspectRatioMode = _Decal__mID__AspectRatioMode;
+
+		decalData.Init(decalMask);
+		#if defined(PROP_DECALTEXTURE__mIDx__) || !defined(OPTIMIZER_ENABLED)
+			decalData.ApplyAspectRatio(_DecalTexture__mIDx___TexelSize.zw);
+		#endif
+
+		#if defined(POI_AUDIOLINK)
+			decalData.m_AudioLinkDecalScaleBand = _AudioLinkDecal__mID__ScaleBand;
+			decalData.m_AudioLinkDecalScale = _AudioLinkDecal__mID__Scale;
+			decalData.m_AudioLinkDecalRotationBand = _AudioLinkDecal__mID__RotationBand;
+			decalData.m_AudioLinkDecalRotation = _AudioLinkDecal__mID__Rotation;
+			decalData.m_AudioLinkDecalAlphaBand = _AudioLinkDecal__mID__AlphaBand;
+			decalData.m_AudioLinkDecalAlpha = _AudioLinkDecal__mID__Alpha;
+			decalData.m_AudioLinkDecalEmissionBand = _AudioLinkDecal__mID__EmissionBand;
+			decalData.m_AudioLinkDecalEmission = _AudioLinkDecal__mID__Emission;
+			decalData.m_DecalRotationCTALBand = _DecalRotationCTALBand__mID__;
+			decalData.m_DecalRotationCTALSpeed = _DecalRotationCTALSpeed__mID__;
+			decalData.m_DecalRotationCTALType = _DecalRotationCTALType__mID__;
+			decalData.m_AudioLinkDecalColorChord = _AudioLinkDecalCC__mID__;
+			decalData.m_AudioLinkDecalSideBand = _AudioLinkDecal__mID__SideBand;
+			decalData.m_AudioLinkDecalSideMin = _AudioLinkDecal__mID__SideMin;
+			decalData.m_AudioLinkDecalSideMax = _AudioLinkDecal__mID__SideMax;
+			decalData.m_AudioLinkDecalChannelSeparation = _AudioLinkDecal__mID__ChannelSeparation;
+			decalData.m_AudioLinkDecalChannelSeparationBand = _AudioLinkDecal__mID__ChannelSeparationBand;
+			decalData.m_AudioLinkDecalColorOverrideEnabled = _AudioLinkDecal__mID__ColorOverrideEnabled;
+			decalData.m_AudioLinkDecalColorOverride = _AudioLinkDecal__mID__ColorOverride;
+			decalData.m_AudioLinkDecalColorOverrideThemeIndex = _AudioLinkDecal__mID__ColorOverrideThemeIndex;
+			decalData.m_AudioLinkDecalColorOverrideBand = _AudioLinkDecal__mID__ColorOverrideBand;
+			decalData.m_AudioLinkDecalColorOverrideRamp = _AudioLinkDecal__mID__ColorOverrideRamp;
+
+			decalData.InitAudiolink(poiMods);
+		#endif
+
+		bool decalApply = true;
+		#if defined(POI_PASS_OUTLINE)
+			decalApply = _Decal__mID__OnOutlines >= 0.5;
+		#endif
+		if (_Decal__mID__VideoEnabled < 0.5)
+		{
+
+			#if defined(PROP_DECALTEXTURE__mIDx__) || !defined(OPTIMIZER_ENABLED)
+				//ifex _Decal__mID__ChannelSeparationEnable==0
+				if (_Decal__mID__ChannelSeparationEnable >= 0.5)
+				{
+					decalData.SampleDecalChannelSeparation(_DecalTexture__mIDx__, poiMods, poiLight, poiMesh, poiCam);
+				}
+				//endex
+				//ifex _Decal__mID__ChannelSeparationEnable==1
+				if (_Decal__mID__ChannelSeparationEnable < 0.5)
+				{
+					decalData.SampleDecal(_DecalTexture__mIDx__, poiMods, poiLight, poiMesh, poiCam);
+				}
+				//endex
+			#else
+				decalData.SampleDecalNoTexture(poiMods, poiLight, poiMesh, poiCam);
+			#endif
+		}
+		else
+		{
+			udonVideoAspectRatio = decalData.GetVideoAspectRatio(_Udon_VideoTex_TexelSize.zw, _Decal__mID__VideoAspectFix, _Decal__mID__VideoFitToScale);
+			
+			if (_Decal__mID__OnlyVideo >= 0.5)
+			{
+				if (udonVideoTexAvailable)
+				{
+					decalData.m_DecalEmissionStrength += _Decal__mID__VideoEmissionStrength;
+					if (_Decal__mID__UseDecalAlpha >= 0.5)
+					{
+						decalData.SampleDecal(_DecalTexture__mIDx__, poiMods, poiLight, poiMesh, poiCam);
+						decalData.SampleDecalNoAlpha(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio);
+					}
+					else
+					{
+						decalData.SampleDecal(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio);
+					}
+				}
+				else
+				{
+					decalApply = false;
+				}
+			}
+			else
+			{
+				decalData.SampleDecal(_DecalTexture__mIDx__, poiMods, poiLight, poiMesh, poiCam);
+				if (udonVideoTexAvailable)
+				{
+					decalData.m_DecalEmissionStrength += _Decal__mID__VideoEmissionStrength;
+					if (_Decal__mID__UseDecalAlpha >= 0.5)
+					{
+						decalData.SampleDecalNoAlpha(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio);
+					}
+					else
+					{
+						decalData.SampleDecal(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio);
+					}
+				}
+			}
+		}
+		if (decalApply)
+		{
+			decalData.ApplyVideoEffects(_Decal__mID__UseVideoEffects, poiCam, poiMesh);
+			decalData.Apply(alphaOverride, decalAlpha, poiFragData, poiMesh, poiCam, poiMods, poiLight);
+		}
+	}
+#endif
+//endex
+
+#T#PoiDecalsFunctionCalls
+<ms_include_in_first>
+{
+//ifex <ms_stringwriter::AllDecalsDisabled>
+#if <ms_stringwriter::_ANY_DECAL_KEYWORD>
+	// Sampled once and handed to every decal; each picks a channel with its Mask Channel property.
+	half4 poiDecalMask = 1;//<ms_no_postfix>
+	#if defined(PROP_DECALMASK)
+		poiDecalMask = POI2D_SAMPLER_PAN(_DecalMask, _MainTex, poiUV(poiMesh.uv[_DecalMaskUV], _DecalMask_ST), _DecalMaskPan);
+	#endif
+#endif
+//endex
+}
+
+//ifex _DecalEnabled__mIDx__==0
+<ms_include_in_first>{     #ifdef GEOM_TYPE_BRANCH }
+<ms_include_in_not_first>{ #ifdef POI_DECAL___mID__ }
+	applyDecals(poiDecalMask, poiFragData, poiMesh, poiCam, poiMods, poiLight);
+#endif
+//endex
+
+<ms_include_in_last>
+{
+//ifex <ms_stringwriter::AllDecalsDisabled>
+#if <ms_stringwriter::_ANY_DECAL_KEYWORD>
+	#K#DECALS_HOOK
+#endif
+//endex
+}

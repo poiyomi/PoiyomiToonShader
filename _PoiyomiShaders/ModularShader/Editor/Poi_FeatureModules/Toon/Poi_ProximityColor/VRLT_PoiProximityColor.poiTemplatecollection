@@ -1,0 +1,107 @@
+#T#PoiProximityColorProperties
+//ifex _FXProximityColor==0
+[HideInInspector] m_start_FXProximityColor (" Proximity Color--{reference_property:_FXProximityColor,button_help:{text:Tutorial,action:{type:URL,data:https://www.poiyomi.com/special-fx/proximity-color},hover:Documentation}}", Float) = 0
+[ThryHideInInspector][ToggleUI]_FXProximityColor ("Enable", Float) = 0
+_FXProximityColorMinColor ("Min Color", Color) = (0, 0, 0, 1)
+[ThryHideInInspector][ThryWideEnum(Off, 0, Theme Color 0, 1, Theme Color 1, 2, Theme Color 2, 3, Theme Color 3, 4, ColorChord 0, 5, ColorChord 1, 6, ColorChord 2, 7, ColorChord 3, 8, AL Theme 0, 9, AL Theme 1, 10, AL Theme 2, 11, AL Theme 3, 12)] _FXProximityColorMinColorThemeIndex ("", Int) = 0
+_FXProximityColorMaxColor ("Max Color", Color) = (1, 1, 1, 1)
+[ThryHideInInspector][ThryWideEnum(Off, 0, Theme Color 0, 1, Theme Color 1, 2, Theme Color 2, 3, Theme Color 3, 4, ColorChord 0, 5, ColorChord 1, 6, ColorChord 2, 7, ColorChord 3, 8, AL Theme 0, 9, AL Theme 1, 10, AL Theme 2, 11, AL Theme 3, 12)] _FXProximityColorMaxColorThemeIndex ("", Int) = 0
+[ToggleUI]_FXProximityColorBackFace ("Force BackFace Color", Float) = 0
+[HideInInspector] s_start_FXProximityColorTransition ("Transition--{persistent_expand:true, default_expand:true}", Float) = 0
+[Enum(Object Position, 0, Pixel Position, 1)]_FXProximityColorType ("Distance Type", Int) = 1
+_FXProximityColorMinDistance ("Min Distance", Float) = 0
+_FXProximityColorMaxDistance ("Max Distance", Float) = 1
+[Curve4]_FXProximityColorCurve ("Transition Curve", Vector) = (0, 0.3333333, 0.6666667, 1)
+[ToggleUI]_FXProximityColorSolid ("Solid Transition", Float) = 0
+_FXProximityColorEdgeColor ("Edge Color--{condition_showS:_FXProximityColorSolid==1}", Color) = (1, 1, 1, 1)
+_FXProximityColorEdgeWidth ("Edge Width--{condition_showS:_FXProximityColorSolid==1}", Float) = 0.05
+[HideInInspector] s_end_FXProximityColorTransition ("Transition", Float) = 0
+[HideInInspector] s_start_FXProximityColorOverride ("Color Options--{default_expand:false}", Float) = 0
+[ToggleUI]_FXProximityColorOverrideColor ("Override Color", Float) = 1
+[ToggleUI]_FXProximityColorOverrideAlpha ("Override Alpha", Float) = 0
+[ToggleUI]_FXProximityColorOverrideEmission ("Override Emission", Float) = 0
+[HideInInspector] s_end_FXProximityColorOverride ("Color Options", Float) = 0
+[HideInInspector] m_end_FXProximityColor ("", Float) = 0
+//endex
+
+#T#PoiProximityColorVariablesExposed
+//ifex _FXProximityColor==0
+half _FXProximityColor;
+float _FXProximityColorType;
+float _FXProximityColorMinDistance;
+float _FXProximityColorMaxDistance;
+float4 _FXProximityColorCurve;
+int _FXProximityColorSolid;
+half4 _FXProximityColorEdgeColor;
+half _FXProximityColorEdgeWidth;
+half4 _FXProximityColorMinColor;
+half4 _FXProximityColorMaxColor;
+float _FXProximityColorMinColorThemeIndex;
+float _FXProximityColorMaxColorThemeIndex;
+int _FXProximityColorBackFace;
+int _FXProximityColorOverrideColor;
+int _FXProximityColorOverrideAlpha;
+int _FXProximityColorOverrideEmission;
+//endex
+
+#T#PoiProximityColorFunctionCalls
+//ifex _FXProximityColor==0
+if (_FXProximityColor >= 0.5)
+{
+	float3 position = _FXProximityColorType ? poiMesh.worldPos : poiMesh.objectPosition;
+	float dist = distance(position, poiCam.worldPos);
+	float lerpVal = inverseLerp(_FXProximityColorMinDistance, _FXProximityColorMaxDistance, dist);
+	lerpVal = poiSampleCurve4(_FXProximityColorCurve, lerpVal);
+	float halfW = saturate(_FXProximityColorEdgeWidth * 0.5);
+	bool inEdge = (_FXProximityColorSolid >= 0.5) && (lerpVal > (0.5 - halfW)) && (lerpVal < (0.5 + halfW));
+	
+	if (_FXProximityColorSolid >= 0.5)
+	{
+		lerpVal = step(0.5, lerpVal);
+	}
+	half3 proxColor = lerp(
+		poiThemeColor(poiMods, _FXProximityColorMinColor.rgb, _FXProximityColorMinColorThemeIndex),
+		poiThemeColor(poiMods, _FXProximityColorMaxColor.rgb, _FXProximityColorMaxColorThemeIndex),
+		lerpVal);
+
+	if (_FXProximityColorOverrideColor >= 0.5)
+	{
+		poiFragData.finalColor *= proxColor;
+		poiFragData.finalColor *= inEdge ? _FXProximityColorEdgeColor.rgb : 1.0;
+	}
+	
+	if (_FXProximityColorOverrideEmission >= 0.5)
+	{
+		poiFragData.emission *= proxColor;
+		poiFragData.emission *= inEdge ? _FXProximityColorEdgeColor.rgb : 1.0;
+	}
+
+	if (_FXProximityColorBackFace >= 0.5)
+	{
+		poiFragData.finalColor = lerp(
+			poiFragData.finalColor * _FXProximityColorMinColor.rgb,
+			poiFragData.finalColor,
+			saturate(poiMesh.isFrontFace));
+	}
+}
+//endex
+
+#T#PoiProximityColorAlphaReplace
+//ifex _FXProximityColor==0
+if (_FXProximityColor >= 0.5 && _FXProximityColorOverrideAlpha >= 0.5)
+{
+	float3 position = _FXProximityColorType ? poiMesh.worldPos : poiMesh.objectPosition;
+	float dist = distance(position, poiCam.worldPos);
+	float lerpVal = inverseLerp(_FXProximityColorMinDistance, _FXProximityColorMaxDistance, dist);
+	lerpVal = poiSampleCurve4(_FXProximityColorCurve, lerpVal);
+	if (_FXProximityColorSolid >= 0.5)
+	{
+		lerpVal = step(0.5, lerpVal);
+	}
+	poiFragData.alpha *= lerp(_FXProximityColorMinColor.a, _FXProximityColorMaxColor.a, lerpVal);
+
+	#if defined(POI_PASS_SHADOW) || defined(POI_PASS_DEPTH_ONLY) || defined(POI_PASS_DEPTH_NORMALS)
+		poiFragData.alpha = poiFragData.alpha < 1.0 ? 0 : 1.0;
+	#endif
+}
+//endex

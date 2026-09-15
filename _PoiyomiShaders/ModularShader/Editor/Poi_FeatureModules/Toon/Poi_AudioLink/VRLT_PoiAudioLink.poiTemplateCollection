@@ -1,0 +1,488 @@
+#T#PoiAudioLinkProperties
+//ifex _EnableAudioLink==0
+[HideInInspector] m_AudioLinkCategory (" Audio Link ♫--{reference_property:_EnableAudioLink, button_help:{text:Tutorial,action:{type:URL,data:https://www.poiyomi.com/audio-link/},hover:Documentation}}", Float) = 0
+[HideInInspector] m_start_audioLink ("Audio Link ♫", Float) = 1
+[HideInInspector][ThryToggle(POI_AUDIOLINK)] _EnableAudioLink ("Enabled", Float) = 0
+[Helpbox(1, 3, 1)] _AudioLinkHelp ("This section houses the global controls for Audio Link. When activating this feature, controls for individual configurations will be exposed under their respective sections (Emission, Dissolve, etc.)", Int) = 0
+[ToggleUI] _AudioLinkAnimToggle ("Anim Toggle", Float) = 1
+/*
+_AudioLinkDelay ("Delay", Range(0, 1)) = 0
+[ToggleUI]_AudioLinkCCStripY ("CC Strip Y UV", Float) = 0
+*/
+[HideInInspector] s_start_Smoothing ("Smoothing--{persistent_expand:true,default_expand:true}", Float) = 1
+_AudioLinkSmoothingBass ("Bass", Range(0, 1)) = 0
+_AudioLinkSmoothingLowMid ("Low Mid", Range(0, 1)) = 0
+_AudioLinkSmoothingHighMid ("High Mid", Range(0, 1)) = 0
+_AudioLinkSmoothingTreble ("Treble", Range(0, 1)) = 0
+[HideInInspector] s_end_Smoothing ("Smoothing", Float) = 0
+[HideInInspector] s_start_audioLinkDebug ("Debug / Data Visualizations--{reference_property:_AudioLinkDebugEnabled,persistent_expand:true}", Float) = 0
+[HideInInspector][DoNotAnimate][ThryToggleUI(false)]_AudioLinkDebugEnabled ("Debug", Float) = 0
+[ThryWideEnum(Waveform, 0, DFT, 1, Autocorrelator, 9, Bass, 2, Low Mids, 3, High Mids, 4, Treble, 5, Volume, 12, Color Chord Colors, 6, CC Strip, 7, CC Strip Y, 11, CC Lights, 8, Chronotensity, 10)] _AudioLinkDebugVisualize ("Visualize", Int) = 0
+[HideInInspector] s_end_audioLinkDebug ("Debug", Float) = 0
+[HideInInspector] m_end_audioLink ("Audio Link", Float) = 0
+
+[HideInInspector] m_start_audioLinkOverrides ("Overrides", Float) = 0
+[HideInInspector] s_start_AudioLinkBandOverrides ("Band Overrides--{reference_property:_AudioLinkBandOverridesEnabled,persistent_expand:true,default_expand:true}", Float) = 1
+[ThryHideInInspector][ToggleUI] _AudioLinkBandOverridesEnabled ("Band Overrides", Float) = 0
+[VectorToSliders(Bass, 0, 1, Low Mid, 0, 1, High Mid, 0, 1, Treble, 0, 1)]_AudioLinkBandOverrideSliders ("Band Override Sliders", Vector) = (0, 0, 0, 0)
+[HideInInspector] s_end_AudioLinkBandOverrides ("Audio Link", Float) = 0
+[HideInInspector] m_end_audioLinkOverrides ("Overrides", Float) = 0
+//endex
+#K#AUDIOLINK_PROPERTIES
+#T#PoiAudioLinkKeywords
+//ifex _EnableAudioLink==0
+#pragma shader_feature_local POI_AUDIOLINK
+//endex
+
+#T#PoiAudioLinkMacrosAndDefines
+//ifex _EnableAudioLink==0
+#ifdef POI_AUDIOLINK
+    // Map of where features in AudioLink are.
+    #define ALPASS_DFT                      uint2(0, 4)   //Size: 128, 2
+    #define ALPASS_WAVEFORM                 uint2(0, 6)   //Size: 128, 16
+    #define ALPASS_AUDIOLINK                uint2(0, 0)   //Size: 128, 4
+    #define ALPASS_AUDIOBASS                uint2(0, 0)   //Size: 128, 1
+    #define ALPASS_AUDIOLOWMIDS             uint2(0, 1)   //Size: 128, 1
+    #define ALPASS_AUDIOHIGHMIDS            uint2(0, 2)   //Size: 128, 1
+    #define ALPASS_AUDIOTREBLE              uint2(0, 3)   //Size: 128, 1
+    #define ALPASS_AUDIOLINKHISTORY         uint2(1, 0)   //Size: 127, 4
+    #define ALPASS_GENERALVU                uint2(0, 22)  //Size: 12, 1
+    #define ALPASS_CCINTERNAL               uint2(12, 22) //Size: 12, 2
+    #define ALPASS_CCCOLORS                 uint2(25, 22) //Size: 11, 1
+    #define ALPASS_CCSTRIP                  uint2(0, 24)  //Size: 128, 1
+    #define ALPASS_CCLIGHTS                 uint2(0, 25)  //Size: 128, 2
+    #define ALPASS_AUTOCORRELATOR           uint2(0, 27)  //Size: 128, 1
+    #define ALPASS_GENERALVU_INSTANCE_TIME  uint2(2, 22)
+    #define ALPASS_GENERALVU_LOCAL_TIME     uint2(3, 22)
+    #define ALPASS_GENERALVU_NETWORK_TIME   uint2(4, 22)
+    #define ALPASS_GENERALVU_PLAYERINFO     uint2(6, 22)
+    // Added in version 2.5
+    #define ALPASS_FILTEREDAUDIOLINK        uint2(0, 28)  //Size: 16, 4
+    // Added in version 2.6
+    #define ALPASS_CHRONOTENSITY            uint2(16, 28) //Size: 8, 4
+    #define ALPASS_THEME_COLOR0             uint2(0, 23)
+    #define ALPASS_THEME_COLOR1             uint2(1, 23)
+    #define ALPASS_THEME_COLOR2             uint2(2, 23)
+    #define ALPASS_THEME_COLOR3             uint2(3, 23)
+    #define ALPASS_FILTEREDVU               uint2(24, 28) //Size: 4, 4
+    #define ALPASS_FILTEREDVU_INTENSITY     uint2(24, 28) //Size: 4, 1
+    #define ALPASS_FILTEREDVU_MARKER        uint2(24, 29) //Size: 4, 1
+
+    // Some basic constants to use (Note, these should be compatible with
+    // future version of AudioLink, but may change.
+    #define AUDIOLINK_SAMPHIST              3069        // Internal use for algos, do not change.
+    #define AUDIOLINK_SAMPLEDATA24          2046
+    #define AUDIOLINK_EXPBINS               24
+    #define AUDIOLINK_EXPOCT                10
+    #define AUDIOLINK_ETOTALBINS (AUDIOLINK_EXPBINS * AUDIOLINK_EXPOCT)
+    #define AUDIOLINK_WIDTH                 128
+    #define AUDIOLINK_SPS                   48000       // Samples per second
+    #define AUDIOLINK_ROOTNOTE              0
+    #define AUDIOLINK_4BAND_FREQFLOOR       0.123
+    #define AUDIOLINK_4BAND_FREQCEILING     1
+    #define AUDIOLINK_BOTTOM_FREQUENCY      13.75
+    #define AUDIOLINK_BASE_AMPLITUDE        2.5
+    #define AUDIOLINK_DELAY_COEFFICIENT_MIN 0.3
+    #define AUDIOLINK_DELAY_COEFFICIENT_MAX 0.9
+    #define AUDIOLINK_DFT_Q                 4.0
+    #define AUDIOLINK_TREBLE_CORRECTION     5.0
+
+    // ColorChord constants
+    #define COLORCHORD_EMAXBIN              192
+    #define COLORCHORD_IIR_DECAY_1          0.90
+    #define COLORCHORD_IIR_DECAY_2          0.85
+    #define COLORCHORD_CONSTANT_DECAY_1     0.01
+    #define COLORCHORD_CONSTANT_DECAY_2     0.0
+    #define COLORCHORD_NOTE_CLOSEST         3.0
+    #define COLORCHORD_NEW_NOTE_GAIN        8.0
+    #define COLORCHORD_MAX_NOTES            10
+
+    uniform float4               _AudioTexture_TexelSize;
+
+    #ifdef SHADER_TARGET_SURFACE_ANALYSIS
+        #define AUDIOLINK_STANDARD_INDEXING
+    #endif
+
+    // Mechanism to index into texture.
+    #ifdef AUDIOLINK_STANDARD_INDEXING
+        sampler2D _AudioTexture;
+        #define AudioLinkData(xycoord) tex2Dlod(_AudioTexture, float4(uint2(xycoord) * _AudioTexture_TexelSize.xy, 0, 0))
+    #else
+        uniform Texture2D<float4> _AudioTexture;
+        SamplerState sampler_AudioTexture;
+        #define AudioLinkData(xycoord) _AudioTexture[uint2(xycoord)]
+    #endif
+    uniform sampler2D _Stored;
+    uniform float4 _Stored_TexelSize;
+#endif
+//endex
+
+#T#PoiAudioLinkVariablesExposed
+//ifex _EnableAudioLink==0
+#ifdef POI_AUDIOLINK
+    float _AudioLinkDelay;
+    float _AudioLinkAnimToggle;
+
+    float _AudioLinkSmoothingBass;
+    float _AudioLinkSmoothingLowMid;
+    float _AudioLinkSmoothingHighMid;
+    float _AudioLinkSmoothingTreble;
+
+    float _AudioLinkDebugEnabled;
+    float _AudioLinkDebugVisualize;
+
+    float _AudioLinkBandOverridesEnabled;
+    float4 _AudioLinkBandOverrideSliders;
+#endif
+//endex
+
+#T#PoiAudioLinkVariables
+
+#T#PoiAudioLinkFunctions
+//ifex _EnableAudioLink==0
+#ifdef POI_AUDIOLINK
+
+    // Convenient mechanism to read from the AudioLink texture that handles reading off the end of one line and onto the next above it.
+    float4 AudioLinkDataMultiline(uint2 xycoord)
+    {
+        return AudioLinkData(uint2(xycoord.x % AUDIOLINK_WIDTH, xycoord.y + xycoord.x / AUDIOLINK_WIDTH));
+    }
+
+    // Mechanism to sample between two adjacent pixels and lerp between them, like "linear" supesampling
+    float4 AudioLinkLerp(float2 xy)
+    {
+        return lerp(AudioLinkData(xy), AudioLinkData(xy + int2(1, 0)), frac(xy.x));
+    }
+
+    // Same as AudioLinkLerp but properly handles multiline reading.
+    float4 AudioLinkLerpMultiline(float2 xy)
+    {
+        return lerp(AudioLinkDataMultiline(xy), AudioLinkDataMultiline(xy + float2(1, 0)), frac(xy.x));
+    }
+
+    //Tests to see if Audio Link texture is available
+    bool AudioLinkIsAvailable()
+    {
+        if (_AudioLinkAnimToggle < 0.5) return false;
+        if (_AudioLinkBandOverridesEnabled >= 0.5) return true;
+    
+        #if !defined(AUDIOLINK_STANDARD_INDEXING)
+            int width, height;
+            _AudioTexture.GetDimensions(width, height);
+            return width > 16;
+        #else
+            return _AudioTexture_TexelSize.z > 16;
+        #endif
+    }
+
+    //Get version of audiolink present in the world, 0 if no audiolink is present
+    float AudioLinkGetVersion()
+    {
+        int2 dims;
+        #if !defined(AUDIOLINK_STANDARD_INDEXING)
+            _AudioTexture.GetDimensions(dims.x, dims.y);
+        #else
+            dims = _AudioTexture_TexelSize.zw;
+        #endif
+
+        if (dims.x >= 128)
+            return AudioLinkData(ALPASS_GENERALVU).x;
+        else if (dims.x > 16)
+            return 1;
+        else
+            return 0;
+    }
+
+    // This pulls data from this texture.
+    #define AudioLinkGetSelfPixelData(xy) _SelfTexture2D[xy]
+
+    // Extra utility functions for time.
+    uint AudioLinkDecodeDataAsUInt(uint2 indexloc)
+    {
+        uint4 rpx = AudioLinkData(indexloc);
+        return rpx.r + rpx.g * 1024 + rpx.b * 1048576 + rpx.a * 1073741824;
+    }
+
+    //Note: This will truncate time to every 134,217.728 seconds (~1.5 days of an instance being up) to prevent floating point aliasing.
+    // if your code will alias sooner, you will need to use a different function.  It should be safe to use this on all times.
+    float AudioLinkDecodeDataAsSeconds(uint2 indexloc)
+    {
+        uint time = AudioLinkDecodeDataAsUInt(indexloc) & 0x7ffffff;
+        //Can't just divide by float.  Bug in Unity's HLSL compiler.
+        return float(time / 1000) + float(time % 1000) / 1000.;
+    }
+
+    #define ALDecodeDataAsSeconds(x) AudioLinkDecodeDataAsSeconds(x)
+    #define ALDecodeDataAsUInt(x) AudioLinkDecodeDataAsUInt(x)
+
+    float AudioLinkRemap(float t, float a, float b, float u, float v)
+    {
+        return ((t - a) / (b - a)) * (v - u) + u;
+    }
+
+    float3 AudioLinkHSVtoRGB(float3 HSV)
+    {
+        float3 RGB = 0;
+        float C = HSV.z * HSV.y;
+        float H = HSV.x * 6;
+        float X = C * (1 - abs(fmod(H, 2) - 1));
+        if (HSV.y != 0)
+        {
+            float I = floor(H);
+            if (I == 0)
+            {
+                RGB = float3(C, X, 0);
+            }
+            else if (I == 1)
+            {
+                RGB = float3(X, C, 0);
+            }
+            else if (I == 2)
+            {
+                RGB = float3(0, C, X);
+            }
+            else if (I == 3)
+            {
+                RGB = float3(0, X, C);
+            }
+            else if (I == 4)
+            {
+                RGB = float3(X, 0, C);
+            }
+            else
+            {
+                RGB = float3(C, 0, X);
+            }
+        }
+        float M = HSV.z - C;
+        return RGB + M;
+    }
+
+    float3 AudioLinkCCtoRGB(float bin, float intensity, int rootNote)
+    {
+        float note = bin / AUDIOLINK_EXPBINS;
+
+        float hue = 0.0;
+        note *= 12.0;
+        note = glsl_mod(4. - note + rootNote, 12.0);
+        {
+            if (note < 4.0)
+            {
+                //Needs to be YELLOW->RED
+                hue = (note) / 24.0;
+            }
+            else if (note < 8.0)
+            {
+                //            [4]  [8]
+                //Needs to be RED->BLUE
+                hue = (note - 2.0) / 12.0;
+            }
+            else
+            {
+                //             [8] [12]
+                //Needs to be BLUE->YELLOW
+                hue = (note - 4.0) / 8.0;
+            }
+        }
+        float val = intensity - 0.1;
+        return AudioLinkHSVtoRGB(float3(fmod(hue, 1.0), 1.0, clamp(val, 0.0, 1.0)));
+    }
+
+    // Sample the amplitude of a given frequency in the DFT, supports frequencies in [13.75; 14080].
+    float4 AudioLinkGetAmplitudeAtFrequency(float hertz)
+    {
+        float note = AUDIOLINK_EXPBINS * log2(hertz / AUDIOLINK_BOTTOM_FREQUENCY);
+        return AudioLinkLerpMultiline(ALPASS_DFT + float2(note, 0));
+    }
+
+    // Sample the amplitude of a given semitone in an octave. Octave is in [0; 9] while note is [0; 11].
+    float AudioLinkGetAmplitudeAtNote(float octave, float note)
+    {
+        float quarter = note * 2.0;
+        return AudioLinkLerpMultiline(ALPASS_DFT + float2(octave * AUDIOLINK_EXPBINS + quarter, 0));
+    }
+
+    // Get a reasonable drop-in replacement time value for POI_TIME.y with the
+    // given chronotensity index [0; 7] and AudioLink band [0; 3].
+    float AudioLinkGetChronoTime(uint index, uint band)
+    {
+        return (AudioLinkDecodeDataAsUInt(ALPASS_CHRONOTENSITY + uint2(index, band))) / 100000.0;
+    }
+
+    // Get a chronotensity value in the interval [0; 1], modulated by the speed input,
+    // with the given chronotensity index [0; 7] and AudioLink band [0; 3].
+    float AudioLinkGetChronoTimeNormalized(uint index, uint band, float speed)
+    {
+        return frac(AudioLinkGetChronoTime(index, band) * speed);
+    }
+
+    // Get a chronotensity value in the interval [0; interval], modulated by the speed input,
+    // with the given chronotensity index [0; 7] and AudioLink band [0; 3].
+    float AudioLinkGetChronoTimeInterval(uint index, uint band, float speed, float interval)
+    {
+        return AudioLinkGetChronoTimeNormalized(index, band, speed) * interval;
+    }
+
+    float getBandAtTime(float band, float time, float size = 1.0f)
+    {
+        //return remap(UNITY_SAMPLE_TEX2D(_AudioTexture, float2(time * width, band/128.0)).r, min(size,.9999), 1);
+        return remapClamped(min(size, .9999), 1, AudioLinkData(ALPASS_AUDIOBASS + uint2(time * AUDIOLINK_WIDTH, band)).r);
+    }
+
+    float3 maximize(float3 c)
+    {
+        if (c.x == 0 && c.y == 0 && c.z == 0)
+            return float3(1.0, 1.0, 1.0);
+        else
+            return c / max(c.r, max(c.g, c.b));
+    }
+
+    inline int poiALBandPass(int bandIdx)
+    {
+        bandIdx = clamp(bandIdx, 0, 3);
+        return bandIdx == 0 ? ALPASS_AUDIOBASS : bandIdx == 1 ? ALPASS_AUDIOLOWMIDS : bandIdx == 2 ? ALPASS_AUDIOHIGHMIDS : ALPASS_AUDIOTREBLE;
+    }
+
+    void initPoiAudioLink(inout PoiMods poiMods)
+    {
+        if (_AudioLinkAnimToggle < 0.5) return;
+        
+        if (AudioLinkIsAvailable())
+        {
+            poiMods.audioLinkAvailable = true;
+            poiMods.audioLinkVersion = AudioLinkGetVersion();
+            poiMods.audioLink[0] = _AudioLinkSmoothingBass == 0 ? AudioLinkData(ALPASS_AUDIOLINK + float2(0, 0))[0] : AudioLinkData(ALPASS_FILTEREDAUDIOLINK + float2((1 - _AudioLinkSmoothingBass) * 15.95, 0))[0];
+            poiMods.audioLink[1] = _AudioLinkSmoothingLowMid == 0 ? AudioLinkData(ALPASS_AUDIOLINK + float2(0, 1))[0] : AudioLinkData(ALPASS_FILTEREDAUDIOLINK + float2((1 - _AudioLinkSmoothingLowMid) * 15.95, 1))[0];
+            poiMods.audioLink[2] = _AudioLinkSmoothingHighMid == 0 ? AudioLinkData(ALPASS_AUDIOLINK + float2(0, 2))[0] : AudioLinkData(ALPASS_FILTEREDAUDIOLINK + float2((1 - _AudioLinkSmoothingHighMid) * 15.95, 2))[0];
+            poiMods.audioLink[3] = _AudioLinkSmoothingTreble == 0 ? AudioLinkData(ALPASS_AUDIOLINK + float2(0, 3))[0] : AudioLinkData(ALPASS_FILTEREDAUDIOLINK + float2((1 - _AudioLinkSmoothingTreble) * 15.95, 3))[0];
+            poiMods.audioLink[4] = AudioLinkData(ALPASS_GENERALVU + float2(8, 0))[0];
+            /*
+            poiMods.globalColorTheme[4] = AudioLinkData( ALPASS_CCCOLORS + uint2( 0, 0 ) );
+            poiMods.globalColorTheme[5] = AudioLinkData( ALPASS_CCCOLORS + uint2( 1, 0 ) );
+            poiMods.globalColorTheme[6] = AudioLinkData( ALPASS_CCCOLORS + uint2( 2, 0 ) );
+            poiMods.globalColorTheme[7] = AudioLinkData( ALPASS_CCCOLORS + uint2( 3, 0 ) );
+            
+            poiMods.globalColorTheme[4] =  float4(maximize(AudioLinkData( ALPASS_CCCOLORS + uint2( 0, 0 ) )),1.0);
+            poiMods.globalColorTheme[5] =  float4(maximize(AudioLinkData( ALPASS_CCCOLORS + uint2( 1, 0 ) )),1.0);
+            poiMods.globalColorTheme[6] =  float4(maximize(AudioLinkData( ALPASS_CCCOLORS + uint2( 2, 0 ) )),1.0);
+            poiMods.globalColorTheme[7] =  float4(maximize(AudioLinkData( ALPASS_CCCOLORS + uint2( 3, 0 ) )),1.0);
+            */
+
+            poiMods.globalColorTheme[4] = float4(AudioLinkCCtoRGB(glsl_mod(AudioLinkData(ALPASS_CCINTERNAL + uint2(2, 0))[0], AUDIOLINK_EXPBINS), 1, AUDIOLINK_ROOTNOTE), 1.0);
+            poiMods.globalColorTheme[5] = float4(AudioLinkCCtoRGB(glsl_mod(AudioLinkData(ALPASS_CCINTERNAL + uint2(3, 0))[0], AUDIOLINK_EXPBINS), 1, AUDIOLINK_ROOTNOTE), 1.0);
+            poiMods.globalColorTheme[6] = float4(AudioLinkCCtoRGB(glsl_mod(AudioLinkData(ALPASS_CCINTERNAL + uint2(4, 0))[0], AUDIOLINK_EXPBINS), 1, AUDIOLINK_ROOTNOTE), 1.0);
+            poiMods.globalColorTheme[7] = float4(AudioLinkCCtoRGB(glsl_mod(AudioLinkData(ALPASS_CCINTERNAL + uint2(5, 0))[0], AUDIOLINK_EXPBINS), 1, AUDIOLINK_ROOTNOTE), 1.0);
+
+            poiMods.globalColorTheme[8] = AudioLinkData(ALPASS_THEME_COLOR0);
+            poiMods.globalColorTheme[9] = AudioLinkData(ALPASS_THEME_COLOR1);
+            poiMods.globalColorTheme[10] = AudioLinkData(ALPASS_THEME_COLOR2);
+            poiMods.globalColorTheme[11] = AudioLinkData(ALPASS_THEME_COLOR3);
+        }
+
+        // Even if world-supplied audiolink data was populated earlier, we want the overrides to take priority.
+        // But we keep any world-supplied global color themes, which are separate.
+        if (_AudioLinkBandOverridesEnabled >= 0.5)
+        {
+            poiMods.audioLinkAvailable = true;
+            poiMods.audioLink[0] = _AudioLinkBandOverrideSliders.x;
+            poiMods.audioLink[1] = _AudioLinkBandOverrideSliders.y;
+            poiMods.audioLink[2] = _AudioLinkBandOverrideSliders.z;
+            poiMods.audioLink[3] = _AudioLinkBandOverrideSliders.w;
+            // We don't expose an override slider for the volume band.
+            // To keep behavior consistent (no mixing sources), we don't retain the world's value.
+            poiMods.audioLink[4] = 0;
+        }
+    }
+
+    void DebugVisualizer(inout PoiFragData poiFragData, in PoiMesh poiMesh, in PoiMods poiMods)
+    {
+        //ifex _AudioLinkDebugEnabled==0
+        if (_AudioLinkDebugEnabled < 0.5) return;
+
+        switch((int)_AudioLinkDebugVisualize)
+        {
+            case 0: // Waveform
+            {
+                float waveform = AudioLinkLerpMultiline(ALPASS_WAVEFORM + float2(500. * poiMesh.uv[0].x, 0)).r;
+                poiFragData.emission += clamp(1 - 50 * abs(waveform - poiMesh.uv[0].y * 2. + 1), 0, 1);
+                break;
+            }
+            case 1: // DFT
+            {
+                poiFragData.emission += AudioLinkLerpMultiline(ALPASS_DFT + uint2(poiMesh.uv[0].x * AUDIOLINK_ETOTALBINS, 0)).rrr;
+                break;
+            }
+            case 2: // Bass
+            {
+                poiFragData.emission += poiMods.audioLink[0];
+                break;
+            }
+            case 3: // Low Mids
+            {
+                poiFragData.emission += poiMods.audioLink[1];
+                break;
+            }
+            case 4: // High Mids
+            {
+                poiFragData.emission += poiMods.audioLink[2];
+                break;
+            }
+            case 5: // Treble
+            {
+                poiFragData.emission += poiMods.audioLink[3];
+                break;
+            }
+            case 6: // Color Chord Colors
+            {
+                poiFragData.emission += AudioLinkData(ALPASS_CCCOLORS + uint2(3 + 1, 0));
+                break;
+            }
+            case 7: // CC Strip
+            {
+                poiFragData.emission += AudioLinkLerp(ALPASS_CCSTRIP + float2(poiMesh.uv[0].x * AUDIOLINK_WIDTH, 0));
+                break;
+            }
+            case 8: // CC Lights
+            {
+                poiFragData.emission += AudioLinkData(ALPASS_CCLIGHTS + uint2(uint(poiMesh.uv[0].x * 8) + uint(poiMesh.uv[0].y * 16) * 8, 0));
+                break;
+            }
+            case 9: // Autocorrelator
+            {
+                poiFragData.emission += saturate(AudioLinkLerp(ALPASS_AUTOCORRELATOR + float2((abs(1. - poiMesh.uv[0].x * 2.)) * AUDIOLINK_WIDTH, 0)).rrr);
+                break;
+            }
+            case 10: // Chronotensity
+            {
+                poiFragData.emission += (AudioLinkDecodeDataAsUInt(ALPASS_CHRONOTENSITY + uint2(1, 0)) % 1000000) / 1000000.0;
+                break;
+            }
+            case 11: // CC Strip Y
+            {
+                poiFragData.emission += AudioLinkLerp(ALPASS_CCSTRIP + float2(poiMesh.uv[0].y * AUDIOLINK_WIDTH, 0)).rgb * .5;
+                break;
+            }
+            case 12: // Volume
+            {
+                poiFragData.emission += poiMods.audioLink[4];
+                break;
+            }
+        }
+        //endex
+    }
+
+    void SetupAudioLink(inout PoiFragData poiFragData, inout PoiMods poiMods, in PoiMesh poiMesh)
+    {
+        initPoiAudioLink(poiMods);
+        DebugVisualizer(poiFragData, poiMesh, poiMods);
+    }
+
+#endif
+//endex
+
+#T#PoiAudioLinkFunctionCalls
+//ifex _EnableAudioLink==0
+#ifdef POI_AUDIOLINK
+    SetupAudioLink(poiFragData, poiMods, poiMesh);
+#endif
+//endex

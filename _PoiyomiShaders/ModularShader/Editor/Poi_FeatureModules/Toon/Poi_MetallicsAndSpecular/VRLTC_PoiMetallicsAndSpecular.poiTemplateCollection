@@ -1,0 +1,1119 @@
+#T#PoiMetallicsAndSpecularProperties
+//ifex _MochieBRDF==0
+[HideInInspector] m_start_brdf (" Reflections & Specular--{reference_property:_MochieBRDF,button_help:{text:Tutorial,action:{type:URL,data:https://www.poiyomi.com/shading/reflections-and-specular},hover:Documentation}}", Float) = 0
+[HideInInspector][ThryToggle(MOCHIE_PBR)]_MochieBRDF ("Enable", Float) = 0
+[Helpbox(1, 3, 2)]_ClothShadingWarning ("Detected Cloth Shading! This section should be left disabled as Cloth already has Reflections & Specular built-in. Please configure your Cloth in the Shadows module.--{condition_showS:(_LightingMode==7)}", Int) = 0
+_MochieMetallicMultiplier ("Metallic", Range(0, 1)) = 0
+_MochieRoughnessMultiplier ("Smoothness", Range(0, 1)) = 1
+_MochieReflectionTint ("Reflection Tint--{reference_property:_MochieReflectionTintThemeIndex}", Color) = (1, 1, 1, 1)
+[ThryHideInInspector][ThryWideEnum(Off, 0, Theme Color 0, 1, Theme Color 1, 2, Theme Color 2, 3, Theme Color 3, 4, ColorChord 0, 5, ColorChord 1, 6, ColorChord 2, 7, ColorChord 3, 8, AL Theme 0, 9, AL Theme 1, 10, AL Theme 2, 11, AL Theme 3, 12)] _MochieReflectionTintThemeIndex ("", Int) = 0
+_MochieSpecularTint ("Specular Tint--{reference_property:_MochieSpecularTintThemeIndex}", Color) = (1, 1, 1, 1)
+[ThryHideInInspector][ThryWideEnum(Off, 0, Theme Color 0, 1, Theme Color 1, 2, Theme Color 2, 3, Theme Color 3, 4, ColorChord 0, 5, ColorChord 1, 6, ColorChord 2, 7, ColorChord 3, 8, AL Theme 0, 9, AL Theme 1, 10, AL Theme 2, 11, AL Theme 3, 12)] _MochieSpecularTintThemeIndex ("", Int) = 0
+[Space(5)]
+[sRGBWarning][ThryRGBAPacker(R Metallic Map, G Smoothness Map, B Reflection Mask, A Specular Mask, linear, false)]_MochieMetallicMaps ("Packed Maps [Click to Expand]--{reference_properties:[_MochieMetallicMapsPan, _MochieMetallicMapsUV, _MochieMetallicMapsStochastic, _MochieMetallicMapsMetallicChannel, _MochieMetallicMapsRoughnessChannel, _MochieMetallicMapsReflectionMaskChannel, _MochieMetallicMapsSpecularMaskChannel, _MochieMetallicMapInvert, _MochieRoughnessMapInvert, _MochieReflectionMaskInvert, _MochieSpecularMaskInvert]}", 2D) = "white" { }
+[ThryHideInInspector][Vector2]_MochieMetallicMapsPan ("Panning", Vector) = (0, 0, 0, 0)
+[ThryHideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7, Matcap, 9, Screen Space, 10)]_MochieMetallicMapsUV ("UV", Int) = 0
+[ThryHideInInspector][ToggleUI]_MochieMetallicMapsStochastic ("Stochastic Sampling", Float) = 0
+[ThryHideInInspector][Enum(R, 0, G, 1, B, 2, A, 3, White, 4)]_MochieMetallicMapsMetallicChannel ("Metallic Channel", Float) = 0
+[ThryHideInInspector][Enum(R, 0, G, 1, B, 2, A, 3, White, 4)]_MochieMetallicMapsRoughnessChannel ("Smoothness Channel", Float) = 1
+[ThryHideInInspector][Enum(R, 0, G, 1, B, 2, A, 3, White, 4)]_MochieMetallicMapsReflectionMaskChannel ("Reflection Mask Channel", Float) = 2
+[ThryHideInInspector][Enum(R, 0, G, 1, B, 2, A, 3, White, 4)]_MochieMetallicMapsSpecularMaskChannel ("Specular Mask Channel", Float) = 3
+[ThryHideInInspector][ToggleUI]_MochieMetallicMapInvert ("Invert Metallic", Float) = 0
+[ThryHideInInspector][ToggleUI]_MochieRoughnessMapInvert ("Invert Smoothness", Float) = 0
+[ThryHideInInspector][ToggleUI]_MochieReflectionMaskInvert ("Invert Reflection Mask", Float) = 0
+[ThryHideInInspector][ToggleUI]_MochieSpecularMaskInvert ("Invert Specular Mask", Float) = 0
+[Space(5)]
+_MochieReflectionStrength ("Reflection Visibility", Range(0, 1)) = 1
+_MochieSpecularStrength ("Specular Visibility", Range(0, 5)) = 1
+_RefSpecFresnelStrength ("Fresnel Strength", Range(0, 1)) = .5
+_SFExposureOcclusion ("Exposure Occlusion", Range(0, 1)) = 0
+[Space(10)]
+[ThryTexture][NoScaleOffset]_MochieReflCube ("Fallback Cubemap", Cube) = "" { }
+[ToggleUI]_MochieForceFallback ("Force Fallback", Int) = 0
+[HideInInspector] s_start_BRDFTPSMaskGroup ("TPS--{condition_showS:(_TPSPenetratorEnabled==1)}", Float) = 0
+[ThryToggleUI(true)] _BRDFTPSDepthEnabled ("<size=13><b>  TPS Depth Enabled</b></size>", Float) = 0
+_BRDFTPSReflectionMaskStrength ("Reflection Mask Strength--{condition_showS:(_BRDFTPSDepthEnabled==1)}", Range(0, 1)) = 1
+_BRDFTPSSpecularMaskStrength ("Specular Mask Strength--{condition_showS:(_BRDFTPSDepthEnabled==1)}", Range(0, 1)) = 1
+[HideInInspector] s_end_BRDFTPSMaskGroup ("", Float) = 0
+
+[HideInInspector] s_start_ggxanisotropics("Anisotropics--{reference_property:_GGXAnisotropics,persistent_expand:true,default_expand:false}", Float) = 0
+[HideInInspector][ThryToggle(GGX_ANISOTROPICS)]_GGXAnisotropics ("Enable", Float) = 0
+
+[sRGBWarning]_AnisotropyMap("Anisotropy Map--{reference_properties:[_AnisotropyMapPan, _AnisotropyMapUV, _AnisotropyMapChannel]}", 2D) = "bump" { }
+[ThryHideInInspector][Vector2]_AnisotropyMapPan("Panning", Vector) = (0, 0, 0, 0)
+[ThryHideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7, Matcap, 9, Screen Space, 10)] _AnisotropyMapUV ("UV", Int) = 0
+[ThryHideInInspector][Enum(R, 0, G, 1, B, 2, A, 3)]_AnisotropyMapChannel ("Channel", Float) = 0
+
+_Anisotropy ("Anisotropy", Range(-1, 1)) = 0
+_ReflectionAnisotropicStretch("Reflection Stretch", Range(1, 5)) = 1
+_RoughnessAnisotropy("Roughness Anisotropy", Range(0, 1)) = 1
+[HideInInspector] s_end_ggxanisotropics ("", Float) = 0
+
+[HideInInspector] s_start_PBRSecondSpecular ("2nd Specular--{reference_property:_Specular2ndLayer,persistent_expand:true,default_expand:false}", Float) = 0
+[ThryHideInInspector][ToggleUI]_Specular2ndLayer ("2nd Specular", Float) = 0
+_MochieSpecularStrength2 ("Visibility", Range(0, 5)) = 1
+_MochieRoughnessMultiplier2 ("Smoothness", Range(0, 1)) = 1
+[HideInInspector] s_end_PBRSecondSpecular ("Name", Float) = 0
+
+[HideInInspector] s_start_PBRSplitMaskSample ("Split Mask Sampling--{reference_property:_PBRSplitMaskSample,persistent_expand:true,default_expand:false}", Float) = 0
+[ThryHideInInspector][ToggleUI]_PBRSplitMaskSample ("Split Mask Sampling", Float) = 0
+[VectorLabel(tX, tY, oX, oY)]_PBRMaskScaleTiling ("Tiling/Offset", Vector) = (1, 1, 0, 0)
+[ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7, Matcap, 9, Screen Space, 10)]_MochieMetallicMasksUV ("UV", Int) = 0
+[ToggleUI]_PBRSplitMaskStochastic ("Stochastic Sampling", Float) = 0
+[Vector2]_MochieMetallicMasksPan ("Panning", Vector) = (0, 0, 0, 0)
+[HideInInspector] s_end_PBRSplitMaskSample ("Split Mask Sampling", Float) = 0
+
+[HideInInspector] s_start_brdfadvanced ("GSAA & Advanced Controls--{persistent_expand:true,default_expand:false}", Float) = 0
+[ToggleUI]_MochieLitFallback ("Lit Fallback", Float) = 1
+[ToggleUI]_IgnoreCastedShadows ("Ignore Casted Shadows", Float) = 0
+_PBRNormalSelect ("Pixel Normal Mix", Range(0, 1)) = 1
+[ThryToggleUI(true)]_MochieGSAAEnabled ("<size=13><b>  GSAA</b></size>", Float) = 1
+_PoiGSAAVariance ("GSAA Variance--{condition_showS:(_MochieGSAAEnabled==1)}", Range(0, 1)) = 0.15
+_PoiGSAAThreshold ("GSAA Threshold--{condition_showS:(_MochieGSAAEnabled==1)}", Range(0, 1)) = 0.1
+[HideInInspector] s_end_brdfadvanced ("", Float) = 0
+
+[HideInInspector] s_start_brdfglobalmask ("Global Mask--{persistent_expand:true,default_expand:false}", Float) = 0
+[ThryWideEnum(Off, 0, 1R, 1, 1G, 2, 1B, 3, 1A, 4, 2R, 5, 2G, 6, 2B, 7, 2A, 8, 3R, 9, 3G, 10, 3B, 11, 3A, 12, 4R, 13, 4G, 14, 4B, 15, 4A, 16)] _MochieMetallicGlobalMask ("Metallic--{reference_property:_MochieMetallicGlobalMaskBlendType}", Int) = 0
+[ThryHideInInspector][ThryWideEnum(Add, 7, Subtract, 1, Multiply, 2, Divide, 3, Min, 4, Max, 5, Average, 6, Replace, 0)] _MochieMetallicGlobalMaskBlendType ("Blending", Int) = 2
+[ThryWideEnum(Off, 0, 1R, 1, 1G, 2, 1B, 3, 1A, 4, 2R, 5, 2G, 6, 2B, 7, 2A, 8, 3R, 9, 3G, 10, 3B, 11, 3A, 12, 4R, 13, 4G, 14, 4B, 15, 4A, 16)] _MochieSmoothnessGlobalMask ("Smoothness--{reference_property:_MochieSmoothnessGlobalMaskBlendType}", Int) = 0
+[ThryHideInInspector][ThryWideEnum(Add, 7, Subtract, 1, Multiply, 2, Divide, 3, Min, 4, Max, 5, Average, 6, Replace, 0)] _MochieSmoothnessGlobalMaskBlendType ("Blending", Int) = 2
+[ThryWideEnum(Off, 0, 1R, 1, 1G, 2, 1B, 3, 1A, 4, 2R, 5, 2G, 6, 2B, 7, 2A, 8, 3R, 9, 3G, 10, 3B, 11, 3A, 12, 4R, 13, 4G, 14, 4B, 15, 4A, 16)] _MochieReflectionStrengthGlobalMask ("Reflection Strength--{reference_property:_MochieReflectionStrengthGlobalMaskBlendType}", Int) = 0
+[ThryHideInInspector][ThryWideEnum(Add, 7, Subtract, 1, Multiply, 2, Divide, 3, Min, 4, Max, 5, Average, 6, Replace, 0)] _MochieReflectionStrengthGlobalMaskBlendType ("Blending", Int) = 2
+[ThryWideEnum(Off, 0, 1R, 1, 1G, 2, 1B, 3, 1A, 4, 2R, 5, 2G, 6, 2B, 7, 2A, 8, 3R, 9, 3G, 10, 3B, 11, 3A, 12, 4R, 13, 4G, 14, 4B, 15, 4A, 16)] _MochieSpecularStrengthGlobalMask ("Specular Strength--{reference_property:_MochieSpecularStrengthGlobalMaskBlendType}", Int) = 0
+[ThryHideInInspector][ThryWideEnum(Add, 7, Subtract, 1, Multiply, 2, Divide, 3, Min, 4, Max, 5, Average, 6, Replace, 0)] _MochieSpecularStrengthGlobalMaskBlendType ("Blending", Int) = 2
+[HideInInspector] s_end_brdfglobalmask ("", Float) = 0
+
+[HideInInspector] m_end_brdf ("", Float) = 0
+//endex
+
+//ifex _ClearCoatBRDF==0
+[HideInInspector] m_start_clearCoat (" Clear Coat--{reference_property:_ClearCoatBRDF,button_help:{text:Tutorial,action:{type:URL,data:https://www.poiyomi.com/shading/clear-coat},hover:Documentation}}", Float) = 0
+[HideInInspector][ThryToggle(POI_CLEARCOAT)]_ClearCoatBRDF ("Enable", Float) = 0
+_ClearCoatStrength ("Coating Strength", Range(0, 1)) = 1
+_ClearCoatSmoothness ("Smoothness", Range(0, 1)) = 1
+_ClearCoatReflectionTint ("Reflection Tint--{reference_property:_ClearCoatReflectionTintThemeIndex}", Color) = (1, 1, 1, 1)
+[ThryHideInInspector][ThryWideEnum(Off, 0, Theme Color 0, 1, Theme Color 1, 2, Theme Color 2, 3, Theme Color 3, 4, ColorChord 0, 5, ColorChord 1, 6, ColorChord 2, 7, ColorChord 3, 8, AL Theme 0, 9, AL Theme 1, 10, AL Theme 2, 11, AL Theme 3, 12)] _ClearCoatReflectionTintThemeIndex ("", Int) = 0
+_ClearCoatSpecularTint ("Specular Tint--{reference_property:_ClearCoatSpecularTintThemeIndex}", Color) = (1, 1, 1, 1)
+[ThryHideInInspector][ThryWideEnum(Off, 0, Theme Color 0, 1, Theme Color 1, 2, Theme Color 2, 3, Theme Color 3, 4, ColorChord 0, 5, ColorChord 1, 6, ColorChord 2, 7, ColorChord 3, 8, AL Theme 0, 9, AL Theme 1, 10, AL Theme 2, 11, AL Theme 3, 12)] _ClearCoatSpecularTintThemeIndex ("", Int) = 0
+[Space(5)]
+[sRGBWarning][ThryRGBAPacker(Clear Coat Mask, Smoothness Map, Reflection Mask, Specular Mask, linear, false)]_ClearCoatMaps ("Packed Maps [Click to Expand]--{reference_properties:[_ClearCoatMapsPan, _ClearCoatMapsUV, _ClearCoatMapsStochastic, _ClearCoatMapsClearCoatMaskChannel, _ClearCoatMapsRoughnessChannel, _ClearCoatMapsReflectionMaskChannel, _ClearCoatMapsSpecularMaskChannel, _ClearCoatMaskInvert, _ClearCoatSmoothnessMapInvert, _ClearCoatReflectionMaskInvert, _ClearCoatSpecularMaskInvert]}", 2D) = "white" { }
+[ThryHideInInspector][Vector2]_ClearCoatMapsPan ("Panning", Vector) = (0, 0, 0, 0)
+[ThryHideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7, Matcap, 9, Screen Space, 10)]_ClearCoatMapsUV ("UV", Int) = 0
+[ThryHideInInspector][ToggleUI]_ClearCoatMapsStochastic ("Stochastic Sampling", Float) = 0
+[ThryHideInInspector][Enum(R, 0, G, 1, B, 2, A, 3, White, 4)]_ClearCoatMapsClearCoatMaskChannel ("Clear Coat Mask Channel", Float) = 0
+[ThryHideInInspector][Enum(R, 0, G, 1, B, 2, A, 3, White, 4)]_ClearCoatMapsRoughnessChannel ("Smoothness Channel", Float) = 1
+[ThryHideInInspector][Enum(R, 0, G, 1, B, 2, A, 3, White, 4)]_ClearCoatMapsReflectionMaskChannel ("Reflection Mask Channel", Float) = 2
+[ThryHideInInspector][Enum(R, 0, G, 1, B, 2, A, 3, White, 4)]_ClearCoatMapsSpecularMaskChannel ("Specular Mask Channel", Float) = 3
+[ThryHideInInspector][ToggleUI]_ClearCoatMaskInvert ("Invert Clear Coat Mask", Float) = 0
+[ThryHideInInspector][ToggleUI]_ClearCoatSmoothnessMapInvert ("Invert Smoothness", Float) = 0
+[ThryHideInInspector][ToggleUI]_ClearCoatReflectionMaskInvert ("Invert Reflection Mask", Float) = 0
+[ThryHideInInspector][ToggleUI]_ClearCoatSpecularMaskInvert ("Invert Specular Mask", Float) = 0
+[Space(5)]
+_ClearCoatReflectionStrength ("Reflection Visibility", Range(0, 1)) = 1
+_ClearCoatSpecularStrength ("Specular Visibility", Range(0, 1)) = 1
+_ClearcoatFresnelStrength ("Fresnel Strength", Range(0, 1)) = .5
+_ClearcoatExposureOcclusion ("Exposure Occlusion", Range(0, 1)) = 0
+[Space(10)]
+[ThryTexture][NoScaleOffset]_ClearCoatFallback ("Fallback Cubemap", Cube) = "" { }
+[ToggleUI]_ClearCoatForceFallback ("Force Fallback", Int) = 0
+
+[HideInInspector] s_start_clearcoatadvanced ("GSAA & Advanced Controls--{persistent_expand:true,default_expand:false}", Float) = 0
+[ToggleUI]_ClearCoatLitFallback ("Lit Fallback", Float) = 1
+[ToggleUI]_CCIgnoreCastedShadows ("Ignore Casted Shadows", Float) = 0
+_ClearCoatNormalSelect ("Pixel Normal Mix", Range(0, 1)) = 0
+[ThryToggleUI(true)]_ClearCoatGSAAEnabled ("<size=13><b>  GSAA</b></size>", Float) = 1
+_ClearCoatGSAAVariance ("GSAA Variance", Range(0, 1)) = 0.15
+_ClearCoatGSAAThreshold ("GSAA Threshold", Range(0, 1)) = 0.1
+
+[HideInInspector] s_start_ClearCoatTPSMaskGroup ("TPS Mask--{reference_property:_ClearCoatTPSDepthMaskEnabled, persistent_expand:true,default_expand:false,condition_showS:(_TPSPenetratorEnabled==1)}", Float) = 0
+[ThryHideInInspector][ToggleUI] _ClearCoatTPSDepthMaskEnabled ("TPS Depth Enabled", Float) = 0
+_ClearCoatTPSMaskStrength ("Mask Strength}", Range(0, 1)) = 1
+[HideInInspector] s_end_ClearCoatTPSMaskGroup ("", Float) = 0
+
+[HideInInspector] s_end_clearcoatadvanced ("", Float) = 0
+
+[HideInInspector] s_start_clearcoatglobalmask ("Global Mask--{persistent_expand:true,default_expand:false}", Float) = 0
+[ThryWideEnum(Off, 0, 1R, 1, 1G, 2, 1B, 3, 1A, 4, 2R, 5, 2G, 6, 2B, 7, 2A, 8, 3R, 9, 3G, 10, 3B, 11, 3A, 12, 4R, 13, 4G, 14, 4B, 15, 4A, 16)] _ClearCoatGlobalMask ("Clear Coat--{reference_property:_ClearCoatGlobalMaskBlendType}", Int) = 0
+[ThryHideInInspector][ThryWideEnum(Add, 7, Subtract, 1, Multiply, 2, Divide, 3, Min, 4, Max, 5, Average, 6, Replace, 0)] _ClearCoatGlobalMaskBlendType ("Blending", Int) = 2
+[ThryWideEnum(Off, 0, 1R, 1, 1G, 2, 1B, 3, 1A, 4, 2R, 5, 2G, 6, 2B, 7, 2A, 8, 3R, 9, 3G, 10, 3B, 11, 3A, 12, 4R, 13, 4G, 14, 4B, 15, 4A, 16)] _ClearCoatSmoothnessGlobalMask ("Smoothness--{reference_property:_ClearCoatSmoothnessGlobalMaskBlendType}", Int) = 0
+[ThryHideInInspector][ThryWideEnum(Add, 7, Subtract, 1, Multiply, 2, Divide, 3, Min, 4, Max, 5, Average, 6, Replace, 0)] _ClearCoatSmoothnessGlobalMaskBlendType ("Blending", Int) = 2
+[ThryWideEnum(Off, 0, 1R, 1, 1G, 2, 1B, 3, 1A, 4, 2R, 5, 2G, 6, 2B, 7, 2A, 8, 3R, 9, 3G, 10, 3B, 11, 3A, 12, 4R, 13, 4G, 14, 4B, 15, 4A, 16)] _ClearCoatReflectionStrengthGlobalMask ("Reflection Strength--{reference_property:_ClearCoatReflectionStrengthGlobalMaskBlendType}", Int) = 0
+[ThryHideInInspector][ThryWideEnum(Add, 7, Subtract, 1, Multiply, 2, Divide, 3, Min, 4, Max, 5, Average, 6, Replace, 0)] _ClearCoatReflectionStrengthGlobalMaskBlendType ("Blending", Int) = 2
+[ThryWideEnum(Off, 0, 1R, 1, 1G, 2, 1B, 3, 1A, 4, 2R, 5, 2G, 6, 2B, 7, 2A, 8, 3R, 9, 3G, 10, 3B, 11, 3A, 12, 4R, 13, 4G, 14, 4B, 15, 4A, 16)] _ClearCoatSpecularStrengthGlobalMask ("Specular Strength--{reference_property:_ClearCoatSpecularStrengthGlobalMaskBlendType}", Int) = 0
+[ThryHideInInspector][ThryWideEnum(Add, 7, Subtract, 1, Multiply, 2, Divide, 3, Min, 4, Max, 5, Average, 6, Replace, 0)] _ClearCoatSpecularStrengthGlobalMaskBlendType ("Blending", Int) = 2
+[HideInInspector] s_end_clearcoatglobalmask ("", Float) = 0
+
+[HideInInspector] m_end_clearCoat ("", Float) = 0
+//endex
+
+#T#PoiMetallicsAndSpecularKeywords
+//ifex _MochieBRDF==0
+#pragma shader_feature_local_fragment MOCHIE_PBR
+#pragma shader_feature_local_fragment GGX_ANISOTROPICS
+//endex
+//ifex _ClearCoatBRDF==0
+#pragma shader_feature_local_fragment POI_CLEARCOAT
+//endex
+
+#T#PoiMetallicsAndSpecularVariablesExposed
+//ifex _MochieBRDF==0
+#ifdef MOCHIE_PBR
+    #if defined(PROP_MOCHIEMETALLICMAPS) || !defined(OPTIMIZER_ENABLED)
+        float _PBRMapsStochastic;
+    #endif
+    float4 _MochieMetallicMaps_ST;
+    float2 _MochieMetallicMapsPan;
+    float _MochieMetallicMapsUV;
+    half _MochieMetallicMapsStochastic;
+    half _MochieMetallicMapInvert;
+    half _MochieRoughnessMapInvert;
+    half _MochieReflectionMaskInvert;
+    half _MochieSpecularMaskInvert;
+    float _MochieMetallicMapsMetallicChannel;
+    float _MochieMetallicMapsRoughnessChannel;
+    float _MochieMetallicMapsReflectionMaskChannel;
+    float _MochieMetallicMapsSpecularMaskChannel;
+    float _PBRNormalSelect;
+
+    float _MochieReflectionTintThemeIndex;
+    float _MochieSpecularTintThemeIndex;
+
+    half _MochieRoughnessMultiplier;
+    half _MochieMetallicMultiplier;
+    half _MochieReflectionStrength;
+    half _MochieSpecularStrength;
+    half4 _MochieSpecularTint;
+    half4 _MochieReflectionTint;
+    #if defined(PROP_MOCHIEREFLCUBE) || !defined(OPTIMIZER_ENABLED)
+        float _MochieLitFallback;
+    #endif
+    half _IgnoreCastedShadows;
+    half _PBRSplitMaskSample;
+    half _PBRSplitMaskStochastic;
+    float4 _PBRMaskScaleTiling;
+    float _MochieMetallicMasksUV;
+    float4 _MochieMetallicMasksPan;
+
+    half _Specular2ndLayer;
+    half _MochieSpecularStrength2;
+    half _MochieRoughnessMultiplier2;
+    half _RefSpecFresnelStrength;
+    half _SFExposureOcclusion;
+    #if defined(PROP_MOCHIEREFLCUBE) || !defined(OPTIMIZER_ENABLED)
+        float4 _MochieReflCube_HDR;
+        float _MochieForceFallback;
+    #endif
+    float _MochieGSAAEnabled;
+    half _PoiGSAAVariance;
+    half _PoiGSAAThreshold;
+    half _BRDFTPSReflectionMaskStrength;
+    half _BRDFTPSSpecularMaskStrength;
+    float _BRDFTPSDepthEnabled;
+
+    half _MochieMetallicGlobalMask;
+    float _MochieMetallicGlobalMaskBlendType;
+    half _MochieSmoothnessGlobalMask;
+    float _MochieSmoothnessGlobalMaskBlendType;
+    half _MochieReflectionStrengthGlobalMask;
+    float _MochieReflectionStrengthGlobalMaskBlendType;
+    half _MochieSpecularStrengthGlobalMask;
+    float _MochieSpecularStrengthGlobalMaskBlendType;
+
+    #ifdef GGX_ANISOTROPICS
+        #if defined(PROP_ANISOTROPYMAP) || !defined(OPTIMIZER_ENABLED)
+            float4 _AnisotropyMap_ST;
+            float2 _AnisotropyMapPan;
+            float _AnisotropyMapUV;
+            float _AnisotropyMapChannel;
+        #endif
+        half _Anisotropy;
+        half _ReflectionAnisotropicStretch;
+        half _RoughnessAnisotropy;
+    #endif
+#endif
+//endex
+//ifex _ClearCoatBRDF==0
+#ifdef POI_CLEARCOAT
+    #if defined(PROP_CLEARCOATMAPS) || !defined(OPTIMIZER_ENABLED)
+        float4 _ClearCoatMaps_ST;
+        float2 _ClearCoatMapsPan;
+        float _ClearCoatMapsUV;
+        float _ClearCoatMapsStochastic;
+    #endif
+    float _ClearCoatMapsClearCoatMaskChannel;
+    float _ClearCoatMapsRoughnessChannel;
+    float _ClearCoatMapsReflectionMaskChannel;
+    float _ClearCoatMapsSpecularMaskChannel;
+    float _ClearCoatBRDF;
+    half _ClearCoatReflectionStrength;
+    half _ClearCoatSpecularStrength;
+    half _ClearCoatStrength;
+    half _ClearCoatSmoothness;
+    half4 _ClearCoatReflectionTint;
+    float _ClearCoatReflectionTintThemeIndex;
+    half4 _ClearCoatSpecularTint;
+    float _ClearCoatSpecularTintThemeIndex;
+    half _ClearCoatSmoothnessMapInvert;
+    half _ClearCoatMaskInvert;
+    half _ClearCoatReflectionMaskInvert;
+    half _ClearCoatSpecularMaskInvert;
+    half _ClearCoatTPSMaskStrength;
+    float _ClearCoatTPSDepthMaskEnabled;
+    float _ClearCoatNormalSelect;
+    
+    #if defined(PROP_CLEARCOATFALLBACK) || !defined(OPTIMIZER_ENABLED)
+        float4 _ClearCoatFallback_HDR;
+        float _ClearCoatForceFallback;
+        float _ClearCoatLitFallback;
+    #endif
+    half _CCIgnoreCastedShadows;
+    float _ClearCoatGSAAEnabled;
+    half _ClearCoatGSAAVariance;
+    half _ClearCoatGSAAThreshold;
+    half _ClearcoatFresnelStrength;
+    half _ClearcoatExposureOcclusion;
+
+    half _ClearCoatGlobalMask;
+    float _ClearCoatGlobalMaskBlendType;
+    half _ClearCoatSmoothnessGlobalMask;
+    float _ClearCoatSmoothnessGlobalMaskBlendType;
+    half _ClearCoatReflectionStrengthGlobalMask;
+    float _ClearCoatReflectionStrengthGlobalMaskBlendType;
+    half _ClearCoatSpecularStrengthGlobalMask;
+    float _ClearCoatSpecularStrengthGlobalMaskBlendType;
+#endif
+//endex
+
+#T#PoiMetallicsAndSpecularVariables
+//ifex _MochieBRDF==0
+#ifdef MOCHIE_PBR
+    #if defined(PROP_ANISOTROPYMAP) || !defined(OPTIMIZER_ENABLED)
+        Texture2D _AnisotropyMap;
+    #endif
+    #if defined(PROP_MOCHIEMETALLICMAPS) || !defined(OPTIMIZER_ENABLED)
+        Texture2D _MochieMetallicMaps;
+    #endif
+    #if defined(PROP_MOCHIEREFLCUBE) || !defined(OPTIMIZER_ENABLED)
+        TextureCube _MochieReflCube;
+    #endif
+#endif
+//endex
+//ifex _ClearCoatBRDF==0
+#ifdef POI_CLEARCOAT
+    #if defined(PROP_CLEARCOATMAPS) || !defined(OPTIMIZER_ENABLED)
+        Texture2D _ClearCoatMaps;
+    #endif
+    #if defined(PROP_CLEARCOATFALLBACK) || !defined(OPTIMIZER_ENABLED)
+        TextureCube _ClearCoatFallback;
+    #endif
+#endif
+//endex
+
+#T#PoiMetallicsAndSpecularStructs
+struct MochieBRDFData
+{
+    half isInitialized;
+    half metallic;
+    half smoothness;
+    half smoothness2;
+    half specularMask;
+    half reflectionMask;
+
+    half roughness;
+    half brdfRoughness;
+    half brdfRoughness2;
+    float percepRough;
+    float percepRough2;
+    float omr;
+    float3 specCol;
+    float2 adjustedAnisotropy;
+
+    float3 pbrNSelect;
+    float3 pbrTSelect;
+    float3 pbrBSelect;
+};
+
+#T#PoiMetallicsAndSpecularAdditionalDataSetup
+MochieBRDFData mochieBRDFData;
+PoiInitStruct(MochieBRDFData, mochieBRDFData);
+
+#T#PoiMetallicsAndSpecularFunction
+//ifex _MochieBRDF==0 && _ClearCoatBRDF==0
+#if defined(MOCHIE_PBR) || defined(POI_CLEARCOAT)
+
+    /*
+    * Copyright 2022 orels1
+    *
+    * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+    *
+    * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+    *
+    * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+    */
+
+    // https://github.com/orels1/orels-Unity-Shaders
+
+    float GSAA_Filament(float3 worldNormal, float perceptualRoughness, float gsaaVariance, float gsaaThreshold)
+    {
+        // Kaplanyan 2016, "Stable specular highlights"
+        // Tokuyoshi 2017, "Error Reduction and Simplification for Shading Anti-Aliasing"
+        // Tokuyoshi and Kaplanyan 2019, "Improved Geometric Specular Antialiasing"
+
+        // This implementation is meant for deferred rendering in the original paper but
+        // we use it in forward rendering as well (as discussed in Tokuyoshi and Kaplanyan
+        // 2019). The main reason is that the forward version requires an expensive transform
+        // of the float vector by the tangent frame for every light. This is therefore an
+        // approximation but it works well enough for our needs and provides an improvement
+        // over our original implementation based on Vlachos 2015, "Advanced VR Rendering".
+
+        float3 du = ddx(worldNormal);
+        float3 dv = ddy(worldNormal);
+
+        float variance = gsaaVariance * (dot(du, du) + dot(dv, dv));
+
+        half roughness = perceptualRoughness * perceptualRoughness;
+        half kernelRoughness = min(2.0 * variance, gsaaThreshold);
+        half squareRoughness = saturate(roughness * roughness + kernelRoughness);
+
+        return sqrt(sqrt(squareRoughness));
+    }
+
+    /*
+    MIT END
+    */
+
+	float3 GetWorldReflections(float3 reflDir, float3 worldPos, float roughness, float2 screenUV)
+	{
+        #if POI_PIPE == POI_BIRP
+            float3 baseReflDir = reflDir;
+            reflDir = BoxProjection(reflDir, worldPos, unity_SpecCube0_ProbePosition, unity_SpecCube0_BoxMin, unity_SpecCube0_BoxMax);
+            float4 envSample0 = UNITY_SAMPLE_TEXCUBE_LOD(unity_SpecCube0, reflDir, roughness * UNITY_SPECCUBE_LOD_STEPS);
+            float3 p0 = PoiDecodeHDR(envSample0, unity_SpecCube0_HDR);
+            float interpolator = unity_SpecCube0_BoxMin.w;
+
+            UNITY_BRANCH
+            if (interpolator < 0.99999)
+            {
+                float3 refDirBlend = BoxProjection(baseReflDir, worldPos, unity_SpecCube1_ProbePosition, unity_SpecCube1_BoxMin, unity_SpecCube1_BoxMax);
+                float4 envSample1 = UNITY_SAMPLE_TEXCUBE_SAMPLER_LOD(unity_SpecCube1, unity_SpecCube0, refDirBlend, roughness * UNITY_SPECCUBE_LOD_STEPS);
+                float3 p1 = PoiDecodeHDR(envSample1, unity_SpecCube1_HDR);
+                p0 = lerp(p1, p0, interpolator);
+            }
+            return p0;
+        #endif
+
+        #if POI_PIPE == POI_URP
+            return PoiGlossyEnvironmentReflection(reflDir, worldPos.xyz, roughness, 1, screenUV);
+        #endif
+        return 0;
+	}
+
+    float3 GetReflections(in PoiCam poiCam, in PoiLight pl, in PoiMesh poiMesh, float perceptualRoughness, float3 reflectionDir)
+    {
+        float3 reflections = 0;
+        #if defined(POI_PASS_BASE) || defined(POI_PASS_OUTLINE)
+            UNITY_BRANCH
+            if (SceneHasReflections())
+            {
+                reflections = GetWorldReflections(reflectionDir, poiMesh.worldPos.xyz, perceptualRoughness, poiCam.screenUV);
+            }
+        #endif
+        return reflections * pl.occlusion;
+    }
+
+    #if defined(PROP_MOCHIEREFLCUBE) || defined(PROP_CLEARCOATFALLBACK) || !defined(OPTIMIZER_ENABLED)
+        float3 SampleFallbackCube(TextureCube reflectionCube, float3 reflectionDir, float perceptualRoughness, float4 hdrData)
+        {
+            float mipLevel = perceptualRoughness * UNITY_SPECCUBE_LOD_STEPS;
+            float mipLevel0 = floor(mipLevel);
+            float mipLerp = frac(mipLevel);
+            float3 sample0 = reflectionCube.SampleLevel(sampler_linear_clamp, reflectionDir, mipLevel0).rgb;
+            float3 sample1 = reflectionCube.SampleLevel(sampler_linear_clamp, reflectionDir, mipLevel0 + 1).rgb;
+            return PoiDecodeHDR(float4(lerp(sample0, sample1, mipLerp), 1), hdrData);
+        }
+
+        float3 GetReflections(in PoiCam poiCam, in PoiLight pl, in PoiMesh poiMesh, float perceptualRoughness, float ForceFallback, float LightFallback, TextureCube reflectionCube, float4 hdrData, float3 reflectionDir)
+        {
+            float3 reflections = 0;
+            // This is a separate conditional so it can optimize out when ForceFallback isn't animated
+            if (ForceFallback == 0)
+            {
+                UNITY_BRANCH
+                if (SceneHasReflections())
+                {
+                    #if defined(POI_PASS_BASE) || defined(POI_PASS_OUTLINE)
+                        reflections = GetWorldReflections(reflectionDir, poiMesh.worldPos.xyz, perceptualRoughness, poiCam.screenUV);
+                    #endif
+                }
+                else
+                {
+                    #if defined(POI_PASS_BASE) || defined(POI_PASS_OUTLINE)
+                        if (pl.lightType == POI_DIRECTIONAL)
+                        {
+                            reflections = SampleFallbackCube(reflectionCube, reflectionDir, perceptualRoughness, hdrData) * lerp(1, pl.finalLighting, LightFallback);
+                        }
+                    #endif
+                    #if defined(POI_PASS_ADD) || POI_PIPE == POI_URP
+                        if (LightFallback || pl.lightType != POI_DIRECTIONAL)
+                        {
+                            reflections = SampleFallbackCube(reflectionCube, reflectionDir, perceptualRoughness, hdrData) * pl.finalLighting;
+                        }
+                    #endif
+                }
+            }
+            else
+            {
+                #if defined(POI_PASS_BASE) || defined(POI_PASS_OUTLINE)
+                    if (pl.lightType == POI_DIRECTIONAL)
+                    {
+                        reflections = SampleFallbackCube(reflectionCube, reflectionDir, perceptualRoughness, hdrData) * lerp(1, pl.finalLighting, LightFallback);
+                    }
+                #endif
+                #if defined(POI_PASS_ADD) || POI_PIPE == POI_URP
+                    if (LightFallback || pl.lightType != POI_DIRECTIONAL)
+                    {
+                        reflections = SampleFallbackCube(reflectionCube, reflectionDir, perceptualRoughness, hdrData) * pl.finalLighting;
+                    }
+                #endif
+            }
+            reflections *= pl.occlusion;
+            return reflections;
+        }
+    #endif
+
+    #if defined(MOCHIE_PBR) && defined(GGX_ANISOTROPICS)
+    float GetGGXTerm(float nDotL, float nDotV, float nDotH, float roughness, float tDotV, float bDotV, float tDotL, float bDotL, float tDotH, float bDotH, float2 adjustedAnisotropy)
+    {
+        float pbrAnistropics = lerp(roughness, 1, (1 - _RoughnessAnisotropy) * adjustedAnisotropy.y);
+        float at = max(pbrAnistropics * ((1 + (roughness * adjustedAnisotropy.y)) + adjustedAnisotropy.x), 0.005);
+        float ab = max(pbrAnistropics * ((1 + (roughness * adjustedAnisotropy.y)) - adjustedAnisotropy.x), 0.005);
+        float visibilityTerm = 0;
+
+        if (nDotL > 0)
+        {
+            float a2 = at * ab;
+            //V_SmithGGXCorrelated
+            float lambdaV = nDotL * length(float3(at * tDotV, ab * bDotV, nDotV));
+            float lambdaL = nDotV * length(float3(at * tDotL, ab * bDotL, nDotL));
+            visibilityTerm = 0.5f / (lambdaV + lambdaL + 1e-5f);
+
+
+            float3 v = float3(ab * tDotH, at * bDotH, a2 * nDotH);
+            float v2 = dot(v, v);
+            float w2 = a2 / (v2+ 1e-5f);
+            float dotTerm = a2 * (w2 * w2 * INV_PI);
+
+
+            visibilityTerm *= dotTerm;
+        }
+        return visibilityTerm;
+    }
+    #endif
+
+    float GetGGXTerm(float nDotL, float nDotV, float nDotH, float roughness)
+    {
+        float visibilityTerm = 0;
+        if (nDotL > 0)
+        {
+            float lambdaV = nDotL * (nDotV * (1 - roughness) + roughness);
+            float lambdaL = nDotV * (nDotL * (1 - roughness) + roughness);
+
+            visibilityTerm = 0.5f / (lambdaV + lambdaL + 1e-5f);
+            float a = nDotH * roughness;
+            float k = roughness / (1.0 - nDotH * nDotH + a * a+ 1e-5f);
+            float dotTerm = k * k * INV_PI;
+
+            visibilityTerm *= dotTerm;
+        }
+        return visibilityTerm;
+    }
+
+    #if defined(MOCHIE_PBR) && defined(GGX_ANISOTROPICS)
+        void GetSpecFresTerm(float nDotL, float nDotV, float nDotH, float lDotH, inout float3 specularTerm, inout float3 fresnelTerm, float3 specCol, float roughness, float tDotV, float bDotV, float tDotL, float bDotL, float tDotH, float bDotH, float2 adjustedAnisotropy)
+        {
+            specularTerm = GetGGXTerm(nDotL, nDotV, nDotH, roughness, tDotV, bDotV, tDotL, bDotL, tDotH, bDotH, adjustedAnisotropy);
+            fresnelTerm = FresnelTerm(specCol, lDotH);
+            specularTerm = max(0, specularTerm * max(0.00001, nDotL));
+        }
+    #endif
+
+    void GetSpecFresTerm(float nDotL, float nDotV, float nDotH, float lDotH, inout float3 specularTerm, inout float3 fresnelTerm, float3 specCol, float roughness)
+    {
+        specularTerm = GetGGXTerm(nDotL, nDotV, nDotH, roughness);
+        fresnelTerm = FresnelTerm(specCol, lDotH);
+        specularTerm = max(0, specularTerm * max(0.00001, nDotL));
+    }
+
+    float GetRoughness(float smoothness)
+    {
+        float rough = 1 - smoothness;
+        rough *= 1.7 - 0.7 * rough;
+        return rough;
+    }
+
+    float SFVisibility(float brdfRoughness, float3 directColor, float NDotV, float ExposureOcclusion)
+    {
+        //Silent's exposure occlusion
+        float Visibility = saturate(length(directColor + EPSILON) * (1.0/max(ExposureOcclusion, EPSILON))); //Using direct color because I think it should be generally more forgiving
+        // Lagarde and de Rousiers 2014, "Moving Frostbite to PBR"
+        return saturate(pow(NDotV + Visibility, exp2(-16.0 * brdfRoughness - 1.0)) - 1.0 + Visibility);
+    }
+#endif
+//endex
+
+//ifex _MochieBRDF==0
+#ifdef MOCHIE_PBR
+    void MetallicAndSpecularFragDataInit(inout PoiFragData poiFragData, inout MochieBRDFData mochieBRDFData, in PoiMesh poiMesh, in PoiMods poiMods)
+    {
+        half smoothness = _MochieRoughnessMultiplier;
+        half smoothness2 = _MochieRoughnessMultiplier2;
+        half metallic = _MochieMetallicMultiplier;
+        half specularMask = 1;
+        half reflectionMask = 1;
+
+        smoothness *= poiFragData.smoothness;
+        smoothness2 *= poiFragData.smoothness2;
+        metallic *= poiFragData.metallic;
+        specularMask *= poiFragData.specularMask;
+        reflectionMask *= poiFragData.reflectionMask;
+
+        #if defined(PROP_MOCHIEMETALLICMAPS) || !defined(OPTIMIZER_ENABLED)
+            half4 PBRMaps = POI2D_SAMPLER_PAN_STOCHASTIC(_MochieMetallicMaps, _MainTex, poiUV(poiMesh.uv[_MochieMetallicMapsUV], _MochieMetallicMaps_ST), _MochieMetallicMapsPan, _MochieMetallicMapsStochastic);
+            UNITY_BRANCH
+            if (_PBRSplitMaskSample >= 0.5)
+            {
+                half4 PBRSplitMask = POI2D_SAMPLER_PAN_STOCHASTIC(_MochieMetallicMaps, _MainTex, poiUV(poiMesh.uv[_MochieMetallicMasksUV], _PBRMaskScaleTiling), _MochieMetallicMasksPan.xy, _PBRSplitMaskStochastic);
+                half reflVal = _MochieMetallicMapsReflectionMaskChannel < 4 ? PBRSplitMask[_MochieMetallicMapsReflectionMaskChannel] : 1.0h;
+                half specVal = _MochieMetallicMapsSpecularMaskChannel < 4 ? PBRSplitMask[_MochieMetallicMapsSpecularMaskChannel] : 1.0h;
+                assignValueToVectorFromIndex(PBRMaps, _MochieMetallicMapsReflectionMaskChannel, reflVal);
+                assignValueToVectorFromIndex(PBRMaps, _MochieMetallicMapsSpecularMaskChannel, specVal);
+            }
+            
+            if (_MochieMetallicMapsMetallicChannel < 4)
+            {
+                metallic *= PBRMaps[_MochieMetallicMapsMetallicChannel];
+            }
+            if (_MochieMetallicMapsRoughnessChannel < 4)
+            {
+                smoothness *= PBRMaps[_MochieMetallicMapsRoughnessChannel];
+                smoothness2 *= PBRMaps[_MochieMetallicMapsRoughnessChannel];
+            }
+            if (_MochieMetallicMapsReflectionMaskChannel < 4)
+            {
+                reflectionMask *= PBRMaps[_MochieMetallicMapsReflectionMaskChannel];
+            }
+            if (_MochieMetallicMapsSpecularMaskChannel < 4)
+            {
+                specularMask *= PBRMaps[_MochieMetallicMapsSpecularMaskChannel];
+            }
+        #endif
+
+        reflectionMask *= _MochieReflectionStrength;
+        specularMask *= _MochieSpecularStrength;
+
+        if (_MochieMetallicMapInvert >= 0.5)
+        {
+            metallic = 1 - metallic;
+        }
+        if (_MochieRoughnessMapInvert >= 0.5)
+        {
+            smoothness = 1 - smoothness;
+            smoothness2 = 1 - smoothness2;
+        }
+        if (_MochieReflectionMaskInvert >= 0.5)
+        {
+            reflectionMask = 1 - reflectionMask;
+        }
+        if (_MochieSpecularMaskInvert >= 0.5)
+        {
+            specularMask = 1 - specularMask;
+        }
+
+        poiFragData.smoothness *= smoothness;
+        poiFragData.smoothness2 *= smoothness2;
+        poiFragData.metallic *= metallic;
+        poiFragData.specularMask *= specularMask;
+        poiFragData.reflectionMask *= reflectionMask;
+
+        // specific metallics and specular data for mochie brdf
+
+        mochieBRDFData.smoothness = poiFragData.smoothness;
+        mochieBRDFData.smoothness2 = poiFragData.smoothness2;
+        mochieBRDFData.metallic = poiFragData.metallic;
+        mochieBRDFData.specularMask = poiFragData.specularMask;
+        mochieBRDFData.reflectionMask = poiFragData.reflectionMask;
+
+        float2 adjustedAnisotropy = 0;
+        #ifdef GGX_ANISOTROPICS
+        #if defined(PROP_ANISOTROPYMAP) || !defined(OPTIMIZER_ENABLED)
+            float4 anisotropyMap = POI2D_SAMPLER_PAN(_AnisotropyMap, _MainTex, poiUV(poiMesh.uv[_AnisotropyMapUV], _AnisotropyMap_ST), _AnisotropyMapPan);
+            adjustedAnisotropy = (anisotropyMap[_AnisotropyMapChannel] - .5) * 2;
+        #endif
+            adjustedAnisotropy = clamp(adjustedAnisotropy + _Anisotropy, -1, 1);
+            adjustedAnisotropy.y = abs(adjustedAnisotropy.y);
+        #endif
+
+        mochieBRDFData.adjustedAnisotropy = adjustedAnisotropy;
+
+        float3 pbrNSelect = lerp(poiMesh.normals[0], poiMesh.normals[1], _PBRNormalSelect);
+        float3 pbrTSelect = lerp(poiMesh.tangent[0], poiMesh.tangent[1], _PBRNormalSelect);
+        float3 pbrBSelect = lerp(poiMesh.binormal[0], poiMesh.binormal[1], _PBRNormalSelect);
+
+        mochieBRDFData.pbrNSelect = pbrNSelect;
+        mochieBRDFData.pbrTSelect = pbrTSelect;
+        mochieBRDFData.pbrBSelect = pbrBSelect;
+    }
+
+    void FinalizeMochieBRDFData(inout MochieBRDFData mochieBRDFData, in PoiMesh poiMesh, in PoiMods poiMods)
+    {
+        if (mochieBRDFData.isInitialized >= 0.5)
+        {
+            return;
+        }
+        mochieBRDFData.isInitialized = 1;
+
+        if (_MochieMetallicGlobalMask > 0)
+        {
+            mochieBRDFData.metallic = maskBlend(mochieBRDFData.metallic, poiMods.globalMask[_MochieMetallicGlobalMask - 1], _MochieMetallicGlobalMaskBlendType);
+        }
+        if (_MochieSmoothnessGlobalMask > 0)
+        {
+            mochieBRDFData.smoothness = maskBlend(mochieBRDFData.smoothness, poiMods.globalMask[_MochieSmoothnessGlobalMask - 1], _MochieSmoothnessGlobalMaskBlendType);
+            mochieBRDFData.smoothness2 = maskBlend(mochieBRDFData.smoothness2, poiMods.globalMask[_MochieSmoothnessGlobalMask - 1], _MochieSmoothnessGlobalMaskBlendType);
+        }
+        if (_MochieReflectionStrengthGlobalMask > 0)
+        {
+            mochieBRDFData.reflectionMask = customBlend(mochieBRDFData.reflectionMask, poiMods.globalMask[_MochieReflectionStrengthGlobalMask - 1], _MochieReflectionStrengthGlobalMaskBlendType);
+        }
+        if (_MochieSpecularStrengthGlobalMask > 0)
+        {
+            mochieBRDFData.specularMask = customBlend(mochieBRDFData.specularMask, poiMods.globalMask[_MochieSpecularStrengthGlobalMask - 1], _MochieSpecularStrengthGlobalMaskBlendType);
+        }
+
+        #ifdef TPS_Penetrator
+            if (_BRDFTPSDepthEnabled >= 0.5)
+            {
+                mochieBRDFData.reflectionMask = lerp(0, mochieBRDFData.reflectionMask * TPSBufferedDepth(poiMesh.localPos, poiMesh.vertexColor), _BRDFTPSReflectionMaskStrength);
+                mochieBRDFData.specularMask = lerp(0, mochieBRDFData.specularMask * TPSBufferedDepth(poiMesh.localPos, poiMesh.vertexColor), _BRDFTPSSpecularMaskStrength);
+            }
+        #endif
+
+        #K#MOCHIE_METALLIC_SMOOTHNESS_MOD
+
+        half roughness = GetRoughness(mochieBRDFData.smoothness);
+        half roughness2 = GetRoughness(mochieBRDFData.smoothness2);
+
+        float omr = unity_ColorSpaceDielectricSpec.a - mochieBRDFData.metallic * unity_ColorSpaceDielectricSpec.a;
+        float percepRough = 1 - mochieBRDFData.smoothness;
+        float percepRough2 = 1 - mochieBRDFData.smoothness2;
+        UNITY_BRANCH
+        if (_MochieGSAAEnabled >= 0.5)
+        {
+            float3 normals = lerp(poiMesh.normals[0], poiMesh.normals[1], _PBRNormalSelect);
+            percepRough = GSAA_Filament(normals, percepRough, _PoiGSAAVariance, _PoiGSAAThreshold);
+            if (_Specular2ndLayer >= 0.5 && _MochieSpecularStrength2 > 0)
+            {
+                percepRough2 = GSAA_Filament(normals, percepRough2, _PoiGSAAVariance, _PoiGSAAThreshold);
+            }
+        }
+        half brdfRoughness = percepRough * percepRough;
+        brdfRoughness = max(brdfRoughness, 0.002);
+        
+        half brdfRoughness2 = percepRough2 * percepRough2;
+        brdfRoughness2 = max(brdfRoughness2, 0.002);
+
+        mochieBRDFData.roughness = roughness;
+        mochieBRDFData.brdfRoughness = brdfRoughness;
+        mochieBRDFData.brdfRoughness2 = brdfRoughness2;
+        mochieBRDFData.percepRough = percepRough;
+        mochieBRDFData.percepRough2 = percepRough2;
+        mochieBRDFData.omr = omr;
+    }
+
+    void MochieBRDFSpecular(inout PoiFragData poiFragData, inout MochieBRDFData mochieBRDFData, in PoiCam poiCam, inout PoiLight poiLight, in PoiMesh poiMesh, inout PoiMods poiMods)
+    {
+        FinalizeMochieBRDFData(mochieBRDFData, poiMesh, poiMods);
+
+        half specularMask = mochieBRDFData.specularMask;
+        half3 specTint = poiThemeColor(poiMods, _MochieSpecularTint.rgb, _MochieSpecularTintThemeIndex);
+
+        float3 specCol = lerp(unity_ColorSpaceDielectricSpec.rgb, poiFragData.baseColor, mochieBRDFData.metallic);
+        mochieBRDFData.specCol = specCol;
+
+        half roughness = mochieBRDFData.roughness;
+        half brdfRoughness = mochieBRDFData.brdfRoughness;
+        half brdfRoughness2 = mochieBRDFData.brdfRoughness2;
+
+        float omr = mochieBRDFData.omr;
+    
+        half3 specular = 0;
+        half3 specular2 = 0;
+        half3 vSpecular = 0;
+        half3 vSpecular2 = 0;
+        float3 environment = 0;
+
+        // In the additive pass directColor already carries atten
+        half specLightMap = poiLight.lightMap;
+        half attenuation = lerp(specLightMap, 1, _IgnoreCastedShadows);
+
+        half3 fresnelTerm = 1;
+        half3 specularTerm = 1;
+
+        float pbrNDotL = lerp(poiLight.vertexNDotL, poiLight.nDotL, _PBRNormalSelect);
+        float pbrNDotV = lerp(poiLight.vertexNDotV, poiLight.nDotV, _PBRNormalSelect);
+        float pbrNDotH = lerp(poiLight.vertexNDotH, poiLight.nDotH, _PBRNormalSelect);
+        
+        float3 pbrNSelect = mochieBRDFData.pbrNSelect;
+        float3 pbrTSelect = mochieBRDFData.pbrTSelect;
+        float3 pbrBSelect = mochieBRDFData.pbrBSelect;
+
+		float pbrTDotV = dot(pbrTSelect, poiCam.eyeViewDir);
+		float pbrBDotV = dot(pbrBSelect, poiCam.eyeViewDir);
+        float pbrTDotL = dot(pbrTSelect, poiLight.direction);
+        float pbrBDotL = dot(pbrBSelect, poiLight.direction);
+        float pbrTDotH = dot(pbrTSelect, poiLight.halfDir);
+        float pbrBDotH = dot(pbrBSelect, poiLight.halfDir);
+
+    #ifdef GGX_ANISOTROPICS
+        float2 adjustedAnisotropy = mochieBRDFData.adjustedAnisotropy;
+        GetSpecFresTerm(pbrNDotL, pbrNDotV, pbrNDotH, poiLight.lDotH, specularTerm, fresnelTerm, specCol, brdfRoughness, pbrTDotV, pbrBDotV, pbrTDotL, pbrBDotL, pbrTDotH, pbrBDotH, adjustedAnisotropy);
+    #else
+        GetSpecFresTerm(pbrNDotL, pbrNDotV, pbrNDotH, poiLight.lDotH, specularTerm, fresnelTerm, specCol, brdfRoughness);
+    #endif
+        half specOcclusion = poiLight.occlusion;
+        #ifdef POI_BENTNORMALMAP
+            if (poiMesh.hasBentNormal > 0.5)
+            {
+                float3 specReflDir = reflect(-poiCam.eyeViewDir, lerp(poiMesh.normals[0], poiMesh.normals[1], _PBRNormalSelect));
+                specOcclusion = lerp(poiLight.occlusion, PoiSpecularOcclusionBentNormal(specReflDir, poiMesh.bentNormal, poiLight.occlusion, mochieBRDFData.percepRough), _BentNormalSpecOccStrength);
+            }
+        #endif
+        specular = poiLight.directColor * specularTerm * fresnelTerm * specularMask * specTint * specOcclusion * attenuation;
+
+        if (poiFragData.toggleVertexLights)
+        {
+            #if defined(VERTEXLIGHT_ON)
+                float3 vSpecBase = specularMask * specTint * specOcclusion;
+                for (int index = 0; index < 4; index++)
+                {
+                    fresnelTerm = 1;
+                    specularTerm = 1;
+                    float pbrVDotNL = lerp(poiLight.vertexVDotNL[index], poiLight.vDotNL[index], _PBRNormalSelect);
+                    float pbrVDotNH = lerp(poiLight.vertexVDotNH[index], poiLight.vDotNH[index], _PBRNormalSelect);
+
+                    #ifdef GGX_ANISOTROPICS
+                     float pbrTDotvL = dot(pbrTSelect, poiLight.vDirection[index]);
+                     float pbrBDotvL = dot(pbrBSelect, poiLight.vDirection[index]);
+                     float pbrTDotvH = dot(pbrTSelect, poiLight.vHalfDir[index]);
+                     float pbrBDotvH = dot(pbrBSelect, poiLight.vHalfDir[index]);
+                    GetSpecFresTerm(pbrVDotNL, pbrNDotV, pbrVDotNH, poiLight.vDotLH[index], specularTerm, fresnelTerm, specCol, brdfRoughness, pbrTDotV, pbrBDotV, pbrTDotvL, pbrBDotvL, pbrTDotvH, pbrBDotvH, adjustedAnisotropy);
+                    #else
+                    GetSpecFresTerm(pbrVDotNL, pbrNDotV, pbrVDotNH, poiLight.vDotLH[index], specularTerm, fresnelTerm, specCol, brdfRoughness);
+                    #endif
+                    vSpecular += poiLight.vColor[index] * specularTerm * fresnelTerm * vSpecBase;
+                }
+            #endif
+        }
+
+        if (_Specular2ndLayer >= 0.5)
+        {
+            half3 fresnelTerm = 1;
+            half3 specularTerm = 1;
+            #ifdef GGX_ANISOTROPICS
+            GetSpecFresTerm(pbrNDotL, pbrNDotV, pbrNDotH, poiLight.lDotH, specularTerm, fresnelTerm, specCol, brdfRoughness2, pbrTDotV, pbrBDotV, pbrTDotL, pbrBDotL, pbrTDotH, pbrBDotH, adjustedAnisotropy);
+            #else
+            GetSpecFresTerm(pbrNDotL, pbrNDotV, pbrNDotH, poiLight.lDotH, specularTerm, fresnelTerm, specCol, brdfRoughness2);
+            #endif
+            specular2 = poiLight.directColor * specularTerm * fresnelTerm * specularMask * specTint * specOcclusion * attenuation * _MochieSpecularStrength2;
+
+            if (poiFragData.toggleVertexLights)
+            {
+                #if defined(VERTEXLIGHT_ON)
+                    float3 vSpec2Base = specularMask * specTint * specOcclusion * _MochieSpecularStrength2;
+                    for (int index = 0; index < 4; index++)
+                    {
+                        fresnelTerm = 1;
+                        specularTerm = 1;
+                        float pbrVDotNL = lerp(poiLight.vertexVDotNL[index], poiLight.vDotNL[index], _PBRNormalSelect);
+                        float pbrVDotNH = lerp(poiLight.vertexVDotNH[index], poiLight.vDotNH[index], _PBRNormalSelect);
+
+                        #ifdef GGX_ANISOTROPICS
+                         float pbrTDotvL = dot(pbrTSelect, poiLight.vDirection[index]);
+                         float pbrBDotvL = dot(pbrBSelect, poiLight.vDirection[index]);
+                         float pbrTDotvH = dot(pbrTSelect, poiLight.vHalfDir[index]);
+                         float pbrBDotvH = dot(pbrBSelect, poiLight.vHalfDir[index]);
+                        GetSpecFresTerm(pbrVDotNL, pbrNDotV, pbrVDotNH, poiLight.vDotLH[index], specularTerm, fresnelTerm, specCol, brdfRoughness2, pbrTDotV, pbrBDotV, pbrTDotvL, pbrBDotvL, pbrTDotvH, pbrBDotvH, adjustedAnisotropy);
+                        #else
+                        GetSpecFresTerm(pbrVDotNL, pbrNDotV, pbrVDotNH, poiLight.vDotLH[index], specularTerm, fresnelTerm, specCol, brdfRoughness2);
+                        #endif
+                        vSpecular2 += poiLight.vColor[index] * specularTerm * fresnelTerm * vSpec2Base;
+                    }
+                #endif
+            }
+        }
+        environment = max(specular + vSpecular, specular2 + vSpecular2);
+        //ifex (_LightingEnableLightVolumes==0 && isNotAnimated(_LightingEnableLightVolumes)) || (_LightingLightVolumesSpecular==0 && isNotAnimated(_LightingLightVolumesSpecular))
+        #if (POI_PIPE == POI_BIRP) && defined(POI_PASS_BASE)
+        if (_UdonLightVolumeEnabled && _LightingEnableLightVolumes >= 0.5 && _LightingLightVolumesSpecular > 0)
+        {
+            environment += LightVolumeSpecularDominant(specCol, 1.0 - mochieBRDFData.percepRough, normalize(pbrNSelect), poiCam.eyeViewDir, float3(PoiSHAr.w, PoiSHAg.w, PoiSHAb.w), PoiSHAr.xyz, PoiSHAg.xyz, PoiSHAb.xyz) * specularMask * specTint * specOcclusion * _LightingLightVolumesIntensity * _LightingLightVolumesSpecular;
+        }
+        #endif
+        //endex
+        poiLight.finalLightAdd += environment;
+    }
+
+    void MochieBRDFMetallics(inout PoiFragData poiFragData, inout MochieBRDFData mochieBRDFData, in PoiCam poiCam, inout PoiLight poiLight, in PoiMesh poiMesh, inout PoiMods poiMods)
+    {
+        FinalizeMochieBRDFData(mochieBRDFData, poiMesh, poiMods);
+
+        half roughness = mochieBRDFData.roughness;
+        
+        half reflectionMask = mochieBRDFData.reflectionMask;
+        float percepRough = mochieBRDFData.percepRough;
+        half brdfRoughness = mochieBRDFData.brdfRoughness;
+        
+        float3 specCol = lerp(unity_ColorSpaceDielectricSpec.rgb, poiFragData.baseColor, mochieBRDFData.metallic);
+        
+        float3 reflections = 0;
+        
+        float pbrNDotL = lerp(poiLight.vertexNDotL, poiLight.nDotL, _PBRNormalSelect);
+        float pbrNDotV = lerp(poiLight.vertexNDotV, poiLight.nDotV, _PBRNormalSelect);
+        float pbrNDotH = lerp(poiLight.vertexNDotH, poiLight.nDotH, _PBRNormalSelect);
+
+        float3 pbrReflectionDir = lerp(poiCam.vertexReflectionDir, poiCam.reflectionDir, _PBRNormalSelect);
+
+    #ifdef GGX_ANISOTROPICS
+        float2 adjustedAnisotropy = mochieBRDFData.adjustedAnisotropy;
+        float3 pbrNSelect = mochieBRDFData.pbrNSelect;
+        float3 pbrTSelect = mochieBRDFData.pbrTSelect;
+        float3 pbrBSelect = mochieBRDFData.pbrBSelect;
+
+        pbrReflectionDir = float3(dot(pbrReflectionDir, pbrTSelect), dot(pbrReflectionDir, pbrBSelect), dot(pbrReflectionDir, pbrNSelect));
+        half pbrReflRoughness = lerp(1, roughness, _RoughnessAnisotropy);
+        pbrReflectionDir.xy *= float2((1 - roughness * adjustedAnisotropy.y) * ((1) - pbrReflRoughness * adjustedAnisotropy.x * (_ReflectionAnisotropicStretch * adjustedAnisotropy.y)), (1 - roughness * adjustedAnisotropy.y) * ((1) + pbrReflRoughness * adjustedAnisotropy.x * (_ReflectionAnisotropicStretch * adjustedAnisotropy.y)));
+        pbrReflectionDir = normalize(pbrReflectionDir.x * pbrTSelect + pbrReflectionDir.y * pbrBSelect + pbrReflectionDir.z * pbrNSelect);
+    #endif
+
+        float surfaceReduction = (1.0 / (brdfRoughness * brdfRoughness + 1.0));
+        // float grazingTerm = saturate(smoothness + (1 - omr));
+        #if defined(PROP_MOCHIEREFLCUBE) || !defined(OPTIMIZER_ENABLED)
+            float3 reflCol = GetReflections(poiCam, poiLight, poiMesh, percepRough, _MochieForceFallback, _MochieLitFallback, _MochieReflCube, _MochieReflCube_HDR, pbrReflectionDir);
+        #else
+            float3 reflCol = GetReflections(poiCam, poiLight, poiMesh, percepRough, pbrReflectionDir);
+        #endif
+        reflections = surfaceReduction * reflCol * FresnelLerp(specCol, specCol + lerp(specCol, 1, _RefSpecFresnelStrength) * _RefSpecFresnelStrength, pbrNDotV) * SFVisibility(brdfRoughness, poiLight.directColor, pbrNDotV, _SFExposureOcclusion);
+        reflections *= poiThemeColor(poiMods, _MochieReflectionTint.rgb, _MochieReflectionTintThemeIndex);
+
+        //ifex (_LightingEnableLightVolumes==0 && isNotAnimated(_LightingEnableLightVolumes)) || (_LightingLightVolumesSpecular==0 && isNotAnimated(_LightingLightVolumesSpecular))
+        #if (POI_PIPE == POI_BIRP) && defined(POI_PASS_BASE)
+        if (_UdonLightVolumeEnabled && _LightingEnableLightVolumes >= 0.5 && _LightingLightVolumesSpecular > 0)
+        {
+            reflections += LightVolumeSpecularDominant(specCol, 1.0 - percepRough, normalize(mochieBRDFData.pbrNSelect), poiCam.eyeViewDir, float3(PoiSHAr.w, PoiSHAg.w, PoiSHAb.w), PoiSHAr.xyz, PoiSHAg.xyz, PoiSHAb.xyz) * _LightingLightVolumesIntensity * _LightingLightVolumesSpecular;
+        }
+        #endif
+        //endex
+
+        #ifdef POI_BENTNORMALMAP
+            if (poiMesh.hasBentNormal > 0.5)
+            {
+                float bentNormalSO = PoiSpecularOcclusionBentNormal(pbrReflectionDir, poiMesh.bentNormal, poiLight.occlusion, percepRough);
+                half occlusionRatio = (poiLight.occlusion > 0.001) ? (bentNormalSO / poiLight.occlusion) : bentNormalSO;
+                reflections *= lerp(1.0, occlusionRatio, _BentNormalSpecOccStrength);
+            }
+        #endif
+
+        reflections *= reflectionMask;
+        poiLight.finalLightAdd += reflections;
+
+        // Apply metallic diffuse darkening
+        poiFragData.finalColor = lerp(poiFragData.finalColor, poiFragData.finalColor * mochieBRDFData.omr, mochieBRDFData.reflectionMask);
+
+        // Correct specular/reflections for baseColor changes after specCol was computed
+        // (e.g., effects like matcap or decals that modify baseColor post-specular)
+        if (any(mochieBRDFData.specCol > 0))
+        {
+            float3 currentSpecCol = lerp(unity_ColorSpaceDielectricSpec.rgb, poiFragData.baseColor, mochieBRDFData.metallic);
+            float3 safeSpecCol = max(mochieBRDFData.specCol, unity_ColorSpaceDielectricSpec.rgb);
+            poiLight.finalLightAdd *= lerp(float3(1, 1, 1), currentSpecCol / safeSpecCol, mochieBRDFData.reflectionMask);
+        }
+    }
+
+#endif
+//endex
+//ifex _ClearCoatBRDF==0
+#ifdef POI_CLEARCOAT
+    void poiClearCoat(inout PoiFragData poiFragData, in PoiCam poiCam, inout PoiLight poiLight, in PoiMesh poiMesh, in PoiMods poiMods)
+    {
+        half clearCoatMask = _ClearCoatStrength;
+        half smoothness = _ClearCoatSmoothness;
+        half reflectionMask = _ClearCoatReflectionStrength;
+        half specularMask = _ClearCoatSpecularStrength;
+
+        #if defined(PROP_CLEARCOATMAPS) || !defined(OPTIMIZER_ENABLED)
+            float4 PBRMaps = POI2D_SAMPLER_PAN_STOCHASTIC(_ClearCoatMaps, _MainTex, poiUV(poiMesh.uv[_ClearCoatMapsUV], _ClearCoatMaps_ST), _ClearCoatMapsPan, _ClearCoatMapsStochastic);
+
+            if (_ClearCoatMapsClearCoatMaskChannel < 4)
+            {
+                clearCoatMask *= PBRMaps[_ClearCoatMapsClearCoatMaskChannel];
+            }
+            if (_ClearCoatMapsRoughnessChannel < 4)
+            {
+                smoothness *= PBRMaps[_ClearCoatMapsRoughnessChannel];
+            }
+            if (_ClearCoatMapsReflectionMaskChannel < 4)
+            {
+                reflectionMask *= PBRMaps[_ClearCoatMapsReflectionMaskChannel];
+            }
+            if (_ClearCoatMapsSpecularMaskChannel < 4)
+            {
+                specularMask *= PBRMaps[_ClearCoatMapsSpecularMaskChannel];
+            }
+        #endif
+        
+        if (_ClearCoatGlobalMask > 0)
+        {
+            clearCoatMask = maskBlend(clearCoatMask, poiMods.globalMask[_ClearCoatGlobalMask - 1], _ClearCoatGlobalMaskBlendType);
+        }
+        if (_ClearCoatSmoothnessGlobalMask > 0)
+        {
+            smoothness = maskBlend(smoothness, poiMods.globalMask[_ClearCoatSmoothnessGlobalMask - 1], _ClearCoatSmoothnessGlobalMaskBlendType);
+        }
+        if (_ClearCoatReflectionStrengthGlobalMask > 0)
+        {
+            reflectionMask = maskBlend(reflectionMask, poiMods.globalMask[_ClearCoatReflectionStrengthGlobalMask - 1], _ClearCoatReflectionStrengthGlobalMaskBlendType);
+        }
+        if (_ClearCoatSpecularStrengthGlobalMask > 0)
+        {
+            specularMask = maskBlend(specularMask, poiMods.globalMask[_ClearCoatSpecularStrengthGlobalMask - 1], _ClearCoatSpecularStrengthGlobalMaskBlendType);
+        }
+
+        if (_ClearCoatMaskInvert >= 0.5)
+        {
+            clearCoatMask = 1 - clearCoatMask;
+        }
+        if (_ClearCoatSmoothnessMapInvert >= 0.5)
+        {
+            smoothness = 1 - smoothness;
+        }
+        if (_ClearCoatReflectionMaskInvert >= 0.5)
+        {
+            reflectionMask = 1 - reflectionMask;
+        }
+        if (_ClearCoatSpecularMaskInvert >= 0.5)
+        {
+            specularMask = 1 - specularMask;
+        }
+        #ifdef TPS_Penetrator
+            if (_ClearCoatTPSDepthMaskEnabled >= 0.5)
+            {
+                clearCoatMask = lerp(0, clearCoatMask * TPSBufferedDepth(poiMesh.localPos, poiMesh.vertexColor), _ClearCoatTPSMaskStrength);
+            }
+        #endif
+
+        if (clearCoatMask < 0.001) return;
+        
+        half roughness = GetRoughness(smoothness);
+        float3 specCol = 0.220916301;
+        float omr = unity_ColorSpaceDielectricSpec.a;
+        float percepRough = 1 - smoothness;
+        UNITY_BRANCH
+        if (_ClearCoatGSAAEnabled >= 0.5)
+        {
+            percepRough = GSAA_Filament(poiMesh.normals[_ClearCoatNormalSelect], percepRough, _ClearCoatGSAAVariance, _ClearCoatGSAAThreshold);
+        }
+        half brdfRoughness = percepRough * percepRough;
+        brdfRoughness = max(brdfRoughness, 0.002);
+        
+        half3 diffuse = 0;
+        half3 specular = 0;
+        half3 vSpecular = 0;
+        float3 reflections = 0;
+        float3 environment = 0;
+        half ccLightMap = poiLight.lightMap;
+        half attenuation = min(poiLight.nDotLSaturated, lerp(ccLightMap, 1, _CCIgnoreCastedShadows));
+
+        half3 fresnelTerm = 1;
+        half3 specularTerm = 1;
+
+        float clearcoatNDotL = lerp(poiLight.vertexNDotL, poiLight.nDotL, _ClearCoatNormalSelect);
+        float clearcoatNDotV = lerp(poiLight.vertexNDotV, poiLight.nDotV, _ClearCoatNormalSelect);
+        float clearcoatNDotH = lerp(poiLight.vertexNDotH, poiLight.nDotH, _ClearCoatNormalSelect);
+        float3 clearcoatReflectionDir = lerp(poiCam.vertexReflectionDir, poiCam.reflectionDir, _ClearCoatNormalSelect);
+
+        half3 ccSpecTint = poiThemeColor(poiMods, _ClearCoatSpecularTint.rgb, _ClearCoatSpecularTintThemeIndex);
+        GetSpecFresTerm(clearcoatNDotL, clearcoatNDotV, clearcoatNDotH, poiLight.lDotH, specularTerm, fresnelTerm, specCol, brdfRoughness);
+        specular = poiLight.directColor * specularTerm * fresnelTerm * specularMask * ccSpecTint * poiLight.occlusion * attenuation;
+        if (poiFragData.toggleVertexLights)
+        {
+            #if defined(VERTEXLIGHT_ON)
+                float3 ccVSpecBase = specularMask * ccSpecTint * poiLight.occlusion;
+                for (int index = 0; index < 4; index++)
+                {
+                    fresnelTerm = 1;
+                    specularTerm = 1;
+                    float clearcoatVDotNL = lerp(poiLight.vertexVDotNL[index], poiLight.vDotNL[index], _ClearCoatNormalSelect);
+                    float clearcoatVDotNH = lerp(poiLight.vertexVDotNH[index], poiLight.vDotNH[index], _ClearCoatNormalSelect);
+                    GetSpecFresTerm(clearcoatVDotNL, clearcoatNDotV, clearcoatVDotNH, poiLight.vDotLH[index], specularTerm, fresnelTerm, specCol, brdfRoughness);
+                    vSpecular += poiLight.vColor[index] * specularTerm * fresnelTerm * ccVSpecBase;
+                }
+            #endif
+        }
+
+        float surfaceReduction = (1.0 / (brdfRoughness * brdfRoughness + 1.0));
+        // float grazingTerm = saturate(smoothness + (1 - omr));
+        #if defined(PROP_CLEARCOATFALLBACK) || !defined(OPTIMIZER_ENABLED)
+            float3 reflCol = GetReflections(poiCam, poiLight, poiMesh, percepRough, _ClearCoatForceFallback, _ClearCoatLitFallback, _ClearCoatFallback, _ClearCoatFallback_HDR, clearcoatReflectionDir);
+        #else
+            float3 reflCol = GetReflections(poiCam, poiLight, poiMesh, percepRough, clearcoatReflectionDir);
+        #endif
+        reflections = surfaceReduction * reflCol * FresnelLerp(specCol, specCol + lerp(specCol, 1, _ClearcoatFresnelStrength) * _ClearcoatFresnelStrength, clearcoatNDotV) * SFVisibility(brdfRoughness, poiLight.directColor, clearcoatNDotV, _ClearcoatExposureOcclusion);
+        reflections *= poiThemeColor(poiMods, _ClearCoatReflectionTint.rgb, _ClearCoatReflectionTintThemeIndex) * reflectionMask;
+        diffuse = lerp(diffuse, diffuse * omr, reflectionMask);
+
+        environment = specular + vSpecular;
+        if (poiLight.lightType == POI_DIRECTIONAL)
+        {
+            environment += reflections;
+        }
+        //ifex (_LightingEnableLightVolumes==0 && isNotAnimated(_LightingEnableLightVolumes)) || (_LightingLightVolumesSpecular==0 && isNotAnimated(_LightingLightVolumesSpecular))
+        #if (POI_PIPE == POI_BIRP) && defined(POI_PASS_BASE)
+        if (_UdonLightVolumeEnabled && _LightingEnableLightVolumes >= 0.5 && _LightingLightVolumesSpecular > 0)
+        {
+            environment += LightVolumeSpecularDominant(specCol, smoothness, poiMesh.normals[_ClearCoatNormalSelect], poiCam.eyeViewDir, float3(PoiSHAr.w, PoiSHAg.w, PoiSHAb.w), PoiSHAr.xyz, PoiSHAg.xyz, PoiSHAb.xyz) * specularMask * _LightingLightVolumesIntensity * _LightingLightVolumesSpecular;
+        }
+        #endif
+        //endex
+        //diffuse *= poiLight.finalLighting;
+        diffuse += environment;
+        poiLight.finalLightAdd += saturate(diffuse * clearCoatMask);
+    }
+#endif
+//endex
+
+#T#PoiMetallicAndSpecularInitFragData
+//ifex _MochieBRDF==0
+#ifdef MOCHIE_PBR
+    MetallicAndSpecularFragDataInit(poiFragData, mochieBRDFData, poiMesh, poiMods);
+#endif
+//endex
+
+#T#PoiSpecularFunctionCall
+//ifex _MochieBRDF==0
+#ifdef MOCHIE_PBR
+    MochieBRDFSpecular(poiFragData, mochieBRDFData, poiCam, poiLight, poiMesh, poiMods);
+#endif
+//endex
+
+#T#PoiMetallicsFunctionCall
+//ifex _MochieBRDF==0
+#ifdef MOCHIE_PBR
+    MochieBRDFMetallics(poiFragData, mochieBRDFData, poiCam, poiLight, poiMesh, poiMods);
+#endif
+//endex
+
+//ifex _ClearCoatBRDF==0
+#ifdef POI_CLEARCOAT
+    poiClearCoat(poiFragData, poiCam, poiLight, poiMesh, poiMods);
+#endif
+//endex

@@ -1,0 +1,156 @@
+#T#PoiBSProperties
+//ifex _BSSEnabled!=1
+[HideInInspector] m_start_BeatsaberOptions (" Beatsaber support--{reference_property:_BSSEnabled}", int) = 0
+[ThryToggle(POIBS_ENABLE)][HideInInspector] _BSSEnabled ("Enable BeatSaber Module--{on_value_actions:[{value:1,actions:[{type:SET_PROPERTY,data:_BlendOpAlpha=0},{type:SET_PROPERTY,data:_SrcBlendAlpha=1},{type:SET_PROPERTY,data:_DstBlendAlpha=0}]}]}", int) = 0
+[ThryRichLabel] _BSSSpacer1 ("<color=#ff0000ff>―――――――[IMPORTANT]―――――――</color>", int) = 0
+[Helpbox(2, 2, 3)] _BSSHelpBox1("Toggling on BeatSaber support will set (Rendering > Blending > Advanced Alpha) to ''Add, One, Zero,'' as alpha blending operations cause visual issues.", int) = 0
+[Helpbox(1, 2, 1)] _BSSHelpBox2 ("Glow is handled through the various emission options found in the shader!", int) = 0
+[ThryRichLabel] _BSSSpacer2 ("<color=#ff0000ff>―――――――[IMPORTANT]―――――――</color>", int) = 0
+[ThryRichLabel] _BSSSpacer3 ("", int) = 0
+
+[HideInInspector]s_start_CCopt("Custom Colors:--{reference_property:_CustomColors}", int) = 1
+[HideInInspector][MaterialToggle] _CustomColors ("", Float) = 0
+[Helpbox(2, 2, 1)] _BSSHelpBox3 ("To properly support custom colors on assets like sabers when material locking. you MUST right click the ''Color & Alpha'' property at the top and tag it to ''Animated.''", int) = 0
+[HideInInspector]s_end_CCopt("Custom Color Toggle:", int) = 1
+
+//ifex _BSSBloomfog!=1
+[HideInInspector] m_start_BeatsaberBloomFog ("Bloom & Height fog--{reference_property:_BSSBloomfog}", int) = 0
+[ThryToggle(POIBS_BLOOMFOG)][HideInInspector] _BSSBloomfog ("Enable Bloomfog", int) = 0
+[HideInInspector]s_start_fogOpt("Bloom fog settings:", int) = 1
+_FogStartOffset ("Fog Start Offset:", Float) = 0
+_FogScale ("Fog Scale:", Float) = 1
+[HideInInspector]s_end_fogOpt("", int) = 1
+[DoNotAnimate][ThryToggleUI(true)][HideInInspector] _BSSBloomfogType ("", int) = 1
+//ifex _BSSBloomfogType!=1
+[HideInInspector]s_start_heightFogOpt("Height fog settings:--{reference_property:_BSSBloomfogType}", int) = 1
+_FogHeightOffset ("Height start offset:--{condition_enable:_BSSBloomfogType==1}", Float) = 0
+_FogHeightScale ("Height Scale:--{condition_enable:_BSSBloomfogType==1}", Float) = 1
+[HideInInspector]s_end_heightFogOpt("", int) = 1
+//endex
+[HideInInspector] m_end_BeatsaberBloomFog ("", int) = 0
+//endex
+
+[HideInInspector] m_end_BeatsaberOptions ("", Float) = 0
+//endex
+
+#T#PoiBSKeywords
+//ifex _BSSEnabled!=1
+#pragma shader_feature_local POIBS_ENABLE
+//ifex _BSSBloomfog!=1
+#pragma shader_feature_local POIBS_BLOOMFOG
+//#pragma shader_feature_local BSSBLOOMFOGTYPE_HEIGHT
+//endex
+//endex
+
+#T#PoiBSVariables
+//ifex _BSSEnabled!=1
+#ifdef POIBS_ENABLE
+    half _CustomColors;
+    //ifex _BSSBloomfog!=1
+    #ifdef POIBS_BLOOMFOG
+        float _FogStartOffset;
+        float _FogScale;
+        half _BSSBloomfogType;
+//ifex _BSSBloomfogType!=1
+        float _FogHeightOffset;
+        float _FogHeightScale;
+        //endex
+
+        uniform float2 _CustomFogTextureToScreenRatio;
+        uniform float _StereoCameraEyeOffset;
+
+        uniform float _CustomFogOffset;
+        uniform float _CustomFogAttenuation;
+        uniform float _CustomFogHeightFogStartY;
+        uniform float _CustomFogHeightFogHeight;
+        uniform Texture2D _BloomPrePassTexture;
+    #endif
+    //endex
+#endif
+//endex
+
+#T#PoiBSVertexReturn
+//ifex _BSSEnabled!=1
+#if defined(POIBS_ENABLE) && !defined(POI_PASS_MOTION_VECTORS)
+    //ifex _BSSBloomfog!=1
+    #ifdef POIBS_BLOOMFOG
+        o.bsFogScreenUV = GetFogCoord(PoiObjectToClipPos(v.vertex.rgb)).xy;
+        o.worldPos = mul(unity_ObjectToWorld, v.vertex);
+    #endif
+    //endex
+#endif
+//endex
+
+#T#PoiBSVertexFunctions
+//ifex _BSSEnabled!=1
+#ifdef POIBS_ENABLE
+    //ifex _BSSBloomfog!=1
+    #ifdef POIBS_BLOOMFOG
+        inline float4 GetFogCoord(float4 clipPos)
+        {
+            float4 screenPos = ComputeNonStereoScreenPos(clipPos);
+            float2 screenPosNormalized = screenPos.xy / screenPos.w;
+            float eyeOffset = (unity_StereoEyeIndex * (_StereoCameraEyeOffset * 2)) + - _StereoCameraEyeOffset;
+            return float4(
+                ((eyeOffset +screenPosNormalized.x) + - 0.5) * _CustomFogTextureToScreenRatio.x + 0.5,
+                (screenPosNormalized.y + - 0.5) * _CustomFogTextureToScreenRatio.y + 0.5
+            ,clipPos.z,clipPos.w);
+        }
+
+//ifex _BSSBloomfogType!=1
+        inline float GetHeightFogIntensity(float3 worldPos, float fogHeightOffset, float fogHeightScale)
+        {
+            half heightFogIntensity = _CustomFogHeightFogHeight + _CustomFogHeightFogStartY;
+            heightFogIntensity = ((worldPos.y * fogHeightScale) + fogHeightOffset) + - heightFogIntensity;
+            heightFogIntensity = heightFogIntensity / _CustomFogHeightFogHeight;
+            heightFogIntensity = clamp(heightFogIntensity, 0, 1);
+            return ((-heightFogIntensity * 2) + 3) * (heightFogIntensity * heightFogIntensity);
+        }
+        //endex
+
+        inline float GetFogIntensity(float3 distance, float fogStartOffset, float fogScale)
+        {
+            half fogIntensity = max(dot(distance, distance) + - fogStartOffset, 0);
+            fogIntensity = max((fogIntensity * fogScale) + - _CustomFogOffset, 0);
+            fogIntensity = 1 / ((fogIntensity * _CustomFogAttenuation) + 1);
+            return -fogIntensity;
+        }
+    #endif
+    //endex
+#endif
+//endex
+
+#T#PoiBSAlphaRewrite
+//ifex _BSSEnabled!=1
+#ifdef POIBS_ENABLE
+    poiFragData.finalColor += poiFragData.emission * poiMods.globalEmission;
+    poiFragData.alpha = poiFragData.alpha * poiFragData.emission.z;
+    poiFragData.emission = 0;
+
+    //ifex _BSSBloomfog!=1
+    #ifdef POIBS_BLOOMFOG
+        float3 fogDistance = i.worldPos - getCameraPosition(false);
+        float4 fogCol = -float4(poiFragData.finalColor, 1) + POI2D_SAMPLER(_BloomPrePassTexture, _MainTex, i.bsFogScreenUV);
+        fogCol.a = -poiFragData.alpha;
+
+//ifex _BSSBloomfogType!=1
+        UNITY_BRANCH
+        if (_BSSBloomfogType >= 0.5)
+        {
+            poiFragData.finalColor = poiFragData.finalColor + (((GetHeightFogIntensity(i.worldPos, _FogHeightOffset, _FogHeightScale) * GetFogIntensity(fogDistance, _FogStartOffset, _FogScale)) + 1) * fogCol.rgb);
+            poiFragData.alpha = poiFragData.alpha + (((GetHeightFogIntensity(i.worldPos, _FogHeightOffset, _FogHeightScale) * GetFogIntensity(fogDistance, _FogStartOffset, _FogScale)) + 1) * fogCol.a);
+        }
+        //endex
+
+//ifex _BSSBloomfogType!=0
+        UNITY_BRANCH
+        if (_BSSBloomfogType < 0.5)
+        {
+            poiFragData.finalColor = poiFragData.finalColor + ((GetFogIntensity(fogDistance, _FogStartOffset, _FogScale) + 1) * fogCol.rgb);
+            poiFragData.alpha = poiFragData.alpha + ((GetFogIntensity(fogDistance, _FogStartOffset, _FogScale) + 1) * fogCol.a);
+        }
+        //endex
+    #endif
+    //endex
+#endif
+//endex

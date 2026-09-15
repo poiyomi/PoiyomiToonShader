@@ -1,0 +1,63 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8aa43eb5c662824699f2379805fb2c0, type: 3}
+  m_Name: PoiyomiURPFreelilFur
+  m_EditorClassIdentifier: 
+  Id: PoiyomiToonlilFur
+  Name: Poiyomi Toon URP Lil Fur
+  Version: 1.0
+  Author: Poiyomi
+  Description: 
+  UseTemplatesForProperties: 1
+  ShaderPropertiesTemplate: {fileID: 0}
+  ShaderPath: .poiyomi/Poiyomi Toon URP + Lil Fur
+  ShaderTemplate: {fileID: -544282384758852595, guid: aae7864a6dafe5b4598869c194de7bd4, type: 3}
+  CustomEditor: Thry.ShaderEditor
+  Properties:
+  - Name: shader_master_label
+    DisplayName: <color=#E75898ff>Poiyomi Pro V8a</color>
+    Type: Float
+    DefaultValue: 0
+    DefaultTextureAsset: {fileID: 0}
+    Attributes: []
+  BaseModules:
+  - {fileID: 11400000, guid: 9b804387778967748835ca2eadcc7e20, type: 2}
+  - {fileID: 11400000, guid: fb5d93d50bc5c03498f9832d8bcb7074, type: 2}
+  - {fileID: 11400000, guid: d45da686e102bac429193ef033901fd7, type: 2}
+  - {fileID: 11400000, guid: f00f1098d03c87048a415d1c40ba52e6, type: 2}
+  - {fileID: 11400000, guid: cf43416d29103f445810e6e753e82dc9, type: 2}
+  - {fileID: 11400000, guid: 40dbee5c6344ee948805987b0aac7f0f, type: 2}
+  - {fileID: 11400000, guid: ea08cf35a87c8d3408b1b796dfe1bde1, type: 2}
+  - {fileID: 11400000, guid: e7ca7297b5910bd4096baab1d9a931d4, type: 2}
+  - {fileID: 11400000, guid: bb795d14417a0004ca298527a48a780f, type: 2}
+  - {fileID: 11400000, guid: 1899682493cff8e48a48ffdb10643c56, type: 2}
+  - {fileID: 11400000, guid: a8c1608b867832a4ebc3e10ec8de150d, type: 2}
+  - {fileID: 11400000, guid: 0486664385d95084682318207871f233, type: 2}
+  - {fileID: 11400000, guid: d982f0d32e8ddb340bab646559373844, type: 2}
+  - {fileID: 11400000, guid: 09d6c45f314e36940b6ac7d42852b9ea, type: 2}
+  - {fileID: 11400000, guid: f86899e1fc320fc4f87a2b45be9cdd82, type: 2}
+  - {fileID: 11400000, guid: cda6385aa13bbb847b8e00f80b822a55, type: 2}
+  - {fileID: 11400000, guid: eb7c90cddc3d52e458018ea6af8844a7, type: 2}
+  - {fileID: 11400000, guid: ef02ca9f4b55f1b49b322197143b1152, type: 2}
+  - {fileID: 11400000, guid: 54756ad751c582c469f3b3638e3427a7, type: 2}
+  - {fileID: 11400000, guid: c4ea6b952ecdc0c40b07a6cc27e2ed67, type: 2}
+  - {fileID: 11400000, guid: d579766a4789fda4cb17f70f66ba2087, type: 2}
+  - {fileID: 11400000, guid: e1ac0430d20d06645af4f4e9f7ef5a68, type: 2}
+  - {fileID: 11400000, guid: 691861f6a28e64048b4d465b44e7dae2, type: 2}
+  - {fileID: 11400000, guid: c86609afa3592c84f9e64ff8f8eb9160, type: 2}
+  - {fileID: 11400000, guid: 496d9ada176c1a64c8d6e75b0ae824c1, type: 2}
+  BaseModulesEnabled: 0101010101010101010101010101010101010101010101
+  AdditionalModules: []
+  LockBaseModules: 0
+  LastGeneratedShaders:
+  - {fileID: 4800000, guid: ddeee41fdcb9c164b919d39d5d45fa19, type: 3}
+  AdditionalSerializedData: 

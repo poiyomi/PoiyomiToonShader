@@ -1,0 +1,57 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1039f25740a92fc4292bb1d94d07ad19, type: 3}
+  m_Name: VRLM_PoiPPAnimations
+  m_EditorClassIdentifier: 
+  Id: PoiPPAnimations
+  Name: Poi Post Processing Animations
+  Version: 1.0
+  Author: Poiyomi
+  Description: 
+  AllowDuplicates: 0
+  ForceDuplicateLogic: 0
+  EnableProperties: []
+  Properties: []
+  ModuleDependencies: []
+  IncompatibleWith: []
+  Templates:
+  - Template: {fileID: -1615086477176747248, guid: 1fa59a8489d3d8645a06835869bc9be4, type: 3}
+    Keywords:
+    - POSTPROCESSING_PROPERTIES
+    NeedsVariant: 0
+    Queue: 100
+  - Template: {fileID: 2550196506854757315, guid: 1fa59a8489d3d8645a06835869bc9be4, type: 3}
+    Keywords:
+    - BASE_PROPERTY_VARIABLES_EXPOSED
+    - OUTLINE_PROPERTY_VARIABLES_EXPOSED
+    - LILFUR_PROPERTY_VARIABLES_EXPOSED
+    NeedsVariant: 0
+    Queue: 100
+  - Template: {fileID: -5946799268947004886, guid: 1fa59a8489d3d8645a06835869bc9be4, type: 3}
+    Keywords:
+    - BASE_LIGHTDATA_MOD
+    NeedsVariant: 0
+    Queue: 100
+  - Template: {fileID: 3874476704323829493, guid: 1fa59a8489d3d8645a06835869bc9be4, type: 3}
+    Keywords:
+    - FRAGMENT_BASE_RETURN
+    - FRAGMENT_OUTLINE_RETURN
+    - FRAGMENT_LILFUR_RETURN
+    NeedsVariant: 0
+    Queue: 100
+  - Template: {fileID: 4110108277581059679, guid: 1fa59a8489d3d8645a06835869bc9be4, type: 3}
+    Keywords:
+    - BASE_REALISTIC_MOD
+    NeedsVariant: 0
+    Queue: 100
+  Functions: []
+  AdditionalSerializedData: 

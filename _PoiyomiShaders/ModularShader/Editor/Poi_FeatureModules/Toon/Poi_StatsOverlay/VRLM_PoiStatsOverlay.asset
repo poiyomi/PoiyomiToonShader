@@ -1,0 +1,75 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1039f25740a92fc4292bb1d94d07ad19, type: 3}
+  m_Name: VRLM_PoiStatsOverlay
+  m_EditorClassIdentifier: 
+  Id: PoiStatsOverlay
+  Name: 
+  Version: 1.0
+  Author: Poiyomi
+  Description: 
+  AllowDuplicates: 0
+  ForceDuplicateLogic: 0
+  EnableProperties: []
+  Properties:
+  - Name: _TextGlyphs
+    DisplayName: Font Array
+    Type: 2D
+    DefaultValue: '"black" {}'
+    DefaultTextureAsset: {fileID: 2800000, guid: bb52cc9d00ce83f49a4c555ae9ceeb45, type: 3}
+    Attributes:
+    - sRGBWarning
+  ModuleDependencies: []
+  IncompatibleWith: []
+  Templates:
+  - Template: {fileID: -2460612774880091232, guid: fea3fc9cac3952548951892080c28033, type: 3}
+    Keywords:
+    - SPECIALFX_PROPERTIES
+    NeedsVariant: 0
+    Queue: 100
+  - Template: {fileID: 358928541890858045, guid: fea3fc9cac3952548951892080c28033, type: 3}
+    Keywords:
+    - BASE_PASS_KEYWORDS
+    - META_PASS_KEYWORDS
+    - LILFUR_PASS_KEYWORDS
+    NeedsVariant: 0
+    Queue: 100
+  - Template: {fileID: -6657864349166974896, guid: fea3fc9cac3952548951892080c28033, type: 3}
+    Keywords:
+    - BASE_PROPERTY_VARIABLES
+    - META_PROPERTY_VARIABLES
+    - LILFUR_PROPERTY_VARIABLES
+    NeedsVariant: 0
+    Queue: 100
+  - Template: {fileID: 2162700110886162558, guid: fea3fc9cac3952548951892080c28033, type: 3}
+    Keywords:
+    - BASE_PROPERTY_VARIABLES_EXPOSED
+    - META_PROPERTY_VARIABLES_EXPOSED
+    - LILFUR_PROPERTY_VARIABLES_EXPOSED
+    NeedsVariant: 0
+    Queue: 100
+  - Template: {fileID: 2574636835266472983, guid: fea3fc9cac3952548951892080c28033, type: 3}
+    Keywords:
+    - FRAGMENT_BASE_FUNCTIONS
+    - FRAGMENT_META_FUNCTIONS
+    - FRAGMENT_LILFUR_FUNCTIONS
+    NeedsVariant: 0
+    Queue: 100
+  - Template: {fileID: -2422269806484800515, guid: fea3fc9cac3952548951892080c28033, type: 3}
+    Keywords:
+    - FRAGMENT_BASE_COLOR
+    - FRAGMENT_META_COLOR
+    - FRAGMENT_LILFUR_COLOR
+    NeedsVariant: 0
+    Queue: 100
+  Functions: []
+  AdditionalSerializedData: 

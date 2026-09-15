@@ -1,0 +1,64 @@
+#T#EarlyZEnablePrefix
+//ifex _RenderingEarlyZEnabled==0
+
+#T#EarlyZEnableSuffix
+//endex
+
+#T#EarlyZPassTags
+Name "EarlyZ"
+Tags { "LightMode" = "ForwardBase" }
+
+#T#EarlyZPassStencil
+#K#DEPTH_PASS_STENCIL
+
+#T#EarlyZPassBlendSettings
+ZWrite On
+Cull [_Cull]
+ZClip [_ZClip]
+ColorMask 0
+
+#T#EarlyZPassOnlyKeywords
+#pragma multi_compile_instancing
+#pragma dynamic_branch _ FOG_LINEAR
+#pragma dynamic_branch _ FOG_EXP
+#pragma dynamic_branch _ FOG_EXP2
+#define POI_PASS_DEPTH_ONLY
+
+#T#EarlyZPassKeywords
+#K#DEPTH_PASS_KEYWORDS
+
+#K#DEPTH_PASS_PRAGMA_PROGRAMS
+
+#T#EarlyZPassPropertyVariables
+#K#DEPTH_PROPERTY_VARIABLES
+#K#DEPTH_PROPERTY_VARIABLES_EXPOSED
+
+#T#EarlyZPassPrograms
+#K#VERTEX_DEPTH_DATA_STRUCTURES
+#K#VERTEX_DEPTH_FUNCTIONS_EARLY
+#K#VERTEX_DEPTH_FUNCTIONS
+#K#VERTEX_DEPTH_FUNCTIONS_LATE
+#K#VERTEX_DEPTH_ONLY_PROGRAM
+
+#K#HULLDOMAIN_DEPTH_ONLY_PROGRAM
+#K#GEOMETRY_DEPTH_ONLY_PROGRAM
+
+// Poi fragement program from VRLT_PoiEarlyZPass
+float4 frag(VertexOut i, bool facing : SV_IsFrontFace) : SV_Target
+/*
+#ifdef
+, out float depth : SV_DEPTH
+#endif
+*/
+{
+    clip(_RenderingEarlyZEnabled - 1.0);
+    UNITY_SETUP_INSTANCE_ID(i);
+    UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(i);
+    return float4(1, 1, 1, 1);
+}
+
+#T#EarlyZProperties
+[DoNotAnimate][ToggleUI] _RenderingEarlyZEnabled ("Early Z", Float) = 0
+
+#T#PoiEarlyZVariables
+float _RenderingEarlyZEnabled;

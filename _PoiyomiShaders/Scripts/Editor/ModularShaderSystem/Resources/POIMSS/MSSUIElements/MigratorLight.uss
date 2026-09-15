@@ -1,0 +1,42 @@
+Button
+{
+    margin: 2px;
+    padding: 4px;
+    border-radius: 0;
+    background-color: #989898;
+}
+.button-tab-area
+{
+    flex-direction: row;
+    margin: 0;
+}
+
+.top-area
+{
+    flex-direction: row;
+    margin: 0;
+}
+
+.button-tab
+{
+    flex-grow: 1;
+    height: 24px;
+    margin: 4px 0 0 0;
+    border-radius: 0;
+    border-width: 1px 0 0 0;
+    background-color: #989898;
+}
+
+.button-tab-selected
+{
+    background-color: #808080;
+}
+
+.title
+{
+    margin-top: 10px;
+    margin-bottom: 3px;
+    -unity-font-style: bold;
+    font-size: 14;
+}
+

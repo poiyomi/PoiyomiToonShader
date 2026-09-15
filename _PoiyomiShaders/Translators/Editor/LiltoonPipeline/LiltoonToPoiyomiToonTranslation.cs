@@ -14,10 +14,20 @@ namespace Poi.Tools.ShaderTranslator.Translations
 {
     public class LiltoonToPoiyomiToonTranslation : ScriptedShaderTranslator
     {
+        /// <summary>
+        /// Whether this shader is one of lilToon's. Exposed separately from CanTranslateMaterial so callers
+        /// that only have the shader - e.g. the across-swap path, where the material already points at
+        /// Poiyomi - can ask the same question.
+        /// </summary>
+        public static bool IsLiltoonShader(Shader shader)
+        {
+            return shader != null && shader.name.IndexOf("liltoon", StringComparison.CurrentCultureIgnoreCase) != -1;
+        }
+
         public override bool CanTranslateMaterial(Material sourceMaterial)
         {
             // Check if the material we're trying to translate uses liltoon
-            return sourceMaterial.shader.name.IndexOf("liltoon", StringComparison.CurrentCultureIgnoreCase) != -1;
+            return sourceMaterial != null && IsLiltoonShader(sourceMaterial.shader);
         }
 
         protected override Shader GetTargetShader(Material sourceMaterial, string newShaderName)
@@ -568,6 +578,29 @@ namespace Poi.Tools.ShaderTranslator.Translations
 
                     SetTargetPropertyValue(context, "_OutlineHueShift", isNeutral ? 0 : 1);
                     SetTargetPropertyValue(context, "_OutlineHueShiftColorSpace", isNeutral ? 0 : 1);
+                }),
+                new PropertyTranslation("_OutlineLitColor", "_OutlineHighlightColor", (prop, context) =>
+                {
+                    // Both shaders use the color's alpha as the blend strength, lilToon just has no separate
+                    // enable toggle and gates the highlight on that alpha being above zero
+                    float strength = GetSourcePropertyValue<Color>(context, prop).a;
+                    SetTargetPropertyValue(context, "_OutlineHighlightEnabled", strength > 0 ? 1 : 0);
+                }),
+                new PropertyTranslation("_OutlineLitApplyTex", "_OutlineHighlightApplyTex"),
+                new PropertyTranslation("_OutlineLitShadowReceive", "_OutlineHighlightReceiveShadow"),
+                new PropertyTranslation("_OutlineLitScale", (prop, context) =>
+                {
+                    // lilToon stores the highlight ramp as scale/offset, Poiyomi uses border/blur
+                    float scale = GetSourcePropertyValue<float>(context, prop);
+                    if (Mathf.Approximately(scale, 0))
+                        return;
+
+                    float offset = GetSourcePropertyValue<float>(context, "_OutlineLitOffset");
+                    float min = Mathf.Clamp01(-offset / scale);
+                    float max = Mathf.Clamp01((1 - offset) / scale);
+
+                    SetTargetPropertyValue(context, "_OutlineHighlightBorder", (min + max) * 0.5f);
+                    SetTargetPropertyValue(context, "_OutlineHighlightBlur", Mathf.Abs(max - min));
                 }),
                 #endregion
 

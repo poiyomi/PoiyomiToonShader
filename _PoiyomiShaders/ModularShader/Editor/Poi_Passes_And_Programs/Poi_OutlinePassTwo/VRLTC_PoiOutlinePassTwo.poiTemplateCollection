@@ -1,0 +1,98 @@
+#T#OutlinePassTwoPrefix
+//ifex _EnableOutlines!=1 || _EnableOutlinesRenderFeature==0
+#T#OutlinePassTwoSuffix
+//endex
+
+#T#OutlinePassTwoStencil
+Stencil
+{
+	Ref [_OutlineStencilRef]
+	ReadMask [_OutlineStencilReadMask]
+	WriteMask [_OutlineStencilWriteMask]
+//ifex _OutlineStencilType==1
+	Comp [_OutlineStencilCompareFunction]
+	Pass [_OutlineStencilPassOp]
+	Fail [_OutlineStencilFailOp]
+	ZFail [_OutlineStencilZFailOp]
+//endex
+
+//ifex _OutlineStencilType==0
+	CompBack [_OutlineStencilBackCompareFunction]
+	PassBack [_OutlineStencilBackPassOp]
+	FailBack [_OutlineStencilBackFailOp]
+	ZFailBack [_OutlineStencilBackZFailOp]
+
+	CompFront [_OutlineStencilFrontCompareFunction]
+	PassFront [_OutlineStencilFrontPassOp]
+	FailFront [_OutlineStencilFrontFailOp]
+	ZFailFront [_OutlineStencilFrontZFailOp]
+//endex
+}
+
+#T#OutlinePassTwoBlendSettings
+/*
+ColorMask [_ColorMask]
+BlendOp [_BlendOp], [_BlendOpAlpha]
+Blend [_SrcBlend] [_DstBlend]
+AlphaToMask [_AlphaToCoverage]
+Cull [_OutlineCull]
+*/
+AlphaToMask [_AlphaToCoverage]
+ZTest [_OutlineZTest]
+ZWrite [_OutlineZWrite]
+Cull [_OutlineCull]
+BlendOp [_OutlineBlendOp], [_OutlineBlendOpAlpha]
+Blend [_OutlineSrcBlend] [_OutlineDstBlend], [_OutlineSrcBlendAlpha] [_OutlineDstBlendAlpha]
+
+
+#T#OutlinePassTwoOnlyKeywords
+#if POI_PIPE == POI_URP
+    #pragma skip_variants FOG_LINEAR FOG_EXP FOG_EXP2
+    // https://issuetracker.unity3d.com/issues/number-pragma-skip-variants-fog-linear-does-not-remove-fog-linear-keyword-declared-keyword
+    // Skip variants not working for fog in URP
+    #define FOG_LINEAR 0
+    #define FOG_EXP 0
+    #define FOG_EXP2 0
+    #pragma multi_compile_vertex _ _CASTING_PUNCTUAL_LIGHT_SHADOW
+#else
+    #pragma dynamic_branch _ FOG_LINEAR
+    #pragma dynamic_branch _ FOG_EXP
+    #pragma dynamic_branch _ FOG_EXP2
+    #pragma multi_compile_fwdbase
+    #pragma multi_compile_fragment _ VERTEXLIGHT_ON
+#endif
+#pragma multi_compile_instancing
+#define POI_PASS_OUTLINE
+#define POI_PASS_OUTLINETWO
+
+#T#OutlinePassTwoKeywords
+#K#OUTLINE_PASS_KEYWORDS
+
+#K#OUTLINE_PASS_TWO_PRAGMA_PROGRAMS
+
+#T#OutlinePassTwoPropertyVariables
+#K#OUTLINE_PROPERTY_VARIABLES
+#K#OUTLINE_PROPERTY_VARIABLES_EXPOSED
+
+#T#OutlinePropertyVariablesURP
+CBUFFER_START(UnityPerMaterial)
+#K#OUTLINE_PROPERTY_VARIABLES_EXPOSED
+CBUFFER_END
+#K#OUTLINE_PROPERTY_VARIABLES
+
+#T#OutlinePassTwoPrograms
+#K#VERTEX_OUTLINE_DATA_STRUCTURES
+#K#VERTEX_OUTLINE_FUNCTIONS_EARLY
+#K#VERTEX_OUTLINE_FUNCTIONS
+#K#VERTEX_OUTLINE_FUNCTIONS_LATE
+#K#VERTEX_OUTLINE_PROGRAM
+
+
+#K#HULLDOMAIN_SHADOW_PROGRAM
+#K#GEOMETRY_SHADOW_PROGRAM
+
+#K#FRAGMENT_OUTLINE_DATA_STRUCTURES
+#K#FRAGMENT_OUTLINE_FUNCTIONS_EARLY
+#K#FRAGMENT_OUTLINE_FUNCTIONS
+#K#FRAGMENT_OUTLINE_FUNCTIONS_LATE
+#K#FRAGMENT_OUTLINE_PROGRAM

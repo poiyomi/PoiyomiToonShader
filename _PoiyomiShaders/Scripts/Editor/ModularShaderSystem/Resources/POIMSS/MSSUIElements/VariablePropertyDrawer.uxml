@@ -1,0 +1,5 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
+    <ui:TextField name="Name" picking-mode="Ignore" label="Name" binding-path="Name" />
+    <uie:EnumField name="Type" label="Type" binding-path="Type" />
+    <ui:TextField name="CustomType" picking-mode="Ignore" label="Custom Type" binding-path="CustomType" />
+</ui:UXML>

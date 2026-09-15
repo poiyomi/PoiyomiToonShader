@@ -1,26 +1,26 @@
 {
-  "name": "com.poiyomi.toon",
-  "displayName": "Poiyomi Toon Shader",
-  "version": "9.3.67",
-  "description": "Feature-rich shaders for Unity and VRChat.",
-  "author": {
-    "name": "Poiyomi",
-    "url": "https://github.com/poiyomi/PoiyomiToonShader"
-  },
-  "changelogUrl": "https://www.poiyomi.com/changelog",
-  "gitDependencies": {},
-  "vpmDependencies": {
-    "com.poiyomi.thryeditor": ">=2.73.2"
-  },
-  "legacyFolders": {
-    "Assets\\_PoiyomiShaders": ""
-  },
-  "legacyFiles": {},
-  "legacyPackages": [
-    "com.poiyomi.pro"
-  ],
-  "hideInEditor": false,
-  "license": "MIT",
-  "unity": "2021.3",
-  "type": "Shader"
+    "name": "com.poiyomi.toon",
+    "displayName": "Poiyomi Toon",
+    "version": "10.0.20",
+    "description": "Feature-rich shaders for Unity and VRChat.",
+    "author": {
+        "name": "Poiyomi",
+        "url": "https://github.com/poiyomi/PoiyomiToonShader"
+    },
+    "changelogUrl": "https://www.poiyomi.com/changelog",
+    "gitDependencies": {},
+    "vpmDependencies": {
+        "com.poiyomi.thryeditor": ">=2.74.0"
+    },
+    "legacyFolders": {
+        "Assets\\_PoiyomiShaders": ""
+    },
+    "legacyFiles": {},
+    "legacyPackages": [
+        "com.poiyomi.pro"
+    ],
+    "hideInEditor": false,
+    "license": "MIT",
+    "unity": "2021.3",
+    "type": "Shader"
 }

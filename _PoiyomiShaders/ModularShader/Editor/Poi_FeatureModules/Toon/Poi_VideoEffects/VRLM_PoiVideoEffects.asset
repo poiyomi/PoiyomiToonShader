@@ -1,0 +1,75 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1039f25740a92fc4292bb1d94d07ad19, type: 3}
+  m_Name: VRLM_PoiVideoEffects
+  m_EditorClassIdentifier: 
+  Id: PoiVideoEffects
+  Name: Poi Video Effects
+  Version: 
+  Author: 
+  Description: 
+  AllowDuplicates: 0
+  ForceDuplicateLogic: 0
+  EnableProperties: []
+  Properties: []
+  ModuleDependencies: []
+  IncompatibleWith: []
+  Templates:
+  - Template: {fileID: 6727262169647579837, guid: bd9672aa4159b794982858e386a7ccdd, type: 3}
+    Keywords:
+    - SPECIALFX_PROPERTIES
+    NeedsVariant: 0
+    Queue: 100
+  - Template: {fileID: 2837137593924449312, guid: bd9672aa4159b794982858e386a7ccdd, type: 3}
+    Keywords:
+    - BASE_PASS_KEYWORDS
+    - ADD_PASS_KEYWORDS
+    - META_PASS_KEYWORDS
+    - LILFUR_PASS_KEYWORDS
+    NeedsVariant: 0
+    Queue: 100
+  - Template: {fileID: -7655127885649803251, guid: bd9672aa4159b794982858e386a7ccdd, type: 3}
+    Keywords:
+    - BASE_PROPERTY_VARIABLES
+    - ADD_PROPERTY_VARIABLES
+    - META_PROPERTY_VARIABLES
+    - LILFUR_PROPERTY_VARIABLES
+    NeedsVariant: 0
+    Queue: 100
+  - Template: {fileID: -5308569970411819534, guid: bd9672aa4159b794982858e386a7ccdd, type: 3}
+    Keywords:
+    - BASE_PROPERTY_VARIABLES_EXPOSED
+    - ADD_PROPERTY_VARIABLES_EXPOSED
+    - META_PROPERTY_VARIABLES_EXPOSED
+    - LILFUR_PROPERTY_VARIABLES_EXPOSED
+    NeedsVariant: 0
+    Queue: 100
+  - Template: {fileID: 2577471065514097518, guid: bd9672aa4159b794982858e386a7ccdd, type: 3}
+    Keywords:
+    - FRAGMENT_BASE_FUNCTIONS
+    - FRAGMENT_ADD_FUNCTIONS
+    - FRAGMENT_META_FUNCTIONS
+    - FRAGMENT_LILFUR_FUNCTIONS
+    NeedsVariant: 0
+    Queue: 99
+  - Template: {fileID: 7995263783866781067, guid: bd9672aa4159b794982858e386a7ccdd, type: 3}
+    Keywords:
+    - MAIN_TEXTURE_SAMPLE
+    NeedsVariant: 0
+    Queue: 101
+  - Template: {fileID: -4908538323552078938, guid: bd9672aa4159b794982858e386a7ccdd, type: 3}
+    Keywords:
+    - MAIN_COLOR_MOD
+    NeedsVariant: 0
+    Queue: 101
+  Functions: []
+  AdditionalSerializedData: 

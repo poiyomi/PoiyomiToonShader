@@ -1,0 +1,76 @@
+#T#PoiSelfGrabBlendingVariables
+//ifex _EnableGrabpass==0
+#if POI_PIPE == POI_BIRP
+	#if defined(UNITY_STEREO_INSTANCING_ENABLED) || defined(UNITY_STEREO_MULTIVIEW_ENABLED)
+		Texture2DArray _PoiSelfGrab;
+	#else
+		Texture2D _PoiSelfGrab;
+	#endif
+
+	float4 _PoiSelfGrab_TexelSize;
+
+	#define _PoiOpaqueTex           _PoiSelfGrab
+	#define _PoiOpaqueTex_TexelSize _PoiSelfGrab_TexelSize
+#endif
+
+#if defined(PROP_GRABPASSBLENDMAP) || !defined(OPTIMIZER_ENABLED)
+	Texture2D _GrabPassBlendMap;
+#endif
+
+//ifex isNotAnimated(_GrabRampEnabled) && _GrabRampEnabled==0
+#if defined(PROP_GRABRAMPTEX) || !defined(OPTIMIZER_ENABLED)
+	Texture2D _GrabRampTex;
+#endif
+//endex
+//endex
+
+#T#PoiSelfGrabBlendingFunctionCalls
+//ifex _EnableGrabpass==0
+// Only the values this pass has no module to produce are filled in here.
+poiLight.nDotV = poiCam.vDotN;
+poiLight.finalLighting = 1.0;
+poiFragData.smoothness = 0.0;
+
+poiFragData.alpha = mainTexture.a * _Color.a;
+if (_TwoPassOverrideFirstPassColor == 1)
+{
+	poiFragData.alpha = mainTexture.a * _TwoPassColor.a;
+}
+else if (_TwoPassOverrideFirstPassColor == 2)
+{
+	poiFragData.alpha = mainTexture.a * _TwoPassAlphaOverride;
+}
+
+poiApplyAlphaMask(poiFragData, poiMesh);
+
+if (_AlphaForceOpaque2 >= 0.5)
+{
+	poiFragData.alpha = 1;
+}
+
+applyGrabEffects(poiFragData, poiCam, poiMesh, poiLight, poiMods);
+
+#K#FRAGMENT_SELF_GRAB_COLOR_LATE
+
+poiFragData.finalColor = poiFragData.baseColor;
+
+if (_ModeTwoPass == POI_MODE_OPAQUE)
+{
+	poiFragData.alpha = 1;
+}
+
+#K#FRAGMENT_SELF_GRAB_RETURN
+
+poiFragData.alpha = pow(saturate(poiFragData.alpha), _TwoPassAlphaPower);
+half selfGrabAlphaToClip = abs(_TwoPassAlphaCutoffInvert - saturate(poiFragData.alpha));
+clip(selfGrabAlphaToClip - _TwoPassAlphaCutoff);
+
+#K#FRAGMENT_SELF_GRAB_ALPHA_LATE
+
+if (_AlphaPremultiply2 >= 0.5)
+{
+	poiFragData.finalColor *= saturate(poiFragData.alpha);
+}
+
+return float4(poiFragData.finalColor, poiFragData.alpha) + POI_SAFE_RGB0;
+//endex

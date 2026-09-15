@@ -1,0 +1,125 @@
+#T#OutlinePassPrefix
+//ifex _EnableOutlines!=1 || _EnableOutlinesRenderFeature==1
+#T#OutlinePassSuffix
+//endex
+
+#T#OutlinePassTags
+Name "Outline"
+Tags { "LightMode" = "ForwardBase" }
+
+#T#OutlinePassTagsURP
+Name "Outline"
+Tags { "LightMode" = "SRPDefaultUnlit" }
+
+#T#OutlinePassTagsFeature
+Name "Outline"
+Tags { "LightMode" = "PoiOutline" }
+
+#T#OutlinePassStencil
+Stencil
+{
+	Ref [_OutlineStencilRef]
+	ReadMask [_OutlineStencilReadMask]
+	WriteMask [_OutlineStencilWriteMask]
+//ifex _OutlineStencilType==1
+	Comp [_OutlineStencilCompareFunction]
+	Pass [_OutlineStencilPassOp]
+	Fail [_OutlineStencilFailOp]
+	ZFail [_OutlineStencilZFailOp]
+//endex
+
+//ifex _OutlineStencilType==0
+	CompBack [_OutlineStencilBackCompareFunction]
+	PassBack [_OutlineStencilBackPassOp]
+	FailBack [_OutlineStencilBackFailOp]
+	ZFailBack [_OutlineStencilBackZFailOp]
+
+	CompFront [_OutlineStencilFrontCompareFunction]
+	PassFront [_OutlineStencilFrontPassOp]
+	FailFront [_OutlineStencilFrontFailOp]
+	ZFailFront [_OutlineStencilFrontZFailOp]
+//endex
+}
+
+#T#OutlinePassBlendSettings
+/*
+ColorMask [_ColorMask]
+BlendOp [_BlendOp], [_BlendOpAlpha]
+Blend [_SrcBlend] [_DstBlend]
+AlphaToMask [_AlphaToCoverage]
+Cull [_OutlineCull]
+*/
+AlphaToMask [_AlphaToCoverage]
+ZTest [_OutlineZTest]
+ZWrite [_OutlineZWrite]
+Cull [_OutlineCull]
+BlendOp [_OutlineBlendOp], [_OutlineBlendOpAlpha]
+Blend [_OutlineSrcBlend] [_OutlineDstBlend], [_OutlineSrcBlendAlpha] [_OutlineDstBlendAlpha]
+
+
+#T#OutlinePassOnlyKeywords
+#if POI_PIPE == POI_URP
+    #pragma multi_compile _ _MAIN_LIGHT_SHADOWS _MAIN_LIGHT_SHADOWS_CASCADE _MAIN_LIGHT_SHADOWS_SCREEN
+
+    #if UNITY_VERSION >= 600000
+        #pragma multi_compile _ _CLUSTER_LIGHT_LOOP
+    #else
+        #pragma multi_compile _ _FORWARD_PLUS
+    #endif
+
+    #pragma multi_compile_fragment _ _ADDITIONAL_LIGHTS
+    #pragma multi_compile_fragment _ _ADDITIONAL_LIGHT_SHADOWS
+    #pragma multi_compile_fragment _ _LIGHT_LAYERS
+    #pragma multi_compile_fragment _ _SHADOWS_SOFT
+    #pragma multi_compile_fragment _ _REFLECTION_PROBE_BLENDING
+    #pragma multi_compile_fragment _ _REFLECTION_PROBE_BOX_PROJECTION
+
+    #pragma multi_compile_fragment _ _LIGHT_COOKIES
+
+    #pragma dynamic_branch _ FOG_LINEAR
+    #pragma dynamic_branch _ FOG_EXP
+    #pragma dynamic_branch _ FOG_EXP2
+#endif
+
+#if POI_PIPE == POI_BIRP
+    #pragma dynamic_branch _ FOG_LINEAR
+    #pragma dynamic_branch _ FOG_EXP
+    #pragma dynamic_branch _ FOG_EXP2
+    #pragma multi_compile_fwdbase
+    #pragma multi_compile_fragment _ VERTEXLIGHT_ON
+#endif
+
+#pragma multi_compile_instancing
+#define POI_PASS_OUTLINE
+
+#T#OutlinePassKeywords
+#K#OUTLINE_PASS_KEYWORDS
+
+#K#OUTLINE_PASS_PRAGMA_PROGRAMS
+
+#T#OutlinePassPropertyVariables
+#K#OUTLINE_PROPERTY_VARIABLES
+#K#OUTLINE_PROPERTY_VARIABLES_EXPOSED
+
+#T#OutlinePropertyVariablesURP
+CBUFFER_START(UnityPerMaterial)
+#K#OUTLINE_PROPERTY_VARIABLES_EXPOSED
+CBUFFER_END
+#K#OUTLINE_PROPERTY_VARIABLES
+
+#T#OutlinePassPrograms
+#K#VERTEX_OUTLINE_DATA_STRUCTURES
+#K#VERTEX_OUTLINE_FUNCTIONS_EARLY
+#K#VERTEX_OUTLINE_FUNCTIONS
+#K#VERTEX_OUTLINE_FUNCTIONS_LATE
+#K#VERTEX_OUTLINE_PROGRAM
+
+
+#K#HULLDOMAIN_SHADOW_PROGRAM
+#K#GEOMETRY_SHADOW_PROGRAM
+
+#K#FRAGMENT_OUTLINE_DATA_STRUCTURES
+#K#FRAGMENT_OUTLINE_FUNCTIONS_EARLY
+#K#FRAGMENT_OUTLINE_FUNCTIONS
+#K#FRAGMENT_OUTLINE_FUNCTIONS_LATE
+#K#FRAGMENT_OUTLINE_PROGRAM

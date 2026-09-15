@@ -1,0 +1,23 @@
+#T#PoiNameProperties
+
+#T#PoiNameKeywords
+#pragma shader_feature KEYWORD
+
+#T#PoiNameVariables
+#ifdef KEYWORD
+    
+#endif
+
+#T#PoiNameFunctions
+#ifdef KEYWORD
+    void function()
+    {
+
+    }
+#endif
+
+#T#PoiNameFunctionCalls
+#ifdef KEYWORD
+    function();
+#endif
+

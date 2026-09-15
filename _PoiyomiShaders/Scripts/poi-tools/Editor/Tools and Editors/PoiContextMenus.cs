@@ -13,48 +13,91 @@ namespace Poi.Tools.Menus
         public const int ContextMaterialBase = 2020;
         public const int ContextRendererBase = 2020;
         public const int AssetsMenuBase = 1200;
-
-        // GameObject menu priorities - organized with separators (gap of 11+ creates separator)
-        // Lock/Unlock: Base, Base+1
-        // --- separator ---
-        // Cross Shader Editor: Base+12
-        // --- separator ---
-        // Translate options: Base+23 to Base+26
-        // --- separator ---
-        // Update Poiyomi: Base+37
-        // --- separator ---
-        // Tools: Base+48, Base+49
         // High priority (1000) puts Poiyomi near bottom with separator above
         public const int ContextGameObjectBase = 1000;
-        public const int ContextGameObjectCrossEditor = ContextGameObjectBase + 12;
-        public const int ContextGameObjectTranslate = ContextGameObjectBase + 23;
-        public const int ContextGameObjectUpdate = ContextGameObjectBase + 37;
-        public const int ContextGameObjectTools = ContextGameObjectBase + 48;
+
+        // One layout shared by every Poiyomi context menu, so the same actions appear in the same order
+        // whichever way the menu is opened - hierarchy, renderer, material inspector or project view.
+        // Unity draws a separator when consecutive priorities differ by 11 or more, hence the gaps.
+        //
+        // Lock/Unlock:          Base, Base+1
+        // --- separator ---
+        // Cross Shader Editor:  Base+12
+        // --- separator ---
+        // Translate:            Base+23 .. Base+26
+        // --- separator ---
+        // Update Poiyomi:       Base+37
+        // --- separator ---
+        // Tools:                Base+48 .. Base+50
+        //
+        // Add offsets to whichever root base applies. Not every action suits every root - the Tools
+        // entries act on a GameObject, so they are absent from the material and project menus.
+        public const int LockOffset = 0;
+        public const int UnlockOffset = 1;
+        public const int CrossEditorOffset = 12;
+        public const int TranslateOffset = 23;
+        public const int UpdateOffset = 37;
+        public const int ToolsOffset = 48;
+
+        public const int ContextGameObjectCrossEditor = ContextGameObjectBase + CrossEditorOffset;
+        public const int ContextGameObjectTranslate = ContextGameObjectBase + TranslateOffset;
+        public const int ContextGameObjectUpdate = ContextGameObjectBase + UpdateOffset;
+        public const int ContextGameObjectTools = ContextGameObjectBase + ToolsOffset;
+
+        #region Shared Actions
+
+        // Every menu entry below is a thin wrapper: work out the materials from whatever was clicked, then
+        // hand them to one of these. Keeping the work here is what lets the four menus stay identical.
+
+        static void _SetLocked(IEnumerable<Material> materials, bool locked, string undoName, ShaderOptimizer.ProgressBar progressBar = ShaderOptimizer.ProgressBar.None)
+        {
+            int undoIndex = Undo.GetCurrentGroup();
+            Undo.SetCurrentGroupName(undoName);
+
+            if (locked) ShaderOptimizer.LockMaterials(materials, progressBar);
+            else ShaderOptimizer.UnlockMaterials(materials, progressBar);
+
+            Undo.CollapseUndoOperations(undoIndex);
+        }
+
+        static void _OpenInCrossShaderEditor(IEnumerable<Material> materials)
+        {
+            CrossEditor.GetInstance().UpdateTargets(materials);
+        }
+
+        #endregion
 
         #region Assets
 
-        [MenuItem("Assets/Poiyomi/Materials/Lock Materials", priority = AssetsMenuBase)]
+        [MenuItem("Assets/Poiyomi/Materials/Lock Materials", priority = AssetsMenuBase + LockOffset)]
         static void LockMaterialsInAssets()
         {
-            var mats = _GetSelectedMaterials();
-            ShaderOptimizer.LockMaterials(mats);
+            _SetLocked(_GetSelectedMaterials(), true, "Lock materials");
         }
 
-        [MenuItem("Assets/Poiyomi/Materials/Unlock Materials", priority = AssetsMenuBase + 1)]
+        [MenuItem("Assets/Poiyomi/Materials/Unlock Materials", priority = AssetsMenuBase + UnlockOffset)]
         static void UnlockMaterialsInAssets()
         {
-            var mats = _GetSelectedMaterials();
-            ShaderOptimizer.UnlockMaterials(mats);
+            _SetLocked(_GetSelectedMaterials(), false, "Unlock materials");
         }
 
-        // Font conversion tool
-        [MenuItem("Assets/Poiyomi/Fonts/Convert Font", true, priority = AssetsMenuBase + 10)]
+        [MenuItem("Assets/Poiyomi/Materials/Open in Cross Shader Editor", priority = AssetsMenuBase + CrossEditorOffset)]
+        static void OpenSelectedAssetsInCrossShaderEditor()
+        {
+            _OpenInCrossShaderEditor(_GetSelectedMaterials());
+        }
+
+        // Font conversion tool.
+        // Both entries need the priority. A submenu takes its position from the lowest priority among its
+        // children, and an item without one defaults to 1000 - which used to drag the whole Poiyomi submenu
+        // up above lilToon in the project view instead of leaving it near the bottom.
+        [MenuItem("Assets/Poiyomi/Fonts/Convert Font", true, priority = AssetsMenuBase + ToolsOffset)]
         public static bool ConvertFont_Validate()
         {
             return Selection.activeObject is Font;
         }
 
-        [MenuItem("Assets/Poiyomi/Fonts/Convert Font", false)]
+        [MenuItem("Assets/Poiyomi/Fonts/Convert Font", false, priority = AssetsMenuBase + ToolsOffset)]
         public static async void ConvertFontContextMenu()
         {
             var package = await PoiPackageHandler.GetPackageInfoAsync(PoiExternalToolRegistry.ExternalPoiToolPackageName, true, true);
@@ -75,71 +118,101 @@ namespace Poi.Tools.Menus
 
         #endregion
 
+        #region Context - Material
+
+        [MenuItem("CONTEXT/Material/Poiyomi/Lock Materials", false, ContextMaterialBase + LockOffset)]
+        static void LockMaterialContext(MenuCommand command)
+        {
+            Material material = command.context as Material;
+            _SetLocked(new[] { material }, true, $"Lock material {material.name}");
+        }
+
+        [MenuItem("CONTEXT/Material/Poiyomi/Unlock Materials", false, ContextMaterialBase + UnlockOffset)]
+        static void UnlockMaterialContext(MenuCommand command)
+        {
+            Material material = command.context as Material;
+            _SetLocked(new[] { material }, false, $"Unlock material {material.name}");
+        }
+
+        [MenuItem("CONTEXT/Material/Poiyomi/Open in Cross Shader Editor", false, ContextMaterialBase + CrossEditorOffset)]
+        static void OpenMaterialInCrossShaderEditor(MenuCommand command)
+        {
+            _OpenInCrossShaderEditor(new[] { command.context as Material });
+        }
+
+        #endregion
+
         #region Context - Renderer
 
-        [MenuItem("CONTEXT/Renderer/Poiyomi/Lock Materials")]
+        [MenuItem("CONTEXT/Renderer/Poiyomi/Lock Materials", false, ContextRendererBase + LockOffset)]
         static void LockRendererMaterials(MenuCommand command)
         {
             var renderer = command.context as Renderer;
-            int undoIndex = Undo.GetCurrentGroup();
-            Undo.SetCurrentGroupName($"Lock materials in {renderer.name}");
-
-            ShaderOptimizer.LockMaterials(renderer.sharedMaterials);
-
-            Undo.CollapseUndoOperations(undoIndex);
+            _SetLocked(renderer.sharedMaterials, true, $"Lock materials in {renderer.name}");
         }
 
-        [MenuItem("CONTEXT/Renderer/Poiyomi/Unlock Materials")]
+        [MenuItem("CONTEXT/Renderer/Poiyomi/Unlock Materials", false, ContextRendererBase + UnlockOffset)]
         static void UnlockRendererMaterials(MenuCommand command)
         {
             var renderer = command.context as Renderer;
-            int undoIndex = Undo.GetCurrentGroup();
-            Undo.SetCurrentGroupName($"Lock materials in {renderer.name}");
+            _SetLocked(renderer.sharedMaterials, false, $"Unlock materials in {renderer.name}");
+        }
 
-            ShaderOptimizer.UnlockMaterials(renderer.sharedMaterials);
+        [MenuItem("CONTEXT/Renderer/Poiyomi/Open in Cross Shader Editor", false, ContextRendererBase + CrossEditorOffset)]
+        static void OpenRendererInCrossShaderEditor(MenuCommand command)
+        {
+            _OpenInCrossShaderEditor((command.context as Renderer).sharedMaterials.Where(m => m != null).Distinct());
+        }
 
-            Undo.CollapseUndoOperations(undoIndex);
+        [MenuItem("CONTEXT/Renderer/Poiyomi/Duplicate with New Materials", false, ContextRendererBase + ToolsOffset)]
+        static void DuplicateRendererWithNewMaterials(MenuCommand command)
+        {
+            DuplicateWithUniqueMaterials.DuplicateWithNewMaterials((command.context as Renderer).gameObject);
+        }
+
+        [MenuItem("CONTEXT/Renderer/Poiyomi/Duplicate Only Translatable Materials", false, ContextRendererBase + ToolsOffset + 1)]
+        static void DuplicateRendererTranslatableMaterials(MenuCommand command)
+        {
+            DuplicateWithUniqueMaterialsOnlyTranslatable.DuplicateWithNewMaterialsOnlyTranslatable((command.context as Renderer).gameObject);
+        }
+
+        [MenuItem("CONTEXT/Renderer/Poiyomi/Move Materials to Folder", false, ContextRendererBase + ToolsOffset + 2)]
+        static void MoveRendererMaterialsToFolder(MenuCommand command)
+        {
+            MoveAvatarMaterialsToFolder.MoveMaterialsToNewFolder((command.context as Renderer).gameObject);
         }
 
         #endregion
 
         #region Context - GameObject
 
-        [MenuItem("GameObject/Poiyomi/Lock Materials", priority = ContextGameObjectBase)]
+        [MenuItem("GameObject/Poiyomi/Lock Materials", priority = ContextGameObjectBase + LockOffset)]
         static void LockMaterialsInGameObject()
         {
-            int undoIndex = Undo.GetCurrentGroup();
-            Undo.SetCurrentGroupName("Lock materials");
             foreach (var obj in Selection.gameObjects)
                 Undo.RegisterFullObjectHierarchyUndo(obj, "Lock materials");
 
-            ShaderOptimizer.LockMaterials(GetMaterialsInChildren(Selection.gameObjects), ShaderOptimizer.ProgressBar.Cancellable);
-
-            Undo.CollapseUndoOperations(undoIndex);
+            _SetLocked(GetMaterialsInChildren(Selection.gameObjects), true, "Lock materials", ShaderOptimizer.ProgressBar.Cancellable);
         }
 
-        [MenuItem("GameObject/Poiyomi/Unlock Materials", priority = ContextGameObjectBase + 1)]
+        [MenuItem("GameObject/Poiyomi/Unlock Materials", priority = ContextGameObjectBase + UnlockOffset)]
         static void UnlockMaterialsInGameObject()
         {
-            int undoIndex = Undo.GetCurrentGroup();
-            Undo.SetCurrentGroupName("Unlock materials");
             foreach (var obj in Selection.gameObjects)
                 Undo.RegisterFullObjectHierarchyUndo(obj, "Unlock materials");
 
-            ShaderOptimizer.UnlockMaterials(GetMaterialsInChildren(Selection.gameObjects), ShaderOptimizer.ProgressBar.Cancellable);
-
-            Undo.CollapseUndoOperations(undoIndex);
+            _SetLocked(GetMaterialsInChildren(Selection.gameObjects), false, "Unlock materials", ShaderOptimizer.ProgressBar.Cancellable);
         }
 
         [MenuItem("GameObject/Poiyomi/Open in Cross Shader Editor", priority = ContextGameObjectCrossEditor)]
         static void OpenInCrossShaderEditor()
         {
-            CrossEditor.GetInstance().UpdateTargets(GetMaterialsInChildren(Selection.gameObjects));
+            _OpenInCrossShaderEditor(GetMaterialsInChildren(Selection.gameObjects));
         }
 
         static IEnumerable<Material> GetMaterialsInChildren(params GameObject[] objects)
         {
-            return objects.SelectMany(o => o.GetComponentsInChildren<Renderer>(true)).SelectMany(r => r.sharedMaterials).Distinct();
+            return objects.SelectMany(o => o.GetComponentsInChildren<Renderer>(true)).SelectMany(r => r.sharedMaterials).Where(m => m != null).Distinct();
         }
 
         #endregion

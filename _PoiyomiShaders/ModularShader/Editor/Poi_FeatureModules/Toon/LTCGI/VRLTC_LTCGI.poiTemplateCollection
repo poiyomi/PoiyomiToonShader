@@ -1,0 +1,1404 @@
+#T#PoiLTCGIProperties
+//ifex _LTCGIEnabled!=1
+[HideInInspector] m_start_LTCGI (" LTCGI--{reference_property:_LTCGIEnabled,button_author:{text:_pi_,action:{type:URL,data:https://github.com/pimaker},hover:GitHub}},button_help:{text:Tutorial,action:{type:URL,data:https://www.poiyomi.com/shading/ltcgi},hover:Documentation}}", Float) = 0
+[ThryHideInInspector][ThryToggle(POI_LTCGI)]_LTCGIEnabled ("LTCGI Enabled", Float) = 0
+[ThryDescription] LTCGI_Attribution ("This section uses LTCGI by _pi_, click for 'github.com/pimaker/ltcgi'--{onClick:{type:URL,data:https://github.com/pimaker/ltcgi}}", Int) = 0
+[Helpbox(1, 3, 2)] LTCGI_Warning ("Use of LTCGI on Avatars should be avoided unless absolutely necessary, as LTCGI in newer Worlds now use custom VRC Light Volumes to affect Avatars. This module will eventually be removed from Poyiomi Shaders in the future. World owners should see LTCGI Docs regarding updates for continued shader compatibility.", Float) = 0
+[ToggleUI] _LTCGI_AnimToggle ("Anim Toggle", Int) = 1
+_LTCGI_DiffuseColor ("Diffuse Tint--{reference_property:_LTCGI_DiffuseColorThemeIndex}", Color) = (1, 1, 1, 1)
+[ThryHideInInspector][ThryWideEnum(Off, 0, Theme Color 0, 1, Theme Color 1, 2, Theme Color 2, 3, Theme Color 3, 4, ColorChord 0, 5, ColorChord 1, 6, ColorChord 2, 7, ColorChord 3, 8, AL Theme 0, 9, AL Theme 1, 10, AL Theme 2, 11, AL Theme 3, 12)] _LTCGI_DiffuseColorThemeIndex ("", Int) = 0
+_LTCGI_SpecularColor ("Specular Tint--{reference_property:_LTCGI_SpecularColorThemeIndex}", Color) = (1, 1, 1, 1)
+[ThryHideInInspector][ThryWideEnum(Off, 0, Theme Color 0, 1, Theme Color 1, 2, Theme Color 2, 3, Theme Color 3, 4, ColorChord 0, 5, ColorChord 1, 6, ColorChord 2, 7, ColorChord 3, 8, AL Theme 0, 9, AL Theme 1, 10, AL Theme 2, 11, AL Theme 3, 12)] _LTCGI_SpecularColorThemeIndex ("", Int) = 0
+[ToggleUI] _LTCGI_UsePBR ("Use Reflection and Specular's Settings", Int) = 1
+[ToggleUI] _LTCGI_UseEO ("Use Exposure Occlusion--{condition_showS:(_MochieBRDF==1)}", Int) = 0
+_LTCGI_Smoothness ("Smoothness--{condition_showS:(_LTCGI_UsePBR==0 || _MochieBRDF==0)}", Range(0, 1)) = 0.0
+_LTCGI_Metallic ("Metallic--{condition_showS:(_LTCGI_UsePBR==0 || _MochieBRDF==0)}", Range(0, 1)) = 0.0
+_LTCGI_SpecularMultiplier ("Specular Multiplier", Range(0, 2)) = 1.0
+_LTCGI_DiffuseMultiplier ("Diffuse Multiplier", Range(0, 2)) = 1.0
+[HideInInspector] m_end_LTCGI ("LTCGI", Float) = 0
+//endex
+#T#PoiLTCGIKeywords
+//ifex _LTCGIEnabled!=1
+#pragma shader_feature_local POI_LTCGI
+//endex
+#T#PoiLTCGIVariablesExposed
+//ifex _LTCGIEnabled!=1
+#ifdef POI_LTCGI
+    half4 _LTCGI_DiffuseColor;
+    int _LTCGI_DiffuseColorThemeIndex;
+    half4 _LTCGI_SpecularColor;
+    int _LTCGI_SpecularColorThemeIndex;
+    half _LTCGI_Smoothness;
+    half _LTCGI_Metallic;
+    half _LTCGI_SpecularMultiplier;
+    half _LTCGI_DiffuseMultiplier;
+    int _LTCGI_UsePBR;
+    int _LTCGI_UseEO;
+    int _LTCGI_AnimToggle;
+#endif
+//endex
+#T#PoiLTCGIFunction
+//ifex _LTCGIEnabled!=1
+#ifdef POI_LTCGI
+    // #include "../../ThirdParty/LTCGI/LTCGI_structs.cginc"
+    // LTCGI_structs.cginc
+    #define LTCGI_COLORMODE_STATIC 0
+    #define LTCGI_COLORMODE_TEXTURE 1
+    #define LTCGI_COLORMODE_SINGLEUV 2
+    #define LTCGI_COLORMODE_AUDIOLINK 3
+
+    struct ltcgi_flags
+    {
+        bool doublesided; // if the light is doublesided or only illuminates the front face
+        bool diffFromLm; // diffuse lighting intensity will not be calculated via LTC but taken directly from the lightmap
+        bool specular; // if the light has a specular component
+        bool diffuse; // if the light has a diffuse component
+        uint colormode; // colormode, see above
+        uint texindex; // index of the texture to shade with, if colormode == LTCGI_COLORMODE_TEXTURE
+        uint lmch, lmidx; // lightmap channel and index
+        bool cylinder; // is this light a cylinder
+        uint alBand; // audiolink band if colormode == LTCGI_COLORMODE_AUDIOLINK
+        bool lmdOnly; // if this light is lightmap-diffuse _only_, that is, no LTC will be run (Lw will be all 0 in that case) - this will never be true on avatars (with LTCGI_ALWAYS_LTC_DIFFUSE)
+
+    };
+
+    struct ltcgi_input
+    {
+        uint i; // light number
+        float3 Lw[4]; // world space area light vertices, Lw[1] == Lw[3] for triangle lights, shifted by input worldPos (i.e. world space position as seen from (0, 0, 0))
+        bool isTri; // if this is a triangle light, quad if false
+        float2 uvStart; // 
+        float2 uvEnd; // defines the UV layout of the area, top left to bottom right
+        half3 rawColor; // the raw light color, unaffected by any colormode calculations (i.e. exactly what's given as "color" in editor)
+        float3 screenNormal; // world space normal direction of area light
+        ltcgi_flags flags; // flags, see above
+
+    };
+
+    struct ltcgi_output
+    {
+        ltcgi_input input; // input data that resulted in this output
+
+        half intensity; // intensity output by LTC calculation
+        half3 color; // color output by LTCGI colormode calculation
+
+    };
+    // LTCGI_structs.cginc END
+    
+    struct accumulator_struct
+    {
+        half3 diffuse;
+        half3 specular;
+    };
+    
+    void callback_diffuse(inout accumulator_struct acc, in ltcgi_output output);
+    void callback_specular(inout accumulator_struct acc, in ltcgi_output output);
+
+    #define LTCGI_V2_CUSTOM_INPUT accumulator_struct
+    #define LTCGI_V2_DIFFUSE_CALLBACK callback_diffuse
+    #define LTCGI_V2_SPECULAR_CALLBACK callback_specular
+
+    // #include "../../ThirdParty/LTCGI/LTCGI.cginc"
+    // LTCGI.cginc
+    // #include "LTCGI_config.cginc"
+    // LTCGI_config.cginc
+    
+    // Feel free to enable or disable (//) the options here.
+    // They will apply to all LTCGI materials in the project.
+    // Most of these can be changed in the LTCGI_Controller editor as well.
+
+    // No specular at all.
+    //#define LTCGI_SPECULAR_OFF
+    // No diffuse at all.
+    //#define LTCGI_DIFFUSE_OFF
+    // Disable the ability to toggle specular/diffuse on or off per screen.
+    //#define LTCGI_TOGGLEABLE_SPEC_DIFF_OFF
+
+    // Only use LTC diffuse mode, never lightmapped diffuse.
+    // This disables lightmaps entirely.
+    //#define LTCGI_ALWAYS_LTC_DIFFUSE
+
+    // Use bicubic filtering for LTCGI lightmap. Recommended on.
+    #define LTCGI_BICUBIC_LIGHTMAP
+
+    // Lightmap values below this will be treated as black for specular/LTC diffuse.
+    #define LTCGI_LIGHTMAP_CUTOFF 0.1
+    // Lightmap values above this (plus cutoff) will be treated as white.
+    #define LTCGI_SPECULAR_LIGHTMAP_STEP 0.3
+
+    // Distance multiplier for calculating blur amount.
+    // Increase to make reflections blurrier faster as distance increases.
+    #define LTCGI_UV_BLUR_DISTANCE 333
+
+    // Fall back to LTC diffuse (from LM diffuse) on objects that are not marked static.
+    #define LTCGI_LTC_DIFFUSE_FALLBACK
+
+    // Approximation to ignore diffuse light for far away
+    // lights, increase MULT or disable if you notice artifacting
+    #define LTCGI_DISTANCE_FADE_APPROX
+    // Distance at which diffuse from screens will be ignored.
+    #define LTCGI_DISTANCE_FADE_APPROX_MULT 50
+
+
+    // disabled editor from here on out
+    //
+
+
+    // Allow statically textured lights.
+    // (deprecated: doesn't really cause any improvement when disabled...)
+    #define LTCGI_STATIC_TEXTURES
+
+
+    // keep in sync with LTCGI_Controller.cs
+    #define MAX_SOURCES 16
+
+    // set according to the LUT specified on CONTROLLER
+    #define LUT_SIZE 256
+    static float LUT_SCALE = (LUT_SIZE - 1.0) / LUT_SIZE;
+    const float LUT_BIAS = 0.5 / LUT_SIZE;
+
+    // will be set automatically if audiolink is available
+    #ifdef POI_AUDIOLINK
+        #define LTCGI_AUDIOLINK
+    #endif
+
+    // #ifdef LTCGI_AUDIOLINK
+    // #ifndef AUDIOLINK_WIDTH
+    // #ifndef AUDIOLINK_CGINC_INCLUDED
+    // #include "Packages/com.llealloo.audiolink/Runtime/Shaders/AudioLink.cginc"
+    // #define AUDIOLINK_CGINC_INCLUDED
+    // #endif
+    // #endif
+    // #endif
+
+    // Bake screen data into texture for better performance. Disables moveable screens.
+    #define LTCGI_STATIC_UNIFORMS
+
+    // Enable support for cylindrical screens.
+    #define LTCGI_CYLINDER
+
+    // Activate avatar mode, which overrides certain configs from above.
+    #define LTCGI_AVATAR_MODE
+
+    // LTCGI_config.cginc END
+
+    #ifdef LTCGI_AVATAR_MODE
+        #undef LTCGI_STATIC_UNIFORMS
+        #undef LTCGI_BICUBIC_LIGHTMAP
+        #define LTCGI_ALWAYS_LTC_DIFFUSE
+    #endif
+
+    #ifdef LTCGI_TOGGLEABLE_SPEC_DIFF_OFF
+        #undef LTCGI_DIFFUSE_OFF
+        #undef LTCGI_SPECULAR_OFF
+    #endif
+
+    #if defined(LTCGI_V2_CUSTOM_INPUT) || defined(LTCGI_V2_DIFFUSE_CALLBACK) || defined(LTCGI_V2_SPECULAR_CALLBACK)
+        #define LTCGI_API_V2
+    #endif
+
+    // #include "LTCGI_uniform.cginc"
+    // global sampler (trilinear)
+    #ifndef LTCGI_SAMPLER
+        #define LTCGI_SAMPLER sampler_trilinear_clamp
+    #endif
+
+    // LUTs
+    #ifndef SHADER_TARGET_SURFACE_ANALYSIS_MOJOSHADER
+        uniform Texture2D<float4> _Udon_LTCGI_lut2;
+        uniform Texture2D<float4> _Udon_LTCGI_lut1;
+    #endif
+
+    #ifndef SHADER_TARGET_SURFACE_ANALYSIS_MOJOSHADER
+        uniform Texture2D<float4> _Udon_LTCGI_static_uniforms;
+    #endif
+
+    #ifdef LTCGI_STATIC_UNIFORMS
+
+        float4 _Udon_LTCGI_Vertices_0_get(uint i)
+        {
+            return _Udon_LTCGI_static_uniforms[uint2(0, i)];
+        }
+        float4 _Udon_LTCGI_Vertices_1_get(uint i)
+        {
+            return _Udon_LTCGI_static_uniforms[uint2(1, i)];
+        }
+        float4 _Udon_LTCGI_Vertices_2_get(uint i)
+        {
+            return _Udon_LTCGI_static_uniforms[uint2(2, i)];
+        }
+        float4 _Udon_LTCGI_Vertices_3_get(uint i)
+        {
+            return _Udon_LTCGI_static_uniforms[uint2(3, i)];
+        }
+
+    #else
+
+        // vertices in object space; w component is UV (legacy)
+        uniform float4 _Udon_LTCGI_Vertices_0[MAX_SOURCES];
+        uniform float4 _Udon_LTCGI_Vertices_1[MAX_SOURCES];
+        uniform float4 _Udon_LTCGI_Vertices_2[MAX_SOURCES];
+        uniform float4 _Udon_LTCGI_Vertices_3[MAX_SOURCES];
+
+        float4 _Udon_LTCGI_Vertices_0_get(uint i)
+        {
+            return _Udon_LTCGI_Vertices_0[i];
+        }
+        float4 _Udon_LTCGI_Vertices_1_get(uint i)
+        {
+            return _Udon_LTCGI_Vertices_1[i];
+        }
+        float4 _Udon_LTCGI_Vertices_2_get(uint i)
+        {
+            return _Udon_LTCGI_Vertices_2[i];
+        }
+        float4 _Udon_LTCGI_Vertices_3_get(uint i)
+        {
+            return _Udon_LTCGI_Vertices_3[i];
+        }
+
+    #endif
+
+    // light source count, maximum is MAX_SOURCES
+    uniform uint _Udon_LTCGI_ScreenCount;
+
+    // per-renderer mask to select sources,
+    // for max perf update _Udon_LTCGI_ScreenCount too
+    uniform bool _Udon_LTCGI_Mask[MAX_SOURCES];
+
+    // extra data per light source, layout:
+    //  color.r   color.g   color.b   flags*
+    // * b0=double-sided, b1=diffuse-from-lightmap, b2=specular, b3=diffuse,
+    //   b4-b7=texture index (0=video, (n>0)=n-1)
+    //   b8-b9=color mode
+    //   b10-b11=lightmap channel (0=disabled, 1=r, 2=g, 3=b)
+    //   b12=cylinder
+    //   b13-14=audio link band
+    //   b15=lightmap diffuse only
+    // (color black = fully disabled)
+    uniform float4 _Udon_LTCGI_ExtraData[MAX_SOURCES];
+
+    ltcgi_flags ltcgi_parse_flags(uint val, bool noLmDiff)
+    {
+        ltcgi_flags ret = (ltcgi_flags)0;
+        ret.doublesided = (val & 1) == 1;
+
+        #ifdef LTCGI_ALWAYS_LTC_DIFFUSE
+            ret.diffFromLm = false;
+        #else
+            ret.diffFromLm = !noLmDiff && (val & 2) == 2;
+        #endif
+
+        ret.diffuse = (val & 8) == 8;
+
+        ret.specular = (val & 4) == 4;
+        ret.texindex = (val & 0xf0) >> 4;
+        ret.colormode = (val & 0x300) >> 8;
+
+        #ifdef LTCGI_ALWAYS_LTC_DIFFUSE
+            ret.lmch = 0;
+        #else
+            ret.lmch = (val & 0xC00) >> 10;
+        #endif
+
+        ret.cylinder = (val & (1 << 12)) == (1 << 12);
+
+        #ifdef LTCGI_AUDIOLINK
+            ret.alBand = (val & 0x6000) >> 13;
+        #endif
+
+        ret.lmdOnly = (val & (1 << 15)) == (1 << 15);
+
+        return ret;
+    }
+
+    // video input
+    #ifndef SHADER_TARGET_SURFACE_ANALYSIS_MOJOSHADER
+        uniform Texture2D<float4> _Udon_LTCGI_Texture_LOD0;
+        uniform Texture2D<float4> _Udon_LTCGI_Texture_LOD1;
+        uniform Texture2D<float4> _Udon_LTCGI_Texture_LOD2;
+        uniform Texture2D<float4> _Udon_LTCGI_Texture_LOD3;
+    #endif
+
+    // static textures
+    UNITY_DECLARE_TEX2DARRAY_NOSAMPLER(_Udon_LTCGI_Texture_LOD0_arr);
+    UNITY_DECLARE_TEX2DARRAY_NOSAMPLER(_Udon_LTCGI_Texture_LOD1_arr);
+    UNITY_DECLARE_TEX2DARRAY_NOSAMPLER(_Udon_LTCGI_Texture_LOD2_arr);
+    UNITY_DECLARE_TEX2DARRAY_NOSAMPLER(_Udon_LTCGI_Texture_LOD3_arr);
+
+    // lightmap
+    #ifndef SHADER_TARGET_SURFACE_ANALYSIS_MOJOSHADER
+        #ifndef LTCGI_ALWAYS_LTC_DIFFUSE
+            uniform Texture2D<float4> _Udon_LTCGI_Lightmap;
+        #endif
+    #endif
+    uniform float3 _Udon_LTCGI_LightmapMult;
+    uniform float4 _Udon_LTCGI_LightmapST;
+
+    // global toggle
+    uniform float _Udon_LTCGI_GlobalEnable;
+
+    // #include "LTCGI_uniform.cginc" END
+    // #include "LTCGI_functions.cginc"
+
+    /*
+    LTC HELPERS
+    */
+
+    float3 LTCGI_IntegrateEdge(float3 v1, float3 v2)
+    {
+        float x = dot(v1, v2);
+        float y = abs(x);
+
+        float a = 0.8543985 + (0.4965155 + 0.0145206 * y) * y;
+        float b = 3.4175940 + (4.1616724 + y) * y;
+        float v = a / b;
+        float theta_sintheta = (x > 0.0) ? v : 0.5 * rsqrt(max(1.0 - x * x, 1e-7)) - v;
+
+        return cross(v1, v2) * theta_sintheta;
+    }
+
+    void LTCGI_ClipQuadToHorizon(inout float3 L[5], out int n)
+    {
+        // detect clipping config
+        uint config = 0;
+        if (L[0].z > 0.0) config += 1;
+        if (L[1].z > 0.0) config += 2;
+        if (L[2].z > 0.0) config += 4;
+        if (L[3].z > 0.0) config += 8;
+
+        n = 0;
+
+        // This [forcecase] only works when the cases are ordered in a specific manner.
+        // It gives like 10%-20% performance boost, so *make sure to leave it on*!
+        // If it breaks however, see if [branch] fixes it, and if it does, start
+        // reordering cases at random until it works again.
+        // It seems the compiler somehow optimizes away anything but setting 'n' in
+        // some orderings, including the ascending and descending ones.
+        // I wish I was joking.
+        [forcecase]
+        switch(config)
+        {
+            case 13: // V1 V3 V4 clip V2 <- tl;dr: this fecker has to be first or shader go boom
+            n = 5;
+            L[4] = L[3];
+            L[3] = L[2];
+            L[2] = -L[1].z * L[2] + L[2].z * L[1];
+            L[1] = -L[1].z * L[0] + L[0].z * L[1];
+            break;
+            case 15: // V1 V2 V3 V4 - most common
+            n = 4;
+            break;
+            case 9: // V1 V4 clip V2 V3
+            n = 4;
+            L[1] = -L[1].z * L[0] + L[0].z * L[1];
+            L[2] = -L[2].z * L[3] + L[3].z * L[2];
+            break;
+            case 0: // clip all
+            break;
+            case 1: // V1 clip V2 V3 V4
+            n = 3;
+            L[1] = -L[1].z * L[0] + L[0].z * L[1];
+            L[2] = -L[3].z * L[0] + L[0].z * L[3];
+            L[3] = L[0];
+            break;
+            case 2: // V2 clip V1 V3 V4
+            n = 3;
+            L[0] = -L[0].z * L[1] + L[1].z * L[0];
+            L[2] = -L[2].z * L[1] + L[1].z * L[2];
+            L[3] = L[0];
+            break;
+            case 3: // V1 V2 clip V3 V4
+            n = 4;
+            L[2] = -L[2].z * L[1] + L[1].z * L[2];
+            L[3] = -L[3].z * L[0] + L[0].z * L[3];
+            break;
+            case 4: // V3 clip V1 V2 V4
+            n = 3;
+            L[0] = -L[3].z * L[2] + L[2].z * L[3];
+            L[1] = -L[1].z * L[2] + L[2].z * L[1];
+            L[3] = L[0];
+            break;
+            case 5: // V1 V3 clip V2 V4) impossible
+            break;
+            case 6: // V2 V3 clip V1 V4
+            n = 4;
+            L[0] = -L[0].z * L[1] + L[1].z * L[0];
+            L[3] = -L[3].z * L[2] + L[2].z * L[3];
+            break;
+            case 7: // V1 V2 V3 clip V4
+            n = 5;
+            L[4] = -L[3].z * L[0] + L[0].z * L[3];
+            L[3] = -L[3].z * L[2] + L[2].z * L[3];
+            break;
+            case 8: // V4 clip V1 V2 V3
+            n = 3;
+            L[0] = -L[0].z * L[3] + L[3].z * L[0];
+            L[1] = -L[2].z * L[3] + L[3].z * L[2];
+            L[2] = L[3];
+            break;
+            case 10: // V2 V4 clip V1 V3) impossible
+            break;
+            case 11: // V1 V2 V4 clip V3
+            n = 5;
+            L[4] = L[3];
+            L[3] = -L[2].z * L[3] + L[3].z * L[2];
+            L[2] = -L[2].z * L[1] + L[1].z * L[2];
+            break;
+            case 12: // V3 V4 clip V1 V2
+            n = 4;
+            L[1] = -L[1].z * L[2] + L[2].z * L[1];
+            L[0] = -L[0].z * L[3] + L[3].z * L[0];
+            break;
+            case 14: // V2 V3 V4 clip V1
+            n = 5;
+            L[4] = -L[0].z * L[3] + L[3].z * L[0];
+            L[0] = -L[0].z * L[1] + L[1].z * L[0];
+            break;
+        }
+        
+        // inlining these branches *unconditionally* breaks the [forcecase] above
+        // ...yeah I know
+        if (n == 3)
+            L[3] = L[0];
+        if (n == 4)
+            L[4] = L[0];
+    }
+
+    /*
+    TEXTURE SAMPLING
+    */
+
+    float2 LTCGI_inset_uv(float2 uv)
+    {
+        return uv * 0.75 + float2(0.125, 0.125);
+    }
+
+    half3 premul_alpha(half4 i)
+    {
+        return i.rgb * i.a;
+    }
+
+    void LTCGI_sample(float2 uv, uint lod, uint idx, float blend, out float3 result)
+    {
+        result = 0;
+        #ifndef LTCGI_STATIC_TEXTURES
+            idx = 0; // optimize away the branches below
+        #endif
+
+        [branch]
+        if (lod == 0)
+        {
+            // if we're outside of the 0-1 UV space we must sample a prefiltered texture
+            [branch]
+            if (any(saturate(abs(uv - 0.5) - 0.5)))
+            {
+                lod = 1;
+            }
+            else
+            {
+                // LOD0 is the original texture itself, so not prefiltered, but we can
+                // approximate it a bit with trilinear lod
+                float lod = (1 - blend) * 1.5;
+                [branch]
+                if (idx == 0)
+                {
+                    #ifndef SHADER_TARGET_SURFACE_ANALYSIS
+                        result = premul_alpha(_Udon_LTCGI_Texture_LOD0.SampleLevel(LTCGI_SAMPLER, uv, lod));
+                        return;
+                    #else
+                        result = 0;
+                        return;
+                    #endif
+                }
+                else
+                {
+                    result = premul_alpha(UNITY_SAMPLE_TEX2DARRAY_SAMPLER_LOD(
+                        _Udon_LTCGI_Texture_LOD0_arr,
+                        _trilinear_clamp,
+                        float3(uv, idx - 1),
+                        lod
+                    ));
+                    return;
+                }
+            }
+        }
+
+        float2 ruv = LTCGI_inset_uv(uv);
+
+        [branch]
+        if (idx == 0)
+        {
+            #ifndef SHADER_TARGET_SURFACE_ANALYSIS
+                switch(lod)
+                {
+                    case 1:
+                        result = _Udon_LTCGI_Texture_LOD1.SampleLevel(LTCGI_SAMPLER, ruv, 0).rgb;
+                        return;
+                    case 2:
+                        result = _Udon_LTCGI_Texture_LOD2.SampleLevel(LTCGI_SAMPLER, ruv, 0).rgb;
+                        return;
+                    default:
+                        result = _Udon_LTCGI_Texture_LOD3.SampleLevel(LTCGI_SAMPLER, ruv, blend * 0.72).rgb;
+                        return;
+                }
+            #else
+                result = 0;
+                return;
+            #endif
+        }
+        else
+        {
+            [forcecase]
+            switch(lod)
+            {
+                case 1:
+                    result = UNITY_SAMPLE_TEX2DARRAY_SAMPLER_LOD(
+                    _Udon_LTCGI_Texture_LOD1_arr,
+                    _trilinear_clamp,
+                    float3(ruv, idx - 1),
+                    0
+                ).rgb;
+                return;
+                case 2:
+                    result = UNITY_SAMPLE_TEX2DARRAY_SAMPLER_LOD(
+                    _Udon_LTCGI_Texture_LOD2_arr,
+                    _trilinear_clamp,
+                    float3(ruv, idx - 1),
+                    0
+                ).rgb;
+                return;
+                default:
+                    result = UNITY_SAMPLE_TEX2DARRAY_SAMPLER_LOD(
+                    _Udon_LTCGI_Texture_LOD3_arr,
+                    _trilinear_clamp,
+                    float3(ruv, idx - 1),
+                    blend
+                ).rgb;
+                return;
+            }
+        }
+    }
+
+    void LTCGI_trilinear(float2 uv, float d, uint idx, out float3 result)
+    {
+        uint low = (uint)d;
+        uint high = low + 1;
+
+        // DEBUG: colorize d/lod
+        //return float3(low == 0, low == 1, low == 2);
+
+        if (low >= 3)
+        {
+            LTCGI_sample(uv, 3, idx, d - 3, result);
+        }
+        else
+        {
+            float amount = saturate(high - d);
+            float3 low_sample;
+            LTCGI_sample(uv, low, idx, amount, low_sample);
+            float3 high_sample;
+            LTCGI_sample(uv, high, idx, 0, high_sample);
+
+            result = lerp(high_sample, low_sample, amount);
+        }
+    }
+
+    /*
+    GENERIC HELPERS
+    */
+
+    bool LTCGI_tri_ray(float3 orig, float3 dir, float3 v0, float3 v1, float3 v2, out float2 bary)
+    {
+        float3 v0v1 = v1 - v0;
+        float3 v0v2 = v2 - v0;
+        float3 pvec = cross(dir, v0v2);
+        float det = dot(v0v1, pvec);
+        float invDet = 1 / det;
+
+        float3 tvec = orig - v0;
+        bary.x = dot(tvec, pvec) * invDet;
+
+        float3 qvec = cross(tvec, v0v1);
+        bary.y = dot(dir, qvec) * invDet;
+
+        // return false when other triangle of quad should be sampled,
+        // i.e. we went over the diagonal line
+        return bary.x >= 0;
+    }
+
+    float2 LTCGI_rotateVector(float2 x, float angle)
+    {
+        float c = cos(angle);
+        float s = sin(angle);
+        return mul(float2x2(c, s, -s, c), x);
+    }
+
+    float2 LTCGI_calculateUV(uint i, ltcgi_flags flags, float3 L[5], bool isTri, float2 uvStart, float2 uvEnd, out float3 ray)
+    {
+        // calculate perpendicular vector to plane defined by area light
+        float3 E1 = L[1] - L[0];
+        float3 E2 = L[3] - L[0];
+        ray = cross(E1, E2);
+
+        // raycast it against the two triangles formed by the quad
+        float2 bary;
+        bool hit0 = LTCGI_tri_ray(0, ray, L[0], L[2], L[3], bary) || isTri;
+        if (!hit0)
+        {
+            LTCGI_tri_ray(0, ray, L[0], L[1], L[2], bary);
+        }
+
+        float2 uvs[4];
+        #ifdef LTCGI_CYLINDER
+            if (flags.cylinder)
+            {
+                uvs[0] = uvStart;
+                uvs[1] = float2(uvStart.x, uvEnd.y);
+                uvs[2] = float2(uvEnd.x, uvStart.y);
+                uvs[3] = uvEnd;
+            }
+            else
+        #endif
+        {
+            uvs[0] = uvStart; // == _Udon_LTCGI_static_uniforms[uint2(4, i)].xy;
+            uvs[1] = _Udon_LTCGI_static_uniforms[uint2(4, i)].zw;
+            uvs[2] = _Udon_LTCGI_static_uniforms[uint2(5, i)].xy;
+            uvs[3] = uvEnd; // == _Udon_LTCGI_static_uniforms[uint2(5, i)].zw;
+
+        }
+
+        // map barycentric triangle coordinates to the according object UVs
+        float3 bary3 = float3(bary, 1 - bary.x - bary.y);
+        float2 uv = uvs[1 + hit0 * 2] * bary3.x + uvs[3 - hit0] * bary3.y + uvs[0] * bary3.z;
+
+        return uv;
+    }
+
+    /*
+    EXPERIMENTAL: CYLINDER HELPER
+    */
+
+    void LTCGI_GetLw(uint i, ltcgi_flags flags, float3 worldPos, out float3 Lw[4], out float2 uvStart, out float2 uvEnd, out bool isTri)
+    {
+        bool cylinder = false;
+        #ifdef LTCGI_CYLINDER
+            // statically optimize out branch below in case disabled
+            cylinder = flags.cylinder;
+        #endif
+
+        float4 v0 = _Udon_LTCGI_Vertices_0_get(i);
+        float4 v1 = _Udon_LTCGI_Vertices_1_get(i);
+        float4 v2 = _Udon_LTCGI_Vertices_2_get(i);
+        float4 v3 = _Udon_LTCGI_Vertices_3_get(i);
+
+        [branch]
+        if (cylinder)
+        {
+            // construct data according to worldPos to create aligned
+            // rectangle tangent to the cylinder
+            
+            float3 in_base = v0.xyz;
+            float in_height = v0.w;
+            float in_radius = v1.w;
+            float in_size = v2.w;
+            float in_angle = v3.w;
+
+            // get angle between 2D unit plane and vector pointing from cylinder to shade point
+            float2 towardsCylinder = LTCGI_rotateVector((in_base - worldPos).xz, -in_angle);
+            float angle = atan2(towardsCylinder.x, towardsCylinder.y);
+            // clamp angle to size parameter, i.e. "width" of lit surface area
+            float angleClamped = clamp(angle, -in_size, in_size) + in_angle;
+            // construct vector that *most* faces shade point
+            float2 facing = float2(sin(angleClamped), cos(angleClamped));
+            // tangent of rectangular screen on cylinder surface used for calculating lighting for shade point
+            float2 tangent = float2(facing.y, -facing.x);
+            float2 onCylinderFacing = facing * in_radius;
+
+            // clip ends, approximately
+            float rclip = saturate(lerp(1, 0, (angleClamped - in_angle) - (in_size - PI_OVER_2 * 0.5f)));
+            float lclip = saturate(lerp(1, 0, - (angleClamped - in_angle) - (in_size - PI_OVER_2 * 0.5f)));
+
+            float2 p1 = in_base.xz - onCylinderFacing + tangent * in_radius * lclip;
+            float2 p2 = in_base.xz - onCylinderFacing - tangent * in_radius * rclip;
+
+            Lw[0] = float3(p1.x, in_base.y, p1.y) - worldPos;
+            Lw[1] = float3(p1.x, in_base.y + in_height, p1.y) - worldPos;
+            Lw[2] = float3(p2.x, in_base.y, p2.y) - worldPos;
+            Lw[3] = float3(p2.x, in_base.y + in_height, p2.y) - worldPos;
+
+            isTri = false;
+
+            // UV depends on "viewing" angle of the shade point towards the cylinder
+            float2 viewDir = normalize((in_base - worldPos).xz);
+            // forwardAngle == atan2(cos(in_angle), sin(in_angle)); but only negative
+            float forwardAngle = -in_angle + PI_OVER_2;
+            // offset from center of screen forward to the side ends, positive goes left/ccw fpv top,
+            // sine to account for the fact we're rotating around a cylinder which has depth
+            float viewAngle = forwardAngle - atan2(viewDir.y, viewDir.x);
+            // prevent rollover, since we need to clamp we must stay withing [-pi, pi]
+            if (viewAngle < - UNITY_PI)
+                viewAngle += UNITY_TWO_PI;
+            if (viewAngle > UNITY_PI)
+                viewAngle -= UNITY_TWO_PI;
+            viewAngle = clamp(viewAngle * 0.5f, -in_size, in_size);
+            viewAngle = sin(viewAngle);
+            // full view UVs, but shifted left/right depending on view angle
+            uvStart = float2(1 - saturate(viewAngle), 0);
+            uvEnd = float2(1 - saturate(viewAngle + 1), 1);
+        }
+        else
+        {
+            // use passed in data, offset around worldPos
+            Lw[0] = v0.xyz - worldPos;
+            Lw[1] = v1.xyz - worldPos;
+            Lw[2] = v2.xyz - worldPos;
+            Lw[3] = v3.xyz - worldPos;
+            #ifndef SHADER_TARGET_SURFACE_ANALYSIS
+                uvStart = _Udon_LTCGI_static_uniforms[uint2(4, i)].xy;
+                uvEnd = _Udon_LTCGI_static_uniforms[uint2(5, i)].zw;
+            #else
+                uvStart = float2(0, 0);
+                uvEnd = float2(1, 1);
+            #endif
+
+            // we only detect triangles for "blender" import configuration, as those are the only
+            // ones that can actually be triangles (I think?)
+            isTri = /*distance(Lw[2], Lw[3]) < 0.001 || */distance(Lw[1], Lw[3]) < 0.001;
+        }
+    }
+
+
+    /*
+
+    Parts of the code in this file are adapted from the example code found here:
+    
+    https://github.com/selfshadow/ltc_code
+
+    Modifications by _pi_ (@pimaker on GitHub), licensed under the terms of the
+    MIT license as far as applicable.
+
+    Original copyright notice:
+
+    Copyright (c) 2017, Eric Heitz, Jonathan Dupuy, Stephen Hill and David Neubelt.
+    All rights reserved.
+
+    Redistribution and use in source and binary forms, with or without
+    modification, are permitted provided that the following conditions are met:
+
+    * If you use (or adapt) the source code in your own work, please include a
+    reference to the paper:
+
+    Real-Time Polygonal-Light Shading with Linearly Transformed Cosines.
+    Eric Heitz, Jonathan Dupuy, Stephen Hill and David Neubelt.
+    ACM Transactions on Graphics (Proceedings of ACM SIGGRAPH 2016) 35(4), 2016.
+    Project page: https://eheitzresearch.wordpress.com/415-2/
+
+    * Redistributions of source code must retain the above copyright notice, this
+    list of conditions and the following disclaimer.
+
+    * Redistributions in binary form must reproduce the above copyright notice,
+    this list of conditions and the following disclaimer in the documentation
+    and/or other materials provided with the distribution.
+
+    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+    AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+    IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+    DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+    FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+    DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+    SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+    CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+    OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+    OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+    */
+    // #include "LTCGI_functions.cginc" END
+    // #include "LTCGI_shadowmap.cginc"
+    
+    // Adapted from: https://gitlab.com/s-ilent/filamented
+    // Licensed under the terms of the Apache License 2.0
+    // Full text: https://gitlab.com/s-ilent/filamented/-/blob/master/LICENSE
+    //
+    // Conforming to the terms of the above license, this file is redistributed
+    // under the terms of the MIT license as part of the LTCGI shader package,
+    // provided this notice is kept.
+
+    #ifndef SHADER_TARGET_SURFACE_ANALYSIS_MOJOSHADER
+
+        float4 LTCGI_cubic(float v)
+        {
+            float4 n = float4(1.0, 2.0, 3.0, 4.0) - v;
+            float4 s = n * n * n;
+            float x = s.x;
+            float y = s.y - 4.0 * s.x;
+            float z = s.z - 4.0 * s.y + 6.0 * s.x;
+            float w = 6.0 - x - y - z;
+            return float4(x, y, z, w);
+        }
+
+        // Unity's SampleTexture2DBicubic doesn't exist in 2018, which is our target here.
+        // So this is a similar function with tweaks to have similar semantics.
+
+        float4 LTCGI_SampleTexture2DBicubicFilter(Texture2D tex, SamplerState smp, float2 coord, float4 texSize)
+        {
+            coord = coord * texSize.xy - 0.5;
+            float fx = frac(coord.x);
+            float fy = frac(coord.y);
+            coord.x -= fx;
+            coord.y -= fy;
+
+            float4 xcubic = LTCGI_cubic(fx);
+            float4 ycubic = LTCGI_cubic(fy);
+
+            float4 c = float4(coord.x - 0.5, coord.x + 1.5, coord.y - 0.5, coord.y + 1.5);
+            float4 s = float4(xcubic.x + xcubic.y, xcubic.z + xcubic.w, ycubic.x + ycubic.y, ycubic.z + ycubic.w);
+            float4 offset = c + float4(xcubic.y, xcubic.w, ycubic.y, ycubic.w) / s;
+
+            float4 sample0 = tex.Sample(smp, float2(offset.x, offset.z) * texSize.zw);
+            float4 sample1 = tex.Sample(smp, float2(offset.y, offset.z) * texSize.zw);
+            float4 sample2 = tex.Sample(smp, float2(offset.x, offset.w) * texSize.zw);
+            float4 sample3 = tex.Sample(smp, float2(offset.y, offset.w) * texSize.zw);
+
+            float sx = s.x / (s.x + s.y);
+            float sy = s.z / (s.z + s.w);
+
+            return lerp(
+                lerp(sample3, sample2, sx),
+                lerp(sample1, sample0, sx), sy);
+        }
+
+        half4 LTCGI_SampleShadowmap(float2 lmuv)
+        {
+            #ifdef LTCGI_ALWAYS_LTC_DIFFUSE
+                return 1;
+            #else
+                lmuv = lmuv * _Udon_LTCGI_LightmapST.xy + _Udon_LTCGI_LightmapST.zw;
+
+                #ifdef LTCGI_BICUBIC_LIGHTMAP
+                    float width, height;
+                    _Udon_LTCGI_Lightmap.GetDimensions(width, height);
+
+                    float4 _Udon_LTCGI_Lightmap_TexelSize = float4(width, height, 1.0 / width, 1.0 / height);
+
+                    return LTCGI_SampleTexture2DBicubicFilter(
+                        _Udon_LTCGI_Lightmap, LTCGI_SAMPLER,
+                        lmuv, _Udon_LTCGI_Lightmap_TexelSize
+                    );
+                #else
+                    return _Udon_LTCGI_Lightmap.Sample(LTCGI_SAMPLER, lmuv);
+                #endif
+            #endif
+        }
+
+    #else
+        // surface shader analysis stub
+        half4 LTCGI_SampleShadowmap(float2 lmuv)
+        {
+            return 1;
+        }
+    #endif
+
+    // #include "LTCGI_shadowmap.cginc" END
+
+    #ifdef SHADER_TARGET_SURFACE_ANALYSIS
+        #define const
+    #endif
+
+    // Main function - this calculates the approximated model for one pixel and one light
+    void LTCGI_Evaluate(ltcgi_input input, float3 worldNorm, float3 viewDir, float3x3 Minv, float roughness, const bool diffuse, out ltcgi_output output)
+    {
+        output.input = input;
+        output.color = input.rawColor; // copy for colormode static
+        output.intensity = 0;
+
+        // diffuse distance fade
+        #ifdef LTCGI_DISTANCE_FADE_APPROX
+            if (diffuse) // static branch, specular does not directly fade with distance
+
+            {
+                if (!input.flags.lmdOnly)
+                {
+                    // very approximate lol
+                    float3 ctr = (input.Lw[0] + input.Lw[1]) / 2;
+                    float dist = length(ctr);
+                    if (dist > LTCGI_DISTANCE_FADE_APPROX_MULT)
+                    {
+                        return;
+                    }
+                }
+            }
+        #endif
+
+        #define RET1_IF_LMDIFF [branch] if (/*const*/ diffuse && input.flags.diffFromLm) \
+        { \
+            output.intensity = 1.0f; return; \
+        }
+
+        if (input.flags.colormode == LTCGI_COLORMODE_SINGLEUV)
+        {
+            float2 uv = input.uvStart;
+            if (uv.x < 0) uv.xy = uv.yx;
+            // TODO: make more configurable?
+            #ifdef LTCGI_VISUALIZE_SAMPLE_UV
+                output.color = float3(uv.xy, 0);
+            #else
+                float3 sampled;
+                LTCGI_sample(LTCGI_inset_uv(uv), 1, input.flags.texindex, 0, sampled);
+                output.color *= sampled;
+            #endif
+
+            RET1_IF_LMDIFF
+        }
+
+        #ifdef LTCGI_AUDIOLINK
+            if (input.flags.colormode == LTCGI_COLORMODE_AUDIOLINK)
+            {
+                float al = AudioLinkData(ALPASS_AUDIOLINK + uint2(0, input.flags.alBand)).r;
+                output.color *= al;
+
+                RET1_IF_LMDIFF
+            }
+        #endif
+
+        // create LTC polygon array
+        // note the order of source verts (keyword: winding order)
+        float3 L[5];
+        L[0] = mul(Minv, input.Lw[0]);
+        L[1] = mul(Minv, input.Lw[1]);
+        L[2] = input.isTri ? L[1] : mul(Minv, input.Lw[3]);
+        L[3] = mul(Minv, input.Lw[2]);
+        L[4] = 0;
+
+        // get texture coords (before clipping!)
+        [branch]
+        if (input.flags.colormode == LTCGI_COLORMODE_TEXTURE)
+        {
+            float3 RN;
+            float2 uv = LTCGI_calculateUV(input.i, input.flags, L, input.isTri, input.uvStart, input.uvEnd, RN);
+            float planeAreaSquared = dot(RN, RN);
+            float planeDistxPlaneArea = dot(RN, L[0]);
+
+            float3 sampled;
+            [branch]
+            if (diffuse)
+            {
+                // static branch
+                float3 sampled1;
+                LTCGI_sample(uv, 3, input.flags.texindex, 10, sampled1);
+                float3 sampled2;
+                LTCGI_sample(uv, 3, input.flags.texindex, 100, sampled2);
+                sampled =
+                    sampled1 * 0.75 +
+                    sampled2 * 0.25;
+            }
+            else
+            {
+                float d = abs(planeDistxPlaneArea) / planeAreaSquared;
+                d *= LTCGI_UV_BLUR_DISTANCE;
+                d = log(d) / log(3.0);
+
+                // a rough material must never show a perfect reflection,
+                // since our LOD0 texture is not prefiltered (and thus cannot
+                // depict any blur correctly) - without this there is artifacting
+                // on the border of LOD0 and LOD1
+                d = clamp(d, saturate(roughness * 5.75), 1000);
+
+                LTCGI_trilinear(uv, d, input.flags.texindex, sampled);
+            }
+
+            // colorize output
+            output.color *= sampled;
+        }
+
+        RET1_IF_LMDIFF
+        #undef RET1_IF_LMDIFF
+
+        int n;
+        LTCGI_ClipQuadToHorizon(L, n);
+
+        // early out if everything was clipped below horizon
+        if (n == 0)
+            return;
+
+        L[0] = normalize(L[0]);
+        L[1] = normalize(L[1]);
+        L[2] = normalize(L[2]);
+        L[3] = normalize(L[3]);
+        L[4] = normalize(L[4]);
+
+        // integrate (and pray that constant folding works well)
+        float sum = 0;
+        [unroll(5)]
+        for (uint v = 0; v < max(3, (uint)n); v++)
+        {
+            float3 a = L[v];
+            float3 b = L[(v + 1) % 5];
+            sum += LTCGI_IntegrateEdge(a, b).z;
+        }
+
+        // doublesided is accounted for with optimization at the start, so return abs
+        output.intensity = abs(sum);
+        return;
+    }
+
+    // Calculate light contribution for all lights,
+    // call this from your shader and use the "diffuse" and "specular" outputs
+    // lmuv is the raw lightmap UV coordinate (e.g. UV1)
+    void LTCGI_Contribution(
+        #ifdef LTCGI_API_V2
+            inout LTCGI_V2_CUSTOM_INPUT data,
+        #endif
+        float3 worldPos, float3 worldNorm, float3 viewDir, float roughness, float2 lmuv
+        #ifndef LTCGI_API_V2
+            , inout half3 diffuse, inout half3 specular, out float totalSpecularIntensity, out float totalDiffuseIntensity
+        #endif
+    )
+    {
+        #ifndef LTCGI_API_V2
+            totalSpecularIntensity = 0;
+        #endif
+        if (_Udon_LTCGI_GlobalEnable == 0.0f)
+        {
+            return;
+        }
+
+        // sample lookup tables
+        float theta = acos(dot(worldNorm, viewDir));
+        float2 uv = float2(roughness, theta / (0.5 * UNITY_PI));
+        uv = uv * LUT_SCALE + LUT_BIAS;
+
+        #ifndef UNITY_UV_STARTS_AT_TOP
+            uv.y = 1 - uv.y;
+        #endif
+
+        // calculate LTCGI custom lightmap UV and sample
+        float3 lms = LTCGI_SampleShadowmap(lmuv);
+
+        #ifndef SHADER_TARGET_SURFACE_ANALYSIS_MOJOSHADER
+            // sample BDRF approximation from lookup texture
+            float4 t = _Udon_LTCGI_lut1.SampleLevel(LTCGI_SAMPLER, uv, 0);
+        #endif
+        float3x3 Minv = float3x3(
+            float3(1, 0, t.w),
+            float3(0, t.z, 0),
+            float3(t.y, 0, t.x)
+        );
+
+        // construct orthonormal basis around N
+        float3 T1, T2;
+        T1 = normalize(viewDir - worldNorm * dot(viewDir, worldNorm));
+        T2 = cross(worldNorm, T1);
+
+        // for diffuse lighting we assume the identity matrix as BDRF, so the
+        // LTC approximation is directly equivalent to the orthonormal rotation matrix
+        float3x3 identityBrdf = float3x3(float3(T1), float3(T2), float3(worldNorm));
+        // rotate area light in (T1, T2, N) basis for actual BRDF matrix as well
+        Minv = mul(Minv, identityBrdf);
+
+        // specular brightness
+        #ifndef LTCGI_SPECULAR_OFF
+            #ifndef SHADER_TARGET_SURFACE_ANALYSIS_MOJOSHADER
+                float spec_amp = _Udon_LTCGI_lut2.SampleLevel(LTCGI_SAMPLER, uv, 0).x;
+            #endif
+        #endif
+
+        bool noLm = false;
+        #ifdef LTCGI_LTC_DIFFUSE_FALLBACK
+            #ifndef LTCGI_ALWAYS_LTC_DIFFUSE
+                #ifndef SHADER_TARGET_SURFACE_ANALYSIS
+                    float2 lmSize;
+                    _Udon_LTCGI_Lightmap.GetDimensions(lmSize.x, lmSize.y);
+                    noLm = lmSize.x == 1;
+                #endif
+            #endif
+        #endif
+        #ifdef LTCGI_ALWAYS_LTC_DIFFUSE
+            noLm = true;
+        #endif
+
+        // loop through all lights and add them to the output
+        uint count = min(_Udon_LTCGI_ScreenCount, MAX_SOURCES);
+        [loop]
+        for (uint i = 0; i < count; i++)
+        {
+            // skip masked and black lights
+            if (_Udon_LTCGI_Mask[i]) continue;
+            float4 extra = _Udon_LTCGI_ExtraData[i];
+            half3 color = extra.rgb;
+            if (!any(color)) continue;
+
+            ltcgi_flags flags = ltcgi_parse_flags(asuint(extra.w), noLm);
+            
+            #ifdef LTCGI_ALWAYS_LTC_DIFFUSE
+                // can't honor a lightmap-only light in this mode
+                if (flags.lmdOnly) continue;
+            #endif
+
+            #ifdef LTCGI_TOGGLEABLE_SPEC_DIFF_OFF
+                // compile branches below away statically
+                flags.diffuse = flags.specular = true;
+            #endif
+
+            // calculate (shifted) world space positions
+            float3 Lw[4];
+            float2 uvStart = (float2)0, uvEnd = (float2)0;
+            bool isTri = false;
+            if (flags.lmdOnly)
+            {
+                Lw[0] = Lw[1] = Lw[2] = Lw[3] = (float3)0;
+            }
+            else
+            {
+                LTCGI_GetLw(i, flags, worldPos, Lw, uvStart, uvEnd, isTri);
+            }
+
+            // skip single-sided lights that face the other way
+            float3 screenNorm = cross(Lw[1] - Lw[0], Lw[2] - Lw[0]);
+            if (!flags.doublesided)
+            {
+                if (dot(screenNorm, Lw[0]) < 0)
+                    continue;
+            }
+
+            float lm = 1;
+            if (flags.lmch)
+            {
+                lm = lms[flags.lmch - 1];
+                if (lm < 0.001) continue;
+            }
+
+            ltcgi_input input;
+            input.i = i;
+            input.Lw = Lw;
+            input.isTri = isTri;
+            input.uvStart = uvStart;
+            input.uvEnd = uvEnd;
+            input.rawColor = color;
+            input.flags = flags;
+            input.screenNormal = screenNorm;
+
+            // diffuse lighting
+            #ifndef LTCGI_DIFFUSE_OFF
+                [branch]
+                if (flags.diffuse)
+                {
+                    float lmd = lm;
+                    if (flags.lmch)
+                    {
+                        if (flags.diffFromLm)
+                            lmd *= _Udon_LTCGI_LightmapMult[flags.lmch - 1];
+                        else
+                            lmd = smoothstep(0.0, LTCGI_SPECULAR_LIGHTMAP_STEP, saturate(lm - LTCGI_LIGHTMAP_CUTOFF));
+                    }
+                    ltcgi_output diff;
+                    LTCGI_Evaluate(input, worldNorm, viewDir, identityBrdf, roughness, true, diff);
+                    diff.intensity *= lmd;
+
+                    #ifdef LTCGI_API_V2
+                        LTCGI_V2_DIFFUSE_CALLBACK(data, diff);
+                    #else
+                        // simply accumulate all lights
+                        diffuse += (diff.intensity * diff.color);
+                        totalDiffuseIntensity += diff.intensity;
+                    #endif
+                }
+            #endif
+
+            // specular lighting
+            #ifndef LTCGI_SPECULAR_OFF
+                [branch]
+                if (flags.specular)
+                {
+                    ltcgi_output spec;
+                    LTCGI_Evaluate(input, worldNorm, viewDir, Minv, roughness, false, spec);
+                    spec.intensity *= spec_amp * smoothstep(0.0, LTCGI_SPECULAR_LIGHTMAP_STEP, saturate(lm - LTCGI_LIGHTMAP_CUTOFF));
+
+                    #ifdef LTCGI_API_V2
+                        LTCGI_V2_SPECULAR_CALLBACK(data, spec);
+                    #else
+                        // simply accumulate all lights
+                        specular += spec.intensity * spec.color;
+                        totalSpecularIntensity += spec.intensity;
+                    #endif
+                }
+            #endif
+        }
+    }
+
+    // COMPATIBILITY FALLBACKS
+
+    #ifndef LTCGI_API_V2
+
+        void LTCGI_Contribution(
+            float3 worldPos, float3 worldNorm, float3 viewDir, float roughness, float2 lmuv, inout half3 diffuse
+        )
+        {
+            half3 _u1;
+            float _u2, _u3;
+            LTCGI_Contribution(worldPos, worldNorm, viewDir, roughness, lmuv, diffuse, _u1, _u2, _u3);
+        }
+
+        void LTCGI_Contribution(
+            float3 worldPos, float3 worldNorm, float3 viewDir, float roughness, float2 lmuv, inout half3 diffuse, inout half3 specular
+        )
+        {
+            float _u1, _u2;
+            LTCGI_Contribution(worldPos, worldNorm, viewDir, roughness, lmuv, diffuse, specular, _u1, _u2);
+        }
+
+        void LTCGI_Contribution(
+            float3 worldPos, float3 worldNorm, float3 viewDir, float roughness, float2 lmuv, inout half3 diffuse, inout half3 specular, out float totalSpecularIntensity
+        )
+        {
+            float _u1;
+            LTCGI_Contribution(worldPos, worldNorm, viewDir, roughness, lmuv, diffuse, specular, totalSpecularIntensity, _u1);
+        }
+
+    #endif
+
+    /*
+
+        Parts of the code in this file are adapted from the example code found here:
+    
+        https://github.com/selfshadow/ltc_code
+
+        Modifications by _pi_ (@pimaker on GitHub), licensed under the terms of the
+        MIT license as far as applicable.
+
+        Original copyright notice:
+
+        Copyright (c) 2017, Eric Heitz, Jonathan Dupuy, Stephen Hill and David Neubelt.
+        All rights reserved.
+
+        Redistribution and use in source and binary forms, with or without
+        modification, are permitted provided that the following conditions are met:
+
+        * If you use (or adapt) the source code in your own work, please include a
+        reference to the paper:
+
+        Real-Time Polygonal-Light Shading with Linearly Transformed Cosines.
+        Eric Heitz, Jonathan Dupuy, Stephen Hill and David Neubelt.
+        ACM Transactions on Graphics (Proceedings of ACM SIGGRAPH 2016) 35(4), 2016.
+        Project page: https://eheitzresearch.wordpress.com/415-2/
+
+        * Redistributions of source code must retain the above copyright notice, this
+        list of conditions and the following disclaimer.
+
+        * Redistributions in binary form must reproduce the above copyright notice,
+        this list of conditions and the following disclaimer in the documentation
+        and/or other materials provided with the distribution.
+
+        THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+        AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+        IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+        DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+        FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+        DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+        SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+        CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+        OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+        OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+    */
+
+    // LTCGI.cginc END
+
+    void callback_diffuse(inout accumulator_struct acc, in ltcgi_output output)
+    {
+        // you can do whatever here! check out the ltcgi_output struct in
+        // "LTCGI_structs.cginc" to see what data you have available
+        acc.diffuse += output.intensity * output.color;
+    }
+    void callback_specular(inout accumulator_struct acc, in ltcgi_output output)
+    {
+        // same here, this example one is pretty boring though.
+        // you could accumulate intensity separately for example,
+        // to emulate total{Specular,Diffuse}Intensity from APIv1
+        acc.specular += output.intensity * output.color;
+    }
+
+#endif
+//endex
+#T#PoiLTCGIFunctionCall
+//ifex _LTCGIEnabled!=1
+#ifdef POI_LTCGI
+    if (_LTCGI_AnimToggle >= 0.5)
+    {
+        half LTCGIsmoothness = _LTCGI_Smoothness;
+        float LTCGImetalness = _LTCGI_Metallic;
+        half LTCGISpecMask = 1;
+
+        if (_LTCGI_UsePBR >= 0.5)
+        {
+            #ifdef MOCHIE_PBR
+	            half smoothness = poiFragData.smoothness;
+	            half metallic = poiFragData.metallic;
+	            half specularMask = poiFragData.specularMask;
+
+	            if (_MochieMetallicGlobalMask > 0)
+	            {
+	            	metallic = customBlend(metallic, poiMods.globalMask[_MochieMetallicGlobalMask - 1], _MochieMetallicGlobalMaskBlendType);
+	            }
+	            if (_MochieSmoothnessGlobalMask > 0)
+	            {
+	             	smoothness = customBlend(smoothness, poiMods.globalMask[_MochieSmoothnessGlobalMask - 1], _MochieSmoothnessGlobalMaskBlendType);
+            	}
+	            if (_MochieSpecularStrengthGlobalMask > 0)
+	            {
+	        	    specularMask = customBlend(specularMask, poiMods.globalMask[_MochieSpecularStrengthGlobalMask - 1], _MochieSpecularStrengthGlobalMaskBlendType);
+	            }
+                if (_LTCGI_UseEO >= 0.5)
+                {
+                    specularMask *= SFVisibility(pow((1-smoothness),2), poiLight.directColor, poiLight.nDotV, _SFExposureOcclusion);
+                }
+	           LTCGIsmoothness = smoothness;
+	           LTCGImetalness = metallic;
+	           LTCGISpecMask = specularMask;
+            #endif
+        }
+
+        // Use bent normal for diffuse when available for better occlusion
+        float3 ltcgiNormal = poiMesh.normals[1];
+        #ifdef POI_BENTNORMALMAP
+            if (poiMesh.hasBentNormal)
+            {
+                ltcgiNormal = poiMesh.bentNormal;
+            }
+        #endif
+
+        accumulator_struct acc = (accumulator_struct)0;
+
+        LTCGI_Contribution(
+            acc,
+            poiMesh.worldPos,
+            ltcgiNormal,
+            poiCam.eyeViewDir,
+            1.0f - LTCGIsmoothness,
+            poiMesh.uv[1]
+        );
+
+        acc.specular *= poiThemeColor(poiMods, _LTCGI_SpecularColor.rgb, _LTCGI_SpecularColorThemeIndex) * _LTCGI_SpecularMultiplier;
+        acc.diffuse *= poiThemeColor(poiMods, _LTCGI_DiffuseColor.rgb, _LTCGI_DiffuseColorThemeIndex) * _LTCGI_DiffuseMultiplier;
+
+        // Apply bent normal specular occlusion when available
+        #ifdef POI_BENTNORMALMAP
+            if (poiMesh.hasBentNormal)
+            {
+                float3 ltcgiReflDir = reflect(-poiCam.eyeViewDir, poiMesh.normals[1]);
+                float bentNormalSO = PoiSpecularOcclusionBentNormal(ltcgiReflDir, poiMesh.bentNormal, poiLight.occlusion, 1.0f - LTCGIsmoothness);
+                half occlusionRatio = (poiLight.occlusion > 0.001) ? (bentNormalSO / poiLight.occlusion) : bentNormalSO;
+                LTCGISpecMask *= saturate(occlusionRatio);
+            }
+        #endif
+
+        poiLight.finalLightAdd += (acc.specular * lerp(unity_ColorSpaceDielectricSpec, poiFragData.baseColor, LTCGImetalness)) * LTCGISpecMask;
+
+        poiLight.finalLighting += acc.diffuse;
+        if (poiLight.lightingCapEnabled)
+        {
+            poiLight.finalLighting = min(poiLight.finalLighting, _LightingCap);
+        }
+    }
+#endif
+//endex

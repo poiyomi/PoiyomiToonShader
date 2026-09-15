@@ -1,0 +1,102 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1039f25740a92fc4292bb1d94d07ad19, type: 3}
+  m_Name: VRLM_PoiDissolve
+  m_EditorClassIdentifier: 
+  Id: PoiDissolve
+  Name: 
+  Version: 1.0
+  Author: Poiyomi
+  Description: 
+  AllowDuplicates: 0
+  ForceDuplicateLogic: 0
+  EnableProperties: []
+  Properties: []
+  ModuleDependencies: []
+  IncompatibleWith: []
+  Templates:
+  - Template: {fileID: 6190473947177011631, guid: db6fb035c5b46e941b0b8ad192fa9aef, type: 3}
+    Keywords:
+    - SPECIALFX_PROPERTIES
+    NeedsVariant: 0
+    Queue: 100
+  - Template: {fileID: -5769407299779581660, guid: db6fb035c5b46e941b0b8ad192fa9aef, type: 3}
+    Keywords:
+    - DEPTH_PASS_KEYWORDS
+    - OUTLINE_PASS_KEYWORDS
+    - BASE_PASS_KEYWORDS
+    - LILFUR_PASS_KEYWORDS
+    - ADD_PASS_KEYWORDS
+    - META_PASS_KEYWORDS
+    - SHADOW_PASS_KEYWORDS
+    - MOTION_VECTORS_PASS_KEYWORDS
+    NeedsVariant: 0
+    Queue: 100
+  - Template: {fileID: 6485966747919507968, guid: db6fb035c5b46e941b0b8ad192fa9aef, type: 3}
+    Keywords:
+    - DEPTH_PROPERTY_VARIABLES
+    - OUTLINE_PROPERTY_VARIABLES
+    - BASE_PROPERTY_VARIABLES
+    - LILFUR_PROPERTY_VARIABLES
+    - ADD_PROPERTY_VARIABLES
+    - META_PROPERTY_VARIABLES
+    - SHADOW_PROPERTY_VARIABLES
+    - MOTION_VECTORS_PROPERTY_VARIABLES
+    NeedsVariant: 0
+    Queue: 100
+  - Template: {fileID: 3125442523925723980, guid: db6fb035c5b46e941b0b8ad192fa9aef, type: 3}
+    Keywords:
+    - DEPTH_PROPERTY_VARIABLES_EXPOSED
+    - OUTLINE_PROPERTY_VARIABLES_EXPOSED
+    - BASE_PROPERTY_VARIABLES_EXPOSED
+    - LILFUR_PROPERTY_VARIABLES_EXPOSED
+    - ADD_PROPERTY_VARIABLES_EXPOSED
+    - META_PROPERTY_VARIABLES_EXPOSED
+    - SHADOW_PROPERTY_VARIABLES_EXPOSED
+    - MOTION_VECTORS_PROPERTY_VARIABLES_EXPOSED
+    NeedsVariant: 0
+    Queue: 100
+  - Template: {fileID: -1196677453625105798, guid: db6fb035c5b46e941b0b8ad192fa9aef, type: 3}
+    Keywords:
+    - VERTEX_DEPTH_FUNCTIONS
+    - VERTEX_OUTLINE_FUNCTIONS
+    - VERTEX_BASE_FUNCTIONS
+    - VERTEX_LILFUR_FUNCTIONS
+    - VERTEX_ADD_FUNCTIONS
+    - VERTEX_META_FUNCTIONS
+    - VERTEX_SHADOW_FUNCTIONS
+    - VERTEX_MOTION_VECTORS_FUNCTIONS
+    NeedsVariant: 0
+    Queue: 100
+  - Template: {fileID: -5874299761129568229, guid: db6fb035c5b46e941b0b8ad192fa9aef, type: 3}
+    Keywords:
+    - FRAGMENT_DEPTH_COLOR
+    - FRAGMENT_OUTLINE_COLOR
+    - FRAGMENT_BASE_COLOR
+    - FRAGMENT_ADD_COLOR
+    - FRAGMENT_META_COLOR
+    - FRAGMENT_SHADOW_COLOR
+    - FRAGMENT_MOTION_VECTORS_COLOR
+    NeedsVariant: 0
+    Queue: 15
+  - Template: {fileID: -6783918953632530723, guid: db6fb035c5b46e941b0b8ad192fa9aef, type: 3}
+    Keywords:
+    - VERTEX_INPUT_MODS
+    NeedsVariant: 0
+    Queue: 100
+  - Template: {fileID: -8376826651685638463, guid: db6fb035c5b46e941b0b8ad192fa9aef, type: 3}
+    Keywords:
+    - VERTEX_INPUT_MODS
+    NeedsVariant: 0
+    Queue: 100
+  Functions: []
+  AdditionalSerializedData: 

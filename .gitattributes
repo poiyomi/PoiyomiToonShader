@@ -1,3 +1,58 @@
+# Auto detect text files and perform LF normalization
+* text=auto
+
+# Unity files
+*.cs text eol=lf
+*.shader text eol=lf
+*.cginc text eol=lf
+*.hlsl text eol=lf
+*.compute text eol=lf
+*.txt text eol=lf
+*.md text eol=lf
+*.json text eol=lf
+*.xml text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.asmdef text eol=lf
+*.asset text eol=lf
+*.mat text eol=lf
+*.meta text eol=lf
+*.prefab text eol=lf
+*.controller text eol=lf
+*.anim text eol=lf
+*.poiTemplateCollection text eol=lf
+*.poiTemplate text eol=lf
+*.uxml text eol=lf
+*.uss text eol=lf
+
+# Git files
+.gitignore text eol=lf
+.gitattributes text eol=lf
+
+# Ensure binary files are not modified
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.exr binary
+*.tga binary
+*.psd binary
+*.tif binary
+*.tiff binary
+*.fbx binary
+*.blend binary
+*.obj binary
+*.max binary
+*.zip binary
+*.rar binary
+*.7z binary
+*.dll binary
+*.exe binary
+*.ttf binary
+*.otf binary
+*.pdf binary
+
 # Overrides for GitHub's Linguist language detection (https://github.com/github/linguist/blob/master/docs/overrides.md)
 *.shader linguist-language=ShaderLab
 *.cginc linguist-language=HLSL

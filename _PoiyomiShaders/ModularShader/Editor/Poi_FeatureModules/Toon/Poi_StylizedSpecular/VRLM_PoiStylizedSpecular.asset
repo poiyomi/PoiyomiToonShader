@@ -1,0 +1,75 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1039f25740a92fc4292bb1d94d07ad19, type: 3}
+  m_Name: VRLM_PoiStylizedSpecular
+  m_EditorClassIdentifier: 
+  Id: PoiStylizedSpecular
+  Name: 
+  Version: 1.0
+  Author: Poiyomi
+  Description: 
+  AllowDuplicates: 0
+  ForceDuplicateLogic: 0
+  EnableProperties: []
+  Properties: []
+  ModuleDependencies: []
+  IncompatibleWith: []
+  Templates:
+  - Template: {fileID: 1811175688506899900, guid: 9c4cc3fe8a24ded449ad957cb11c9ec0, type: 3}
+    Keywords:
+    - LIGHTING_PROPERTIES
+    NeedsVariant: 0
+    Queue: 100
+  - Template: {fileID: 7575734690947602720, guid: 9c4cc3fe8a24ded449ad957cb11c9ec0, type: 3}
+    Keywords:
+    - BASE_PASS_KEYWORDS
+    - ADD_PASS_KEYWORDS
+    - LILFUR_PASS_KEYWORDS
+    NeedsVariant: 0
+    Queue: 100
+  - Template: {fileID: -6401650772416328856, guid: 9c4cc3fe8a24ded449ad957cb11c9ec0, type: 3}
+    Keywords:
+    - BASE_PROPERTY_VARIABLES
+    - ADD_PROPERTY_VARIABLES
+    - LILFUR_PROPERTY_VARIABLES
+    NeedsVariant: 0
+    Queue: 100
+  - Template: {fileID: 7887983345187198410, guid: 9c4cc3fe8a24ded449ad957cb11c9ec0, type: 3}
+    Keywords:
+    - BASE_PROPERTY_VARIABLES_EXPOSED
+    - ADD_PROPERTY_VARIABLES_EXPOSED
+    - LILFUR_PROPERTY_VARIABLES_EXPOSED
+    NeedsVariant: 0
+    Queue: 100
+  - Template: {fileID: -721671918919467234, guid: 9c4cc3fe8a24ded449ad957cb11c9ec0, type: 3}
+    Keywords:
+    - FRAGMENT_BASE_FUNCTIONS
+    - FRAGMENT_ADD_FUNCTIONS
+    - FRAGMENT_LILFUR_FUNCTIONS
+    NeedsVariant: 0
+    Queue: 100
+  - Template: {fileID: 715447138891700941, guid: 9c4cc3fe8a24ded449ad957cb11c9ec0, type: 3}
+    Keywords:
+    - BASE_LIGHT_LOOP
+    - ADD_LIGHT_LOOP
+    - LILFUR_LIGHT_LOOP
+    NeedsVariant: 0
+    Queue: 100
+  - Template: {fileID: 9115247659250130973, guid: 9c4cc3fe8a24ded449ad957cb11c9ec0, type: 3}
+    Keywords:
+    - BASE_LIGHT_LOOP
+    - ADD_LIGHT_LOOP
+    - LILFUR_LIGHT_LOOP
+    NeedsVariant: 0
+    Queue: 100
+  Functions: []
+  AdditionalSerializedData: 

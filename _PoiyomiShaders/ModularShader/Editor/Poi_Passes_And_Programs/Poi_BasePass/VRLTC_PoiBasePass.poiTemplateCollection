@@ -1,0 +1,118 @@
+#T#BasePassTags
+Name "Base"
+Tags { "LightMode" = "ForwardBase" }
+
+#T#BasePassTagsURP
+Name "ForwardLit"
+Tags { "LightMode" = "UniversalForward" }
+
+#T#BasePassStencil
+#K#BASE_PASS_STENCIL
+
+#T#BasePassBlendSettings
+ZWrite [_ZWrite]
+Cull [_Cull]
+ZClip [_ZClip]
+//ifex _AlphaToCoverage==0
+AlphaToMask [_AlphaToCoverage]
+//endex
+ZTest [_ZTest]
+ColorMask [_ColorMask]
+Offset [_OffsetFactor], [_OffsetUnits]
+
+BlendOp [_BlendOp], [_BlendOpAlpha]
+Blend [_SrcBlend] [_DstBlend], [_SrcBlendAlpha] [_DstBlendAlpha]
+
+#T#BasePassOnlyKeywords
+#if POI_PIPE == POI_URP
+    #pragma multi_compile _ _MAIN_LIGHT_SHADOWS _MAIN_LIGHT_SHADOWS_CASCADE _MAIN_LIGHT_SHADOWS_SCREEN
+
+    #if UNITY_VERSION >= 600000
+        #pragma multi_compile _ _CLUSTER_LIGHT_LOOP
+    #else
+        #pragma multi_compile _ _FORWARD_PLUS
+    #endif
+
+    #pragma multi_compile_fragment _ _ADDITIONAL_LIGHTS
+    #pragma multi_compile_fragment _ _ADDITIONAL_LIGHT_SHADOWS
+    #pragma multi_compile_fragment _ _LIGHT_LAYERS
+    #pragma multi_compile_fragment _ _SHADOWS_SOFT
+    #pragma multi_compile_fragment _ _REFLECTION_PROBE_BLENDING
+    #pragma multi_compile_fragment _ _REFLECTION_PROBE_BOX_PROJECTION
+
+    #pragma multi_compile_fragment _ _LIGHT_COOKIES
+
+    #pragma dynamic_branch _ FOG_LINEAR
+    #pragma dynamic_branch _ FOG_EXP
+    #pragma dynamic_branch _ FOG_EXP2
+#endif
+
+#if POI_PIPE == POI_BIRP
+    #pragma dynamic_branch _ FOG_LINEAR
+    #pragma dynamic_branch _ FOG_EXP
+    #pragma dynamic_branch _ FOG_EXP2
+    #pragma multi_compile_fwdbase
+    #pragma multi_compile_fragment _ VERTEXLIGHT_ON
+#endif
+
+// BIRP gets these from multi_compile_fwdbase
+#if defined(POI_WORLD) && POI_PIPE == POI_URP
+    #pragma multi_compile _ LIGHTMAP_SHADOW_MIXING
+    #pragma multi_compile _ SHADOWS_SHADOWMASK
+    #pragma multi_compile _ DIRLIGHTMAP_COMBINED
+    #pragma multi_compile _ LIGHTMAP_ON
+    #pragma multi_compile _ DYNAMICLIGHTMAP_ON
+    #pragma multi_compile_fragment _ _SCREEN_SPACE_OCCLUSION
+#endif
+
+#pragma multi_compile_instancing
+
+#define POI_PASS_BASE
+
+#T#BasePassKeywords
+#K#BASE_PASS_KEYWORDS
+
+#K#BASE_PASS_PRAGMA_PROGRAMS
+
+#T#BasePassPropertyVariablesURP
+CBUFFER_START(UnityPerMaterial)
+#K#BASE_PROPERTY_VARIABLES_EXPOSED
+CBUFFER_END
+#K#BASE_PROPERTY_VARIABLES
+
+#T#BasePassPropertyVariables
+#K#BASE_PROPERTY_VARIABLES
+#K#BASE_PROPERTY_VARIABLES_EXPOSED
+
+#T#BasePassPrograms
+#K#VERTEX_BASE_DATA_STRUCTURES
+#K#VERTEX_BASE_FUNCTIONS_EARLY
+#K#VERTEX_BASE_FUNCTIONS
+#K#VERTEX_BASE_FUNCTIONS_LATE
+#K#VERTEX_BASE_PROGRAM
+
+#K#HULLDOMAIN_BASE_PROGRAM
+#K#GEOMETRY_BASE_PROGRAM
+
+#K#FRAGMENT_BASE_DATA_STRUCTURES
+#K#FRAGMENT_BASE_FUNCTIONS_EARLY
+#K#FRAGMENT_BASE_FUNCTIONS
+#K#FRAGMENT_BASE_FUNCTIONS_LATE
+#K#FRAGMENT_BASE_PROGRAM
+
+#T#BasePassIncludesURP
+#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/CommonMaterial.hlsl"
+#if UNITY_VERSION >= 202100
+    #if UNITY_VERSION < 202300
+        #ifndef __AMBIENTPROBE_HLSL__
+        half3 EvaluateAmbientProbe(half3 normalWS)
+        {
+            return half3(0.0h, 0.0h, 0.0h);
+        }
+        #endif
+    #endif
+    #include "Packages/com.unity.render-pipelines.core/Runtime/Lighting/ProbeVolume/ProbeVolume.hlsl"
+#endif
+#if UNITY_VERSION >= 202300
+    #include_with_pragmas "Packages/com.unity.render-pipelines.universal/ShaderLibrary/ProbeVolumeVariants.hlsl"
+#endif

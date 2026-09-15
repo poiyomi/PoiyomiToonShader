@@ -1,0 +1,449 @@
+#T#PoiALDecalsProperties
+//ifex _EnableALDecal==0
+[HideInInspector] m_start_ALDecalSpectrum (" AL ♫ Spectrum--{  reference_property:_EnableALDecal, button_help:{text:Tutorial,action:{type:URL,data:https://www.poiyomi.com/audio-link/spectrum},hover:Documentation}}", Float) = 0
+[HideInInspector][ThryToggle(POI_AL_DECAL)]_EnableALDecal ("Enable AL Decal", Float) = 0
+
+[HideInInspector] s_start_ALDecalPositioning ("Positioning--{persistent_expand:true,default_expand:true}", Float) = 1
+[Helpbox(1, 2, 1)] _ALDecalPositioningHelp ("To apply Positioning using Raycast, edit this Material directly from your Mesh in the Scene. Click for video tutorial.--{onClick:{type:URL,data:https://www.poiyomi.com/audio-link/spectrum#positioning}}", Int) = 0
+[ThryDecalPositioning(_ALDecalColorMask, _ALDecalUV, _ALDecalPosition, _ALDecalRotation, _ALDecalScale, _ALDecalSideOffset)]
+[ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7, Matcap, 9, Screen Space, 10)] _ALDecalUV ("UV", Int) = 0
+[Vector2]_ALDecalPosition ("Position", Vector) = (.5, .5, 0, 0)
+_ALDecalRotation ("Rotation", Range(0, 360)) = 0
+_ALDecalRotationSpeed ("Rotation Speed", Float) = 0
+[VectorLabel(X, Y, link)]_ALDecalScale ("Scale", Vector) = (1, 1, 1, 0)
+[VectorLabel(L, R, D, U)]_ALDecalSideOffset ("Side Offset", Vector) = (0, 0, 0, 0)
+[ThryWideEnum(Off, 0, Flip, 1, Left Only, 2, Right Only, 3, Flip Right Only, 4)] _ALDecalMirroredUVMode ("Mirrored UV Mode", Int) = 0
+[ThryWideEnum(Off, 0, Symmetry, 1, Flipped, 2)] _ALDecalSymmetryMode ("Symmetry Mode", Int) = 0
+[ToggleUI]_ALDecalTiled ("Tiled", Float) = 0
+[HideInInspector] s_end_ALDecalPositioning ("Positioning", Float) = 0
+
+[HideInInspector] s_start_ALDecalSpectrumOptions ("Spectrum--{persistent_expand:true,default_expand:true}", Float) = 1
+[Enum(Normal, 0, Circle, 1)] _ALDecalUVMode ("UV Mode", Float) = 0
+_ALDecaldCircleDimensions ("Circle Dimensions--{ condition_showS:_ALDecalUVMode==1}", Vector) = (0, 1, 0, 1)
+_ALDecalLineWidth ("Line Width", Range(0, 1)) = 1.0
+[ToggleUI]_ALDecalBilateral ("Bilateral Mode", Float) = 0
+[Enum(Off, 0, Mirror, 1, Mirror Flipped, 2)] _ALDecalMirrorBand ("Mirror Spectrum", Int) = 0
+_ALDecalBandRange ("Band Range", Range(0.01, 1)) = 0.5
+[HideInInspector] s_end_ALDecalSpectrumOptions ("Spectrum", Float) = 0
+
+[HideInInspector] s_start_ALDecalAudioModsOptions ("Audio Mods--{persistent_expand:true,default_expand:true}", Float) = 1
+_ALDecalVolume ("Volume", Range(0, 2)) = 1.0
+_ALDecalBaseBoost ("Bass Boost", Float) = 1.0
+_ALDecalTrebleBoost ("Treble Boost", Float) = 1.0
+[HideInInspector] s_end_ALDecalAudioModsOptions ("Audio Mods", Float) = 0
+
+[HideInInspector] s_start_ALDecalClippingOptions ("Clipping--{persistent_expand:true,default_expand:true}", Float) = 1
+_ALDecalVolumeStep ("Volume Step (0 = Off)", Float) = 0.0
+_ALDecalVolumeClipMin ("Volume Clip Min", Range(0, 1)) = 0.0
+_ALDecalVolumeClipMax ("Volume Clip Max", Range(0, 1)) = 1.0
+_ALDecalBandStep ("Band Step (0 = Off)", Float) = 0.0
+_ALDecalBandClipMin ("Band Clip Min", Range(0, 1)) = 0.0
+_ALDecalBandClipMax ("Band Clip Max", Range(0, 1)) = 1.0
+[ToggleUI]_ALDecalShapeClip ("Shape Clip", Float) = 0
+_ALDecalShapeClipVolumeWidth ("Shape Clip Volume Width--{ condition_showS:_ALDecalShapeClip==1}", Range(0, 1)) = 0.5
+_ALDecalShapeClipBandWidth ("Shape Clip Band Width--{ condition_showS:_ALDecalShapeClip==1}", Range(0, 1)) = 0.5
+[HideInInspector] s_end_ALDecalClippingOptions ("Clipping", Float) = 0
+
+[HideInInspector] s_start_ALDecalColorsBlendingOptions ("Colors and Blending--{persistent_expand:true,default_expand:true}", Float) = 1
+[Enum(Gradient, 0, ColorChord, 1)] _ALDecalColorMode ("Color Mode", Int) = 0
+[sRGBWarning(true)][ThryRGBAPacker(RGB Color, A Mask, sRGB, false)]_ALDecalColorMask ("Color & Mask--{reference_properties:[_ALDecalColorMaskPan, _ALDecalColorMaskUV]}", 2D) = "white" { }
+[ThryHideInInspector][Vector2]_ALDecalColorMaskPan ("Panning", Vector) = (0, 0, 0, 0)
+[ThryHideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7, Matcap, 9, Screen Space, 10)] _ALDecalColorMaskUV ("UV", Int) = 0
+_ALDecalColorChordEmission ("ColorChord Emission--{ condition_showS:_ALDecalColorMode==1}", Range(0, 20)) = 0
+[Enum(UVX, 0, UVY, 1, Volume, 2)] _ALDecalVolumeColorSource ("Source--{ condition_showS:_ALDecalColorMode==0}", Int) = 1
+_ALDecalVolumeColorLow ("Volume Color Low--{reference_property:_ALDecalVolumeColorLowThemeIndex, condition_showS:_ALDecalColorMode==0}", Color) = (0, 0, 1)
+[ThryHideInInspector][ThryWideEnum(Off, 0, Theme Color 0, 1, Theme Color 1, 2, Theme Color 2, 3, Theme Color 3, 4, ColorChord 0, 5, ColorChord 1, 6, ColorChord 2, 7, ColorChord 3, 8, AL Theme 0, 9, AL Theme 1, 10, AL Theme 2, 11, AL Theme 3, 12)] _ALDecalVolumeColorLowThemeIndex ("", Int) = 0
+_ALDecalLowEmission ("Low Emission--{ condition_showS:_ALDecalColorMode==0}", Range(0, 20)) = 0
+_ALDecalVolumeColorMid ("Volume Color Mid--{reference_property:_ALDecalVolumeColorMidThemeIndex, condition_showS:_ALDecalColorMode==0}", Color) = (0, 1, 0)
+[ThryHideInInspector][ThryWideEnum(Off, 0, Theme Color 0, 1, Theme Color 1, 2, Theme Color 2, 3, Theme Color 3, 4, ColorChord 0, 5, ColorChord 1, 6, ColorChord 2, 7, ColorChord 3, 8, AL Theme 0, 9, AL Theme 1, 10, AL Theme 2, 11, AL Theme 3, 12)] _ALDecalVolumeColorMidThemeIndex ("", Int) = 0
+_ALDecalMidEmission ("Mid Emission--{ condition_showS:_ALDecalColorMode==0}", Range(0, 20)) = 0
+_ALDecalVolumeColorHigh ("Volume Color High--{reference_property:_ALDecalVolumeColorHighThemeIndex, condition_showS:_ALDecalColorMode==0}", Color) = (1, 0, 0)
+[ThryHideInInspector][ThryWideEnum(Off, 0, Theme Color 0, 1, Theme Color 1, 2, Theme Color 2, 3, Theme Color 3, 4, ColorChord 0, 5, ColorChord 1, 6, ColorChord 2, 7, ColorChord 3, 8, AL Theme 0, 9, AL Theme 1, 10, AL Theme 2, 11, AL Theme 3, 12)] _ALDecalVolumeColorHighThemeIndex ("", Int) = 0
+_ALDecalHighEmission ("High Emission--{ condition_showS:_ALDecalColorMode==0}", Range(0, 20)) = 0
+[ThryWideEnum(Replace, 0, Darken, 1, Multiply, 2, Lighten, 5, Screen, 6, Subtract, 7, Add, 8, Overlay, 9, Mixed, 20)]_ALDecalBlendType ("Blend Type", Int) = 0
+_ALDecalBlendAlpha ("Alpha", Range(0, 1)) = 1
+_ALDecalControlsAlpha ("Override Alpha", Range(0, 1)) = 0
+[ToggleUI] _ALDecalUseVideoEffects ("Apply Video Effects--{condition_showS:(_VideoEffectsEnable==1)}", Float) = 0
+[ThryWideEnum(Off, 0, 1R, 1, 1G, 2, 1B, 3, 1A, 4, 2R, 5, 2G, 6, 2B, 7, 2A, 8, 3R, 9, 3G, 10, 3B, 11, 3A, 12, 4R, 13, 4G, 14, 4B, 15, 4A, 16)] _ALDecalGlobalMask ("Global Mask--{reference_property:_ALDecalGlobalMaskBlendType}", Int) = 0
+[ThryHideInInspector][ThryWideEnum(Add, 7, Subtract, 1, Multiply, 2, Divide, 3, Min, 4, Max, 5, Average, 6, Replace, 0)] _ALDecalGlobalMaskBlendType ("Blending", Int) = 2
+[HideInInspector] s_end_ALDecalColorsBlendingOptions ("Colors and Blending", Float) = 0
+
+[ToggleUI]_ALDecalDebug ("Debug", Float) = 0
+_ALDecalDebugBorderWidth ("Debug Border Width--{ condition_showS:_ALDecalDebug==1}", Range(0.005, 0.1)) = 0.02
+[HideInInspector] m_end_ALDecalSpectrum ("AL ♫ Spectrum", Float) = 0
+//endex
+
+#T#PoiALDecalsKeywords
+//ifex _EnableALDecal==0
+#pragma shader_feature_local_fragment POI_AL_DECAL
+//endex
+
+#T#PoiALDecalsVariablesExposed
+//ifex _EnableALDecal==0
+#ifdef POI_AUDIOLINK
+    #ifdef POI_AL_DECAL
+        float _ALDecalUV;
+        float2 _ALDecalPosition;
+        float _ALDecalRotation;
+        float _ALDecalRotationSpeed;
+        float2 _ALDecalScale;
+        float4 _ALDecalSideOffset;
+        float _ALDecalMirroredUVMode;
+        float _ALDecalSymmetryMode;
+        float _ALDecalTiled;
+        float4 _ALDecaldCircleDimensions;
+
+        float _ALDecalUVMode;
+        float _ALDecalBilateral;
+        float _ALDecalMirrorBand;
+        half _ALDecalBandRange;
+        float _ALDecalColorMode;
+        half _ALDecalColorChordEmission;
+
+        float _ALDecalVolumeStep;
+        half _ALDecalVolumeClipMin;
+        half _ALDecalVolumeClipMax;
+
+        float _ALDecalBandStep;
+        half _ALDecalBandClipMin;
+        half _ALDecalBandClipMax;
+
+        float _ALDecalShapeClip;
+        half _ALDecalShapeClipVolumeWidth;
+        half _ALDecalShapeClipBandWidth;
+
+        #if defined(PROP_ALDECALCOLORMASK) || !defined(OPTIMIZER_ENABLED)
+            float4 _ALDecalColorMask_ST;
+            float2 _ALDecalColorMaskPan;
+            float _ALDecalColorMaskUV;
+        #endif
+
+        half _ALDecalVolume;
+        half _ALDecalBaseBoost;
+        half _ALDecalTrebleBoost;
+        half _ALDecalLineWidth;
+        half _ALDecalVolumeColorSource;
+        half3 _ALDecalVolumeColorLow;
+        float _ALDecalVolumeColorLowThemeIndex;
+        half3 _ALDecalVolumeColorMid;
+        float _ALDecalVolumeColorMidThemeIndex;
+        half3 _ALDecalVolumeColorHigh;
+        float _ALDecalVolumeColorHighThemeIndex;
+        half _ALDecalLowEmission;
+        half _ALDecalMidEmission;
+        half _ALDecalHighEmission;
+        float _ALDecalBlendType;
+        half _ALDecalBlendAlpha;
+        half _ALDecalControlsAlpha;
+        float _ALDecalUseVideoEffects;
+        half _ALDecalGlobalMask;
+        float _ALDecalGlobalMaskBlendType;
+        float _ALDecalDebug;
+        half _ALDecalDebugBorderWidth;
+    #endif
+#endif
+//endex
+
+#T#PoiALDecalsVariables
+//ifex _EnableALDecal==0
+#ifdef POI_AUDIOLINK
+    #ifdef POI_AL_DECAL
+        #if defined(PROP_ALDECALCOLORMASK) || !defined(OPTIMIZER_ENABLED)
+            Texture2D _ALDecalColorMask;
+        #endif
+    #endif
+#endif
+//endex
+
+
+#T#PoiALDecalsFunctions
+//ifex _EnableALDecal==0
+#ifdef POI_AUDIOLINK
+    #ifdef POI_AL_DECAL
+        void ApplyAudioLinkDecal(in PoiMesh poiMesh, in PoiCam poiCam, inout PoiFragData poiFragData, in PoiMods poiMods)
+        {
+            half4 colorAndMask = float4(1, 1, 1, 1);
+            #if defined(PROP_ALDECALCOLORMASK) || !defined(OPTIMIZER_ENABLED)
+                colorAndMask = POI2D_SAMPLER_PAN(_ALDecalColorMask, _MainTex, poiUV(poiMesh.uv[_ALDecalColorMaskUV], _ALDecalColorMask_ST), _ALDecalColorMaskPan);
+            #endif
+            if (_ALDecalGlobalMask > 0)
+            {
+                colorAndMask.a = customBlend(colorAndMask.a, poiMods.globalMask[_ALDecalGlobalMask-1], _ALDecalGlobalMaskBlendType);
+            }
+
+            float4 scaleOffset = float4(-_ALDecalSideOffset.x, _ALDecalSideOffset.y, -_ALDecalSideOffset.z, _ALDecalSideOffset.w);
+            float2 centerOffset = float2((scaleOffset.x + scaleOffset.y) / 2, (scaleOffset.z + scaleOffset.w) / 2);
+            float2 uv = poiMesh.uv[_ALDecalUV];
+            float tilingClip = 1;
+            // Symmetry
+            if (_ALDecalSymmetryMode == 1) uv.x = abs(uv.x - 0.5) + 0.5;
+            if (_ALDecalSymmetryMode == 2 && uv.x < 0.5) uv.x = uv.x + 0.5;
+            // Mirrored UV
+            if ((_ALDecalMirroredUVMode == 1 || _ALDecalMirroredUVMode == 4) && poiMesh.isRightHand) uv.x = 1.0 - uv.x;
+            if (_ALDecalMirroredUVMode == 2 && poiMesh.isRightHand) tilingClip = 0;
+            if ((_ALDecalMirroredUVMode == 3 || _ALDecalMirroredUVMode == 4) && !poiMesh.isRightHand) tilingClip = 0;
+
+            float2 decalCenter = _ALDecalPosition + centerOffset;
+            float theta = radians(_ALDecalRotation + POI_TIME.z * _ALDecalRotationSpeed);
+            float cs = cos(theta);
+            float sn = sin(theta);
+            uv = float2((uv.x - decalCenter.x) * cs - (uv.y - decalCenter.y) * sn + decalCenter.x, (uv.x - decalCenter.x) * sn + (uv.y - decalCenter.y) * cs + decalCenter.y);
+            uv = remap(uv, float2(0, 0) - _ALDecalScale / 2 + _ALDecalPosition + scaleOffset.xz, _ALDecalScale / 2 + _ALDecalPosition + scaleOffset.yw, float2(0, 0), float2(1, 1));
+            // Tiling Clip
+            if (_ALDecalTiled < 0.5)
+            {
+                if (uv.x > 1 || uv.y > 1 || uv.x < 0 || uv.y < 0)
+                {
+                    tilingClip = 0;
+                }
+            }
+            uv = tilingClip > 0 ? frac(uv) : uv;
+
+            // Mask
+            half3 audioLinkMask = 1.0;
+
+            // UV
+            float2 aluv = uv;
+            half maskY = aluv.y;
+            half maskX = aluv.x;
+            if (_ALDecalUVMode == 1)
+            {
+                float2 uvdir = uv * 2 - 1;
+                aluv.x = frac(atan2(uvdir.y, uvdir.x) * UNITY_INV_TWO_PI);
+                aluv.y = length(uvdir);
+                maskY = remap(aluv.y, _ALDecaldCircleDimensions.x, _ALDecaldCircleDimensions.y, 0, 1);
+                maskX = remap(aluv.x, _ALDecaldCircleDimensions.z, _ALDecaldCircleDimensions.w, 0, 1);
+            }
+
+
+            half maskVolume = _ALDecalVolumeStep != 0.0 ? floor(maskY * _ALDecalVolumeStep + 1e-4) / _ALDecalVolumeStep : maskY;
+            half maskBand = _ALDecalBandStep != 0.0 ? floor(maskX * _ALDecalBandStep + 1e-4) / _ALDecalBandStep : maskX;
+
+            // Mirror band axis (0->1->0 or 1->0->1)
+            if (_ALDecalMirrorBand == 1)
+            {
+                maskBand = 1.0 - abs(maskBand * 2.0 - 1.0);
+            }
+            else if (_ALDecalMirrorBand == 2)
+            {
+                maskBand = abs(maskBand * 2.0 - 1.0);
+            }
+
+            // Copy
+            audioLinkMask.r = maskVolume;
+            audioLinkMask.g = maskBand;
+
+            // Clip
+            audioLinkMask.b = maskVolume < _ALDecalVolumeClipMin || maskVolume > _ALDecalVolumeClipMax ? 0.0 : audioLinkMask.b;
+            audioLinkMask.b = maskBand < _ALDecalBandClipMin || maskBand > _ALDecalBandClipMax ? 0.0 : audioLinkMask.b;
+
+            // Shape Clip (analytical filtered pulse for proper AA on all edges)
+            if (_ALDecalShapeClip >= 0.5)
+            {
+                if (_ALDecalVolumeStep != 0.0)
+                {
+                    float vw = _ALDecalShapeClipVolumeWidth;
+                    float gw = 1.0 - vw;
+                    // Center the bar in each step so the gap straddles the step boundary
+                    float volInput = maskY * _ALDecalVolumeStep - gw * 0.5;
+                    float vdx = max(fwidth(volInput), 0.0001);
+                    float vx0 = volInput - vdx * 0.5;
+                    float vx1 = volInput + vdx * 0.5;
+                    float vI0 = floor(vx0) * vw + min(frac(vx0), vw);
+                    float vI1 = floor(vx1) * vw + min(frac(vx1), vw);
+                    audioLinkMask.b *= saturate((vI1 - vI0) / vdx);
+                }
+
+                float bandwidth = _ALDecalUVMode == 1 ? _ALDecalShapeClipBandWidth / aluv.y : _ALDecalShapeClipBandWidth;
+                float bandth = 1.0 - bandwidth;
+                if (_ALDecalBandStep != 0.0)
+                {
+                    float bandInput = maskX * _ALDecalBandStep + bandth * 0.5;
+                    float bdx = max(fwidth(bandInput), 0.0001);
+                    float bx0 = bandInput - bdx * 0.5;
+                    float bx1 = bandInput + bdx * 0.5;
+                    float bI0 = floor(bx0) * bandth + min(frac(bx0), bandth);
+                    float bI1 = floor(bx1) * bandth + min(frac(bx1), bandth);
+                    audioLinkMask.b *= 1.0 - saturate((bI1 - bI0) / bdx);
+                }
+            }
+
+            // Bilateral Mode
+            float bilateralVolume = maskVolume;
+            if (_ALDecalBilateral >= 0.5)
+            {
+                bilateralVolume = abs(maskVolume - 0.5) * 2.0;
+            }
+
+            // AudioLink
+            float bandScale = 4.0 * _ALDecalBandRange;
+            float alBandIndex = min(floor(audioLinkMask.g * bandScale), 3.0);
+            float2 audioLinkUV = float2(frac(audioLinkMask.g * bandScale), (4.5 + alBandIndex) / 64.0);
+
+            float audioVal;
+            if (_ALDecalDebug >= 0.5)
+            {
+                float bandPos = maskBand;
+                float bandHash = frac(sin(floor(bandPos * 128.0) * 43.7585) * 2847.15);
+                half bassWeight = saturate(1.0 - bandPos * 2.0);
+                half trebWeight = saturate(bandPos * 2.0 - 1.0);
+                half midWeight = 1.0 - bassWeight - trebWeight;
+                float speed = lerp(1.5, 6.0, bandPos);
+                float t = POI_TIME.y;
+                half pulse = saturate(sin(t * speed + bandHash * 6.283) * 0.7 + 0.3);
+                pulse *= saturate(sin(t * speed * 0.37 + bandHash * 3.14) + 0.5);
+                float beat = pow(saturate(sin(t * 1.8 + bandHash * 2.0) * 0.5 + 0.5), 2.0);
+                audioVal = lerp(pulse, beat, bassWeight) * lerp(0.8, 0.3, trebWeight);
+                audioVal *= _ALDecalVolume * lerp(_ALDecalBaseBoost, _ALDecalTrebleBoost, audioLinkMask.g);
+            }
+            else
+            {
+                float4 audioTexture = _AudioTexture.Sample(sampler_linear_clamp, audioLinkUV);
+                audioVal = audioTexture.b * _ALDecalVolume * lerp(_ALDecalBaseBoost, _ALDecalTrebleBoost, audioLinkMask.g);
+            }
+            audioVal = tanh(audioVal);
+
+            float audioLinkValue;
+            if (_ALDecalLineWidth < 1.0 && _ALDecalVolumeStep != 0.0)
+            {
+                // Step percentage mode: lineWidth = percentage of total steps shown from top down (min 1 step)
+                float stepSize = 1.0 / _ALDecalVolumeStep;
+                float threshold = audioVal - max(_ALDecalLineWidth, stepSize);
+                audioLinkValue = (audioVal > bilateralVolume && bilateralVolume >= threshold) ? 1.0 : 0.0;
+            }
+            else if (_ALDecalLineWidth < 1.0)
+            {
+                // Line mode (no steps active)
+                float pixelSize = max(length(float2(ddx(bilateralVolume), ddy(bilateralVolume))), 0.0001);
+                float thickness = _ALDecalLineWidth * 64.0;
+                float marginUV = (thickness + 1.0) * pixelSize;
+                float remappedAudio = lerp(marginUV, 1.0 - marginUV, audioVal);
+                float d = abs(remappedAudio - bilateralVolume);
+                float pixelDist = d / pixelSize;
+                audioLinkValue = smoothstep(thickness + 1.0, thickness, pixelDist);
+            }
+            else
+            {
+                audioLinkValue = audioVal > bilateralVolume ? 1.0 : 0.0;
+            }
+            audioLinkValue = saturate(audioLinkValue) * audioLinkMask.b * tilingClip;
+            //clip(audioLinkValue - .5);
+            audioLinkValue *= colorAndMask.a;
+
+            if (_ALDecalDebug < 0.5 && !poiMods.audioLinkAvailable)
+            {
+                audioLinkValue = 0;
+            }
+
+            // Debug: draw perimeter border
+            float debugBorder = 0;
+            if (_ALDecalDebug >= 0.5 && tilingClip > 0)
+            {
+                float bw = _ALDecalDebugBorderWidth;
+                if (uv.x < bw || uv.x > 1 - bw || uv.y < bw || uv.y > 1 - bw)
+                {
+                    debugBorder = 1;
+                }
+            }
+
+            half3 alColorChord = float3(0, 0, 0);
+            if (_ALDecalColorMode == 1)
+            {
+                if (_ALDecalDebug >= 0.5)
+                {
+                    alColorChord = float3(
+                        saturate(sin(POI_TIME.y * 2.1 + maskBand * 13.0) * 0.5 + 0.5),
+                        saturate(sin(POI_TIME.y * 3.3 + maskBand * 7.7) * 0.5 + 0.5),
+                        saturate(sin(POI_TIME.y * 4.7 + maskBand * 19.1) * 0.5 + 0.5)
+                    );
+                }
+                else
+                {
+                    alColorChord = _AudioTexture.Sample(sampler_linear_clamp, float2(maskBand, 24.5 / 64.0)).rgb;
+                }
+            }
+            half volumeColorSrc = audioLinkMask.g;
+            if (_ALDecalVolumeColorSource == 1) volumeColorSrc = bilateralVolume;
+            if (_ALDecalVolumeColorSource == 2) volumeColorSrc = audioVal;
+
+            half3 volumeColor = float3(0, 0, 0);
+            half3 emissionColor = float3(0, 0, 0);
+            if (_ALDecalColorMode == 1)
+            {
+                volumeColor = alColorChord;
+                emissionColor = alColorChord * _ALDecalColorChordEmission;
+            }
+            else
+            {
+                half3 lowColor = poiThemeColor(poiMods, _ALDecalVolumeColorLow.rgb, _ALDecalVolumeColorLowThemeIndex);
+                half3 midColor = poiThemeColor(poiMods, _ALDecalVolumeColorMid.rgb, _ALDecalVolumeColorMidThemeIndex);
+                half3 highColor = poiThemeColor(poiMods, _ALDecalVolumeColorHigh.rgb, _ALDecalVolumeColorHighThemeIndex);
+
+                volumeColor = lerp(lowColor, midColor, saturate(volumeColorSrc * 2));
+                volumeColor = lerp(volumeColor, highColor, saturate(volumeColorSrc * 2 - 1));
+
+                emissionColor = lerp(lowColor * _ALDecalLowEmission, midColor * _ALDecalMidEmission, saturate(volumeColorSrc * 2));
+                emissionColor = lerp(emissionColor, highColor * _ALDecalHighEmission, saturate(volumeColorSrc * 2 - 1));
+            }
+            
+            //poiFragData.baseColor = lerp(poiFragData.baseColor, volumeColor, audioLinkValue);
+            half3 alColor = volumeColor * colorAndMask.rgb;
+            half alCoverage = saturate(_ALDecalBlendAlpha * audioLinkValue);
+
+            // --- Video Effects screen look (shared poiApplyScreenEffect helper) ---
+            bool alScreenActive = false;
+            half3 alScreenEmission = 0;
+            #if defined(POI_VIDEO_EFFECTS) && (defined(POI_PASS_BASE) || defined(POI_PASS_ADD) || defined(POI_PASS_META))
+            if (_ALDecalUseVideoEffects >= 0.5 && _VideoEffectsEnable >= 0.5)
+            {
+                PoiScreenEffect se;
+                se.type = _VideoType;
+                se.backlight = _VideoBacklight;
+                se.contrast = _VideoContrast;
+                se.saturation = _VideoSaturation;
+                se.resolution = _VideoResolution;
+                se.crtRefreshRate = _VideoCRTRefreshRate;
+                se.crtPixelEnergizedTime = _VideoCRTPixelEnergizedTime;
+
+                half3 pixels = 1.0h;
+                #if defined(PROP_VIDEOPIXELTEXTURE) || !defined(OPTIMIZER_ENABLED)
+                    pixels = POI2D_SAMPLER(_VideoPixelTexture, _MainTex, poiUV(poiMesh.uv[_VideoPixelTextureUV], _VideoPixelTexture_ST) * se.resolution);
+                #endif
+                float2 screenUV = poiUV(poiMesh.uv[_MainTexUV], _MainTex_ST) + POI_TIME.x * _MainTexPan;
+
+                half4 screenColor = float4(alColor, 1);
+                poiApplyScreenEffect(screenColor, se, pixels, screenUV, poiCam, poiMesh);
+                alColor = screenColor.rgb;
+                alScreenActive = true;
+                alScreenEmission = _VideoEmissionEnabled ? screenColor.rgb : (float3)0;
+            }
+            #endif
+
+            // A screen occludes the emission already on the surface (incl. the main Video Effects glow)
+            // so the spectrum reads as a solid screen; otherwise keep the original additive emission.
+            if (alScreenActive)
+                poiFragData.emission = lerp(poiFragData.emission, alScreenEmission, alCoverage);
+            else
+                poiFragData.emission += emissionColor * audioLinkValue;
+
+            poiFragData.baseColor.rgb = lerp(poiFragData.baseColor, customBlend(poiFragData.baseColor, alColor, _ALDecalBlendType), alCoverage);
+            if (debugBorder)
+            {
+                poiFragData.baseColor.rgb = float3(0, 1, 0);
+                poiFragData.emission += float3(0, 1, 0);
+            }
+            poiFragData.alpha = lerp(poiFragData.alpha, poiFragData.alpha * audioLinkValue, _ALDecalControlsAlpha);
+
+        }
+    #endif
+#endif
+//endex
+#T#PoiALDecalsFunctionCalls
+//ifex _EnableALDecal==0
+#ifdef POI_AUDIOLINK
+    #if defined(POI_AL_DECAL) && (defined(POI_PASS_BASE) || defined(POI_PASS_ADD) || defined(POI_PASS_META))
+        ApplyAudioLinkDecal(poiMesh, poiCam, poiFragData, poiMods);
+        #K#AUDIOLINK_DECAL_HOOK
+    #endif
+#endif
+//endex

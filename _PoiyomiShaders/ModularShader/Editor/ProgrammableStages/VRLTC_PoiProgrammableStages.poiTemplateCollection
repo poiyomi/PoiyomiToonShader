@@ -1,0 +1,14 @@
+
+#T#PragmaVertexPrePass
+#pragma vertex vertPrePass
+#T#PragmaHull
+#pragma hull hull
+#T#PragmaDomain
+#pragma domain domain
+#T#PragmaVertex
+#pragma vertex vert
+#T#PragmaGeometry
+#pragma geometry geom
+#T#PragmaFragment
+#pragma fragment frag
+

@@ -1,0 +1,545 @@
+
+#T#PoiMainProperties
+//Main-main
+_Color ("Color & Alpha--{reference_property:_ColorThemeIndex}", Color) = (1, 1, 1, 1)
+[ThryHideInInspector][ThryWideEnum(Off, 0, Theme Color 0, 1, Theme Color 1, 2, Theme Color 2, 3, Theme Color 3, 4, ColorChord 0, 5, ColorChord 1, 6, ColorChord 2, 7, ColorChord 3, 8, AL Theme 0, 9, AL Theme 1, 10, AL Theme 2, 11, AL Theme 3, 12)] _ColorThemeIndex ("Color Theme Index", Int) = 0
+[sRGBWarning(true)]_MainTex ("Texture--{reference_properties:[_MainTexPan, _MainTexUV, _MainPixelMode, _MainTexStochastic, _MainIgnoreTexAlpha]}", 2D) = "white" { }
+[ThryHideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7, Matcap, 9, Screen Space, 10)] _MainTexUV ("UV", Int) = 0
+[ThryHideInInspector][Vector2]_MainTexPan ("Panning", Vector) = (0, 0, 0, 0)
+[ThryHideInInspector][ToggleUI]_MainPixelMode ("Pixel Mode", Float) = 0
+[ThryHideInInspector][ToggleUI]_MainTexStochastic ("Stochastic Sampling", Float) = 0
+[ThryHideInInspector][ToggleUI]_MainIgnoreTexAlpha ("Ignore Alpha", Float) = 0
+
+[Normal]_BumpMap ("Normal Map--{reference_property:_BumpScale, reference_properties:[_BumpMapPan, _BumpMapUV, _BumpMapStochastic]}", 2D) = "bump" { }
+[ThryHideInInspector]_BumpScale ("Intensity", Range(0, 10)) = 1
+[ThryHideInInspector][Vector2]_BumpMapPan ("Panning", Vector) = (0, 0, 0, 0)
+[ThryHideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7, Matcap, 9, Screen Space, 10)] _BumpMapUV ("UV", Int) = 0
+[ThryHideInInspector][ToggleUI]_BumpMapStochastic ("Stochastic Sampling", Float) = 0
+
+[sRGBWarning]_AlphaMask ("Alpha Map--{reference_properties:[_AlphaMaskPan, _AlphaMaskUV, _AlphaMaskInvert, _MainAlphaMaskMode, _AlphaMaskBlendStrength, _AlphaMaskValue, _AlphaMaskR, _AlphaMaskG, _AlphaMaskB, _AlphaMaskA, _AlphaMaskChannelBlendMode, _AlphaMaskMinMax, _AlphaMaskGamma], alts:[_AlphaMap]}", 2D) = "white" { }
+[ThryHideInInspector][Vector2]_AlphaMaskPan ("Panning", Vector) = (0, 0, 0, 0)
+[ThryHideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7, Matcap, 9, Screen Space, 10)] _AlphaMaskUV ("UV", Int) = 0
+[ThryHideInInspector][ThryWideEnum(Off, 0, Replace, 1, Multiply, 2, Add, 3, Subtract, 4)]_MainAlphaMaskMode ("Blend Mode", Int) = 2
+[ThryHideInInspector]_AlphaMaskR ("R Channel", Range(0, 1)) = 1
+[ThryHideInInspector]_AlphaMaskG ("G Channel", Range(0, 1)) = 0
+[ThryHideInInspector]_AlphaMaskB ("B Channel", Range(0, 1)) = 0
+[ThryHideInInspector]_AlphaMaskA ("A Channel", Range(0, 1)) = 0
+[ThryHideInInspector][ThryWideEnum(Replace, 0, Subtract, 1, Multiply, 2, Divide, 3, Min, 4, Max, 5, Average, 6, Add, 7)]_AlphaMaskChannelBlendMode ("Channel Blend", Int) = 2
+[ThryHideInInspector][MultiSlider]_AlphaMaskMinMax ("Min Max", Vector) = (0, 1, 0, 1)
+[ThryHideInInspector]_AlphaMaskGamma ("Gamma", Range(0.01, 5)) = 1
+[ThryHideInInspector]_AlphaMaskBlendStrength ("Blend Strength", Float) = 1
+[ThryHideInInspector]_AlphaMaskValue ("Blend Offset", Float) = 0
+[ThryHideInInspector][ToggleUI]_AlphaMaskInvert ("Invert", Float) = 0
+
+_Cutoff ("Alpha Cutoff", Range(0, 1.001)) = 0.5
+
+//ifex _MainColorAdjustToggle==0
+[HideInInspector] m_start_ColorAdjust (" Color Adjust--{reference_property:_MainColorAdjustToggle,button_help:{text:Tutorial,action:{type:URL,data:https://www.poiyomi.com/color-and-normals/color-adjust},hover:Documentation}}", Float) = 0
+[HideInInspector][ThryToggle(COLOR_GRADING_HDR)] _MainColorAdjustToggle ("Adjust Colors", Float) = 0
+[PoiBakeColorAdjust] _BakeColorAdjustButton ("Bake Color Adjust", Float) = 0
+[sRGBWarning][ThryRGBAPacker(R Hue Mask, G Brightness Mask, B Saturation Mask,A Gamma , linear, false)]_MainColorAdjustTexture ("Mask (Expand)--{reference_properties:[_MainColorAdjustTexturePan, _MainColorAdjustTextureUV]}", 2D) = "white" { }
+[ThryHideInInspector][Vector2]_MainColorAdjustTexturePan ("Panning", Vector) = (0, 0, 0, 0)
+[ThryHideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7, Matcap, 9, Screen Space, 10)] _MainColorAdjustTextureUV ("UV", Int) = 0
+_Saturation ("Saturation", Range(-1, 10)) = 0
+_MainChromatize ("Chromatize", Range(-1, 10)) = 0
+_MainBrightness ("Brightness", Range(-1, 2)) = 0
+_MainGamma ("Gamma", Range(0.01, 5)) = 1
+
+[HideInInspector] s_start_MainTint ("Tint--{persistent_expand:true,default_expand:true}", Float) = 1
+_MainTintColor ("Tint Color", Color) = (1, 1, 1, 0)
+[sRGBWarning(true)]_MainTintTexture ("Tint Texture--{reference_properties:[_MainTintTexturePan, _MainTintTextureUV]}", 2D) = "white" { }
+[ThryHideInInspector][Vector2]_MainTintTexturePan ("Panning", Vector) = (0, 0, 0, 0)
+[ThryHideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7, Matcap, 9, Screen Space, 10)] _MainTintTextureUV ("UV", Int) = 0
+[HideInInspector] s_end_MainTint ("Tint", Float) = 0
+
+[HideInInspector] s_start_MainHueShift ("Hue Shift--{reference_property:_MainHueShiftToggle,persistent_expand:true,default_expand:true}", Float) = 1
+[HideInInspector][ThryToggleUI(true)] _MainHueShiftToggle ("<size=13><b>  Hue Shift</b></size>", Float) = 0
+[ThryWideEnum(OKLab, 0, HSV, 1)] _MainHueShiftColorSpace ("Color Space", Int) = 0
+[ThryWideEnum(Hue Select, 0, Hue Shift, 1)] _MainHueShiftSelectOrShift ("Select or Shift", Int) = 1
+[ToggleUI]_MainHueShiftReplace ("Hue Replace?", Float) = 1
+_MainHueShift ("Hue Shift", Range(0, 1)) = 0
+_MainHueShiftSpeed ("Hue Shift Speed", Float) = 0
+
+[HideInInspector] ss_start_MainHueShiftAL ("Hue Shift Audio Link ♫--{reference_property:_MainHueALCTEnabled,persistent_expand:true,default_expand:false, condition_showS:(_EnableAudioLink==1)}", Float) = 0
+[HideInInspector][ThryToggleUI(true)]_MainHueALCTEnabled ("Hue Shift Audio Link", Float) = 0
+[Enum(Bass, 0, Low Mid, 1, High Mid, 2, Treble, 3, Volume, 4)]_MainALHueShiftBand ("Band", Int) = 0
+[ThryWideEnum(Motion increases as intensity of band increases, 0, Above but Smooth, 1, Motion moves back and forth as a function of intensity, 2, Above but Smoooth, 3, Fixed speed increase when the band is dark Stationary when light, 4, Above but Smooooth, 5, Fixed speed increase when the band is dark Fixed speed decrease when light, 6, Above but Smoooooth, 7)]_MainALHueShiftCTIndex ("Motion Type", Int) = 0
+_MainHueALMotionSpeed ("Motion Speed", Float) = 1
+[HideInInspector] ss_end_MainHueShiftAL ("Audio Link", Float) = 0
+[HideInInspector] s_end_MainHueShift ("Name Motion", Float) = 0
+
+[HideInInspector] s_start_ColorAdjustColorGrading ("Color Grading--{reference_property:_ColorGradingToggle, persistent_expand:true}", Float) = 0
+[ThryHideInInspector][ToggleUI] _ColorGradingToggle ("Color Grading", Float) = 0
+[TextureKeyword][NoScaleOffset][Gradient] _MainGradationTex ("Gradation Map", 2D) = "white" { }
+[Enum(None, 0, R, 1, G, 2, B, 3, A, 4)] _MainGradationMaskChannel ("Gradation Mask", Float) = 0
+_MainGradationStrength ("Gradation Strength", Range(0, 1)) = 0
+[HideInInspector] s_end_ColorAdjustColorGrading ("Color Grading", Float) = 0
+
+[HideInInspector] s_start_MainHueShiftGlobalMask ("Global Mask--{persistent_expand:true}", Float) = 0
+[ThryWideEnum(Off, 0, 1R, 1, 1G, 2, 1B, 3, 1A, 4, 2R, 5, 2G, 6, 2B, 7, 2A, 8, 3R, 9, 3G, 10, 3B, 11, 3A, 12, 4R, 13, 4G, 14, 4B, 15, 4A, 16)] _MainHueGlobalMask ("Hue--{reference_property:_MainHueGlobalMaskBlendType}", Int) = 0
+[ThryHideInInspector][ThryWideEnum(Add, 7, Subtract, 1, Multiply, 2, Divide, 3, Min, 4, Max, 5, Average, 6, Replace, 0)] _MainHueGlobalMaskBlendType ("Blending", Int) = 2
+[ThryWideEnum(Off, 0, 1R, 1, 1G, 2, 1B, 3, 1A, 4, 2R, 5, 2G, 6, 2B, 7, 2A, 8, 3R, 9, 3G, 10, 3B, 11, 3A, 12, 4R, 13, 4G, 14, 4B, 15, 4A, 16)] _MainSaturationGlobalMask ("Saturation--{reference_property:_MainSaturationGlobalMaskBlendType}", Int) = 0
+[ThryHideInInspector][ThryWideEnum(Add, 7, Subtract, 1, Multiply, 2, Divide, 3, Min, 4, Max, 5, Average, 6, Replace, 0)] _MainSaturationGlobalMaskBlendType ("Blending", Int) = 2
+[ThryWideEnum(Off, 0, 1R, 1, 1G, 2, 1B, 3, 1A, 4, 2R, 5, 2G, 6, 2B, 7, 2A, 8, 3R, 9, 3G, 10, 3B, 11, 3A, 12, 4R, 13, 4G, 14, 4B, 15, 4A, 16)] _MainBrightnessGlobalMask ("Brightness--{reference_property:_MainBrightnessGlobalMaskBlendType}", Int) = 0
+[ThryHideInInspector][ThryWideEnum(Add, 7, Subtract, 1, Multiply, 2, Divide, 3, Min, 4, Max, 5, Average, 6, Replace, 0)] _MainBrightnessGlobalMaskBlendType ("Blending", Int) = 2
+[ThryWideEnum(Off, 0, 1R, 1, 1G, 2, 1B, 3, 1A, 4, 2R, 5, 2G, 6, 2B, 7, 2A, 8, 3R, 9, 3G, 10, 3B, 11, 3A, 12, 4R, 13, 4G, 14, 4B, 15, 4A, 16)] _MainGammaGlobalMask ("Gamma--{reference_property:_MainGammaGlobalMaskBlendType}", Int) = 0
+[ThryHideInInspector][ThryWideEnum(Add, 7, Subtract, 1, Multiply, 2, Divide, 3, Min, 4, Max, 5, Average, 6, Replace, 0)] _MainGammaGlobalMaskBlendType ("Blending", Int) = 2
+[HideInInspector] s_end_MainHueShiftGlobalMask ("Global Mask", Float) = 0
+[HideInInspector] m_end_ColorAdjust ("Color Adjust", Float) = 0
+//endex
+
+//ifex _UseBump2ndMap==0
+[HideInInspector] m_start_Bump2ndMap (" Normal Map 2--{reference_property:_UseBump2ndMap,button_help:{text:Tutorial,action:{type:URL,data:https://www.poiyomi.com/color-and-normals/normal-map-2},hover:Documentation}}", Float) = 0
+[HideInInspector][ThryToggle(POI_BUMP2NDMAP)]_UseBump2ndMap ("Enable", Int) = 0
+[Normal]_Bump2ndMap ("Normal Map--{reference_property:_Bump2ndScale, reference_properties:[_Bump2ndMapPan, _Bump2ndMapUV, _Bump2ndMapStochastic]}", 2D) = "bump" { }
+[ThryHideInInspector]_Bump2ndScale ("Intensity", Range(-10, 10)) = 1
+[ThryHideInInspector][Vector2]_Bump2ndMapPan ("Panning", Vector) = (0, 0, 0, 0)
+[ThryHideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7, Matcap, 9, Screen Space, 10)] _Bump2ndMapUV ("UV", Int) = 0
+[ThryHideInInspector][ToggleUI]_Bump2ndMapStochastic ("Stochastic Sampling", Float) = 0
+[sRGBWarning]_Bump2ndScaleMask ("Mask--{reference_properties:[_Bump2ndScaleMaskPan, _Bump2ndScaleMaskUV]}", 2D) = "white" { }
+[ThryHideInInspector][Vector2]_Bump2ndScaleMaskPan ("Panning", Vector) = (0, 0, 0, 0)
+[ThryHideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7, Matcap, 9, Screen Space, 10)] _Bump2ndScaleMaskUV ("UV", Int) = 0
+[ThryWideEnum(Off, 0, 1R, 1, 1G, 2, 1B, 3, 1A, 4, 2R, 5, 2G, 6, 2B, 7, 2A, 8, 3R, 9, 3G, 10, 3B, 11, 3A, 12, 4R, 13, 4G, 14, 4B, 15, 4A, 16)] _Bump2ndScaleMaskGlobalMask ("Global Mask--{reference_property:_Bump2ndScaleMaskGlobalMaskBlendType}", Int) = 0
+[ThryHideInInspector][ThryWideEnum(Add, 7, Subtract, 1, Multiply, 2, Divide, 3, Min, 4, Max, 5, Average, 6, Replace, 0)] _Bump2ndScaleMaskGlobalMaskBlendType ("Blending", Int) = 2
+[HideInInspector] m_end_Bump2ndMap ("", Float) = 0
+//endex
+
+#T#PoiMainKeywords
+//ifex _UseBump2ndMap==0
+#pragma shader_feature_local POI_BUMP2NDMAP
+//endex
+//ifex _MainColorAdjustToggle==0
+#pragma shader_feature_fragment COLOR_GRADING_HDR
+#pragma shader_feature_local_fragment PROP_MAINGRADATIONTEX
+//endex
+
+#T#PoiMainVariablesExposed
+half4 _Color;
+float _ColorThemeIndex;
+float _MainPixelMode;
+float4 _MainTex_ST;
+float4 _MainTex_TexelSize;
+float2 _MainTexPan;
+float _MainTexUV;
+float _MainTexStochastic;
+half _MainIgnoreTexAlpha;
+float4 _BumpMap_ST;
+float2 _BumpMapPan;
+float _BumpMapUV;
+float _BumpScale;
+float _BumpMapStochastic;
+//ifex _UseBump2ndMap==0
+#ifdef POI_BUMP2NDMAP
+	float4 _Bump2ndMap_ST;
+	float2 _Bump2ndMapPan;
+	float _Bump2ndMapUV;
+	float _Bump2ndScale;
+	float _Bump2ndMapStochastic;
+	float4 _Bump2ndScaleMask_ST;
+	float2 _Bump2ndScaleMaskPan;
+	float _Bump2ndScaleMaskUV;
+	float _Bump2ndScaleMaskGlobalMask;
+	float _Bump2ndScaleMaskGlobalMaskBlendType;
+#endif
+//endex
+float4 _AlphaMask_ST;
+float2 _AlphaMaskPan;
+float _AlphaMaskUV;
+half _AlphaMaskInvert;
+float _MainAlphaMaskMode;
+half _AlphaMaskR;
+half _AlphaMaskG;
+half _AlphaMaskB;
+half _AlphaMaskA;
+float _AlphaMaskChannelBlendMode;
+half2 _AlphaMaskMinMax;
+half _AlphaMaskGamma;
+half _AlphaMaskBlendStrength;
+half _AlphaMaskValue;
+float _Cutoff;
+//ifex _MainColorAdjustToggle==0
+#ifdef COLOR_GRADING_HDR
+	half _MainColorAdjustToggle;
+	float4 _MainColorAdjustTexture_ST;
+	float2 _MainColorAdjustTexturePan;
+	float _MainColorAdjustTextureUV;
+	half _MainHueShiftColorSpace;
+	float _MainHueShiftSelectOrShift;
+	float _MainHueShiftToggle;
+	float _MainHueShiftReplace;
+	float _MainHueShift;
+	float _MainHueShiftSpeed;
+	half _Saturation;
+	float _MainChromatize;
+	half4 _MainTintColor;
+	float4 _MainTintTexture_ST;
+	float2 _MainTintTexturePan;
+	float _MainTintTextureUV;
+	half _MainBrightness;
+	float _MainGamma;
+
+	float _MainHueALCTEnabled;
+	float _MainALHueShiftBand;
+	float _MainALHueShiftCTIndex;
+	float _MainHueALMotionSpeed;
+
+	half _MainHueGlobalMask;
+	float _MainHueGlobalMaskBlendType;
+	half _MainSaturationGlobalMask;
+	float _MainSaturationGlobalMaskBlendType;
+	half _MainBrightnessGlobalMask;
+	float _MainBrightnessGlobalMaskBlendType;
+	half _MainGammaGlobalMask;
+	float _MainGammaGlobalMaskBlendType;
+	half _ColorGradingToggle;
+	float _MainGradationStrength;
+	float _MainGradationMaskChannel;
+#endif
+//endex
+
+#T#PoiMainVariables
+/*poi-section-shared-begin*/
+// Depth texture handling from d4rkpl4y3r
+
+#if defined(UNITY_STEREO_INSTANCING_ENABLED) || defined(UNITY_STEREO_MULTIVIEW_ENABLED)
+	#define STEREO_UV(uv) float3(uv, unity_StereoEyeIndex)
+#else
+	#define STEREO_UV(uv) uv
+#endif
+
+#if POI_PIPE == POI_BIRP
+	#if defined(UNITY_STEREO_INSTANCING_ENABLED) || defined(UNITY_STEREO_MULTIVIEW_ENABLED)
+		Texture2DArray<float> _CameraDepthTexture;
+	#else
+		Texture2D<float> _CameraDepthTexture;
+	#endif
+#endif
+
+#if POI_PIPE == POI_URP
+	TEXTURE2D_X_FLOAT(_CameraDepthTexture);
+	float4 _CameraDepthTexture_TexelSize;
+#endif
+
+float SampleScreenDepth(float2 uv)
+{
+	uv.y = _ProjectionParams.x * 0.5 + 0.5 - uv.y * _ProjectionParams.x;
+	return _CameraDepthTexture.SampleLevel(sampler_point_clamp, STEREO_UV(uv), 0).r;
+}
+
+bool DepthTextureExists()
+{
+	float3 dTexDim = 0;
+	#if defined(UNITY_STEREO_INSTANCING_ENABLED) || defined(UNITY_STEREO_MULTIVIEW_ENABLED)
+		_CameraDepthTexture.GetDimensions(dTexDim.x, dTexDim.y, dTexDim.z);
+	#else
+		_CameraDepthTexture.GetDimensions(dTexDim.x, dTexDim.y);
+	#endif
+	return dTexDim.x > 16;
+}
+// End Depth texture handling
+
+/*poi-section-shared-end*/
+/*poi-section-fallback:
+#define sampler_MainTex sampler_linear_repeat
+*/
+UNITY_DECLARE_TEX2D(_MainTex);
+#if defined(PROP_BUMPMAP) || !defined(OPTIMIZER_ENABLED)
+	Texture2D _BumpMap;
+#endif
+//ifex _UseBump2ndMap==0
+#ifdef POI_BUMP2NDMAP
+	#if defined(PROP_BUMP2NDMAP) || !defined(OPTIMIZER_ENABLED)
+		Texture2D _Bump2ndMap;
+	#endif
+	#if defined(PROP_BUMP2NDSCALEMASK) || !defined(OPTIMIZER_ENABLED)
+		Texture2D _Bump2ndScaleMask;
+	#endif
+#endif
+//endex
+#if defined(PROP_ALPHAMASK) || !defined(OPTIMIZER_ENABLED)
+	Texture2D _AlphaMask;
+#endif
+//ifex _MainColorAdjustToggle==0
+#ifdef COLOR_GRADING_HDR
+	#if defined(PROP_MAINCOLORADJUSTTEXTURE) || !defined(OPTIMIZER_ENABLED)
+		Texture2D _MainColorAdjustTexture;
+	#endif
+	#if defined(PROP_MAINTINTTEXTURE) || !defined(OPTIMIZER_ENABLED)
+		Texture2D _MainTintTexture;
+	#endif
+	#if defined(PROP_MAINGRADATIONTEX)
+		Texture2D _MainGradationTex;
+	#endif
+#endif
+//endex
+
+#T#PoiMainTextureSample
+/*poi-section-fallback:
+float4 mainTexture = 1;
+poiFragData.baseColor = 1;
+*/
+float2 mainUV = poiUV(poiMesh.uv[_MainTexUV].xy, _MainTex_ST);
+
+if (_MainPixelMode >= 0.5)
+{
+	mainUV = sharpSample(_MainTex_TexelSize, mainUV);
+}
+
+float4 mainTexture = POI2D_SAMPLER_PAN_STOCHASTIC(_MainTex, _MainTex, mainUV, _MainTexPan, _MainTexStochastic);
+mainTexture.a = max(mainTexture.a, _MainIgnoreTexAlpha);
+
+#K#MAIN_TEXTURE_HOOK
+
+#T#PoiMainFunctions
+void poiApplyAlphaMask(inout PoiFragData poiFragData, in PoiMesh poiMesh)
+{
+	if (_MainAlphaMaskMode)
+	{
+		half4 alphaMaskTex = 1;
+		#if defined(PROP_ALPHAMASK) || !defined(OPTIMIZER_ENABLED)
+			alphaMaskTex = POI2D_SAMPLER_PAN(_AlphaMask, _MainTex, poiUV(poiMesh.uv[_AlphaMaskUV], _AlphaMask_ST), _AlphaMaskPan.xy);
+		#endif
+		half alphaMask = poiSampleMask(alphaMaskTex, float4(_AlphaMaskR, _AlphaMaskG, _AlphaMaskB, _AlphaMaskA), _AlphaMaskChannelBlendMode, _AlphaMaskInvert, _AlphaMaskMinMax, _AlphaMaskGamma, _AlphaMaskBlendStrength, _AlphaMaskValue);
+		switch ((int)_MainAlphaMaskMode)
+		{
+			case 1: poiFragData.alpha = alphaMask; break;
+			case 2: poiFragData.alpha *= alphaMask; break;
+			case 3: poiFragData.alpha = saturate(poiFragData.alpha + alphaMask); break;
+			case 4: poiFragData.alpha = saturate(poiFragData.alpha - alphaMask); break;
+		}
+	}
+}
+
+void applyMainColor(inout PoiFragData poiFragData, inout PoiMesh poiMesh, inout PoiCam poiCam, inout PoiMods poiMods, inout float4 mainTexture)
+{
+	poiFragData.baseColor = mainTexture.rgb;
+	#if !defined(POI_PASS_BASETWO) && !defined(POI_PASS_ADDTWO)
+		poiFragData.baseColor *= poiThemeColor(poiMods, _Color.rgb, _ColorThemeIndex);
+		poiFragData.alpha = mainTexture.a * _Color.a;
+	#else
+		if(_TwoPassOverrideFirstPassColor == 1)
+		{
+			poiFragData.baseColor *= poiThemeColor(poiMods, _TwoPassColor.rgb, _TwoPassColorThemeIndex);
+			poiFragData.alpha = mainTexture.a * _TwoPassColor.a;
+		}
+		else if(_TwoPassOverrideFirstPassColor == 2)
+		{
+			poiFragData.baseColor *= poiThemeColor(poiMods, _Color.rgb, _ColorThemeIndex);
+			poiFragData.alpha = mainTexture.a * _TwoPassAlphaOverride;
+		}
+		else
+		{
+			poiFragData.baseColor *= poiThemeColor(poiMods, _Color.rgb, _ColorThemeIndex);
+			poiFragData.alpha = mainTexture.a * _Color.a;
+		}
+	#endif
+
+	//ifex _MainColorAdjustToggle==0
+	#ifdef COLOR_GRADING_HDR
+		#if defined(PROP_MAINCOLORADJUSTTEXTURE) || !defined(OPTIMIZER_ENABLED)
+			half4 hueShiftAlpha = POI2D_SAMPLER_PAN(_MainColorAdjustTexture, _MainTex, poiUV(poiMesh.uv[_MainColorAdjustTextureUV], _MainColorAdjustTexture_ST), _MainColorAdjustTexturePan);
+		#else
+			half4 hueShiftAlpha = 1;
+		#endif
+
+		if (_MainHueGlobalMask > 0)
+		{
+			hueShiftAlpha.r = maskBlend(hueShiftAlpha.r, poiMods.globalMask[_MainHueGlobalMask - 1], _MainHueGlobalMaskBlendType);
+		}
+		if (_MainSaturationGlobalMask > 0)
+		{
+			hueShiftAlpha.b = maskBlend(hueShiftAlpha.b, poiMods.globalMask[_MainSaturationGlobalMask - 1], _MainSaturationGlobalMaskBlendType);
+		}
+		if (_MainBrightnessGlobalMask > 0)
+		{
+			hueShiftAlpha.g = maskBlend(hueShiftAlpha.g, poiMods.globalMask[_MainBrightnessGlobalMask - 1], _MainBrightnessGlobalMaskBlendType);
+		}
+		if (_MainGammaGlobalMask > 0)
+		{
+			hueShiftAlpha.a = maskBlend(hueShiftAlpha.a, poiMods.globalMask[_MainGammaGlobalMask - 1], _MainGammaGlobalMaskBlendType);
+		}
+		
+		if (_MainHueShiftToggle >= 0.5)
+		{
+			float shift = _MainHueShift;
+			#ifdef POI_AUDIOLINK
+				//UNITY_BRANCH
+				if (poiMods.audioLinkAvailable && _MainHueALCTEnabled >= 0.5)
+				{
+					shift += AudioLinkGetChronoTime(_MainALHueShiftCTIndex, _MainALHueShiftBand) * _MainHueALMotionSpeed;
+				}
+			#endif
+			if (_MainHueShiftReplace >= 0.5)
+			{
+				poiFragData.baseColor = lerp(poiFragData.baseColor, hueShift(poiFragData.baseColor, shift + _MainHueShiftSpeed * POI_TIME.x, _MainHueShiftColorSpace, _MainHueShiftSelectOrShift), hueShiftAlpha.r);
+			}
+			else
+			{
+				poiFragData.baseColor = hueShift(poiFragData.baseColor, frac((shift - (1 - hueShiftAlpha.r) + _MainHueShiftSpeed * POI_TIME.x)), _MainHueShiftColorSpace, _MainHueShiftSelectOrShift);
+			}
+		}
+
+
+		if (_MainGradationStrength && _ColorGradingToggle >= 0.5)
+		{
+			#if !defined(UNITY_COLORSPACE_GAMMA)
+				half3 tempColor = OpenLitLinearToSRGB(poiFragData.baseColor);
+			#else
+				half3 tempColor = poiFragData.baseColor;
+			#endif
+			#if defined(PROP_MAINGRADATIONTEX)
+				tempColor.r = POI_SAMPLE_1D_X(_MainGradationTex, sampler_linear_clamp, tempColor.r).r;
+				tempColor.g = POI_SAMPLE_1D_X(_MainGradationTex, sampler_linear_clamp, tempColor.g).g;
+				tempColor.b = POI_SAMPLE_1D_X(_MainGradationTex, sampler_linear_clamp, tempColor.b).b;
+			#else
+				tempColor = float3(1, 1, 1);
+			#endif
+			#if !defined(UNITY_COLORSPACE_GAMMA)
+				tempColor = OpenLitSRGBToLinear(tempColor);
+			#endif
+			half gradationMask = 1;
+			if (_MainGradationMaskChannel > 0)
+			{
+				gradationMask = hueShiftAlpha[_MainGradationMaskChannel - 1];
+			}
+			poiFragData.baseColor = lerp(poiFragData.baseColor, tempColor, _MainGradationStrength * gradationMask);
+		}
+		if (_MainGamma != 1)
+		{
+			float3 gammaAdjustedColor = sign(poiFragData.baseColor) * pow(abs(poiFragData.baseColor), _MainGamma);
+			poiFragData.baseColor = lerp(poiFragData.baseColor, gammaAdjustedColor, hueShiftAlpha.a);
+		}
+		poiFragData.baseColor = lerp(poiFragData.baseColor, dot(poiFragData.baseColor, float3(0.3, 0.59, 0.11)), - (_Saturation) * hueShiftAlpha.b);
+		if (_MainChromatize != 0)
+		{
+			#if !defined(UNITY_COLORSPACE_GAMMA)
+				float3 chromaLinear = poiFragData.baseColor;
+			#else
+				float3 chromaLinear = OpenLitSRGBToLinear(poiFragData.baseColor);
+			#endif
+			chromaLinear = PoiApplyChromatize(chromaLinear, _MainChromatize * hueShiftAlpha.r);
+			
+			#if !defined(UNITY_COLORSPACE_GAMMA)
+				poiFragData.baseColor = saturate(chromaLinear);
+			#else
+				poiFragData.baseColor = saturate(OpenLitLinearToSRGB(chromaLinear));
+			#endif
+		}
+		if (_MainTintColor.a > 0)
+		{
+			#if defined(PROP_MAINTINTTEXTURE) || !defined(OPTIMIZER_ENABLED)
+				half4 mainTintTexSample = POI2D_SAMPLER_PAN(_MainTintTexture, _MainTex, poiUV(poiMesh.uv[_MainTintTextureUV], _MainTintTexture_ST), _MainTintTexturePan);
+			#else
+				half4 mainTintTexSample = 1;
+			#endif
+			half3 finalTintColor = _MainTintColor.rgb * mainTintTexSample.rgb;
+			half finalTintAlpha = _MainTintColor.a * mainTintTexSample.a;
+
+			#if !defined(UNITY_COLORSPACE_GAMMA)
+				half3 tintInputLinear = poiFragData.baseColor;
+				half3 tintColorLinear = finalTintColor;
+			#else
+				half3 tintInputLinear = OpenLitSRGBToLinear(poiFragData.baseColor);
+				half3 tintColorLinear = OpenLitSRGBToLinear(finalTintColor);
+			#endif
+
+			// Get tint color's hue and saturation factor
+			half3 tintOklab = linear_srgb_to_oklab(tintColorLinear);
+			half tintHue = atan2(tintOklab.z, tintOklab.y);
+			half tintMin = min(tintColorLinear.r, min(tintColorLinear.g, tintColorLinear.b));
+			half tintMax = max(tintColorLinear.r, max(tintColorLinear.g, tintColorLinear.b));
+			half tintSatFactor = (tintMax > 0.0001) ? 1.0 - (tintMin / tintMax) : 0;
+
+			// Get input's lightness and chroma
+			float3 inputOklab = linear_srgb_to_oklab(tintInputLinear);
+			float inputL = inputOklab.x;
+			float inputChroma = length(inputOklab.yz);
+
+			// Combine: input's L, tint's H, input's C scaled by tint saturation
+			float newChroma = inputChroma * tintSatFactor;
+			half3 tintedOklab = float3(inputL, newChroma * cos(tintHue), newChroma * sin(tintHue));
+			half3 tintedLinear = saturate(oklab_to_linear_srgb(tintedOklab));
+
+			// Lerp by alpha
+			tintInputLinear = lerp(tintInputLinear, tintedLinear, finalTintAlpha);
+
+			#if !defined(UNITY_COLORSPACE_GAMMA)
+				poiFragData.baseColor = tintInputLinear;
+			#else
+				poiFragData.baseColor = OpenLitLinearToSRGB(tintInputLinear);
+			#endif
+		}
+		poiFragData.baseColor = lerp(poiFragData.baseColor, poiFragData.baseColor * (_MainBrightness + 1), hueShiftAlpha.g);
+	#endif
+	//endex
+
+	poiApplyAlphaMask(poiFragData, poiMesh);
+}
+
+void applyMainNormal(inout PoiMesh poiMesh)
+{
+	#if defined(PROP_BUMPMAP) || !defined(OPTIMIZER_ENABLED)
+		poiMesh.tangentSpaceNormal = PoiUnpackNormalScale(POI2D_SAMPLER_PAN_STOCHASTIC(_BumpMap, _MainTex, poiUV(poiMesh.uv[_BumpMapUV].xy, _BumpMap_ST), _BumpMapPan, _BumpMapStochastic), _BumpScale);
+	#else
+		poiMesh.tangentSpaceNormal = float3(0, 0, 1);
+	#endif
+}
+
+//ifex _UseBump2ndMap==0
+#if defined(POI_BUMP2NDMAP)
+	void applyMainNormal2(inout PoiMesh poiMesh, in PoiMods poiMods)
+	{
+		#if defined(PROP_BUMP2NDMAP) || !defined(OPTIMIZER_ENABLED)
+			#if defined(PROP_BUMP2NDSCALEMASK) || !defined(OPTIMIZER_ENABLED)
+				half bump2ndMask = POI2D_SAMPLER_PAN(_Bump2ndScaleMask, _MainTex, poiUV(poiMesh.uv[_Bump2ndScaleMaskUV].xy, _Bump2ndScaleMask_ST), _Bump2ndScaleMaskPan).r;
+			#else
+				half bump2ndMask = 1;
+			#endif
+			if (_Bump2ndScaleMaskGlobalMask > 0)
+			{
+				bump2ndMask = maskBlend(bump2ndMask, poiMods.globalMask[_Bump2ndScaleMaskGlobalMask - 1], _Bump2ndScaleMaskGlobalMaskBlendType);
+			}
+			float3 bump2ndNormal = PoiUnpackNormalScale(POI2D_SAMPLER_PAN_STOCHASTIC(_Bump2ndMap, _MainTex, poiUV(poiMesh.uv[_Bump2ndMapUV].xy, _Bump2ndMap_ST), _Bump2ndMapPan, _Bump2ndMapStochastic), _Bump2ndScale * bump2ndMask);
+			poiMesh.tangentSpaceNormal = PoiBlendNormal(bump2ndNormal, poiMesh.tangentSpaceNormal);
+		#endif
+	}
+#endif
+//endex
+
+#T#PoiMainImplementation
+applyMainColor(poiFragData, poiMesh, poiCam, poiMods, mainTexture);
+#K#MAIN_COLOR_HOOK
+#K#MAIN_COLOR_MOD
+
+#T#PoiMainNormalImplementation
+/*poi-section-fallback:
+poiMesh.normals[0] = normalize(poiMesh.normals[0]);
+poiMesh.normals[1] = poiMesh.normals[0];
+poiMesh.tangentSpaceNormal = float3(0, 0, 1);
+poiMesh.tangent[1] = poiMesh.tangent[0];
+poiMesh.binormal[1] = poiMesh.binormal[0];
+*/
+applyMainNormal(poiMesh);
+#K#MAIN_NORMAL_HOOK
+
+//ifex _UseBump2ndMap==0
+#if defined(POI_BUMP2NDMAP)
+	applyMainNormal2(poiMesh, poiMods);
+	#K#MAIN_NORMAL2_HOOK
+#endif
+//endex
+
+#K#TANGENT_NORMAL_INJECTION
+
+poiMesh.normals[0] = normalize(poiMesh.normals[0]);
+
+poiMesh.normals[1] = normalize(
+	poiMesh.tangentSpaceNormal.x * poiMesh.tangent[0] +
+	poiMesh.tangentSpaceNormal.y * poiMesh.binormal[0] +
+	poiMesh.tangentSpaceNormal.z * poiMesh.normals[0]
+);
+
+poiMesh.tangent[1] = normalize(cross(poiMesh.binormal[0], -poiMesh.normals[1]));
+poiMesh.binormal[1] = normalize(cross(-poiMesh.normals[1], poiMesh.tangent[0]));
+
+#K#TANGENT_NORMAL_INJECTION_END

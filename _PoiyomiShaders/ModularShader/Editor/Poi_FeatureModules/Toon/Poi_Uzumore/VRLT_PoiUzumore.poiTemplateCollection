@@ -1,0 +1,88 @@
+#T#PoiUzumore
+//ifex _UzumoreCategoryToggle==0
+[HideInInspector] m_start_Uzumore (" View Clip Prevention (Uzumore)--{reference_property:_UzumoreCategoryToggle,button_author:{text:sigmal00,action:{type:URL,data:https://github.com/sigmal00},hover:GitHub}}, button_help:{text:Tutorial,action:{type:URL,data:https://www.poiyomi.com/vertex-options/view-clip-prevention},hover:Documentation}}", Float) = 0
+[HideInInspector][DoNotAnimate][ThryToggle] _UzumoreCategoryToggle (" View Clip Prevention (Uzumore)", Float) = 0
+[ToggleUI] _UzumoreEnabled ("Animation Toggle", Float) = 1
+_UzumoreAmount ("Push Amount (m)", Float) = 0.1
+_UzumoreBias ("Push Bias", Float) = 0.001
+[sRGBWarning]_UzumoreMask ("Push Mask--{reference_properties:[_UzumoreMaskUV, _UzumoreMaskChannel]}", 2D) = "white" { }
+[ThryHideInInspector][Enum(UV0, 0, UV1, 1, UV2, 2, UV3, 3)] _UzumoreMaskUV ("UV", Int) = 0
+[ThryHideInInspector][Enum(R, 0, G, 1, B, 2, A, 3)] _UzumoreMaskChannel ("Channel", Float) = 3
+[HideInInspector] m_end_Uzumore ("Camera Push Back", Float) = 0
+//endex
+
+#T#PoiUzumoreKeyword
+//ifex _UzumoreCategoryToggle==0
+//#pragma shader_feature_local POI_UZUMORE
+//endex
+
+#T#PoiUzumoreVariablesExposed
+//ifex _UzumoreCategoryToggle==0
+float _UzumoreCategoryToggle;
+float _UzumoreEnabled;
+float _UzumoreAmount;
+float _UzumoreBias;
+float _UzumoreMaskUV;
+float _UzumoreMaskChannel;
+#if defined(PROP_UZUMOREMASK) || !defined(OPTIMIZER_ENABLED)
+	float4 _UzumoreMask_ST;
+#endif
+//endex
+
+#T#PoiUzumoreVariables
+//ifex _UzumoreCategoryToggle==0
+#if defined(PROP_UZUMOREMASK) || !defined(OPTIMIZER_ENABLED)
+	Texture2D _UzumoreMask;
+#endif
+//endex
+
+#T#PoiUzumoreFunctions
+//ifex _UzumoreCategoryToggle==0
+inline float sdPlane(float3 p, float3 n, float h)
+{
+	return dot(p, normalize(n)) + h;
+}
+
+float3 calcIntrudePos(float3 pos, float3 normalOS, float2 uv, float objectScale)
+{
+	float3 wnormal = PoiObjectToWorldNormal(normalOS);
+	float3 wpos = mul(unity_ObjectToWorld, float4(pos, 1.0)).xyz;
+
+	float3 camDir = -UNITY_MATRIX_V._m20_m21_m22;
+	float3 camPos = getCameraPosition(false);
+	float near = _ProjectionParams.y;
+
+	#if defined(PROP_UZUMOREMASK) || !defined(OPTIMIZER_ENABLED)
+		half uzumoreMask = UNITY_SAMPLE_TEX2D_SAMPLER_LOD(_UzumoreMask, _linear_repeat, uv, 0)[_UzumoreMaskChannel];
+	#else
+		half uzumoreMask = 1;
+	#endif
+
+	float maxAmount = _UzumoreAmount * uzumoreMask * objectScale;
+	float maxBias = _UzumoreBias * objectScale;
+	float d = sdPlane(wpos - camPos, -camDir, (near + maxBias));
+	float intrudeAmount = clamp(d, 0, maxAmount);
+
+	if (intrudeAmount > 0.0f && dot(camDir, wnormal) < - 0.2)
+	{
+		float biasRate = min(1.0f, intrudeAmount / max(maxAmount, 0.00001));
+		float bias = maxBias * biasRate;
+
+		float3 extrude = (intrudeAmount - bias) * camDir;
+		return mul(unity_WorldToObject, float4(wpos + extrude, 1.0)).xyz;
+	}
+
+	return pos;
+}
+//endex
+
+#T#PoiUzumoreFunctionCalls
+//ifex _UzumoreCategoryToggle==0
+#if !defined(POI_PASS_META)
+	UNITY_BRANCH
+	if (_UzumoreCategoryToggle >= 0.5 && _UzumoreEnabled >= 0.5)
+	{
+		v.vertex.xyz = calcIntrudePos(v.vertex.xyz, v.normal.xyz, poiUV(vertexUV(v, _UzumoreMaskUV), _UzumoreMask_ST), o.normal.w);
+	}
+#endif
+//endex

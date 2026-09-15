@@ -1,0 +1,50 @@
+// Poi fragement program from PoiFragmentProgramShadow.poiTemplate
+float4 frag(VertexOut i, bool facing : SV_IsFrontFace) : SV_Target
+{
+	#K#FRAGMENT_SHADOW_FIRSTLINE
+	
+	UNITY_SETUP_INSTANCE_ID(i);
+	UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(i);
+
+	#ifdef LOD_FADE_CROSSFADE
+		#if POI_PIPE == POI_URP
+			#if UNITY_VERSION >= 2022000
+				LODFadeCrossFade(i.pos);
+			#endif
+		#else
+			UnityApplyDitherCrossFade(i.pos.xy);
+		#endif
+	#endif
+
+	#K#FRAGMENT_SHADOW_DECLARATIONS
+
+	#K#FRAGMENT_SHADOW_INIT_EARLY
+	#K#FRAGMENT_SHADOW_INIT
+	#K#FRAGMENT_SHADOW_INIT_LATE
+
+	#K#FRAGMENT_SHADOW_COLOR_EARLY
+	#K#FRAGMENT_SHADOW_COLOR
+	#K#FRAGMENT_SHADOW_COLOR_LATE
+
+	poiFragData.finalColor = poiFragData.baseColor;
+
+	#K#FRAGMENT_SHADOW_LIGHTING_EARLY
+	#K#FRAGMENT_SHADOW_LIGHTING
+	#K#FRAGMENT_SHADOW_LIGHTING_LATE
+
+	#K#FRAGMENT_SHADOW_EMISSION_EARLY
+	#K#FRAGMENT_SHADOW_EMISSION
+	#K#FRAGMENT_SHADOW_EMISSION_LATE
+
+	#K#FRAGMENT_SHADOW_RETURN
+	
+	if (_Mode == POI_MODE_OPAQUE)
+	{
+		poiFragData.alpha = 1;
+	}
+	
+	clip(poiFragData.alpha - _Cutoff);
+
+	applyUnityFog(poiFragData.finalColor, i.fogData, _IgnoreFog);
+	return float4(poiFragData.finalColor, poiFragData.alpha) + POI_SAFE_RGB0;
+}

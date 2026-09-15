@@ -1,0 +1,15 @@
+.node-header-queue
+{
+    -unity-font-style: italic;
+    color: grey;
+    -unity-text-align: middle-right;
+    flex-grow: 1;
+    margin-right: 6px;
+}
+.node-header-id
+{
+    font-size: 8px;
+    -unity-font-style: italic;
+    align-self: center;
+    margin-left: 2px;
+}

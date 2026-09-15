@@ -1,0 +1,9 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
+    <ui:TextField name="Name" picking-mode="Ignore" label="Name" binding-path="Name" />
+    <ui:TextField picking-mode="Ignore" label="Append After" binding-path="AppendAfter" />
+    <uie:IntegerField label="Queue" value="100" binding-path="Queue" />
+    <uie:PropertyField binding-path="ShaderFunctionCode" label="Function Code" focusable="true" />
+    <Poiyomi.ModularShaderSystem.UI.InspectorList show-elements-text="false" binding-path="UsedVariables" />
+    <Poiyomi.ModularShaderSystem.UI.InspectorList show-elements-text="false" binding-path="VariableKeywords" />
+    <Poiyomi.ModularShaderSystem.UI.InspectorList show-elements-text="false" binding-path="CodeKeywords" />
+</ui:UXML>

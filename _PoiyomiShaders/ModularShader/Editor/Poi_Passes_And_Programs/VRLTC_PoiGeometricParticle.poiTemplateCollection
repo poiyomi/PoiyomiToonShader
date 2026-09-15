@@ -1,0 +1,971 @@
+#T#PoiGeoParticleProperties
+// Geometric Particle System
+[HideInInspector] m_geoParticle ("Geometric Particles--{button_help:{text:Tutorial,action:{type:URL,data:https://www.poiyomi.com/extended-features/particle},hover:Documentation}}", Float) = 0
+
+_ParticleRandomSeedOffset ("Random Seed Offset", Range(0, 1)) = 0.069
+[ThryWideEnum(Off, 0, 1R, 1, 1G, 2, 1B, 3, 1A, 4, 2R, 5, 2G, 6, 2B, 7, 2A, 8, 3R, 9, 3G, 10, 3B, 11, 3A, 12, 4R, 13, 4G, 14, 4B, 15, 4A, 16)] _ParticleApplyGlobalMaskIndex ("Apply To GlobalMask--{reference_property:_ParticleApplyGlobalMaskBlendType}", Int) = 0
+[HideInInspector][ThryWideEnum(Add, 7, Subtract, 1, Multiply, 2, Divide, 3, Min, 4, Max, 5, Average, 6, Replace, 0)] _ParticleApplyGlobalMaskBlendType ("Blending", Int) = 0
+[HideInInspector]_ParticleBaseColorOverride ("MainTex Override", Color) = (1, 1, 1, 1)
+[ToggleUI]_ParticleOverrideBaseColor ("MainTex Color Override--{reference_property:_ParticleBaseColorOverride}", Float) = 1
+
+
+[HideInInspector] s_start_geoParticleSpawning ("Spawning--{persistent_expand:true,default_expand:true}", Float) = 0
+[ToggleUI]_ParticleRenderBaseMesh ("Render Base Mesh", Float) = 1
+_ParticleDensity ("Particles Per cm^2", Range(0, 4)) = 0.15
+[VectorLabel(Min, Max, link)]_ParticleFloatDistance ("Spawn Distance", Vector) = (1, 1.5, 0, 500)
+[sRGBWarning]_ParticleSpawnMask ("Spawn Mask--{reference_properties:[_ParticleSpawnMaskPan, _ParticleSpawnMaskUV, _ParticleSpawnMaskChannel, _ParticleSpawnMaskInvert]}", 2D) = "white" { }
+[HideInInspector][Vector2]_ParticleSpawnMaskPan ("Panning", Vector) = (0, 0, 0, 0)
+[HideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3)] _ParticleSpawnMaskUV ("UV", Int) = 0
+[HideInInspector][Enum(R, 0, G, 1, B, 2, A, 3)]_ParticleSpawnMaskChannel ("Channel", Float) = 0
+[HideInInspector][ToggleUI]_ParticleSpawnMaskInvert ("Invert", Float) = 0
+[Enum(Off, 0, Red, 1, Green, 2, Blue, 3, Alpha, 4)]_ParticleSpawnMaskVertexColor ("Vertex Color Mask", Int) = 0
+[HideInInspector] s_end_geoParticleSpawning ("Spawning", Float) = 0
+
+[HideInInspector] s_start_geoParticleAppearance ("Appearance--{persistent_expand:true,default_expand:true}", Float) = 0
+[ThryRGBAPacker(RGB Color, A Alpha, sRGB, false)]_ParticleTexture ("Texture--{reference_properties:[_ParticleTexturePan, _ParticleTextureUV]}", 2D) = "white" { }
+[HideInInspector][Vector2]_ParticleTexturePan ("Panning", Vector) = (0, 0, 0, 0)
+[HideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7, Matcap, 9, Screen Space, 10)] _ParticleTextureUV ("UV", Int) = 0
+_ParticleColor ("Color--{reference_property:_ParticleColorThemeIndex}", Color) = (1, 1, 1, 1)
+[HideInInspector][ThryWideEnum(Off, 0, Theme Color 0, 1, Theme Color 1, 2, Theme Color 2, 3, Theme Color 3, 4, ColorChord 0, 5, ColorChord 1, 6, ColorChord 2, 7, ColorChord 3, 8, AL Theme 0, 9, AL Theme 1, 10, AL Theme 2, 11, AL Theme 3, 12)] _ParticleColorThemeIndex ("", Int) = 0
+_ParticleColorBlendAlpha ("Color Blend Alpha", Range(0, 1)) = 1
+[ThryWideEnum(Replace, 0, Darken, 1, Multiply, 2, Lighten, 5, Screen, 6, Subtract, 7, Add, 8, Overlay, 9, Mixed, 20)]_ParticleColorBlendMode ("Color Blend Mode", Int) = 0
+[ThryWideEnum(Replace, 0, Add, 1)]_ParticleEmissionBlendMode ("Emission Blend Mode", Int) = 0
+[VectorLabel(Min, Max, link)]_ParticleEmissionStrength ("Emission Range", Vector) = (0, 0, 0, 0)
+[VectorLabel(Min, Max, link)]_ParticleAlpha ("Alpha Range", Vector) = (1, 1, 0, 0)
+[VectorLabel(Min, Max, link)]_ParticleSize ("Particle Size", Vector) = (1.5, 2, 0.01, 100)
+_ParticleInheritNormal ("Inherit Mesh Normal", Range(0, 1)) = 0
+[HideInInspector] s_end_geoParticleAppearance ("Appearance", Float) = 0
+
+[HideInInspector] s_start_geoParticleMotion ("Motion--{persistent_expand:true,default_expand:true}", Float) = 0
+[ThryWideEnum(Still, 0, Outward, 1, Ping Pong, 2)] _ParticleMotionMode ("Motion Mode", Float) = 0
+_ParticleCycleDuration ("Cycle Duration (Seconds)", Range(0.1, 10.0)) = 2.0
+[VectorLabel(Min, Max, link)]_ParticleRotationSpeed ("Rotation Speed", Vector) = (-3, 3, -20, 20)
+[VectorLabel(Min, Max, link)]_ParticleTravelDistance ("Travel Distance--{condition_showS:(_ParticleMotionMode >= 1)}", Vector) = (50, 100, 0, 1000)
+[ThrySeperator(2, 5, 5)]
+[ThryRGBAPacker(X, Y, Z, NA, Linear, false)] _ParticleNoiseTex ("Noise Texture (RGB)--{reference_properties:[_ParticleNoiseTexPan]}", 2D) = "gray" { }
+[HideInInspector][Vector2]_ParticleNoiseTexPan ("Panning", Vector) = (0, 0, 0, 0)
+[VectorLabel(Min, Max, link)]_ParticleNoiseStrength ("Noise Strength", Vector) = (0, 0, 0, 50)
+[VectorLabel(Min, Max, link)]_ParticleNoiseScrollSpeed ("Noise Scroll Speed", Vector) = (1, 1, 0, 0)
+[ThrySeperator(2, 5, 5)]
+[Vector3]_ParticleWorldDirection ("World Direction (XYZ)--{condition_showS:(_ParticleMotionMode >= 1)}", Vector) = (0, 1, 0, 0)
+_ParticleDirectionStrength ("Direction Strength--{condition_showS:(_ParticleMotionMode >= 1)}", Range(0, 1)) = 0
+_ParticleFaceDirection ("Align To Travel Direction--{condition_showS:(_ParticleMotionMode >= 1)}", Range(0, 1)) = 0
+[Ramp4]_ParticleDirectionRamp ("Direction Ramp--{condition_showS:(_ParticleMotionMode >= 1)}", Vector) = (0, 0, 0, .2)
+_ParticleSpawnDirectionCull ("Directional Cull--{condition_showS:(_ParticleMotionMode >= 1)}", Range(0, 1)) = 0
+[HideInInspector] s_end_geoParticleMotion ("Motion", Float) = 0
+
+[HideInInspector] s_start_geoParticleOverTime ("Over Time--{persistent_expand:true,default_expand:false}", Float) = 0
+[Ramp4]_ParticleSizeRamp ("Size", Vector) = (1, 1, 0, 1)
+[Ramp4]_ParticleAlphaRamp ("Alpha", Vector) = (1, 1, 0, 1)
+[Ramp4]_ParticleEmissionRamp ("Emission", Vector) = (1, 1, 0, 1)
+[Gradient]_ParticleLifetimeGradient ("Color", 2D) = "white" { }
+[HideInInspector] s_end_geoParticleOverTime ("Over Time", Float) = 0
+
+[HideInInspector] s_start_geoParticleSpriteSheet ("Sprite Sheet--{persistent_expand:true,default_expand:true, reference_property:_ParticleSpriteSheetEnabled}", Float) = 0
+[HideInInspector][ToggleUI]_ParticleSpriteSheetEnabled ("Enable Sprite Sheet", Float) = 0
+_ParticleSpriteSheetColumns ("Columns", float) = 1
+_ParticleSpriteSheetRows ("Rows", float) = 1
+[ThryWideEnum(Random, 0, Progress Based, 1, Time Based, 2)]_ParticleSpriteSheetFrameSelection ("Frame Selection", Int) = 0
+_ParticleSpriteSheetFPS ("FPS--{condition_showS:(_ParticleSpriteSheetFrameSelection==2)}", Float) = 10
+[ToggleUI]_ParticleSpriteSheetRandomStart ("Random Start Frame--{condition_showS:(_ParticleSpriteSheetFrameSelection==2)}", Float) = 0
+_ParticleSpriteSheetTotalFrames ("Total Frames (0 = auto)--{tooltip:Use when atlas isn't full. 0 = rows*columns}", float) = 0
+_ParticleSpriteSheetInset ("Frame Inset (texels)", Range(0, 2)) = 0
+[HideInInspector] s_end_geoParticleSpriteSheet ("Sprite Sheet", Float) = 0
+
+[HideInInspector] s_start_geoParticleAudioLink ("Audio Link ♫--{persistent_expand:true,default_expand:false,condition_showS:_EnableAudioLink==1}", Float) = 0
+[ThryWideEnum(Off, 2, X(Frequency), 0, Y(Height), 1)] _ParticleALGradientSource ("Gradient Source", Int) = 2
+[ThryWideEnum(Waveform, 0, DFT Spectrum, 1, Four Band Random, 2, AutoCorrelator, 4, Bass, 5, Low Mid, 6, High Mid, 7, Treble, 8)] _ParticleALType ("AudioLink Type", Int) = 2
+_ParticleALWaveformScale ("Height Scale", Range(0, 10)) = 1.0
+_ParticleALWaveformSmoothing ("Waveform Smoothing--{condition_showS:(_ParticleALType == 0)}", Range(0, 1)) = 0.2
+
+[ThrySeperator(2, 2, 2)]
+[ToggleUI]_ParticleALReactiveEmission ("Emission", Float) = 0
+[Enum(Bass, 0, Low Mid, 1, High Mid, 2, Treble, 3, Volume, 4, AudioLink Type, 5)]_ParticleALReactiveEmissionBand ("Band--{condition_showS:(_ParticleALReactiveEmission==1)}", Int) = 0
+[Ramp4(normalized)]_ParticleALReactiveEmissionRamp ("Add Ramp--{condition_showS:(_ParticleALReactiveEmission==1)}", Vector) = (0, 0, 0, 1)
+
+[ThrySeperator(2, 2, 2)]
+[ToggleUI]_ParticleALSizeModulation ("Size", Float) = 0
+[Enum(Bass, 0, Low Mid, 1, High Mid, 2, Treble, 3, Volume, 4, AudioLink Type, 5)]_ParticleALSizeBand ("Band--{condition_showS:(_ParticleALSizeModulation==1)}", Int) = 0
+[Ramp4(normalized)]_ParticleALSizeRamp ("Add Ramp--{condition_showS:(_ParticleALSizeModulation==1)}", Vector) = (0, 0, 0, 1)
+
+[ThrySeperator(2, 2, 2)]
+[ToggleUI]_ParticleALRotationModulation ("Rotation Speed", Float) = 0
+[ThryWideEnum(Bass, 0, Low Mid, 1, High Mid, 2, Treble, 3, Volume, 4, AudioLink Type, 5)] _ParticleALRotationBand ("Chrono Rotation Band--{condition_showS:(_ParticleALRotationModulation==1)}", Int) = 0
+[ThryWideEnum(Motion increases as intensity of band increases, 0, Above but Smooth, 1, Motion moves back and forth as a function of intensity, 2, Above but Smooth, 3, Fixed speed increase when the band is dark Stationary when light, 4, Above but Smooth, 5, Fixed speed increase when the band is dark Fixed speed decrease when light, 6, Above but Smooth, 7)]_ParticleALRotationType ("Chrono Motion Type--{condition_showS:(_ParticleALRotationModulation==1)}", Int) = 0
+_ParticleALRotationSpeed ("Chrono Rotation Speed--{condition_showS:(_ParticleALRotationModulation==1)}", Float) = 2.0
+
+[ThrySeperator(2, 2, 2)]
+[ToggleUI]_ParticleALNoiseModulation ("Noise Strength", Float) = 0
+[Enum(Bass, 0, Low Mid, 1, High Mid, 2, Treble, 3, Volume, 4, AudioLink Type, 5)]_ParticleALNoiseBand ("Band--{condition_showS:(_ParticleALNoiseModulation==1)}", Int) = 1
+[Ramp4(normalized)]_ParticleALNoiseRamp ("Multiplier Ramp--{condition_showS:(_ParticleALNoiseModulation==1)}", Vector) = (1, 1, 0, 1)
+
+[ThrySeperator(2, 2, 2)]
+[ToggleUI]_ParticleALAlphaModulation ("Alpha", Float) = 0
+[Enum(Bass, 0, Low Mid, 1, High Mid, 2, Treble, 3, Volume, 4, AudioLink Type, 5)]_ParticleALAlphaBand ("Band--{condition_showS:(_ParticleALAlphaModulation==1)}", Int) = 0
+[Ramp4(normalized)]_ParticleALAlphaRamp ("Add Ramp--{condition_showS:(_ParticleALAlphaModulation==1)}", Vector) = (0, 0, 0, 1)
+
+[ThrySeperator(2, 2, 2)]
+[ToggleUI]_ParticleALSpriteSheetFrameControl ("Sprite Sheet Frame Control--{condition_showS:(_ParticleSpriteSheetEnabled==1)}", Float) = 0
+[ThryWideEnum(Bass, 0, Low Mid, 1, High Mid, 2, Treble, 3)]_ParticleALSpriteSheetBand ("Frame Band--{condition_showS:(_ParticleALSpriteSheetFrameControl==1 && _ParticleSpriteSheetEnabled==1)}", Int) = 0
+[HideInInspector] s_end_geoParticleAudioLink ("Audio Link", Float) = 0
+
+[HideInInspector] s_start_geoParticleUVMod ("UV Mod--{persistent_expand:true,default_expand:false}", Float) = 0
+[ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3)] _ParticlePosUVSource ("Particle Pos UV Source", Int) = 0
+[ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Off, 4)] _ParticlePosUVDestination ("Apply to UV Destination", Int) = 4
+[HideInInspector] s_end_geoParticleUVMod ("UV Mod", Float) = 0
+
+[HideInInspector] s_start_geoParticlePerformance ("Spawn Reduction--{persistent_expand:true,default_expand:false, reference_property:_ParticleSpawnReductionEnabled}", Float) = 0
+[HideInInspector][ToggleUI]_ParticleSpawnReductionEnabled ("Enable Spawn Reduction", Float) = 1
+[VectorLabel(Near, Far, link)]_ParticleSpawnDistances ("Spawn Distances", Vector) = (3, 8, 0, 0)
+[VectorLabel(Near, Far, link)]_ParticleSpawnReduction ("Spawn Multiplier", Vector) = (1.0, 0, 0, 0)
+[HideInInspector] s_end_geoParticlePerformance ("Spawn Reduction", Float) = 0
+
+
+#T#PoiGeoParticleVariablesExposed
+float _ParticleRandomSeedOffset;
+float _ParticleApplyGlobalMaskIndex;
+float _ParticleApplyGlobalMaskBlendType;
+half4 _ParticleBaseColorOverride;
+half _ParticleOverrideBaseColor;
+
+#if defined(PROP_PARTICLESPAWNMASK) || !defined(OPTIMIZER_ENABLED)
+	float4 _ParticleSpawnMask_ST;
+	float2 _ParticleSpawnMaskPan;
+	float _ParticleSpawnMaskUV;
+	float _ParticleSpawnMaskChannel;
+	half _ParticleSpawnMaskInvert;
+#endif
+float _ParticleSpawnMaskVertexColor;
+
+#if defined(PROP_PARTICLETEXTURE) || !defined(OPTIMIZER_ENABLED)
+	float4 _ParticleTexture_ST;
+	float2 _ParticleTexturePan;
+	float _ParticleTextureUV;
+#endif
+
+#if defined(PROP_PARTICLENOISETEX) || !defined(OPTIMIZER_ENABLED)
+	float4 _ParticleNoiseTex_ST;
+	float2 _ParticleNoiseTexPan;
+#endif
+
+// removed _ParticleStartEndSize (piecewise)
+float4 _ParticleSizeRamp;
+
+// Over Time ramps
+half4 _ParticleAlphaRamp;
+half4 _ParticleEmissionRamp;
+
+float _ParticleColorBlendMode;
+half _ParticleColorBlendAlpha;
+float _ParticleEmissionBlendMode;
+half4 _ParticleColor;
+float _ParticleColorThemeIndex;
+half4 _ParticleEmissionStrength;
+half4 _ParticleAlpha;
+float _ParticleSpriteSheetEnabled;
+float _ParticleSpriteSheetColumns;
+float _ParticleSpriteSheetRows;
+float _ParticleSpriteSheetFrameSelection;
+float _ParticleSpriteSheetFPS;
+float _ParticleSpriteSheetRandomStart;
+float _ParticleSpriteSheetTotalFrames;
+float _ParticleSpriteSheetInset;
+float _ParticleRenderBaseMesh;
+float _ParticleDensity;
+float4 _ParticleSize;
+float4 _ParticleFloatDistance;
+float4 _ParticleNoiseStrength;
+float4 _ParticleNoiseScrollSpeed;
+float4 _ParticleRotationSpeed;
+float _ParticleMotionMode;
+float4 _ParticleTravelDistance;
+float _ParticleCycleDuration;
+float _ParticleSpawnReductionEnabled;
+float4 _ParticleSpawnDistances;
+float4 _ParticleSpawnReduction;
+
+float _ParticlePosUVSource;
+float _ParticlePosUVDestination;
+
+float4 _ParticleWorldDirection;
+float _ParticleDirectionStrength;
+float _ParticleSpawnDirectionCull;
+float4 _ParticleDirectionRamp;
+float _ParticleFaceDirection;
+float _ParticleInheritNormal;
+
+float _ParticleALType;
+#ifdef POI_AUDIOLINK
+	float _ParticleALWaveformScale;
+	float _ParticleALWaveformSmoothing;
+	float _ParticleALGradientSource;
+	
+	half _ParticleALReactiveEmission;
+	float _ParticleALReactiveEmissionBand;
+	half4 _ParticleALReactiveEmissionRamp;
+	
+	float _ParticleALSizeModulation;
+	float _ParticleALSizeBand;
+	float4 _ParticleALSizeRamp;
+	
+	float _ParticleALRotationModulation;
+	float _ParticleALRotationBand;
+	float _ParticleALRotationType;
+	float _ParticleALRotationSpeed;
+	
+	float _ParticleALNoiseModulation;
+	float _ParticleALNoiseBand;
+	float4 _ParticleALNoiseRamp;
+	
+	half _ParticleALAlphaModulation;
+	float _ParticleALAlphaBand;
+	half4 _ParticleALAlphaRamp;
+	
+	float _ParticleALSpriteSheetFrameControl;
+	float _ParticleALSpriteSheetBand;
+#endif
+
+#T#PoiGeoParticleVariables
+#if defined(PROP_PARTICLESPAWNMASK) || !defined(OPTIMIZER_ENABLED)
+	Texture2D _ParticleSpawnMask;
+#endif
+
+#if defined(PROP_PARTICLETEXTURE) || !defined(OPTIMIZER_ENABLED)
+	Texture2D _ParticleTexture;
+#endif
+
+#if defined(PROP_PARTICLENOISETEX) || !defined(OPTIMIZER_ENABLED)
+	Texture2D _ParticleNoiseTex;
+#endif
+
+#if defined(PROP_PARTICLELIFETIMEGRADIENT) || !defined(OPTIMIZER_ENABLED)
+	Texture2D _ParticleLifetimeGradient;
+#endif
+
+#T#PoiGeoParticleVertexOutVariable
+// particleData: x=isParticle+progress (isParticle in sign bit, progress in mantissa), y=packed audio, z=particleSeed
+nointerpolation float3 particleData : TEXCOORD13;
+
+#T#PoiGeoParticleProgram
+#define POI_PARTICLE_MAX_PER_TRIANGLE 3
+#define POI_PARTICLE_MAX_OUTPUT_VERTICES 21
+#define CM2_TO_M2 10000.0
+#define CM_TO_M 0.01
+#define PARTICLE_VERTICES 4
+
+struct ParticleData
+{
+	float3 position;
+	float size;
+	float progress;
+	float audioHeight;
+	float audioPosition;
+	float rotationSpeed;
+	float audioRotationOffset;
+	float2 particleSeed;
+	float2 spawnUV;
+	float3 spawnNormal;
+	float3 noiseOffset;
+	float3 moveDir;
+	float motionVelocity;
+};
+
+float3 poiAnyPerpendicular(float3 v)
+{
+	float3 a = (abs(v.x) < 0.5) ? float3(1, 0, 0) : float3(0, 1, 0);
+	float3 p = cross(v, a);
+	return (length(p) > 1e-6) ? normalize(p) : normalize(cross(v, float3(0, 0, 1)));
+}
+
+float3 poiRotateAroundAxis(float3 v, float3 axis, float angle)
+{
+	float s, c; sincos(angle, s, c);
+	return v * c + cross(axis, v) * s + axis * dot(axis, v) * (1 - c);
+}
+
+float3 poiSlerpUnitStable(float3 fromDir, float3 toDir, float t)
+{
+	fromDir = normalize(fromDir);
+	toDir = normalize(toDir);
+	float d = clamp(dot(fromDir, toDir), -1.0, 1.0);
+
+	if (d > 0.999)
+	{
+		return normalize(lerp(fromDir, toDir, t));
+	}
+	if (d < - 0.999)
+	{
+		float3 axis = poiAnyPerpendicular(fromDir);
+		return normalize(poiRotateAroundAxis(fromDir, axis, UNITY_PI * t));
+	}
+	float omega = acos(d);
+	float s = sin(omega);
+	float w0 = sin((1.0 - t) * omega) / s;
+	float w1 = sin(t * omega) / s;
+	return normalize(fromDir * w0 + toDir * w1);
+}
+
+ParticleData GenerateParticle(int particleIndex, uint primID, float3 v0_world, float3 v1_world, float3 v2_world, float3 n0, float3 n1, float3 n2, float3 tangent, float3 bitangent, float2 uvA, float2 uvB, float2 uvC, bool audioLinkAvailable)
+{
+	ParticleData particle;
+	
+	float2 seedBase = float2((primID + particleIndex) * 0.51, particleIndex * 1.123) + _ParticleRandomSeedOffset;
+	float randomU = poiRand(seedBase);
+	float randomV = poiRand(seedBase.yx);
+	if (randomU + randomV > 1.0)
+	{
+		randomU = 1.0 - randomU; randomV = 1.0 - randomV;
+	}
+	
+	float3 basePos = v0_world * (1.0 - randomU - randomV) + v1_world * randomU + v2_world * randomV;
+
+	// compute spawn UV at the exact random spawn position using barycentric weights
+	particle.spawnUV = uvA * (1.0 - randomU - randomV) + uvB * randomU + uvC * randomV;
+	
+	// compute spawn normal at the exact random spawn position using barycentric weights
+	particle.spawnNormal = normalize(n0 * (1.0 - randomU - randomV) + n1 * randomU + n2 * randomV);
+	
+	// Use flat triangle normal for physics calculations
+	float3 normal = normalize(n0 + n1 + n2);
+	
+	
+	float4 rand1 = float4(poiRand3(seedBase), poiRand(seedBase + 11.0));
+	float4 rand2 = float4(poiRand3(seedBase + 1.0), poiRand(seedBase + 12.0));
+	float4 rand3 = float4(poiRand3(seedBase + 2.0), poiRand(seedBase + 13.0));
+	
+	float progress = frac((POI_TIME.y / _ParticleCycleDuration) + rand1.x);
+	float3 worldDir = _ParticleWorldDirection.xyz;
+	float invLen = rsqrt(max(dot(worldDir, worldDir), 1e-8));
+	worldDir *= invLen;
+	float specificTravelDistance = lerp(_ParticleTravelDistance.x, _ParticleTravelDistance.y, rand1.w) * CM_TO_M;
+	float dBW = clamp(dot(normal, worldDir), -1.0, 1.0);
+	float angN = acos(dBW) / 3.14159265;
+	float effStrength = saturate(_ParticleDirectionStrength / max(angN, 1e-4));
+	float3 moveDir = poiSlerpUnitStable(normal, worldDir, effStrength);
+	float motionVelocity = 0;
+	
+	if (_ParticleMotionMode >= 1) // Outward or Ping Pong
+
+	{
+		float effectiveProgress = progress;
+		
+		if (_ParticleMotionMode == 2) // Ping Pong
+
+		{
+			// Convert linear progress to sine wave oscillation (0->1->0)
+			effectiveProgress = sin(progress * UNITY_PI);
+			
+			// Calculate velocity for direction alignment
+			// Derivative of sin(x*pi) is pi*cos(x*pi)
+			motionVelocity = cos(progress * UNITY_PI);
+		}
+		else // Outward
+
+		{
+			motionVelocity = 1.0; // Always moving forward
+
+		}
+		
+		// Use the same integration method for both modes
+		float3 integratedPos = basePos;
+		[unroll]
+		for (int step = 0; step < 8; ++step)
+		{
+			float t = effectiveProgress * ((step + 0.5) / 8.0);
+			float ramp = evalRamp4(saturate(t), _ParticleDirectionRamp);
+			float blend = saturate(effStrength * ramp);
+			float3 stepDir = poiSlerpUnitStable(normal, worldDir, blend);
+			integratedPos += stepDir * (specificTravelDistance * (effectiveProgress / 8.0));
+		}
+		basePos = integratedPos;
+	}
+	
+	float3 floatPos = basePos + moveDir * (lerp(_ParticleFloatDistance.x, _ParticleFloatDistance.y, rand2.z) * CM_TO_M);
+	
+	float3 noiseOffset = 0;
+	#if defined(PROP_PARTICLENOISETEX) || !defined(OPTIMIZER_ENABLED)
+		float noiseStrength = lerp(_ParticleNoiseStrength.x, _ParticleNoiseStrength.y, rand3.x) * CM_TO_M;
+
+		float noiseScrollSpeed = lerp(_ParticleNoiseScrollSpeed.x, _ParticleNoiseScrollSpeed.y, rand3.w);
+		float2 lookupUV = (rand2.xy * _ParticleNoiseTex_ST.xy) + _ParticleNoiseTex_ST.zw;
+		float2 dynamicPan = POI_TIME.x * (_ParticleNoiseTexPan + noiseScrollSpeed);
+		
+		float3 noiseVal = _ParticleNoiseTex.SampleLevel(sampler_linear_repeat, lookupUV + dynamicPan, 0).rgb * 2.0 - 1.0;
+		noiseOffset = (tangent * noiseVal.r + bitangent * noiseVal.g) * noiseStrength;
+	#endif
+	
+	float audioLinkHeight = 0, frequencyPosition = 0, bandAssignment = 0;
+	
+	#ifdef POI_AUDIOLINK
+		if (audioLinkAvailable)
+		{
+			if (_ParticleALType == 0)
+			{
+				float waveformX = frac(randomU + randomV) * 128.0;
+				frequencyPosition = waveformX / 128.0;
+				float4 waveformData = AudioLinkLerpMultiline(float2(waveformX, 6));
+				float audioLinkSample = waveformData.r;
+				
+				float4 waveformDataNext = AudioLinkLerpMultiline(float2(waveformX + 1, 6));
+				audioLinkSample = lerp(audioLinkSample, waveformDataNext.r, _ParticleALWaveformSmoothing);
+				audioLinkHeight = audioLinkSample * _ParticleALWaveformScale * CM_TO_M;
+			}
+			else if (_ParticleALType == 1)
+			{
+				float dftX = frac(randomU + randomV) * 128.0;
+				frequencyPosition = dftX / 128.0;
+				float4 dftData = AudioLinkLerpMultiline(float2(dftX, 4));
+				float audioLinkSample = dftData.r;
+				audioLinkHeight = audioLinkSample * _ParticleALWaveformScale * CM_TO_M;
+			}
+			else if (_ParticleALType == 2)
+			{
+				int band = clamp(floor(poiRand(seedBase + 0.7) * 4.0), 0, 3);
+				bandAssignment = band / 3.0;
+				
+				float bandX = frac(randomU + randomV) * 128.0;
+				frequencyPosition = bandX / 128.0;
+				float audioLinkSample = AudioLinkLerp(float2(bandX, band)).r;
+				audioLinkHeight = audioLinkSample * _ParticleALWaveformScale * CM_TO_M;
+			}
+			else if (_ParticleALType == 3)
+			{
+				int filteredBand = clamp(floor(poiRand(seedBase + 0.7) * 4.0), 0, 3);
+				bandAssignment = filteredBand / 3.0;
+				
+				float filteredX = frac(randomU + randomV) * 16.0;
+				frequencyPosition = filteredX / 16.0;
+				float audioLinkSample = AudioLinkLerp(float2(filteredX, 28 + filteredBand)).r;
+				audioLinkHeight = audioLinkSample * _ParticleALWaveformScale * CM_TO_M;
+			}
+			else if (_ParticleALType == 4)
+			{
+				float autocorrX = frac(randomU + randomV) * 128.0;
+				frequencyPosition = autocorrX / 128.0;
+				float audioLinkSample = AudioLinkLerp(float2(autocorrX, 27)).r;
+				audioLinkHeight = audioLinkSample * _ParticleALWaveformScale * CM_TO_M;
+			}
+			else if (_ParticleALType >= 5 && _ParticleALType <= 8)
+			{
+				// Individual bands: 5=Bass, 6=Low Mid, 7=High Mid, 8=Treble
+				int band = _ParticleALType - 5;
+				bandAssignment = band / 3.0;
+				
+				float bandX = frac(randomU + randomV) * 128.0;
+				frequencyPosition = bandX / 128.0;
+				float audioLinkSample = AudioLinkLerp(float2(bandX, band)).r;
+				audioLinkHeight = audioLinkSample * _ParticleALWaveformScale * CM_TO_M;
+			}
+			
+			if (_ParticleALNoiseModulation >= 0.5)
+			{
+				float audioLinkNoise;
+				if (_ParticleALNoiseBand == 5)
+				{
+					audioLinkNoise = audioLinkHeight / max(_ParticleALWaveformScale * CM_TO_M, 0.001);
+				}
+				else
+				{
+					int noiseBand = clamp(_ParticleALNoiseBand, 0, 4);
+					audioLinkNoise = AudioLinkLerp(float2(0, noiseBand)).r;
+				}
+				float noiseMultiplier = evalRamp4(audioLinkNoise, _ParticleALNoiseRamp);
+				noiseOffset *= noiseMultiplier;
+			}
+		}
+	#endif
+	
+	particle.position = floatPos + noiseOffset +moveDir * audioLinkHeight;
+	particle.noiseOffset = noiseOffset;
+	particle.moveDir = moveDir;
+	particle.motionVelocity = motionVelocity;
+	particle.rotationSpeed = lerp(_ParticleRotationSpeed.x, _ParticleRotationSpeed.y, rand1.z);
+	particle.audioRotationOffset = 0;
+	
+	#ifdef POI_AUDIOLINK
+		if (audioLinkAvailable && _ParticleALRotationModulation >= 0.5)
+		{
+			if (_ParticleALRotationBand == 5)
+			{
+				float normalizedAudioHeight = audioLinkHeight / max(_ParticleALWaveformScale * CM_TO_M, 0.001);
+				particle.audioRotationOffset = normalizedAudioHeight * _ParticleALRotationSpeed * 360;
+			}
+			else
+			{
+				int rotationBand = clamp(_ParticleALRotationBand, 0, 4);
+				particle.audioRotationOffset = AudioLinkGetChronoTime(_ParticleALRotationType, rotationBand) * _ParticleALRotationSpeed * 360;
+			}
+		}
+	#endif
+	
+	particle.size = lerp(_ParticleSize.x, _ParticleSize.y, rand3.y) * CM_TO_M;
+	particle.size *= evalRamp4(saturate(progress), _ParticleSizeRamp);
+	
+	#ifdef POI_AUDIOLINK
+		if (audioLinkAvailable && _ParticleALSizeModulation >= 0.5)
+		{
+			float audioLinkSize;
+			if (_ParticleALSizeBand == 5)
+			{
+				audioLinkSize = audioLinkHeight / max(_ParticleALWaveformScale * CM_TO_M, 0.001);
+			}
+			else
+			{
+				int sizeBand = clamp(_ParticleALSizeBand, 0, 4);
+				audioLinkSize = AudioLinkLerp(float2(0, sizeBand)).r;
+			}
+			float sizeAdd = evalRamp4(audioLinkSize, _ParticleALSizeRamp) * CM_TO_M;
+			particle.size = max(0.0001, particle.size + sizeAdd);
+		}
+	#endif
+	
+	particle.progress = progress;
+	particle.audioHeight = audioLinkHeight;
+	if (_ParticleALType <= 1)
+	{
+		particle.audioPosition = frequencyPosition;
+	}
+	else
+	{
+		particle.audioPosition = bandAssignment;
+	}
+	particle.particleSeed = seedBase;
+	
+	return particle;
+}
+
+// Helper to append one particle vertex (keeps ordering and shadow/camera setup consistent)
+inline void AppendParticleVertex(VertexOut output, float3 worldPosition, float2 quadUV, float2 triCenterUV, int outSet, float3 normalVector, float3 tangentVector, float handedness, float3 camPos, inout TriangleStream<VertexOut> outStream)
+{
+	output.worldPos = float4(worldPosition, 1);
+	output.localPos = mul(unity_WorldToObject, float4(worldPosition, 1));
+	output.pos = PoiWorldToClipPos(worldPosition);
+	output.fogData = output.pos.z;
+	POI_TRANSFER_SHADOW(output, output.uv[0].xy);
+	//output.worldDir = float4(output.worldPos.xyz - camPos, dot(output.pos, CalculateFrustumCorrection()));
+	output.normal.xyz = normalVector;
+	output.tangent.xyz = tangentVector;
+	output.tangent.w = handedness;
+	
+	// Initialize UV channels
+	output.uv[0] = float4(quadUV, quadUV);
+	output.uv[1] = float4(quadUV, quadUV);
+	
+	// Write spawn UV to the specified destination
+	if (outSet == 0)
+	{
+		output.uv[0].xy = triCenterUV;
+	}
+	else if (outSet == 1)
+	{
+		output.uv[0].zw = triCenterUV;
+	}
+	else if (outSet == 2)
+	{
+		output.uv[1].xy = triCenterUV;
+	}
+	else if (outSet == 3)
+	{
+		output.uv[1].zw = triCenterUV;
+	}
+	
+	outStream.Append(output);
+}
+
+// Compute mesh UV at a given barycentric location on a triangle for the selected UV set
+// Removed: UV computation is done in GenerateParticle from passed UVs
+
+void RenderParticle(ParticleData particle, VertexOut input[3], inout TriangleStream<VertexOut> outStream)
+{
+	float3 camPos = getCameraPosition();
+	float3 toCamera = normalize(camPos - particle.position + float3(1e-6, 0, 0));
+	float theta = atan2(toCamera.z, toCamera.x);
+	float phi = asin(toCamera.y);
+	float cosTheta, sinTheta, cosPhi, sinPhi;
+	sincos(theta, sinTheta, cosTheta);
+	sincos(phi, sinPhi, cosPhi);
+	float3 camRight = float3(-sinTheta, 0, cosTheta);
+	float3 camUp = float3(-sinPhi * cosTheta, cosPhi, -sinPhi * sinTheta);
+
+	// Base camera-facing billboard basis
+	float3 billboardNormal = normalize(camPos - particle.position);
+	
+	// Blend between billboard normal and mesh spawn normal
+	float3 normalVector = normalize(lerp(billboardNormal, particle.spawnNormal, _ParticleInheritNormal));
+	
+	// Recalculate tangent and bitangent based on the blended normal
+	float3 tangentVector = normalize(camRight - dot(camRight, normalVector) * normalVector);
+	float3 bitangentVector = normalize(cross(normalVector, tangentVector));
+
+	// Optional alignment toward travel direction using existing rotation pipeline
+	float3 camFacing = normalVector;
+	float faceBlend = _ParticleFaceDirection;
+	float alignAngle = 0;
+	if (faceBlend > 0.0001)
+	{
+		// Calculate alignment based on motion direction only (not noise)
+		float3 baseMotionDir = particle.moveDir;
+		
+		// Apply direction ramp based on progress
+		// For ping pong mode, use the oscillating progress
+		float effectiveProgress = particle.progress;
+		if (_ParticleMotionMode == 2) // Ping Pong
+
+		{
+			effectiveProgress = sin(particle.progress * UNITY_PI);
+		}
+		float rampAtP = evalRamp4(saturate(effectiveProgress), _ParticleDirectionRamp);
+		float3 triNormal = normalize(input[0].normal.xyz + input[1].normal.xyz + input[2].normal.xyz);
+		baseMotionDir = poiSlerpUnitStable(triNormal, baseMotionDir, saturate(rampAtP));
+		
+		// Project motion direction into the billboard plane
+		float2 dir2 = normalize(float2(dot(baseMotionDir, camRight), dot(baseMotionDir, camUp)) + 1e-6);
+		alignAngle = atan2(dir2.y, dir2.x);
+		
+		// Add rotation based on motion velocity (for ping pong mode)
+		if (_ParticleMotionMode == 2) // Ping Pong
+
+		{
+			// Simple flip when moving backward
+			if (particle.motionVelocity < - 0.001)
+			{
+				alignAngle += UNITY_PI;
+			}
+		}
+		else if (particle.motionVelocity < - 0.001) // Other modes
+
+		{
+			alignAngle += UNITY_PI;
+		}
+	}
+	float baseAngle = POI_TIME.y * particle.rotationSpeed + radians(particle.audioRotationOffset);
+	float finalAngle = baseAngle + alignAngle * faceBlend;
+	float sinAngle, cosAngle;
+	sincos(finalAngle, sinAngle, cosAngle);
+	float2x2 rotMatrix = float2x2(cosAngle, -sinAngle, sinAngle, cosAngle);
+
+	float handedness = 1;
+	if (dot(cross(tangentVector, bitangentVector), normalVector) < 0)
+	{
+		handedness = -1;
+	}
+	
+	float halfSize = particle.size * 0.5f;
+	
+	VertexOut outputVertex = input[0];
+	#ifdef POI_AUDIOLINK
+		float normalizedAudioHeight = saturate(particle.audioHeight / max(_ParticleALWaveformScale * CM_TO_M, 0.001));
+	#else
+		float normalizedAudioHeight = 0;
+	#endif
+	// Pack audio data: height and position both normalized to 0-1, packed into 16 bits each
+	float packedAudio = floor(normalizedAudioHeight * 65535.0) * 65536.0 + floor(particle.audioPosition * 65535.0);
+	// Pack isParticle (1) and progress together: negative value indicates particle
+	outputVertex.particleData = float3(-particle.progress - 1.0, packedAudio, poiRand(particle.particleSeed));
+
+	float2 corner0 = mul(rotMatrix, float2(-1, -1) * halfSize);
+	float2 corner1 = mul(rotMatrix, float2(1, -1) * halfSize);
+	float2 corner2 = mul(rotMatrix, float2(-1, 1) * halfSize);
+	float2 corner3 = mul(rotMatrix, float2(1, 1) * halfSize);
+
+	// use precomputed spawnUV stored in ParticleData
+	float2 particleSpawnUV = particle.spawnUV;
+
+	float3 worldPos;
+	worldPos = particle.position + camRight * corner0.x + camUp * corner0.y;
+	AppendParticleVertex(outputVertex, worldPos, float2(0, 0), particleSpawnUV, _ParticlePosUVDestination, normalVector, tangentVector, handedness, camPos, outStream);
+	worldPos = particle.position + camRight * corner2.x + camUp * corner2.y;
+	AppendParticleVertex(outputVertex, worldPos, float2(0, 1), particleSpawnUV, _ParticlePosUVDestination, normalVector, tangentVector, handedness, camPos, outStream);
+	worldPos = particle.position + camRight * corner1.x + camUp * corner1.y;
+	AppendParticleVertex(outputVertex, worldPos, float2(1, 0), particleSpawnUV, _ParticlePosUVDestination, normalVector, tangentVector, handedness, camPos, outStream);
+	outStream.RestartStrip();
+
+	worldPos = particle.position + camRight * corner2.x + camUp * corner2.y;
+	AppendParticleVertex(outputVertex, worldPos, float2(0, 1), particleSpawnUV, _ParticlePosUVDestination, normalVector, tangentVector, handedness, camPos, outStream);
+	worldPos = particle.position + camRight * corner3.x + camUp * corner3.y;
+	AppendParticleVertex(outputVertex, worldPos, float2(1, 1), particleSpawnUV, _ParticlePosUVDestination, normalVector, tangentVector, handedness, camPos, outStream);
+	worldPos = particle.position + camRight * corner1.x + camUp * corner1.y;
+	AppendParticleVertex(outputVertex, worldPos, float2(1, 0), particleSpawnUV, _ParticlePosUVDestination, normalVector, tangentVector, handedness, camPos, outStream);
+	outStream.RestartStrip();
+}
+
+[poi_maxvertexcount(POI_PARTICLE_MAX_OUTPUT_VERTICES)]
+void geom(triangle VertexOut input[3], inout TriangleStream<VertexOut> outStream, uint primID : SV_PrimitiveID)
+{
+	UNITY_SETUP_INSTANCE_ID(input[0]);
+	UNITY_SETUP_INSTANCE_ID(input[1]);
+	UNITY_SETUP_INSTANCE_ID(input[2]);
+
+	POI_INITIALIZE_VERTEX_OUTPUT_STEREO(input[0]);
+	POI_INITIALIZE_VERTEX_OUTPUT_STEREO(input[1]);
+	POI_INITIALIZE_VERTEX_OUTPUT_STEREO(input[2]);
+
+	#K#GEOMETRY_INPUT_MODS
+
+	if (_ParticleRenderBaseMesh >= 0.5)
+	{
+		[unroll]
+		for (int vertexIndex = 0; vertexIndex < 3; vertexIndex++)
+		{
+			VertexOut vertex = input[vertexIndex];
+			vertex.particleData = float3(0, 0, 0);
+			vertex.pos = PoiWorldToClipPos(vertex.worldPos.xyz);
+			outStream.Append(vertex);
+		}
+		outStream.RestartStrip();
+	}
+
+	if (_ParticleDensity <= 0)
+	{
+		return;
+	}
+
+	float3 v0_world = input[0].worldPos.xyz;
+	float3 v1_world = input[1].worldPos.xyz;
+	float3 v2_world = input[2].worldPos.xyz;
+	float triangleArea = length(cross(v1_world - v0_world, v2_world - v0_world)) * 0.5;
+	
+	// Cull based on facing relative to world direction
+	if (_ParticleMotionMode >= 1 && _ParticleSpawnDirectionCull > 0.0)
+	{
+		float3 triNormal = normalize(input[0].normal.xyz + input[1].normal.xyz + input[2].normal.xyz);
+		float3 safeWorldDir = _ParticleWorldDirection.xyz;
+		float lenW = length(safeWorldDir);
+		safeWorldDir = (lenW > 1e-4) ? (safeWorldDir / lenW) : float3(0, 1, 0);
+		// Require dot(normal, worldDir) >= threshold
+		if (dot(triNormal, safeWorldDir) * .5 + .5 < _ParticleSpawnDirectionCull)
+		{
+			return;
+		}
+	}
+	
+	float distanceToCamera = length(getCameraPosition() - (v0_world + v1_world + v2_world) / 3.0);
+	
+	float desiredCount = (triangleArea * CM2_TO_M2) * _ParticleDensity;
+	
+
+	if (_ParticleSpawnMaskVertexColor > 0)
+	{
+		desiredCount *= ((input[0].vertexColor + input[1].vertexColor + input[2].vertexColor) / 3.0)[_ParticleSpawnMaskVertexColor - 1];
+	}
+	
+	#if defined(PROP_PARTICLESPAWNMASK) || !defined(OPTIMIZER_ENABLED)
+		float2 avgUV = (vertexUV(input[0], _ParticleSpawnMaskUV) + vertexUV(input[1], _ParticleSpawnMaskUV) + vertexUV(input[2], _ParticleSpawnMaskUV)) / 3.0;
+		avgUV = POI_PAN_UV(poiUV(avgUV, _ParticleSpawnMask_ST), _ParticleSpawnMaskPan);
+		half maskValue = _ParticleSpawnMask.SampleLevel(sampler_linear_repeat, avgUV, 0)[_ParticleSpawnMaskChannel];
+		if (_ParticleSpawnMaskInvert >= 0.5)
+		{
+			desiredCount *= 1.0 - maskValue;
+		}
+		else
+		{
+			desiredCount *= maskValue;
+		}
+	#endif
+	
+	if (_ParticleSpawnReductionEnabled >= 0.5)
+	{
+		float distanceInterpolation = saturate((distanceToCamera - _ParticleSpawnDistances.x) / (_ParticleSpawnDistances.y - _ParticleSpawnDistances.x));
+		desiredCount *= lerp(_ParticleSpawnReduction.x, _ParticleSpawnReduction.y, distanceInterpolation);
+	}
+	
+	int finalSpawnCount = min(floor(desiredCount + poiRand(float2(primID, primID) + _ParticleRandomSeedOffset)), POI_PARTICLE_MAX_PER_TRIANGLE);
+	if (finalSpawnCount == 0)
+	{
+		return;
+	}
+
+	float3 normal = normalize(input[0].normal.xyz + input[1].normal.xyz + input[2].normal.xyz);
+	float4 avgTangent = (input[0].tangent + input[1].tangent + input[2].tangent) / 3.0;
+	float3 tangent;
+	if (length(avgTangent.xyz) > 0.0001)
+	{
+		tangent = normalize(avgTangent.xyz);
+	}
+	else
+	{
+		tangent = float3(1, 0, 0);
+	}
+	float3 bitangent = cross(normal, tangent) * avgTangent.w;
+
+	#ifdef POI_AUDIOLINK
+		bool audioLinkAvailable = AudioLinkIsAvailable();
+	#else
+		bool audioLinkAvailable = false;
+	#endif
+	
+	[unroll(POI_PARTICLE_MAX_PER_TRIANGLE)]
+	for (int i = 0; i < finalSpawnCount; ++i)
+	{
+		float2 uvA = vertexUV(input[0], _ParticlePosUVSource);
+		float2 uvB = vertexUV(input[1], _ParticlePosUVSource);
+		float2 uvC = vertexUV(input[2], _ParticlePosUVSource);
+
+		ParticleData p = GenerateParticle(i, primID, v0_world, v1_world, v2_world, input[0].normal.xyz, input[1].normal.xyz, input[2].normal.xyz, tangent, bitangent, uvA, uvB, uvC, audioLinkAvailable);
+		RenderParticle(p, input, outStream);
+	}
+}
+
+#T#PoiGeoParticleFragFunction
+void poiGeoParticle(VertexOut i, inout PoiFragData poiFragData, in PoiMesh poiMesh, inout PoiMods poiMods, in PoiCam poiCam)
+{
+	// Negative x indicates particle (vs base mesh)
+	if (i.particleData.x < 0)
+	{
+		float progress = -i.particleData.x - 1.0;
+		// Unpack audio data from y component
+		float packedAudio = i.particleData.y;
+		float audioLinkHeight = floor(packedAudio / 65536.0) / 65535.0;
+		float audioPosition = fmod(packedAudio, 65536.0) / 65535.0;
+		float particleSeed = i.particleData.z;
+		
+		float frameIndex = 0;
+		if (_ParticleSpriteSheetEnabled >= 0.5)
+		{
+			PoiSpriteSheetConfig spriteConfig;
+			spriteConfig.columns = _ParticleSpriteSheetColumns;
+			spriteConfig.rows = _ParticleSpriteSheetRows;
+			spriteConfig.totalFrames = _ParticleSpriteSheetTotalFrames;
+			spriteConfig.frameSelection = _ParticleSpriteSheetFrameSelection;
+			spriteConfig.fps = _ParticleSpriteSheetFPS;
+			spriteConfig.randomStart = _ParticleSpriteSheetRandomStart;
+			spriteConfig.inset = _ParticleSpriteSheetInset;
+			#if defined(PROP_PARTICLETEXTURE) || !defined(OPTIMIZER_ENABLED)
+				spriteConfig.textureST = _ParticleTexture_ST.xy;
+			#else
+				spriteConfig.textureST = float2(1, 1);
+			#endif
+			
+			frameIndex = poiSpriteSheetFrameIndex(spriteConfig, progress, particleSeed);
+			
+			#ifdef POI_AUDIOLINK
+				if (AudioLinkIsAvailable() && _ParticleALSpriteSheetFrameControl >= 0.5)
+				{
+					int spriteBand = clamp(_ParticleALSpriteSheetBand, 0, 3);
+					float totalFrames = (spriteConfig.totalFrames > 0) ? spriteConfig.totalFrames : (spriteConfig.columns * spriteConfig.rows);
+					frameIndex = clamp(floor(poiMods.audioLink[spriteBand] * totalFrames), 0, totalFrames - 1);
+				}
+			#endif
+		}
+		
+		#if defined(PROP_PARTICLELIFETIMEGRADIENT) || !defined(OPTIMIZER_ENABLED)
+			half3 lifetimeColor = _ParticleLifetimeGradient.SampleLevel(sampler_linear_clamp, float2(progress, 0.5), 0).rgb;
+		#else
+			half3 lifetimeColor = half3(1, 1, 1);
+		#endif
+		
+		float4 randFrag = poiRand4(float2(particleSeed, particleSeed * 1.37));
+		
+		half2 alphaRange = _ParticleAlpha.xy;
+		#ifdef POI_AUDIOLINK
+		if (AudioLinkIsAvailable() && _ParticleALAlphaModulation >= 0.5)
+		{
+			half alphaValue;
+			if (_ParticleALAlphaBand == 5)
+			{
+				alphaValue = audioLinkHeight;
+			}
+			else
+			{
+				int alphaBand = clamp(_ParticleALAlphaBand, 0, 4);
+				alphaValue = poiMods.audioLink[alphaBand];
+			}
+			half alphaAdd = evalRamp4(alphaValue, _ParticleALAlphaRamp);
+			alphaRange = saturate(alphaRange + alphaAdd);
+		}
+		#endif
+		
+		half lifetimeAlpha = lerp(alphaRange.x, alphaRange.y, randFrag.y);
+		
+		half3 finalColor = float3(1, 1, 1);
+		half finalAlpha = 1;
+		half emissionBoost = 0;
+
+		#ifdef POI_AUDIOLINK
+		if (AudioLinkIsAvailable())
+		{
+			#if defined(PROP_PARTICLELIFETIMEGRADIENT) || !defined(OPTIMIZER_ENABLED)
+				if (_ParticleALGradientSource != 2)
+				{
+					float gradientSample = progress;
+					
+					if (_ParticleALGradientSource == 0)
+						gradientSample = audioPosition;
+					else if (_ParticleALGradientSource == 1)
+						gradientSample = audioLinkHeight;
+					
+					half4 alGradientColor = _ParticleLifetimeGradient.SampleLevel(sampler_linear_clamp, float2(gradientSample, 0.5), 0);
+					lifetimeColor = alGradientColor.rgb;
+				}
+				// Emission boost handled by reactive emission below
+			#endif
+			
+			if (_ParticleALReactiveEmission >= 0.5)
+			{
+				half emissionValue;
+				if (_ParticleALReactiveEmissionBand == 5)
+				{
+					emissionValue = audioLinkHeight;
+				}
+				else
+				{
+					int emissionBand = clamp(_ParticleALReactiveEmissionBand, 0, 4);
+					emissionValue = poiMods.audioLink[emissionBand];
+				}
+				emissionBoost += evalRamp4(emissionValue, _ParticleALReactiveEmissionRamp);
+			}
+		}
+		#endif
+
+		#if defined(PROP_PARTICLETEXTURE) || !defined(OPTIMIZER_ENABLED)
+			float2 lookupUV = poiMesh.uv[_ParticleTextureUV];
+
+			if (_ParticleSpriteSheetEnabled >= 0.5)
+				lookupUV = poiSpriteSheetUV(lookupUV, _ParticleSpriteSheetColumns, _ParticleSpriteSheetRows, frameIndex, _ParticleSpriteSheetInset, _ParticleTexture_ST.xy);
+
+			lookupUV = POI_PAN_UV(poiUV(lookupUV, _ParticleTexture_ST), _ParticleTexturePan);
+			
+			float4 particleTex = _ParticleTexture.SampleLevel(sampler_linear_repeat, lookupUV, 0);
+		
+			finalColor = particleTex.rgb * lifetimeColor.rgb * poiThemeColor(poiMods, _ParticleColor.rgb, _ParticleColorThemeIndex);
+			finalAlpha = particleTex.a * lifetimeAlpha * _ParticleColor.a;
+		#else
+			finalColor = lifetimeColor.rgb * poiThemeColor(poiMods, _ParticleColor.rgb, _ParticleColorThemeIndex);
+			finalAlpha = lifetimeAlpha * _ParticleColor.a;
+		#endif
+
+		finalAlpha *= evalRamp4(saturate(progress), _ParticleAlphaRamp);
+		
+		half3 originalColor = poiFragData.baseColor;
+		half3 originalEmission = poiFragData.emission;
+		
+		poiFragData.baseColor = customBlend(originalColor, finalColor, _ParticleColorBlendMode, _ParticleColorBlendAlpha);
+		poiFragData.alpha *= saturate(finalAlpha);
+		
+		half emissStrength = lerp(_ParticleEmissionStrength.x, _ParticleEmissionStrength.y, randFrag.x) + emissionBoost;
+
+		emissStrength *= evalRamp4(saturate(progress), _ParticleEmissionRamp);
+		half3 particleEmission = finalColor * emissStrength;
+		if (_ParticleEmissionBlendMode == 0)
+		{
+			poiFragData.emission = particleEmission;
+		}
+		else
+		{
+			poiFragData.emission = originalEmission + particleEmission;
+		}
+	}
+}
+
+#T#PoiGeoParticleFragFunctionCall
+poiGeoParticle(i, poiFragData, poiMesh, poiMods, poiCam);
+
+#T#PoiGeoParticleGlobalMasking
+if (_ParticleApplyGlobalMaskIndex > 0)
+{
+	applyToGlobalMask(poiMods, _ParticleApplyGlobalMaskIndex - 1, _ParticleApplyGlobalMaskBlendType, i.particleData.x < 0 ? 1.0 : 0.0);
+}
+if (i.particleData.x < 0)
+{
+	poiFragData.baseColor = lerp(poiFragData.baseColor, _ParticleBaseColorOverride, _ParticleOverrideBaseColor);
+}

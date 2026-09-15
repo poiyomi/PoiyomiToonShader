@@ -1,0 +1,267 @@
+#T#PoiDepthRimLightProperties
+//ifex _EnableDepthRimLighting==0
+[HideInInspector] m_start_depthRimLightOptions (" Depth Rim Lighting--{reference_property:_EnableDepthRimLighting,button_help:{text:Tutorial,action:{type:URL,data:https://www.poiyomi.com/shading/depth-rim-lighting},hover:Documentation}}", Float) = 0
+[HideInInspector][ThryToggle(_POI_DEPTH_RIMLIGHT)]_EnableDepthRimLighting ("", Float) = 0
+[Helpbox(1, 2, 1)]_DepthRimDepthGetWarning ("Depth Rim Lighting requires the depth buffer. Put the DepthGet.prefab on your avatar so it'll work in every world.", Int) = 0
+[PoiPrefabSpawner(23c61f8f4d0a87243a36c937bd3e1393)] _DepthRimSpawnDepthGet ("Add DepthGet Prefab to Scene", Float) = 0
+[Enum(vertex, 0, pixel, 1)] _DepthRimNormalToUse ("Normal To Use", Int) = 1
+[ThryWideEnum(Two Samples, 0, Four Samples, 1, Eight Samples, 2)] _DepthRimType ("Rim Type", Int) = 2
+
+[HideInInspector] s_start_FixedRimShapeControl ("Shape Control--{persistent_expand:true,default_expand:true}", Float) = 1
+_DepthRimWidth ("Width", Range(0, 1)) = 0.08
+_DepthRimSharpness ("Sharpness--{condition_showS:(_DepthRimBinary==0)}", Range(0, 1)) = .5
+_DepthRimDepthThreshold ("Depth Threshold", Range(0.001, 1)) = 0.25
+[ToggleUI]_DepthRimBinary ("Binary", Float) = 1
+_DepthRimCameraClip ("Fixed Size Threshold", Float) = .5
+_DepthRimMinDistance ("Min Distance", Float) = 0
+_DepthRimMaxDistance ("Max Distance", Float) = 0
+[HideInInspector] s_end_FixedRimShapeControl ("Shape Control", Float) = 0
+
+[HideInInspector] s_start_FixedRimLightDir ("Light Direction--{persistent_expand:true,default_expand:false}", Float) = 0
+[Enum(NdotL, 0, Rim Dot Light, 1)] _DepthRimLightDirMethod ("Method", Int) = 0
+_DepthRimHideInShadow ("Map to Light Direction", Range(0, 1)) = 0
+_DepthRimShadowMask ("Mix Attenuation", Range(0, 1)) = 0
+_DepthRimMixRampedLightMap ("Mix Ramped Light Map", Range(0, 1)) = 0
+[HideInInspector] s_end_FixedRimLightDir ("Light Direction", Float) = 0
+
+[HideInInspector] s_start_FixedRimMasking ("Masking--{persistent_expand:true,default_expand:false}", Float) = 0
+[TextureNoSO]_DepthRimMask ("Mask--{reference_properties:[_DepthRimMaskPan, _DepthRimMaskUV]}", 2D) = "white" {}
+[ThryHideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7, Matcap, 9, Screen Space, 10)] _DepthRimMaskUV ("UV", Int) = 0
+[ThryHideInInspector][Vector2]_DepthRimMaskPan ("Panning", Vector) = (0, 0, 0, 0)
+[Enum(R, 0, G, 1, B, 2, A, 3)]_DepthRimMaskChannel ("Channel", Float) = 0
+[HideInInspector] s_end_FixedRimMasking ("Masking", Float) = 0
+
+
+[HideInInspector] s_start_FixedRimColor ("Color--{persistent_expand:true,default_expand:true}", Float) = 1
+_DepthRimMixBaseColor ("Use Base Color", Range(0, 1)) = 0
+_DepthRimMixLightColor ("Light Color Mix", Range(0, 1)) = 0
+_DepthRimColor ("Rim Color--{reference_property:_DepthRimColorThemeIndex}", Color) = (1, 1, 1, 1)
+_DepthRimBrightness ("Color Brightness", Range(0, 10)) = 1
+_DepthRimIgnoreLighting ("Ignore Lighting", Range(0, 1)) = 0
+[ThryHideInInspector][ThryWideEnum(Off, 0, Theme Color 0, 1, Theme Color 1, 2, Theme Color 2, 3, Theme Color 3, 4, ColorChord 0, 5, ColorChord 1, 6, ColorChord 2, 7, ColorChord 3, 8, AL Theme 0, 9, AL Theme 1, 10, AL Theme 2, 11, AL Theme 3, 12)] _DepthRimColorThemeIndex ("", Int) = 0
+_DepthRimEmission ("Emission", Range(0, 20)) = 0
+[HideInInspector] s_end_FixedRimColor ("Color", Float) = 0
+[HideInInspector] s_start_FixedRimBlending ("Blending--{persistent_expand:true,default_expand:true}", Float) = 1
+_DepthRimReplace ("Replace", Range(0, 1)) = 0
+_DepthRimAdd ("Add", Range(0, 1)) = 0
+_DepthRimScreen ("Screen", Range(0, 1)) = 1
+_DepthRimMultiply ("Multiply", Range(0, 1)) = 0
+_DepthRimAdditiveLighting ("Unlit Add", Range(0, 1)) = 0
+[HideInInspector] s_end_FixedRimBlending ("Blending", Float) = 0
+[HideInInspector] m_end_depthRimLightOptions ("Rim Lighting", Float) = 0
+//endex
+
+#T#PoiRimLightKeywords
+//ifex _EnableDepthRimLighting==0
+#pragma shader_feature_local _POI_DEPTH_RIMLIGHT
+//endex
+
+#T#PoiDepthRimLightVariablesExposed
+//ifex _EnableDepthRimLighting==0
+#ifdef _POI_DEPTH_RIMLIGHT
+    float _DepthRimNormalToUse;
+    half _DepthRimWidth;
+    half _DepthRimSharpness;
+    float _DepthRimDepthThreshold;
+    float _DepthRimBinary;
+    float _DepthRimHideInShadow;
+    float _DepthRimLightDirMethod;
+    half _DepthRimShadowMask;
+    half _DepthRimMixRampedLightMap;
+    float _DepthRimCameraClip;
+    float _DepthRimMinDistance;
+    float _DepthRimMaxDistance;
+    half4 _DepthRimColor;
+    float _DepthRimColorThemeIndex;
+    half _DepthRimMixBaseColor;
+    half _DepthRimEmission;
+    half _DepthRimReplace;
+    half _DepthRimAdd;
+    half _DepthRimScreen;
+    half _DepthRimMultiply;
+    half _DepthRimAdditiveLighting;
+    half _DepthRimMixLightColor;
+    float _DepthRimType;
+    half _DepthRimBrightness;
+    float _DepthRimIgnoreLighting;
+    
+    #if defined(PROP_DEPTHRIMMASK) || !defined(OPTIMIZER_ENABLED)
+        float4 _DepthRimMask_ST;
+        float2 _DepthRimMaskPan;
+        float _DepthRimMaskUV;
+        float _DepthRimMaskChannel;
+    #endif
+#endif
+//endex
+
+#T#PoiDepthRimLightVariables
+//ifex _EnableDepthRimLighting==0
+#ifdef _POI_DEPTH_RIMLIGHT
+    #if defined(PROP_DEPTHRIMMASK) || !defined(OPTIMIZER_ENABLED)
+        Texture2D _DepthRimMask;
+    #endif
+    static float2 depthRimSampleOffsets4[4] = {
+        float2(0, 1), float2(0, -1), float2(-1, 0), float2(1, 0)
+    };
+    static float2 depthRimSampleOffsets8[8] = {
+        float2(-1, 1), float2(0, 1), float2(1, 1),
+        float2(-1, 0),               float2(1, 0),
+        float2(-1, -1), float2(0, -1), float2(1, -1)
+    };
+#endif
+//endex
+
+#T#PoiDepthRimLightFunction
+//ifex _EnableDepthRimLighting==0
+#ifdef _POI_DEPTH_RIMLIGHT
+    void ApplyDepthRimLighting(inout PoiFragData poiFragData, in PoiMesh poiMesh, in PoiCam poiCam, inout PoiLight poiLight, in PoiMods poiMods)
+    {
+        if (!DepthTextureExists()) return;
+        
+        float perspectiveDivide = 1.0f / poiCam.clipPos.w;
+        float2 screenPos = poiCam.posScreenSpace.xy * perspectiveDivide;
+        float z = SampleScreenDepth(screenPos);
+        
+        #if UNITY_REVERSED_Z
+            if (z == 0) return;
+        #else
+            if (z == 1) return;
+        #endif
+        
+        float4 direction = poiCam.worldDirection * perspectiveDivide;
+        float linearDepth = CorrectedLinearEyeDepth(z, direction.w);
+        
+        float distanceFade = 1;
+        if (_DepthRimMaxDistance > 0)
+        {
+            distanceFade = smoothstep(_DepthRimMaxDistance, _DepthRimMinDistance + 0.001, poiCam.distanceToVert);
+            if (distanceFade <= 0) return;
+        }
+        
+        float cameraClipScale = _DepthRimCameraClip > 0 ? saturate(poiCam.distanceToVert / _DepthRimCameraClip) : 1;
+        float scale = WorldToScreenScale(_DepthRimWidth * 0.1, poiCam.distanceToVert) * cameraClipScale;
+        float2 aspectCorrect = GetScreenAspectCorrection();
+        
+        float3 viewNorm = normalize(mul((float3x3)UNITY_MATRIX_V, poiMesh.normals[_DepthRimNormalToUse]));
+        half normalFacingRaw = saturate(1 - abs(viewNorm.z));
+        float normalFacing = _DepthRimBinary ? 1 : saturate(1.8 - abs(normalFacingRaw - 0.5) * 3.6);
+        float2 viewNormXY = viewNorm.xy;
+        float2 N_View = length(viewNormXY) > 1e-6 ? normalize(viewNormXY) : float2(0, 1);
+
+        float3 viewLight = normalize(mul((float3x3)UNITY_MATRIX_V, poiLight.direction));
+        float2 viewLightXY = viewLight.xy;
+        float2 L_View = length(viewLightXY) > 1e-6 ? normalize(viewLightXY) : float2(0, 1);
+
+        half rim = 0;
+        float depthDiff = 0;
+        float depthThreshold = _DepthRimDepthThreshold / max(cameraClipScale, 0.001);
+        float depthThresholdLow = depthThreshold * _DepthRimSharpness;
+        
+        // Large depth value to use when sample hits skybox (ensures rim is detected at silhouette edges)
+        float skyboxDepth = linearDepth + depthThreshold * 2;
+
+        [branch]
+        switch (_DepthRimType)
+        {
+            case 0:
+            {
+                float2 ssUV1 = screenPos + N_View * aspectCorrect * scale;
+                float2 ssUV2 = screenPos - N_View * aspectCorrect * scale;
+                float sampleZ1 = SampleScreenDepth(ssUV1);
+                float sampleZ2 = SampleScreenDepth(ssUV2);
+                
+                #if UNITY_REVERSED_Z
+                    float sampleDepth1 = sampleZ1 < 0.0001 ? skyboxDepth : CorrectedLinearEyeDepth(sampleZ1, direction.w);
+                    float sampleDepth2 = sampleZ2 < 0.0001 ? skyboxDepth : CorrectedLinearEyeDepth(sampleZ2, direction.w);
+                #else
+                    float sampleDepth1 = sampleZ1 > 0.9999 ? skyboxDepth : CorrectedLinearEyeDepth(sampleZ1, direction.w);
+                    float sampleDepth2 = sampleZ2 > 0.9999 ? skyboxDepth : CorrectedLinearEyeDepth(sampleZ2, direction.w);
+                #endif
+                depthDiff = max(sampleDepth1 - linearDepth, sampleDepth2 - linearDepth);
+
+                rim = _DepthRimBinary ? step(depthThreshold, depthDiff) : smoothstep(depthThresholdLow, depthThreshold, depthDiff);
+                rim *= normalFacing;
+                break;
+            }
+            case 1:
+            {
+                [unroll]
+                for (int i = 0; i < 4; i++)
+                {
+                    float2 ssUV1 = screenPos + depthRimSampleOffsets4[i] * aspectCorrect * scale;
+                    float sampleZ = SampleScreenDepth(ssUV1);
+                    #if UNITY_REVERSED_Z
+                        float sampleDepth = sampleZ < 0.0001 ? skyboxDepth : CorrectedLinearEyeDepth(sampleZ, direction.w);
+                    #else
+                        float sampleDepth = sampleZ > 0.9999 ? skyboxDepth : CorrectedLinearEyeDepth(sampleZ, direction.w);
+                    #endif
+                    depthDiff = max(depthDiff, sampleDepth - linearDepth);
+                }
+                rim = _DepthRimBinary ? step(depthThreshold, depthDiff) : smoothstep(depthThresholdLow, depthThreshold, depthDiff);
+                rim *= normalFacing;
+                break;
+            }
+            case 2:
+            {
+                [unroll]
+                for (int i = 0; i < 8; i++)
+                {
+                    float2 ssUV1 = screenPos + depthRimSampleOffsets8[i] * aspectCorrect * scale;
+                    float sampleZ = SampleScreenDepth(ssUV1);
+                    #if UNITY_REVERSED_Z
+                        float sampleDepth = sampleZ < 0.0001 ? skyboxDepth : CorrectedLinearEyeDepth(sampleZ, direction.w);
+                    #else
+                        float sampleDepth = sampleZ > 0.9999 ? skyboxDepth : CorrectedLinearEyeDepth(sampleZ, direction.w);
+                    #endif
+                    depthDiff = max(depthDiff, sampleDepth - linearDepth);
+                }
+                rim = _DepthRimBinary ? step(depthThreshold, depthDiff) : smoothstep(depthThresholdLow, depthThreshold, depthDiff);
+                rim *= normalFacing;
+                break;
+            }
+        }
+
+        // Light Direction
+        float lightDirFactor = _DepthRimLightDirMethod == 0
+            ? saturate(lerp(poiLight.vertexNDotL, poiLight.nDotL, _DepthRimNormalToUse))
+            : saturate(dot(L_View, N_View));
+        rim *= lerp(1, lightDirFactor, _DepthRimHideInShadow);
+        rim *= lerp(1, poiLight.lightMap, _DepthRimShadowMask);
+        rim *= lerp(1, dot(poiLight.rampedLightMap, float3(0.299, 0.587, 0.114)), _DepthRimMixRampedLightMap);
+
+        #if defined(PROP_DEPTHRIMMASK) || !defined(OPTIMIZER_ENABLED)
+            half mask = POI2D_SAMPLER_PAN(_DepthRimMask, _MainTex, poiUV(poiMesh.uv[_DepthRimMaskUV], _DepthRimMask_ST), _DepthRimMaskPan)[_DepthRimMaskChannel];
+        #else
+            half mask = 1;
+        #endif
+        if (_DepthRimBinary >= 0.5)
+        {
+            rim *= step(0.5, mask) * step(0.5, distanceFade);
+        }
+        else
+        {
+            rim *= mask * distanceFade;
+        }
+        
+        half3 rimColor = poiThemeColor(poiMods, _DepthRimColor.rgb, _DepthRimColorThemeIndex).rgb * lerp(1, poiLight.directColor, _DepthRimMixLightColor) * lerp(1, poiFragData.baseColor, _DepthRimMixBaseColor) * _DepthRimBrightness;
+        half3 rimColorUnlit = rimColor / max(poiLight.finalLighting, 0.0001);
+        rimColor = lerp(rimColor, rimColorUnlit, _DepthRimIgnoreLighting);
+
+        #if defined(POI_PASS_BASE) || defined(POI_PASS_OUTLINE)
+            poiLight.finalLightAdd += rim * rimColor * _DepthRimAdditiveLighting;
+        #endif
+        poiFragData.emission += rim * rimColor * _DepthRimEmission;
+        poiFragData.baseColor = lerp(poiFragData.baseColor, rimColor, rim * _DepthRimReplace);
+        poiFragData.baseColor += rim * rimColor * _DepthRimAdd;
+        poiFragData.baseColor = lerp(poiFragData.baseColor, 1 - (1 - poiFragData.baseColor) * (1 - rimColor), rim * _DepthRimScreen);
+        poiFragData.baseColor *= lerp(1, rimColor, rim * _DepthRimMultiply);
+    }
+#endif
+//endex
+
+#T#PoiDepthRimLightFunctionCall
+//ifex _EnableDepthRimLighting==0
+#ifdef _POI_DEPTH_RIMLIGHT
+    ApplyDepthRimLighting(poiFragData, poiMesh, poiCam, poiLight, poiMods);
+#endif
+//endex
