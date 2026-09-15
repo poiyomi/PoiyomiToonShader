@@ -1,5 +1,5 @@
 <div align=center class=flex>
-  <img height="125" alt="Poi Documentation" src="https://www.poiyomi.com/img/logo.svg">
+  <img height="125" alt="Poi Documentation" src="https://www.poiyomi.com/img/PoiyomiTextFull.svg">
   <br><br>
   <a href="https://discord.gg/poiyomi">
     <img alt="Discord" src="https://img.shields.io/discord/550477546958094348?color=%237289da&label=DISCORD&logo=Discord&style=for-the-badge">
@@ -7,10 +7,10 @@
   <a href="https://patreon.com/poiyomi">
     <img src="https://img.shields.io/endpoint.svg?url=https%3A%2F%2Fshieldsio-patreon.vercel.app%2Fapi%3Fusername%3Dpoiyomi%26type%3Dpatrons&style=for-the-badge" alt="Support Poiyomi on Patreon">
   </a>
-  <a href="https://poiyomi.com/">
+  <a href="https://www.poiyomi.com/">
     <img alt="Website" src="https://img.shields.io/website?down_color=ff2244&down_message=poiyomi.com&label=DOCUMENTATION&style=for-the-badge&up_color=E7BF2A&up_message=poiyomi.com&url=http%3A%2F%2Fpoiyomi.com%2F">
   </a>
-  <a href="https://github.com/poiyomi/PoiyomiToonShader/blob/master/LICENSE">
+  <a href="https://github.com/poiyomi/PoiyomiToonShader/blob/master/LICENSE.txt">
     <img alt="GitHub" src="https://img.shields.io/github/license/Poiyomi/PoiyomiToonShader?color=1BB7E4&style=for-the-badge">
   </a>
   <a href="https://github.com/poiyomi/PoiyomiToonShader/releases/latest">
