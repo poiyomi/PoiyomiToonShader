@@ -61,6 +61,7 @@ namespace Poi.Tools.ShaderTranslator.VersionUpgrade
 			// Locked (optimized) materials carry a generated Hidden/Locked shader; translating against that is unsafe,
 			// so unlock first. The values we need are preserved on the material across the unlock.
 			UnlockIfNeeded(material);
+			if (!PoiyomiUpgrade_9_3_to_10_0.CanPreserveLilFurMasks(material, material.shader)) return false;
 
 			List<ScriptedShaderTranslator> translatorChain = BuildChain(startVersion, PoiyomiVersionDetector.LatestVersion);
 
@@ -164,6 +165,14 @@ namespace Poi.Tools.ShaderTranslator.VersionUpgrade
 			List<ScriptedShaderTranslator> translatorChain = BuildChain(oldVersion, newVersion);
 			if (translatorChain.Count == 0)
 				return false;
+
+			if (!PoiyomiUpgrade_9_3_to_10_0.CanPreserveLilFurMasks(material, oldShader))
+			{
+				int renderQueue = material.renderQueue;
+				material.shader = oldShader;
+				material.renderQueue = renderQueue;
+				return false;
+			}
 
 			ThryLogger.Log($"Auto-upgrading material <b>{material.name}</b> from version {oldVersion} to {newVersion} after shader swap{(editionSwap ? $" (edition change: {oldVariant} -> {newVariant})" : "")}.");
 

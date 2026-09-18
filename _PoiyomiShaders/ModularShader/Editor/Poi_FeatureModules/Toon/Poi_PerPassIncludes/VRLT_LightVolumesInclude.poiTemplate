@@ -126,11 +126,17 @@ uniform float4 _UdonPointLightVolumeShadowRotationData[VRCLV_MAX_LIGHTS_COUNT];
 // Only the camera basis and position change during normal HMD motion. The enable flag and
 // projection/layout values stay in the cold block because their transitions are infrequent.
 #if VRCLV_CLUSTERING_SUPPORTED
+// D3D11 instanced forward lighting exhausts its 14 cbuffer slots.
+// Keep these three vectors in $Globals on DirectX.
+#if !defined(SHADER_API_D3D11)
 cbuffer LightVolumeClusteringUniforms {
+#endif
 uniform float4 _UdonFroxelRight;      // xyz: axis, w: camera position x
 uniform float4 _UdonFroxelUp;         // xyz: axis, w: camera position y
 uniform float4 _UdonFroxelForward;    // xyz: axis, w: camera position z
+#if !defined(SHADER_API_D3D11)
 }
+#endif
 #endif
 
 #ifndef SHADER_TARGET_SURFACE_ANALYSIS

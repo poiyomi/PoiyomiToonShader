@@ -754,7 +754,10 @@ float4 frag(PoiGeoToFragLilFur i, bool facing : SV_IsFrontFace) : SV_Target
 	//clip(poiFragData.alpha - .5f);
 	#K#FRAGMENT_LILFUR_ALPHA_LATE
 
-	poiFragData.finalColor += poiFragData.emission * poiMods.globalEmission;
+	// Emission is independent of the number of realtime lights.
+	#if !defined(POI_PASS_ADD)
+		poiFragData.finalColor += poiFragData.emission * poiMods.globalEmission;
+	#endif
 
 	// Apply Poiyomi fog system (handles all fog types without keywords)
 	applyUnityFog(poiFragData.finalColor, i.fogData, _IgnoreFog);

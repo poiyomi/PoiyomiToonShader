@@ -2,7 +2,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 {
 	Properties
 	{
-		[HideInInspector] shader_master_label ("<color=#E75898ff>Poiyomi 10.0.20</color>", Float) = 0
+		[HideInInspector] shader_master_label ("<color=#E75898ff>Poiyomi 10.0.21</color>", Float) = 0
 		[HideInInspector] shader_is_using_thry_editor ("", Float) = 0
 		[HideInInspector] shader_locale ("0db0b86376c3dca4b9a6828ef8615fe0", Float) = 0
 		[HideInInspector] footer_website ("{texture:{name:icon-poilogo,height:24},action:{type:URL,data:https://www.poiyomi.com},hover:WEBSITE}", Float) = 0
@@ -18928,11 +18928,17 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			// Only the camera basis and position change during normal HMD motion. The enable flag and
 			// projection/layout values stay in the cold block because their transitions are infrequent.
 			#if VRCLV_CLUSTERING_SUPPORTED
+			// D3D11 instanced forward lighting exhausts its 14 cbuffer slots.
+			// Keep these three vectors in $Globals on DirectX.
+			#if !defined(SHADER_API_D3D11)
 			cbuffer LightVolumeClusteringUniforms {
+				#endif
 				uniform float4 _UdonFroxelRight;      // xyz: axis, w: camera position x
 				uniform float4 _UdonFroxelUp;         // xyz: axis, w: camera position y
 				uniform float4 _UdonFroxelForward;    // xyz: axis, w: camera position z
+				#if !defined(SHADER_API_D3D11)
 			}
+			#endif
 			#endif
 			
 			#ifndef SHADER_TARGET_SURFACE_ANALYSIS
@@ -27813,7 +27819,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				half3 sss = poiLight.lightMapNoAttenuation;
 				#endif
 				
-				poiLight.finalLighting = lerp(skinLitColor, min(lerp(ambientColor * _LightingShadowColor, _LightingShadowColor, ignoreAmbientColor) * poiLight.occlusion + (sss * litColor), litColor), shadowStrength);
+				poiLight.finalLighting = lerp(skinLitColor, min(lerp(ambientColor * _LightingShadowColor, _LightingShadowColor, ignoreAmbientColor) * poiLight.occlusion + (sss * skinLitColor), litColor), shadowStrength);
 				#endif
 				
 				#ifdef _LIGHTINGMODE_SDF
@@ -32598,28 +32604,29 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				if (_PBRSplitMaskSample >= 0.5)
 				{
 					half4 PBRSplitMask = POI2D_SAMPLER_PAN_STOCHASTIC(_MochieMetallicMaps, _MainTex, poiUV(poiMesh.uv[_MochieMetallicMasksUV], _PBRMaskScaleTiling), _MochieMetallicMasksPan.xy, _PBRSplitMaskStochastic);
-					half reflVal = _MochieMetallicMapsReflectionMaskChannel < 4 ? PBRSplitMask[_MochieMetallicMapsReflectionMaskChannel] : 1.0h;
-					half specVal = _MochieMetallicMapsSpecularMaskChannel < 4 ? PBRSplitMask[_MochieMetallicMapsSpecularMaskChannel] : 1.0h;
-					assignValueToVectorFromIndex(PBRMaps, _MochieMetallicMapsReflectionMaskChannel, reflVal);
-					assignValueToVectorFromIndex(PBRMaps, _MochieMetallicMapsSpecularMaskChannel, specVal);
+					half reflVal = _MochieMetallicMapsReflectionMaskChannel < 4 ? PBRSplitMask[min(_MochieMetallicMapsReflectionMaskChannel, 3)] : 1.0h;
+					half specVal = _MochieMetallicMapsSpecularMaskChannel < 4 ? PBRSplitMask[min(_MochieMetallicMapsSpecularMaskChannel, 3)] : 1.0h;
+					if (_MochieMetallicMapsReflectionMaskChannel < 4) assignValueToVectorFromIndex(PBRMaps, _MochieMetallicMapsReflectionMaskChannel, reflVal);
+					if (_MochieMetallicMapsSpecularMaskChannel < 4) assignValueToVectorFromIndex(PBRMaps, _MochieMetallicMapsSpecularMaskChannel, specVal);
 				}
 				
+				// Locking makes channels literal constants; even unused branches need valid vector indices.
 				if (_MochieMetallicMapsMetallicChannel < 4)
 				{
-					metallic *= PBRMaps[_MochieMetallicMapsMetallicChannel];
+					metallic *= PBRMaps[min(_MochieMetallicMapsMetallicChannel, 3)];
 				}
 				if (_MochieMetallicMapsRoughnessChannel < 4)
 				{
-					smoothness *= PBRMaps[_MochieMetallicMapsRoughnessChannel];
-					smoothness2 *= PBRMaps[_MochieMetallicMapsRoughnessChannel];
+					smoothness *= PBRMaps[min(_MochieMetallicMapsRoughnessChannel, 3)];
+					smoothness2 *= PBRMaps[min(_MochieMetallicMapsRoughnessChannel, 3)];
 				}
 				if (_MochieMetallicMapsReflectionMaskChannel < 4)
 				{
-					reflectionMask *= PBRMaps[_MochieMetallicMapsReflectionMaskChannel];
+					reflectionMask *= PBRMaps[min(_MochieMetallicMapsReflectionMaskChannel, 3)];
 				}
 				if (_MochieMetallicMapsSpecularMaskChannel < 4)
 				{
-					specularMask *= PBRMaps[_MochieMetallicMapsSpecularMaskChannel];
+					specularMask *= PBRMaps[min(_MochieMetallicMapsSpecularMaskChannel, 3)];
 				}
 				#endif
 				
@@ -33050,19 +33057,19 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				
 				if (_ClearCoatMapsClearCoatMaskChannel < 4)
 				{
-					clearCoatMask *= PBRMaps[_ClearCoatMapsClearCoatMaskChannel];
+					clearCoatMask *= PBRMaps[min(_ClearCoatMapsClearCoatMaskChannel, 3)];
 				}
 				if (_ClearCoatMapsRoughnessChannel < 4)
 				{
-					smoothness *= PBRMaps[_ClearCoatMapsRoughnessChannel];
+					smoothness *= PBRMaps[min(_ClearCoatMapsRoughnessChannel, 3)];
 				}
 				if (_ClearCoatMapsReflectionMaskChannel < 4)
 				{
-					reflectionMask *= PBRMaps[_ClearCoatMapsReflectionMaskChannel];
+					reflectionMask *= PBRMaps[min(_ClearCoatMapsReflectionMaskChannel, 3)];
 				}
 				if (_ClearCoatMapsSpecularMaskChannel < 4)
 				{
-					specularMask *= PBRMaps[_ClearCoatMapsSpecularMaskChannel];
+					specularMask *= PBRMaps[min(_ClearCoatMapsSpecularMaskChannel, 3)];
 				}
 				#endif
 				
@@ -47998,7 +48005,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				half3 sss = poiLight.lightMapNoAttenuation;
 				#endif
 				
-				poiLight.finalLighting = lerp(skinLitColor, min(lerp(ambientColor * _LightingShadowColor, _LightingShadowColor, ignoreAmbientColor) * poiLight.occlusion + (sss * litColor), litColor), shadowStrength);
+				poiLight.finalLighting = lerp(skinLitColor, min(lerp(ambientColor * _LightingShadowColor, _LightingShadowColor, ignoreAmbientColor) * poiLight.occlusion + (sss * skinLitColor), litColor), shadowStrength);
 				#endif
 				
 				#ifdef _LIGHTINGMODE_SDF
@@ -51943,28 +51950,29 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				if (_PBRSplitMaskSample >= 0.5)
 				{
 					half4 PBRSplitMask = POI2D_SAMPLER_PAN_STOCHASTIC(_MochieMetallicMaps, _MainTex, poiUV(poiMesh.uv[_MochieMetallicMasksUV], _PBRMaskScaleTiling), _MochieMetallicMasksPan.xy, _PBRSplitMaskStochastic);
-					half reflVal = _MochieMetallicMapsReflectionMaskChannel < 4 ? PBRSplitMask[_MochieMetallicMapsReflectionMaskChannel] : 1.0h;
-					half specVal = _MochieMetallicMapsSpecularMaskChannel < 4 ? PBRSplitMask[_MochieMetallicMapsSpecularMaskChannel] : 1.0h;
-					assignValueToVectorFromIndex(PBRMaps, _MochieMetallicMapsReflectionMaskChannel, reflVal);
-					assignValueToVectorFromIndex(PBRMaps, _MochieMetallicMapsSpecularMaskChannel, specVal);
+					half reflVal = _MochieMetallicMapsReflectionMaskChannel < 4 ? PBRSplitMask[min(_MochieMetallicMapsReflectionMaskChannel, 3)] : 1.0h;
+					half specVal = _MochieMetallicMapsSpecularMaskChannel < 4 ? PBRSplitMask[min(_MochieMetallicMapsSpecularMaskChannel, 3)] : 1.0h;
+					if (_MochieMetallicMapsReflectionMaskChannel < 4) assignValueToVectorFromIndex(PBRMaps, _MochieMetallicMapsReflectionMaskChannel, reflVal);
+					if (_MochieMetallicMapsSpecularMaskChannel < 4) assignValueToVectorFromIndex(PBRMaps, _MochieMetallicMapsSpecularMaskChannel, specVal);
 				}
 				
+				// Locking makes channels literal constants; even unused branches need valid vector indices.
 				if (_MochieMetallicMapsMetallicChannel < 4)
 				{
-					metallic *= PBRMaps[_MochieMetallicMapsMetallicChannel];
+					metallic *= PBRMaps[min(_MochieMetallicMapsMetallicChannel, 3)];
 				}
 				if (_MochieMetallicMapsRoughnessChannel < 4)
 				{
-					smoothness *= PBRMaps[_MochieMetallicMapsRoughnessChannel];
-					smoothness2 *= PBRMaps[_MochieMetallicMapsRoughnessChannel];
+					smoothness *= PBRMaps[min(_MochieMetallicMapsRoughnessChannel, 3)];
+					smoothness2 *= PBRMaps[min(_MochieMetallicMapsRoughnessChannel, 3)];
 				}
 				if (_MochieMetallicMapsReflectionMaskChannel < 4)
 				{
-					reflectionMask *= PBRMaps[_MochieMetallicMapsReflectionMaskChannel];
+					reflectionMask *= PBRMaps[min(_MochieMetallicMapsReflectionMaskChannel, 3)];
 				}
 				if (_MochieMetallicMapsSpecularMaskChannel < 4)
 				{
-					specularMask *= PBRMaps[_MochieMetallicMapsSpecularMaskChannel];
+					specularMask *= PBRMaps[min(_MochieMetallicMapsSpecularMaskChannel, 3)];
 				}
 				#endif
 				
@@ -52395,19 +52403,19 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				
 				if (_ClearCoatMapsClearCoatMaskChannel < 4)
 				{
-					clearCoatMask *= PBRMaps[_ClearCoatMapsClearCoatMaskChannel];
+					clearCoatMask *= PBRMaps[min(_ClearCoatMapsClearCoatMaskChannel, 3)];
 				}
 				if (_ClearCoatMapsRoughnessChannel < 4)
 				{
-					smoothness *= PBRMaps[_ClearCoatMapsRoughnessChannel];
+					smoothness *= PBRMaps[min(_ClearCoatMapsRoughnessChannel, 3)];
 				}
 				if (_ClearCoatMapsReflectionMaskChannel < 4)
 				{
-					reflectionMask *= PBRMaps[_ClearCoatMapsReflectionMaskChannel];
+					reflectionMask *= PBRMaps[min(_ClearCoatMapsReflectionMaskChannel, 3)];
 				}
 				if (_ClearCoatMapsSpecularMaskChannel < 4)
 				{
-					specularMask *= PBRMaps[_ClearCoatMapsSpecularMaskChannel];
+					specularMask *= PBRMaps[min(_ClearCoatMapsSpecularMaskChannel, 3)];
 				}
 				#endif
 				
@@ -61042,11 +61050,17 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			// Only the camera basis and position change during normal HMD motion. The enable flag and
 			// projection/layout values stay in the cold block because their transitions are infrequent.
 			#if VRCLV_CLUSTERING_SUPPORTED
+			// D3D11 instanced forward lighting exhausts its 14 cbuffer slots.
+			// Keep these three vectors in $Globals on DirectX.
+			#if !defined(SHADER_API_D3D11)
 			cbuffer LightVolumeClusteringUniforms {
+				#endif
 				uniform float4 _UdonFroxelRight;      // xyz: axis, w: camera position x
 				uniform float4 _UdonFroxelUp;         // xyz: axis, w: camera position y
 				uniform float4 _UdonFroxelForward;    // xyz: axis, w: camera position z
+				#if !defined(SHADER_API_D3D11)
 			}
+			#endif
 			#endif
 			
 			#ifndef SHADER_TARGET_SURFACE_ANALYSIS
@@ -69927,7 +69941,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				half3 sss = poiLight.lightMapNoAttenuation;
 				#endif
 				
-				poiLight.finalLighting = lerp(skinLitColor, min(lerp(ambientColor * _LightingShadowColor, _LightingShadowColor, ignoreAmbientColor) * poiLight.occlusion + (sss * litColor), litColor), shadowStrength);
+				poiLight.finalLighting = lerp(skinLitColor, min(lerp(ambientColor * _LightingShadowColor, _LightingShadowColor, ignoreAmbientColor) * poiLight.occlusion + (sss * skinLitColor), litColor), shadowStrength);
 				#endif
 				
 				#ifdef _LIGHTINGMODE_SDF
@@ -74712,28 +74726,29 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				if (_PBRSplitMaskSample >= 0.5)
 				{
 					half4 PBRSplitMask = POI2D_SAMPLER_PAN_STOCHASTIC(_MochieMetallicMaps, _MainTex, poiUV(poiMesh.uv[_MochieMetallicMasksUV], _PBRMaskScaleTiling), _MochieMetallicMasksPan.xy, _PBRSplitMaskStochastic);
-					half reflVal = _MochieMetallicMapsReflectionMaskChannel < 4 ? PBRSplitMask[_MochieMetallicMapsReflectionMaskChannel] : 1.0h;
-					half specVal = _MochieMetallicMapsSpecularMaskChannel < 4 ? PBRSplitMask[_MochieMetallicMapsSpecularMaskChannel] : 1.0h;
-					assignValueToVectorFromIndex(PBRMaps, _MochieMetallicMapsReflectionMaskChannel, reflVal);
-					assignValueToVectorFromIndex(PBRMaps, _MochieMetallicMapsSpecularMaskChannel, specVal);
+					half reflVal = _MochieMetallicMapsReflectionMaskChannel < 4 ? PBRSplitMask[min(_MochieMetallicMapsReflectionMaskChannel, 3)] : 1.0h;
+					half specVal = _MochieMetallicMapsSpecularMaskChannel < 4 ? PBRSplitMask[min(_MochieMetallicMapsSpecularMaskChannel, 3)] : 1.0h;
+					if (_MochieMetallicMapsReflectionMaskChannel < 4) assignValueToVectorFromIndex(PBRMaps, _MochieMetallicMapsReflectionMaskChannel, reflVal);
+					if (_MochieMetallicMapsSpecularMaskChannel < 4) assignValueToVectorFromIndex(PBRMaps, _MochieMetallicMapsSpecularMaskChannel, specVal);
 				}
 				
+				// Locking makes channels literal constants; even unused branches need valid vector indices.
 				if (_MochieMetallicMapsMetallicChannel < 4)
 				{
-					metallic *= PBRMaps[_MochieMetallicMapsMetallicChannel];
+					metallic *= PBRMaps[min(_MochieMetallicMapsMetallicChannel, 3)];
 				}
 				if (_MochieMetallicMapsRoughnessChannel < 4)
 				{
-					smoothness *= PBRMaps[_MochieMetallicMapsRoughnessChannel];
-					smoothness2 *= PBRMaps[_MochieMetallicMapsRoughnessChannel];
+					smoothness *= PBRMaps[min(_MochieMetallicMapsRoughnessChannel, 3)];
+					smoothness2 *= PBRMaps[min(_MochieMetallicMapsRoughnessChannel, 3)];
 				}
 				if (_MochieMetallicMapsReflectionMaskChannel < 4)
 				{
-					reflectionMask *= PBRMaps[_MochieMetallicMapsReflectionMaskChannel];
+					reflectionMask *= PBRMaps[min(_MochieMetallicMapsReflectionMaskChannel, 3)];
 				}
 				if (_MochieMetallicMapsSpecularMaskChannel < 4)
 				{
-					specularMask *= PBRMaps[_MochieMetallicMapsSpecularMaskChannel];
+					specularMask *= PBRMaps[min(_MochieMetallicMapsSpecularMaskChannel, 3)];
 				}
 				#endif
 				
@@ -75164,19 +75179,19 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				
 				if (_ClearCoatMapsClearCoatMaskChannel < 4)
 				{
-					clearCoatMask *= PBRMaps[_ClearCoatMapsClearCoatMaskChannel];
+					clearCoatMask *= PBRMaps[min(_ClearCoatMapsClearCoatMaskChannel, 3)];
 				}
 				if (_ClearCoatMapsRoughnessChannel < 4)
 				{
-					smoothness *= PBRMaps[_ClearCoatMapsRoughnessChannel];
+					smoothness *= PBRMaps[min(_ClearCoatMapsRoughnessChannel, 3)];
 				}
 				if (_ClearCoatMapsReflectionMaskChannel < 4)
 				{
-					reflectionMask *= PBRMaps[_ClearCoatMapsReflectionMaskChannel];
+					reflectionMask *= PBRMaps[min(_ClearCoatMapsReflectionMaskChannel, 3)];
 				}
 				if (_ClearCoatMapsSpecularMaskChannel < 4)
 				{
-					specularMask *= PBRMaps[_ClearCoatMapsSpecularMaskChannel];
+					specularMask *= PBRMaps[min(_ClearCoatMapsSpecularMaskChannel, 3)];
 				}
 				#endif
 				
@@ -90117,7 +90132,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				half3 sss = poiLight.lightMapNoAttenuation;
 				#endif
 				
-				poiLight.finalLighting = lerp(skinLitColor, min(lerp(ambientColor * _LightingShadowColor, _LightingShadowColor, ignoreAmbientColor) * poiLight.occlusion + (sss * litColor), litColor), shadowStrength);
+				poiLight.finalLighting = lerp(skinLitColor, min(lerp(ambientColor * _LightingShadowColor, _LightingShadowColor, ignoreAmbientColor) * poiLight.occlusion + (sss * skinLitColor), litColor), shadowStrength);
 				#endif
 				
 				#ifdef _LIGHTINGMODE_SDF
@@ -94062,28 +94077,29 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				if (_PBRSplitMaskSample >= 0.5)
 				{
 					half4 PBRSplitMask = POI2D_SAMPLER_PAN_STOCHASTIC(_MochieMetallicMaps, _MainTex, poiUV(poiMesh.uv[_MochieMetallicMasksUV], _PBRMaskScaleTiling), _MochieMetallicMasksPan.xy, _PBRSplitMaskStochastic);
-					half reflVal = _MochieMetallicMapsReflectionMaskChannel < 4 ? PBRSplitMask[_MochieMetallicMapsReflectionMaskChannel] : 1.0h;
-					half specVal = _MochieMetallicMapsSpecularMaskChannel < 4 ? PBRSplitMask[_MochieMetallicMapsSpecularMaskChannel] : 1.0h;
-					assignValueToVectorFromIndex(PBRMaps, _MochieMetallicMapsReflectionMaskChannel, reflVal);
-					assignValueToVectorFromIndex(PBRMaps, _MochieMetallicMapsSpecularMaskChannel, specVal);
+					half reflVal = _MochieMetallicMapsReflectionMaskChannel < 4 ? PBRSplitMask[min(_MochieMetallicMapsReflectionMaskChannel, 3)] : 1.0h;
+					half specVal = _MochieMetallicMapsSpecularMaskChannel < 4 ? PBRSplitMask[min(_MochieMetallicMapsSpecularMaskChannel, 3)] : 1.0h;
+					if (_MochieMetallicMapsReflectionMaskChannel < 4) assignValueToVectorFromIndex(PBRMaps, _MochieMetallicMapsReflectionMaskChannel, reflVal);
+					if (_MochieMetallicMapsSpecularMaskChannel < 4) assignValueToVectorFromIndex(PBRMaps, _MochieMetallicMapsSpecularMaskChannel, specVal);
 				}
 				
+				// Locking makes channels literal constants; even unused branches need valid vector indices.
 				if (_MochieMetallicMapsMetallicChannel < 4)
 				{
-					metallic *= PBRMaps[_MochieMetallicMapsMetallicChannel];
+					metallic *= PBRMaps[min(_MochieMetallicMapsMetallicChannel, 3)];
 				}
 				if (_MochieMetallicMapsRoughnessChannel < 4)
 				{
-					smoothness *= PBRMaps[_MochieMetallicMapsRoughnessChannel];
-					smoothness2 *= PBRMaps[_MochieMetallicMapsRoughnessChannel];
+					smoothness *= PBRMaps[min(_MochieMetallicMapsRoughnessChannel, 3)];
+					smoothness2 *= PBRMaps[min(_MochieMetallicMapsRoughnessChannel, 3)];
 				}
 				if (_MochieMetallicMapsReflectionMaskChannel < 4)
 				{
-					reflectionMask *= PBRMaps[_MochieMetallicMapsReflectionMaskChannel];
+					reflectionMask *= PBRMaps[min(_MochieMetallicMapsReflectionMaskChannel, 3)];
 				}
 				if (_MochieMetallicMapsSpecularMaskChannel < 4)
 				{
-					specularMask *= PBRMaps[_MochieMetallicMapsSpecularMaskChannel];
+					specularMask *= PBRMaps[min(_MochieMetallicMapsSpecularMaskChannel, 3)];
 				}
 				#endif
 				
@@ -94514,19 +94530,19 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				
 				if (_ClearCoatMapsClearCoatMaskChannel < 4)
 				{
-					clearCoatMask *= PBRMaps[_ClearCoatMapsClearCoatMaskChannel];
+					clearCoatMask *= PBRMaps[min(_ClearCoatMapsClearCoatMaskChannel, 3)];
 				}
 				if (_ClearCoatMapsRoughnessChannel < 4)
 				{
-					smoothness *= PBRMaps[_ClearCoatMapsRoughnessChannel];
+					smoothness *= PBRMaps[min(_ClearCoatMapsRoughnessChannel, 3)];
 				}
 				if (_ClearCoatMapsReflectionMaskChannel < 4)
 				{
-					reflectionMask *= PBRMaps[_ClearCoatMapsReflectionMaskChannel];
+					reflectionMask *= PBRMaps[min(_ClearCoatMapsReflectionMaskChannel, 3)];
 				}
 				if (_ClearCoatMapsSpecularMaskChannel < 4)
 				{
-					specularMask *= PBRMaps[_ClearCoatMapsSpecularMaskChannel];
+					specularMask *= PBRMaps[min(_ClearCoatMapsSpecularMaskChannel, 3)];
 				}
 				#endif
 				
@@ -101162,11 +101178,17 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			// Only the camera basis and position change during normal HMD motion. The enable flag and
 			// projection/layout values stay in the cold block because their transitions are infrequent.
 			#if VRCLV_CLUSTERING_SUPPORTED
+			// D3D11 instanced forward lighting exhausts its 14 cbuffer slots.
+			// Keep these three vectors in $Globals on DirectX.
+			#if !defined(SHADER_API_D3D11)
 			cbuffer LightVolumeClusteringUniforms {
+				#endif
 				uniform float4 _UdonFroxelRight;      // xyz: axis, w: camera position x
 				uniform float4 _UdonFroxelUp;         // xyz: axis, w: camera position y
 				uniform float4 _UdonFroxelForward;    // xyz: axis, w: camera position z
+				#if !defined(SHADER_API_D3D11)
 			}
+			#endif
 			#endif
 			
 			#ifndef SHADER_TARGET_SURFACE_ANALYSIS
@@ -108318,7 +108340,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				half3 sss = poiLight.lightMapNoAttenuation;
 				#endif
 				
-				poiLight.finalLighting = lerp(skinLitColor, min(lerp(ambientColor * _LightingShadowColor, _LightingShadowColor, ignoreAmbientColor) * poiLight.occlusion + (sss * litColor), litColor), shadowStrength);
+				poiLight.finalLighting = lerp(skinLitColor, min(lerp(ambientColor * _LightingShadowColor, _LightingShadowColor, ignoreAmbientColor) * poiLight.occlusion + (sss * skinLitColor), litColor), shadowStrength);
 				#endif
 				
 				#ifdef _LIGHTINGMODE_SDF

@@ -559,7 +559,8 @@ namespace Poi.Tools.ShaderTranslator.Translations
                 new PropertyTranslation("_OutlineTex_ST", "_OutlineTexture_ST"),
                 new PropertyTranslation("_OutlineColor", "_LineColor"),
                 new PropertyTranslation("_OutlineWidthMask", "_OutlineMask"),
-                new PropertyTranslation("_OutlineWidthMask_ST", "_OutlineMask_ST"),
+                // lilToon samples the width mask with uvMain in the vertex shader; its own ST is unused.
+                new PropertyTranslation("_MainTex_ST", "_OutlineMask_ST"),
                 new PropertyTranslation("_OutlineWidth", (prop, context) =>
                 {
                     SetTargetPropertyValue(context, "_LineWidth", GetSourcePropertyValue<float>(context, prop));

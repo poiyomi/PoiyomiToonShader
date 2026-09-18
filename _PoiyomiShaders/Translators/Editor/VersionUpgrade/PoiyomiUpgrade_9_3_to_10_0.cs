@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using Thry.ThryEditor.Helpers;
 
@@ -21,7 +22,8 @@ namespace Poi.Tools.ShaderTranslator.VersionUpgrade
 			if (!PoiyomiVersionDetector.TryGetVersion(sourceMaterial, out Version version))
 				return false;
 
-			return version.Major == SourceVersion.Major && version.Minor == SourceVersion.Minor;
+			return version.Major == SourceVersion.Major && version.Minor == SourceVersion.Minor
+				&& CanPreserveLilFurMasks(sourceMaterial, sourceMaterial.shader);
 		}
 
 		protected override Shader GetTargetShader(Material sourceMaterial, string newShaderName)
@@ -136,8 +138,67 @@ namespace Poi.Tools.ShaderTranslator.VersionUpgrade
 
 		protected override void DoAfterTranslation(TranslationContext context)
 		{
+			UpgradeLilFurMasks(context);
 			SetTargetRenderQueue(context, context.originalRenderQueue);
 			WarnIfGrabPass(context);
+		}
+
+		// 10.0 has one packed texture and one UV transform for both masks. Refuse conversions
+		// that need baking before any properties are changed; neither mask may silently win.
+		internal static bool CanPreserveLilFurMasks(Material material, Shader sourceShader)
+		{
+			if (sourceShader == null || sourceShader.FindPropertyIndex("_FurLengthMask") < 0) return true;
+			var source = new ShaderRepresentation(sourceShader);
+			var values = source.GetPropertiesWithValues(material);
+			var length = values[source["_FurLengthMask"]] as Texture;
+			var alpha = values[source["_FurMask"]] as Texture;
+			if (length == null || alpha == null) return true;
+			var lengthST = (Vector4)values[source["_MainTex_ST"]];
+			if (length == alpha && lengthST == new Vector4(1, 1, 0, 0)) return true;
+
+			ThryLogger.LogWarn($"Skipping Lil Fur upgrade for <b>{material.name}</b>: its length and alpha masks " +
+				"cannot share one texture and UV transform without packing/baking. The 9.3 shader is retained. " +
+				"To migrate manually, copy the material, disable Poi/Auto-Translate Materials On Shader Swap, " +
+				"and pack the old masks' red channels into separate Fur Mask (RGBA) channels. Select those channels " +
+				"for Length Mask and Alpha Mask. Length used Main Texture tiling/offset; alpha used raw UV0, " +
+				"so bake that difference when necessary.");
+			return false;
+		}
+
+		void UpgradeLilFurMasks(TranslationContext context)
+		{
+			// This property identifies Lil Fur, not the unrelated shell-based Pro Fur shader.
+			if (SourceShader["_FurLengthMask"] == null || TargetShader["_FurLengthChannel"] == null) return;
+			var length = GetSourcePropertyValue<Texture>(context, "_FurLengthMask");
+			var alpha = GetSourcePropertyValue<Texture>(context, "_FurMask");
+			SetTargetPropertyValue(context, "_FurMask", length != null ? length : alpha);
+			// 9.3 ignored both masks' own ST; length used MainTex_ST, alpha used raw UV0.
+			SetTargetPropertyValue(context, "_FurMask_ST", length != null
+				? GetSourcePropertyValue<Vector4>(context, "_MainTex_ST") : new Vector4(1, 1, 0, 0));
+			// The menu upgrade defers the shader swap. MaterialProperty/Material setters do not
+			// persist properties absent from the current shader, so write the new saved values.
+			var serialized = new SerializedObject(context.Material);
+			var floats = serialized.FindProperty("m_SavedProperties.m_Floats");
+			SavedValue(floats, "_FurLengthChannel").floatValue = length != null ? 0 : 4;
+			SavedValue(floats, "_FurAlphaChannel").floatValue = alpha != null ? 0 : 4;
+			SavedValue(floats, "_FurMaskStrengthR").floatValue = 1;
+			SavedValue(floats, "_FurMaskUV").floatValue = 0;
+			SavedValue(serialized.FindProperty("m_SavedProperties.m_Colors"), "_FurMaskPan").colorValue = new Color(0, 0, 0, 0);
+			serialized.ApplyModifiedPropertiesWithoutUndo();
+		}
+
+		static SerializedProperty SavedValue(SerializedProperty entries, string name)
+		{
+			for (int i = 0; i < entries.arraySize; i++)
+			{
+				var entry = entries.GetArrayElementAtIndex(i);
+				if (entry.FindPropertyRelative("first").stringValue == name) return entry.FindPropertyRelative("second");
+			}
+			int index = entries.arraySize;
+			entries.InsertArrayElementAtIndex(index);
+			var added = entries.GetArrayElementAtIndex(index);
+			added.FindPropertyRelative("first").stringValue = name;
+			return added.FindPropertyRelative("second");
 		}
 
 		/// <summary>

@@ -1428,7 +1428,7 @@ void PoiShadingGlobalMasks(inout PoiMods poiMods, in PoiLight poiLight)
 				half3 sss = poiLight.lightMapNoAttenuation;
 			#endif
 
-			poiLight.finalLighting = lerp(skinLitColor, min(lerp(ambientColor * _LightingShadowColor, _LightingShadowColor, ignoreAmbientColor) * poiLight.occlusion + (sss * litColor), litColor), shadowStrength);
+			poiLight.finalLighting = lerp(skinLitColor, min(lerp(ambientColor * _LightingShadowColor, _LightingShadowColor, ignoreAmbientColor) * poiLight.occlusion + (sss * skinLitColor), litColor), shadowStrength);
 		#endif
 
 		#ifdef _LIGHTINGMODE_SDF

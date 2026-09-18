@@ -583,28 +583,29 @@ PoiInitStruct(MochieBRDFData, mochieBRDFData);
             if (_PBRSplitMaskSample >= 0.5)
             {
                 half4 PBRSplitMask = POI2D_SAMPLER_PAN_STOCHASTIC(_MochieMetallicMaps, _MainTex, poiUV(poiMesh.uv[_MochieMetallicMasksUV], _PBRMaskScaleTiling), _MochieMetallicMasksPan.xy, _PBRSplitMaskStochastic);
-                half reflVal = _MochieMetallicMapsReflectionMaskChannel < 4 ? PBRSplitMask[_MochieMetallicMapsReflectionMaskChannel] : 1.0h;
-                half specVal = _MochieMetallicMapsSpecularMaskChannel < 4 ? PBRSplitMask[_MochieMetallicMapsSpecularMaskChannel] : 1.0h;
-                assignValueToVectorFromIndex(PBRMaps, _MochieMetallicMapsReflectionMaskChannel, reflVal);
-                assignValueToVectorFromIndex(PBRMaps, _MochieMetallicMapsSpecularMaskChannel, specVal);
+                half reflVal = _MochieMetallicMapsReflectionMaskChannel < 4 ? PBRSplitMask[min(_MochieMetallicMapsReflectionMaskChannel, 3)] : 1.0h;
+                half specVal = _MochieMetallicMapsSpecularMaskChannel < 4 ? PBRSplitMask[min(_MochieMetallicMapsSpecularMaskChannel, 3)] : 1.0h;
+                if (_MochieMetallicMapsReflectionMaskChannel < 4) assignValueToVectorFromIndex(PBRMaps, _MochieMetallicMapsReflectionMaskChannel, reflVal);
+                if (_MochieMetallicMapsSpecularMaskChannel < 4) assignValueToVectorFromIndex(PBRMaps, _MochieMetallicMapsSpecularMaskChannel, specVal);
             }
             
+            // Locking makes channels literal constants; even unused branches need valid vector indices.
             if (_MochieMetallicMapsMetallicChannel < 4)
             {
-                metallic *= PBRMaps[_MochieMetallicMapsMetallicChannel];
+                metallic *= PBRMaps[min(_MochieMetallicMapsMetallicChannel, 3)];
             }
             if (_MochieMetallicMapsRoughnessChannel < 4)
             {
-                smoothness *= PBRMaps[_MochieMetallicMapsRoughnessChannel];
-                smoothness2 *= PBRMaps[_MochieMetallicMapsRoughnessChannel];
+                smoothness *= PBRMaps[min(_MochieMetallicMapsRoughnessChannel, 3)];
+                smoothness2 *= PBRMaps[min(_MochieMetallicMapsRoughnessChannel, 3)];
             }
             if (_MochieMetallicMapsReflectionMaskChannel < 4)
             {
-                reflectionMask *= PBRMaps[_MochieMetallicMapsReflectionMaskChannel];
+                reflectionMask *= PBRMaps[min(_MochieMetallicMapsReflectionMaskChannel, 3)];
             }
             if (_MochieMetallicMapsSpecularMaskChannel < 4)
             {
-                specularMask *= PBRMaps[_MochieMetallicMapsSpecularMaskChannel];
+                specularMask *= PBRMaps[min(_MochieMetallicMapsSpecularMaskChannel, 3)];
             }
         #endif
 
@@ -955,19 +956,19 @@ PoiInitStruct(MochieBRDFData, mochieBRDFData);
 
             if (_ClearCoatMapsClearCoatMaskChannel < 4)
             {
-                clearCoatMask *= PBRMaps[_ClearCoatMapsClearCoatMaskChannel];
+                clearCoatMask *= PBRMaps[min(_ClearCoatMapsClearCoatMaskChannel, 3)];
             }
             if (_ClearCoatMapsRoughnessChannel < 4)
             {
-                smoothness *= PBRMaps[_ClearCoatMapsRoughnessChannel];
+                smoothness *= PBRMaps[min(_ClearCoatMapsRoughnessChannel, 3)];
             }
             if (_ClearCoatMapsReflectionMaskChannel < 4)
             {
-                reflectionMask *= PBRMaps[_ClearCoatMapsReflectionMaskChannel];
+                reflectionMask *= PBRMaps[min(_ClearCoatMapsReflectionMaskChannel, 3)];
             }
             if (_ClearCoatMapsSpecularMaskChannel < 4)
             {
-                specularMask *= PBRMaps[_ClearCoatMapsSpecularMaskChannel];
+                specularMask *= PBRMaps[min(_ClearCoatMapsSpecularMaskChannel, 3)];
             }
         #endif
         
