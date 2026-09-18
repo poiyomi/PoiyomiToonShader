@@ -4,7 +4,7 @@
   <a href="https://discord.gg/poiyomi">
     <img alt="Discord" src="https://img.shields.io/discord/550477546958094348?color=%237289da&label=DISCORD&logo=Discord&style=for-the-badge">
   </a>
-  <a href="https://patreon.com/poiyomi">
+  <a href="https://www.patreon.com/c/poiyomi/">
     <img src="https://img.shields.io/endpoint.svg?url=https%3A%2F%2Fshieldsio-patreon.vercel.app%2Fapi%3Fusername%3Dpoiyomi%26type%3Dpatrons&style=for-the-badge" alt="Support Poiyomi on Patreon">
   </a>
   <a href="https://www.poiyomi.com/">
@@ -77,7 +77,7 @@ Currently, the latest publicly-accessible version contains versions 9.3 thru 10.
 
 ## Pro Shader
 
-[Poiyomi Pro](https://patreon.com/poiyomi) offers additional features and functionality, and always has the latest developments. It contains everything in the free version, plus features like:
+[Poiyomi Pro](https://www.patreon.com/c/poiyomi/) offers additional features and functionality, and always has the latest developments. It contains everything in the free version, plus features like:
 - Fur Shader, supporting all of the main shader's feature plus fluffy fur.
 - Tessellation and Geometry Shader effects, like a Geometric Dissolve.
 - TPS
@@ -87,7 +87,7 @@ Currently, the latest publicly-accessible version contains versions 9.3 thru 10.
 - Early, unreleased features
 - and more!
 
-To get access to Poiyomi Pro, [support Poiyomi on Patreon](https://patreon.com/poiyomi) at the $10 tier or higher, then use the VCC package `Poiyomi Pro` to authenticate with your Patreon account to download and install Poiyomi Pro into your project. Optionally, you can install Poiyomi Pro manually by accessing the downloads on our [Poiyomi Pro Website](https://pro.poiyomi.com/) by logging in with your Patreon account. For more information, refer to our Documentation [here](https://www.poiyomi.com/download#poiyomi-pro).
+To get access to Poiyomi Pro, [support Poiyomi on Patreon](https://www.patreon.com/c/poiyomi/) at the $10 tier or higher, then use the VCC package `Poiyomi Pro` to authenticate with your Patreon account to download and install Poiyomi Pro into your project. Optionally, you can install Poiyomi Pro manually by accessing the downloads on our [Poiyomi Pro Website](https://pro.poiyomi.com/) by logging in with your Patreon account. For more information, refer to our Documentation [here](https://www.poiyomi.com/download#poiyomi-pro).
 
 ---
 
@@ -101,9 +101,9 @@ Poiyomi relies on [ThryEditor](https://github.com/poiyomi/ThryEditor) to display
 
 Poiyomi Shaders are designed for use with the **Built-In Render Pipeline (BIRP)** on **DX11**. We target VRChat's [currently supported Unity version](https://docs.vrchat.com/docs/current-unity-version), **2022.3.22f1** at time of writing. Higher Unity versions have been tested and are known to work, but we primarily target the latest Unity version that VRChat supports.
 
-Compatibility with the Universal Rendering Pipeline (URP) is currently limited, but available. For more information, join the [Discord](https://discord.gg/poiyomi).
+Compatibility with the Universal Rendering Pipeline (URP) is also available. For more information, join the [Discord](https://discord.gg/poiyomi).
 
-Poiyomi Shaders are currently **not compatible** with Unity's Scriptable Rendering Pipelines (HDRP, SRP). Non-DirectX 11 platforms (e.g. OpenGL, Metal, Vulkan, etc.) are not guaranteed to work either.
+Poiyomi Shaders are currently **not compatible** with Unity's Scriptable Rendering Pipelines (HDRP, SRP). Non-DirectX 11 platforms (e.g. OpenGL, Metal, Vulkan, etc.) are not guaranteed to work, although Vulkan support is highly experimental.
 
 The shaders can be used for games outside of VRChat, but may not be ideal due to materials being unable to share a common shader. For non-VRChat usage, make sure to use the [Locking](https://www.poiyomi.com/general/locking) functionality provided by ThryEditor to create optimized shaders for each material.
 
