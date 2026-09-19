@@ -2,7 +2,7 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 {
 	Properties
 	{
-		[HideInInspector] shader_master_label ("<color=#E75898ff>Poiyomi 10.0.21</color>", Float) = 0
+		[HideInInspector] shader_master_label ("<color=#E75898ff>Poiyomi 10.0.22</color>", Float) = 0
 		[HideInInspector] shader_is_using_thry_editor ("", Float) = 0
 		[HideInInspector] shader_locale ("0db0b86376c3dca4b9a6828ef8615fe0", Float) = 0
 		[HideInInspector] footer_website ("{texture:{name:icon-poilogo,height:24},action:{type:URL,data:https://www.poiyomi.com},hover:WEBSITE}", Float) = 0
@@ -284,7 +284,7 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 		
 		[HideInInspector] s_start_AlphaAdvanced ("Advanced--{persistent_expand:true,default_expand:false}", Float) = 0
 		[ToggleUI]_AlphaPremultiply ("Alpha Premultiply", Float) = 0
-		_AlphaBoostFA ("Boost Transparency in ForwardAdd--{condition_showS:(_AddBlendOp==4)}", Range(1, 100)) = 10
+		_AlphaBoostFA ("Boost Transparency in Forward Add--{condition_showS:(_AddBlendOp==4)}", Range(1, 100)) = 10
 		[HideInInspector] s_end_AlphaAdvanced ("Advanced", Float) = 0
 		[HideInInspector] m_end_Alpha ("Alpha Options", Float) = 0
 		
@@ -5843,7 +5843,7 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 		//[ToggleUI]_Conservative ("Conservative", Float) = 0
 		[DoNotAnimate][ToggleUI]_FlipBackfaceNormals ("Flip Backface Normals--{tooltip:Fix lighting on backfaces.}", Int) = 1
 		[DoNotAnimate][HideInInspector] Instancing ("Instancing", Float) = 0 //add this property for instancing variants settings to be shown
-		[DoNotAnimate][ToggleUI] _RenderingEarlyZEnabled ("Early Z", Float) = 0
+		[ToggleUI] _RenderingEarlyZEnabled ("Early Z", Float) = 0
 		
 		[HideInInspector] s_end_renderOptions ("Options", Float) = 0
 		
@@ -8943,7 +8943,7 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 		
 		ENDCG
 		
-		//ifex _RenderingEarlyZEnabled==0
+		//ifex isNotAnimated(_RenderingEarlyZEnabled) && _RenderingEarlyZEnabled==0
 		
 		Pass
 		{
@@ -19000,7 +19000,8 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 			#define VRCLV_DYNAMIC_LOOP [fastopt]
 			#endif
 			
-			#ifndef SHADER_TARGET_SURFACE_ANALYSIS
+			// DirectX PBR with instancing needs this block in $Globals to stay within 14 slots.
+			#if !defined(SHADER_TARGET_SURFACE_ANALYSIS) && !defined(SHADER_API_D3D11)
 			// GLES3 and baseline Vulkan guarantee only 16 KiB per uniform block and 12 blocks per stage.
 			// Three frequency groups preserve two blocks of headroom in the heaviest known integrations:
 			//   cold regular-volume, scalar, shadow and layout data: 9,856 bytes
@@ -19094,7 +19095,7 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 				//   XYZW = Rotation from current world space to baked shadow space.
 				uniform float4 _UdonPointLightVolumeShadowRotationData[VRCLV_MAX_LIGHTS_COUNT];
 				
-				#ifndef SHADER_TARGET_SURFACE_ANALYSIS
+				#if !defined(SHADER_TARGET_SURFACE_ANALYSIS) && !defined(SHADER_API_D3D11)
 			}
 			#endif
 			
@@ -59317,7 +59318,8 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 			#define VRCLV_DYNAMIC_LOOP [fastopt]
 			#endif
 			
-			#ifndef SHADER_TARGET_SURFACE_ANALYSIS
+			// DirectX PBR with instancing needs this block in $Globals to stay within 14 slots.
+			#if !defined(SHADER_TARGET_SURFACE_ANALYSIS) && !defined(SHADER_API_D3D11)
 			// GLES3 and baseline Vulkan guarantee only 16 KiB per uniform block and 12 blocks per stage.
 			// Three frequency groups preserve two blocks of headroom in the heaviest known integrations:
 			//   cold regular-volume, scalar, shadow and layout data: 9,856 bytes
@@ -59411,7 +59413,7 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 				//   XYZW = Rotation from current world space to baked shadow space.
 				uniform float4 _UdonPointLightVolumeShadowRotationData[VRCLV_MAX_LIGHTS_COUNT];
 				
-				#ifndef SHADER_TARGET_SURFACE_ANALYSIS
+				#if !defined(SHADER_TARGET_SURFACE_ANALYSIS) && !defined(SHADER_API_D3D11)
 			}
 			#endif
 			
@@ -76113,7 +76115,8 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 			#define VRCLV_DYNAMIC_LOOP [fastopt]
 			#endif
 			
-			#ifndef SHADER_TARGET_SURFACE_ANALYSIS
+			// DirectX PBR with instancing needs this block in $Globals to stay within 14 slots.
+			#if !defined(SHADER_TARGET_SURFACE_ANALYSIS) && !defined(SHADER_API_D3D11)
 			// GLES3 and baseline Vulkan guarantee only 16 KiB per uniform block and 12 blocks per stage.
 			// Three frequency groups preserve two blocks of headroom in the heaviest known integrations:
 			//   cold regular-volume, scalar, shadow and layout data: 9,856 bytes
@@ -76207,7 +76210,7 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 				//   XYZW = Rotation from current world space to baked shadow space.
 				uniform float4 _UdonPointLightVolumeShadowRotationData[VRCLV_MAX_LIGHTS_COUNT];
 				
-				#ifndef SHADER_TARGET_SURFACE_ANALYSIS
+				#if !defined(SHADER_TARGET_SURFACE_ANALYSIS) && !defined(SHADER_API_D3D11)
 			}
 			#endif
 			
@@ -122448,7 +122451,8 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 			#define VRCLV_DYNAMIC_LOOP [fastopt]
 			#endif
 			
-			#ifndef SHADER_TARGET_SURFACE_ANALYSIS
+			// DirectX PBR with instancing needs this block in $Globals to stay within 14 slots.
+			#if !defined(SHADER_TARGET_SURFACE_ANALYSIS) && !defined(SHADER_API_D3D11)
 			// GLES3 and baseline Vulkan guarantee only 16 KiB per uniform block and 12 blocks per stage.
 			// Three frequency groups preserve two blocks of headroom in the heaviest known integrations:
 			//   cold regular-volume, scalar, shadow and layout data: 9,856 bytes
@@ -122542,7 +122546,7 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 				//   XYZW = Rotation from current world space to baked shadow space.
 				uniform float4 _UdonPointLightVolumeShadowRotationData[VRCLV_MAX_LIGHTS_COUNT];
 				
-				#ifndef SHADER_TARGET_SURFACE_ANALYSIS
+				#if !defined(SHADER_TARGET_SURFACE_ANALYSIS) && !defined(SHADER_API_D3D11)
 			}
 			#endif
 			

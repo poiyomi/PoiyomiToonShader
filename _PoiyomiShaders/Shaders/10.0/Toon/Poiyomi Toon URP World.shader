@@ -2,7 +2,7 @@ Shader ".poiyomi/Poiyomi Toon URP World"
 {
 	Properties
 	{
-		[HideInInspector] shader_master_label ("<color=#E75898ff>Poiyomi 10.0.21</color>", Float) = 0
+		[HideInInspector] shader_master_label ("<color=#E75898ff>Poiyomi 10.0.22</color>", Float) = 0
 		[HideInInspector] shader_is_using_thry_editor ("", Float) = 0
 		[HideInInspector] shader_locale ("0db0b86376c3dca4b9a6828ef8615fe0", Float) = 0
 		[HideInInspector] footer_website ("{texture:{name:icon-poilogo,height:24},action:{type:URL,data:https://www.poiyomi.com},hover:WEBSITE}", Float) = 0
@@ -284,7 +284,7 @@ Shader ".poiyomi/Poiyomi Toon URP World"
 		
 		[HideInInspector] s_start_AlphaAdvanced ("Advanced--{persistent_expand:true,default_expand:false}", Float) = 0
 		[ToggleUI]_AlphaPremultiply ("Alpha Premultiply", Float) = 0
-		_AlphaBoostFA ("Boost Transparency in ForwardAdd--{condition_showS:(_AddBlendOp==4)}", Range(1, 100)) = 10
+		_AlphaBoostFA ("Boost Transparency in Forward Add--{condition_showS:(_AddBlendOp==4)}", Range(1, 100)) = 10
 		[HideInInspector] s_end_AlphaAdvanced ("Advanced", Float) = 0
 		[HideInInspector] m_end_Alpha ("Alpha Options", Float) = 0
 		

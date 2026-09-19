@@ -1,5 +1,5 @@
 #T#EarlyZEnablePrefix
-//ifex _RenderingEarlyZEnabled==0
+//ifex isNotAnimated(_RenderingEarlyZEnabled) && _RenderingEarlyZEnabled==0
 
 #T#EarlyZEnableSuffix
 //endex
@@ -58,7 +58,7 @@ float4 frag(VertexOut i, bool facing : SV_IsFrontFace) : SV_Target
 }
 
 #T#EarlyZProperties
-[DoNotAnimate][ToggleUI] _RenderingEarlyZEnabled ("Early Z", Float) = 0
+[ToggleUI] _RenderingEarlyZEnabled ("Early Z", Float) = 0
 
 #T#PoiEarlyZVariables
 float _RenderingEarlyZEnabled;
