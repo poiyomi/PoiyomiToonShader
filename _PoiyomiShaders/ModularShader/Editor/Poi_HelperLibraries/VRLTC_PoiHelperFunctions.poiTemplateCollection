@@ -1921,25 +1921,6 @@ float2 poiSnapUVToForeignGrid(float2 sampleUV, float2 gridUV, float2 resolution,
 
 void applyToGlobalMask(inout PoiMods poiMods, int index, int blendType, half val)
 {
-	// Compute blended values for all 16 masks
-	half v0 = saturate(maskBlend(poiMods.globalMask[0], val, blendType));
-	half v1 = saturate(maskBlend(poiMods.globalMask[1], val, blendType));
-	half v2 = saturate(maskBlend(poiMods.globalMask[2], val, blendType));
-	half v3 = saturate(maskBlend(poiMods.globalMask[3], val, blendType));
-	half v4 = saturate(maskBlend(poiMods.globalMask[4], val, blendType));
-	half v5 = saturate(maskBlend(poiMods.globalMask[5], val, blendType));
-	half v6 = saturate(maskBlend(poiMods.globalMask[6], val, blendType));
-	half v7 = saturate(maskBlend(poiMods.globalMask[7], val, blendType));
-	half v8 = saturate(maskBlend(poiMods.globalMask[8], val, blendType));
-	half v9 = saturate(maskBlend(poiMods.globalMask[9], val, blendType));
-	half v10 = saturate(maskBlend(poiMods.globalMask[10], val, blendType));
-	half v11 = saturate(maskBlend(poiMods.globalMask[11], val, blendType));
-	half v12 = saturate(maskBlend(poiMods.globalMask[12], val, blendType));
-	half v13 = saturate(maskBlend(poiMods.globalMask[13], val, blendType));
-	half v14 = saturate(maskBlend(poiMods.globalMask[14], val, blendType));
-	half v15 = saturate(maskBlend(poiMods.globalMask[15], val, blendType));
-	
-	// Branchless weights
 	half i = index;
 	half w0 = saturate(1.0h - abs(i - 0.0h));
 	half w1 = saturate(1.0h - abs(i - 1.0h));
@@ -1957,24 +1938,24 @@ void applyToGlobalMask(inout PoiMods poiMods, int index, int blendType, half val
 	half w13 = saturate(1.0h - abs(i - 13.0h));
 	half w14 = saturate(1.0h - abs(i - 14.0h));
 	half w15 = saturate(1.0h - abs(i - 15.0h));
-	
-	// Branchless conditional writes
-	poiMods.globalMask[0] = lerp(poiMods.globalMask[0], v0, w0);
-	poiMods.globalMask[1] = lerp(poiMods.globalMask[1], v1, w1);
-	poiMods.globalMask[2] = lerp(poiMods.globalMask[2], v2, w2);
-	poiMods.globalMask[3] = lerp(poiMods.globalMask[3], v3, w3);
-	poiMods.globalMask[4] = lerp(poiMods.globalMask[4], v4, w4);
-	poiMods.globalMask[5] = lerp(poiMods.globalMask[5], v5, w5);
-	poiMods.globalMask[6] = lerp(poiMods.globalMask[6], v6, w6);
-	poiMods.globalMask[7] = lerp(poiMods.globalMask[7], v7, w7);
-	poiMods.globalMask[8] = lerp(poiMods.globalMask[8], v8, w8);
-	poiMods.globalMask[9] = lerp(poiMods.globalMask[9], v9, w9);
-	poiMods.globalMask[10] = lerp(poiMods.globalMask[10], v10, w10);
-	poiMods.globalMask[11] = lerp(poiMods.globalMask[11], v11, w11);
-	poiMods.globalMask[12] = lerp(poiMods.globalMask[12], v12, w12);
-	poiMods.globalMask[13] = lerp(poiMods.globalMask[13], v13, w13);
-	poiMods.globalMask[14] = lerp(poiMods.globalMask[14], v14, w14);
-	poiMods.globalMask[15] = lerp(poiMods.globalMask[15], v15, w15);
+	half cur = poiMods.globalMask[0] * w0 + poiMods.globalMask[1] * w1 + poiMods.globalMask[2] * w2 + poiMods.globalMask[3] * w3 + poiMods.globalMask[4] * w4 + poiMods.globalMask[5] * w5 + poiMods.globalMask[6] * w6 + poiMods.globalMask[7] * w7 + poiMods.globalMask[8] * w8 + poiMods.globalMask[9] * w9 + poiMods.globalMask[10] * w10 + poiMods.globalMask[11] * w11 + poiMods.globalMask[12] * w12 + poiMods.globalMask[13] * w13 + poiMods.globalMask[14] * w14 + poiMods.globalMask[15] * w15;
+	half nv = saturate(maskBlend(cur, val, blendType));
+	poiMods.globalMask[0] = lerp(poiMods.globalMask[0], nv, w0);
+	poiMods.globalMask[1] = lerp(poiMods.globalMask[1], nv, w1);
+	poiMods.globalMask[2] = lerp(poiMods.globalMask[2], nv, w2);
+	poiMods.globalMask[3] = lerp(poiMods.globalMask[3], nv, w3);
+	poiMods.globalMask[4] = lerp(poiMods.globalMask[4], nv, w4);
+	poiMods.globalMask[5] = lerp(poiMods.globalMask[5], nv, w5);
+	poiMods.globalMask[6] = lerp(poiMods.globalMask[6], nv, w6);
+	poiMods.globalMask[7] = lerp(poiMods.globalMask[7], nv, w7);
+	poiMods.globalMask[8] = lerp(poiMods.globalMask[8], nv, w8);
+	poiMods.globalMask[9] = lerp(poiMods.globalMask[9], nv, w9);
+	poiMods.globalMask[10] = lerp(poiMods.globalMask[10], nv, w10);
+	poiMods.globalMask[11] = lerp(poiMods.globalMask[11], nv, w11);
+	poiMods.globalMask[12] = lerp(poiMods.globalMask[12], nv, w12);
+	poiMods.globalMask[13] = lerp(poiMods.globalMask[13], nv, w13);
+	poiMods.globalMask[14] = lerp(poiMods.globalMask[14], nv, w14);
+	poiMods.globalMask[15] = lerp(poiMods.globalMask[15], nv, w15);
 }
 
 void assignValueToVectorFromIndex(inout half4 vec, int index, half value)
@@ -2162,26 +2143,13 @@ float2 vertexUV(in PoiVertToGeoLilFur o, int index)
 
 half3 poiThemeColor(in PoiMods poiMods, in half3 srcColor, in half themeIndex)
 {
-	half3 outputColor = srcColor;
-	if (themeIndex != 0)
-	{
-		themeIndex = max(themeIndex - 1, 0);
-		
-		if (themeIndex <= 3)
-		{
-			outputColor = poiMods.globalColorTheme[themeIndex].rgb;
-		}
-		else
-		{
-			#ifdef POI_AUDIOLINK
-				if (poiMods.audioLinkAvailable)
-				{
-					outputColor = poiMods.globalColorTheme[themeIndex].rgb;
-				}
-			#endif
-		}
-	}
-	return outputColor;
+	half poiThemeIdx = clamp(max(themeIndex - 1, 0), 0, 11);
+	#ifdef POI_AUDIOLINK
+		bool poiThemeUse = (themeIndex != 0) && (poiThemeIdx <= 3 || poiMods.audioLinkAvailable);
+	#else
+		bool poiThemeUse = (themeIndex != 0) && (poiThemeIdx <= 3);
+	#endif
+	return poiThemeUse ? poiMods.globalColorTheme[poiThemeIdx].rgb : srcColor;
 }
 
 struct PoiSpriteSheetConfig

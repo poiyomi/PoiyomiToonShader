@@ -1,7 +1,7 @@
 {
     "name": "com.poiyomi.toon",
     "displayName": "Poiyomi Toon",
-    "version": "10.0.22",
+    "version": "10.0.23",
     "description": "Feature-rich shaders for Unity and VRChat.",
     "author": {
         "name": "Poiyomi",
@@ -10,7 +10,7 @@
     "changelogUrl": "https://www.poiyomi.com/changelog",
     "gitDependencies": {},
     "vpmDependencies": {
-        "com.poiyomi.thryeditor": ">=2.74.0"
+        "com.poiyomi.thryeditor": ">=2.74.3"
     },
     "legacyFolders": {
         "Assets\\_PoiyomiShaders": ""

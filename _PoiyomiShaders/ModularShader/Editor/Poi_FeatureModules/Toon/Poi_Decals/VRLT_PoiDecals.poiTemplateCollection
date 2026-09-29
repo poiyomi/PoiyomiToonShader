@@ -30,7 +30,7 @@ _DecalRotationSpeed__mIDx__ ("Rotation Speed", Float) = 0
 [ToggleUI]_DecalTiled__mIDx__ ("Tiled", Float) = 0
 [HideInInspector] s_end_Decal__mID__Position ("Positioning", Float) = 0
 
-_DecalColor__mIDx__ ("Color--{reference_property:_DecalColor__mIDx__ThemeIndex}", Color) = (1, 1, 1, 1)
+[ThryHDR]_DecalColor__mIDx__ ("Color--{reference_property:_DecalColor__mIDx__ThemeIndex}", Color) = (1, 1, 1, 1)
 [ThryHideInInspector][ThryWideEnum(Off, 0, Theme Color 0, 1, Theme Color 1, 2, Theme Color 2, 3, Theme Color 3, 4, ColorChord 0, 5, ColorChord 1, 6, ColorChord 2, 7, ColorChord 3, 8, AL Theme 0, 9, AL Theme 1, 10, AL Theme 2, 11, AL Theme 3, 12)] _DecalColor__mIDx__ThemeIndex ("", Int) = 0
 [sRGBWarning(true)]_DecalTexture__mIDx__ ("Decal--{reference_properties:[_DecalTexture__mIDx__Pan, _DecalTexture__mIDx__UV, _Decal__mID__MaskChannel]}", 2D) = "white" { }
 [ThryHideInInspector][Vector2]_DecalTexture__mIDx__Pan ("Panning", Vector) = (0, 0, 0, 0)
@@ -122,7 +122,7 @@ _DecalRotationCTALSpeed__mID__ ("Chrono Rotation Speed", Float) = 0
 [ThrySeperator(2, 2, 2)]
 [HideInInspector] ss_start_Decal__mID__ALColorOverrideS ("Color Override--{reference_property:_AudioLinkDecal__mID__ColorOverrideEnabled, persistent_expand:true, default_expand:false}", Float) = 0
 [ThryHideInInspector][ToggleUI] _AudioLinkDecal__mID__ColorOverrideEnabled ("Color Override", Float) = 0
-_AudioLinkDecal__mID__ColorOverride ("Color", Color) = (1,1,1,1)
+[ThryHDR]_AudioLinkDecal__mID__ColorOverride ("Color", Color) = (1,1,1,1)
 [ThryWideEnum(Off, 0, Theme Color 0, 1, Theme Color 1, 2, Theme Color 2, 3, Theme Color 3, 4, ColorChord 0, 5, ColorChord 1, 6, ColorChord 2, 7, ColorChord 3, 8, AL Theme 0, 9, AL Theme 1, 10, AL Theme 2, 11, AL Theme 3, 12)] _AudioLinkDecal__mID__ColorOverrideThemeIndex ("Theme Color", Int) = 0
 [Enum(Bass, 0, Low Mid, 1, High Mid, 2, Treble, 3, Volume, 4)] _AudioLinkDecal__mID__ColorOverrideBand ("Color Override Band", Int) = 0
 [Ramp4(normalized)]_AudioLinkDecal__mID__ColorOverrideRamp ("Color Override Ramp", Vector) = (0, 1, 0, 1)
@@ -265,6 +265,18 @@ _AudioLinkDecal__mID__ColorOverride ("Color", Color) = (1,1,1,1)
 #endif
 sampler2D _Udon_VideoTex;//<ms_no_postfix>
 float4 _Udon_VideoTex_TexelSize;//<ms_no_postfix>
+//endex
+}
+<ms_include_in_first>
+{
+//ifex <ms_stringwriter::AllDecalsDisabled>
+#if defined(OPTIMIZER_ENABLED)
+	#define POI_DECAL_LAYER_LOOP [unroll]
+	#define POI_DECAL_SAMPLE_BOUND 2
+#else
+	#define POI_DECAL_LAYER_LOOP [loop]
+	#define POI_DECAL_SAMPLE_BOUND sampleCount
+#endif
 //endex
 }
 
@@ -483,81 +495,73 @@ float4 _Udon_VideoTex_TexelSize;//<ms_no_postfix>
 			#endif
 		}
 
-		
-
-		void SampleDecalNoTexture(in PoiMods poiMods, in PoiLight poiLight, in PoiMesh poiMesh, in PoiCam poiCam)
+		void SampleDecalLayers(sampler2D decalTexture, sampler2D videoTexture, bool videoEnabled, bool videoAvailable, bool onlyVideo, bool keepDecalAlpha, bool channelSeparation, bool localTextureAvailable, float2 videoAspectRatio, in PoiMods poiMods, in PoiLight poiLight, in PoiMesh poiMesh, in PoiCam poiCam)
 		{
-			uv = decalUV(m_DecalTextureUV, m_DecalPosition, m_DecalRotation + decalRotation, m_DecalRotationSpeed, decalScale, m_DecalSideOffset +sideMod, m_DecalDepth, m_DecalSymmetryMode, m_DecalMirroredUVMode, poiMesh, poiCam);
-			decalColor = float4(poiThemeColor(poiMods, m_DecalColor.rgb, m_DecalColorThemeIndex), m_DecalColor.a);
-			decalColor.rgb = decalHueShift(m_DecalHueShiftEnabled, decalColor.rgb, m_DecalHueShift + poiLight.nDotVCentered * m_DecalHueAngleStrength, m_DecalHueShiftSpeed, m_DecalHueShiftColorSpace, m_DecalHueShiftSelectOrShift);
-			decalColor.rgb = decalColorAdjust(m_DecalColorAdjustEnabled, decalColor.rgb, m_DecalSaturation, m_DecalChromatize, m_DecalBrightness, m_DecalGamma);
-			decalColor.a *= decalMask[m_DecalMaskChannel] * applyTilingClipping(m_DecalTiled, uv);
-		}
-
-		void SampleDecal(sampler2D decalTexture, in PoiMods poiMods, in PoiLight poiLight, in PoiMesh poiMesh, in PoiCam poiCam, float2 scaleMultiplier = float2(1, 1))
-		{
-			uv = decalUV(m_DecalTextureUV, m_DecalPosition, m_DecalRotation + decalRotation, m_DecalRotationSpeed, decalScale * scaleMultiplier, m_DecalSideOffset +sideMod, m_DecalDepth, m_DecalSymmetryMode, m_DecalMirroredUVMode, poiMesh, poiCam);
-			// Adjust derivatives for _ST of decal texture
-			float4 dduv = any(fwidth(uv) > .5) ? 0.001 : float4(ddx(uv) * m_DecalTexture_ST.x, ddy(uv) * m_DecalTexture_ST.y);
-			decalColor = tex2D(decalTexture, poiUV(uv, m_DecalTexture_ST) + m_DecalTexturePan * POI_TIME.x, dduv.xy, dduv.zw) * float4(poiThemeColor(poiMods, m_DecalColor.rgb, m_DecalColorThemeIndex), m_DecalColor.a);
-			decalColor.rgb = decalHueShift(m_DecalHueShiftEnabled, decalColor.rgb, m_DecalHueShift + poiLight.nDotVCentered * m_DecalHueAngleStrength, m_DecalHueShiftSpeed, m_DecalHueShiftColorSpace, m_DecalHueShiftSelectOrShift);
-			decalColor.rgb = decalColorAdjust(m_DecalColorAdjustEnabled, decalColor.rgb, m_DecalSaturation, m_DecalChromatize, m_DecalBrightness, m_DecalGamma);
-			decalColor.a *= decalMask[m_DecalMaskChannel] * applyTilingClipping(m_DecalTiled, uv);
-		}
-
-		void SampleDecalNoAlpha(sampler2D decalTexture, in PoiMods poiMods, in PoiLight poiLight, in PoiMesh poiMesh, in PoiCam poiCam, float2 scaleMultiplier = float2(1, 1))
-		{
-			uv = decalUV(m_DecalTextureUV, m_DecalPosition, m_DecalRotation + decalRotation, m_DecalRotationSpeed, decalScale * scaleMultiplier, m_DecalSideOffset +sideMod, m_DecalDepth, m_DecalSymmetryMode, m_DecalMirroredUVMode, poiMesh, poiCam);
-			// Adjust derivatives for _ST of decal texture
-			float4 dduv = any(fwidth(uv) > .5) ? 0.001 : float4(ddx(uv) * m_DecalTexture_ST.x, ddy(uv) * m_DecalTexture_ST.y);
-			decalColor.rgb = tex2D(decalTexture, poiUV(uv, m_DecalTexture_ST) + m_DecalTexturePan * POI_TIME.x, dduv.xy, dduv.zw) * float4(poiThemeColor(poiMods, m_DecalColor.rgb, m_DecalColorThemeIndex), m_DecalColor.a).rgb;
-			decalColor.rgb = decalHueShift(m_DecalHueShiftEnabled, decalColor.rgb, m_DecalHueShift + poiLight.nDotVCentered * m_DecalHueAngleStrength, m_DecalHueShiftSpeed, m_DecalHueShiftColorSpace, m_DecalHueShiftSelectOrShift);
-			decalColor.rgb = decalColorAdjust(m_DecalColorAdjustEnabled, decalColor.rgb, m_DecalSaturation, m_DecalChromatize, m_DecalBrightness, m_DecalGamma);
-			decalColor.a *= decalMask[m_DecalMaskChannel] * applyTilingClipping(m_DecalTiled, uv);
-		}
-
-		void SampleDecalAlphaOnly(sampler2D decalTexture, in PoiMods poiMods, in PoiLight poiLight, in PoiMesh poiMesh, in PoiCam poiCam, float2 scaleMultiplier = float2(1, 1))
-		{
-			uv = decalUV(m_DecalTextureUV, m_DecalPosition, m_DecalRotation + decalRotation, m_DecalRotationSpeed, decalScale * scaleMultiplier, m_DecalSideOffset +sideMod, m_DecalDepth, m_DecalSymmetryMode, m_DecalMirroredUVMode, poiMesh, poiCam);
-			// Adjust derivatives for _ST of decal texture
-			float4 dduv = any(fwidth(uv) > .5) ? 0.001 : float4(ddx(uv) * m_DecalTexture_ST.x, ddy(uv) * m_DecalTexture_ST.y);
-			decalColor = tex2D(decalTexture, poiUV(uv, m_DecalTexture_ST) + m_DecalTexturePan * POI_TIME.x, dduv.xy, dduv.zw) * float4(poiThemeColor(poiMods, m_DecalColor.rgb, m_DecalColorThemeIndex), m_DecalColor.a);
-			decalColor.rgb = decalColorAdjust(m_DecalColorAdjustEnabled, decalColor.rgb, m_DecalSaturation, m_DecalChromatize, m_DecalBrightness, m_DecalGamma);
-			decalColor.a *= decalMask[m_DecalMaskChannel] * applyTilingClipping(m_DecalTiled, uv);
-		}
-
-		void SampleDecalChannelSeparation(sampler2D decalTexture, in PoiMods poiMods, in PoiLight poiLight, in PoiMesh poiMesh, in PoiCam poiCam)
-		{
-			decalColor = float4(0, 0, 0, 1);
-			decalChannelOffset += m_DecalChannelSeparation + m_DecalChannelSeparationAngleStrength * (m_DecalChannelSeparationAngleStrength > 0 ? (1 - poiLight.nDotVCentered) : poiLight.nDotVCentered);
-			float2 positionOffset = decalChannelOffset * 0.01 * (decalScale.x + decalScale.y) * float2(cos(m_DecalChannelSeparationVertical), sin(m_DecalChannelSeparationVertical));
-			float2 uvSample0 = decalUV(m_DecalTextureUV, m_DecalPosition + positionOffset, m_DecalRotation + decalRotation, m_DecalRotationSpeed, decalScale, m_DecalSideOffset +sideMod, m_DecalDepth, m_DecalSymmetryMode, m_DecalMirroredUVMode, poiMesh, poiCam);
-			float2 uvSample1 = decalUV(m_DecalTextureUV, m_DecalPosition - positionOffset, m_DecalRotation + decalRotation, m_DecalRotationSpeed, decalScale, m_DecalSideOffset +sideMod, m_DecalDepth, m_DecalSymmetryMode, m_DecalMirroredUVMode, poiMesh, poiCam);
-
-			float4 dduvSample0 = any(fwidth(uvSample0) > .5) ? 0.001 : float4(ddx(uvSample0) * m_DecalTexture_ST.x, ddy(uvSample0) * m_DecalTexture_ST.y);
-			float4 dduvSample1 = any(fwidth(uvSample1) > .5) ? 0.001 : float4(ddx(uvSample1) * m_DecalTexture_ST.x, ddy(uvSample1) * m_DecalTexture_ST.y);
-
-			half4 decalTint = float4(poiThemeColor(poiMods, m_DecalColor.rgb, m_DecalColorThemeIndex), m_DecalColor.a);
-			float4 sample0 = tex2D(decalTexture, poiUV(uvSample0, m_DecalTexture_ST) + m_DecalTexturePan * POI_TIME.x, dduvSample0.xy, dduvSample0.zw) * decalTint;
-			float4 sample1 = tex2D(decalTexture, poiUV(uvSample1, m_DecalTexture_ST) + m_DecalTexturePan * POI_TIME.x, dduvSample1.xy, dduvSample1.zw) * decalTint;
-
-			sample0.rgb = decalHueShift(m_DecalHueShiftEnabled, sample0.rgb, m_DecalHueShift + poiLight.nDotVCentered * m_DecalHueAngleStrength, m_DecalHueShiftSpeed, m_DecalHueShiftColorSpace, m_DecalHueShiftSelectOrShift);
-			sample1.rgb = decalHueShift(m_DecalHueShiftEnabled, sample1.rgb, m_DecalHueShift + poiLight.nDotVCentered * m_DecalHueAngleStrength, m_DecalHueShiftSpeed, m_DecalHueShiftColorSpace, m_DecalHueShiftSelectOrShift);
-			sample0.rgb = decalColorAdjust(m_DecalColorAdjustEnabled, sample0.rgb, m_DecalSaturation, m_DecalChromatize, m_DecalBrightness, m_DecalGamma);
-			sample1.rgb = decalColorAdjust(m_DecalColorAdjustEnabled, sample1.rgb, m_DecalSaturation, m_DecalChromatize, m_DecalBrightness, m_DecalGamma);
-
-			half3 channelSeparationColor = HUEtoRGB(frac(m_DecalChannelSeparationHue));
-
-			if (m_DecalChannelSeparationPremultiply)
+			bool separateChannels = !videoEnabled && channelSeparation && localTextureAvailable;
+			float2 positionOffset = 0;
+			if (separateChannels)
 			{
-				decalColor.rgb = lerp(sample0 * sample0.a, sample1 * sample1.a, channelSeparationColor);
+				decalChannelOffset += m_DecalChannelSeparation + m_DecalChannelSeparationAngleStrength * (m_DecalChannelSeparationAngleStrength > 0 ? (1 - poiLight.nDotVCentered) : poiLight.nDotVCentered);
+				positionOffset = decalChannelOffset * 0.01 * (decalScale.x + decalScale.y) * float2(cos(m_DecalChannelSeparationVertical), sin(m_DecalChannelSeparationVertical));
 			}
-			else
+			// Share UV and color processing across local/video layers and separated channels.
+			// Material-uniform loop bounds keep derivative evaluation in uniform control flow.
+			POI_DECAL_LAYER_LOOP
+			for (int layer = 0; layer < 2; ++layer)
 			{
-				decalColor.rgb = lerp(sample0, sample1, channelSeparationColor);
+				bool videoLayer = layer == 1;
+				bool sampleLayer = videoLayer ? (videoEnabled && videoAvailable) : (!videoEnabled || !onlyVideo || (videoAvailable && keepDecalAlpha));
+				if (sampleLayer)
+				{
+					bool separatedLayer = !videoLayer && separateChannels;
+					int sampleCount = separatedLayer ? 2 : 1;
+					float4 samples[2];
+					float clips[2];
+					float previousAlpha = decalColor.a;
+					POI_DECAL_LAYER_LOOP
+					for (int sampleIndex = 0; sampleIndex < POI_DECAL_SAMPLE_BOUND; ++sampleIndex)
+					{
+						#if defined(OPTIMIZER_ENABLED)
+						if (sampleIndex >= sampleCount) break;
+						#endif
+						float2 samplePosition = m_DecalPosition + (separatedLayer ? (sampleIndex == 0 ? positionOffset : -positionOffset) : float2(0, 0));
+						float2 sampleScale = decalScale * (videoLayer ? videoAspectRatio : float2(1, 1));
+						float2 sampleUV = decalUV(m_DecalTextureUV, samplePosition, m_DecalRotation + decalRotation, m_DecalRotationSpeed, sampleScale, m_DecalSideOffset +sideMod, m_DecalDepth, m_DecalSymmetryMode, m_DecalMirroredUVMode, poiMesh, poiCam);
+						float4 decalSampleColor = float4(poiThemeColor(poiMods, m_DecalColor.rgb, m_DecalColorThemeIndex), m_DecalColor.a);
+						if (videoLayer || videoEnabled || localTextureAvailable)
+						{
+							float4 derivatives = any(fwidth(sampleUV) > .5) ? 0.001 : float4(ddx(sampleUV) * m_DecalTexture_ST.xy, ddy(sampleUV) * m_DecalTexture_ST.xy);
+							float2 textureUV = poiUV(sampleUV, m_DecalTexture_ST) + m_DecalTexturePan * POI_TIME.x;
+							if (videoLayer)
+								decalSampleColor *= tex2D(videoTexture, textureUV, derivatives.xy, derivatives.zw);
+							else
+								decalSampleColor *= tex2D(decalTexture, textureUV, derivatives.xy, derivatives.zw);
+						}
+						decalSampleColor.rgb = decalHueShift(m_DecalHueShiftEnabled, decalSampleColor.rgb, m_DecalHueShift + poiLight.nDotVCentered * m_DecalHueAngleStrength, m_DecalHueShiftSpeed, m_DecalHueShiftColorSpace, m_DecalHueShiftSelectOrShift);
+						decalSampleColor.rgb = decalColorAdjust(m_DecalColorAdjustEnabled, decalSampleColor.rgb, m_DecalSaturation, m_DecalChromatize, m_DecalBrightness, m_DecalGamma);
+						samples[sampleIndex] = decalSampleColor;
+						clips[sampleIndex] = applyTilingClipping(m_DecalTiled, sampleUV);
+						// Preserve the original channel-separation path's handling of the stored UV.
+						if (!separatedLayer) uv = sampleUV;
+					}
+					if (separatedLayer)
+					{
+						half3 channelSeparationColor = HUEtoRGB(frac(m_DecalChannelSeparationHue));
+						if (m_DecalChannelSeparationPremultiply)
+							decalColor.rgb = lerp(samples[0] * samples[0].a, samples[1] * samples[1].a, channelSeparationColor);
+						else
+							decalColor.rgb = lerp(samples[0], samples[1], channelSeparationColor);
+						decalColor.a = 0.5 * (samples[0].a + samples[1].a);
+						decalColor.a *= decalMask[m_DecalMaskChannel] * max(clips[0], clips[1]);
+					}
+					else
+					{
+						decalColor = samples[0];
+						if (videoLayer && keepDecalAlpha) decalColor.a = previousAlpha;
+						decalColor.a *= decalMask[m_DecalMaskChannel] * clips[0];
+					}
+				}
 			}
-			decalColor.a = 0.5 * (sample0.a + sample1.a);
-			decalColor.a *= decalMask[m_DecalMaskChannel] * max(applyTilingClipping(m_DecalTiled, uvSample0), applyTilingClipping(m_DecalTiled, uvSample1));
 		}
 
 		void Apply(inout float alphaOverride, inout float decalAlpha, inout PoiFragData poiFragData, in PoiMesh poiMesh, in PoiCam poiCam, inout PoiMods poiMods, in PoiLight poiLight)
@@ -854,67 +858,21 @@ float4 _Udon_VideoTex_TexelSize;//<ms_no_postfix>
 		#if defined(POI_PASS_OUTLINE)
 			decalApply = _Decal__mID__OnOutlines >= 0.5;
 		#endif
-		if (_Decal__mID__VideoEnabled < 0.5)
-		{
-
-			#if defined(PROP_DECALTEXTURE__mIDx__) || !defined(OPTIMIZER_ENABLED)
-				//ifex _Decal__mID__ChannelSeparationEnable==0
-				if (_Decal__mID__ChannelSeparationEnable >= 0.5)
-				{
-					decalData.SampleDecalChannelSeparation(_DecalTexture__mIDx__, poiMods, poiLight, poiMesh, poiCam);
-				}
-				//endex
-				//ifex _Decal__mID__ChannelSeparationEnable==1
-				if (_Decal__mID__ChannelSeparationEnable < 0.5)
-				{
-					decalData.SampleDecal(_DecalTexture__mIDx__, poiMods, poiLight, poiMesh, poiCam);
-				}
-				//endex
-			#else
-				decalData.SampleDecalNoTexture(poiMods, poiLight, poiMesh, poiCam);
-			#endif
-		}
-		else
+		bool videoEnabled = !(_Decal__mID__VideoEnabled < 0.5);
+		bool localTextureAvailable = false;
+		#if defined(PROP_DECALTEXTURE__mIDx__) || !defined(OPTIMIZER_ENABLED)
+			localTextureAvailable = true;
+		#endif
+		if (videoEnabled)
 		{
 			udonVideoAspectRatio = decalData.GetVideoAspectRatio(_Udon_VideoTex_TexelSize.zw, _Decal__mID__VideoAspectFix, _Decal__mID__VideoFitToScale);
-			
-			if (_Decal__mID__OnlyVideo >= 0.5)
-			{
-				if (udonVideoTexAvailable)
-				{
-					decalData.m_DecalEmissionStrength += _Decal__mID__VideoEmissionStrength;
-					if (_Decal__mID__UseDecalAlpha >= 0.5)
-					{
-						decalData.SampleDecal(_DecalTexture__mIDx__, poiMods, poiLight, poiMesh, poiCam);
-						decalData.SampleDecalNoAlpha(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio);
-					}
-					else
-					{
-						decalData.SampleDecal(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio);
-					}
-				}
-				else
-				{
-					decalApply = false;
-				}
-			}
-			else
-			{
-				decalData.SampleDecal(_DecalTexture__mIDx__, poiMods, poiLight, poiMesh, poiCam);
-				if (udonVideoTexAvailable)
-				{
-					decalData.m_DecalEmissionStrength += _Decal__mID__VideoEmissionStrength;
-					if (_Decal__mID__UseDecalAlpha >= 0.5)
-					{
-						decalData.SampleDecalNoAlpha(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio);
-					}
-					else
-					{
-						decalData.SampleDecal(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio);
-					}
-				}
-			}
+			if (udonVideoTexAvailable)
+				decalData.m_DecalEmissionStrength += _Decal__mID__VideoEmissionStrength;
+			else if (_Decal__mID__OnlyVideo >= 0.5)
+				decalApply = false;
 		}
+		decalData.SampleDecalLayers(_DecalTexture__mIDx__, _Udon_VideoTex, videoEnabled, udonVideoTexAvailable != 0, _Decal__mID__OnlyVideo >= 0.5, _Decal__mID__UseDecalAlpha >= 0.5, _Decal__mID__ChannelSeparationEnable >= 0.5, localTextureAvailable, udonVideoAspectRatio, poiMods, poiLight, poiMesh, poiCam);
+
 		if (decalApply)
 		{
 			decalData.ApplyVideoEffects(_Decal__mID__UseVideoEffects, poiCam, poiMesh);

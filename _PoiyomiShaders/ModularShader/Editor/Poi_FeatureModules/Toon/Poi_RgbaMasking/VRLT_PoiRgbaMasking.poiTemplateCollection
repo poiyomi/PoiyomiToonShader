@@ -490,7 +490,7 @@ void RGBABlendNormals(inout float3 tangentSpaceNormal, in float3 originalNormal,
                         bool selRedG = (_RgbNormalGBlendSources.y > 0.5);
                         int modeG = (selBaseG || selRedG) ? 2 : 0;
                         float3 fromNormalG = selBaseG ? originalNormal : neutralNormal;
-                        if (selRedG && hasR > 0.5) fromNormalG = lerp(fromNormalG, BlendNormals(fromNormalG, nR), maskFinal.r);
+                        if (selRedG && hasR > 0.5) fromNormalG = lerp(fromNormalG, PoiBlendNormal(fromNormalG, nR), maskFinal.r);
                         RGBABlendNormals(poiMesh.tangentSpaceNormal, fromNormalG, nG, maskFinal.g, modeG);
                     }
                 #endif
@@ -504,8 +504,8 @@ void RGBABlendNormals(inout float3 tangentSpaceNormal, in float3 originalNormal,
                         bool selGreenB = (_RgbNormalBBlendSources.z > 0.5);
                         int modeB = (selBaseB || selRedB || selGreenB) ? 2 : 0;
                         float3 fromNormalB = selBaseB ? originalNormal : neutralNormal;
-                        if (selRedB && hasR > 0.5) fromNormalB = lerp(fromNormalB, BlendNormals(fromNormalB, nR), maskFinal.r);
-                        if (selGreenB && hasG > 0.5) fromNormalB = lerp(fromNormalB, BlendNormals(fromNormalB, nG), maskFinal.g);
+                        if (selRedB && hasR > 0.5) fromNormalB = lerp(fromNormalB, PoiBlendNormal(fromNormalB, nR), maskFinal.r);
+                        if (selGreenB && hasG > 0.5) fromNormalB = lerp(fromNormalB, PoiBlendNormal(fromNormalB, nG), maskFinal.g);
                         RGBABlendNormals(poiMesh.tangentSpaceNormal, fromNormalB, nB, maskFinal.b, modeB);
                     }
                 #endif
@@ -519,9 +519,9 @@ void RGBABlendNormals(inout float3 tangentSpaceNormal, in float3 originalNormal,
                         bool selBlueA = (_RgbNormalABlendSources.w > 0.5);
                         int modeA = (selBaseA || selRedA || selGreenA || selBlueA) ? 2 : 0;
                         float3 fromNormalA = selBaseA ? originalNormal : neutralNormal;
-                        if (selRedA && hasR > 0.5) fromNormalA = lerp(fromNormalA, BlendNormals(fromNormalA, nR), maskFinal.r);
-                        if (selGreenA && hasG > 0.5) fromNormalA = lerp(fromNormalA, BlendNormals(fromNormalA, nG), maskFinal.g);
-                        if (selBlueA && hasB > 0.5) fromNormalA = lerp(fromNormalA, BlendNormals(fromNormalA, nB), maskFinal.b);
+                        if (selRedA && hasR > 0.5) fromNormalA = lerp(fromNormalA, PoiBlendNormal(fromNormalA, nR), maskFinal.r);
+                        if (selGreenA && hasG > 0.5) fromNormalA = lerp(fromNormalA, PoiBlendNormal(fromNormalA, nG), maskFinal.g);
+                        if (selBlueA && hasB > 0.5) fromNormalA = lerp(fromNormalA, PoiBlendNormal(fromNormalA, nB), maskFinal.b);
                         RGBABlendNormals(poiMesh.tangentSpaceNormal, fromNormalA, normalToBlendWith, maskFinal.a, modeA);
                     }
                 #endif

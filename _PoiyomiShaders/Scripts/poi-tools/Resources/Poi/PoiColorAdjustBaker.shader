@@ -16,6 +16,7 @@ Shader "Hidden/Poi/ColorAdjustBaker"
         _Saturation ("Saturation", Float) = 0
         _MainChromatize ("Chromatize", Float) = 0
         _MainBrightness ("Brightness", Float) = 0
+        _MainColorAdjustClamp ("Clamp Color Adjust", Float) = 1
         _MainGamma ("Gamma", Float) = 1
 
         // Tint
@@ -86,6 +87,7 @@ Shader "Hidden/Poi/ColorAdjustBaker"
             float _Saturation;
             float _MainChromatize;
             float _MainBrightness;
+            float _MainColorAdjustClamp;
             float _MainGamma;
             float4 _MainTintColor;
             float _ColorGradingToggle;
@@ -295,7 +297,11 @@ Shader "Hidden/Poi/ColorAdjustBaker"
                 }
 
                 // Gamma
-                baseColor = lerp(baseColor, pow(abs(baseColor), _MainGamma), hueShiftAlpha.a);
+                if (_MainGamma != 1)
+                {
+                    float3 gammaAdjustedColor = sign(baseColor) * pow(abs(baseColor), _MainGamma);
+                    baseColor = lerp(baseColor, gammaAdjustedColor, hueShiftAlpha.a);
+                }
 
                 // Saturation
                 baseColor = lerp(baseColor, dot(baseColor, float3(0.3, 0.59, 0.11)), -_Saturation * hueShiftAlpha.b);
@@ -354,7 +360,9 @@ Shader "Hidden/Poi/ColorAdjustBaker"
                 }
 
                 // Brightness
-                baseColor = saturate(lerp(baseColor, baseColor * (_MainBrightness + 1), hueShiftAlpha.g));
+                baseColor = lerp(baseColor, baseColor * (_MainBrightness + 1), hueShiftAlpha.g);
+                if (_MainColorAdjustClamp > 0.5)
+                    baseColor = saturate(baseColor);
 
                 // Convert back
                 #if !defined(UNITY_COLORSPACE_GAMMA)

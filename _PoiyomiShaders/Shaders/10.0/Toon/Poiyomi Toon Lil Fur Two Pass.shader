@@ -2,7 +2,7 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 {
 	Properties
 	{
-		[HideInInspector] shader_master_label ("<color=#E75898ff>Poiyomi 10.0.22</color>", Float) = 0
+		[HideInInspector] shader_master_label ("<color=#E75898ff>Poiyomi 10.0.23</color>", Float) = 0
 		[HideInInspector] shader_is_using_thry_editor ("", Float) = 0
 		[HideInInspector] shader_locale ("0db0b86376c3dca4b9a6828ef8615fe0", Float) = 0
 		[HideInInspector] footer_website ("{texture:{name:icon-poilogo,height:24},action:{type:URL,data:https://www.poiyomi.com},hover:WEBSITE}", Float) = 0
@@ -101,6 +101,7 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 		_MainChromatize ("Chromatize", Range(-1, 10)) = 0
 		_MainBrightness ("Brightness", Range(-1, 2)) = 0
 		_MainGamma ("Gamma", Range(0.01, 5)) = 1
+		[ToggleUI]_MainColorAdjustClamp ("Clamp Color Adjust--{tooltip:Keeps the adjusted color between 0 and 1 before lighting.}", Float) = 1
 		
 		[HideInInspector] s_start_MainTint ("Tint--{persistent_expand:true,default_expand:true}", Float) = 1
 		_MainTintColor ("Tint Color", Color) = (1, 1, 1, 0)
@@ -558,7 +559,7 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 		[ToggleUI]_DecalTiled ("Tiled", Float) = 0
 		[HideInInspector] s_end_Decal0Position ("Positioning", Float) = 0
 		
-		_DecalColor ("Color--{reference_property:_DecalColorThemeIndex}", Color) = (1, 1, 1, 1)
+		[ThryHDR]_DecalColor ("Color--{reference_property:_DecalColorThemeIndex}", Color) = (1, 1, 1, 1)
 		[ThryHideInInspector][ThryWideEnum(Off, 0, Theme Color 0, 1, Theme Color 1, 2, Theme Color 2, 3, Theme Color 3, 4, ColorChord 0, 5, ColorChord 1, 6, ColorChord 2, 7, ColorChord 3, 8, AL Theme 0, 9, AL Theme 1, 10, AL Theme 2, 11, AL Theme 3, 12)] _DecalColorThemeIndex ("", Int) = 0
 		[sRGBWarning(true)]_DecalTexture ("Decal--{reference_properties:[_DecalTexturePan, _DecalTextureUV, _Decal0MaskChannel]}", 2D) = "white" { }
 		[ThryHideInInspector][Vector2]_DecalTexturePan ("Panning", Vector) = (0, 0, 0, 0)
@@ -650,7 +651,7 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 		[ThrySeperator(2, 2, 2)]
 		[HideInInspector] ss_start_Decal0ALColorOverrideS ("Color Override--{reference_property:_AudioLinkDecal0ColorOverrideEnabled, persistent_expand:true, default_expand:false}", Float) = 0
 		[ThryHideInInspector][ToggleUI] _AudioLinkDecal0ColorOverrideEnabled ("Color Override", Float) = 0
-		_AudioLinkDecal0ColorOverride ("Color", Color) = (1,1,1,1)
+		[ThryHDR]_AudioLinkDecal0ColorOverride ("Color", Color) = (1,1,1,1)
 		[ThryWideEnum(Off, 0, Theme Color 0, 1, Theme Color 1, 2, Theme Color 2, 3, Theme Color 3, 4, ColorChord 0, 5, ColorChord 1, 6, ColorChord 2, 7, ColorChord 3, 8, AL Theme 0, 9, AL Theme 1, 10, AL Theme 2, 11, AL Theme 3, 12)] _AudioLinkDecal0ColorOverrideThemeIndex ("Theme Color", Int) = 0
 		[Enum(Bass, 0, Low Mid, 1, High Mid, 2, Treble, 3, Volume, 4)] _AudioLinkDecal0ColorOverrideBand ("Color Override Band", Int) = 0
 		[Ramp4(normalized)]_AudioLinkDecal0ColorOverrideRamp ("Color Override Ramp", Vector) = (0, 1, 0, 1)
@@ -677,7 +678,7 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 		[ToggleUI]_DecalTiled1 ("Tiled", Float) = 0
 		[HideInInspector] s_end_Decal1Position ("Positioning", Float) = 0
 		
-		_DecalColor1 ("Color--{reference_property:_DecalColor1ThemeIndex}", Color) = (1, 1, 1, 1)
+		[ThryHDR]_DecalColor1 ("Color--{reference_property:_DecalColor1ThemeIndex}", Color) = (1, 1, 1, 1)
 		[ThryHideInInspector][ThryWideEnum(Off, 0, Theme Color 0, 1, Theme Color 1, 2, Theme Color 2, 3, Theme Color 3, 4, ColorChord 0, 5, ColorChord 1, 6, ColorChord 2, 7, ColorChord 3, 8, AL Theme 0, 9, AL Theme 1, 10, AL Theme 2, 11, AL Theme 3, 12)] _DecalColor1ThemeIndex ("", Int) = 0
 		[sRGBWarning(true)]_DecalTexture1 ("Decal--{reference_properties:[_DecalTexture1Pan, _DecalTexture1UV, _Decal1MaskChannel]}", 2D) = "white" { }
 		[ThryHideInInspector][Vector2]_DecalTexture1Pan ("Panning", Vector) = (0, 0, 0, 0)
@@ -769,7 +770,7 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 		[ThrySeperator(2, 2, 2)]
 		[HideInInspector] ss_start_Decal1ALColorOverrideS ("Color Override--{reference_property:_AudioLinkDecal1ColorOverrideEnabled, persistent_expand:true, default_expand:false}", Float) = 0
 		[ThryHideInInspector][ToggleUI] _AudioLinkDecal1ColorOverrideEnabled ("Color Override", Float) = 0
-		_AudioLinkDecal1ColorOverride ("Color", Color) = (1,1,1,1)
+		[ThryHDR]_AudioLinkDecal1ColorOverride ("Color", Color) = (1,1,1,1)
 		[ThryWideEnum(Off, 0, Theme Color 0, 1, Theme Color 1, 2, Theme Color 2, 3, Theme Color 3, 4, ColorChord 0, 5, ColorChord 1, 6, ColorChord 2, 7, ColorChord 3, 8, AL Theme 0, 9, AL Theme 1, 10, AL Theme 2, 11, AL Theme 3, 12)] _AudioLinkDecal1ColorOverrideThemeIndex ("Theme Color", Int) = 0
 		[Enum(Bass, 0, Low Mid, 1, High Mid, 2, Treble, 3, Volume, 4)] _AudioLinkDecal1ColorOverrideBand ("Color Override Band", Int) = 0
 		[Ramp4(normalized)]_AudioLinkDecal1ColorOverrideRamp ("Color Override Ramp", Vector) = (0, 1, 0, 1)
@@ -796,7 +797,7 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 		[ToggleUI]_DecalTiled2 ("Tiled", Float) = 0
 		[HideInInspector] s_end_Decal2Position ("Positioning", Float) = 0
 		
-		_DecalColor2 ("Color--{reference_property:_DecalColor2ThemeIndex}", Color) = (1, 1, 1, 1)
+		[ThryHDR]_DecalColor2 ("Color--{reference_property:_DecalColor2ThemeIndex}", Color) = (1, 1, 1, 1)
 		[ThryHideInInspector][ThryWideEnum(Off, 0, Theme Color 0, 1, Theme Color 1, 2, Theme Color 2, 3, Theme Color 3, 4, ColorChord 0, 5, ColorChord 1, 6, ColorChord 2, 7, ColorChord 3, 8, AL Theme 0, 9, AL Theme 1, 10, AL Theme 2, 11, AL Theme 3, 12)] _DecalColor2ThemeIndex ("", Int) = 0
 		[sRGBWarning(true)]_DecalTexture2 ("Decal--{reference_properties:[_DecalTexture2Pan, _DecalTexture2UV, _Decal2MaskChannel]}", 2D) = "white" { }
 		[ThryHideInInspector][Vector2]_DecalTexture2Pan ("Panning", Vector) = (0, 0, 0, 0)
@@ -888,7 +889,7 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 		[ThrySeperator(2, 2, 2)]
 		[HideInInspector] ss_start_Decal2ALColorOverrideS ("Color Override--{reference_property:_AudioLinkDecal2ColorOverrideEnabled, persistent_expand:true, default_expand:false}", Float) = 0
 		[ThryHideInInspector][ToggleUI] _AudioLinkDecal2ColorOverrideEnabled ("Color Override", Float) = 0
-		_AudioLinkDecal2ColorOverride ("Color", Color) = (1,1,1,1)
+		[ThryHDR]_AudioLinkDecal2ColorOverride ("Color", Color) = (1,1,1,1)
 		[ThryWideEnum(Off, 0, Theme Color 0, 1, Theme Color 1, 2, Theme Color 2, 3, Theme Color 3, 4, ColorChord 0, 5, ColorChord 1, 6, ColorChord 2, 7, ColorChord 3, 8, AL Theme 0, 9, AL Theme 1, 10, AL Theme 2, 11, AL Theme 3, 12)] _AudioLinkDecal2ColorOverrideThemeIndex ("Theme Color", Int) = 0
 		[Enum(Bass, 0, Low Mid, 1, High Mid, 2, Treble, 3, Volume, 4)] _AudioLinkDecal2ColorOverrideBand ("Color Override Band", Int) = 0
 		[Ramp4(normalized)]_AudioLinkDecal2ColorOverrideRamp ("Color Override Ramp", Vector) = (0, 1, 0, 1)
@@ -915,7 +916,7 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 		[ToggleUI]_DecalTiled3 ("Tiled", Float) = 0
 		[HideInInspector] s_end_Decal3Position ("Positioning", Float) = 0
 		
-		_DecalColor3 ("Color--{reference_property:_DecalColor3ThemeIndex}", Color) = (1, 1, 1, 1)
+		[ThryHDR]_DecalColor3 ("Color--{reference_property:_DecalColor3ThemeIndex}", Color) = (1, 1, 1, 1)
 		[ThryHideInInspector][ThryWideEnum(Off, 0, Theme Color 0, 1, Theme Color 1, 2, Theme Color 2, 3, Theme Color 3, 4, ColorChord 0, 5, ColorChord 1, 6, ColorChord 2, 7, ColorChord 3, 8, AL Theme 0, 9, AL Theme 1, 10, AL Theme 2, 11, AL Theme 3, 12)] _DecalColor3ThemeIndex ("", Int) = 0
 		[sRGBWarning(true)]_DecalTexture3 ("Decal--{reference_properties:[_DecalTexture3Pan, _DecalTexture3UV, _Decal3MaskChannel]}", 2D) = "white" { }
 		[ThryHideInInspector][Vector2]_DecalTexture3Pan ("Panning", Vector) = (0, 0, 0, 0)
@@ -1007,7 +1008,7 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 		[ThrySeperator(2, 2, 2)]
 		[HideInInspector] ss_start_Decal3ALColorOverrideS ("Color Override--{reference_property:_AudioLinkDecal3ColorOverrideEnabled, persistent_expand:true, default_expand:false}", Float) = 0
 		[ThryHideInInspector][ToggleUI] _AudioLinkDecal3ColorOverrideEnabled ("Color Override", Float) = 0
-		_AudioLinkDecal3ColorOverride ("Color", Color) = (1,1,1,1)
+		[ThryHDR]_AudioLinkDecal3ColorOverride ("Color", Color) = (1,1,1,1)
 		[ThryWideEnum(Off, 0, Theme Color 0, 1, Theme Color 1, 2, Theme Color 2, 3, Theme Color 3, 4, ColorChord 0, 5, ColorChord 1, 6, ColorChord 2, 7, ColorChord 3, 8, AL Theme 0, 9, AL Theme 1, 10, AL Theme 2, 11, AL Theme 3, 12)] _AudioLinkDecal3ColorOverrideThemeIndex ("Theme Color", Int) = 0
 		[Enum(Bass, 0, Low Mid, 1, High Mid, 2, Treble, 3, Volume, 4)] _AudioLinkDecal3ColorOverrideBand ("Color Override Band", Int) = 0
 		[Ramp4(normalized)]_AudioLinkDecal3ColorOverrideRamp ("Color Override Ramp", Vector) = (0, 1, 0, 1)
@@ -3798,7 +3799,7 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 		
 		[HideInInspector] ss_start_GlitterALColorOverrideSS ("Color Override--{reference_property:_GlitterALColorOverrideEnabled,persistent_expand:true,default_expand:false}", Float) = 0
 		[ThryHideInInspector][ToggleUI] _GlitterALColorOverrideEnabled ("Color Override", Float) = 0
-		_GlitterALColorOverride ("Color", Color) = (1,1,1,1)
+		[ThryHDR]_GlitterALColorOverride ("Color", Color) = (1,1,1,1)
 		[ThryWideEnum(Off, 0, Theme Color 0, 1, Theme Color 1, 2, Theme Color 2, 3, Theme Color 3, 4, ColorChord 0, 5, ColorChord 1, 6, ColorChord 2, 7, ColorChord 3, 8, AL Theme 0, 9, AL Theme 1, 10, AL Theme 2, 11, AL Theme 3, 12)] _GlitterALColorOverrideThemeIndex ("Theme Color", Int) = 0
 		[Enum(Bass, 0, Low Mid, 1, High Mid, 2, Treble, 3, Volume, 4)] _GlitterALColorOverrideBand ("Color Override Band", Int) = 0
 		[Ramp4(normalized)]_GlitterALColorOverrideRamp ("Color Override Ramp", Vector) = (0, 1, 0, 1)
@@ -8746,25 +8747,6 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 		
 		void applyToGlobalMask(inout PoiMods poiMods, int index, int blendType, half val)
 		{
-			// Compute blended values for all 16 masks
-			half v0 = saturate(maskBlend(poiMods.globalMask[0], val, blendType));
-			half v1 = saturate(maskBlend(poiMods.globalMask[1], val, blendType));
-			half v2 = saturate(maskBlend(poiMods.globalMask[2], val, blendType));
-			half v3 = saturate(maskBlend(poiMods.globalMask[3], val, blendType));
-			half v4 = saturate(maskBlend(poiMods.globalMask[4], val, blendType));
-			half v5 = saturate(maskBlend(poiMods.globalMask[5], val, blendType));
-			half v6 = saturate(maskBlend(poiMods.globalMask[6], val, blendType));
-			half v7 = saturate(maskBlend(poiMods.globalMask[7], val, blendType));
-			half v8 = saturate(maskBlend(poiMods.globalMask[8], val, blendType));
-			half v9 = saturate(maskBlend(poiMods.globalMask[9], val, blendType));
-			half v10 = saturate(maskBlend(poiMods.globalMask[10], val, blendType));
-			half v11 = saturate(maskBlend(poiMods.globalMask[11], val, blendType));
-			half v12 = saturate(maskBlend(poiMods.globalMask[12], val, blendType));
-			half v13 = saturate(maskBlend(poiMods.globalMask[13], val, blendType));
-			half v14 = saturate(maskBlend(poiMods.globalMask[14], val, blendType));
-			half v15 = saturate(maskBlend(poiMods.globalMask[15], val, blendType));
-			
-			// Branchless weights
 			half i = index;
 			half w0 = saturate(1.0h - abs(i - 0.0h));
 			half w1 = saturate(1.0h - abs(i - 1.0h));
@@ -8782,24 +8764,24 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 			half w13 = saturate(1.0h - abs(i - 13.0h));
 			half w14 = saturate(1.0h - abs(i - 14.0h));
 			half w15 = saturate(1.0h - abs(i - 15.0h));
-			
-			// Branchless conditional writes
-			poiMods.globalMask[0] = lerp(poiMods.globalMask[0], v0, w0);
-			poiMods.globalMask[1] = lerp(poiMods.globalMask[1], v1, w1);
-			poiMods.globalMask[2] = lerp(poiMods.globalMask[2], v2, w2);
-			poiMods.globalMask[3] = lerp(poiMods.globalMask[3], v3, w3);
-			poiMods.globalMask[4] = lerp(poiMods.globalMask[4], v4, w4);
-			poiMods.globalMask[5] = lerp(poiMods.globalMask[5], v5, w5);
-			poiMods.globalMask[6] = lerp(poiMods.globalMask[6], v6, w6);
-			poiMods.globalMask[7] = lerp(poiMods.globalMask[7], v7, w7);
-			poiMods.globalMask[8] = lerp(poiMods.globalMask[8], v8, w8);
-			poiMods.globalMask[9] = lerp(poiMods.globalMask[9], v9, w9);
-			poiMods.globalMask[10] = lerp(poiMods.globalMask[10], v10, w10);
-			poiMods.globalMask[11] = lerp(poiMods.globalMask[11], v11, w11);
-			poiMods.globalMask[12] = lerp(poiMods.globalMask[12], v12, w12);
-			poiMods.globalMask[13] = lerp(poiMods.globalMask[13], v13, w13);
-			poiMods.globalMask[14] = lerp(poiMods.globalMask[14], v14, w14);
-			poiMods.globalMask[15] = lerp(poiMods.globalMask[15], v15, w15);
+			half cur = poiMods.globalMask[0] * w0 + poiMods.globalMask[1] * w1 + poiMods.globalMask[2] * w2 + poiMods.globalMask[3] * w3 + poiMods.globalMask[4] * w4 + poiMods.globalMask[5] * w5 + poiMods.globalMask[6] * w6 + poiMods.globalMask[7] * w7 + poiMods.globalMask[8] * w8 + poiMods.globalMask[9] * w9 + poiMods.globalMask[10] * w10 + poiMods.globalMask[11] * w11 + poiMods.globalMask[12] * w12 + poiMods.globalMask[13] * w13 + poiMods.globalMask[14] * w14 + poiMods.globalMask[15] * w15;
+			half nv = saturate(maskBlend(cur, val, blendType));
+			poiMods.globalMask[0] = lerp(poiMods.globalMask[0], nv, w0);
+			poiMods.globalMask[1] = lerp(poiMods.globalMask[1], nv, w1);
+			poiMods.globalMask[2] = lerp(poiMods.globalMask[2], nv, w2);
+			poiMods.globalMask[3] = lerp(poiMods.globalMask[3], nv, w3);
+			poiMods.globalMask[4] = lerp(poiMods.globalMask[4], nv, w4);
+			poiMods.globalMask[5] = lerp(poiMods.globalMask[5], nv, w5);
+			poiMods.globalMask[6] = lerp(poiMods.globalMask[6], nv, w6);
+			poiMods.globalMask[7] = lerp(poiMods.globalMask[7], nv, w7);
+			poiMods.globalMask[8] = lerp(poiMods.globalMask[8], nv, w8);
+			poiMods.globalMask[9] = lerp(poiMods.globalMask[9], nv, w9);
+			poiMods.globalMask[10] = lerp(poiMods.globalMask[10], nv, w10);
+			poiMods.globalMask[11] = lerp(poiMods.globalMask[11], nv, w11);
+			poiMods.globalMask[12] = lerp(poiMods.globalMask[12], nv, w12);
+			poiMods.globalMask[13] = lerp(poiMods.globalMask[13], nv, w13);
+			poiMods.globalMask[14] = lerp(poiMods.globalMask[14], nv, w14);
+			poiMods.globalMask[15] = lerp(poiMods.globalMask[15], nv, w15);
 		}
 		
 		void assignValueToVectorFromIndex(inout half4 vec, int index, half value)
@@ -9624,6 +9606,7 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 			float2 _MainTintTexturePan;
 			float _MainTintTextureUV;
 			half _MainBrightness;
+			half _MainColorAdjustClamp;
 			float _MainGamma;
 			
 			float _MainHueALCTEnabled;
@@ -11272,26 +11255,13 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 			
 			half3 poiThemeColor(in PoiMods poiMods, in half3 srcColor, in half themeIndex)
 			{
-				half3 outputColor = srcColor;
-				if (themeIndex != 0)
-				{
-					themeIndex = max(themeIndex - 1, 0);
-					
-					if (themeIndex <= 3)
-					{
-						outputColor = poiMods.globalColorTheme[themeIndex].rgb;
-					}
-					else
-					{
-						#ifdef POI_AUDIOLINK
-						if (poiMods.audioLinkAvailable)
-						{
-							outputColor = poiMods.globalColorTheme[themeIndex].rgb;
-						}
-						#endif
-					}
-				}
-				return outputColor;
+				half poiThemeIdx = clamp(max(themeIndex - 1, 0), 0, 11);
+				#ifdef POI_AUDIOLINK
+				bool poiThemeUse = (themeIndex != 0) && (poiThemeIdx <= 3 || poiMods.audioLinkAvailable);
+				#else
+				bool poiThemeUse = (themeIndex != 0) && (poiThemeIdx <= 3);
+				#endif
+				return poiThemeUse ? poiMods.globalColorTheme[poiThemeIdx].rgb : srcColor;
 			}
 			
 			struct PoiSpriteSheetConfig
@@ -13873,6 +13843,14 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 			#define _Mode _RenderingReduceClipDistance
 			#endif
 			
+			#if defined(OPTIMIZER_ENABLED)
+			#define POI_LILFUR_SLOT_LOOP [unroll]
+			#define POI_LILFUR_SLOT_BOUND 6
+			#else
+			#define POI_LILFUR_SLOT_LOOP [loop]
+			#define POI_LILFUR_SLOT_BOUND furFactorCount
+			#endif
+			
 			//ifex _EnableBentNormal==0
 			#ifdef POI_BENTNORMALMAP
 			#if defined(PROP_BENTNORMALMAP) || !defined(OPTIMIZER_ENABLED)
@@ -14119,6 +14097,16 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 			#endif
 			sampler2D _Udon_VideoTex;//<ms_no_postfix>
 			float4 _Udon_VideoTex_TexelSize;//<ms_no_postfix>
+			//endex
+			
+			//ifex _DecalEnabled==0 && _DecalEnabled1==0 && _DecalEnabled2==0 && _DecalEnabled3==0
+			#if defined(OPTIMIZER_ENABLED)
+			#define POI_DECAL_LAYER_LOOP [unroll]
+			#define POI_DECAL_SAMPLE_BOUND 2
+			#else
+			#define POI_DECAL_LAYER_LOOP [loop]
+			#define POI_DECAL_SAMPLE_BOUND sampleCount
+			#endif
 			//endex
 			
 			//ifex _DecalEnabled==0
@@ -14506,6 +14494,11 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 			TextureCube _ReflectionCubeTex;
 			#endif
 			#endif
+			#if defined(OPTIMIZER_ENABLED)
+			#define POI_STYLIZED_SPECULAR_VERTEX_LIGHT_LOOP [unroll]
+			#else
+			#define POI_STYLIZED_SPECULAR_VERTEX_LIGHT_LOOP [loop]
+			#endif
 			#endif
 			//endex
 			
@@ -14826,6 +14819,7 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 			float2 _MainTintTexturePan;
 			float _MainTintTextureUV;
 			half _MainBrightness;
+			half _MainColorAdjustClamp;
 			float _MainGamma;
 			
 			float _MainHueALCTEnabled;
@@ -20520,26 +20514,13 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 			
 			half3 poiThemeColor(in PoiMods poiMods, in half3 srcColor, in half themeIndex)
 			{
-				half3 outputColor = srcColor;
-				if (themeIndex != 0)
-				{
-					themeIndex = max(themeIndex - 1, 0);
-					
-					if (themeIndex <= 3)
-					{
-						outputColor = poiMods.globalColorTheme[themeIndex].rgb;
-					}
-					else
-					{
-						#ifdef POI_AUDIOLINK
-						if (poiMods.audioLinkAvailable)
-						{
-							outputColor = poiMods.globalColorTheme[themeIndex].rgb;
-						}
-						#endif
-					}
-				}
-				return outputColor;
+				half poiThemeIdx = clamp(max(themeIndex - 1, 0), 0, 11);
+				#ifdef POI_AUDIOLINK
+				bool poiThemeUse = (themeIndex != 0) && (poiThemeIdx <= 3 || poiMods.audioLinkAvailable);
+				#else
+				bool poiThemeUse = (themeIndex != 0) && (poiThemeIdx <= 3);
+				#endif
+				return poiThemeUse ? poiMods.globalColorTheme[poiThemeIdx].rgb : srcColor;
 			}
 			
 			struct PoiSpriteSheetConfig
@@ -24081,6 +24062,10 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 					#endif
 				}
 				poiFragData.baseColor = lerp(poiFragData.baseColor, poiFragData.baseColor * (_MainBrightness + 1), hueShiftAlpha.g);
+				if (_MainColorAdjustClamp > 0.5)
+				{
+					poiFragData.baseColor = saturate(poiFragData.baseColor);
+				}
 				#endif
 				//endex
 				
@@ -25689,7 +25674,7 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 					bool selRedG = (_RgbNormalGBlendSources.y > 0.5);
 					int modeG = (selBaseG || selRedG) ? 2 : 0;
 					float3 fromNormalG = selBaseG ? originalNormal : neutralNormal;
-					if (selRedG && hasR > 0.5) fromNormalG = lerp(fromNormalG, BlendNormals(fromNormalG, nR), maskFinal.r);
+					if (selRedG && hasR > 0.5) fromNormalG = lerp(fromNormalG, PoiBlendNormal(fromNormalG, nR), maskFinal.r);
 					RGBABlendNormals(poiMesh.tangentSpaceNormal, fromNormalG, nG, maskFinal.g, modeG);
 				}
 				#endif
@@ -25703,8 +25688,8 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 					bool selGreenB = (_RgbNormalBBlendSources.z > 0.5);
 					int modeB = (selBaseB || selRedB || selGreenB) ? 2 : 0;
 					float3 fromNormalB = selBaseB ? originalNormal : neutralNormal;
-					if (selRedB && hasR > 0.5) fromNormalB = lerp(fromNormalB, BlendNormals(fromNormalB, nR), maskFinal.r);
-					if (selGreenB && hasG > 0.5) fromNormalB = lerp(fromNormalB, BlendNormals(fromNormalB, nG), maskFinal.g);
+					if (selRedB && hasR > 0.5) fromNormalB = lerp(fromNormalB, PoiBlendNormal(fromNormalB, nR), maskFinal.r);
+					if (selGreenB && hasG > 0.5) fromNormalB = lerp(fromNormalB, PoiBlendNormal(fromNormalB, nG), maskFinal.g);
 					RGBABlendNormals(poiMesh.tangentSpaceNormal, fromNormalB, nB, maskFinal.b, modeB);
 				}
 				#endif
@@ -25718,9 +25703,9 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 					bool selBlueA = (_RgbNormalABlendSources.w > 0.5);
 					int modeA = (selBaseA || selRedA || selGreenA || selBlueA) ? 2 : 0;
 					float3 fromNormalA = selBaseA ? originalNormal : neutralNormal;
-					if (selRedA && hasR > 0.5) fromNormalA = lerp(fromNormalA, BlendNormals(fromNormalA, nR), maskFinal.r);
-					if (selGreenA && hasG > 0.5) fromNormalA = lerp(fromNormalA, BlendNormals(fromNormalA, nG), maskFinal.g);
-					if (selBlueA && hasB > 0.5) fromNormalA = lerp(fromNormalA, BlendNormals(fromNormalA, nB), maskFinal.b);
+					if (selRedA && hasR > 0.5) fromNormalA = lerp(fromNormalA, PoiBlendNormal(fromNormalA, nR), maskFinal.r);
+					if (selGreenA && hasG > 0.5) fromNormalA = lerp(fromNormalA, PoiBlendNormal(fromNormalA, nG), maskFinal.g);
+					if (selBlueA && hasB > 0.5) fromNormalA = lerp(fromNormalA, PoiBlendNormal(fromNormalA, nB), maskFinal.b);
 					RGBABlendNormals(poiMesh.tangentSpaceNormal, fromNormalA, normalToBlendWith, maskFinal.a, modeA);
 				}
 				#endif
@@ -28332,79 +28317,73 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 					#endif
 				}
 				
-				void SampleDecalNoTexture(in PoiMods poiMods, in PoiLight poiLight, in PoiMesh poiMesh, in PoiCam poiCam)
+				void SampleDecalLayers(sampler2D decalTexture, sampler2D videoTexture, bool videoEnabled, bool videoAvailable, bool onlyVideo, bool keepDecalAlpha, bool channelSeparation, bool localTextureAvailable, float2 videoAspectRatio, in PoiMods poiMods, in PoiLight poiLight, in PoiMesh poiMesh, in PoiCam poiCam)
 				{
-					uv = decalUV(m_DecalTextureUV, m_DecalPosition, m_DecalRotation + decalRotation, m_DecalRotationSpeed, decalScale, m_DecalSideOffset +sideMod, m_DecalDepth, m_DecalSymmetryMode, m_DecalMirroredUVMode, poiMesh, poiCam);
-					decalColor = float4(poiThemeColor(poiMods, m_DecalColor.rgb, m_DecalColorThemeIndex), m_DecalColor.a);
-					decalColor.rgb = decalHueShift(m_DecalHueShiftEnabled, decalColor.rgb, m_DecalHueShift + poiLight.nDotVCentered * m_DecalHueAngleStrength, m_DecalHueShiftSpeed, m_DecalHueShiftColorSpace, m_DecalHueShiftSelectOrShift);
-					decalColor.rgb = decalColorAdjust(m_DecalColorAdjustEnabled, decalColor.rgb, m_DecalSaturation, m_DecalChromatize, m_DecalBrightness, m_DecalGamma);
-					decalColor.a *= decalMask[m_DecalMaskChannel] * applyTilingClipping(m_DecalTiled, uv);
-				}
-				
-				void SampleDecal(sampler2D decalTexture, in PoiMods poiMods, in PoiLight poiLight, in PoiMesh poiMesh, in PoiCam poiCam, float2 scaleMultiplier = float2(1, 1))
-				{
-					uv = decalUV(m_DecalTextureUV, m_DecalPosition, m_DecalRotation + decalRotation, m_DecalRotationSpeed, decalScale * scaleMultiplier, m_DecalSideOffset +sideMod, m_DecalDepth, m_DecalSymmetryMode, m_DecalMirroredUVMode, poiMesh, poiCam);
-					// Adjust derivatives for _ST of decal texture
-					float4 dduv = any(fwidth(uv) > .5) ? 0.001 : float4(ddx(uv) * m_DecalTexture_ST.x, ddy(uv) * m_DecalTexture_ST.y);
-					decalColor = tex2D(decalTexture, poiUV(uv, m_DecalTexture_ST) + m_DecalTexturePan * POI_TIME.x, dduv.xy, dduv.zw) * float4(poiThemeColor(poiMods, m_DecalColor.rgb, m_DecalColorThemeIndex), m_DecalColor.a);
-					decalColor.rgb = decalHueShift(m_DecalHueShiftEnabled, decalColor.rgb, m_DecalHueShift + poiLight.nDotVCentered * m_DecalHueAngleStrength, m_DecalHueShiftSpeed, m_DecalHueShiftColorSpace, m_DecalHueShiftSelectOrShift);
-					decalColor.rgb = decalColorAdjust(m_DecalColorAdjustEnabled, decalColor.rgb, m_DecalSaturation, m_DecalChromatize, m_DecalBrightness, m_DecalGamma);
-					decalColor.a *= decalMask[m_DecalMaskChannel] * applyTilingClipping(m_DecalTiled, uv);
-				}
-				
-				void SampleDecalNoAlpha(sampler2D decalTexture, in PoiMods poiMods, in PoiLight poiLight, in PoiMesh poiMesh, in PoiCam poiCam, float2 scaleMultiplier = float2(1, 1))
-				{
-					uv = decalUV(m_DecalTextureUV, m_DecalPosition, m_DecalRotation + decalRotation, m_DecalRotationSpeed, decalScale * scaleMultiplier, m_DecalSideOffset +sideMod, m_DecalDepth, m_DecalSymmetryMode, m_DecalMirroredUVMode, poiMesh, poiCam);
-					// Adjust derivatives for _ST of decal texture
-					float4 dduv = any(fwidth(uv) > .5) ? 0.001 : float4(ddx(uv) * m_DecalTexture_ST.x, ddy(uv) * m_DecalTexture_ST.y);
-					decalColor.rgb = tex2D(decalTexture, poiUV(uv, m_DecalTexture_ST) + m_DecalTexturePan * POI_TIME.x, dduv.xy, dduv.zw) * float4(poiThemeColor(poiMods, m_DecalColor.rgb, m_DecalColorThemeIndex), m_DecalColor.a).rgb;
-					decalColor.rgb = decalHueShift(m_DecalHueShiftEnabled, decalColor.rgb, m_DecalHueShift + poiLight.nDotVCentered * m_DecalHueAngleStrength, m_DecalHueShiftSpeed, m_DecalHueShiftColorSpace, m_DecalHueShiftSelectOrShift);
-					decalColor.rgb = decalColorAdjust(m_DecalColorAdjustEnabled, decalColor.rgb, m_DecalSaturation, m_DecalChromatize, m_DecalBrightness, m_DecalGamma);
-					decalColor.a *= decalMask[m_DecalMaskChannel] * applyTilingClipping(m_DecalTiled, uv);
-				}
-				
-				void SampleDecalAlphaOnly(sampler2D decalTexture, in PoiMods poiMods, in PoiLight poiLight, in PoiMesh poiMesh, in PoiCam poiCam, float2 scaleMultiplier = float2(1, 1))
-				{
-					uv = decalUV(m_DecalTextureUV, m_DecalPosition, m_DecalRotation + decalRotation, m_DecalRotationSpeed, decalScale * scaleMultiplier, m_DecalSideOffset +sideMod, m_DecalDepth, m_DecalSymmetryMode, m_DecalMirroredUVMode, poiMesh, poiCam);
-					// Adjust derivatives for _ST of decal texture
-					float4 dduv = any(fwidth(uv) > .5) ? 0.001 : float4(ddx(uv) * m_DecalTexture_ST.x, ddy(uv) * m_DecalTexture_ST.y);
-					decalColor = tex2D(decalTexture, poiUV(uv, m_DecalTexture_ST) + m_DecalTexturePan * POI_TIME.x, dduv.xy, dduv.zw) * float4(poiThemeColor(poiMods, m_DecalColor.rgb, m_DecalColorThemeIndex), m_DecalColor.a);
-					decalColor.rgb = decalColorAdjust(m_DecalColorAdjustEnabled, decalColor.rgb, m_DecalSaturation, m_DecalChromatize, m_DecalBrightness, m_DecalGamma);
-					decalColor.a *= decalMask[m_DecalMaskChannel] * applyTilingClipping(m_DecalTiled, uv);
-				}
-				
-				void SampleDecalChannelSeparation(sampler2D decalTexture, in PoiMods poiMods, in PoiLight poiLight, in PoiMesh poiMesh, in PoiCam poiCam)
-				{
-					decalColor = float4(0, 0, 0, 1);
-					decalChannelOffset += m_DecalChannelSeparation + m_DecalChannelSeparationAngleStrength * (m_DecalChannelSeparationAngleStrength > 0 ? (1 - poiLight.nDotVCentered) : poiLight.nDotVCentered);
-					float2 positionOffset = decalChannelOffset * 0.01 * (decalScale.x + decalScale.y) * float2(cos(m_DecalChannelSeparationVertical), sin(m_DecalChannelSeparationVertical));
-					float2 uvSample0 = decalUV(m_DecalTextureUV, m_DecalPosition + positionOffset, m_DecalRotation + decalRotation, m_DecalRotationSpeed, decalScale, m_DecalSideOffset +sideMod, m_DecalDepth, m_DecalSymmetryMode, m_DecalMirroredUVMode, poiMesh, poiCam);
-					float2 uvSample1 = decalUV(m_DecalTextureUV, m_DecalPosition - positionOffset, m_DecalRotation + decalRotation, m_DecalRotationSpeed, decalScale, m_DecalSideOffset +sideMod, m_DecalDepth, m_DecalSymmetryMode, m_DecalMirroredUVMode, poiMesh, poiCam);
-					
-					float4 dduvSample0 = any(fwidth(uvSample0) > .5) ? 0.001 : float4(ddx(uvSample0) * m_DecalTexture_ST.x, ddy(uvSample0) * m_DecalTexture_ST.y);
-					float4 dduvSample1 = any(fwidth(uvSample1) > .5) ? 0.001 : float4(ddx(uvSample1) * m_DecalTexture_ST.x, ddy(uvSample1) * m_DecalTexture_ST.y);
-					
-					half4 decalTint = float4(poiThemeColor(poiMods, m_DecalColor.rgb, m_DecalColorThemeIndex), m_DecalColor.a);
-					float4 sample0 = tex2D(decalTexture, poiUV(uvSample0, m_DecalTexture_ST) + m_DecalTexturePan * POI_TIME.x, dduvSample0.xy, dduvSample0.zw) * decalTint;
-					float4 sample1 = tex2D(decalTexture, poiUV(uvSample1, m_DecalTexture_ST) + m_DecalTexturePan * POI_TIME.x, dduvSample1.xy, dduvSample1.zw) * decalTint;
-					
-					sample0.rgb = decalHueShift(m_DecalHueShiftEnabled, sample0.rgb, m_DecalHueShift + poiLight.nDotVCentered * m_DecalHueAngleStrength, m_DecalHueShiftSpeed, m_DecalHueShiftColorSpace, m_DecalHueShiftSelectOrShift);
-					sample1.rgb = decalHueShift(m_DecalHueShiftEnabled, sample1.rgb, m_DecalHueShift + poiLight.nDotVCentered * m_DecalHueAngleStrength, m_DecalHueShiftSpeed, m_DecalHueShiftColorSpace, m_DecalHueShiftSelectOrShift);
-					sample0.rgb = decalColorAdjust(m_DecalColorAdjustEnabled, sample0.rgb, m_DecalSaturation, m_DecalChromatize, m_DecalBrightness, m_DecalGamma);
-					sample1.rgb = decalColorAdjust(m_DecalColorAdjustEnabled, sample1.rgb, m_DecalSaturation, m_DecalChromatize, m_DecalBrightness, m_DecalGamma);
-					
-					half3 channelSeparationColor = HUEtoRGB(frac(m_DecalChannelSeparationHue));
-					
-					if (m_DecalChannelSeparationPremultiply)
+					bool separateChannels = !videoEnabled && channelSeparation && localTextureAvailable;
+					float2 positionOffset = 0;
+					if (separateChannels)
 					{
-						decalColor.rgb = lerp(sample0 * sample0.a, sample1 * sample1.a, channelSeparationColor);
+						decalChannelOffset += m_DecalChannelSeparation + m_DecalChannelSeparationAngleStrength * (m_DecalChannelSeparationAngleStrength > 0 ? (1 - poiLight.nDotVCentered) : poiLight.nDotVCentered);
+						positionOffset = decalChannelOffset * 0.01 * (decalScale.x + decalScale.y) * float2(cos(m_DecalChannelSeparationVertical), sin(m_DecalChannelSeparationVertical));
 					}
-					else
+					// Share UV and color processing across local/video layers and separated channels.
+					// Material-uniform loop bounds keep derivative evaluation in uniform control flow.
+					POI_DECAL_LAYER_LOOP
+					for (int layer = 0; layer < 2; ++layer)
 					{
-						decalColor.rgb = lerp(sample0, sample1, channelSeparationColor);
+						bool videoLayer = layer == 1;
+						bool sampleLayer = videoLayer ? (videoEnabled && videoAvailable) : (!videoEnabled || !onlyVideo || (videoAvailable && keepDecalAlpha));
+						if (sampleLayer)
+						{
+							bool separatedLayer = !videoLayer && separateChannels;
+							int sampleCount = separatedLayer ? 2 : 1;
+							float4 samples[2];
+							float clips[2];
+							float previousAlpha = decalColor.a;
+							POI_DECAL_LAYER_LOOP
+							for (int sampleIndex = 0; sampleIndex < POI_DECAL_SAMPLE_BOUND; ++sampleIndex)
+							{
+								#if defined(OPTIMIZER_ENABLED)
+								if (sampleIndex >= sampleCount) break;
+								#endif
+								float2 samplePosition = m_DecalPosition + (separatedLayer ? (sampleIndex == 0 ? positionOffset : -positionOffset) : float2(0, 0));
+								float2 sampleScale = decalScale * (videoLayer ? videoAspectRatio : float2(1, 1));
+								float2 sampleUV = decalUV(m_DecalTextureUV, samplePosition, m_DecalRotation + decalRotation, m_DecalRotationSpeed, sampleScale, m_DecalSideOffset +sideMod, m_DecalDepth, m_DecalSymmetryMode, m_DecalMirroredUVMode, poiMesh, poiCam);
+								float4 decalSampleColor = float4(poiThemeColor(poiMods, m_DecalColor.rgb, m_DecalColorThemeIndex), m_DecalColor.a);
+								if (videoLayer || videoEnabled || localTextureAvailable)
+								{
+									float4 derivatives = any(fwidth(sampleUV) > .5) ? 0.001 : float4(ddx(sampleUV) * m_DecalTexture_ST.xy, ddy(sampleUV) * m_DecalTexture_ST.xy);
+									float2 textureUV = poiUV(sampleUV, m_DecalTexture_ST) + m_DecalTexturePan * POI_TIME.x;
+									if (videoLayer)
+									decalSampleColor *= tex2D(videoTexture, textureUV, derivatives.xy, derivatives.zw);
+									else
+									decalSampleColor *= tex2D(decalTexture, textureUV, derivatives.xy, derivatives.zw);
+								}
+								decalSampleColor.rgb = decalHueShift(m_DecalHueShiftEnabled, decalSampleColor.rgb, m_DecalHueShift + poiLight.nDotVCentered * m_DecalHueAngleStrength, m_DecalHueShiftSpeed, m_DecalHueShiftColorSpace, m_DecalHueShiftSelectOrShift);
+								decalSampleColor.rgb = decalColorAdjust(m_DecalColorAdjustEnabled, decalSampleColor.rgb, m_DecalSaturation, m_DecalChromatize, m_DecalBrightness, m_DecalGamma);
+								samples[sampleIndex] = decalSampleColor;
+								clips[sampleIndex] = applyTilingClipping(m_DecalTiled, sampleUV);
+								// Preserve the original channel-separation path's handling of the stored UV.
+								if (!separatedLayer) uv = sampleUV;
+							}
+							if (separatedLayer)
+							{
+								half3 channelSeparationColor = HUEtoRGB(frac(m_DecalChannelSeparationHue));
+								if (m_DecalChannelSeparationPremultiply)
+								decalColor.rgb = lerp(samples[0] * samples[0].a, samples[1] * samples[1].a, channelSeparationColor);
+								else
+								decalColor.rgb = lerp(samples[0], samples[1], channelSeparationColor);
+								decalColor.a = 0.5 * (samples[0].a + samples[1].a);
+								decalColor.a *= decalMask[m_DecalMaskChannel] * max(clips[0], clips[1]);
+							}
+							else
+							{
+								decalColor = samples[0];
+								if (videoLayer && keepDecalAlpha) decalColor.a = previousAlpha;
+								decalColor.a *= decalMask[m_DecalMaskChannel] * clips[0];
+							}
+						}
 					}
-					decalColor.a = 0.5 * (sample0.a + sample1.a);
-					decalColor.a *= decalMask[m_DecalMaskChannel] * max(applyTilingClipping(m_DecalTiled, uvSample0), applyTilingClipping(m_DecalTiled, uvSample1));
 				}
 				
 				void Apply(inout float alphaOverride, inout float decalAlpha, inout PoiFragData poiFragData, in PoiMesh poiMesh, in PoiCam poiCam, inout PoiMods poiMods, in PoiLight poiLight)
@@ -28699,67 +28678,21 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 				#if defined(POI_PASS_OUTLINE)
 				decalApply = _Decal0OnOutlines >= 0.5;
 				#endif
-				if (_Decal0VideoEnabled < 0.5)
-				{
-					
-					#if defined(PROP_DECALTEXTURE) || !defined(OPTIMIZER_ENABLED)
-					//ifex _Decal0ChannelSeparationEnable==0
-					if (_Decal0ChannelSeparationEnable >= 0.5)
-					{
-						decalData.SampleDecalChannelSeparation(_DecalTexture, poiMods, poiLight, poiMesh, poiCam);
-					}
-					//endex
-					//ifex _Decal0ChannelSeparationEnable==1
-					if (_Decal0ChannelSeparationEnable < 0.5)
-					{
-						decalData.SampleDecal(_DecalTexture, poiMods, poiLight, poiMesh, poiCam);
-					}
-					//endex
-					#else
-					decalData.SampleDecalNoTexture(poiMods, poiLight, poiMesh, poiCam);
-					#endif
-				}
-				else
+				bool videoEnabled = !(_Decal0VideoEnabled < 0.5);
+				bool localTextureAvailable = false;
+				#if defined(PROP_DECALTEXTURE) || !defined(OPTIMIZER_ENABLED)
+				localTextureAvailable = true;
+				#endif
+				if (videoEnabled)
 				{
 					udonVideoAspectRatio = decalData.GetVideoAspectRatio(_Udon_VideoTex_TexelSize.zw, _Decal0VideoAspectFix, _Decal0VideoFitToScale);
-					
-					if (_Decal0OnlyVideo >= 0.5)
-					{
-						if (udonVideoTexAvailable)
-						{
-							decalData.m_DecalEmissionStrength += _Decal0VideoEmissionStrength;
-							if (_Decal0UseDecalAlpha >= 0.5)
-							{
-								decalData.SampleDecal(_DecalTexture, poiMods, poiLight, poiMesh, poiCam);
-								decalData.SampleDecalNoAlpha(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio);
-							}
-							else
-							{
-								decalData.SampleDecal(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio);
-							}
-						}
-						else
-						{
-							decalApply = false;
-						}
-					}
-					else
-					{
-						decalData.SampleDecal(_DecalTexture, poiMods, poiLight, poiMesh, poiCam);
-						if (udonVideoTexAvailable)
-						{
-							decalData.m_DecalEmissionStrength += _Decal0VideoEmissionStrength;
-							if (_Decal0UseDecalAlpha >= 0.5)
-							{
-								decalData.SampleDecalNoAlpha(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio);
-							}
-							else
-							{
-								decalData.SampleDecal(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio);
-							}
-						}
-					}
+					if (udonVideoTexAvailable)
+					decalData.m_DecalEmissionStrength += _Decal0VideoEmissionStrength;
+					else if (_Decal0OnlyVideo >= 0.5)
+					decalApply = false;
 				}
+				decalData.SampleDecalLayers(_DecalTexture, _Udon_VideoTex, videoEnabled, udonVideoTexAvailable != 0, _Decal0OnlyVideo >= 0.5, _Decal0UseDecalAlpha >= 0.5, _Decal0ChannelSeparationEnable >= 0.5, localTextureAvailable, udonVideoAspectRatio, poiMods, poiLight, poiMesh, poiCam);
+				
 				if (decalApply)
 				{
 					decalData.ApplyVideoEffects(_Decal0UseVideoEffects, poiCam, poiMesh);
@@ -28867,67 +28800,21 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 				#if defined(POI_PASS_OUTLINE)
 				decalApply__1 = _Decal1OnOutlines >= 0.5;
 				#endif
-				if (_Decal1VideoEnabled < 0.5)
-				{
-					
-					#if defined(PROP_DECALTEXTURE1) || !defined(OPTIMIZER_ENABLED)
-					//ifex _Decal1ChannelSeparationEnable==0
-					if (_Decal1ChannelSeparationEnable >= 0.5)
-					{
-						decalData__1.SampleDecalChannelSeparation(_DecalTexture1, poiMods, poiLight, poiMesh, poiCam);
-					}
-					//endex
-					//ifex _Decal1ChannelSeparationEnable==1
-					if (_Decal1ChannelSeparationEnable < 0.5)
-					{
-						decalData__1.SampleDecal(_DecalTexture1, poiMods, poiLight, poiMesh, poiCam);
-					}
-					//endex
-					#else
-					decalData__1.SampleDecalNoTexture(poiMods, poiLight, poiMesh, poiCam);
-					#endif
-				}
-				else
+				bool videoEnabled__1 = !(_Decal1VideoEnabled < 0.5);
+				bool localTextureAvailable__1 = false;
+				#if defined(PROP_DECALTEXTURE1) || !defined(OPTIMIZER_ENABLED)
+				localTextureAvailable__1 = true;
+				#endif
+				if (videoEnabled__1)
 				{
 					udonVideoAspectRatio__1 = decalData__1.GetVideoAspectRatio(_Udon_VideoTex_TexelSize.zw, _Decal1VideoAspectFix, _Decal1VideoFitToScale);
-					
-					if (_Decal1OnlyVideo >= 0.5)
-					{
-						if (udonVideoTexAvailable__1)
-						{
-							decalData__1.m_DecalEmissionStrength += _Decal1VideoEmissionStrength;
-							if (_Decal1UseDecalAlpha >= 0.5)
-							{
-								decalData__1.SampleDecal(_DecalTexture1, poiMods, poiLight, poiMesh, poiCam);
-								decalData__1.SampleDecalNoAlpha(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio__1);
-							}
-							else
-							{
-								decalData__1.SampleDecal(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio__1);
-							}
-						}
-						else
-						{
-							decalApply__1 = false;
-						}
-					}
-					else
-					{
-						decalData__1.SampleDecal(_DecalTexture1, poiMods, poiLight, poiMesh, poiCam);
-						if (udonVideoTexAvailable__1)
-						{
-							decalData__1.m_DecalEmissionStrength += _Decal1VideoEmissionStrength;
-							if (_Decal1UseDecalAlpha >= 0.5)
-							{
-								decalData__1.SampleDecalNoAlpha(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio__1);
-							}
-							else
-							{
-								decalData__1.SampleDecal(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio__1);
-							}
-						}
-					}
+					if (udonVideoTexAvailable__1)
+					decalData__1.m_DecalEmissionStrength += _Decal1VideoEmissionStrength;
+					else if (_Decal1OnlyVideo >= 0.5)
+					decalApply__1 = false;
 				}
+				decalData__1.SampleDecalLayers(_DecalTexture1, _Udon_VideoTex, videoEnabled__1, udonVideoTexAvailable__1 != 0, _Decal1OnlyVideo >= 0.5, _Decal1UseDecalAlpha >= 0.5, _Decal1ChannelSeparationEnable >= 0.5, localTextureAvailable__1, udonVideoAspectRatio__1, poiMods, poiLight, poiMesh, poiCam);
+				
 				if (decalApply__1)
 				{
 					decalData__1.ApplyVideoEffects(_Decal1UseVideoEffects, poiCam, poiMesh);
@@ -29035,67 +28922,21 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 				#if defined(POI_PASS_OUTLINE)
 				decalApply__2 = _Decal2OnOutlines >= 0.5;
 				#endif
-				if (_Decal2VideoEnabled < 0.5)
-				{
-					
-					#if defined(PROP_DECALTEXTURE2) || !defined(OPTIMIZER_ENABLED)
-					//ifex _Decal2ChannelSeparationEnable==0
-					if (_Decal2ChannelSeparationEnable >= 0.5)
-					{
-						decalData__2.SampleDecalChannelSeparation(_DecalTexture2, poiMods, poiLight, poiMesh, poiCam);
-					}
-					//endex
-					//ifex _Decal2ChannelSeparationEnable==1
-					if (_Decal2ChannelSeparationEnable < 0.5)
-					{
-						decalData__2.SampleDecal(_DecalTexture2, poiMods, poiLight, poiMesh, poiCam);
-					}
-					//endex
-					#else
-					decalData__2.SampleDecalNoTexture(poiMods, poiLight, poiMesh, poiCam);
-					#endif
-				}
-				else
+				bool videoEnabled__2 = !(_Decal2VideoEnabled < 0.5);
+				bool localTextureAvailable__2 = false;
+				#if defined(PROP_DECALTEXTURE2) || !defined(OPTIMIZER_ENABLED)
+				localTextureAvailable__2 = true;
+				#endif
+				if (videoEnabled__2)
 				{
 					udonVideoAspectRatio__2 = decalData__2.GetVideoAspectRatio(_Udon_VideoTex_TexelSize.zw, _Decal2VideoAspectFix, _Decal2VideoFitToScale);
-					
-					if (_Decal2OnlyVideo >= 0.5)
-					{
-						if (udonVideoTexAvailable__2)
-						{
-							decalData__2.m_DecalEmissionStrength += _Decal2VideoEmissionStrength;
-							if (_Decal2UseDecalAlpha >= 0.5)
-							{
-								decalData__2.SampleDecal(_DecalTexture2, poiMods, poiLight, poiMesh, poiCam);
-								decalData__2.SampleDecalNoAlpha(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio__2);
-							}
-							else
-							{
-								decalData__2.SampleDecal(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio__2);
-							}
-						}
-						else
-						{
-							decalApply__2 = false;
-						}
-					}
-					else
-					{
-						decalData__2.SampleDecal(_DecalTexture2, poiMods, poiLight, poiMesh, poiCam);
-						if (udonVideoTexAvailable__2)
-						{
-							decalData__2.m_DecalEmissionStrength += _Decal2VideoEmissionStrength;
-							if (_Decal2UseDecalAlpha >= 0.5)
-							{
-								decalData__2.SampleDecalNoAlpha(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio__2);
-							}
-							else
-							{
-								decalData__2.SampleDecal(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio__2);
-							}
-						}
-					}
+					if (udonVideoTexAvailable__2)
+					decalData__2.m_DecalEmissionStrength += _Decal2VideoEmissionStrength;
+					else if (_Decal2OnlyVideo >= 0.5)
+					decalApply__2 = false;
 				}
+				decalData__2.SampleDecalLayers(_DecalTexture2, _Udon_VideoTex, videoEnabled__2, udonVideoTexAvailable__2 != 0, _Decal2OnlyVideo >= 0.5, _Decal2UseDecalAlpha >= 0.5, _Decal2ChannelSeparationEnable >= 0.5, localTextureAvailable__2, udonVideoAspectRatio__2, poiMods, poiLight, poiMesh, poiCam);
+				
 				if (decalApply__2)
 				{
 					decalData__2.ApplyVideoEffects(_Decal2UseVideoEffects, poiCam, poiMesh);
@@ -29203,67 +29044,21 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 				#if defined(POI_PASS_OUTLINE)
 				decalApply__3 = _Decal3OnOutlines >= 0.5;
 				#endif
-				if (_Decal3VideoEnabled < 0.5)
-				{
-					
-					#if defined(PROP_DECALTEXTURE3) || !defined(OPTIMIZER_ENABLED)
-					//ifex _Decal3ChannelSeparationEnable==0
-					if (_Decal3ChannelSeparationEnable >= 0.5)
-					{
-						decalData__3.SampleDecalChannelSeparation(_DecalTexture3, poiMods, poiLight, poiMesh, poiCam);
-					}
-					//endex
-					//ifex _Decal3ChannelSeparationEnable==1
-					if (_Decal3ChannelSeparationEnable < 0.5)
-					{
-						decalData__3.SampleDecal(_DecalTexture3, poiMods, poiLight, poiMesh, poiCam);
-					}
-					//endex
-					#else
-					decalData__3.SampleDecalNoTexture(poiMods, poiLight, poiMesh, poiCam);
-					#endif
-				}
-				else
+				bool videoEnabled__3 = !(_Decal3VideoEnabled < 0.5);
+				bool localTextureAvailable__3 = false;
+				#if defined(PROP_DECALTEXTURE3) || !defined(OPTIMIZER_ENABLED)
+				localTextureAvailable__3 = true;
+				#endif
+				if (videoEnabled__3)
 				{
 					udonVideoAspectRatio__3 = decalData__3.GetVideoAspectRatio(_Udon_VideoTex_TexelSize.zw, _Decal3VideoAspectFix, _Decal3VideoFitToScale);
-					
-					if (_Decal3OnlyVideo >= 0.5)
-					{
-						if (udonVideoTexAvailable__3)
-						{
-							decalData__3.m_DecalEmissionStrength += _Decal3VideoEmissionStrength;
-							if (_Decal3UseDecalAlpha >= 0.5)
-							{
-								decalData__3.SampleDecal(_DecalTexture3, poiMods, poiLight, poiMesh, poiCam);
-								decalData__3.SampleDecalNoAlpha(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio__3);
-							}
-							else
-							{
-								decalData__3.SampleDecal(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio__3);
-							}
-						}
-						else
-						{
-							decalApply__3 = false;
-						}
-					}
-					else
-					{
-						decalData__3.SampleDecal(_DecalTexture3, poiMods, poiLight, poiMesh, poiCam);
-						if (udonVideoTexAvailable__3)
-						{
-							decalData__3.m_DecalEmissionStrength += _Decal3VideoEmissionStrength;
-							if (_Decal3UseDecalAlpha >= 0.5)
-							{
-								decalData__3.SampleDecalNoAlpha(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio__3);
-							}
-							else
-							{
-								decalData__3.SampleDecal(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio__3);
-							}
-						}
-					}
+					if (udonVideoTexAvailable__3)
+					decalData__3.m_DecalEmissionStrength += _Decal3VideoEmissionStrength;
+					else if (_Decal3OnlyVideo >= 0.5)
+					decalApply__3 = false;
 				}
+				decalData__3.SampleDecalLayers(_DecalTexture3, _Udon_VideoTex, videoEnabled__3, udonVideoTexAvailable__3 != 0, _Decal3OnlyVideo >= 0.5, _Decal3UseDecalAlpha >= 0.5, _Decal3ChannelSeparationEnable >= 0.5, localTextureAvailable__3, udonVideoAspectRatio__3, poiMods, poiLight, poiMesh, poiCam);
+				
 				if (decalApply__3)
 				{
 					decalData__3.ApplyVideoEffects(_Decal3UseVideoEffects, poiCam, poiMesh);
@@ -32511,11 +32306,10 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 					if (_GlitterFullCoverage >= 0.5)
 					{
 						// Process every cell whose particle could overlap this fragment.
-						[loop] for (int cellJ = -1; cellJ <= 1; cellJ++)
+						[loop] for (int poiCell0 = 0; poiCell0 < 9; poiCell0++)
 						{
-							[loop] for (int cellI = -1; cellI <= 1; cellI++)
 							{
-								float2 neighbor = float2(cellI, cellJ);
+								float2 neighbor = float2(poiCell0 % 3 - 1, poiCell0 / 3 - 1);
 								float2 cellRando = poiRand2(neighborhoodSeed + neighbor);
 								float2 cellDiff = neighborhoodOrigin + neighbor + cellRando * _GlitterRandomLocation;
 								if (dot(cellDiff, cellDiff) >= maxParticleDistSq) continue;
@@ -32530,11 +32324,10 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 						float2 randoPoint = 0;
 						float2 closestDiff = 0;
 						
-						[loop] for (int cellJ = -1; cellJ <= 1; cellJ++)
+						[unroll] for (int poiCell1 = 0; poiCell1 < 9; poiCell1++)
 						{
-							[loop] for (int cellI = -1; cellI <= 1; cellI++)
 							{
-								float2 neighbor = float2(cellI, cellJ);
+								float2 neighbor = float2(poiCell1 % 3 - 1, poiCell1 / 3 - 1);
 								float2 cellRando = poiRand2(neighborhoodSeed + neighbor);
 								float2 cellDiff = neighborhoodOrigin + neighbor + cellRando * _GlitterRandomLocation;
 								float cellDistSq = dot(cellDiff, cellDiff);
@@ -33961,7 +33754,7 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 				#if defined(VERTEXLIGHT_ON)
 				if (poiFragData.toggleVertexLights && _UseReflection >= 0.5 && _ApplySpecular >= 0.5 && _ApplySpecularFA >= 0.5)
 				{
-					[unroll]
+					POI_STYLIZED_SPECULAR_VERTEX_LIGHT_LOOP
 					for (int vIdx = 0; vIdx < 4; vIdx++)
 					{
 						if (!any(poiLight.vPosition[vIdx])) continue;
@@ -37586,6 +37379,14 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 			#define _Mode _RenderingReduceClipDistance
 			#endif
 			
+			#if defined(OPTIMIZER_ENABLED)
+			#define POI_LILFUR_SLOT_LOOP [unroll]
+			#define POI_LILFUR_SLOT_BOUND 6
+			#else
+			#define POI_LILFUR_SLOT_LOOP [loop]
+			#define POI_LILFUR_SLOT_BOUND furFactorCount
+			#endif
+			
 			//ifex _EnableBentNormal==0
 			#ifdef POI_BENTNORMALMAP
 			#if defined(PROP_BENTNORMALMAP) || !defined(OPTIMIZER_ENABLED)
@@ -37821,6 +37622,16 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 			#endif
 			sampler2D _Udon_VideoTex;//<ms_no_postfix>
 			float4 _Udon_VideoTex_TexelSize;//<ms_no_postfix>
+			//endex
+			
+			//ifex _DecalEnabled==0 && _DecalEnabled1==0 && _DecalEnabled2==0 && _DecalEnabled3==0
+			#if defined(OPTIMIZER_ENABLED)
+			#define POI_DECAL_LAYER_LOOP [unroll]
+			#define POI_DECAL_SAMPLE_BOUND 2
+			#else
+			#define POI_DECAL_LAYER_LOOP [loop]
+			#define POI_DECAL_SAMPLE_BOUND sampleCount
+			#endif
 			//endex
 			
 			//ifex _DecalEnabled==0
@@ -38144,6 +37955,11 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 			TextureCube _ReflectionCubeTex;
 			#endif
 			#endif
+			#if defined(OPTIMIZER_ENABLED)
+			#define POI_STYLIZED_SPECULAR_VERTEX_LIGHT_LOOP [unroll]
+			#else
+			#define POI_STYLIZED_SPECULAR_VERTEX_LIGHT_LOOP [loop]
+			#endif
 			#endif
 			//endex
 			
@@ -38426,6 +38242,7 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 			float2 _MainTintTexturePan;
 			float _MainTintTextureUV;
 			half _MainBrightness;
+			half _MainColorAdjustClamp;
 			float _MainGamma;
 			
 			float _MainHueALCTEnabled;
@@ -42122,26 +41939,13 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 			
 			half3 poiThemeColor(in PoiMods poiMods, in half3 srcColor, in half themeIndex)
 			{
-				half3 outputColor = srcColor;
-				if (themeIndex != 0)
-				{
-					themeIndex = max(themeIndex - 1, 0);
-					
-					if (themeIndex <= 3)
-					{
-						outputColor = poiMods.globalColorTheme[themeIndex].rgb;
-					}
-					else
-					{
-						#ifdef POI_AUDIOLINK
-						if (poiMods.audioLinkAvailable)
-						{
-							outputColor = poiMods.globalColorTheme[themeIndex].rgb;
-						}
-						#endif
-					}
-				}
-				return outputColor;
+				half poiThemeIdx = clamp(max(themeIndex - 1, 0), 0, 11);
+				#ifdef POI_AUDIOLINK
+				bool poiThemeUse = (themeIndex != 0) && (poiThemeIdx <= 3 || poiMods.audioLinkAvailable);
+				#else
+				bool poiThemeUse = (themeIndex != 0) && (poiThemeIdx <= 3);
+				#endif
+				return poiThemeUse ? poiMods.globalColorTheme[poiThemeIdx].rgb : srcColor;
 			}
 			
 			struct PoiSpriteSheetConfig
@@ -45683,6 +45487,10 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 					#endif
 				}
 				poiFragData.baseColor = lerp(poiFragData.baseColor, poiFragData.baseColor * (_MainBrightness + 1), hueShiftAlpha.g);
+				if (_MainColorAdjustClamp > 0.5)
+				{
+					poiFragData.baseColor = saturate(poiFragData.baseColor);
+				}
 				#endif
 				//endex
 				
@@ -47291,7 +47099,7 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 					bool selRedG = (_RgbNormalGBlendSources.y > 0.5);
 					int modeG = (selBaseG || selRedG) ? 2 : 0;
 					float3 fromNormalG = selBaseG ? originalNormal : neutralNormal;
-					if (selRedG && hasR > 0.5) fromNormalG = lerp(fromNormalG, BlendNormals(fromNormalG, nR), maskFinal.r);
+					if (selRedG && hasR > 0.5) fromNormalG = lerp(fromNormalG, PoiBlendNormal(fromNormalG, nR), maskFinal.r);
 					RGBABlendNormals(poiMesh.tangentSpaceNormal, fromNormalG, nG, maskFinal.g, modeG);
 				}
 				#endif
@@ -47305,8 +47113,8 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 					bool selGreenB = (_RgbNormalBBlendSources.z > 0.5);
 					int modeB = (selBaseB || selRedB || selGreenB) ? 2 : 0;
 					float3 fromNormalB = selBaseB ? originalNormal : neutralNormal;
-					if (selRedB && hasR > 0.5) fromNormalB = lerp(fromNormalB, BlendNormals(fromNormalB, nR), maskFinal.r);
-					if (selGreenB && hasG > 0.5) fromNormalB = lerp(fromNormalB, BlendNormals(fromNormalB, nG), maskFinal.g);
+					if (selRedB && hasR > 0.5) fromNormalB = lerp(fromNormalB, PoiBlendNormal(fromNormalB, nR), maskFinal.r);
+					if (selGreenB && hasG > 0.5) fromNormalB = lerp(fromNormalB, PoiBlendNormal(fromNormalB, nG), maskFinal.g);
 					RGBABlendNormals(poiMesh.tangentSpaceNormal, fromNormalB, nB, maskFinal.b, modeB);
 				}
 				#endif
@@ -47320,9 +47128,9 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 					bool selBlueA = (_RgbNormalABlendSources.w > 0.5);
 					int modeA = (selBaseA || selRedA || selGreenA || selBlueA) ? 2 : 0;
 					float3 fromNormalA = selBaseA ? originalNormal : neutralNormal;
-					if (selRedA && hasR > 0.5) fromNormalA = lerp(fromNormalA, BlendNormals(fromNormalA, nR), maskFinal.r);
-					if (selGreenA && hasG > 0.5) fromNormalA = lerp(fromNormalA, BlendNormals(fromNormalA, nG), maskFinal.g);
-					if (selBlueA && hasB > 0.5) fromNormalA = lerp(fromNormalA, BlendNormals(fromNormalA, nB), maskFinal.b);
+					if (selRedA && hasR > 0.5) fromNormalA = lerp(fromNormalA, PoiBlendNormal(fromNormalA, nR), maskFinal.r);
+					if (selGreenA && hasG > 0.5) fromNormalA = lerp(fromNormalA, PoiBlendNormal(fromNormalA, nG), maskFinal.g);
+					if (selBlueA && hasB > 0.5) fromNormalA = lerp(fromNormalA, PoiBlendNormal(fromNormalA, nB), maskFinal.b);
 					RGBABlendNormals(poiMesh.tangentSpaceNormal, fromNormalA, normalToBlendWith, maskFinal.a, modeA);
 				}
 				#endif
@@ -48655,79 +48463,73 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 					#endif
 				}
 				
-				void SampleDecalNoTexture(in PoiMods poiMods, in PoiLight poiLight, in PoiMesh poiMesh, in PoiCam poiCam)
+				void SampleDecalLayers(sampler2D decalTexture, sampler2D videoTexture, bool videoEnabled, bool videoAvailable, bool onlyVideo, bool keepDecalAlpha, bool channelSeparation, bool localTextureAvailable, float2 videoAspectRatio, in PoiMods poiMods, in PoiLight poiLight, in PoiMesh poiMesh, in PoiCam poiCam)
 				{
-					uv = decalUV(m_DecalTextureUV, m_DecalPosition, m_DecalRotation + decalRotation, m_DecalRotationSpeed, decalScale, m_DecalSideOffset +sideMod, m_DecalDepth, m_DecalSymmetryMode, m_DecalMirroredUVMode, poiMesh, poiCam);
-					decalColor = float4(poiThemeColor(poiMods, m_DecalColor.rgb, m_DecalColorThemeIndex), m_DecalColor.a);
-					decalColor.rgb = decalHueShift(m_DecalHueShiftEnabled, decalColor.rgb, m_DecalHueShift + poiLight.nDotVCentered * m_DecalHueAngleStrength, m_DecalHueShiftSpeed, m_DecalHueShiftColorSpace, m_DecalHueShiftSelectOrShift);
-					decalColor.rgb = decalColorAdjust(m_DecalColorAdjustEnabled, decalColor.rgb, m_DecalSaturation, m_DecalChromatize, m_DecalBrightness, m_DecalGamma);
-					decalColor.a *= decalMask[m_DecalMaskChannel] * applyTilingClipping(m_DecalTiled, uv);
-				}
-				
-				void SampleDecal(sampler2D decalTexture, in PoiMods poiMods, in PoiLight poiLight, in PoiMesh poiMesh, in PoiCam poiCam, float2 scaleMultiplier = float2(1, 1))
-				{
-					uv = decalUV(m_DecalTextureUV, m_DecalPosition, m_DecalRotation + decalRotation, m_DecalRotationSpeed, decalScale * scaleMultiplier, m_DecalSideOffset +sideMod, m_DecalDepth, m_DecalSymmetryMode, m_DecalMirroredUVMode, poiMesh, poiCam);
-					// Adjust derivatives for _ST of decal texture
-					float4 dduv = any(fwidth(uv) > .5) ? 0.001 : float4(ddx(uv) * m_DecalTexture_ST.x, ddy(uv) * m_DecalTexture_ST.y);
-					decalColor = tex2D(decalTexture, poiUV(uv, m_DecalTexture_ST) + m_DecalTexturePan * POI_TIME.x, dduv.xy, dduv.zw) * float4(poiThemeColor(poiMods, m_DecalColor.rgb, m_DecalColorThemeIndex), m_DecalColor.a);
-					decalColor.rgb = decalHueShift(m_DecalHueShiftEnabled, decalColor.rgb, m_DecalHueShift + poiLight.nDotVCentered * m_DecalHueAngleStrength, m_DecalHueShiftSpeed, m_DecalHueShiftColorSpace, m_DecalHueShiftSelectOrShift);
-					decalColor.rgb = decalColorAdjust(m_DecalColorAdjustEnabled, decalColor.rgb, m_DecalSaturation, m_DecalChromatize, m_DecalBrightness, m_DecalGamma);
-					decalColor.a *= decalMask[m_DecalMaskChannel] * applyTilingClipping(m_DecalTiled, uv);
-				}
-				
-				void SampleDecalNoAlpha(sampler2D decalTexture, in PoiMods poiMods, in PoiLight poiLight, in PoiMesh poiMesh, in PoiCam poiCam, float2 scaleMultiplier = float2(1, 1))
-				{
-					uv = decalUV(m_DecalTextureUV, m_DecalPosition, m_DecalRotation + decalRotation, m_DecalRotationSpeed, decalScale * scaleMultiplier, m_DecalSideOffset +sideMod, m_DecalDepth, m_DecalSymmetryMode, m_DecalMirroredUVMode, poiMesh, poiCam);
-					// Adjust derivatives for _ST of decal texture
-					float4 dduv = any(fwidth(uv) > .5) ? 0.001 : float4(ddx(uv) * m_DecalTexture_ST.x, ddy(uv) * m_DecalTexture_ST.y);
-					decalColor.rgb = tex2D(decalTexture, poiUV(uv, m_DecalTexture_ST) + m_DecalTexturePan * POI_TIME.x, dduv.xy, dduv.zw) * float4(poiThemeColor(poiMods, m_DecalColor.rgb, m_DecalColorThemeIndex), m_DecalColor.a).rgb;
-					decalColor.rgb = decalHueShift(m_DecalHueShiftEnabled, decalColor.rgb, m_DecalHueShift + poiLight.nDotVCentered * m_DecalHueAngleStrength, m_DecalHueShiftSpeed, m_DecalHueShiftColorSpace, m_DecalHueShiftSelectOrShift);
-					decalColor.rgb = decalColorAdjust(m_DecalColorAdjustEnabled, decalColor.rgb, m_DecalSaturation, m_DecalChromatize, m_DecalBrightness, m_DecalGamma);
-					decalColor.a *= decalMask[m_DecalMaskChannel] * applyTilingClipping(m_DecalTiled, uv);
-				}
-				
-				void SampleDecalAlphaOnly(sampler2D decalTexture, in PoiMods poiMods, in PoiLight poiLight, in PoiMesh poiMesh, in PoiCam poiCam, float2 scaleMultiplier = float2(1, 1))
-				{
-					uv = decalUV(m_DecalTextureUV, m_DecalPosition, m_DecalRotation + decalRotation, m_DecalRotationSpeed, decalScale * scaleMultiplier, m_DecalSideOffset +sideMod, m_DecalDepth, m_DecalSymmetryMode, m_DecalMirroredUVMode, poiMesh, poiCam);
-					// Adjust derivatives for _ST of decal texture
-					float4 dduv = any(fwidth(uv) > .5) ? 0.001 : float4(ddx(uv) * m_DecalTexture_ST.x, ddy(uv) * m_DecalTexture_ST.y);
-					decalColor = tex2D(decalTexture, poiUV(uv, m_DecalTexture_ST) + m_DecalTexturePan * POI_TIME.x, dduv.xy, dduv.zw) * float4(poiThemeColor(poiMods, m_DecalColor.rgb, m_DecalColorThemeIndex), m_DecalColor.a);
-					decalColor.rgb = decalColorAdjust(m_DecalColorAdjustEnabled, decalColor.rgb, m_DecalSaturation, m_DecalChromatize, m_DecalBrightness, m_DecalGamma);
-					decalColor.a *= decalMask[m_DecalMaskChannel] * applyTilingClipping(m_DecalTiled, uv);
-				}
-				
-				void SampleDecalChannelSeparation(sampler2D decalTexture, in PoiMods poiMods, in PoiLight poiLight, in PoiMesh poiMesh, in PoiCam poiCam)
-				{
-					decalColor = float4(0, 0, 0, 1);
-					decalChannelOffset += m_DecalChannelSeparation + m_DecalChannelSeparationAngleStrength * (m_DecalChannelSeparationAngleStrength > 0 ? (1 - poiLight.nDotVCentered) : poiLight.nDotVCentered);
-					float2 positionOffset = decalChannelOffset * 0.01 * (decalScale.x + decalScale.y) * float2(cos(m_DecalChannelSeparationVertical), sin(m_DecalChannelSeparationVertical));
-					float2 uvSample0 = decalUV(m_DecalTextureUV, m_DecalPosition + positionOffset, m_DecalRotation + decalRotation, m_DecalRotationSpeed, decalScale, m_DecalSideOffset +sideMod, m_DecalDepth, m_DecalSymmetryMode, m_DecalMirroredUVMode, poiMesh, poiCam);
-					float2 uvSample1 = decalUV(m_DecalTextureUV, m_DecalPosition - positionOffset, m_DecalRotation + decalRotation, m_DecalRotationSpeed, decalScale, m_DecalSideOffset +sideMod, m_DecalDepth, m_DecalSymmetryMode, m_DecalMirroredUVMode, poiMesh, poiCam);
-					
-					float4 dduvSample0 = any(fwidth(uvSample0) > .5) ? 0.001 : float4(ddx(uvSample0) * m_DecalTexture_ST.x, ddy(uvSample0) * m_DecalTexture_ST.y);
-					float4 dduvSample1 = any(fwidth(uvSample1) > .5) ? 0.001 : float4(ddx(uvSample1) * m_DecalTexture_ST.x, ddy(uvSample1) * m_DecalTexture_ST.y);
-					
-					half4 decalTint = float4(poiThemeColor(poiMods, m_DecalColor.rgb, m_DecalColorThemeIndex), m_DecalColor.a);
-					float4 sample0 = tex2D(decalTexture, poiUV(uvSample0, m_DecalTexture_ST) + m_DecalTexturePan * POI_TIME.x, dduvSample0.xy, dduvSample0.zw) * decalTint;
-					float4 sample1 = tex2D(decalTexture, poiUV(uvSample1, m_DecalTexture_ST) + m_DecalTexturePan * POI_TIME.x, dduvSample1.xy, dduvSample1.zw) * decalTint;
-					
-					sample0.rgb = decalHueShift(m_DecalHueShiftEnabled, sample0.rgb, m_DecalHueShift + poiLight.nDotVCentered * m_DecalHueAngleStrength, m_DecalHueShiftSpeed, m_DecalHueShiftColorSpace, m_DecalHueShiftSelectOrShift);
-					sample1.rgb = decalHueShift(m_DecalHueShiftEnabled, sample1.rgb, m_DecalHueShift + poiLight.nDotVCentered * m_DecalHueAngleStrength, m_DecalHueShiftSpeed, m_DecalHueShiftColorSpace, m_DecalHueShiftSelectOrShift);
-					sample0.rgb = decalColorAdjust(m_DecalColorAdjustEnabled, sample0.rgb, m_DecalSaturation, m_DecalChromatize, m_DecalBrightness, m_DecalGamma);
-					sample1.rgb = decalColorAdjust(m_DecalColorAdjustEnabled, sample1.rgb, m_DecalSaturation, m_DecalChromatize, m_DecalBrightness, m_DecalGamma);
-					
-					half3 channelSeparationColor = HUEtoRGB(frac(m_DecalChannelSeparationHue));
-					
-					if (m_DecalChannelSeparationPremultiply)
+					bool separateChannels = !videoEnabled && channelSeparation && localTextureAvailable;
+					float2 positionOffset = 0;
+					if (separateChannels)
 					{
-						decalColor.rgb = lerp(sample0 * sample0.a, sample1 * sample1.a, channelSeparationColor);
+						decalChannelOffset += m_DecalChannelSeparation + m_DecalChannelSeparationAngleStrength * (m_DecalChannelSeparationAngleStrength > 0 ? (1 - poiLight.nDotVCentered) : poiLight.nDotVCentered);
+						positionOffset = decalChannelOffset * 0.01 * (decalScale.x + decalScale.y) * float2(cos(m_DecalChannelSeparationVertical), sin(m_DecalChannelSeparationVertical));
 					}
-					else
+					// Share UV and color processing across local/video layers and separated channels.
+					// Material-uniform loop bounds keep derivative evaluation in uniform control flow.
+					POI_DECAL_LAYER_LOOP
+					for (int layer = 0; layer < 2; ++layer)
 					{
-						decalColor.rgb = lerp(sample0, sample1, channelSeparationColor);
+						bool videoLayer = layer == 1;
+						bool sampleLayer = videoLayer ? (videoEnabled && videoAvailable) : (!videoEnabled || !onlyVideo || (videoAvailable && keepDecalAlpha));
+						if (sampleLayer)
+						{
+							bool separatedLayer = !videoLayer && separateChannels;
+							int sampleCount = separatedLayer ? 2 : 1;
+							float4 samples[2];
+							float clips[2];
+							float previousAlpha = decalColor.a;
+							POI_DECAL_LAYER_LOOP
+							for (int sampleIndex = 0; sampleIndex < POI_DECAL_SAMPLE_BOUND; ++sampleIndex)
+							{
+								#if defined(OPTIMIZER_ENABLED)
+								if (sampleIndex >= sampleCount) break;
+								#endif
+								float2 samplePosition = m_DecalPosition + (separatedLayer ? (sampleIndex == 0 ? positionOffset : -positionOffset) : float2(0, 0));
+								float2 sampleScale = decalScale * (videoLayer ? videoAspectRatio : float2(1, 1));
+								float2 sampleUV = decalUV(m_DecalTextureUV, samplePosition, m_DecalRotation + decalRotation, m_DecalRotationSpeed, sampleScale, m_DecalSideOffset +sideMod, m_DecalDepth, m_DecalSymmetryMode, m_DecalMirroredUVMode, poiMesh, poiCam);
+								float4 decalSampleColor = float4(poiThemeColor(poiMods, m_DecalColor.rgb, m_DecalColorThemeIndex), m_DecalColor.a);
+								if (videoLayer || videoEnabled || localTextureAvailable)
+								{
+									float4 derivatives = any(fwidth(sampleUV) > .5) ? 0.001 : float4(ddx(sampleUV) * m_DecalTexture_ST.xy, ddy(sampleUV) * m_DecalTexture_ST.xy);
+									float2 textureUV = poiUV(sampleUV, m_DecalTexture_ST) + m_DecalTexturePan * POI_TIME.x;
+									if (videoLayer)
+									decalSampleColor *= tex2D(videoTexture, textureUV, derivatives.xy, derivatives.zw);
+									else
+									decalSampleColor *= tex2D(decalTexture, textureUV, derivatives.xy, derivatives.zw);
+								}
+								decalSampleColor.rgb = decalHueShift(m_DecalHueShiftEnabled, decalSampleColor.rgb, m_DecalHueShift + poiLight.nDotVCentered * m_DecalHueAngleStrength, m_DecalHueShiftSpeed, m_DecalHueShiftColorSpace, m_DecalHueShiftSelectOrShift);
+								decalSampleColor.rgb = decalColorAdjust(m_DecalColorAdjustEnabled, decalSampleColor.rgb, m_DecalSaturation, m_DecalChromatize, m_DecalBrightness, m_DecalGamma);
+								samples[sampleIndex] = decalSampleColor;
+								clips[sampleIndex] = applyTilingClipping(m_DecalTiled, sampleUV);
+								// Preserve the original channel-separation path's handling of the stored UV.
+								if (!separatedLayer) uv = sampleUV;
+							}
+							if (separatedLayer)
+							{
+								half3 channelSeparationColor = HUEtoRGB(frac(m_DecalChannelSeparationHue));
+								if (m_DecalChannelSeparationPremultiply)
+								decalColor.rgb = lerp(samples[0] * samples[0].a, samples[1] * samples[1].a, channelSeparationColor);
+								else
+								decalColor.rgb = lerp(samples[0], samples[1], channelSeparationColor);
+								decalColor.a = 0.5 * (samples[0].a + samples[1].a);
+								decalColor.a *= decalMask[m_DecalMaskChannel] * max(clips[0], clips[1]);
+							}
+							else
+							{
+								decalColor = samples[0];
+								if (videoLayer && keepDecalAlpha) decalColor.a = previousAlpha;
+								decalColor.a *= decalMask[m_DecalMaskChannel] * clips[0];
+							}
+						}
 					}
-					decalColor.a = 0.5 * (sample0.a + sample1.a);
-					decalColor.a *= decalMask[m_DecalMaskChannel] * max(applyTilingClipping(m_DecalTiled, uvSample0), applyTilingClipping(m_DecalTiled, uvSample1));
 				}
 				
 				void Apply(inout float alphaOverride, inout float decalAlpha, inout PoiFragData poiFragData, in PoiMesh poiMesh, in PoiCam poiCam, inout PoiMods poiMods, in PoiLight poiLight)
@@ -49022,67 +48824,21 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 				#if defined(POI_PASS_OUTLINE)
 				decalApply = _Decal0OnOutlines >= 0.5;
 				#endif
-				if (_Decal0VideoEnabled < 0.5)
-				{
-					
-					#if defined(PROP_DECALTEXTURE) || !defined(OPTIMIZER_ENABLED)
-					//ifex _Decal0ChannelSeparationEnable==0
-					if (_Decal0ChannelSeparationEnable >= 0.5)
-					{
-						decalData.SampleDecalChannelSeparation(_DecalTexture, poiMods, poiLight, poiMesh, poiCam);
-					}
-					//endex
-					//ifex _Decal0ChannelSeparationEnable==1
-					if (_Decal0ChannelSeparationEnable < 0.5)
-					{
-						decalData.SampleDecal(_DecalTexture, poiMods, poiLight, poiMesh, poiCam);
-					}
-					//endex
-					#else
-					decalData.SampleDecalNoTexture(poiMods, poiLight, poiMesh, poiCam);
-					#endif
-				}
-				else
+				bool videoEnabled = !(_Decal0VideoEnabled < 0.5);
+				bool localTextureAvailable = false;
+				#if defined(PROP_DECALTEXTURE) || !defined(OPTIMIZER_ENABLED)
+				localTextureAvailable = true;
+				#endif
+				if (videoEnabled)
 				{
 					udonVideoAspectRatio = decalData.GetVideoAspectRatio(_Udon_VideoTex_TexelSize.zw, _Decal0VideoAspectFix, _Decal0VideoFitToScale);
-					
-					if (_Decal0OnlyVideo >= 0.5)
-					{
-						if (udonVideoTexAvailable)
-						{
-							decalData.m_DecalEmissionStrength += _Decal0VideoEmissionStrength;
-							if (_Decal0UseDecalAlpha >= 0.5)
-							{
-								decalData.SampleDecal(_DecalTexture, poiMods, poiLight, poiMesh, poiCam);
-								decalData.SampleDecalNoAlpha(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio);
-							}
-							else
-							{
-								decalData.SampleDecal(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio);
-							}
-						}
-						else
-						{
-							decalApply = false;
-						}
-					}
-					else
-					{
-						decalData.SampleDecal(_DecalTexture, poiMods, poiLight, poiMesh, poiCam);
-						if (udonVideoTexAvailable)
-						{
-							decalData.m_DecalEmissionStrength += _Decal0VideoEmissionStrength;
-							if (_Decal0UseDecalAlpha >= 0.5)
-							{
-								decalData.SampleDecalNoAlpha(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio);
-							}
-							else
-							{
-								decalData.SampleDecal(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio);
-							}
-						}
-					}
+					if (udonVideoTexAvailable)
+					decalData.m_DecalEmissionStrength += _Decal0VideoEmissionStrength;
+					else if (_Decal0OnlyVideo >= 0.5)
+					decalApply = false;
 				}
+				decalData.SampleDecalLayers(_DecalTexture, _Udon_VideoTex, videoEnabled, udonVideoTexAvailable != 0, _Decal0OnlyVideo >= 0.5, _Decal0UseDecalAlpha >= 0.5, _Decal0ChannelSeparationEnable >= 0.5, localTextureAvailable, udonVideoAspectRatio, poiMods, poiLight, poiMesh, poiCam);
+				
 				if (decalApply)
 				{
 					decalData.ApplyVideoEffects(_Decal0UseVideoEffects, poiCam, poiMesh);
@@ -49190,67 +48946,21 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 				#if defined(POI_PASS_OUTLINE)
 				decalApply__1 = _Decal1OnOutlines >= 0.5;
 				#endif
-				if (_Decal1VideoEnabled < 0.5)
-				{
-					
-					#if defined(PROP_DECALTEXTURE1) || !defined(OPTIMIZER_ENABLED)
-					//ifex _Decal1ChannelSeparationEnable==0
-					if (_Decal1ChannelSeparationEnable >= 0.5)
-					{
-						decalData__1.SampleDecalChannelSeparation(_DecalTexture1, poiMods, poiLight, poiMesh, poiCam);
-					}
-					//endex
-					//ifex _Decal1ChannelSeparationEnable==1
-					if (_Decal1ChannelSeparationEnable < 0.5)
-					{
-						decalData__1.SampleDecal(_DecalTexture1, poiMods, poiLight, poiMesh, poiCam);
-					}
-					//endex
-					#else
-					decalData__1.SampleDecalNoTexture(poiMods, poiLight, poiMesh, poiCam);
-					#endif
-				}
-				else
+				bool videoEnabled__1 = !(_Decal1VideoEnabled < 0.5);
+				bool localTextureAvailable__1 = false;
+				#if defined(PROP_DECALTEXTURE1) || !defined(OPTIMIZER_ENABLED)
+				localTextureAvailable__1 = true;
+				#endif
+				if (videoEnabled__1)
 				{
 					udonVideoAspectRatio__1 = decalData__1.GetVideoAspectRatio(_Udon_VideoTex_TexelSize.zw, _Decal1VideoAspectFix, _Decal1VideoFitToScale);
-					
-					if (_Decal1OnlyVideo >= 0.5)
-					{
-						if (udonVideoTexAvailable__1)
-						{
-							decalData__1.m_DecalEmissionStrength += _Decal1VideoEmissionStrength;
-							if (_Decal1UseDecalAlpha >= 0.5)
-							{
-								decalData__1.SampleDecal(_DecalTexture1, poiMods, poiLight, poiMesh, poiCam);
-								decalData__1.SampleDecalNoAlpha(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio__1);
-							}
-							else
-							{
-								decalData__1.SampleDecal(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio__1);
-							}
-						}
-						else
-						{
-							decalApply__1 = false;
-						}
-					}
-					else
-					{
-						decalData__1.SampleDecal(_DecalTexture1, poiMods, poiLight, poiMesh, poiCam);
-						if (udonVideoTexAvailable__1)
-						{
-							decalData__1.m_DecalEmissionStrength += _Decal1VideoEmissionStrength;
-							if (_Decal1UseDecalAlpha >= 0.5)
-							{
-								decalData__1.SampleDecalNoAlpha(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio__1);
-							}
-							else
-							{
-								decalData__1.SampleDecal(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio__1);
-							}
-						}
-					}
+					if (udonVideoTexAvailable__1)
+					decalData__1.m_DecalEmissionStrength += _Decal1VideoEmissionStrength;
+					else if (_Decal1OnlyVideo >= 0.5)
+					decalApply__1 = false;
 				}
+				decalData__1.SampleDecalLayers(_DecalTexture1, _Udon_VideoTex, videoEnabled__1, udonVideoTexAvailable__1 != 0, _Decal1OnlyVideo >= 0.5, _Decal1UseDecalAlpha >= 0.5, _Decal1ChannelSeparationEnable >= 0.5, localTextureAvailable__1, udonVideoAspectRatio__1, poiMods, poiLight, poiMesh, poiCam);
+				
 				if (decalApply__1)
 				{
 					decalData__1.ApplyVideoEffects(_Decal1UseVideoEffects, poiCam, poiMesh);
@@ -49358,67 +49068,21 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 				#if defined(POI_PASS_OUTLINE)
 				decalApply__2 = _Decal2OnOutlines >= 0.5;
 				#endif
-				if (_Decal2VideoEnabled < 0.5)
-				{
-					
-					#if defined(PROP_DECALTEXTURE2) || !defined(OPTIMIZER_ENABLED)
-					//ifex _Decal2ChannelSeparationEnable==0
-					if (_Decal2ChannelSeparationEnable >= 0.5)
-					{
-						decalData__2.SampleDecalChannelSeparation(_DecalTexture2, poiMods, poiLight, poiMesh, poiCam);
-					}
-					//endex
-					//ifex _Decal2ChannelSeparationEnable==1
-					if (_Decal2ChannelSeparationEnable < 0.5)
-					{
-						decalData__2.SampleDecal(_DecalTexture2, poiMods, poiLight, poiMesh, poiCam);
-					}
-					//endex
-					#else
-					decalData__2.SampleDecalNoTexture(poiMods, poiLight, poiMesh, poiCam);
-					#endif
-				}
-				else
+				bool videoEnabled__2 = !(_Decal2VideoEnabled < 0.5);
+				bool localTextureAvailable__2 = false;
+				#if defined(PROP_DECALTEXTURE2) || !defined(OPTIMIZER_ENABLED)
+				localTextureAvailable__2 = true;
+				#endif
+				if (videoEnabled__2)
 				{
 					udonVideoAspectRatio__2 = decalData__2.GetVideoAspectRatio(_Udon_VideoTex_TexelSize.zw, _Decal2VideoAspectFix, _Decal2VideoFitToScale);
-					
-					if (_Decal2OnlyVideo >= 0.5)
-					{
-						if (udonVideoTexAvailable__2)
-						{
-							decalData__2.m_DecalEmissionStrength += _Decal2VideoEmissionStrength;
-							if (_Decal2UseDecalAlpha >= 0.5)
-							{
-								decalData__2.SampleDecal(_DecalTexture2, poiMods, poiLight, poiMesh, poiCam);
-								decalData__2.SampleDecalNoAlpha(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio__2);
-							}
-							else
-							{
-								decalData__2.SampleDecal(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio__2);
-							}
-						}
-						else
-						{
-							decalApply__2 = false;
-						}
-					}
-					else
-					{
-						decalData__2.SampleDecal(_DecalTexture2, poiMods, poiLight, poiMesh, poiCam);
-						if (udonVideoTexAvailable__2)
-						{
-							decalData__2.m_DecalEmissionStrength += _Decal2VideoEmissionStrength;
-							if (_Decal2UseDecalAlpha >= 0.5)
-							{
-								decalData__2.SampleDecalNoAlpha(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio__2);
-							}
-							else
-							{
-								decalData__2.SampleDecal(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio__2);
-							}
-						}
-					}
+					if (udonVideoTexAvailable__2)
+					decalData__2.m_DecalEmissionStrength += _Decal2VideoEmissionStrength;
+					else if (_Decal2OnlyVideo >= 0.5)
+					decalApply__2 = false;
 				}
+				decalData__2.SampleDecalLayers(_DecalTexture2, _Udon_VideoTex, videoEnabled__2, udonVideoTexAvailable__2 != 0, _Decal2OnlyVideo >= 0.5, _Decal2UseDecalAlpha >= 0.5, _Decal2ChannelSeparationEnable >= 0.5, localTextureAvailable__2, udonVideoAspectRatio__2, poiMods, poiLight, poiMesh, poiCam);
+				
 				if (decalApply__2)
 				{
 					decalData__2.ApplyVideoEffects(_Decal2UseVideoEffects, poiCam, poiMesh);
@@ -49526,67 +49190,21 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 				#if defined(POI_PASS_OUTLINE)
 				decalApply__3 = _Decal3OnOutlines >= 0.5;
 				#endif
-				if (_Decal3VideoEnabled < 0.5)
-				{
-					
-					#if defined(PROP_DECALTEXTURE3) || !defined(OPTIMIZER_ENABLED)
-					//ifex _Decal3ChannelSeparationEnable==0
-					if (_Decal3ChannelSeparationEnable >= 0.5)
-					{
-						decalData__3.SampleDecalChannelSeparation(_DecalTexture3, poiMods, poiLight, poiMesh, poiCam);
-					}
-					//endex
-					//ifex _Decal3ChannelSeparationEnable==1
-					if (_Decal3ChannelSeparationEnable < 0.5)
-					{
-						decalData__3.SampleDecal(_DecalTexture3, poiMods, poiLight, poiMesh, poiCam);
-					}
-					//endex
-					#else
-					decalData__3.SampleDecalNoTexture(poiMods, poiLight, poiMesh, poiCam);
-					#endif
-				}
-				else
+				bool videoEnabled__3 = !(_Decal3VideoEnabled < 0.5);
+				bool localTextureAvailable__3 = false;
+				#if defined(PROP_DECALTEXTURE3) || !defined(OPTIMIZER_ENABLED)
+				localTextureAvailable__3 = true;
+				#endif
+				if (videoEnabled__3)
 				{
 					udonVideoAspectRatio__3 = decalData__3.GetVideoAspectRatio(_Udon_VideoTex_TexelSize.zw, _Decal3VideoAspectFix, _Decal3VideoFitToScale);
-					
-					if (_Decal3OnlyVideo >= 0.5)
-					{
-						if (udonVideoTexAvailable__3)
-						{
-							decalData__3.m_DecalEmissionStrength += _Decal3VideoEmissionStrength;
-							if (_Decal3UseDecalAlpha >= 0.5)
-							{
-								decalData__3.SampleDecal(_DecalTexture3, poiMods, poiLight, poiMesh, poiCam);
-								decalData__3.SampleDecalNoAlpha(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio__3);
-							}
-							else
-							{
-								decalData__3.SampleDecal(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio__3);
-							}
-						}
-						else
-						{
-							decalApply__3 = false;
-						}
-					}
-					else
-					{
-						decalData__3.SampleDecal(_DecalTexture3, poiMods, poiLight, poiMesh, poiCam);
-						if (udonVideoTexAvailable__3)
-						{
-							decalData__3.m_DecalEmissionStrength += _Decal3VideoEmissionStrength;
-							if (_Decal3UseDecalAlpha >= 0.5)
-							{
-								decalData__3.SampleDecalNoAlpha(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio__3);
-							}
-							else
-							{
-								decalData__3.SampleDecal(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio__3);
-							}
-						}
-					}
+					if (udonVideoTexAvailable__3)
+					decalData__3.m_DecalEmissionStrength += _Decal3VideoEmissionStrength;
+					else if (_Decal3OnlyVideo >= 0.5)
+					decalApply__3 = false;
 				}
+				decalData__3.SampleDecalLayers(_DecalTexture3, _Udon_VideoTex, videoEnabled__3, udonVideoTexAvailable__3 != 0, _Decal3OnlyVideo >= 0.5, _Decal3UseDecalAlpha >= 0.5, _Decal3ChannelSeparationEnable >= 0.5, localTextureAvailable__3, udonVideoAspectRatio__3, poiMods, poiLight, poiMesh, poiCam);
+				
 				if (decalApply__3)
 				{
 					decalData__3.ApplyVideoEffects(_Decal3UseVideoEffects, poiCam, poiMesh);
@@ -51994,11 +51612,10 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 					if (_GlitterFullCoverage >= 0.5)
 					{
 						// Process every cell whose particle could overlap this fragment.
-						[loop] for (int cellJ = -1; cellJ <= 1; cellJ++)
+						[loop] for (int poiCell0 = 0; poiCell0 < 9; poiCell0++)
 						{
-							[loop] for (int cellI = -1; cellI <= 1; cellI++)
 							{
-								float2 neighbor = float2(cellI, cellJ);
+								float2 neighbor = float2(poiCell0 % 3 - 1, poiCell0 / 3 - 1);
 								float2 cellRando = poiRand2(neighborhoodSeed + neighbor);
 								float2 cellDiff = neighborhoodOrigin + neighbor + cellRando * _GlitterRandomLocation;
 								if (dot(cellDiff, cellDiff) >= maxParticleDistSq) continue;
@@ -52013,11 +51630,10 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 						float2 randoPoint = 0;
 						float2 closestDiff = 0;
 						
-						[loop] for (int cellJ = -1; cellJ <= 1; cellJ++)
+						[unroll] for (int poiCell1 = 0; poiCell1 < 9; poiCell1++)
 						{
-							[loop] for (int cellI = -1; cellI <= 1; cellI++)
 							{
-								float2 neighbor = float2(cellI, cellJ);
+								float2 neighbor = float2(poiCell1 % 3 - 1, poiCell1 / 3 - 1);
 								float2 cellRando = poiRand2(neighborhoodSeed + neighbor);
 								float2 cellDiff = neighborhoodOrigin + neighbor + cellRando * _GlitterRandomLocation;
 								float cellDistSq = dot(cellDiff, cellDiff);
@@ -53398,7 +53014,7 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 				#if defined(VERTEXLIGHT_ON)
 				if (poiFragData.toggleVertexLights && _UseReflection >= 0.5 && _ApplySpecular >= 0.5 && _ApplySpecularFA >= 0.5)
 				{
-					[unroll]
+					POI_STYLIZED_SPECULAR_VERTEX_LIGHT_LOOP
 					for (int vIdx = 0; vIdx < 4; vIdx++)
 					{
 						if (!any(poiLight.vPosition[vIdx])) continue;
@@ -56378,6 +55994,16 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 			float4 _Udon_VideoTex_TexelSize;//<ms_no_postfix>
 			//endex
 			
+			//ifex _DecalEnabled==0 && _DecalEnabled1==0 && _DecalEnabled2==0 && _DecalEnabled3==0
+			#if defined(OPTIMIZER_ENABLED)
+			#define POI_DECAL_LAYER_LOOP [unroll]
+			#define POI_DECAL_SAMPLE_BOUND 2
+			#else
+			#define POI_DECAL_LAYER_LOOP [loop]
+			#define POI_DECAL_SAMPLE_BOUND sampleCount
+			#endif
+			//endex
+			
 			//ifex _DecalEnabled==0
 			#ifdef GEOM_TYPE_BRANCH
 			sampler2D _DecalTexture;
@@ -56756,6 +56382,7 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 			float2 _MainTintTexturePan;
 			float _MainTintTextureUV;
 			half _MainBrightness;
+			half _MainColorAdjustClamp;
 			float _MainGamma;
 			
 			float _MainHueALCTEnabled;
@@ -60838,26 +60465,13 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 			
 			half3 poiThemeColor(in PoiMods poiMods, in half3 srcColor, in half themeIndex)
 			{
-				half3 outputColor = srcColor;
-				if (themeIndex != 0)
-				{
-					themeIndex = max(themeIndex - 1, 0);
-					
-					if (themeIndex <= 3)
-					{
-						outputColor = poiMods.globalColorTheme[themeIndex].rgb;
-					}
-					else
-					{
-						#ifdef POI_AUDIOLINK
-						if (poiMods.audioLinkAvailable)
-						{
-							outputColor = poiMods.globalColorTheme[themeIndex].rgb;
-						}
-						#endif
-					}
-				}
-				return outputColor;
+				half poiThemeIdx = clamp(max(themeIndex - 1, 0), 0, 11);
+				#ifdef POI_AUDIOLINK
+				bool poiThemeUse = (themeIndex != 0) && (poiThemeIdx <= 3 || poiMods.audioLinkAvailable);
+				#else
+				bool poiThemeUse = (themeIndex != 0) && (poiThemeIdx <= 3);
+				#endif
+				return poiThemeUse ? poiMods.globalColorTheme[poiThemeIdx].rgb : srcColor;
 			}
 			
 			struct PoiSpriteSheetConfig
@@ -64153,6 +63767,10 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 					#endif
 				}
 				poiFragData.baseColor = lerp(poiFragData.baseColor, poiFragData.baseColor * (_MainBrightness + 1), hueShiftAlpha.g);
+				if (_MainColorAdjustClamp > 0.5)
+				{
+					poiFragData.baseColor = saturate(poiFragData.baseColor);
+				}
 				#endif
 				//endex
 				
@@ -65544,7 +65162,7 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 					bool selRedG = (_RgbNormalGBlendSources.y > 0.5);
 					int modeG = (selBaseG || selRedG) ? 2 : 0;
 					float3 fromNormalG = selBaseG ? originalNormal : neutralNormal;
-					if (selRedG && hasR > 0.5) fromNormalG = lerp(fromNormalG, BlendNormals(fromNormalG, nR), maskFinal.r);
+					if (selRedG && hasR > 0.5) fromNormalG = lerp(fromNormalG, PoiBlendNormal(fromNormalG, nR), maskFinal.r);
 					RGBABlendNormals(poiMesh.tangentSpaceNormal, fromNormalG, nG, maskFinal.g, modeG);
 				}
 				#endif
@@ -65558,8 +65176,8 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 					bool selGreenB = (_RgbNormalBBlendSources.z > 0.5);
 					int modeB = (selBaseB || selRedB || selGreenB) ? 2 : 0;
 					float3 fromNormalB = selBaseB ? originalNormal : neutralNormal;
-					if (selRedB && hasR > 0.5) fromNormalB = lerp(fromNormalB, BlendNormals(fromNormalB, nR), maskFinal.r);
-					if (selGreenB && hasG > 0.5) fromNormalB = lerp(fromNormalB, BlendNormals(fromNormalB, nG), maskFinal.g);
+					if (selRedB && hasR > 0.5) fromNormalB = lerp(fromNormalB, PoiBlendNormal(fromNormalB, nR), maskFinal.r);
+					if (selGreenB && hasG > 0.5) fromNormalB = lerp(fromNormalB, PoiBlendNormal(fromNormalB, nG), maskFinal.g);
 					RGBABlendNormals(poiMesh.tangentSpaceNormal, fromNormalB, nB, maskFinal.b, modeB);
 				}
 				#endif
@@ -65573,9 +65191,9 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 					bool selBlueA = (_RgbNormalABlendSources.w > 0.5);
 					int modeA = (selBaseA || selRedA || selGreenA || selBlueA) ? 2 : 0;
 					float3 fromNormalA = selBaseA ? originalNormal : neutralNormal;
-					if (selRedA && hasR > 0.5) fromNormalA = lerp(fromNormalA, BlendNormals(fromNormalA, nR), maskFinal.r);
-					if (selGreenA && hasG > 0.5) fromNormalA = lerp(fromNormalA, BlendNormals(fromNormalA, nG), maskFinal.g);
-					if (selBlueA && hasB > 0.5) fromNormalA = lerp(fromNormalA, BlendNormals(fromNormalA, nB), maskFinal.b);
+					if (selRedA && hasR > 0.5) fromNormalA = lerp(fromNormalA, PoiBlendNormal(fromNormalA, nR), maskFinal.r);
+					if (selGreenA && hasG > 0.5) fromNormalA = lerp(fromNormalA, PoiBlendNormal(fromNormalA, nG), maskFinal.g);
+					if (selBlueA && hasB > 0.5) fromNormalA = lerp(fromNormalA, PoiBlendNormal(fromNormalA, nB), maskFinal.b);
 					RGBABlendNormals(poiMesh.tangentSpaceNormal, fromNormalA, normalToBlendWith, maskFinal.a, modeA);
 				}
 				#endif
@@ -66908,79 +66526,73 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 					#endif
 				}
 				
-				void SampleDecalNoTexture(in PoiMods poiMods, in PoiLight poiLight, in PoiMesh poiMesh, in PoiCam poiCam)
+				void SampleDecalLayers(sampler2D decalTexture, sampler2D videoTexture, bool videoEnabled, bool videoAvailable, bool onlyVideo, bool keepDecalAlpha, bool channelSeparation, bool localTextureAvailable, float2 videoAspectRatio, in PoiMods poiMods, in PoiLight poiLight, in PoiMesh poiMesh, in PoiCam poiCam)
 				{
-					uv = decalUV(m_DecalTextureUV, m_DecalPosition, m_DecalRotation + decalRotation, m_DecalRotationSpeed, decalScale, m_DecalSideOffset +sideMod, m_DecalDepth, m_DecalSymmetryMode, m_DecalMirroredUVMode, poiMesh, poiCam);
-					decalColor = float4(poiThemeColor(poiMods, m_DecalColor.rgb, m_DecalColorThemeIndex), m_DecalColor.a);
-					decalColor.rgb = decalHueShift(m_DecalHueShiftEnabled, decalColor.rgb, m_DecalHueShift + poiLight.nDotVCentered * m_DecalHueAngleStrength, m_DecalHueShiftSpeed, m_DecalHueShiftColorSpace, m_DecalHueShiftSelectOrShift);
-					decalColor.rgb = decalColorAdjust(m_DecalColorAdjustEnabled, decalColor.rgb, m_DecalSaturation, m_DecalChromatize, m_DecalBrightness, m_DecalGamma);
-					decalColor.a *= decalMask[m_DecalMaskChannel] * applyTilingClipping(m_DecalTiled, uv);
-				}
-				
-				void SampleDecal(sampler2D decalTexture, in PoiMods poiMods, in PoiLight poiLight, in PoiMesh poiMesh, in PoiCam poiCam, float2 scaleMultiplier = float2(1, 1))
-				{
-					uv = decalUV(m_DecalTextureUV, m_DecalPosition, m_DecalRotation + decalRotation, m_DecalRotationSpeed, decalScale * scaleMultiplier, m_DecalSideOffset +sideMod, m_DecalDepth, m_DecalSymmetryMode, m_DecalMirroredUVMode, poiMesh, poiCam);
-					// Adjust derivatives for _ST of decal texture
-					float4 dduv = any(fwidth(uv) > .5) ? 0.001 : float4(ddx(uv) * m_DecalTexture_ST.x, ddy(uv) * m_DecalTexture_ST.y);
-					decalColor = tex2D(decalTexture, poiUV(uv, m_DecalTexture_ST) + m_DecalTexturePan * POI_TIME.x, dduv.xy, dduv.zw) * float4(poiThemeColor(poiMods, m_DecalColor.rgb, m_DecalColorThemeIndex), m_DecalColor.a);
-					decalColor.rgb = decalHueShift(m_DecalHueShiftEnabled, decalColor.rgb, m_DecalHueShift + poiLight.nDotVCentered * m_DecalHueAngleStrength, m_DecalHueShiftSpeed, m_DecalHueShiftColorSpace, m_DecalHueShiftSelectOrShift);
-					decalColor.rgb = decalColorAdjust(m_DecalColorAdjustEnabled, decalColor.rgb, m_DecalSaturation, m_DecalChromatize, m_DecalBrightness, m_DecalGamma);
-					decalColor.a *= decalMask[m_DecalMaskChannel] * applyTilingClipping(m_DecalTiled, uv);
-				}
-				
-				void SampleDecalNoAlpha(sampler2D decalTexture, in PoiMods poiMods, in PoiLight poiLight, in PoiMesh poiMesh, in PoiCam poiCam, float2 scaleMultiplier = float2(1, 1))
-				{
-					uv = decalUV(m_DecalTextureUV, m_DecalPosition, m_DecalRotation + decalRotation, m_DecalRotationSpeed, decalScale * scaleMultiplier, m_DecalSideOffset +sideMod, m_DecalDepth, m_DecalSymmetryMode, m_DecalMirroredUVMode, poiMesh, poiCam);
-					// Adjust derivatives for _ST of decal texture
-					float4 dduv = any(fwidth(uv) > .5) ? 0.001 : float4(ddx(uv) * m_DecalTexture_ST.x, ddy(uv) * m_DecalTexture_ST.y);
-					decalColor.rgb = tex2D(decalTexture, poiUV(uv, m_DecalTexture_ST) + m_DecalTexturePan * POI_TIME.x, dduv.xy, dduv.zw) * float4(poiThemeColor(poiMods, m_DecalColor.rgb, m_DecalColorThemeIndex), m_DecalColor.a).rgb;
-					decalColor.rgb = decalHueShift(m_DecalHueShiftEnabled, decalColor.rgb, m_DecalHueShift + poiLight.nDotVCentered * m_DecalHueAngleStrength, m_DecalHueShiftSpeed, m_DecalHueShiftColorSpace, m_DecalHueShiftSelectOrShift);
-					decalColor.rgb = decalColorAdjust(m_DecalColorAdjustEnabled, decalColor.rgb, m_DecalSaturation, m_DecalChromatize, m_DecalBrightness, m_DecalGamma);
-					decalColor.a *= decalMask[m_DecalMaskChannel] * applyTilingClipping(m_DecalTiled, uv);
-				}
-				
-				void SampleDecalAlphaOnly(sampler2D decalTexture, in PoiMods poiMods, in PoiLight poiLight, in PoiMesh poiMesh, in PoiCam poiCam, float2 scaleMultiplier = float2(1, 1))
-				{
-					uv = decalUV(m_DecalTextureUV, m_DecalPosition, m_DecalRotation + decalRotation, m_DecalRotationSpeed, decalScale * scaleMultiplier, m_DecalSideOffset +sideMod, m_DecalDepth, m_DecalSymmetryMode, m_DecalMirroredUVMode, poiMesh, poiCam);
-					// Adjust derivatives for _ST of decal texture
-					float4 dduv = any(fwidth(uv) > .5) ? 0.001 : float4(ddx(uv) * m_DecalTexture_ST.x, ddy(uv) * m_DecalTexture_ST.y);
-					decalColor = tex2D(decalTexture, poiUV(uv, m_DecalTexture_ST) + m_DecalTexturePan * POI_TIME.x, dduv.xy, dduv.zw) * float4(poiThemeColor(poiMods, m_DecalColor.rgb, m_DecalColorThemeIndex), m_DecalColor.a);
-					decalColor.rgb = decalColorAdjust(m_DecalColorAdjustEnabled, decalColor.rgb, m_DecalSaturation, m_DecalChromatize, m_DecalBrightness, m_DecalGamma);
-					decalColor.a *= decalMask[m_DecalMaskChannel] * applyTilingClipping(m_DecalTiled, uv);
-				}
-				
-				void SampleDecalChannelSeparation(sampler2D decalTexture, in PoiMods poiMods, in PoiLight poiLight, in PoiMesh poiMesh, in PoiCam poiCam)
-				{
-					decalColor = float4(0, 0, 0, 1);
-					decalChannelOffset += m_DecalChannelSeparation + m_DecalChannelSeparationAngleStrength * (m_DecalChannelSeparationAngleStrength > 0 ? (1 - poiLight.nDotVCentered) : poiLight.nDotVCentered);
-					float2 positionOffset = decalChannelOffset * 0.01 * (decalScale.x + decalScale.y) * float2(cos(m_DecalChannelSeparationVertical), sin(m_DecalChannelSeparationVertical));
-					float2 uvSample0 = decalUV(m_DecalTextureUV, m_DecalPosition + positionOffset, m_DecalRotation + decalRotation, m_DecalRotationSpeed, decalScale, m_DecalSideOffset +sideMod, m_DecalDepth, m_DecalSymmetryMode, m_DecalMirroredUVMode, poiMesh, poiCam);
-					float2 uvSample1 = decalUV(m_DecalTextureUV, m_DecalPosition - positionOffset, m_DecalRotation + decalRotation, m_DecalRotationSpeed, decalScale, m_DecalSideOffset +sideMod, m_DecalDepth, m_DecalSymmetryMode, m_DecalMirroredUVMode, poiMesh, poiCam);
-					
-					float4 dduvSample0 = any(fwidth(uvSample0) > .5) ? 0.001 : float4(ddx(uvSample0) * m_DecalTexture_ST.x, ddy(uvSample0) * m_DecalTexture_ST.y);
-					float4 dduvSample1 = any(fwidth(uvSample1) > .5) ? 0.001 : float4(ddx(uvSample1) * m_DecalTexture_ST.x, ddy(uvSample1) * m_DecalTexture_ST.y);
-					
-					half4 decalTint = float4(poiThemeColor(poiMods, m_DecalColor.rgb, m_DecalColorThemeIndex), m_DecalColor.a);
-					float4 sample0 = tex2D(decalTexture, poiUV(uvSample0, m_DecalTexture_ST) + m_DecalTexturePan * POI_TIME.x, dduvSample0.xy, dduvSample0.zw) * decalTint;
-					float4 sample1 = tex2D(decalTexture, poiUV(uvSample1, m_DecalTexture_ST) + m_DecalTexturePan * POI_TIME.x, dduvSample1.xy, dduvSample1.zw) * decalTint;
-					
-					sample0.rgb = decalHueShift(m_DecalHueShiftEnabled, sample0.rgb, m_DecalHueShift + poiLight.nDotVCentered * m_DecalHueAngleStrength, m_DecalHueShiftSpeed, m_DecalHueShiftColorSpace, m_DecalHueShiftSelectOrShift);
-					sample1.rgb = decalHueShift(m_DecalHueShiftEnabled, sample1.rgb, m_DecalHueShift + poiLight.nDotVCentered * m_DecalHueAngleStrength, m_DecalHueShiftSpeed, m_DecalHueShiftColorSpace, m_DecalHueShiftSelectOrShift);
-					sample0.rgb = decalColorAdjust(m_DecalColorAdjustEnabled, sample0.rgb, m_DecalSaturation, m_DecalChromatize, m_DecalBrightness, m_DecalGamma);
-					sample1.rgb = decalColorAdjust(m_DecalColorAdjustEnabled, sample1.rgb, m_DecalSaturation, m_DecalChromatize, m_DecalBrightness, m_DecalGamma);
-					
-					half3 channelSeparationColor = HUEtoRGB(frac(m_DecalChannelSeparationHue));
-					
-					if (m_DecalChannelSeparationPremultiply)
+					bool separateChannels = !videoEnabled && channelSeparation && localTextureAvailable;
+					float2 positionOffset = 0;
+					if (separateChannels)
 					{
-						decalColor.rgb = lerp(sample0 * sample0.a, sample1 * sample1.a, channelSeparationColor);
+						decalChannelOffset += m_DecalChannelSeparation + m_DecalChannelSeparationAngleStrength * (m_DecalChannelSeparationAngleStrength > 0 ? (1 - poiLight.nDotVCentered) : poiLight.nDotVCentered);
+						positionOffset = decalChannelOffset * 0.01 * (decalScale.x + decalScale.y) * float2(cos(m_DecalChannelSeparationVertical), sin(m_DecalChannelSeparationVertical));
 					}
-					else
+					// Share UV and color processing across local/video layers and separated channels.
+					// Material-uniform loop bounds keep derivative evaluation in uniform control flow.
+					POI_DECAL_LAYER_LOOP
+					for (int layer = 0; layer < 2; ++layer)
 					{
-						decalColor.rgb = lerp(sample0, sample1, channelSeparationColor);
+						bool videoLayer = layer == 1;
+						bool sampleLayer = videoLayer ? (videoEnabled && videoAvailable) : (!videoEnabled || !onlyVideo || (videoAvailable && keepDecalAlpha));
+						if (sampleLayer)
+						{
+							bool separatedLayer = !videoLayer && separateChannels;
+							int sampleCount = separatedLayer ? 2 : 1;
+							float4 samples[2];
+							float clips[2];
+							float previousAlpha = decalColor.a;
+							POI_DECAL_LAYER_LOOP
+							for (int sampleIndex = 0; sampleIndex < POI_DECAL_SAMPLE_BOUND; ++sampleIndex)
+							{
+								#if defined(OPTIMIZER_ENABLED)
+								if (sampleIndex >= sampleCount) break;
+								#endif
+								float2 samplePosition = m_DecalPosition + (separatedLayer ? (sampleIndex == 0 ? positionOffset : -positionOffset) : float2(0, 0));
+								float2 sampleScale = decalScale * (videoLayer ? videoAspectRatio : float2(1, 1));
+								float2 sampleUV = decalUV(m_DecalTextureUV, samplePosition, m_DecalRotation + decalRotation, m_DecalRotationSpeed, sampleScale, m_DecalSideOffset +sideMod, m_DecalDepth, m_DecalSymmetryMode, m_DecalMirroredUVMode, poiMesh, poiCam);
+								float4 decalSampleColor = float4(poiThemeColor(poiMods, m_DecalColor.rgb, m_DecalColorThemeIndex), m_DecalColor.a);
+								if (videoLayer || videoEnabled || localTextureAvailable)
+								{
+									float4 derivatives = any(fwidth(sampleUV) > .5) ? 0.001 : float4(ddx(sampleUV) * m_DecalTexture_ST.xy, ddy(sampleUV) * m_DecalTexture_ST.xy);
+									float2 textureUV = poiUV(sampleUV, m_DecalTexture_ST) + m_DecalTexturePan * POI_TIME.x;
+									if (videoLayer)
+									decalSampleColor *= tex2D(videoTexture, textureUV, derivatives.xy, derivatives.zw);
+									else
+									decalSampleColor *= tex2D(decalTexture, textureUV, derivatives.xy, derivatives.zw);
+								}
+								decalSampleColor.rgb = decalHueShift(m_DecalHueShiftEnabled, decalSampleColor.rgb, m_DecalHueShift + poiLight.nDotVCentered * m_DecalHueAngleStrength, m_DecalHueShiftSpeed, m_DecalHueShiftColorSpace, m_DecalHueShiftSelectOrShift);
+								decalSampleColor.rgb = decalColorAdjust(m_DecalColorAdjustEnabled, decalSampleColor.rgb, m_DecalSaturation, m_DecalChromatize, m_DecalBrightness, m_DecalGamma);
+								samples[sampleIndex] = decalSampleColor;
+								clips[sampleIndex] = applyTilingClipping(m_DecalTiled, sampleUV);
+								// Preserve the original channel-separation path's handling of the stored UV.
+								if (!separatedLayer) uv = sampleUV;
+							}
+							if (separatedLayer)
+							{
+								half3 channelSeparationColor = HUEtoRGB(frac(m_DecalChannelSeparationHue));
+								if (m_DecalChannelSeparationPremultiply)
+								decalColor.rgb = lerp(samples[0] * samples[0].a, samples[1] * samples[1].a, channelSeparationColor);
+								else
+								decalColor.rgb = lerp(samples[0], samples[1], channelSeparationColor);
+								decalColor.a = 0.5 * (samples[0].a + samples[1].a);
+								decalColor.a *= decalMask[m_DecalMaskChannel] * max(clips[0], clips[1]);
+							}
+							else
+							{
+								decalColor = samples[0];
+								if (videoLayer && keepDecalAlpha) decalColor.a = previousAlpha;
+								decalColor.a *= decalMask[m_DecalMaskChannel] * clips[0];
+							}
+						}
 					}
-					decalColor.a = 0.5 * (sample0.a + sample1.a);
-					decalColor.a *= decalMask[m_DecalMaskChannel] * max(applyTilingClipping(m_DecalTiled, uvSample0), applyTilingClipping(m_DecalTiled, uvSample1));
 				}
 				
 				void Apply(inout float alphaOverride, inout float decalAlpha, inout PoiFragData poiFragData, in PoiMesh poiMesh, in PoiCam poiCam, inout PoiMods poiMods, in PoiLight poiLight)
@@ -67275,67 +66887,21 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 				#if defined(POI_PASS_OUTLINE)
 				decalApply = _Decal0OnOutlines >= 0.5;
 				#endif
-				if (_Decal0VideoEnabled < 0.5)
-				{
-					
-					#if defined(PROP_DECALTEXTURE) || !defined(OPTIMIZER_ENABLED)
-					//ifex _Decal0ChannelSeparationEnable==0
-					if (_Decal0ChannelSeparationEnable >= 0.5)
-					{
-						decalData.SampleDecalChannelSeparation(_DecalTexture, poiMods, poiLight, poiMesh, poiCam);
-					}
-					//endex
-					//ifex _Decal0ChannelSeparationEnable==1
-					if (_Decal0ChannelSeparationEnable < 0.5)
-					{
-						decalData.SampleDecal(_DecalTexture, poiMods, poiLight, poiMesh, poiCam);
-					}
-					//endex
-					#else
-					decalData.SampleDecalNoTexture(poiMods, poiLight, poiMesh, poiCam);
-					#endif
-				}
-				else
+				bool videoEnabled = !(_Decal0VideoEnabled < 0.5);
+				bool localTextureAvailable = false;
+				#if defined(PROP_DECALTEXTURE) || !defined(OPTIMIZER_ENABLED)
+				localTextureAvailable = true;
+				#endif
+				if (videoEnabled)
 				{
 					udonVideoAspectRatio = decalData.GetVideoAspectRatio(_Udon_VideoTex_TexelSize.zw, _Decal0VideoAspectFix, _Decal0VideoFitToScale);
-					
-					if (_Decal0OnlyVideo >= 0.5)
-					{
-						if (udonVideoTexAvailable)
-						{
-							decalData.m_DecalEmissionStrength += _Decal0VideoEmissionStrength;
-							if (_Decal0UseDecalAlpha >= 0.5)
-							{
-								decalData.SampleDecal(_DecalTexture, poiMods, poiLight, poiMesh, poiCam);
-								decalData.SampleDecalNoAlpha(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio);
-							}
-							else
-							{
-								decalData.SampleDecal(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio);
-							}
-						}
-						else
-						{
-							decalApply = false;
-						}
-					}
-					else
-					{
-						decalData.SampleDecal(_DecalTexture, poiMods, poiLight, poiMesh, poiCam);
-						if (udonVideoTexAvailable)
-						{
-							decalData.m_DecalEmissionStrength += _Decal0VideoEmissionStrength;
-							if (_Decal0UseDecalAlpha >= 0.5)
-							{
-								decalData.SampleDecalNoAlpha(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio);
-							}
-							else
-							{
-								decalData.SampleDecal(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio);
-							}
-						}
-					}
+					if (udonVideoTexAvailable)
+					decalData.m_DecalEmissionStrength += _Decal0VideoEmissionStrength;
+					else if (_Decal0OnlyVideo >= 0.5)
+					decalApply = false;
 				}
+				decalData.SampleDecalLayers(_DecalTexture, _Udon_VideoTex, videoEnabled, udonVideoTexAvailable != 0, _Decal0OnlyVideo >= 0.5, _Decal0UseDecalAlpha >= 0.5, _Decal0ChannelSeparationEnable >= 0.5, localTextureAvailable, udonVideoAspectRatio, poiMods, poiLight, poiMesh, poiCam);
+				
 				if (decalApply)
 				{
 					decalData.ApplyVideoEffects(_Decal0UseVideoEffects, poiCam, poiMesh);
@@ -67443,67 +67009,21 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 				#if defined(POI_PASS_OUTLINE)
 				decalApply__1 = _Decal1OnOutlines >= 0.5;
 				#endif
-				if (_Decal1VideoEnabled < 0.5)
-				{
-					
-					#if defined(PROP_DECALTEXTURE1) || !defined(OPTIMIZER_ENABLED)
-					//ifex _Decal1ChannelSeparationEnable==0
-					if (_Decal1ChannelSeparationEnable >= 0.5)
-					{
-						decalData__1.SampleDecalChannelSeparation(_DecalTexture1, poiMods, poiLight, poiMesh, poiCam);
-					}
-					//endex
-					//ifex _Decal1ChannelSeparationEnable==1
-					if (_Decal1ChannelSeparationEnable < 0.5)
-					{
-						decalData__1.SampleDecal(_DecalTexture1, poiMods, poiLight, poiMesh, poiCam);
-					}
-					//endex
-					#else
-					decalData__1.SampleDecalNoTexture(poiMods, poiLight, poiMesh, poiCam);
-					#endif
-				}
-				else
+				bool videoEnabled__1 = !(_Decal1VideoEnabled < 0.5);
+				bool localTextureAvailable__1 = false;
+				#if defined(PROP_DECALTEXTURE1) || !defined(OPTIMIZER_ENABLED)
+				localTextureAvailable__1 = true;
+				#endif
+				if (videoEnabled__1)
 				{
 					udonVideoAspectRatio__1 = decalData__1.GetVideoAspectRatio(_Udon_VideoTex_TexelSize.zw, _Decal1VideoAspectFix, _Decal1VideoFitToScale);
-					
-					if (_Decal1OnlyVideo >= 0.5)
-					{
-						if (udonVideoTexAvailable__1)
-						{
-							decalData__1.m_DecalEmissionStrength += _Decal1VideoEmissionStrength;
-							if (_Decal1UseDecalAlpha >= 0.5)
-							{
-								decalData__1.SampleDecal(_DecalTexture1, poiMods, poiLight, poiMesh, poiCam);
-								decalData__1.SampleDecalNoAlpha(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio__1);
-							}
-							else
-							{
-								decalData__1.SampleDecal(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio__1);
-							}
-						}
-						else
-						{
-							decalApply__1 = false;
-						}
-					}
-					else
-					{
-						decalData__1.SampleDecal(_DecalTexture1, poiMods, poiLight, poiMesh, poiCam);
-						if (udonVideoTexAvailable__1)
-						{
-							decalData__1.m_DecalEmissionStrength += _Decal1VideoEmissionStrength;
-							if (_Decal1UseDecalAlpha >= 0.5)
-							{
-								decalData__1.SampleDecalNoAlpha(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio__1);
-							}
-							else
-							{
-								decalData__1.SampleDecal(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio__1);
-							}
-						}
-					}
+					if (udonVideoTexAvailable__1)
+					decalData__1.m_DecalEmissionStrength += _Decal1VideoEmissionStrength;
+					else if (_Decal1OnlyVideo >= 0.5)
+					decalApply__1 = false;
 				}
+				decalData__1.SampleDecalLayers(_DecalTexture1, _Udon_VideoTex, videoEnabled__1, udonVideoTexAvailable__1 != 0, _Decal1OnlyVideo >= 0.5, _Decal1UseDecalAlpha >= 0.5, _Decal1ChannelSeparationEnable >= 0.5, localTextureAvailable__1, udonVideoAspectRatio__1, poiMods, poiLight, poiMesh, poiCam);
+				
 				if (decalApply__1)
 				{
 					decalData__1.ApplyVideoEffects(_Decal1UseVideoEffects, poiCam, poiMesh);
@@ -67611,67 +67131,21 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 				#if defined(POI_PASS_OUTLINE)
 				decalApply__2 = _Decal2OnOutlines >= 0.5;
 				#endif
-				if (_Decal2VideoEnabled < 0.5)
-				{
-					
-					#if defined(PROP_DECALTEXTURE2) || !defined(OPTIMIZER_ENABLED)
-					//ifex _Decal2ChannelSeparationEnable==0
-					if (_Decal2ChannelSeparationEnable >= 0.5)
-					{
-						decalData__2.SampleDecalChannelSeparation(_DecalTexture2, poiMods, poiLight, poiMesh, poiCam);
-					}
-					//endex
-					//ifex _Decal2ChannelSeparationEnable==1
-					if (_Decal2ChannelSeparationEnable < 0.5)
-					{
-						decalData__2.SampleDecal(_DecalTexture2, poiMods, poiLight, poiMesh, poiCam);
-					}
-					//endex
-					#else
-					decalData__2.SampleDecalNoTexture(poiMods, poiLight, poiMesh, poiCam);
-					#endif
-				}
-				else
+				bool videoEnabled__2 = !(_Decal2VideoEnabled < 0.5);
+				bool localTextureAvailable__2 = false;
+				#if defined(PROP_DECALTEXTURE2) || !defined(OPTIMIZER_ENABLED)
+				localTextureAvailable__2 = true;
+				#endif
+				if (videoEnabled__2)
 				{
 					udonVideoAspectRatio__2 = decalData__2.GetVideoAspectRatio(_Udon_VideoTex_TexelSize.zw, _Decal2VideoAspectFix, _Decal2VideoFitToScale);
-					
-					if (_Decal2OnlyVideo >= 0.5)
-					{
-						if (udonVideoTexAvailable__2)
-						{
-							decalData__2.m_DecalEmissionStrength += _Decal2VideoEmissionStrength;
-							if (_Decal2UseDecalAlpha >= 0.5)
-							{
-								decalData__2.SampleDecal(_DecalTexture2, poiMods, poiLight, poiMesh, poiCam);
-								decalData__2.SampleDecalNoAlpha(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio__2);
-							}
-							else
-							{
-								decalData__2.SampleDecal(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio__2);
-							}
-						}
-						else
-						{
-							decalApply__2 = false;
-						}
-					}
-					else
-					{
-						decalData__2.SampleDecal(_DecalTexture2, poiMods, poiLight, poiMesh, poiCam);
-						if (udonVideoTexAvailable__2)
-						{
-							decalData__2.m_DecalEmissionStrength += _Decal2VideoEmissionStrength;
-							if (_Decal2UseDecalAlpha >= 0.5)
-							{
-								decalData__2.SampleDecalNoAlpha(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio__2);
-							}
-							else
-							{
-								decalData__2.SampleDecal(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio__2);
-							}
-						}
-					}
+					if (udonVideoTexAvailable__2)
+					decalData__2.m_DecalEmissionStrength += _Decal2VideoEmissionStrength;
+					else if (_Decal2OnlyVideo >= 0.5)
+					decalApply__2 = false;
 				}
+				decalData__2.SampleDecalLayers(_DecalTexture2, _Udon_VideoTex, videoEnabled__2, udonVideoTexAvailable__2 != 0, _Decal2OnlyVideo >= 0.5, _Decal2UseDecalAlpha >= 0.5, _Decal2ChannelSeparationEnable >= 0.5, localTextureAvailable__2, udonVideoAspectRatio__2, poiMods, poiLight, poiMesh, poiCam);
+				
 				if (decalApply__2)
 				{
 					decalData__2.ApplyVideoEffects(_Decal2UseVideoEffects, poiCam, poiMesh);
@@ -67779,67 +67253,21 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 				#if defined(POI_PASS_OUTLINE)
 				decalApply__3 = _Decal3OnOutlines >= 0.5;
 				#endif
-				if (_Decal3VideoEnabled < 0.5)
-				{
-					
-					#if defined(PROP_DECALTEXTURE3) || !defined(OPTIMIZER_ENABLED)
-					//ifex _Decal3ChannelSeparationEnable==0
-					if (_Decal3ChannelSeparationEnable >= 0.5)
-					{
-						decalData__3.SampleDecalChannelSeparation(_DecalTexture3, poiMods, poiLight, poiMesh, poiCam);
-					}
-					//endex
-					//ifex _Decal3ChannelSeparationEnable==1
-					if (_Decal3ChannelSeparationEnable < 0.5)
-					{
-						decalData__3.SampleDecal(_DecalTexture3, poiMods, poiLight, poiMesh, poiCam);
-					}
-					//endex
-					#else
-					decalData__3.SampleDecalNoTexture(poiMods, poiLight, poiMesh, poiCam);
-					#endif
-				}
-				else
+				bool videoEnabled__3 = !(_Decal3VideoEnabled < 0.5);
+				bool localTextureAvailable__3 = false;
+				#if defined(PROP_DECALTEXTURE3) || !defined(OPTIMIZER_ENABLED)
+				localTextureAvailable__3 = true;
+				#endif
+				if (videoEnabled__3)
 				{
 					udonVideoAspectRatio__3 = decalData__3.GetVideoAspectRatio(_Udon_VideoTex_TexelSize.zw, _Decal3VideoAspectFix, _Decal3VideoFitToScale);
-					
-					if (_Decal3OnlyVideo >= 0.5)
-					{
-						if (udonVideoTexAvailable__3)
-						{
-							decalData__3.m_DecalEmissionStrength += _Decal3VideoEmissionStrength;
-							if (_Decal3UseDecalAlpha >= 0.5)
-							{
-								decalData__3.SampleDecal(_DecalTexture3, poiMods, poiLight, poiMesh, poiCam);
-								decalData__3.SampleDecalNoAlpha(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio__3);
-							}
-							else
-							{
-								decalData__3.SampleDecal(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio__3);
-							}
-						}
-						else
-						{
-							decalApply__3 = false;
-						}
-					}
-					else
-					{
-						decalData__3.SampleDecal(_DecalTexture3, poiMods, poiLight, poiMesh, poiCam);
-						if (udonVideoTexAvailable__3)
-						{
-							decalData__3.m_DecalEmissionStrength += _Decal3VideoEmissionStrength;
-							if (_Decal3UseDecalAlpha >= 0.5)
-							{
-								decalData__3.SampleDecalNoAlpha(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio__3);
-							}
-							else
-							{
-								decalData__3.SampleDecal(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio__3);
-							}
-						}
-					}
+					if (udonVideoTexAvailable__3)
+					decalData__3.m_DecalEmissionStrength += _Decal3VideoEmissionStrength;
+					else if (_Decal3OnlyVideo >= 0.5)
+					decalApply__3 = false;
 				}
+				decalData__3.SampleDecalLayers(_DecalTexture3, _Udon_VideoTex, videoEnabled__3, udonVideoTexAvailable__3 != 0, _Decal3OnlyVideo >= 0.5, _Decal3UseDecalAlpha >= 0.5, _Decal3ChannelSeparationEnable >= 0.5, localTextureAvailable__3, udonVideoAspectRatio__3, poiMods, poiLight, poiMesh, poiCam);
+				
 				if (decalApply__3)
 				{
 					decalData__3.ApplyVideoEffects(_Decal3UseVideoEffects, poiCam, poiMesh);
@@ -71184,6 +70612,7 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 			float2 _MainTintTexturePan;
 			float _MainTintTextureUV;
 			half _MainBrightness;
+			half _MainColorAdjustClamp;
 			float _MainGamma;
 			
 			float _MainHueALCTEnabled;
@@ -75320,6 +74749,14 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 			#define _Mode _RenderingReduceClipDistance
 			#endif
 			
+			#if defined(OPTIMIZER_ENABLED)
+			#define POI_LILFUR_SLOT_LOOP [unroll]
+			#define POI_LILFUR_SLOT_BOUND 6
+			#else
+			#define POI_LILFUR_SLOT_LOOP [loop]
+			#define POI_LILFUR_SLOT_BOUND furFactorCount
+			#endif
+			
 			//ifex _EnableBentNormal==0
 			#ifdef POI_BENTNORMALMAP
 			#if defined(PROP_BENTNORMALMAP) || !defined(OPTIMIZER_ENABLED)
@@ -75542,6 +74979,16 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 			#endif
 			sampler2D _Udon_VideoTex;//<ms_no_postfix>
 			float4 _Udon_VideoTex_TexelSize;//<ms_no_postfix>
+			//endex
+			
+			//ifex _DecalEnabled==0 && _DecalEnabled1==0 && _DecalEnabled2==0 && _DecalEnabled3==0
+			#if defined(OPTIMIZER_ENABLED)
+			#define POI_DECAL_LAYER_LOOP [unroll]
+			#define POI_DECAL_SAMPLE_BOUND 2
+			#else
+			#define POI_DECAL_LAYER_LOOP [loop]
+			#define POI_DECAL_SAMPLE_BOUND sampleCount
+			#endif
 			//endex
 			
 			//ifex _DecalEnabled==0
@@ -75928,6 +75375,11 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 			#if defined(PROP_REFLECTIONCUBETEX) || !defined(OPTIMIZER_ENABLED)
 			TextureCube _ReflectionCubeTex;
 			#endif
+			#endif
+			#if defined(OPTIMIZER_ENABLED)
+			#define POI_STYLIZED_SPECULAR_VERTEX_LIGHT_LOOP [unroll]
+			#else
+			#define POI_STYLIZED_SPECULAR_VERTEX_LIGHT_LOOP [loop]
 			#endif
 			#endif
 			//endex
@@ -77635,26 +77087,13 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 			
 			half3 poiThemeColor(in PoiMods poiMods, in half3 srcColor, in half themeIndex)
 			{
-				half3 outputColor = srcColor;
-				if (themeIndex != 0)
-				{
-					themeIndex = max(themeIndex - 1, 0);
-					
-					if (themeIndex <= 3)
-					{
-						outputColor = poiMods.globalColorTheme[themeIndex].rgb;
-					}
-					else
-					{
-						#ifdef POI_AUDIOLINK
-						if (poiMods.audioLinkAvailable)
-						{
-							outputColor = poiMods.globalColorTheme[themeIndex].rgb;
-						}
-						#endif
-					}
-				}
-				return outputColor;
+				half poiThemeIdx = clamp(max(themeIndex - 1, 0), 0, 11);
+				#ifdef POI_AUDIOLINK
+				bool poiThemeUse = (themeIndex != 0) && (poiThemeIdx <= 3 || poiMods.audioLinkAvailable);
+				#else
+				bool poiThemeUse = (themeIndex != 0) && (poiThemeIdx <= 3);
+				#endif
+				return poiThemeUse ? poiMods.globalColorTheme[poiThemeIdx].rgb : srcColor;
 			}
 			
 			struct PoiSpriteSheetConfig
@@ -78745,12 +78184,12 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 				UNITY_SETUP_INSTANCE_ID(v);
 				PoiVertToGeoLilFur o;
 				PoiInitStruct(PoiVertToGeoLilFur, o);
+				UNITY_TRANSFER_INSTANCE_ID(v, o);
 				
 				// FXC on mobile doesn't like (PoiVertToGeoLilFur)POI_NAN return
 				// if o.worldPos NaN does not get overwritten, it's discarded
 				#if defined(SHADER_API_MOBILE)
 				o.worldPos = float3(POI_NAN, POI_NAN, POI_NAN);
-				UNITY_TRANSFER_INSTANCE_ID(v, o);
 				#endif
 				
 				#ifdef POI_AUDIOLINK
@@ -81225,6 +80664,10 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 					#endif
 				}
 				poiFragData.baseColor = lerp(poiFragData.baseColor, poiFragData.baseColor * (_MainBrightness + 1), hueShiftAlpha.g);
+				if (_MainColorAdjustClamp > 0.5)
+				{
+					poiFragData.baseColor = saturate(poiFragData.baseColor);
+				}
 				#endif
 				//endex
 				
@@ -82792,7 +82235,7 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 					bool selRedG = (_RgbNormalGBlendSources.y > 0.5);
 					int modeG = (selBaseG || selRedG) ? 2 : 0;
 					float3 fromNormalG = selBaseG ? originalNormal : neutralNormal;
-					if (selRedG && hasR > 0.5) fromNormalG = lerp(fromNormalG, BlendNormals(fromNormalG, nR), maskFinal.r);
+					if (selRedG && hasR > 0.5) fromNormalG = lerp(fromNormalG, PoiBlendNormal(fromNormalG, nR), maskFinal.r);
 					RGBABlendNormals(poiMesh.tangentSpaceNormal, fromNormalG, nG, maskFinal.g, modeG);
 				}
 				#endif
@@ -82806,8 +82249,8 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 					bool selGreenB = (_RgbNormalBBlendSources.z > 0.5);
 					int modeB = (selBaseB || selRedB || selGreenB) ? 2 : 0;
 					float3 fromNormalB = selBaseB ? originalNormal : neutralNormal;
-					if (selRedB && hasR > 0.5) fromNormalB = lerp(fromNormalB, BlendNormals(fromNormalB, nR), maskFinal.r);
-					if (selGreenB && hasG > 0.5) fromNormalB = lerp(fromNormalB, BlendNormals(fromNormalB, nG), maskFinal.g);
+					if (selRedB && hasR > 0.5) fromNormalB = lerp(fromNormalB, PoiBlendNormal(fromNormalB, nR), maskFinal.r);
+					if (selGreenB && hasG > 0.5) fromNormalB = lerp(fromNormalB, PoiBlendNormal(fromNormalB, nG), maskFinal.g);
 					RGBABlendNormals(poiMesh.tangentSpaceNormal, fromNormalB, nB, maskFinal.b, modeB);
 				}
 				#endif
@@ -82821,9 +82264,9 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 					bool selBlueA = (_RgbNormalABlendSources.w > 0.5);
 					int modeA = (selBaseA || selRedA || selGreenA || selBlueA) ? 2 : 0;
 					float3 fromNormalA = selBaseA ? originalNormal : neutralNormal;
-					if (selRedA && hasR > 0.5) fromNormalA = lerp(fromNormalA, BlendNormals(fromNormalA, nR), maskFinal.r);
-					if (selGreenA && hasG > 0.5) fromNormalA = lerp(fromNormalA, BlendNormals(fromNormalA, nG), maskFinal.g);
-					if (selBlueA && hasB > 0.5) fromNormalA = lerp(fromNormalA, BlendNormals(fromNormalA, nB), maskFinal.b);
+					if (selRedA && hasR > 0.5) fromNormalA = lerp(fromNormalA, PoiBlendNormal(fromNormalA, nR), maskFinal.r);
+					if (selGreenA && hasG > 0.5) fromNormalA = lerp(fromNormalA, PoiBlendNormal(fromNormalA, nG), maskFinal.g);
+					if (selBlueA && hasB > 0.5) fromNormalA = lerp(fromNormalA, PoiBlendNormal(fromNormalA, nB), maskFinal.b);
 					RGBABlendNormals(poiMesh.tangentSpaceNormal, fromNormalA, normalToBlendWith, maskFinal.a, modeA);
 				}
 				#endif
@@ -85435,79 +84878,73 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 					#endif
 				}
 				
-				void SampleDecalNoTexture(in PoiMods poiMods, in PoiLight poiLight, in PoiMesh poiMesh, in PoiCam poiCam)
+				void SampleDecalLayers(sampler2D decalTexture, sampler2D videoTexture, bool videoEnabled, bool videoAvailable, bool onlyVideo, bool keepDecalAlpha, bool channelSeparation, bool localTextureAvailable, float2 videoAspectRatio, in PoiMods poiMods, in PoiLight poiLight, in PoiMesh poiMesh, in PoiCam poiCam)
 				{
-					uv = decalUV(m_DecalTextureUV, m_DecalPosition, m_DecalRotation + decalRotation, m_DecalRotationSpeed, decalScale, m_DecalSideOffset +sideMod, m_DecalDepth, m_DecalSymmetryMode, m_DecalMirroredUVMode, poiMesh, poiCam);
-					decalColor = float4(poiThemeColor(poiMods, m_DecalColor.rgb, m_DecalColorThemeIndex), m_DecalColor.a);
-					decalColor.rgb = decalHueShift(m_DecalHueShiftEnabled, decalColor.rgb, m_DecalHueShift + poiLight.nDotVCentered * m_DecalHueAngleStrength, m_DecalHueShiftSpeed, m_DecalHueShiftColorSpace, m_DecalHueShiftSelectOrShift);
-					decalColor.rgb = decalColorAdjust(m_DecalColorAdjustEnabled, decalColor.rgb, m_DecalSaturation, m_DecalChromatize, m_DecalBrightness, m_DecalGamma);
-					decalColor.a *= decalMask[m_DecalMaskChannel] * applyTilingClipping(m_DecalTiled, uv);
-				}
-				
-				void SampleDecal(sampler2D decalTexture, in PoiMods poiMods, in PoiLight poiLight, in PoiMesh poiMesh, in PoiCam poiCam, float2 scaleMultiplier = float2(1, 1))
-				{
-					uv = decalUV(m_DecalTextureUV, m_DecalPosition, m_DecalRotation + decalRotation, m_DecalRotationSpeed, decalScale * scaleMultiplier, m_DecalSideOffset +sideMod, m_DecalDepth, m_DecalSymmetryMode, m_DecalMirroredUVMode, poiMesh, poiCam);
-					// Adjust derivatives for _ST of decal texture
-					float4 dduv = any(fwidth(uv) > .5) ? 0.001 : float4(ddx(uv) * m_DecalTexture_ST.x, ddy(uv) * m_DecalTexture_ST.y);
-					decalColor = tex2D(decalTexture, poiUV(uv, m_DecalTexture_ST) + m_DecalTexturePan * POI_TIME.x, dduv.xy, dduv.zw) * float4(poiThemeColor(poiMods, m_DecalColor.rgb, m_DecalColorThemeIndex), m_DecalColor.a);
-					decalColor.rgb = decalHueShift(m_DecalHueShiftEnabled, decalColor.rgb, m_DecalHueShift + poiLight.nDotVCentered * m_DecalHueAngleStrength, m_DecalHueShiftSpeed, m_DecalHueShiftColorSpace, m_DecalHueShiftSelectOrShift);
-					decalColor.rgb = decalColorAdjust(m_DecalColorAdjustEnabled, decalColor.rgb, m_DecalSaturation, m_DecalChromatize, m_DecalBrightness, m_DecalGamma);
-					decalColor.a *= decalMask[m_DecalMaskChannel] * applyTilingClipping(m_DecalTiled, uv);
-				}
-				
-				void SampleDecalNoAlpha(sampler2D decalTexture, in PoiMods poiMods, in PoiLight poiLight, in PoiMesh poiMesh, in PoiCam poiCam, float2 scaleMultiplier = float2(1, 1))
-				{
-					uv = decalUV(m_DecalTextureUV, m_DecalPosition, m_DecalRotation + decalRotation, m_DecalRotationSpeed, decalScale * scaleMultiplier, m_DecalSideOffset +sideMod, m_DecalDepth, m_DecalSymmetryMode, m_DecalMirroredUVMode, poiMesh, poiCam);
-					// Adjust derivatives for _ST of decal texture
-					float4 dduv = any(fwidth(uv) > .5) ? 0.001 : float4(ddx(uv) * m_DecalTexture_ST.x, ddy(uv) * m_DecalTexture_ST.y);
-					decalColor.rgb = tex2D(decalTexture, poiUV(uv, m_DecalTexture_ST) + m_DecalTexturePan * POI_TIME.x, dduv.xy, dduv.zw) * float4(poiThemeColor(poiMods, m_DecalColor.rgb, m_DecalColorThemeIndex), m_DecalColor.a).rgb;
-					decalColor.rgb = decalHueShift(m_DecalHueShiftEnabled, decalColor.rgb, m_DecalHueShift + poiLight.nDotVCentered * m_DecalHueAngleStrength, m_DecalHueShiftSpeed, m_DecalHueShiftColorSpace, m_DecalHueShiftSelectOrShift);
-					decalColor.rgb = decalColorAdjust(m_DecalColorAdjustEnabled, decalColor.rgb, m_DecalSaturation, m_DecalChromatize, m_DecalBrightness, m_DecalGamma);
-					decalColor.a *= decalMask[m_DecalMaskChannel] * applyTilingClipping(m_DecalTiled, uv);
-				}
-				
-				void SampleDecalAlphaOnly(sampler2D decalTexture, in PoiMods poiMods, in PoiLight poiLight, in PoiMesh poiMesh, in PoiCam poiCam, float2 scaleMultiplier = float2(1, 1))
-				{
-					uv = decalUV(m_DecalTextureUV, m_DecalPosition, m_DecalRotation + decalRotation, m_DecalRotationSpeed, decalScale * scaleMultiplier, m_DecalSideOffset +sideMod, m_DecalDepth, m_DecalSymmetryMode, m_DecalMirroredUVMode, poiMesh, poiCam);
-					// Adjust derivatives for _ST of decal texture
-					float4 dduv = any(fwidth(uv) > .5) ? 0.001 : float4(ddx(uv) * m_DecalTexture_ST.x, ddy(uv) * m_DecalTexture_ST.y);
-					decalColor = tex2D(decalTexture, poiUV(uv, m_DecalTexture_ST) + m_DecalTexturePan * POI_TIME.x, dduv.xy, dduv.zw) * float4(poiThemeColor(poiMods, m_DecalColor.rgb, m_DecalColorThemeIndex), m_DecalColor.a);
-					decalColor.rgb = decalColorAdjust(m_DecalColorAdjustEnabled, decalColor.rgb, m_DecalSaturation, m_DecalChromatize, m_DecalBrightness, m_DecalGamma);
-					decalColor.a *= decalMask[m_DecalMaskChannel] * applyTilingClipping(m_DecalTiled, uv);
-				}
-				
-				void SampleDecalChannelSeparation(sampler2D decalTexture, in PoiMods poiMods, in PoiLight poiLight, in PoiMesh poiMesh, in PoiCam poiCam)
-				{
-					decalColor = float4(0, 0, 0, 1);
-					decalChannelOffset += m_DecalChannelSeparation + m_DecalChannelSeparationAngleStrength * (m_DecalChannelSeparationAngleStrength > 0 ? (1 - poiLight.nDotVCentered) : poiLight.nDotVCentered);
-					float2 positionOffset = decalChannelOffset * 0.01 * (decalScale.x + decalScale.y) * float2(cos(m_DecalChannelSeparationVertical), sin(m_DecalChannelSeparationVertical));
-					float2 uvSample0 = decalUV(m_DecalTextureUV, m_DecalPosition + positionOffset, m_DecalRotation + decalRotation, m_DecalRotationSpeed, decalScale, m_DecalSideOffset +sideMod, m_DecalDepth, m_DecalSymmetryMode, m_DecalMirroredUVMode, poiMesh, poiCam);
-					float2 uvSample1 = decalUV(m_DecalTextureUV, m_DecalPosition - positionOffset, m_DecalRotation + decalRotation, m_DecalRotationSpeed, decalScale, m_DecalSideOffset +sideMod, m_DecalDepth, m_DecalSymmetryMode, m_DecalMirroredUVMode, poiMesh, poiCam);
-					
-					float4 dduvSample0 = any(fwidth(uvSample0) > .5) ? 0.001 : float4(ddx(uvSample0) * m_DecalTexture_ST.x, ddy(uvSample0) * m_DecalTexture_ST.y);
-					float4 dduvSample1 = any(fwidth(uvSample1) > .5) ? 0.001 : float4(ddx(uvSample1) * m_DecalTexture_ST.x, ddy(uvSample1) * m_DecalTexture_ST.y);
-					
-					half4 decalTint = float4(poiThemeColor(poiMods, m_DecalColor.rgb, m_DecalColorThemeIndex), m_DecalColor.a);
-					float4 sample0 = tex2D(decalTexture, poiUV(uvSample0, m_DecalTexture_ST) + m_DecalTexturePan * POI_TIME.x, dduvSample0.xy, dduvSample0.zw) * decalTint;
-					float4 sample1 = tex2D(decalTexture, poiUV(uvSample1, m_DecalTexture_ST) + m_DecalTexturePan * POI_TIME.x, dduvSample1.xy, dduvSample1.zw) * decalTint;
-					
-					sample0.rgb = decalHueShift(m_DecalHueShiftEnabled, sample0.rgb, m_DecalHueShift + poiLight.nDotVCentered * m_DecalHueAngleStrength, m_DecalHueShiftSpeed, m_DecalHueShiftColorSpace, m_DecalHueShiftSelectOrShift);
-					sample1.rgb = decalHueShift(m_DecalHueShiftEnabled, sample1.rgb, m_DecalHueShift + poiLight.nDotVCentered * m_DecalHueAngleStrength, m_DecalHueShiftSpeed, m_DecalHueShiftColorSpace, m_DecalHueShiftSelectOrShift);
-					sample0.rgb = decalColorAdjust(m_DecalColorAdjustEnabled, sample0.rgb, m_DecalSaturation, m_DecalChromatize, m_DecalBrightness, m_DecalGamma);
-					sample1.rgb = decalColorAdjust(m_DecalColorAdjustEnabled, sample1.rgb, m_DecalSaturation, m_DecalChromatize, m_DecalBrightness, m_DecalGamma);
-					
-					half3 channelSeparationColor = HUEtoRGB(frac(m_DecalChannelSeparationHue));
-					
-					if (m_DecalChannelSeparationPremultiply)
+					bool separateChannels = !videoEnabled && channelSeparation && localTextureAvailable;
+					float2 positionOffset = 0;
+					if (separateChannels)
 					{
-						decalColor.rgb = lerp(sample0 * sample0.a, sample1 * sample1.a, channelSeparationColor);
+						decalChannelOffset += m_DecalChannelSeparation + m_DecalChannelSeparationAngleStrength * (m_DecalChannelSeparationAngleStrength > 0 ? (1 - poiLight.nDotVCentered) : poiLight.nDotVCentered);
+						positionOffset = decalChannelOffset * 0.01 * (decalScale.x + decalScale.y) * float2(cos(m_DecalChannelSeparationVertical), sin(m_DecalChannelSeparationVertical));
 					}
-					else
+					// Share UV and color processing across local/video layers and separated channels.
+					// Material-uniform loop bounds keep derivative evaluation in uniform control flow.
+					POI_DECAL_LAYER_LOOP
+					for (int layer = 0; layer < 2; ++layer)
 					{
-						decalColor.rgb = lerp(sample0, sample1, channelSeparationColor);
+						bool videoLayer = layer == 1;
+						bool sampleLayer = videoLayer ? (videoEnabled && videoAvailable) : (!videoEnabled || !onlyVideo || (videoAvailable && keepDecalAlpha));
+						if (sampleLayer)
+						{
+							bool separatedLayer = !videoLayer && separateChannels;
+							int sampleCount = separatedLayer ? 2 : 1;
+							float4 samples[2];
+							float clips[2];
+							float previousAlpha = decalColor.a;
+							POI_DECAL_LAYER_LOOP
+							for (int sampleIndex = 0; sampleIndex < POI_DECAL_SAMPLE_BOUND; ++sampleIndex)
+							{
+								#if defined(OPTIMIZER_ENABLED)
+								if (sampleIndex >= sampleCount) break;
+								#endif
+								float2 samplePosition = m_DecalPosition + (separatedLayer ? (sampleIndex == 0 ? positionOffset : -positionOffset) : float2(0, 0));
+								float2 sampleScale = decalScale * (videoLayer ? videoAspectRatio : float2(1, 1));
+								float2 sampleUV = decalUV(m_DecalTextureUV, samplePosition, m_DecalRotation + decalRotation, m_DecalRotationSpeed, sampleScale, m_DecalSideOffset +sideMod, m_DecalDepth, m_DecalSymmetryMode, m_DecalMirroredUVMode, poiMesh, poiCam);
+								float4 decalSampleColor = float4(poiThemeColor(poiMods, m_DecalColor.rgb, m_DecalColorThemeIndex), m_DecalColor.a);
+								if (videoLayer || videoEnabled || localTextureAvailable)
+								{
+									float4 derivatives = any(fwidth(sampleUV) > .5) ? 0.001 : float4(ddx(sampleUV) * m_DecalTexture_ST.xy, ddy(sampleUV) * m_DecalTexture_ST.xy);
+									float2 textureUV = poiUV(sampleUV, m_DecalTexture_ST) + m_DecalTexturePan * POI_TIME.x;
+									if (videoLayer)
+									decalSampleColor *= tex2D(videoTexture, textureUV, derivatives.xy, derivatives.zw);
+									else
+									decalSampleColor *= tex2D(decalTexture, textureUV, derivatives.xy, derivatives.zw);
+								}
+								decalSampleColor.rgb = decalHueShift(m_DecalHueShiftEnabled, decalSampleColor.rgb, m_DecalHueShift + poiLight.nDotVCentered * m_DecalHueAngleStrength, m_DecalHueShiftSpeed, m_DecalHueShiftColorSpace, m_DecalHueShiftSelectOrShift);
+								decalSampleColor.rgb = decalColorAdjust(m_DecalColorAdjustEnabled, decalSampleColor.rgb, m_DecalSaturation, m_DecalChromatize, m_DecalBrightness, m_DecalGamma);
+								samples[sampleIndex] = decalSampleColor;
+								clips[sampleIndex] = applyTilingClipping(m_DecalTiled, sampleUV);
+								// Preserve the original channel-separation path's handling of the stored UV.
+								if (!separatedLayer) uv = sampleUV;
+							}
+							if (separatedLayer)
+							{
+								half3 channelSeparationColor = HUEtoRGB(frac(m_DecalChannelSeparationHue));
+								if (m_DecalChannelSeparationPremultiply)
+								decalColor.rgb = lerp(samples[0] * samples[0].a, samples[1] * samples[1].a, channelSeparationColor);
+								else
+								decalColor.rgb = lerp(samples[0], samples[1], channelSeparationColor);
+								decalColor.a = 0.5 * (samples[0].a + samples[1].a);
+								decalColor.a *= decalMask[m_DecalMaskChannel] * max(clips[0], clips[1]);
+							}
+							else
+							{
+								decalColor = samples[0];
+								if (videoLayer && keepDecalAlpha) decalColor.a = previousAlpha;
+								decalColor.a *= decalMask[m_DecalMaskChannel] * clips[0];
+							}
+						}
 					}
-					decalColor.a = 0.5 * (sample0.a + sample1.a);
-					decalColor.a *= decalMask[m_DecalMaskChannel] * max(applyTilingClipping(m_DecalTiled, uvSample0), applyTilingClipping(m_DecalTiled, uvSample1));
 				}
 				
 				void Apply(inout float alphaOverride, inout float decalAlpha, inout PoiFragData poiFragData, in PoiMesh poiMesh, in PoiCam poiCam, inout PoiMods poiMods, in PoiLight poiLight)
@@ -85802,67 +85239,21 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 				#if defined(POI_PASS_OUTLINE)
 				decalApply = _Decal0OnOutlines >= 0.5;
 				#endif
-				if (_Decal0VideoEnabled < 0.5)
-				{
-					
-					#if defined(PROP_DECALTEXTURE) || !defined(OPTIMIZER_ENABLED)
-					//ifex _Decal0ChannelSeparationEnable==0
-					if (_Decal0ChannelSeparationEnable >= 0.5)
-					{
-						decalData.SampleDecalChannelSeparation(_DecalTexture, poiMods, poiLight, poiMesh, poiCam);
-					}
-					//endex
-					//ifex _Decal0ChannelSeparationEnable==1
-					if (_Decal0ChannelSeparationEnable < 0.5)
-					{
-						decalData.SampleDecal(_DecalTexture, poiMods, poiLight, poiMesh, poiCam);
-					}
-					//endex
-					#else
-					decalData.SampleDecalNoTexture(poiMods, poiLight, poiMesh, poiCam);
-					#endif
-				}
-				else
+				bool videoEnabled = !(_Decal0VideoEnabled < 0.5);
+				bool localTextureAvailable = false;
+				#if defined(PROP_DECALTEXTURE) || !defined(OPTIMIZER_ENABLED)
+				localTextureAvailable = true;
+				#endif
+				if (videoEnabled)
 				{
 					udonVideoAspectRatio = decalData.GetVideoAspectRatio(_Udon_VideoTex_TexelSize.zw, _Decal0VideoAspectFix, _Decal0VideoFitToScale);
-					
-					if (_Decal0OnlyVideo >= 0.5)
-					{
-						if (udonVideoTexAvailable)
-						{
-							decalData.m_DecalEmissionStrength += _Decal0VideoEmissionStrength;
-							if (_Decal0UseDecalAlpha >= 0.5)
-							{
-								decalData.SampleDecal(_DecalTexture, poiMods, poiLight, poiMesh, poiCam);
-								decalData.SampleDecalNoAlpha(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio);
-							}
-							else
-							{
-								decalData.SampleDecal(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio);
-							}
-						}
-						else
-						{
-							decalApply = false;
-						}
-					}
-					else
-					{
-						decalData.SampleDecal(_DecalTexture, poiMods, poiLight, poiMesh, poiCam);
-						if (udonVideoTexAvailable)
-						{
-							decalData.m_DecalEmissionStrength += _Decal0VideoEmissionStrength;
-							if (_Decal0UseDecalAlpha >= 0.5)
-							{
-								decalData.SampleDecalNoAlpha(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio);
-							}
-							else
-							{
-								decalData.SampleDecal(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio);
-							}
-						}
-					}
+					if (udonVideoTexAvailable)
+					decalData.m_DecalEmissionStrength += _Decal0VideoEmissionStrength;
+					else if (_Decal0OnlyVideo >= 0.5)
+					decalApply = false;
 				}
+				decalData.SampleDecalLayers(_DecalTexture, _Udon_VideoTex, videoEnabled, udonVideoTexAvailable != 0, _Decal0OnlyVideo >= 0.5, _Decal0UseDecalAlpha >= 0.5, _Decal0ChannelSeparationEnable >= 0.5, localTextureAvailable, udonVideoAspectRatio, poiMods, poiLight, poiMesh, poiCam);
+				
 				if (decalApply)
 				{
 					decalData.ApplyVideoEffects(_Decal0UseVideoEffects, poiCam, poiMesh);
@@ -85970,67 +85361,21 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 				#if defined(POI_PASS_OUTLINE)
 				decalApply__1 = _Decal1OnOutlines >= 0.5;
 				#endif
-				if (_Decal1VideoEnabled < 0.5)
-				{
-					
-					#if defined(PROP_DECALTEXTURE1) || !defined(OPTIMIZER_ENABLED)
-					//ifex _Decal1ChannelSeparationEnable==0
-					if (_Decal1ChannelSeparationEnable >= 0.5)
-					{
-						decalData__1.SampleDecalChannelSeparation(_DecalTexture1, poiMods, poiLight, poiMesh, poiCam);
-					}
-					//endex
-					//ifex _Decal1ChannelSeparationEnable==1
-					if (_Decal1ChannelSeparationEnable < 0.5)
-					{
-						decalData__1.SampleDecal(_DecalTexture1, poiMods, poiLight, poiMesh, poiCam);
-					}
-					//endex
-					#else
-					decalData__1.SampleDecalNoTexture(poiMods, poiLight, poiMesh, poiCam);
-					#endif
-				}
-				else
+				bool videoEnabled__1 = !(_Decal1VideoEnabled < 0.5);
+				bool localTextureAvailable__1 = false;
+				#if defined(PROP_DECALTEXTURE1) || !defined(OPTIMIZER_ENABLED)
+				localTextureAvailable__1 = true;
+				#endif
+				if (videoEnabled__1)
 				{
 					udonVideoAspectRatio__1 = decalData__1.GetVideoAspectRatio(_Udon_VideoTex_TexelSize.zw, _Decal1VideoAspectFix, _Decal1VideoFitToScale);
-					
-					if (_Decal1OnlyVideo >= 0.5)
-					{
-						if (udonVideoTexAvailable__1)
-						{
-							decalData__1.m_DecalEmissionStrength += _Decal1VideoEmissionStrength;
-							if (_Decal1UseDecalAlpha >= 0.5)
-							{
-								decalData__1.SampleDecal(_DecalTexture1, poiMods, poiLight, poiMesh, poiCam);
-								decalData__1.SampleDecalNoAlpha(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio__1);
-							}
-							else
-							{
-								decalData__1.SampleDecal(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio__1);
-							}
-						}
-						else
-						{
-							decalApply__1 = false;
-						}
-					}
-					else
-					{
-						decalData__1.SampleDecal(_DecalTexture1, poiMods, poiLight, poiMesh, poiCam);
-						if (udonVideoTexAvailable__1)
-						{
-							decalData__1.m_DecalEmissionStrength += _Decal1VideoEmissionStrength;
-							if (_Decal1UseDecalAlpha >= 0.5)
-							{
-								decalData__1.SampleDecalNoAlpha(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio__1);
-							}
-							else
-							{
-								decalData__1.SampleDecal(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio__1);
-							}
-						}
-					}
+					if (udonVideoTexAvailable__1)
+					decalData__1.m_DecalEmissionStrength += _Decal1VideoEmissionStrength;
+					else if (_Decal1OnlyVideo >= 0.5)
+					decalApply__1 = false;
 				}
+				decalData__1.SampleDecalLayers(_DecalTexture1, _Udon_VideoTex, videoEnabled__1, udonVideoTexAvailable__1 != 0, _Decal1OnlyVideo >= 0.5, _Decal1UseDecalAlpha >= 0.5, _Decal1ChannelSeparationEnable >= 0.5, localTextureAvailable__1, udonVideoAspectRatio__1, poiMods, poiLight, poiMesh, poiCam);
+				
 				if (decalApply__1)
 				{
 					decalData__1.ApplyVideoEffects(_Decal1UseVideoEffects, poiCam, poiMesh);
@@ -86138,67 +85483,21 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 				#if defined(POI_PASS_OUTLINE)
 				decalApply__2 = _Decal2OnOutlines >= 0.5;
 				#endif
-				if (_Decal2VideoEnabled < 0.5)
-				{
-					
-					#if defined(PROP_DECALTEXTURE2) || !defined(OPTIMIZER_ENABLED)
-					//ifex _Decal2ChannelSeparationEnable==0
-					if (_Decal2ChannelSeparationEnable >= 0.5)
-					{
-						decalData__2.SampleDecalChannelSeparation(_DecalTexture2, poiMods, poiLight, poiMesh, poiCam);
-					}
-					//endex
-					//ifex _Decal2ChannelSeparationEnable==1
-					if (_Decal2ChannelSeparationEnable < 0.5)
-					{
-						decalData__2.SampleDecal(_DecalTexture2, poiMods, poiLight, poiMesh, poiCam);
-					}
-					//endex
-					#else
-					decalData__2.SampleDecalNoTexture(poiMods, poiLight, poiMesh, poiCam);
-					#endif
-				}
-				else
+				bool videoEnabled__2 = !(_Decal2VideoEnabled < 0.5);
+				bool localTextureAvailable__2 = false;
+				#if defined(PROP_DECALTEXTURE2) || !defined(OPTIMIZER_ENABLED)
+				localTextureAvailable__2 = true;
+				#endif
+				if (videoEnabled__2)
 				{
 					udonVideoAspectRatio__2 = decalData__2.GetVideoAspectRatio(_Udon_VideoTex_TexelSize.zw, _Decal2VideoAspectFix, _Decal2VideoFitToScale);
-					
-					if (_Decal2OnlyVideo >= 0.5)
-					{
-						if (udonVideoTexAvailable__2)
-						{
-							decalData__2.m_DecalEmissionStrength += _Decal2VideoEmissionStrength;
-							if (_Decal2UseDecalAlpha >= 0.5)
-							{
-								decalData__2.SampleDecal(_DecalTexture2, poiMods, poiLight, poiMesh, poiCam);
-								decalData__2.SampleDecalNoAlpha(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio__2);
-							}
-							else
-							{
-								decalData__2.SampleDecal(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio__2);
-							}
-						}
-						else
-						{
-							decalApply__2 = false;
-						}
-					}
-					else
-					{
-						decalData__2.SampleDecal(_DecalTexture2, poiMods, poiLight, poiMesh, poiCam);
-						if (udonVideoTexAvailable__2)
-						{
-							decalData__2.m_DecalEmissionStrength += _Decal2VideoEmissionStrength;
-							if (_Decal2UseDecalAlpha >= 0.5)
-							{
-								decalData__2.SampleDecalNoAlpha(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio__2);
-							}
-							else
-							{
-								decalData__2.SampleDecal(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio__2);
-							}
-						}
-					}
+					if (udonVideoTexAvailable__2)
+					decalData__2.m_DecalEmissionStrength += _Decal2VideoEmissionStrength;
+					else if (_Decal2OnlyVideo >= 0.5)
+					decalApply__2 = false;
 				}
+				decalData__2.SampleDecalLayers(_DecalTexture2, _Udon_VideoTex, videoEnabled__2, udonVideoTexAvailable__2 != 0, _Decal2OnlyVideo >= 0.5, _Decal2UseDecalAlpha >= 0.5, _Decal2ChannelSeparationEnable >= 0.5, localTextureAvailable__2, udonVideoAspectRatio__2, poiMods, poiLight, poiMesh, poiCam);
+				
 				if (decalApply__2)
 				{
 					decalData__2.ApplyVideoEffects(_Decal2UseVideoEffects, poiCam, poiMesh);
@@ -86306,67 +85605,21 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 				#if defined(POI_PASS_OUTLINE)
 				decalApply__3 = _Decal3OnOutlines >= 0.5;
 				#endif
-				if (_Decal3VideoEnabled < 0.5)
-				{
-					
-					#if defined(PROP_DECALTEXTURE3) || !defined(OPTIMIZER_ENABLED)
-					//ifex _Decal3ChannelSeparationEnable==0
-					if (_Decal3ChannelSeparationEnable >= 0.5)
-					{
-						decalData__3.SampleDecalChannelSeparation(_DecalTexture3, poiMods, poiLight, poiMesh, poiCam);
-					}
-					//endex
-					//ifex _Decal3ChannelSeparationEnable==1
-					if (_Decal3ChannelSeparationEnable < 0.5)
-					{
-						decalData__3.SampleDecal(_DecalTexture3, poiMods, poiLight, poiMesh, poiCam);
-					}
-					//endex
-					#else
-					decalData__3.SampleDecalNoTexture(poiMods, poiLight, poiMesh, poiCam);
-					#endif
-				}
-				else
+				bool videoEnabled__3 = !(_Decal3VideoEnabled < 0.5);
+				bool localTextureAvailable__3 = false;
+				#if defined(PROP_DECALTEXTURE3) || !defined(OPTIMIZER_ENABLED)
+				localTextureAvailable__3 = true;
+				#endif
+				if (videoEnabled__3)
 				{
 					udonVideoAspectRatio__3 = decalData__3.GetVideoAspectRatio(_Udon_VideoTex_TexelSize.zw, _Decal3VideoAspectFix, _Decal3VideoFitToScale);
-					
-					if (_Decal3OnlyVideo >= 0.5)
-					{
-						if (udonVideoTexAvailable__3)
-						{
-							decalData__3.m_DecalEmissionStrength += _Decal3VideoEmissionStrength;
-							if (_Decal3UseDecalAlpha >= 0.5)
-							{
-								decalData__3.SampleDecal(_DecalTexture3, poiMods, poiLight, poiMesh, poiCam);
-								decalData__3.SampleDecalNoAlpha(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio__3);
-							}
-							else
-							{
-								decalData__3.SampleDecal(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio__3);
-							}
-						}
-						else
-						{
-							decalApply__3 = false;
-						}
-					}
-					else
-					{
-						decalData__3.SampleDecal(_DecalTexture3, poiMods, poiLight, poiMesh, poiCam);
-						if (udonVideoTexAvailable__3)
-						{
-							decalData__3.m_DecalEmissionStrength += _Decal3VideoEmissionStrength;
-							if (_Decal3UseDecalAlpha >= 0.5)
-							{
-								decalData__3.SampleDecalNoAlpha(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio__3);
-							}
-							else
-							{
-								decalData__3.SampleDecal(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio__3);
-							}
-						}
-					}
+					if (udonVideoTexAvailable__3)
+					decalData__3.m_DecalEmissionStrength += _Decal3VideoEmissionStrength;
+					else if (_Decal3OnlyVideo >= 0.5)
+					decalApply__3 = false;
 				}
+				decalData__3.SampleDecalLayers(_DecalTexture3, _Udon_VideoTex, videoEnabled__3, udonVideoTexAvailable__3 != 0, _Decal3OnlyVideo >= 0.5, _Decal3UseDecalAlpha >= 0.5, _Decal3ChannelSeparationEnable >= 0.5, localTextureAvailable__3, udonVideoAspectRatio__3, poiMods, poiLight, poiMesh, poiCam);
+				
 				if (decalApply__3)
 				{
 					decalData__3.ApplyVideoEffects(_Decal3UseVideoEffects, poiCam, poiMesh);
@@ -89614,11 +88867,10 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 					if (_GlitterFullCoverage >= 0.5)
 					{
 						// Process every cell whose particle could overlap this fragment.
-						[loop] for (int cellJ = -1; cellJ <= 1; cellJ++)
+						[loop] for (int poiCell0 = 0; poiCell0 < 9; poiCell0++)
 						{
-							[loop] for (int cellI = -1; cellI <= 1; cellI++)
 							{
-								float2 neighbor = float2(cellI, cellJ);
+								float2 neighbor = float2(poiCell0 % 3 - 1, poiCell0 / 3 - 1);
 								float2 cellRando = poiRand2(neighborhoodSeed + neighbor);
 								float2 cellDiff = neighborhoodOrigin + neighbor + cellRando * _GlitterRandomLocation;
 								if (dot(cellDiff, cellDiff) >= maxParticleDistSq) continue;
@@ -89633,11 +88885,10 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 						float2 randoPoint = 0;
 						float2 closestDiff = 0;
 						
-						[loop] for (int cellJ = -1; cellJ <= 1; cellJ++)
+						[unroll] for (int poiCell1 = 0; poiCell1 < 9; poiCell1++)
 						{
-							[loop] for (int cellI = -1; cellI <= 1; cellI++)
 							{
-								float2 neighbor = float2(cellI, cellJ);
+								float2 neighbor = float2(poiCell1 % 3 - 1, poiCell1 / 3 - 1);
 								float2 cellRando = poiRand2(neighborhoodSeed + neighbor);
 								float2 cellDiff = neighborhoodOrigin + neighbor + cellRando * _GlitterRandomLocation;
 								float cellDistSq = dot(cellDiff, cellDiff);
@@ -91064,7 +90315,7 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 				#if defined(VERTEXLIGHT_ON)
 				if (poiFragData.toggleVertexLights && _UseReflection >= 0.5 && _ApplySpecular >= 0.5 && _ApplySpecularFA >= 0.5)
 				{
-					[unroll]
+					POI_STYLIZED_SPECULAR_VERTEX_LIGHT_LOOP
 					for (int vIdx = 0; vIdx < 4; vIdx++)
 					{
 						if (!any(poiLight.vPosition[vIdx])) continue;
@@ -93073,44 +92324,48 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 				#endif
 				
 				int furLayerCount = min(max((int)_FurLayerNum, 1), 3);
-				if (furLayerCount == 1)
+				// [loop] keeps one copy of SetupFurOutputStructs()
+				// to prevent compiler stack overflow (unlocked only, see POI_LILFUR_SLOT_LOOP)
+				static const float3 poiFurFactors[15] =
 				{
-					outStream.Append(SetupFurOutputStructs(output, input, furVectors, float3(1.0, 0.0, 0.0) / 1.0));
-					outStream.Append(output);
-					outStream.Append(SetupFurOutputStructs(output, input, furVectors, float3(0.0, 1.0, 0.0) / 1.0));
-					outStream.Append(output);
-					outStream.Append(SetupFurOutputStructs(output, input, furVectors, float3(0.0, 0.0, 1.0) / 1.0));
-					outStream.Append(output);
-				}
-				else if (furLayerCount >= 2)
+					// [0..2] furLayerCount == 1
+					float3(1.0, 0.0, 0.0) / 1.0,
+					float3(0.0, 1.0, 0.0) / 1.0,
+					float3(0.0, 0.0, 1.0) / 1.0,
+					// [3..8] furLayerCount >= 2
+					float3(1.0, 0.0, 0.0) / 1.0,
+					float3(0.0, 1.0, 1.0) / 2.0,
+					float3(0.0, 1.0, 0.0) / 1.0,
+					float3(1.0, 0.0, 1.0) / 2.0,
+					float3(0.0, 0.0, 1.0) / 1.0,
+					float3(1.0, 1.0, 0.0) / 2.0,
+					// [9..14] furLayerCount >= 3, emitted on top of the >= 2 set
+					float3(1.0, 4.0, 1.0) / 6.0,
+					float3(0.0, 1.0, 1.0) / 2.0,
+					float3(1.0, 1.0, 4.0) / 6.0,
+					float3(1.0, 0.0, 1.0) / 2.0,
+					float3(4.0, 1.0, 1.0) / 6.0,
+					float3(1.0, 1.0, 0.0) / 2.0
+				};
+				
+				int furFactorStart = (furLayerCount == 1) ? 0 : 3;
+				int furFactorCount = (furLayerCount == 1) ? 3 : 6;
+				POI_LILFUR_SLOT_LOOP for (int furSlot = 0; furSlot < POI_LILFUR_SLOT_BOUND; furSlot++)
 				{
-					outStream.Append(SetupFurOutputStructs(output, input, furVectors, float3(1.0, 0.0, 0.0) / 1.0));
-					outStream.Append(output);
-					outStream.Append(SetupFurOutputStructs(output, input, furVectors, float3(0.0, 1.0, 1.0) / 2.0));
-					outStream.Append(output);
-					outStream.Append(SetupFurOutputStructs(output, input, furVectors, float3(0.0, 1.0, 0.0) / 1.0));
-					outStream.Append(output);
-					outStream.Append(SetupFurOutputStructs(output, input, furVectors, float3(1.0, 0.0, 1.0) / 2.0));
-					outStream.Append(output);
-					outStream.Append(SetupFurOutputStructs(output, input, furVectors, float3(0.0, 0.0, 1.0) / 1.0));
-					outStream.Append(output);
-					outStream.Append(SetupFurOutputStructs(output, input, furVectors, float3(1.0, 1.0, 0.0) / 2.0));
+					#if defined(OPTIMIZER_ENABLED)
+					// Constant bound so the unroll always succeeds, even if the layer count is animated.
+					if (furSlot >= furFactorCount) break;
+					#endif
+					outStream.Append(SetupFurOutputStructs(output, input, furVectors, poiFurFactors[furFactorStart + furSlot]));
 					outStream.Append(output);
 				}
 				if (furLayerCount >= 3)
 				{
-					outStream.Append(SetupFurOutputStructs(output, input, furVectors, float3(1.0, 4.0, 1.0) / 6.0));
-					outStream.Append(output);
-					outStream.Append(SetupFurOutputStructs(output, input, furVectors, float3(0.0, 1.0, 1.0) / 2.0));
-					outStream.Append(output);
-					outStream.Append(SetupFurOutputStructs(output, input, furVectors, float3(1.0, 1.0, 4.0) / 6.0));
-					outStream.Append(output);
-					outStream.Append(SetupFurOutputStructs(output, input, furVectors, float3(1.0, 0.0, 1.0) / 2.0));
-					outStream.Append(output);
-					outStream.Append(SetupFurOutputStructs(output, input, furVectors, float3(4.0, 1.0, 1.0) / 6.0));
-					outStream.Append(output);
-					outStream.Append(SetupFurOutputStructs(output, input, furVectors, float3(1.0, 1.0, 0.0) / 2.0));
-					outStream.Append(output);
+					POI_LILFUR_SLOT_LOOP for (int furSlot3 = 9; furSlot3 < 15; furSlot3++)
+					{
+						outStream.Append(SetupFurOutputStructs(output, input, furVectors, poiFurFactors[furSlot3]));
+						outStream.Append(output);
+					}
 				}
 				outStream.Append(SetupFurOutputStructs(output, input, furVectors, float3(1.0, 0.0, 0.0) / 1.0));
 				outStream.Append(output);
@@ -94982,6 +94237,14 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 			#define _Mode _RenderingReduceClipDistance
 			#endif
 			
+			#if defined(OPTIMIZER_ENABLED)
+			#define POI_LILFUR_SLOT_LOOP [unroll]
+			#define POI_LILFUR_SLOT_BOUND 6
+			#else
+			#define POI_LILFUR_SLOT_LOOP [loop]
+			#define POI_LILFUR_SLOT_BOUND furFactorCount
+			#endif
+			
 			//ifex _EnableBentNormal==0
 			#ifdef POI_BENTNORMALMAP
 			#if defined(PROP_BENTNORMALMAP) || !defined(OPTIMIZER_ENABLED)
@@ -95204,6 +94467,16 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 			#endif
 			sampler2D _Udon_VideoTex;//<ms_no_postfix>
 			float4 _Udon_VideoTex_TexelSize;//<ms_no_postfix>
+			//endex
+			
+			//ifex _DecalEnabled==0 && _DecalEnabled1==0 && _DecalEnabled2==0 && _DecalEnabled3==0
+			#if defined(OPTIMIZER_ENABLED)
+			#define POI_DECAL_LAYER_LOOP [unroll]
+			#define POI_DECAL_SAMPLE_BOUND 2
+			#else
+			#define POI_DECAL_LAYER_LOOP [loop]
+			#define POI_DECAL_SAMPLE_BOUND sampleCount
+			#endif
 			//endex
 			
 			//ifex _DecalEnabled==0
@@ -95591,6 +94864,11 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 			TextureCube _ReflectionCubeTex;
 			#endif
 			#endif
+			#if defined(OPTIMIZER_ENABLED)
+			#define POI_STYLIZED_SPECULAR_VERTEX_LIGHT_LOOP [unroll]
+			#else
+			#define POI_STYLIZED_SPECULAR_VERTEX_LIGHT_LOOP [loop]
+			#endif
 			#endif
 			//endex
 			
@@ -95908,6 +95186,7 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 			float2 _MainTintTexturePan;
 			float _MainTintTextureUV;
 			half _MainBrightness;
+			half _MainColorAdjustClamp;
 			float _MainGamma;
 			
 			float _MainHueALCTEnabled;
@@ -100096,26 +99375,13 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 			
 			half3 poiThemeColor(in PoiMods poiMods, in half3 srcColor, in half themeIndex)
 			{
-				half3 outputColor = srcColor;
-				if (themeIndex != 0)
-				{
-					themeIndex = max(themeIndex - 1, 0);
-					
-					if (themeIndex <= 3)
-					{
-						outputColor = poiMods.globalColorTheme[themeIndex].rgb;
-					}
-					else
-					{
-						#ifdef POI_AUDIOLINK
-						if (poiMods.audioLinkAvailable)
-						{
-							outputColor = poiMods.globalColorTheme[themeIndex].rgb;
-						}
-						#endif
-					}
-				}
-				return outputColor;
+				half poiThemeIdx = clamp(max(themeIndex - 1, 0), 0, 11);
+				#ifdef POI_AUDIOLINK
+				bool poiThemeUse = (themeIndex != 0) && (poiThemeIdx <= 3 || poiMods.audioLinkAvailable);
+				#else
+				bool poiThemeUse = (themeIndex != 0) && (poiThemeIdx <= 3);
+				#endif
+				return poiThemeUse ? poiMods.globalColorTheme[poiThemeIdx].rgb : srcColor;
 			}
 			
 			struct PoiSpriteSheetConfig
@@ -101206,12 +100472,12 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 				UNITY_SETUP_INSTANCE_ID(v);
 				PoiVertToGeoLilFur o;
 				PoiInitStruct(PoiVertToGeoLilFur, o);
+				UNITY_TRANSFER_INSTANCE_ID(v, o);
 				
 				// FXC on mobile doesn't like (PoiVertToGeoLilFur)POI_NAN return
 				// if o.worldPos NaN does not get overwritten, it's discarded
 				#if defined(SHADER_API_MOBILE)
 				o.worldPos = float3(POI_NAN, POI_NAN, POI_NAN);
-				UNITY_TRANSFER_INSTANCE_ID(v, o);
 				#endif
 				
 				#ifdef POI_AUDIOLINK
@@ -103686,6 +102952,10 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 					#endif
 				}
 				poiFragData.baseColor = lerp(poiFragData.baseColor, poiFragData.baseColor * (_MainBrightness + 1), hueShiftAlpha.g);
+				if (_MainColorAdjustClamp > 0.5)
+				{
+					poiFragData.baseColor = saturate(poiFragData.baseColor);
+				}
 				#endif
 				//endex
 				
@@ -105253,7 +104523,7 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 					bool selRedG = (_RgbNormalGBlendSources.y > 0.5);
 					int modeG = (selBaseG || selRedG) ? 2 : 0;
 					float3 fromNormalG = selBaseG ? originalNormal : neutralNormal;
-					if (selRedG && hasR > 0.5) fromNormalG = lerp(fromNormalG, BlendNormals(fromNormalG, nR), maskFinal.r);
+					if (selRedG && hasR > 0.5) fromNormalG = lerp(fromNormalG, PoiBlendNormal(fromNormalG, nR), maskFinal.r);
 					RGBABlendNormals(poiMesh.tangentSpaceNormal, fromNormalG, nG, maskFinal.g, modeG);
 				}
 				#endif
@@ -105267,8 +104537,8 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 					bool selGreenB = (_RgbNormalBBlendSources.z > 0.5);
 					int modeB = (selBaseB || selRedB || selGreenB) ? 2 : 0;
 					float3 fromNormalB = selBaseB ? originalNormal : neutralNormal;
-					if (selRedB && hasR > 0.5) fromNormalB = lerp(fromNormalB, BlendNormals(fromNormalB, nR), maskFinal.r);
-					if (selGreenB && hasG > 0.5) fromNormalB = lerp(fromNormalB, BlendNormals(fromNormalB, nG), maskFinal.g);
+					if (selRedB && hasR > 0.5) fromNormalB = lerp(fromNormalB, PoiBlendNormal(fromNormalB, nR), maskFinal.r);
+					if (selGreenB && hasG > 0.5) fromNormalB = lerp(fromNormalB, PoiBlendNormal(fromNormalB, nG), maskFinal.g);
 					RGBABlendNormals(poiMesh.tangentSpaceNormal, fromNormalB, nB, maskFinal.b, modeB);
 				}
 				#endif
@@ -105282,9 +104552,9 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 					bool selBlueA = (_RgbNormalABlendSources.w > 0.5);
 					int modeA = (selBaseA || selRedA || selGreenA || selBlueA) ? 2 : 0;
 					float3 fromNormalA = selBaseA ? originalNormal : neutralNormal;
-					if (selRedA && hasR > 0.5) fromNormalA = lerp(fromNormalA, BlendNormals(fromNormalA, nR), maskFinal.r);
-					if (selGreenA && hasG > 0.5) fromNormalA = lerp(fromNormalA, BlendNormals(fromNormalA, nG), maskFinal.g);
-					if (selBlueA && hasB > 0.5) fromNormalA = lerp(fromNormalA, BlendNormals(fromNormalA, nB), maskFinal.b);
+					if (selRedA && hasR > 0.5) fromNormalA = lerp(fromNormalA, PoiBlendNormal(fromNormalA, nR), maskFinal.r);
+					if (selGreenA && hasG > 0.5) fromNormalA = lerp(fromNormalA, PoiBlendNormal(fromNormalA, nG), maskFinal.g);
+					if (selBlueA && hasB > 0.5) fromNormalA = lerp(fromNormalA, PoiBlendNormal(fromNormalA, nB), maskFinal.b);
 					RGBABlendNormals(poiMesh.tangentSpaceNormal, fromNormalA, normalToBlendWith, maskFinal.a, modeA);
 				}
 				#endif
@@ -107896,79 +107166,73 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 					#endif
 				}
 				
-				void SampleDecalNoTexture(in PoiMods poiMods, in PoiLight poiLight, in PoiMesh poiMesh, in PoiCam poiCam)
+				void SampleDecalLayers(sampler2D decalTexture, sampler2D videoTexture, bool videoEnabled, bool videoAvailable, bool onlyVideo, bool keepDecalAlpha, bool channelSeparation, bool localTextureAvailable, float2 videoAspectRatio, in PoiMods poiMods, in PoiLight poiLight, in PoiMesh poiMesh, in PoiCam poiCam)
 				{
-					uv = decalUV(m_DecalTextureUV, m_DecalPosition, m_DecalRotation + decalRotation, m_DecalRotationSpeed, decalScale, m_DecalSideOffset +sideMod, m_DecalDepth, m_DecalSymmetryMode, m_DecalMirroredUVMode, poiMesh, poiCam);
-					decalColor = float4(poiThemeColor(poiMods, m_DecalColor.rgb, m_DecalColorThemeIndex), m_DecalColor.a);
-					decalColor.rgb = decalHueShift(m_DecalHueShiftEnabled, decalColor.rgb, m_DecalHueShift + poiLight.nDotVCentered * m_DecalHueAngleStrength, m_DecalHueShiftSpeed, m_DecalHueShiftColorSpace, m_DecalHueShiftSelectOrShift);
-					decalColor.rgb = decalColorAdjust(m_DecalColorAdjustEnabled, decalColor.rgb, m_DecalSaturation, m_DecalChromatize, m_DecalBrightness, m_DecalGamma);
-					decalColor.a *= decalMask[m_DecalMaskChannel] * applyTilingClipping(m_DecalTiled, uv);
-				}
-				
-				void SampleDecal(sampler2D decalTexture, in PoiMods poiMods, in PoiLight poiLight, in PoiMesh poiMesh, in PoiCam poiCam, float2 scaleMultiplier = float2(1, 1))
-				{
-					uv = decalUV(m_DecalTextureUV, m_DecalPosition, m_DecalRotation + decalRotation, m_DecalRotationSpeed, decalScale * scaleMultiplier, m_DecalSideOffset +sideMod, m_DecalDepth, m_DecalSymmetryMode, m_DecalMirroredUVMode, poiMesh, poiCam);
-					// Adjust derivatives for _ST of decal texture
-					float4 dduv = any(fwidth(uv) > .5) ? 0.001 : float4(ddx(uv) * m_DecalTexture_ST.x, ddy(uv) * m_DecalTexture_ST.y);
-					decalColor = tex2D(decalTexture, poiUV(uv, m_DecalTexture_ST) + m_DecalTexturePan * POI_TIME.x, dduv.xy, dduv.zw) * float4(poiThemeColor(poiMods, m_DecalColor.rgb, m_DecalColorThemeIndex), m_DecalColor.a);
-					decalColor.rgb = decalHueShift(m_DecalHueShiftEnabled, decalColor.rgb, m_DecalHueShift + poiLight.nDotVCentered * m_DecalHueAngleStrength, m_DecalHueShiftSpeed, m_DecalHueShiftColorSpace, m_DecalHueShiftSelectOrShift);
-					decalColor.rgb = decalColorAdjust(m_DecalColorAdjustEnabled, decalColor.rgb, m_DecalSaturation, m_DecalChromatize, m_DecalBrightness, m_DecalGamma);
-					decalColor.a *= decalMask[m_DecalMaskChannel] * applyTilingClipping(m_DecalTiled, uv);
-				}
-				
-				void SampleDecalNoAlpha(sampler2D decalTexture, in PoiMods poiMods, in PoiLight poiLight, in PoiMesh poiMesh, in PoiCam poiCam, float2 scaleMultiplier = float2(1, 1))
-				{
-					uv = decalUV(m_DecalTextureUV, m_DecalPosition, m_DecalRotation + decalRotation, m_DecalRotationSpeed, decalScale * scaleMultiplier, m_DecalSideOffset +sideMod, m_DecalDepth, m_DecalSymmetryMode, m_DecalMirroredUVMode, poiMesh, poiCam);
-					// Adjust derivatives for _ST of decal texture
-					float4 dduv = any(fwidth(uv) > .5) ? 0.001 : float4(ddx(uv) * m_DecalTexture_ST.x, ddy(uv) * m_DecalTexture_ST.y);
-					decalColor.rgb = tex2D(decalTexture, poiUV(uv, m_DecalTexture_ST) + m_DecalTexturePan * POI_TIME.x, dduv.xy, dduv.zw) * float4(poiThemeColor(poiMods, m_DecalColor.rgb, m_DecalColorThemeIndex), m_DecalColor.a).rgb;
-					decalColor.rgb = decalHueShift(m_DecalHueShiftEnabled, decalColor.rgb, m_DecalHueShift + poiLight.nDotVCentered * m_DecalHueAngleStrength, m_DecalHueShiftSpeed, m_DecalHueShiftColorSpace, m_DecalHueShiftSelectOrShift);
-					decalColor.rgb = decalColorAdjust(m_DecalColorAdjustEnabled, decalColor.rgb, m_DecalSaturation, m_DecalChromatize, m_DecalBrightness, m_DecalGamma);
-					decalColor.a *= decalMask[m_DecalMaskChannel] * applyTilingClipping(m_DecalTiled, uv);
-				}
-				
-				void SampleDecalAlphaOnly(sampler2D decalTexture, in PoiMods poiMods, in PoiLight poiLight, in PoiMesh poiMesh, in PoiCam poiCam, float2 scaleMultiplier = float2(1, 1))
-				{
-					uv = decalUV(m_DecalTextureUV, m_DecalPosition, m_DecalRotation + decalRotation, m_DecalRotationSpeed, decalScale * scaleMultiplier, m_DecalSideOffset +sideMod, m_DecalDepth, m_DecalSymmetryMode, m_DecalMirroredUVMode, poiMesh, poiCam);
-					// Adjust derivatives for _ST of decal texture
-					float4 dduv = any(fwidth(uv) > .5) ? 0.001 : float4(ddx(uv) * m_DecalTexture_ST.x, ddy(uv) * m_DecalTexture_ST.y);
-					decalColor = tex2D(decalTexture, poiUV(uv, m_DecalTexture_ST) + m_DecalTexturePan * POI_TIME.x, dduv.xy, dduv.zw) * float4(poiThemeColor(poiMods, m_DecalColor.rgb, m_DecalColorThemeIndex), m_DecalColor.a);
-					decalColor.rgb = decalColorAdjust(m_DecalColorAdjustEnabled, decalColor.rgb, m_DecalSaturation, m_DecalChromatize, m_DecalBrightness, m_DecalGamma);
-					decalColor.a *= decalMask[m_DecalMaskChannel] * applyTilingClipping(m_DecalTiled, uv);
-				}
-				
-				void SampleDecalChannelSeparation(sampler2D decalTexture, in PoiMods poiMods, in PoiLight poiLight, in PoiMesh poiMesh, in PoiCam poiCam)
-				{
-					decalColor = float4(0, 0, 0, 1);
-					decalChannelOffset += m_DecalChannelSeparation + m_DecalChannelSeparationAngleStrength * (m_DecalChannelSeparationAngleStrength > 0 ? (1 - poiLight.nDotVCentered) : poiLight.nDotVCentered);
-					float2 positionOffset = decalChannelOffset * 0.01 * (decalScale.x + decalScale.y) * float2(cos(m_DecalChannelSeparationVertical), sin(m_DecalChannelSeparationVertical));
-					float2 uvSample0 = decalUV(m_DecalTextureUV, m_DecalPosition + positionOffset, m_DecalRotation + decalRotation, m_DecalRotationSpeed, decalScale, m_DecalSideOffset +sideMod, m_DecalDepth, m_DecalSymmetryMode, m_DecalMirroredUVMode, poiMesh, poiCam);
-					float2 uvSample1 = decalUV(m_DecalTextureUV, m_DecalPosition - positionOffset, m_DecalRotation + decalRotation, m_DecalRotationSpeed, decalScale, m_DecalSideOffset +sideMod, m_DecalDepth, m_DecalSymmetryMode, m_DecalMirroredUVMode, poiMesh, poiCam);
-					
-					float4 dduvSample0 = any(fwidth(uvSample0) > .5) ? 0.001 : float4(ddx(uvSample0) * m_DecalTexture_ST.x, ddy(uvSample0) * m_DecalTexture_ST.y);
-					float4 dduvSample1 = any(fwidth(uvSample1) > .5) ? 0.001 : float4(ddx(uvSample1) * m_DecalTexture_ST.x, ddy(uvSample1) * m_DecalTexture_ST.y);
-					
-					half4 decalTint = float4(poiThemeColor(poiMods, m_DecalColor.rgb, m_DecalColorThemeIndex), m_DecalColor.a);
-					float4 sample0 = tex2D(decalTexture, poiUV(uvSample0, m_DecalTexture_ST) + m_DecalTexturePan * POI_TIME.x, dduvSample0.xy, dduvSample0.zw) * decalTint;
-					float4 sample1 = tex2D(decalTexture, poiUV(uvSample1, m_DecalTexture_ST) + m_DecalTexturePan * POI_TIME.x, dduvSample1.xy, dduvSample1.zw) * decalTint;
-					
-					sample0.rgb = decalHueShift(m_DecalHueShiftEnabled, sample0.rgb, m_DecalHueShift + poiLight.nDotVCentered * m_DecalHueAngleStrength, m_DecalHueShiftSpeed, m_DecalHueShiftColorSpace, m_DecalHueShiftSelectOrShift);
-					sample1.rgb = decalHueShift(m_DecalHueShiftEnabled, sample1.rgb, m_DecalHueShift + poiLight.nDotVCentered * m_DecalHueAngleStrength, m_DecalHueShiftSpeed, m_DecalHueShiftColorSpace, m_DecalHueShiftSelectOrShift);
-					sample0.rgb = decalColorAdjust(m_DecalColorAdjustEnabled, sample0.rgb, m_DecalSaturation, m_DecalChromatize, m_DecalBrightness, m_DecalGamma);
-					sample1.rgb = decalColorAdjust(m_DecalColorAdjustEnabled, sample1.rgb, m_DecalSaturation, m_DecalChromatize, m_DecalBrightness, m_DecalGamma);
-					
-					half3 channelSeparationColor = HUEtoRGB(frac(m_DecalChannelSeparationHue));
-					
-					if (m_DecalChannelSeparationPremultiply)
+					bool separateChannels = !videoEnabled && channelSeparation && localTextureAvailable;
+					float2 positionOffset = 0;
+					if (separateChannels)
 					{
-						decalColor.rgb = lerp(sample0 * sample0.a, sample1 * sample1.a, channelSeparationColor);
+						decalChannelOffset += m_DecalChannelSeparation + m_DecalChannelSeparationAngleStrength * (m_DecalChannelSeparationAngleStrength > 0 ? (1 - poiLight.nDotVCentered) : poiLight.nDotVCentered);
+						positionOffset = decalChannelOffset * 0.01 * (decalScale.x + decalScale.y) * float2(cos(m_DecalChannelSeparationVertical), sin(m_DecalChannelSeparationVertical));
 					}
-					else
+					// Share UV and color processing across local/video layers and separated channels.
+					// Material-uniform loop bounds keep derivative evaluation in uniform control flow.
+					POI_DECAL_LAYER_LOOP
+					for (int layer = 0; layer < 2; ++layer)
 					{
-						decalColor.rgb = lerp(sample0, sample1, channelSeparationColor);
+						bool videoLayer = layer == 1;
+						bool sampleLayer = videoLayer ? (videoEnabled && videoAvailable) : (!videoEnabled || !onlyVideo || (videoAvailable && keepDecalAlpha));
+						if (sampleLayer)
+						{
+							bool separatedLayer = !videoLayer && separateChannels;
+							int sampleCount = separatedLayer ? 2 : 1;
+							float4 samples[2];
+							float clips[2];
+							float previousAlpha = decalColor.a;
+							POI_DECAL_LAYER_LOOP
+							for (int sampleIndex = 0; sampleIndex < POI_DECAL_SAMPLE_BOUND; ++sampleIndex)
+							{
+								#if defined(OPTIMIZER_ENABLED)
+								if (sampleIndex >= sampleCount) break;
+								#endif
+								float2 samplePosition = m_DecalPosition + (separatedLayer ? (sampleIndex == 0 ? positionOffset : -positionOffset) : float2(0, 0));
+								float2 sampleScale = decalScale * (videoLayer ? videoAspectRatio : float2(1, 1));
+								float2 sampleUV = decalUV(m_DecalTextureUV, samplePosition, m_DecalRotation + decalRotation, m_DecalRotationSpeed, sampleScale, m_DecalSideOffset +sideMod, m_DecalDepth, m_DecalSymmetryMode, m_DecalMirroredUVMode, poiMesh, poiCam);
+								float4 decalSampleColor = float4(poiThemeColor(poiMods, m_DecalColor.rgb, m_DecalColorThemeIndex), m_DecalColor.a);
+								if (videoLayer || videoEnabled || localTextureAvailable)
+								{
+									float4 derivatives = any(fwidth(sampleUV) > .5) ? 0.001 : float4(ddx(sampleUV) * m_DecalTexture_ST.xy, ddy(sampleUV) * m_DecalTexture_ST.xy);
+									float2 textureUV = poiUV(sampleUV, m_DecalTexture_ST) + m_DecalTexturePan * POI_TIME.x;
+									if (videoLayer)
+									decalSampleColor *= tex2D(videoTexture, textureUV, derivatives.xy, derivatives.zw);
+									else
+									decalSampleColor *= tex2D(decalTexture, textureUV, derivatives.xy, derivatives.zw);
+								}
+								decalSampleColor.rgb = decalHueShift(m_DecalHueShiftEnabled, decalSampleColor.rgb, m_DecalHueShift + poiLight.nDotVCentered * m_DecalHueAngleStrength, m_DecalHueShiftSpeed, m_DecalHueShiftColorSpace, m_DecalHueShiftSelectOrShift);
+								decalSampleColor.rgb = decalColorAdjust(m_DecalColorAdjustEnabled, decalSampleColor.rgb, m_DecalSaturation, m_DecalChromatize, m_DecalBrightness, m_DecalGamma);
+								samples[sampleIndex] = decalSampleColor;
+								clips[sampleIndex] = applyTilingClipping(m_DecalTiled, sampleUV);
+								// Preserve the original channel-separation path's handling of the stored UV.
+								if (!separatedLayer) uv = sampleUV;
+							}
+							if (separatedLayer)
+							{
+								half3 channelSeparationColor = HUEtoRGB(frac(m_DecalChannelSeparationHue));
+								if (m_DecalChannelSeparationPremultiply)
+								decalColor.rgb = lerp(samples[0] * samples[0].a, samples[1] * samples[1].a, channelSeparationColor);
+								else
+								decalColor.rgb = lerp(samples[0], samples[1], channelSeparationColor);
+								decalColor.a = 0.5 * (samples[0].a + samples[1].a);
+								decalColor.a *= decalMask[m_DecalMaskChannel] * max(clips[0], clips[1]);
+							}
+							else
+							{
+								decalColor = samples[0];
+								if (videoLayer && keepDecalAlpha) decalColor.a = previousAlpha;
+								decalColor.a *= decalMask[m_DecalMaskChannel] * clips[0];
+							}
+						}
 					}
-					decalColor.a = 0.5 * (sample0.a + sample1.a);
-					decalColor.a *= decalMask[m_DecalMaskChannel] * max(applyTilingClipping(m_DecalTiled, uvSample0), applyTilingClipping(m_DecalTiled, uvSample1));
 				}
 				
 				void Apply(inout float alphaOverride, inout float decalAlpha, inout PoiFragData poiFragData, in PoiMesh poiMesh, in PoiCam poiCam, inout PoiMods poiMods, in PoiLight poiLight)
@@ -108263,67 +107527,21 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 				#if defined(POI_PASS_OUTLINE)
 				decalApply = _Decal0OnOutlines >= 0.5;
 				#endif
-				if (_Decal0VideoEnabled < 0.5)
-				{
-					
-					#if defined(PROP_DECALTEXTURE) || !defined(OPTIMIZER_ENABLED)
-					//ifex _Decal0ChannelSeparationEnable==0
-					if (_Decal0ChannelSeparationEnable >= 0.5)
-					{
-						decalData.SampleDecalChannelSeparation(_DecalTexture, poiMods, poiLight, poiMesh, poiCam);
-					}
-					//endex
-					//ifex _Decal0ChannelSeparationEnable==1
-					if (_Decal0ChannelSeparationEnable < 0.5)
-					{
-						decalData.SampleDecal(_DecalTexture, poiMods, poiLight, poiMesh, poiCam);
-					}
-					//endex
-					#else
-					decalData.SampleDecalNoTexture(poiMods, poiLight, poiMesh, poiCam);
-					#endif
-				}
-				else
+				bool videoEnabled = !(_Decal0VideoEnabled < 0.5);
+				bool localTextureAvailable = false;
+				#if defined(PROP_DECALTEXTURE) || !defined(OPTIMIZER_ENABLED)
+				localTextureAvailable = true;
+				#endif
+				if (videoEnabled)
 				{
 					udonVideoAspectRatio = decalData.GetVideoAspectRatio(_Udon_VideoTex_TexelSize.zw, _Decal0VideoAspectFix, _Decal0VideoFitToScale);
-					
-					if (_Decal0OnlyVideo >= 0.5)
-					{
-						if (udonVideoTexAvailable)
-						{
-							decalData.m_DecalEmissionStrength += _Decal0VideoEmissionStrength;
-							if (_Decal0UseDecalAlpha >= 0.5)
-							{
-								decalData.SampleDecal(_DecalTexture, poiMods, poiLight, poiMesh, poiCam);
-								decalData.SampleDecalNoAlpha(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio);
-							}
-							else
-							{
-								decalData.SampleDecal(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio);
-							}
-						}
-						else
-						{
-							decalApply = false;
-						}
-					}
-					else
-					{
-						decalData.SampleDecal(_DecalTexture, poiMods, poiLight, poiMesh, poiCam);
-						if (udonVideoTexAvailable)
-						{
-							decalData.m_DecalEmissionStrength += _Decal0VideoEmissionStrength;
-							if (_Decal0UseDecalAlpha >= 0.5)
-							{
-								decalData.SampleDecalNoAlpha(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio);
-							}
-							else
-							{
-								decalData.SampleDecal(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio);
-							}
-						}
-					}
+					if (udonVideoTexAvailable)
+					decalData.m_DecalEmissionStrength += _Decal0VideoEmissionStrength;
+					else if (_Decal0OnlyVideo >= 0.5)
+					decalApply = false;
 				}
+				decalData.SampleDecalLayers(_DecalTexture, _Udon_VideoTex, videoEnabled, udonVideoTexAvailable != 0, _Decal0OnlyVideo >= 0.5, _Decal0UseDecalAlpha >= 0.5, _Decal0ChannelSeparationEnable >= 0.5, localTextureAvailable, udonVideoAspectRatio, poiMods, poiLight, poiMesh, poiCam);
+				
 				if (decalApply)
 				{
 					decalData.ApplyVideoEffects(_Decal0UseVideoEffects, poiCam, poiMesh);
@@ -108431,67 +107649,21 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 				#if defined(POI_PASS_OUTLINE)
 				decalApply__1 = _Decal1OnOutlines >= 0.5;
 				#endif
-				if (_Decal1VideoEnabled < 0.5)
-				{
-					
-					#if defined(PROP_DECALTEXTURE1) || !defined(OPTIMIZER_ENABLED)
-					//ifex _Decal1ChannelSeparationEnable==0
-					if (_Decal1ChannelSeparationEnable >= 0.5)
-					{
-						decalData__1.SampleDecalChannelSeparation(_DecalTexture1, poiMods, poiLight, poiMesh, poiCam);
-					}
-					//endex
-					//ifex _Decal1ChannelSeparationEnable==1
-					if (_Decal1ChannelSeparationEnable < 0.5)
-					{
-						decalData__1.SampleDecal(_DecalTexture1, poiMods, poiLight, poiMesh, poiCam);
-					}
-					//endex
-					#else
-					decalData__1.SampleDecalNoTexture(poiMods, poiLight, poiMesh, poiCam);
-					#endif
-				}
-				else
+				bool videoEnabled__1 = !(_Decal1VideoEnabled < 0.5);
+				bool localTextureAvailable__1 = false;
+				#if defined(PROP_DECALTEXTURE1) || !defined(OPTIMIZER_ENABLED)
+				localTextureAvailable__1 = true;
+				#endif
+				if (videoEnabled__1)
 				{
 					udonVideoAspectRatio__1 = decalData__1.GetVideoAspectRatio(_Udon_VideoTex_TexelSize.zw, _Decal1VideoAspectFix, _Decal1VideoFitToScale);
-					
-					if (_Decal1OnlyVideo >= 0.5)
-					{
-						if (udonVideoTexAvailable__1)
-						{
-							decalData__1.m_DecalEmissionStrength += _Decal1VideoEmissionStrength;
-							if (_Decal1UseDecalAlpha >= 0.5)
-							{
-								decalData__1.SampleDecal(_DecalTexture1, poiMods, poiLight, poiMesh, poiCam);
-								decalData__1.SampleDecalNoAlpha(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio__1);
-							}
-							else
-							{
-								decalData__1.SampleDecal(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio__1);
-							}
-						}
-						else
-						{
-							decalApply__1 = false;
-						}
-					}
-					else
-					{
-						decalData__1.SampleDecal(_DecalTexture1, poiMods, poiLight, poiMesh, poiCam);
-						if (udonVideoTexAvailable__1)
-						{
-							decalData__1.m_DecalEmissionStrength += _Decal1VideoEmissionStrength;
-							if (_Decal1UseDecalAlpha >= 0.5)
-							{
-								decalData__1.SampleDecalNoAlpha(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio__1);
-							}
-							else
-							{
-								decalData__1.SampleDecal(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio__1);
-							}
-						}
-					}
+					if (udonVideoTexAvailable__1)
+					decalData__1.m_DecalEmissionStrength += _Decal1VideoEmissionStrength;
+					else if (_Decal1OnlyVideo >= 0.5)
+					decalApply__1 = false;
 				}
+				decalData__1.SampleDecalLayers(_DecalTexture1, _Udon_VideoTex, videoEnabled__1, udonVideoTexAvailable__1 != 0, _Decal1OnlyVideo >= 0.5, _Decal1UseDecalAlpha >= 0.5, _Decal1ChannelSeparationEnable >= 0.5, localTextureAvailable__1, udonVideoAspectRatio__1, poiMods, poiLight, poiMesh, poiCam);
+				
 				if (decalApply__1)
 				{
 					decalData__1.ApplyVideoEffects(_Decal1UseVideoEffects, poiCam, poiMesh);
@@ -108599,67 +107771,21 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 				#if defined(POI_PASS_OUTLINE)
 				decalApply__2 = _Decal2OnOutlines >= 0.5;
 				#endif
-				if (_Decal2VideoEnabled < 0.5)
-				{
-					
-					#if defined(PROP_DECALTEXTURE2) || !defined(OPTIMIZER_ENABLED)
-					//ifex _Decal2ChannelSeparationEnable==0
-					if (_Decal2ChannelSeparationEnable >= 0.5)
-					{
-						decalData__2.SampleDecalChannelSeparation(_DecalTexture2, poiMods, poiLight, poiMesh, poiCam);
-					}
-					//endex
-					//ifex _Decal2ChannelSeparationEnable==1
-					if (_Decal2ChannelSeparationEnable < 0.5)
-					{
-						decalData__2.SampleDecal(_DecalTexture2, poiMods, poiLight, poiMesh, poiCam);
-					}
-					//endex
-					#else
-					decalData__2.SampleDecalNoTexture(poiMods, poiLight, poiMesh, poiCam);
-					#endif
-				}
-				else
+				bool videoEnabled__2 = !(_Decal2VideoEnabled < 0.5);
+				bool localTextureAvailable__2 = false;
+				#if defined(PROP_DECALTEXTURE2) || !defined(OPTIMIZER_ENABLED)
+				localTextureAvailable__2 = true;
+				#endif
+				if (videoEnabled__2)
 				{
 					udonVideoAspectRatio__2 = decalData__2.GetVideoAspectRatio(_Udon_VideoTex_TexelSize.zw, _Decal2VideoAspectFix, _Decal2VideoFitToScale);
-					
-					if (_Decal2OnlyVideo >= 0.5)
-					{
-						if (udonVideoTexAvailable__2)
-						{
-							decalData__2.m_DecalEmissionStrength += _Decal2VideoEmissionStrength;
-							if (_Decal2UseDecalAlpha >= 0.5)
-							{
-								decalData__2.SampleDecal(_DecalTexture2, poiMods, poiLight, poiMesh, poiCam);
-								decalData__2.SampleDecalNoAlpha(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio__2);
-							}
-							else
-							{
-								decalData__2.SampleDecal(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio__2);
-							}
-						}
-						else
-						{
-							decalApply__2 = false;
-						}
-					}
-					else
-					{
-						decalData__2.SampleDecal(_DecalTexture2, poiMods, poiLight, poiMesh, poiCam);
-						if (udonVideoTexAvailable__2)
-						{
-							decalData__2.m_DecalEmissionStrength += _Decal2VideoEmissionStrength;
-							if (_Decal2UseDecalAlpha >= 0.5)
-							{
-								decalData__2.SampleDecalNoAlpha(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio__2);
-							}
-							else
-							{
-								decalData__2.SampleDecal(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio__2);
-							}
-						}
-					}
+					if (udonVideoTexAvailable__2)
+					decalData__2.m_DecalEmissionStrength += _Decal2VideoEmissionStrength;
+					else if (_Decal2OnlyVideo >= 0.5)
+					decalApply__2 = false;
 				}
+				decalData__2.SampleDecalLayers(_DecalTexture2, _Udon_VideoTex, videoEnabled__2, udonVideoTexAvailable__2 != 0, _Decal2OnlyVideo >= 0.5, _Decal2UseDecalAlpha >= 0.5, _Decal2ChannelSeparationEnable >= 0.5, localTextureAvailable__2, udonVideoAspectRatio__2, poiMods, poiLight, poiMesh, poiCam);
+				
 				if (decalApply__2)
 				{
 					decalData__2.ApplyVideoEffects(_Decal2UseVideoEffects, poiCam, poiMesh);
@@ -108767,67 +107893,21 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 				#if defined(POI_PASS_OUTLINE)
 				decalApply__3 = _Decal3OnOutlines >= 0.5;
 				#endif
-				if (_Decal3VideoEnabled < 0.5)
-				{
-					
-					#if defined(PROP_DECALTEXTURE3) || !defined(OPTIMIZER_ENABLED)
-					//ifex _Decal3ChannelSeparationEnable==0
-					if (_Decal3ChannelSeparationEnable >= 0.5)
-					{
-						decalData__3.SampleDecalChannelSeparation(_DecalTexture3, poiMods, poiLight, poiMesh, poiCam);
-					}
-					//endex
-					//ifex _Decal3ChannelSeparationEnable==1
-					if (_Decal3ChannelSeparationEnable < 0.5)
-					{
-						decalData__3.SampleDecal(_DecalTexture3, poiMods, poiLight, poiMesh, poiCam);
-					}
-					//endex
-					#else
-					decalData__3.SampleDecalNoTexture(poiMods, poiLight, poiMesh, poiCam);
-					#endif
-				}
-				else
+				bool videoEnabled__3 = !(_Decal3VideoEnabled < 0.5);
+				bool localTextureAvailable__3 = false;
+				#if defined(PROP_DECALTEXTURE3) || !defined(OPTIMIZER_ENABLED)
+				localTextureAvailable__3 = true;
+				#endif
+				if (videoEnabled__3)
 				{
 					udonVideoAspectRatio__3 = decalData__3.GetVideoAspectRatio(_Udon_VideoTex_TexelSize.zw, _Decal3VideoAspectFix, _Decal3VideoFitToScale);
-					
-					if (_Decal3OnlyVideo >= 0.5)
-					{
-						if (udonVideoTexAvailable__3)
-						{
-							decalData__3.m_DecalEmissionStrength += _Decal3VideoEmissionStrength;
-							if (_Decal3UseDecalAlpha >= 0.5)
-							{
-								decalData__3.SampleDecal(_DecalTexture3, poiMods, poiLight, poiMesh, poiCam);
-								decalData__3.SampleDecalNoAlpha(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio__3);
-							}
-							else
-							{
-								decalData__3.SampleDecal(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio__3);
-							}
-						}
-						else
-						{
-							decalApply__3 = false;
-						}
-					}
-					else
-					{
-						decalData__3.SampleDecal(_DecalTexture3, poiMods, poiLight, poiMesh, poiCam);
-						if (udonVideoTexAvailable__3)
-						{
-							decalData__3.m_DecalEmissionStrength += _Decal3VideoEmissionStrength;
-							if (_Decal3UseDecalAlpha >= 0.5)
-							{
-								decalData__3.SampleDecalNoAlpha(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio__3);
-							}
-							else
-							{
-								decalData__3.SampleDecal(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio__3);
-							}
-						}
-					}
+					if (udonVideoTexAvailable__3)
+					decalData__3.m_DecalEmissionStrength += _Decal3VideoEmissionStrength;
+					else if (_Decal3OnlyVideo >= 0.5)
+					decalApply__3 = false;
 				}
+				decalData__3.SampleDecalLayers(_DecalTexture3, _Udon_VideoTex, videoEnabled__3, udonVideoTexAvailable__3 != 0, _Decal3OnlyVideo >= 0.5, _Decal3UseDecalAlpha >= 0.5, _Decal3ChannelSeparationEnable >= 0.5, localTextureAvailable__3, udonVideoAspectRatio__3, poiMods, poiLight, poiMesh, poiCam);
+				
 				if (decalApply__3)
 				{
 					decalData__3.ApplyVideoEffects(_Decal3UseVideoEffects, poiCam, poiMesh);
@@ -112075,11 +111155,10 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 					if (_GlitterFullCoverage >= 0.5)
 					{
 						// Process every cell whose particle could overlap this fragment.
-						[loop] for (int cellJ = -1; cellJ <= 1; cellJ++)
+						[loop] for (int poiCell0 = 0; poiCell0 < 9; poiCell0++)
 						{
-							[loop] for (int cellI = -1; cellI <= 1; cellI++)
 							{
-								float2 neighbor = float2(cellI, cellJ);
+								float2 neighbor = float2(poiCell0 % 3 - 1, poiCell0 / 3 - 1);
 								float2 cellRando = poiRand2(neighborhoodSeed + neighbor);
 								float2 cellDiff = neighborhoodOrigin + neighbor + cellRando * _GlitterRandomLocation;
 								if (dot(cellDiff, cellDiff) >= maxParticleDistSq) continue;
@@ -112094,11 +111173,10 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 						float2 randoPoint = 0;
 						float2 closestDiff = 0;
 						
-						[loop] for (int cellJ = -1; cellJ <= 1; cellJ++)
+						[unroll] for (int poiCell1 = 0; poiCell1 < 9; poiCell1++)
 						{
-							[loop] for (int cellI = -1; cellI <= 1; cellI++)
 							{
-								float2 neighbor = float2(cellI, cellJ);
+								float2 neighbor = float2(poiCell1 % 3 - 1, poiCell1 / 3 - 1);
 								float2 cellRando = poiRand2(neighborhoodSeed + neighbor);
 								float2 cellDiff = neighborhoodOrigin + neighbor + cellRando * _GlitterRandomLocation;
 								float cellDistSq = dot(cellDiff, cellDiff);
@@ -113525,7 +112603,7 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 				#if defined(VERTEXLIGHT_ON)
 				if (poiFragData.toggleVertexLights && _UseReflection >= 0.5 && _ApplySpecular >= 0.5 && _ApplySpecularFA >= 0.5)
 				{
-					[unroll]
+					POI_STYLIZED_SPECULAR_VERTEX_LIGHT_LOOP
 					for (int vIdx = 0; vIdx < 4; vIdx++)
 					{
 						if (!any(poiLight.vPosition[vIdx])) continue;
@@ -115534,44 +114612,48 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 				#endif
 				
 				int furLayerCount = min(max((int)_FurLayerNum, 1), 3);
-				if (furLayerCount == 1)
+				// [loop] keeps one copy of SetupFurOutputStructs()
+				// to prevent compiler stack overflow (unlocked only, see POI_LILFUR_SLOT_LOOP)
+				static const float3 poiFurFactors[15] =
 				{
-					outStream.Append(SetupFurOutputStructs(output, input, furVectors, float3(1.0, 0.0, 0.0) / 1.0));
-					outStream.Append(output);
-					outStream.Append(SetupFurOutputStructs(output, input, furVectors, float3(0.0, 1.0, 0.0) / 1.0));
-					outStream.Append(output);
-					outStream.Append(SetupFurOutputStructs(output, input, furVectors, float3(0.0, 0.0, 1.0) / 1.0));
-					outStream.Append(output);
-				}
-				else if (furLayerCount >= 2)
+					// [0..2] furLayerCount == 1
+					float3(1.0, 0.0, 0.0) / 1.0,
+					float3(0.0, 1.0, 0.0) / 1.0,
+					float3(0.0, 0.0, 1.0) / 1.0,
+					// [3..8] furLayerCount >= 2
+					float3(1.0, 0.0, 0.0) / 1.0,
+					float3(0.0, 1.0, 1.0) / 2.0,
+					float3(0.0, 1.0, 0.0) / 1.0,
+					float3(1.0, 0.0, 1.0) / 2.0,
+					float3(0.0, 0.0, 1.0) / 1.0,
+					float3(1.0, 1.0, 0.0) / 2.0,
+					// [9..14] furLayerCount >= 3, emitted on top of the >= 2 set
+					float3(1.0, 4.0, 1.0) / 6.0,
+					float3(0.0, 1.0, 1.0) / 2.0,
+					float3(1.0, 1.0, 4.0) / 6.0,
+					float3(1.0, 0.0, 1.0) / 2.0,
+					float3(4.0, 1.0, 1.0) / 6.0,
+					float3(1.0, 1.0, 0.0) / 2.0
+				};
+				
+				int furFactorStart = (furLayerCount == 1) ? 0 : 3;
+				int furFactorCount = (furLayerCount == 1) ? 3 : 6;
+				POI_LILFUR_SLOT_LOOP for (int furSlot = 0; furSlot < POI_LILFUR_SLOT_BOUND; furSlot++)
 				{
-					outStream.Append(SetupFurOutputStructs(output, input, furVectors, float3(1.0, 0.0, 0.0) / 1.0));
-					outStream.Append(output);
-					outStream.Append(SetupFurOutputStructs(output, input, furVectors, float3(0.0, 1.0, 1.0) / 2.0));
-					outStream.Append(output);
-					outStream.Append(SetupFurOutputStructs(output, input, furVectors, float3(0.0, 1.0, 0.0) / 1.0));
-					outStream.Append(output);
-					outStream.Append(SetupFurOutputStructs(output, input, furVectors, float3(1.0, 0.0, 1.0) / 2.0));
-					outStream.Append(output);
-					outStream.Append(SetupFurOutputStructs(output, input, furVectors, float3(0.0, 0.0, 1.0) / 1.0));
-					outStream.Append(output);
-					outStream.Append(SetupFurOutputStructs(output, input, furVectors, float3(1.0, 1.0, 0.0) / 2.0));
+					#if defined(OPTIMIZER_ENABLED)
+					// Constant bound so the unroll always succeeds, even if the layer count is animated.
+					if (furSlot >= furFactorCount) break;
+					#endif
+					outStream.Append(SetupFurOutputStructs(output, input, furVectors, poiFurFactors[furFactorStart + furSlot]));
 					outStream.Append(output);
 				}
 				if (furLayerCount >= 3)
 				{
-					outStream.Append(SetupFurOutputStructs(output, input, furVectors, float3(1.0, 4.0, 1.0) / 6.0));
-					outStream.Append(output);
-					outStream.Append(SetupFurOutputStructs(output, input, furVectors, float3(0.0, 1.0, 1.0) / 2.0));
-					outStream.Append(output);
-					outStream.Append(SetupFurOutputStructs(output, input, furVectors, float3(1.0, 1.0, 4.0) / 6.0));
-					outStream.Append(output);
-					outStream.Append(SetupFurOutputStructs(output, input, furVectors, float3(1.0, 0.0, 1.0) / 2.0));
-					outStream.Append(output);
-					outStream.Append(SetupFurOutputStructs(output, input, furVectors, float3(4.0, 1.0, 1.0) / 6.0));
-					outStream.Append(output);
-					outStream.Append(SetupFurOutputStructs(output, input, furVectors, float3(1.0, 1.0, 0.0) / 2.0));
-					outStream.Append(output);
+					POI_LILFUR_SLOT_LOOP for (int furSlot3 = 9; furSlot3 < 15; furSlot3++)
+					{
+						outStream.Append(SetupFurOutputStructs(output, input, furVectors, poiFurFactors[furSlot3]));
+						outStream.Append(output);
+					}
 				}
 				outStream.Append(SetupFurOutputStructs(output, input, furVectors, float3(1.0, 0.0, 0.0) / 1.0));
 				outStream.Append(output);
@@ -117520,6 +116602,7 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 			float2 _MainTintTexturePan;
 			float _MainTintTextureUV;
 			half _MainBrightness;
+			half _MainColorAdjustClamp;
 			float _MainGamma;
 			
 			float _MainHueALCTEnabled;
@@ -121656,6 +120739,14 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 			#define _Mode _RenderingReduceClipDistance
 			#endif
 			
+			#if defined(OPTIMIZER_ENABLED)
+			#define POI_LILFUR_SLOT_LOOP [unroll]
+			#define POI_LILFUR_SLOT_BOUND 6
+			#else
+			#define POI_LILFUR_SLOT_LOOP [loop]
+			#define POI_LILFUR_SLOT_BOUND furFactorCount
+			#endif
+			
 			//ifex _EnableBentNormal==0
 			#ifdef POI_BENTNORMALMAP
 			#if defined(PROP_BENTNORMALMAP) || !defined(OPTIMIZER_ENABLED)
@@ -121878,6 +120969,16 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 			#endif
 			sampler2D _Udon_VideoTex;//<ms_no_postfix>
 			float4 _Udon_VideoTex_TexelSize;//<ms_no_postfix>
+			//endex
+			
+			//ifex _DecalEnabled==0 && _DecalEnabled1==0 && _DecalEnabled2==0 && _DecalEnabled3==0
+			#if defined(OPTIMIZER_ENABLED)
+			#define POI_DECAL_LAYER_LOOP [unroll]
+			#define POI_DECAL_SAMPLE_BOUND 2
+			#else
+			#define POI_DECAL_LAYER_LOOP [loop]
+			#define POI_DECAL_SAMPLE_BOUND sampleCount
+			#endif
 			//endex
 			
 			//ifex _DecalEnabled==0
@@ -122264,6 +121365,11 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 			#if defined(PROP_REFLECTIONCUBETEX) || !defined(OPTIMIZER_ENABLED)
 			TextureCube _ReflectionCubeTex;
 			#endif
+			#endif
+			#if defined(OPTIMIZER_ENABLED)
+			#define POI_STYLIZED_SPECULAR_VERTEX_LIGHT_LOOP [unroll]
+			#else
+			#define POI_STYLIZED_SPECULAR_VERTEX_LIGHT_LOOP [loop]
 			#endif
 			#endif
 			//endex
@@ -123971,26 +123077,13 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 			
 			half3 poiThemeColor(in PoiMods poiMods, in half3 srcColor, in half themeIndex)
 			{
-				half3 outputColor = srcColor;
-				if (themeIndex != 0)
-				{
-					themeIndex = max(themeIndex - 1, 0);
-					
-					if (themeIndex <= 3)
-					{
-						outputColor = poiMods.globalColorTheme[themeIndex].rgb;
-					}
-					else
-					{
-						#ifdef POI_AUDIOLINK
-						if (poiMods.audioLinkAvailable)
-						{
-							outputColor = poiMods.globalColorTheme[themeIndex].rgb;
-						}
-						#endif
-					}
-				}
-				return outputColor;
+				half poiThemeIdx = clamp(max(themeIndex - 1, 0), 0, 11);
+				#ifdef POI_AUDIOLINK
+				bool poiThemeUse = (themeIndex != 0) && (poiThemeIdx <= 3 || poiMods.audioLinkAvailable);
+				#else
+				bool poiThemeUse = (themeIndex != 0) && (poiThemeIdx <= 3);
+				#endif
+				return poiThemeUse ? poiMods.globalColorTheme[poiThemeIdx].rgb : srcColor;
 			}
 			
 			struct PoiSpriteSheetConfig
@@ -125081,12 +124174,12 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 				UNITY_SETUP_INSTANCE_ID(v);
 				PoiVertToGeoLilFur o;
 				PoiInitStruct(PoiVertToGeoLilFur, o);
+				UNITY_TRANSFER_INSTANCE_ID(v, o);
 				
 				// FXC on mobile doesn't like (PoiVertToGeoLilFur)POI_NAN return
 				// if o.worldPos NaN does not get overwritten, it's discarded
 				#if defined(SHADER_API_MOBILE)
 				o.worldPos = float3(POI_NAN, POI_NAN, POI_NAN);
-				UNITY_TRANSFER_INSTANCE_ID(v, o);
 				#endif
 				
 				#ifdef POI_AUDIOLINK
@@ -127561,6 +126654,10 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 					#endif
 				}
 				poiFragData.baseColor = lerp(poiFragData.baseColor, poiFragData.baseColor * (_MainBrightness + 1), hueShiftAlpha.g);
+				if (_MainColorAdjustClamp > 0.5)
+				{
+					poiFragData.baseColor = saturate(poiFragData.baseColor);
+				}
 				#endif
 				//endex
 				
@@ -129128,7 +128225,7 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 					bool selRedG = (_RgbNormalGBlendSources.y > 0.5);
 					int modeG = (selBaseG || selRedG) ? 2 : 0;
 					float3 fromNormalG = selBaseG ? originalNormal : neutralNormal;
-					if (selRedG && hasR > 0.5) fromNormalG = lerp(fromNormalG, BlendNormals(fromNormalG, nR), maskFinal.r);
+					if (selRedG && hasR > 0.5) fromNormalG = lerp(fromNormalG, PoiBlendNormal(fromNormalG, nR), maskFinal.r);
 					RGBABlendNormals(poiMesh.tangentSpaceNormal, fromNormalG, nG, maskFinal.g, modeG);
 				}
 				#endif
@@ -129142,8 +128239,8 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 					bool selGreenB = (_RgbNormalBBlendSources.z > 0.5);
 					int modeB = (selBaseB || selRedB || selGreenB) ? 2 : 0;
 					float3 fromNormalB = selBaseB ? originalNormal : neutralNormal;
-					if (selRedB && hasR > 0.5) fromNormalB = lerp(fromNormalB, BlendNormals(fromNormalB, nR), maskFinal.r);
-					if (selGreenB && hasG > 0.5) fromNormalB = lerp(fromNormalB, BlendNormals(fromNormalB, nG), maskFinal.g);
+					if (selRedB && hasR > 0.5) fromNormalB = lerp(fromNormalB, PoiBlendNormal(fromNormalB, nR), maskFinal.r);
+					if (selGreenB && hasG > 0.5) fromNormalB = lerp(fromNormalB, PoiBlendNormal(fromNormalB, nG), maskFinal.g);
 					RGBABlendNormals(poiMesh.tangentSpaceNormal, fromNormalB, nB, maskFinal.b, modeB);
 				}
 				#endif
@@ -129157,9 +128254,9 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 					bool selBlueA = (_RgbNormalABlendSources.w > 0.5);
 					int modeA = (selBaseA || selRedA || selGreenA || selBlueA) ? 2 : 0;
 					float3 fromNormalA = selBaseA ? originalNormal : neutralNormal;
-					if (selRedA && hasR > 0.5) fromNormalA = lerp(fromNormalA, BlendNormals(fromNormalA, nR), maskFinal.r);
-					if (selGreenA && hasG > 0.5) fromNormalA = lerp(fromNormalA, BlendNormals(fromNormalA, nG), maskFinal.g);
-					if (selBlueA && hasB > 0.5) fromNormalA = lerp(fromNormalA, BlendNormals(fromNormalA, nB), maskFinal.b);
+					if (selRedA && hasR > 0.5) fromNormalA = lerp(fromNormalA, PoiBlendNormal(fromNormalA, nR), maskFinal.r);
+					if (selGreenA && hasG > 0.5) fromNormalA = lerp(fromNormalA, PoiBlendNormal(fromNormalA, nG), maskFinal.g);
+					if (selBlueA && hasB > 0.5) fromNormalA = lerp(fromNormalA, PoiBlendNormal(fromNormalA, nB), maskFinal.b);
 					RGBABlendNormals(poiMesh.tangentSpaceNormal, fromNormalA, normalToBlendWith, maskFinal.a, modeA);
 				}
 				#endif
@@ -131771,79 +130868,73 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 					#endif
 				}
 				
-				void SampleDecalNoTexture(in PoiMods poiMods, in PoiLight poiLight, in PoiMesh poiMesh, in PoiCam poiCam)
+				void SampleDecalLayers(sampler2D decalTexture, sampler2D videoTexture, bool videoEnabled, bool videoAvailable, bool onlyVideo, bool keepDecalAlpha, bool channelSeparation, bool localTextureAvailable, float2 videoAspectRatio, in PoiMods poiMods, in PoiLight poiLight, in PoiMesh poiMesh, in PoiCam poiCam)
 				{
-					uv = decalUV(m_DecalTextureUV, m_DecalPosition, m_DecalRotation + decalRotation, m_DecalRotationSpeed, decalScale, m_DecalSideOffset +sideMod, m_DecalDepth, m_DecalSymmetryMode, m_DecalMirroredUVMode, poiMesh, poiCam);
-					decalColor = float4(poiThemeColor(poiMods, m_DecalColor.rgb, m_DecalColorThemeIndex), m_DecalColor.a);
-					decalColor.rgb = decalHueShift(m_DecalHueShiftEnabled, decalColor.rgb, m_DecalHueShift + poiLight.nDotVCentered * m_DecalHueAngleStrength, m_DecalHueShiftSpeed, m_DecalHueShiftColorSpace, m_DecalHueShiftSelectOrShift);
-					decalColor.rgb = decalColorAdjust(m_DecalColorAdjustEnabled, decalColor.rgb, m_DecalSaturation, m_DecalChromatize, m_DecalBrightness, m_DecalGamma);
-					decalColor.a *= decalMask[m_DecalMaskChannel] * applyTilingClipping(m_DecalTiled, uv);
-				}
-				
-				void SampleDecal(sampler2D decalTexture, in PoiMods poiMods, in PoiLight poiLight, in PoiMesh poiMesh, in PoiCam poiCam, float2 scaleMultiplier = float2(1, 1))
-				{
-					uv = decalUV(m_DecalTextureUV, m_DecalPosition, m_DecalRotation + decalRotation, m_DecalRotationSpeed, decalScale * scaleMultiplier, m_DecalSideOffset +sideMod, m_DecalDepth, m_DecalSymmetryMode, m_DecalMirroredUVMode, poiMesh, poiCam);
-					// Adjust derivatives for _ST of decal texture
-					float4 dduv = any(fwidth(uv) > .5) ? 0.001 : float4(ddx(uv) * m_DecalTexture_ST.x, ddy(uv) * m_DecalTexture_ST.y);
-					decalColor = tex2D(decalTexture, poiUV(uv, m_DecalTexture_ST) + m_DecalTexturePan * POI_TIME.x, dduv.xy, dduv.zw) * float4(poiThemeColor(poiMods, m_DecalColor.rgb, m_DecalColorThemeIndex), m_DecalColor.a);
-					decalColor.rgb = decalHueShift(m_DecalHueShiftEnabled, decalColor.rgb, m_DecalHueShift + poiLight.nDotVCentered * m_DecalHueAngleStrength, m_DecalHueShiftSpeed, m_DecalHueShiftColorSpace, m_DecalHueShiftSelectOrShift);
-					decalColor.rgb = decalColorAdjust(m_DecalColorAdjustEnabled, decalColor.rgb, m_DecalSaturation, m_DecalChromatize, m_DecalBrightness, m_DecalGamma);
-					decalColor.a *= decalMask[m_DecalMaskChannel] * applyTilingClipping(m_DecalTiled, uv);
-				}
-				
-				void SampleDecalNoAlpha(sampler2D decalTexture, in PoiMods poiMods, in PoiLight poiLight, in PoiMesh poiMesh, in PoiCam poiCam, float2 scaleMultiplier = float2(1, 1))
-				{
-					uv = decalUV(m_DecalTextureUV, m_DecalPosition, m_DecalRotation + decalRotation, m_DecalRotationSpeed, decalScale * scaleMultiplier, m_DecalSideOffset +sideMod, m_DecalDepth, m_DecalSymmetryMode, m_DecalMirroredUVMode, poiMesh, poiCam);
-					// Adjust derivatives for _ST of decal texture
-					float4 dduv = any(fwidth(uv) > .5) ? 0.001 : float4(ddx(uv) * m_DecalTexture_ST.x, ddy(uv) * m_DecalTexture_ST.y);
-					decalColor.rgb = tex2D(decalTexture, poiUV(uv, m_DecalTexture_ST) + m_DecalTexturePan * POI_TIME.x, dduv.xy, dduv.zw) * float4(poiThemeColor(poiMods, m_DecalColor.rgb, m_DecalColorThemeIndex), m_DecalColor.a).rgb;
-					decalColor.rgb = decalHueShift(m_DecalHueShiftEnabled, decalColor.rgb, m_DecalHueShift + poiLight.nDotVCentered * m_DecalHueAngleStrength, m_DecalHueShiftSpeed, m_DecalHueShiftColorSpace, m_DecalHueShiftSelectOrShift);
-					decalColor.rgb = decalColorAdjust(m_DecalColorAdjustEnabled, decalColor.rgb, m_DecalSaturation, m_DecalChromatize, m_DecalBrightness, m_DecalGamma);
-					decalColor.a *= decalMask[m_DecalMaskChannel] * applyTilingClipping(m_DecalTiled, uv);
-				}
-				
-				void SampleDecalAlphaOnly(sampler2D decalTexture, in PoiMods poiMods, in PoiLight poiLight, in PoiMesh poiMesh, in PoiCam poiCam, float2 scaleMultiplier = float2(1, 1))
-				{
-					uv = decalUV(m_DecalTextureUV, m_DecalPosition, m_DecalRotation + decalRotation, m_DecalRotationSpeed, decalScale * scaleMultiplier, m_DecalSideOffset +sideMod, m_DecalDepth, m_DecalSymmetryMode, m_DecalMirroredUVMode, poiMesh, poiCam);
-					// Adjust derivatives for _ST of decal texture
-					float4 dduv = any(fwidth(uv) > .5) ? 0.001 : float4(ddx(uv) * m_DecalTexture_ST.x, ddy(uv) * m_DecalTexture_ST.y);
-					decalColor = tex2D(decalTexture, poiUV(uv, m_DecalTexture_ST) + m_DecalTexturePan * POI_TIME.x, dduv.xy, dduv.zw) * float4(poiThemeColor(poiMods, m_DecalColor.rgb, m_DecalColorThemeIndex), m_DecalColor.a);
-					decalColor.rgb = decalColorAdjust(m_DecalColorAdjustEnabled, decalColor.rgb, m_DecalSaturation, m_DecalChromatize, m_DecalBrightness, m_DecalGamma);
-					decalColor.a *= decalMask[m_DecalMaskChannel] * applyTilingClipping(m_DecalTiled, uv);
-				}
-				
-				void SampleDecalChannelSeparation(sampler2D decalTexture, in PoiMods poiMods, in PoiLight poiLight, in PoiMesh poiMesh, in PoiCam poiCam)
-				{
-					decalColor = float4(0, 0, 0, 1);
-					decalChannelOffset += m_DecalChannelSeparation + m_DecalChannelSeparationAngleStrength * (m_DecalChannelSeparationAngleStrength > 0 ? (1 - poiLight.nDotVCentered) : poiLight.nDotVCentered);
-					float2 positionOffset = decalChannelOffset * 0.01 * (decalScale.x + decalScale.y) * float2(cos(m_DecalChannelSeparationVertical), sin(m_DecalChannelSeparationVertical));
-					float2 uvSample0 = decalUV(m_DecalTextureUV, m_DecalPosition + positionOffset, m_DecalRotation + decalRotation, m_DecalRotationSpeed, decalScale, m_DecalSideOffset +sideMod, m_DecalDepth, m_DecalSymmetryMode, m_DecalMirroredUVMode, poiMesh, poiCam);
-					float2 uvSample1 = decalUV(m_DecalTextureUV, m_DecalPosition - positionOffset, m_DecalRotation + decalRotation, m_DecalRotationSpeed, decalScale, m_DecalSideOffset +sideMod, m_DecalDepth, m_DecalSymmetryMode, m_DecalMirroredUVMode, poiMesh, poiCam);
-					
-					float4 dduvSample0 = any(fwidth(uvSample0) > .5) ? 0.001 : float4(ddx(uvSample0) * m_DecalTexture_ST.x, ddy(uvSample0) * m_DecalTexture_ST.y);
-					float4 dduvSample1 = any(fwidth(uvSample1) > .5) ? 0.001 : float4(ddx(uvSample1) * m_DecalTexture_ST.x, ddy(uvSample1) * m_DecalTexture_ST.y);
-					
-					half4 decalTint = float4(poiThemeColor(poiMods, m_DecalColor.rgb, m_DecalColorThemeIndex), m_DecalColor.a);
-					float4 sample0 = tex2D(decalTexture, poiUV(uvSample0, m_DecalTexture_ST) + m_DecalTexturePan * POI_TIME.x, dduvSample0.xy, dduvSample0.zw) * decalTint;
-					float4 sample1 = tex2D(decalTexture, poiUV(uvSample1, m_DecalTexture_ST) + m_DecalTexturePan * POI_TIME.x, dduvSample1.xy, dduvSample1.zw) * decalTint;
-					
-					sample0.rgb = decalHueShift(m_DecalHueShiftEnabled, sample0.rgb, m_DecalHueShift + poiLight.nDotVCentered * m_DecalHueAngleStrength, m_DecalHueShiftSpeed, m_DecalHueShiftColorSpace, m_DecalHueShiftSelectOrShift);
-					sample1.rgb = decalHueShift(m_DecalHueShiftEnabled, sample1.rgb, m_DecalHueShift + poiLight.nDotVCentered * m_DecalHueAngleStrength, m_DecalHueShiftSpeed, m_DecalHueShiftColorSpace, m_DecalHueShiftSelectOrShift);
-					sample0.rgb = decalColorAdjust(m_DecalColorAdjustEnabled, sample0.rgb, m_DecalSaturation, m_DecalChromatize, m_DecalBrightness, m_DecalGamma);
-					sample1.rgb = decalColorAdjust(m_DecalColorAdjustEnabled, sample1.rgb, m_DecalSaturation, m_DecalChromatize, m_DecalBrightness, m_DecalGamma);
-					
-					half3 channelSeparationColor = HUEtoRGB(frac(m_DecalChannelSeparationHue));
-					
-					if (m_DecalChannelSeparationPremultiply)
+					bool separateChannels = !videoEnabled && channelSeparation && localTextureAvailable;
+					float2 positionOffset = 0;
+					if (separateChannels)
 					{
-						decalColor.rgb = lerp(sample0 * sample0.a, sample1 * sample1.a, channelSeparationColor);
+						decalChannelOffset += m_DecalChannelSeparation + m_DecalChannelSeparationAngleStrength * (m_DecalChannelSeparationAngleStrength > 0 ? (1 - poiLight.nDotVCentered) : poiLight.nDotVCentered);
+						positionOffset = decalChannelOffset * 0.01 * (decalScale.x + decalScale.y) * float2(cos(m_DecalChannelSeparationVertical), sin(m_DecalChannelSeparationVertical));
 					}
-					else
+					// Share UV and color processing across local/video layers and separated channels.
+					// Material-uniform loop bounds keep derivative evaluation in uniform control flow.
+					POI_DECAL_LAYER_LOOP
+					for (int layer = 0; layer < 2; ++layer)
 					{
-						decalColor.rgb = lerp(sample0, sample1, channelSeparationColor);
+						bool videoLayer = layer == 1;
+						bool sampleLayer = videoLayer ? (videoEnabled && videoAvailable) : (!videoEnabled || !onlyVideo || (videoAvailable && keepDecalAlpha));
+						if (sampleLayer)
+						{
+							bool separatedLayer = !videoLayer && separateChannels;
+							int sampleCount = separatedLayer ? 2 : 1;
+							float4 samples[2];
+							float clips[2];
+							float previousAlpha = decalColor.a;
+							POI_DECAL_LAYER_LOOP
+							for (int sampleIndex = 0; sampleIndex < POI_DECAL_SAMPLE_BOUND; ++sampleIndex)
+							{
+								#if defined(OPTIMIZER_ENABLED)
+								if (sampleIndex >= sampleCount) break;
+								#endif
+								float2 samplePosition = m_DecalPosition + (separatedLayer ? (sampleIndex == 0 ? positionOffset : -positionOffset) : float2(0, 0));
+								float2 sampleScale = decalScale * (videoLayer ? videoAspectRatio : float2(1, 1));
+								float2 sampleUV = decalUV(m_DecalTextureUV, samplePosition, m_DecalRotation + decalRotation, m_DecalRotationSpeed, sampleScale, m_DecalSideOffset +sideMod, m_DecalDepth, m_DecalSymmetryMode, m_DecalMirroredUVMode, poiMesh, poiCam);
+								float4 decalSampleColor = float4(poiThemeColor(poiMods, m_DecalColor.rgb, m_DecalColorThemeIndex), m_DecalColor.a);
+								if (videoLayer || videoEnabled || localTextureAvailable)
+								{
+									float4 derivatives = any(fwidth(sampleUV) > .5) ? 0.001 : float4(ddx(sampleUV) * m_DecalTexture_ST.xy, ddy(sampleUV) * m_DecalTexture_ST.xy);
+									float2 textureUV = poiUV(sampleUV, m_DecalTexture_ST) + m_DecalTexturePan * POI_TIME.x;
+									if (videoLayer)
+									decalSampleColor *= tex2D(videoTexture, textureUV, derivatives.xy, derivatives.zw);
+									else
+									decalSampleColor *= tex2D(decalTexture, textureUV, derivatives.xy, derivatives.zw);
+								}
+								decalSampleColor.rgb = decalHueShift(m_DecalHueShiftEnabled, decalSampleColor.rgb, m_DecalHueShift + poiLight.nDotVCentered * m_DecalHueAngleStrength, m_DecalHueShiftSpeed, m_DecalHueShiftColorSpace, m_DecalHueShiftSelectOrShift);
+								decalSampleColor.rgb = decalColorAdjust(m_DecalColorAdjustEnabled, decalSampleColor.rgb, m_DecalSaturation, m_DecalChromatize, m_DecalBrightness, m_DecalGamma);
+								samples[sampleIndex] = decalSampleColor;
+								clips[sampleIndex] = applyTilingClipping(m_DecalTiled, sampleUV);
+								// Preserve the original channel-separation path's handling of the stored UV.
+								if (!separatedLayer) uv = sampleUV;
+							}
+							if (separatedLayer)
+							{
+								half3 channelSeparationColor = HUEtoRGB(frac(m_DecalChannelSeparationHue));
+								if (m_DecalChannelSeparationPremultiply)
+								decalColor.rgb = lerp(samples[0] * samples[0].a, samples[1] * samples[1].a, channelSeparationColor);
+								else
+								decalColor.rgb = lerp(samples[0], samples[1], channelSeparationColor);
+								decalColor.a = 0.5 * (samples[0].a + samples[1].a);
+								decalColor.a *= decalMask[m_DecalMaskChannel] * max(clips[0], clips[1]);
+							}
+							else
+							{
+								decalColor = samples[0];
+								if (videoLayer && keepDecalAlpha) decalColor.a = previousAlpha;
+								decalColor.a *= decalMask[m_DecalMaskChannel] * clips[0];
+							}
+						}
 					}
-					decalColor.a = 0.5 * (sample0.a + sample1.a);
-					decalColor.a *= decalMask[m_DecalMaskChannel] * max(applyTilingClipping(m_DecalTiled, uvSample0), applyTilingClipping(m_DecalTiled, uvSample1));
 				}
 				
 				void Apply(inout float alphaOverride, inout float decalAlpha, inout PoiFragData poiFragData, in PoiMesh poiMesh, in PoiCam poiCam, inout PoiMods poiMods, in PoiLight poiLight)
@@ -132138,67 +131229,21 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 				#if defined(POI_PASS_OUTLINE)
 				decalApply = _Decal0OnOutlines >= 0.5;
 				#endif
-				if (_Decal0VideoEnabled < 0.5)
-				{
-					
-					#if defined(PROP_DECALTEXTURE) || !defined(OPTIMIZER_ENABLED)
-					//ifex _Decal0ChannelSeparationEnable==0
-					if (_Decal0ChannelSeparationEnable >= 0.5)
-					{
-						decalData.SampleDecalChannelSeparation(_DecalTexture, poiMods, poiLight, poiMesh, poiCam);
-					}
-					//endex
-					//ifex _Decal0ChannelSeparationEnable==1
-					if (_Decal0ChannelSeparationEnable < 0.5)
-					{
-						decalData.SampleDecal(_DecalTexture, poiMods, poiLight, poiMesh, poiCam);
-					}
-					//endex
-					#else
-					decalData.SampleDecalNoTexture(poiMods, poiLight, poiMesh, poiCam);
-					#endif
-				}
-				else
+				bool videoEnabled = !(_Decal0VideoEnabled < 0.5);
+				bool localTextureAvailable = false;
+				#if defined(PROP_DECALTEXTURE) || !defined(OPTIMIZER_ENABLED)
+				localTextureAvailable = true;
+				#endif
+				if (videoEnabled)
 				{
 					udonVideoAspectRatio = decalData.GetVideoAspectRatio(_Udon_VideoTex_TexelSize.zw, _Decal0VideoAspectFix, _Decal0VideoFitToScale);
-					
-					if (_Decal0OnlyVideo >= 0.5)
-					{
-						if (udonVideoTexAvailable)
-						{
-							decalData.m_DecalEmissionStrength += _Decal0VideoEmissionStrength;
-							if (_Decal0UseDecalAlpha >= 0.5)
-							{
-								decalData.SampleDecal(_DecalTexture, poiMods, poiLight, poiMesh, poiCam);
-								decalData.SampleDecalNoAlpha(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio);
-							}
-							else
-							{
-								decalData.SampleDecal(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio);
-							}
-						}
-						else
-						{
-							decalApply = false;
-						}
-					}
-					else
-					{
-						decalData.SampleDecal(_DecalTexture, poiMods, poiLight, poiMesh, poiCam);
-						if (udonVideoTexAvailable)
-						{
-							decalData.m_DecalEmissionStrength += _Decal0VideoEmissionStrength;
-							if (_Decal0UseDecalAlpha >= 0.5)
-							{
-								decalData.SampleDecalNoAlpha(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio);
-							}
-							else
-							{
-								decalData.SampleDecal(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio);
-							}
-						}
-					}
+					if (udonVideoTexAvailable)
+					decalData.m_DecalEmissionStrength += _Decal0VideoEmissionStrength;
+					else if (_Decal0OnlyVideo >= 0.5)
+					decalApply = false;
 				}
+				decalData.SampleDecalLayers(_DecalTexture, _Udon_VideoTex, videoEnabled, udonVideoTexAvailable != 0, _Decal0OnlyVideo >= 0.5, _Decal0UseDecalAlpha >= 0.5, _Decal0ChannelSeparationEnable >= 0.5, localTextureAvailable, udonVideoAspectRatio, poiMods, poiLight, poiMesh, poiCam);
+				
 				if (decalApply)
 				{
 					decalData.ApplyVideoEffects(_Decal0UseVideoEffects, poiCam, poiMesh);
@@ -132306,67 +131351,21 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 				#if defined(POI_PASS_OUTLINE)
 				decalApply__1 = _Decal1OnOutlines >= 0.5;
 				#endif
-				if (_Decal1VideoEnabled < 0.5)
-				{
-					
-					#if defined(PROP_DECALTEXTURE1) || !defined(OPTIMIZER_ENABLED)
-					//ifex _Decal1ChannelSeparationEnable==0
-					if (_Decal1ChannelSeparationEnable >= 0.5)
-					{
-						decalData__1.SampleDecalChannelSeparation(_DecalTexture1, poiMods, poiLight, poiMesh, poiCam);
-					}
-					//endex
-					//ifex _Decal1ChannelSeparationEnable==1
-					if (_Decal1ChannelSeparationEnable < 0.5)
-					{
-						decalData__1.SampleDecal(_DecalTexture1, poiMods, poiLight, poiMesh, poiCam);
-					}
-					//endex
-					#else
-					decalData__1.SampleDecalNoTexture(poiMods, poiLight, poiMesh, poiCam);
-					#endif
-				}
-				else
+				bool videoEnabled__1 = !(_Decal1VideoEnabled < 0.5);
+				bool localTextureAvailable__1 = false;
+				#if defined(PROP_DECALTEXTURE1) || !defined(OPTIMIZER_ENABLED)
+				localTextureAvailable__1 = true;
+				#endif
+				if (videoEnabled__1)
 				{
 					udonVideoAspectRatio__1 = decalData__1.GetVideoAspectRatio(_Udon_VideoTex_TexelSize.zw, _Decal1VideoAspectFix, _Decal1VideoFitToScale);
-					
-					if (_Decal1OnlyVideo >= 0.5)
-					{
-						if (udonVideoTexAvailable__1)
-						{
-							decalData__1.m_DecalEmissionStrength += _Decal1VideoEmissionStrength;
-							if (_Decal1UseDecalAlpha >= 0.5)
-							{
-								decalData__1.SampleDecal(_DecalTexture1, poiMods, poiLight, poiMesh, poiCam);
-								decalData__1.SampleDecalNoAlpha(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio__1);
-							}
-							else
-							{
-								decalData__1.SampleDecal(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio__1);
-							}
-						}
-						else
-						{
-							decalApply__1 = false;
-						}
-					}
-					else
-					{
-						decalData__1.SampleDecal(_DecalTexture1, poiMods, poiLight, poiMesh, poiCam);
-						if (udonVideoTexAvailable__1)
-						{
-							decalData__1.m_DecalEmissionStrength += _Decal1VideoEmissionStrength;
-							if (_Decal1UseDecalAlpha >= 0.5)
-							{
-								decalData__1.SampleDecalNoAlpha(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio__1);
-							}
-							else
-							{
-								decalData__1.SampleDecal(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio__1);
-							}
-						}
-					}
+					if (udonVideoTexAvailable__1)
+					decalData__1.m_DecalEmissionStrength += _Decal1VideoEmissionStrength;
+					else if (_Decal1OnlyVideo >= 0.5)
+					decalApply__1 = false;
 				}
+				decalData__1.SampleDecalLayers(_DecalTexture1, _Udon_VideoTex, videoEnabled__1, udonVideoTexAvailable__1 != 0, _Decal1OnlyVideo >= 0.5, _Decal1UseDecalAlpha >= 0.5, _Decal1ChannelSeparationEnable >= 0.5, localTextureAvailable__1, udonVideoAspectRatio__1, poiMods, poiLight, poiMesh, poiCam);
+				
 				if (decalApply__1)
 				{
 					decalData__1.ApplyVideoEffects(_Decal1UseVideoEffects, poiCam, poiMesh);
@@ -132474,67 +131473,21 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 				#if defined(POI_PASS_OUTLINE)
 				decalApply__2 = _Decal2OnOutlines >= 0.5;
 				#endif
-				if (_Decal2VideoEnabled < 0.5)
-				{
-					
-					#if defined(PROP_DECALTEXTURE2) || !defined(OPTIMIZER_ENABLED)
-					//ifex _Decal2ChannelSeparationEnable==0
-					if (_Decal2ChannelSeparationEnable >= 0.5)
-					{
-						decalData__2.SampleDecalChannelSeparation(_DecalTexture2, poiMods, poiLight, poiMesh, poiCam);
-					}
-					//endex
-					//ifex _Decal2ChannelSeparationEnable==1
-					if (_Decal2ChannelSeparationEnable < 0.5)
-					{
-						decalData__2.SampleDecal(_DecalTexture2, poiMods, poiLight, poiMesh, poiCam);
-					}
-					//endex
-					#else
-					decalData__2.SampleDecalNoTexture(poiMods, poiLight, poiMesh, poiCam);
-					#endif
-				}
-				else
+				bool videoEnabled__2 = !(_Decal2VideoEnabled < 0.5);
+				bool localTextureAvailable__2 = false;
+				#if defined(PROP_DECALTEXTURE2) || !defined(OPTIMIZER_ENABLED)
+				localTextureAvailable__2 = true;
+				#endif
+				if (videoEnabled__2)
 				{
 					udonVideoAspectRatio__2 = decalData__2.GetVideoAspectRatio(_Udon_VideoTex_TexelSize.zw, _Decal2VideoAspectFix, _Decal2VideoFitToScale);
-					
-					if (_Decal2OnlyVideo >= 0.5)
-					{
-						if (udonVideoTexAvailable__2)
-						{
-							decalData__2.m_DecalEmissionStrength += _Decal2VideoEmissionStrength;
-							if (_Decal2UseDecalAlpha >= 0.5)
-							{
-								decalData__2.SampleDecal(_DecalTexture2, poiMods, poiLight, poiMesh, poiCam);
-								decalData__2.SampleDecalNoAlpha(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio__2);
-							}
-							else
-							{
-								decalData__2.SampleDecal(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio__2);
-							}
-						}
-						else
-						{
-							decalApply__2 = false;
-						}
-					}
-					else
-					{
-						decalData__2.SampleDecal(_DecalTexture2, poiMods, poiLight, poiMesh, poiCam);
-						if (udonVideoTexAvailable__2)
-						{
-							decalData__2.m_DecalEmissionStrength += _Decal2VideoEmissionStrength;
-							if (_Decal2UseDecalAlpha >= 0.5)
-							{
-								decalData__2.SampleDecalNoAlpha(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio__2);
-							}
-							else
-							{
-								decalData__2.SampleDecal(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio__2);
-							}
-						}
-					}
+					if (udonVideoTexAvailable__2)
+					decalData__2.m_DecalEmissionStrength += _Decal2VideoEmissionStrength;
+					else if (_Decal2OnlyVideo >= 0.5)
+					decalApply__2 = false;
 				}
+				decalData__2.SampleDecalLayers(_DecalTexture2, _Udon_VideoTex, videoEnabled__2, udonVideoTexAvailable__2 != 0, _Decal2OnlyVideo >= 0.5, _Decal2UseDecalAlpha >= 0.5, _Decal2ChannelSeparationEnable >= 0.5, localTextureAvailable__2, udonVideoAspectRatio__2, poiMods, poiLight, poiMesh, poiCam);
+				
 				if (decalApply__2)
 				{
 					decalData__2.ApplyVideoEffects(_Decal2UseVideoEffects, poiCam, poiMesh);
@@ -132642,67 +131595,21 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 				#if defined(POI_PASS_OUTLINE)
 				decalApply__3 = _Decal3OnOutlines >= 0.5;
 				#endif
-				if (_Decal3VideoEnabled < 0.5)
-				{
-					
-					#if defined(PROP_DECALTEXTURE3) || !defined(OPTIMIZER_ENABLED)
-					//ifex _Decal3ChannelSeparationEnable==0
-					if (_Decal3ChannelSeparationEnable >= 0.5)
-					{
-						decalData__3.SampleDecalChannelSeparation(_DecalTexture3, poiMods, poiLight, poiMesh, poiCam);
-					}
-					//endex
-					//ifex _Decal3ChannelSeparationEnable==1
-					if (_Decal3ChannelSeparationEnable < 0.5)
-					{
-						decalData__3.SampleDecal(_DecalTexture3, poiMods, poiLight, poiMesh, poiCam);
-					}
-					//endex
-					#else
-					decalData__3.SampleDecalNoTexture(poiMods, poiLight, poiMesh, poiCam);
-					#endif
-				}
-				else
+				bool videoEnabled__3 = !(_Decal3VideoEnabled < 0.5);
+				bool localTextureAvailable__3 = false;
+				#if defined(PROP_DECALTEXTURE3) || !defined(OPTIMIZER_ENABLED)
+				localTextureAvailable__3 = true;
+				#endif
+				if (videoEnabled__3)
 				{
 					udonVideoAspectRatio__3 = decalData__3.GetVideoAspectRatio(_Udon_VideoTex_TexelSize.zw, _Decal3VideoAspectFix, _Decal3VideoFitToScale);
-					
-					if (_Decal3OnlyVideo >= 0.5)
-					{
-						if (udonVideoTexAvailable__3)
-						{
-							decalData__3.m_DecalEmissionStrength += _Decal3VideoEmissionStrength;
-							if (_Decal3UseDecalAlpha >= 0.5)
-							{
-								decalData__3.SampleDecal(_DecalTexture3, poiMods, poiLight, poiMesh, poiCam);
-								decalData__3.SampleDecalNoAlpha(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio__3);
-							}
-							else
-							{
-								decalData__3.SampleDecal(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio__3);
-							}
-						}
-						else
-						{
-							decalApply__3 = false;
-						}
-					}
-					else
-					{
-						decalData__3.SampleDecal(_DecalTexture3, poiMods, poiLight, poiMesh, poiCam);
-						if (udonVideoTexAvailable__3)
-						{
-							decalData__3.m_DecalEmissionStrength += _Decal3VideoEmissionStrength;
-							if (_Decal3UseDecalAlpha >= 0.5)
-							{
-								decalData__3.SampleDecalNoAlpha(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio__3);
-							}
-							else
-							{
-								decalData__3.SampleDecal(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio__3);
-							}
-						}
-					}
+					if (udonVideoTexAvailable__3)
+					decalData__3.m_DecalEmissionStrength += _Decal3VideoEmissionStrength;
+					else if (_Decal3OnlyVideo >= 0.5)
+					decalApply__3 = false;
 				}
+				decalData__3.SampleDecalLayers(_DecalTexture3, _Udon_VideoTex, videoEnabled__3, udonVideoTexAvailable__3 != 0, _Decal3OnlyVideo >= 0.5, _Decal3UseDecalAlpha >= 0.5, _Decal3ChannelSeparationEnable >= 0.5, localTextureAvailable__3, udonVideoAspectRatio__3, poiMods, poiLight, poiMesh, poiCam);
+				
 				if (decalApply__3)
 				{
 					decalData__3.ApplyVideoEffects(_Decal3UseVideoEffects, poiCam, poiMesh);
@@ -135950,11 +134857,10 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 					if (_GlitterFullCoverage >= 0.5)
 					{
 						// Process every cell whose particle could overlap this fragment.
-						[loop] for (int cellJ = -1; cellJ <= 1; cellJ++)
+						[loop] for (int poiCell0 = 0; poiCell0 < 9; poiCell0++)
 						{
-							[loop] for (int cellI = -1; cellI <= 1; cellI++)
 							{
-								float2 neighbor = float2(cellI, cellJ);
+								float2 neighbor = float2(poiCell0 % 3 - 1, poiCell0 / 3 - 1);
 								float2 cellRando = poiRand2(neighborhoodSeed + neighbor);
 								float2 cellDiff = neighborhoodOrigin + neighbor + cellRando * _GlitterRandomLocation;
 								if (dot(cellDiff, cellDiff) >= maxParticleDistSq) continue;
@@ -135969,11 +134875,10 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 						float2 randoPoint = 0;
 						float2 closestDiff = 0;
 						
-						[loop] for (int cellJ = -1; cellJ <= 1; cellJ++)
+						[unroll] for (int poiCell1 = 0; poiCell1 < 9; poiCell1++)
 						{
-							[loop] for (int cellI = -1; cellI <= 1; cellI++)
 							{
-								float2 neighbor = float2(cellI, cellJ);
+								float2 neighbor = float2(poiCell1 % 3 - 1, poiCell1 / 3 - 1);
 								float2 cellRando = poiRand2(neighborhoodSeed + neighbor);
 								float2 cellDiff = neighborhoodOrigin + neighbor + cellRando * _GlitterRandomLocation;
 								float cellDistSq = dot(cellDiff, cellDiff);
@@ -137400,7 +136305,7 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 				#if defined(VERTEXLIGHT_ON)
 				if (poiFragData.toggleVertexLights && _UseReflection >= 0.5 && _ApplySpecular >= 0.5 && _ApplySpecularFA >= 0.5)
 				{
-					[unroll]
+					POI_STYLIZED_SPECULAR_VERTEX_LIGHT_LOOP
 					for (int vIdx = 0; vIdx < 4; vIdx++)
 					{
 						if (!any(poiLight.vPosition[vIdx])) continue;
@@ -139409,44 +138314,48 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 				#endif
 				
 				int furLayerCount = min(max((int)_FurLayerNum, 1), 3);
-				if (furLayerCount == 1)
+				// [loop] keeps one copy of SetupFurOutputStructs()
+				// to prevent compiler stack overflow (unlocked only, see POI_LILFUR_SLOT_LOOP)
+				static const float3 poiFurFactors[15] =
 				{
-					outStream.Append(SetupFurOutputStructs(output, input, furVectors, float3(1.0, 0.0, 0.0) / 1.0));
-					outStream.Append(output);
-					outStream.Append(SetupFurOutputStructs(output, input, furVectors, float3(0.0, 1.0, 0.0) / 1.0));
-					outStream.Append(output);
-					outStream.Append(SetupFurOutputStructs(output, input, furVectors, float3(0.0, 0.0, 1.0) / 1.0));
-					outStream.Append(output);
-				}
-				else if (furLayerCount >= 2)
+					// [0..2] furLayerCount == 1
+					float3(1.0, 0.0, 0.0) / 1.0,
+					float3(0.0, 1.0, 0.0) / 1.0,
+					float3(0.0, 0.0, 1.0) / 1.0,
+					// [3..8] furLayerCount >= 2
+					float3(1.0, 0.0, 0.0) / 1.0,
+					float3(0.0, 1.0, 1.0) / 2.0,
+					float3(0.0, 1.0, 0.0) / 1.0,
+					float3(1.0, 0.0, 1.0) / 2.0,
+					float3(0.0, 0.0, 1.0) / 1.0,
+					float3(1.0, 1.0, 0.0) / 2.0,
+					// [9..14] furLayerCount >= 3, emitted on top of the >= 2 set
+					float3(1.0, 4.0, 1.0) / 6.0,
+					float3(0.0, 1.0, 1.0) / 2.0,
+					float3(1.0, 1.0, 4.0) / 6.0,
+					float3(1.0, 0.0, 1.0) / 2.0,
+					float3(4.0, 1.0, 1.0) / 6.0,
+					float3(1.0, 1.0, 0.0) / 2.0
+				};
+				
+				int furFactorStart = (furLayerCount == 1) ? 0 : 3;
+				int furFactorCount = (furLayerCount == 1) ? 3 : 6;
+				POI_LILFUR_SLOT_LOOP for (int furSlot = 0; furSlot < POI_LILFUR_SLOT_BOUND; furSlot++)
 				{
-					outStream.Append(SetupFurOutputStructs(output, input, furVectors, float3(1.0, 0.0, 0.0) / 1.0));
-					outStream.Append(output);
-					outStream.Append(SetupFurOutputStructs(output, input, furVectors, float3(0.0, 1.0, 1.0) / 2.0));
-					outStream.Append(output);
-					outStream.Append(SetupFurOutputStructs(output, input, furVectors, float3(0.0, 1.0, 0.0) / 1.0));
-					outStream.Append(output);
-					outStream.Append(SetupFurOutputStructs(output, input, furVectors, float3(1.0, 0.0, 1.0) / 2.0));
-					outStream.Append(output);
-					outStream.Append(SetupFurOutputStructs(output, input, furVectors, float3(0.0, 0.0, 1.0) / 1.0));
-					outStream.Append(output);
-					outStream.Append(SetupFurOutputStructs(output, input, furVectors, float3(1.0, 1.0, 0.0) / 2.0));
+					#if defined(OPTIMIZER_ENABLED)
+					// Constant bound so the unroll always succeeds, even if the layer count is animated.
+					if (furSlot >= furFactorCount) break;
+					#endif
+					outStream.Append(SetupFurOutputStructs(output, input, furVectors, poiFurFactors[furFactorStart + furSlot]));
 					outStream.Append(output);
 				}
 				if (furLayerCount >= 3)
 				{
-					outStream.Append(SetupFurOutputStructs(output, input, furVectors, float3(1.0, 4.0, 1.0) / 6.0));
-					outStream.Append(output);
-					outStream.Append(SetupFurOutputStructs(output, input, furVectors, float3(0.0, 1.0, 1.0) / 2.0));
-					outStream.Append(output);
-					outStream.Append(SetupFurOutputStructs(output, input, furVectors, float3(1.0, 1.0, 4.0) / 6.0));
-					outStream.Append(output);
-					outStream.Append(SetupFurOutputStructs(output, input, furVectors, float3(1.0, 0.0, 1.0) / 2.0));
-					outStream.Append(output);
-					outStream.Append(SetupFurOutputStructs(output, input, furVectors, float3(4.0, 1.0, 1.0) / 6.0));
-					outStream.Append(output);
-					outStream.Append(SetupFurOutputStructs(output, input, furVectors, float3(1.0, 1.0, 0.0) / 2.0));
-					outStream.Append(output);
+					POI_LILFUR_SLOT_LOOP for (int furSlot3 = 9; furSlot3 < 15; furSlot3++)
+					{
+						outStream.Append(SetupFurOutputStructs(output, input, furVectors, poiFurFactors[furSlot3]));
+						outStream.Append(output);
+					}
 				}
 				outStream.Append(SetupFurOutputStructs(output, input, furVectors, float3(1.0, 0.0, 0.0) / 1.0));
 				outStream.Append(output);
@@ -141319,6 +140228,14 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 			#define _Mode _RenderingReduceClipDistance
 			#endif
 			
+			#if defined(OPTIMIZER_ENABLED)
+			#define POI_LILFUR_SLOT_LOOP [unroll]
+			#define POI_LILFUR_SLOT_BOUND 6
+			#else
+			#define POI_LILFUR_SLOT_LOOP [loop]
+			#define POI_LILFUR_SLOT_BOUND furFactorCount
+			#endif
+			
 			//ifex _EnableBentNormal==0
 			#ifdef POI_BENTNORMALMAP
 			#if defined(PROP_BENTNORMALMAP) || !defined(OPTIMIZER_ENABLED)
@@ -141541,6 +140458,16 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 			#endif
 			sampler2D _Udon_VideoTex;//<ms_no_postfix>
 			float4 _Udon_VideoTex_TexelSize;//<ms_no_postfix>
+			//endex
+			
+			//ifex _DecalEnabled==0 && _DecalEnabled1==0 && _DecalEnabled2==0 && _DecalEnabled3==0
+			#if defined(OPTIMIZER_ENABLED)
+			#define POI_DECAL_LAYER_LOOP [unroll]
+			#define POI_DECAL_SAMPLE_BOUND 2
+			#else
+			#define POI_DECAL_LAYER_LOOP [loop]
+			#define POI_DECAL_SAMPLE_BOUND sampleCount
+			#endif
 			//endex
 			
 			//ifex _DecalEnabled==0
@@ -141928,6 +140855,11 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 			TextureCube _ReflectionCubeTex;
 			#endif
 			#endif
+			#if defined(OPTIMIZER_ENABLED)
+			#define POI_STYLIZED_SPECULAR_VERTEX_LIGHT_LOOP [unroll]
+			#else
+			#define POI_STYLIZED_SPECULAR_VERTEX_LIGHT_LOOP [loop]
+			#endif
 			#endif
 			//endex
 			
@@ -142245,6 +141177,7 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 			float2 _MainTintTexturePan;
 			float _MainTintTextureUV;
 			half _MainBrightness;
+			half _MainColorAdjustClamp;
 			float _MainGamma;
 			
 			float _MainHueALCTEnabled;
@@ -146433,26 +145366,13 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 			
 			half3 poiThemeColor(in PoiMods poiMods, in half3 srcColor, in half themeIndex)
 			{
-				half3 outputColor = srcColor;
-				if (themeIndex != 0)
-				{
-					themeIndex = max(themeIndex - 1, 0);
-					
-					if (themeIndex <= 3)
-					{
-						outputColor = poiMods.globalColorTheme[themeIndex].rgb;
-					}
-					else
-					{
-						#ifdef POI_AUDIOLINK
-						if (poiMods.audioLinkAvailable)
-						{
-							outputColor = poiMods.globalColorTheme[themeIndex].rgb;
-						}
-						#endif
-					}
-				}
-				return outputColor;
+				half poiThemeIdx = clamp(max(themeIndex - 1, 0), 0, 11);
+				#ifdef POI_AUDIOLINK
+				bool poiThemeUse = (themeIndex != 0) && (poiThemeIdx <= 3 || poiMods.audioLinkAvailable);
+				#else
+				bool poiThemeUse = (themeIndex != 0) && (poiThemeIdx <= 3);
+				#endif
+				return poiThemeUse ? poiMods.globalColorTheme[poiThemeIdx].rgb : srcColor;
 			}
 			
 			struct PoiSpriteSheetConfig
@@ -147543,12 +146463,12 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 				UNITY_SETUP_INSTANCE_ID(v);
 				PoiVertToGeoLilFur o;
 				PoiInitStruct(PoiVertToGeoLilFur, o);
+				UNITY_TRANSFER_INSTANCE_ID(v, o);
 				
 				// FXC on mobile doesn't like (PoiVertToGeoLilFur)POI_NAN return
 				// if o.worldPos NaN does not get overwritten, it's discarded
 				#if defined(SHADER_API_MOBILE)
 				o.worldPos = float3(POI_NAN, POI_NAN, POI_NAN);
-				UNITY_TRANSFER_INSTANCE_ID(v, o);
 				#endif
 				
 				#ifdef POI_AUDIOLINK
@@ -150023,6 +148943,10 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 					#endif
 				}
 				poiFragData.baseColor = lerp(poiFragData.baseColor, poiFragData.baseColor * (_MainBrightness + 1), hueShiftAlpha.g);
+				if (_MainColorAdjustClamp > 0.5)
+				{
+					poiFragData.baseColor = saturate(poiFragData.baseColor);
+				}
 				#endif
 				//endex
 				
@@ -151590,7 +150514,7 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 					bool selRedG = (_RgbNormalGBlendSources.y > 0.5);
 					int modeG = (selBaseG || selRedG) ? 2 : 0;
 					float3 fromNormalG = selBaseG ? originalNormal : neutralNormal;
-					if (selRedG && hasR > 0.5) fromNormalG = lerp(fromNormalG, BlendNormals(fromNormalG, nR), maskFinal.r);
+					if (selRedG && hasR > 0.5) fromNormalG = lerp(fromNormalG, PoiBlendNormal(fromNormalG, nR), maskFinal.r);
 					RGBABlendNormals(poiMesh.tangentSpaceNormal, fromNormalG, nG, maskFinal.g, modeG);
 				}
 				#endif
@@ -151604,8 +150528,8 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 					bool selGreenB = (_RgbNormalBBlendSources.z > 0.5);
 					int modeB = (selBaseB || selRedB || selGreenB) ? 2 : 0;
 					float3 fromNormalB = selBaseB ? originalNormal : neutralNormal;
-					if (selRedB && hasR > 0.5) fromNormalB = lerp(fromNormalB, BlendNormals(fromNormalB, nR), maskFinal.r);
-					if (selGreenB && hasG > 0.5) fromNormalB = lerp(fromNormalB, BlendNormals(fromNormalB, nG), maskFinal.g);
+					if (selRedB && hasR > 0.5) fromNormalB = lerp(fromNormalB, PoiBlendNormal(fromNormalB, nR), maskFinal.r);
+					if (selGreenB && hasG > 0.5) fromNormalB = lerp(fromNormalB, PoiBlendNormal(fromNormalB, nG), maskFinal.g);
 					RGBABlendNormals(poiMesh.tangentSpaceNormal, fromNormalB, nB, maskFinal.b, modeB);
 				}
 				#endif
@@ -151619,9 +150543,9 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 					bool selBlueA = (_RgbNormalABlendSources.w > 0.5);
 					int modeA = (selBaseA || selRedA || selGreenA || selBlueA) ? 2 : 0;
 					float3 fromNormalA = selBaseA ? originalNormal : neutralNormal;
-					if (selRedA && hasR > 0.5) fromNormalA = lerp(fromNormalA, BlendNormals(fromNormalA, nR), maskFinal.r);
-					if (selGreenA && hasG > 0.5) fromNormalA = lerp(fromNormalA, BlendNormals(fromNormalA, nG), maskFinal.g);
-					if (selBlueA && hasB > 0.5) fromNormalA = lerp(fromNormalA, BlendNormals(fromNormalA, nB), maskFinal.b);
+					if (selRedA && hasR > 0.5) fromNormalA = lerp(fromNormalA, PoiBlendNormal(fromNormalA, nR), maskFinal.r);
+					if (selGreenA && hasG > 0.5) fromNormalA = lerp(fromNormalA, PoiBlendNormal(fromNormalA, nG), maskFinal.g);
+					if (selBlueA && hasB > 0.5) fromNormalA = lerp(fromNormalA, PoiBlendNormal(fromNormalA, nB), maskFinal.b);
 					RGBABlendNormals(poiMesh.tangentSpaceNormal, fromNormalA, normalToBlendWith, maskFinal.a, modeA);
 				}
 				#endif
@@ -154233,79 +153157,73 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 					#endif
 				}
 				
-				void SampleDecalNoTexture(in PoiMods poiMods, in PoiLight poiLight, in PoiMesh poiMesh, in PoiCam poiCam)
+				void SampleDecalLayers(sampler2D decalTexture, sampler2D videoTexture, bool videoEnabled, bool videoAvailable, bool onlyVideo, bool keepDecalAlpha, bool channelSeparation, bool localTextureAvailable, float2 videoAspectRatio, in PoiMods poiMods, in PoiLight poiLight, in PoiMesh poiMesh, in PoiCam poiCam)
 				{
-					uv = decalUV(m_DecalTextureUV, m_DecalPosition, m_DecalRotation + decalRotation, m_DecalRotationSpeed, decalScale, m_DecalSideOffset +sideMod, m_DecalDepth, m_DecalSymmetryMode, m_DecalMirroredUVMode, poiMesh, poiCam);
-					decalColor = float4(poiThemeColor(poiMods, m_DecalColor.rgb, m_DecalColorThemeIndex), m_DecalColor.a);
-					decalColor.rgb = decalHueShift(m_DecalHueShiftEnabled, decalColor.rgb, m_DecalHueShift + poiLight.nDotVCentered * m_DecalHueAngleStrength, m_DecalHueShiftSpeed, m_DecalHueShiftColorSpace, m_DecalHueShiftSelectOrShift);
-					decalColor.rgb = decalColorAdjust(m_DecalColorAdjustEnabled, decalColor.rgb, m_DecalSaturation, m_DecalChromatize, m_DecalBrightness, m_DecalGamma);
-					decalColor.a *= decalMask[m_DecalMaskChannel] * applyTilingClipping(m_DecalTiled, uv);
-				}
-				
-				void SampleDecal(sampler2D decalTexture, in PoiMods poiMods, in PoiLight poiLight, in PoiMesh poiMesh, in PoiCam poiCam, float2 scaleMultiplier = float2(1, 1))
-				{
-					uv = decalUV(m_DecalTextureUV, m_DecalPosition, m_DecalRotation + decalRotation, m_DecalRotationSpeed, decalScale * scaleMultiplier, m_DecalSideOffset +sideMod, m_DecalDepth, m_DecalSymmetryMode, m_DecalMirroredUVMode, poiMesh, poiCam);
-					// Adjust derivatives for _ST of decal texture
-					float4 dduv = any(fwidth(uv) > .5) ? 0.001 : float4(ddx(uv) * m_DecalTexture_ST.x, ddy(uv) * m_DecalTexture_ST.y);
-					decalColor = tex2D(decalTexture, poiUV(uv, m_DecalTexture_ST) + m_DecalTexturePan * POI_TIME.x, dduv.xy, dduv.zw) * float4(poiThemeColor(poiMods, m_DecalColor.rgb, m_DecalColorThemeIndex), m_DecalColor.a);
-					decalColor.rgb = decalHueShift(m_DecalHueShiftEnabled, decalColor.rgb, m_DecalHueShift + poiLight.nDotVCentered * m_DecalHueAngleStrength, m_DecalHueShiftSpeed, m_DecalHueShiftColorSpace, m_DecalHueShiftSelectOrShift);
-					decalColor.rgb = decalColorAdjust(m_DecalColorAdjustEnabled, decalColor.rgb, m_DecalSaturation, m_DecalChromatize, m_DecalBrightness, m_DecalGamma);
-					decalColor.a *= decalMask[m_DecalMaskChannel] * applyTilingClipping(m_DecalTiled, uv);
-				}
-				
-				void SampleDecalNoAlpha(sampler2D decalTexture, in PoiMods poiMods, in PoiLight poiLight, in PoiMesh poiMesh, in PoiCam poiCam, float2 scaleMultiplier = float2(1, 1))
-				{
-					uv = decalUV(m_DecalTextureUV, m_DecalPosition, m_DecalRotation + decalRotation, m_DecalRotationSpeed, decalScale * scaleMultiplier, m_DecalSideOffset +sideMod, m_DecalDepth, m_DecalSymmetryMode, m_DecalMirroredUVMode, poiMesh, poiCam);
-					// Adjust derivatives for _ST of decal texture
-					float4 dduv = any(fwidth(uv) > .5) ? 0.001 : float4(ddx(uv) * m_DecalTexture_ST.x, ddy(uv) * m_DecalTexture_ST.y);
-					decalColor.rgb = tex2D(decalTexture, poiUV(uv, m_DecalTexture_ST) + m_DecalTexturePan * POI_TIME.x, dduv.xy, dduv.zw) * float4(poiThemeColor(poiMods, m_DecalColor.rgb, m_DecalColorThemeIndex), m_DecalColor.a).rgb;
-					decalColor.rgb = decalHueShift(m_DecalHueShiftEnabled, decalColor.rgb, m_DecalHueShift + poiLight.nDotVCentered * m_DecalHueAngleStrength, m_DecalHueShiftSpeed, m_DecalHueShiftColorSpace, m_DecalHueShiftSelectOrShift);
-					decalColor.rgb = decalColorAdjust(m_DecalColorAdjustEnabled, decalColor.rgb, m_DecalSaturation, m_DecalChromatize, m_DecalBrightness, m_DecalGamma);
-					decalColor.a *= decalMask[m_DecalMaskChannel] * applyTilingClipping(m_DecalTiled, uv);
-				}
-				
-				void SampleDecalAlphaOnly(sampler2D decalTexture, in PoiMods poiMods, in PoiLight poiLight, in PoiMesh poiMesh, in PoiCam poiCam, float2 scaleMultiplier = float2(1, 1))
-				{
-					uv = decalUV(m_DecalTextureUV, m_DecalPosition, m_DecalRotation + decalRotation, m_DecalRotationSpeed, decalScale * scaleMultiplier, m_DecalSideOffset +sideMod, m_DecalDepth, m_DecalSymmetryMode, m_DecalMirroredUVMode, poiMesh, poiCam);
-					// Adjust derivatives for _ST of decal texture
-					float4 dduv = any(fwidth(uv) > .5) ? 0.001 : float4(ddx(uv) * m_DecalTexture_ST.x, ddy(uv) * m_DecalTexture_ST.y);
-					decalColor = tex2D(decalTexture, poiUV(uv, m_DecalTexture_ST) + m_DecalTexturePan * POI_TIME.x, dduv.xy, dduv.zw) * float4(poiThemeColor(poiMods, m_DecalColor.rgb, m_DecalColorThemeIndex), m_DecalColor.a);
-					decalColor.rgb = decalColorAdjust(m_DecalColorAdjustEnabled, decalColor.rgb, m_DecalSaturation, m_DecalChromatize, m_DecalBrightness, m_DecalGamma);
-					decalColor.a *= decalMask[m_DecalMaskChannel] * applyTilingClipping(m_DecalTiled, uv);
-				}
-				
-				void SampleDecalChannelSeparation(sampler2D decalTexture, in PoiMods poiMods, in PoiLight poiLight, in PoiMesh poiMesh, in PoiCam poiCam)
-				{
-					decalColor = float4(0, 0, 0, 1);
-					decalChannelOffset += m_DecalChannelSeparation + m_DecalChannelSeparationAngleStrength * (m_DecalChannelSeparationAngleStrength > 0 ? (1 - poiLight.nDotVCentered) : poiLight.nDotVCentered);
-					float2 positionOffset = decalChannelOffset * 0.01 * (decalScale.x + decalScale.y) * float2(cos(m_DecalChannelSeparationVertical), sin(m_DecalChannelSeparationVertical));
-					float2 uvSample0 = decalUV(m_DecalTextureUV, m_DecalPosition + positionOffset, m_DecalRotation + decalRotation, m_DecalRotationSpeed, decalScale, m_DecalSideOffset +sideMod, m_DecalDepth, m_DecalSymmetryMode, m_DecalMirroredUVMode, poiMesh, poiCam);
-					float2 uvSample1 = decalUV(m_DecalTextureUV, m_DecalPosition - positionOffset, m_DecalRotation + decalRotation, m_DecalRotationSpeed, decalScale, m_DecalSideOffset +sideMod, m_DecalDepth, m_DecalSymmetryMode, m_DecalMirroredUVMode, poiMesh, poiCam);
-					
-					float4 dduvSample0 = any(fwidth(uvSample0) > .5) ? 0.001 : float4(ddx(uvSample0) * m_DecalTexture_ST.x, ddy(uvSample0) * m_DecalTexture_ST.y);
-					float4 dduvSample1 = any(fwidth(uvSample1) > .5) ? 0.001 : float4(ddx(uvSample1) * m_DecalTexture_ST.x, ddy(uvSample1) * m_DecalTexture_ST.y);
-					
-					half4 decalTint = float4(poiThemeColor(poiMods, m_DecalColor.rgb, m_DecalColorThemeIndex), m_DecalColor.a);
-					float4 sample0 = tex2D(decalTexture, poiUV(uvSample0, m_DecalTexture_ST) + m_DecalTexturePan * POI_TIME.x, dduvSample0.xy, dduvSample0.zw) * decalTint;
-					float4 sample1 = tex2D(decalTexture, poiUV(uvSample1, m_DecalTexture_ST) + m_DecalTexturePan * POI_TIME.x, dduvSample1.xy, dduvSample1.zw) * decalTint;
-					
-					sample0.rgb = decalHueShift(m_DecalHueShiftEnabled, sample0.rgb, m_DecalHueShift + poiLight.nDotVCentered * m_DecalHueAngleStrength, m_DecalHueShiftSpeed, m_DecalHueShiftColorSpace, m_DecalHueShiftSelectOrShift);
-					sample1.rgb = decalHueShift(m_DecalHueShiftEnabled, sample1.rgb, m_DecalHueShift + poiLight.nDotVCentered * m_DecalHueAngleStrength, m_DecalHueShiftSpeed, m_DecalHueShiftColorSpace, m_DecalHueShiftSelectOrShift);
-					sample0.rgb = decalColorAdjust(m_DecalColorAdjustEnabled, sample0.rgb, m_DecalSaturation, m_DecalChromatize, m_DecalBrightness, m_DecalGamma);
-					sample1.rgb = decalColorAdjust(m_DecalColorAdjustEnabled, sample1.rgb, m_DecalSaturation, m_DecalChromatize, m_DecalBrightness, m_DecalGamma);
-					
-					half3 channelSeparationColor = HUEtoRGB(frac(m_DecalChannelSeparationHue));
-					
-					if (m_DecalChannelSeparationPremultiply)
+					bool separateChannels = !videoEnabled && channelSeparation && localTextureAvailable;
+					float2 positionOffset = 0;
+					if (separateChannels)
 					{
-						decalColor.rgb = lerp(sample0 * sample0.a, sample1 * sample1.a, channelSeparationColor);
+						decalChannelOffset += m_DecalChannelSeparation + m_DecalChannelSeparationAngleStrength * (m_DecalChannelSeparationAngleStrength > 0 ? (1 - poiLight.nDotVCentered) : poiLight.nDotVCentered);
+						positionOffset = decalChannelOffset * 0.01 * (decalScale.x + decalScale.y) * float2(cos(m_DecalChannelSeparationVertical), sin(m_DecalChannelSeparationVertical));
 					}
-					else
+					// Share UV and color processing across local/video layers and separated channels.
+					// Material-uniform loop bounds keep derivative evaluation in uniform control flow.
+					POI_DECAL_LAYER_LOOP
+					for (int layer = 0; layer < 2; ++layer)
 					{
-						decalColor.rgb = lerp(sample0, sample1, channelSeparationColor);
+						bool videoLayer = layer == 1;
+						bool sampleLayer = videoLayer ? (videoEnabled && videoAvailable) : (!videoEnabled || !onlyVideo || (videoAvailable && keepDecalAlpha));
+						if (sampleLayer)
+						{
+							bool separatedLayer = !videoLayer && separateChannels;
+							int sampleCount = separatedLayer ? 2 : 1;
+							float4 samples[2];
+							float clips[2];
+							float previousAlpha = decalColor.a;
+							POI_DECAL_LAYER_LOOP
+							for (int sampleIndex = 0; sampleIndex < POI_DECAL_SAMPLE_BOUND; ++sampleIndex)
+							{
+								#if defined(OPTIMIZER_ENABLED)
+								if (sampleIndex >= sampleCount) break;
+								#endif
+								float2 samplePosition = m_DecalPosition + (separatedLayer ? (sampleIndex == 0 ? positionOffset : -positionOffset) : float2(0, 0));
+								float2 sampleScale = decalScale * (videoLayer ? videoAspectRatio : float2(1, 1));
+								float2 sampleUV = decalUV(m_DecalTextureUV, samplePosition, m_DecalRotation + decalRotation, m_DecalRotationSpeed, sampleScale, m_DecalSideOffset +sideMod, m_DecalDepth, m_DecalSymmetryMode, m_DecalMirroredUVMode, poiMesh, poiCam);
+								float4 decalSampleColor = float4(poiThemeColor(poiMods, m_DecalColor.rgb, m_DecalColorThemeIndex), m_DecalColor.a);
+								if (videoLayer || videoEnabled || localTextureAvailable)
+								{
+									float4 derivatives = any(fwidth(sampleUV) > .5) ? 0.001 : float4(ddx(sampleUV) * m_DecalTexture_ST.xy, ddy(sampleUV) * m_DecalTexture_ST.xy);
+									float2 textureUV = poiUV(sampleUV, m_DecalTexture_ST) + m_DecalTexturePan * POI_TIME.x;
+									if (videoLayer)
+									decalSampleColor *= tex2D(videoTexture, textureUV, derivatives.xy, derivatives.zw);
+									else
+									decalSampleColor *= tex2D(decalTexture, textureUV, derivatives.xy, derivatives.zw);
+								}
+								decalSampleColor.rgb = decalHueShift(m_DecalHueShiftEnabled, decalSampleColor.rgb, m_DecalHueShift + poiLight.nDotVCentered * m_DecalHueAngleStrength, m_DecalHueShiftSpeed, m_DecalHueShiftColorSpace, m_DecalHueShiftSelectOrShift);
+								decalSampleColor.rgb = decalColorAdjust(m_DecalColorAdjustEnabled, decalSampleColor.rgb, m_DecalSaturation, m_DecalChromatize, m_DecalBrightness, m_DecalGamma);
+								samples[sampleIndex] = decalSampleColor;
+								clips[sampleIndex] = applyTilingClipping(m_DecalTiled, sampleUV);
+								// Preserve the original channel-separation path's handling of the stored UV.
+								if (!separatedLayer) uv = sampleUV;
+							}
+							if (separatedLayer)
+							{
+								half3 channelSeparationColor = HUEtoRGB(frac(m_DecalChannelSeparationHue));
+								if (m_DecalChannelSeparationPremultiply)
+								decalColor.rgb = lerp(samples[0] * samples[0].a, samples[1] * samples[1].a, channelSeparationColor);
+								else
+								decalColor.rgb = lerp(samples[0], samples[1], channelSeparationColor);
+								decalColor.a = 0.5 * (samples[0].a + samples[1].a);
+								decalColor.a *= decalMask[m_DecalMaskChannel] * max(clips[0], clips[1]);
+							}
+							else
+							{
+								decalColor = samples[0];
+								if (videoLayer && keepDecalAlpha) decalColor.a = previousAlpha;
+								decalColor.a *= decalMask[m_DecalMaskChannel] * clips[0];
+							}
+						}
 					}
-					decalColor.a = 0.5 * (sample0.a + sample1.a);
-					decalColor.a *= decalMask[m_DecalMaskChannel] * max(applyTilingClipping(m_DecalTiled, uvSample0), applyTilingClipping(m_DecalTiled, uvSample1));
 				}
 				
 				void Apply(inout float alphaOverride, inout float decalAlpha, inout PoiFragData poiFragData, in PoiMesh poiMesh, in PoiCam poiCam, inout PoiMods poiMods, in PoiLight poiLight)
@@ -154600,67 +153518,21 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 				#if defined(POI_PASS_OUTLINE)
 				decalApply = _Decal0OnOutlines >= 0.5;
 				#endif
-				if (_Decal0VideoEnabled < 0.5)
-				{
-					
-					#if defined(PROP_DECALTEXTURE) || !defined(OPTIMIZER_ENABLED)
-					//ifex _Decal0ChannelSeparationEnable==0
-					if (_Decal0ChannelSeparationEnable >= 0.5)
-					{
-						decalData.SampleDecalChannelSeparation(_DecalTexture, poiMods, poiLight, poiMesh, poiCam);
-					}
-					//endex
-					//ifex _Decal0ChannelSeparationEnable==1
-					if (_Decal0ChannelSeparationEnable < 0.5)
-					{
-						decalData.SampleDecal(_DecalTexture, poiMods, poiLight, poiMesh, poiCam);
-					}
-					//endex
-					#else
-					decalData.SampleDecalNoTexture(poiMods, poiLight, poiMesh, poiCam);
-					#endif
-				}
-				else
+				bool videoEnabled = !(_Decal0VideoEnabled < 0.5);
+				bool localTextureAvailable = false;
+				#if defined(PROP_DECALTEXTURE) || !defined(OPTIMIZER_ENABLED)
+				localTextureAvailable = true;
+				#endif
+				if (videoEnabled)
 				{
 					udonVideoAspectRatio = decalData.GetVideoAspectRatio(_Udon_VideoTex_TexelSize.zw, _Decal0VideoAspectFix, _Decal0VideoFitToScale);
-					
-					if (_Decal0OnlyVideo >= 0.5)
-					{
-						if (udonVideoTexAvailable)
-						{
-							decalData.m_DecalEmissionStrength += _Decal0VideoEmissionStrength;
-							if (_Decal0UseDecalAlpha >= 0.5)
-							{
-								decalData.SampleDecal(_DecalTexture, poiMods, poiLight, poiMesh, poiCam);
-								decalData.SampleDecalNoAlpha(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio);
-							}
-							else
-							{
-								decalData.SampleDecal(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio);
-							}
-						}
-						else
-						{
-							decalApply = false;
-						}
-					}
-					else
-					{
-						decalData.SampleDecal(_DecalTexture, poiMods, poiLight, poiMesh, poiCam);
-						if (udonVideoTexAvailable)
-						{
-							decalData.m_DecalEmissionStrength += _Decal0VideoEmissionStrength;
-							if (_Decal0UseDecalAlpha >= 0.5)
-							{
-								decalData.SampleDecalNoAlpha(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio);
-							}
-							else
-							{
-								decalData.SampleDecal(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio);
-							}
-						}
-					}
+					if (udonVideoTexAvailable)
+					decalData.m_DecalEmissionStrength += _Decal0VideoEmissionStrength;
+					else if (_Decal0OnlyVideo >= 0.5)
+					decalApply = false;
 				}
+				decalData.SampleDecalLayers(_DecalTexture, _Udon_VideoTex, videoEnabled, udonVideoTexAvailable != 0, _Decal0OnlyVideo >= 0.5, _Decal0UseDecalAlpha >= 0.5, _Decal0ChannelSeparationEnable >= 0.5, localTextureAvailable, udonVideoAspectRatio, poiMods, poiLight, poiMesh, poiCam);
+				
 				if (decalApply)
 				{
 					decalData.ApplyVideoEffects(_Decal0UseVideoEffects, poiCam, poiMesh);
@@ -154768,67 +153640,21 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 				#if defined(POI_PASS_OUTLINE)
 				decalApply__1 = _Decal1OnOutlines >= 0.5;
 				#endif
-				if (_Decal1VideoEnabled < 0.5)
-				{
-					
-					#if defined(PROP_DECALTEXTURE1) || !defined(OPTIMIZER_ENABLED)
-					//ifex _Decal1ChannelSeparationEnable==0
-					if (_Decal1ChannelSeparationEnable >= 0.5)
-					{
-						decalData__1.SampleDecalChannelSeparation(_DecalTexture1, poiMods, poiLight, poiMesh, poiCam);
-					}
-					//endex
-					//ifex _Decal1ChannelSeparationEnable==1
-					if (_Decal1ChannelSeparationEnable < 0.5)
-					{
-						decalData__1.SampleDecal(_DecalTexture1, poiMods, poiLight, poiMesh, poiCam);
-					}
-					//endex
-					#else
-					decalData__1.SampleDecalNoTexture(poiMods, poiLight, poiMesh, poiCam);
-					#endif
-				}
-				else
+				bool videoEnabled__1 = !(_Decal1VideoEnabled < 0.5);
+				bool localTextureAvailable__1 = false;
+				#if defined(PROP_DECALTEXTURE1) || !defined(OPTIMIZER_ENABLED)
+				localTextureAvailable__1 = true;
+				#endif
+				if (videoEnabled__1)
 				{
 					udonVideoAspectRatio__1 = decalData__1.GetVideoAspectRatio(_Udon_VideoTex_TexelSize.zw, _Decal1VideoAspectFix, _Decal1VideoFitToScale);
-					
-					if (_Decal1OnlyVideo >= 0.5)
-					{
-						if (udonVideoTexAvailable__1)
-						{
-							decalData__1.m_DecalEmissionStrength += _Decal1VideoEmissionStrength;
-							if (_Decal1UseDecalAlpha >= 0.5)
-							{
-								decalData__1.SampleDecal(_DecalTexture1, poiMods, poiLight, poiMesh, poiCam);
-								decalData__1.SampleDecalNoAlpha(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio__1);
-							}
-							else
-							{
-								decalData__1.SampleDecal(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio__1);
-							}
-						}
-						else
-						{
-							decalApply__1 = false;
-						}
-					}
-					else
-					{
-						decalData__1.SampleDecal(_DecalTexture1, poiMods, poiLight, poiMesh, poiCam);
-						if (udonVideoTexAvailable__1)
-						{
-							decalData__1.m_DecalEmissionStrength += _Decal1VideoEmissionStrength;
-							if (_Decal1UseDecalAlpha >= 0.5)
-							{
-								decalData__1.SampleDecalNoAlpha(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio__1);
-							}
-							else
-							{
-								decalData__1.SampleDecal(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio__1);
-							}
-						}
-					}
+					if (udonVideoTexAvailable__1)
+					decalData__1.m_DecalEmissionStrength += _Decal1VideoEmissionStrength;
+					else if (_Decal1OnlyVideo >= 0.5)
+					decalApply__1 = false;
 				}
+				decalData__1.SampleDecalLayers(_DecalTexture1, _Udon_VideoTex, videoEnabled__1, udonVideoTexAvailable__1 != 0, _Decal1OnlyVideo >= 0.5, _Decal1UseDecalAlpha >= 0.5, _Decal1ChannelSeparationEnable >= 0.5, localTextureAvailable__1, udonVideoAspectRatio__1, poiMods, poiLight, poiMesh, poiCam);
+				
 				if (decalApply__1)
 				{
 					decalData__1.ApplyVideoEffects(_Decal1UseVideoEffects, poiCam, poiMesh);
@@ -154936,67 +153762,21 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 				#if defined(POI_PASS_OUTLINE)
 				decalApply__2 = _Decal2OnOutlines >= 0.5;
 				#endif
-				if (_Decal2VideoEnabled < 0.5)
-				{
-					
-					#if defined(PROP_DECALTEXTURE2) || !defined(OPTIMIZER_ENABLED)
-					//ifex _Decal2ChannelSeparationEnable==0
-					if (_Decal2ChannelSeparationEnable >= 0.5)
-					{
-						decalData__2.SampleDecalChannelSeparation(_DecalTexture2, poiMods, poiLight, poiMesh, poiCam);
-					}
-					//endex
-					//ifex _Decal2ChannelSeparationEnable==1
-					if (_Decal2ChannelSeparationEnable < 0.5)
-					{
-						decalData__2.SampleDecal(_DecalTexture2, poiMods, poiLight, poiMesh, poiCam);
-					}
-					//endex
-					#else
-					decalData__2.SampleDecalNoTexture(poiMods, poiLight, poiMesh, poiCam);
-					#endif
-				}
-				else
+				bool videoEnabled__2 = !(_Decal2VideoEnabled < 0.5);
+				bool localTextureAvailable__2 = false;
+				#if defined(PROP_DECALTEXTURE2) || !defined(OPTIMIZER_ENABLED)
+				localTextureAvailable__2 = true;
+				#endif
+				if (videoEnabled__2)
 				{
 					udonVideoAspectRatio__2 = decalData__2.GetVideoAspectRatio(_Udon_VideoTex_TexelSize.zw, _Decal2VideoAspectFix, _Decal2VideoFitToScale);
-					
-					if (_Decal2OnlyVideo >= 0.5)
-					{
-						if (udonVideoTexAvailable__2)
-						{
-							decalData__2.m_DecalEmissionStrength += _Decal2VideoEmissionStrength;
-							if (_Decal2UseDecalAlpha >= 0.5)
-							{
-								decalData__2.SampleDecal(_DecalTexture2, poiMods, poiLight, poiMesh, poiCam);
-								decalData__2.SampleDecalNoAlpha(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio__2);
-							}
-							else
-							{
-								decalData__2.SampleDecal(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio__2);
-							}
-						}
-						else
-						{
-							decalApply__2 = false;
-						}
-					}
-					else
-					{
-						decalData__2.SampleDecal(_DecalTexture2, poiMods, poiLight, poiMesh, poiCam);
-						if (udonVideoTexAvailable__2)
-						{
-							decalData__2.m_DecalEmissionStrength += _Decal2VideoEmissionStrength;
-							if (_Decal2UseDecalAlpha >= 0.5)
-							{
-								decalData__2.SampleDecalNoAlpha(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio__2);
-							}
-							else
-							{
-								decalData__2.SampleDecal(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio__2);
-							}
-						}
-					}
+					if (udonVideoTexAvailable__2)
+					decalData__2.m_DecalEmissionStrength += _Decal2VideoEmissionStrength;
+					else if (_Decal2OnlyVideo >= 0.5)
+					decalApply__2 = false;
 				}
+				decalData__2.SampleDecalLayers(_DecalTexture2, _Udon_VideoTex, videoEnabled__2, udonVideoTexAvailable__2 != 0, _Decal2OnlyVideo >= 0.5, _Decal2UseDecalAlpha >= 0.5, _Decal2ChannelSeparationEnable >= 0.5, localTextureAvailable__2, udonVideoAspectRatio__2, poiMods, poiLight, poiMesh, poiCam);
+				
 				if (decalApply__2)
 				{
 					decalData__2.ApplyVideoEffects(_Decal2UseVideoEffects, poiCam, poiMesh);
@@ -155104,67 +153884,21 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 				#if defined(POI_PASS_OUTLINE)
 				decalApply__3 = _Decal3OnOutlines >= 0.5;
 				#endif
-				if (_Decal3VideoEnabled < 0.5)
-				{
-					
-					#if defined(PROP_DECALTEXTURE3) || !defined(OPTIMIZER_ENABLED)
-					//ifex _Decal3ChannelSeparationEnable==0
-					if (_Decal3ChannelSeparationEnable >= 0.5)
-					{
-						decalData__3.SampleDecalChannelSeparation(_DecalTexture3, poiMods, poiLight, poiMesh, poiCam);
-					}
-					//endex
-					//ifex _Decal3ChannelSeparationEnable==1
-					if (_Decal3ChannelSeparationEnable < 0.5)
-					{
-						decalData__3.SampleDecal(_DecalTexture3, poiMods, poiLight, poiMesh, poiCam);
-					}
-					//endex
-					#else
-					decalData__3.SampleDecalNoTexture(poiMods, poiLight, poiMesh, poiCam);
-					#endif
-				}
-				else
+				bool videoEnabled__3 = !(_Decal3VideoEnabled < 0.5);
+				bool localTextureAvailable__3 = false;
+				#if defined(PROP_DECALTEXTURE3) || !defined(OPTIMIZER_ENABLED)
+				localTextureAvailable__3 = true;
+				#endif
+				if (videoEnabled__3)
 				{
 					udonVideoAspectRatio__3 = decalData__3.GetVideoAspectRatio(_Udon_VideoTex_TexelSize.zw, _Decal3VideoAspectFix, _Decal3VideoFitToScale);
-					
-					if (_Decal3OnlyVideo >= 0.5)
-					{
-						if (udonVideoTexAvailable__3)
-						{
-							decalData__3.m_DecalEmissionStrength += _Decal3VideoEmissionStrength;
-							if (_Decal3UseDecalAlpha >= 0.5)
-							{
-								decalData__3.SampleDecal(_DecalTexture3, poiMods, poiLight, poiMesh, poiCam);
-								decalData__3.SampleDecalNoAlpha(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio__3);
-							}
-							else
-							{
-								decalData__3.SampleDecal(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio__3);
-							}
-						}
-						else
-						{
-							decalApply__3 = false;
-						}
-					}
-					else
-					{
-						decalData__3.SampleDecal(_DecalTexture3, poiMods, poiLight, poiMesh, poiCam);
-						if (udonVideoTexAvailable__3)
-						{
-							decalData__3.m_DecalEmissionStrength += _Decal3VideoEmissionStrength;
-							if (_Decal3UseDecalAlpha >= 0.5)
-							{
-								decalData__3.SampleDecalNoAlpha(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio__3);
-							}
-							else
-							{
-								decalData__3.SampleDecal(_Udon_VideoTex, poiMods, poiLight, poiMesh, poiCam, udonVideoAspectRatio__3);
-							}
-						}
-					}
+					if (udonVideoTexAvailable__3)
+					decalData__3.m_DecalEmissionStrength += _Decal3VideoEmissionStrength;
+					else if (_Decal3OnlyVideo >= 0.5)
+					decalApply__3 = false;
 				}
+				decalData__3.SampleDecalLayers(_DecalTexture3, _Udon_VideoTex, videoEnabled__3, udonVideoTexAvailable__3 != 0, _Decal3OnlyVideo >= 0.5, _Decal3UseDecalAlpha >= 0.5, _Decal3ChannelSeparationEnable >= 0.5, localTextureAvailable__3, udonVideoAspectRatio__3, poiMods, poiLight, poiMesh, poiCam);
+				
 				if (decalApply__3)
 				{
 					decalData__3.ApplyVideoEffects(_Decal3UseVideoEffects, poiCam, poiMesh);
@@ -158412,11 +157146,10 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 					if (_GlitterFullCoverage >= 0.5)
 					{
 						// Process every cell whose particle could overlap this fragment.
-						[loop] for (int cellJ = -1; cellJ <= 1; cellJ++)
+						[loop] for (int poiCell0 = 0; poiCell0 < 9; poiCell0++)
 						{
-							[loop] for (int cellI = -1; cellI <= 1; cellI++)
 							{
-								float2 neighbor = float2(cellI, cellJ);
+								float2 neighbor = float2(poiCell0 % 3 - 1, poiCell0 / 3 - 1);
 								float2 cellRando = poiRand2(neighborhoodSeed + neighbor);
 								float2 cellDiff = neighborhoodOrigin + neighbor + cellRando * _GlitterRandomLocation;
 								if (dot(cellDiff, cellDiff) >= maxParticleDistSq) continue;
@@ -158431,11 +157164,10 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 						float2 randoPoint = 0;
 						float2 closestDiff = 0;
 						
-						[loop] for (int cellJ = -1; cellJ <= 1; cellJ++)
+						[unroll] for (int poiCell1 = 0; poiCell1 < 9; poiCell1++)
 						{
-							[loop] for (int cellI = -1; cellI <= 1; cellI++)
 							{
-								float2 neighbor = float2(cellI, cellJ);
+								float2 neighbor = float2(poiCell1 % 3 - 1, poiCell1 / 3 - 1);
 								float2 cellRando = poiRand2(neighborhoodSeed + neighbor);
 								float2 cellDiff = neighborhoodOrigin + neighbor + cellRando * _GlitterRandomLocation;
 								float cellDistSq = dot(cellDiff, cellDiff);
@@ -159862,7 +158594,7 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 				#if defined(VERTEXLIGHT_ON)
 				if (poiFragData.toggleVertexLights && _UseReflection >= 0.5 && _ApplySpecular >= 0.5 && _ApplySpecularFA >= 0.5)
 				{
-					[unroll]
+					POI_STYLIZED_SPECULAR_VERTEX_LIGHT_LOOP
 					for (int vIdx = 0; vIdx < 4; vIdx++)
 					{
 						if (!any(poiLight.vPosition[vIdx])) continue;
@@ -161871,44 +160603,48 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 				#endif
 				
 				int furLayerCount = min(max((int)_FurLayerNum, 1), 3);
-				if (furLayerCount == 1)
+				// [loop] keeps one copy of SetupFurOutputStructs()
+				// to prevent compiler stack overflow (unlocked only, see POI_LILFUR_SLOT_LOOP)
+				static const float3 poiFurFactors[15] =
 				{
-					outStream.Append(SetupFurOutputStructs(output, input, furVectors, float3(1.0, 0.0, 0.0) / 1.0));
-					outStream.Append(output);
-					outStream.Append(SetupFurOutputStructs(output, input, furVectors, float3(0.0, 1.0, 0.0) / 1.0));
-					outStream.Append(output);
-					outStream.Append(SetupFurOutputStructs(output, input, furVectors, float3(0.0, 0.0, 1.0) / 1.0));
-					outStream.Append(output);
-				}
-				else if (furLayerCount >= 2)
+					// [0..2] furLayerCount == 1
+					float3(1.0, 0.0, 0.0) / 1.0,
+					float3(0.0, 1.0, 0.0) / 1.0,
+					float3(0.0, 0.0, 1.0) / 1.0,
+					// [3..8] furLayerCount >= 2
+					float3(1.0, 0.0, 0.0) / 1.0,
+					float3(0.0, 1.0, 1.0) / 2.0,
+					float3(0.0, 1.0, 0.0) / 1.0,
+					float3(1.0, 0.0, 1.0) / 2.0,
+					float3(0.0, 0.0, 1.0) / 1.0,
+					float3(1.0, 1.0, 0.0) / 2.0,
+					// [9..14] furLayerCount >= 3, emitted on top of the >= 2 set
+					float3(1.0, 4.0, 1.0) / 6.0,
+					float3(0.0, 1.0, 1.0) / 2.0,
+					float3(1.0, 1.0, 4.0) / 6.0,
+					float3(1.0, 0.0, 1.0) / 2.0,
+					float3(4.0, 1.0, 1.0) / 6.0,
+					float3(1.0, 1.0, 0.0) / 2.0
+				};
+				
+				int furFactorStart = (furLayerCount == 1) ? 0 : 3;
+				int furFactorCount = (furLayerCount == 1) ? 3 : 6;
+				POI_LILFUR_SLOT_LOOP for (int furSlot = 0; furSlot < POI_LILFUR_SLOT_BOUND; furSlot++)
 				{
-					outStream.Append(SetupFurOutputStructs(output, input, furVectors, float3(1.0, 0.0, 0.0) / 1.0));
-					outStream.Append(output);
-					outStream.Append(SetupFurOutputStructs(output, input, furVectors, float3(0.0, 1.0, 1.0) / 2.0));
-					outStream.Append(output);
-					outStream.Append(SetupFurOutputStructs(output, input, furVectors, float3(0.0, 1.0, 0.0) / 1.0));
-					outStream.Append(output);
-					outStream.Append(SetupFurOutputStructs(output, input, furVectors, float3(1.0, 0.0, 1.0) / 2.0));
-					outStream.Append(output);
-					outStream.Append(SetupFurOutputStructs(output, input, furVectors, float3(0.0, 0.0, 1.0) / 1.0));
-					outStream.Append(output);
-					outStream.Append(SetupFurOutputStructs(output, input, furVectors, float3(1.0, 1.0, 0.0) / 2.0));
+					#if defined(OPTIMIZER_ENABLED)
+					// Constant bound so the unroll always succeeds, even if the layer count is animated.
+					if (furSlot >= furFactorCount) break;
+					#endif
+					outStream.Append(SetupFurOutputStructs(output, input, furVectors, poiFurFactors[furFactorStart + furSlot]));
 					outStream.Append(output);
 				}
 				if (furLayerCount >= 3)
 				{
-					outStream.Append(SetupFurOutputStructs(output, input, furVectors, float3(1.0, 4.0, 1.0) / 6.0));
-					outStream.Append(output);
-					outStream.Append(SetupFurOutputStructs(output, input, furVectors, float3(0.0, 1.0, 1.0) / 2.0));
-					outStream.Append(output);
-					outStream.Append(SetupFurOutputStructs(output, input, furVectors, float3(1.0, 1.0, 4.0) / 6.0));
-					outStream.Append(output);
-					outStream.Append(SetupFurOutputStructs(output, input, furVectors, float3(1.0, 0.0, 1.0) / 2.0));
-					outStream.Append(output);
-					outStream.Append(SetupFurOutputStructs(output, input, furVectors, float3(4.0, 1.0, 1.0) / 6.0));
-					outStream.Append(output);
-					outStream.Append(SetupFurOutputStructs(output, input, furVectors, float3(1.0, 1.0, 0.0) / 2.0));
-					outStream.Append(output);
+					POI_LILFUR_SLOT_LOOP for (int furSlot3 = 9; furSlot3 < 15; furSlot3++)
+					{
+						outStream.Append(SetupFurOutputStructs(output, input, furVectors, poiFurFactors[furSlot3]));
+						outStream.Append(output);
+					}
 				}
 				outStream.Append(SetupFurOutputStructs(output, input, furVectors, float3(1.0, 0.0, 0.0) / 1.0));
 				outStream.Append(output);
@@ -163847,6 +162583,7 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 			float2 _MainTintTexturePan;
 			float _MainTintTextureUV;
 			half _MainBrightness;
+			half _MainColorAdjustClamp;
 			float _MainGamma;
 			
 			float _MainHueALCTEnabled;
@@ -165343,26 +164080,13 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 			
 			half3 poiThemeColor(in PoiMods poiMods, in half3 srcColor, in half themeIndex)
 			{
-				half3 outputColor = srcColor;
-				if (themeIndex != 0)
-				{
-					themeIndex = max(themeIndex - 1, 0);
-					
-					if (themeIndex <= 3)
-					{
-						outputColor = poiMods.globalColorTheme[themeIndex].rgb;
-					}
-					else
-					{
-						#ifdef POI_AUDIOLINK
-						if (poiMods.audioLinkAvailable)
-						{
-							outputColor = poiMods.globalColorTheme[themeIndex].rgb;
-						}
-						#endif
-					}
-				}
-				return outputColor;
+				half poiThemeIdx = clamp(max(themeIndex - 1, 0), 0, 11);
+				#ifdef POI_AUDIOLINK
+				bool poiThemeUse = (themeIndex != 0) && (poiThemeIdx <= 3 || poiMods.audioLinkAvailable);
+				#else
+				bool poiThemeUse = (themeIndex != 0) && (poiThemeIdx <= 3);
+				#endif
+				return poiThemeUse ? poiMods.globalColorTheme[poiThemeIdx].rgb : srcColor;
 			}
 			
 			struct PoiSpriteSheetConfig
@@ -167896,6 +166620,10 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 					#endif
 				}
 				poiFragData.baseColor = lerp(poiFragData.baseColor, poiFragData.baseColor * (_MainBrightness + 1), hueShiftAlpha.g);
+				if (_MainColorAdjustClamp > 0.5)
+				{
+					poiFragData.baseColor = saturate(poiFragData.baseColor);
+				}
 				#endif
 				//endex
 				

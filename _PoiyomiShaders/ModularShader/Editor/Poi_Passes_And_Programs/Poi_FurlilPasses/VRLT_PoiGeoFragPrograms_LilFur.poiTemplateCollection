@@ -225,6 +225,14 @@ Stencil
 	#define _Mode _RenderingReduceClipDistance
 #endif
 
+#if defined(OPTIMIZER_ENABLED)
+	#define POI_LILFUR_SLOT_LOOP [unroll]
+	#define POI_LILFUR_SLOT_BOUND 6
+#else
+	#define POI_LILFUR_SLOT_LOOP [loop]
+	#define POI_LILFUR_SLOT_BOUND furFactorCount
+#endif
+
 #T#PoiLilFurVariablesExposed
 float4 _FurVector;
 float4 _FurVectorPan;
@@ -361,12 +369,12 @@ PoiVertToGeoLilFur vert(appdata v)
 	UNITY_SETUP_INSTANCE_ID(v);
 	PoiVertToGeoLilFur o;
 	PoiInitStruct(PoiVertToGeoLilFur, o);
+	UNITY_TRANSFER_INSTANCE_ID(v, o);
 
 	// FXC on mobile doesn't like (PoiVertToGeoLilFur)POI_NAN return
 	// if o.worldPos NaN does not get overwritten, it's discarded
 	#if defined(SHADER_API_MOBILE)
 		o.worldPos = float3(POI_NAN, POI_NAN, POI_NAN);
-		UNITY_TRANSFER_INSTANCE_ID(v, o);
 	#endif
 
 	#ifdef POI_AUDIOLINK
@@ -637,44 +645,48 @@ void geom(triangle PoiVertToGeoLilFur input[3], inout TriangleStream<PoiGeoToFra
 	#endif
 
 	int furLayerCount = min(max((int)_FurLayerNum, 1), 3);
-	if (furLayerCount == 1)
+	// [loop] keeps one copy of SetupFurOutputStructs()
+	// to prevent compiler stack overflow (unlocked only, see POI_LILFUR_SLOT_LOOP)
+	static const float3 poiFurFactors[15] =
 	{
-		outStream.Append(SetupFurOutputStructs(output, input, furVectors, float3(1.0, 0.0, 0.0) / 1.0));
-		outStream.Append(output);
-		outStream.Append(SetupFurOutputStructs(output, input, furVectors, float3(0.0, 1.0, 0.0) / 1.0));
-		outStream.Append(output);
-		outStream.Append(SetupFurOutputStructs(output, input, furVectors, float3(0.0, 0.0, 1.0) / 1.0));
-		outStream.Append(output);
-	}
-	else if (furLayerCount >= 2)
+		// [0..2] furLayerCount == 1
+		float3(1.0, 0.0, 0.0) / 1.0,
+		float3(0.0, 1.0, 0.0) / 1.0,
+		float3(0.0, 0.0, 1.0) / 1.0,
+		// [3..8] furLayerCount >= 2
+		float3(1.0, 0.0, 0.0) / 1.0,
+		float3(0.0, 1.0, 1.0) / 2.0,
+		float3(0.0, 1.0, 0.0) / 1.0,
+		float3(1.0, 0.0, 1.0) / 2.0,
+		float3(0.0, 0.0, 1.0) / 1.0,
+		float3(1.0, 1.0, 0.0) / 2.0,
+		// [9..14] furLayerCount >= 3, emitted on top of the >= 2 set
+		float3(1.0, 4.0, 1.0) / 6.0,
+		float3(0.0, 1.0, 1.0) / 2.0,
+		float3(1.0, 1.0, 4.0) / 6.0,
+		float3(1.0, 0.0, 1.0) / 2.0,
+		float3(4.0, 1.0, 1.0) / 6.0,
+		float3(1.0, 1.0, 0.0) / 2.0
+	};
+
+	int furFactorStart = (furLayerCount == 1) ? 0 : 3;
+	int furFactorCount = (furLayerCount == 1) ? 3 : 6;
+	POI_LILFUR_SLOT_LOOP for (int furSlot = 0; furSlot < POI_LILFUR_SLOT_BOUND; furSlot++)
 	{
-		outStream.Append(SetupFurOutputStructs(output, input, furVectors, float3(1.0, 0.0, 0.0) / 1.0));
-		outStream.Append(output);
-		outStream.Append(SetupFurOutputStructs(output, input, furVectors, float3(0.0, 1.0, 1.0) / 2.0));
-		outStream.Append(output);
-		outStream.Append(SetupFurOutputStructs(output, input, furVectors, float3(0.0, 1.0, 0.0) / 1.0));
-		outStream.Append(output);
-		outStream.Append(SetupFurOutputStructs(output, input, furVectors, float3(1.0, 0.0, 1.0) / 2.0));
-		outStream.Append(output);
-		outStream.Append(SetupFurOutputStructs(output, input, furVectors, float3(0.0, 0.0, 1.0) / 1.0));
-		outStream.Append(output);
-		outStream.Append(SetupFurOutputStructs(output, input, furVectors, float3(1.0, 1.0, 0.0) / 2.0));
+		#if defined(OPTIMIZER_ENABLED)
+		// Constant bound so the unroll always succeeds, even if the layer count is animated.
+		if (furSlot >= furFactorCount) break;
+		#endif
+		outStream.Append(SetupFurOutputStructs(output, input, furVectors, poiFurFactors[furFactorStart + furSlot]));
 		outStream.Append(output);
 	}
 	if (furLayerCount >= 3)
 	{
-		outStream.Append(SetupFurOutputStructs(output, input, furVectors, float3(1.0, 4.0, 1.0) / 6.0));
-		outStream.Append(output);
-		outStream.Append(SetupFurOutputStructs(output, input, furVectors, float3(0.0, 1.0, 1.0) / 2.0));
-		outStream.Append(output);
-		outStream.Append(SetupFurOutputStructs(output, input, furVectors, float3(1.0, 1.0, 4.0) / 6.0));
-		outStream.Append(output);
-		outStream.Append(SetupFurOutputStructs(output, input, furVectors, float3(1.0, 0.0, 1.0) / 2.0));
-		outStream.Append(output);
-		outStream.Append(SetupFurOutputStructs(output, input, furVectors, float3(4.0, 1.0, 1.0) / 6.0));
-		outStream.Append(output);
-		outStream.Append(SetupFurOutputStructs(output, input, furVectors, float3(1.0, 1.0, 0.0) / 2.0));
-		outStream.Append(output);
+		POI_LILFUR_SLOT_LOOP for (int furSlot3 = 9; furSlot3 < 15; furSlot3++)
+		{
+			outStream.Append(SetupFurOutputStructs(output, input, furVectors, poiFurFactors[furSlot3]));
+			outStream.Append(output);
+		}
 	}
 	outStream.Append(SetupFurOutputStructs(output, input, furVectors, float3(1.0, 0.0, 0.0) / 1.0));
 	outStream.Append(output);

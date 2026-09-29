@@ -44,6 +44,7 @@ _Saturation ("Saturation", Range(-1, 10)) = 0
 _MainChromatize ("Chromatize", Range(-1, 10)) = 0
 _MainBrightness ("Brightness", Range(-1, 2)) = 0
 _MainGamma ("Gamma", Range(0.01, 5)) = 1
+[ToggleUI]_MainColorAdjustClamp ("Clamp Color Adjust--{tooltip:Keeps the adjusted color between 0 and 1 before lighting.}", Float) = 1
 
 [HideInInspector] s_start_MainTint ("Tint--{persistent_expand:true,default_expand:true}", Float) = 1
 _MainTintColor ("Tint Color", Color) = (1, 1, 1, 0)
@@ -176,6 +177,7 @@ float _Cutoff;
 	float2 _MainTintTexturePan;
 	float _MainTintTextureUV;
 	half _MainBrightness;
+	half _MainColorAdjustClamp;
 	float _MainGamma;
 
 	float _MainHueALCTEnabled;
@@ -470,6 +472,10 @@ void applyMainColor(inout PoiFragData poiFragData, inout PoiMesh poiMesh, inout 
 			#endif
 		}
 		poiFragData.baseColor = lerp(poiFragData.baseColor, poiFragData.baseColor * (_MainBrightness + 1), hueShiftAlpha.g);
+		if (_MainColorAdjustClamp > 0.5)
+		{
+			poiFragData.baseColor = saturate(poiFragData.baseColor);
+		}
 	#endif
 	//endex
 

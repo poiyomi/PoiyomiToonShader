@@ -117,7 +117,7 @@ _GlitterALChronoRotationSpeed ("Chrono Rotation Speed", Float) = 0
 
 [HideInInspector] ss_start_GlitterALColorOverrideSS ("Color Override--{reference_property:_GlitterALColorOverrideEnabled,persistent_expand:true,default_expand:false}", Float) = 0
 [ThryHideInInspector][ToggleUI] _GlitterALColorOverrideEnabled ("Color Override", Float) = 0
-_GlitterALColorOverride ("Color", Color) = (1,1,1,1)
+[ThryHDR]_GlitterALColorOverride ("Color", Color) = (1,1,1,1)
 [ThryWideEnum(Off, 0, Theme Color 0, 1, Theme Color 1, 2, Theme Color 2, 3, Theme Color 3, 4, ColorChord 0, 5, ColorChord 1, 6, ColorChord 2, 7, ColorChord 3, 8, AL Theme 0, 9, AL Theme 1, 10, AL Theme 2, 11, AL Theme 3, 12)] _GlitterALColorOverrideThemeIndex ("Theme Color", Int) = 0
 [Enum(Bass, 0, Low Mid, 1, High Mid, 2, Treble, 3, Volume, 4)] _GlitterALColorOverrideBand ("Color Override Band", Int) = 0
 [Ramp4(normalized)]_GlitterALColorOverrideRamp ("Color Override Ramp", Vector) = (0, 1, 0, 1)
@@ -550,11 +550,10 @@ _GlitterALColorOverride ("Color", Color) = (1,1,1,1)
             if (_GlitterFullCoverage >= 0.5)
             {
                 // Process every cell whose particle could overlap this fragment.
-                [loop] for (int cellJ = -1; cellJ <= 1; cellJ++)
+                [loop] for (int poiCell0 = 0; poiCell0 < 9; poiCell0++)
                 {
-                    [loop] for (int cellI = -1; cellI <= 1; cellI++)
                     {
-                        float2 neighbor = float2(cellI, cellJ);
+                        float2 neighbor = float2(poiCell0 % 3 - 1, poiCell0 / 3 - 1);
                         float2 cellRando = poiRand2(neighborhoodSeed + neighbor);
                         float2 cellDiff = neighborhoodOrigin + neighbor + cellRando * _GlitterRandomLocation;
                         if (dot(cellDiff, cellDiff) >= maxParticleDistSq) continue;
@@ -569,11 +568,10 @@ _GlitterALColorOverride ("Color", Color) = (1,1,1,1)
                 float2 randoPoint = 0;
                 float2 closestDiff = 0;
 
-                [loop] for (int cellJ = -1; cellJ <= 1; cellJ++)
+                [unroll] for (int poiCell1 = 0; poiCell1 < 9; poiCell1++)
                 {
-                    [loop] for (int cellI = -1; cellI <= 1; cellI++)
                     {
-                        float2 neighbor = float2(cellI, cellJ);
+                        float2 neighbor = float2(poiCell1 % 3 - 1, poiCell1 / 3 - 1);
                         float2 cellRando = poiRand2(neighborhoodSeed + neighbor);
                         float2 cellDiff = neighborhoodOrigin + neighbor + cellRando * _GlitterRandomLocation;
                         float cellDistSq = dot(cellDiff, cellDiff);

@@ -310,13 +310,11 @@ half poiGrabPixelGapCut(float2 grabSampleUV, float2 pixelBlock, float2 pixelAnch
 float2 poiGrabPixelateUV(float2 uv, half pixelMask, float pixelSize, float2 pixelAnchor)
 {
 	//ifex isNotAnimated(_GrabPixelationEnabled) && _GrabPixelationEnabled==0
-	if (_GrabPixelationEnabled >= 0.5)
-	{
-		float2 pixelBlock = poiGrabPixelBlock(pixelMask, pixelSize);
-		return (floor((uv - pixelAnchor) / pixelBlock) + 0.5) * pixelBlock + pixelAnchor;
-	}
+	float2 pixelBlock = poiGrabPixelBlock(pixelMask, pixelSize);
+	uv = _GrabPixelationEnabled >= 0.5
+		? (floor((uv - pixelAnchor) / pixelBlock) + 0.5) * pixelBlock + pixelAnchor
+		: uv;
 	//endex
-
 	return uv;
 }
 

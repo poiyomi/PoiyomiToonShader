@@ -184,6 +184,11 @@ _ReflectionCubeEnableLighting ("Enable Lighting (Fallback)", Range(0, 1)) = 1
 			TextureCube _ReflectionCubeTex;
 		#endif
 	#endif
+	#if defined(OPTIMIZER_ENABLED)
+		#define POI_STYLIZED_SPECULAR_VERTEX_LIGHT_LOOP [unroll]
+	#else
+		#define POI_STYLIZED_SPECULAR_VERTEX_LIGHT_LOOP [loop]
+	#endif
 #endif
 //endex
 
@@ -673,7 +678,7 @@ _ReflectionCubeEnableLighting ("Enable Lighting (Fallback)", Range(0, 1)) = 1
 			#if defined(VERTEXLIGHT_ON)
 			if (poiFragData.toggleVertexLights && _UseReflection >= 0.5 && _ApplySpecular >= 0.5 && _ApplySpecularFA >= 0.5)
 			{
-					[unroll]
+					POI_STYLIZED_SPECULAR_VERTEX_LIGHT_LOOP
 					for (int vIdx = 0; vIdx < 4; vIdx++)
 					{
 						if (!any(poiLight.vPosition[vIdx])) continue;

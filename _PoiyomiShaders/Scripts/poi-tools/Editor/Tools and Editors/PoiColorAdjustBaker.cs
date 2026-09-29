@@ -32,6 +32,7 @@ namespace Poi.Tools
             bool hueShiftActive = GetFloatOr(material, "_MainHueShiftToggle", 0f) == 1 &&
                                   GetFloatOr(material, "_MainHueShift", 0f) != 0;
             bool satChanged = GetFloatOr(material, "_Saturation", 0f) != 0;
+            bool clampEnabled = GetFloatOr(material, "_MainColorAdjustClamp", 0f) > 0.5f;
             bool brightChanged = GetFloatOr(material, "_MainBrightness", 0f) != 0;
             bool gammaChanged = Mathf.Abs(GetFloatOr(material, "_MainGamma", 1f) - 1f) > 0.001f;
             bool chromatizeChanged = GetFloatOr(material, "_MainChromatize", 0f) != 0;
@@ -40,7 +41,7 @@ namespace Poi.Tools
                                    material.GetFloat("_ColorGradingToggle") > 0 &&
                                    GetFloatOr(material, "_MainGradationStrength", 0f) > 0;
 
-            return hueShiftActive || satChanged || brightChanged || gammaChanged ||
+            return clampEnabled || hueShiftActive || satChanged || brightChanged || gammaChanged ||
                    chromatizeChanged || tintActive || gradationActive;
         }
 
@@ -187,6 +188,7 @@ namespace Poi.Tools
             SetFloatIfExists(baker, source, "_Saturation");
             SetFloatIfExists(baker, source, "_MainChromatize");
             SetFloatIfExists(baker, source, "_MainBrightness");
+            SetFloatIfExists(baker, source, "_MainColorAdjustClamp");
             SetFloatIfExists(baker, source, "_MainGamma");
             SetFloatIfExists(baker, source, "_ColorGradingToggle");
             SetFloatIfExists(baker, source, "_MainGradationStrength");
@@ -303,6 +305,8 @@ namespace Poi.Tools
                 material.SetFloat("_MainBrightness", 0);
             if (material.HasProperty("_MainGamma"))
                 material.SetFloat("_MainGamma", 1);
+            if (material.HasProperty("_MainColorAdjustClamp"))
+                material.SetFloat("_MainColorAdjustClamp", 1);
             if (material.HasProperty("_MainTintColor"))
                 material.SetColor("_MainTintColor", new Color(1, 1, 1, 0));
             if (material.HasProperty("_MainGradationStrength"))
