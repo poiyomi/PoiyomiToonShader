@@ -103,16 +103,22 @@ namespace Poi.Tools.ShaderTranslator.VersionUpgrade
 					SetTargetPropertyValue(ctx, "_ContinuousDissolveEnabled", speed != 0f ? 1f : 0f);
 				}),
 
-				// Dissolve: _DissolveEdgeWidth -> if (_DissolveEdgeWidth > 0) _DissolveEdgeEnabled = 1f
+				// Dissolve: 9.3 had no edge toggle. The edge showed whenever it had any width (or, for Point to Point, any
+				// _DissolveP2PEdgeLength), so no 9.3 value reliably says whether it was in use. 10.0 gates the edge
+				// behind _DissolveEdgeEnabled, so always turn it on; the width and colors carry over unchanged.
 				new PropertyTranslation("_DissolveEdgeWidth", (prop, ctx) =>
 				{
-					if (GetSourcePropertyValue<float>(ctx, prop) > 0f) SetTargetPropertyValue(ctx, "_DissolveEdgeEnabled", 1f);
+					SetTargetPropertyValue(ctx, "_DissolveEdgeEnabled", 1f);
 				}),
 
-				// Dissolve: _DissolveDetailStrength -> if (_DissolveDetailStrength > 0) _DissolveDetailNoiseEnabled = 1f
-				new PropertyTranslation("_DissolveDetailStrength", (prop, ctx) =>
+				// Dissolve: 9.3 always applied the Dissolve Noise, so an unassigned (black) texture simply added nothing.
+				// 10.0 gates it behind _DissolveDetailNoiseEnabled, so turn it on when a noise texture is assigned.
+				// Inverting the blank texture makes it solid white, which still offsets the dissolve, so that counts too.
+				new PropertyTranslation("_DissolveDetailNoise", (prop, ctx) =>
 				{
-					if (GetSourcePropertyValue<float>(ctx, prop) > 0f) SetTargetPropertyValue(ctx, "_DissolveDetailNoiseEnabled", 1f);
+					bool textured = GetSourcePropertyValue<Texture>(ctx, prop) != null;
+					bool inverted = GetSourcePropertyValue<float>(ctx, "_DissolveInvertDetailNoise") > 0f;
+					if (textured || inverted) SetTargetPropertyValue(ctx, "_DissolveDetailNoiseEnabled", 1f);
 				}),
 
 				// Dissolve: 9.3 only drew the edge hue shift when BOTH _DissolveEdgeHueShiftEnabled and the master

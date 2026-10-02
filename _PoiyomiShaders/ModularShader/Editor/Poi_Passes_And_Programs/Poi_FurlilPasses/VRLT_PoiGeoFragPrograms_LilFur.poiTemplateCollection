@@ -440,7 +440,7 @@ PoiVertToGeoLilFur vert(appdata v)
 
 	#ifdef POI_PASS_LILFUR
 		// Calculate fur vector
-		float3 bitangentOS = normalize(cross(v.normal, v.tangent.xyz)) * v.tangent.w;
+		float3 bitangentOS = Unity_SafeNormalize(cross(v.normal, v.tangent.xyz)) * v.tangent.w;
 		float3x3 tbnOS = float3x3(v.tangent.xyz, bitangentOS, v.normal);
 		o.furVector = _FurVector.xyz + float3(0, 0, 0.001);
 		
@@ -451,7 +451,7 @@ PoiVertToGeoLilFur vert(appdata v)
 			o.furVector = float3(o.furVector.xy + furVectorTex.xy, o.furVector.z * furVectorTex.z);
 		#endif
 		
-		o.furVector = mul(normalize(o.furVector), tbnOS);
+		o.furVector = mul(Unity_SafeNormalize(o.furVector), tbnOS);
 		o.furVector *= _FurVector.w;
 		
 		#ifdef LIL_FUR_PRE
@@ -466,8 +466,8 @@ PoiVertToGeoLilFur vert(appdata v)
 		UNITY_BRANCH
 		if (_FurWindEnabled >= 0.5)
 		{
-			float3 furWindPrimaryDir = normalize(_FurWindPrimaryDirection.xyz);
-			float3 furWindDetailDir = normalize(_FurWindDetailDirection.xyz);
+			float3 furWindPrimaryDir = Unity_SafeNormalize(_FurWindPrimaryDirection.xyz);
+			float3 furWindDetailDir = Unity_SafeNormalize(_FurWindDetailDirection.xyz);
 			half furWindPrimaryWave = sin(POI_TIME.y * _FurWindPrimarySpeed + dot(o.worldPos, furWindPrimaryDir) * _FurWindPrimaryFrequency);
 			float furWindDetailWave = sin(POI_TIME.y * _FurWindDetailSpeed + dot(o.worldPos, furWindDetailDir) * _FurWindDetailFrequency);
 			float3 furWindOffset = furWindPrimaryWave * furWindPrimaryDir * _FurWindPrimaryAmplitude
@@ -542,9 +542,9 @@ PoiGeoToFragLilFur SetupFurOutputStructs(inout PoiGeoToFragLilFur output, PoiVer
 	output.uv[1] = lilLerpFloat4(input[0].uv[1], input[1].uv[1], input[2].uv[1], factor);
 	output.lightmapUV = lilLerpFloat4(input[0].lightmapUV, input[1].lightmapUV, input[2].lightmapUV, factor);
 	output.vertexColor = lilLerpFloat4(input[0].vertexColor, input[1].vertexColor, input[2].vertexColor, factor);
-	output.normal.xyz = normalize(lilLerpFloat3(input[0].normal.xyz, input[1].normal.xyz, input[2].normal.xyz, factor));
+	output.normal.xyz = Unity_SafeNormalize(lilLerpFloat3(input[0].normal.xyz, input[1].normal.xyz, input[2].normal.xyz, factor));
 	output.normal.w = input[0].normal.w;
-	output.tangent.xyz = normalize(lilLerpFloat3(input[0].tangent.xyz, input[1].tangent.xyz, input[2].tangent.xyz, factor));
+	output.tangent.xyz = Unity_SafeNormalize(lilLerpFloat3(input[0].tangent.xyz, input[1].tangent.xyz, input[2].tangent.xyz, factor));
 	output.tangent.w = input[0].tangent.w;
 
 	output.fogData = lilLerpFloat(input[0].fogData, input[1].fogData, input[2].fogData, factor);
@@ -729,9 +729,10 @@ float4 frag(PoiGeoToFragLilFur i, bool facing : SV_IsFrontFace) : SV_Target
 	// Fur Rim Lighting (from liltoon)
 	// invLighting = (1.0 - directColor) * sqrt(directColor) - smooth inverse curve from direct light only
 	// grayscale using simple 1/3 average, then lerp based on antiLight
-	half3 furRimInvLighting = saturate((1.0 - poiLight.directColor) * sqrt(poiLight.directColor));
+	half3 furRimDirectColor = max(poiLight.directColor, 0.0h);
+	half3 furRimInvLighting = saturate((1.0h - furRimDirectColor) * sqrt(furRimDirectColor));
 	half furRimAntiLightValue = lerp(1, dot(furRimInvLighting, float3(1.0/3.0, 1.0/3.0, 1.0/3.0)), _FurRimAntiLight);
-	poiFragData.finalColor += i.furLayer * pow((1 - abs(dot(i.normal.xyz, poiCam.viewDir))), _FurRimFresnelPower) * furRimAntiLightValue * _FurRimColor.rgb * poiLight.directColor;
+	poiFragData.finalColor += i.furLayer * pow(saturate(1.0h - abs(dot(i.normal.xyz, poiCam.viewDir))), _FurRimFresnelPower) * furRimAntiLightValue * _FurRimColor.rgb * poiLight.directColor;
 
 	// Multiply color by alpha in ForwardAdd pass for transparent mode (same as liltoon)
 	#if defined(POI_PASS_ADD) && !defined(LIL_FUR_PRE)
@@ -881,9 +882,9 @@ poiMesh.uv[2] = i.uv[1].xy;
 poiMesh.uv[3] = i.uv[1].zw;
 
 poiCam.eyeViewDir = !IsOrthographicCamera() ? (getCameraPosition(false) - i.worldPos.xyz) : UNITY_MATRIX_I_V._m02_m12_m22;
-poiCam.eyeViewDir = normalize(poiCam.eyeViewDir);
+poiCam.eyeViewDir = Unity_SafeNormalize(poiCam.eyeViewDir);
 poiCam.viewDir = !IsOrthographicCamera() ? (getCameraPosition() - i.worldPos.xyz) : UNITY_MATRIX_I_V._m02_m12_m22;
-poiCam.viewDir = normalize(poiCam.viewDir);
+poiCam.viewDir = Unity_SafeNormalize(poiCam.viewDir);
 poiCam.worldPos = getCameraPosition();
 poiCam.vDotN = abs(dot(poiCam.eyeViewDir, i.normal.xyz));
 poiCam.vDotNCentered = abs(dot(poiCam.viewDir, i.normal.xyz));

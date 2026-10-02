@@ -2,7 +2,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 {
 	Properties
 	{
-		[HideInInspector] shader_master_label ("<color=#E75898ff>Poiyomi 10.0.23</color>", Float) = 0
+		[HideInInspector] shader_master_label ("<color=#E75898ff>Poiyomi 10.0.24</color>", Float) = 0
 		[HideInInspector] shader_is_using_thry_editor ("", Float) = 0
 		[HideInInspector] shader_locale ("0db0b86376c3dca4b9a6828ef8615fe0", Float) = 0
 		[HideInInspector] footer_website ("{texture:{name:icon-poilogo,height:24},action:{type:URL,data:https://www.poiyomi.com},hover:WEBSITE}", Float) = 0
@@ -4932,6 +4932,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 		[HideInInspector] m_start_Uzumore (" View Clip Prevention (Uzumore)--{reference_property:_UzumoreCategoryToggle,button_author:{text:sigmal00,action:{type:URL,data:https://github.com/sigmal00},hover:GitHub}}, button_help:{text:Tutorial,action:{type:URL,data:https://www.poiyomi.com/vertex-options/view-clip-prevention},hover:Documentation}}", Float) = 0
 		[HideInInspector][DoNotAnimate][ThryToggle] _UzumoreCategoryToggle (" View Clip Prevention (Uzumore)", Float) = 0
 		[ToggleUI] _UzumoreEnabled ("Animation Toggle", Float) = 1
+		_UzumoreObjectScale ("Object Scale--{tooltip:Multiplies the transform scale that Push Amount and Push Bias scale with.}", Float) = 1
 		_UzumoreAmount ("Push Amount (m)", Float) = 0.1
 		_UzumoreBias ("Push Bias", Float) = 0.001
 		[sRGBWarning]_UzumoreMask ("Push Mask--{reference_properties:[_UzumoreMaskUV, _UzumoreMaskChannel]}", 2D) = "white" { }
@@ -11033,6 +11034,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 			float _UzumoreEnabled;
 			float _UzumoreAmount;
 			float _UzumoreBias;
+			float _UzumoreObjectScale;
 			float _UzumoreMaskUV;
 			float _UzumoreMaskChannel;
 			#if defined(PROP_UZUMOREMASK) || !defined(OPTIMIZER_ENABLED)
@@ -12162,12 +12164,23 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				return dot(p, normalize(n)) + h;
 			}
 			
-			float3 calcIntrudePos(float3 pos, float3 normalOS, float2 uv, float objectScale)
+			float3 calcIntrudePos(float3 pos, float3 normalOS, float2 uv, half4 vertexColor)
 			{
 				float3 wnormal = PoiObjectToWorldNormal(normalOS);
 				float3 wpos = mul(unity_ObjectToWorld, float4(pos, 1.0)).xyz;
 				
+				float3 axisX = unity_ObjectToWorld._m00_m10_m20;
+				float3 axisY = unity_ObjectToWorld._m01_m11_m21;
+				float3 axisZ = unity_ObjectToWorld._m02_m12_m22;
+				float objectScale = sqrt((dot(axisX, axisX) + dot(axisY, axisY) + dot(axisZ, axisZ)) / 3.0) * _UzumoreObjectScale;
+				
+				#if POI_PIPE == POI_BIRP
+				// Keep the viewing camera's direction when the current view belongs to a shadow map.
+				// unity_WorldToCamera uses +Z forward.
+				float3 camDir = unity_WorldToCamera._m20_m21_m22;
+				#else
 				float3 camDir = -UNITY_MATRIX_V._m20_m21_m22;
+				#endif
 				float3 camPos = getCameraPosition(false);
 				float near = _ProjectionParams.y;
 				
@@ -12177,7 +12190,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				half uzumoreMask = 1;
 				#endif
 				
-				float maxAmount = _UzumoreAmount * uzumoreMask * objectScale;
+				float maxAmount = objectScale > 0 ? uzumoreMask * (_UzumoreAmount * objectScale + near * (1.0 - objectScale)) : 0;
 				float maxBias = _UzumoreBias * objectScale;
 				float d = sdPlane(wpos - camPos, -camDir, (near + maxBias));
 				float intrudeAmount = clamp(d, 0, maxAmount);
@@ -12820,11 +12833,15 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				//endex
 				
 				//ifex _UzumoreCategoryToggle==0
-				#if !defined(POI_PASS_META)
+				#if !defined(POI_PASS_META) && !(POI_PIPE == POI_URP && defined(POI_PASS_SHADOW))
 				UNITY_BRANCH
 				if (_UzumoreCategoryToggle >= 0.5 && _UzumoreEnabled >= 0.5)
 				{
-					v.vertex.xyz = calcIntrudePos(v.vertex.xyz, v.normal.xyz, poiUV(vertexUV(v, _UzumoreMaskUV), _UzumoreMask_ST), o.normal.w);
+					float2 maskUV = 0;
+					#if defined(PROP_UZUMOREMASK) || !defined(OPTIMIZER_ENABLED)
+					maskUV = poiUV(vertexUV(v, _UzumoreMaskUV), _UzumoreMask_ST);
+					#endif
+					v.vertex.xyz = calcIntrudePos(v.vertex.xyz, v.normal.xyz, maskUV, v.color);
 				}
 				#endif
 				//endex
@@ -18888,6 +18905,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 			float _UzumoreEnabled;
 			float _UzumoreAmount;
 			float _UzumoreBias;
+			float _UzumoreObjectScale;
 			float _UzumoreMaskUV;
 			float _UzumoreMaskChannel;
 			#if defined(PROP_UZUMOREMASK) || !defined(OPTIMIZER_ENABLED)
@@ -21450,12 +21468,23 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				return dot(p, normalize(n)) + h;
 			}
 			
-			float3 calcIntrudePos(float3 pos, float3 normalOS, float2 uv, float objectScale)
+			float3 calcIntrudePos(float3 pos, float3 normalOS, float2 uv, half4 vertexColor)
 			{
 				float3 wnormal = PoiObjectToWorldNormal(normalOS);
 				float3 wpos = mul(unity_ObjectToWorld, float4(pos, 1.0)).xyz;
 				
+				float3 axisX = unity_ObjectToWorld._m00_m10_m20;
+				float3 axisY = unity_ObjectToWorld._m01_m11_m21;
+				float3 axisZ = unity_ObjectToWorld._m02_m12_m22;
+				float objectScale = sqrt((dot(axisX, axisX) + dot(axisY, axisY) + dot(axisZ, axisZ)) / 3.0) * _UzumoreObjectScale;
+				
+				#if POI_PIPE == POI_BIRP
+				// Keep the viewing camera's direction when the current view belongs to a shadow map.
+				// unity_WorldToCamera uses +Z forward.
+				float3 camDir = unity_WorldToCamera._m20_m21_m22;
+				#else
 				float3 camDir = -UNITY_MATRIX_V._m20_m21_m22;
+				#endif
 				float3 camPos = getCameraPosition(false);
 				float near = _ProjectionParams.y;
 				
@@ -21465,7 +21494,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				half uzumoreMask = 1;
 				#endif
 				
-				float maxAmount = _UzumoreAmount * uzumoreMask * objectScale;
+				float maxAmount = objectScale > 0 ? uzumoreMask * (_UzumoreAmount * objectScale + near * (1.0 - objectScale)) : 0;
 				float maxBias = _UzumoreBias * objectScale;
 				float d = sdPlane(wpos - camPos, -camDir, (near + maxBias));
 				float intrudeAmount = clamp(d, 0, maxAmount);
@@ -22108,11 +22137,15 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				//endex
 				
 				//ifex _UzumoreCategoryToggle==0
-				#if !defined(POI_PASS_META)
+				#if !defined(POI_PASS_META) && !(POI_PIPE == POI_URP && defined(POI_PASS_SHADOW))
 				UNITY_BRANCH
 				if (_UzumoreCategoryToggle >= 0.5 && _UzumoreEnabled >= 0.5)
 				{
-					v.vertex.xyz = calcIntrudePos(v.vertex.xyz, v.normal.xyz, poiUV(vertexUV(v, _UzumoreMaskUV), _UzumoreMask_ST), o.normal.w);
+					float2 maskUV = 0;
+					#if defined(PROP_UZUMOREMASK) || !defined(OPTIMIZER_ENABLED)
+					maskUV = poiUV(vertexUV(v, _UzumoreMaskUV), _UzumoreMask_ST);
+					#endif
+					v.vertex.xyz = calcIntrudePos(v.vertex.xyz, v.normal.xyz, maskUV, v.color);
 				}
 				#endif
 				//endex
@@ -42154,6 +42187,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 			float _UzumoreEnabled;
 			float _UzumoreAmount;
 			float _UzumoreBias;
+			float _UzumoreObjectScale;
 			float _UzumoreMaskUV;
 			float _UzumoreMaskChannel;
 			#if defined(PROP_UZUMOREMASK) || !defined(OPTIMIZER_ENABLED)
@@ -43332,12 +43366,23 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				return dot(p, normalize(n)) + h;
 			}
 			
-			float3 calcIntrudePos(float3 pos, float3 normalOS, float2 uv, float objectScale)
+			float3 calcIntrudePos(float3 pos, float3 normalOS, float2 uv, half4 vertexColor)
 			{
 				float3 wnormal = PoiObjectToWorldNormal(normalOS);
 				float3 wpos = mul(unity_ObjectToWorld, float4(pos, 1.0)).xyz;
 				
+				float3 axisX = unity_ObjectToWorld._m00_m10_m20;
+				float3 axisY = unity_ObjectToWorld._m01_m11_m21;
+				float3 axisZ = unity_ObjectToWorld._m02_m12_m22;
+				float objectScale = sqrt((dot(axisX, axisX) + dot(axisY, axisY) + dot(axisZ, axisZ)) / 3.0) * _UzumoreObjectScale;
+				
+				#if POI_PIPE == POI_BIRP
+				// Keep the viewing camera's direction when the current view belongs to a shadow map.
+				// unity_WorldToCamera uses +Z forward.
+				float3 camDir = unity_WorldToCamera._m20_m21_m22;
+				#else
 				float3 camDir = -UNITY_MATRIX_V._m20_m21_m22;
+				#endif
 				float3 camPos = getCameraPosition(false);
 				float near = _ProjectionParams.y;
 				
@@ -43347,7 +43392,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				half uzumoreMask = 1;
 				#endif
 				
-				float maxAmount = _UzumoreAmount * uzumoreMask * objectScale;
+				float maxAmount = objectScale > 0 ? uzumoreMask * (_UzumoreAmount * objectScale + near * (1.0 - objectScale)) : 0;
 				float maxBias = _UzumoreBias * objectScale;
 				float d = sdPlane(wpos - camPos, -camDir, (near + maxBias));
 				float intrudeAmount = clamp(d, 0, maxAmount);
@@ -43990,11 +44035,15 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				//endex
 				
 				//ifex _UzumoreCategoryToggle==0
-				#if !defined(POI_PASS_META)
+				#if !defined(POI_PASS_META) && !(POI_PIPE == POI_URP && defined(POI_PASS_SHADOW))
 				UNITY_BRANCH
 				if (_UzumoreCategoryToggle >= 0.5 && _UzumoreEnabled >= 0.5)
 				{
-					v.vertex.xyz = calcIntrudePos(v.vertex.xyz, v.normal.xyz, poiUV(vertexUV(v, _UzumoreMaskUV), _UzumoreMask_ST), o.normal.w);
+					float2 maskUV = 0;
+					#if defined(PROP_UZUMOREMASK) || !defined(OPTIMIZER_ENABLED)
+					maskUV = poiUV(vertexUV(v, _UzumoreMaskUV), _UzumoreMask_ST);
+					#endif
+					v.vertex.xyz = calcIntrudePos(v.vertex.xyz, v.normal.xyz, maskUV, v.color);
 				}
 				#endif
 				//endex
@@ -59733,6 +59782,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 			float _UzumoreEnabled;
 			float _UzumoreAmount;
 			float _UzumoreBias;
+			float _UzumoreObjectScale;
 			float _UzumoreMaskUV;
 			float _UzumoreMaskChannel;
 			#if defined(PROP_UZUMOREMASK) || !defined(OPTIMIZER_ENABLED)
@@ -62295,12 +62345,23 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				return dot(p, normalize(n)) + h;
 			}
 			
-			float3 calcIntrudePos(float3 pos, float3 normalOS, float2 uv, float objectScale)
+			float3 calcIntrudePos(float3 pos, float3 normalOS, float2 uv, half4 vertexColor)
 			{
 				float3 wnormal = PoiObjectToWorldNormal(normalOS);
 				float3 wpos = mul(unity_ObjectToWorld, float4(pos, 1.0)).xyz;
 				
+				float3 axisX = unity_ObjectToWorld._m00_m10_m20;
+				float3 axisY = unity_ObjectToWorld._m01_m11_m21;
+				float3 axisZ = unity_ObjectToWorld._m02_m12_m22;
+				float objectScale = sqrt((dot(axisX, axisX) + dot(axisY, axisY) + dot(axisZ, axisZ)) / 3.0) * _UzumoreObjectScale;
+				
+				#if POI_PIPE == POI_BIRP
+				// Keep the viewing camera's direction when the current view belongs to a shadow map.
+				// unity_WorldToCamera uses +Z forward.
+				float3 camDir = unity_WorldToCamera._m20_m21_m22;
+				#else
 				float3 camDir = -UNITY_MATRIX_V._m20_m21_m22;
+				#endif
 				float3 camPos = getCameraPosition(false);
 				float near = _ProjectionParams.y;
 				
@@ -62310,7 +62371,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				half uzumoreMask = 1;
 				#endif
 				
-				float maxAmount = _UzumoreAmount * uzumoreMask * objectScale;
+				float maxAmount = objectScale > 0 ? uzumoreMask * (_UzumoreAmount * objectScale + near * (1.0 - objectScale)) : 0;
 				float maxBias = _UzumoreBias * objectScale;
 				float d = sdPlane(wpos - camPos, -camDir, (near + maxBias));
 				float intrudeAmount = clamp(d, 0, maxAmount);
@@ -62953,11 +63014,15 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				//endex
 				
 				//ifex _UzumoreCategoryToggle==0
-				#if !defined(POI_PASS_META)
+				#if !defined(POI_PASS_META) && !(POI_PIPE == POI_URP && defined(POI_PASS_SHADOW))
 				UNITY_BRANCH
 				if (_UzumoreCategoryToggle >= 0.5 && _UzumoreEnabled >= 0.5)
 				{
-					v.vertex.xyz = calcIntrudePos(v.vertex.xyz, v.normal.xyz, poiUV(vertexUV(v, _UzumoreMaskUV), _UzumoreMask_ST), o.normal.w);
+					float2 maskUV = 0;
+					#if defined(PROP_UZUMOREMASK) || !defined(OPTIMIZER_ENABLED)
+					maskUV = poiUV(vertexUV(v, _UzumoreMaskUV), _UzumoreMask_ST);
+					#endif
+					v.vertex.xyz = calcIntrudePos(v.vertex.xyz, v.normal.xyz, maskUV, v.color);
 				}
 				#endif
 				//endex
@@ -72728,6 +72793,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 			float _UzumoreEnabled;
 			float _UzumoreAmount;
 			float _UzumoreBias;
+			float _UzumoreObjectScale;
 			float _UzumoreMaskUV;
 			float _UzumoreMaskChannel;
 			#if defined(PROP_UZUMOREMASK) || !defined(OPTIMIZER_ENABLED)
@@ -73857,12 +73923,23 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				return dot(p, normalize(n)) + h;
 			}
 			
-			float3 calcIntrudePos(float3 pos, float3 normalOS, float2 uv, float objectScale)
+			float3 calcIntrudePos(float3 pos, float3 normalOS, float2 uv, half4 vertexColor)
 			{
 				float3 wnormal = PoiObjectToWorldNormal(normalOS);
 				float3 wpos = mul(unity_ObjectToWorld, float4(pos, 1.0)).xyz;
 				
+				float3 axisX = unity_ObjectToWorld._m00_m10_m20;
+				float3 axisY = unity_ObjectToWorld._m01_m11_m21;
+				float3 axisZ = unity_ObjectToWorld._m02_m12_m22;
+				float objectScale = sqrt((dot(axisX, axisX) + dot(axisY, axisY) + dot(axisZ, axisZ)) / 3.0) * _UzumoreObjectScale;
+				
+				#if POI_PIPE == POI_BIRP
+				// Keep the viewing camera's direction when the current view belongs to a shadow map.
+				// unity_WorldToCamera uses +Z forward.
+				float3 camDir = unity_WorldToCamera._m20_m21_m22;
+				#else
 				float3 camDir = -UNITY_MATRIX_V._m20_m21_m22;
+				#endif
 				float3 camPos = getCameraPosition(false);
 				float near = _ProjectionParams.y;
 				
@@ -73872,7 +73949,7 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				half uzumoreMask = 1;
 				#endif
 				
-				float maxAmount = _UzumoreAmount * uzumoreMask * objectScale;
+				float maxAmount = objectScale > 0 ? uzumoreMask * (_UzumoreAmount * objectScale + near * (1.0 - objectScale)) : 0;
 				float maxBias = _UzumoreBias * objectScale;
 				float d = sdPlane(wpos - camPos, -camDir, (near + maxBias));
 				float intrudeAmount = clamp(d, 0, maxAmount);
@@ -74549,11 +74626,15 @@ Shader ".poiyomi/Poiyomi Toon Grab Pass"
 				//endex
 				
 				//ifex _UzumoreCategoryToggle==0
-				#if !defined(POI_PASS_META)
+				#if !defined(POI_PASS_META) && !(POI_PIPE == POI_URP && defined(POI_PASS_SHADOW))
 				UNITY_BRANCH
 				if (_UzumoreCategoryToggle >= 0.5 && _UzumoreEnabled >= 0.5)
 				{
-					v.vertex.xyz = calcIntrudePos(v.vertex.xyz, v.normal.xyz, poiUV(vertexUV(v, _UzumoreMaskUV), _UzumoreMask_ST), o.normal.w);
+					float2 maskUV = 0;
+					#if defined(PROP_UZUMOREMASK) || !defined(OPTIMIZER_ENABLED)
+					maskUV = poiUV(vertexUV(v, _UzumoreMaskUV), _UzumoreMask_ST);
+					#endif
+					v.vertex.xyz = calcIntrudePos(v.vertex.xyz, v.normal.xyz, maskUV, v.color);
 				}
 				#endif
 				//endex

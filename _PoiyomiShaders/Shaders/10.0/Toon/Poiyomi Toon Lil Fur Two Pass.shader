@@ -2,7 +2,7 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 {
 	Properties
 	{
-		[HideInInspector] shader_master_label ("<color=#E75898ff>Poiyomi 10.0.23</color>", Float) = 0
+		[HideInInspector] shader_master_label ("<color=#E75898ff>Poiyomi 10.0.24</color>", Float) = 0
 		[HideInInspector] shader_is_using_thry_editor ("", Float) = 0
 		[HideInInspector] shader_locale ("0db0b86376c3dca4b9a6828ef8615fe0", Float) = 0
 		[HideInInspector] footer_website ("{texture:{name:icon-poilogo,height:24},action:{type:URL,data:https://www.poiyomi.com},hover:WEBSITE}", Float) = 0
@@ -4990,6 +4990,7 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 		[HideInInspector] m_start_Uzumore (" View Clip Prevention (Uzumore)--{reference_property:_UzumoreCategoryToggle,button_author:{text:sigmal00,action:{type:URL,data:https://github.com/sigmal00},hover:GitHub}}, button_help:{text:Tutorial,action:{type:URL,data:https://www.poiyomi.com/vertex-options/view-clip-prevention},hover:Documentation}}", Float) = 0
 		[HideInInspector][DoNotAnimate][ThryToggle] _UzumoreCategoryToggle (" View Clip Prevention (Uzumore)", Float) = 0
 		[ToggleUI] _UzumoreEnabled ("Animation Toggle", Float) = 1
+		_UzumoreObjectScale ("Object Scale--{tooltip:Multiplies the transform scale that Push Amount and Push Bias scale with.}", Float) = 1
 		_UzumoreAmount ("Push Amount (m)", Float) = 0.1
 		_UzumoreBias ("Push Bias", Float) = 0.001
 		[sRGBWarning]_UzumoreMask ("Push Mask--{reference_properties:[_UzumoreMaskUV, _UzumoreMaskChannel]}", 2D) = "white" { }
@@ -11085,6 +11086,7 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 			float _UzumoreEnabled;
 			float _UzumoreAmount;
 			float _UzumoreBias;
+			float _UzumoreObjectScale;
 			float _UzumoreMaskUV;
 			float _UzumoreMaskChannel;
 			#if defined(PROP_UZUMOREMASK) || !defined(OPTIMIZER_ENABLED)
@@ -12265,12 +12267,23 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 				return dot(p, normalize(n)) + h;
 			}
 			
-			float3 calcIntrudePos(float3 pos, float3 normalOS, float2 uv, float objectScale)
+			float3 calcIntrudePos(float3 pos, float3 normalOS, float2 uv, half4 vertexColor)
 			{
 				float3 wnormal = PoiObjectToWorldNormal(normalOS);
 				float3 wpos = mul(unity_ObjectToWorld, float4(pos, 1.0)).xyz;
 				
+				float3 axisX = unity_ObjectToWorld._m00_m10_m20;
+				float3 axisY = unity_ObjectToWorld._m01_m11_m21;
+				float3 axisZ = unity_ObjectToWorld._m02_m12_m22;
+				float objectScale = sqrt((dot(axisX, axisX) + dot(axisY, axisY) + dot(axisZ, axisZ)) / 3.0) * _UzumoreObjectScale;
+				
+				#if POI_PIPE == POI_BIRP
+				// Keep the viewing camera's direction when the current view belongs to a shadow map.
+				// unity_WorldToCamera uses +Z forward.
+				float3 camDir = unity_WorldToCamera._m20_m21_m22;
+				#else
 				float3 camDir = -UNITY_MATRIX_V._m20_m21_m22;
+				#endif
 				float3 camPos = getCameraPosition(false);
 				float near = _ProjectionParams.y;
 				
@@ -12280,7 +12293,7 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 				half uzumoreMask = 1;
 				#endif
 				
-				float maxAmount = _UzumoreAmount * uzumoreMask * objectScale;
+				float maxAmount = objectScale > 0 ? uzumoreMask * (_UzumoreAmount * objectScale + near * (1.0 - objectScale)) : 0;
 				float maxBias = _UzumoreBias * objectScale;
 				float d = sdPlane(wpos - camPos, -camDir, (near + maxBias));
 				float intrudeAmount = clamp(d, 0, maxAmount);
@@ -12923,11 +12936,15 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 				//endex
 				
 				//ifex _UzumoreCategoryToggle==0
-				#if !defined(POI_PASS_META)
+				#if !defined(POI_PASS_META) && !(POI_PIPE == POI_URP && defined(POI_PASS_SHADOW))
 				UNITY_BRANCH
 				if (_UzumoreCategoryToggle >= 0.5 && _UzumoreEnabled >= 0.5)
 				{
-					v.vertex.xyz = calcIntrudePos(v.vertex.xyz, v.normal.xyz, poiUV(vertexUV(v, _UzumoreMaskUV), _UzumoreMask_ST), o.normal.w);
+					float2 maskUV = 0;
+					#if defined(PROP_UZUMOREMASK) || !defined(OPTIMIZER_ENABLED)
+					maskUV = poiUV(vertexUV(v, _UzumoreMaskUV), _UzumoreMask_ST);
+					#endif
+					v.vertex.xyz = calcIntrudePos(v.vertex.xyz, v.normal.xyz, maskUV, v.color);
 				}
 				#endif
 				//endex
@@ -18960,6 +18977,7 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 			float _UzumoreEnabled;
 			float _UzumoreAmount;
 			float _UzumoreBias;
+			float _UzumoreObjectScale;
 			float _UzumoreMaskUV;
 			float _UzumoreMaskChannel;
 			#if defined(PROP_UZUMOREMASK) || !defined(OPTIMIZER_ENABLED)
@@ -21573,12 +21591,23 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 				return dot(p, normalize(n)) + h;
 			}
 			
-			float3 calcIntrudePos(float3 pos, float3 normalOS, float2 uv, float objectScale)
+			float3 calcIntrudePos(float3 pos, float3 normalOS, float2 uv, half4 vertexColor)
 			{
 				float3 wnormal = PoiObjectToWorldNormal(normalOS);
 				float3 wpos = mul(unity_ObjectToWorld, float4(pos, 1.0)).xyz;
 				
+				float3 axisX = unity_ObjectToWorld._m00_m10_m20;
+				float3 axisY = unity_ObjectToWorld._m01_m11_m21;
+				float3 axisZ = unity_ObjectToWorld._m02_m12_m22;
+				float objectScale = sqrt((dot(axisX, axisX) + dot(axisY, axisY) + dot(axisZ, axisZ)) / 3.0) * _UzumoreObjectScale;
+				
+				#if POI_PIPE == POI_BIRP
+				// Keep the viewing camera's direction when the current view belongs to a shadow map.
+				// unity_WorldToCamera uses +Z forward.
+				float3 camDir = unity_WorldToCamera._m20_m21_m22;
+				#else
 				float3 camDir = -UNITY_MATRIX_V._m20_m21_m22;
+				#endif
 				float3 camPos = getCameraPosition(false);
 				float near = _ProjectionParams.y;
 				
@@ -21588,7 +21617,7 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 				half uzumoreMask = 1;
 				#endif
 				
-				float maxAmount = _UzumoreAmount * uzumoreMask * objectScale;
+				float maxAmount = objectScale > 0 ? uzumoreMask * (_UzumoreAmount * objectScale + near * (1.0 - objectScale)) : 0;
 				float maxBias = _UzumoreBias * objectScale;
 				float d = sdPlane(wpos - camPos, -camDir, (near + maxBias));
 				float intrudeAmount = clamp(d, 0, maxAmount);
@@ -22231,11 +22260,15 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 				//endex
 				
 				//ifex _UzumoreCategoryToggle==0
-				#if !defined(POI_PASS_META)
+				#if !defined(POI_PASS_META) && !(POI_PIPE == POI_URP && defined(POI_PASS_SHADOW))
 				UNITY_BRANCH
 				if (_UzumoreCategoryToggle >= 0.5 && _UzumoreEnabled >= 0.5)
 				{
-					v.vertex.xyz = calcIntrudePos(v.vertex.xyz, v.normal.xyz, poiUV(vertexUV(v, _UzumoreMaskUV), _UzumoreMask_ST), o.normal.w);
+					float2 maskUV = 0;
+					#if defined(PROP_UZUMOREMASK) || !defined(OPTIMIZER_ENABLED)
+					maskUV = poiUV(vertexUV(v, _UzumoreMaskUV), _UzumoreMask_ST);
+					#endif
+					v.vertex.xyz = calcIntrudePos(v.vertex.xyz, v.normal.xyz, maskUV, v.color);
 				}
 				#endif
 				//endex
@@ -41769,6 +41802,7 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 			float _UzumoreEnabled;
 			float _UzumoreAmount;
 			float _UzumoreBias;
+			float _UzumoreObjectScale;
 			float _UzumoreMaskUV;
 			float _UzumoreMaskChannel;
 			#if defined(PROP_UZUMOREMASK) || !defined(OPTIMIZER_ENABLED)
@@ -42998,12 +43032,23 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 				return dot(p, normalize(n)) + h;
 			}
 			
-			float3 calcIntrudePos(float3 pos, float3 normalOS, float2 uv, float objectScale)
+			float3 calcIntrudePos(float3 pos, float3 normalOS, float2 uv, half4 vertexColor)
 			{
 				float3 wnormal = PoiObjectToWorldNormal(normalOS);
 				float3 wpos = mul(unity_ObjectToWorld, float4(pos, 1.0)).xyz;
 				
+				float3 axisX = unity_ObjectToWorld._m00_m10_m20;
+				float3 axisY = unity_ObjectToWorld._m01_m11_m21;
+				float3 axisZ = unity_ObjectToWorld._m02_m12_m22;
+				float objectScale = sqrt((dot(axisX, axisX) + dot(axisY, axisY) + dot(axisZ, axisZ)) / 3.0) * _UzumoreObjectScale;
+				
+				#if POI_PIPE == POI_BIRP
+				// Keep the viewing camera's direction when the current view belongs to a shadow map.
+				// unity_WorldToCamera uses +Z forward.
+				float3 camDir = unity_WorldToCamera._m20_m21_m22;
+				#else
 				float3 camDir = -UNITY_MATRIX_V._m20_m21_m22;
+				#endif
 				float3 camPos = getCameraPosition(false);
 				float near = _ProjectionParams.y;
 				
@@ -43013,7 +43058,7 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 				half uzumoreMask = 1;
 				#endif
 				
-				float maxAmount = _UzumoreAmount * uzumoreMask * objectScale;
+				float maxAmount = objectScale > 0 ? uzumoreMask * (_UzumoreAmount * objectScale + near * (1.0 - objectScale)) : 0;
 				float maxBias = _UzumoreBias * objectScale;
 				float d = sdPlane(wpos - camPos, -camDir, (near + maxBias));
 				float intrudeAmount = clamp(d, 0, maxAmount);
@@ -43656,11 +43701,15 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 				//endex
 				
 				//ifex _UzumoreCategoryToggle==0
-				#if !defined(POI_PASS_META)
+				#if !defined(POI_PASS_META) && !(POI_PIPE == POI_URP && defined(POI_PASS_SHADOW))
 				UNITY_BRANCH
 				if (_UzumoreCategoryToggle >= 0.5 && _UzumoreEnabled >= 0.5)
 				{
-					v.vertex.xyz = calcIntrudePos(v.vertex.xyz, v.normal.xyz, poiUV(vertexUV(v, _UzumoreMaskUV), _UzumoreMask_ST), o.normal.w);
+					float2 maskUV = 0;
+					#if defined(PROP_UZUMOREMASK) || !defined(OPTIMIZER_ENABLED)
+					maskUV = poiUV(vertexUV(v, _UzumoreMaskUV), _UzumoreMask_ST);
+					#endif
+					v.vertex.xyz = calcIntrudePos(v.vertex.xyz, v.normal.xyz, maskUV, v.color);
 				}
 				#endif
 				//endex
@@ -58911,6 +58960,7 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 			float _UzumoreEnabled;
 			float _UzumoreAmount;
 			float _UzumoreBias;
+			float _UzumoreObjectScale;
 			float _UzumoreMaskUV;
 			float _UzumoreMaskChannel;
 			#if defined(PROP_UZUMOREMASK) || !defined(OPTIMIZER_ENABLED)
@@ -61524,12 +61574,23 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 				return dot(p, normalize(n)) + h;
 			}
 			
-			float3 calcIntrudePos(float3 pos, float3 normalOS, float2 uv, float objectScale)
+			float3 calcIntrudePos(float3 pos, float3 normalOS, float2 uv, half4 vertexColor)
 			{
 				float3 wnormal = PoiObjectToWorldNormal(normalOS);
 				float3 wpos = mul(unity_ObjectToWorld, float4(pos, 1.0)).xyz;
 				
+				float3 axisX = unity_ObjectToWorld._m00_m10_m20;
+				float3 axisY = unity_ObjectToWorld._m01_m11_m21;
+				float3 axisZ = unity_ObjectToWorld._m02_m12_m22;
+				float objectScale = sqrt((dot(axisX, axisX) + dot(axisY, axisY) + dot(axisZ, axisZ)) / 3.0) * _UzumoreObjectScale;
+				
+				#if POI_PIPE == POI_BIRP
+				// Keep the viewing camera's direction when the current view belongs to a shadow map.
+				// unity_WorldToCamera uses +Z forward.
+				float3 camDir = unity_WorldToCamera._m20_m21_m22;
+				#else
 				float3 camDir = -UNITY_MATRIX_V._m20_m21_m22;
+				#endif
 				float3 camPos = getCameraPosition(false);
 				float near = _ProjectionParams.y;
 				
@@ -61539,7 +61600,7 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 				half uzumoreMask = 1;
 				#endif
 				
-				float maxAmount = _UzumoreAmount * uzumoreMask * objectScale;
+				float maxAmount = objectScale > 0 ? uzumoreMask * (_UzumoreAmount * objectScale + near * (1.0 - objectScale)) : 0;
 				float maxBias = _UzumoreBias * objectScale;
 				float d = sdPlane(wpos - camPos, -camDir, (near + maxBias));
 				float intrudeAmount = clamp(d, 0, maxAmount);
@@ -62182,11 +62243,15 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 				//endex
 				
 				//ifex _UzumoreCategoryToggle==0
-				#if !defined(POI_PASS_META)
+				#if !defined(POI_PASS_META) && !(POI_PIPE == POI_URP && defined(POI_PASS_SHADOW))
 				UNITY_BRANCH
 				if (_UzumoreCategoryToggle >= 0.5 && _UzumoreEnabled >= 0.5)
 				{
-					v.vertex.xyz = calcIntrudePos(v.vertex.xyz, v.normal.xyz, poiUV(vertexUV(v, _UzumoreMaskUV), _UzumoreMask_ST), o.normal.w);
+					float2 maskUV = 0;
+					#if defined(PROP_UZUMOREMASK) || !defined(OPTIMIZER_ENABLED)
+					maskUV = poiUV(vertexUV(v, _UzumoreMaskUV), _UzumoreMask_ST);
+					#endif
+					v.vertex.xyz = calcIntrudePos(v.vertex.xyz, v.normal.xyz, maskUV, v.color);
 				}
 				#endif
 				//endex
@@ -74631,6 +74696,7 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 			float _UzumoreEnabled;
 			float _UzumoreAmount;
 			float _UzumoreBias;
+			float _UzumoreObjectScale;
 			float _UzumoreMaskUV;
 			float _UzumoreMaskChannel;
 			#if defined(PROP_UZUMOREMASK) || !defined(OPTIMIZER_ENABLED)
@@ -78146,12 +78212,23 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 				return dot(p, normalize(n)) + h;
 			}
 			
-			float3 calcIntrudePos(float3 pos, float3 normalOS, float2 uv, float objectScale)
+			float3 calcIntrudePos(float3 pos, float3 normalOS, float2 uv, half4 vertexColor)
 			{
 				float3 wnormal = PoiObjectToWorldNormal(normalOS);
 				float3 wpos = mul(unity_ObjectToWorld, float4(pos, 1.0)).xyz;
 				
+				float3 axisX = unity_ObjectToWorld._m00_m10_m20;
+				float3 axisY = unity_ObjectToWorld._m01_m11_m21;
+				float3 axisZ = unity_ObjectToWorld._m02_m12_m22;
+				float objectScale = sqrt((dot(axisX, axisX) + dot(axisY, axisY) + dot(axisZ, axisZ)) / 3.0) * _UzumoreObjectScale;
+				
+				#if POI_PIPE == POI_BIRP
+				// Keep the viewing camera's direction when the current view belongs to a shadow map.
+				// unity_WorldToCamera uses +Z forward.
+				float3 camDir = unity_WorldToCamera._m20_m21_m22;
+				#else
 				float3 camDir = -UNITY_MATRIX_V._m20_m21_m22;
+				#endif
 				float3 camPos = getCameraPosition(false);
 				float near = _ProjectionParams.y;
 				
@@ -78161,7 +78238,7 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 				half uzumoreMask = 1;
 				#endif
 				
-				float maxAmount = _UzumoreAmount * uzumoreMask * objectScale;
+				float maxAmount = objectScale > 0 ? uzumoreMask * (_UzumoreAmount * objectScale + near * (1.0 - objectScale)) : 0;
 				float maxBias = _UzumoreBias * objectScale;
 				float d = sdPlane(wpos - camPos, -camDir, (near + maxBias));
 				float intrudeAmount = clamp(d, 0, maxAmount);
@@ -78791,11 +78868,15 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 				//endex
 				
 				//ifex _UzumoreCategoryToggle==0
-				#if !defined(POI_PASS_META)
+				#if !defined(POI_PASS_META) && !(POI_PIPE == POI_URP && defined(POI_PASS_SHADOW))
 				UNITY_BRANCH
 				if (_UzumoreCategoryToggle >= 0.5 && _UzumoreEnabled >= 0.5)
 				{
-					v.vertex.xyz = calcIntrudePos(v.vertex.xyz, v.normal.xyz, poiUV(vertexUV(v, _UzumoreMaskUV), _UzumoreMask_ST), o.normal.w);
+					float2 maskUV = 0;
+					#if defined(PROP_UZUMOREMASK) || !defined(OPTIMIZER_ENABLED)
+					maskUV = poiUV(vertexUV(v, _UzumoreMaskUV), _UzumoreMask_ST);
+					#endif
+					v.vertex.xyz = calcIntrudePos(v.vertex.xyz, v.normal.xyz, maskUV, v.color);
 				}
 				#endif
 				//endex
@@ -79053,7 +79134,7 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 				
 				#ifdef POI_PASS_LILFUR
 				// Calculate fur vector
-				float3 bitangentOS = normalize(cross(v.normal, v.tangent.xyz)) * v.tangent.w;
+				float3 bitangentOS = Unity_SafeNormalize(cross(v.normal, v.tangent.xyz)) * v.tangent.w;
 				float3x3 tbnOS = float3x3(v.tangent.xyz, bitangentOS, v.normal);
 				o.furVector = _FurVector.xyz + float3(0, 0, 0.001);
 				
@@ -79064,7 +79145,7 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 				o.furVector = float3(o.furVector.xy + furVectorTex.xy, o.furVector.z * furVectorTex.z);
 				#endif
 				
-				o.furVector = mul(normalize(o.furVector), tbnOS);
+				o.furVector = mul(Unity_SafeNormalize(o.furVector), tbnOS);
 				o.furVector *= _FurVector.w;
 				
 				#ifdef LIL_FUR_PRE
@@ -79079,8 +79160,8 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 				UNITY_BRANCH
 				if (_FurWindEnabled >= 0.5)
 				{
-					float3 furWindPrimaryDir = normalize(_FurWindPrimaryDirection.xyz);
-					float3 furWindDetailDir = normalize(_FurWindDetailDirection.xyz);
+					float3 furWindPrimaryDir = Unity_SafeNormalize(_FurWindPrimaryDirection.xyz);
+					float3 furWindDetailDir = Unity_SafeNormalize(_FurWindDetailDirection.xyz);
 					half furWindPrimaryWave = sin(POI_TIME.y * _FurWindPrimarySpeed + dot(o.worldPos, furWindPrimaryDir) * _FurWindPrimaryFrequency);
 					float furWindDetailWave = sin(POI_TIME.y * _FurWindDetailSpeed + dot(o.worldPos, furWindDetailDir) * _FurWindDetailFrequency);
 					float3 furWindOffset = furWindPrimaryWave * furWindPrimaryDir * _FurWindPrimaryAmplitude
@@ -92198,9 +92279,9 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 				output.uv[1] = lilLerpFloat4(input[0].uv[1], input[1].uv[1], input[2].uv[1], factor);
 				output.lightmapUV = lilLerpFloat4(input[0].lightmapUV, input[1].lightmapUV, input[2].lightmapUV, factor);
 				output.vertexColor = lilLerpFloat4(input[0].vertexColor, input[1].vertexColor, input[2].vertexColor, factor);
-				output.normal.xyz = normalize(lilLerpFloat3(input[0].normal.xyz, input[1].normal.xyz, input[2].normal.xyz, factor));
+				output.normal.xyz = Unity_SafeNormalize(lilLerpFloat3(input[0].normal.xyz, input[1].normal.xyz, input[2].normal.xyz, factor));
 				output.normal.w = input[0].normal.w;
-				output.tangent.xyz = normalize(lilLerpFloat3(input[0].tangent.xyz, input[1].tangent.xyz, input[2].tangent.xyz, factor));
+				output.tangent.xyz = Unity_SafeNormalize(lilLerpFloat3(input[0].tangent.xyz, input[1].tangent.xyz, input[2].tangent.xyz, factor));
 				output.tangent.w = input[0].tangent.w;
 				
 				output.fogData = lilLerpFloat(input[0].fogData, input[1].fogData, input[2].fogData, factor);
@@ -92702,9 +92783,9 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 				poiMesh.uv[3] = i.uv[1].zw;
 				
 				poiCam.eyeViewDir = !IsOrthographicCamera() ? (getCameraPosition(false) - i.worldPos.xyz) : UNITY_MATRIX_I_V._m02_m12_m22;
-				poiCam.eyeViewDir = normalize(poiCam.eyeViewDir);
+				poiCam.eyeViewDir = Unity_SafeNormalize(poiCam.eyeViewDir);
 				poiCam.viewDir = !IsOrthographicCamera() ? (getCameraPosition() - i.worldPos.xyz) : UNITY_MATRIX_I_V._m02_m12_m22;
-				poiCam.viewDir = normalize(poiCam.viewDir);
+				poiCam.viewDir = Unity_SafeNormalize(poiCam.viewDir);
 				poiCam.worldPos = getCameraPosition();
 				poiCam.vDotN = abs(dot(poiCam.eyeViewDir, i.normal.xyz));
 				poiCam.vDotNCentered = abs(dot(poiCam.viewDir, i.normal.xyz));
@@ -93534,9 +93615,10 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 				// Fur Rim Lighting (from liltoon)
 				// invLighting = (1.0 - directColor) * sqrt(directColor) - smooth inverse curve from direct light only
 				// grayscale using simple 1/3 average, then lerp based on antiLight
-				half3 furRimInvLighting = saturate((1.0 - poiLight.directColor) * sqrt(poiLight.directColor));
+				half3 furRimDirectColor = max(poiLight.directColor, 0.0h);
+				half3 furRimInvLighting = saturate((1.0h - furRimDirectColor) * sqrt(furRimDirectColor));
 				half furRimAntiLightValue = lerp(1, dot(furRimInvLighting, float3(1.0/3.0, 1.0/3.0, 1.0/3.0)), _FurRimAntiLight);
-				poiFragData.finalColor += i.furLayer * pow((1 - abs(dot(i.normal.xyz, poiCam.viewDir))), _FurRimFresnelPower) * furRimAntiLightValue * _FurRimColor.rgb * poiLight.directColor;
+				poiFragData.finalColor += i.furLayer * pow(saturate(1.0h - abs(dot(i.normal.xyz, poiCam.viewDir))), _FurRimFresnelPower) * furRimAntiLightValue * _FurRimColor.rgb * poiLight.directColor;
 				
 				// Multiply color by alpha in ForwardAdd pass for transparent mode (same as liltoon)
 				#if defined(POI_PASS_ADD) && !defined(LIL_FUR_PRE)
@@ -99205,6 +99287,7 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 			float _UzumoreEnabled;
 			float _UzumoreAmount;
 			float _UzumoreBias;
+			float _UzumoreObjectScale;
 			float _UzumoreMaskUV;
 			float _UzumoreMaskChannel;
 			#if defined(PROP_UZUMOREMASK) || !defined(OPTIMIZER_ENABLED)
@@ -100434,12 +100517,23 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 				return dot(p, normalize(n)) + h;
 			}
 			
-			float3 calcIntrudePos(float3 pos, float3 normalOS, float2 uv, float objectScale)
+			float3 calcIntrudePos(float3 pos, float3 normalOS, float2 uv, half4 vertexColor)
 			{
 				float3 wnormal = PoiObjectToWorldNormal(normalOS);
 				float3 wpos = mul(unity_ObjectToWorld, float4(pos, 1.0)).xyz;
 				
+				float3 axisX = unity_ObjectToWorld._m00_m10_m20;
+				float3 axisY = unity_ObjectToWorld._m01_m11_m21;
+				float3 axisZ = unity_ObjectToWorld._m02_m12_m22;
+				float objectScale = sqrt((dot(axisX, axisX) + dot(axisY, axisY) + dot(axisZ, axisZ)) / 3.0) * _UzumoreObjectScale;
+				
+				#if POI_PIPE == POI_BIRP
+				// Keep the viewing camera's direction when the current view belongs to a shadow map.
+				// unity_WorldToCamera uses +Z forward.
+				float3 camDir = unity_WorldToCamera._m20_m21_m22;
+				#else
 				float3 camDir = -UNITY_MATRIX_V._m20_m21_m22;
+				#endif
 				float3 camPos = getCameraPosition(false);
 				float near = _ProjectionParams.y;
 				
@@ -100449,7 +100543,7 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 				half uzumoreMask = 1;
 				#endif
 				
-				float maxAmount = _UzumoreAmount * uzumoreMask * objectScale;
+				float maxAmount = objectScale > 0 ? uzumoreMask * (_UzumoreAmount * objectScale + near * (1.0 - objectScale)) : 0;
 				float maxBias = _UzumoreBias * objectScale;
 				float d = sdPlane(wpos - camPos, -camDir, (near + maxBias));
 				float intrudeAmount = clamp(d, 0, maxAmount);
@@ -101079,11 +101173,15 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 				//endex
 				
 				//ifex _UzumoreCategoryToggle==0
-				#if !defined(POI_PASS_META)
+				#if !defined(POI_PASS_META) && !(POI_PIPE == POI_URP && defined(POI_PASS_SHADOW))
 				UNITY_BRANCH
 				if (_UzumoreCategoryToggle >= 0.5 && _UzumoreEnabled >= 0.5)
 				{
-					v.vertex.xyz = calcIntrudePos(v.vertex.xyz, v.normal.xyz, poiUV(vertexUV(v, _UzumoreMaskUV), _UzumoreMask_ST), o.normal.w);
+					float2 maskUV = 0;
+					#if defined(PROP_UZUMOREMASK) || !defined(OPTIMIZER_ENABLED)
+					maskUV = poiUV(vertexUV(v, _UzumoreMaskUV), _UzumoreMask_ST);
+					#endif
+					v.vertex.xyz = calcIntrudePos(v.vertex.xyz, v.normal.xyz, maskUV, v.color);
 				}
 				#endif
 				//endex
@@ -101341,7 +101439,7 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 				
 				#ifdef POI_PASS_LILFUR
 				// Calculate fur vector
-				float3 bitangentOS = normalize(cross(v.normal, v.tangent.xyz)) * v.tangent.w;
+				float3 bitangentOS = Unity_SafeNormalize(cross(v.normal, v.tangent.xyz)) * v.tangent.w;
 				float3x3 tbnOS = float3x3(v.tangent.xyz, bitangentOS, v.normal);
 				o.furVector = _FurVector.xyz + float3(0, 0, 0.001);
 				
@@ -101352,7 +101450,7 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 				o.furVector = float3(o.furVector.xy + furVectorTex.xy, o.furVector.z * furVectorTex.z);
 				#endif
 				
-				o.furVector = mul(normalize(o.furVector), tbnOS);
+				o.furVector = mul(Unity_SafeNormalize(o.furVector), tbnOS);
 				o.furVector *= _FurVector.w;
 				
 				#ifdef LIL_FUR_PRE
@@ -101367,8 +101465,8 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 				UNITY_BRANCH
 				if (_FurWindEnabled >= 0.5)
 				{
-					float3 furWindPrimaryDir = normalize(_FurWindPrimaryDirection.xyz);
-					float3 furWindDetailDir = normalize(_FurWindDetailDirection.xyz);
+					float3 furWindPrimaryDir = Unity_SafeNormalize(_FurWindPrimaryDirection.xyz);
+					float3 furWindDetailDir = Unity_SafeNormalize(_FurWindDetailDirection.xyz);
 					half furWindPrimaryWave = sin(POI_TIME.y * _FurWindPrimarySpeed + dot(o.worldPos, furWindPrimaryDir) * _FurWindPrimaryFrequency);
 					float furWindDetailWave = sin(POI_TIME.y * _FurWindDetailSpeed + dot(o.worldPos, furWindDetailDir) * _FurWindDetailFrequency);
 					float3 furWindOffset = furWindPrimaryWave * furWindPrimaryDir * _FurWindPrimaryAmplitude
@@ -114486,9 +114584,9 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 				output.uv[1] = lilLerpFloat4(input[0].uv[1], input[1].uv[1], input[2].uv[1], factor);
 				output.lightmapUV = lilLerpFloat4(input[0].lightmapUV, input[1].lightmapUV, input[2].lightmapUV, factor);
 				output.vertexColor = lilLerpFloat4(input[0].vertexColor, input[1].vertexColor, input[2].vertexColor, factor);
-				output.normal.xyz = normalize(lilLerpFloat3(input[0].normal.xyz, input[1].normal.xyz, input[2].normal.xyz, factor));
+				output.normal.xyz = Unity_SafeNormalize(lilLerpFloat3(input[0].normal.xyz, input[1].normal.xyz, input[2].normal.xyz, factor));
 				output.normal.w = input[0].normal.w;
-				output.tangent.xyz = normalize(lilLerpFloat3(input[0].tangent.xyz, input[1].tangent.xyz, input[2].tangent.xyz, factor));
+				output.tangent.xyz = Unity_SafeNormalize(lilLerpFloat3(input[0].tangent.xyz, input[1].tangent.xyz, input[2].tangent.xyz, factor));
 				output.tangent.w = input[0].tangent.w;
 				
 				output.fogData = lilLerpFloat(input[0].fogData, input[1].fogData, input[2].fogData, factor);
@@ -114990,9 +115088,9 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 				poiMesh.uv[3] = i.uv[1].zw;
 				
 				poiCam.eyeViewDir = !IsOrthographicCamera() ? (getCameraPosition(false) - i.worldPos.xyz) : UNITY_MATRIX_I_V._m02_m12_m22;
-				poiCam.eyeViewDir = normalize(poiCam.eyeViewDir);
+				poiCam.eyeViewDir = Unity_SafeNormalize(poiCam.eyeViewDir);
 				poiCam.viewDir = !IsOrthographicCamera() ? (getCameraPosition() - i.worldPos.xyz) : UNITY_MATRIX_I_V._m02_m12_m22;
-				poiCam.viewDir = normalize(poiCam.viewDir);
+				poiCam.viewDir = Unity_SafeNormalize(poiCam.viewDir);
 				poiCam.worldPos = getCameraPosition();
 				poiCam.vDotN = abs(dot(poiCam.eyeViewDir, i.normal.xyz));
 				poiCam.vDotNCentered = abs(dot(poiCam.viewDir, i.normal.xyz));
@@ -115822,9 +115920,10 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 				// Fur Rim Lighting (from liltoon)
 				// invLighting = (1.0 - directColor) * sqrt(directColor) - smooth inverse curve from direct light only
 				// grayscale using simple 1/3 average, then lerp based on antiLight
-				half3 furRimInvLighting = saturate((1.0 - poiLight.directColor) * sqrt(poiLight.directColor));
+				half3 furRimDirectColor = max(poiLight.directColor, 0.0h);
+				half3 furRimInvLighting = saturate((1.0h - furRimDirectColor) * sqrt(furRimDirectColor));
 				half furRimAntiLightValue = lerp(1, dot(furRimInvLighting, float3(1.0/3.0, 1.0/3.0, 1.0/3.0)), _FurRimAntiLight);
-				poiFragData.finalColor += i.furLayer * pow((1 - abs(dot(i.normal.xyz, poiCam.viewDir))), _FurRimFresnelPower) * furRimAntiLightValue * _FurRimColor.rgb * poiLight.directColor;
+				poiFragData.finalColor += i.furLayer * pow(saturate(1.0h - abs(dot(i.normal.xyz, poiCam.viewDir))), _FurRimFresnelPower) * furRimAntiLightValue * _FurRimColor.rgb * poiLight.directColor;
 				
 				// Multiply color by alpha in ForwardAdd pass for transparent mode (same as liltoon)
 				#if defined(POI_PASS_ADD) && !defined(LIL_FUR_PRE)
@@ -120621,6 +120720,7 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 			float _UzumoreEnabled;
 			float _UzumoreAmount;
 			float _UzumoreBias;
+			float _UzumoreObjectScale;
 			float _UzumoreMaskUV;
 			float _UzumoreMaskChannel;
 			#if defined(PROP_UZUMOREMASK) || !defined(OPTIMIZER_ENABLED)
@@ -124136,12 +124236,23 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 				return dot(p, normalize(n)) + h;
 			}
 			
-			float3 calcIntrudePos(float3 pos, float3 normalOS, float2 uv, float objectScale)
+			float3 calcIntrudePos(float3 pos, float3 normalOS, float2 uv, half4 vertexColor)
 			{
 				float3 wnormal = PoiObjectToWorldNormal(normalOS);
 				float3 wpos = mul(unity_ObjectToWorld, float4(pos, 1.0)).xyz;
 				
+				float3 axisX = unity_ObjectToWorld._m00_m10_m20;
+				float3 axisY = unity_ObjectToWorld._m01_m11_m21;
+				float3 axisZ = unity_ObjectToWorld._m02_m12_m22;
+				float objectScale = sqrt((dot(axisX, axisX) + dot(axisY, axisY) + dot(axisZ, axisZ)) / 3.0) * _UzumoreObjectScale;
+				
+				#if POI_PIPE == POI_BIRP
+				// Keep the viewing camera's direction when the current view belongs to a shadow map.
+				// unity_WorldToCamera uses +Z forward.
+				float3 camDir = unity_WorldToCamera._m20_m21_m22;
+				#else
 				float3 camDir = -UNITY_MATRIX_V._m20_m21_m22;
+				#endif
 				float3 camPos = getCameraPosition(false);
 				float near = _ProjectionParams.y;
 				
@@ -124151,7 +124262,7 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 				half uzumoreMask = 1;
 				#endif
 				
-				float maxAmount = _UzumoreAmount * uzumoreMask * objectScale;
+				float maxAmount = objectScale > 0 ? uzumoreMask * (_UzumoreAmount * objectScale + near * (1.0 - objectScale)) : 0;
 				float maxBias = _UzumoreBias * objectScale;
 				float d = sdPlane(wpos - camPos, -camDir, (near + maxBias));
 				float intrudeAmount = clamp(d, 0, maxAmount);
@@ -124781,11 +124892,15 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 				//endex
 				
 				//ifex _UzumoreCategoryToggle==0
-				#if !defined(POI_PASS_META)
+				#if !defined(POI_PASS_META) && !(POI_PIPE == POI_URP && defined(POI_PASS_SHADOW))
 				UNITY_BRANCH
 				if (_UzumoreCategoryToggle >= 0.5 && _UzumoreEnabled >= 0.5)
 				{
-					v.vertex.xyz = calcIntrudePos(v.vertex.xyz, v.normal.xyz, poiUV(vertexUV(v, _UzumoreMaskUV), _UzumoreMask_ST), o.normal.w);
+					float2 maskUV = 0;
+					#if defined(PROP_UZUMOREMASK) || !defined(OPTIMIZER_ENABLED)
+					maskUV = poiUV(vertexUV(v, _UzumoreMaskUV), _UzumoreMask_ST);
+					#endif
+					v.vertex.xyz = calcIntrudePos(v.vertex.xyz, v.normal.xyz, maskUV, v.color);
 				}
 				#endif
 				//endex
@@ -125043,7 +125158,7 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 				
 				#ifdef POI_PASS_LILFUR
 				// Calculate fur vector
-				float3 bitangentOS = normalize(cross(v.normal, v.tangent.xyz)) * v.tangent.w;
+				float3 bitangentOS = Unity_SafeNormalize(cross(v.normal, v.tangent.xyz)) * v.tangent.w;
 				float3x3 tbnOS = float3x3(v.tangent.xyz, bitangentOS, v.normal);
 				o.furVector = _FurVector.xyz + float3(0, 0, 0.001);
 				
@@ -125054,7 +125169,7 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 				o.furVector = float3(o.furVector.xy + furVectorTex.xy, o.furVector.z * furVectorTex.z);
 				#endif
 				
-				o.furVector = mul(normalize(o.furVector), tbnOS);
+				o.furVector = mul(Unity_SafeNormalize(o.furVector), tbnOS);
 				o.furVector *= _FurVector.w;
 				
 				#ifdef LIL_FUR_PRE
@@ -125069,8 +125184,8 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 				UNITY_BRANCH
 				if (_FurWindEnabled >= 0.5)
 				{
-					float3 furWindPrimaryDir = normalize(_FurWindPrimaryDirection.xyz);
-					float3 furWindDetailDir = normalize(_FurWindDetailDirection.xyz);
+					float3 furWindPrimaryDir = Unity_SafeNormalize(_FurWindPrimaryDirection.xyz);
+					float3 furWindDetailDir = Unity_SafeNormalize(_FurWindDetailDirection.xyz);
 					half furWindPrimaryWave = sin(POI_TIME.y * _FurWindPrimarySpeed + dot(o.worldPos, furWindPrimaryDir) * _FurWindPrimaryFrequency);
 					float furWindDetailWave = sin(POI_TIME.y * _FurWindDetailSpeed + dot(o.worldPos, furWindDetailDir) * _FurWindDetailFrequency);
 					float3 furWindOffset = furWindPrimaryWave * furWindPrimaryDir * _FurWindPrimaryAmplitude
@@ -138188,9 +138303,9 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 				output.uv[1] = lilLerpFloat4(input[0].uv[1], input[1].uv[1], input[2].uv[1], factor);
 				output.lightmapUV = lilLerpFloat4(input[0].lightmapUV, input[1].lightmapUV, input[2].lightmapUV, factor);
 				output.vertexColor = lilLerpFloat4(input[0].vertexColor, input[1].vertexColor, input[2].vertexColor, factor);
-				output.normal.xyz = normalize(lilLerpFloat3(input[0].normal.xyz, input[1].normal.xyz, input[2].normal.xyz, factor));
+				output.normal.xyz = Unity_SafeNormalize(lilLerpFloat3(input[0].normal.xyz, input[1].normal.xyz, input[2].normal.xyz, factor));
 				output.normal.w = input[0].normal.w;
-				output.tangent.xyz = normalize(lilLerpFloat3(input[0].tangent.xyz, input[1].tangent.xyz, input[2].tangent.xyz, factor));
+				output.tangent.xyz = Unity_SafeNormalize(lilLerpFloat3(input[0].tangent.xyz, input[1].tangent.xyz, input[2].tangent.xyz, factor));
 				output.tangent.w = input[0].tangent.w;
 				
 				output.fogData = lilLerpFloat(input[0].fogData, input[1].fogData, input[2].fogData, factor);
@@ -138692,9 +138807,9 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 				poiMesh.uv[3] = i.uv[1].zw;
 				
 				poiCam.eyeViewDir = !IsOrthographicCamera() ? (getCameraPosition(false) - i.worldPos.xyz) : UNITY_MATRIX_I_V._m02_m12_m22;
-				poiCam.eyeViewDir = normalize(poiCam.eyeViewDir);
+				poiCam.eyeViewDir = Unity_SafeNormalize(poiCam.eyeViewDir);
 				poiCam.viewDir = !IsOrthographicCamera() ? (getCameraPosition() - i.worldPos.xyz) : UNITY_MATRIX_I_V._m02_m12_m22;
-				poiCam.viewDir = normalize(poiCam.viewDir);
+				poiCam.viewDir = Unity_SafeNormalize(poiCam.viewDir);
 				poiCam.worldPos = getCameraPosition();
 				poiCam.vDotN = abs(dot(poiCam.eyeViewDir, i.normal.xyz));
 				poiCam.vDotNCentered = abs(dot(poiCam.viewDir, i.normal.xyz));
@@ -139524,9 +139639,10 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 				// Fur Rim Lighting (from liltoon)
 				// invLighting = (1.0 - directColor) * sqrt(directColor) - smooth inverse curve from direct light only
 				// grayscale using simple 1/3 average, then lerp based on antiLight
-				half3 furRimInvLighting = saturate((1.0 - poiLight.directColor) * sqrt(poiLight.directColor));
+				half3 furRimDirectColor = max(poiLight.directColor, 0.0h);
+				half3 furRimInvLighting = saturate((1.0h - furRimDirectColor) * sqrt(furRimDirectColor));
 				half furRimAntiLightValue = lerp(1, dot(furRimInvLighting, float3(1.0/3.0, 1.0/3.0, 1.0/3.0)), _FurRimAntiLight);
-				poiFragData.finalColor += i.furLayer * pow((1 - abs(dot(i.normal.xyz, poiCam.viewDir))), _FurRimFresnelPower) * furRimAntiLightValue * _FurRimColor.rgb * poiLight.directColor;
+				poiFragData.finalColor += i.furLayer * pow(saturate(1.0h - abs(dot(i.normal.xyz, poiCam.viewDir))), _FurRimFresnelPower) * furRimAntiLightValue * _FurRimColor.rgb * poiLight.directColor;
 				
 				// Multiply color by alpha in ForwardAdd pass for transparent mode (same as liltoon)
 				#if defined(POI_PASS_ADD) && !defined(LIL_FUR_PRE)
@@ -145196,6 +145312,7 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 			float _UzumoreEnabled;
 			float _UzumoreAmount;
 			float _UzumoreBias;
+			float _UzumoreObjectScale;
 			float _UzumoreMaskUV;
 			float _UzumoreMaskChannel;
 			#if defined(PROP_UZUMOREMASK) || !defined(OPTIMIZER_ENABLED)
@@ -146425,12 +146542,23 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 				return dot(p, normalize(n)) + h;
 			}
 			
-			float3 calcIntrudePos(float3 pos, float3 normalOS, float2 uv, float objectScale)
+			float3 calcIntrudePos(float3 pos, float3 normalOS, float2 uv, half4 vertexColor)
 			{
 				float3 wnormal = PoiObjectToWorldNormal(normalOS);
 				float3 wpos = mul(unity_ObjectToWorld, float4(pos, 1.0)).xyz;
 				
+				float3 axisX = unity_ObjectToWorld._m00_m10_m20;
+				float3 axisY = unity_ObjectToWorld._m01_m11_m21;
+				float3 axisZ = unity_ObjectToWorld._m02_m12_m22;
+				float objectScale = sqrt((dot(axisX, axisX) + dot(axisY, axisY) + dot(axisZ, axisZ)) / 3.0) * _UzumoreObjectScale;
+				
+				#if POI_PIPE == POI_BIRP
+				// Keep the viewing camera's direction when the current view belongs to a shadow map.
+				// unity_WorldToCamera uses +Z forward.
+				float3 camDir = unity_WorldToCamera._m20_m21_m22;
+				#else
 				float3 camDir = -UNITY_MATRIX_V._m20_m21_m22;
+				#endif
 				float3 camPos = getCameraPosition(false);
 				float near = _ProjectionParams.y;
 				
@@ -146440,7 +146568,7 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 				half uzumoreMask = 1;
 				#endif
 				
-				float maxAmount = _UzumoreAmount * uzumoreMask * objectScale;
+				float maxAmount = objectScale > 0 ? uzumoreMask * (_UzumoreAmount * objectScale + near * (1.0 - objectScale)) : 0;
 				float maxBias = _UzumoreBias * objectScale;
 				float d = sdPlane(wpos - camPos, -camDir, (near + maxBias));
 				float intrudeAmount = clamp(d, 0, maxAmount);
@@ -147070,11 +147198,15 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 				//endex
 				
 				//ifex _UzumoreCategoryToggle==0
-				#if !defined(POI_PASS_META)
+				#if !defined(POI_PASS_META) && !(POI_PIPE == POI_URP && defined(POI_PASS_SHADOW))
 				UNITY_BRANCH
 				if (_UzumoreCategoryToggle >= 0.5 && _UzumoreEnabled >= 0.5)
 				{
-					v.vertex.xyz = calcIntrudePos(v.vertex.xyz, v.normal.xyz, poiUV(vertexUV(v, _UzumoreMaskUV), _UzumoreMask_ST), o.normal.w);
+					float2 maskUV = 0;
+					#if defined(PROP_UZUMOREMASK) || !defined(OPTIMIZER_ENABLED)
+					maskUV = poiUV(vertexUV(v, _UzumoreMaskUV), _UzumoreMask_ST);
+					#endif
+					v.vertex.xyz = calcIntrudePos(v.vertex.xyz, v.normal.xyz, maskUV, v.color);
 				}
 				#endif
 				//endex
@@ -147332,7 +147464,7 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 				
 				#ifdef POI_PASS_LILFUR
 				// Calculate fur vector
-				float3 bitangentOS = normalize(cross(v.normal, v.tangent.xyz)) * v.tangent.w;
+				float3 bitangentOS = Unity_SafeNormalize(cross(v.normal, v.tangent.xyz)) * v.tangent.w;
 				float3x3 tbnOS = float3x3(v.tangent.xyz, bitangentOS, v.normal);
 				o.furVector = _FurVector.xyz + float3(0, 0, 0.001);
 				
@@ -147343,7 +147475,7 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 				o.furVector = float3(o.furVector.xy + furVectorTex.xy, o.furVector.z * furVectorTex.z);
 				#endif
 				
-				o.furVector = mul(normalize(o.furVector), tbnOS);
+				o.furVector = mul(Unity_SafeNormalize(o.furVector), tbnOS);
 				o.furVector *= _FurVector.w;
 				
 				#ifdef LIL_FUR_PRE
@@ -147358,8 +147490,8 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 				UNITY_BRANCH
 				if (_FurWindEnabled >= 0.5)
 				{
-					float3 furWindPrimaryDir = normalize(_FurWindPrimaryDirection.xyz);
-					float3 furWindDetailDir = normalize(_FurWindDetailDirection.xyz);
+					float3 furWindPrimaryDir = Unity_SafeNormalize(_FurWindPrimaryDirection.xyz);
+					float3 furWindDetailDir = Unity_SafeNormalize(_FurWindDetailDirection.xyz);
 					half furWindPrimaryWave = sin(POI_TIME.y * _FurWindPrimarySpeed + dot(o.worldPos, furWindPrimaryDir) * _FurWindPrimaryFrequency);
 					float furWindDetailWave = sin(POI_TIME.y * _FurWindDetailSpeed + dot(o.worldPos, furWindDetailDir) * _FurWindDetailFrequency);
 					float3 furWindOffset = furWindPrimaryWave * furWindPrimaryDir * _FurWindPrimaryAmplitude
@@ -160477,9 +160609,9 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 				output.uv[1] = lilLerpFloat4(input[0].uv[1], input[1].uv[1], input[2].uv[1], factor);
 				output.lightmapUV = lilLerpFloat4(input[0].lightmapUV, input[1].lightmapUV, input[2].lightmapUV, factor);
 				output.vertexColor = lilLerpFloat4(input[0].vertexColor, input[1].vertexColor, input[2].vertexColor, factor);
-				output.normal.xyz = normalize(lilLerpFloat3(input[0].normal.xyz, input[1].normal.xyz, input[2].normal.xyz, factor));
+				output.normal.xyz = Unity_SafeNormalize(lilLerpFloat3(input[0].normal.xyz, input[1].normal.xyz, input[2].normal.xyz, factor));
 				output.normal.w = input[0].normal.w;
-				output.tangent.xyz = normalize(lilLerpFloat3(input[0].tangent.xyz, input[1].tangent.xyz, input[2].tangent.xyz, factor));
+				output.tangent.xyz = Unity_SafeNormalize(lilLerpFloat3(input[0].tangent.xyz, input[1].tangent.xyz, input[2].tangent.xyz, factor));
 				output.tangent.w = input[0].tangent.w;
 				
 				output.fogData = lilLerpFloat(input[0].fogData, input[1].fogData, input[2].fogData, factor);
@@ -160981,9 +161113,9 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 				poiMesh.uv[3] = i.uv[1].zw;
 				
 				poiCam.eyeViewDir = !IsOrthographicCamera() ? (getCameraPosition(false) - i.worldPos.xyz) : UNITY_MATRIX_I_V._m02_m12_m22;
-				poiCam.eyeViewDir = normalize(poiCam.eyeViewDir);
+				poiCam.eyeViewDir = Unity_SafeNormalize(poiCam.eyeViewDir);
 				poiCam.viewDir = !IsOrthographicCamera() ? (getCameraPosition() - i.worldPos.xyz) : UNITY_MATRIX_I_V._m02_m12_m22;
-				poiCam.viewDir = normalize(poiCam.viewDir);
+				poiCam.viewDir = Unity_SafeNormalize(poiCam.viewDir);
 				poiCam.worldPos = getCameraPosition();
 				poiCam.vDotN = abs(dot(poiCam.eyeViewDir, i.normal.xyz));
 				poiCam.vDotNCentered = abs(dot(poiCam.viewDir, i.normal.xyz));
@@ -161813,9 +161945,10 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 				// Fur Rim Lighting (from liltoon)
 				// invLighting = (1.0 - directColor) * sqrt(directColor) - smooth inverse curve from direct light only
 				// grayscale using simple 1/3 average, then lerp based on antiLight
-				half3 furRimInvLighting = saturate((1.0 - poiLight.directColor) * sqrt(poiLight.directColor));
+				half3 furRimDirectColor = max(poiLight.directColor, 0.0h);
+				half3 furRimInvLighting = saturate((1.0h - furRimDirectColor) * sqrt(furRimDirectColor));
 				half furRimAntiLightValue = lerp(1, dot(furRimInvLighting, float3(1.0/3.0, 1.0/3.0, 1.0/3.0)), _FurRimAntiLight);
-				poiFragData.finalColor += i.furLayer * pow((1 - abs(dot(i.normal.xyz, poiCam.viewDir))), _FurRimFresnelPower) * furRimAntiLightValue * _FurRimColor.rgb * poiLight.directColor;
+				poiFragData.finalColor += i.furLayer * pow(saturate(1.0h - abs(dot(i.normal.xyz, poiCam.viewDir))), _FurRimFresnelPower) * furRimAntiLightValue * _FurRimColor.rgb * poiLight.directColor;
 				
 				// Multiply color by alpha in ForwardAdd pass for transparent mode (same as liltoon)
 				#if defined(POI_PASS_ADD) && !defined(LIL_FUR_PRE)
@@ -163910,6 +164043,7 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 			float _UzumoreEnabled;
 			float _UzumoreAmount;
 			float _UzumoreBias;
+			float _UzumoreObjectScale;
 			float _UzumoreMaskUV;
 			float _UzumoreMaskChannel;
 			#if defined(PROP_UZUMOREMASK) || !defined(OPTIMIZER_ENABLED)
@@ -165090,12 +165224,23 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 				return dot(p, normalize(n)) + h;
 			}
 			
-			float3 calcIntrudePos(float3 pos, float3 normalOS, float2 uv, float objectScale)
+			float3 calcIntrudePos(float3 pos, float3 normalOS, float2 uv, half4 vertexColor)
 			{
 				float3 wnormal = PoiObjectToWorldNormal(normalOS);
 				float3 wpos = mul(unity_ObjectToWorld, float4(pos, 1.0)).xyz;
 				
+				float3 axisX = unity_ObjectToWorld._m00_m10_m20;
+				float3 axisY = unity_ObjectToWorld._m01_m11_m21;
+				float3 axisZ = unity_ObjectToWorld._m02_m12_m22;
+				float objectScale = sqrt((dot(axisX, axisX) + dot(axisY, axisY) + dot(axisZ, axisZ)) / 3.0) * _UzumoreObjectScale;
+				
+				#if POI_PIPE == POI_BIRP
+				// Keep the viewing camera's direction when the current view belongs to a shadow map.
+				// unity_WorldToCamera uses +Z forward.
+				float3 camDir = unity_WorldToCamera._m20_m21_m22;
+				#else
 				float3 camDir = -UNITY_MATRIX_V._m20_m21_m22;
+				#endif
 				float3 camPos = getCameraPosition(false);
 				float near = _ProjectionParams.y;
 				
@@ -165105,7 +165250,7 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 				half uzumoreMask = 1;
 				#endif
 				
-				float maxAmount = _UzumoreAmount * uzumoreMask * objectScale;
+				float maxAmount = objectScale > 0 ? uzumoreMask * (_UzumoreAmount * objectScale + near * (1.0 - objectScale)) : 0;
 				float maxBias = _UzumoreBias * objectScale;
 				float d = sdPlane(wpos - camPos, -camDir, (near + maxBias));
 				float intrudeAmount = clamp(d, 0, maxAmount);
@@ -165782,11 +165927,15 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 				//endex
 				
 				//ifex _UzumoreCategoryToggle==0
-				#if !defined(POI_PASS_META)
+				#if !defined(POI_PASS_META) && !(POI_PIPE == POI_URP && defined(POI_PASS_SHADOW))
 				UNITY_BRANCH
 				if (_UzumoreCategoryToggle >= 0.5 && _UzumoreEnabled >= 0.5)
 				{
-					v.vertex.xyz = calcIntrudePos(v.vertex.xyz, v.normal.xyz, poiUV(vertexUV(v, _UzumoreMaskUV), _UzumoreMask_ST), o.normal.w);
+					float2 maskUV = 0;
+					#if defined(PROP_UZUMOREMASK) || !defined(OPTIMIZER_ENABLED)
+					maskUV = poiUV(vertexUV(v, _UzumoreMaskUV), _UzumoreMask_ST);
+					#endif
+					v.vertex.xyz = calcIntrudePos(v.vertex.xyz, v.normal.xyz, maskUV, v.color);
 				}
 				#endif
 				//endex
