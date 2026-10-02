@@ -11,3 +11,6 @@ _PoiyomiShaders/Scripts/ThryEditor.meta
 .ide/node_modules/
 .ide/out/
 .ide/*.vsix
+_PoiyomiShaders/.ide/node_modules/
+_PoiyomiShaders/.ide/out/
+_PoiyomiShaders/.ide/*.vsix
