@@ -1,3 +1,7 @@
 //ifex 0==0
+#if UNITY_VERSION >= 60060000
+#pragma skip_optimizations dx11
+#else
 #pragma skip_optimizations d3d11
+#endif
 //endex

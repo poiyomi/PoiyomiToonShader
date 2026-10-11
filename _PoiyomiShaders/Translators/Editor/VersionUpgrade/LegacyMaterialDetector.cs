@@ -322,7 +322,10 @@ namespace Poi.Tools.ShaderTranslator.VersionUpgrade
 			if (material.shader.name.StartsWith(LockedShaderPrefix, StringComparison.OrdinalIgnoreCase))
 				return true;
 			// Broken shader: _ShaderOptimizerEnabled survives on the serialized sheet even when the shader is gone.
-			return reader.GetFloat("_ShaderOptimizerEnabled", 0f) > 0.5f;
+			// Only then - Unity also keeps it when a material moves to another shader, so on a present shader it is
+			// history. Trusting it there read a once-locked Poiyomi material since switched to Standard as locked
+			// with its source shader removed, and the inspector offered to translate it to 9.3.
+			return material.shader.IsBroken() && reader.GetFloat("_ShaderOptimizerEnabled", 0f) > 0.5f;
 		}
 
 		static string VariantFromLockedName(string lockedOrErrorName, string originalTag)

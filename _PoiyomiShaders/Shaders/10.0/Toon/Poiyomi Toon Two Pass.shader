@@ -2,7 +2,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 {
 	Properties
 	{
-		[HideInInspector] shader_master_label ("<color=#E75898ff>Poiyomi 10.0.24</color>", Float) = 0
+		[HideInInspector] shader_master_label ("<color=#E75898ff>Poiyomi 10.0.25</color>", Float) = 0
 		[HideInInspector] shader_is_using_thry_editor ("", Float) = 0
 		[HideInInspector] shader_locale ("0db0b86376c3dca4b9a6828ef8615fe0", Float) = 0
 		[HideInInspector] footer_website ("{texture:{name:icon-poilogo,height:24},action:{type:URL,data:https://www.poiyomi.com},hover:WEBSITE}", Float) = 0
@@ -8932,7 +8932,11 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			*/
 			#pragma target 5.0
 			//ifex 0==0
+			#if UNITY_VERSION >= 60060000
+			#pragma skip_optimizations dx11
+			#else
 			#pragma skip_optimizations d3d11
+			#endif
 			//endex
 			
 			#pragma shader_feature_local_fragment _STOCHASTICMODE_DELIOT_HEITZ _STOCHASTICMODE_HEXTILE _STOCHASTICMODE_NONE
@@ -12924,7 +12928,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				//UNITY_BRANCH
 				if (_OutlineFixedSize >= 0.5)
 				{
-					distanceOffset *= lerp(1.0, clamp((distance(getCameraPosition(), mul(unity_ObjectToWorld, o.localPos).xyz)) / o.normal.w, 0.0f, _OutlinesMaxDistance), _OutlineFixWidth);
+					distanceOffset *= lerp(1.0, clamp((distance(getCameraPosition(), mul(unity_ObjectToWorld, o.localPos).xyz)) / (_OutlineSpace ? 1.0 : o.normal.w), 0.0f, _OutlinesMaxDistance), _OutlineFixWidth);
 				}
 				
 				float lineWidth = _LineWidth;
@@ -12976,7 +12980,6 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				}
 				else
 				{
-					offset *= o.normal.w;
 					localOffset += mul((float3x3)unity_WorldToObject, offset);
 					worldOffset += offset;
 				}
@@ -13224,7 +13227,11 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			*/
 			#pragma target 5.0
 			//ifex 0==0
+			#if UNITY_VERSION >= 60060000
+			#pragma skip_optimizations dx11
+			#else
 			#pragma skip_optimizations d3d11
+			#endif
 			//endex
 			
 			#pragma shader_feature_local_fragment _STOCHASTICMODE_DELIOT_HEITZ _STOCHASTICMODE_HEXTILE _STOCHASTICMODE_NONE
@@ -22111,7 +22118,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				//UNITY_BRANCH
 				if (_OutlineFixedSize >= 0.5)
 				{
-					distanceOffset *= lerp(1.0, clamp((distance(getCameraPosition(), mul(unity_ObjectToWorld, o.localPos).xyz)) / o.normal.w, 0.0f, _OutlinesMaxDistance), _OutlineFixWidth);
+					distanceOffset *= lerp(1.0, clamp((distance(getCameraPosition(), mul(unity_ObjectToWorld, o.localPos).xyz)) / (_OutlineSpace ? 1.0 : o.normal.w), 0.0f, _OutlinesMaxDistance), _OutlineFixWidth);
 				}
 				
 				float lineWidth = _LineWidth;
@@ -22163,7 +22170,6 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				}
 				else
 				{
-					offset *= o.normal.w;
 					localOffset += mul((float3x3)unity_WorldToObject, offset);
 					worldOffset += offset;
 				}
@@ -36704,7 +36710,11 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			*/
 			#pragma target 5.0
 			//ifex 0==0
+			#if UNITY_VERSION >= 60060000
+			#pragma skip_optimizations dx11
+			#else
 			#pragma skip_optimizations d3d11
+			#endif
 			//endex
 			
 			#pragma shader_feature_local_fragment _STOCHASTICMODE_DELIOT_HEITZ _STOCHASTICMODE_HEXTILE _STOCHASTICMODE_NONE
@@ -43407,7 +43417,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				//UNITY_BRANCH
 				if (_OutlineFixedSize >= 0.5)
 				{
-					distanceOffset *= lerp(1.0, clamp((distance(getCameraPosition(), mul(unity_ObjectToWorld, o.localPos).xyz)) / o.normal.w, 0.0f, _OutlinesMaxDistance), _OutlineFixWidth);
+					distanceOffset *= lerp(1.0, clamp((distance(getCameraPosition(), mul(unity_ObjectToWorld, o.localPos).xyz)) / (_OutlineSpace ? 1.0 : o.normal.w), 0.0f, _OutlinesMaxDistance), _OutlineFixWidth);
 				}
 				
 				float lineWidth = _LineWidth;
@@ -43459,7 +43469,6 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				}
 				else
 				{
-					offset *= o.normal.w;
 					localOffset += mul((float3x3)unity_WorldToObject, offset);
 					worldOffset += offset;
 				}
@@ -55043,7 +55052,11 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			*/
 			#pragma target 5.0
 			//ifex 0==0
+			#if UNITY_VERSION >= 60060000
+			#pragma skip_optimizations dx11
+			#else
 			#pragma skip_optimizations d3d11
+			#endif
 			//endex
 			
 			#pragma shader_feature_local_fragment _STOCHASTICMODE_DELIOT_HEITZ _STOCHASTICMODE_HEXTILE _STOCHASTICMODE_NONE
@@ -63896,7 +63909,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				//UNITY_BRANCH
 				if (_OutlineFixedSize >= 0.5)
 				{
-					distanceOffset *= lerp(1.0, clamp((distance(getCameraPosition(), mul(unity_ObjectToWorld, o.localPos).xyz)) / o.normal.w, 0.0f, _OutlinesMaxDistance), _OutlineFixWidth);
+					distanceOffset *= lerp(1.0, clamp((distance(getCameraPosition(), mul(unity_ObjectToWorld, o.localPos).xyz)) / (_OutlineSpace ? 1.0 : o.normal.w), 0.0f, _OutlinesMaxDistance), _OutlineFixWidth);
 				}
 				
 				float lineWidth = _LineWidth;
@@ -63948,7 +63961,6 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				}
 				else
 				{
-					offset *= o.normal.w;
 					localOffset += mul((float3x3)unity_WorldToObject, offset);
 					worldOffset += offset;
 				}
@@ -78492,7 +78504,11 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			*/
 			#pragma target 5.0
 			//ifex 0==0
+			#if UNITY_VERSION >= 60060000
+			#pragma skip_optimizations dx11
+			#else
 			#pragma skip_optimizations d3d11
+			#endif
 			//endex
 			
 			#pragma shader_feature_local_fragment _STOCHASTICMODE_DELIOT_HEITZ _STOCHASTICMODE_HEXTILE _STOCHASTICMODE_NONE
@@ -85197,7 +85213,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				//UNITY_BRANCH
 				if (_OutlineFixedSize >= 0.5)
 				{
-					distanceOffset *= lerp(1.0, clamp((distance(getCameraPosition(), mul(unity_ObjectToWorld, o.localPos).xyz)) / o.normal.w, 0.0f, _OutlinesMaxDistance), _OutlineFixWidth);
+					distanceOffset *= lerp(1.0, clamp((distance(getCameraPosition(), mul(unity_ObjectToWorld, o.localPos).xyz)) / (_OutlineSpace ? 1.0 : o.normal.w), 0.0f, _OutlinesMaxDistance), _OutlineFixWidth);
 				}
 				
 				float lineWidth = _LineWidth;
@@ -85249,7 +85265,6 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				}
 				else
 				{
-					offset *= o.normal.w;
 					localOffset += mul((float3x3)unity_WorldToObject, offset);
 					worldOffset += offset;
 				}
@@ -96836,7 +96851,11 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			*/
 			#pragma target 5.0
 			//ifex 0==0
+			#if UNITY_VERSION >= 60060000
+			#pragma skip_optimizations dx11
+			#else
 			#pragma skip_optimizations d3d11
+			#endif
 			//endex
 			
 			#pragma shader_feature_local_fragment _STOCHASTICMODE_DELIOT_HEITZ _STOCHASTICMODE_HEXTILE _STOCHASTICMODE_NONE
@@ -103682,7 +103701,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				//UNITY_BRANCH
 				if (_OutlineFixedSize >= 0.5)
 				{
-					distanceOffset *= lerp(1.0, clamp((distance(getCameraPosition(), mul(unity_ObjectToWorld, o.localPos).xyz)) / o.normal.w, 0.0f, _OutlinesMaxDistance), _OutlineFixWidth);
+					distanceOffset *= lerp(1.0, clamp((distance(getCameraPosition(), mul(unity_ObjectToWorld, o.localPos).xyz)) / (_OutlineSpace ? 1.0 : o.normal.w), 0.0f, _OutlinesMaxDistance), _OutlineFixWidth);
 				}
 				
 				float lineWidth = _LineWidth;
@@ -103734,7 +103753,6 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				}
 				else
 				{
-					offset *= o.normal.w;
 					localOffset += mul((float3x3)unity_WorldToObject, offset);
 					worldOffset += offset;
 				}
@@ -111481,7 +111499,11 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 			*/
 			#pragma target 5.0
 			//ifex 0==0
+			#if UNITY_VERSION >= 60060000
+			#pragma skip_optimizations dx11
+			#else
 			#pragma skip_optimizations d3d11
+			#endif
 			//endex
 			
 			#pragma shader_feature_local_fragment _STOCHASTICMODE_DELIOT_HEITZ _STOCHASTICMODE_HEXTILE _STOCHASTICMODE_NONE
@@ -115294,7 +115316,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				//UNITY_BRANCH
 				if (_OutlineFixedSize >= 0.5)
 				{
-					distanceOffset *= lerp(1.0, clamp((distance(getCameraPosition(), mul(unity_ObjectToWorld, o.localPos).xyz)) / o.normal.w, 0.0f, _OutlinesMaxDistance), _OutlineFixWidth);
+					distanceOffset *= lerp(1.0, clamp((distance(getCameraPosition(), mul(unity_ObjectToWorld, o.localPos).xyz)) / (_OutlineSpace ? 1.0 : o.normal.w), 0.0f, _OutlinesMaxDistance), _OutlineFixWidth);
 				}
 				
 				float lineWidth = _LineWidth;
@@ -115346,7 +115368,6 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 				}
 				else
 				{
-					offset *= o.normal.w;
 					localOffset += mul((float3x3)unity_WorldToObject, offset);
 					worldOffset += offset;
 				}

@@ -373,7 +373,7 @@ _OutlineZOffsetVertexColorStrength ("Vertex Color Strength", Range(0, 1)) = 1
 	//UNITY_BRANCH
 	if (_OutlineFixedSize >= 0.5)
 	{
-		distanceOffset *= lerp(1.0, clamp((distance(getCameraPosition(), mul(unity_ObjectToWorld, o.localPos).xyz)) / o.normal.w, 0.0f, _OutlinesMaxDistance), _OutlineFixWidth);
+		distanceOffset *= lerp(1.0, clamp((distance(getCameraPosition(), mul(unity_ObjectToWorld, o.localPos).xyz)) / (_OutlineSpace ? 1.0 : o.normal.w), 0.0f, _OutlinesMaxDistance), _OutlineFixWidth);
 	}
 
 	float lineWidth = _LineWidth;
@@ -425,7 +425,6 @@ _OutlineZOffsetVertexColorStrength ("Vertex Color Strength", Range(0, 1)) = 1
 	}
 	else
 	{
-		offset *= o.normal.w;
 		localOffset += mul((float3x3)unity_WorldToObject, offset);
 		worldOffset += offset;
 	}

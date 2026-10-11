@@ -45,6 +45,10 @@ namespace Poi.Tools
         static bool? _projectHasPro;
 
         Material targetMaterial;
+        // The shader Initialize read its state from. Unity keeps the same editor when a material's shader changes
+        // (MaterialEditor only calls OnShaderChanged), so without this a material that had been on the error shader
+        // or a legacy shader kept the 9.3 upgrade prompt - and hid its own inspector - after moving to any other shader.
+        Shader initializedShader;
 
         public override void Awake()
         {
@@ -55,7 +59,12 @@ namespace Poi.Tools
         void Initialize()
         {
             targetMaterial = target as Material;
-            if(targetMaterial == null || targetMaterial.shader == null)
+            initializedShader = targetMaterial != null ? targetMaterial.shader : null;
+            // Reset first: this re-runs on the same editor when the shader changes, and an early return must not
+            // keep the previous shader's state.
+            originalShader = null;
+            isErrorShader = isPoiyomiMaterial = isProMaterial = isLockedMaterial = isLegacy = false;
+            if (targetMaterial == null || targetMaterial.shader == null)
                 return;
 
             isErrorShader = targetMaterial.shader.name == ErrorShaderName;
@@ -112,6 +121,10 @@ namespace Poi.Tools
 
         public override void OnInspectorGUI()
         {
+            // Covers every way a shader changes (dropdown, undo, scripts, a deleted asset). Layout only, so both
+            // passes of an IMGUI pair take the same branch below.
+            if (Event.current.type == EventType.Layout && targetMaterial != null && targetMaterial.shader != initializedShader)
+                Initialize();
             if (BeginThrottledPass()) return;
             Rect content = EditorGUILayout.BeginVertical();
             DrawInspector();
