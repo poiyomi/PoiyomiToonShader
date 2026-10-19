@@ -50,7 +50,8 @@ float4 frag(VertexOut i, bool facing : SV_IsFrontFace) : SV_Target
 		poiFragData.alpha = saturate(poiFragData.alpha * _AlphaBoostFA);
 	}
 
-	if (_Mode != POI_MODE_TRANSPARENT)
+	// SrcAlpha (5) with Add/Sub/RevSub (0-2) and alpha to coverage already scale by alpha
+	if (_Mode != POI_MODE_TRANSPARENT && (_AddSrcBlend != 5 || _AddBlendOp > 2) && !(_Mode == POI_MODE_CUTOUT && _AlphaToCoverage >= 0.5))
 	{
 		poiFragData.finalColor *= poiFragData.alpha;
 	}

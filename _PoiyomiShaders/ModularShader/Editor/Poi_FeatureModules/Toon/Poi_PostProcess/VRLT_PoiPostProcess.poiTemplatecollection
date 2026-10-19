@@ -140,21 +140,30 @@ _PPPosterizationAmount ("Steps", Range(1, 30)) = 4
 		#endif
 
 		float3 col = poiFragData.finalColor;
-		col = hueShift(col, _PPHue + _PPHueOffset * ppMask[_PPHueOffsetMask] + frac(POI_TIME.x * _PPHueSpeed), _PPHueShiftColorSpace, _ppHueSelectOrShift);
+		// The add pass blends additively, so only linear adjustments are applied per light
+		#if !defined(POI_PASS_ADD)
+			col = hueShift(col, _PPHue + _PPHueOffset * ppMask[_PPHueOffsetMask] + frac(POI_TIME.x * _PPHueSpeed), _PPHueShiftColorSpace, _ppHueSelectOrShift);
+		#endif
 		col *= _PPTint;
 		col *= _PPRGB;
 		col = GetSaturation(col, _PPSaturation);
-		col = lerp(col, GetHDR(col), _PPHDR);
-		col = GetContrast(col, _PPContrast);
+		#if !defined(POI_PASS_ADD)
+			col = lerp(col, GetHDR(col), _PPHDR);
+			col = GetContrast(col, _PPContrast);
+		#endif
 		col *= _PPBrightness;
-		col += _PPLightness;
+		#if !defined(POI_PASS_ADD)
+			col += _PPLightness;
+		#endif
 
 		col = lerp(poiFragData.finalColor, col, ppMask[_PPMaskChannel]);
 
-		if (_PPPosterization >= 0.5)
-		{
-			col = lerp(col, poiPosterize(col, _PPPosterizationAmount), ppMask[_PPMaskChannel]);
-		}
+		#if !defined(POI_PASS_ADD)
+			if (_PPPosterization >= 0.5)
+			{
+				col = lerp(col, poiPosterize(col, _PPPosterizationAmount), ppMask[_PPMaskChannel]);
+			}
+		#endif
 
 		poiFragData.finalColor = col;
 	}

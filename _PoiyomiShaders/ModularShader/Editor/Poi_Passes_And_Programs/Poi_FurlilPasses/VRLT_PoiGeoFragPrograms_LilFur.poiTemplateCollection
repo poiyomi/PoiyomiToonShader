@@ -867,24 +867,3 @@ void applyFurAOSimple(inout PoiFragData poiFragData, in PoiMesh poiMesh)
 		applyFurAOSimple(poiFragData, poiMesh);
 	}
 #endif
-
-#T#PoiLilFurFragmentInit
-poiMesh.objectPosition = mul(unity_ObjectToWorld, float4(0, 0, 0, 1)).xyz;
-poiMesh.objNormal = mul(unity_WorldToObject, i.normal.xyz);
-poiMesh.normals[0] = i.normal.xyz;
-poiMesh.normals[1] = i.normal.xyz;
-poiMesh.objectScale = i.normal.w;
-poiMesh.worldPos = i.worldPos;
-poiMesh.isFrontFace = facing;
-poiMesh.uv[0] = i.uv[0].xy;
-poiMesh.uv[1] = i.uv[0].zw;
-poiMesh.uv[2] = i.uv[1].xy;
-poiMesh.uv[3] = i.uv[1].zw;
-
-poiCam.eyeViewDir = !IsOrthographicCamera() ? (getCameraPosition(false) - i.worldPos.xyz) : UNITY_MATRIX_I_V._m02_m12_m22;
-poiCam.eyeViewDir = Unity_SafeNormalize(poiCam.eyeViewDir);
-poiCam.viewDir = !IsOrthographicCamera() ? (getCameraPosition() - i.worldPos.xyz) : UNITY_MATRIX_I_V._m02_m12_m22;
-poiCam.viewDir = Unity_SafeNormalize(poiCam.viewDir);
-poiCam.worldPos = getCameraPosition();
-poiCam.vDotN = abs(dot(poiCam.eyeViewDir, i.normal.xyz));
-poiCam.vDotNCentered = abs(dot(poiCam.viewDir, i.normal.xyz));

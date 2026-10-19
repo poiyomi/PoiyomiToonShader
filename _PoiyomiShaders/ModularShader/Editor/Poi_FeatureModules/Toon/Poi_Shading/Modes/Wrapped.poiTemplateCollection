@@ -1,0 +1,159 @@
+#T#Properties
+//ifex _LightingMode!=2
+// Wrapped
+_LightingWrappedColor ("LightSide Color--{condition_showS:(_LightingMode==2)}", Color) = (1, 1, 1, 1)
+_LightingWrappedWrap ("Wrap--{condition_showS:(_LightingMode==2)}", Range(0, 2)) = 0
+_LightingWrappedNormalization ("Normalization--{condition_showS:(_LightingMode==2)}", Range(0, 1)) = 0
+_LightingGradientStart ("Gradient Start--{condition_showS:(_LightingMode==2)}", Range(0, 1)) = 0
+_LightingGradientEnd ("Gradient End--{condition_showS:(_LightingMode==2)}", Range(0, 1)) = .5
+//endex
+#T#Variables
+#ifdef _LIGHTINGMODE_WRAPPED
+	half4 _LightingWrappedColor;
+	float _LightingWrappedWrap;
+	float _LightingWrappedNormalization;
+	float _LightingGradientStart;
+	float _LightingGradientEnd;
+#endif
+#T#Helpers
+	#ifdef _LIGHTINGMODE_WRAPPED
+		// Wrapped
+		// Green’s model with adjustable energy
+		// http://blog.stevemcauley.com/2011/12/03/energy-conserving-wrapped-diffuse/
+		// Modified for adjustable conservation ratio and over-wrap to directionless
+		float RTWrapFunc(in float dt, in float w, in float norm)
+		{
+			float cw = saturate(w);
+			
+			float o = (dt + cw) / ((1.0 + cw) * (1.0 + cw * norm));
+			float flt = 1.0 - 0.85 * norm;
+			if (w > 1.0)
+			{
+				o = lerp(o, flt, w - 1.0);
+			}
+			return o;
+		}
+
+		float3 GreenWrapSH(float fA) // Greens unoptimized and non-normalized
+
+		{
+			float fAs = saturate(fA);
+			float4 t = float4(fA + 1, fAs - 1, fA - 2, fAs + 1); // DJL edit: allow wrapping to L0-only at w=2
+			return float3(t.x, -t.z * t.x / 3, 0.25 * t.y * t.y * t.w);
+		}
+		float3 GreenWrapSHOpt(float fW) // optimised and normalized https://blog.selfshadow.com/2012/01/07/righting-wrap-part-2/
+
+		{
+			const float4 t0 = float4(0.0, 1.0 / 4.0, -1.0 / 3.0, -1.0 / 2.0);
+			const float4 t1 = float4(1.0, 2.0 / 3.0, 1.0 / 4.0, 0.0);
+			float3 fWs = float3(fW, fW, saturate(fW)); // DJL edit: allow wrapping to L0-only at w=2
+			
+			float3 r;
+			r.xyz = t0.xxy * fWs + t0.xzw;
+			r.xyz = r.xyz * fWs + t1.xyz;
+			return r;
+		}
+		float3 ShadeSH9_wrapped(float3 normal, float wrap)
+		{
+			float3 x0, x1, x2;
+			float3 conv = lerp(GreenWrapSH(wrap), GreenWrapSHOpt(wrap), _LightingWrappedNormalization); // Should try optimizing this...
+			conv *= float3(1, 1.5, 4); // Undo pre-applied cosine convolution by using the inverse
+			
+			// Constant (L0)
+			x0 = float3(PoiSHAr.w, PoiSHAg.w, PoiSHAb.w);
+			// Remove pre-applied constant part from L(2,0) to apply correct convolution
+			float3 L2_0 = float3(PoiSHBr.z, PoiSHBg.z, PoiSHBb.z) / - 3.0;
+			x0 -= L2_0;
+			
+			// Linear (L1) polynomial terms
+			x1.r = dot(PoiSHAr.xyz, normal);
+			x1.g = dot(PoiSHAg.xyz, normal);
+			x1.b = dot(PoiSHAb.xyz, normal);
+			
+			// 4 of the quadratic (L2) polynomials
+			float4 vB = normal.xyzz * normal.yzzx;
+			x2.r = dot(PoiSHBr, vB);
+			x2.g = dot(PoiSHBg, vB);
+			x2.b = dot(PoiSHBb, vB);
+			
+			// Final (5th) quadratic (L2) polynomial
+			float vC = normal.x * normal.x - normal.y * normal.y;
+			x2 += PoiSHC.rgb * vC;
+			// Move back the constant part of L(2,0)
+			x2 += L2_0;
+			
+			return x0 * conv.x + x1 * conv.y + x2 * conv.z;
+		}
+
+		float3 GetSHDirectionL1()
+		{
+			// For efficiency, we only get the direction from L1.
+			// Because getting it from L2 would be too hard!
+			return Unity_SafeNormalize((PoiSHAr.xyz + PoiSHAg.xyz + PoiSHAb.xyz));
+		}
+		// Returns the value from SH in the lighting direction with the
+		// brightest intensity.
+		half3 GetSHMaxL1()
+		{
+			float3 maxDirection = GetSHDirectionL1();
+			return ShadeSH9_wrapped(maxDirection, 0);
+		}
+	#endif
+#T#Block
+		#ifdef _LIGHTINGMODE_WRAPPED
+			#define GREYSCALE_VECTOR float3(.33333, .33333, .33333)
+			// Add lights bring their own falloff, limit and grayscale in litColor
+			half3 wrappedLightColor = poiLight.isAdditive ? litColor : poiLight.unityLight.color * poiLight.lightCookie;
+			if (_LightingForceColorEnabled >= 0.5 && !poiLight.isAdditive)
+			{
+				wrappedLightColor = poiThemeColor(poiMods, _LightingForcedColor.rgb, _LightingForcedColorThemeIndex);
+			}
+			float3 directColor = wrappedLightColor * saturate(RTWrapFunc(poiLight.nDotL, _LightingWrappedWrap, _LightingWrappedNormalization));
+			float3 indirectColor = 0;
+			#if defined(POI_PASS_BASE) || defined(POI_PASS_OUTLINE)
+				if (!poiLight.isAdditive)
+					indirectColor = ShadeSH9_wrapped(lerp(poiMesh.normals[0], poiMesh.normals[1], _LightingIndirectUsesNormals), _LightingWrappedWrap) * poiLight.occlusion;
+			#endif
+			float3 ShadeSH9Plus_2 = 0;
+			if (!poiLight.isAdditive)
+			{
+				directColor = lerp(directColor, dot(directColor, float3(0.299, 0.587, 0.114)), poiLight.lightingMonochromatic); // Duplicated from Lightdata due to recreating the light colour
+				indirectColor = lerp(indirectColor, dot(indirectColor, float3(0.299, 0.587, 0.114)), poiLight.lightingMonochromatic); // Ditto^
+				ShadeSH9Plus_2 = GetSHMaxL1();
+			}
+			float bw_topDirectLighting_2 = dot(wrappedLightColor, GREYSCALE_VECTOR);
+			float bw_directLighting = dot(directColor, GREYSCALE_VECTOR);
+			float bw_indirectLighting = dot(indirectColor, GREYSCALE_VECTOR);
+			float bw_topIndirectLighting = dot(ShadeSH9Plus_2, GREYSCALE_VECTOR);
+			#ifdef POI_LIGHT_VOLUME_FORM
+				if (!poiLight.isAdditive)
+				{
+					float3 lvBlocked = PoiLVWrappedBlocked * poiLight.occlusion;
+					indirectColor -= lerp(lvBlocked, dot(lvBlocked, float3(0.299, 0.587, 0.114)), poiLight.lightingMonochromatic);
+				}
+			#endif
+
+			poiLight.lightMap = smoothstep(0, max(bw_topIndirectLighting + bw_topDirectLighting_2, 0.0001), bw_indirectLighting + bw_directLighting) * min(poiLight.detailShadow, poiLight.attenShadowsStrength);
+            #ifdef POI_LIGHT_VOLUME_FORM
+                [branch] if (PoiLightVolumesActive() && !poiLight.isAdditive)
+                {
+                    float wrappedMap = smoothstep(0, max(bw_topIndirectLighting + bw_topDirectLighting_2, 0.0001), bw_indirectLighting + bw_directLighting) * poiLight.attenShadowsStrength;
+                    poiLight.lightMap = PoiLVLightmap(0, poiMesh.normals[1], wrappedMap, _LightingCastedShadows,
+                        poiLight.unityLight.color.rgb * poiLight.attenDistance * poiLight.lightCookie,
+                        poiLight.unityLight.direction.xyz, poiLight.attenShadows) * poiLight.detailShadow;
+                }
+            #endif
+			poiLight.rampedLightMap = saturate((poiLight.lightMap - (1 - _LightingGradientEnd)) / saturate((1 - _LightingGradientStart) - (1 - _LightingGradientEnd) + 0.001));
+			float3 mathRamp = lerp(float3(1, 1, 1), saturate(lerp(_LightingShadowColor, float3(1, 1, 1), saturate(poiLight.rampedLightMap))), shadowStrength);
+
+			directColor *= saturate(poiLight.rampedLightMap + 1 - shadowStrength) * _LightingWrappedColor;
+
+			float3 finalWrap = directColor + indirectColor;
+			if (poiLight.lightingCapEnabled && !poiLight.isAdditive)
+			{
+				finalWrap = min(finalWrap, _LightingCap);
+			}
+			poiLight.finalLighting = finalWrap * mathRamp;
+			if (poiLight.isAdditive)
+				poiLight.finalLighting = max(poiLight.finalLighting, passthroughColor);
+		#endif

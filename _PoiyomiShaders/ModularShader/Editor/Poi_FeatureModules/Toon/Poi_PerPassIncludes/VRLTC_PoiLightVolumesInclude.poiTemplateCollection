@@ -1,0 +1,6 @@
+#T#Template
+//ifex _LightingEnableLightVolumes==0 && isNotAnimated(_LightingEnableLightVolumes)
+#TI# "VRLTC_PoiLightVolumesHelpers.poiTemplateCollection" Hooks
+#TI# "VRLTC_LightVolumesSource.poiTemplateCollection" Source
+#TI# "VRLTC_PoiLightVolumesHelpers.poiTemplateCollection" Helpers
+//endex

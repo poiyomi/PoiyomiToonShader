@@ -244,17 +244,19 @@ _DepthRimAdditiveLighting ("Unlit Add", Range(0, 1)) = 0
         }
         
         half3 rimColor = poiThemeColor(poiMods, _DepthRimColor.rgb, _DepthRimColorThemeIndex).rgb * lerp(1, poiLight.directColor, _DepthRimMixLightColor) * lerp(1, poiFragData.baseColor, _DepthRimMixBaseColor) * _DepthRimBrightness;
-        half3 rimColorUnlit = rimColor / max(poiLight.finalLighting, 0.0001);
-        rimColor = lerp(rimColor, rimColorUnlit, _DepthRimIgnoreLighting);
+        half3 rimBaseColor = rimColor;
+        #ifndef POI_PASS_ADD
+            rimBaseColor = lerp(rimColor, rimColor / max(poiLight.finalLighting, 0.0001), _DepthRimIgnoreLighting);
+        #endif
 
         #if defined(POI_PASS_BASE) || defined(POI_PASS_OUTLINE)
             poiLight.finalLightAdd += rim * rimColor * _DepthRimAdditiveLighting;
         #endif
         poiFragData.emission += rim * rimColor * _DepthRimEmission;
-        poiFragData.baseColor = lerp(poiFragData.baseColor, rimColor, rim * _DepthRimReplace);
-        poiFragData.baseColor += rim * rimColor * _DepthRimAdd;
-        poiFragData.baseColor = lerp(poiFragData.baseColor, 1 - (1 - poiFragData.baseColor) * (1 - rimColor), rim * _DepthRimScreen);
-        poiFragData.baseColor *= lerp(1, rimColor, rim * _DepthRimMultiply);
+        poiFragData.baseColor = lerp(poiFragData.baseColor, rimBaseColor, rim * _DepthRimReplace);
+        poiFragData.baseColor += rim * rimBaseColor * _DepthRimAdd;
+        poiFragData.baseColor = lerp(poiFragData.baseColor, 1 - (1 - poiFragData.baseColor) * (1 - rimBaseColor), rim * _DepthRimScreen);
+        poiFragData.baseColor *= lerp(1, rimBaseColor, rim * _DepthRimMultiply);
     }
 #endif
 //endex

@@ -926,7 +926,10 @@ void getMatcapUV(inout float2 matcapUV, out float2 matcapMaskUV, in float2 matca
             // A solution to top pinch would be so awesome
 
             float3 worldUp = float3(0, 1, 0);
-            float3 tangent = normalize(cross(normal, worldUp));
+            float3 tangent = cross(normal, worldUp);
+            // A normal pointing straight up or down has no cross product with world up; normalizing zero gives NaN.
+            if (dot(tangent, tangent) < 1e-12) tangent = cross(normal, float3(0, 0, 1));
+            tangent = normalize(tangent);
             
             float3 bitangent = normalize(cross(normal, tangent));
             float2 projection;

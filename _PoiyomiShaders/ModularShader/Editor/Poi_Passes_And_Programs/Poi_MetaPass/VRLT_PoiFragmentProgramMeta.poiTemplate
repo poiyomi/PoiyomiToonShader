@@ -45,23 +45,16 @@ float4 frag(VertexOut i, bool facing : SV_IsFrontFace) : SV_Target
 
 	clip(poiFragData.alpha - _Cutoff);
 	
-	#ifdef POI_PASS_META
-		UnityMetaInput meta;
-		PoiInitStruct(UnityMetaInput, meta);
-		meta.Albedo = saturate(poiFragData.finalColor.rgb);
-		meta.Emission = poiFragData.emission * _GIEmissionMultiplier * poiMods.globalEmission;
-		#if POI_PIPE == POI_BIRP
-			meta.SpecularColor = poiLight.finalLightAdd;
-		#endif
-		#ifdef EDITOR_VISUALIZATION
-			meta.VizUV = i.VizUV;
-			meta.LightCoord = i.LightCoord;
-		#endif
-		return UnityMetaFragment(meta) + POI_SAFE_RGB0;
+	UnityMetaInput meta;
+	PoiInitStruct(UnityMetaInput, meta);
+	meta.Albedo = saturate(poiFragData.finalColor.rgb);
+	meta.Emission = poiFragData.emission * _GIEmissionMultiplier * poiMods.globalEmission;
+	#if POI_PIPE == POI_BIRP
+		meta.SpecularColor = poiLight.finalLightAdd;
 	#endif
-
-	poiFragData.finalColor += poiFragData.emission * poiMods.globalEmission;
-	applyUnityFog(poiFragData.finalColor, i.fogData, _IgnoreFog);
-
-	return float4(poiFragData.finalColor, poiFragData.alpha) + POI_SAFE_RGB0;
+	#ifdef EDITOR_VISUALIZATION
+		meta.VizUV = i.VizUV;
+		meta.LightCoord = i.LightCoord;
+	#endif
+	return UnityMetaFragment(meta) + POI_SAFE_RGB0;
 }

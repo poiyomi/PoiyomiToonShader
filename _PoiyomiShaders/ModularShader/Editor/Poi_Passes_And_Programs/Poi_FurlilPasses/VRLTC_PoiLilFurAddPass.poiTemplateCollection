@@ -41,7 +41,7 @@ ColorMask [_FurColorMask]
 Offset [_FurOffsetFactor], [_FurOffsetUnits]
 
 BlendOp [_FurBlendOpFA], [_FurBlendOpAlphaFA]
-Blend [_FurSrcBlendFA] [_FurDstBlendFA], Zero One
+Blend [_FurSrcBlendFA] [_FurDstBlendFA], [_FurSrcBlendAlphaFA] [_FurDstBlendAlphaFA]
 
 #T#LilFurPreAddPassBlendSettings
 ZWrite Off
@@ -53,7 +53,7 @@ ColorMask [_FurColorMask]
 Offset [_FurOffsetFactor], [_FurOffsetUnits]
 
 BlendOp [_FurBlendOpFA], [_FurBlendOpAlphaFA]
-Blend [_FurSrcBlendFA] [_FurDstBlendFA], Zero One
+Blend [_FurSrcBlendFA] [_FurDstBlendFA], [_FurSrcBlendAlphaFA] [_FurDstBlendAlphaFA]
 
 #T#LilFurAddPassOnlyKeywords
 #pragma multi_compile_fwdadd_fullshadows

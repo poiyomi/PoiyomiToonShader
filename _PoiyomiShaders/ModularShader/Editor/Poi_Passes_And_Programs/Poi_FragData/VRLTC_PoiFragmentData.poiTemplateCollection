@@ -150,6 +150,7 @@ struct PoiLight
     half lightingMonochromatic;
     int lightType;
     int isAdditive;
+    int lightMapMode;
     Light unityLight;
     #if POI_PIPE == POI_URP
         BRDFData brdfData;
@@ -211,15 +212,28 @@ struct PoiFragData
 static half4 PoiSHAr = 0;
 static half4 PoiSHAg = 0;
 static half4 PoiSHAb = 0;
+#if POI_PIPE == POI_BIRP
+// Light Volumes have no L2, so their branch turns it off instead of keeping zeroed copies live.
+static bool PoiSHL2Off = false;
+#define PoiSHBr (PoiSHL2Off ? (half4)0 : unity_SHBr)
+#define PoiSHBg (PoiSHL2Off ? (half4)0 : unity_SHBg)
+#define PoiSHBb (PoiSHL2Off ? (half4)0 : unity_SHBb)
+#define PoiSHC (PoiSHL2Off ? (half4)0 : unity_SHC)
+#else
 static half4 PoiSHBr = 0;
 static half4 PoiSHBg = 0;
 static half4 PoiSHBb = 0;
 static half4 PoiSHC  = 0;
+#endif
 
 float4 poiTransformClipSpacetoScreenSpaceFrag(float4 clipPos)
 {
     float4 positionSS = float4(clipPos.xyz * clipPos.w, clipPos.w);
-    positionSS.xy = positionSS.xy / _ScreenParams.xy;
+    #if POI_PIPE == POI_URP
+        positionSS.xy = positionSS.xy / GetScaledScreenParams().xy;
+    #else
+        positionSS.xy = positionSS.xy / _ScreenParams.xy;
+    #endif
     return positionSS;
 }
 
@@ -244,6 +258,11 @@ half3 PoiSHEval_L2(half4 normal)
     return x1 + x2;
 }
 
+#if POI_PIPE == POI_URP && defined(UNITY_COLORSPACE_GAMMA)
+// The URP compatibility implementation is emitted with the global helpers, after this block.
+inline half3 LinearToGammaSpace(half3 linRGB);
+#endif
+
 half3 PoiShadeSH9 (half4 normal)
 {
     half3 res = PoiSHEval_L0L1(normal);
@@ -261,10 +280,12 @@ half3 PoiShadeSH9 (half4 normal)
 PoiSHAr = unity_SHAr;
 PoiSHAg = unity_SHAg;
 PoiSHAb = unity_SHAb;
+#if POI_PIPE != POI_BIRP
 PoiSHBr = unity_SHBr;
 PoiSHBg = unity_SHBg;
 PoiSHBb = unity_SHBb;
 PoiSHC =  unity_SHC;
+#endif
 
 PoiMesh poiMesh;
 PoiInitStruct(PoiMesh, poiMesh);
@@ -322,7 +343,7 @@ poiMesh.vertexColor = i.vertexColor;
 
 poiMesh.isFrontFace = facing;
 
-#ifndef POI_PASS_OUTLINE
+#if !defined(POI_PASS_OUTLINE) && !defined(POI_PASS_LILFUR)
     if (!poiMesh.isFrontFace && _FlipBackfaceNormals >= 0.5)
     {
         poiMesh.normals[0] *= -1;

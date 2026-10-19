@@ -46,7 +46,7 @@ namespace Poi.Tools.ShaderTranslator.VersionUpgrade
 			// --- 8.x Iridescence -> Matcap (UV Mode = Gradient). Only fires if iridescence was enabled. ---
     		MigrateIridescenceToMatcap(material, src);
 
-			// --- 7.3 lighting/shading. Gated internally on the 7.3-only _LightingRampType, so it never touches 8.x/9.x. ---
+			// --- 7.3 lighting/shading. Gated internally so it never touches 8.x/9.x. ---
 			Migrate73Lighting(material, src);
 		}
 
@@ -55,13 +55,14 @@ namespace Poi.Tools.ShaderTranslator.VersionUpgrade
 		/// enum was re-indexed (so the raw value lands on the wrong mode), the separate _LightingRampType was folded
 		/// into _LightingMode, and the AO/shadow/detail masks were restructured into RGBA-packed maps. This puts the
 		/// material into the correct 9.3 lighting mode with its ramp, shadow and mask config intact. Only 7.3 has
-		/// _LightingRampType, so the whole block is gated on it - it never runs for 8.x/9.x materials.
+		/// _LightingRampType, but 8.x/9.x materials can keep it as a leftover, so sources with 8.0's _LightingColorMode are skipped.
 		/// NOTE: the specular / BRDF / reflection systems were rebuilt after 7.3 and are intentionally NOT migrated -
 		/// their math changed, so they can't be reproduced; they reset to 9.3 defaults.
 		/// </summary>
 		static void Migrate73Lighting(Material material, Reader src)
 		{
 			if (!src.Has("_LightingRampType")) return; // not a 7.3 material
+			if (src.Has("_LightingColorMode")) return;
 
 			ThryLogger.LogWarn($"<b>{material.name}</b>: migrated from Poiyomi 7.3. Lighting/shading was translated to 9.3, " + "be aware that specular, reflections and metallics were rebuilt after 7.3 and reset to defaults - please re-check them.");
 

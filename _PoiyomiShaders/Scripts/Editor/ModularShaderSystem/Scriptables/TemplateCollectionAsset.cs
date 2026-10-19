@@ -13,6 +13,9 @@ namespace Poiyomi.ModularShaderSystem
     {
         public List<TemplateAsset> Templates;
 
+        // Keep source fragments in dependency-based exports as well as in Unity's import graph.
+        [SerializeField, HideInInspector] internal List<TemplateCollectionAsset> SourceIncludes;
+
         public TemplateCollectionAsset()
         {
             Templates = new List<TemplateAsset>();

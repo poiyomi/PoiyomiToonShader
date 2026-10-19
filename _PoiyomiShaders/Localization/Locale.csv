@@ -719,6 +719,7 @@
 "_LightingIndirectUsesNormals","Indirect Uses Normals","La iluminación indirecta usa normales","Indirekt verwendet Normalen","ノーマル(法線)を間接的に使用","간접 노멀 사용","间接光使用法线","Использовать Нормали Для Непрямого Освещения"
 "_LightingCastedShadows","Receive Casted Shadows","Recibir sombras proyectadas","Erhalten Sie Casted Shadows","投影された影を受け取る","투사된 그림자 받기","接收投影阴影","Получать Отбрасываемые Тени"
 "_LightingShadowSoftness","Casted Shadow Softness","Suavidad de sombra proyectada","Casted Shadow Weichheit","投影された影のソフトネス","투사된 그림자 부드러움","投影阴影柔和度","Мягкость Отбрасываемых Теней"
+"_LightingCleanCastedShadows","Clean Casted Shadows","Sombras proyectadas limpias","Saubere geworfene Schatten","投影された影をきれいにする","깔끔한 투사된 그림자","干净的投影阴影","Чистые Отбрасываемые Тени"
 "_LightingMonochromatic","Grayscale Lighting","Iluminación de monocromática","Graustufenbeleuchtung","影色への環境光影響度","흑백 조명","单色光照 (黑白)","Монохромное Освещение"
 "_LightingVertexLightingEnabled","Vertex lights (Non-Important)","Iluminación de vértices (No importantes)","Scheitelpunktlichter (Unwichtig)","頂点ライト (重要ではない)","버텍스 라이트 (중요하지 않음)","顶点光照 (不重要)","Вертексный свет (неважно)"
 "_LightingAdditiveEnable","Pixel lights (Important)","Iluminación de píxeles (Importantes)","Pixellichter (Wichtig)","ピクセル ライト (重要)","픽셀 라이트 (중요)","像素光照 (重要)","Pixel Lights (Важно)"

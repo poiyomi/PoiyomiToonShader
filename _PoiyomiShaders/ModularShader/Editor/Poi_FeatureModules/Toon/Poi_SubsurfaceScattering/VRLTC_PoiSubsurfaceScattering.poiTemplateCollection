@@ -7,7 +7,7 @@
 [sRGBWarning(true)][ThryRGBAPacker(RGB Color, A Thickness, linear, false)]_SSSThicknessMap ("Color & Thickness--{reference_properties:[_SSSThicknessMapPan, _SSSThicknessMapUV, _SSSThicknessMapChannel]}", 2D) = "white" { }
 [ThryHideInInspector][Vector2]_SSSThicknessMapPan ("Panning", Vector) = (0, 0, 0, 0)
 [ThryHideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7, Matcap, 9, Screen Space, 10)] _SSSThicknessMapUV ("UV", Int) = 0
-[ThryHideInInspector][Enum(R, 0, G, 1, B, 2, A, 3)] _SSSThicknessMapChannel ("Channel", Int) = 0
+[ThryHideInInspector][Enum(R, 1, G, 2, B, 3, A, 0)] _SSSThicknessMapChannel ("Channel", Int) = 0
 _SSSThicknessMod ("Thickness mod", Range(-1, 1)) = -1
 _SSSStrength ("Light Strength", Range(0, 1)) = 0.5
 _SSSSpread ("Light Spread", Range(1, 100)) = 2
@@ -65,10 +65,13 @@ _SSSShadowStrength ("Shadow Strength", Range(0, 1)) = 0.25
     void applySubsurfaceScattering(in PoiCam poiCam, inout PoiLight poiLight, in PoiMesh poiMesh, in PoiFragData poiFragData, in PoiMods poiMods)
     {
         float4 SSS = 1;
+        float sssThickness = 1;
         #if defined(PROP_SSSTHICKNESSMAP) || !defined(OPTIMIZER_ENABLED)
             SSS = POI2D_SAMPLER_PAN(_SSSThicknessMap, _MainTex, poiUV(poiMesh.uv[_SSSThicknessMapUV], _SSSThicknessMap_ST), _SSSThicknessMapPan);
+            // 0 is alpha: materials saved while the selector was ignored keep their thickness.
+            sssThickness *= SSS[((uint)_SSSThicknessMapChannel + 3) % 4];
         #endif
-        SSS.a = 1 - SSS.a;
+        SSS.a = 1 - sssThickness;
 
         float3 sssLightDir = poiLight.direction;
         #if POI_PIPE == POI_BIRP
@@ -82,7 +85,7 @@ _SSSShadowStrength ("Shadow Strength", Range(0, 1)) = 0.25
         if (poiLight.lightType == POI_POINT_SPOT)
         {
             sssLightColor = poiLight.unityLight.color.rgb;
-            sssReach = poiLight.attenDistance * CalculateLuminance(poiLight.lightCookie);
+            sssReach = saturate(poiLight.attenDistance) * CalculateLuminance(poiLight.lightCookie);
         }
 
         float3 vLTLight = sssLightDir + poiMesh.normals[1] * _SSSDistortion;

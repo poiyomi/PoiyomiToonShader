@@ -1,0 +1,61 @@
+#T#Info
+[Helpbox(1, 2, 1)] _SDFNote ("SDF requires a specialized data texture specific to your model in order for this to work. If there's no texture, this will appear Flat.--{condition_showS:(_LightingMode==8)}", Int) = 0
+#T#Properties
+//ifex _LightingMode!=8
+// SDF
+[sRGBWarning]_SDFShadingTexture ("SDF--{reference_properties:[_SDFShadingTexturePan, _SDFShadingTextureUV],condition_showS:(_LightingMode==8)}", 2D) = "white" { }
+[ThryHideInInspector][Vector2]_SDFShadingTexturePan ("Panning", Vector) = (0, 0, 0, 0)
+[ThryHideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7, Matcap, 9, Screen Space, 10)] _SDFShadingTextureUV ("UV", Int) = 0
+_SDFBlur ("Blur--{condition_showS:(_LightingMode==8)}", Range(0, 1)) = 0.1
+[Vector3]_SDFForward ("Forward Direction--{condition_showS:(_LightingMode==8)}", Vector) = (0, 0, 1, 0)
+[Vector3]_SDFLeft ("Left Direction--{condition_showS:(_LightingMode==8)}", Vector) = (-1, 0, 0, 0)
+//endex
+#T#VariablesExposed
+#ifdef _LIGHTINGMODE_SDF
+	#if defined(PROP_SDFSHADINGTEXTURE) || !defined(OPTIMIZER_ENABLED)
+		float _SDFShadingTextureUV;
+		float2 _SDFShadingTexturePan;
+		float4 _SDFShadingTexture_ST;
+	#endif
+	float _SDFBlur;
+	float4 _SDFForward;
+	float4 _SDFLeft;
+#endif
+#T#Variables
+#ifdef _LIGHTINGMODE_SDF
+	#if defined(PROP_SDFSHADINGTEXTURE) || !defined(OPTIMIZER_ENABLED)
+		Texture2D _SDFShadingTexture;
+	#endif
+#endif
+#T#Block
+		#ifdef _LIGHTINGMODE_SDF
+			float3 forward = normalize(mul((float3x3)unity_ObjectToWorld, _SDFForward.xyz));
+			float3 left = normalize(mul((float3x3)unity_ObjectToWorld, _SDFLeft.xyz));
+			float2 lightDirXZ = poiLight.direction.xz;
+			float3 lightDirHorizontal = dot(lightDirXZ, lightDirXZ) > 0 ? normalize(float3(lightDirXZ.x, 0, lightDirXZ.y)) : forward;
+
+			float lightAtten = 1 - (dot(lightDirHorizontal, forward) * 0.5 + 0.5);
+			// Not sign(): it returns 0 for light from front or back
+			float filpU = dot(lightDirHorizontal, left) < 0 ? -1 : 1;
+
+			#if defined(PROP_SDFSHADINGTEXTURE) || !defined(OPTIMIZER_ENABLED)
+				float shadowSDF = POI2D_SAMPLER_PAN(_SDFShadingTexture, _MainTex, poiUV(poiMesh.uv[_SDFShadingTextureUV], _SDFShadingTexture_ST) * float2(filpU, 1), _SDFShadingTexturePan).r;
+			#else
+				float shadowSDF = 1;
+			#endif
+			float blur = _SDFBlur * 0.1;
+			half faceShadow = smoothstep(lightAtten - blur, lightAtten + blur, shadowSDF) * poiLight.detailShadow;
+			half sdfShadow = poiLight.attenShadowsStrength;
+			#ifdef POI_LIGHT_VOLUME_FORM
+				[branch] if (PoiLightVolumesActive() && !poiLight.isAdditive)
+					sdfShadow = PoiLVReceivedShadow(poiLight.unityLight.color.rgb * poiLight.attenDistance * poiLight.lightCookie, poiLight.attenShadows);
+			#endif
+			half3 sdfLitColor = litColor * sdfShadow;
+			poiLight.rampedLightMap = faceShadow * sdfShadow;
+
+			float3 indirectColor = _LightingShadowColor.rgb;
+			indirectColor = indirectColor * lerp(ambientColor * poiLight.occlusion, sdfLitColor, ignoreAmbientColor);
+			indirectColor = lerp(sdfLitColor, indirectColor, shadowStrength);
+
+			poiLight.finalLighting = lerp(indirectColor, sdfLitColor, faceShadow);
+		#endif

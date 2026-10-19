@@ -6,23 +6,11 @@ Tags { "LightMode" = "Meta" }
 #K#META_PASS_STENCIL
 
 #T#MetaPassBlendSettings
-ZWrite [_ZWrite]
+ZWrite On
 Cull Off
-//ifex _AlphaToCoverage==0
-AlphaToMask [_AlphaToCoverage]
-//endex
-ZTest [_ZTest]
-ColorMask [_ColorMask]
-Offset [_OffsetFactor], [_OffsetUnits]
-
-BlendOp [_BlendOp], [_BlendOpAlpha]
-Blend [_SrcBlend] [_DstBlend], [_SrcBlendAlpha] [_DstBlendAlpha]
 
 #T#MetaPassOnlyKeywords
 #pragma multi_compile_instancing
-#if POI_PIPE == POI_BIRP
-    #pragma multi_compile_fragment _ VERTEXLIGHT_ON
-#endif
 
 #define POI_PASS_META
 

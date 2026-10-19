@@ -81,6 +81,7 @@ half _AlphaPremultiply2;
 half _AlphaForceOpaque2;
 half _TwoPassAlphaPower;
 float _AddBlendOp2;
+float _AddSrcBlend2;
 float _Cull2;
 
 #T#2ndPassFunctions

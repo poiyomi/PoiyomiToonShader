@@ -17,5 +17,9 @@ namespace Poiyomi.ModularShaderSystem
         public const string CREATE_PATH = "Poi/Modular Shader";
         
         public const string RESOURCES_FOLDER = "POIMSS";
+
+        public const string TEMPLATE_ASSET_SCRIPT_GUID = "c5245566ee65d4b4bbd25c70aee47169";
+
+        public const string TEMPLATE_COLLECTION_ASSET_SCRIPT_GUID = "c670b58f3d80515448cad87058c4e731";
     }
 }

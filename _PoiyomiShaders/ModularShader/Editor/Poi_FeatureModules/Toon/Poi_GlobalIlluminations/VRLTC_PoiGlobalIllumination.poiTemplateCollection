@@ -1,11 +1,11 @@
 #T#PoiWorldProps
 [HideInInspector] m_start_bakedLighting ("Baked Lighting--{button_help:{text:Tutorial,action:{type:URL,data:https://www.poiyomi.com/shading/baked-lighting},hover:Documentation}}", Float) = 0
-[Helpbox(1, 5, 3)] _GIWarning ("Poiyomi Shaders is not designed to be used as a general-purpose World shader and should be reserved only for specialized features that typical World shaders do not have. Additionally, Static Batching is unsupported! For this reason, you should keep your usage of Poiyomi World to a minimum.", Int) = 0
+[Helpbox(1, 0, 3)] _GIWarning ("Poiyomi Shaders is not designed to be used as a general-purpose World shader and should be reserved only for specialized features that typical World shaders do not have. Additionally, Static Batching is unsupported! For this reason, you should keep your usage of Poiyomi World to a minimum.", Int) = 0
 //_SpecularLMOcclusion ("Specular Occlusion", Range(0, 1)) = 0
 //_SpecLMOcclusionAdjust ("Spec Occlusion Sensitiviy", Range(0, 1)) = 0.2
 [DoNotAnimate] _GIEmissionMultiplier ("GI Emission Multiplier", Float) = 1
-[HideInInspector][HDR]_EmissionColor ("Emission Color", Color) = (0, 0, 0, 1) // Fallback for Unity GI - overridden by emission module when enabled
-[HideInInspector][DoNotAnimate] DSGI ("DSGI", Float) = 0 //add this property for double sided illumination settings to be shown
+[HideInInspector][HDR]_EmissionColor ("Emission Color", Color) = (1, 1, 1, 1) // Fallback for Unity GI - overridden by emission module when enabled
+[HideInInspector][DoNotAnimate] DSGI ("DSGI--{tooltip:Double-sided global illumination. Treats both sides of this material as surfaces for light baking. Useful for thin geometry such as leaves or cloth. Does not change rendering culling. Re-bake lighting after changing this setting.}", Float) = 0 //add this property for double sided illumination settings to be shown
 [HideInInspector][DoNotAnimate] LightmapFlags ("Lightmap Flags", Float) = 0 //add this property for lightmap flags settings to be shown
 [DoNotAnimate][ThryWideEnum(None, 0, SH, 1, RNM, 2, MonoSH, 3)] _BakeryMode ("Bakery Mode", Float) = 0
 //ifex _BakeryMode!=1 && _BakeryMode!=2
@@ -13,7 +13,7 @@
 [DoNotAnimate][NoScaleOffset] _RNM1 ("RNM1--{condition_showS:(_BakeryMode==1 || _BakeryMode==2)}", 2D) = "black" {}
 [DoNotAnimate][NoScaleOffset] _RNM2 ("RNM2--{condition_showS:(_BakeryMode==1 || _BakeryMode==2)}", 2D) = "black" {}
 //endex
-[DoNotAnimate][Toggle(_LIGHTMAP_BICUBIC)] _LightmapBicubic ("Use Bicubic Filtering", Float) = 0
+[DoNotAnimate][Toggle(_LIGHTMAP_BICUBIC)] _LightmapBicubic ("Use Bicubic Filtering--{tooltip:Smooths lightmap sampling to reduce visible texel edges and blocky lighting. Uses additional texture samples and may soften fine lighting details.}", Float) = 0
 [HideInInspector] m_end_bakedLighting ("Baked Lighting", Float) = 0
 
 #T#PoiWorldDefine

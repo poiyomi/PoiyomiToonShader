@@ -1,0 +1,28 @@
+#T#Properties
+//ifex _LightingMode!=0
+// Texture Ramp
+[NoScaleOffset][sRGBWarning(false)][Gradient]_ToonRamp ("Lighting Ramp--{texture:{width:512,height:4,filterMode:Bilinear,wrapMode:Clamp},force_texture_options:true,condition_showS:(_LightingMode==0)}", 2D) = "white" { }
+_ShadowOffset ("Ramp Offset--{condition_showS:(_LightingMode==0)}", Range(-1, 1)) = 0
+_ToonRampCount ("Ramp Count--{condition_showS:(_LightingMode==0)}", Int) = 1
+[ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3)]_ToonRampUVSelector ("Ramp Selector UV--{condition_showS:(_LightingMode==0)}", Int) = 1
+//endex
+#T#VariablesExposed
+#ifdef _LIGHTINGMODE_TEXTURERAMP
+	float _ShadowOffset;
+	int _ToonRampCount;
+	int _ToonRampUVSelector;
+#endif
+#T#Variables
+#ifdef _LIGHTINGMODE_TEXTURERAMP
+	UNITY_DECLARE_TEX2D_NOSAMPLER(_ToonRamp);
+#endif
+#T#Block
+		#ifdef _LIGHTINGMODE_TEXTURERAMP
+			float2 rampUVs = poiLight.lightMap + _ShadowOffset;
+			if (_ToonRampCount > 1)
+			{
+				rampUVs.y = (floor(poiMesh.uv[_ToonRampUVSelector].y * _ToonRampCount) + 0.5) / _ToonRampCount;
+			}
+			poiLight.rampedLightMap = lerp(1, UNITY_SAMPLE_TEX2D_SAMPLER(_ToonRamp, _linear_clamp, rampUVs).rgb, shadowStrength);
+			poiLight.finalLighting = lerp(_LightingShadowColor * lerp(ambientColor, poiLight.rampedLightMap * poiLight.directColor, ignoreAmbientColor) * poiLight.occlusion, poiLight.directColor, poiLight.rampedLightMap);
+		#endif

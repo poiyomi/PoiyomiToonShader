@@ -1,0 +1,116 @@
+#T#Properties
+//ifex _LightingMode!=3
+[sRGBWarning]_SkinLUT ("LUT--{condition_showS:(_LightingMode==3)}", 2D) = "white" { }
+_SssScale ("Scale--{condition_showS:(_LightingMode==3)}", Range(0, 1)) = 1
+_SkinThicknessMap ("Thickness Map--{reference_properties:[_SkinThicknessMapPan, _SkinThicknessMapUV, _SkinThicknessMapInvert],condition_showS:(_LightingMode==3)}", 2D) = "black" { }
+[ThryHideInInspector][Vector2]_SkinThicknessMapPan ("Panning", Vector) = (0, 0, 0, 0)
+[ThryHideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7, Matcap, 9, Screen Space, 10)] _SkinThicknessMapUV ("UV", Int) = 0
+[ThryHideInInspector][ToggleUI]_SkinThicknessMapInvert ("Invert", Float) = 0
+_SkinThicknessPower ("Thickness Power--{condition_showS:(_LightingMode==3)}", Range(0, 3)) = 1
+[ToggleUI]_SkinDiffuseSoftnessEnabled ("Soften Diffuse Normals--{condition_showS:(_LightingMode==3),tooltip:Softens normal-map detail in skin diffuse lighting without changing specular normals. Off preserves existing materials.}", Float) = 0
+_SssBumpBlur ("Diffuse Normal Softness--{condition_showS:(_LightingMode==3 && _SkinDiffuseSoftnessEnabled==1),tooltip:Blends the diffuse normal toward the mesh normal. This is a local approximation rather than a texture blur.}", Range(0, 1)) = 0.7
+_SkinScatteringStability ("Scattering Stability--{condition_showS:(_LightingMode==3),tooltip:Keeps the scattering LUT profile stable as light intensity changes. Zero preserves the existing brightness-dependent profile.}", Range(0, 1)) = 0
+[HideInInspector][Vector3]_SssTransmissionAbsorption ("Absorption--{condition_showS:(_LightingMode==3)}", Vector) = (-8, -40, -64, 0)
+[HideInInspector][Vector3]_SssColorBleedAoWeights ("AO Color Bleed--{condition_showS:(_LightingMode==3)}", Vector) = (0.4, 0.15, 0.13, 0)
+//endex
+#T#VariablesExposed
+#ifdef _LIGHTINGMODE_SKIN
+	float _SssScale;
+	#if defined(PROP_SKINTHICKNESSMAP) || !defined(OPTIMIZER_ENABLED)
+		float4 _SkinThicknessMap_ST;
+		float2 _SkinThicknessMapPan;
+		float _SkinThicknessMapUV;
+	#endif
+	float _SkinThicknessMapInvert;
+	float _SkinThicknessPower;
+	float _SssBumpBlur;
+	float _SkinDiffuseSoftnessEnabled;
+	float _SkinScatteringStability;
+	float3 _SssTransmissionAbsorption;
+	half3 _SssColorBleedAoWeights;
+#endif
+#T#Variables
+#ifdef _LIGHTINGMODE_SKIN
+	#if defined(PROP_SKINLUT) || !defined(OPTIMIZER_ENABLED)
+		Texture2D _SkinLUT;
+	#endif
+	#if defined(PROP_SKINTHICKNESSMAP) || !defined(OPTIMIZER_ENABLED)
+		Texture2D _SkinThicknessMap;
+	#endif
+#endif
+#T#Block
+		#ifdef _LIGHTINGMODE_SKIN
+			poiLight.rampedLightMap = poiLight.nDotLSaturated;
+
+			// Scattering mask.
+			float subsurface = 1;
+			#if defined(PROP_SKINTHICKNESSMAP) || !defined(OPTIMIZER_ENABLED)
+			    subsurface = 1 - POI2D_SAMPLER_PAN(_SkinThicknessMap, _MainTex, poiUV(poiMesh.uv[_SkinThicknessMapUV], _SkinThicknessMap_ST), _SkinThicknessMapPan).r;
+			#endif
+			if (_SkinThicknessMapInvert >= 0.5)
+			{
+				subsurface = 1 - subsurface;
+			}
+
+			subsurface = pow(subsurface, max(_SkinThicknessPower, 0.001));
+
+			float skinScattering = saturate(subsurface * _SssScale * 2);
+			
+			// Skin subsurface depth absorption tint.
+			// cf http://www.crytek.com/download/2014_03_25_CRYENGINE_GDC_Schultz.pdf pg 35
+			// link dead, https://ia600902.us.archive.org/25/items/crytek_presentations/2014_03_25_CRYENGINE_GDC_Schultz.pdf
+			half3 absorption = exp((1.0h - subsurface) * _SssTransmissionAbsorption.rgb);
+			
+			// Albedo scale for absorption assumes ~0.5 luminance for Caucasian skin.
+			absorption *= saturate(poiFragData.baseColor * unity_ColorSpaceDouble.rgb);
+			
+			half skinShadow = poiLight.attenShadowsStrength;
+			#ifdef POI_LIGHT_VOLUME_FORM
+				[branch] if (PoiLightVolumesActive() && !poiLight.isAdditive)
+					skinShadow = PoiLVReceivedShadow(poiLight.unityLight.color.rgb * poiLight.attenDistance * poiLight.lightCookie, poiLight.attenShadows);
+			#endif
+			half3 skinLitColor = litColor * skinShadow;
+			float ndlBlur = poiLight.nDotLNormalized;
+			float skinLightMap = poiLight.lightMapNoAttenuation;
+			// Keep changes local: other modules (especially specular) retain their detailed normals.
+			//ifex isNotAnimated(_SkinDiffuseSoftnessEnabled) && _SkinDiffuseSoftnessEnabled==0
+			if (_SkinDiffuseSoftnessEnabled > 0.5 && _SssBumpBlur > 0)
+			{
+				float3 diffuseNormal = lerp(poiMesh.normals[1], poiMesh.normals[0], saturate(_SssBumpBlur));
+				float normalLengthSq = dot(diffuseNormal, diffuseNormal);
+				diffuseNormal = normalLengthSq > 1e-6 ? diffuseNormal * rsqrt(max(normalLengthSq, 1e-6)) : poiMesh.normals[1];
+				float diffuseNDotL = dot(diffuseNormal, poiLight.direction);
+				ndlBlur = saturate(diffuseNDotL * 0.5 + 0.5);
+				if (poiLight.lightMapMode == 2)
+					skinLightMap = saturate(diffuseNDotL) * poiLight.detailShadow;
+				else if (poiLight.lightMapMode == 1)
+					skinLightMap = ndlBlur * poiLight.detailShadow;
+				else if (poiLight.lightMapMode == 0 && poiLight.isAdditive)
+					skinLightMap = smoothstep(0, 1, ndlBlur) * poiLight.detailShadow;
+				else if (poiLight.lightMapMode == 0)
+				{
+					// Re-evaluate the custom light map with the softened normal, retaining its SH response.
+					float3 shBottom = float3(PoiSHAr.w, PoiSHAg.w, PoiSHAb.w) + float3(PoiSHBr.z, PoiSHBg.z, PoiSHBb.z) / 3.0;
+					float3 grey = float3(0.33333, 0.33333, 0.33333);
+					float directLuma = dot(poiLight.directColor, grey);
+					float bottomLuma = dot(shBottom, grey);
+					float lightRange = dot(GetSHLength(), grey) + directLuma - bottomLuma;
+					if (lightRange > 1e-5)
+						skinLightMap = smoothstep(0, lightRange, ndlBlur * directLuma + dot(PoiShadeSH9(float4(diffuseNormal, 1)), grey) - bottomLuma) * poiLight.detailShadow;
+				}
+				// Casted Shadows Only and base-pass SDF retain their authored light maps.
+			}
+			//endex
+			float lumi = dot(litColor, half3(0.2126h, 0.7152h, 0.0722h));
+			lumi = lerp(lumi, 1.0, _SkinScatteringStability);
+			float4 sssLookupUv = float4(ndlBlur, skinScattering * lumi, 0.0f, 0.0f);
+			#if defined(PROP_SKINLUT) || !defined(OPTIMIZER_ENABLED)
+				half3 sss = skinLightMap * _SkinLUT.SampleLevel(sampler_linear_clamp, sssLookupUv.xy, sssLookupUv.w).rgb;
+			#else
+				half3 sss = skinLightMap;
+			#endif
+
+			// Shadow Tint is the main light's shadow floor; point lights keep their ambient.
+			half skinIgnoreAmbient = poiLight.isAdditive ? 0 : ignoreAmbientColor;
+			poiLight.finalLighting = lerp(litColor, min(lerp(ambientColor * _LightingShadowColor, _LightingShadowColor, skinIgnoreAmbient) * poiLight.occlusion + (sss * skinLitColor), litColor), shadowStrength);
+		#endif

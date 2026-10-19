@@ -70,9 +70,9 @@ _BacklightViewStrength ("View Direction Strength", Range(0, 1)) = 1
     {
 
         // Color
-        half3 backlightColor = _BacklightColor.rgb;
+        half4 backlightColor = _BacklightColor;
         #if defined(PROP_BACKLIGHTCOLORTEX) || !defined(OPTIMIZER_ENABLED)
-            backlightColor *= POI2D_SAMPLER_PAN(_BacklightColorTex, _MainTex, poiUV(poiMesh.uv[_BacklightColorTexUV], _BacklightColorTex_ST), _BacklightColorTexPan).rgb;
+            backlightColor *= POI2D_SAMPLER_PAN(_BacklightColorTex, _MainTex, poiUV(poiMesh.uv[_BacklightColorTexUV], _BacklightColorTex_ST), _BacklightColorTexPan);
         #endif
 
         float3 normal = lerp(poiMesh.normals[0], poiMesh.normals[1], _BacklightNormalStrength);
@@ -83,11 +83,21 @@ _BacklightViewStrength ("View Direction Strength", Range(0, 1)) = 1
         half backlightLN = dot(normalize(-headDir * _BacklightViewStrength + poiLight.direction), normal) * 0.5 + 0.5;
 
         if (_BacklightReceiveShadow >= 0.5)
-            backlightLN *= poiLight.lightMap;
+        {
+            // Match lilToon's raw attenuation and shading-direction correction before tooning.
+            // The surface light map also contains NdotL and the separate Light Data shadow strength.
+            half backlightShadow = poiLight.attenShadows * saturate(poiLight.attenDistance) * CalculateLuminance(poiLight.lightCookie) + distance(poiLight.direction, poiLight.unityLight.direction);
+            #ifdef POI_LIGHT_VOLUME_FORM
+                // LV shadows each light separately, so the light direction no longer tells shadowed light apart.
+                [branch] if (PoiLightVolumesActive())
+                    backlightShadow = PoiLVVisibility(0, poiMesh.normals[1], poiLight.unityLight.color.rgb * poiLight.attenDistance * poiLight.lightCookie, poiLight.unityLight.direction, poiLight.attenShadows);
+            #endif
+            backlightLN *= saturate(backlightShadow);
+        }
 
         backlightLN = poiEdgeLinear(backlightLN, _BacklightBorder, _BacklightBlur);
-        half backlight = saturate(backlightFactor * backlightLN);
-        backlight = !poiMesh.isFrontFace && _BacklightBackfaceMask >= 0.5 ? 0.0 : backlight;
+        half backlightAmount = saturate(backlightFactor * backlightLN);
+        backlightAmount = !poiMesh.isFrontFace && _BacklightBackfaceMask >= 0.5 ? 0.0 : backlightAmount;
 
         // Global Masking
         half backlightMask = 1;
@@ -97,16 +107,20 @@ _BacklightViewStrength ("View Direction Strength", Range(0, 1)) = 1
             backlightMask = maskBlend(backlightMask, poiMods.globalMask[_BacklightGlobalMask - 1], _BacklightGlobalMaskBlendType);
         }
 
-        backlight *= backlightMask;
+        backlightAmount *= backlightMask;
 
         if (_BacklightApplyGlobalMaskIndex > 0)
         {
-            applyToGlobalMask(poiMods, _BacklightApplyGlobalMaskIndex - 1, _BacklightApplyGlobalMaskBlendType, backlight);
+            applyToGlobalMask(poiMods, _BacklightApplyGlobalMaskIndex - 1, _BacklightApplyGlobalMaskBlendType, backlightAmount);
         }
 
         // Blend
-        backlightColor = lerp(backlightColor, backlightColor * poiFragData.baseColor, _BacklightMainStrength);
-        poiLight.finalLightAdd += backlight * backlightColor * poiLight.directColor;
+        backlightColor.rgb = lerp(backlightColor.rgb, backlightColor.rgb * poiFragData.baseColor, _BacklightMainStrength);
+        // lilToon's ForwardAdd light color already carries the light's shadow and cookie.
+        half3 backlightLightColor = poiLight.directColor;
+        if (poiLight.isAdditive)
+            backlightLightColor *= poiLight.attenShadows * poiLight.lightCookie;
+        poiLight.finalLightAdd += backlightAmount * backlightColor.a * backlightColor.rgb * backlightLightColor;
     }
 #endif
 //endex

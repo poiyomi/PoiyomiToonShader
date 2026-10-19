@@ -39,7 +39,8 @@ _BRDFTPSSpecularMaskStrength ("Specular Mask Strength--{condition_showS:(_BRDFTP
 [HideInInspector] s_start_ggxanisotropics("Anisotropics--{reference_property:_GGXAnisotropics,persistent_expand:true,default_expand:false}", Float) = 0
 [HideInInspector][ThryToggle(GGX_ANISOTROPICS)]_GGXAnisotropics ("Enable", Float) = 0
 
-[sRGBWarning]_AnisotropyMap("Anisotropy Map--{reference_properties:[_AnisotropyMapPan, _AnisotropyMapUV, _AnisotropyMapChannel]}", 2D) = "bump" { }
+[sRGBWarning]_AnisotropyMap("Anisotropy Map--{reference_properties:[_AnisotropyMapVertexColor, _AnisotropyMapPan, _AnisotropyMapUV, _AnisotropyMapChannel]}", 2D) = "bump" { }
+[ThryHideInInspector][Enum(Off, 0, R, 1, G, 2, B, 3, A, 4)]_AnisotropyMapVertexColor ("Vertex Color--{tooltip:Use a vertex color channel instead of the texture. Gray is no anisotropy.}", Float) = 0
 [ThryHideInInspector][Vector2]_AnisotropyMapPan("Panning", Vector) = (0, 0, 0, 0)
 [ThryHideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7, Matcap, 9, Screen Space, 10)] _AnisotropyMapUV ("UV", Int) = 0
 [ThryHideInInspector][Enum(R, 0, G, 1, B, 2, A, 3)]_AnisotropyMapChannel ("Channel", Float) = 0
@@ -47,6 +48,12 @@ _BRDFTPSSpecularMaskStrength ("Specular Mask Strength--{condition_showS:(_BRDFTP
 _Anisotropy ("Anisotropy", Range(-1, 1)) = 0
 _ReflectionAnisotropicStretch("Reflection Stretch", Range(1, 5)) = 1
 _RoughnessAnisotropy("Roughness Anisotropy", Range(0, 1)) = 1
+//ifex _AnisotropyDirectionEnabled==0
+[ThryToggle(POI_ANISOTROPY_DIRECTION)]_AnisotropyDirectionEnabled ("Use Direction Map", Float) = 0
+[sRGBWarning]_AnisotropyDirectionMap ("Direction Map--{condition_showS:(_AnisotropyDirectionEnabled==1),reference_properties:[_AnisotropyDirectionMapPan, _AnisotropyDirectionMapUV],tooltip:RG sets the direction along the mesh tangent and binormal. Values are remapped from 0 to 1 into -1 to 1. Import as a Default texture with sRGB off.}", 2D) = "bump" { }
+[ThryHideInInspector][Vector2]_AnisotropyDirectionMapPan ("Panning", Vector) = (0, 0, 0, 0)
+[ThryHideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7, Matcap, 9, Screen Space, 10)]_AnisotropyDirectionMapUV ("UV", Int) = 0
+//endex
 [HideInInspector] s_end_ggxanisotropics ("", Float) = 0
 
 [HideInInspector] s_start_PBRSecondSpecular ("2nd Specular--{reference_property:_Specular2ndLayer,persistent_expand:true,default_expand:false}", Float) = 0
@@ -127,7 +134,7 @@ _ClearCoatGSAAThreshold ("GSAA Threshold", Range(0, 1)) = 0.1
 
 [HideInInspector] s_start_ClearCoatTPSMaskGroup ("TPS Mask--{reference_property:_ClearCoatTPSDepthMaskEnabled, persistent_expand:true,default_expand:false,condition_showS:(_TPSPenetratorEnabled==1)}", Float) = 0
 [ThryHideInInspector][ToggleUI] _ClearCoatTPSDepthMaskEnabled ("TPS Depth Enabled", Float) = 0
-_ClearCoatTPSMaskStrength ("Mask Strength}", Range(0, 1)) = 1
+_ClearCoatTPSMaskStrength ("Mask Strength", Range(0, 1)) = 1
 [HideInInspector] s_end_ClearCoatTPSMaskGroup ("", Float) = 0
 
 [HideInInspector] s_end_clearcoatadvanced ("", Float) = 0
@@ -150,6 +157,9 @@ _ClearCoatTPSMaskStrength ("Mask Strength}", Range(0, 1)) = 1
 //ifex _MochieBRDF==0
 #pragma shader_feature_local_fragment MOCHIE_PBR
 #pragma shader_feature_local_fragment GGX_ANISOTROPICS
+//ifex _AnisotropyDirectionEnabled==0
+#pragma shader_feature_local_fragment POI_ANISOTROPY_DIRECTION
+//endex
 //endex
 //ifex _ClearCoatBRDF==0
 #pragma shader_feature_local_fragment POI_CLEARCOAT
@@ -226,6 +236,12 @@ _ClearCoatTPSMaskStrength ("Mask Strength}", Range(0, 1)) = 1
             float _AnisotropyMapUV;
             float _AnisotropyMapChannel;
         #endif
+        #if defined(POI_ANISOTROPY_DIRECTION) && (defined(PROP_ANISOTROPYDIRECTIONMAP) || !defined(OPTIMIZER_ENABLED))
+            float4 _AnisotropyDirectionMap_ST;
+            float2 _AnisotropyDirectionMapPan;
+            float _AnisotropyDirectionMapUV;
+        #endif
+        float _AnisotropyMapVertexColor;
         half _Anisotropy;
         half _ReflectionAnisotropicStretch;
         half _RoughnessAnisotropy;
@@ -287,6 +303,9 @@ _ClearCoatTPSMaskStrength ("Mask Strength}", Range(0, 1)) = 1
 #T#PoiMetallicsAndSpecularVariables
 //ifex _MochieBRDF==0
 #ifdef MOCHIE_PBR
+    #if defined(GGX_ANISOTROPICS) && defined(POI_ANISOTROPY_DIRECTION) && (defined(PROP_ANISOTROPYDIRECTIONMAP) || !defined(OPTIMIZER_ENABLED))
+        Texture2D _AnisotropyDirectionMap;
+    #endif
     #if defined(PROP_ANISOTROPYMAP) || !defined(OPTIMIZER_ENABLED)
         Texture2D _AnisotropyMap;
     #endif
@@ -326,6 +345,7 @@ struct MochieBRDFData
     float percepRough2;
     float omr;
     float3 specCol;
+    float3 specular;
     float2 adjustedAnisotropy;
 
     float3 pbrNSelect;
@@ -333,8 +353,11 @@ struct MochieBRDFData
     float3 pbrBSelect;
 };
 
+// Private per-invocation storage lets the shared light loop access every R&S instance.
+// The generator gives each copy its own name; initialization remains in the fragment setup.
+static MochieBRDFData mochieBRDFData;
+
 #T#PoiMetallicsAndSpecularAdditionalDataSetup
-MochieBRDFData mochieBRDFData;
 PoiInitStruct(MochieBRDFData, mochieBRDFData);
 
 #T#PoiMetallicsAndSpecularFunction
@@ -403,7 +426,7 @@ PoiInitStruct(MochieBRDFData, mochieBRDFData);
         #endif
 
         #if POI_PIPE == POI_URP
-            return PoiGlossyEnvironmentReflection(reflDir, worldPos.xyz, roughness, 1, screenUV);
+            return GlossyEnvironmentReflection(reflDir, worldPos.xyz, roughness, 1, screenUV);
         #endif
         return 0;
 	}
@@ -533,7 +556,7 @@ PoiInitStruct(MochieBRDFData, mochieBRDFData);
         {
             specularTerm = GetGGXTerm(nDotL, nDotV, nDotH, roughness, tDotV, bDotV, tDotL, bDotL, tDotH, bDotH, adjustedAnisotropy);
             fresnelTerm = FresnelTerm(specCol, lDotH);
-            specularTerm = max(0, specularTerm * max(0.00001, nDotL));
+            specularTerm = max(0, specularTerm * max(0.00001, nDotL) * UNITY_PI);
         }
     #endif
 
@@ -541,8 +564,59 @@ PoiInitStruct(MochieBRDFData, mochieBRDFData);
     {
         specularTerm = GetGGXTerm(nDotL, nDotV, nDotH, roughness);
         fresnelTerm = FresnelTerm(specCol, lDotH);
-        specularTerm = max(0, specularTerm * max(0.00001, nDotL));
+        specularTerm = max(0, specularTerm * max(0.00001, nDotL) * UNITY_PI);
     }
+
+    //ifex (_LightingEnableLightVolumes==0 && isNotAnimated(_LightingEnableLightVolumes)) || (_LightingLightVolumesSpecular==0 && isNotAnimated(_LightingLightVolumesSpecular))
+    #if (POI_PIPE == POI_BIRP) && defined(POI_PASS_BASE)
+    // The GGX term without Fresnel and the Schlick weight that takes f0 to 1, so a layer can sum its
+    // lights before it knows f0.
+    float PoiMaterialLVTerm(float3 normal, float3 view, float3 direction, float alpha, float3 tangent, float3 binormal,
+        float2 anisotropy, bool anisotropic, float spreadSq, out float fresnelWeight)
+    {
+        float3 halfDirection = LV_NormalizeSafe(direction + view);
+        float NoL = PoiLVSpecularNoL(dot(normal, direction), spreadSq);
+        float NoV = max(saturate(dot(normal, view)), 0.0001);
+        float NoH = saturate(dot(normal, halfDirection));
+        fresnelWeight = Pow5(1 - saturate(dot(direction, halfDirection)));
+        float term;
+        #if defined(MOCHIE_PBR) && defined(GGX_ANISOTROPICS)
+            if (anisotropic)
+                term = GetGGXTerm(NoL, NoV, NoH, alpha,
+                    dot(tangent, view), dot(binormal, view), dot(tangent, direction), dot(binormal, direction),
+                    dot(tangent, halfDirection), dot(binormal, halfDirection), anisotropy);
+            else
+        #endif
+                term = GetGGXTerm(NoL, NoV, NoH, alpha);
+        return max(0, term * max(0.00001, NoL) * UNITY_PI);
+    }
+    float3 PoiMaterialLVLobe(float3 normal, float3 view, float3 direction, float3 f0, float alpha,
+        float3 tangent, float3 binormal, float2 anisotropy, bool anisotropic, float spreadSq = 0)
+    {
+        float fresnelWeight;
+        float term = PoiMaterialLVTerm(normal, view, direction, alpha, tangent, binormal, anisotropy, anisotropic, spreadSq, fresnelWeight);
+        return term * (f0 + (1 - f0) * fresnelWeight);
+    }
+
+    float3 PoiMaterialLVSHSpecular(float3 normal, float3 view, float3 f0, float2 smoothness,
+        float secondStrength, float3 tangent, float3 binormal, float2 anisotropy, bool anisotropic)
+    {
+        float3 color, direction;
+        float spreadSq;
+        if (!PoiLVSHDisc(color, direction, spreadSq)) return 0;
+        float2 alpha = max((1 - smoothness) * (1 - smoothness), 0.002);
+        float3 first = PoiMaterialLVLobe(normal, view, direction, f0,
+            PoiLVSourceRoughness(alpha.x, spreadSq, direction, view), tangent, binormal, anisotropy, anisotropic);
+        float3 second = 0;
+        if (secondStrength > 0)
+        {
+            second = PoiMaterialLVLobe(normal, view, direction, f0,
+                PoiLVSourceRoughness(alpha.y, spreadSq, direction, view), tangent, binormal, anisotropy, anisotropic) * secondStrength;
+        }
+        return color * max(first, second);
+    }
+    #endif
+    //endex
 
     float GetRoughness(float smoothness)
     {
@@ -577,8 +651,9 @@ PoiInitStruct(MochieBRDFData, mochieBRDFData);
         specularMask *= poiFragData.specularMask;
         reflectionMask *= poiFragData.reflectionMask;
 
+        half4 PBRMaps = 1;
         #if defined(PROP_MOCHIEMETALLICMAPS) || !defined(OPTIMIZER_ENABLED)
-            half4 PBRMaps = POI2D_SAMPLER_PAN_STOCHASTIC(_MochieMetallicMaps, _MainTex, poiUV(poiMesh.uv[_MochieMetallicMapsUV], _MochieMetallicMaps_ST), _MochieMetallicMapsPan, _MochieMetallicMapsStochastic);
+            PBRMaps = POI2D_SAMPLER_PAN_STOCHASTIC(_MochieMetallicMaps, _MainTex, poiUV(poiMesh.uv[_MochieMetallicMapsUV], _MochieMetallicMaps_ST), _MochieMetallicMapsPan, _MochieMetallicMapsStochastic);
             UNITY_BRANCH
             if (_PBRSplitMaskSample >= 0.5)
             {
@@ -589,29 +664,21 @@ PoiInitStruct(MochieBRDFData, mochieBRDFData);
                 if (_MochieMetallicMapsSpecularMaskChannel < 4) assignValueToVectorFromIndex(PBRMaps, _MochieMetallicMapsSpecularMaskChannel, specVal);
             }
             
-            // Locking makes channels literal constants; even unused branches need valid vector indices.
-            if (_MochieMetallicMapsMetallicChannel < 4)
-            {
-                metallic *= PBRMaps[min(_MochieMetallicMapsMetallicChannel, 3)];
-            }
-            if (_MochieMetallicMapsRoughnessChannel < 4)
-            {
-                smoothness *= PBRMaps[min(_MochieMetallicMapsRoughnessChannel, 3)];
-                smoothness2 *= PBRMaps[min(_MochieMetallicMapsRoughnessChannel, 3)];
-            }
-            if (_MochieMetallicMapsReflectionMaskChannel < 4)
-            {
-                reflectionMask *= PBRMaps[min(_MochieMetallicMapsReflectionMaskChannel, 3)];
-            }
-            if (_MochieMetallicMapsSpecularMaskChannel < 4)
-            {
-                specularMask *= PBRMaps[min(_MochieMetallicMapsSpecularMaskChannel, 3)];
-            }
+
         #endif
+        // Locking makes channels literal constants; even unused branches need valid vector indices.
+        half metallicMap = _MochieMetallicMapsMetallicChannel < 4 ? PBRMaps[min(_MochieMetallicMapsMetallicChannel, 3)] : 1.0h;
+        half smoothnessMap = _MochieMetallicMapsRoughnessChannel < 4 ? PBRMaps[min(_MochieMetallicMapsRoughnessChannel, 3)] : 1.0h;
+        half reflectionMaskMap = _MochieMetallicMapsReflectionMaskChannel < 4 ? PBRMaps[min(_MochieMetallicMapsReflectionMaskChannel, 3)] : 1.0h;
+        half specularMaskMap = _MochieMetallicMapsSpecularMaskChannel < 4 ? PBRMaps[min(_MochieMetallicMapsSpecularMaskChannel, 3)] : 1.0h;
 
-        reflectionMask *= _MochieReflectionStrength;
-        specularMask *= _MochieSpecularStrength;
+        metallic *= metallicMap;
+        smoothness *= smoothnessMap;
+        smoothness2 *= smoothnessMap;
+        reflectionMask *= reflectionMaskMap * _MochieReflectionStrength;
+        specularMask *= specularMaskMap * _MochieSpecularStrength;
 
+        // Inverting the result makes Invert Smoothness work as roughness: the slider and map set roughness.
         if (_MochieMetallicMapInvert >= 0.5)
         {
             metallic = 1 - metallic;
@@ -650,6 +717,10 @@ PoiInitStruct(MochieBRDFData, mochieBRDFData);
             float4 anisotropyMap = POI2D_SAMPLER_PAN(_AnisotropyMap, _MainTex, poiUV(poiMesh.uv[_AnisotropyMapUV], _AnisotropyMap_ST), _AnisotropyMapPan);
             adjustedAnisotropy = (anisotropyMap[_AnisotropyMapChannel] - .5) * 2;
         #endif
+            if (_AnisotropyMapVertexColor > 0.5)
+            {
+                adjustedAnisotropy = (poiMesh.vertexColor[(int)clamp(_AnisotropyMapVertexColor - 1.0, 0.0, 3.0)] - .5) * 2;
+            }
             adjustedAnisotropy = clamp(adjustedAnisotropy + _Anisotropy, -1, 1);
             adjustedAnisotropy.y = abs(adjustedAnisotropy.y);
         #endif
@@ -659,6 +730,29 @@ PoiInitStruct(MochieBRDFData, mochieBRDFData);
         float3 pbrNSelect = lerp(poiMesh.normals[0], poiMesh.normals[1], _PBRNormalSelect);
         float3 pbrTSelect = lerp(poiMesh.tangent[0], poiMesh.tangent[1], _PBRNormalSelect);
         float3 pbrBSelect = lerp(poiMesh.binormal[0], poiMesh.binormal[1], _PBRNormalSelect);
+
+        #if defined(GGX_ANISOTROPICS) && defined(POI_ANISOTROPY_DIRECTION) && (defined(PROP_ANISOTROPYDIRECTIONMAP) || !defined(OPTIMIZER_ENABLED))
+            float2 direction = POI2D_SAMPLER_PAN(_AnisotropyDirectionMap, _MainTex, poiUV(poiMesh.uv[_AnisotropyDirectionMapUV], _AnisotropyDirectionMap_ST), _AnisotropyDirectionMapPan).rg * 2 - 1;
+            // Treat neutral gray, including 8-bit quantization, as the original frame.
+            float directionLengthSq = dot(direction, direction);
+            if (directionLengthSq > 0.0001)
+            {
+                direction *= rsqrt(directionLengthSq);
+                // Normal blending can leave the selected axes non-orthogonal.
+                // Build a local frame without changing the mesh's normal-map basis.
+                float3 directionN = normalize(pbrNSelect);
+                float3 directionT = pbrTSelect - directionN * dot(directionN, pbrTSelect);
+                float tangentLengthSq = dot(directionT, directionT);
+                if (tangentLengthSq > 0.000001)
+                {
+                    directionT *= rsqrt(tangentLengthSq);
+                    float3 directionB = cross(directionN, directionT);
+                    directionB *= dot(directionB, pbrBSelect) < 0 ? -1 : 1;
+                    pbrTSelect = directionT * direction.x + directionB * direction.y;
+                    pbrBSelect = directionB * direction.x - directionT * direction.y;
+                }
+            }
+        #endif
 
         mochieBRDFData.pbrNSelect = pbrNSelect;
         mochieBRDFData.pbrTSelect = pbrTSelect;
@@ -699,7 +793,10 @@ PoiInitStruct(MochieBRDFData, mochieBRDFData);
             }
         #endif
 
+        // Bind injected modifiers to this instance after the generator renames its data parameter.
+        #define POI_BRDF_MOD_DATA mochieBRDFData
         #K#MOCHIE_METALLIC_SMOOTHNESS_MOD
+        #undef POI_BRDF_MOD_DATA
 
         half roughness = GetRoughness(mochieBRDFData.smoothness);
         half roughness2 = GetRoughness(mochieBRDFData.smoothness2);
@@ -731,8 +828,77 @@ PoiInitStruct(MochieBRDFData, mochieBRDFData);
         mochieBRDFData.omr = omr;
     }
 
+    //ifex (_LightingEnableLightVolumes==0 && isNotAnimated(_LightingEnableLightVolumes)) || (_LightingLightVolumesSpecular==0 && isNotAnimated(_LightingLightVolumesSpecular))
+    #if (POI_PIPE == POI_BIRP) && defined(POI_PASS_BASE)
+    // LV lights reach Specular through the light walk, which evaluates each of them as LV's own shader
+    // does. The walk runs before Specular's data is set up, so it works from a copy prepared here.
+    static float3 PoiMochieLVNormal, PoiMochieLVTangent, PoiMochieLVBinormal, PoiMochieLVView;
+    static float2 PoiMochieLVAlpha, PoiMochieLVAnisotropy;
+    static float PoiMochieLVSecond, PoiMochieLVReceive;
+    static float3 PoiMochieLVFirst = 0, PoiMochieLVFirstFresnel = 0, PoiMochieLVSecondTerm = 0, PoiMochieLVSecondFresnel = 0;
+    void PoiMochieLVPrepare(PoiFragData poiFragData, PoiMesh poiMesh, PoiMods poiMods, PoiCam poiCam)
+    {
+        MochieBRDFData data = (MochieBRDFData)0;
+        MetallicAndSpecularFragDataInit(poiFragData, data, poiMesh, poiMods);
+        FinalizeMochieBRDFData(data, poiMesh, poiMods);
+        PoiMochieLVNormal = normalize(data.pbrNSelect);
+        PoiMochieLVTangent = data.pbrTSelect;
+        PoiMochieLVBinormal = data.pbrBSelect;
+        PoiMochieLVView = poiCam.eyeViewDir;
+        PoiMochieLVAlpha = float2(data.brdfRoughness, data.brdfRoughness2);
+        PoiMochieLVAnisotropy = data.adjustedAnisotropy;
+        PoiMochieLVSecond = _Specular2ndLayer > 0 ? _MochieSpecularStrength2 : 0;
+        PoiMochieLVReceive = _LightingCastedShadows * (1 - _IgnoreCastedShadows);
+    }
+    void PoiMochieLVAdd(float3 color, float visibility, float3 direction, float spreadSq)
+    {
+        color *= lerp(1, visibility, PoiMochieLVReceive);
+        float fresnelWeight;
+        float term = PoiMaterialLVTerm(PoiMochieLVNormal, PoiMochieLVView, direction,
+            PoiLVSourceRoughness(PoiMochieLVAlpha.x, spreadSq, direction, PoiMochieLVView),
+            PoiMochieLVTangent, PoiMochieLVBinormal, PoiMochieLVAnisotropy, true, spreadSq, fresnelWeight);
+        PoiMochieLVFirst += color * (term * (1 - fresnelWeight));
+        PoiMochieLVFirstFresnel += color * (term * fresnelWeight);
+        if (PoiMochieLVSecond > 0)
+        {
+            term = PoiMaterialLVTerm(PoiMochieLVNormal, PoiMochieLVView, direction,
+                PoiLVSourceRoughness(PoiMochieLVAlpha.y, spreadSq, direction, PoiMochieLVView),
+                PoiMochieLVTangent, PoiMochieLVBinormal, PoiMochieLVAnisotropy, true, spreadSq, fresnelWeight);
+            PoiMochieLVSecondTerm += color * (term * (1 - fresnelWeight));
+            PoiMochieLVSecondFresnel += color * (term * fresnelWeight);
+        }
+    }
+    float3 PoiMochieLVSpecular(float3 f0)
+    {
+        float3 first = f0 * PoiMochieLVFirst + PoiMochieLVFirstFresnel;
+        float3 second = (f0 * PoiMochieLVSecondTerm + PoiMochieLVSecondFresnel) * PoiMochieLVSecond;
+        return max(first, second);
+    }
+    #endif
+    //endex
+
     void MochieBRDFSpecular(inout PoiFragData poiFragData, inout MochieBRDFData mochieBRDFData, in PoiCam poiCam, inout PoiLight poiLight, in PoiMesh poiMesh, inout PoiMods poiMods)
     {
+        PoiLight specLight = poiLight;
+        //ifex _LightingEnableLightVolumes==0 && isNotAnimated(_LightingEnableLightVolumes)
+        #if (POI_PIPE == POI_BIRP) && defined(POI_PASS_BASE)
+        [branch] if (PoiLightVolumesActive())
+        {
+            // Local LV highlights are evaluated separately below.
+            specLight.direction = poiLight.unityLight.direction;
+            specLight.directColor = poiLight.unityLight.color.rgb * poiLight.attenDistance * poiLight.lightCookie;
+            specLight.halfDir = Unity_SafeNormalize(specLight.direction + poiCam.eyeViewDir);
+            specLight.nDotL = dot(poiMesh.normals[1], specLight.direction);
+            specLight.vertexNDotL = dot(poiMesh.normals[0], specLight.direction);
+            specLight.nDotH = dot(poiMesh.normals[1], specLight.halfDir);
+            specLight.vertexNDotH = dot(poiMesh.normals[0], specLight.halfDir);
+            specLight.lDotH = dot(specLight.direction, specLight.halfDir);
+            specLight.lightMap = poiLight.attenShadowsStrength;
+            specLight.lightCookie = 1;
+        }
+        #endif
+        //endex
+
         FinalizeMochieBRDFData(mochieBRDFData, poiMesh, poiMods);
 
         half specularMask = mochieBRDFData.specularMask;
@@ -754,15 +920,15 @@ PoiInitStruct(MochieBRDFData, mochieBRDFData);
         float3 environment = 0;
 
         // In the additive pass directColor already carries atten
-        half specLightMap = poiLight.lightMap;
-        half attenuation = lerp(specLightMap, 1, _IgnoreCastedShadows);
+        half specLightMap = specLight.lightMap;
+        half attenuation = lerp(specLightMap, CalculateLuminance(specLight.lightCookie), _IgnoreCastedShadows);
 
         half3 fresnelTerm = 1;
         half3 specularTerm = 1;
 
-        float pbrNDotL = lerp(poiLight.vertexNDotL, poiLight.nDotL, _PBRNormalSelect);
-        float pbrNDotV = lerp(poiLight.vertexNDotV, poiLight.nDotV, _PBRNormalSelect);
-        float pbrNDotH = lerp(poiLight.vertexNDotH, poiLight.nDotH, _PBRNormalSelect);
+        float pbrNDotL = lerp(specLight.vertexNDotL, specLight.nDotL, _PBRNormalSelect);
+        float pbrNDotV = lerp(specLight.vertexNDotV, specLight.nDotV, _PBRNormalSelect);
+        float pbrNDotH = lerp(specLight.vertexNDotH, specLight.nDotH, _PBRNormalSelect);
         
         float3 pbrNSelect = mochieBRDFData.pbrNSelect;
         float3 pbrTSelect = mochieBRDFData.pbrTSelect;
@@ -770,26 +936,26 @@ PoiInitStruct(MochieBRDFData, mochieBRDFData);
 
 		float pbrTDotV = dot(pbrTSelect, poiCam.eyeViewDir);
 		float pbrBDotV = dot(pbrBSelect, poiCam.eyeViewDir);
-        float pbrTDotL = dot(pbrTSelect, poiLight.direction);
-        float pbrBDotL = dot(pbrBSelect, poiLight.direction);
-        float pbrTDotH = dot(pbrTSelect, poiLight.halfDir);
-        float pbrBDotH = dot(pbrBSelect, poiLight.halfDir);
+        float pbrTDotL = dot(pbrTSelect, specLight.direction);
+        float pbrBDotL = dot(pbrBSelect, specLight.direction);
+        float pbrTDotH = dot(pbrTSelect, specLight.halfDir);
+        float pbrBDotH = dot(pbrBSelect, specLight.halfDir);
 
     #ifdef GGX_ANISOTROPICS
         float2 adjustedAnisotropy = mochieBRDFData.adjustedAnisotropy;
-        GetSpecFresTerm(pbrNDotL, pbrNDotV, pbrNDotH, poiLight.lDotH, specularTerm, fresnelTerm, specCol, brdfRoughness, pbrTDotV, pbrBDotV, pbrTDotL, pbrBDotL, pbrTDotH, pbrBDotH, adjustedAnisotropy);
+        GetSpecFresTerm(pbrNDotL, pbrNDotV, pbrNDotH, specLight.lDotH, specularTerm, fresnelTerm, specCol, brdfRoughness, pbrTDotV, pbrBDotV, pbrTDotL, pbrBDotL, pbrTDotH, pbrBDotH, adjustedAnisotropy);
     #else
-        GetSpecFresTerm(pbrNDotL, pbrNDotV, pbrNDotH, poiLight.lDotH, specularTerm, fresnelTerm, specCol, brdfRoughness);
+        GetSpecFresTerm(pbrNDotL, pbrNDotV, pbrNDotH, specLight.lDotH, specularTerm, fresnelTerm, specCol, brdfRoughness);
     #endif
-        half specOcclusion = poiLight.occlusion;
+        half specOcclusion = specLight.occlusion;
         #ifdef POI_BENTNORMALMAP
             if (poiMesh.hasBentNormal > 0.5)
             {
                 float3 specReflDir = reflect(-poiCam.eyeViewDir, lerp(poiMesh.normals[0], poiMesh.normals[1], _PBRNormalSelect));
-                specOcclusion = lerp(poiLight.occlusion, PoiSpecularOcclusionBentNormal(specReflDir, poiMesh.bentNormal, poiLight.occlusion, mochieBRDFData.percepRough), _BentNormalSpecOccStrength);
+                specOcclusion = lerp(specLight.occlusion, PoiSpecularOcclusionBentNormal(specReflDir, poiMesh.bentNormal, specLight.occlusion, mochieBRDFData.percepRough), _BentNormalSpecOccStrength);
             }
         #endif
-        specular = poiLight.directColor * specularTerm * fresnelTerm * specularMask * specTint * specOcclusion * attenuation;
+        specular = specLight.directColor * specularTerm * fresnelTerm * specularMask * specTint * specOcclusion * attenuation;
 
         if (poiFragData.toggleVertexLights)
         {
@@ -799,19 +965,19 @@ PoiInitStruct(MochieBRDFData, mochieBRDFData);
                 {
                     fresnelTerm = 1;
                     specularTerm = 1;
-                    float pbrVDotNL = lerp(poiLight.vertexVDotNL[index], poiLight.vDotNL[index], _PBRNormalSelect);
-                    float pbrVDotNH = lerp(poiLight.vertexVDotNH[index], poiLight.vDotNH[index], _PBRNormalSelect);
+                    float pbrVDotNL = lerp(specLight.vertexVDotNL[index], specLight.vDotNL[index], _PBRNormalSelect);
+                    float pbrVDotNH = lerp(specLight.vertexVDotNH[index], specLight.vDotNH[index], _PBRNormalSelect);
 
                     #ifdef GGX_ANISOTROPICS
-                     float pbrTDotvL = dot(pbrTSelect, poiLight.vDirection[index]);
-                     float pbrBDotvL = dot(pbrBSelect, poiLight.vDirection[index]);
-                     float pbrTDotvH = dot(pbrTSelect, poiLight.vHalfDir[index]);
-                     float pbrBDotvH = dot(pbrBSelect, poiLight.vHalfDir[index]);
-                    GetSpecFresTerm(pbrVDotNL, pbrNDotV, pbrVDotNH, poiLight.vDotLH[index], specularTerm, fresnelTerm, specCol, brdfRoughness, pbrTDotV, pbrBDotV, pbrTDotvL, pbrBDotvL, pbrTDotvH, pbrBDotvH, adjustedAnisotropy);
+                     float pbrTDotvL = dot(pbrTSelect, specLight.vDirection[index]);
+                     float pbrBDotvL = dot(pbrBSelect, specLight.vDirection[index]);
+                     float pbrTDotvH = dot(pbrTSelect, specLight.vHalfDir[index]);
+                     float pbrBDotvH = dot(pbrBSelect, specLight.vHalfDir[index]);
+                    GetSpecFresTerm(pbrVDotNL, pbrNDotV, pbrVDotNH, specLight.vDotLH[index], specularTerm, fresnelTerm, specCol, brdfRoughness, pbrTDotV, pbrBDotV, pbrTDotvL, pbrBDotvL, pbrTDotvH, pbrBDotvH, adjustedAnisotropy);
                     #else
-                    GetSpecFresTerm(pbrVDotNL, pbrNDotV, pbrVDotNH, poiLight.vDotLH[index], specularTerm, fresnelTerm, specCol, brdfRoughness);
+                    GetSpecFresTerm(pbrVDotNL, pbrNDotV, pbrVDotNH, specLight.vDotLH[index], specularTerm, fresnelTerm, specCol, brdfRoughness);
                     #endif
-                    vSpecular += poiLight.vColor[index] * specularTerm * fresnelTerm * vSpecBase;
+                    vSpecular += specLight.vColor[index] * specularTerm * fresnelTerm * vSpecBase;
                 }
             #endif
         }
@@ -821,11 +987,11 @@ PoiInitStruct(MochieBRDFData, mochieBRDFData);
             half3 fresnelTerm = 1;
             half3 specularTerm = 1;
             #ifdef GGX_ANISOTROPICS
-            GetSpecFresTerm(pbrNDotL, pbrNDotV, pbrNDotH, poiLight.lDotH, specularTerm, fresnelTerm, specCol, brdfRoughness2, pbrTDotV, pbrBDotV, pbrTDotL, pbrBDotL, pbrTDotH, pbrBDotH, adjustedAnisotropy);
+            GetSpecFresTerm(pbrNDotL, pbrNDotV, pbrNDotH, specLight.lDotH, specularTerm, fresnelTerm, specCol, brdfRoughness2, pbrTDotV, pbrBDotV, pbrTDotL, pbrBDotL, pbrTDotH, pbrBDotH, adjustedAnisotropy);
             #else
-            GetSpecFresTerm(pbrNDotL, pbrNDotV, pbrNDotH, poiLight.lDotH, specularTerm, fresnelTerm, specCol, brdfRoughness2);
+            GetSpecFresTerm(pbrNDotL, pbrNDotV, pbrNDotH, specLight.lDotH, specularTerm, fresnelTerm, specCol, brdfRoughness2);
             #endif
-            specular2 = poiLight.directColor * specularTerm * fresnelTerm * specularMask * specTint * specOcclusion * attenuation * _MochieSpecularStrength2;
+            specular2 = specLight.directColor * specularTerm * fresnelTerm * specularMask * specTint * specOcclusion * attenuation * _MochieSpecularStrength2;
 
             if (poiFragData.toggleVertexLights)
             {
@@ -835,19 +1001,19 @@ PoiInitStruct(MochieBRDFData, mochieBRDFData);
                     {
                         fresnelTerm = 1;
                         specularTerm = 1;
-                        float pbrVDotNL = lerp(poiLight.vertexVDotNL[index], poiLight.vDotNL[index], _PBRNormalSelect);
-                        float pbrVDotNH = lerp(poiLight.vertexVDotNH[index], poiLight.vDotNH[index], _PBRNormalSelect);
+                        float pbrVDotNL = lerp(specLight.vertexVDotNL[index], specLight.vDotNL[index], _PBRNormalSelect);
+                        float pbrVDotNH = lerp(specLight.vertexVDotNH[index], specLight.vDotNH[index], _PBRNormalSelect);
 
                         #ifdef GGX_ANISOTROPICS
-                         float pbrTDotvL = dot(pbrTSelect, poiLight.vDirection[index]);
-                         float pbrBDotvL = dot(pbrBSelect, poiLight.vDirection[index]);
-                         float pbrTDotvH = dot(pbrTSelect, poiLight.vHalfDir[index]);
-                         float pbrBDotvH = dot(pbrBSelect, poiLight.vHalfDir[index]);
-                        GetSpecFresTerm(pbrVDotNL, pbrNDotV, pbrVDotNH, poiLight.vDotLH[index], specularTerm, fresnelTerm, specCol, brdfRoughness2, pbrTDotV, pbrBDotV, pbrTDotvL, pbrBDotvL, pbrTDotvH, pbrBDotvH, adjustedAnisotropy);
+                         float pbrTDotvL = dot(pbrTSelect, specLight.vDirection[index]);
+                         float pbrBDotvL = dot(pbrBSelect, specLight.vDirection[index]);
+                         float pbrTDotvH = dot(pbrTSelect, specLight.vHalfDir[index]);
+                         float pbrBDotvH = dot(pbrBSelect, specLight.vHalfDir[index]);
+                        GetSpecFresTerm(pbrVDotNL, pbrNDotV, pbrVDotNH, specLight.vDotLH[index], specularTerm, fresnelTerm, specCol, brdfRoughness2, pbrTDotV, pbrBDotV, pbrTDotvL, pbrBDotvL, pbrTDotvH, pbrBDotvH, adjustedAnisotropy);
                         #else
-                        GetSpecFresTerm(pbrVDotNL, pbrNDotV, pbrVDotNH, poiLight.vDotLH[index], specularTerm, fresnelTerm, specCol, brdfRoughness2);
+                        GetSpecFresTerm(pbrVDotNL, pbrNDotV, pbrVDotNH, specLight.vDotLH[index], specularTerm, fresnelTerm, specCol, brdfRoughness2);
                         #endif
-                        vSpecular2 += poiLight.vColor[index] * specularTerm * fresnelTerm * vSpec2Base;
+                        vSpecular2 += specLight.vColor[index] * specularTerm * fresnelTerm * vSpec2Base;
                     }
                 #endif
             }
@@ -855,12 +1021,17 @@ PoiInitStruct(MochieBRDFData, mochieBRDFData);
         environment = max(specular + vSpecular, specular2 + vSpecular2);
         //ifex (_LightingEnableLightVolumes==0 && isNotAnimated(_LightingEnableLightVolumes)) || (_LightingLightVolumesSpecular==0 && isNotAnimated(_LightingLightVolumesSpecular))
         #if (POI_PIPE == POI_BIRP) && defined(POI_PASS_BASE)
-        if (_UdonLightVolumeEnabled && _LightingEnableLightVolumes >= 0.5 && _LightingLightVolumesSpecular > 0)
+        [branch] if (PoiLightVolumesActive() && _LightingLightVolumesSpecular > 0)
         {
-            environment += LightVolumeSpecularDominant(specCol, 1.0 - mochieBRDFData.percepRough, normalize(pbrNSelect), poiCam.eyeViewDir, float3(PoiSHAr.w, PoiSHAg.w, PoiSHAb.w), PoiSHAr.xyz, PoiSHAg.xyz, PoiSHAb.xyz) * specularMask * specTint * specOcclusion * _LightingLightVolumesIntensity * _LightingLightVolumesSpecular;
+            float secondStrength = _Specular2ndLayer > 0 ? _MochieSpecularStrength2 : 0;
+            environment += PoiMochieLVSpecular(specCol) * specularMask * specTint * specOcclusion * _LightingLightVolumesSpecular;
+            environment += PoiMaterialLVSHSpecular(normalize(pbrNSelect), poiCam.eyeViewDir, specCol,
+                1 - float2(mochieBRDFData.percepRough, mochieBRDFData.percepRough2), secondStrength,
+                pbrTSelect, pbrBSelect, mochieBRDFData.adjustedAnisotropy, true) * specularMask * specTint * specOcclusion * _LightingLightVolumesSpecular;
         }
         #endif
         //endex
+        mochieBRDFData.specular += environment;
         poiLight.finalLightAdd += environment;
     }
 
@@ -904,18 +1075,13 @@ PoiInitStruct(MochieBRDFData, mochieBRDFData);
             float3 reflCol = GetReflections(poiCam, poiLight, poiMesh, percepRough, pbrReflectionDir);
         #endif
         reflections = surfaceReduction * reflCol * FresnelLerp(specCol, specCol + lerp(specCol, 1, _RefSpecFresnelStrength) * _RefSpecFresnelStrength, pbrNDotV) * SFVisibility(brdfRoughness, poiLight.directColor, pbrNDotV, _SFExposureOcclusion);
-        reflections *= poiThemeColor(poiMods, _MochieReflectionTint.rgb, _MochieReflectionTintThemeIndex);
 
-        //ifex (_LightingEnableLightVolumes==0 && isNotAnimated(_LightingEnableLightVolumes)) || (_LightingLightVolumesSpecular==0 && isNotAnimated(_LightingLightVolumesSpecular))
-        #if (POI_PIPE == POI_BIRP) && defined(POI_PASS_BASE)
-        if (_UdonLightVolumeEnabled && _LightingEnableLightVolumes >= 0.5 && _LightingLightVolumesSpecular > 0)
-        {
-            reflections += LightVolumeSpecularDominant(specCol, 1.0 - percepRough, normalize(mochieBRDFData.pbrNSelect), poiCam.eyeViewDir, float3(PoiSHAr.w, PoiSHAg.w, PoiSHAb.w), PoiSHAr.xyz, PoiSHAg.xyz, PoiSHAb.xyz) * _LightingLightVolumesIntensity * _LightingLightVolumesSpecular;
-        }
-        #endif
-        //endex
+        // LV highlights belong to Specular; Reflections supplies the cubemap.
 
-        #ifdef POI_BENTNORMALMAP
+
+            reflections *= poiThemeColor(poiMods, _MochieReflectionTint.rgb, _MochieReflectionTintThemeIndex);
+
+    #ifdef POI_BENTNORMALMAP
             if (poiMesh.hasBentNormal > 0.5)
             {
                 float bentNormalSO = PoiSpecularOcclusionBentNormal(pbrReflectionDir, poiMesh.bentNormal, poiLight.occlusion, percepRough);
@@ -930,13 +1096,13 @@ PoiInitStruct(MochieBRDFData, mochieBRDFData);
         // Apply metallic diffuse darkening
         poiFragData.finalColor = lerp(poiFragData.finalColor, poiFragData.finalColor * mochieBRDFData.omr, mochieBRDFData.reflectionMask);
 
-        // Correct specular/reflections for baseColor changes after specCol was computed
+        // Correct specular for baseColor changes after specCol was computed
         // (e.g., effects like matcap or decals that modify baseColor post-specular)
         if (any(mochieBRDFData.specCol > 0))
         {
             float3 currentSpecCol = lerp(unity_ColorSpaceDielectricSpec.rgb, poiFragData.baseColor, mochieBRDFData.metallic);
             float3 safeSpecCol = max(mochieBRDFData.specCol, unity_ColorSpaceDielectricSpec.rgb);
-            poiLight.finalLightAdd *= lerp(float3(1, 1, 1), currentSpecCol / safeSpecCol, mochieBRDFData.reflectionMask);
+            poiLight.finalLightAdd += mochieBRDFData.specular * (lerp(float3(1, 1, 1), currentSpecCol / safeSpecCol, mochieBRDFData.reflectionMask) - 1);
         }
     }
 
@@ -944,15 +1110,18 @@ PoiInitStruct(MochieBRDFData, mochieBRDFData);
 //endex
 //ifex _ClearCoatBRDF==0
 #ifdef POI_CLEARCOAT
-    void poiClearCoat(inout PoiFragData poiFragData, in PoiCam poiCam, inout PoiLight poiLight, in PoiMesh poiMesh, in PoiMods poiMods)
+    void PoiClearCoatSurface(in PoiMesh poiMesh, in PoiMods poiMods, out half clearCoatMask, out half smoothness, out half reflectionMask, out half specularMask)
     {
-        half clearCoatMask = _ClearCoatStrength;
-        half smoothness = _ClearCoatSmoothness;
-        half reflectionMask = _ClearCoatReflectionStrength;
-        half specularMask = _ClearCoatSpecularStrength;
+        clearCoatMask = _ClearCoatStrength;
+        smoothness = _ClearCoatSmoothness;
+        reflectionMask = _ClearCoatReflectionStrength;
+        specularMask = _ClearCoatSpecularStrength;
 
+        half4 PBRMaps = 1;
         #if defined(PROP_CLEARCOATMAPS) || !defined(OPTIMIZER_ENABLED)
-            float4 PBRMaps = POI2D_SAMPLER_PAN_STOCHASTIC(_ClearCoatMaps, _MainTex, poiUV(poiMesh.uv[_ClearCoatMapsUV], _ClearCoatMaps_ST), _ClearCoatMapsPan, _ClearCoatMapsStochastic);
+            PBRMaps = POI2D_SAMPLER_PAN_STOCHASTIC(_ClearCoatMaps, _MainTex, poiUV(poiMesh.uv[_ClearCoatMapsUV], _ClearCoatMaps_ST), _ClearCoatMapsPan, _ClearCoatMapsStochastic);
+        #endif
+
 
             if (_ClearCoatMapsClearCoatMaskChannel < 4)
             {
@@ -970,7 +1139,7 @@ PoiInitStruct(MochieBRDFData, mochieBRDFData);
             {
                 specularMask *= PBRMaps[min(_ClearCoatMapsSpecularMaskChannel, 3)];
             }
-        #endif
+
         
         if (_ClearCoatGlobalMask > 0)
         {
@@ -1011,17 +1180,57 @@ PoiInitStruct(MochieBRDFData, mochieBRDFData);
                 clearCoatMask = lerp(0, clearCoatMask * TPSBufferedDepth(poiMesh.localPos, poiMesh.vertexColor), _ClearCoatTPSMaskStrength);
             }
         #endif
+    }
 
-        if (clearCoatMask < 0.001) return;
-        
-        half roughness = GetRoughness(smoothness);
-        float3 specCol = 0.220916301;
-        float omr = unity_ColorSpaceDielectricSpec.a;
+    //ifex (_LightingEnableLightVolumes==0 && isNotAnimated(_LightingEnableLightVolumes)) || (_LightingLightVolumesSpecular==0 && isNotAnimated(_LightingLightVolumesSpecular))
+    #if (POI_PIPE == POI_BIRP) && defined(POI_PASS_BASE)
+    // Clear Coat's LV lights are evaluated in the light walk, from a copy of its surface prepared there.
+    static float3 PoiClearCoatLVNormal, PoiClearCoatLVView;
+    static float PoiClearCoatLVAlpha, PoiClearCoatLVReceive;
+    static bool PoiClearCoatLVActive = false;
+    static float3 PoiClearCoatLVSpecular = 0;
+    void PoiClearCoatLVPrepare(PoiMesh poiMesh, PoiMods poiMods, PoiCam poiCam)
+    {
+        half clearCoatMask, smoothness, reflectionMask, specularMask;
+        PoiClearCoatSurface(poiMesh, poiMods, clearCoatMask, smoothness, reflectionMask, specularMask);
+        PoiClearCoatLVActive = clearCoatMask >= 0.001;
+        float3 clearcoatNormal = lerp(poiMesh.normals[0], poiMesh.normals[1], _ClearCoatNormalSelect);
         float percepRough = 1 - smoothness;
         UNITY_BRANCH
         if (_ClearCoatGSAAEnabled >= 0.5)
         {
-            percepRough = GSAA_Filament(poiMesh.normals[_ClearCoatNormalSelect], percepRough, _ClearCoatGSAAVariance, _ClearCoatGSAAThreshold);
+            percepRough = GSAA_Filament(clearcoatNormal, percepRough, _ClearCoatGSAAVariance, _ClearCoatGSAAThreshold);
+        }
+        PoiClearCoatLVAlpha = max(percepRough * percepRough, 0.002);
+        PoiClearCoatLVNormal = normalize(clearcoatNormal);
+        PoiClearCoatLVView = poiCam.eyeViewDir;
+        PoiClearCoatLVReceive = _LightingCastedShadows * (1 - _CCIgnoreCastedShadows);
+    }
+    void PoiClearCoatLVAdd(float3 color, float visibility, float3 direction, float spreadSq)
+    {
+        if (!PoiClearCoatLVActive) return;
+        PoiClearCoatLVSpecular += color * lerp(1, visibility, PoiClearCoatLVReceive) * PoiMaterialLVLobe(PoiClearCoatLVNormal, PoiClearCoatLVView, direction,
+            unity_ColorSpaceDielectricSpec.rgb, PoiLVSourceRoughness(PoiClearCoatLVAlpha, spreadSq, direction, PoiClearCoatLVView), 0, 0, 0, false, spreadSq);
+    }
+    #endif
+    //endex
+
+    void poiClearCoat(inout PoiFragData poiFragData, in PoiCam poiCam, inout PoiLight poiLight, in PoiMesh poiMesh, in PoiMods poiMods, bool lightOnly)
+    {
+        half clearCoatMask, smoothness, reflectionMask, specularMask;
+        PoiClearCoatSurface(poiMesh, poiMods, clearCoatMask, smoothness, reflectionMask, specularMask);
+
+        if (clearCoatMask < 0.001) return;
+        
+        half roughness = GetRoughness(smoothness);
+        float3 specCol = unity_ColorSpaceDielectricSpec.rgb;
+        float omr = unity_ColorSpaceDielectricSpec.a;
+        float percepRough = 1 - smoothness;
+        float3 clearcoatNormal = lerp(poiMesh.normals[0], poiMesh.normals[1], _ClearCoatNormalSelect);
+        UNITY_BRANCH
+        if (_ClearCoatGSAAEnabled >= 0.5)
+        {
+            percepRough = GSAA_Filament(clearcoatNormal, percepRough, _ClearCoatGSAAVariance, _ClearCoatGSAAThreshold);
         }
         half brdfRoughness = percepRough * percepRough;
         brdfRoughness = max(brdfRoughness, 0.002);
@@ -1032,7 +1241,7 @@ PoiInitStruct(MochieBRDFData, mochieBRDFData);
         float3 reflections = 0;
         float3 environment = 0;
         half ccLightMap = poiLight.lightMap;
-        half attenuation = min(poiLight.nDotLSaturated, lerp(ccLightMap, 1, _CCIgnoreCastedShadows));
+        half attenuation = min(poiLight.nDotLSaturated, lerp(ccLightMap, CalculateLuminance(poiLight.lightCookie), _CCIgnoreCastedShadows));
 
         half3 fresnelTerm = 1;
         half3 specularTerm = 1;
@@ -1043,8 +1252,29 @@ PoiInitStruct(MochieBRDFData, mochieBRDFData);
         float3 clearcoatReflectionDir = lerp(poiCam.vertexReflectionDir, poiCam.reflectionDir, _ClearCoatNormalSelect);
 
         half3 ccSpecTint = poiThemeColor(poiMods, _ClearCoatSpecularTint.rgb, _ClearCoatSpecularTintThemeIndex);
-        GetSpecFresTerm(clearcoatNDotL, clearcoatNDotV, clearcoatNDotH, poiLight.lDotH, specularTerm, fresnelTerm, specCol, brdfRoughness);
-        specular = poiLight.directColor * specularTerm * fresnelTerm * specularMask * ccSpecTint * poiLight.occlusion * attenuation;
+        float ccLDotH = poiLight.lDotH;
+        float3 ccDirectColor = poiLight.directColor;
+        //ifex _LightingEnableLightVolumes==0 && isNotAnimated(_LightingEnableLightVolumes)
+        #if (POI_PIPE == POI_BIRP) && defined(POI_PASS_BASE)
+        [branch] if (PoiLightVolumesActive())
+        {
+            // poiLight already carries LV light, which is added separately below, as in R&S.
+            float3 ccHalfDir = Unity_SafeNormalize(poiLight.unityLight.direction + poiCam.eyeViewDir);
+            ccDirectColor = poiLight.unityLight.color.rgb * poiLight.attenDistance * poiLight.lightCookie;
+            clearcoatNDotL = dot(clearcoatNormal, poiLight.unityLight.direction);
+            clearcoatNDotH = dot(clearcoatNormal, ccHalfDir);
+            ccLDotH = dot(poiLight.unityLight.direction, ccHalfDir);
+            attenuation = min(saturate(clearcoatNDotL), lerp(poiLight.attenShadowsStrength * poiLight.detailShadow, CalculateLuminance(poiLight.lightCookie), _CCIgnoreCastedShadows));
+        }
+        #endif
+        //endex
+        GetSpecFresTerm(clearcoatNDotL, clearcoatNDotV, clearcoatNDotH, ccLDotH, specularTerm, fresnelTerm, specCol, brdfRoughness);
+        specular = ccDirectColor * specularTerm * fresnelTerm * specularMask * ccSpecTint * poiLight.occlusion * attenuation;
+        if (lightOnly)
+        {
+            poiLight.finalLightAdd += saturate(specular * clearCoatMask);
+            return;
+        }
         if (poiFragData.toggleVertexLights)
         {
             #if defined(VERTEXLIGHT_ON)
@@ -1079,9 +1309,11 @@ PoiInitStruct(MochieBRDFData, mochieBRDFData);
         }
         //ifex (_LightingEnableLightVolumes==0 && isNotAnimated(_LightingEnableLightVolumes)) || (_LightingLightVolumesSpecular==0 && isNotAnimated(_LightingLightVolumesSpecular))
         #if (POI_PIPE == POI_BIRP) && defined(POI_PASS_BASE)
-        if (_UdonLightVolumeEnabled && _LightingEnableLightVolumes >= 0.5 && _LightingLightVolumesSpecular > 0)
+        [branch] if (PoiLightVolumesActive() && _LightingLightVolumesSpecular > 0)
         {
-            environment += LightVolumeSpecularDominant(specCol, smoothness, poiMesh.normals[_ClearCoatNormalSelect], poiCam.eyeViewDir, float3(PoiSHAr.w, PoiSHAg.w, PoiSHAb.w), PoiSHAr.xyz, PoiSHAg.xyz, PoiSHAb.xyz) * specularMask * _LightingLightVolumesIntensity * _LightingLightVolumesSpecular;
+            environment += PoiClearCoatLVSpecular * specularMask * ccSpecTint * poiLight.occlusion * _LightingLightVolumesSpecular;
+            environment += PoiMaterialLVSHSpecular(normalize(clearcoatNormal), poiCam.eyeViewDir,
+                specCol, (1 - percepRough).xx, 0, 0, 0, 0, false) * ccSpecTint * poiLight.occlusion * specularMask * _LightingLightVolumesSpecular;
         }
         #endif
         //endex
@@ -1102,19 +1334,40 @@ PoiInitStruct(MochieBRDFData, mochieBRDFData);
 #T#PoiSpecularFunctionCall
 //ifex _MochieBRDF==0
 #ifdef MOCHIE_PBR
+    #if defined(_LIGHTINGMODE_PBR) && defined(VIGNETTE_MASKED) && !defined(POI_PASS_META)
+        if (!PoiUsesCalibratedPBR(poiMesh))
+    #endif
     MochieBRDFSpecular(poiFragData, mochieBRDFData, poiCam, poiLight, poiMesh, poiMods);
+#endif
+//endex
+
+//ifex _ClearCoatBRDF==0
+#if defined(POI_CLEARCOAT) && POI_PIPE == POI_URP
+    if (poiLight.isAdditive)
+    {
+        #if defined(_LIGHTINGMODE_PBR) && defined(VIGNETTE_MASKED) && !defined(POI_PASS_META)
+            if (!PoiUsesCalibratedPBR(poiMesh))
+        #endif
+        poiClearCoat(poiFragData, poiCam, poiLight, poiMesh, poiMods, true);
+    }
 #endif
 //endex
 
 #T#PoiMetallicsFunctionCall
 //ifex _MochieBRDF==0
 #ifdef MOCHIE_PBR
+    #if defined(_LIGHTINGMODE_PBR) && defined(VIGNETTE_MASKED) && !defined(POI_PASS_META)
+        if (!PoiUsesCalibratedPBR(poiMesh))
+    #endif
     MochieBRDFMetallics(poiFragData, mochieBRDFData, poiCam, poiLight, poiMesh, poiMods);
 #endif
 //endex
 
 //ifex _ClearCoatBRDF==0
 #ifdef POI_CLEARCOAT
-    poiClearCoat(poiFragData, poiCam, poiLight, poiMesh, poiMods);
+    #if defined(_LIGHTINGMODE_PBR) && defined(VIGNETTE_MASKED) && !defined(POI_PASS_META)
+        if (!PoiUsesCalibratedPBR(poiMesh))
+    #endif
+    poiClearCoat(poiFragData, poiCam, poiLight, poiMesh, poiMods, false);
 #endif
 //endex

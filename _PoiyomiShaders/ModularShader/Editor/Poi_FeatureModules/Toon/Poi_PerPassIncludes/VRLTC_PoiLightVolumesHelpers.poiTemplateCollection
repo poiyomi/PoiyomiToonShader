@@ -1,0 +1,459 @@
+#T#Hooks
+// Register before the upstream include. Cached-SH callers use the same adapter
+// directly so each material layer does not sample the volumes again.
+#define LV_CUSTOM_SH_SPECULAR_BRDF
+float3 LV_SpecularBRDFSH_Custom(float3 f0, float smoothness, float3 worldNormal, float3 viewDir,
+    float3 L0, float3 L1r, float3 L1g, float3 L1b);
+
+#T#Helpers
+// Use LV's availability check so its supported versions and probe fallback stay intact.
+// Scene globals are uniform across the draw; callers branch before doing LV work.
+bool PoiLightVolumesActive()
+{
+    #if (POI_PIPE == POI_BIRP) && (defined(POI_PASS_BASE) || defined(POI_PASS_OUTLINE))
+        return _LightingEnableLightVolumes >= 0.5 && LightVolumesEnabled() > 0;
+    #else
+        return false;
+    #endif
+}
+// Baked SH cannot recover individual emitters. Fade uncertain directions and
+// broaden the lobe to the information the volume can represent.
+#ifndef POI_LV_SPEC_STRENGTH
+    #define POI_LV_SPEC_STRENGTH 1.0
+#endif
+#ifndef POI_LV_SPEC_MAX_OVER_AMBIENT
+    #define POI_LV_SPEC_MAX_OVER_AMBIENT 4.0
+#endif
+#ifndef POI_LV_SPEC_MIN_ROUGHNESS
+    #define POI_LV_SPEC_MIN_ROUGHNESS 0.15
+#endif
+
+float3 PoiLVSHDirection(float3 l1, float3 l0)
+{
+    float l1Len = sqrt(max(dot(l1, l1), 1e-12));
+    float directionality = saturate(l1Len / max((l0.r + l0.g + l0.b) * 0.33333333, 1e-4));
+    return l1 / max(l1Len, 1e-6) * directionality;
+}
+// Preserve the stylized BRDF's shape. Uncertain SH directions fade coverage,
+// so a nearly ambient volume cannot suddenly produce a full-strength highlight.
+float PoiLVStylizedSH(float3 l0, float3 l1r, float3 l1g, float3 l1b,
+    out float3 color, out float3 direction)
+{
+    float3 weightedDirection = PoiLVSHDirection(l1r + l1g + l1b, l0);
+    float confidence = length(weightedDirection);
+    direction = weightedDirection / max(confidence, 1e-6);
+    color = max(l0 + float3(dot(direction, l1r), dot(direction, l1g), dot(direction, l1b)), 0);
+    return confidence;
+}
+float PoiLVSHRoughness(float smoothness, float directionality)
+{
+    return max(1 - smoothness * 0.9, lerp(1.0, POI_LV_SPEC_MIN_ROUGHNESS, sqrt(directionality)));
+}
+
+// Shared bounded approximation for consumers without a material BRDF context.
+// Keep the established isotropic response while using LV's official hook.
+float3 LV_SpecularBRDFSH_Custom(float3 f0, float smoothness, float3 worldNormal, float3 viewDir,
+    float3 L0, float3 L1r, float3 L1g, float3 L1b)
+{
+    float3 l1 = L1r + L1g + L1b;
+    float3 direction = PoiLVSHDirection(l1, L0);
+    float directionality = length(direction);
+    float nh = saturate(dot(worldNormal, LV_NormalizeSafe(direction + viewDir)));
+    float nl = saturate(dot(worldNormal, LV_NormalizeSafe(l1)));
+    float roughness = PoiLVSHRoughness(smoothness, directionality);
+    float3 spec = LV_DistributionGGX(nh, roughness * roughness) * L0 * f0 * nl * directionality * POI_LV_SPEC_STRENGTH;
+    return clamp(spec, 0.0, max(L0, 0) * POI_LV_SPEC_MAX_OVER_AMBIENT);
+}
+
+struct PoiLVIterator
+{
+    uint count, limit, index, end;
+    uint4 mask;
+    uint bits;
+    bool includeShadowed;
+};
+PoiLVIterator PoiLVBeginLive(float3 worldPos)
+{
+    PoiLVIterator it = (PoiLVIterator)0;
+    #if VRCLV_LIGHTS_SUPPORTED
+        it.end = min((uint)_UdonPointLightVolumeCount, VRCLV_MAX_LIGHTS_COUNT);
+        it.limit = min((uint)_UdonLightVolumeAdditiveMaxOverdraw, it.end);
+        #if VRCLV_CLUSTERING_SUPPORTED
+            bool clustered = false;
+            LV_LoadClusterMask(worldPos, it.mask, clustered);
+            // Hi-Z can remove a light whose available color still belongs in a toon
+            // shadow or whose shadow reception is reduced by the material. Merge
+            // shadow-casting candidates with the mask in light-ID order below.
+            it.includeShadowed = clustered && _UdonLightVolumeVersion >= 3 && _UdonPointLightVolumeShadowCount > 0;
+            if (clustered && !it.includeShadowed) it.end = 0;
+            it.bits = it.mask.x;
+        #endif
+    #endif
+    return it;
+}
+struct PoiLVLight
+{
+    float3 color, direction, shDirection;
+    float spreadSq, visibility;
+};
+
+float PoiLVSourceRoughness(float alpha, float spreadSq, float3 lightDir, float3 viewDir)
+{
+    float denominator = max(2.0 + 2.0 * dot(lightDir, viewDir), 0.0001);
+    return sqrt((alpha * alpha * denominator + spreadSq) / (denominator + spreadSq));
+}
+// Match LV's finite-source horizon response while retaining the material BRDF.
+float PoiLVSpecularNoL(float centerNoL, float spreadSq)
+{
+    float spread = saturate(sqrt(max(spreadSq, 0)));
+    return saturate((centerNoL + spread) / (1 + spread));
+}
+// One incident-light coordinate per shading normal; material ramps run afterward.
+#define POI_LIGHT_VOLUME_FORM 1
+static float3 PoiLVAvailableForm, PoiLVArrivingForm;
+static float PoiLVFormWeight, PoiLVLampWeight, PoiLVLampArriving;
+#if defined(_LIGHTINGMODE_TEXTURERAMP) || defined(_LIGHTINGMODE_SHADEMAP)
+    // These modes' Unity lights use Poi Custom's light map curve.
+    static float PoiLVCustomAvailable, PoiLVCustomArriving;
+    float PoiLVCustomForm(float3 normal, float3 direction) { return smoothstep(0, 1, dot(normal, direction) * 0.5 + 0.5); }
+#endif
+float PoiLVLuminance(float3 color) { return dot(color, float3(.2126, .7152, .0722)); }
+// Stylized layers see the walk's lights as one light: the one whose highlight lands on this pixel,
+// the brightest after weighting by how close it is to the reflection direction. The other lights add
+// to its color by the same closeness, which stands in for their own highlights' tails here.
+static float3 PoiLVSpecularDirection = 0, PoiLVSpecularColor = 0;
+static float PoiLVSpecularSpreadSq = 0, PoiLVSpecularVisibility = 1, PoiLVSpecularImportance = 0;
+static float PoiLVSpecularReach = 1, PoiLVSpecularReachWeight = 0, PoiLVSpecularReachArriving = 0;
+void PoiLVSpecularAdd(float3 color, float3 direction, float spreadSq, float weight, float visibility, float3 reflection)
+{
+    float reach = exp2(16 * (dot(direction, reflection) - 1));
+    PoiLVSpecularColor += color * reach;
+    PoiLVSpecularReachWeight += weight * reach;
+    PoiLVSpecularReachArriving += weight * reach * visibility;
+    float importance = weight * lerp(1, visibility, _LightingCastedShadows) * reach;
+    if (importance > PoiLVSpecularImportance)
+    {
+        PoiLVSpecularImportance = importance;
+        PoiLVSpecularReach = reach;
+        PoiLVSpecularDirection = direction;
+        PoiLVSpecularSpreadSq = spreadSq;
+    }
+}
+void PoiLVSpecularFinish()
+{
+    PoiLVSpecularColor /= PoiLVSpecularReach;
+    PoiLVSpecularVisibility = PoiLVSpecularReachWeight > 0.00001 ? saturate(PoiLVSpecularReachArriving / PoiLVSpecularReachWeight) : 1;
+}
+bool PoiLVSpecularLight(out float3 color, out float3 direction, out float spreadSq, out float visibility)
+{
+    color = PoiLVSpecularColor;
+    direction = PoiLVSpecularDirection;
+    spreadSq = PoiLVSpecularSpreadSq;
+    visibility = PoiLVSpecularVisibility;
+    return PoiLVSpecularImportance > 0;
+}
+float PoiLVForm(float3 normal, float3 L0, float3 L1r, float3 L1g, float3 L1b)
+{
+    return PoiLVLuminance(max(L0 + float3(dot(normal, L1r), dot(normal, L1g), dot(normal, L1b)), 0));
+}
+
+#if defined(_LIGHTINGMODE_WRAPPED) && defined(VIGNETTE_MASKED)
+    // Implemented by Wrapped; use the same response for LV and Unity lights.
+    float RTWrapFunc(float dt, float w, float norm);
+    float3 GreenWrapSH(float w);
+    float3 GreenWrapSHOpt(float w);
+    static float3 PoiLVWrappedBlocked = 0;
+#endif
+#ifdef _LIGHTINGMODE_FLAT
+    static float PoiLVFlatAvailable, PoiLVFlatArriving;
+    float PoiLVFlatVisibility(float3 unityColor, float unityShadow, float receive)
+    {
+        float unityWeight = PoiLVLuminance(max(unityColor, 0));
+        float available = PoiLVFlatAvailable + unityWeight;
+        float arriving = PoiLVFlatArriving + unityWeight * saturate(unityShadow);
+        return lerp(1, available > 0.00001 ? saturate(arriving / available) : 1, receive);
+    }
+#endif
+#if defined(_LIGHTINGMODE_REALISTIC) || defined(_LIGHTINGMODE_PBR)
+    // These modes read diffuse lighting directly instead of coloring it through a ramp.
+    static float3 PoiLVDiffuseL0, PoiLVDiffuseL1r, PoiLVDiffuseL1g, PoiLVDiffuseL1b;
+    // Evaluated once at the end of the walk, so shading carries 3 floats instead of the 12-float SH.
+    static float3 PoiLVDiffuseColor = 0;
+    float3 PoiLVDiffuse(float3 normal)
+    {
+        float3 diffuse = max(0, LightVolumeEvaluate(normal, PoiLVDiffuseL0, PoiLVDiffuseL1r, PoiLVDiffuseL1g, PoiLVDiffuseL1b));
+        #ifdef UNITY_COLORSPACE_GAMMA
+            diffuse = LinearToGammaSpace(diffuse);
+        #endif
+        return diffuse;
+    }
+#endif
+
+// Keep baked-volume highlights separate from individual local lights.
+static float3 PoiLVL0 = 0, PoiLVL1r = 0, PoiLVL1g = 0, PoiLVL1b = 0;
+// Treat the baked L1 as one uniformly lit disc plus ambient. A disc of brightness C adds C/2 to L1,
+// and |L1|/L0 = 1 + cos(half angle) gives its size.
+// LV's dering keeps |L1| <= L0, which reads as a hemisphere that swamps the material's
+// smoothness, so the size is capped at a typical LV light (half angle about 3 degrees).
+#ifndef POI_LV_SH_MAX_SPREAD_SQ
+    #define POI_LV_SH_MAX_SPREAD_SQ 0.003
+#endif
+bool PoiLVSHDiscCompute(out float3 color, out float3 direction, out float spreadSq)
+{
+    color = 0; direction = 0; spreadSq = 1;
+    float3 l1 = PoiLVL1r * .2126 + PoiLVL1g * .7152 + PoiLVL1b * .0722;
+    float l1Length = length(l1);
+    float l0 = PoiLVLuminance(max(PoiLVL0, 0));
+    if (l1Length <= 1e-5 || l0 <= 1e-5) return false;
+    direction = l1 / l1Length;
+    float cosHalfAngle = saturate(l1Length / l0 - 1);
+    spreadSq = min(1 - cosHalfAngle * cosHalfAngle, POI_LV_SH_MAX_SPREAD_SQ);
+    // L1 alone is the lit side minus the far side and turns complementary in tinted rooms, so the
+    // disc takes the volume's color toward it, at L1's brightness. L1 is scaled down only where a
+    // channel's L1 exceeds its L0 (mainly undered light probes) to keep every channel positive.
+    float3 l0c = max(PoiLVL0, 0);
+    float3 l1Limit = (l0c + 1e-6) / (max(float3(length(PoiLVL1r), length(PoiLVL1g), length(PoiLVL1b)), l0c) + 1e-6);
+    float l1Scale = min(l1Limit.r, min(l1Limit.g, l1Limit.b));
+    float3 around = max(PoiLVL0 + l1Scale * float3(dot(PoiLVL1r, direction), dot(PoiLVL1g, direction), dot(PoiLVL1b, direction)), 0);
+    color = around * (2 * l1Length / max(PoiLVLuminance(around), 1e-5)) * POI_LV_SPEC_STRENGTH;
+    return true;
+}
+// The disc depends only on PoiLVL*, which SampleLightVolumes alone writes, so it is computed
+// there once; GGX, Stylized and PBR read the cache instead of each inlining the derivation.
+// The initial values are the disc of the zero SH, for passes that never sample the volumes.
+static float3 PoiLVSHDiscColor = 0, PoiLVSHDiscDirection = 0;
+static float PoiLVSHDiscSpreadSq = 1;
+bool PoiLVSHDisc(out float3 color, out float3 direction, out float spreadSq)
+{
+    color = PoiLVSHDiscColor; direction = PoiLVSHDiscDirection; spreadSq = PoiLVSHDiscSpreadSq;
+    return PoiLVSHDiscSpreadSq < 1;
+}
+
+// Add Unity's main light to the same incident-light coordinate used by LV.
+float PoiLVLightmap(uint layer, float3 normal, float authoredMap, float receive,
+    float3 unityColor, float3 unityDirection, float unityShadow, bool preserveForm = false)
+{
+    [branch] if (!PoiLightVolumesActive() || PoiLVFormWeight < 0.00001) return authoredMap;
+    float unityWeight = PoiLVLuminance(max(unityColor, 0));
+    float unityForm = unityWeight * saturate(dot(normal, unityDirection));
+    #if defined(_LIGHTINGMODE_WRAPPED) && defined(VIGNETTE_MASKED)
+        unityForm = unityWeight * saturate(RTWrapFunc(dot(normal, unityDirection), _LightingWrappedWrap, _LightingWrappedNormalization));
+        unityWeight *= saturate(RTWrapFunc(1, _LightingWrappedWrap, _LightingWrappedNormalization));
+    #endif
+    float available = PoiLVAvailableForm[layer] + unityForm;
+    float arriving = PoiLVArrivingForm[layer] + unityForm * saturate(unityShadow);
+    if (preserveForm || _LightingDirectionMode != 0 || _LightingMapMode != 0)
+    {
+        // Authored form already contains Unity's shadow response.
+        float lvVisibility = available > 0.00001 ? saturate((PoiLVArrivingForm[layer] + unityForm) / available) : 1;
+        return authoredMap * lerp(1, lvVisibility, receive);
+    }
+    #if defined(_LIGHTINGMODE_TEXTURERAMP) || defined(_LIGHTINGMODE_SHADEMAP)
+        unityForm = unityWeight * PoiLVCustomForm(normal, unityDirection);
+        available = PoiLVCustomAvailable + unityForm;
+        arriving = PoiLVCustomArriving + unityForm * saturate(unityShadow);
+    #endif
+    float shape = saturate(available / (PoiLVFormWeight + unityWeight));
+    float visibility = available > 0.00001 ? saturate(arriving / available) : 1;
+    return shape * lerp(1, visibility, receive);
+}
+// Share of the light reaching this normal that is not cast-shadowed, Unity's main light included.
+float PoiLVVisibility(uint layer, float3 normal, float3 unityColor, float3 unityDirection, float unityShadow)
+{
+    float unityForm = PoiLVLuminance(max(unityColor, 0)) * saturate(dot(normal, unityDirection));
+    #if defined(_LIGHTINGMODE_WRAPPED) && defined(VIGNETTE_MASKED)
+        unityForm = PoiLVLuminance(max(unityColor, 0)) * saturate(RTWrapFunc(dot(normal, unityDirection), _LightingWrappedWrap, _LightingWrappedNormalization));
+    #endif
+    float available = PoiLVAvailableForm[layer] + unityForm;
+    return available > 0.00001 ? saturate((PoiLVArrivingForm[layer] + unityForm * saturate(unityShadow)) / available) : 1;
+}
+// Received cast shadow for Light Data's light, which also carries LV lights. Direct lights count by
+// brightness, so without LV lights this is Unity's received shadow exactly.
+float PoiLVReceivedShadow(float3 unityColor, float unityShadow)
+{
+    float unityWeight = PoiLVLuminance(max(unityColor, 0));
+    float available = PoiLVLampWeight + unityWeight;
+    float visibility = available > 0.00001 ? saturate((PoiLVLampArriving + unityWeight * saturate(unityShadow)) / available) : saturate(unityShadow);
+    return lerp(1, visibility, _LightingCastedShadows);
+}
+#T#SampleLightVolumes
+// Included in frag, inside Light Data's Light Volumes branch.
+LV_LightVolumeRegularSH(worldPos + offset, L0, L1r, L1g, L1b);
+#if defined(LIGHTMAP_ON) || defined(DYNAMICLIGHTMAP_ON)
+    // Lightmaps already contain regular baked lighting.
+    PoiLVL0 = 0; PoiLVL1r = 0; PoiLVL1g = 0; PoiLVL1b = 0;
+    LV_LightVolumeAdditiveSH(worldPos + offset, PoiLVL0, PoiLVL1r, PoiLVL1g, PoiLVL1b);
+    L0 += PoiLVL0; L1r += PoiLVL1r; L1g += PoiLVL1g; L1b += PoiLVL1b;
+#else
+    LV_LightVolumeAdditiveSH(worldPos + offset, L0, L1r, L1g, L1b);
+    PoiLVL0 = L0; PoiLVL1r = L1r; PoiLVL1g = L1g; PoiLVL1b = L1b;
+#endif
+PoiLVSHDiscCompute(PoiLVSHDiscColor, PoiLVSHDiscDirection, PoiLVSHDiscSpreadSq);
+#if defined(_LIGHTINGMODE_REALISTIC) || defined(_LIGHTINGMODE_PBR)
+    PoiLVDiffuseL0 = PoiLVL0; PoiLVDiffuseL1r = PoiLVL1r;
+    PoiLVDiffuseL1g = PoiLVL1g; PoiLVDiffuseL1b = PoiLVL1b;
+#endif
+float3 N1 = normal, N2 = normal, N3 = normal;
+#ifdef _LIGHTINGMODE_MULTILAYER_MATH
+    N1 = lerp(geometryNormal, normal, _ShadowNormalStrength);
+    N2 = lerp(geometryNormal, normal, _Shadow2ndNormalStrength);
+    N3 = lerp(geometryNormal, normal, _Shadow3rdNormalStrength);
+#endif
+PoiLVAvailableForm = float3(PoiLVForm(N1, L0, L1r, L1g, L1b),
+    PoiLVForm(N2, L0, L1r, L1g, L1b), PoiLVForm(N3, L0, L1r, L1g, L1b));
+PoiLVFormWeight = PoiLVLuminance(max(L0, 0)) + length(L1r * .2126 + L1g * .7152 + L1b * .0722);
+#if defined(_LIGHTINGMODE_WRAPPED) && defined(VIGNETTE_MASKED)
+    N1 = lerp(geometryNormal, normal, _LightingIndirectUsesNormals);
+    float3 convolution = lerp(GreenWrapSH(_LightingWrappedWrap), GreenWrapSHOpt(_LightingWrappedWrap), _LightingWrappedNormalization) * float3(1, 1.5, 4);
+    PoiLVAvailableForm = PoiLVForm(N1, L0 * convolution.x, L1r * convolution.y, L1g * convolution.y, L1b * convolution.y);
+    PoiLVFormWeight = PoiLVLuminance(max(L0 * convolution.x, 0)) + length((L1r * .2126 + L1g * .7152 + L1b * .0722) * convolution.y);
+    PoiLVWrappedBlocked = 0;
+#endif
+PoiLVArrivingForm = PoiLVAvailableForm;
+PoiLVLampWeight = 0;
+PoiLVLampArriving = 0;
+#if defined(_LIGHTINGMODE_TEXTURERAMP) || defined(_LIGHTINGMODE_SHADEMAP)
+    PoiLVCustomAvailable = PoiLVAvailableForm.x;
+    PoiLVCustomArriving = PoiLVAvailableForm.x;
+#endif
+#ifdef _LIGHTINGMODE_FLAT
+    PoiLVFlatAvailable = PoiLVLuminance(max(L0, 0));
+    PoiLVFlatArriving = PoiLVFlatAvailable;
+#endif
+PoiLVIterator lights = PoiLVBeginLive(worldPos);
+PoiLVLight light;
+//ifex _LightingLightVolumesSpecular==0 && isNotAnimated(_LightingLightVolumesSpecular)
+#if (POI_PIPE == POI_BIRP) && defined(POI_PASS_BASE)
+    // Specular layers with a GGX lobe evaluate every light inside this loop, as LV's own shader does.
+    // Their surface is prepared here because the walk runs before they set it up.
+    bool specularLayers = _LightingLightVolumesSpecular > 0;
+    #if defined(_LIGHTINGMODE_PBR) && defined(VIGNETTE_MASKED)
+        bool specularMaterialLayers = specularLayers && !PoiUsesCalibratedPBR(poiMesh);
+    #else
+        bool specularMaterialLayers = specularLayers;
+    #endif
+    #ifdef MOCHIE_PBR
+        if (specularMaterialLayers) PoiMochieLVPrepare(poiFragData, poiMesh, poiMods, poiCam);
+    #endif
+    #ifdef POI_CLEARCOAT
+        if (specularMaterialLayers) PoiClearCoatLVPrepare(poiMesh, poiMods, poiCam);
+    #endif
+    #ifdef _LIGHTINGMODE_PBR
+        if (specularLayers) PoiPreparePBR(poiFragData, poiLight, poiMesh, poiCam);
+    #endif
+#endif
+//endex
+#if VRCLV_LIGHTS_SUPPORTED
+// Each found light runs the body once, in ID order. Behind a function, FXC built a second
+// skip loop inside this one.
+VRCLV_DYNAMIC_LOOP while (lights.count < lights.limit)
+{
+    uint id;
+    bool masked = true;
+    if (lights.index < lights.end)
+    {
+        id = lights.index++;
+        #if VRCLV_CLUSTERING_SUPPORTED
+            if (lights.includeShadowed)
+            {
+                uint word = id >> 5u;
+                uint candidates = word == 0u ? lights.mask.x : LV_ClusterMaskWord(lights.mask, word);
+                masked = (candidates & (1u << (id & 31u))) != 0u;
+                if (!masked)
+                {
+                    float shadowId = abs(_UdonPointLightVolumeCustomID[id].y);
+                    if (shadowId < 1 || shadowId >= 10000) continue;
+                }
+            }
+        #endif
+    }
+    else
+    {
+        if (lights.end > 0) break;
+        #if VRCLV_CLUSTERING_SUPPORTED
+            if (!LV_NextClusteredLight(lights.mask, lights.index, lights.bits, id)) break;
+        #else
+            break;
+        #endif
+    }
+    // Normal response belongs to the lightmap or BRDF, not LV's normal mask. Keep the body
+    // inside this branch: routing it through a status flag loses most of the saving.
+    if (LV_PointLightVolumeContribution(id, worldPos, 0, -1,
+        light.color, light.shDirection, light.direction, light.spreadSq, light.visibility))
+    {
+        lights.count++;
+        // Poiyomi's color modes consume the available SH. Cast shadows shape the
+        // lightmap, so the material's shadow colors remain in charge of darkness.
+        L0 += light.color;
+        L1r += light.shDirection * light.color.r;
+        L1g += light.shDirection * light.color.g;
+        L1b += light.shDirection * light.color.b;
+        float3 form = saturate(float3(dot(N1, light.direction), dot(N2, light.direction), dot(N3, light.direction)));
+        float weight = PoiLVLuminance(max(light.color, 0));
+        PoiLVLampWeight += weight;
+        PoiLVLampArriving += weight * light.visibility;
+        PoiLVSpecularAdd(light.color, light.direction, light.spreadSq, weight, light.visibility, poiCam.reflectionDir);
+        //ifex _LightingLightVolumesSpecular==0 && isNotAnimated(_LightingLightVolumesSpecular)
+        #if (POI_PIPE == POI_BIRP) && defined(POI_PASS_BASE)
+            #ifdef MOCHIE_PBR
+                [branch] if (specularMaterialLayers) PoiMochieLVAdd(light.color, light.visibility, light.direction, light.spreadSq);
+            #endif
+            #ifdef POI_CLEARCOAT
+                [branch] if (specularMaterialLayers) PoiClearCoatLVAdd(light.color, light.visibility, light.direction, light.spreadSq);
+            #endif
+            #ifdef _LIGHTINGMODE_PBR
+                [branch] if (specularLayers) PoiPBRLVAdd(light.color, light.visibility, light.direction, light.spreadSq);
+            #endif
+        #endif
+        //endex
+        #if defined(_LIGHTINGMODE_TEXTURERAMP) || defined(_LIGHTINGMODE_SHADEMAP)
+            float customForm = weight * PoiLVCustomForm(N1, light.direction);
+            PoiLVCustomAvailable += customForm;
+            PoiLVCustomArriving += customForm * light.visibility;
+        #endif
+        #if defined(_LIGHTINGMODE_WRAPPED) && defined(VIGNETTE_MASKED)
+            form = saturate(RTWrapFunc(dot(N1, light.direction), _LightingWrappedWrap, _LightingWrappedNormalization));
+            PoiLVFormWeight += weight * saturate(RTWrapFunc(1, _LightingWrappedWrap, _LightingWrappedNormalization));
+            // Wrapped shades LV light as ambient, so its cast-shadowed share is taken out there.
+            PoiLVWrappedBlocked += light.color * (1 - lerp(1, light.visibility, _LightingCastedShadows))
+                * (convolution.x + convolution.y * dot(N1, light.shDirection));
+        #else
+            PoiLVFormWeight += weight;
+        #endif
+        PoiLVAvailableForm += weight * form;
+        PoiLVArrivingForm += weight * form * light.visibility;
+        #ifdef _LIGHTINGMODE_FLAT
+            PoiLVFlatAvailable += weight;
+            PoiLVFlatArriving += weight * light.visibility;
+        #endif
+        #if defined(_LIGHTINGMODE_REALISTIC) || defined(_LIGHTINGMODE_PBR)
+            #if !defined(LIGHTMAP_ON) && !defined(DYNAMICLIGHTMAP_ON)
+            if (_LightingCastedShadows != 0)
+            #endif
+            {
+                float3 receivedColor = light.color * lerp(1, light.visibility, _LightingCastedShadows);
+                PoiLVDiffuseL0 += receivedColor;
+                PoiLVDiffuseL1r += light.shDirection * receivedColor.r;
+                PoiLVDiffuseL1g += light.shDirection * receivedColor.g;
+                PoiLVDiffuseL1b += light.shDirection * receivedColor.b;
+            }
+        #endif
+    }
+}
+#endif
+PoiLVSpecularFinish();
+#if defined(_LIGHTINGMODE_REALISTIC) || defined(_LIGHTINGMODE_PBR)
+    #if !defined(LIGHTMAP_ON) && !defined(DYNAMICLIGHTMAP_ON)
+        // Without cast shadows the received sums started from L0/L1 and took the same light.
+        if (_LightingCastedShadows == 0)
+        {
+            PoiLVDiffuseL0 = L0; PoiLVDiffuseL1r = L1r; PoiLVDiffuseL1g = L1g; PoiLVDiffuseL1b = L1b;
+        }
+    #endif
+    // The shading normal is final here; PBR normalizes it as PoiPreparePBR does.
+    #ifdef _LIGHTINGMODE_PBR
+        PoiLVDiffuseColor = PoiLVDiffuse(normalize(normal));
+    #else
+        PoiLVDiffuseColor = PoiLVDiffuse(normal);
+    #endif
+#endif

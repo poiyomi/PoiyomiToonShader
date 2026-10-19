@@ -78,7 +78,7 @@ _RimEnviroIntensity ("Intensity", Range(0, 1)) = 1
         #endif
 
         #if POI_PIPE == POI_URP
-            enviroRimColor = PoiGlossyEnvironmentReflection(poiMesh.normals[1], poiMesh.worldPos, rimEnviroBlur, 1, poiCam.screenUV);
+            enviroRimColor = GlossyEnvironmentReflection(poiMesh.normals[1], poiMesh.worldPos, rimEnviroBlur, 1, poiCam.screenUV);
         #endif
         
         half enviroMask = 1; 

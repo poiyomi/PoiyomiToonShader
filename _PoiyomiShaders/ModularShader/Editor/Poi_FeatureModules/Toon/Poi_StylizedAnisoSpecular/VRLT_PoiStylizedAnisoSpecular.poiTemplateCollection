@@ -146,17 +146,22 @@ _Aniso1Blur ("Blur", Range(0, 1)) = 0
 		float nDotL;
 	};
 
-	half calculateAnisoShadowMask(in PoiLight poiLight, in PoiMods poiMods)
+	half calculateAnisoMask(half unshadowed, half shadowed, float nDotL, in PoiMods poiMods)
 	{
-		half anisoLightMap = poiLight.lightMap;
-		half3 anisoRampedLightMap = poiLight.rampedLightMap / max(poiLight.attenDistance, 1e-4);
-		half mask = lerp(1.0, poiMax(anisoRampedLightMap * anisoLightMap), _AnisoHideInShadow);
-		mask *= lerp(1.0, poiLight.nDotL, _AnisoFadeByLightDirection);
+		half mask = lerp(unshadowed, shadowed, _AnisoHideInShadow);
+		mask *= lerp(1.0, nDotL, _AnisoFadeByLightDirection);
 		if (_AnisoGlobalMask > 0)
 		{
 			mask = customBlend(mask, poiMods.globalMask[_AnisoGlobalMask - 1], _AnisoGlobalMaskBlendType);
 		}
 		return mask;
+	}
+
+	half calculateAnisoShadowMask(in PoiLight poiLight, in PoiMods poiMods)
+	{
+		half anisoLightMap = poiLight.lightMap;
+		half3 anisoRampedLightMap = poiLight.rampedLightMap / max(saturate(poiLight.attenDistance), 1e-4);
+		return calculateAnisoMask(CalculateLuminance(poiLight.lightCookie), poiMax(anisoRampedLightMap * anisoLightMap), poiLight.nDotL, poiMods);
 	}
 
 	AnisoGeometry getAnisoGeometry(in PoiMesh poiMesh)
@@ -256,7 +261,7 @@ _Aniso1Blur ("Blur", Range(0, 1)) = 0
 		#if defined(PROP_ANISOCOLORMAP) || !defined(OPTIMIZER_ENABLED)
 			float4 specMap = POI2D_SAMPLER_PAN(_AnisoColorMap, _MainTex, poiUV(poiMesh.uv[_AnisoColorMapUV], _AnisoColorMap_ST), _AnisoColorMapPan);
 		#else
-			float4 specMap = float4(1, 1, 1, 0);
+			float4 specMap = float4(1, 1, 1, 1);
 		#endif
 
 		half shadowMask = calculateAnisoShadowMask(poiLight, poiMods);
@@ -291,7 +296,7 @@ _Aniso1Blur ("Blur", Range(0, 1)) = 0
 					AnisoLightData vLight = {
 						poiLight.vDirection[i],
 						poiLight.vColor[i],
-						poiLight.vSaturatedDotNL[i],
+						calculateAnisoMask(1.0, poiLight.vSaturatedDotNL[i], poiLight.vDotNL[i], poiMods),
 						poiLight.vSaturatedDotNL[i]
 					};
 					processAnisoLight(poiFragData, poiLight, poiCam, poiMods, geom, specMap.rgb, specMap.a, layer0, layer1, vLight);

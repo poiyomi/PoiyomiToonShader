@@ -47,13 +47,26 @@ Blend [_OutlineSrcBlend] [_OutlineDstBlend], [_OutlineSrcBlendAlpha] [_OutlineDs
 
 #T#OutlinePassTwoOnlyKeywords
 #if POI_PIPE == POI_URP
-    #pragma skip_variants FOG_LINEAR FOG_EXP FOG_EXP2
-    // https://issuetracker.unity3d.com/issues/number-pragma-skip-variants-fog-linear-does-not-remove-fog-linear-keyword-declared-keyword
-    // Skip variants not working for fog in URP
-    #define FOG_LINEAR 0
-    #define FOG_EXP 0
-    #define FOG_EXP2 0
-    #pragma multi_compile_vertex _ _CASTING_PUNCTUAL_LIGHT_SHADOW
+    #pragma multi_compile _ _MAIN_LIGHT_SHADOWS _MAIN_LIGHT_SHADOWS_CASCADE _MAIN_LIGHT_SHADOWS_SCREEN
+
+    #if UNITY_VERSION >= 600000
+        #pragma multi_compile _ _CLUSTER_LIGHT_LOOP
+    #else
+        #pragma multi_compile _ _FORWARD_PLUS
+    #endif
+
+    #pragma multi_compile_fragment _ _ADDITIONAL_LIGHTS
+    #pragma multi_compile_fragment _ _ADDITIONAL_LIGHT_SHADOWS
+    #pragma multi_compile_fragment _ _LIGHT_LAYERS
+    #pragma multi_compile_fragment _ _SHADOWS_SOFT
+    #pragma multi_compile_fragment _ _REFLECTION_PROBE_BLENDING
+    #pragma multi_compile_fragment _ _REFLECTION_PROBE_BOX_PROJECTION
+
+    #pragma multi_compile_fragment _ _LIGHT_COOKIES
+
+    #pragma dynamic_branch _ FOG_LINEAR
+    #pragma dynamic_branch _ FOG_EXP
+    #pragma dynamic_branch _ FOG_EXP2
 #else
     #pragma dynamic_branch _ FOG_LINEAR
     #pragma dynamic_branch _ FOG_EXP

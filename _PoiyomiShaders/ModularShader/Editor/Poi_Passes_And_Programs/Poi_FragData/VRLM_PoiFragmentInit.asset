@@ -55,10 +55,5 @@ MonoBehaviour:
     - FRAGMENT_SELF_GRAB_INIT
     NeedsVariant: 0
     Queue: 0
-  - Template: {fileID: 4410451462306096815, guid: b74d0e4505930a042af3cf0f050a3e61, type: 3}
-    Keywords:
-    - FRAGMENT_LILFUR_INIT
-    NeedsVariant: 0
-    Queue: 0
   Functions: []
   AdditionalSerializedData: 

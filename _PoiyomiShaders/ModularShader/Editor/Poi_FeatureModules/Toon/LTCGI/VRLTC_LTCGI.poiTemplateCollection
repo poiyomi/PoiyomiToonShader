@@ -1052,6 +1052,8 @@ _LTCGI_DiffuseMultiplier ("Diffuse Multiplier", Range(0, 2)) = 1.0
         float3 worldPos, float3 worldNorm, float3 viewDir, float roughness, float2 lmuv
         #ifndef LTCGI_API_V2
             , inout half3 diffuse, inout half3 specular, out float totalSpecularIntensity, out float totalDiffuseIntensity
+        #else
+            , float3 diffuseNorm
         #endif
     )
     {
@@ -1095,6 +1097,10 @@ _LTCGI_DiffuseMultiplier ("Diffuse Multiplier", Range(0, 2)) = 1.0
         float3x3 identityBrdf = float3x3(float3(T1), float3(T2), float3(worldNorm));
         // rotate area light in (T1, T2, N) basis for actual BRDF matrix as well
         Minv = mul(Minv, identityBrdf);
+        #ifdef LTCGI_API_V2
+            float3 diffuseT1 = normalize(viewDir - diffuseNorm * dot(viewDir, diffuseNorm));
+            identityBrdf = float3x3(diffuseT1, cross(diffuseNorm, diffuseT1), diffuseNorm);
+        #endif
 
         // specular brightness
         #ifndef LTCGI_SPECULAR_OFF
@@ -1228,7 +1234,14 @@ _LTCGI_DiffuseMultiplier ("Diffuse Multiplier", Range(0, 2)) = 1.0
 
     // COMPATIBILITY FALLBACKS
 
-    #ifndef LTCGI_API_V2
+    #ifdef LTCGI_API_V2
+
+        void LTCGI_Contribution(inout LTCGI_V2_CUSTOM_INPUT data, float3 worldPos, float3 worldNorm, float3 viewDir, float roughness, float2 lmuv)
+        {
+            LTCGI_Contribution(data, worldPos, worldNorm, viewDir, roughness, lmuv, worldNorm);
+        }
+
+    #else
 
         void LTCGI_Contribution(
             float3 worldPos, float3 worldNorm, float3 viewDir, float roughness, float2 lmuv, inout half3 diffuse
@@ -1359,11 +1372,11 @@ _LTCGI_DiffuseMultiplier ("Diffuse Multiplier", Range(0, 2)) = 1.0
         }
 
         // Use bent normal for diffuse when available for better occlusion
-        float3 ltcgiNormal = poiMesh.normals[1];
+        float3 ltcgiDiffuseNormal = poiMesh.normals[1];
         #ifdef POI_BENTNORMALMAP
             if (poiMesh.hasBentNormal)
             {
-                ltcgiNormal = poiMesh.bentNormal;
+                ltcgiDiffuseNormal = poiMesh.bentNormal;
             }
         #endif
 
@@ -1372,10 +1385,11 @@ _LTCGI_DiffuseMultiplier ("Diffuse Multiplier", Range(0, 2)) = 1.0
         LTCGI_Contribution(
             acc,
             poiMesh.worldPos,
-            ltcgiNormal,
+            poiMesh.normals[1],
             poiCam.eyeViewDir,
             1.0f - LTCGIsmoothness,
-            poiMesh.uv[1]
+            poiMesh.uv[1],
+            ltcgiDiffuseNormal
         );
 
         acc.specular *= poiThemeColor(poiMods, _LTCGI_SpecularColor.rgb, _LTCGI_SpecularColorThemeIndex) * _LTCGI_SpecularMultiplier;

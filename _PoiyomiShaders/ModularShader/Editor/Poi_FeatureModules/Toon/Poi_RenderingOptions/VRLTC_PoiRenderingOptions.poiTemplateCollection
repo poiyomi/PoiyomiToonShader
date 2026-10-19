@@ -57,6 +57,7 @@ float _IgnoreFog;
 float _RenderingReduceClipDistance;
 int _FlipBackfaceNormals;
 float _AddBlendOp;
+float _AddSrcBlend;
 float _Cull;
 
 //ifex _RenderingAOBlockerEnabled==0

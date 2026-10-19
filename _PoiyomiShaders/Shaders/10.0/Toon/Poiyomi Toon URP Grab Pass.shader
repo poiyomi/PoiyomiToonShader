@@ -2,7 +2,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 {
 	Properties
 	{
-		[HideInInspector] shader_master_label ("<color=#E75898ff>Poiyomi 10.0.25</color>", Float) = 0
+		[HideInInspector] shader_master_label ("<color=#E75898ff>Poiyomi 10.0.26</color>", Float) = 0
 		[HideInInspector] shader_is_using_thry_editor ("", Float) = 0
 		[HideInInspector] shader_locale ("0db0b86376c3dca4b9a6828ef8615fe0", Float) = 0
 		[HideInInspector] footer_website ("{texture:{name:icon-poilogo,height:24},action:{type:URL,data:https://www.poiyomi.com},hover:WEBSITE}", Float) = 0
@@ -1153,7 +1153,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 		[ThryHideInInspector]_LightDataAOStrengthB ("B Strength", Range(0, 1)) = 0
 		[ThryHideInInspector]_LightDataAOStrengthA ("A Strength", Range(0, 1)) = 0
 		[ThryHideInInspector][ThryWideEnum(Off, 0, 1R, 1, 1G, 2, 1B, 3, 1A, 4, 2R, 5, 2G, 6, 2B, 7, 2A, 8, 3R, 9, 3G, 10, 3B, 11, 3A, 12, 4R, 13, 4G, 14, 4B, 15, 4A, 16)] _LightDataAOGlobalMaskR ("Global Mask--{reference_property:_LightDataAOGlobalMaskBlendTypeR}", Int) = 0
-		[ThryHideInInspector][ThryWideEnum(Add, 7, Subtract, 1, Multiply, 2, Divide, 3, Min, 4, Max, 5, Average, 6, Replace, 0)] _LightDataAOGlobalMaskBlendTypeR ("Blending", Range(0, 1)) = 2
+		[ThryHideInInspector][ThryWideEnum(Add, 7, Subtract, 1, Multiply, 2, Divide, 3, Min, 4, Max, 5, Average, 6, Replace, 0)] _LightDataAOGlobalMaskBlendTypeR ("Blending", Int) = 2
 		[TextureKeyword][sRGBWarning][ThryRGBAPacker(R, G, B, A, Linear, false)]_LightingDetailShadowMaps ("Shadow Map (expand)--{reference_properties:[_LightingDetailShadowMapsPan, _LightingDetailShadowMapsUV,_LightingDetailShadowStrengthR,_LightingDetailShadowStrengthG,_LightingDetailShadowStrengthB,_LightingDetailShadowStrengthA,_LightingAddDetailShadowStrengthR,_LightingAddDetailShadowStrengthG,_LightingAddDetailShadowStrengthB,_LightingAddDetailShadowStrengthA, _LightDataDetailShadowGlobalMaskR]}", 2D) = "white" { }
 		[ThryHideInInspector][Vector2]_LightingDetailShadowMapsPan ("Panning", Vector) = (0, 0, 0, 0)
 		[ThryHideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7, Matcap, 9, Screen Space, 10)] _LightingDetailShadowMapsUV ("UV", Int) = 0
@@ -1166,7 +1166,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 		[ThryHideInInspector]_LightingAddDetailShadowStrengthB ("Additive B Strength", Range(0, 1)) = 0
 		[ThryHideInInspector]_LightingAddDetailShadowStrengthA ("Additive A Strength", Range(0, 1)) = 0
 		[ThryHideInInspector][ThryWideEnum(Off, 0, 1R, 1, 1G, 2, 1B, 3, 1A, 4, 2R, 5, 2G, 6, 2B, 7, 2A, 8, 3R, 9, 3G, 10, 3B, 11, 3A, 12, 4R, 13, 4G, 14, 4B, 15, 4A, 16)] _LightDataDetailShadowGlobalMaskR ("Global Mask--{reference_property:_LightDataDetailShadowGlobalMaskBlendTypeR}", Int) = 0
-		[ThryHideInInspector][ThryWideEnum(Add, 7, Subtract, 1, Multiply, 2, Divide, 3, Min, 4, Max, 5, Average, 6, Replace, 0)] _LightDataDetailShadowGlobalMaskBlendTypeR ("Blending", Range(0, 1)) = 2
+		[ThryHideInInspector][ThryWideEnum(Add, 7, Subtract, 1, Multiply, 2, Divide, 3, Min, 4, Max, 5, Average, 6, Replace, 0)] _LightDataDetailShadowGlobalMaskBlendTypeR ("Blending", Int) = 2
 		[TextureKeyword][sRGBWarning][ThryRGBAPacker(R, G, B, A, Linear, false)]_LightingShadowMasks ("Shadow Masks (expand)--{reference_properties:[_LightingShadowMasksPan, _LightingShadowMasksUV,_LightingShadowMaskStrengthR,_LightingShadowMaskStrengthG,_LightingShadowMaskStrengthB,_LightingShadowMaskStrengthA, _LightDataShadowMaskGlobalMaskR]}", 2D) = "white" { }
 		[ThryHideInInspector][Vector2]_LightingShadowMasksPan ("Panning", Vector) = (0, 0, 0, 0)
 		[ThryHideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7, Matcap, 9, Screen Space, 10)] _LightingShadowMasksUV ("UV", Int) = 0
@@ -1175,7 +1175,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 		[ThryHideInInspector]_LightingShadowMaskStrengthB ("B Strength", Range(0, 1)) = 0
 		[ThryHideInInspector]_LightingShadowMaskStrengthA ("A Strength", Range(0, 1)) = 0
 		[ThryHideInInspector][ThryWideEnum(Off, 0, 1R, 1, 1G, 2, 1B, 3, 1A, 4, 2R, 5, 2G, 6, 2B, 7, 2A, 8, 3R, 9, 3G, 10, 3B, 11, 3A, 12, 4R, 13, 4G, 14, 4B, 15, 4A, 16)] _LightDataShadowMaskGlobalMaskR ("Global Mask--{reference_property:_LightDataShadowMaskGlobalMaskBlendTypeR}", Int) = 0
-		[ThryHideInInspector][ThryWideEnum(Add, 7, Subtract, 1, Multiply, 2, Divide, 3, Min, 4, Max, 5, Average, 6, Replace, 0)] _LightDataShadowMaskGlobalMaskBlendTypeR ("Blending", Range(0, 1)) = 2
+		[ThryHideInInspector][ThryWideEnum(Add, 7, Subtract, 1, Multiply, 2, Divide, 3, Min, 4, Max, 5, Average, 6, Replace, 0)] _LightDataShadowMaskGlobalMaskBlendTypeR ("Blending", Int) = 2
 		
 		// Base Pass
 		[HideInInspector] s_start_LightDataBasePass ("Base Pass (Main Directional & Baked Lights)--{persistent_expand:true,default_expand:true}", Float) = 1
@@ -1200,10 +1200,12 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 		_Unlit_Intensity ("Unlit Intensity--{condition_showS:(_LightingColorMode==2),tooltip:How much the model should be lit in the absence of direct light.}", Range(0.001, 4)) = 1
 		[DoNotLock][ToggleUI]_LightingCapEnabled ("Limit Brightness--{tooltip:Enables clamping the maximum brightness. This toggle is tagged animated by default.}", Float) = 1
 		[DoNotLock]_LightingCap ("Max Brightness--{condition_showS:(_LightingCapEnabled==1),tooltip:Clamps the brightness to never go above this value in regular lighting. This slider is tagged animated by default.}", Range(0, 10)) = 1
+		[DoNotLock]_LightingCapLuminance ("Luminance Limit (Experimental)--{condition_showS:(_LightingCapEnabled==1),tooltip:Blends from the original channel clamp at 0 to a color-preserving luminance limit at 1. Higher values allow individual direct-light channels above Max Brightness.}", Range(0, 1)) = 0
 		[DoNotLock]_LightingMinLightBrightness ("Min Brightness--{tooltip:A value here above 0 will make the model visible in total darkness at the specified intensity. This slider is tagged animated by default.}", Range(0, 1)) = 0
 		_LightingIndirectUsesNormals ("Indirect Uses Normals--{condition_showS:(_LightingColorMode==0),tooltip:Amount of normal influence when calculating indirect lighting.}", Range(0, 1)) = 0
-		_LightingCastedShadows ("Receive Casted Shadows--{tooltip:Amount to apply Unity's built-in casted shadows to the model.}", Range(0, 1)) = 0
-		_LightingShadowSoftness ("Casted Shadow Softness--{tooltip:Softens the casted shadows applied to the model.}", Range(0, 1)) = 0
+		_LightingCastedShadows ("Receive Casted Shadows--{tooltip:Controls how much Unity and Light Volume cast shadows affect the shading.}", Range(0, 1)) = 0
+		_LightingShadowSoftness ("Casted Shadow Softness--{condition_showS:(_LightingCleanCastedShadows==0),tooltip:Softens the casted shadows applied to the model.}", Range(0, 1)) = 0
+		[ToggleUI]_LightingCleanCastedShadows ("Clean Casted Shadows--{tooltip:Smooths the blocky steps out of casted shadow edges.}", Float) = 0
 		[DoNotLock]_LightingMonochromatic ("Grayscale Lighting--{tooltip:De-saturates the base lighting color while keeping perceptual luminance the same.}", Range(0, 1)) = 0
 		[ToggleUI]_LightingVertexLightingEnabled ("Vertex lights (Non-Important)--{tooltip:Enables realtime vertex lights to perform unimportant lighting calculations.}", Float) = 1
 		[ToggleUI]_LightingMirrorVertexLightingEnabled ("Mirror Vertex lights (Non-Important)--{tooltip:Invokes correct handling of vertex lighting due to how VRChat performs lighting differently in various mirrors.}", Float) = 1
@@ -1226,8 +1228,6 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 		[ThryHideInInspector][ToggleUI]_LightingEnableLightVolumes ("Light Volumes", Float) = 1
 		[ThryDescription] LVDesc ("This shader supports VRC Light Volumes by RED_SIM. Click for more info.--{onClick:{type:URL,data:https://github.com/REDSIM/VRCLightVolumes}}", Int) = 0
 		_LightingLightVolumesSpecular ("LV Specular--{tooltip:Adjusts the specular intensity received from Light Volumes data.}", Range(0, 1)) = 1
-		_LightingLightVolumesIntensity ("LV Intensity--{tooltip:Adjusts the total intensity of Light Volumes affecting the model.}", Range(0, 1)) = 1
-		_LightingLightVolumesShadows ("LV Shadows--{tooltip:Adjusts the intensity of shadows to simulate when the model is exposed to a Light Volumes voxel.}", Range(0, 1)) = 0
 		_LightingLightVolumesNormalBias ("Normal Bias Sampling--{tooltip:Offsets the position where lighting from the mesh normals is sampled from in Light Volumes.}", Range(-1, 1)) = 0
 		[HideInInspector] s_end_LightDataLightVolumes ("Light Volumes", Float) = 1
 		
@@ -1248,7 +1248,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 		[Helpbox(1, 2, 1)] _ClothPBRInfo ("Cloth has built-in Reflections & Specular. Therefore, it's not necessary to enable Reflections & Specular separately.--{condition_showS:(_LightingMode==7)}", Int) = 0
 		[Helpbox(1, 2, 1)] _SDFNote ("SDF requires a specialized data texture specific to your model in order for this to work. If there's no texture, this will appear Flat.--{condition_showS:(_LightingMode==8)}", Int) = 0
 		
-		_LightingShadowColor ("Shadow Tint--{condition_showS:(_LightingMode!=4 && _LightingMode!=1 && _LightingMode!=5)}", Color) = (1, 1, 1)
+		_LightingShadowColor ("Shadow Tint--{condition_showS:(_LightingMode!=4 && _LightingMode!=1 && _LightingMode!=5 && _LightingMode!=7 && _LightingMode!=9)}", Color) = (1, 1, 1)
 		
 		//ifex _LightingMode!=0
 		// Texture Ramp
@@ -1315,9 +1315,16 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 		
 		[HideInInspector] s_start_MultilayerMathBorderMap ("Shadow Border Map--{reference_property:_ShadowBorderMapToggle, persistent_expand:true,default_expand:false, condition_showS:(_LightingMode==1)}", Float) = 0
 		[ThryHideInInspector][ToggleUI] _ShadowBorderMapToggle ("Shadow Border Map Toggle", Float) = 0
-		_ShadowBorderMask ("AO Map--{reference_properties:[_ShadowBorderMaskPan, _ShadowBorderMaskUV]}", 2D) = "white" { }
+		[sRGBWarning][ThryRGBAPacker(R, G, B, A, Linear, false)]_ShadowBorderMask ("AO Map--{reference_properties:[_ShadowBorderMaskPan, _ShadowBorderMaskUV, _ShadowBorderMaskMode, _ShadowBorderMaskStrengthR, _ShadowBorderMaskStrengthG, _ShadowBorderMaskStrengthB, _ShadowBorderMaskStrengthA, _ShadowBorderMaskGlobalMask]}", 2D) = "white" { }
 		[ThryHideInInspector][Vector2]_ShadowBorderMaskPan ("Panning", Vector) = (0, 0, 0, 0)
 		[ThryHideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7, Matcap, 9, Screen Space, 10)] _ShadowBorderMaskUV ("UV", Int) = 0
+		[ThryHideInInspector][ThryWideEnum(RGB Per Layer, 0, Packed RGBA, 1)] _ShadowBorderMaskMode ("Channel Mode", Float) = 0
+		[ThryHideInInspector]_ShadowBorderMaskStrengthR ("R Strength--{condition_showS:(_ShadowBorderMaskMode==1)}", Range(0, 1)) = 1
+		[ThryHideInInspector]_ShadowBorderMaskStrengthG ("G Strength--{condition_showS:(_ShadowBorderMaskMode==1)}", Range(0, 1)) = 0
+		[ThryHideInInspector]_ShadowBorderMaskStrengthB ("B Strength--{condition_showS:(_ShadowBorderMaskMode==1)}", Range(0, 1)) = 0
+		[ThryHideInInspector]_ShadowBorderMaskStrengthA ("A Strength--{condition_showS:(_ShadowBorderMaskMode==1)}", Range(0, 1)) = 0
+		[ThryHideInInspector][ThryWideEnum(Off, 0, 1R, 1, 1G, 2, 1B, 3, 1A, 4, 2R, 5, 2G, 6, 2B, 7, 2A, 8, 3R, 9, 3G, 10, 3B, 11, 3A, 12, 4R, 13, 4G, 14, 4B, 15, 4A, 16)] _ShadowBorderMaskGlobalMask ("Global Mask--{reference_property:_ShadowBorderMaskGlobalMaskBlendType}", Int) = 0
+		[ThryHideInInspector][ThryWideEnum(Add, 7, Subtract, 1, Multiply, 2, Divide, 3, Min, 4, Max, 5, Average, 6, Replace, 0)] _ShadowBorderMaskGlobalMaskBlendType ("Blending", Float) = 2
 		_ShadowBorderMaskLOD ("Border Map LOD", Range(0, 1)) = 0
 		[ToggleUI]_ShadowPostAO ("Ignore Border Properties", Float) = 0
 		[VectorToSliders(1st Min, n0.01, p1.01, 1st Max, n0.01, p1.01, 2nd Min, n0.01, p1.01, 2nd Max, n0.01, p1.01)]_ShadowAOShift ("Shadow AO Shift", Vector) = (0, 1, 0, 1)
@@ -1371,7 +1378,9 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 		[ThryHideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7, Matcap, 9, Screen Space, 10)] _SkinThicknessMapUV ("UV", Int) = 0
 		[ThryHideInInspector][ToggleUI]_SkinThicknessMapInvert ("Invert", Float) = 0
 		_SkinThicknessPower ("Thickness Power--{condition_showS:(_LightingMode==3)}", Range(0, 3)) = 1
-		_SssBumpBlur ("Bump Blur--{condition_showS:(_LightingMode==3)}", Range(0, 1)) = 0.7
+		[ToggleUI]_SkinDiffuseSoftnessEnabled ("Soften Diffuse Normals--{condition_showS:(_LightingMode==3),tooltip:Softens normal-map detail in skin diffuse lighting without changing specular normals. Off preserves existing materials.}", Float) = 0
+		_SssBumpBlur ("Diffuse Normal Softness--{condition_showS:(_LightingMode==3 && _SkinDiffuseSoftnessEnabled==1),tooltip:Blends the diffuse normal toward the mesh normal. This is a local approximation rather than a texture blur.}", Range(0, 1)) = 0.7
+		_SkinScatteringStability ("Scattering Stability--{condition_showS:(_LightingMode==3),tooltip:Keeps the scattering LUT profile stable as light intensity changes. Zero preserves the existing brightness-dependent profile.}", Range(0, 1)) = 0
 		[HideInInspector][Vector3]_SssTransmissionAbsorption ("Absorption--{condition_showS:(_LightingMode==3)}", Vector) = (-8, -40, -64, 0)
 		[HideInInspector][Vector3]_SssColorBleedAoWeights ("AO Color Bleed--{condition_showS:(_LightingMode==3)}", Vector) = (0.4, 0.15, 0.13, 0)
 		//endex
@@ -1392,6 +1401,17 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 		[Gamma] _ClothMetallic ("Metallic--{condition_showS:(_LightingMode==7)}", Range(0, 1)) = 0
 		_ClothReflectance ("Reflectance--{condition_showS:(_LightingMode==7)}", Range(0.35, 1)) = 0.5
 		_ClothSmoothness ("Smoothness--{condition_showS:(_LightingMode==7)}", Range(0, 1)) = 0.5
+		
+		[HideInInspector] s_start_ClothGlobalMask ("Global Mask--{condition_showS:(_LightingMode==7),persistent_expand:true,default_expand:false}", Float) = 0
+		[ThryWideEnum(Off, 0, 1R, 1, 1G, 2, 1B, 3, 1A, 4, 2R, 5, 2G, 6, 2B, 7, 2A, 8, 3R, 9, 3G, 10, 3B, 11, 3A, 12, 4R, 13, 4G, 14, 4B, 15, 4A, 16)] _ClothMetallicGlobalMask ("Metallic--{reference_property:_ClothMetallicGlobalMaskBlendType}", Int) = 0
+		[ThryHideInInspector][ThryWideEnum(Add, 7, Subtract, 1, Multiply, 2, Divide, 3, Min, 4, Max, 5, Average, 6, Replace, 0)] _ClothMetallicGlobalMaskBlendType ("Blending", Int) = 2
+		[ThryWideEnum(Off, 0, 1R, 1, 1G, 2, 1B, 3, 1A, 4, 2R, 5, 2G, 6, 2B, 7, 2A, 8, 3R, 9, 3G, 10, 3B, 11, 3A, 12, 4R, 13, 4G, 14, 4B, 15, 4A, 16)] _ClothMaskGlobalMask ("Cloth Mask--{reference_property:_ClothMaskGlobalMaskBlendType}", Int) = 0
+		[ThryHideInInspector][ThryWideEnum(Add, 7, Subtract, 1, Multiply, 2, Divide, 3, Min, 4, Max, 5, Average, 6, Replace, 0)] _ClothMaskGlobalMaskBlendType ("Blending", Int) = 2
+		[ThryWideEnum(Off, 0, 1R, 1, 1G, 2, 1B, 3, 1A, 4, 2R, 5, 2G, 6, 2B, 7, 2A, 8, 3R, 9, 3G, 10, 3B, 11, 3A, 12, 4R, 13, 4G, 14, 4B, 15, 4A, 16)] _ClothReflectanceGlobalMask ("Reflectance--{reference_property:_ClothReflectanceGlobalMaskBlendType}", Int) = 0
+		[ThryHideInInspector][ThryWideEnum(Add, 7, Subtract, 1, Multiply, 2, Divide, 3, Min, 4, Max, 5, Average, 6, Replace, 0)] _ClothReflectanceGlobalMaskBlendType ("Blending", Int) = 2
+		[ThryWideEnum(Off, 0, 1R, 1, 1G, 2, 1B, 3, 1A, 4, 2R, 5, 2G, 6, 2B, 7, 2A, 8, 3R, 9, 3G, 10, 3B, 11, 3A, 12, 4R, 13, 4G, 14, 4B, 15, 4A, 16)] _ClothSmoothnessGlobalMask ("Smoothness--{reference_property:_ClothSmoothnessGlobalMaskBlendType}", Int) = 0
+		[ThryHideInInspector][ThryWideEnum(Add, 7, Subtract, 1, Multiply, 2, Divide, 3, Min, 4, Max, 5, Average, 6, Replace, 0)] _ClothSmoothnessGlobalMaskBlendType ("Blending", Int) = 2
+		[HideInInspector] s_end_ClothGlobalMask ("", Float) = 0
 		//endex
 		
 		//ifex _LightingMode!=8
@@ -1406,7 +1426,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 		
 		// Generic
 		_ShadowStrength ("Shadow Strength--{condition_showS:(_LightingMode<=4 || _LightingMode==6 || _LightingMode==8)}", Range(0, 1)) = 1
-		_LightingIgnoreAmbientColor ("Ignore Indirect Shadow Color--{condition_showS:(_LightingMode<=3 || _LightingMode==8)}", Range(0, 1)) = 1
+		_LightingIgnoreAmbientColor ("Ignore Indirect Shadow Color--{condition_showS:(_LightingMode<=1 || _LightingMode==3 || _LightingMode==8)}", Range(0, 1)) = 1
 		
 		// Additive
 		[Space(15)]
@@ -1415,10 +1435,8 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 		_LightingAdditiveGradientStart ("Gradient Start--{condition_showS:(_LightingAdditiveType==1)}", Range(0, 1)) = 0
 		_LightingAdditiveGradientEnd ("Gradient End--{condition_showS:(_LightingAdditiveType==1)}", Range(0, 1)) = .5
 		[HideInInspector] s_end_ShadingAddPass ("Add Pass", Float) = 0
-		//_LightingAdditiveDetailStrength ("Detail Shadow Strength", Range(0, 1)) = 1 //TODO-implement this
 		
-		// The Global Masks section is deliberately OUTSIDE the _ShadingEnabled==0 region. Its consumer,
-		// PoiShadingGlobalMasks(), is called under //ifex _ShadingEnabled!=0 in PoiCalculateShadingFunctionCall
+		// Global Masks stay outside the _ShadingEnabled==0 region: PoiShadingGlobalMasks() also runs with shading off.
 		//endex
 		[HideInInspector] s_start_ShadingGlobalMask ("Global Masks--{persistent_expand:true,default_expand:false}", Float) = 0
 		[ThryWideEnum(Off, 0, 1R, 1, 1G, 2, 1B, 3, 1A, 4, 2R, 5, 2G, 6, 2B, 7, 2A, 8, 3R, 9, 3G, 10, 3B, 11, 3A, 12, 4R, 13, 4G, 14, 4B, 15, 4A, 16)] _ShadingRampedLightMapApplyGlobalMaskIndex ("LightMap to Global Mask--{reference_property:_ShadingRampedLightMapApplyGlobalMaskBlendType}", Int) = 0
@@ -2266,7 +2284,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 		[sRGBWarning(true)][ThryRGBAPacker(RGB Color, A Thickness, linear, false)]_SSSThicknessMap ("Color & Thickness--{reference_properties:[_SSSThicknessMapPan, _SSSThicknessMapUV, _SSSThicknessMapChannel]}", 2D) = "white" { }
 		[ThryHideInInspector][Vector2]_SSSThicknessMapPan ("Panning", Vector) = (0, 0, 0, 0)
 		[ThryHideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7, Matcap, 9, Screen Space, 10)] _SSSThicknessMapUV ("UV", Int) = 0
-		[ThryHideInInspector][Enum(R, 0, G, 1, B, 2, A, 3)] _SSSThicknessMapChannel ("Channel", Int) = 0
+		[ThryHideInInspector][Enum(R, 1, G, 2, B, 3, A, 0)] _SSSThicknessMapChannel ("Channel", Int) = 0
 		_SSSThicknessMod ("Thickness mod", Range(-1, 1)) = -1
 		_SSSStrength ("Light Strength", Range(0, 1)) = 0.5
 		_SSSSpread ("Light Spread", Range(1, 100)) = 2
@@ -2323,7 +2341,8 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 		[HideInInspector] s_start_ggxanisotropics("Anisotropics--{reference_property:_GGXAnisotropics,persistent_expand:true,default_expand:false}", Float) = 0
 		[HideInInspector][ThryToggle(GGX_ANISOTROPICS)]_GGXAnisotropics ("Enable", Float) = 0
 		
-		[sRGBWarning]_AnisotropyMap("Anisotropy Map--{reference_properties:[_AnisotropyMapPan, _AnisotropyMapUV, _AnisotropyMapChannel]}", 2D) = "bump" { }
+		[sRGBWarning]_AnisotropyMap("Anisotropy Map--{reference_properties:[_AnisotropyMapVertexColor, _AnisotropyMapPan, _AnisotropyMapUV, _AnisotropyMapChannel]}", 2D) = "bump" { }
+		[ThryHideInInspector][Enum(Off, 0, R, 1, G, 2, B, 3, A, 4)]_AnisotropyMapVertexColor ("Vertex Color--{tooltip:Use a vertex color channel instead of the texture. Gray is no anisotropy.}", Float) = 0
 		[ThryHideInInspector][Vector2]_AnisotropyMapPan("Panning", Vector) = (0, 0, 0, 0)
 		[ThryHideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7, Matcap, 9, Screen Space, 10)] _AnisotropyMapUV ("UV", Int) = 0
 		[ThryHideInInspector][Enum(R, 0, G, 1, B, 2, A, 3)]_AnisotropyMapChannel ("Channel", Float) = 0
@@ -2331,6 +2350,12 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 		_Anisotropy ("Anisotropy", Range(-1, 1)) = 0
 		_ReflectionAnisotropicStretch("Reflection Stretch", Range(1, 5)) = 1
 		_RoughnessAnisotropy("Roughness Anisotropy", Range(0, 1)) = 1
+		//ifex _AnisotropyDirectionEnabled==0
+		[ThryToggle(POI_ANISOTROPY_DIRECTION)]_AnisotropyDirectionEnabled ("Use Direction Map", Float) = 0
+		[sRGBWarning]_AnisotropyDirectionMap ("Direction Map--{condition_showS:(_AnisotropyDirectionEnabled==1),reference_properties:[_AnisotropyDirectionMapPan, _AnisotropyDirectionMapUV],tooltip:RG sets the direction along the mesh tangent and binormal. Values are remapped from 0 to 1 into -1 to 1. Import as a Default texture with sRGB off.}", 2D) = "bump" { }
+		[ThryHideInInspector][Vector2]_AnisotropyDirectionMapPan ("Panning", Vector) = (0, 0, 0, 0)
+		[ThryHideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7, Matcap, 9, Screen Space, 10)]_AnisotropyDirectionMapUV ("UV", Int) = 0
+		//endex
 		[HideInInspector] s_end_ggxanisotropics ("", Float) = 0
 		
 		[HideInInspector] s_start_PBRSecondSpecular ("2nd Specular--{reference_property:_Specular2ndLayer,persistent_expand:true,default_expand:false}", Float) = 0
@@ -2411,7 +2436,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 		
 		[HideInInspector] s_start_ClearCoatTPSMaskGroup ("TPS Mask--{reference_property:_ClearCoatTPSDepthMaskEnabled, persistent_expand:true,default_expand:false,condition_showS:(_TPSPenetratorEnabled==1)}", Float) = 0
 		[ThryHideInInspector][ToggleUI] _ClearCoatTPSDepthMaskEnabled ("TPS Depth Enabled", Float) = 0
-		_ClearCoatTPSMaskStrength ("Mask Strength}", Range(0, 1)) = 1
+		_ClearCoatTPSMaskStrength ("Mask Strength", Range(0, 1)) = 1
 		[HideInInspector] s_end_ClearCoatTPSMaskGroup ("", Float) = 0
 		
 		[HideInInspector] s_end_clearcoatadvanced ("", Float) = 0
@@ -6420,6 +6445,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			half lightingMonochromatic;
 			int lightType;
 			int isAdditive;
+			int lightMapMode;
 			Light unityLight;
 			#if POI_PIPE == POI_URP
 			BRDFData brdfData;
@@ -6481,15 +6507,28 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 		static half4 PoiSHAr = 0;
 		static half4 PoiSHAg = 0;
 		static half4 PoiSHAb = 0;
+		#if POI_PIPE == POI_BIRP
+		// Light Volumes have no L2, so their branch turns it off instead of keeping zeroed copies live.
+		static bool PoiSHL2Off = false;
+		#define PoiSHBr (PoiSHL2Off ? (half4)0 : unity_SHBr)
+		#define PoiSHBg (PoiSHL2Off ? (half4)0 : unity_SHBg)
+		#define PoiSHBb (PoiSHL2Off ? (half4)0 : unity_SHBb)
+		#define PoiSHC (PoiSHL2Off ? (half4)0 : unity_SHC)
+		#else
 		static half4 PoiSHBr = 0;
 		static half4 PoiSHBg = 0;
 		static half4 PoiSHBb = 0;
 		static half4 PoiSHC  = 0;
+		#endif
 		
 		float4 poiTransformClipSpacetoScreenSpaceFrag(float4 clipPos)
 		{
 			float4 positionSS = float4(clipPos.xyz * clipPos.w, clipPos.w);
+			#if POI_PIPE == POI_URP
+			positionSS.xy = positionSS.xy / GetScaledScreenParams().xy;
+			#else
 			positionSS.xy = positionSS.xy / _ScreenParams.xy;
+			#endif
 			return positionSS;
 		}
 		
@@ -6513,6 +6552,11 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			x2    = PoiSHC.rgb * vC;
 			return x1 + x2;
 		}
+		
+		#if POI_PIPE == POI_URP && defined(UNITY_COLORSPACE_GAMMA)
+		// The URP compatibility implementation is emitted with the global helpers, after this block.
+		inline half3 LinearToGammaSpace(half3 linRGB);
+		#endif
 		
 		half3 PoiShadeSH9 (half4 normal)
 		{
@@ -6542,12 +6586,17 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float percepRough2;
 			float omr;
 			float3 specCol;
+			float3 specular;
 			float2 adjustedAnisotropy;
 			
 			float3 pbrNSelect;
 			float3 pbrTSelect;
 			float3 pbrBSelect;
 		};
+		
+		// Private per-invocation storage lets the shared light loop access every R&S instance.
+		// The generator gives each copy its own name; initialization remains in the fragment setup.
+		static MochieBRDFData mochieBRDFData;
 		
 		inline half Pow5(half x)
 		{
@@ -6829,46 +6878,19 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			return shadowMask;
 		}
 		
-		// normal should be normalized, w=1.0
-		half3 SHEvalLinearL2 (half4 normal)
+		half4 PoiCalculateShadowMask(float2 shadowCoords, float3 positionWS, float3 normalWS, float3 viewDirWS, float2 positionSS)
 		{
-			half3 x1, x2;
-			// 4 of the quadratic (L2) polynomials
-			half4 vB = normal.xyzz * normal.yzzx;
-			
-			x1.r = dot(PoiSHBr,vB);
-			x1.g = dot(PoiSHBg,vB);
-			x1.b = dot(PoiSHBb,vB);
-			
-			// Final (5th) quadratic (L2) polynomial
-			half vC = normal.x*normal.x - normal.y*normal.y;
-			
-			x2 = PoiSHC.rgb * vC;
-			
-			return x1 + x2;
-		}
-		
-		half3 PoiGlossyEnvironmentReflection(half3 reflectVector, float3 positionWS, half perceptualRoughness, half occlusion, float2 normalizedScreenSpaceUV)
-		{
-			#if UNITY_VERSION >= 202200
-			return GlossyEnvironmentReflection(reflectVector, positionWS, perceptualRoughness, occlusion, normalizedScreenSpaceUV);
-			#elif UNITY_VERSION >= 202100
-			return GlossyEnvironmentReflection(reflectVector, positionWS, perceptualRoughness, occlusion);
+			#if !defined(LIGHTMAP_ON) && defined(USE_APV_PROBE_OCCLUSION)
+			half4 shadowMask = half4(1, 1, 1, 1);
+			if (_EnableProbeVolumes)
+			{
+				float3 apvPositionWS = AddNoiseToSamplingPosition(GetAbsolutePositionWS(positionWS), positionSS, viewDirWS);
+				APVSample apvSample = SampleAPV(apvPositionWS, normalWS, GetMeshRenderingLayer(), viewDirWS);
+				shadowMask = apvSample.probeOcclusion;
+			}
+			return shadowMask;
 			#else
-			return GlossyEnvironmentReflection(reflectVector, perceptualRoughness, occlusion);
-			#endif
-		}
-		
-		half3 PoiGlobalIllumination(BRDFData brdfData, BRDFData brdfDataClearCoat, half clearCoatMask,
-		half3 bakedGI, half occlusion, float3 positionWS,
-		half3 normalWS, half3 viewDirectionWS, float2 normalizedScreenSpaceUV)
-		{
-			#if UNITY_VERSION >= 202200
-			return GlobalIllumination(brdfData, brdfDataClearCoat, clearCoatMask, bakedGI, occlusion, positionWS, normalWS, viewDirectionWS, normalizedScreenSpaceUV);
-			#elif UNITY_VERSION >= 202100
-			return GlobalIllumination(brdfData, brdfDataClearCoat, clearCoatMask, bakedGI, occlusion, positionWS, normalWS, viewDirectionWS);
-			#else
-			return GlobalIllumination(brdfData, brdfDataClearCoat, clearCoatMask, bakedGI, occlusion, normalWS, viewDirectionWS);
+			return PoiCalculateShadowMask(shadowCoords);
 			#endif
 		}
 		
@@ -6940,60 +6962,22 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 		}
 		#endif
 		
-		half3 SampleAPV(float3 positionWS, float3 normalWS, float3 viewDirWS)
-		{
-			#if defined(PROBE_VOLUMES_L1) || defined(PROBE_VOLUMES_L2)
-			
-			// Important:
-			// Do not pass zero as vertexValue. In some evaluation modes,
-			// SampleProbeVolumePixel can return the vertex value directly.
-			// float4 vertexProbeOcclusion;
-			half3 vertexValue = SampleProbeSHVertex(
-			positionWS,
-			normalWS,
-			viewDirWS
-			);
-			
-			return vertexValue;
-			
-			// float4 pixelProbeOcclusion;
-			// return SampleProbeVolumePixel(
-			// 	vertexValue,
-			// 	positionWS,
-			// 	normalWS,
-			// 	viewDirWS,
-			// 	positionSS,
-			// 	vertexProbeOcclusion,
-			// 	pixelProbeOcclusion
-			// );
-			
-			#else
-			return 0;
-			#endif
-		}
-		
-		half CalculateLuminance(half3 color);
-		
+		#if defined(PROBE_VOLUMES_L1) || defined(PROBE_VOLUMES_L2)
 		half3 EstimateAPVDominantDirection(float3 positionWS, half3 viewDirWS)
 		{
-			const half3 n0 = half3( 1.0h,  1.0h,  1.0h);
-			const half3 n1 = half3(-1.0h, -1.0h,  1.0h);
-			const half3 n2 = half3(-1.0h,  1.0h, -1.0h);
-			const half3 n3 = half3( 1.0h, -1.0h, -1.0h);
-			
-			half l0 = CalculateLuminance(SampleAPV(positionWS, n0, viewDirWS));
-			half l1 = CalculateLuminance(SampleAPV(positionWS, n1, viewDirWS));
-			half l2 = CalculateLuminance(SampleAPV(positionWS, n2, viewDirWS));
-			half l3 = CalculateLuminance(SampleAPV(positionWS, n3, viewDirWS));
-			
-			return half3
-			(
-			n0 * l0 +
-			n1 * l1 +
-			n2 * l2 +
-			n3 * l3
-			);
+			half3 direction = (PoiSHAr.xyz + PoiSHAg.xyz + PoiSHAb.xyz) / 3.0;
+			if (_EnableProbeVolumes)
+			{
+				APVSample apvSample = SampleAPV(GetAbsolutePositionWS(positionWS), float3(0, 0, 0), GetMeshRenderingLayer(), viewDirWS);
+				if (apvSample.status != APV_SAMPLE_STATUS_INVALID)
+				{
+					apvSample.Decode();
+					direction = (apvSample.L1_R + apvSample.L1_G + apvSample.L1_B) / 3.0;
+				}
+			}
+			return direction;
 		}
+		#endif
 		
 		#endif
 		
@@ -7181,6 +7165,8 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 		{
 			// average energy
 			float R0 = max(0, L0);
+			// Avoids 0/0 below; only D3D hides the NaN
+			if (R0 <= 0) return 0;
 			
 			// avg direction of incoming light
 			float3 R1 = 0.5f * L1;
@@ -7191,7 +7177,9 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			// linear angle between normal and direction 0-1
 			//float q = 0.5f * (1.0f + dot(R1 / lenR1, n));
 			//float q = dot(R1 / lenR1, n) * 0.5 + 0.5;
-			float q = dot(normalize(R1), n) * 0.5 + 0.5;
+			// Guarded: normalize(0) is NaN
+			float r1LenSq = dot(R1, R1);
+			float q = dot(r1LenSq > 0 ? R1 * rsqrt(r1LenSq) : 0, n) * 0.5 + 0.5;
 			q = saturate(q); // Thanks to ScruffyRuffles for the bug identity.
 			
 			// power for q
@@ -7213,7 +7201,12 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			indirect.g = shEvaluateDiffuseL1Geomerics_local(L0.g, PoiSHAg.xyz, normal.xyz);
 			indirect.b = shEvaluateDiffuseL1Geomerics_local(L0.b, PoiSHAb.xyz, normal.xyz);
 			indirect = max(0, indirect);
+			#if POI_PIPE == POI_URP
+			indirect += PoiSHEval_L2(normal);
+			#else
+			// Built-in intentionally reads Unity's SH coefficients here.
 			indirect += SHEvalLinearL2(normal);
+			#endif
 			return indirect;
 		}
 		
@@ -8019,6 +8012,8 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			half2 uv = grabPos.xy / (grabPos.w + 0.0000000001);
 			#if UNITY_SINGLE_PASS_STEREO
 			uv.xy *= half2(_ScreenParams.x * 2, _ScreenParams.y);
+			#elif POI_PIPE == POI_URP
+			uv.xy *= GetScaledScreenParams().xy;
 			#else
 			uv.xy *= _ScreenParams.xy;
 			#endif
@@ -8553,13 +8548,8 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 		
 		half3 OpenLitLightingDirection(half4 lightDirectionOverride, half3 mainDir)
 		{
-			#if !defined(LIGHTMAP_ON) && UNITY_SHOULD_SAMPLE_SH
 			half3 sh9Dir = PoiSHAr.xyz * 0.333333 + PoiSHAg.xyz * 0.333333 + PoiSHAb.xyz * 0.333333;
 			half3 sh9DirAbs = half3(sh9Dir.x, abs(sh9Dir.y), sh9Dir.z);
-			#else
-			half3 sh9Dir = 0;
-			half3 sh9DirAbs = 0;
-			#endif
 			half3 customDir = OpenLitComputeCustomLightDirection(lightDirectionOverride);
 			
 			return normalize(sh9DirAbs + mainDir + customDir);
@@ -8577,16 +8567,29 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			return OpenLitLightingDirection(customDir, light);
 		}
 		
+		inline float4 CalculateFrustumCorrection(float4x4 projection)
+		{
+			float x1 = -projection._31 / (projection._11 * projection._34);
+			float x2 = -projection._32 / (projection._22 * projection._34);
+			return float4(x1, x2, 0, projection._33 / projection._34 + x1 * projection._13 + x2 * projection._23);
+		}
+		
 		inline float4 CalculateFrustumCorrection()
 		{
-			float x1 = -UNITY_MATRIX_P._31 / (UNITY_MATRIX_P._11 * UNITY_MATRIX_P._34);
-			float x2 = -UNITY_MATRIX_P._32 / (UNITY_MATRIX_P._22 * UNITY_MATRIX_P._34);
-			return float4(x1, x2, 0, UNITY_MATRIX_P._33 / UNITY_MATRIX_P._34 + x1 * UNITY_MATRIX_P._13 + x2 * UNITY_MATRIX_P._23);
+			return CalculateFrustumCorrection(UNITY_MATRIX_P);
+		}
+		
+		inline float CorrectedLinearEyeDepth(float z, float correctionFactor, float4x4 projection)
+		{
+			// 1 / P._34 is a per-frame constant, so it folds to a single divide shared by every call site
+			// instead of one divide per depth tap.
+			float invP34 = 1.f / projection._34;
+			return 1.f / (z * invP34 + correctionFactor);
 		}
 		
 		inline float CorrectedLinearEyeDepth(float z, float correctionFactor)
 		{
-			return 1.f / (z / UNITY_MATRIX_P._34 + correctionFactor);
+			return CorrectedLinearEyeDepth(z, correctionFactor, UNITY_MATRIX_P);
 		}
 		
 		inline float GetFOVScale()
@@ -9147,6 +9150,9 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			//ifex _MochieBRDF==0
 			#pragma shader_feature_local_fragment MOCHIE_PBR
 			#pragma shader_feature_local_fragment GGX_ANISOTROPICS
+			//ifex _AnisotropyDirectionEnabled==0
+			#pragma shader_feature_local_fragment POI_ANISOTROPY_DIRECTION
+			//endex
 			//endex
 			//ifex _ClearCoatBRDF==0
 			#pragma shader_feature_local_fragment POI_CLEARCOAT
@@ -9450,11 +9456,13 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _LightingIndirectUsesNormals;
 			float _LightingCapEnabled;
 			float _LightingCap;
+			float _LightingCapLuminance;
 			half _LightingForceColorEnabled;
 			half3 _LightingForcedColor;
 			float _LightingForcedColorThemeIndex;
 			half _LightingCastedShadows;
 			half _LightingShadowSoftness;
+			half _LightingCleanCastedShadows;
 			float _LightingMonochromatic;
 			half _LightingMinLightBrightness;
 			// Additive Lighting Data
@@ -9469,10 +9477,8 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _LightingVertexLightingEnabled;
 			float _LightingMirrorVertexLightingEnabled;
 			float _LightingEnableLightVolumes;
-			float _LightingLightVolumesIntensity;
 			float _LightingLightVolumesNormalBias;
 			float _LightingLightVolumesSpecular;
-			float _LightingLightVolumesShadows;
 			// Lighting Data Debug
 			float _LightDataDebugEnabled;
 			float _LightingDebugVisualize;
@@ -10882,10 +10888,12 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float4 _SkinThicknessMap_ST;
 			float2 _SkinThicknessMapPan;
 			float _SkinThicknessMapUV;
-			float _SkinThicknessMapInvert;
 			#endif
+			float _SkinThicknessMapInvert;
 			float _SkinThicknessPower;
 			float _SssBumpBlur;
+			float _SkinDiffuseSoftnessEnabled;
+			float _SkinScatteringStability;
 			float3 _SssTransmissionAbsorption;
 			half3 _SssColorBleedAoWeights;
 			#endif
@@ -10896,6 +10904,13 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float2 _ShadowBorderMaskPan;
 			float _ShadowBorderMaskUV;
 			#endif
+			half _ShadowBorderMaskMode;
+			half _ShadowBorderMaskStrengthR;
+			half _ShadowBorderMaskStrengthG;
+			half _ShadowBorderMaskStrengthB;
+			half _ShadowBorderMaskStrengthA;
+			half _ShadowBorderMaskGlobalMask;
+			half _ShadowBorderMaskGlobalMaskBlendType;
 			half _ShadowPostAO;
 			half _ShadowBorderMaskLOD;
 			half4 _ShadowAOShift;
@@ -10969,6 +10984,14 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			half _ClothMetallic;
 			half _ClothReflectance;
 			half _ClothSmoothness;
+			half _ClothMetallicGlobalMask;
+			float _ClothMetallicGlobalMaskBlendType;
+			half _ClothMaskGlobalMask;
+			float _ClothMaskGlobalMaskBlendType;
+			half _ClothReflectanceGlobalMask;
+			float _ClothReflectanceGlobalMaskBlendType;
+			half _ClothSmoothnessGlobalMask;
+			float _ClothSmoothnessGlobalMaskBlendType;
 			#endif
 			
 			#ifdef _LIGHTINGMODE_SDF
@@ -10976,17 +10999,16 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _SDFShadingTextureUV;
 			float2 _SDFShadingTexturePan;
 			float4 _SDFShadingTexture_ST;
+			#endif
 			float _SDFBlur;
 			float4 _SDFForward;
 			float4 _SDFLeft;
-			#endif
 			#endif
 			
 			// Additive
 			float _LightingAdditiveType;
 			float _LightingAdditiveGradientStart;
 			float _LightingAdditiveGradientEnd;
-			float _LightingAdditiveDetailStrength;
 			//endex
 			
 			//ifex _DecalEnabled==0 && _DecalEnabled1==0 && _DecalEnabled2==0 && _DecalEnabled3==0
@@ -12854,6 +12876,12 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _AnisotropyMapUV;
 			float _AnisotropyMapChannel;
 			#endif
+			#if defined(POI_ANISOTROPY_DIRECTION) && (defined(PROP_ANISOTROPYDIRECTIONMAP) || !defined(OPTIMIZER_ENABLED))
+			float4 _AnisotropyDirectionMap_ST;
+			float2 _AnisotropyDirectionMapPan;
+			float _AnisotropyDirectionMapUV;
+			#endif
+			float _AnisotropyMapVertexColor;
 			half _Anisotropy;
 			half _ReflectionAnisotropicStretch;
 			half _RoughnessAnisotropy;
@@ -13631,6 +13659,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _RenderingReduceClipDistance;
 			int _FlipBackfaceNormals;
 			float _AddBlendOp;
+			float _AddSrcBlend;
 			float _Cull;
 			
 			//ifex _RenderingAOBlockerEnabled==0
@@ -14298,6 +14327,9 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			
 			//ifex _MochieBRDF==0
 			#ifdef MOCHIE_PBR
+			#if defined(GGX_ANISOTROPICS) && defined(POI_ANISOTROPY_DIRECTION) && (defined(PROP_ANISOTROPYDIRECTIONMAP) || !defined(OPTIMIZER_ENABLED))
+			Texture2D _AnisotropyDirectionMap;
+			#endif
 			#if defined(PROP_ANISOTROPYMAP) || !defined(OPTIMIZER_ENABLED)
 			Texture2D _AnisotropyMap;
 			#endif
@@ -14351,6 +14383,8 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			#if defined(PROP_REFLECTIONCUBETEX) || !defined(OPTIMIZER_ENABLED)
 			TextureCube _ReflectionCubeTex;
 			#endif
+			static float3 lilReflectionMul = 1;
+			static float3 lilReflectionAdd = 0;
 			#endif
 			#if defined(OPTIMIZER_ENABLED)
 			#define POI_STYLIZED_SPECULAR_VERTEX_LIGHT_LOOP [unroll]
@@ -17009,6 +17043,22 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			#endif // defined(_STOCHASTICMODE_HEXTILE)
 			//endex
 			
+			// Clean Casted Shadows averages a fixed disk (no per-pixel rotation, so the result doesn't crawl) and runs it through
+			// an S-curve, which turns the shadow map's texel steps into a clean edge.
+			#define POI_SHADOW_CLEAN_TAPS 12
+			
+			float2 PoiShadowCleanTap(int index)
+			{
+				float angle = index * 2.3999632;
+				return float2(cos(angle), sin(angle)) * sqrt((index + 0.5) / POI_SHADOW_CLEAN_TAPS);
+			}
+			
+			// Clean Casted Shadows uses a fixed size and ignores Softness
+			float PoiShadowFilterSize()
+			{
+				return _LightingCleanCastedShadows >= 0.5 ? 0.3 : _LightingShadowSoftness;
+			}
+			
 			// Directional/main light shadow blur (4-tap Vogel disk), shared by BIRP and URP.
 			half PoiDirectionalShadowBlur(
 			half attenShadows,
@@ -17024,11 +17074,11 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				#if POI_PIPE == POI_BIRP
 				#if defined(SHADOWS_SCREEN) && !defined(UNITY_NO_SCREENSPACE_SHADOWS)
 				UNITY_BRANCH
-				if (_LightingShadowSoftness > 0 && _LightingCastedShadows > 0)
+				if (_LightingShadowSoftness > 0 || _LightingCleanCastedShadows >= 0.5)
 				{
 					float4 poiShadowCoord = i._ShadowCoord;
 					float poiCamDist = distance(posWS, _WorldSpaceCameraPos);
-					float poiRadiusPx = _LightingShadowSoftness * (108.0 / max(poiCamDist * 1.8, 2.0));
+					float poiRadiusPx = PoiShadowFilterSize() * (108.0 / max(poiCamDist * 1.8, 2.0));
 					float2 poiStep = (_ScreenParams.zw - 1.0) * (poiShadowCoord.w * poiRadiusPx);
 					float2 poiPix = (poiShadowCoord.xy / max(poiShadowCoord.w, 1e-5)) * _ScreenParams.xy;
 					#ifdef POI_PASS_LILFUR
@@ -17036,50 +17086,89 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 					#else
 					float poiRot = frac(52.9829189 * frac(dot(poiPix, float2(0.06711056, 0.00583715)))) * 6.2831853;
 					#endif
-					float poiSinR, poiCosR;
-					sincos(poiRot, poiSinR, poiCosR);
-					half poiShadowSum = attenShadows; // center tap (r=0)
-					[unroll] for (int poiT = 0; poiT < 4; poiT++)
+					if (_LightingCleanCastedShadows >= 0.5)
 					{
-						float poiR = sqrt((poiT + 0.5) / 4.0);
-						float poiC = poiT * 2.3999632;
-						float2 poiBase = float2(cos(poiC), sin(poiC)) * poiR; // compile-time constant
-						float2 poiDir = float2(poiCosR * poiBase.x - poiSinR * poiBase.y, poiSinR * poiBase.x + poiCosR * poiBase.y);
-						float4 sc = poiShadowCoord;
-						sc.xy += poiDir * poiStep;
-						poiShadowSum += UNITY_SAMPLE_SCREEN_SHADOW(_ShadowMapTexture, sc);
+						// Taps that land on another surface would vote with that surface's shadow, so each tap is
+						// weighted by how close its depth is to this surface's tangent plane.
+						float2 poiCenterUV = poiShadowCoord.xy / poiShadowCoord.w;
+						float poiDepth = poiShadowCoord.w;
+						float2 poiDepthSlope = float2(ddx(poiDepth) / ddx(poiCenterUV.x), ddy(poiDepth) / ddy(poiCenterUV.y));
+						half poiShadowSum = attenShadows;
+						half poiWeightSum = 1;
+						[unroll] for (int poiT = 0; poiT < POI_SHADOW_CLEAN_TAPS; poiT++)
+						{
+							float4 sc = poiShadowCoord;
+							sc.xy += PoiShadowCleanTap(poiT) * poiStep;
+							float2 poiTapUV = sc.xy / sc.w;
+							float poiTapDepth = LinearEyeDepth(_CameraDepthTexture.SampleLevel(sampler_point_clamp, STEREO_UV(poiTapUV), 0));
+							float poiExpectedDepth = poiDepth + dot(poiDepthSlope, poiTapUV - poiCenterUV);
+							half poiWeight = saturate(2.0 - abs(poiTapDepth - poiExpectedDepth) / (poiDepth * 0.01));
+							poiShadowSum += UNITY_SAMPLE_SCREEN_SHADOW(_ShadowMapTexture, sc) * poiWeight;
+							poiWeightSum += poiWeight;
+						}
+						attenShadows = smoothstep(0, 1, poiShadowSum / poiWeightSum);
 					}
-					attenShadows = poiShadowSum / 5.0; // 4 disk taps + center
+					else
+					{
+						float poiSinR, poiCosR;
+						sincos(poiRot, poiSinR, poiCosR);
+						half poiShadowSum = attenShadows; // center tap (r=0)
+						[unroll] for (int poiT = 0; poiT < 4; poiT++)
+						{
+							float poiR = sqrt((poiT + 0.5) / 4.0);
+							float poiC = poiT * 2.3999632;
+							float2 poiBase = float2(cos(poiC), sin(poiC)) * poiR; // compile-time constant
+							float2 poiDir = float2(poiCosR * poiBase.x - poiSinR * poiBase.y, poiSinR * poiBase.x + poiCosR * poiBase.y);
+							float4 sc = poiShadowCoord;
+							sc.xy += poiDir * poiStep;
+							poiShadowSum += UNITY_SAMPLE_SCREEN_SHADOW(_ShadowMapTexture, sc);
+						}
+						attenShadows = poiShadowSum / 5.0; // 4 disk taps + center
+					}
 				}
 				#endif
 				#elif POI_PIPE == POI_URP
 				#if defined(_MAIN_LIGHT_SHADOWS) || defined(_MAIN_LIGHT_SHADOWS_CASCADE) || defined(_MAIN_LIGHT_SHADOWS_SCREEN)
 				UNITY_BRANCH
-				if (_LightingShadowSoftness > 0 && _LightingCastedShadows > 0)
+				if (_LightingShadowSoftness > 0 || _LightingCleanCastedShadows >= 0.5)
 				{
 					float3 poiLdir = lightDir;
 					float3 poiShadowT = normalize(cross(poiLdir, float3(0.0, 1.0, 0.001)));
 					float3 poiShadowB = cross(poiLdir, poiShadowT);
-					float poiShadowRadius = _LightingShadowSoftness * 0.06;
-					float2 poiPix = screenUV * _ScreenParams.xy;
+					float poiShadowRadius = PoiShadowFilterSize() * 0.06;
+					float2 poiPix = screenUV * GetScaledScreenParams().xy;
 					#ifdef POI_PASS_LILFUR
 					float poiRot = PoiBayer8(floor(poiPix)) * 6.2831853;
 					#else
 					float poiRot = frac(52.9829189 * frac(dot(poiPix, float2(0.06711056, 0.00583715)))) * 6.2831853;
 					#endif
-					float poiSinR, poiCosR;
-					sincos(poiRot, poiSinR, poiCosR);
-					half poiShadowSum = attenShadows; // center tap (r=0)
-					[unroll] for (int poiT = 0; poiT < 4; poiT++)
+					if (_LightingCleanCastedShadows >= 0.5)
 					{
-						float poiR = sqrt((poiT + 0.5) / 4.0);
-						float poiC = poiT * 2.3999632;
-						float2 poiBase = float2(cos(poiC), sin(poiC)) * poiR; // compile-time constant
-						float2 poiOff = float2(poiCosR * poiBase.x - poiSinR * poiBase.y, poiSinR * poiBase.x + poiCosR * poiBase.y) * poiShadowRadius;
-						float3 op = posWS + poiShadowT * poiOff.x + poiShadowB * poiOff.y;
-						poiShadowSum += MainLightRealtimeShadow(TransformWorldToShadowCoord(op));
+						half poiShadowSum = attenShadows;
+						[unroll] for (int poiT = 0; poiT < POI_SHADOW_CLEAN_TAPS; poiT++)
+						{
+							float2 poiOff = PoiShadowCleanTap(poiT) * poiShadowRadius;
+							float3 op = posWS + poiShadowT * poiOff.x + poiShadowB * poiOff.y;
+							poiShadowSum += MainLightRealtimeShadow(TransformWorldToShadowCoord(op));
+						}
+						attenShadows = smoothstep(0, 1, poiShadowSum / (POI_SHADOW_CLEAN_TAPS + 1.0));
 					}
-					attenShadows = poiShadowSum / 5.0; // 4 disk taps + center
+					else
+					{
+						float poiSinR, poiCosR;
+						sincos(poiRot, poiSinR, poiCosR);
+						half poiShadowSum = attenShadows; // center tap (r=0)
+						[unroll] for (int poiT = 0; poiT < 4; poiT++)
+						{
+							float poiR = sqrt((poiT + 0.5) / 4.0);
+							float poiC = poiT * 2.3999632;
+							float2 poiBase = float2(cos(poiC), sin(poiC)) * poiR; // compile-time constant
+							float2 poiOff = float2(poiCosR * poiBase.x - poiSinR * poiBase.y, poiSinR * poiBase.x + poiCosR * poiBase.y) * poiShadowRadius;
+							float3 op = posWS + poiShadowT * poiOff.x + poiShadowB * poiOff.y;
+							poiShadowSum += MainLightRealtimeShadow(TransformWorldToShadowCoord(op));
+						}
+						attenShadows = poiShadowSum / 5.0; // 4 disk taps + center
+					}
 				}
 				#endif
 				#endif
@@ -17127,6 +17216,101 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				#endif
 			}
 			#endif
+			
+			// Face SDF light map for whichever light poiLight holds, so add-pass lights follow the same face shading
+			float PoiLightDataSDF(in PoiMesh poiMesh, in PoiLight poiLight)
+			{
+				#if defined(PROP_LIGHTDATASDFMAP)
+				float2 lightDataSDFMap = 1;
+				if (_LightDataSDFMapLOD > 0)
+				{
+					float sdfLod = pow(_LightDataSDFMapLOD, 4.0);
+					lightDataSDFMap = POI2D_SAMPLER_PANGRAD(_LightDataSDFMap, _linear_repeat, poiUV(poiMesh.uv[_LightDataSDFMapUV], _LightDataSDFMap_ST), _LightDataSDFMapPan, max(poiMesh.dx, sdfLod), max(poiMesh.dy, sdfLod)).rg;
+				}
+				else
+				{
+					lightDataSDFMap = POI2D_SAMPLER_PAN(_LightDataSDFMap, _linear_repeat, poiUV(poiMesh.uv[_LightDataSDFMapUV], _LightDataSDFMap_ST), _LightDataSDFMapPan).rg;
+				}
+				
+				float3 faceR = mul((float3x3)unity_ObjectToWorld, float3(-1.0, 0.0, 0.0));
+				float LdotR = dot(poiLight.direction.xz, faceR.xz);
+				float sdf = LdotR < 0 ? lightDataSDFMap.g : lightDataSDFMap.r;
+				
+				float3 faceF = mul((float3x3)unity_ObjectToWorld, float3(0.0, 0.0, 1.0)).xyz;
+				faceF.y *= _LightDataSDFBlendY;
+				faceF = dot(faceF, faceF) == 0 ? 0 : normalize(faceF);
+				float3 faceL = poiLight.direction;
+				faceL.y *= _LightDataSDFBlendY;
+				faceL = dot(faceL, faceL) == 0 ? 0 : normalize(faceL);
+				
+				float lnSDF = dot(faceL, faceF);
+				return saturate(lnSDF * 0.5 + sdf * 0.5 + 0.25);
+				#else
+				return poiLight.nDotLNormalized;
+				#endif
+			}
+			
+			// Shared by add-pass lights, URP additional lights and vertex lights once direction, color and attenuation are set
+			void PoiFinishAdditiveLight(inout PoiLight poiLight, in PoiMesh poiMesh, in PoiCam poiCam)
+			{
+				poiLight.halfDir = normalize(poiLight.direction + poiCam.eyeViewDir);
+				poiLight.nDotL = dot(poiMesh.normals[1], poiLight.direction);
+				poiLight.nDotLSaturated = saturate(poiLight.nDotL);
+				poiLight.nDotLNormalized = (poiLight.nDotL + 1) * 0.5;
+				poiLight.nDotV = abs(dot(poiMesh.normals[1], poiCam.eyeViewDir));
+				poiLight.nDotVCentered = abs(dot(poiMesh.normals[1], poiCam.viewDir));
+				poiLight.nDotH = dot(poiMesh.normals[1], poiLight.halfDir);
+				poiLight.lDotv = dot(poiLight.direction, poiCam.eyeViewDir);
+				poiLight.lDotH = dot(poiLight.direction, poiLight.halfDir);
+				poiLight.vertexNDotL = dot(poiMesh.normals[0], poiLight.direction);
+				poiLight.vertexNDotV = abs(dot(poiMesh.normals[0], poiCam.eyeViewDir));
+				poiLight.vertexNDotH = max(0.00001, dot(poiMesh.normals[0], poiLight.halfDir));
+				
+				[flatten]
+				switch ((int)_LightingMapMode)
+				{
+					// Poi Custom's curve without its ambient terms, which only the base pass adds
+					case 0:
+					{
+						poiLight.lightMap = smoothstep(0, 1, poiLight.nDotLNormalized);
+						poiLight.lightMapMode = 0;
+						break;
+					}
+					// Saturated NDotL
+					case 2:
+					{
+						poiLight.lightMap = poiLight.nDotLSaturated;
+						poiLight.lightMapMode = 2;
+						break;
+					}
+					// Casted Shadows Only
+					case 3:
+					{
+						poiLight.lightMap = 1;
+						poiLight.lightMapMode = 3;
+						break;
+					}
+					case 4:
+					{
+						poiLight.lightMap = PoiLightDataSDF(poiMesh, poiLight);
+						poiLight.lightMapMode = 4;
+						break;
+					}
+					default:
+					{
+						poiLight.lightMap = poiLight.nDotLNormalized;
+						poiLight.lightMapMode = 1;
+						break;
+					}
+				}
+				
+				poiLight.lightMap *= poiLight.detailShadow;
+				poiLight.lightMapNoAttenuation = poiLight.lightMap;
+				poiLight.lightMap *= CalculateLuminance(poiLight.lightCookie) * poiLight.attenShadowsStrength;
+				// backwards compatibility
+				poiLight.attenuation = poiLight.lightMap;
+				poiLight.additiveShadow = poiLight.lightMap;
+			}
 			
 			void PoiLightDataSetupAdd(
 			inout PoiLight poiLight,
@@ -17181,7 +17365,8 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				PoiGetLightAttenuation(poiMesh.worldPos, i, poiLight.attenShadows, poiLight.attenDistance, poiLight.lightCookie);
 				#elif POI_PIPE == POI_URP
 				poiLight.attenShadows = poiLight.unityLight.shadowAttenuation;
-				poiLight.attenDistance = poiSampleCurve4(_LightingAdditiveAttenCurve, poiLight.unityLight.distanceAttenuation);
+				// Inverse-square attenuation exceeds 1 near the light; the curve only shapes the 0-1 range
+				poiLight.attenDistance = poiSampleCurve4(_LightingAdditiveAttenCurve, poiLight.unityLight.distanceAttenuation) * max(poiLight.unityLight.distanceAttenuation, 1);
 				#if defined(_LIGHT_COOKIES)
 				#if USE_CLUSTER_LIGHT_LOOP
 				int lightBufferIndex = params.lightIndex;
@@ -17204,47 +17389,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				poiLight.directColor = lerp(poiLight.directColor, dot(poiLight.directColor, float3(0.299, 0.587, 0.114)), _LightingAdditiveMonochromatic);
 				poiLight.indirectColor = lerp(poiLight.indirectColor, dot(poiLight.indirectColor, float3(0.299, 0.587, 0.114)), _LightingAdditiveMonochromatic);
 				
-				poiLight.halfDir = normalize(poiLight.direction + poiCam.eyeViewDir);
-				poiLight.nDotL = dot(poiMesh.normals[1], poiLight.direction);
-				poiLight.nDotLSaturated = saturate(poiLight.nDotL);
-				poiLight.nDotLNormalized = (poiLight.nDotL + 1) * 0.5;
-				poiLight.nDotV = abs(dot(poiMesh.normals[1], poiCam.eyeViewDir));
-				poiLight.nDotVCentered = abs(dot(poiMesh.normals[1], poiCam.viewDir));
-				poiLight.nDotH = dot(poiMesh.normals[1], poiLight.halfDir);
-				poiLight.lDotv = dot(poiLight.direction, poiCam.eyeViewDir);
-				poiLight.lDotH = dot(poiLight.direction, poiLight.halfDir);
-				poiLight.vertexNDotL = dot(poiMesh.normals[0], poiLight.direction);
-				poiLight.vertexNDotV = abs(dot(poiMesh.normals[0], poiCam.eyeViewDir));
-				poiLight.vertexNDotH = max(0.00001, dot(poiMesh.normals[0], poiLight.halfDir));
-				
-				[flatten]
-				switch ((int)_LightingMapMode)
-				{
-					// Saturated NDotL
-					case 2:
-					{
-						poiLight.lightMap = poiLight.nDotLSaturated;
-						break;
-					}
-					// Casted Shadows Only
-					case 3:
-					{
-						poiLight.lightMap = 1;
-						break;
-					}
-					default:
-					{
-						poiLight.lightMap = poiLight.nDotLNormalized;
-						break;
-					}
-				}
-				
-				poiLight.lightMap *= poiLight.detailShadow;
-				poiLight.lightMapNoAttenuation = poiLight.lightMap;
-				poiLight.lightMap *= CalculateLuminance(poiLight.lightCookie) * poiLight.attenShadowsStrength;
-				// backwards compatibility
-				poiLight.attenuation = poiLight.lightMap;
-				poiLight.additiveShadow = poiLight.lightMap;
+				PoiFinishAdditiveLight(poiLight, poiMesh, poiCam);
 				
 				//ifex _LightDataDebugEnabled==0
 				if (_LightDataDebugEnabled >= 0.5)
@@ -17288,6 +17433,51 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				params.exitCode = 0;
 			}
 			
+			#if POI_PIPE == POI_BIRP && defined(VERTEXLIGHT_ON)
+			// Turns one of Unity's four vertex lights into an additive light, so it can be shaded like a pixel light
+			void PoiVertexLightSetup(inout PoiLight vertexLight, in PoiLight mainLight, uint index, in PoiMesh poiMesh, in PoiCam poiCam, half detailShadow)
+			{
+				PoiInitStruct(PoiLight, vertexLight);
+				vertexLight.lightType = POI_POINT_SPOT;
+				vertexLight.isAdditive = 1;
+				vertexLight.detailShadow = detailShadow;
+				vertexLight.toonShadowMask = mainLight.toonShadowMask;
+				vertexLight.occlusion = mainLight.occlusion;
+				vertexLight.lightingMinLightBrightness = mainLight.lightingMinLightBrightness;
+				vertexLight.lightingCapEnabled = mainLight.lightingCapEnabled;
+				vertexLight.lightingMonochromatic = mainLight.lightingMonochromatic;
+				
+				vertexLight.direction = mainLight.vDirection[index];
+				vertexLight.attenDistance = mainLight.vAttenuation[index];
+				vertexLight.attenShadows = 1;
+				vertexLight.attenShadowsStrength = 1;
+				vertexLight.lightCookie = 1;
+				
+				vertexLight.directColor = mainLight.vColor[index];
+				vertexLight.indirectColor = unity_LightColor[index].rgb * vertexLight.attenDistance * _LightingAdditivePassthrough;
+				vertexLight.indirectColor = _LightingAdditiveLimited ? MaxLuminance(vertexLight.indirectColor, _LightingAdditiveLimit) : vertexLight.indirectColor;
+				vertexLight.indirectColor = lerp(vertexLight.indirectColor, dot(vertexLight.indirectColor, float3(0.299, 0.587, 0.114)), _LightingAdditiveMonochromatic);
+				
+				PoiFinishAdditiveLight(vertexLight, poiMesh, poiCam);
+			}
+			#endif
+			
+			float3 PoiCapDirectLight(float3 directColor)
+			{
+				float3 cappedDirectColor = min(directColor, _LightingCap);
+				if (_LightingCapLuminance > 0)
+				{
+					#if defined(UNITY_COLORSPACE_GAMMA)
+					float luminance = dot(directColor, float3(0.299, 0.587, 0.114));
+					#else
+					float luminance = dot(directColor, float3(0.2126, 0.7152, 0.0722));
+					#endif
+					float3 luminanceLimitedColor = directColor * saturate(_LightingCap / max(luminance, 0.00001));
+					cappedDirectColor = lerp(cappedDirectColor, luminanceLimitedColor, saturate(_LightingCapLuminance));
+				}
+				return cappedDirectColor;
+			}
+			
 			void PoiLightDataSetup(
 			inout PoiLight poiLight,
 			inout PoiFragData poiFragData,
@@ -17316,52 +17506,6 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				{
 					poiFragData.toggleVertexLights = 0;
 				}
-				
-				#if POI_PIPE == POI_BIRP
-				if (_LightingVertexLightingEnabled >= 0.5)
-				{
-					#if defined(VERTEXLIGHT_ON)
-					float4 toLightX = unity_4LightPosX0 - poiMesh.worldPos.x;
-					float4 toLightY = unity_4LightPosY0 - poiMesh.worldPos.y;
-					float4 toLightZ = unity_4LightPosZ0 - poiMesh.worldPos.z;
-					float4 lengthSq = 0;
-					lengthSq += toLightX * toLightX;
-					lengthSq += toLightY * toLightY;
-					lengthSq += toLightZ * toLightZ;
-					
-					float4 lightAttenSq = unity_4LightAtten0;
-					float4 atten = 1.0 / (1.0 + lengthSq * lightAttenSq);
-					half4 vLightWeight = saturate(1 - (lengthSq * lightAttenSq / 25));
-					poiLight.vAttenuation = min(atten, vLightWeight * vLightWeight);
-					
-					poiLight.vDotNL = 0;
-					poiLight.vDotNL += toLightX * poiMesh.normals[1].x;
-					poiLight.vDotNL += toLightY * poiMesh.normals[1].y;
-					poiLight.vDotNL += toLightZ * poiMesh.normals[1].z;
-					
-					float4 corr = rsqrt(lengthSq);
-					poiLight.vDotNL *= corr;
-					poiLight.vertexVDotNL = max(0, poiLight.vDotNL);
-					poiLight.vSaturatedDotNL = saturate(poiLight.vDotNL);
-					
-					[unroll]
-					for (int index = 0; index < 4; index++)
-					{
-						poiLight.vPosition[index] = float3(unity_4LightPosX0[index], unity_4LightPosY0[index], unity_4LightPosZ0[index]);
-						poiLight.vDirection[index] = float3(toLightX[index], toLightY[index], toLightZ[index]) * corr[index];
-						poiLight.vAttenuation[index] = poiSampleCurve4(_LightingAdditiveAttenCurve, poiLight.vAttenuation[index]);
-						float3 col = unity_LightColor[index].rgb * poiLight.vAttenuation[index];
-						poiLight.vColor[index] = _LightingAdditiveLimited ? MaxLuminance(col, _LightingAdditiveLimit) : col;
-						poiLight.vColor[index] = lerp(poiLight.vColor[index], dot(poiLight.vColor[index], float3(0.299,0.587,0.114)), _LightingAdditiveMonochromatic);
-						poiLight.vHalfDir[index] = Unity_SafeNormalize(poiLight.vDirection[index] + poiCam.eyeViewDir);
-						poiLight.vDotLH[index] = saturate(dot(poiLight.vDirection[index], poiLight.vHalfDir[index]));
-						poiLight.vDotNH[index] = dot(poiMesh.normals[1], poiLight.vHalfDir[index]);
-						poiLight.vCorrectedDotNL[index] = .5 * (poiLight.vDotNL[index] + 1);
-						poiLight.vertexVDotNH[index] = saturate(dot(poiMesh.normals[0], poiLight.vHalfDir[index]));
-					}
-					#endif
-				}
-				#endif
 				
 				poiLight.attenStrength = _LightingCastedShadows;
 				
@@ -17544,6 +17688,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				poiLight.lDotv = dot(poiLight.direction, poiCam.eyeViewDir);
 				poiLight.lDotH = max(0.00001, dot(poiLight.direction, poiLight.halfDir));
 				
+				poiLight.lightMapMode = lightMapMode;
 				float lightCookieLuminance = CalculateLuminance(poiLight.lightCookie);
 				[flatten]
 				switch (lightMapMode)
@@ -17589,41 +17734,19 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 					}
 					case 4:
 					{
-						#if defined(PROP_LIGHTDATASDFMAP)
-						float2 lightDataSDFMap = 1;
-						if (_LightDataSDFMapLOD > 0)
-						{
-							float sdfLod = pow(_LightDataSDFMapLOD, 4.0);
-							lightDataSDFMap = POI2D_SAMPLER_PANGRAD(_LightDataSDFMap, _linear_repeat, poiUV(poiMesh.uv[_LightDataSDFMapUV], _LightDataSDFMap_ST), _LightDataSDFMapPan, max(poiMesh.dx, sdfLod), max(poiMesh.dy, sdfLod)).rg;
-						}
-						else
-						{
-							lightDataSDFMap = POI2D_SAMPLER_PAN(_LightDataSDFMap, _linear_repeat, poiUV(poiMesh.uv[_LightDataSDFMapUV], _LightDataSDFMap_ST), _LightDataSDFMapPan).rg;
-						}
-						
-						poiLight.lightMapNoAttenuation = poiLight.nDotLSaturated;
-						float3 faceR = mul((float3x3)unity_ObjectToWorld, float3(-1.0, 0.0, 0.0));
-						float LdotR = dot(poiLight.direction.xz, faceR.xz);
-						float sdf = LdotR < 0 ? lightDataSDFMap.g : lightDataSDFMap.r;
-						
-						float3 faceF = mul((float3x3)unity_ObjectToWorld, float3(0.0, 0.0, 1.0)).xyz;
-						faceF.y *= _LightDataSDFBlendY;
-						faceF = dot(faceF, faceF) == 0 ? 0 : normalize(faceF);
-						float3 faceL = poiLight.direction;
-						faceL.y *= _LightDataSDFBlendY;
-						faceL = dot(faceL, faceL) == 0 ? 0 : normalize(faceL);
-						
-						float lnSDF = dot(faceL, faceF);
-						poiLight.lightMapNoAttenuation = saturate(lnSDF * 0.5 + sdf * 0.5 + 0.25);
-						poiLight.lightMap = saturate(lnSDF * 0.5 + sdf * 0.5 + 0.25) * poiLight.attenShadowsStrength * lightCookieLuminance;
-						#else
-						poiLight.lightMapNoAttenuation = poiLight.nDotLNormalized;
-						poiLight.lightMap = poiLight.nDotLNormalized * poiLight.attenShadowsStrength * lightCookieLuminance;
-						#endif
+						poiLight.lightMapNoAttenuation = PoiLightDataSDF(poiMesh, poiLight);
+						poiLight.lightMap = poiLight.lightMapNoAttenuation * poiLight.attenShadowsStrength * lightCookieLuminance;
 						break;
 					}
 				}
 				
+				#ifdef POI_LIGHT_VOLUME_FORM
+				[branch] if (PoiLightVolumesActive())
+				{
+					poiLight.lightMap = PoiLVLightmap(0, poiMesh.normals[1], poiLight.lightMap, _LightingCastedShadows,
+					poiLight.unityLight.color.rgb * poiLight.attenDistance * poiLight.lightCookie, poiLight.unityLight.direction.xyz, poiLight.attenShadows);
+				}
+				#endif
 				poiLight.lightMapNoAttenuation *= poiLight.detailShadow;
 				poiLight.lightMap *= poiLight.detailShadow;
 				// backwards compatibility
@@ -17643,8 +17766,11 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 					// poiLight.directColor = max(poiLight.directColor, poiLight.directColor * min(10000, (_LightingMinLightBrightness * rcp(CalculateLuminance(poiLight.directColor)))));
 					// poiLight.indirectColor = max(poiLight.indirectColor, poiLight.indirectColor * min(10000, (_LightingMinLightBrightness * rcp(CalculateLuminance(poiLight.indirectColor)))));
 					
-					poiLight.directColor = PoiMinBrightness(poiLight.directColor, poiLight.lightingMinLightBrightness);
-					poiLight.indirectColor = PoiMinBrightness(poiLight.indirectColor, poiLight.lightingMinLightBrightness);
+					if (poiLight.lightingMinLightBrightness > EPSILON)
+					{
+						poiLight.directColor = PoiMinBrightness(poiLight.directColor, poiLight.lightingMinLightBrightness);
+						poiLight.indirectColor = PoiMinBrightness(poiLight.indirectColor, poiLight.lightingMinLightBrightness);
+					}
 				}
 				
 				poiLight.directColor = lerp(poiLight.directColor, dot(poiLight.directColor, float3(0.299, 0.587, 0.114)), poiLight.lightingMonochromatic);
@@ -17652,7 +17778,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				
 				if (poiLight.lightingCapEnabled)
 				{
-					poiLight.directColor = min(poiLight.directColor, _LightingCap);
+					poiLight.directColor = PoiCapDirectLight(poiLight.directColor);
 					poiLight.indirectColor = min(poiLight.indirectColor, _LightingCap);
 				}
 				
@@ -17666,6 +17792,52 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				poiLight.directColor = max(poiLight.directColor + _PPLightingAddition, 0);
 				poiLight.indirectColor = max(poiLight.indirectColor * _PPLightingMultiplier, 0);
 				poiLight.indirectColor = max(poiLight.indirectColor + _PPLightingAddition, 0);
+				#endif
+				
+				#if POI_PIPE == POI_BIRP
+				if (_LightingVertexLightingEnabled >= 0.5)
+				{
+					#if defined(VERTEXLIGHT_ON)
+					float4 toLightX = unity_4LightPosX0 - poiMesh.worldPos.x;
+					float4 toLightY = unity_4LightPosY0 - poiMesh.worldPos.y;
+					float4 toLightZ = unity_4LightPosZ0 - poiMesh.worldPos.z;
+					float4 lengthSq = 0;
+					lengthSq += toLightX * toLightX;
+					lengthSq += toLightY * toLightY;
+					lengthSq += toLightZ * toLightZ;
+					
+					float4 lightAttenSq = unity_4LightAtten0;
+					float4 atten = 1.0 / (1.0 + lengthSq * lightAttenSq);
+					half4 vLightWeight = saturate(1 - (lengthSq * lightAttenSq / 25));
+					poiLight.vAttenuation = min(atten, vLightWeight * vLightWeight);
+					
+					poiLight.vDotNL = 0;
+					poiLight.vDotNL += toLightX * poiMesh.normals[1].x;
+					poiLight.vDotNL += toLightY * poiMesh.normals[1].y;
+					poiLight.vDotNL += toLightZ * poiMesh.normals[1].z;
+					
+					float4 corr = rsqrt(lengthSq);
+					poiLight.vDotNL *= corr;
+					poiLight.vertexVDotNL = max(0, poiLight.vDotNL);
+					poiLight.vSaturatedDotNL = saturate(poiLight.vDotNL);
+					
+					[unroll]
+					for (int index = 0; index < 4; index++)
+					{
+						poiLight.vPosition[index] = float3(unity_4LightPosX0[index], unity_4LightPosY0[index], unity_4LightPosZ0[index]);
+						poiLight.vDirection[index] = float3(toLightX[index], toLightY[index], toLightZ[index]) * corr[index];
+						poiLight.vAttenuation[index] = poiSampleCurve4(_LightingAdditiveAttenCurve, poiLight.vAttenuation[index]);
+						float3 col = unity_LightColor[index].rgb * poiLight.vAttenuation[index];
+						poiLight.vColor[index] = _LightingAdditiveLimited ? MaxLuminance(col, _LightingAdditiveLimit) : col;
+						poiLight.vColor[index] = lerp(poiLight.vColor[index], dot(poiLight.vColor[index], float3(0.299,0.587,0.114)), _LightingAdditiveMonochromatic);
+						poiLight.vHalfDir[index] = Unity_SafeNormalize(poiLight.vDirection[index] + poiCam.eyeViewDir);
+						poiLight.vDotLH[index] = saturate(dot(poiLight.vDirection[index], poiLight.vHalfDir[index]));
+						poiLight.vDotNH[index] = dot(poiMesh.normals[1], poiLight.vHalfDir[index]);
+						poiLight.vCorrectedDotNL[index] = .5 * (poiLight.vDotNL[index] + 1);
+						poiLight.vertexVDotNH[index] = saturate(dot(poiMesh.normals[0], poiLight.vHalfDir[index]));
+					}
+					#endif
+				}
 				#endif
 				
 				#ifdef POI_PASS_ADD
@@ -21003,6 +21175,8 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float3 worldPos, float3 worldNorm, float3 viewDir, float roughness, float2 lmuv
 			#ifndef LTCGI_API_V2
 			, inout half3 diffuse, inout half3 specular, out float totalSpecularIntensity, out float totalDiffuseIntensity
+			#else
+			, float3 diffuseNorm
 			#endif
 			)
 			{
@@ -21046,6 +21220,10 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				float3x3 identityBrdf = float3x3(float3(T1), float3(T2), float3(worldNorm));
 				// rotate area light in (T1, T2, N) basis for actual BRDF matrix as well
 				Minv = mul(Minv, identityBrdf);
+				#ifdef LTCGI_API_V2
+				float3 diffuseT1 = normalize(viewDir - diffuseNorm * dot(viewDir, diffuseNorm));
+				identityBrdf = float3x3(diffuseT1, cross(diffuseNorm, diffuseT1), diffuseNorm);
+				#endif
 				
 				// specular brightness
 				#ifndef LTCGI_SPECULAR_OFF
@@ -21179,7 +21357,14 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			
 			// COMPATIBILITY FALLBACKS
 			
-			#ifndef LTCGI_API_V2
+			#ifdef LTCGI_API_V2
+			
+			void LTCGI_Contribution(inout LTCGI_V2_CUSTOM_INPUT data, float3 worldPos, float3 worldNorm, float3 viewDir, float roughness, float2 lmuv)
+			{
+				LTCGI_Contribution(data, worldPos, worldNorm, viewDir, roughness, lmuv, worldNorm);
+			}
+			
+			#else
 			
 			void LTCGI_Contribution(
 			float3 worldPos, float3 worldNorm, float3 viewDir, float roughness, float2 lmuv, inout half3 diffuse
@@ -21274,6 +21459,10 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			
 			void PoiShadingGlobalMasks(inout PoiMods poiMods, in PoiLight poiLight)
 			{
+				// URP additional lights and vertex lights are shaded in the base pass; only the main light writes the mask
+				#if POI_PIPE == POI_URP || !defined(POI_PASS_ADD)
+				if (poiLight.isAdditive) return;
+				#endif
 				if (_ShadingRampedLightMapApplyGlobalMaskIndex > 0)
 				{
 					applyToGlobalMask(poiMods, _ShadingRampedLightMapApplyGlobalMaskIndex - 1, _ShadingRampedLightMapApplyGlobalMaskBlendType, saturate(poiMax(poiLight.rampedLightMap * _ShadingRampedLightMapApplyGlobalMaskStrength)));
@@ -21443,20 +21632,6 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				return (D * V) * F;
 			}
 			
-			float3 getBoxProjection(float3 direction, float3 position, float4 cubemapPosition, float3 boxMin, float3 boxMax)
-			{
-				#if UNITY_SPECCUBE_BOX_PROJECTION
-				if (cubemapPosition.w > 0)
-				{
-					float3 factors = ((direction > 0 ? boxMax : boxMin) - position) / direction;
-					float scalar = min(min(factors.x, factors.y), factors.z);
-					direction = direction * scalar + (position - cubemapPosition.xyz);
-				}
-				#endif
-				
-				return direction;
-			}
-			
 			float SpecularAO(float NoV, float ao, float roughness)
 			{
 				return clamp(pow(NoV + ao, exp2(-16.0 * roughness - 1.0)) - 1.0 + ao, 0.0, 1.0);
@@ -21470,7 +21645,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				#if POI_PIPE == POI_BIRP
 				Unity_GlossyEnvironmentData envData;
 				envData.roughness = roughness;
-				envData.reflUVW = getBoxProjection(reflDir, poiMesh.worldPos, unity_SpecCube0_ProbePosition,
+				envData.reflUVW = BoxProjection(reflDir, poiMesh.worldPos, unity_SpecCube0_ProbePosition,
 				unity_SpecCube0_BoxMin.xyz, unity_SpecCube0_BoxMax.xyz);
 				
 				float3 probe0 = Unity_GlossyEnvironment(UNITY_PASS_TEXCUBE(unity_SpecCube0), unity_SpecCube0_HDR, envData);
@@ -21480,7 +21655,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				UNITY_BRANCH
 				if (unity_SpecCube0_BoxMin.w < 0.99999)
 				{
-					envData.reflUVW = getBoxProjection(reflDir, poiMesh.worldPos, unity_SpecCube1_ProbePosition, unity_SpecCube1_BoxMin.xyz, unity_SpecCube1_BoxMax.xyz);
+					envData.reflUVW = BoxProjection(reflDir, poiMesh.worldPos, unity_SpecCube1_ProbePosition, unity_SpecCube1_BoxMin.xyz, unity_SpecCube1_BoxMax.xyz);
 					float3 probe1 = Unity_GlossyEnvironment(UNITY_PASS_TEXCUBE_SAMPLER(unity_SpecCube1, unity_SpecCube0), unity_SpecCube1_HDR, envData);
 					indirectSpecular = lerp(probe1, probe0, unity_SpecCube0_BoxMin.w);
 				}
@@ -21488,7 +21663,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				#endif
 				
 				#if POI_PIPE == POI_URP
-				float3 indirectSpecular = PoiGlossyEnvironmentReflection(reflDir, poiMesh.worldPos.xyz, roughness, 1.0, poiCam.screenUV);
+				float3 indirectSpecular = GlossyEnvironmentReflection(reflDir, poiMesh.worldPos.xyz, roughness, 1.0, poiCam.screenUV);
 				#endif
 				
 				float horizon = min(1 + dot(reflDir, normal), 1);
@@ -21497,6 +21672,25 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				indirectSpecular *= SpecularAO(poiLight.nDotV, occlusion, roughness);
 				return indirectSpecular;
 			};
+			
+			float4 PoiClothMapSample(in PoiMesh poiMesh)
+			{
+				float4 clothmapsample = 1;
+				#if defined(PROP_CLOTHMETALLICSMOOTHNESSMAP) || !defined(OPTIMIZER_ENABLED)
+				clothmapsample = POI2D_SAMPLER_PAN(_ClothMetallicSmoothnessMap, _MainTex, poiUV(poiMesh.uv[_ClothMetallicSmoothnessMapUV], _ClothMetallicSmoothnessMap_ST), _ClothMetallicSmoothnessMapPan);
+				#endif
+				return clothmapsample;
+			}
+			
+			half PoiClothMetallic(float4 clothmapsample, in PoiMods poiMods)
+			{
+				half metallic = pow(clothmapsample.r * _ClothMetallic, 2);
+				if (_ClothMetallicGlobalMask > 0)
+				{
+					metallic = maskBlend(metallic, poiMods.globalMask[_ClothMetallicGlobalMask - 1], _ClothMetallicGlobalMaskBlendType);
+				}
+				return metallic;
+			}
 			#endif
 			
 			#ifdef _LIGHTINGMODE_WRAPPED
@@ -21713,6 +21907,17 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				#endif
 				#endif
 				
+				#ifdef POI_LIGHT_VOLUME_FORM
+				[branch] if (PoiLightVolumesActive())
+				{
+					#if defined(LIGHTMAP_ON) || defined(DYNAMICLIGHTMAP_ON)
+					indirectLight.diffuse += PoiLVDiffuseColor;
+					#else
+					indirectLight.diffuse = PoiLVDiffuseColor;
+					#endif
+				}
+				#endif
+				
 				indirectLight.diffuse *= poiLight.occlusion;
 				
 				return indirectLight;
@@ -21789,31 +21994,22 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			{
 				half3 litColor = poiLight.directColor * poiLight.lightCookie;
 				half3 passthroughColor = poiLight.indirectColor * poiLight.lightCookie;
+				// Additive lights use Passthrough as their ambient but follow the same Ignore Indirect Shadow Color as the main light
 				half3 ambientColor = poiLight.isAdditive ? passthroughColor : poiLight.indirectColor;
-				half ignoreAmbientColor = poiLight.isAdditive ? 0 : _LightingIgnoreAmbientColor;
+				half ignoreAmbientColor = _LightingIgnoreAmbientColor;
 				
 				#if (POI_PIPE == POI_BIRP && defined(POI_PASS_ADD)) || (POI_PIPE == POI_URP)
 				if (poiLight.isAdditive)
 				{
-					if (_LightingAdditiveType == 3)
-					{
-						#if defined(_LIGHTINGMODE_REALISTIC) || defined(_LIGHTINGMODE_CLOTH) || defined(_LIGHTINGMODE_WRAPPED)
-						poiLight.rampedLightMap = poiLight.nDotLSaturated;
-						poiLight.rampedLightMap *= poiLight.attenDistance;
-						#if POI_PIPE == POI_BIRP
-						poiLight.finalLighting = litColor * poiLight.nDotLSaturated * poiLight.detailShadow * poiLight.attenShadowsStrength;
-						#elif POI_PIPE == POI_URP
-						poiLight.finalLighting = LightingPhysicallyBased(poiLight.brdfData, poiLight.brdfDataClearCoat, litColor, poiLight.direction, poiLight.detailShadow * poiLight.attenShadowsStrength, poiMesh.normals[1], poiCam.eyeViewDir, 1.0, false);
-						#endif
-						poiLight.finalLighting = max(poiLight.finalLighting, passthroughColor);
-						return;
-						#endif
-					}
+					// The Cloth block that removes metallic diffuse only runs for the main light
+					#if POI_PIPE == POI_BIRP && defined(_LIGHTINGMODE_CLOTH)
+					poiFragData.baseColor.xyz *= 1 - PoiClothMetallic(PoiClothMapSample(poiMesh), poiMods);
+					#endif
 					// Realistic
 					if (_LightingAdditiveType == 0)
 					{
 						poiLight.rampedLightMap = poiLight.nDotLSaturated;
-						poiLight.rampedLightMap *= poiLight.attenDistance;
+						poiLight.rampedLightMap *= saturate(poiLight.attenDistance);
 						#if POI_PIPE == POI_BIRP
 						poiLight.finalLighting = litColor * poiLight.nDotLSaturated * poiLight.detailShadow * poiLight.attenShadowsStrength;
 						#elif POI_PIPE == POI_URP
@@ -21830,7 +22026,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 						if (ToonAddGradient.x == ToonAddGradient.y) ToonAddGradient.y += 0.0001;
 						
 						poiLight.rampedLightMap = smoothstep(ToonAddGradient.y, ToonAddGradient.x, 1 - poiLight.nDotLNormalized);
-						poiLight.rampedLightMap *= poiLight.attenDistance;
+						poiLight.rampedLightMap *= saturate(poiLight.attenDistance);
 						poiLight.finalLighting = lerp(litColor * poiLight.detailShadow * poiLight.attenShadowsStrength, passthroughColor,
 						smoothstep(ToonAddGradient.x, ToonAddGradient.y, 1 - poiLight.nDotLNormalized));
 						return;
@@ -21847,10 +22043,17 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				// These blocks shouldn't need ifex, they should be removed on lock when their keywords aren't present
 				
 				#ifdef _LIGHTINGMODE_FLAT
-				poiLight.finalLighting = litColor * poiLight.attenShadowsStrength;
+				float flatVisibility = poiLight.attenShadowsStrength;
+				#ifdef POI_LIGHT_VOLUME_FORM
+				[branch] if (PoiLightVolumesActive())
+				flatVisibility = PoiLVFlatVisibility(poiLight.unityLight.color.rgb * poiLight.attenDistance * poiLight.lightCookie,
+				poiLight.attenShadows, _LightingCastedShadows);
+				#endif
+				poiLight.finalLighting = litColor * flatVisibility;
 				if (_ForceFlatRampedLightmap >= 0.5)
 				{
-					poiLight.rampedLightMap = smoothstep(0.4, 0.6, poiLight.nDotLNormalized);
+					// Additional lights ramp on the vertex normal: Flat reads no normal maps
+					poiLight.rampedLightMap = smoothstep(0.4, 0.6, poiLight.isAdditive ? poiLight.vertexNDotL * 0.5 + 0.5 : poiLight.nDotLNormalized);
 				}
 				else
 				{
@@ -21881,11 +22084,8 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				
 				float4 lns = float4(1, 1, 1, 1);
 				
-				// This mode builds its own light map instead of ramping poiLight.lightMap
-				half mlReceive = max(_ShadowReceive, max(_Shadow2ndReceive, _Shadow3rdReceive));
-				half mlCastDepth = lerp(0.44, 0.15, mlReceive); // lower is lighter shadow
-				half mlCast = lerp(1.0, exp2(-(1.0 - poiLight.attenShadows) * mlCastDepth), poiLight.attenStrength);
-				half3 mlLitColor = litColor * mlCast;
+				// This mode builds its own light map instead of ramping poiLight.lightMap. Cast shadows only come in
+				// through each layer's Receive Shadow; Light Data's Receive Casted Shadows doesn't apply here.
 				
 				float3 N1 = poiMesh.normals[1];
 				float3 N2 = poiMesh.normals[1];
@@ -21901,13 +22101,37 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				lightMap.x *= lerp(1.0, poiLight.attenShadows, _ShadowReceive);
 				lightMap.y *= lerp(1.0, poiLight.attenShadows, _Shadow2ndReceive);
 				lightMap.z *= lerp(1.0, poiLight.attenShadows, _Shadow3rdReceive);
+				#ifdef POI_LIGHT_VOLUME_FORM
+				[branch] if (PoiLightVolumesActive())
+				{
+					float3 unityColor = poiLight.unityLight.color.rgb * poiLight.attenDistance * poiLight.lightCookie;
+					lightMap.x = PoiLVLightmap(0, N1, lightMap.x, _ShadowReceive,
+					unityColor, poiLight.unityLight.direction.xyz, poiLight.attenShadows);
+					#if defined(OPTIMIZER_ENABLED)
+					if (_Shadow2ndNormalStrength == _ShadowNormalStrength && _Shadow2ndReceive == _ShadowReceive) lightMap.y = lightMap.x;
+					else
+					#endif
+					lightMap.y = PoiLVLightmap(1, N2, lightMap.y, _Shadow2ndReceive,
+					unityColor, poiLight.unityLight.direction.xyz, poiLight.attenShadows);
+					#if defined(OPTIMIZER_ENABLED)
+					if (_Shadow3rdNormalStrength == _ShadowNormalStrength && _Shadow3rdReceive == _ShadowReceive) lightMap.z = lightMap.x;
+					else
+					#endif
+					lightMap.z = PoiLVLightmap(2, N3, lightMap.z, _Shadow3rdReceive,
+					unityColor, poiLight.unityLight.direction.xyz, poiLight.attenShadows);
+				}
+				#endif
 				
 				half4 shadowBorderMask = 1;
 				
-				if (_ShadowBorderMapToggle >= 0.5)
+				// Keep the legacy no-texture optimizer path neutral, but allow masks without a texture.
+				bool shadowBorderMaskActive = _ShadowBorderMaskGlobalMask > 0;
+				#if defined(PROP_SHADOWBORDERMASK) || !defined(OPTIMIZER_ENABLED)
+				shadowBorderMaskActive = true;
+				#endif
+				if (_ShadowBorderMapToggle >= 0.5 && shadowBorderMaskActive)
 				{
 					
-					#if defined(PROP_SHADOWBORDERMASK) || !defined(OPTIMIZER_ENABLED)
 					// This should be moved to ui but honestly if these are locked in the compiler should be able to resolve it at compile time
 					half2 shadowShift0 = float2(_ShadowAOShift.x, _ShadowAOShift.y);
 					half2 shadowShift1 = float2(_ShadowAOShift.z, _ShadowAOShift.w);
@@ -21929,26 +22153,37 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 					float2 shadowBorderMaskUV = poiUV(poiMesh.uv[_ShadowBorderMaskUV], _ShadowBorderMask_ST);
 					if (_ShadowBorderMaskLOD)
 					{
-						shadowBorderMask = POI2D_SAMPLE_TEX2D_SAMPLERGRADD(_ShadowBorderMask, sampler_trilinear_repeat, shadowBorderMaskUV, _ShadowBorderMaskPan, max(abs(ddx(shadowBorderMaskUV)), pow(_ShadowBorderMaskLOD, 4)), max(abs(ddy(shadowBorderMaskUV)), pow(_ShadowBorderMaskLOD, 4)));
+						shadowBorderMask *= POI2D_SAMPLE_TEX2D_SAMPLERGRADD(_ShadowBorderMask, sampler_trilinear_repeat, shadowBorderMaskUV, _ShadowBorderMaskPan, max(abs(ddx(shadowBorderMaskUV)), pow(_ShadowBorderMaskLOD, 4)), max(abs(ddy(shadowBorderMaskUV)), pow(_ShadowBorderMaskLOD, 4)));
 					}
 					else
 					{
-						shadowBorderMask = POI2D_SAMPLER_PAN(_ShadowBorderMask, _linear_repeat, shadowBorderMaskUV, _ShadowBorderMaskPan);
+						shadowBorderMask *= POI2D_SAMPLER_PAN(_ShadowBorderMask, _linear_repeat, shadowBorderMaskUV, _ShadowBorderMaskPan);
 					}
 					#endif
+					
+					// Packed channels follow Light Data AO: zero strength is neutral white.
+					if (_ShadowBorderMaskMode > 0.5)
+					{
+						half packedAO = min(min(lerp(1, shadowBorderMask.r, _ShadowBorderMaskStrengthR), lerp(1, shadowBorderMask.g, _ShadowBorderMaskStrengthG)), min(lerp(1, shadowBorderMask.b, _ShadowBorderMaskStrengthB), lerp(1, shadowBorderMask.a, _ShadowBorderMaskStrengthA)));
+						shadowBorderMask.rgb = packedAO.xxx;
+					}
+					shadowBorderMask.r = globalMaskBlend(shadowBorderMask.r, _ShadowBorderMaskGlobalMask, _ShadowBorderMaskGlobalMaskBlendType, poiMods);
+					shadowBorderMask.g = globalMaskBlend(shadowBorderMask.g, _ShadowBorderMaskGlobalMask, _ShadowBorderMaskGlobalMaskBlendType, poiMods);
+					shadowBorderMask.b = globalMaskBlend(shadowBorderMask.b, _ShadowBorderMaskGlobalMask, _ShadowBorderMaskGlobalMaskBlendType, poiMods);
 					
 					shadowBorderMask.r = saturate(shadowBorderMask.r * shadowShift0.x + shadowShift0.y);
 					shadowBorderMask.g = saturate(shadowBorderMask.g * shadowShift1.x + shadowShift1.y);
 					shadowBorderMask.b = saturate(shadowBorderMask.b * shadowShift2.x + shadowShift2.y);
 					
 					lightMap.xyz = _ShadowPostAO ? lightMap.xyz : lightMap.xyz * shadowBorderMask.rgb;
-					#endif
 				}
 				
 				if (_LightingMapMode == 4)
 				{
-					// mlLitColor already carries the cookie and the shadow
 					lightMap.xyz = poiLight.lightMapNoAttenuation;
+					lightMap.x *= lerp(1.0, poiLight.attenShadows, _ShadowReceive);
+					lightMap.y *= lerp(1.0, poiLight.attenShadows, _Shadow2ndReceive);
+					lightMap.z *= lerp(1.0, poiLight.attenShadows, _Shadow3rdReceive);
 				}
 				if (_LightingMulitlayerNonLinear >= 0.5)
 				{
@@ -21965,16 +22200,13 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 					lns.w = poiEdgeLinearNoSaturate(lightMap.x, _ShadowBorder, _ShadowBlur * blurMap.r, _ShadowBorderRange);
 				}
 				
-				#if defined(PROP_SHADOWBORDERMASK) || !defined(OPTIMIZER_ENABLED)
 				lns = _ShadowPostAO ? lns * shadowBorderMask.rgbr : lns;
-				#endif
 				lns *= poiLight.detailShadow;
 				lns = saturate(lns);
 				
-				#if defined(PROP_SHADOWSTRENGTHMASK) || !defined(OPTIMIZER_ENABLED)
-				half4 shadowStrengthMask = POI2D_SAMPLER_PAN(_ShadowStrengthMask, _MainTex, poiUV(poiMesh.uv[_ShadowStrengthMaskUV], _ShadowStrengthMask_ST), _ShadowStrengthMaskPan);
-				#else
 				half4 shadowStrengthMask = 1;
+				#if defined(PROP_SHADOWSTRENGTHMASK) || !defined(OPTIMIZER_ENABLED)
+				shadowStrengthMask *= POI2D_SAMPLER_PAN(_ShadowStrengthMask, _MainTex, poiUV(poiMesh.uv[_ShadowStrengthMaskUV], _ShadowStrengthMask_ST), _ShadowStrengthMaskPan);
 				#endif
 				if (_ShadowMaskType == 1)
 				{
@@ -22030,11 +22262,11 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				indirectColor = lerp(indirectColor, indirectColor * poiFragData.baseColor, _ShadowMainStrength);
 				poiLight.rampedLightMap = lns.x;
 				indirectColor = lerp(indirectColor, 1, lns.w * _ShadowBorderColor.rgb * _ShadowBorderColor.a);
-				indirectColor = indirectColor * lerp(ambientColor * poiLight.occlusion, mlLitColor, ignoreAmbientColor);
+				indirectColor = indirectColor * lerp(ambientColor * poiLight.occlusion, litColor, ignoreAmbientColor);
 				if (!poiLight.isAdditive)
-				indirectColor = lerp(indirectColor, mlLitColor, poiLight.indirectColor * _ShadowEnvStrength);
-				indirectColor = lerp(mlLitColor, indirectColor, shadowStrength);
-				poiLight.finalLighting = lerp(indirectColor, mlLitColor, lns.x);
+				indirectColor = lerp(indirectColor, litColor, poiLight.indirectColor * _ShadowEnvStrength);
+				indirectColor = lerp(litColor, indirectColor, shadowStrength);
+				poiLight.finalLighting = lerp(indirectColor, litColor, lns.x);
 				#endif
 				
 				#ifdef _LIGHTINGMODE_SHADEMAP
@@ -22055,46 +22287,29 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				#if POI_PIPE == POI_BIRP
 				UnityLight light;
 				light.dir = poiLight.direction;
-				light.color = max(0, poiLight.unityLight.color * poiLight.lightCookie * poiLight.attenDistance * poiLight.attenShadowsStrength) * realisticLightMap;
+				// Add lights bring their own limit and grayscale in litColor
+				half3 realisticLightColor = poiLight.isAdditive ? litColor : poiLight.unityLight.color * poiLight.lightCookie * poiLight.attenDistance;
+				light.color = max(0, realisticLightColor * poiLight.attenShadowsStrength) * realisticLightMap;
 				light.ndotl = poiLight.nDotLSaturated;
 				UnityIndirect indirectLight = (UnityIndirect)0;
-				#if defined(POI_PASS_BASE) || defined(POI_PASS_OUTLINE)
-				indirectLight = CreateIndirectLight(poiMesh, poiCam, poiLight);
-				indirectLight.diffuse = lerp(indirectLight.diffuse, dot(indirectLight.diffuse, float3(0.299, 0.587, 0.114)), poiLight.lightingMonochromatic);
-				#endif
-				#if defined(POI_PASS_BASE) || defined(POI_PASS_OUTLINE)
-				light.color = max(light.color * _PPLightingMultiplier, 0);
-				light.color = max(light.color + _PPLightingAddition, 0);
-				indirectLight.diffuse = max(indirectLight.diffuse * _PPLightingMultiplier, 0);
-				indirectLight.diffuse = max(indirectLight.diffuse + _PPLightingAddition, 0);
-				#endif
-				
+				// Ambient light and lighting mods belong to the main light only
+				if (!poiLight.isAdditive)
+				{
+					#if defined(POI_PASS_BASE) || defined(POI_PASS_OUTLINE)
+					indirectLight = CreateIndirectLight(poiMesh, poiCam, poiLight);
+					indirectLight.diffuse = lerp(indirectLight.diffuse, dot(indirectLight.diffuse, float3(0.299, 0.587, 0.114)), poiLight.lightingMonochromatic);
+					#endif
+					#if defined(POI_PASS_BASE) || defined(POI_PASS_OUTLINE)
+					light.color = max(light.color * _PPLightingMultiplier, 0);
+					light.color = max(light.color + _PPLightingAddition, 0);
+					indirectLight.diffuse = max(indirectLight.diffuse * _PPLightingMultiplier, 0);
+					indirectLight.diffuse = max(indirectLight.diffuse + _PPLightingAddition, 0);
+					#endif
+					
+				}
 				poiLight.rampedLightMap = poiLight.nDotLSaturated;
 				poiLight.finalLighting = POI_BRDF_PBS(1, unity_ColorSpaceDielectricSpec.rgb, unity_ColorSpaceDielectricSpec.a, 0, poiMesh.normals[1], poiCam.eyeViewDir, poiLight.nDotVSaturated, poiLight.nDotLSaturated, light, indirectLight).xyz;
 				
-				//ifex _LightingEnableLightVolumes==0 && isNotAnimated(_LightingEnableLightVolumes)
-				#if defined(POI_PASS_BASE) || defined(POI_PASS_OUTLINE)
-				[branch]
-				if (_UdonLightVolumeEnabled && _LightingEnableLightVolumes >= 0.5)
-				{
-					float3 L0 = 0;
-					float3 L1r = 0;
-					float3 L1g = 0;
-					float3 L1b = 0;
-					#ifdef LIGHTMAP_ON
-					LightVolumeAdditiveSH(poiMesh.worldPos, L0, L1r, L1g, L1b, poiMesh.normals[1] * _LightingLightVolumesNormalBias, poiMesh.normals[1]);
-					float lightVolumeIntensity = saturate(_LightingLightVolumesIntensity);
-					L0 *= lightVolumeIntensity;
-					L1r *= lightVolumeIntensity;
-					L1g *= lightVolumeIntensity;
-					L1b *= lightVolumeIntensity;
-					float3 lightVolumeAdditive = max(LightVolumeEvaluate(poiMesh.normals[1], L0, L1r, L1g, L1b), 0);
-					if (poiLight.lightingCapEnabled) lightVolumeAdditive = min(lightVolumeAdditive, _LightingCap);
-					poiLight.finalLighting += lightVolumeAdditive;
-					#endif
-				}
-				#endif
-				//endex
 				#endif
 				
 				#if POI_PIPE == POI_URP
@@ -22102,12 +22317,11 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				half3 realisticLightColor = poiLight.isAdditive ? litColor : max(0, poiLight.unityLight.color.rgb * poiLight.lightCookie * poiLight.attenDistance);
 				poiLight.rampedLightMap = poiLight.nDotLSaturated;
 				poiLight.finalLighting = LightingPhysicallyBased(poiLight.brdfData, poiLight.brdfDataClearCoat, realisticLightColor, poiLight.direction, realisticLightMap * poiLight.attenShadowsStrength, poiMesh.normals[1], poiCam.eyeViewDir, 1.0, false);
-				//ifex _LightingEnableLightVolumes==0 && isNotAnimated(_LightingEnableLightVolumes)
 				// Global Illumination
 				// URP Outline pass doesn't have access to lightmaps or SH
 				#if defined(POI_PASS_BASE) || defined(POI_PASS_OUTLINE)
 				[branch]
-				if (_LightingEnableLightVolumes >= 0.5 && !poiLight.isAdditive)
+				if (!poiLight.isAdditive)
 				{
 					float4 lightNormalWS = float4(poiMesh.normals[1], 1);
 					if (_LightingColorMode == 0)
@@ -22115,32 +22329,33 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 					
 					float3 poiGI = 0;
 					float3 vertexSH = SampleSHVertex(lightNormalWS);
+					float poiGINormalBias = _LightingEnableLightVolumes >= 0.5 ? _LightingLightVolumesNormalBias : 0;
 					
 					#if defined(_SCREEN_SPACE_IRRADIANCE)
 					poiGI = SAMPLE_GI(_ScreenSpaceIrradiance, poiCam.clipPos.xy);
 					#elif defined(DYNAMICLIGHTMAP_ON)
 					poiGI = SAMPLE_GI(poiMesh.lightmapUV.xy, poiMesh.lightmapUV.zw, vertexSH, lightNormalWS.xyz);
 					#elif !defined(LIGHTMAP_ON) && (defined(PROBE_VOLUMES_L1) || defined(PROBE_VOLUMES_L2))
+					float4 poiGIProbeOcclusion = 1;
 					poiGI = SAMPLE_GI(vertexSH,
-					GetAbsolutePositionWS(poiMesh.worldPos + poiMesh.normals[1] * _LightingLightVolumesNormalBias),
+					GetAbsolutePositionWS(poiMesh.worldPos + poiMesh.normals[1] * poiGINormalBias),
 					poiMesh.normals[1],
 					poiCam.viewDir,
 					poiCam.clipPos.xy,
-					poiLight.occlusion,
-					PoiCalculateShadowMask(poiMesh.lightmapUV.xy));
+					poiGIProbeOcclusion,
+					poiGIProbeOcclusion);
 					#else
 					poiGI = SAMPLE_GI(poiMesh.lightmapUV.xy, vertexSH, lightNormalWS.xyz);
 					#endif
 					
 					MixRealtimeAndBakedGI(poiLight.unityLight, poiMesh.normals[1], poiGI);
-					poiGI = PoiGlobalIllumination(poiLight.brdfData, poiLight.brdfDataClearCoat, 1,
-					poiGI, poiLight.aoFactor.indirectAmbientOcclusion, poiMesh.worldPos + poiMesh.normals[1] * _LightingLightVolumesNormalBias,
+					poiGI = GlobalIllumination(poiLight.brdfData, poiLight.brdfDataClearCoat, 1,
+					poiGI, poiLight.aoFactor.indirectAmbientOcclusion, poiMesh.worldPos + poiMesh.normals[1] * poiGINormalBias,
 					poiMesh.normals[1], poiCam.eyeViewDir, poiCam.screenUV);
 					if (poiLight.lightingCapEnabled) poiGI = min(poiGI, _LightingCap);
 					poiLight.finalLighting += lerp(poiGI, dot(poiGI, float3(0.299, 0.587, 0.114)), poiLight.lightingMonochromatic);
 				}
 				#endif
-				//endex
 				
 				if (!poiLight.isAdditive)
 				{
@@ -22150,22 +22365,30 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				
 				half realisticShadowAmount = saturate((1.0 - saturate(poiLight.lightMap)) * shadowStrength);
 				poiLight.finalLighting *= lerp(1.0, _LightingShadowColor, realisticShadowAmount);
+				if (poiLight.isAdditive)
+				poiLight.finalLighting = max(poiLight.finalLighting, passthroughColor);
 				#endif
 				
 				#ifdef _LIGHTINGMODE_CLOTH
-				#if defined(PROP_CLOTHMETALLICSMOOTHNESSMAP) || !defined(OPTIMIZER_ENABLED)
-				float4 clothmapsample = POI2D_SAMPLER_PAN(_ClothMetallicSmoothnessMap, _MainTex, poiUV(poiMesh.uv[_ClothMetallicSmoothnessMapUV], _ClothMetallicSmoothnessMap_ST), _ClothMetallicSmoothnessMapPan);
-				half roughness = 1 - (clothmapsample.a * _ClothSmoothness);
+				float4 clothmapsample = PoiClothMapSample(poiMesh);
+				half clothSmoothnessMap = _ClothMetallicSmoothnessMapInvert >= 0.5 ? 1 - clothmapsample.a : clothmapsample.a;
+				half roughness = 1 - (clothSmoothnessMap * _ClothSmoothness);
 				half reflectance = _ClothReflectance * clothmapsample.b;
 				half clothmask = clothmapsample.g;
-				half metallic = pow(clothmapsample.r * _ClothMetallic, 2);
-				roughness = _ClothMetallicSmoothnessMapInvert >= 0.5 ? 1 - roughness : roughness;
-				#else
-				half roughness = 1 - (_ClothSmoothness);
-				half metallic = pow(_ClothMetallic, 2);
-				half reflectance = _ClothReflectance;
-				half clothmask = 1;
-				#endif
+				half metallic = PoiClothMetallic(clothmapsample, poiMods);
+				
+				if (_ClothMaskGlobalMask > 0)
+				{
+					clothmask = maskBlend(clothmask, poiMods.globalMask[_ClothMaskGlobalMask - 1], _ClothMaskGlobalMaskBlendType);
+				}
+				if (_ClothReflectanceGlobalMask > 0)
+				{
+					reflectance = maskBlend(reflectance, poiMods.globalMask[_ClothReflectanceGlobalMask - 1], _ClothReflectanceGlobalMaskBlendType);
+				}
+				if (_ClothSmoothnessGlobalMask > 0)
+				{
+					roughness = 1 - maskBlend(1 - roughness, poiMods.globalMask[_ClothSmoothnessGlobalMask - 1], _ClothSmoothnessGlobalMaskBlendType);
+				}
 				
 				half clothBrdfMask = clothmask * (1 - metallic);
 				
@@ -22178,14 +22401,19 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				
 				float3 energyCompensation = EnvBRDFEnergyCompensation(dfg, f0, clothBrdfMask);
 				
-				poiLight.finalLighting = Fd_Burley(perceptualRoughness, poiLight.nDotV, poiLight.nDotLSaturated, poiLight.lDotH);
-				poiLight.finalLighting *= litColor * poiLight.attenShadowsStrength * poiLight.nDotLSaturated;
+				half clothShadow = poiLight.attenShadowsStrength;
+				#ifdef POI_LIGHT_VOLUME_FORM
+				[branch] if (PoiLightVolumesActive() && !poiLight.isAdditive)
+				clothShadow = PoiLVReceivedShadow(poiLight.unityLight.color.rgb * poiLight.attenDistance * poiLight.lightCookie, poiLight.attenShadows);
+				#endif
+				half3 clothLightTerm = litColor * clothShadow * poiLight.nDotLSaturated;
+				poiLight.finalLighting = Fd_Burley(perceptualRoughness, poiLight.nDotV, poiLight.nDotLSaturated, poiLight.lDotH) * clothLightTerm;
 				poiLight.rampedLightMap = poiLight.nDotLSaturated;
 				
-				half3 specular = max(0, Specular(clampedRoughness, poiLight, f0, poiMesh.normals[1], clothBrdfMask) * poiLight.finalLighting * energyCompensation * UNITY_PI); // (D * V) * F
+				half3 specular = max(0, Specular(clampedRoughness, poiLight, f0, poiMesh.normals[1], clothBrdfMask) * clothLightTerm * energyCompensation * UNITY_PI); // (D * V) * F
 				
-				#if defined(POI_PASS_BASE) || defined(POI_PASS_OUTLINE)
 				poiLight.finalLightAdd += max(0, specular);
+				#if defined(POI_PASS_BASE) || defined(POI_PASS_OUTLINE)
 				if (!poiLight.isAdditive)
 				{
 					float3 L0 = float3(PoiSHAr.w, PoiSHAg.w, PoiSHAb.w);
@@ -22202,13 +22430,18 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				}
 				#endif
 				
+				// Add lights already had the metallic diffuse removed before shading
+				if (!poiLight.isAdditive)
 				poiFragData.baseColor.xyz *= (1 - metallic);
+				else
+				poiLight.finalLighting = max(poiLight.finalLighting, passthroughColor);
 				#endif
 				
 				#ifdef _LIGHTINGMODE_WRAPPED
 				#define GREYSCALE_VECTOR float3(.33333, .33333, .33333)
-				half3 wrappedLightColor = poiLight.unityLight.color * poiLight.lightCookie;
-				if (_LightingForceColorEnabled >= 0.5)
+				// Add lights bring their own falloff, limit and grayscale in litColor
+				half3 wrappedLightColor = poiLight.isAdditive ? litColor : poiLight.unityLight.color * poiLight.lightCookie;
+				if (_LightingForceColorEnabled >= 0.5 && !poiLight.isAdditive)
 				{
 					wrappedLightColor = poiThemeColor(poiMods, _LightingForcedColor.rgb, _LightingForcedColorThemeIndex);
 				}
@@ -22218,38 +22451,57 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				if (!poiLight.isAdditive)
 				indirectColor = ShadeSH9_wrapped(lerp(poiMesh.normals[0], poiMesh.normals[1], _LightingIndirectUsesNormals), _LightingWrappedWrap) * poiLight.occlusion;
 				#endif
-				directColor = lerp(directColor, dot(directColor, float3(0.299, 0.587, 0.114)), poiLight.lightingMonochromatic); // Duplicated from Lightdata due to recreating the light colour
-				indirectColor = lerp(indirectColor, dot(indirectColor, float3(0.299, 0.587, 0.114)), poiLight.lightingMonochromatic); // Ditto^
-				
-				float3 ShadeSH9Plus_2 = GetSHMaxL1();
+				float3 ShadeSH9Plus_2 = 0;
+				if (!poiLight.isAdditive)
+				{
+					directColor = lerp(directColor, dot(directColor, float3(0.299, 0.587, 0.114)), poiLight.lightingMonochromatic); // Duplicated from Lightdata due to recreating the light colour
+					indirectColor = lerp(indirectColor, dot(indirectColor, float3(0.299, 0.587, 0.114)), poiLight.lightingMonochromatic); // Ditto^
+					ShadeSH9Plus_2 = GetSHMaxL1();
+				}
 				float bw_topDirectLighting_2 = dot(wrappedLightColor, GREYSCALE_VECTOR);
 				float bw_directLighting = dot(directColor, GREYSCALE_VECTOR);
 				float bw_indirectLighting = dot(indirectColor, GREYSCALE_VECTOR);
 				float bw_topIndirectLighting = dot(ShadeSH9Plus_2, GREYSCALE_VECTOR);
+				#ifdef POI_LIGHT_VOLUME_FORM
+				if (!poiLight.isAdditive)
+				{
+					float3 lvBlocked = PoiLVWrappedBlocked * poiLight.occlusion;
+					indirectColor -= lerp(lvBlocked, dot(lvBlocked, float3(0.299, 0.587, 0.114)), poiLight.lightingMonochromatic);
+				}
+				#endif
 				
-				poiLight.lightMap = smoothstep(0, bw_topIndirectLighting + bw_topDirectLighting_2, bw_indirectLighting + bw_directLighting) * min(poiLight.detailShadow, poiLight.attenShadowsStrength);
+				poiLight.lightMap = smoothstep(0, max(bw_topIndirectLighting + bw_topDirectLighting_2, 0.0001), bw_indirectLighting + bw_directLighting) * min(poiLight.detailShadow, poiLight.attenShadowsStrength);
+				#ifdef POI_LIGHT_VOLUME_FORM
+				[branch] if (PoiLightVolumesActive() && !poiLight.isAdditive)
+				{
+					float wrappedMap = smoothstep(0, max(bw_topIndirectLighting + bw_topDirectLighting_2, 0.0001), bw_indirectLighting + bw_directLighting) * poiLight.attenShadowsStrength;
+					poiLight.lightMap = PoiLVLightmap(0, poiMesh.normals[1], wrappedMap, _LightingCastedShadows,
+					poiLight.unityLight.color.rgb * poiLight.attenDistance * poiLight.lightCookie,
+					poiLight.unityLight.direction.xyz, poiLight.attenShadows) * poiLight.detailShadow;
+				}
+				#endif
 				poiLight.rampedLightMap = saturate((poiLight.lightMap - (1 - _LightingGradientEnd)) / saturate((1 - _LightingGradientStart) - (1 - _LightingGradientEnd) + 0.001));
-				float3 mathRamp = lerp(float3(1, 1, 1), saturate(lerp((_LightingShadowColor * lerp(indirectColor, 1, _LightingIgnoreAmbientColor)), float3(1, 1, 1), saturate(poiLight.rampedLightMap))), shadowStrength);
+				float3 mathRamp = lerp(float3(1, 1, 1), saturate(lerp(_LightingShadowColor, float3(1, 1, 1), saturate(poiLight.rampedLightMap))), shadowStrength);
 				
 				directColor *= saturate(poiLight.rampedLightMap + 1 - shadowStrength) * _LightingWrappedColor;
 				
 				float3 finalWrap = directColor + indirectColor;
-				if (poiLight.lightingCapEnabled)
+				if (poiLight.lightingCapEnabled && !poiLight.isAdditive)
 				{
 					finalWrap = min(finalWrap, _LightingCap);
 				}
-				poiLight.finalLighting = finalWrap * saturate(mathRamp + 1 - shadowStrength);
+				poiLight.finalLighting = finalWrap * mathRamp;
+				if (poiLight.isAdditive)
+				poiLight.finalLighting = max(poiLight.finalLighting, passthroughColor);
 				#endif
 				
 				#ifdef _LIGHTINGMODE_SKIN
-				float3 ambientNormalWorld = poiMesh.normals[1];//aTangentToWorld(s, s.blurredNormalTangent);
 				poiLight.rampedLightMap = poiLight.nDotLSaturated;
 				
 				// Scattering mask.
-				#if defined(PROP_SKINTHICKNESSMAP) || !defined(OPTIMIZER_ENABLED)
-				float subsurface = 1 - POI2D_SAMPLER_PAN(_SkinThicknessMap, _MainTex, poiUV(poiMesh.uv[_SkinThicknessMapUV], _SkinThicknessMap_ST), _SkinThicknessMapPan).r;
-				#else
 				float subsurface = 1;
+				#if defined(PROP_SKINTHICKNESSMAP) || !defined(OPTIMIZER_ENABLED)
+				subsurface = 1 - POI2D_SAMPLER_PAN(_SkinThicknessMap, _MainTex, poiUV(poiMesh.uv[_SkinThicknessMapUV], _SkinThicknessMap_ST), _SkinThicknessMapPan).r;
 				#endif
 				if (_SkinThicknessMapInvert >= 0.5)
 				{
@@ -22268,28 +22520,66 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				// Albedo scale for absorption assumes ~0.5 luminance for Caucasian skin.
 				absorption *= saturate(poiFragData.baseColor * unity_ColorSpaceDouble.rgb);
 				
-				// Blurred normals for indirect diffuse and direct scattering.
-				ambientNormalWorld = normalize(lerp(poiMesh.normals[1], ambientNormalWorld, _SssBumpBlur));
-				half3 skinLitColor = litColor * poiLight.attenShadowsStrength;
+				half skinShadow = poiLight.attenShadowsStrength;
+				#ifdef POI_LIGHT_VOLUME_FORM
+				[branch] if (PoiLightVolumesActive() && !poiLight.isAdditive)
+				skinShadow = PoiLVReceivedShadow(poiLight.unityLight.color.rgb * poiLight.attenDistance * poiLight.lightCookie, poiLight.attenShadows);
+				#endif
+				half3 skinLitColor = litColor * skinShadow;
 				float ndlBlur = poiLight.nDotLNormalized;
+				float skinLightMap = poiLight.lightMapNoAttenuation;
+				// Keep changes local: other modules (especially specular) retain their detailed normals.
+				//ifex isNotAnimated(_SkinDiffuseSoftnessEnabled) && _SkinDiffuseSoftnessEnabled==0
+				if (_SkinDiffuseSoftnessEnabled > 0.5 && _SssBumpBlur > 0)
+				{
+					float3 diffuseNormal = lerp(poiMesh.normals[1], poiMesh.normals[0], saturate(_SssBumpBlur));
+					float normalLengthSq = dot(diffuseNormal, diffuseNormal);
+					diffuseNormal = normalLengthSq > 1e-6 ? diffuseNormal * rsqrt(max(normalLengthSq, 1e-6)) : poiMesh.normals[1];
+					float diffuseNDotL = dot(diffuseNormal, poiLight.direction);
+					ndlBlur = saturate(diffuseNDotL * 0.5 + 0.5);
+					if (poiLight.lightMapMode == 2)
+					skinLightMap = saturate(diffuseNDotL) * poiLight.detailShadow;
+					else if (poiLight.lightMapMode == 1)
+					skinLightMap = ndlBlur * poiLight.detailShadow;
+					else if (poiLight.lightMapMode == 0 && poiLight.isAdditive)
+					skinLightMap = smoothstep(0, 1, ndlBlur) * poiLight.detailShadow;
+					else if (poiLight.lightMapMode == 0)
+					{
+						// Re-evaluate the custom light map with the softened normal, retaining its SH response.
+						float3 shBottom = float3(PoiSHAr.w, PoiSHAg.w, PoiSHAb.w) + float3(PoiSHBr.z, PoiSHBg.z, PoiSHBb.z) / 3.0;
+						float3 grey = float3(0.33333, 0.33333, 0.33333);
+						float directLuma = dot(poiLight.directColor, grey);
+						float bottomLuma = dot(shBottom, grey);
+						float lightRange = dot(GetSHLength(), grey) + directLuma - bottomLuma;
+						if (lightRange > 1e-5)
+						skinLightMap = smoothstep(0, lightRange, ndlBlur * directLuma + dot(PoiShadeSH9(float4(diffuseNormal, 1)), grey) - bottomLuma) * poiLight.detailShadow;
+					}
+					// Casted Shadows Only and base-pass SDF retain their authored light maps.
+				}
+				//endex
 				float lumi = dot(litColor, half3(0.2126h, 0.7152h, 0.0722h));
+				lumi = lerp(lumi, 1.0, _SkinScatteringStability);
 				float4 sssLookupUv = float4(ndlBlur, skinScattering * lumi, 0.0f, 0.0f);
 				#if defined(PROP_SKINLUT) || !defined(OPTIMIZER_ENABLED)
-				half3 sss = poiLight.lightMapNoAttenuation * _SkinLUT.SampleLevel(sampler_linear_clamp, sssLookupUv.xy, sssLookupUv.w).rgb;
+				half3 sss = skinLightMap * _SkinLUT.SampleLevel(sampler_linear_clamp, sssLookupUv.xy, sssLookupUv.w).rgb;
 				#else
-				half3 sss = poiLight.lightMapNoAttenuation;
+				half3 sss = skinLightMap;
 				#endif
 				
-				poiLight.finalLighting = lerp(skinLitColor, min(lerp(ambientColor * _LightingShadowColor, _LightingShadowColor, ignoreAmbientColor) * poiLight.occlusion + (sss * skinLitColor), litColor), shadowStrength);
+				// Shadow Tint is the main light's shadow floor; point lights keep their ambient.
+				half skinIgnoreAmbient = poiLight.isAdditive ? 0 : ignoreAmbientColor;
+				poiLight.finalLighting = lerp(litColor, min(lerp(ambientColor * _LightingShadowColor, _LightingShadowColor, skinIgnoreAmbient) * poiLight.occlusion + (sss * skinLitColor), litColor), shadowStrength);
 				#endif
 				
 				#ifdef _LIGHTINGMODE_SDF
 				float3 forward = normalize(mul((float3x3)unity_ObjectToWorld, _SDFForward.xyz));
 				float3 left = normalize(mul((float3x3)unity_ObjectToWorld, _SDFLeft.xyz));
-				float3 lightDirHorizontal = normalize(float3(poiLight.direction.x, 0, poiLight.direction.z));
+				float2 lightDirXZ = poiLight.direction.xz;
+				float3 lightDirHorizontal = dot(lightDirXZ, lightDirXZ) > 0 ? normalize(float3(lightDirXZ.x, 0, lightDirXZ.y)) : forward;
 				
 				float lightAtten = 1 - (dot(lightDirHorizontal, forward) * 0.5 + 0.5);
-				float filpU = sign(dot(lightDirHorizontal, left));
+				// Not sign(): it returns 0 for light from front or back
+				float filpU = dot(lightDirHorizontal, left) < 0 ? -1 : 1;
 				
 				#if defined(PROP_SDFSHADINGTEXTURE) || !defined(OPTIMIZER_ENABLED)
 				float shadowSDF = POI2D_SAMPLER_PAN(_SDFShadingTexture, _MainTex, poiUV(poiMesh.uv[_SDFShadingTextureUV], _SDFShadingTexture_ST) * float2(filpU, 1), _SDFShadingTexturePan).r;
@@ -22298,8 +22588,13 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				#endif
 				float blur = _SDFBlur * 0.1;
 				half faceShadow = smoothstep(lightAtten - blur, lightAtten + blur, shadowSDF) * poiLight.detailShadow;
-				half3 sdfLitColor = litColor * poiLight.attenShadowsStrength;
-				poiLight.rampedLightMap = faceShadow * poiLight.attenShadowsStrength;
+				half sdfShadow = poiLight.attenShadowsStrength;
+				#ifdef POI_LIGHT_VOLUME_FORM
+				[branch] if (PoiLightVolumesActive() && !poiLight.isAdditive)
+				sdfShadow = PoiLVReceivedShadow(poiLight.unityLight.color.rgb * poiLight.attenDistance * poiLight.lightCookie, poiLight.attenShadows);
+				#endif
+				half3 sdfLitColor = litColor * sdfShadow;
+				poiLight.rampedLightMap = faceShadow * sdfShadow;
 				
 				float3 indirectColor = _LightingShadowColor.rgb;
 				indirectColor = indirectColor * lerp(ambientColor * poiLight.occlusion, sdfLitColor, ignoreAmbientColor);
@@ -22309,26 +22604,19 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				#endif
 				
 				#if POI_PIPE == POI_BIRP
-				if (poiFragData.toggleVertexLights)
+				// Same as Base Pass shades vertex lights like pixel lights after the main light (see PoiVertexLightSetup)
+				if (poiFragData.toggleVertexLights && _LightingAdditiveType != 3 && !poiLight.isAdditive)
 				{
 					#if defined(VERTEXLIGHT_ON)
 					float3 vertexLighting = float3(0, 0, 0);
 					for (int index = 0; index < 4; index++)
 					{
 						float lightingMode = _LightingAdditiveType;
-						if (lightingMode == 3)
-						{
-							//This is a temporary bandaid fix
-							#if defined(_LIGHTINGMODE_REALISTIC)
-							lightingMode = 0;
-							#else
-							lightingMode = 1;
-							#endif
-						}
 						//UNITY_BRANCH
 						if (lightingMode == 0)
 						{
-							vertexLighting += poiLight.vColor[index] * poiLight.vSaturatedDotNL[index] * poiLight.detailShadow; // Realistic
+							half3 vertexLight = poiLight.vColor[index] * poiLight.vSaturatedDotNL[index] * poiLight.detailShadow; // Realistic
+							vertexLighting = _AddBlendOp == 4 ? max(vertexLighting, vertexLight) : vertexLighting + vertexLight;
 						}
 						//UNITY_BRANCH
 						// Toon
@@ -22336,15 +22624,16 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 						{
 							float2 ToonAddGradient = float2(_LightingAdditiveGradientStart, _LightingAdditiveGradientEnd);
 							if (ToonAddGradient.x == ToonAddGradient.y) ToonAddGradient.y += 0.0001;
-							vertexLighting += lerp(poiLight.vColor[index] * poiLight.detailShadow, poiLight.vColor[index] * _LightingAdditivePassthrough, smoothstep(ToonAddGradient.x, ToonAddGradient.y, 1 - (.5 * poiLight.vDotNL[index] + .5)));
+							half3 vertexLight = lerp(poiLight.vColor[index] * poiLight.detailShadow, poiLight.vColor[index] * _LightingAdditivePassthrough, smoothstep(ToonAddGradient.x, ToonAddGradient.y, 1 - (.5 * poiLight.vDotNL[index] + .5)));
+							vertexLighting = _AddBlendOp == 4 ? max(vertexLighting, vertexLight) : vertexLighting + vertexLight;
 						}
 					}
-					poiLight.finalLighting += vertexLighting;
+					poiLight.finalLighting = _AddBlendOp == 4 ? max(poiLight.finalLighting, vertexLighting) : poiLight.finalLighting + vertexLighting;
 					#endif
 				}
 				#endif
 				
-				poiLight.rampedLightMap *= poiLight.attenDistance;
+				poiLight.rampedLightMap *= saturate(poiLight.attenDistance);
 				PoiShadingGlobalMasks(poiMods, poiLight);
 			}
 			#endif
@@ -23341,17 +23630,22 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				float nDotL;
 			};
 			
-			half calculateAnisoShadowMask(in PoiLight poiLight, in PoiMods poiMods)
+			half calculateAnisoMask(half unshadowed, half shadowed, float nDotL, in PoiMods poiMods)
 			{
-				half anisoLightMap = poiLight.lightMap;
-				half3 anisoRampedLightMap = poiLight.rampedLightMap / max(poiLight.attenDistance, 1e-4);
-				half mask = lerp(1.0, poiMax(anisoRampedLightMap * anisoLightMap), _AnisoHideInShadow);
-				mask *= lerp(1.0, poiLight.nDotL, _AnisoFadeByLightDirection);
+				half mask = lerp(unshadowed, shadowed, _AnisoHideInShadow);
+				mask *= lerp(1.0, nDotL, _AnisoFadeByLightDirection);
 				if (_AnisoGlobalMask > 0)
 				{
 					mask = customBlend(mask, poiMods.globalMask[_AnisoGlobalMask - 1], _AnisoGlobalMaskBlendType);
 				}
 				return mask;
+			}
+			
+			half calculateAnisoShadowMask(in PoiLight poiLight, in PoiMods poiMods)
+			{
+				half anisoLightMap = poiLight.lightMap;
+				half3 anisoRampedLightMap = poiLight.rampedLightMap / max(saturate(poiLight.attenDistance), 1e-4);
+				return calculateAnisoMask(CalculateLuminance(poiLight.lightCookie), poiMax(anisoRampedLightMap * anisoLightMap), poiLight.nDotL, poiMods);
 			}
 			
 			AnisoGeometry getAnisoGeometry(in PoiMesh poiMesh)
@@ -23451,7 +23745,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				#if defined(PROP_ANISOCOLORMAP) || !defined(OPTIMIZER_ENABLED)
 				float4 specMap = POI2D_SAMPLER_PAN(_AnisoColorMap, _MainTex, poiUV(poiMesh.uv[_AnisoColorMapUV], _AnisoColorMap_ST), _AnisoColorMapPan);
 				#else
-				float4 specMap = float4(1, 1, 1, 0);
+				float4 specMap = float4(1, 1, 1, 1);
 				#endif
 				
 				half shadowMask = calculateAnisoShadowMask(poiLight, poiMods);
@@ -23486,7 +23780,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 						AnisoLightData vLight = {
 							poiLight.vDirection[i],
 							poiLight.vColor[i],
-							poiLight.vSaturatedDotNL[i],
+							calculateAnisoMask(1.0, poiLight.vSaturatedDotNL[i], poiLight.vDotNL[i], poiMods),
 							poiLight.vSaturatedDotNL[i]
 						};
 						processAnisoLight(poiFragData, poiLight, poiCam, poiMods, geom, specMap.rgb, specMap.a, layer0, layer1, vLight);
@@ -23580,7 +23874,10 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 						// A solution to top pinch would be so awesome
 						
 						float3 worldUp = float3(0, 1, 0);
-						float3 tangent = normalize(cross(normal, worldUp));
+						float3 tangent = cross(normal, worldUp);
+						// A normal pointing straight up or down has no cross product with world up; normalizing zero gives NaN.
+						if (dot(tangent, tangent) < 1e-12) tangent = cross(normal, float3(0, 0, 1));
+						tangent = normalize(tangent);
 						
 						float3 bitangent = normalize(cross(normal, tangent));
 						float2 projection;
@@ -25966,7 +26263,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 					{
 						case 0:
 						{
-							half rampedLightMap = poiLight.rampedLightMap;
+							half rampedLightMap = dot(poiLight.rampedLightMap, float3(0.299, 0.587, 0.114));
 							if (RimShadowMaskInvert) rampedLightMap = 1 - rampedLightMap;
 							rim = lerp(rim, rim * rampedLightMap, RimShadowMaskStrength);
 							break;
@@ -26091,8 +26388,9 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				rimDir = poiEdgeLinear(rimDir, RimBorder, RimBlur);
 				rimIndir = poiEdgeLinear(rimIndir, RimIndirBorder, RimIndirBlur);
 				
-				rimDir = lerp(rimDir, rimDir * poiLight.rampedLightMap, RimShadowMask);
-				rimIndir = lerp(rimIndir, rimIndir * poiLight.rampedLightMap, RimShadowMask);
+				half rampedLightMap = dot(poiLight.rampedLightMap, float3(0.299, 0.587, 0.114));
+				rimDir = lerp(rimDir, rimDir * rampedLightMap, RimShadowMask);
+				rimIndir = lerp(rimIndir, rimIndir * rampedLightMap, RimShadowMask);
 				
 				half3 lightCol = poiLight.finalLighting;
 				/*
@@ -26248,17 +26546,19 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				}
 				
 				half3 rimColor = poiThemeColor(poiMods, _DepthRimColor.rgb, _DepthRimColorThemeIndex).rgb * lerp(1, poiLight.directColor, _DepthRimMixLightColor) * lerp(1, poiFragData.baseColor, _DepthRimMixBaseColor) * _DepthRimBrightness;
-				half3 rimColorUnlit = rimColor / max(poiLight.finalLighting, 0.0001);
-				rimColor = lerp(rimColor, rimColorUnlit, _DepthRimIgnoreLighting);
+				half3 rimBaseColor = rimColor;
+				#ifndef POI_PASS_ADD
+				rimBaseColor = lerp(rimColor, rimColor / max(poiLight.finalLighting, 0.0001), _DepthRimIgnoreLighting);
+				#endif
 				
 				#if defined(POI_PASS_BASE) || defined(POI_PASS_OUTLINE)
 				poiLight.finalLightAdd += rim * rimColor * _DepthRimAdditiveLighting;
 				#endif
 				poiFragData.emission += rim * rimColor * _DepthRimEmission;
-				poiFragData.baseColor = lerp(poiFragData.baseColor, rimColor, rim * _DepthRimReplace);
-				poiFragData.baseColor += rim * rimColor * _DepthRimAdd;
-				poiFragData.baseColor = lerp(poiFragData.baseColor, 1 - (1 - poiFragData.baseColor) * (1 - rimColor), rim * _DepthRimScreen);
-				poiFragData.baseColor *= lerp(1, rimColor, rim * _DepthRimMultiply);
+				poiFragData.baseColor = lerp(poiFragData.baseColor, rimBaseColor, rim * _DepthRimReplace);
+				poiFragData.baseColor += rim * rimBaseColor * _DepthRimAdd;
+				poiFragData.baseColor = lerp(poiFragData.baseColor, 1 - (1 - poiFragData.baseColor) * (1 - rimBaseColor), rim * _DepthRimScreen);
+				poiFragData.baseColor *= lerp(1, rimBaseColor, rim * _DepthRimMultiply);
 			}
 			#endif
 			//endex
@@ -26591,10 +26891,13 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			void applySubsurfaceScattering(in PoiCam poiCam, inout PoiLight poiLight, in PoiMesh poiMesh, in PoiFragData poiFragData, in PoiMods poiMods)
 			{
 				float4 SSS = 1;
+				float sssThickness = 1;
 				#if defined(PROP_SSSTHICKNESSMAP) || !defined(OPTIMIZER_ENABLED)
 				SSS = POI2D_SAMPLER_PAN(_SSSThicknessMap, _MainTex, poiUV(poiMesh.uv[_SSSThicknessMapUV], _SSSThicknessMap_ST), _SSSThicknessMapPan);
+				// 0 is alpha: materials saved while the selector was ignored keep their thickness.
+				sssThickness *= SSS[((uint)_SSSThicknessMapChannel + 3) % 4];
 				#endif
-				SSS.a = 1 - SSS.a;
+				SSS.a = 1 - sssThickness;
 				
 				float3 sssLightDir = poiLight.direction;
 				#if POI_PIPE == POI_BIRP
@@ -26608,7 +26911,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				if (poiLight.lightType == POI_POINT_SPOT)
 				{
 					sssLightColor = poiLight.unityLight.color.rgb;
-					sssReach = poiLight.attenDistance * CalculateLuminance(poiLight.lightCookie);
+					sssReach = saturate(poiLight.attenDistance) * CalculateLuminance(poiLight.lightCookie);
 				}
 				
 				float3 vLTLight = sssLightDir + poiMesh.normals[1] * _SSSDistortion;
@@ -26695,7 +26998,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				#endif
 				
 				#if POI_PIPE == POI_URP
-				return PoiGlossyEnvironmentReflection(reflDir, worldPos.xyz, roughness, 1, screenUV);
+				return GlossyEnvironmentReflection(reflDir, worldPos.xyz, roughness, 1, screenUV);
 				#endif
 				return 0;
 			}
@@ -26823,7 +27126,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			{
 				specularTerm = GetGGXTerm(nDotL, nDotV, nDotH, roughness, tDotV, bDotV, tDotL, bDotL, tDotH, bDotH, adjustedAnisotropy);
 				fresnelTerm = FresnelTerm(specCol, lDotH);
-				specularTerm = max(0, specularTerm * max(0.00001, nDotL));
+				specularTerm = max(0, specularTerm * max(0.00001, nDotL) * UNITY_PI);
 			}
 			#endif
 			
@@ -26831,8 +27134,59 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			{
 				specularTerm = GetGGXTerm(nDotL, nDotV, nDotH, roughness);
 				fresnelTerm = FresnelTerm(specCol, lDotH);
-				specularTerm = max(0, specularTerm * max(0.00001, nDotL));
+				specularTerm = max(0, specularTerm * max(0.00001, nDotL) * UNITY_PI);
 			}
+			
+			//ifex (_LightingEnableLightVolumes==0 && isNotAnimated(_LightingEnableLightVolumes)) || (_LightingLightVolumesSpecular==0 && isNotAnimated(_LightingLightVolumesSpecular))
+			#if (POI_PIPE == POI_BIRP) && defined(POI_PASS_BASE)
+			// The GGX term without Fresnel and the Schlick weight that takes f0 to 1, so a layer can sum its
+			// lights before it knows f0.
+			float PoiMaterialLVTerm(float3 normal, float3 view, float3 direction, float alpha, float3 tangent, float3 binormal,
+			float2 anisotropy, bool anisotropic, float spreadSq, out float fresnelWeight)
+			{
+				float3 halfDirection = LV_NormalizeSafe(direction + view);
+				float NoL = PoiLVSpecularNoL(dot(normal, direction), spreadSq);
+				float NoV = max(saturate(dot(normal, view)), 0.0001);
+				float NoH = saturate(dot(normal, halfDirection));
+				fresnelWeight = Pow5(1 - saturate(dot(direction, halfDirection)));
+				float term;
+				#if defined(MOCHIE_PBR) && defined(GGX_ANISOTROPICS)
+				if (anisotropic)
+				term = GetGGXTerm(NoL, NoV, NoH, alpha,
+				dot(tangent, view), dot(binormal, view), dot(tangent, direction), dot(binormal, direction),
+				dot(tangent, halfDirection), dot(binormal, halfDirection), anisotropy);
+				else
+				#endif
+				term = GetGGXTerm(NoL, NoV, NoH, alpha);
+				return max(0, term * max(0.00001, NoL) * UNITY_PI);
+			}
+			float3 PoiMaterialLVLobe(float3 normal, float3 view, float3 direction, float3 f0, float alpha,
+			float3 tangent, float3 binormal, float2 anisotropy, bool anisotropic, float spreadSq = 0)
+			{
+				float fresnelWeight;
+				float term = PoiMaterialLVTerm(normal, view, direction, alpha, tangent, binormal, anisotropy, anisotropic, spreadSq, fresnelWeight);
+				return term * (f0 + (1 - f0) * fresnelWeight);
+			}
+			
+			float3 PoiMaterialLVSHSpecular(float3 normal, float3 view, float3 f0, float2 smoothness,
+			float secondStrength, float3 tangent, float3 binormal, float2 anisotropy, bool anisotropic)
+			{
+				float3 color, direction;
+				float spreadSq;
+				if (!PoiLVSHDisc(color, direction, spreadSq)) return 0;
+				float2 alpha = max((1 - smoothness) * (1 - smoothness), 0.002);
+				float3 first = PoiMaterialLVLobe(normal, view, direction, f0,
+				PoiLVSourceRoughness(alpha.x, spreadSq, direction, view), tangent, binormal, anisotropy, anisotropic);
+				float3 second = 0;
+				if (secondStrength > 0)
+				{
+					second = PoiMaterialLVLobe(normal, view, direction, f0,
+					PoiLVSourceRoughness(alpha.y, spreadSq, direction, view), tangent, binormal, anisotropy, anisotropic) * secondStrength;
+				}
+				return color * max(first, second);
+			}
+			#endif
+			//endex
 			
 			float GetRoughness(float smoothness)
 			{
@@ -26867,8 +27221,9 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				specularMask *= poiFragData.specularMask;
 				reflectionMask *= poiFragData.reflectionMask;
 				
+				half4 PBRMaps = 1;
 				#if defined(PROP_MOCHIEMETALLICMAPS) || !defined(OPTIMIZER_ENABLED)
-				half4 PBRMaps = POI2D_SAMPLER_PAN_STOCHASTIC(_MochieMetallicMaps, _MainTex, poiUV(poiMesh.uv[_MochieMetallicMapsUV], _MochieMetallicMaps_ST), _MochieMetallicMapsPan, _MochieMetallicMapsStochastic);
+				PBRMaps = POI2D_SAMPLER_PAN_STOCHASTIC(_MochieMetallicMaps, _MainTex, poiUV(poiMesh.uv[_MochieMetallicMapsUV], _MochieMetallicMaps_ST), _MochieMetallicMapsPan, _MochieMetallicMapsStochastic);
 				UNITY_BRANCH
 				if (_PBRSplitMaskSample >= 0.5)
 				{
@@ -26879,29 +27234,20 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 					if (_MochieMetallicMapsSpecularMaskChannel < 4) assignValueToVectorFromIndex(PBRMaps, _MochieMetallicMapsSpecularMaskChannel, specVal);
 				}
 				
-				// Locking makes channels literal constants; even unused branches need valid vector indices.
-				if (_MochieMetallicMapsMetallicChannel < 4)
-				{
-					metallic *= PBRMaps[min(_MochieMetallicMapsMetallicChannel, 3)];
-				}
-				if (_MochieMetallicMapsRoughnessChannel < 4)
-				{
-					smoothness *= PBRMaps[min(_MochieMetallicMapsRoughnessChannel, 3)];
-					smoothness2 *= PBRMaps[min(_MochieMetallicMapsRoughnessChannel, 3)];
-				}
-				if (_MochieMetallicMapsReflectionMaskChannel < 4)
-				{
-					reflectionMask *= PBRMaps[min(_MochieMetallicMapsReflectionMaskChannel, 3)];
-				}
-				if (_MochieMetallicMapsSpecularMaskChannel < 4)
-				{
-					specularMask *= PBRMaps[min(_MochieMetallicMapsSpecularMaskChannel, 3)];
-				}
 				#endif
+				// Locking makes channels literal constants; even unused branches need valid vector indices.
+				half metallicMap = _MochieMetallicMapsMetallicChannel < 4 ? PBRMaps[min(_MochieMetallicMapsMetallicChannel, 3)] : 1.0h;
+				half smoothnessMap = _MochieMetallicMapsRoughnessChannel < 4 ? PBRMaps[min(_MochieMetallicMapsRoughnessChannel, 3)] : 1.0h;
+				half reflectionMaskMap = _MochieMetallicMapsReflectionMaskChannel < 4 ? PBRMaps[min(_MochieMetallicMapsReflectionMaskChannel, 3)] : 1.0h;
+				half specularMaskMap = _MochieMetallicMapsSpecularMaskChannel < 4 ? PBRMaps[min(_MochieMetallicMapsSpecularMaskChannel, 3)] : 1.0h;
 				
-				reflectionMask *= _MochieReflectionStrength;
-				specularMask *= _MochieSpecularStrength;
+				metallic *= metallicMap;
+				smoothness *= smoothnessMap;
+				smoothness2 *= smoothnessMap;
+				reflectionMask *= reflectionMaskMap * _MochieReflectionStrength;
+				specularMask *= specularMaskMap * _MochieSpecularStrength;
 				
+				// Inverting the result makes Invert Smoothness work as roughness: the slider and map set roughness.
 				if (_MochieMetallicMapInvert >= 0.5)
 				{
 					metallic = 1 - metallic;
@@ -26940,6 +27286,10 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				float4 anisotropyMap = POI2D_SAMPLER_PAN(_AnisotropyMap, _MainTex, poiUV(poiMesh.uv[_AnisotropyMapUV], _AnisotropyMap_ST), _AnisotropyMapPan);
 				adjustedAnisotropy = (anisotropyMap[_AnisotropyMapChannel] - .5) * 2;
 				#endif
+				if (_AnisotropyMapVertexColor > 0.5)
+				{
+					adjustedAnisotropy = (poiMesh.vertexColor[(int)clamp(_AnisotropyMapVertexColor - 1.0, 0.0, 3.0)] - .5) * 2;
+				}
 				adjustedAnisotropy = clamp(adjustedAnisotropy + _Anisotropy, -1, 1);
 				adjustedAnisotropy.y = abs(adjustedAnisotropy.y);
 				#endif
@@ -26949,6 +27299,29 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				float3 pbrNSelect = lerp(poiMesh.normals[0], poiMesh.normals[1], _PBRNormalSelect);
 				float3 pbrTSelect = lerp(poiMesh.tangent[0], poiMesh.tangent[1], _PBRNormalSelect);
 				float3 pbrBSelect = lerp(poiMesh.binormal[0], poiMesh.binormal[1], _PBRNormalSelect);
+				
+				#if defined(GGX_ANISOTROPICS) && defined(POI_ANISOTROPY_DIRECTION) && (defined(PROP_ANISOTROPYDIRECTIONMAP) || !defined(OPTIMIZER_ENABLED))
+				float2 direction = POI2D_SAMPLER_PAN(_AnisotropyDirectionMap, _MainTex, poiUV(poiMesh.uv[_AnisotropyDirectionMapUV], _AnisotropyDirectionMap_ST), _AnisotropyDirectionMapPan).rg * 2 - 1;
+				// Treat neutral gray, including 8-bit quantization, as the original frame.
+				float directionLengthSq = dot(direction, direction);
+				if (directionLengthSq > 0.0001)
+				{
+					direction *= rsqrt(directionLengthSq);
+					// Normal blending can leave the selected axes non-orthogonal.
+					// Build a local frame without changing the mesh's normal-map basis.
+					float3 directionN = normalize(pbrNSelect);
+					float3 directionT = pbrTSelect - directionN * dot(directionN, pbrTSelect);
+					float tangentLengthSq = dot(directionT, directionT);
+					if (tangentLengthSq > 0.000001)
+					{
+						directionT *= rsqrt(tangentLengthSq);
+						float3 directionB = cross(directionN, directionT);
+						directionB *= dot(directionB, pbrBSelect) < 0 ? -1 : 1;
+						pbrTSelect = directionT * direction.x + directionB * direction.y;
+						pbrBSelect = directionB * direction.x - directionT * direction.y;
+					}
+				}
+				#endif
 				
 				mochieBRDFData.pbrNSelect = pbrNSelect;
 				mochieBRDFData.pbrTSelect = pbrTSelect;
@@ -26989,6 +27362,8 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				}
 				#endif
 				
+				// Bind injected modifiers to this instance after the generator renames its data parameter.
+				#define POI_BRDF_MOD_DATA mochieBRDFData
 				//ifex _RGBMaskEnabled==0
 				#ifdef VIGNETTE
 				// Apply RGBA Masking PBR values to mochieBRDFData
@@ -27071,6 +27446,8 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				#endif
 				//endex
 				
+				#undef POI_BRDF_MOD_DATA
+				
 				half roughness = GetRoughness(mochieBRDFData.smoothness);
 				half roughness2 = GetRoughness(mochieBRDFData.smoothness2);
 				
@@ -27101,8 +27478,77 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				mochieBRDFData.omr = omr;
 			}
 			
+			//ifex (_LightingEnableLightVolumes==0 && isNotAnimated(_LightingEnableLightVolumes)) || (_LightingLightVolumesSpecular==0 && isNotAnimated(_LightingLightVolumesSpecular))
+			#if (POI_PIPE == POI_BIRP) && defined(POI_PASS_BASE)
+			// LV lights reach Specular through the light walk, which evaluates each of them as LV's own shader
+			// does. The walk runs before Specular's data is set up, so it works from a copy prepared here.
+			static float3 PoiMochieLVNormal, PoiMochieLVTangent, PoiMochieLVBinormal, PoiMochieLVView;
+			static float2 PoiMochieLVAlpha, PoiMochieLVAnisotropy;
+			static float PoiMochieLVSecond, PoiMochieLVReceive;
+			static float3 PoiMochieLVFirst = 0, PoiMochieLVFirstFresnel = 0, PoiMochieLVSecondTerm = 0, PoiMochieLVSecondFresnel = 0;
+			void PoiMochieLVPrepare(PoiFragData poiFragData, PoiMesh poiMesh, PoiMods poiMods, PoiCam poiCam)
+			{
+				MochieBRDFData data = (MochieBRDFData)0;
+				MetallicAndSpecularFragDataInit(poiFragData, data, poiMesh, poiMods);
+				FinalizeMochieBRDFData(data, poiMesh, poiMods);
+				PoiMochieLVNormal = normalize(data.pbrNSelect);
+				PoiMochieLVTangent = data.pbrTSelect;
+				PoiMochieLVBinormal = data.pbrBSelect;
+				PoiMochieLVView = poiCam.eyeViewDir;
+				PoiMochieLVAlpha = float2(data.brdfRoughness, data.brdfRoughness2);
+				PoiMochieLVAnisotropy = data.adjustedAnisotropy;
+				PoiMochieLVSecond = _Specular2ndLayer > 0 ? _MochieSpecularStrength2 : 0;
+				PoiMochieLVReceive = _LightingCastedShadows * (1 - _IgnoreCastedShadows);
+			}
+			void PoiMochieLVAdd(float3 color, float visibility, float3 direction, float spreadSq)
+			{
+				color *= lerp(1, visibility, PoiMochieLVReceive);
+				float fresnelWeight;
+				float term = PoiMaterialLVTerm(PoiMochieLVNormal, PoiMochieLVView, direction,
+				PoiLVSourceRoughness(PoiMochieLVAlpha.x, spreadSq, direction, PoiMochieLVView),
+				PoiMochieLVTangent, PoiMochieLVBinormal, PoiMochieLVAnisotropy, true, spreadSq, fresnelWeight);
+				PoiMochieLVFirst += color * (term * (1 - fresnelWeight));
+				PoiMochieLVFirstFresnel += color * (term * fresnelWeight);
+				if (PoiMochieLVSecond > 0)
+				{
+					term = PoiMaterialLVTerm(PoiMochieLVNormal, PoiMochieLVView, direction,
+					PoiLVSourceRoughness(PoiMochieLVAlpha.y, spreadSq, direction, PoiMochieLVView),
+					PoiMochieLVTangent, PoiMochieLVBinormal, PoiMochieLVAnisotropy, true, spreadSq, fresnelWeight);
+					PoiMochieLVSecondTerm += color * (term * (1 - fresnelWeight));
+					PoiMochieLVSecondFresnel += color * (term * fresnelWeight);
+				}
+			}
+			float3 PoiMochieLVSpecular(float3 f0)
+			{
+				float3 first = f0 * PoiMochieLVFirst + PoiMochieLVFirstFresnel;
+				float3 second = (f0 * PoiMochieLVSecondTerm + PoiMochieLVSecondFresnel) * PoiMochieLVSecond;
+				return max(first, second);
+			}
+			#endif
+			//endex
+			
 			void MochieBRDFSpecular(inout PoiFragData poiFragData, inout MochieBRDFData mochieBRDFData, in PoiCam poiCam, inout PoiLight poiLight, in PoiMesh poiMesh, inout PoiMods poiMods)
 			{
+				PoiLight specLight = poiLight;
+				//ifex _LightingEnableLightVolumes==0 && isNotAnimated(_LightingEnableLightVolumes)
+				#if (POI_PIPE == POI_BIRP) && defined(POI_PASS_BASE)
+				[branch] if (PoiLightVolumesActive())
+				{
+					// Local LV highlights are evaluated separately below.
+					specLight.direction = poiLight.unityLight.direction;
+					specLight.directColor = poiLight.unityLight.color.rgb * poiLight.attenDistance * poiLight.lightCookie;
+					specLight.halfDir = Unity_SafeNormalize(specLight.direction + poiCam.eyeViewDir);
+					specLight.nDotL = dot(poiMesh.normals[1], specLight.direction);
+					specLight.vertexNDotL = dot(poiMesh.normals[0], specLight.direction);
+					specLight.nDotH = dot(poiMesh.normals[1], specLight.halfDir);
+					specLight.vertexNDotH = dot(poiMesh.normals[0], specLight.halfDir);
+					specLight.lDotH = dot(specLight.direction, specLight.halfDir);
+					specLight.lightMap = poiLight.attenShadowsStrength;
+					specLight.lightCookie = 1;
+				}
+				#endif
+				//endex
+				
 				FinalizeMochieBRDFData(mochieBRDFData, poiMesh, poiMods);
 				
 				half specularMask = mochieBRDFData.specularMask;
@@ -27124,15 +27570,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				float3 environment = 0;
 				
 				// In the additive pass directColor already carries atten
-				half specLightMap = poiLight.lightMap;
-				half attenuation = lerp(specLightMap, 1, _IgnoreCastedShadows);
+				half specLightMap = specLight.lightMap;
+				half attenuation = lerp(specLightMap, CalculateLuminance(specLight.lightCookie), _IgnoreCastedShadows);
 				
 				half3 fresnelTerm = 1;
 				half3 specularTerm = 1;
 				
-				float pbrNDotL = lerp(poiLight.vertexNDotL, poiLight.nDotL, _PBRNormalSelect);
-				float pbrNDotV = lerp(poiLight.vertexNDotV, poiLight.nDotV, _PBRNormalSelect);
-				float pbrNDotH = lerp(poiLight.vertexNDotH, poiLight.nDotH, _PBRNormalSelect);
+				float pbrNDotL = lerp(specLight.vertexNDotL, specLight.nDotL, _PBRNormalSelect);
+				float pbrNDotV = lerp(specLight.vertexNDotV, specLight.nDotV, _PBRNormalSelect);
+				float pbrNDotH = lerp(specLight.vertexNDotH, specLight.nDotH, _PBRNormalSelect);
 				
 				float3 pbrNSelect = mochieBRDFData.pbrNSelect;
 				float3 pbrTSelect = mochieBRDFData.pbrTSelect;
@@ -27140,26 +27586,26 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				
 				float pbrTDotV = dot(pbrTSelect, poiCam.eyeViewDir);
 				float pbrBDotV = dot(pbrBSelect, poiCam.eyeViewDir);
-				float pbrTDotL = dot(pbrTSelect, poiLight.direction);
-				float pbrBDotL = dot(pbrBSelect, poiLight.direction);
-				float pbrTDotH = dot(pbrTSelect, poiLight.halfDir);
-				float pbrBDotH = dot(pbrBSelect, poiLight.halfDir);
+				float pbrTDotL = dot(pbrTSelect, specLight.direction);
+				float pbrBDotL = dot(pbrBSelect, specLight.direction);
+				float pbrTDotH = dot(pbrTSelect, specLight.halfDir);
+				float pbrBDotH = dot(pbrBSelect, specLight.halfDir);
 				
 				#ifdef GGX_ANISOTROPICS
 				float2 adjustedAnisotropy = mochieBRDFData.adjustedAnisotropy;
-				GetSpecFresTerm(pbrNDotL, pbrNDotV, pbrNDotH, poiLight.lDotH, specularTerm, fresnelTerm, specCol, brdfRoughness, pbrTDotV, pbrBDotV, pbrTDotL, pbrBDotL, pbrTDotH, pbrBDotH, adjustedAnisotropy);
+				GetSpecFresTerm(pbrNDotL, pbrNDotV, pbrNDotH, specLight.lDotH, specularTerm, fresnelTerm, specCol, brdfRoughness, pbrTDotV, pbrBDotV, pbrTDotL, pbrBDotL, pbrTDotH, pbrBDotH, adjustedAnisotropy);
 				#else
-				GetSpecFresTerm(pbrNDotL, pbrNDotV, pbrNDotH, poiLight.lDotH, specularTerm, fresnelTerm, specCol, brdfRoughness);
+				GetSpecFresTerm(pbrNDotL, pbrNDotV, pbrNDotH, specLight.lDotH, specularTerm, fresnelTerm, specCol, brdfRoughness);
 				#endif
-				half specOcclusion = poiLight.occlusion;
+				half specOcclusion = specLight.occlusion;
 				#ifdef POI_BENTNORMALMAP
 				if (poiMesh.hasBentNormal > 0.5)
 				{
 					float3 specReflDir = reflect(-poiCam.eyeViewDir, lerp(poiMesh.normals[0], poiMesh.normals[1], _PBRNormalSelect));
-					specOcclusion = lerp(poiLight.occlusion, PoiSpecularOcclusionBentNormal(specReflDir, poiMesh.bentNormal, poiLight.occlusion, mochieBRDFData.percepRough), _BentNormalSpecOccStrength);
+					specOcclusion = lerp(specLight.occlusion, PoiSpecularOcclusionBentNormal(specReflDir, poiMesh.bentNormal, specLight.occlusion, mochieBRDFData.percepRough), _BentNormalSpecOccStrength);
 				}
 				#endif
-				specular = poiLight.directColor * specularTerm * fresnelTerm * specularMask * specTint * specOcclusion * attenuation;
+				specular = specLight.directColor * specularTerm * fresnelTerm * specularMask * specTint * specOcclusion * attenuation;
 				
 				if (poiFragData.toggleVertexLights)
 				{
@@ -27169,19 +27615,19 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 					{
 						fresnelTerm = 1;
 						specularTerm = 1;
-						float pbrVDotNL = lerp(poiLight.vertexVDotNL[index], poiLight.vDotNL[index], _PBRNormalSelect);
-						float pbrVDotNH = lerp(poiLight.vertexVDotNH[index], poiLight.vDotNH[index], _PBRNormalSelect);
+						float pbrVDotNL = lerp(specLight.vertexVDotNL[index], specLight.vDotNL[index], _PBRNormalSelect);
+						float pbrVDotNH = lerp(specLight.vertexVDotNH[index], specLight.vDotNH[index], _PBRNormalSelect);
 						
 						#ifdef GGX_ANISOTROPICS
-						float pbrTDotvL = dot(pbrTSelect, poiLight.vDirection[index]);
-						float pbrBDotvL = dot(pbrBSelect, poiLight.vDirection[index]);
-						float pbrTDotvH = dot(pbrTSelect, poiLight.vHalfDir[index]);
-						float pbrBDotvH = dot(pbrBSelect, poiLight.vHalfDir[index]);
-						GetSpecFresTerm(pbrVDotNL, pbrNDotV, pbrVDotNH, poiLight.vDotLH[index], specularTerm, fresnelTerm, specCol, brdfRoughness, pbrTDotV, pbrBDotV, pbrTDotvL, pbrBDotvL, pbrTDotvH, pbrBDotvH, adjustedAnisotropy);
+						float pbrTDotvL = dot(pbrTSelect, specLight.vDirection[index]);
+						float pbrBDotvL = dot(pbrBSelect, specLight.vDirection[index]);
+						float pbrTDotvH = dot(pbrTSelect, specLight.vHalfDir[index]);
+						float pbrBDotvH = dot(pbrBSelect, specLight.vHalfDir[index]);
+						GetSpecFresTerm(pbrVDotNL, pbrNDotV, pbrVDotNH, specLight.vDotLH[index], specularTerm, fresnelTerm, specCol, brdfRoughness, pbrTDotV, pbrBDotV, pbrTDotvL, pbrBDotvL, pbrTDotvH, pbrBDotvH, adjustedAnisotropy);
 						#else
-						GetSpecFresTerm(pbrVDotNL, pbrNDotV, pbrVDotNH, poiLight.vDotLH[index], specularTerm, fresnelTerm, specCol, brdfRoughness);
+						GetSpecFresTerm(pbrVDotNL, pbrNDotV, pbrVDotNH, specLight.vDotLH[index], specularTerm, fresnelTerm, specCol, brdfRoughness);
 						#endif
-						vSpecular += poiLight.vColor[index] * specularTerm * fresnelTerm * vSpecBase;
+						vSpecular += specLight.vColor[index] * specularTerm * fresnelTerm * vSpecBase;
 					}
 					#endif
 				}
@@ -27191,11 +27637,11 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 					half3 fresnelTerm = 1;
 					half3 specularTerm = 1;
 					#ifdef GGX_ANISOTROPICS
-					GetSpecFresTerm(pbrNDotL, pbrNDotV, pbrNDotH, poiLight.lDotH, specularTerm, fresnelTerm, specCol, brdfRoughness2, pbrTDotV, pbrBDotV, pbrTDotL, pbrBDotL, pbrTDotH, pbrBDotH, adjustedAnisotropy);
+					GetSpecFresTerm(pbrNDotL, pbrNDotV, pbrNDotH, specLight.lDotH, specularTerm, fresnelTerm, specCol, brdfRoughness2, pbrTDotV, pbrBDotV, pbrTDotL, pbrBDotL, pbrTDotH, pbrBDotH, adjustedAnisotropy);
 					#else
-					GetSpecFresTerm(pbrNDotL, pbrNDotV, pbrNDotH, poiLight.lDotH, specularTerm, fresnelTerm, specCol, brdfRoughness2);
+					GetSpecFresTerm(pbrNDotL, pbrNDotV, pbrNDotH, specLight.lDotH, specularTerm, fresnelTerm, specCol, brdfRoughness2);
 					#endif
-					specular2 = poiLight.directColor * specularTerm * fresnelTerm * specularMask * specTint * specOcclusion * attenuation * _MochieSpecularStrength2;
+					specular2 = specLight.directColor * specularTerm * fresnelTerm * specularMask * specTint * specOcclusion * attenuation * _MochieSpecularStrength2;
 					
 					if (poiFragData.toggleVertexLights)
 					{
@@ -27205,19 +27651,19 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 						{
 							fresnelTerm = 1;
 							specularTerm = 1;
-							float pbrVDotNL = lerp(poiLight.vertexVDotNL[index], poiLight.vDotNL[index], _PBRNormalSelect);
-							float pbrVDotNH = lerp(poiLight.vertexVDotNH[index], poiLight.vDotNH[index], _PBRNormalSelect);
+							float pbrVDotNL = lerp(specLight.vertexVDotNL[index], specLight.vDotNL[index], _PBRNormalSelect);
+							float pbrVDotNH = lerp(specLight.vertexVDotNH[index], specLight.vDotNH[index], _PBRNormalSelect);
 							
 							#ifdef GGX_ANISOTROPICS
-							float pbrTDotvL = dot(pbrTSelect, poiLight.vDirection[index]);
-							float pbrBDotvL = dot(pbrBSelect, poiLight.vDirection[index]);
-							float pbrTDotvH = dot(pbrTSelect, poiLight.vHalfDir[index]);
-							float pbrBDotvH = dot(pbrBSelect, poiLight.vHalfDir[index]);
-							GetSpecFresTerm(pbrVDotNL, pbrNDotV, pbrVDotNH, poiLight.vDotLH[index], specularTerm, fresnelTerm, specCol, brdfRoughness2, pbrTDotV, pbrBDotV, pbrTDotvL, pbrBDotvL, pbrTDotvH, pbrBDotvH, adjustedAnisotropy);
+							float pbrTDotvL = dot(pbrTSelect, specLight.vDirection[index]);
+							float pbrBDotvL = dot(pbrBSelect, specLight.vDirection[index]);
+							float pbrTDotvH = dot(pbrTSelect, specLight.vHalfDir[index]);
+							float pbrBDotvH = dot(pbrBSelect, specLight.vHalfDir[index]);
+							GetSpecFresTerm(pbrVDotNL, pbrNDotV, pbrVDotNH, specLight.vDotLH[index], specularTerm, fresnelTerm, specCol, brdfRoughness2, pbrTDotV, pbrBDotV, pbrTDotvL, pbrBDotvL, pbrTDotvH, pbrBDotvH, adjustedAnisotropy);
 							#else
-							GetSpecFresTerm(pbrVDotNL, pbrNDotV, pbrVDotNH, poiLight.vDotLH[index], specularTerm, fresnelTerm, specCol, brdfRoughness2);
+							GetSpecFresTerm(pbrVDotNL, pbrNDotV, pbrVDotNH, specLight.vDotLH[index], specularTerm, fresnelTerm, specCol, brdfRoughness2);
 							#endif
-							vSpecular2 += poiLight.vColor[index] * specularTerm * fresnelTerm * vSpec2Base;
+							vSpecular2 += specLight.vColor[index] * specularTerm * fresnelTerm * vSpec2Base;
 						}
 						#endif
 					}
@@ -27225,12 +27671,17 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				environment = max(specular + vSpecular, specular2 + vSpecular2);
 				//ifex (_LightingEnableLightVolumes==0 && isNotAnimated(_LightingEnableLightVolumes)) || (_LightingLightVolumesSpecular==0 && isNotAnimated(_LightingLightVolumesSpecular))
 				#if (POI_PIPE == POI_BIRP) && defined(POI_PASS_BASE)
-				if (_UdonLightVolumeEnabled && _LightingEnableLightVolumes >= 0.5 && _LightingLightVolumesSpecular > 0)
+				[branch] if (PoiLightVolumesActive() && _LightingLightVolumesSpecular > 0)
 				{
-					environment += LightVolumeSpecularDominant(specCol, 1.0 - mochieBRDFData.percepRough, normalize(pbrNSelect), poiCam.eyeViewDir, float3(PoiSHAr.w, PoiSHAg.w, PoiSHAb.w), PoiSHAr.xyz, PoiSHAg.xyz, PoiSHAb.xyz) * specularMask * specTint * specOcclusion * _LightingLightVolumesIntensity * _LightingLightVolumesSpecular;
+					float secondStrength = _Specular2ndLayer > 0 ? _MochieSpecularStrength2 : 0;
+					environment += PoiMochieLVSpecular(specCol) * specularMask * specTint * specOcclusion * _LightingLightVolumesSpecular;
+					environment += PoiMaterialLVSHSpecular(normalize(pbrNSelect), poiCam.eyeViewDir, specCol,
+					1 - float2(mochieBRDFData.percepRough, mochieBRDFData.percepRough2), secondStrength,
+					pbrTSelect, pbrBSelect, mochieBRDFData.adjustedAnisotropy, true) * specularMask * specTint * specOcclusion * _LightingLightVolumesSpecular;
 				}
 				#endif
 				//endex
+				mochieBRDFData.specular += environment;
 				poiLight.finalLightAdd += environment;
 			}
 			
@@ -27274,16 +27725,10 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				float3 reflCol = GetReflections(poiCam, poiLight, poiMesh, percepRough, pbrReflectionDir);
 				#endif
 				reflections = surfaceReduction * reflCol * FresnelLerp(specCol, specCol + lerp(specCol, 1, _RefSpecFresnelStrength) * _RefSpecFresnelStrength, pbrNDotV) * SFVisibility(brdfRoughness, poiLight.directColor, pbrNDotV, _SFExposureOcclusion);
-				reflections *= poiThemeColor(poiMods, _MochieReflectionTint.rgb, _MochieReflectionTintThemeIndex);
 				
-				//ifex (_LightingEnableLightVolumes==0 && isNotAnimated(_LightingEnableLightVolumes)) || (_LightingLightVolumesSpecular==0 && isNotAnimated(_LightingLightVolumesSpecular))
-				#if (POI_PIPE == POI_BIRP) && defined(POI_PASS_BASE)
-				if (_UdonLightVolumeEnabled && _LightingEnableLightVolumes >= 0.5 && _LightingLightVolumesSpecular > 0)
-				{
-					reflections += LightVolumeSpecularDominant(specCol, 1.0 - percepRough, normalize(mochieBRDFData.pbrNSelect), poiCam.eyeViewDir, float3(PoiSHAr.w, PoiSHAg.w, PoiSHAb.w), PoiSHAr.xyz, PoiSHAg.xyz, PoiSHAb.xyz) * _LightingLightVolumesIntensity * _LightingLightVolumesSpecular;
-				}
-				#endif
-				//endex
+				// LV highlights belong to Specular; Reflections supplies the cubemap.
+				
+				reflections *= poiThemeColor(poiMods, _MochieReflectionTint.rgb, _MochieReflectionTintThemeIndex);
 				
 				#ifdef POI_BENTNORMALMAP
 				if (poiMesh.hasBentNormal > 0.5)
@@ -27300,13 +27745,13 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				// Apply metallic diffuse darkening
 				poiFragData.finalColor = lerp(poiFragData.finalColor, poiFragData.finalColor * mochieBRDFData.omr, mochieBRDFData.reflectionMask);
 				
-				// Correct specular/reflections for baseColor changes after specCol was computed
+				// Correct specular for baseColor changes after specCol was computed
 				// (e.g., effects like matcap or decals that modify baseColor post-specular)
 				if (any(mochieBRDFData.specCol > 0))
 				{
 					float3 currentSpecCol = lerp(unity_ColorSpaceDielectricSpec.rgb, poiFragData.baseColor, mochieBRDFData.metallic);
 					float3 safeSpecCol = max(mochieBRDFData.specCol, unity_ColorSpaceDielectricSpec.rgb);
-					poiLight.finalLightAdd *= lerp(float3(1, 1, 1), currentSpecCol / safeSpecCol, mochieBRDFData.reflectionMask);
+					poiLight.finalLightAdd += mochieBRDFData.specular * (lerp(float3(1, 1, 1), currentSpecCol / safeSpecCol, mochieBRDFData.reflectionMask) - 1);
 				}
 			}
 			
@@ -27314,15 +27759,17 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			//endex
 			//ifex _ClearCoatBRDF==0
 			#ifdef POI_CLEARCOAT
-			void poiClearCoat(inout PoiFragData poiFragData, in PoiCam poiCam, inout PoiLight poiLight, in PoiMesh poiMesh, in PoiMods poiMods)
+			void PoiClearCoatSurface(in PoiMesh poiMesh, in PoiMods poiMods, out half clearCoatMask, out half smoothness, out half reflectionMask, out half specularMask)
 			{
-				half clearCoatMask = _ClearCoatStrength;
-				half smoothness = _ClearCoatSmoothness;
-				half reflectionMask = _ClearCoatReflectionStrength;
-				half specularMask = _ClearCoatSpecularStrength;
+				clearCoatMask = _ClearCoatStrength;
+				smoothness = _ClearCoatSmoothness;
+				reflectionMask = _ClearCoatReflectionStrength;
+				specularMask = _ClearCoatSpecularStrength;
 				
+				half4 PBRMaps = 1;
 				#if defined(PROP_CLEARCOATMAPS) || !defined(OPTIMIZER_ENABLED)
-				float4 PBRMaps = POI2D_SAMPLER_PAN_STOCHASTIC(_ClearCoatMaps, _MainTex, poiUV(poiMesh.uv[_ClearCoatMapsUV], _ClearCoatMaps_ST), _ClearCoatMapsPan, _ClearCoatMapsStochastic);
+				PBRMaps = POI2D_SAMPLER_PAN_STOCHASTIC(_ClearCoatMaps, _MainTex, poiUV(poiMesh.uv[_ClearCoatMapsUV], _ClearCoatMaps_ST), _ClearCoatMapsPan, _ClearCoatMapsStochastic);
+				#endif
 				
 				if (_ClearCoatMapsClearCoatMaskChannel < 4)
 				{
@@ -27340,7 +27787,6 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				{
 					specularMask *= PBRMaps[min(_ClearCoatMapsSpecularMaskChannel, 3)];
 				}
-				#endif
 				
 				if (_ClearCoatGlobalMask > 0)
 				{
@@ -27381,17 +27827,57 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 					clearCoatMask = lerp(0, clearCoatMask * TPSBufferedDepth(poiMesh.localPos, poiMesh.vertexColor), _ClearCoatTPSMaskStrength);
 				}
 				#endif
-				
-				if (clearCoatMask < 0.001) return;
-				
-				half roughness = GetRoughness(smoothness);
-				float3 specCol = 0.220916301;
-				float omr = unity_ColorSpaceDielectricSpec.a;
+			}
+			
+			//ifex (_LightingEnableLightVolumes==0 && isNotAnimated(_LightingEnableLightVolumes)) || (_LightingLightVolumesSpecular==0 && isNotAnimated(_LightingLightVolumesSpecular))
+			#if (POI_PIPE == POI_BIRP) && defined(POI_PASS_BASE)
+			// Clear Coat's LV lights are evaluated in the light walk, from a copy of its surface prepared there.
+			static float3 PoiClearCoatLVNormal, PoiClearCoatLVView;
+			static float PoiClearCoatLVAlpha, PoiClearCoatLVReceive;
+			static bool PoiClearCoatLVActive = false;
+			static float3 PoiClearCoatLVSpecular = 0;
+			void PoiClearCoatLVPrepare(PoiMesh poiMesh, PoiMods poiMods, PoiCam poiCam)
+			{
+				half clearCoatMask, smoothness, reflectionMask, specularMask;
+				PoiClearCoatSurface(poiMesh, poiMods, clearCoatMask, smoothness, reflectionMask, specularMask);
+				PoiClearCoatLVActive = clearCoatMask >= 0.001;
+				float3 clearcoatNormal = lerp(poiMesh.normals[0], poiMesh.normals[1], _ClearCoatNormalSelect);
 				float percepRough = 1 - smoothness;
 				UNITY_BRANCH
 				if (_ClearCoatGSAAEnabled >= 0.5)
 				{
-					percepRough = GSAA_Filament(poiMesh.normals[_ClearCoatNormalSelect], percepRough, _ClearCoatGSAAVariance, _ClearCoatGSAAThreshold);
+					percepRough = GSAA_Filament(clearcoatNormal, percepRough, _ClearCoatGSAAVariance, _ClearCoatGSAAThreshold);
+				}
+				PoiClearCoatLVAlpha = max(percepRough * percepRough, 0.002);
+				PoiClearCoatLVNormal = normalize(clearcoatNormal);
+				PoiClearCoatLVView = poiCam.eyeViewDir;
+				PoiClearCoatLVReceive = _LightingCastedShadows * (1 - _CCIgnoreCastedShadows);
+			}
+			void PoiClearCoatLVAdd(float3 color, float visibility, float3 direction, float spreadSq)
+			{
+				if (!PoiClearCoatLVActive) return;
+				PoiClearCoatLVSpecular += color * lerp(1, visibility, PoiClearCoatLVReceive) * PoiMaterialLVLobe(PoiClearCoatLVNormal, PoiClearCoatLVView, direction,
+				unity_ColorSpaceDielectricSpec.rgb, PoiLVSourceRoughness(PoiClearCoatLVAlpha, spreadSq, direction, PoiClearCoatLVView), 0, 0, 0, false, spreadSq);
+			}
+			#endif
+			//endex
+			
+			void poiClearCoat(inout PoiFragData poiFragData, in PoiCam poiCam, inout PoiLight poiLight, in PoiMesh poiMesh, in PoiMods poiMods, bool lightOnly)
+			{
+				half clearCoatMask, smoothness, reflectionMask, specularMask;
+				PoiClearCoatSurface(poiMesh, poiMods, clearCoatMask, smoothness, reflectionMask, specularMask);
+				
+				if (clearCoatMask < 0.001) return;
+				
+				half roughness = GetRoughness(smoothness);
+				float3 specCol = unity_ColorSpaceDielectricSpec.rgb;
+				float omr = unity_ColorSpaceDielectricSpec.a;
+				float percepRough = 1 - smoothness;
+				float3 clearcoatNormal = lerp(poiMesh.normals[0], poiMesh.normals[1], _ClearCoatNormalSelect);
+				UNITY_BRANCH
+				if (_ClearCoatGSAAEnabled >= 0.5)
+				{
+					percepRough = GSAA_Filament(clearcoatNormal, percepRough, _ClearCoatGSAAVariance, _ClearCoatGSAAThreshold);
 				}
 				half brdfRoughness = percepRough * percepRough;
 				brdfRoughness = max(brdfRoughness, 0.002);
@@ -27402,7 +27888,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				float3 reflections = 0;
 				float3 environment = 0;
 				half ccLightMap = poiLight.lightMap;
-				half attenuation = min(poiLight.nDotLSaturated, lerp(ccLightMap, 1, _CCIgnoreCastedShadows));
+				half attenuation = min(poiLight.nDotLSaturated, lerp(ccLightMap, CalculateLuminance(poiLight.lightCookie), _CCIgnoreCastedShadows));
 				
 				half3 fresnelTerm = 1;
 				half3 specularTerm = 1;
@@ -27413,8 +27899,29 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				float3 clearcoatReflectionDir = lerp(poiCam.vertexReflectionDir, poiCam.reflectionDir, _ClearCoatNormalSelect);
 				
 				half3 ccSpecTint = poiThemeColor(poiMods, _ClearCoatSpecularTint.rgb, _ClearCoatSpecularTintThemeIndex);
-				GetSpecFresTerm(clearcoatNDotL, clearcoatNDotV, clearcoatNDotH, poiLight.lDotH, specularTerm, fresnelTerm, specCol, brdfRoughness);
-				specular = poiLight.directColor * specularTerm * fresnelTerm * specularMask * ccSpecTint * poiLight.occlusion * attenuation;
+				float ccLDotH = poiLight.lDotH;
+				float3 ccDirectColor = poiLight.directColor;
+				//ifex _LightingEnableLightVolumes==0 && isNotAnimated(_LightingEnableLightVolumes)
+				#if (POI_PIPE == POI_BIRP) && defined(POI_PASS_BASE)
+				[branch] if (PoiLightVolumesActive())
+				{
+					// poiLight already carries LV light, which is added separately below, as in R&S.
+					float3 ccHalfDir = Unity_SafeNormalize(poiLight.unityLight.direction + poiCam.eyeViewDir);
+					ccDirectColor = poiLight.unityLight.color.rgb * poiLight.attenDistance * poiLight.lightCookie;
+					clearcoatNDotL = dot(clearcoatNormal, poiLight.unityLight.direction);
+					clearcoatNDotH = dot(clearcoatNormal, ccHalfDir);
+					ccLDotH = dot(poiLight.unityLight.direction, ccHalfDir);
+					attenuation = min(saturate(clearcoatNDotL), lerp(poiLight.attenShadowsStrength * poiLight.detailShadow, CalculateLuminance(poiLight.lightCookie), _CCIgnoreCastedShadows));
+				}
+				#endif
+				//endex
+				GetSpecFresTerm(clearcoatNDotL, clearcoatNDotV, clearcoatNDotH, ccLDotH, specularTerm, fresnelTerm, specCol, brdfRoughness);
+				specular = ccDirectColor * specularTerm * fresnelTerm * specularMask * ccSpecTint * poiLight.occlusion * attenuation;
+				if (lightOnly)
+				{
+					poiLight.finalLightAdd += saturate(specular * clearCoatMask);
+					return;
+				}
 				if (poiFragData.toggleVertexLights)
 				{
 					#if defined(VERTEXLIGHT_ON)
@@ -27449,9 +27956,11 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				}
 				//ifex (_LightingEnableLightVolumes==0 && isNotAnimated(_LightingEnableLightVolumes)) || (_LightingLightVolumesSpecular==0 && isNotAnimated(_LightingLightVolumesSpecular))
 				#if (POI_PIPE == POI_BIRP) && defined(POI_PASS_BASE)
-				if (_UdonLightVolumeEnabled && _LightingEnableLightVolumes >= 0.5 && _LightingLightVolumesSpecular > 0)
+				[branch] if (PoiLightVolumesActive() && _LightingLightVolumesSpecular > 0)
 				{
-					environment += LightVolumeSpecularDominant(specCol, smoothness, poiMesh.normals[_ClearCoatNormalSelect], poiCam.eyeViewDir, float3(PoiSHAr.w, PoiSHAg.w, PoiSHAb.w), PoiSHAr.xyz, PoiSHAg.xyz, PoiSHAb.xyz) * specularMask * _LightingLightVolumesIntensity * _LightingLightVolumesSpecular;
+					environment += PoiClearCoatLVSpecular * specularMask * ccSpecTint * poiLight.occlusion * _LightingLightVolumesSpecular;
+					environment += PoiMaterialLVSHSpecular(normalize(clearcoatNormal), poiCam.eyeViewDir,
+					specCol, (1 - percepRough).xx, 0, 0, 0, 0, false) * ccSpecTint * poiLight.occlusion * specularMask * _LightingLightVolumesSpecular;
 				}
 				#endif
 				//endex
@@ -27495,7 +28004,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				#endif
 				
 				#if POI_PIPE == POI_URP
-				enviroRimColor = PoiGlossyEnvironmentReflection(poiMesh.normals[1], poiMesh.worldPos, rimEnviroBlur, 1, poiCam.screenUV);
+				enviroRimColor = GlossyEnvironmentReflection(poiMesh.normals[1], poiMesh.worldPos, rimEnviroBlur, 1, poiCam.screenUV);
 				#endif
 				
 				half enviroMask = 1;
@@ -27511,17 +28020,8 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			//ifex _StylizedSpecular==0
 			#ifdef POI_STYLIZED_StylizedSpecular
 			#ifdef _STYLIZEDREFLECTIONMODE_UNITYCHAN
-			void CalculateUTSSpecular(inout PoiFragData poiFragData, in PoiCam poiCam, inout PoiLight poiLight, in PoiMesh poiMesh, in PoiMods poiMods)
+			float PoiUTSShape(float specArea)
 			{
-				float3 blendedNormal = lerp(poiMesh.normals[0], poiMesh.normals[1], _StylizedSpecularNormalStrength);
-				float nDotH = dot(blendedNormal, poiLight.halfDir);
-				float specArea = 0.5 * nDotH + 0.5;
-				#if defined(PROP_HIGHCOLOR_TEX) || !defined(OPTIMIZER_ENABLED)
-				half3 specularMap = POI2D_SAMPLER_PAN(_HighColor_Tex, _MainTex, poiUV(poiMesh.uv[_HighColor_TexUV], _HighColor_Tex_ST), _HighColor_TexPan);
-				#else
-				half3 specularMap = 1;
-				#endif
-				
 				float layer1Exp = exp2(lerp(11, 1, _HighColor_Power));
 				float layer2Exp = exp2(lerp(11, 1, _Layer2Size));
 				float layer1Thresh = 1.0 - pow(_HighColor_Power, 5);
@@ -27539,24 +28039,11 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 					specMask2 += poiEdgeNonLinear(specArea, layer2Thresh, _StylizedSpecular2Feather) * _Layer2Strength;
 				}
 				
-				#if defined(PROP_SET_HIGHCOLORMASK) || !defined(OPTIMIZER_ENABLED)
-				half specularMask = POI2D_SAMPLER_PAN(_Set_HighColorMask, _MainTex, poiUV(poiMesh.uv[_Set_HighColorMaskUV], _Set_HighColorMask_ST), _Set_HighColorMaskPan)[_Set_HighColorMaskChannel];
-				#else
-				half specularMask = 1;
-				#endif
-				if (_StylizedSpecularInvertMask >= 0.5)
-				{
-					specularMask = 1 - specularMask;
-				}
-				specularMask = saturate(specularMask + _Tweak_HighColorMaskLevel);
-				
-				half specMask = saturate(specMask1 + specMask2) * specularMask * lerp(poiLight.rampedLightMap, 1, _StylizedSpecularIgnoreShadow);
-				half specLightMap = poiLight.lightMap;
-				half attenuation = min(lerp(poiLight.nDotLSaturated, 1, _StylizedSpecularIgnoreNormal), lerp(lerp(specLightMap, 1, _SSIgnoreCastedShadows), 1, _StylizedSpecularIgnoreShadow));
-				
-				half finalSpecMask = min(min(specMask, poiLight.occlusion), attenuation) * _StylizedSpecularStrength;
-				half3 specColorBase = specularMap * poiThemeColor(poiMods, _HighColor.rgb, _HighColorThemeIndex);
-				half3 finalSpecColor = specColorBase * lerp(1, poiLight.directColor, _UseLightColor);
+				return saturate(specMask1 + specMask2);
+			}
+			
+			void PoiUTSBlend(inout PoiFragData poiFragData, inout PoiLight poiLight, float3 finalSpecColor, float finalSpecMask)
+			{
 				switch (_Is_BlendAddToHiColor)
 				{
 					case 0:
@@ -27580,15 +28067,90 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 						break;
 					}
 				}
+			}
+			
+			//ifex _LightingEnableLightVolumes==0 && isNotAnimated(_LightingEnableLightVolumes)
+			#if (POI_PIPE == POI_BIRP) && defined(POI_PASS_BASE)
+			void PoiLVUTSLight(inout PoiFragData frag, inout PoiLight lighting, PoiCam cam,
+			float3 normal, float3 color, float3 direction, float visibility, float coverage,
+			float3 tint, float mask)
+			{
+				if (coverage <= 0 || !any(color > 0)) return;
+				float receive = _LightingCastedShadows * (1 - _SSIgnoreCastedShadows) * (1 - _StylizedSpecularIgnoreShadow);
+				float cast = lerp(1, visibility, receive);
+				float nl = dot(normal, direction);
+				float shape = PoiUTSShape(0.5 * dot(normal, LV_NormalizeSafe(direction + cam.eyeViewDir)) + 0.5);
+				// Keep the material's ramp mask, as in the Unity UTS path. The per-source
+				// visibility also gates coverage so Replace/Screen/Multiply respect occlusion.
+				float specMask = shape * mask * lerp(lighting.rampedLightMap, 1, _StylizedSpecularIgnoreShadow);
+				float attenuation = min(lerp(saturate(nl), 1, _StylizedSpecularIgnoreNormal),
+				lerp(saturate(nl * 0.5 + 0.5), 1, max(_SSIgnoreCastedShadows, _StylizedSpecularIgnoreShadow)));
+				float finalMask = min(min(specMask, lighting.occlusion), attenuation) * _StylizedSpecularStrength * coverage * cast;
+				PoiUTSBlend(frag, lighting, tint * lerp(1, color, _UseLightColor), finalMask);
+			}
+			#endif
+			//endex
+			
+			void CalculateUTSSpecular(inout PoiFragData poiFragData, in PoiCam poiCam, inout PoiLight poiLight, in PoiMesh poiMesh, in PoiMods poiMods)
+			{
+				float3 blendedNormal = lerp(poiMesh.normals[0], poiMesh.normals[1], _StylizedSpecularNormalStrength);
+				float nDotH = dot(blendedNormal, poiLight.halfDir);
+				float specArea = 0.5 * nDotH + 0.5;
+				#if defined(PROP_HIGHCOLOR_TEX) || !defined(OPTIMIZER_ENABLED)
+				half3 specularMap = POI2D_SAMPLER_PAN(_HighColor_Tex, _MainTex, poiUV(poiMesh.uv[_HighColor_TexUV], _HighColor_Tex_ST), _HighColor_TexPan);
+				#else
+				half3 specularMap = 1;
+				#endif
 				
-				//ifex (_LightingEnableLightVolumes==0 && isNotAnimated(_LightingEnableLightVolumes)) || (_LightingLightVolumesSpecular==0 && isNotAnimated(_LightingLightVolumesSpecular))
-				#if (POI_PIPE == POI_BIRP) && defined(POI_PASS_BASE)
-				if (_UdonLightVolumeEnabled && _LightingEnableLightVolumes >= 0.5 && _LightingLightVolumesSpecular > 0)
+				half specularMask = 1;
+				#if defined(PROP_SET_HIGHCOLORMASK) || !defined(OPTIMIZER_ENABLED)
+				specularMask = POI2D_SAMPLER_PAN(_Set_HighColorMask, _MainTex, poiUV(poiMesh.uv[_Set_HighColorMaskUV], _Set_HighColorMask_ST), _Set_HighColorMaskPan)[_Set_HighColorMaskChannel];
+				#endif
+				if (_StylizedSpecularInvertMask >= 0.5)
 				{
-					poiLight.finalLightAdd += LightVolumeSpecularDominant(specColorBase, saturate(_HighColor_Power), normalize(blendedNormal), poiCam.eyeViewDir, float3(PoiSHAr.w, PoiSHAg.w, PoiSHAb.w), PoiSHAr.xyz, PoiSHAg.xyz, PoiSHAb.xyz) * specularMask * _StylizedSpecularStrength * _LightingLightVolumesSpecular;
+					specularMask = 1 - specularMask;
 				}
+				specularMask = saturate(specularMask + _Tweak_HighColorMaskLevel);
+				
+				half specMask = PoiUTSShape(specArea) * specularMask * lerp(poiLight.rampedLightMap, 1, _StylizedSpecularIgnoreShadow);
+				half specLightMap = poiLight.lightMap;
+				half attenuation = min(lerp(poiLight.nDotLSaturated, 1, _StylizedSpecularIgnoreNormal), lerp(lerp(specLightMap, CalculateLuminance(poiLight.lightCookie), _SSIgnoreCastedShadows), 1, _StylizedSpecularIgnoreShadow));
+				
+				half finalSpecMask = min(min(specMask, poiLight.occlusion), attenuation) * _StylizedSpecularStrength;
+				half3 specColorBase = specularMap * poiThemeColor(poiMods, _HighColor.rgb, _HighColorThemeIndex);
+				half3 finalSpecColor = specColorBase * lerp(1, poiLight.directColor, _UseLightColor);
+				//ifex _LightingEnableLightVolumes==0 && isNotAnimated(_LightingEnableLightVolumes)
+				#if (POI_PIPE == POI_BIRP) && defined(POI_PASS_BASE)
+				[branch] if (PoiLightVolumesActive())
+				{
+					PoiLVUTSLight(poiFragData, poiLight, poiCam, blendedNormal,
+					poiLight.unityLight.color.rgb * poiLight.attenDistance * poiLight.lightCookie,
+					poiLight.unityLight.direction.xyz, poiLight.attenShadows, 1, specColorBase, specularMask);
+					if (_LightingLightVolumesSpecular > 0)
+					{
+						float3 volumeColor, volumeDirection;
+						float unusedSpreadSq;
+						if (PoiLVSHDisc(volumeColor, volumeDirection, unusedSpreadSq))
+						PoiLVUTSLight(poiFragData, poiLight, poiCam, blendedNormal, volumeColor, volumeDirection,
+						1, _LightingLightVolumesSpecular, specColorBase, specularMask);
+						float3 localColor, localDirection;
+						float unusedLocalSpreadSq, localVisibility;
+						if (PoiLVSpecularLight(localColor, localDirection, unusedLocalSpreadSq, localVisibility))
+						PoiLVUTSLight(poiFragData, poiLight, poiCam, blendedNormal, localColor, localDirection,
+						localVisibility, _LightingLightVolumesSpecular, specColorBase, specularMask);
+					}
+				}
+				else
 				#endif
 				//endex
+				{
+					PoiUTSBlend(poiFragData, poiLight, finalSpecColor, finalSpecMask);
+				}
+				float layer1Exp = exp2(lerp(11, 1, _HighColor_Power));
+				float layer2Exp = exp2(lerp(11, 1, _Layer2Size));
+				float layer1Thresh = 1.0 - pow(_HighColor_Power, 5);
+				float layer2Thresh = 1.0 - pow(_Layer2Size, 5);
+				
 				half vSpecMask = 0;
 				if (poiFragData.toggleVertexLights)
 				{
@@ -27642,6 +28204,29 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			#endif
 			
 			#ifdef _STYLIZEDREFLECTIONMODE_LILTOON
+			// Blend modes are affine per channel, so highlights compose here and apply to the lit color later.
+			void lilDeferBlend(float3 srcCol, float3 srcA)
+			{
+				float3 m = 1;
+				float3 c = srcCol * srcA;
+				if (_ReflectionBlendMode == 0) m = 1 - srcA;
+				if (_ReflectionBlendMode == 2) m = 1 - c;
+				if (_ReflectionBlendMode == 3)
+				{
+					m = 1 - srcA + c;
+					c = 0;
+				}
+				lilReflectionMul *= m;
+				lilReflectionAdd = lilReflectionAdd * m + c;
+			}
+			
+			void lilApplyReflection(inout PoiFragData poiFragData)
+			{
+				float3 blended = poiFragData.finalColor * lilReflectionMul + lilReflectionAdd;
+				// Screen never darkens, including colors already above 1.
+				poiFragData.finalColor = _ReflectionBlendMode == 2 ? max(blended, poiFragData.finalColor) : blended;
+			}
+			
 			void GSAA(inout float roughness, float3 N, float strength)
 			{
 				float3 dx = abs(ddx(N));
@@ -27744,6 +28329,16 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				return lilDecodeHDR(POI_SAMPLE_TEXCUBE_LOD(tex, sampler_linear_repeat, refl, mip), hdr);
 			}
 			
+			// lilToon's shadowmix includes the received cast shadow; these modes' shade factor is plain NdotL
+			float lilShadowMix(PoiLight poiLight)
+			{
+				#if defined(_LIGHTINGMODE_FLAT) || defined(_LIGHTINGMODE_REALISTIC) || defined(_LIGHTINGMODE_SKIN) || defined(_LIGHTINGMODE_CLOTH) || defined(_LIGHTINGMODE_PBR)
+				return poiLight.rampedLightMap.x * poiLight.attenShadowsStrength;
+				#else
+				return poiLight.rampedLightMap.x;
+				#endif
+			}
+			
 			float3 lilCalcSpecular(PoiMesh poiMesh, PoiCam poiCam, float3 L, float3 specular, float attenuation, float roughness, float3 N, float nv)
 			{
 				float3 H = normalize(poiCam.eyeViewDir + L);
@@ -27761,60 +28356,13 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				float lambdaV = 0.0;
 				float lambdaL = 0.0;
 				float d = 1.0;
-				#if defined(LIL_FEATURE_ANISOTROPY)
-				if (isAnisotropy)
-				{
-					half roughnessT = max(roughness * (1.0 + fd.anisotropy), 0.002);
-					half roughnessB = max(roughness * (1.0 - fd.anisotropy), 0.002);
-					
-					float tv = dot(fd.T, fd.V);
-					float bv = dot(fd.B, fd.V);
-					float tl = dot(fd.T, L);
-					float bl = dot(fd.B, L);
-					
-					lambdaV = nl * length(float3(roughnessT * tv, roughnessB * bv, nv));
-					lambdaL = nv * length(float3(roughnessT * tl, roughnessB * bl, nl));
-					
-					half roughnessT1 = roughnessT * _AnisotropyTangentWidth;
-					half roughnessB1 = roughnessB * _AnisotropyBitangentWidth;
-					half roughnessT2 = roughnessT * _Anisotropy2ndTangentWidth;
-					half roughnessB2 = roughnessB * _Anisotropy2ndBitangentWidth;
-					
-					float anisotropyShiftNoise = 0.5;
-					#if defined(LIL_FEATURE_AnisotropyShiftNoiseMask)
-					anisotropyShiftNoise = POI2D_SAMPLER(_AnisotropyShiftNoiseMask, _linear_repeat, fd.uvMain).r - 0.5;
-					#endif
-					float anisotropyShift = anisotropyShiftNoise * _AnisotropyShiftNoiseScale + _AnisotropyShift;
-					float anisotropy2ndShift = anisotropyShiftNoise * _Anisotropy2ndShiftNoiseScale + _Anisotropy2ndShift;
-					float3 T1 = normalize(fd.T - N * anisotropyShift);
-					float3 B1 = normalize(fd.B - N * anisotropyShift);
-					float3 T2 = normalize(fd.T - N * anisotropy2ndShift);
-					float3 B2 = normalize(fd.B - N * anisotropy2ndShift);
-					
-					float th1 = dot(T1, H);
-					float bh1 = dot(B1, H);
-					float th2 = dot(T2, H);
-					float bh2 = dot(B2, H);
-					
-					float r1 = roughnessT1 * roughnessB1;
-					float r2 = roughnessT2 * roughnessB2;
-					float3 v1 = float3(th1 * roughnessB1, bh1 * roughnessT1, nh * r1);
-					float3 v2 = float3(th2 * roughnessB2, bh2 * roughnessT2, nh * r2);
-					float w1 = r1 / dot(v1, v1);
-					float w2 = r2 / dot(v2, v2);
-					ggx = r1 * w1 * w1 * _AnisotropySpecularStrength + r2 * w2 * w2 * _Anisotropy2ndSpecularStrength;
-				}
-				else
-				#endif
-				{
-					half roughness2 = max(roughness, 0.002);
-					lambdaV = nl * (nv * (1.0 - roughness2) + roughness2);
-					lambdaL = nv * (nl * (1.0 - roughness2) + roughness2);
-					
-					float r2 = roughness2 * roughness2;
-					d = (nh * r2 - nh) * nh + 1.0;
-					ggx = r2 / (d * d + 1e-7f);
-				}
+				half roughness2 = max(roughness, 0.002);
+				lambdaV = nl * (nv * (1.0 - roughness2) + roughness2);
+				lambdaL = nv * (nl * (1.0 - roughness2) + roughness2);
+				
+				float r2 = roughness2 * roughness2;
+				d = (nh * r2 - nh) * nh + 1.0;
+				ggx = r2 / (d * d + 1e-7f);
 				
 				#if defined(SHADER_API_MOBILE) || defined(SHADER_API_SWITCH)
 				sjggx = 0.5 / (lambdaV + lambdaL + 1e-4f);
@@ -27828,11 +28376,47 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				#endif
 				specularTerm *= nl * attenuation;
 				
-				#if defined(LIL_FEATURE_ANISOTROPY)
-				if (_SpecularToon) return poiEdgeLinear(specularTerm, 0.5);
-				#endif
 				return specularTerm * lilFresnelTerm(specular, lh);
 			}
+			
+			//ifex _LightingEnableLightVolumes==0 && isNotAnimated(_LightingEnableLightVolumes)
+			// Use the material's lilToon highlight and blend for each LV source.
+			// Light size does not remap the artist's roughness, border or blur.
+			#if (POI_PIPE == POI_BIRP) && defined(POI_PASS_BASE)
+			void PoiLVLilLight(PoiMesh mesh, PoiCam cam,
+			float3 color, float3 direction, float visibility, float3 specular,
+			float roughness, float3 normal, float nv, float4 tint)
+			{
+				if (visibility <= 0 || !any(color > 0)) return;
+				float3 highlight = lilCalcSpecular(mesh, cam, direction, specular, 1.0,
+				roughness, normal, nv);
+				// Visibility belongs in coverage for Normal/Screen/Multiply as well as Add.
+				lilDeferBlend(tint.rgb * color, highlight * tint.a * visibility);
+			}
+			
+			void PoiLVLilSpecular(PoiMesh mesh, PoiCam cam,
+			float3 specular, float roughness, float3 normal, float nv, float4 tint)
+			{
+				tint.a *= _LightingLightVolumesSpecular;
+				// Baked/probe SH has no individual emitters. Its directional approximation
+				// uses the same lilToon function and excludes the separately sampled lights.
+				float3 volumeColor, volumeDirection;
+				float confidence = PoiLVStylizedSH(PoiLVL0, PoiLVL1r, PoiLVL1g, PoiLVL1b, volumeColor, volumeDirection);
+				if (confidence > 1e-6)
+				{
+					PoiLVLilLight(mesh, cam, volumeColor, volumeDirection, confidence,
+					specular, roughness, normal, nv, tint);
+				}
+				float3 localColor, localDirection;
+				float unusedLocalSpreadSq, localVisibility;
+				if (PoiLVSpecularLight(localColor, localDirection, unusedLocalSpreadSq, localVisibility))
+				{
+					PoiLVLilLight(mesh, cam, localColor, localDirection, lerp(1, localVisibility, _LightingCastedShadows),
+					specular, roughness, normal, nv, tint);
+				}
+			}
+			#endif
+			//endex
 			
 			void lilReflection(inout PoiFragData poiFragData, PoiCam poiCam, PoiLight poiLight, PoiMesh poiMesh, PoiMods poiMods)
 			{
@@ -27904,17 +28488,47 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 					if (poiLight.isAdditive || _ApplySpecular >= 0.5)
 					#endif
 					{
-						float3 lightDirectionSpc = poiLight.direction;
-						half3 lightColorSpc = poiLight.directColor;
-						
-						#if defined(POI_PASS_ADD)
-						reflectCol = lilCalcSpecular(poiMesh, poiCam, lightDirectionSpc, specular, poiLight.lightMapNoAttenuation, roughness, specularN, specularNV);
-						#elif defined(SHADOWS_SCREEN)
-						reflectCol = lilCalcSpecular(poiMesh, poiCam, lightDirectionSpc, specular, poiLight.rampedLightMap, roughness, specularN, specularNV);
-						#else
-						reflectCol = lilCalcSpecular(poiMesh, poiCam, lightDirectionSpc, specular, 1.0, roughness, specularN, specularNV);
+						//ifex _LightingEnableLightVolumes==0 && isNotAnimated(_LightingEnableLightVolumes)
+						#if (POI_PIPE == POI_BIRP) && defined(POI_PASS_BASE)
+						[branch] if (PoiLightVolumesActive())
+						{
+							PoiLVLilLight(poiMesh, poiCam,
+							poiLight.unityLight.color.rgb * poiLight.attenDistance * poiLight.lightCookie,
+							poiLight.unityLight.direction.xyz, poiLight.attenShadowsStrength,
+							specular, roughness, specularN, specularNV, reflectionColor);
+							if (_LightingLightVolumesSpecular > 0)
+							PoiLVLilSpecular(poiMesh, poiCam,
+							specular, roughness, specularN, specularNV, reflectionColor);
+						}
+						else
 						#endif
-						poiFragData.baseColor = lilBlendColor(poiFragData.baseColor, reflectionColor.rgb * lightColorSpc, reflectCol * reflectionColor.a, _ReflectionBlendMode);
+						//endex
+						{
+							float3 lightDirectionSpc = poiLight.direction;
+							half3 lightColorSpc = poiLight.directColor;
+							
+							#if defined(POI_PASS_ADD)
+							reflectCol = lilCalcSpecular(poiMesh, poiCam, lightDirectionSpc, specular, poiLight.lightMapNoAttenuation, roughness, specularN, specularNV);
+							#elif POI_PIPE == POI_URP
+							if (poiLight.isAdditive)
+							{
+								reflectCol = lilCalcSpecular(poiMesh, poiCam, lightDirectionSpc, specular, poiLight.lightMapNoAttenuation * poiLight.attenShadowsStrength, roughness, specularN, specularNV);
+							}
+							else
+							{
+								#if defined(_MAIN_LIGHT_SHADOWS) || defined(_MAIN_LIGHT_SHADOWS_CASCADE) || defined(_MAIN_LIGHT_SHADOWS_SCREEN)
+								reflectCol = lilCalcSpecular(poiMesh, poiCam, lightDirectionSpc, specular, lilShadowMix(poiLight), roughness, specularN, specularNV);
+								#else
+								reflectCol = lilCalcSpecular(poiMesh, poiCam, lightDirectionSpc, specular, 1.0, roughness, specularN, specularNV);
+								#endif
+							}
+							#elif defined(SHADOWS_SCREEN)
+							reflectCol = lilCalcSpecular(poiMesh, poiCam, lightDirectionSpc, specular, lilShadowMix(poiLight), roughness, specularN, specularNV);
+							#else
+							reflectCol = lilCalcSpecular(poiMesh, poiCam, lightDirectionSpc, specular, 1.0, roughness, specularN, specularNV);
+							#endif
+							lilDeferBlend(reflectionColor.rgb * lightColorSpc, reflectCol * reflectionColor.a);
+						}
 					}
 					
 					// Reflection
@@ -27961,7 +28575,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 						else
 						{
 							float3 reflectionDir = reflect(-poiCam.eyeViewDir, N);
-							envReflectionColor = PoiGlossyEnvironmentReflection(reflectionDir, poiMesh.worldPos.xyz, perceptualRoughness, 1, poiCam.screenUV);
+							envReflectionColor = GlossyEnvironmentReflection(reflectionDir, poiMesh.worldPos.xyz, perceptualRoughness, 1, poiCam.screenUV);
 						}
 						#endif
 						
@@ -27974,19 +28588,10 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 						#endif
 						
 						reflectCol = surfaceReduction * envReflectionColor * lilFresnelLerp(specular, grazingTerm, poiLight.nDotV);
-						poiFragData.baseColor = lilBlendColor(poiFragData.baseColor, reflectionColor.rgb, reflectCol * reflectionColor.a, _ReflectionBlendMode);
+						lilDeferBlend(reflectionColor.rgb, reflectCol * reflectionColor.a);
 					}
 					#endif
 				}
-				
-				//ifex (_LightingEnableLightVolumes==0 && isNotAnimated(_LightingEnableLightVolumes)) || (_LightingLightVolumesSpecular==0 && isNotAnimated(_LightingLightVolumesSpecular))
-				#if (POI_PIPE == POI_BIRP) && defined(POI_PASS_BASE)
-				if (_UdonLightVolumeEnabled && _LightingEnableLightVolumes >= 0.5 && _LightingLightVolumesSpecular > 0)
-				{
-					poiFragData.baseColor += LightVolumeSpecularDominant(specular, smoothness, normalize(specularN), poiCam.eyeViewDir, float3(PoiSHAr.w, PoiSHAg.w, PoiSHAb.w), PoiSHAr.xyz, PoiSHAg.xyz, PoiSHAb.xyz) * reflectionColor.rgb * reflectionColor.a * _LightingLightVolumesSpecular;
-				}
-				#endif
-				//endex
 				
 				// Vertex light specular
 				#if defined(VERTEXLIGHT_ON)
@@ -27997,7 +28602,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 					{
 						if (!any(poiLight.vPosition[vIdx])) continue;
 						float3 vReflectCol = lilCalcSpecular(poiMesh, poiCam, poiLight.vDirection[vIdx], specular, poiLight.vAttenuation[vIdx], roughness, specularN, specularNV);
-						poiFragData.baseColor = lilBlendColor(poiFragData.baseColor, reflectionColor.rgb * poiLight.vColor[vIdx], vReflectCol * reflectionColor.a, _ReflectionBlendMode);
+						lilDeferBlend(reflectionColor.rgb * poiLight.vColor[vIdx], vReflectCol * reflectionColor.a);
 					}
 				}
 				#endif
@@ -28955,21 +29560,30 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				#endif
 				
 				float3 col = poiFragData.finalColor;
+				// The add pass blends additively, so only linear adjustments are applied per light
+				#if !defined(POI_PASS_ADD)
 				col = hueShift(col, _PPHue + _PPHueOffset * ppMask[_PPHueOffsetMask] + frac(POI_TIME.x * _PPHueSpeed), _PPHueShiftColorSpace, _ppHueSelectOrShift);
+				#endif
 				col *= _PPTint;
 				col *= _PPRGB;
 				col = GetSaturation(col, _PPSaturation);
+				#if !defined(POI_PASS_ADD)
 				col = lerp(col, GetHDR(col), _PPHDR);
 				col = GetContrast(col, _PPContrast);
+				#endif
 				col *= _PPBrightness;
+				#if !defined(POI_PASS_ADD)
 				col += _PPLightness;
+				#endif
 				
 				col = lerp(poiFragData.finalColor, col, ppMask[_PPMaskChannel]);
 				
+				#if !defined(POI_PASS_ADD)
 				if (_PPPosterization >= 0.5)
 				{
 					col = lerp(col, poiPosterize(col, _PPPosterizationAmount), ppMask[_PPMaskChannel]);
 				}
+				#endif
 				
 				poiFragData.finalColor = col;
 			}
@@ -29181,7 +29795,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				float3 normalCorrectObject = posOS - _NormalCorrectOrigin;
 				normalCorrectObject.y = 0;
 				normalCorrectObject = normalize(normalCorrectObject);
-				float3 normalCorrectWorld = mul((float3x3)unity_ObjectToWorld, normalCorrectObject).xyz;
+				float3 normalCorrectWorld = PoiObjectToWorldNormal(normalCorrectObject);
 				i.normal.xyz = normalize(lerp(i.normal.xyz, normalCorrectWorld, _NormalCorrectAmount));
 				//i.objNormal.xyz = normalize(lerp(i.objNormal.xyz, normalCorrectObject, _NormalCorrectAmount));
 			}
@@ -29193,9 +29807,9 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			{
 				
 				// Color
-				half3 backlightColor = _BacklightColor.rgb;
+				half4 backlightColor = _BacklightColor;
 				#if defined(PROP_BACKLIGHTCOLORTEX) || !defined(OPTIMIZER_ENABLED)
-				backlightColor *= POI2D_SAMPLER_PAN(_BacklightColorTex, _MainTex, poiUV(poiMesh.uv[_BacklightColorTexUV], _BacklightColorTex_ST), _BacklightColorTexPan).rgb;
+				backlightColor *= POI2D_SAMPLER_PAN(_BacklightColorTex, _MainTex, poiUV(poiMesh.uv[_BacklightColorTexUV], _BacklightColorTex_ST), _BacklightColorTexPan);
 				#endif
 				
 				float3 normal = lerp(poiMesh.normals[0], poiMesh.normals[1], _BacklightNormalStrength);
@@ -29206,11 +29820,21 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				half backlightLN = dot(normalize(-headDir * _BacklightViewStrength + poiLight.direction), normal) * 0.5 + 0.5;
 				
 				if (_BacklightReceiveShadow >= 0.5)
-				backlightLN *= poiLight.lightMap;
+				{
+					// Match lilToon's raw attenuation and shading-direction correction before tooning.
+					// The surface light map also contains NdotL and the separate Light Data shadow strength.
+					half backlightShadow = poiLight.attenShadows * saturate(poiLight.attenDistance) * CalculateLuminance(poiLight.lightCookie) + distance(poiLight.direction, poiLight.unityLight.direction);
+					#ifdef POI_LIGHT_VOLUME_FORM
+					// LV shadows each light separately, so the light direction no longer tells shadowed light apart.
+					[branch] if (PoiLightVolumesActive())
+					backlightShadow = PoiLVVisibility(0, poiMesh.normals[1], poiLight.unityLight.color.rgb * poiLight.attenDistance * poiLight.lightCookie, poiLight.unityLight.direction, poiLight.attenShadows);
+					#endif
+					backlightLN *= saturate(backlightShadow);
+				}
 				
 				backlightLN = poiEdgeLinear(backlightLN, _BacklightBorder, _BacklightBlur);
-				half backlight = saturate(backlightFactor * backlightLN);
-				backlight = !poiMesh.isFrontFace && _BacklightBackfaceMask >= 0.5 ? 0.0 : backlight;
+				half backlightAmount = saturate(backlightFactor * backlightLN);
+				backlightAmount = !poiMesh.isFrontFace && _BacklightBackfaceMask >= 0.5 ? 0.0 : backlightAmount;
 				
 				// Global Masking
 				half backlightMask = 1;
@@ -29220,16 +29844,20 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 					backlightMask = maskBlend(backlightMask, poiMods.globalMask[_BacklightGlobalMask - 1], _BacklightGlobalMaskBlendType);
 				}
 				
-				backlight *= backlightMask;
+				backlightAmount *= backlightMask;
 				
 				if (_BacklightApplyGlobalMaskIndex > 0)
 				{
-					applyToGlobalMask(poiMods, _BacklightApplyGlobalMaskIndex - 1, _BacklightApplyGlobalMaskBlendType, backlight);
+					applyToGlobalMask(poiMods, _BacklightApplyGlobalMaskIndex - 1, _BacklightApplyGlobalMaskBlendType, backlightAmount);
 				}
 				
 				// Blend
-				backlightColor = lerp(backlightColor, backlightColor * poiFragData.baseColor, _BacklightMainStrength);
-				poiLight.finalLightAdd += backlight * backlightColor * poiLight.directColor;
+				backlightColor.rgb = lerp(backlightColor.rgb, backlightColor.rgb * poiFragData.baseColor, _BacklightMainStrength);
+				// lilToon's ForwardAdd light color already carries the light's shadow and cookie.
+				half3 backlightLightColor = poiLight.directColor;
+				if (poiLight.isAdditive)
+				backlightLightColor *= poiLight.attenShadows * poiLight.lightCookie;
+				poiLight.finalLightAdd += backlightAmount * backlightColor.a * backlightColor.rgb * backlightLightColor;
 			}
 			#endif
 			//endex
@@ -29976,7 +30604,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				else
 				{
 					//ifex isNotAnimated(_EnableBlur) && _EnableBlur==0
-					#ifdef CHROMATIC_ABERRATION_LOW
+					#if defined(CHROMATIC_ABERRATION_LOW) && !defined(POI_PASS_ADD)
 					refractionColor = grabpassBlur(refractedGrab, camDistance, poiFragData.smoothness, depthFade, blurMask, pixelMask, pixelSize, pixelAnchor);
 					#else
 					//endex
@@ -30178,7 +30806,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 					depthFade = getGrabBlurDepthFade(poiCam.screenUV, direction, poiMesh.worldPos);
 					//endex
 					//ifex isNotAnimated(_EnableBlur) && _EnableBlur==0
-					#ifdef CHROMATIC_ABERRATION_LOW
+					#if defined(CHROMATIC_ABERRATION_LOW) && !defined(POI_PASS_ADD)
 					grabpassColor = grabpassBlur(poiCam.screenUV, camDistance, poiFragData.smoothness, depthFade, blurMask, pixelMask, pixelSize, pixelAnchor);
 					#else
 					//endex
@@ -30329,7 +30957,22 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				
 				//ifex _MochieBRDF==0
 				#ifdef MOCHIE_PBR
+				#if defined(_LIGHTINGMODE_PBR) && defined(VIGNETTE_MASKED) && !defined(POI_PASS_META)
+				if (!PoiUsesCalibratedPBR(poiMesh))
+				#endif
 				MochieBRDFSpecular(poiFragData, mochieBRDFData, poiCam, poiLight, poiMesh, poiMods);
+				#endif
+				//endex
+				
+				//ifex _ClearCoatBRDF==0
+				#if defined(POI_CLEARCOAT) && POI_PIPE == POI_URP
+				if (poiLight.isAdditive)
+				{
+					#if defined(_LIGHTINGMODE_PBR) && defined(VIGNETTE_MASKED) && !defined(POI_PASS_META)
+					if (!PoiUsesCalibratedPBR(poiMesh))
+					#endif
+					poiClearCoat(poiFragData, poiCam, poiLight, poiMesh, poiMods, true);
+				}
 				#endif
 				//endex
 				
@@ -30349,10 +30992,12 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				PoiSHAr = unity_SHAr;
 				PoiSHAg = unity_SHAg;
 				PoiSHAb = unity_SHAb;
+				#if POI_PIPE != POI_BIRP
 				PoiSHBr = unity_SHBr;
 				PoiSHBg = unity_SHBg;
 				PoiSHBb = unity_SHBb;
 				PoiSHC =  unity_SHC;
+				#endif
 				
 				PoiMesh poiMesh;
 				PoiInitStruct(PoiMesh, poiMesh);
@@ -30383,7 +31028,6 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				poiFragData.reflectionMask = 1;
 				poiFragData.alpha = 1;
 				
-				MochieBRDFData mochieBRDFData;
 				PoiInitStruct(MochieBRDFData, mochieBRDFData);
 				
 				//ifex _EnableUDIMDiscardOptions==0
@@ -30424,7 +31068,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				
 				poiMesh.isFrontFace = facing;
 				
-				#ifndef POI_PASS_OUTLINE
+				#if !defined(POI_PASS_OUTLINE) && !defined(POI_PASS_LILFUR)
 				if (!poiMesh.isFrontFace && _FlipBackfaceNormals >= 0.5)
 				{
 					poiMesh.normals[0] *= -1;
@@ -30595,8 +31239,9 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				poiMesh.tangentSpaceNormal.z * poiMesh.normals[0]
 				);
 				
-				poiMesh.tangent[1] = normalize(cross(poiMesh.binormal[0], -poiMesh.normals[1]));
-				poiMesh.binormal[1] = normalize(cross(-poiMesh.normals[1], poiMesh.tangent[0]));
+				float poiTangentSign = dot(cross(poiMesh.normals[0], poiMesh.tangent[0]), poiMesh.binormal[0]) < 0 ? -1 : 1;
+				poiMesh.tangent[1] = normalize(cross(poiMesh.binormal[0], poiMesh.normals[1])) * poiTangentSign;
+				poiMesh.binormal[1] = normalize(cross(poiMesh.normals[1], poiMesh.tangent[0])) * poiTangentSign;
 				
 				//ifex _EnableBentNormal==0
 				#if defined(POI_BENTNORMALMAP) && !defined(POI_PASS_SHADOW) && !defined(POI_PASS_MOTION_VECTORS)
@@ -30666,6 +31311,247 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				#endif
 				//endex
 				
+				#if defined(POI_PASS_BASE) || defined(POI_PASS_OUTLINE)
+				float3 L0 = float3(0, 0, 0);
+				float3 L1r = float3(0, 0, 0);
+				float3 L1g = float3(0, 0, 0);
+				float3 L1b = float3(0, 0, 0);
+				#if POI_PIPE == POI_BIRP
+				//ifex _LightingEnableLightVolumes==0 && isNotAnimated(_LightingEnableLightVolumes)
+				[branch] if (PoiLightVolumesActive())
+				{
+					float3 worldPos = poiMesh.worldPos;
+					float3 offset = poiMesh.normals[1] * _LightingLightVolumesNormalBias;
+					float3 normal = poiMesh.normals[1];
+					float3 geometryNormal = poiMesh.normals[0];
+					// Included in frag, inside Light Data's Light Volumes branch.
+					LV_LightVolumeRegularSH(worldPos + offset, L0, L1r, L1g, L1b);
+					#if defined(LIGHTMAP_ON) || defined(DYNAMICLIGHTMAP_ON)
+					// Lightmaps already contain regular baked lighting.
+					PoiLVL0 = 0; PoiLVL1r = 0; PoiLVL1g = 0; PoiLVL1b = 0;
+					LV_LightVolumeAdditiveSH(worldPos + offset, PoiLVL0, PoiLVL1r, PoiLVL1g, PoiLVL1b);
+					L0 += PoiLVL0; L1r += PoiLVL1r; L1g += PoiLVL1g; L1b += PoiLVL1b;
+					#else
+					LV_LightVolumeAdditiveSH(worldPos + offset, L0, L1r, L1g, L1b);
+					PoiLVL0 = L0; PoiLVL1r = L1r; PoiLVL1g = L1g; PoiLVL1b = L1b;
+					#endif
+					PoiLVSHDiscCompute(PoiLVSHDiscColor, PoiLVSHDiscDirection, PoiLVSHDiscSpreadSq);
+					#if defined(_LIGHTINGMODE_REALISTIC) || defined(_LIGHTINGMODE_PBR)
+					PoiLVDiffuseL0 = PoiLVL0; PoiLVDiffuseL1r = PoiLVL1r;
+					PoiLVDiffuseL1g = PoiLVL1g; PoiLVDiffuseL1b = PoiLVL1b;
+					#endif
+					float3 N1 = normal, N2 = normal, N3 = normal;
+					#ifdef _LIGHTINGMODE_MULTILAYER_MATH
+					N1 = lerp(geometryNormal, normal, _ShadowNormalStrength);
+					N2 = lerp(geometryNormal, normal, _Shadow2ndNormalStrength);
+					N3 = lerp(geometryNormal, normal, _Shadow3rdNormalStrength);
+					#endif
+					PoiLVAvailableForm = float3(PoiLVForm(N1, L0, L1r, L1g, L1b),
+					PoiLVForm(N2, L0, L1r, L1g, L1b), PoiLVForm(N3, L0, L1r, L1g, L1b));
+					PoiLVFormWeight = PoiLVLuminance(max(L0, 0)) + length(L1r * .2126 + L1g * .7152 + L1b * .0722);
+					#if defined(_LIGHTINGMODE_WRAPPED) && defined(VIGNETTE_MASKED)
+					N1 = lerp(geometryNormal, normal, _LightingIndirectUsesNormals);
+					float3 convolution = lerp(GreenWrapSH(_LightingWrappedWrap), GreenWrapSHOpt(_LightingWrappedWrap), _LightingWrappedNormalization) * float3(1, 1.5, 4);
+					PoiLVAvailableForm = PoiLVForm(N1, L0 * convolution.x, L1r * convolution.y, L1g * convolution.y, L1b * convolution.y);
+					PoiLVFormWeight = PoiLVLuminance(max(L0 * convolution.x, 0)) + length((L1r * .2126 + L1g * .7152 + L1b * .0722) * convolution.y);
+					PoiLVWrappedBlocked = 0;
+					#endif
+					PoiLVArrivingForm = PoiLVAvailableForm;
+					PoiLVLampWeight = 0;
+					PoiLVLampArriving = 0;
+					#if defined(_LIGHTINGMODE_TEXTURERAMP) || defined(_LIGHTINGMODE_SHADEMAP)
+					PoiLVCustomAvailable = PoiLVAvailableForm.x;
+					PoiLVCustomArriving = PoiLVAvailableForm.x;
+					#endif
+					#ifdef _LIGHTINGMODE_FLAT
+					PoiLVFlatAvailable = PoiLVLuminance(max(L0, 0));
+					PoiLVFlatArriving = PoiLVFlatAvailable;
+					#endif
+					PoiLVIterator lights = PoiLVBeginLive(worldPos);
+					PoiLVLight light;
+					//ifex _LightingLightVolumesSpecular==0 && isNotAnimated(_LightingLightVolumesSpecular)
+					#if (POI_PIPE == POI_BIRP) && defined(POI_PASS_BASE)
+					// Specular layers with a GGX lobe evaluate every light inside this loop, as LV's own shader does.
+					// Their surface is prepared here because the walk runs before they set it up.
+					bool specularLayers = _LightingLightVolumesSpecular > 0;
+					#if defined(_LIGHTINGMODE_PBR) && defined(VIGNETTE_MASKED)
+					bool specularMaterialLayers = specularLayers && !PoiUsesCalibratedPBR(poiMesh);
+					#else
+					bool specularMaterialLayers = specularLayers;
+					#endif
+					#ifdef MOCHIE_PBR
+					if (specularMaterialLayers) PoiMochieLVPrepare(poiFragData, poiMesh, poiMods, poiCam);
+					#endif
+					#ifdef POI_CLEARCOAT
+					if (specularMaterialLayers) PoiClearCoatLVPrepare(poiMesh, poiMods, poiCam);
+					#endif
+					#ifdef _LIGHTINGMODE_PBR
+					if (specularLayers) PoiPreparePBR(poiFragData, poiLight, poiMesh, poiCam);
+					#endif
+					#endif
+					//endex
+					#if VRCLV_LIGHTS_SUPPORTED
+					// Each found light runs the body once, in ID order. Behind a function, FXC built a second
+					// skip loop inside this one.
+					VRCLV_DYNAMIC_LOOP while (lights.count < lights.limit)
+					{
+						uint id;
+						bool masked = true;
+						if (lights.index < lights.end)
+						{
+							id = lights.index++;
+							#if VRCLV_CLUSTERING_SUPPORTED
+							if (lights.includeShadowed)
+							{
+								uint word = id >> 5u;
+								uint candidates = word == 0u ? lights.mask.x : LV_ClusterMaskWord(lights.mask, word);
+								masked = (candidates & (1u << (id & 31u))) != 0u;
+								if (!masked)
+								{
+									float shadowId = abs(_UdonPointLightVolumeCustomID[id].y);
+									if (shadowId < 1 || shadowId >= 10000) continue;
+								}
+							}
+							#endif
+						}
+						else
+						{
+							if (lights.end > 0) break;
+							#if VRCLV_CLUSTERING_SUPPORTED
+							if (!LV_NextClusteredLight(lights.mask, lights.index, lights.bits, id)) break;
+							#else
+							break;
+							#endif
+						}
+						// Normal response belongs to the lightmap or BRDF, not LV's normal mask. Keep the body
+						// inside this branch: routing it through a status flag loses most of the saving.
+						if (LV_PointLightVolumeContribution(id, worldPos, 0, -1,
+						light.color, light.shDirection, light.direction, light.spreadSq, light.visibility))
+						{
+							lights.count++;
+							// Poiyomi's color modes consume the available SH. Cast shadows shape the
+							// lightmap, so the material's shadow colors remain in charge of darkness.
+							L0 += light.color;
+							L1r += light.shDirection * light.color.r;
+							L1g += light.shDirection * light.color.g;
+							L1b += light.shDirection * light.color.b;
+							float3 form = saturate(float3(dot(N1, light.direction), dot(N2, light.direction), dot(N3, light.direction)));
+							float weight = PoiLVLuminance(max(light.color, 0));
+							PoiLVLampWeight += weight;
+							PoiLVLampArriving += weight * light.visibility;
+							PoiLVSpecularAdd(light.color, light.direction, light.spreadSq, weight, light.visibility, poiCam.reflectionDir);
+							//ifex _LightingLightVolumesSpecular==0 && isNotAnimated(_LightingLightVolumesSpecular)
+							#if (POI_PIPE == POI_BIRP) && defined(POI_PASS_BASE)
+							#ifdef MOCHIE_PBR
+							[branch] if (specularMaterialLayers) PoiMochieLVAdd(light.color, light.visibility, light.direction, light.spreadSq);
+							#endif
+							#ifdef POI_CLEARCOAT
+							[branch] if (specularMaterialLayers) PoiClearCoatLVAdd(light.color, light.visibility, light.direction, light.spreadSq);
+							#endif
+							#ifdef _LIGHTINGMODE_PBR
+							[branch] if (specularLayers) PoiPBRLVAdd(light.color, light.visibility, light.direction, light.spreadSq);
+							#endif
+							#endif
+							//endex
+							#if defined(_LIGHTINGMODE_TEXTURERAMP) || defined(_LIGHTINGMODE_SHADEMAP)
+							float customForm = weight * PoiLVCustomForm(N1, light.direction);
+							PoiLVCustomAvailable += customForm;
+							PoiLVCustomArriving += customForm * light.visibility;
+							#endif
+							#if defined(_LIGHTINGMODE_WRAPPED) && defined(VIGNETTE_MASKED)
+							form = saturate(RTWrapFunc(dot(N1, light.direction), _LightingWrappedWrap, _LightingWrappedNormalization));
+							PoiLVFormWeight += weight * saturate(RTWrapFunc(1, _LightingWrappedWrap, _LightingWrappedNormalization));
+							// Wrapped shades LV light as ambient, so its cast-shadowed share is taken out there.
+							PoiLVWrappedBlocked += light.color * (1 - lerp(1, light.visibility, _LightingCastedShadows))
+							* (convolution.x + convolution.y * dot(N1, light.shDirection));
+							#else
+							PoiLVFormWeight += weight;
+							#endif
+							PoiLVAvailableForm += weight * form;
+							PoiLVArrivingForm += weight * form * light.visibility;
+							#ifdef _LIGHTINGMODE_FLAT
+							PoiLVFlatAvailable += weight;
+							PoiLVFlatArriving += weight * light.visibility;
+							#endif
+							#if defined(_LIGHTINGMODE_REALISTIC) || defined(_LIGHTINGMODE_PBR)
+							#if !defined(LIGHTMAP_ON) && !defined(DYNAMICLIGHTMAP_ON)
+							if (_LightingCastedShadows != 0)
+							#endif
+							{
+								float3 receivedColor = light.color * lerp(1, light.visibility, _LightingCastedShadows);
+								PoiLVDiffuseL0 += receivedColor;
+								PoiLVDiffuseL1r += light.shDirection * receivedColor.r;
+								PoiLVDiffuseL1g += light.shDirection * receivedColor.g;
+								PoiLVDiffuseL1b += light.shDirection * receivedColor.b;
+							}
+							#endif
+						}
+					}
+					#endif
+					PoiLVSpecularFinish();
+					#if defined(_LIGHTINGMODE_REALISTIC) || defined(_LIGHTINGMODE_PBR)
+					#if !defined(LIGHTMAP_ON) && !defined(DYNAMICLIGHTMAP_ON)
+					// Without cast shadows the received sums started from L0/L1 and took the same light.
+					if (_LightingCastedShadows == 0)
+					{
+						PoiLVDiffuseL0 = L0; PoiLVDiffuseL1r = L1r; PoiLVDiffuseL1g = L1g; PoiLVDiffuseL1b = L1b;
+					}
+					#endif
+					// The shading normal is final here; PBR normalizes it as PoiPreparePBR does.
+					#ifdef _LIGHTINGMODE_PBR
+					PoiLVDiffuseColor = PoiLVDiffuse(normalize(normal));
+					#else
+					PoiLVDiffuseColor = PoiLVDiffuse(normal);
+					#endif
+					#endif
+					PoiSHAr = float4(L1r, L0.r);
+					PoiSHAg = float4(L1g, L0.g);
+					PoiSHAb = float4(L1b, L0.b);
+					PoiSHL2Off = true;
+				}
+				// Recomputed after the walk so the compiler doesn't keep them live through it.
+				poiCam.eyeViewDir = !IsOrthographicCamera() ? (getCameraPosition(false) - i.worldPos.xyz) : UNITY_MATRIX_I_V._m02_m12_m22;
+				poiCam.eyeViewDir = normalize(poiCam.eyeViewDir);
+				float3 poiLVCenterViewDelta = getCameraPosition() - i.worldPos.xyz;
+				float poiLVCenterViewDistanceSq = dot(poiLVCenterViewDelta, poiLVCenterViewDelta);
+				float poiLVCenterViewInvDistance = rsqrt(max(poiLVCenterViewDistanceSq, 1e-12));
+				poiCam.viewDir = !IsOrthographicCamera() ? poiLVCenterViewDelta * poiLVCenterViewInvDistance : normalize(UNITY_MATRIX_I_V._m02_m12_m22);
+				//endex
+				#endif
+				#if POI_PIPE == POI_URP
+				//ifex _LightingEnableLightVolumes==0 && isNotAnimated(_LightingEnableLightVolumes)
+				#if defined(PROBE_VOLUMES_L1) || defined(PROBE_VOLUMES_L2)
+				if (_LightingEnableLightVolumes >= 0.5)
+				{
+					APVResources apvRes = FillAPVResources();
+					float3 posWS = GetAbsolutePositionWS(poiMesh.worldPos + poiMesh.normals[1] * _LightingLightVolumesNormalBias);
+					posWS = AddNoiseToSamplingPosition(posWS, poiCam.clipPos.xy, poiCam.viewDir);
+					APVSample apvSample = SampleAPV(posWS, poiMesh.normals[1], GetMeshRenderingLayer(), poiCam.viewDir);
+					if (apvSample.status != APV_SAMPLE_STATUS_INVALID)
+					{
+						apvSample.Decode();
+						PoiSHAr = float4(apvSample.L1_R, apvSample.L0.r);
+						PoiSHAg = float4(apvSample.L1_G, apvSample.L0.g);
+						PoiSHAb = float4(apvSample.L1_B, apvSample.L0.b);
+						#ifdef PROBE_VOLUMES_L2
+						// Decode() already folds the L2 z-squared constant into L0, matching unity_SH layout
+						PoiSHBr = apvSample.L2_R;
+						PoiSHBg = apvSample.L2_G;
+						PoiSHBb = apvSample.L2_B;
+						PoiSHC = float4(apvSample.L2_C, 0);
+						#else
+						PoiSHBr = 0;
+						PoiSHBg = 0;
+						PoiSHBb = 0;
+						PoiSHC = 0;
+						#endif
+					}
+				}
+				#endif
+				//endex
+				#endif
+				#endif
+				
 				if (_UdonForceSceneLighting)
 				{
 					poiLight.lightingMinLightBrightness = 0;
@@ -30680,70 +31566,19 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				}
 				
 				#if defined(POI_PASS_BASE) || defined(POI_PASS_OUTLINE)
-				float3 L0 = float3(0, 0, 0);
-				float3 L1r = float3(0, 0, 0);
-				float3 L1g = float3(0, 0, 0);
-				float3 L1b = float3(0, 0, 0);
-				#if POI_PIPE == POI_BIRP
-				//ifex _LightingEnableLightVolumes==0 && isNotAnimated(_LightingEnableLightVolumes)
-				if (_UdonLightVolumeEnabled && _LightingEnableLightVolumes >= 0.5)
+				[branch] if (poiLight.lightingMinLightBrightness > EPSILON)
 				{
-					LightVolumeSH(poiMesh.worldPos, L0, L1r, L1g, L1b, poiMesh.normals[1] * _LightingLightVolumesNormalBias, poiMesh.normals[1]);
-					float lightVolumeIntensity = saturate(_LightingLightVolumesIntensity);
-					PoiSHAr = lerp(PoiSHAr, float4(L1r, L0.r), lightVolumeIntensity);
-					PoiSHAg = lerp(PoiSHAg, float4(L1g, L0.g), lightVolumeIntensity);
-					PoiSHAb = lerp(PoiSHAb, float4(L1b, L0.b), lightVolumeIntensity);
-					PoiSHBr = lerp(PoiSHBr, 0, lightVolumeIntensity);
-					PoiSHBg = lerp(PoiSHBg, 0, lightVolumeIntensity);
-					PoiSHBb = lerp(PoiSHBb, 0, lightVolumeIntensity);
-					PoiSHC = lerp(PoiSHC, 0, lightVolumeIntensity);
+					PoiApplyMinBrightnessToSH(poiLight.lightingMinLightBrightness);
 				}
-				//endex
-				#endif
-				#if POI_PIPE == POI_URP
-				//ifex _LightingEnableLightVolumes==0 && isNotAnimated(_LightingEnableLightVolumes)
-				#ifdef PROBE_VOLUMES_L1
-				if (_LightingEnableLightVolumes >= 0.5)
-				{
-					APVResources apvRes = FillAPVResources();
-					float3 posWS = GetAbsolutePositionWS(poiMesh.worldPos + poiMesh.normals[1] * _LightingLightVolumesNormalBias);
-					posWS = AddNoiseToSamplingPosition(posWS, poiCam.clipPos.xy, poiCam.viewDir);
-					APVSample apvSample = SampleAPV(posWS, poiMesh.normals[1], GetMeshRenderingLayer(), poiCam.viewDir);
-					if (apvSample.status != APV_SAMPLE_STATUS_INVALID)
-					{
-						apvSample.Decode();
-						PoiSHAr = float4(apvSample.L1_R, apvSample.L0.r);
-						PoiSHAg = float4(apvSample.L1_G, apvSample.L0.g);
-						PoiSHAb = float4(apvSample.L1_B, apvSample.L0.b);
-						#ifdef PROBE_VOLUMES_L2
-						PoiSHBr = float4(apvSample.L2_R, apvSample.L0.r);
-						PoiSHBg = float4(apvSample.L2_G, apvSample.L0.g);
-						PoiSHBb = float4(apvSample.L2_B, apvSample.L0.b);
-						PoiSHC = float4(apvSample.L2_C, 0);
-						#else
-						PoiSHBr = 0;
-						PoiSHBg = 0;
-						PoiSHBb = 0;
-						PoiSHC = 0;
-						#endif
-					}
-				}
-				#endif
-				//endex
-				#endif
-				
-				PoiApplyMinBrightnessToSH(poiLight.lightingMinLightBrightness);
 				#endif
 				
 				// Detail Shadows
+				half4 DetailShadows = 1;
 				#if defined(PROP_LIGHTINGDETAILSHADOWMAPS)
-				half4 DetailShadows = POI2D_SAMPLER_PAN(_LightingDetailShadowMaps, _MainTex, poiUV(poiMesh.uv[_LightingDetailShadowMapsUV], _LightingDetailShadowMaps_ST), _LightingDetailShadowMapsPan);
-				half poiDetailShadowAdditional = lerp(1, DetailShadows.r, _LightingDetailShadowStrengthR) * lerp(1, DetailShadows.g, _LightingDetailShadowStrengthG) * lerp(1, DetailShadows.b, _LightingDetailShadowStrengthB) * lerp(1, DetailShadows.a, _LightingDetailShadowStrengthA);
-				half poiDetailShadowMain = lerp(1, DetailShadows.r, _LightingAddDetailShadowStrengthR) * lerp(1, DetailShadows.g, _LightingAddDetailShadowStrengthG) * lerp(1, DetailShadows.b, _LightingAddDetailShadowStrengthB) * lerp(1, DetailShadows.a, _LightingAddDetailShadowStrengthA);
-				#else
-				half poiDetailShadowAdditional = 1;
-				half poiDetailShadowMain = 1;
+				DetailShadows = POI2D_SAMPLER_PAN(_LightingDetailShadowMaps, _MainTex, poiUV(poiMesh.uv[_LightingDetailShadowMapsUV], _LightingDetailShadowMaps_ST), _LightingDetailShadowMapsPan);
 				#endif
+				half poiDetailShadowAdditional = lerp(1, DetailShadows.r, _LightingAddDetailShadowStrengthR) * lerp(1, DetailShadows.g, _LightingAddDetailShadowStrengthG) * lerp(1, DetailShadows.b, _LightingAddDetailShadowStrengthB) * lerp(1, DetailShadows.a, _LightingAddDetailShadowStrengthA);
+				half poiDetailShadowMain = lerp(1, DetailShadows.r, _LightingDetailShadowStrengthR) * lerp(1, DetailShadows.g, _LightingDetailShadowStrengthG) * lerp(1, DetailShadows.b, _LightingDetailShadowStrengthB) * lerp(1, DetailShadows.a, _LightingDetailShadowStrengthA);
 				
 				if (_LightDataDetailShadowGlobalMaskR > 0)
 				{
@@ -30758,12 +31593,11 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				#endif
 				
 				// Shadow Masks
+				half4 ShadowMasks = 1;
 				#if defined(PROP_LIGHTINGSHADOWMASKS)
-				half4 ShadowMasks = POI2D_SAMPLER_PAN(_LightingShadowMasks, _MainTex, poiUV(poiMesh.uv[_LightingShadowMasksUV], _LightingShadowMasks_ST), _LightingShadowMasksPan);
-				poiLight.toonShadowMask = lerp(1, ShadowMasks.r, _LightingShadowMaskStrengthR) * lerp(1, ShadowMasks.g, _LightingShadowMaskStrengthG) * lerp(1, ShadowMasks.b, _LightingShadowMaskStrengthB) * lerp(1, ShadowMasks.a, _LightingShadowMaskStrengthA);
-				#else
-				poiLight.toonShadowMask = 1;
+				ShadowMasks = POI2D_SAMPLER_PAN(_LightingShadowMasks, _MainTex, poiUV(poiMesh.uv[_LightingShadowMasksUV], _LightingShadowMasks_ST), _LightingShadowMasksPan);
 				#endif
+				poiLight.toonShadowMask = lerp(1, ShadowMasks.r, _LightingShadowMaskStrengthR) * lerp(1, ShadowMasks.g, _LightingShadowMaskStrengthG) * lerp(1, ShadowMasks.b, _LightingShadowMaskStrengthB) * lerp(1, ShadowMasks.a, _LightingShadowMaskStrengthA);
 				
 				if (_LightDataShadowMaskGlobalMaskR > 0)
 				{
@@ -30771,12 +31605,11 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				}
 				
 				// Ambient Occlusion
+				float4 AOMaps = 1;
 				#if defined(PROP_LIGHTINGAOMAPS)
-				float4 AOMaps = POI2D_SAMPLER_PAN(_LightingAOMaps, _MainTex, poiUV(poiMesh.uv[_LightingAOMapsUV], _LightingAOMaps_ST), _LightingAOMapsPan);
-				poiLight.occlusion = min(min(min(lerp(1, AOMaps.r, _LightDataAOStrengthR), lerp(1, AOMaps.g, _LightDataAOStrengthG)), lerp(1, AOMaps.b, _LightDataAOStrengthB)), lerp(1, AOMaps.a, _LightDataAOStrengthA));
-				#else
-				poiLight.occlusion = 1;
+				AOMaps = POI2D_SAMPLER_PAN(_LightingAOMaps, _MainTex, poiUV(poiMesh.uv[_LightingAOMapsUV], _LightingAOMaps_ST), _LightingAOMapsPan);
 				#endif
+				poiLight.occlusion = min(min(min(lerp(1, AOMaps.r, _LightDataAOStrengthR), lerp(1, AOMaps.g, _LightDataAOStrengthG)), lerp(1, AOMaps.b, _LightDataAOStrengthB)), lerp(1, AOMaps.a, _LightDataAOStrengthA));
 				
 				if (_LightDataAOGlobalMaskR > 0)
 				{
@@ -30784,12 +31617,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				}
 				
 				#if POI_PIPE == POI_URP
-				#if UNITY_VERSION >= 202100
 				poiLight.aoFactor = CreateAmbientOcclusionFactor(poiCam.screenUV, poiLight.occlusion);
-				#else
-				poiLight.aoFactor = GetScreenSpaceAmbientOcclusion(poiCam.screenUV);
-				poiLight.aoFactor.indirectAmbientOcclusion = min(poiLight.aoFactor.indirectAmbientOcclusion, poiLight.occlusion);
-				#endif
 				#endif
 				
 				Light mainLight;
@@ -30799,7 +31627,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				mainLight.direction = _WorldSpaceLightPos0.xyz;
 				mainLight.color = _LightColor0.rgb;
 				#elif POI_PIPE == POI_URP
-				half4 poiBakedShadowMask = PoiCalculateShadowMask(i.lightmapUV.xy);
+				half4 poiBakedShadowMask = PoiCalculateShadowMask(i.lightmapUV.xy, poiMesh.worldPos, poiMesh.normals[1], poiCam.viewDir, poiCam.clipPos.xy);
 				mainLight = PoiGetMainLight(TransformWorldToShadowCoord(poiMesh.worldPos), poiMesh.worldPos, poiBakedShadowMask, poiLight.aoFactor);
 				#ifdef _LIGHT_LAYERS
 				uint poiMeshRenderingLayers = GetMeshRenderingLayer();
@@ -30827,6 +31655,17 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				PoiInitStruct(PoiShadingParams, poiShadingParams);
 				PoiLightDataSetup(poiLight, poiFragData, poiMesh, poiCam, poiMods, i, poiShadingParams);
 				if (poiShadingParams.exitCode != 0) return POI_SAFE_RGB1;
+				#if (defined(POI_PASS_BASE) || defined(POI_PASS_OUTLINE)) && POI_PIPE == POI_BIRP && !defined(POI_CAMERA_DATA_REPLACED)
+				//ifex _LightingEnableLightVolumes==0 && isNotAnimated(_LightingEnableLightVolumes)
+				float3 poiLVCamDelta = getCameraPosition() - i.worldPos.xyz;
+				float poiLVCamDistanceSq = dot(poiLVCamDelta, poiLVCamDelta);
+				poiCam.reflectionDir = reflect(-poiCam.eyeViewDir, poiMesh.normals[1]);
+				poiCam.vertexReflectionDir = reflect(-poiCam.eyeViewDir, poiMesh.normals[0]);
+				poiCam.distanceToVert = poiLVCamDistanceSq * rsqrt(max(poiLVCamDistanceSq, 1e-12));
+				poiCam.vDotN = abs(dot(poiCam.eyeViewDir, poiMesh.normals[1]));
+				poiCam.vDotNCentered = abs(dot(poiCam.viewDir, poiMesh.normals[1]));
+				//endex
+				#endif
 				
 				#if POI_PIPE == POI_BIRP
 				#if defined(POI_PASS_BASE) || defined(POI_PASS_ADD)
@@ -30926,6 +31765,28 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				if (!skipShading)
 				{
 					PoiCalculateShading(poiLight, poiFragData, poiMods, poiMesh, poiCam);
+					#if POI_PIPE == POI_BIRP && defined(VERTEXLIGHT_ON) && !defined(_LIGHTINGMODE_PBR)
+					if (poiFragData.toggleVertexLights && _LightingAdditiveType == 3)
+					{
+						[unroll] for (uint poiVertexIndex = 0; poiVertexIndex < 4; poiVertexIndex++)
+						{
+							PoiLight poiVertexLight;
+							PoiVertexLightSetup(poiVertexLight, poiLight, poiVertexIndex, poiMesh, poiCam, poiDetailShadowAdditional);
+							PoiCalculateShading(poiVertexLight, poiFragData, poiMods, poiMesh, poiCam);
+							// Pixel lights blend over the base pass with the add pass's Blend Op, Max by default
+							if (_AddBlendOp == 4)
+							{
+								poiLight.finalLighting = max(poiLight.finalLighting, poiVertexLight.finalLighting);
+								poiLight.finalLightAdd = max(poiLight.finalLightAdd, poiVertexLight.finalLightAdd);
+							}
+							else
+							{
+								poiLight.finalLighting += poiVertexLight.finalLighting;
+								poiLight.finalLightAdd += poiVertexLight.finalLightAdd;
+							}
+						}
+					}
+					#endif
 					PoiLightingNoLoopModules(poiLight, poiFragData, poiMesh, poiCam, poiMods);
 					
 					PoiLightingDependantModules(poiLight, poiFragData, mochieBRDFData, poiMesh, poiCam, poiMods);
@@ -30946,8 +31807,10 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 						PoiLight poiLightAdd;
 						PoiAdditionalLightCopy(poiLightAdd, poiLight, additionalLight, POI_DIRECTIONAL, poiDetailShadowAdditional);
 						poiShadingParams.lightIndex = lightIndex;
+						// Else the main light's debug color is re-added per light
+						poiShadingParams.debugColor = 0;
 						PoiLightDataSetupAdd(poiLightAdd, poiFragData, poiMesh, poiCam, poiMods, i, poiShadingParams);
-						poiLightOut.totalLightMap = saturate(poiLightOut.totalLightMap + poiLightAdd.lightMap * poiLightAdd.attenDistance);
+						poiLightOut.totalLightMap = saturate(poiLightOut.totalLightMap + poiLightAdd.lightMap * saturate(poiLightAdd.attenDistance));
 						if (poiShadingParams.exitCode != 0) continue;
 						PoiCalculateShading(poiLightAdd, poiFragData, poiMods, poiMesh, poiCam);
 						poiLightOut.totalRampedLightMap = poiLightOut.totalRampedLightMap + poiLightAdd.rampedLightMap - poiLightOut.totalRampedLightMap * poiLightAdd.rampedLightMap;
@@ -30969,10 +31832,16 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 					if (!IsMatchingLightLayer(additionalLight.layerMask, poiMeshRenderingLayers)) continue;
 					#endif
 					PoiLight poiLightAdd;
-					PoiAdditionalLightCopy(poiLightAdd, poiLight, additionalLight, POI_POINT_SPOT, poiDetailShadowAdditional);
+					#if USE_CLUSTER_LIGHT_LOOP
+					uint poiAddLightType = POI_POINT_SPOT;
+					#else
+					uint poiAddLightType = _AdditionalLightsPosition[GetPerObjectLightIndex(lightIndex)].w == 0 ? POI_DIRECTIONAL : POI_POINT_SPOT;
+					#endif
+					PoiAdditionalLightCopy(poiLightAdd, poiLight, additionalLight, poiAddLightType, poiDetailShadowAdditional);
 					poiShadingParams.lightIndex = lightIndex;
+					poiShadingParams.debugColor = 0;
 					PoiLightDataSetupAdd(poiLightAdd, poiFragData, poiMesh, poiCam, poiMods, i, poiShadingParams);
-					poiLightOut.totalLightMap = saturate(poiLightOut.totalLightMap + poiLightAdd.lightMap * poiLightAdd.attenDistance);
+					poiLightOut.totalLightMap = saturate(poiLightOut.totalLightMap + poiLightAdd.lightMap * saturate(poiLightAdd.attenDistance));
 					if (poiShadingParams.exitCode != 0) continue;
 					PoiCalculateShading(poiLightAdd, poiFragData, poiMods, poiMesh, poiCam);
 					poiLightOut.totalRampedLightMap = poiLightOut.totalRampedLightMap + poiLightAdd.rampedLightMap - poiLightOut.totalRampedLightMap * poiLightAdd.rampedLightMap;
@@ -30998,8 +31867,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				poiLight.finalLighting = 1;
 				poiLight.rampedLightMap = poiEdgeNonLinear(poiLight.nDotL, 0.1, .1);
 				poiLight.lightMap = poiLight.nDotLNormalized;
-				PoiLightingNoLoopModules(poiLight, poiFragData, poiMesh, poiCam, poiMods);
-				
+				// Unlit/meta effects run below, after global masks, exactly once (also when locked).
 				//ifex _ShadingEnabled==0
 				#endif
 				
@@ -31012,14 +31880,12 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				#endif
 				//endex
 				
-				//ifex _ShadingEnabled!=0
 				#if !defined(VIGNETTE_MASKED) || defined(POI_PASS_META)
 				PoiShadingGlobalMasks(poiMods, poiLight);
 				PoiLightingNoLoopModules(poiLight, poiFragData, poiMesh, poiCam, poiMods);
 				
 				PoiLightingDependantModules(poiLight, poiFragData, mochieBRDFData, poiMesh, poiCam, poiMods);
 				#endif
-				//endex
 				
 				#if POI_PIPE == POI_URP
 				poiLight.lightMap = saturate(poiLightOut.totalLightMap + poiLight.lightMap);
@@ -31348,11 +32214,11 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 					}
 					
 					// Use bent normal for diffuse when available for better occlusion
-					float3 ltcgiNormal = poiMesh.normals[1];
+					float3 ltcgiDiffuseNormal = poiMesh.normals[1];
 					#ifdef POI_BENTNORMALMAP
 					if (poiMesh.hasBentNormal)
 					{
-						ltcgiNormal = poiMesh.bentNormal;
+						ltcgiDiffuseNormal = poiMesh.bentNormal;
 					}
 					#endif
 					
@@ -31361,10 +32227,11 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 					LTCGI_Contribution(
 					acc,
 					poiMesh.worldPos,
-					ltcgiNormal,
+					poiMesh.normals[1],
 					poiCam.eyeViewDir,
 					1.0f - LTCGIsmoothness,
-					poiMesh.uv[1]
+					poiMesh.uv[1],
+					ltcgiDiffuseNormal
 					);
 					
 					acc.specular *= poiThemeColor(poiMods, _LTCGI_SpecularColor.rgb, _LTCGI_SpecularColorThemeIndex) * _LTCGI_SpecularMultiplier;
@@ -31399,13 +32266,19 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				
 				//ifex _MochieBRDF==0
 				#ifdef MOCHIE_PBR
+				#if defined(_LIGHTINGMODE_PBR) && defined(VIGNETTE_MASKED) && !defined(POI_PASS_META)
+				if (!PoiUsesCalibratedPBR(poiMesh))
+				#endif
 				MochieBRDFMetallics(poiFragData, mochieBRDFData, poiCam, poiLight, poiMesh, poiMods);
 				#endif
 				//endex
 				
 				//ifex _ClearCoatBRDF==0
 				#ifdef POI_CLEARCOAT
-				poiClearCoat(poiFragData, poiCam, poiLight, poiMesh, poiMods);
+				#if defined(_LIGHTINGMODE_PBR) && defined(VIGNETTE_MASKED) && !defined(POI_PASS_META)
+				if (!PoiUsesCalibratedPBR(poiMesh))
+				#endif
+				poiClearCoat(poiFragData, poiCam, poiLight, poiMesh, poiMods, false);
 				#endif
 				//endex
 				
@@ -31418,6 +32291,14 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				//ifex _BacklightEnabled!=1
 				#ifdef POI_BACKLIGHT
 				ApplyBacklight(poiFragData, poiMesh, poiLight, poiCam, poiMods);
+				#endif
+				//endex
+				
+				//ifex _StylizedSpecular==0
+				#ifdef POI_STYLIZED_StylizedSpecular
+				#ifdef _STYLIZEDREFLECTIONMODE_LILTOON
+				lilApplyReflection(poiFragData);
+				#endif
 				#endif
 				//endex
 				
@@ -32035,11 +32916,13 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _LightingIndirectUsesNormals;
 			float _LightingCapEnabled;
 			float _LightingCap;
+			float _LightingCapLuminance;
 			half _LightingForceColorEnabled;
 			half3 _LightingForcedColor;
 			float _LightingForcedColorThemeIndex;
 			half _LightingCastedShadows;
 			half _LightingShadowSoftness;
+			half _LightingCleanCastedShadows;
 			float _LightingMonochromatic;
 			half _LightingMinLightBrightness;
 			// Additive Lighting Data
@@ -32054,10 +32937,8 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _LightingVertexLightingEnabled;
 			float _LightingMirrorVertexLightingEnabled;
 			float _LightingEnableLightVolumes;
-			float _LightingLightVolumesIntensity;
 			float _LightingLightVolumesNormalBias;
 			float _LightingLightVolumesSpecular;
-			float _LightingLightVolumesShadows;
 			// Lighting Data Debug
 			float _LightDataDebugEnabled;
 			float _LightingDebugVisualize;
@@ -33364,10 +34245,12 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float4 _SkinThicknessMap_ST;
 			float2 _SkinThicknessMapPan;
 			float _SkinThicknessMapUV;
-			float _SkinThicknessMapInvert;
 			#endif
+			float _SkinThicknessMapInvert;
 			float _SkinThicknessPower;
 			float _SssBumpBlur;
+			float _SkinDiffuseSoftnessEnabled;
+			float _SkinScatteringStability;
 			float3 _SssTransmissionAbsorption;
 			half3 _SssColorBleedAoWeights;
 			#endif
@@ -33378,6 +34261,13 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float2 _ShadowBorderMaskPan;
 			float _ShadowBorderMaskUV;
 			#endif
+			half _ShadowBorderMaskMode;
+			half _ShadowBorderMaskStrengthR;
+			half _ShadowBorderMaskStrengthG;
+			half _ShadowBorderMaskStrengthB;
+			half _ShadowBorderMaskStrengthA;
+			half _ShadowBorderMaskGlobalMask;
+			half _ShadowBorderMaskGlobalMaskBlendType;
 			half _ShadowPostAO;
 			half _ShadowBorderMaskLOD;
 			half4 _ShadowAOShift;
@@ -33451,6 +34341,14 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			half _ClothMetallic;
 			half _ClothReflectance;
 			half _ClothSmoothness;
+			half _ClothMetallicGlobalMask;
+			float _ClothMetallicGlobalMaskBlendType;
+			half _ClothMaskGlobalMask;
+			float _ClothMaskGlobalMaskBlendType;
+			half _ClothReflectanceGlobalMask;
+			float _ClothReflectanceGlobalMaskBlendType;
+			half _ClothSmoothnessGlobalMask;
+			float _ClothSmoothnessGlobalMaskBlendType;
 			#endif
 			
 			#ifdef _LIGHTINGMODE_SDF
@@ -33458,17 +34356,16 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _SDFShadingTextureUV;
 			float2 _SDFShadingTexturePan;
 			float4 _SDFShadingTexture_ST;
+			#endif
 			float _SDFBlur;
 			float4 _SDFForward;
 			float4 _SDFLeft;
-			#endif
 			#endif
 			
 			// Additive
 			float _LightingAdditiveType;
 			float _LightingAdditiveGradientStart;
 			float _LightingAdditiveGradientEnd;
-			float _LightingAdditiveDetailStrength;
 			//endex
 			
 			//ifex _DecalEnabled==0 && _DecalEnabled1==0 && _DecalEnabled2==0 && _DecalEnabled3==0
@@ -34681,6 +35578,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _RenderingReduceClipDistance;
 			int _FlipBackfaceNormals;
 			float _AddBlendOp;
+			float _AddSrcBlend;
 			float _Cull;
 			
 			//ifex _RenderingAOBlockerEnabled==0
@@ -37568,6 +38466,22 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			#endif // defined(_STOCHASTICMODE_HEXTILE)
 			//endex
 			
+			// Clean Casted Shadows averages a fixed disk (no per-pixel rotation, so the result doesn't crawl) and runs it through
+			// an S-curve, which turns the shadow map's texel steps into a clean edge.
+			#define POI_SHADOW_CLEAN_TAPS 12
+			
+			float2 PoiShadowCleanTap(int index)
+			{
+				float angle = index * 2.3999632;
+				return float2(cos(angle), sin(angle)) * sqrt((index + 0.5) / POI_SHADOW_CLEAN_TAPS);
+			}
+			
+			// Clean Casted Shadows uses a fixed size and ignores Softness
+			float PoiShadowFilterSize()
+			{
+				return _LightingCleanCastedShadows >= 0.5 ? 0.3 : _LightingShadowSoftness;
+			}
+			
 			// Directional/main light shadow blur (4-tap Vogel disk), shared by BIRP and URP.
 			half PoiDirectionalShadowBlur(
 			half attenShadows,
@@ -37583,11 +38497,11 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				#if POI_PIPE == POI_BIRP
 				#if defined(SHADOWS_SCREEN) && !defined(UNITY_NO_SCREENSPACE_SHADOWS)
 				UNITY_BRANCH
-				if (_LightingShadowSoftness > 0 && _LightingCastedShadows > 0)
+				if (_LightingShadowSoftness > 0 || _LightingCleanCastedShadows >= 0.5)
 				{
 					float4 poiShadowCoord = i._ShadowCoord;
 					float poiCamDist = distance(posWS, _WorldSpaceCameraPos);
-					float poiRadiusPx = _LightingShadowSoftness * (108.0 / max(poiCamDist * 1.8, 2.0));
+					float poiRadiusPx = PoiShadowFilterSize() * (108.0 / max(poiCamDist * 1.8, 2.0));
 					float2 poiStep = (_ScreenParams.zw - 1.0) * (poiShadowCoord.w * poiRadiusPx);
 					float2 poiPix = (poiShadowCoord.xy / max(poiShadowCoord.w, 1e-5)) * _ScreenParams.xy;
 					#ifdef POI_PASS_LILFUR
@@ -37595,50 +38509,89 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 					#else
 					float poiRot = frac(52.9829189 * frac(dot(poiPix, float2(0.06711056, 0.00583715)))) * 6.2831853;
 					#endif
-					float poiSinR, poiCosR;
-					sincos(poiRot, poiSinR, poiCosR);
-					half poiShadowSum = attenShadows; // center tap (r=0)
-					[unroll] for (int poiT = 0; poiT < 4; poiT++)
+					if (_LightingCleanCastedShadows >= 0.5)
 					{
-						float poiR = sqrt((poiT + 0.5) / 4.0);
-						float poiC = poiT * 2.3999632;
-						float2 poiBase = float2(cos(poiC), sin(poiC)) * poiR; // compile-time constant
-						float2 poiDir = float2(poiCosR * poiBase.x - poiSinR * poiBase.y, poiSinR * poiBase.x + poiCosR * poiBase.y);
-						float4 sc = poiShadowCoord;
-						sc.xy += poiDir * poiStep;
-						poiShadowSum += UNITY_SAMPLE_SCREEN_SHADOW(_ShadowMapTexture, sc);
+						// Taps that land on another surface would vote with that surface's shadow, so each tap is
+						// weighted by how close its depth is to this surface's tangent plane.
+						float2 poiCenterUV = poiShadowCoord.xy / poiShadowCoord.w;
+						float poiDepth = poiShadowCoord.w;
+						float2 poiDepthSlope = float2(ddx(poiDepth) / ddx(poiCenterUV.x), ddy(poiDepth) / ddy(poiCenterUV.y));
+						half poiShadowSum = attenShadows;
+						half poiWeightSum = 1;
+						[unroll] for (int poiT = 0; poiT < POI_SHADOW_CLEAN_TAPS; poiT++)
+						{
+							float4 sc = poiShadowCoord;
+							sc.xy += PoiShadowCleanTap(poiT) * poiStep;
+							float2 poiTapUV = sc.xy / sc.w;
+							float poiTapDepth = LinearEyeDepth(_CameraDepthTexture.SampleLevel(sampler_point_clamp, STEREO_UV(poiTapUV), 0));
+							float poiExpectedDepth = poiDepth + dot(poiDepthSlope, poiTapUV - poiCenterUV);
+							half poiWeight = saturate(2.0 - abs(poiTapDepth - poiExpectedDepth) / (poiDepth * 0.01));
+							poiShadowSum += UNITY_SAMPLE_SCREEN_SHADOW(_ShadowMapTexture, sc) * poiWeight;
+							poiWeightSum += poiWeight;
+						}
+						attenShadows = smoothstep(0, 1, poiShadowSum / poiWeightSum);
 					}
-					attenShadows = poiShadowSum / 5.0; // 4 disk taps + center
+					else
+					{
+						float poiSinR, poiCosR;
+						sincos(poiRot, poiSinR, poiCosR);
+						half poiShadowSum = attenShadows; // center tap (r=0)
+						[unroll] for (int poiT = 0; poiT < 4; poiT++)
+						{
+							float poiR = sqrt((poiT + 0.5) / 4.0);
+							float poiC = poiT * 2.3999632;
+							float2 poiBase = float2(cos(poiC), sin(poiC)) * poiR; // compile-time constant
+							float2 poiDir = float2(poiCosR * poiBase.x - poiSinR * poiBase.y, poiSinR * poiBase.x + poiCosR * poiBase.y);
+							float4 sc = poiShadowCoord;
+							sc.xy += poiDir * poiStep;
+							poiShadowSum += UNITY_SAMPLE_SCREEN_SHADOW(_ShadowMapTexture, sc);
+						}
+						attenShadows = poiShadowSum / 5.0; // 4 disk taps + center
+					}
 				}
 				#endif
 				#elif POI_PIPE == POI_URP
 				#if defined(_MAIN_LIGHT_SHADOWS) || defined(_MAIN_LIGHT_SHADOWS_CASCADE) || defined(_MAIN_LIGHT_SHADOWS_SCREEN)
 				UNITY_BRANCH
-				if (_LightingShadowSoftness > 0 && _LightingCastedShadows > 0)
+				if (_LightingShadowSoftness > 0 || _LightingCleanCastedShadows >= 0.5)
 				{
 					float3 poiLdir = lightDir;
 					float3 poiShadowT = normalize(cross(poiLdir, float3(0.0, 1.0, 0.001)));
 					float3 poiShadowB = cross(poiLdir, poiShadowT);
-					float poiShadowRadius = _LightingShadowSoftness * 0.06;
-					float2 poiPix = screenUV * _ScreenParams.xy;
+					float poiShadowRadius = PoiShadowFilterSize() * 0.06;
+					float2 poiPix = screenUV * GetScaledScreenParams().xy;
 					#ifdef POI_PASS_LILFUR
 					float poiRot = PoiBayer8(floor(poiPix)) * 6.2831853;
 					#else
 					float poiRot = frac(52.9829189 * frac(dot(poiPix, float2(0.06711056, 0.00583715)))) * 6.2831853;
 					#endif
-					float poiSinR, poiCosR;
-					sincos(poiRot, poiSinR, poiCosR);
-					half poiShadowSum = attenShadows; // center tap (r=0)
-					[unroll] for (int poiT = 0; poiT < 4; poiT++)
+					if (_LightingCleanCastedShadows >= 0.5)
 					{
-						float poiR = sqrt((poiT + 0.5) / 4.0);
-						float poiC = poiT * 2.3999632;
-						float2 poiBase = float2(cos(poiC), sin(poiC)) * poiR; // compile-time constant
-						float2 poiOff = float2(poiCosR * poiBase.x - poiSinR * poiBase.y, poiSinR * poiBase.x + poiCosR * poiBase.y) * poiShadowRadius;
-						float3 op = posWS + poiShadowT * poiOff.x + poiShadowB * poiOff.y;
-						poiShadowSum += MainLightRealtimeShadow(TransformWorldToShadowCoord(op));
+						half poiShadowSum = attenShadows;
+						[unroll] for (int poiT = 0; poiT < POI_SHADOW_CLEAN_TAPS; poiT++)
+						{
+							float2 poiOff = PoiShadowCleanTap(poiT) * poiShadowRadius;
+							float3 op = posWS + poiShadowT * poiOff.x + poiShadowB * poiOff.y;
+							poiShadowSum += MainLightRealtimeShadow(TransformWorldToShadowCoord(op));
+						}
+						attenShadows = smoothstep(0, 1, poiShadowSum / (POI_SHADOW_CLEAN_TAPS + 1.0));
 					}
-					attenShadows = poiShadowSum / 5.0; // 4 disk taps + center
+					else
+					{
+						float poiSinR, poiCosR;
+						sincos(poiRot, poiSinR, poiCosR);
+						half poiShadowSum = attenShadows; // center tap (r=0)
+						[unroll] for (int poiT = 0; poiT < 4; poiT++)
+						{
+							float poiR = sqrt((poiT + 0.5) / 4.0);
+							float poiC = poiT * 2.3999632;
+							float2 poiBase = float2(cos(poiC), sin(poiC)) * poiR; // compile-time constant
+							float2 poiOff = float2(poiCosR * poiBase.x - poiSinR * poiBase.y, poiSinR * poiBase.x + poiCosR * poiBase.y) * poiShadowRadius;
+							float3 op = posWS + poiShadowT * poiOff.x + poiShadowB * poiOff.y;
+							poiShadowSum += MainLightRealtimeShadow(TransformWorldToShadowCoord(op));
+						}
+						attenShadows = poiShadowSum / 5.0; // 4 disk taps + center
+					}
 				}
 				#endif
 				#endif
@@ -37686,6 +38639,101 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				#endif
 			}
 			#endif
+			
+			// Face SDF light map for whichever light poiLight holds, so add-pass lights follow the same face shading
+			float PoiLightDataSDF(in PoiMesh poiMesh, in PoiLight poiLight)
+			{
+				#if defined(PROP_LIGHTDATASDFMAP)
+				float2 lightDataSDFMap = 1;
+				if (_LightDataSDFMapLOD > 0)
+				{
+					float sdfLod = pow(_LightDataSDFMapLOD, 4.0);
+					lightDataSDFMap = POI2D_SAMPLER_PANGRAD(_LightDataSDFMap, _linear_repeat, poiUV(poiMesh.uv[_LightDataSDFMapUV], _LightDataSDFMap_ST), _LightDataSDFMapPan, max(poiMesh.dx, sdfLod), max(poiMesh.dy, sdfLod)).rg;
+				}
+				else
+				{
+					lightDataSDFMap = POI2D_SAMPLER_PAN(_LightDataSDFMap, _linear_repeat, poiUV(poiMesh.uv[_LightDataSDFMapUV], _LightDataSDFMap_ST), _LightDataSDFMapPan).rg;
+				}
+				
+				float3 faceR = mul((float3x3)unity_ObjectToWorld, float3(-1.0, 0.0, 0.0));
+				float LdotR = dot(poiLight.direction.xz, faceR.xz);
+				float sdf = LdotR < 0 ? lightDataSDFMap.g : lightDataSDFMap.r;
+				
+				float3 faceF = mul((float3x3)unity_ObjectToWorld, float3(0.0, 0.0, 1.0)).xyz;
+				faceF.y *= _LightDataSDFBlendY;
+				faceF = dot(faceF, faceF) == 0 ? 0 : normalize(faceF);
+				float3 faceL = poiLight.direction;
+				faceL.y *= _LightDataSDFBlendY;
+				faceL = dot(faceL, faceL) == 0 ? 0 : normalize(faceL);
+				
+				float lnSDF = dot(faceL, faceF);
+				return saturate(lnSDF * 0.5 + sdf * 0.5 + 0.25);
+				#else
+				return poiLight.nDotLNormalized;
+				#endif
+			}
+			
+			// Shared by add-pass lights, URP additional lights and vertex lights once direction, color and attenuation are set
+			void PoiFinishAdditiveLight(inout PoiLight poiLight, in PoiMesh poiMesh, in PoiCam poiCam)
+			{
+				poiLight.halfDir = normalize(poiLight.direction + poiCam.eyeViewDir);
+				poiLight.nDotL = dot(poiMesh.normals[1], poiLight.direction);
+				poiLight.nDotLSaturated = saturate(poiLight.nDotL);
+				poiLight.nDotLNormalized = (poiLight.nDotL + 1) * 0.5;
+				poiLight.nDotV = abs(dot(poiMesh.normals[1], poiCam.eyeViewDir));
+				poiLight.nDotVCentered = abs(dot(poiMesh.normals[1], poiCam.viewDir));
+				poiLight.nDotH = dot(poiMesh.normals[1], poiLight.halfDir);
+				poiLight.lDotv = dot(poiLight.direction, poiCam.eyeViewDir);
+				poiLight.lDotH = dot(poiLight.direction, poiLight.halfDir);
+				poiLight.vertexNDotL = dot(poiMesh.normals[0], poiLight.direction);
+				poiLight.vertexNDotV = abs(dot(poiMesh.normals[0], poiCam.eyeViewDir));
+				poiLight.vertexNDotH = max(0.00001, dot(poiMesh.normals[0], poiLight.halfDir));
+				
+				[flatten]
+				switch ((int)_LightingMapMode)
+				{
+					// Poi Custom's curve without its ambient terms, which only the base pass adds
+					case 0:
+					{
+						poiLight.lightMap = smoothstep(0, 1, poiLight.nDotLNormalized);
+						poiLight.lightMapMode = 0;
+						break;
+					}
+					// Saturated NDotL
+					case 2:
+					{
+						poiLight.lightMap = poiLight.nDotLSaturated;
+						poiLight.lightMapMode = 2;
+						break;
+					}
+					// Casted Shadows Only
+					case 3:
+					{
+						poiLight.lightMap = 1;
+						poiLight.lightMapMode = 3;
+						break;
+					}
+					case 4:
+					{
+						poiLight.lightMap = PoiLightDataSDF(poiMesh, poiLight);
+						poiLight.lightMapMode = 4;
+						break;
+					}
+					default:
+					{
+						poiLight.lightMap = poiLight.nDotLNormalized;
+						poiLight.lightMapMode = 1;
+						break;
+					}
+				}
+				
+				poiLight.lightMap *= poiLight.detailShadow;
+				poiLight.lightMapNoAttenuation = poiLight.lightMap;
+				poiLight.lightMap *= CalculateLuminance(poiLight.lightCookie) * poiLight.attenShadowsStrength;
+				// backwards compatibility
+				poiLight.attenuation = poiLight.lightMap;
+				poiLight.additiveShadow = poiLight.lightMap;
+			}
 			
 			void PoiLightDataSetupAdd(
 			inout PoiLight poiLight,
@@ -37740,7 +38788,8 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				PoiGetLightAttenuation(poiMesh.worldPos, i, poiLight.attenShadows, poiLight.attenDistance, poiLight.lightCookie);
 				#elif POI_PIPE == POI_URP
 				poiLight.attenShadows = poiLight.unityLight.shadowAttenuation;
-				poiLight.attenDistance = poiSampleCurve4(_LightingAdditiveAttenCurve, poiLight.unityLight.distanceAttenuation);
+				// Inverse-square attenuation exceeds 1 near the light; the curve only shapes the 0-1 range
+				poiLight.attenDistance = poiSampleCurve4(_LightingAdditiveAttenCurve, poiLight.unityLight.distanceAttenuation) * max(poiLight.unityLight.distanceAttenuation, 1);
 				#if defined(_LIGHT_COOKIES)
 				#if USE_CLUSTER_LIGHT_LOOP
 				int lightBufferIndex = params.lightIndex;
@@ -37763,47 +38812,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				poiLight.directColor = lerp(poiLight.directColor, dot(poiLight.directColor, float3(0.299, 0.587, 0.114)), _LightingAdditiveMonochromatic);
 				poiLight.indirectColor = lerp(poiLight.indirectColor, dot(poiLight.indirectColor, float3(0.299, 0.587, 0.114)), _LightingAdditiveMonochromatic);
 				
-				poiLight.halfDir = normalize(poiLight.direction + poiCam.eyeViewDir);
-				poiLight.nDotL = dot(poiMesh.normals[1], poiLight.direction);
-				poiLight.nDotLSaturated = saturate(poiLight.nDotL);
-				poiLight.nDotLNormalized = (poiLight.nDotL + 1) * 0.5;
-				poiLight.nDotV = abs(dot(poiMesh.normals[1], poiCam.eyeViewDir));
-				poiLight.nDotVCentered = abs(dot(poiMesh.normals[1], poiCam.viewDir));
-				poiLight.nDotH = dot(poiMesh.normals[1], poiLight.halfDir);
-				poiLight.lDotv = dot(poiLight.direction, poiCam.eyeViewDir);
-				poiLight.lDotH = dot(poiLight.direction, poiLight.halfDir);
-				poiLight.vertexNDotL = dot(poiMesh.normals[0], poiLight.direction);
-				poiLight.vertexNDotV = abs(dot(poiMesh.normals[0], poiCam.eyeViewDir));
-				poiLight.vertexNDotH = max(0.00001, dot(poiMesh.normals[0], poiLight.halfDir));
-				
-				[flatten]
-				switch ((int)_LightingMapMode)
-				{
-					// Saturated NDotL
-					case 2:
-					{
-						poiLight.lightMap = poiLight.nDotLSaturated;
-						break;
-					}
-					// Casted Shadows Only
-					case 3:
-					{
-						poiLight.lightMap = 1;
-						break;
-					}
-					default:
-					{
-						poiLight.lightMap = poiLight.nDotLNormalized;
-						break;
-					}
-				}
-				
-				poiLight.lightMap *= poiLight.detailShadow;
-				poiLight.lightMapNoAttenuation = poiLight.lightMap;
-				poiLight.lightMap *= CalculateLuminance(poiLight.lightCookie) * poiLight.attenShadowsStrength;
-				// backwards compatibility
-				poiLight.attenuation = poiLight.lightMap;
-				poiLight.additiveShadow = poiLight.lightMap;
+				PoiFinishAdditiveLight(poiLight, poiMesh, poiCam);
 				
 				//ifex _LightDataDebugEnabled==0
 				if (_LightDataDebugEnabled >= 0.5)
@@ -37847,6 +38856,51 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				params.exitCode = 0;
 			}
 			
+			#if POI_PIPE == POI_BIRP && defined(VERTEXLIGHT_ON)
+			// Turns one of Unity's four vertex lights into an additive light, so it can be shaded like a pixel light
+			void PoiVertexLightSetup(inout PoiLight vertexLight, in PoiLight mainLight, uint index, in PoiMesh poiMesh, in PoiCam poiCam, half detailShadow)
+			{
+				PoiInitStruct(PoiLight, vertexLight);
+				vertexLight.lightType = POI_POINT_SPOT;
+				vertexLight.isAdditive = 1;
+				vertexLight.detailShadow = detailShadow;
+				vertexLight.toonShadowMask = mainLight.toonShadowMask;
+				vertexLight.occlusion = mainLight.occlusion;
+				vertexLight.lightingMinLightBrightness = mainLight.lightingMinLightBrightness;
+				vertexLight.lightingCapEnabled = mainLight.lightingCapEnabled;
+				vertexLight.lightingMonochromatic = mainLight.lightingMonochromatic;
+				
+				vertexLight.direction = mainLight.vDirection[index];
+				vertexLight.attenDistance = mainLight.vAttenuation[index];
+				vertexLight.attenShadows = 1;
+				vertexLight.attenShadowsStrength = 1;
+				vertexLight.lightCookie = 1;
+				
+				vertexLight.directColor = mainLight.vColor[index];
+				vertexLight.indirectColor = unity_LightColor[index].rgb * vertexLight.attenDistance * _LightingAdditivePassthrough;
+				vertexLight.indirectColor = _LightingAdditiveLimited ? MaxLuminance(vertexLight.indirectColor, _LightingAdditiveLimit) : vertexLight.indirectColor;
+				vertexLight.indirectColor = lerp(vertexLight.indirectColor, dot(vertexLight.indirectColor, float3(0.299, 0.587, 0.114)), _LightingAdditiveMonochromatic);
+				
+				PoiFinishAdditiveLight(vertexLight, poiMesh, poiCam);
+			}
+			#endif
+			
+			float3 PoiCapDirectLight(float3 directColor)
+			{
+				float3 cappedDirectColor = min(directColor, _LightingCap);
+				if (_LightingCapLuminance > 0)
+				{
+					#if defined(UNITY_COLORSPACE_GAMMA)
+					float luminance = dot(directColor, float3(0.299, 0.587, 0.114));
+					#else
+					float luminance = dot(directColor, float3(0.2126, 0.7152, 0.0722));
+					#endif
+					float3 luminanceLimitedColor = directColor * saturate(_LightingCap / max(luminance, 0.00001));
+					cappedDirectColor = lerp(cappedDirectColor, luminanceLimitedColor, saturate(_LightingCapLuminance));
+				}
+				return cappedDirectColor;
+			}
+			
 			void PoiLightDataSetup(
 			inout PoiLight poiLight,
 			inout PoiFragData poiFragData,
@@ -37875,52 +38929,6 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				{
 					poiFragData.toggleVertexLights = 0;
 				}
-				
-				#if POI_PIPE == POI_BIRP
-				if (_LightingVertexLightingEnabled >= 0.5)
-				{
-					#if defined(VERTEXLIGHT_ON)
-					float4 toLightX = unity_4LightPosX0 - poiMesh.worldPos.x;
-					float4 toLightY = unity_4LightPosY0 - poiMesh.worldPos.y;
-					float4 toLightZ = unity_4LightPosZ0 - poiMesh.worldPos.z;
-					float4 lengthSq = 0;
-					lengthSq += toLightX * toLightX;
-					lengthSq += toLightY * toLightY;
-					lengthSq += toLightZ * toLightZ;
-					
-					float4 lightAttenSq = unity_4LightAtten0;
-					float4 atten = 1.0 / (1.0 + lengthSq * lightAttenSq);
-					half4 vLightWeight = saturate(1 - (lengthSq * lightAttenSq / 25));
-					poiLight.vAttenuation = min(atten, vLightWeight * vLightWeight);
-					
-					poiLight.vDotNL = 0;
-					poiLight.vDotNL += toLightX * poiMesh.normals[1].x;
-					poiLight.vDotNL += toLightY * poiMesh.normals[1].y;
-					poiLight.vDotNL += toLightZ * poiMesh.normals[1].z;
-					
-					float4 corr = rsqrt(lengthSq);
-					poiLight.vDotNL *= corr;
-					poiLight.vertexVDotNL = max(0, poiLight.vDotNL);
-					poiLight.vSaturatedDotNL = saturate(poiLight.vDotNL);
-					
-					[unroll]
-					for (int index = 0; index < 4; index++)
-					{
-						poiLight.vPosition[index] = float3(unity_4LightPosX0[index], unity_4LightPosY0[index], unity_4LightPosZ0[index]);
-						poiLight.vDirection[index] = float3(toLightX[index], toLightY[index], toLightZ[index]) * corr[index];
-						poiLight.vAttenuation[index] = poiSampleCurve4(_LightingAdditiveAttenCurve, poiLight.vAttenuation[index]);
-						float3 col = unity_LightColor[index].rgb * poiLight.vAttenuation[index];
-						poiLight.vColor[index] = _LightingAdditiveLimited ? MaxLuminance(col, _LightingAdditiveLimit) : col;
-						poiLight.vColor[index] = lerp(poiLight.vColor[index], dot(poiLight.vColor[index], float3(0.299,0.587,0.114)), _LightingAdditiveMonochromatic);
-						poiLight.vHalfDir[index] = Unity_SafeNormalize(poiLight.vDirection[index] + poiCam.eyeViewDir);
-						poiLight.vDotLH[index] = saturate(dot(poiLight.vDirection[index], poiLight.vHalfDir[index]));
-						poiLight.vDotNH[index] = dot(poiMesh.normals[1], poiLight.vHalfDir[index]);
-						poiLight.vCorrectedDotNL[index] = .5 * (poiLight.vDotNL[index] + 1);
-						poiLight.vertexVDotNH[index] = saturate(dot(poiMesh.normals[0], poiLight.vHalfDir[index]));
-					}
-					#endif
-				}
-				#endif
 				
 				poiLight.attenStrength = _LightingCastedShadows;
 				
@@ -38103,6 +39111,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				poiLight.lDotv = dot(poiLight.direction, poiCam.eyeViewDir);
 				poiLight.lDotH = max(0.00001, dot(poiLight.direction, poiLight.halfDir));
 				
+				poiLight.lightMapMode = lightMapMode;
 				float lightCookieLuminance = CalculateLuminance(poiLight.lightCookie);
 				[flatten]
 				switch (lightMapMode)
@@ -38148,41 +39157,19 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 					}
 					case 4:
 					{
-						#if defined(PROP_LIGHTDATASDFMAP)
-						float2 lightDataSDFMap = 1;
-						if (_LightDataSDFMapLOD > 0)
-						{
-							float sdfLod = pow(_LightDataSDFMapLOD, 4.0);
-							lightDataSDFMap = POI2D_SAMPLER_PANGRAD(_LightDataSDFMap, _linear_repeat, poiUV(poiMesh.uv[_LightDataSDFMapUV], _LightDataSDFMap_ST), _LightDataSDFMapPan, max(poiMesh.dx, sdfLod), max(poiMesh.dy, sdfLod)).rg;
-						}
-						else
-						{
-							lightDataSDFMap = POI2D_SAMPLER_PAN(_LightDataSDFMap, _linear_repeat, poiUV(poiMesh.uv[_LightDataSDFMapUV], _LightDataSDFMap_ST), _LightDataSDFMapPan).rg;
-						}
-						
-						poiLight.lightMapNoAttenuation = poiLight.nDotLSaturated;
-						float3 faceR = mul((float3x3)unity_ObjectToWorld, float3(-1.0, 0.0, 0.0));
-						float LdotR = dot(poiLight.direction.xz, faceR.xz);
-						float sdf = LdotR < 0 ? lightDataSDFMap.g : lightDataSDFMap.r;
-						
-						float3 faceF = mul((float3x3)unity_ObjectToWorld, float3(0.0, 0.0, 1.0)).xyz;
-						faceF.y *= _LightDataSDFBlendY;
-						faceF = dot(faceF, faceF) == 0 ? 0 : normalize(faceF);
-						float3 faceL = poiLight.direction;
-						faceL.y *= _LightDataSDFBlendY;
-						faceL = dot(faceL, faceL) == 0 ? 0 : normalize(faceL);
-						
-						float lnSDF = dot(faceL, faceF);
-						poiLight.lightMapNoAttenuation = saturate(lnSDF * 0.5 + sdf * 0.5 + 0.25);
-						poiLight.lightMap = saturate(lnSDF * 0.5 + sdf * 0.5 + 0.25) * poiLight.attenShadowsStrength * lightCookieLuminance;
-						#else
-						poiLight.lightMapNoAttenuation = poiLight.nDotLNormalized;
-						poiLight.lightMap = poiLight.nDotLNormalized * poiLight.attenShadowsStrength * lightCookieLuminance;
-						#endif
+						poiLight.lightMapNoAttenuation = PoiLightDataSDF(poiMesh, poiLight);
+						poiLight.lightMap = poiLight.lightMapNoAttenuation * poiLight.attenShadowsStrength * lightCookieLuminance;
 						break;
 					}
 				}
 				
+				#ifdef POI_LIGHT_VOLUME_FORM
+				[branch] if (PoiLightVolumesActive())
+				{
+					poiLight.lightMap = PoiLVLightmap(0, poiMesh.normals[1], poiLight.lightMap, _LightingCastedShadows,
+					poiLight.unityLight.color.rgb * poiLight.attenDistance * poiLight.lightCookie, poiLight.unityLight.direction.xyz, poiLight.attenShadows);
+				}
+				#endif
 				poiLight.lightMapNoAttenuation *= poiLight.detailShadow;
 				poiLight.lightMap *= poiLight.detailShadow;
 				// backwards compatibility
@@ -38202,8 +39189,11 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 					// poiLight.directColor = max(poiLight.directColor, poiLight.directColor * min(10000, (_LightingMinLightBrightness * rcp(CalculateLuminance(poiLight.directColor)))));
 					// poiLight.indirectColor = max(poiLight.indirectColor, poiLight.indirectColor * min(10000, (_LightingMinLightBrightness * rcp(CalculateLuminance(poiLight.indirectColor)))));
 					
-					poiLight.directColor = PoiMinBrightness(poiLight.directColor, poiLight.lightingMinLightBrightness);
-					poiLight.indirectColor = PoiMinBrightness(poiLight.indirectColor, poiLight.lightingMinLightBrightness);
+					if (poiLight.lightingMinLightBrightness > EPSILON)
+					{
+						poiLight.directColor = PoiMinBrightness(poiLight.directColor, poiLight.lightingMinLightBrightness);
+						poiLight.indirectColor = PoiMinBrightness(poiLight.indirectColor, poiLight.lightingMinLightBrightness);
+					}
 				}
 				
 				poiLight.directColor = lerp(poiLight.directColor, dot(poiLight.directColor, float3(0.299, 0.587, 0.114)), poiLight.lightingMonochromatic);
@@ -38211,7 +39201,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				
 				if (poiLight.lightingCapEnabled)
 				{
-					poiLight.directColor = min(poiLight.directColor, _LightingCap);
+					poiLight.directColor = PoiCapDirectLight(poiLight.directColor);
 					poiLight.indirectColor = min(poiLight.indirectColor, _LightingCap);
 				}
 				
@@ -38225,6 +39215,52 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				poiLight.directColor = max(poiLight.directColor + _PPLightingAddition, 0);
 				poiLight.indirectColor = max(poiLight.indirectColor * _PPLightingMultiplier, 0);
 				poiLight.indirectColor = max(poiLight.indirectColor + _PPLightingAddition, 0);
+				#endif
+				
+				#if POI_PIPE == POI_BIRP
+				if (_LightingVertexLightingEnabled >= 0.5)
+				{
+					#if defined(VERTEXLIGHT_ON)
+					float4 toLightX = unity_4LightPosX0 - poiMesh.worldPos.x;
+					float4 toLightY = unity_4LightPosY0 - poiMesh.worldPos.y;
+					float4 toLightZ = unity_4LightPosZ0 - poiMesh.worldPos.z;
+					float4 lengthSq = 0;
+					lengthSq += toLightX * toLightX;
+					lengthSq += toLightY * toLightY;
+					lengthSq += toLightZ * toLightZ;
+					
+					float4 lightAttenSq = unity_4LightAtten0;
+					float4 atten = 1.0 / (1.0 + lengthSq * lightAttenSq);
+					half4 vLightWeight = saturate(1 - (lengthSq * lightAttenSq / 25));
+					poiLight.vAttenuation = min(atten, vLightWeight * vLightWeight);
+					
+					poiLight.vDotNL = 0;
+					poiLight.vDotNL += toLightX * poiMesh.normals[1].x;
+					poiLight.vDotNL += toLightY * poiMesh.normals[1].y;
+					poiLight.vDotNL += toLightZ * poiMesh.normals[1].z;
+					
+					float4 corr = rsqrt(lengthSq);
+					poiLight.vDotNL *= corr;
+					poiLight.vertexVDotNL = max(0, poiLight.vDotNL);
+					poiLight.vSaturatedDotNL = saturate(poiLight.vDotNL);
+					
+					[unroll]
+					for (int index = 0; index < 4; index++)
+					{
+						poiLight.vPosition[index] = float3(unity_4LightPosX0[index], unity_4LightPosY0[index], unity_4LightPosZ0[index]);
+						poiLight.vDirection[index] = float3(toLightX[index], toLightY[index], toLightZ[index]) * corr[index];
+						poiLight.vAttenuation[index] = poiSampleCurve4(_LightingAdditiveAttenCurve, poiLight.vAttenuation[index]);
+						float3 col = unity_LightColor[index].rgb * poiLight.vAttenuation[index];
+						poiLight.vColor[index] = _LightingAdditiveLimited ? MaxLuminance(col, _LightingAdditiveLimit) : col;
+						poiLight.vColor[index] = lerp(poiLight.vColor[index], dot(poiLight.vColor[index], float3(0.299,0.587,0.114)), _LightingAdditiveMonochromatic);
+						poiLight.vHalfDir[index] = Unity_SafeNormalize(poiLight.vDirection[index] + poiCam.eyeViewDir);
+						poiLight.vDotLH[index] = saturate(dot(poiLight.vDirection[index], poiLight.vHalfDir[index]));
+						poiLight.vDotNH[index] = dot(poiMesh.normals[1], poiLight.vHalfDir[index]);
+						poiLight.vCorrectedDotNL[index] = .5 * (poiLight.vDotNL[index] + 1);
+						poiLight.vertexVDotNH[index] = saturate(dot(poiMesh.normals[0], poiLight.vHalfDir[index]));
+					}
+					#endif
+				}
 				#endif
 				
 				#ifdef POI_PASS_ADD
@@ -40104,6 +41140,10 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			
 			void PoiShadingGlobalMasks(inout PoiMods poiMods, in PoiLight poiLight)
 			{
+				// URP additional lights and vertex lights are shaded in the base pass; only the main light writes the mask
+				#if POI_PIPE == POI_URP || !defined(POI_PASS_ADD)
+				if (poiLight.isAdditive) return;
+				#endif
 				if (_ShadingRampedLightMapApplyGlobalMaskIndex > 0)
 				{
 					applyToGlobalMask(poiMods, _ShadingRampedLightMapApplyGlobalMaskIndex - 1, _ShadingRampedLightMapApplyGlobalMaskBlendType, saturate(poiMax(poiLight.rampedLightMap * _ShadingRampedLightMapApplyGlobalMaskStrength)));
@@ -40273,20 +41313,6 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				return (D * V) * F;
 			}
 			
-			float3 getBoxProjection(float3 direction, float3 position, float4 cubemapPosition, float3 boxMin, float3 boxMax)
-			{
-				#if UNITY_SPECCUBE_BOX_PROJECTION
-				if (cubemapPosition.w > 0)
-				{
-					float3 factors = ((direction > 0 ? boxMax : boxMin) - position) / direction;
-					float scalar = min(min(factors.x, factors.y), factors.z);
-					direction = direction * scalar + (position - cubemapPosition.xyz);
-				}
-				#endif
-				
-				return direction;
-			}
-			
 			float SpecularAO(float NoV, float ao, float roughness)
 			{
 				return clamp(pow(NoV + ao, exp2(-16.0 * roughness - 1.0)) - 1.0 + ao, 0.0, 1.0);
@@ -40300,7 +41326,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				#if POI_PIPE == POI_BIRP
 				Unity_GlossyEnvironmentData envData;
 				envData.roughness = roughness;
-				envData.reflUVW = getBoxProjection(reflDir, poiMesh.worldPos, unity_SpecCube0_ProbePosition,
+				envData.reflUVW = BoxProjection(reflDir, poiMesh.worldPos, unity_SpecCube0_ProbePosition,
 				unity_SpecCube0_BoxMin.xyz, unity_SpecCube0_BoxMax.xyz);
 				
 				float3 probe0 = Unity_GlossyEnvironment(UNITY_PASS_TEXCUBE(unity_SpecCube0), unity_SpecCube0_HDR, envData);
@@ -40310,7 +41336,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				UNITY_BRANCH
 				if (unity_SpecCube0_BoxMin.w < 0.99999)
 				{
-					envData.reflUVW = getBoxProjection(reflDir, poiMesh.worldPos, unity_SpecCube1_ProbePosition, unity_SpecCube1_BoxMin.xyz, unity_SpecCube1_BoxMax.xyz);
+					envData.reflUVW = BoxProjection(reflDir, poiMesh.worldPos, unity_SpecCube1_ProbePosition, unity_SpecCube1_BoxMin.xyz, unity_SpecCube1_BoxMax.xyz);
 					float3 probe1 = Unity_GlossyEnvironment(UNITY_PASS_TEXCUBE_SAMPLER(unity_SpecCube1, unity_SpecCube0), unity_SpecCube1_HDR, envData);
 					indirectSpecular = lerp(probe1, probe0, unity_SpecCube0_BoxMin.w);
 				}
@@ -40318,7 +41344,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				#endif
 				
 				#if POI_PIPE == POI_URP
-				float3 indirectSpecular = PoiGlossyEnvironmentReflection(reflDir, poiMesh.worldPos.xyz, roughness, 1.0, poiCam.screenUV);
+				float3 indirectSpecular = GlossyEnvironmentReflection(reflDir, poiMesh.worldPos.xyz, roughness, 1.0, poiCam.screenUV);
 				#endif
 				
 				float horizon = min(1 + dot(reflDir, normal), 1);
@@ -40327,6 +41353,25 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				indirectSpecular *= SpecularAO(poiLight.nDotV, occlusion, roughness);
 				return indirectSpecular;
 			};
+			
+			float4 PoiClothMapSample(in PoiMesh poiMesh)
+			{
+				float4 clothmapsample = 1;
+				#if defined(PROP_CLOTHMETALLICSMOOTHNESSMAP) || !defined(OPTIMIZER_ENABLED)
+				clothmapsample = POI2D_SAMPLER_PAN(_ClothMetallicSmoothnessMap, _MainTex, poiUV(poiMesh.uv[_ClothMetallicSmoothnessMapUV], _ClothMetallicSmoothnessMap_ST), _ClothMetallicSmoothnessMapPan);
+				#endif
+				return clothmapsample;
+			}
+			
+			half PoiClothMetallic(float4 clothmapsample, in PoiMods poiMods)
+			{
+				half metallic = pow(clothmapsample.r * _ClothMetallic, 2);
+				if (_ClothMetallicGlobalMask > 0)
+				{
+					metallic = maskBlend(metallic, poiMods.globalMask[_ClothMetallicGlobalMask - 1], _ClothMetallicGlobalMaskBlendType);
+				}
+				return metallic;
+			}
 			#endif
 			
 			#ifdef _LIGHTINGMODE_WRAPPED
@@ -40543,6 +41588,17 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				#endif
 				#endif
 				
+				#ifdef POI_LIGHT_VOLUME_FORM
+				[branch] if (PoiLightVolumesActive())
+				{
+					#if defined(LIGHTMAP_ON) || defined(DYNAMICLIGHTMAP_ON)
+					indirectLight.diffuse += PoiLVDiffuseColor;
+					#else
+					indirectLight.diffuse = PoiLVDiffuseColor;
+					#endif
+				}
+				#endif
+				
 				indirectLight.diffuse *= poiLight.occlusion;
 				
 				return indirectLight;
@@ -40619,31 +41675,22 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			{
 				half3 litColor = poiLight.directColor * poiLight.lightCookie;
 				half3 passthroughColor = poiLight.indirectColor * poiLight.lightCookie;
+				// Additive lights use Passthrough as their ambient but follow the same Ignore Indirect Shadow Color as the main light
 				half3 ambientColor = poiLight.isAdditive ? passthroughColor : poiLight.indirectColor;
-				half ignoreAmbientColor = poiLight.isAdditive ? 0 : _LightingIgnoreAmbientColor;
+				half ignoreAmbientColor = _LightingIgnoreAmbientColor;
 				
 				#if (POI_PIPE == POI_BIRP && defined(POI_PASS_ADD)) || (POI_PIPE == POI_URP)
 				if (poiLight.isAdditive)
 				{
-					if (_LightingAdditiveType == 3)
-					{
-						#if defined(_LIGHTINGMODE_REALISTIC) || defined(_LIGHTINGMODE_CLOTH) || defined(_LIGHTINGMODE_WRAPPED)
-						poiLight.rampedLightMap = poiLight.nDotLSaturated;
-						poiLight.rampedLightMap *= poiLight.attenDistance;
-						#if POI_PIPE == POI_BIRP
-						poiLight.finalLighting = litColor * poiLight.nDotLSaturated * poiLight.detailShadow * poiLight.attenShadowsStrength;
-						#elif POI_PIPE == POI_URP
-						poiLight.finalLighting = LightingPhysicallyBased(poiLight.brdfData, poiLight.brdfDataClearCoat, litColor, poiLight.direction, poiLight.detailShadow * poiLight.attenShadowsStrength, poiMesh.normals[1], poiCam.eyeViewDir, 1.0, false);
-						#endif
-						poiLight.finalLighting = max(poiLight.finalLighting, passthroughColor);
-						return;
-						#endif
-					}
+					// The Cloth block that removes metallic diffuse only runs for the main light
+					#if POI_PIPE == POI_BIRP && defined(_LIGHTINGMODE_CLOTH)
+					poiFragData.baseColor.xyz *= 1 - PoiClothMetallic(PoiClothMapSample(poiMesh), poiMods);
+					#endif
 					// Realistic
 					if (_LightingAdditiveType == 0)
 					{
 						poiLight.rampedLightMap = poiLight.nDotLSaturated;
-						poiLight.rampedLightMap *= poiLight.attenDistance;
+						poiLight.rampedLightMap *= saturate(poiLight.attenDistance);
 						#if POI_PIPE == POI_BIRP
 						poiLight.finalLighting = litColor * poiLight.nDotLSaturated * poiLight.detailShadow * poiLight.attenShadowsStrength;
 						#elif POI_PIPE == POI_URP
@@ -40660,7 +41707,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 						if (ToonAddGradient.x == ToonAddGradient.y) ToonAddGradient.y += 0.0001;
 						
 						poiLight.rampedLightMap = smoothstep(ToonAddGradient.y, ToonAddGradient.x, 1 - poiLight.nDotLNormalized);
-						poiLight.rampedLightMap *= poiLight.attenDistance;
+						poiLight.rampedLightMap *= saturate(poiLight.attenDistance);
 						poiLight.finalLighting = lerp(litColor * poiLight.detailShadow * poiLight.attenShadowsStrength, passthroughColor,
 						smoothstep(ToonAddGradient.x, ToonAddGradient.y, 1 - poiLight.nDotLNormalized));
 						return;
@@ -40677,10 +41724,17 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				// These blocks shouldn't need ifex, they should be removed on lock when their keywords aren't present
 				
 				#ifdef _LIGHTINGMODE_FLAT
-				poiLight.finalLighting = litColor * poiLight.attenShadowsStrength;
+				float flatVisibility = poiLight.attenShadowsStrength;
+				#ifdef POI_LIGHT_VOLUME_FORM
+				[branch] if (PoiLightVolumesActive())
+				flatVisibility = PoiLVFlatVisibility(poiLight.unityLight.color.rgb * poiLight.attenDistance * poiLight.lightCookie,
+				poiLight.attenShadows, _LightingCastedShadows);
+				#endif
+				poiLight.finalLighting = litColor * flatVisibility;
 				if (_ForceFlatRampedLightmap >= 0.5)
 				{
-					poiLight.rampedLightMap = smoothstep(0.4, 0.6, poiLight.nDotLNormalized);
+					// Additional lights ramp on the vertex normal: Flat reads no normal maps
+					poiLight.rampedLightMap = smoothstep(0.4, 0.6, poiLight.isAdditive ? poiLight.vertexNDotL * 0.5 + 0.5 : poiLight.nDotLNormalized);
 				}
 				else
 				{
@@ -40711,11 +41765,8 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				
 				float4 lns = float4(1, 1, 1, 1);
 				
-				// This mode builds its own light map instead of ramping poiLight.lightMap
-				half mlReceive = max(_ShadowReceive, max(_Shadow2ndReceive, _Shadow3rdReceive));
-				half mlCastDepth = lerp(0.44, 0.15, mlReceive); // lower is lighter shadow
-				half mlCast = lerp(1.0, exp2(-(1.0 - poiLight.attenShadows) * mlCastDepth), poiLight.attenStrength);
-				half3 mlLitColor = litColor * mlCast;
+				// This mode builds its own light map instead of ramping poiLight.lightMap. Cast shadows only come in
+				// through each layer's Receive Shadow; Light Data's Receive Casted Shadows doesn't apply here.
 				
 				float3 N1 = poiMesh.normals[1];
 				float3 N2 = poiMesh.normals[1];
@@ -40731,13 +41782,37 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				lightMap.x *= lerp(1.0, poiLight.attenShadows, _ShadowReceive);
 				lightMap.y *= lerp(1.0, poiLight.attenShadows, _Shadow2ndReceive);
 				lightMap.z *= lerp(1.0, poiLight.attenShadows, _Shadow3rdReceive);
+				#ifdef POI_LIGHT_VOLUME_FORM
+				[branch] if (PoiLightVolumesActive())
+				{
+					float3 unityColor = poiLight.unityLight.color.rgb * poiLight.attenDistance * poiLight.lightCookie;
+					lightMap.x = PoiLVLightmap(0, N1, lightMap.x, _ShadowReceive,
+					unityColor, poiLight.unityLight.direction.xyz, poiLight.attenShadows);
+					#if defined(OPTIMIZER_ENABLED)
+					if (_Shadow2ndNormalStrength == _ShadowNormalStrength && _Shadow2ndReceive == _ShadowReceive) lightMap.y = lightMap.x;
+					else
+					#endif
+					lightMap.y = PoiLVLightmap(1, N2, lightMap.y, _Shadow2ndReceive,
+					unityColor, poiLight.unityLight.direction.xyz, poiLight.attenShadows);
+					#if defined(OPTIMIZER_ENABLED)
+					if (_Shadow3rdNormalStrength == _ShadowNormalStrength && _Shadow3rdReceive == _ShadowReceive) lightMap.z = lightMap.x;
+					else
+					#endif
+					lightMap.z = PoiLVLightmap(2, N3, lightMap.z, _Shadow3rdReceive,
+					unityColor, poiLight.unityLight.direction.xyz, poiLight.attenShadows);
+				}
+				#endif
 				
 				half4 shadowBorderMask = 1;
 				
-				if (_ShadowBorderMapToggle >= 0.5)
+				// Keep the legacy no-texture optimizer path neutral, but allow masks without a texture.
+				bool shadowBorderMaskActive = _ShadowBorderMaskGlobalMask > 0;
+				#if defined(PROP_SHADOWBORDERMASK) || !defined(OPTIMIZER_ENABLED)
+				shadowBorderMaskActive = true;
+				#endif
+				if (_ShadowBorderMapToggle >= 0.5 && shadowBorderMaskActive)
 				{
 					
-					#if defined(PROP_SHADOWBORDERMASK) || !defined(OPTIMIZER_ENABLED)
 					// This should be moved to ui but honestly if these are locked in the compiler should be able to resolve it at compile time
 					half2 shadowShift0 = float2(_ShadowAOShift.x, _ShadowAOShift.y);
 					half2 shadowShift1 = float2(_ShadowAOShift.z, _ShadowAOShift.w);
@@ -40759,26 +41834,37 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 					float2 shadowBorderMaskUV = poiUV(poiMesh.uv[_ShadowBorderMaskUV], _ShadowBorderMask_ST);
 					if (_ShadowBorderMaskLOD)
 					{
-						shadowBorderMask = POI2D_SAMPLE_TEX2D_SAMPLERGRADD(_ShadowBorderMask, sampler_trilinear_repeat, shadowBorderMaskUV, _ShadowBorderMaskPan, max(abs(ddx(shadowBorderMaskUV)), pow(_ShadowBorderMaskLOD, 4)), max(abs(ddy(shadowBorderMaskUV)), pow(_ShadowBorderMaskLOD, 4)));
+						shadowBorderMask *= POI2D_SAMPLE_TEX2D_SAMPLERGRADD(_ShadowBorderMask, sampler_trilinear_repeat, shadowBorderMaskUV, _ShadowBorderMaskPan, max(abs(ddx(shadowBorderMaskUV)), pow(_ShadowBorderMaskLOD, 4)), max(abs(ddy(shadowBorderMaskUV)), pow(_ShadowBorderMaskLOD, 4)));
 					}
 					else
 					{
-						shadowBorderMask = POI2D_SAMPLER_PAN(_ShadowBorderMask, _linear_repeat, shadowBorderMaskUV, _ShadowBorderMaskPan);
+						shadowBorderMask *= POI2D_SAMPLER_PAN(_ShadowBorderMask, _linear_repeat, shadowBorderMaskUV, _ShadowBorderMaskPan);
 					}
 					#endif
+					
+					// Packed channels follow Light Data AO: zero strength is neutral white.
+					if (_ShadowBorderMaskMode > 0.5)
+					{
+						half packedAO = min(min(lerp(1, shadowBorderMask.r, _ShadowBorderMaskStrengthR), lerp(1, shadowBorderMask.g, _ShadowBorderMaskStrengthG)), min(lerp(1, shadowBorderMask.b, _ShadowBorderMaskStrengthB), lerp(1, shadowBorderMask.a, _ShadowBorderMaskStrengthA)));
+						shadowBorderMask.rgb = packedAO.xxx;
+					}
+					shadowBorderMask.r = globalMaskBlend(shadowBorderMask.r, _ShadowBorderMaskGlobalMask, _ShadowBorderMaskGlobalMaskBlendType, poiMods);
+					shadowBorderMask.g = globalMaskBlend(shadowBorderMask.g, _ShadowBorderMaskGlobalMask, _ShadowBorderMaskGlobalMaskBlendType, poiMods);
+					shadowBorderMask.b = globalMaskBlend(shadowBorderMask.b, _ShadowBorderMaskGlobalMask, _ShadowBorderMaskGlobalMaskBlendType, poiMods);
 					
 					shadowBorderMask.r = saturate(shadowBorderMask.r * shadowShift0.x + shadowShift0.y);
 					shadowBorderMask.g = saturate(shadowBorderMask.g * shadowShift1.x + shadowShift1.y);
 					shadowBorderMask.b = saturate(shadowBorderMask.b * shadowShift2.x + shadowShift2.y);
 					
 					lightMap.xyz = _ShadowPostAO ? lightMap.xyz : lightMap.xyz * shadowBorderMask.rgb;
-					#endif
 				}
 				
 				if (_LightingMapMode == 4)
 				{
-					// mlLitColor already carries the cookie and the shadow
 					lightMap.xyz = poiLight.lightMapNoAttenuation;
+					lightMap.x *= lerp(1.0, poiLight.attenShadows, _ShadowReceive);
+					lightMap.y *= lerp(1.0, poiLight.attenShadows, _Shadow2ndReceive);
+					lightMap.z *= lerp(1.0, poiLight.attenShadows, _Shadow3rdReceive);
 				}
 				if (_LightingMulitlayerNonLinear >= 0.5)
 				{
@@ -40795,16 +41881,13 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 					lns.w = poiEdgeLinearNoSaturate(lightMap.x, _ShadowBorder, _ShadowBlur * blurMap.r, _ShadowBorderRange);
 				}
 				
-				#if defined(PROP_SHADOWBORDERMASK) || !defined(OPTIMIZER_ENABLED)
 				lns = _ShadowPostAO ? lns * shadowBorderMask.rgbr : lns;
-				#endif
 				lns *= poiLight.detailShadow;
 				lns = saturate(lns);
 				
-				#if defined(PROP_SHADOWSTRENGTHMASK) || !defined(OPTIMIZER_ENABLED)
-				half4 shadowStrengthMask = POI2D_SAMPLER_PAN(_ShadowStrengthMask, _MainTex, poiUV(poiMesh.uv[_ShadowStrengthMaskUV], _ShadowStrengthMask_ST), _ShadowStrengthMaskPan);
-				#else
 				half4 shadowStrengthMask = 1;
+				#if defined(PROP_SHADOWSTRENGTHMASK) || !defined(OPTIMIZER_ENABLED)
+				shadowStrengthMask *= POI2D_SAMPLER_PAN(_ShadowStrengthMask, _MainTex, poiUV(poiMesh.uv[_ShadowStrengthMaskUV], _ShadowStrengthMask_ST), _ShadowStrengthMaskPan);
 				#endif
 				if (_ShadowMaskType == 1)
 				{
@@ -40860,11 +41943,11 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				indirectColor = lerp(indirectColor, indirectColor * poiFragData.baseColor, _ShadowMainStrength);
 				poiLight.rampedLightMap = lns.x;
 				indirectColor = lerp(indirectColor, 1, lns.w * _ShadowBorderColor.rgb * _ShadowBorderColor.a);
-				indirectColor = indirectColor * lerp(ambientColor * poiLight.occlusion, mlLitColor, ignoreAmbientColor);
+				indirectColor = indirectColor * lerp(ambientColor * poiLight.occlusion, litColor, ignoreAmbientColor);
 				if (!poiLight.isAdditive)
-				indirectColor = lerp(indirectColor, mlLitColor, poiLight.indirectColor * _ShadowEnvStrength);
-				indirectColor = lerp(mlLitColor, indirectColor, shadowStrength);
-				poiLight.finalLighting = lerp(indirectColor, mlLitColor, lns.x);
+				indirectColor = lerp(indirectColor, litColor, poiLight.indirectColor * _ShadowEnvStrength);
+				indirectColor = lerp(litColor, indirectColor, shadowStrength);
+				poiLight.finalLighting = lerp(indirectColor, litColor, lns.x);
 				#endif
 				
 				#ifdef _LIGHTINGMODE_SHADEMAP
@@ -40885,46 +41968,29 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				#if POI_PIPE == POI_BIRP
 				UnityLight light;
 				light.dir = poiLight.direction;
-				light.color = max(0, poiLight.unityLight.color * poiLight.lightCookie * poiLight.attenDistance * poiLight.attenShadowsStrength) * realisticLightMap;
+				// Add lights bring their own limit and grayscale in litColor
+				half3 realisticLightColor = poiLight.isAdditive ? litColor : poiLight.unityLight.color * poiLight.lightCookie * poiLight.attenDistance;
+				light.color = max(0, realisticLightColor * poiLight.attenShadowsStrength) * realisticLightMap;
 				light.ndotl = poiLight.nDotLSaturated;
 				UnityIndirect indirectLight = (UnityIndirect)0;
-				#if defined(POI_PASS_BASE) || defined(POI_PASS_OUTLINE)
-				indirectLight = CreateIndirectLight(poiMesh, poiCam, poiLight);
-				indirectLight.diffuse = lerp(indirectLight.diffuse, dot(indirectLight.diffuse, float3(0.299, 0.587, 0.114)), poiLight.lightingMonochromatic);
-				#endif
-				#if defined(POI_PASS_BASE) || defined(POI_PASS_OUTLINE)
-				light.color = max(light.color * _PPLightingMultiplier, 0);
-				light.color = max(light.color + _PPLightingAddition, 0);
-				indirectLight.diffuse = max(indirectLight.diffuse * _PPLightingMultiplier, 0);
-				indirectLight.diffuse = max(indirectLight.diffuse + _PPLightingAddition, 0);
-				#endif
-				
+				// Ambient light and lighting mods belong to the main light only
+				if (!poiLight.isAdditive)
+				{
+					#if defined(POI_PASS_BASE) || defined(POI_PASS_OUTLINE)
+					indirectLight = CreateIndirectLight(poiMesh, poiCam, poiLight);
+					indirectLight.diffuse = lerp(indirectLight.diffuse, dot(indirectLight.diffuse, float3(0.299, 0.587, 0.114)), poiLight.lightingMonochromatic);
+					#endif
+					#if defined(POI_PASS_BASE) || defined(POI_PASS_OUTLINE)
+					light.color = max(light.color * _PPLightingMultiplier, 0);
+					light.color = max(light.color + _PPLightingAddition, 0);
+					indirectLight.diffuse = max(indirectLight.diffuse * _PPLightingMultiplier, 0);
+					indirectLight.diffuse = max(indirectLight.diffuse + _PPLightingAddition, 0);
+					#endif
+					
+				}
 				poiLight.rampedLightMap = poiLight.nDotLSaturated;
 				poiLight.finalLighting = POI_BRDF_PBS(1, unity_ColorSpaceDielectricSpec.rgb, unity_ColorSpaceDielectricSpec.a, 0, poiMesh.normals[1], poiCam.eyeViewDir, poiLight.nDotVSaturated, poiLight.nDotLSaturated, light, indirectLight).xyz;
 				
-				//ifex _LightingEnableLightVolumes==0 && isNotAnimated(_LightingEnableLightVolumes)
-				#if defined(POI_PASS_BASE) || defined(POI_PASS_OUTLINE)
-				[branch]
-				if (_UdonLightVolumeEnabled && _LightingEnableLightVolumes >= 0.5)
-				{
-					float3 L0 = 0;
-					float3 L1r = 0;
-					float3 L1g = 0;
-					float3 L1b = 0;
-					#ifdef LIGHTMAP_ON
-					LightVolumeAdditiveSH(poiMesh.worldPos, L0, L1r, L1g, L1b, poiMesh.normals[1] * _LightingLightVolumesNormalBias, poiMesh.normals[1]);
-					float lightVolumeIntensity = saturate(_LightingLightVolumesIntensity);
-					L0 *= lightVolumeIntensity;
-					L1r *= lightVolumeIntensity;
-					L1g *= lightVolumeIntensity;
-					L1b *= lightVolumeIntensity;
-					float3 lightVolumeAdditive = max(LightVolumeEvaluate(poiMesh.normals[1], L0, L1r, L1g, L1b), 0);
-					if (poiLight.lightingCapEnabled) lightVolumeAdditive = min(lightVolumeAdditive, _LightingCap);
-					poiLight.finalLighting += lightVolumeAdditive;
-					#endif
-				}
-				#endif
-				//endex
 				#endif
 				
 				#if POI_PIPE == POI_URP
@@ -40932,12 +41998,11 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				half3 realisticLightColor = poiLight.isAdditive ? litColor : max(0, poiLight.unityLight.color.rgb * poiLight.lightCookie * poiLight.attenDistance);
 				poiLight.rampedLightMap = poiLight.nDotLSaturated;
 				poiLight.finalLighting = LightingPhysicallyBased(poiLight.brdfData, poiLight.brdfDataClearCoat, realisticLightColor, poiLight.direction, realisticLightMap * poiLight.attenShadowsStrength, poiMesh.normals[1], poiCam.eyeViewDir, 1.0, false);
-				//ifex _LightingEnableLightVolumes==0 && isNotAnimated(_LightingEnableLightVolumes)
 				// Global Illumination
 				// URP Outline pass doesn't have access to lightmaps or SH
 				#if defined(POI_PASS_BASE) || defined(POI_PASS_OUTLINE)
 				[branch]
-				if (_LightingEnableLightVolumes >= 0.5 && !poiLight.isAdditive)
+				if (!poiLight.isAdditive)
 				{
 					float4 lightNormalWS = float4(poiMesh.normals[1], 1);
 					if (_LightingColorMode == 0)
@@ -40945,32 +42010,33 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 					
 					float3 poiGI = 0;
 					float3 vertexSH = SampleSHVertex(lightNormalWS);
+					float poiGINormalBias = _LightingEnableLightVolumes >= 0.5 ? _LightingLightVolumesNormalBias : 0;
 					
 					#if defined(_SCREEN_SPACE_IRRADIANCE)
 					poiGI = SAMPLE_GI(_ScreenSpaceIrradiance, poiCam.clipPos.xy);
 					#elif defined(DYNAMICLIGHTMAP_ON)
 					poiGI = SAMPLE_GI(poiMesh.lightmapUV.xy, poiMesh.lightmapUV.zw, vertexSH, lightNormalWS.xyz);
 					#elif !defined(LIGHTMAP_ON) && (defined(PROBE_VOLUMES_L1) || defined(PROBE_VOLUMES_L2))
+					float4 poiGIProbeOcclusion = 1;
 					poiGI = SAMPLE_GI(vertexSH,
-					GetAbsolutePositionWS(poiMesh.worldPos + poiMesh.normals[1] * _LightingLightVolumesNormalBias),
+					GetAbsolutePositionWS(poiMesh.worldPos + poiMesh.normals[1] * poiGINormalBias),
 					poiMesh.normals[1],
 					poiCam.viewDir,
 					poiCam.clipPos.xy,
-					poiLight.occlusion,
-					PoiCalculateShadowMask(poiMesh.lightmapUV.xy));
+					poiGIProbeOcclusion,
+					poiGIProbeOcclusion);
 					#else
 					poiGI = SAMPLE_GI(poiMesh.lightmapUV.xy, vertexSH, lightNormalWS.xyz);
 					#endif
 					
 					MixRealtimeAndBakedGI(poiLight.unityLight, poiMesh.normals[1], poiGI);
-					poiGI = PoiGlobalIllumination(poiLight.brdfData, poiLight.brdfDataClearCoat, 1,
-					poiGI, poiLight.aoFactor.indirectAmbientOcclusion, poiMesh.worldPos + poiMesh.normals[1] * _LightingLightVolumesNormalBias,
+					poiGI = GlobalIllumination(poiLight.brdfData, poiLight.brdfDataClearCoat, 1,
+					poiGI, poiLight.aoFactor.indirectAmbientOcclusion, poiMesh.worldPos + poiMesh.normals[1] * poiGINormalBias,
 					poiMesh.normals[1], poiCam.eyeViewDir, poiCam.screenUV);
 					if (poiLight.lightingCapEnabled) poiGI = min(poiGI, _LightingCap);
 					poiLight.finalLighting += lerp(poiGI, dot(poiGI, float3(0.299, 0.587, 0.114)), poiLight.lightingMonochromatic);
 				}
 				#endif
-				//endex
 				
 				if (!poiLight.isAdditive)
 				{
@@ -40980,22 +42046,30 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				
 				half realisticShadowAmount = saturate((1.0 - saturate(poiLight.lightMap)) * shadowStrength);
 				poiLight.finalLighting *= lerp(1.0, _LightingShadowColor, realisticShadowAmount);
+				if (poiLight.isAdditive)
+				poiLight.finalLighting = max(poiLight.finalLighting, passthroughColor);
 				#endif
 				
 				#ifdef _LIGHTINGMODE_CLOTH
-				#if defined(PROP_CLOTHMETALLICSMOOTHNESSMAP) || !defined(OPTIMIZER_ENABLED)
-				float4 clothmapsample = POI2D_SAMPLER_PAN(_ClothMetallicSmoothnessMap, _MainTex, poiUV(poiMesh.uv[_ClothMetallicSmoothnessMapUV], _ClothMetallicSmoothnessMap_ST), _ClothMetallicSmoothnessMapPan);
-				half roughness = 1 - (clothmapsample.a * _ClothSmoothness);
+				float4 clothmapsample = PoiClothMapSample(poiMesh);
+				half clothSmoothnessMap = _ClothMetallicSmoothnessMapInvert >= 0.5 ? 1 - clothmapsample.a : clothmapsample.a;
+				half roughness = 1 - (clothSmoothnessMap * _ClothSmoothness);
 				half reflectance = _ClothReflectance * clothmapsample.b;
 				half clothmask = clothmapsample.g;
-				half metallic = pow(clothmapsample.r * _ClothMetallic, 2);
-				roughness = _ClothMetallicSmoothnessMapInvert >= 0.5 ? 1 - roughness : roughness;
-				#else
-				half roughness = 1 - (_ClothSmoothness);
-				half metallic = pow(_ClothMetallic, 2);
-				half reflectance = _ClothReflectance;
-				half clothmask = 1;
-				#endif
+				half metallic = PoiClothMetallic(clothmapsample, poiMods);
+				
+				if (_ClothMaskGlobalMask > 0)
+				{
+					clothmask = maskBlend(clothmask, poiMods.globalMask[_ClothMaskGlobalMask - 1], _ClothMaskGlobalMaskBlendType);
+				}
+				if (_ClothReflectanceGlobalMask > 0)
+				{
+					reflectance = maskBlend(reflectance, poiMods.globalMask[_ClothReflectanceGlobalMask - 1], _ClothReflectanceGlobalMaskBlendType);
+				}
+				if (_ClothSmoothnessGlobalMask > 0)
+				{
+					roughness = 1 - maskBlend(1 - roughness, poiMods.globalMask[_ClothSmoothnessGlobalMask - 1], _ClothSmoothnessGlobalMaskBlendType);
+				}
 				
 				half clothBrdfMask = clothmask * (1 - metallic);
 				
@@ -41008,14 +42082,19 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				
 				float3 energyCompensation = EnvBRDFEnergyCompensation(dfg, f0, clothBrdfMask);
 				
-				poiLight.finalLighting = Fd_Burley(perceptualRoughness, poiLight.nDotV, poiLight.nDotLSaturated, poiLight.lDotH);
-				poiLight.finalLighting *= litColor * poiLight.attenShadowsStrength * poiLight.nDotLSaturated;
+				half clothShadow = poiLight.attenShadowsStrength;
+				#ifdef POI_LIGHT_VOLUME_FORM
+				[branch] if (PoiLightVolumesActive() && !poiLight.isAdditive)
+				clothShadow = PoiLVReceivedShadow(poiLight.unityLight.color.rgb * poiLight.attenDistance * poiLight.lightCookie, poiLight.attenShadows);
+				#endif
+				half3 clothLightTerm = litColor * clothShadow * poiLight.nDotLSaturated;
+				poiLight.finalLighting = Fd_Burley(perceptualRoughness, poiLight.nDotV, poiLight.nDotLSaturated, poiLight.lDotH) * clothLightTerm;
 				poiLight.rampedLightMap = poiLight.nDotLSaturated;
 				
-				half3 specular = max(0, Specular(clampedRoughness, poiLight, f0, poiMesh.normals[1], clothBrdfMask) * poiLight.finalLighting * energyCompensation * UNITY_PI); // (D * V) * F
+				half3 specular = max(0, Specular(clampedRoughness, poiLight, f0, poiMesh.normals[1], clothBrdfMask) * clothLightTerm * energyCompensation * UNITY_PI); // (D * V) * F
 				
-				#if defined(POI_PASS_BASE) || defined(POI_PASS_OUTLINE)
 				poiLight.finalLightAdd += max(0, specular);
+				#if defined(POI_PASS_BASE) || defined(POI_PASS_OUTLINE)
 				if (!poiLight.isAdditive)
 				{
 					float3 L0 = float3(PoiSHAr.w, PoiSHAg.w, PoiSHAb.w);
@@ -41032,13 +42111,18 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				}
 				#endif
 				
+				// Add lights already had the metallic diffuse removed before shading
+				if (!poiLight.isAdditive)
 				poiFragData.baseColor.xyz *= (1 - metallic);
+				else
+				poiLight.finalLighting = max(poiLight.finalLighting, passthroughColor);
 				#endif
 				
 				#ifdef _LIGHTINGMODE_WRAPPED
 				#define GREYSCALE_VECTOR float3(.33333, .33333, .33333)
-				half3 wrappedLightColor = poiLight.unityLight.color * poiLight.lightCookie;
-				if (_LightingForceColorEnabled >= 0.5)
+				// Add lights bring their own falloff, limit and grayscale in litColor
+				half3 wrappedLightColor = poiLight.isAdditive ? litColor : poiLight.unityLight.color * poiLight.lightCookie;
+				if (_LightingForceColorEnabled >= 0.5 && !poiLight.isAdditive)
 				{
 					wrappedLightColor = poiThemeColor(poiMods, _LightingForcedColor.rgb, _LightingForcedColorThemeIndex);
 				}
@@ -41048,38 +42132,57 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				if (!poiLight.isAdditive)
 				indirectColor = ShadeSH9_wrapped(lerp(poiMesh.normals[0], poiMesh.normals[1], _LightingIndirectUsesNormals), _LightingWrappedWrap) * poiLight.occlusion;
 				#endif
-				directColor = lerp(directColor, dot(directColor, float3(0.299, 0.587, 0.114)), poiLight.lightingMonochromatic); // Duplicated from Lightdata due to recreating the light colour
-				indirectColor = lerp(indirectColor, dot(indirectColor, float3(0.299, 0.587, 0.114)), poiLight.lightingMonochromatic); // Ditto^
-				
-				float3 ShadeSH9Plus_2 = GetSHMaxL1();
+				float3 ShadeSH9Plus_2 = 0;
+				if (!poiLight.isAdditive)
+				{
+					directColor = lerp(directColor, dot(directColor, float3(0.299, 0.587, 0.114)), poiLight.lightingMonochromatic); // Duplicated from Lightdata due to recreating the light colour
+					indirectColor = lerp(indirectColor, dot(indirectColor, float3(0.299, 0.587, 0.114)), poiLight.lightingMonochromatic); // Ditto^
+					ShadeSH9Plus_2 = GetSHMaxL1();
+				}
 				float bw_topDirectLighting_2 = dot(wrappedLightColor, GREYSCALE_VECTOR);
 				float bw_directLighting = dot(directColor, GREYSCALE_VECTOR);
 				float bw_indirectLighting = dot(indirectColor, GREYSCALE_VECTOR);
 				float bw_topIndirectLighting = dot(ShadeSH9Plus_2, GREYSCALE_VECTOR);
+				#ifdef POI_LIGHT_VOLUME_FORM
+				if (!poiLight.isAdditive)
+				{
+					float3 lvBlocked = PoiLVWrappedBlocked * poiLight.occlusion;
+					indirectColor -= lerp(lvBlocked, dot(lvBlocked, float3(0.299, 0.587, 0.114)), poiLight.lightingMonochromatic);
+				}
+				#endif
 				
-				poiLight.lightMap = smoothstep(0, bw_topIndirectLighting + bw_topDirectLighting_2, bw_indirectLighting + bw_directLighting) * min(poiLight.detailShadow, poiLight.attenShadowsStrength);
+				poiLight.lightMap = smoothstep(0, max(bw_topIndirectLighting + bw_topDirectLighting_2, 0.0001), bw_indirectLighting + bw_directLighting) * min(poiLight.detailShadow, poiLight.attenShadowsStrength);
+				#ifdef POI_LIGHT_VOLUME_FORM
+				[branch] if (PoiLightVolumesActive() && !poiLight.isAdditive)
+				{
+					float wrappedMap = smoothstep(0, max(bw_topIndirectLighting + bw_topDirectLighting_2, 0.0001), bw_indirectLighting + bw_directLighting) * poiLight.attenShadowsStrength;
+					poiLight.lightMap = PoiLVLightmap(0, poiMesh.normals[1], wrappedMap, _LightingCastedShadows,
+					poiLight.unityLight.color.rgb * poiLight.attenDistance * poiLight.lightCookie,
+					poiLight.unityLight.direction.xyz, poiLight.attenShadows) * poiLight.detailShadow;
+				}
+				#endif
 				poiLight.rampedLightMap = saturate((poiLight.lightMap - (1 - _LightingGradientEnd)) / saturate((1 - _LightingGradientStart) - (1 - _LightingGradientEnd) + 0.001));
-				float3 mathRamp = lerp(float3(1, 1, 1), saturate(lerp((_LightingShadowColor * lerp(indirectColor, 1, _LightingIgnoreAmbientColor)), float3(1, 1, 1), saturate(poiLight.rampedLightMap))), shadowStrength);
+				float3 mathRamp = lerp(float3(1, 1, 1), saturate(lerp(_LightingShadowColor, float3(1, 1, 1), saturate(poiLight.rampedLightMap))), shadowStrength);
 				
 				directColor *= saturate(poiLight.rampedLightMap + 1 - shadowStrength) * _LightingWrappedColor;
 				
 				float3 finalWrap = directColor + indirectColor;
-				if (poiLight.lightingCapEnabled)
+				if (poiLight.lightingCapEnabled && !poiLight.isAdditive)
 				{
 					finalWrap = min(finalWrap, _LightingCap);
 				}
-				poiLight.finalLighting = finalWrap * saturate(mathRamp + 1 - shadowStrength);
+				poiLight.finalLighting = finalWrap * mathRamp;
+				if (poiLight.isAdditive)
+				poiLight.finalLighting = max(poiLight.finalLighting, passthroughColor);
 				#endif
 				
 				#ifdef _LIGHTINGMODE_SKIN
-				float3 ambientNormalWorld = poiMesh.normals[1];//aTangentToWorld(s, s.blurredNormalTangent);
 				poiLight.rampedLightMap = poiLight.nDotLSaturated;
 				
 				// Scattering mask.
-				#if defined(PROP_SKINTHICKNESSMAP) || !defined(OPTIMIZER_ENABLED)
-				float subsurface = 1 - POI2D_SAMPLER_PAN(_SkinThicknessMap, _MainTex, poiUV(poiMesh.uv[_SkinThicknessMapUV], _SkinThicknessMap_ST), _SkinThicknessMapPan).r;
-				#else
 				float subsurface = 1;
+				#if defined(PROP_SKINTHICKNESSMAP) || !defined(OPTIMIZER_ENABLED)
+				subsurface = 1 - POI2D_SAMPLER_PAN(_SkinThicknessMap, _MainTex, poiUV(poiMesh.uv[_SkinThicknessMapUV], _SkinThicknessMap_ST), _SkinThicknessMapPan).r;
 				#endif
 				if (_SkinThicknessMapInvert >= 0.5)
 				{
@@ -41098,28 +42201,66 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				// Albedo scale for absorption assumes ~0.5 luminance for Caucasian skin.
 				absorption *= saturate(poiFragData.baseColor * unity_ColorSpaceDouble.rgb);
 				
-				// Blurred normals for indirect diffuse and direct scattering.
-				ambientNormalWorld = normalize(lerp(poiMesh.normals[1], ambientNormalWorld, _SssBumpBlur));
-				half3 skinLitColor = litColor * poiLight.attenShadowsStrength;
+				half skinShadow = poiLight.attenShadowsStrength;
+				#ifdef POI_LIGHT_VOLUME_FORM
+				[branch] if (PoiLightVolumesActive() && !poiLight.isAdditive)
+				skinShadow = PoiLVReceivedShadow(poiLight.unityLight.color.rgb * poiLight.attenDistance * poiLight.lightCookie, poiLight.attenShadows);
+				#endif
+				half3 skinLitColor = litColor * skinShadow;
 				float ndlBlur = poiLight.nDotLNormalized;
+				float skinLightMap = poiLight.lightMapNoAttenuation;
+				// Keep changes local: other modules (especially specular) retain their detailed normals.
+				//ifex isNotAnimated(_SkinDiffuseSoftnessEnabled) && _SkinDiffuseSoftnessEnabled==0
+				if (_SkinDiffuseSoftnessEnabled > 0.5 && _SssBumpBlur > 0)
+				{
+					float3 diffuseNormal = lerp(poiMesh.normals[1], poiMesh.normals[0], saturate(_SssBumpBlur));
+					float normalLengthSq = dot(diffuseNormal, diffuseNormal);
+					diffuseNormal = normalLengthSq > 1e-6 ? diffuseNormal * rsqrt(max(normalLengthSq, 1e-6)) : poiMesh.normals[1];
+					float diffuseNDotL = dot(diffuseNormal, poiLight.direction);
+					ndlBlur = saturate(diffuseNDotL * 0.5 + 0.5);
+					if (poiLight.lightMapMode == 2)
+					skinLightMap = saturate(diffuseNDotL) * poiLight.detailShadow;
+					else if (poiLight.lightMapMode == 1)
+					skinLightMap = ndlBlur * poiLight.detailShadow;
+					else if (poiLight.lightMapMode == 0 && poiLight.isAdditive)
+					skinLightMap = smoothstep(0, 1, ndlBlur) * poiLight.detailShadow;
+					else if (poiLight.lightMapMode == 0)
+					{
+						// Re-evaluate the custom light map with the softened normal, retaining its SH response.
+						float3 shBottom = float3(PoiSHAr.w, PoiSHAg.w, PoiSHAb.w) + float3(PoiSHBr.z, PoiSHBg.z, PoiSHBb.z) / 3.0;
+						float3 grey = float3(0.33333, 0.33333, 0.33333);
+						float directLuma = dot(poiLight.directColor, grey);
+						float bottomLuma = dot(shBottom, grey);
+						float lightRange = dot(GetSHLength(), grey) + directLuma - bottomLuma;
+						if (lightRange > 1e-5)
+						skinLightMap = smoothstep(0, lightRange, ndlBlur * directLuma + dot(PoiShadeSH9(float4(diffuseNormal, 1)), grey) - bottomLuma) * poiLight.detailShadow;
+					}
+					// Casted Shadows Only and base-pass SDF retain their authored light maps.
+				}
+				//endex
 				float lumi = dot(litColor, half3(0.2126h, 0.7152h, 0.0722h));
+				lumi = lerp(lumi, 1.0, _SkinScatteringStability);
 				float4 sssLookupUv = float4(ndlBlur, skinScattering * lumi, 0.0f, 0.0f);
 				#if defined(PROP_SKINLUT) || !defined(OPTIMIZER_ENABLED)
-				half3 sss = poiLight.lightMapNoAttenuation * _SkinLUT.SampleLevel(sampler_linear_clamp, sssLookupUv.xy, sssLookupUv.w).rgb;
+				half3 sss = skinLightMap * _SkinLUT.SampleLevel(sampler_linear_clamp, sssLookupUv.xy, sssLookupUv.w).rgb;
 				#else
-				half3 sss = poiLight.lightMapNoAttenuation;
+				half3 sss = skinLightMap;
 				#endif
 				
-				poiLight.finalLighting = lerp(skinLitColor, min(lerp(ambientColor * _LightingShadowColor, _LightingShadowColor, ignoreAmbientColor) * poiLight.occlusion + (sss * skinLitColor), litColor), shadowStrength);
+				// Shadow Tint is the main light's shadow floor; point lights keep their ambient.
+				half skinIgnoreAmbient = poiLight.isAdditive ? 0 : ignoreAmbientColor;
+				poiLight.finalLighting = lerp(litColor, min(lerp(ambientColor * _LightingShadowColor, _LightingShadowColor, skinIgnoreAmbient) * poiLight.occlusion + (sss * skinLitColor), litColor), shadowStrength);
 				#endif
 				
 				#ifdef _LIGHTINGMODE_SDF
 				float3 forward = normalize(mul((float3x3)unity_ObjectToWorld, _SDFForward.xyz));
 				float3 left = normalize(mul((float3x3)unity_ObjectToWorld, _SDFLeft.xyz));
-				float3 lightDirHorizontal = normalize(float3(poiLight.direction.x, 0, poiLight.direction.z));
+				float2 lightDirXZ = poiLight.direction.xz;
+				float3 lightDirHorizontal = dot(lightDirXZ, lightDirXZ) > 0 ? normalize(float3(lightDirXZ.x, 0, lightDirXZ.y)) : forward;
 				
 				float lightAtten = 1 - (dot(lightDirHorizontal, forward) * 0.5 + 0.5);
-				float filpU = sign(dot(lightDirHorizontal, left));
+				// Not sign(): it returns 0 for light from front or back
+				float filpU = dot(lightDirHorizontal, left) < 0 ? -1 : 1;
 				
 				#if defined(PROP_SDFSHADINGTEXTURE) || !defined(OPTIMIZER_ENABLED)
 				float shadowSDF = POI2D_SAMPLER_PAN(_SDFShadingTexture, _MainTex, poiUV(poiMesh.uv[_SDFShadingTextureUV], _SDFShadingTexture_ST) * float2(filpU, 1), _SDFShadingTexturePan).r;
@@ -41128,8 +42269,13 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				#endif
 				float blur = _SDFBlur * 0.1;
 				half faceShadow = smoothstep(lightAtten - blur, lightAtten + blur, shadowSDF) * poiLight.detailShadow;
-				half3 sdfLitColor = litColor * poiLight.attenShadowsStrength;
-				poiLight.rampedLightMap = faceShadow * poiLight.attenShadowsStrength;
+				half sdfShadow = poiLight.attenShadowsStrength;
+				#ifdef POI_LIGHT_VOLUME_FORM
+				[branch] if (PoiLightVolumesActive() && !poiLight.isAdditive)
+				sdfShadow = PoiLVReceivedShadow(poiLight.unityLight.color.rgb * poiLight.attenDistance * poiLight.lightCookie, poiLight.attenShadows);
+				#endif
+				half3 sdfLitColor = litColor * sdfShadow;
+				poiLight.rampedLightMap = faceShadow * sdfShadow;
 				
 				float3 indirectColor = _LightingShadowColor.rgb;
 				indirectColor = indirectColor * lerp(ambientColor * poiLight.occlusion, sdfLitColor, ignoreAmbientColor);
@@ -41139,26 +42285,19 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				#endif
 				
 				#if POI_PIPE == POI_BIRP
-				if (poiFragData.toggleVertexLights)
+				// Same as Base Pass shades vertex lights like pixel lights after the main light (see PoiVertexLightSetup)
+				if (poiFragData.toggleVertexLights && _LightingAdditiveType != 3 && !poiLight.isAdditive)
 				{
 					#if defined(VERTEXLIGHT_ON)
 					float3 vertexLighting = float3(0, 0, 0);
 					for (int index = 0; index < 4; index++)
 					{
 						float lightingMode = _LightingAdditiveType;
-						if (lightingMode == 3)
-						{
-							//This is a temporary bandaid fix
-							#if defined(_LIGHTINGMODE_REALISTIC)
-							lightingMode = 0;
-							#else
-							lightingMode = 1;
-							#endif
-						}
 						//UNITY_BRANCH
 						if (lightingMode == 0)
 						{
-							vertexLighting += poiLight.vColor[index] * poiLight.vSaturatedDotNL[index] * poiLight.detailShadow; // Realistic
+							half3 vertexLight = poiLight.vColor[index] * poiLight.vSaturatedDotNL[index] * poiLight.detailShadow; // Realistic
+							vertexLighting = _AddBlendOp == 4 ? max(vertexLighting, vertexLight) : vertexLighting + vertexLight;
 						}
 						//UNITY_BRANCH
 						// Toon
@@ -41166,15 +42305,16 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 						{
 							float2 ToonAddGradient = float2(_LightingAdditiveGradientStart, _LightingAdditiveGradientEnd);
 							if (ToonAddGradient.x == ToonAddGradient.y) ToonAddGradient.y += 0.0001;
-							vertexLighting += lerp(poiLight.vColor[index] * poiLight.detailShadow, poiLight.vColor[index] * _LightingAdditivePassthrough, smoothstep(ToonAddGradient.x, ToonAddGradient.y, 1 - (.5 * poiLight.vDotNL[index] + .5)));
+							half3 vertexLight = lerp(poiLight.vColor[index] * poiLight.detailShadow, poiLight.vColor[index] * _LightingAdditivePassthrough, smoothstep(ToonAddGradient.x, ToonAddGradient.y, 1 - (.5 * poiLight.vDotNL[index] + .5)));
+							vertexLighting = _AddBlendOp == 4 ? max(vertexLighting, vertexLight) : vertexLighting + vertexLight;
 						}
 					}
-					poiLight.finalLighting += vertexLighting;
+					poiLight.finalLighting = _AddBlendOp == 4 ? max(poiLight.finalLighting, vertexLighting) : poiLight.finalLighting + vertexLighting;
 					#endif
 				}
 				#endif
 				
-				poiLight.rampedLightMap *= poiLight.attenDistance;
+				poiLight.rampedLightMap *= saturate(poiLight.attenDistance);
 				PoiShadingGlobalMasks(poiMods, poiLight);
 			}
 			#endif
@@ -42219,7 +43359,10 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 						// A solution to top pinch would be so awesome
 						
 						float3 worldUp = float3(0, 1, 0);
-						float3 tangent = normalize(cross(normal, worldUp));
+						float3 tangent = cross(normal, worldUp);
+						// A normal pointing straight up or down has no cross product with world up; normalizing zero gives NaN.
+						if (dot(tangent, tangent) < 1e-12) tangent = cross(normal, float3(0, 0, 1));
+						tangent = normalize(tangent);
 						
 						float3 bitangent = normalize(cross(normal, tangent));
 						float2 projection;
@@ -43479,21 +44622,30 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				#endif
 				
 				float3 col = poiFragData.finalColor;
+				// The add pass blends additively, so only linear adjustments are applied per light
+				#if !defined(POI_PASS_ADD)
 				col = hueShift(col, _PPHue + _PPHueOffset * ppMask[_PPHueOffsetMask] + frac(POI_TIME.x * _PPHueSpeed), _PPHueShiftColorSpace, _ppHueSelectOrShift);
+				#endif
 				col *= _PPTint;
 				col *= _PPRGB;
 				col = GetSaturation(col, _PPSaturation);
+				#if !defined(POI_PASS_ADD)
 				col = lerp(col, GetHDR(col), _PPHDR);
 				col = GetContrast(col, _PPContrast);
+				#endif
 				col *= _PPBrightness;
+				#if !defined(POI_PASS_ADD)
 				col += _PPLightness;
+				#endif
 				
 				col = lerp(poiFragData.finalColor, col, ppMask[_PPMaskChannel]);
 				
+				#if !defined(POI_PASS_ADD)
 				if (_PPPosterization >= 0.5)
 				{
 					col = lerp(col, poiPosterize(col, _PPPosterizationAmount), ppMask[_PPMaskChannel]);
 				}
+				#endif
 				
 				poiFragData.finalColor = col;
 			}
@@ -43516,7 +44668,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				float3 normalCorrectObject = posOS - _NormalCorrectOrigin;
 				normalCorrectObject.y = 0;
 				normalCorrectObject = normalize(normalCorrectObject);
-				float3 normalCorrectWorld = mul((float3x3)unity_ObjectToWorld, normalCorrectObject).xyz;
+				float3 normalCorrectWorld = PoiObjectToWorldNormal(normalCorrectObject);
 				i.normal.xyz = normalize(lerp(i.normal.xyz, normalCorrectWorld, _NormalCorrectAmount));
 				//i.objNormal.xyz = normalize(lerp(i.objNormal.xyz, normalCorrectObject, _NormalCorrectAmount));
 			}
@@ -43528,9 +44680,9 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			{
 				
 				// Color
-				half3 backlightColor = _BacklightColor.rgb;
+				half4 backlightColor = _BacklightColor;
 				#if defined(PROP_BACKLIGHTCOLORTEX) || !defined(OPTIMIZER_ENABLED)
-				backlightColor *= POI2D_SAMPLER_PAN(_BacklightColorTex, _MainTex, poiUV(poiMesh.uv[_BacklightColorTexUV], _BacklightColorTex_ST), _BacklightColorTexPan).rgb;
+				backlightColor *= POI2D_SAMPLER_PAN(_BacklightColorTex, _MainTex, poiUV(poiMesh.uv[_BacklightColorTexUV], _BacklightColorTex_ST), _BacklightColorTexPan);
 				#endif
 				
 				float3 normal = lerp(poiMesh.normals[0], poiMesh.normals[1], _BacklightNormalStrength);
@@ -43541,11 +44693,21 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				half backlightLN = dot(normalize(-headDir * _BacklightViewStrength + poiLight.direction), normal) * 0.5 + 0.5;
 				
 				if (_BacklightReceiveShadow >= 0.5)
-				backlightLN *= poiLight.lightMap;
+				{
+					// Match lilToon's raw attenuation and shading-direction correction before tooning.
+					// The surface light map also contains NdotL and the separate Light Data shadow strength.
+					half backlightShadow = poiLight.attenShadows * saturate(poiLight.attenDistance) * CalculateLuminance(poiLight.lightCookie) + distance(poiLight.direction, poiLight.unityLight.direction);
+					#ifdef POI_LIGHT_VOLUME_FORM
+					// LV shadows each light separately, so the light direction no longer tells shadowed light apart.
+					[branch] if (PoiLightVolumesActive())
+					backlightShadow = PoiLVVisibility(0, poiMesh.normals[1], poiLight.unityLight.color.rgb * poiLight.attenDistance * poiLight.lightCookie, poiLight.unityLight.direction, poiLight.attenShadows);
+					#endif
+					backlightLN *= saturate(backlightShadow);
+				}
 				
 				backlightLN = poiEdgeLinear(backlightLN, _BacklightBorder, _BacklightBlur);
-				half backlight = saturate(backlightFactor * backlightLN);
-				backlight = !poiMesh.isFrontFace && _BacklightBackfaceMask >= 0.5 ? 0.0 : backlight;
+				half backlightAmount = saturate(backlightFactor * backlightLN);
+				backlightAmount = !poiMesh.isFrontFace && _BacklightBackfaceMask >= 0.5 ? 0.0 : backlightAmount;
 				
 				// Global Masking
 				half backlightMask = 1;
@@ -43555,16 +44717,20 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 					backlightMask = maskBlend(backlightMask, poiMods.globalMask[_BacklightGlobalMask - 1], _BacklightGlobalMaskBlendType);
 				}
 				
-				backlight *= backlightMask;
+				backlightAmount *= backlightMask;
 				
 				if (_BacklightApplyGlobalMaskIndex > 0)
 				{
-					applyToGlobalMask(poiMods, _BacklightApplyGlobalMaskIndex - 1, _BacklightApplyGlobalMaskBlendType, backlight);
+					applyToGlobalMask(poiMods, _BacklightApplyGlobalMaskIndex - 1, _BacklightApplyGlobalMaskBlendType, backlightAmount);
 				}
 				
 				// Blend
-				backlightColor = lerp(backlightColor, backlightColor * poiFragData.baseColor, _BacklightMainStrength);
-				poiLight.finalLightAdd += backlight * backlightColor * poiLight.directColor;
+				backlightColor.rgb = lerp(backlightColor.rgb, backlightColor.rgb * poiFragData.baseColor, _BacklightMainStrength);
+				// lilToon's ForwardAdd light color already carries the light's shadow and cookie.
+				half3 backlightLightColor = poiLight.directColor;
+				if (poiLight.isAdditive)
+				backlightLightColor *= poiLight.attenShadows * poiLight.lightCookie;
+				poiLight.finalLightAdd += backlightAmount * backlightColor.a * backlightColor.rgb * backlightLightColor;
 			}
 			#endif
 			//endex
@@ -44010,10 +45176,12 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				PoiSHAr = unity_SHAr;
 				PoiSHAg = unity_SHAg;
 				PoiSHAb = unity_SHAb;
+				#if POI_PIPE != POI_BIRP
 				PoiSHBr = unity_SHBr;
 				PoiSHBg = unity_SHBg;
 				PoiSHBb = unity_SHBb;
 				PoiSHC =  unity_SHC;
+				#endif
 				
 				PoiMesh poiMesh;
 				PoiInitStruct(PoiMesh, poiMesh);
@@ -44044,7 +45212,6 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				poiFragData.reflectionMask = 1;
 				poiFragData.alpha = 1;
 				
-				MochieBRDFData mochieBRDFData;
 				PoiInitStruct(MochieBRDFData, mochieBRDFData);
 				
 				//ifex _EnableUDIMDiscardOptions==0
@@ -44085,7 +45252,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				
 				poiMesh.isFrontFace = facing;
 				
-				#ifndef POI_PASS_OUTLINE
+				#if !defined(POI_PASS_OUTLINE) && !defined(POI_PASS_LILFUR)
 				if (!poiMesh.isFrontFace && _FlipBackfaceNormals >= 0.5)
 				{
 					poiMesh.normals[0] *= -1;
@@ -44256,8 +45423,9 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				poiMesh.tangentSpaceNormal.z * poiMesh.normals[0]
 				);
 				
-				poiMesh.tangent[1] = normalize(cross(poiMesh.binormal[0], -poiMesh.normals[1]));
-				poiMesh.binormal[1] = normalize(cross(-poiMesh.normals[1], poiMesh.tangent[0]));
+				float poiTangentSign = dot(cross(poiMesh.normals[0], poiMesh.tangent[0]), poiMesh.binormal[0]) < 0 ? -1 : 1;
+				poiMesh.tangent[1] = normalize(cross(poiMesh.binormal[0], poiMesh.normals[1])) * poiTangentSign;
+				poiMesh.binormal[1] = normalize(cross(poiMesh.normals[1], poiMesh.tangent[0])) * poiTangentSign;
 				
 				//ifex _EnableBentNormal==0
 				#if defined(POI_BENTNORMALMAP) && !defined(POI_PASS_SHADOW) && !defined(POI_PASS_MOTION_VECTORS)
@@ -44327,6 +45495,247 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				#endif
 				//endex
 				
+				#if defined(POI_PASS_BASE) || defined(POI_PASS_OUTLINE)
+				float3 L0 = float3(0, 0, 0);
+				float3 L1r = float3(0, 0, 0);
+				float3 L1g = float3(0, 0, 0);
+				float3 L1b = float3(0, 0, 0);
+				#if POI_PIPE == POI_BIRP
+				//ifex _LightingEnableLightVolumes==0 && isNotAnimated(_LightingEnableLightVolumes)
+				[branch] if (PoiLightVolumesActive())
+				{
+					float3 worldPos = poiMesh.worldPos;
+					float3 offset = poiMesh.normals[1] * _LightingLightVolumesNormalBias;
+					float3 normal = poiMesh.normals[1];
+					float3 geometryNormal = poiMesh.normals[0];
+					// Included in frag, inside Light Data's Light Volumes branch.
+					LV_LightVolumeRegularSH(worldPos + offset, L0, L1r, L1g, L1b);
+					#if defined(LIGHTMAP_ON) || defined(DYNAMICLIGHTMAP_ON)
+					// Lightmaps already contain regular baked lighting.
+					PoiLVL0 = 0; PoiLVL1r = 0; PoiLVL1g = 0; PoiLVL1b = 0;
+					LV_LightVolumeAdditiveSH(worldPos + offset, PoiLVL0, PoiLVL1r, PoiLVL1g, PoiLVL1b);
+					L0 += PoiLVL0; L1r += PoiLVL1r; L1g += PoiLVL1g; L1b += PoiLVL1b;
+					#else
+					LV_LightVolumeAdditiveSH(worldPos + offset, L0, L1r, L1g, L1b);
+					PoiLVL0 = L0; PoiLVL1r = L1r; PoiLVL1g = L1g; PoiLVL1b = L1b;
+					#endif
+					PoiLVSHDiscCompute(PoiLVSHDiscColor, PoiLVSHDiscDirection, PoiLVSHDiscSpreadSq);
+					#if defined(_LIGHTINGMODE_REALISTIC) || defined(_LIGHTINGMODE_PBR)
+					PoiLVDiffuseL0 = PoiLVL0; PoiLVDiffuseL1r = PoiLVL1r;
+					PoiLVDiffuseL1g = PoiLVL1g; PoiLVDiffuseL1b = PoiLVL1b;
+					#endif
+					float3 N1 = normal, N2 = normal, N3 = normal;
+					#ifdef _LIGHTINGMODE_MULTILAYER_MATH
+					N1 = lerp(geometryNormal, normal, _ShadowNormalStrength);
+					N2 = lerp(geometryNormal, normal, _Shadow2ndNormalStrength);
+					N3 = lerp(geometryNormal, normal, _Shadow3rdNormalStrength);
+					#endif
+					PoiLVAvailableForm = float3(PoiLVForm(N1, L0, L1r, L1g, L1b),
+					PoiLVForm(N2, L0, L1r, L1g, L1b), PoiLVForm(N3, L0, L1r, L1g, L1b));
+					PoiLVFormWeight = PoiLVLuminance(max(L0, 0)) + length(L1r * .2126 + L1g * .7152 + L1b * .0722);
+					#if defined(_LIGHTINGMODE_WRAPPED) && defined(VIGNETTE_MASKED)
+					N1 = lerp(geometryNormal, normal, _LightingIndirectUsesNormals);
+					float3 convolution = lerp(GreenWrapSH(_LightingWrappedWrap), GreenWrapSHOpt(_LightingWrappedWrap), _LightingWrappedNormalization) * float3(1, 1.5, 4);
+					PoiLVAvailableForm = PoiLVForm(N1, L0 * convolution.x, L1r * convolution.y, L1g * convolution.y, L1b * convolution.y);
+					PoiLVFormWeight = PoiLVLuminance(max(L0 * convolution.x, 0)) + length((L1r * .2126 + L1g * .7152 + L1b * .0722) * convolution.y);
+					PoiLVWrappedBlocked = 0;
+					#endif
+					PoiLVArrivingForm = PoiLVAvailableForm;
+					PoiLVLampWeight = 0;
+					PoiLVLampArriving = 0;
+					#if defined(_LIGHTINGMODE_TEXTURERAMP) || defined(_LIGHTINGMODE_SHADEMAP)
+					PoiLVCustomAvailable = PoiLVAvailableForm.x;
+					PoiLVCustomArriving = PoiLVAvailableForm.x;
+					#endif
+					#ifdef _LIGHTINGMODE_FLAT
+					PoiLVFlatAvailable = PoiLVLuminance(max(L0, 0));
+					PoiLVFlatArriving = PoiLVFlatAvailable;
+					#endif
+					PoiLVIterator lights = PoiLVBeginLive(worldPos);
+					PoiLVLight light;
+					//ifex _LightingLightVolumesSpecular==0 && isNotAnimated(_LightingLightVolumesSpecular)
+					#if (POI_PIPE == POI_BIRP) && defined(POI_PASS_BASE)
+					// Specular layers with a GGX lobe evaluate every light inside this loop, as LV's own shader does.
+					// Their surface is prepared here because the walk runs before they set it up.
+					bool specularLayers = _LightingLightVolumesSpecular > 0;
+					#if defined(_LIGHTINGMODE_PBR) && defined(VIGNETTE_MASKED)
+					bool specularMaterialLayers = specularLayers && !PoiUsesCalibratedPBR(poiMesh);
+					#else
+					bool specularMaterialLayers = specularLayers;
+					#endif
+					#ifdef MOCHIE_PBR
+					if (specularMaterialLayers) PoiMochieLVPrepare(poiFragData, poiMesh, poiMods, poiCam);
+					#endif
+					#ifdef POI_CLEARCOAT
+					if (specularMaterialLayers) PoiClearCoatLVPrepare(poiMesh, poiMods, poiCam);
+					#endif
+					#ifdef _LIGHTINGMODE_PBR
+					if (specularLayers) PoiPreparePBR(poiFragData, poiLight, poiMesh, poiCam);
+					#endif
+					#endif
+					//endex
+					#if VRCLV_LIGHTS_SUPPORTED
+					// Each found light runs the body once, in ID order. Behind a function, FXC built a second
+					// skip loop inside this one.
+					VRCLV_DYNAMIC_LOOP while (lights.count < lights.limit)
+					{
+						uint id;
+						bool masked = true;
+						if (lights.index < lights.end)
+						{
+							id = lights.index++;
+							#if VRCLV_CLUSTERING_SUPPORTED
+							if (lights.includeShadowed)
+							{
+								uint word = id >> 5u;
+								uint candidates = word == 0u ? lights.mask.x : LV_ClusterMaskWord(lights.mask, word);
+								masked = (candidates & (1u << (id & 31u))) != 0u;
+								if (!masked)
+								{
+									float shadowId = abs(_UdonPointLightVolumeCustomID[id].y);
+									if (shadowId < 1 || shadowId >= 10000) continue;
+								}
+							}
+							#endif
+						}
+						else
+						{
+							if (lights.end > 0) break;
+							#if VRCLV_CLUSTERING_SUPPORTED
+							if (!LV_NextClusteredLight(lights.mask, lights.index, lights.bits, id)) break;
+							#else
+							break;
+							#endif
+						}
+						// Normal response belongs to the lightmap or BRDF, not LV's normal mask. Keep the body
+						// inside this branch: routing it through a status flag loses most of the saving.
+						if (LV_PointLightVolumeContribution(id, worldPos, 0, -1,
+						light.color, light.shDirection, light.direction, light.spreadSq, light.visibility))
+						{
+							lights.count++;
+							// Poiyomi's color modes consume the available SH. Cast shadows shape the
+							// lightmap, so the material's shadow colors remain in charge of darkness.
+							L0 += light.color;
+							L1r += light.shDirection * light.color.r;
+							L1g += light.shDirection * light.color.g;
+							L1b += light.shDirection * light.color.b;
+							float3 form = saturate(float3(dot(N1, light.direction), dot(N2, light.direction), dot(N3, light.direction)));
+							float weight = PoiLVLuminance(max(light.color, 0));
+							PoiLVLampWeight += weight;
+							PoiLVLampArriving += weight * light.visibility;
+							PoiLVSpecularAdd(light.color, light.direction, light.spreadSq, weight, light.visibility, poiCam.reflectionDir);
+							//ifex _LightingLightVolumesSpecular==0 && isNotAnimated(_LightingLightVolumesSpecular)
+							#if (POI_PIPE == POI_BIRP) && defined(POI_PASS_BASE)
+							#ifdef MOCHIE_PBR
+							[branch] if (specularMaterialLayers) PoiMochieLVAdd(light.color, light.visibility, light.direction, light.spreadSq);
+							#endif
+							#ifdef POI_CLEARCOAT
+							[branch] if (specularMaterialLayers) PoiClearCoatLVAdd(light.color, light.visibility, light.direction, light.spreadSq);
+							#endif
+							#ifdef _LIGHTINGMODE_PBR
+							[branch] if (specularLayers) PoiPBRLVAdd(light.color, light.visibility, light.direction, light.spreadSq);
+							#endif
+							#endif
+							//endex
+							#if defined(_LIGHTINGMODE_TEXTURERAMP) || defined(_LIGHTINGMODE_SHADEMAP)
+							float customForm = weight * PoiLVCustomForm(N1, light.direction);
+							PoiLVCustomAvailable += customForm;
+							PoiLVCustomArriving += customForm * light.visibility;
+							#endif
+							#if defined(_LIGHTINGMODE_WRAPPED) && defined(VIGNETTE_MASKED)
+							form = saturate(RTWrapFunc(dot(N1, light.direction), _LightingWrappedWrap, _LightingWrappedNormalization));
+							PoiLVFormWeight += weight * saturate(RTWrapFunc(1, _LightingWrappedWrap, _LightingWrappedNormalization));
+							// Wrapped shades LV light as ambient, so its cast-shadowed share is taken out there.
+							PoiLVWrappedBlocked += light.color * (1 - lerp(1, light.visibility, _LightingCastedShadows))
+							* (convolution.x + convolution.y * dot(N1, light.shDirection));
+							#else
+							PoiLVFormWeight += weight;
+							#endif
+							PoiLVAvailableForm += weight * form;
+							PoiLVArrivingForm += weight * form * light.visibility;
+							#ifdef _LIGHTINGMODE_FLAT
+							PoiLVFlatAvailable += weight;
+							PoiLVFlatArriving += weight * light.visibility;
+							#endif
+							#if defined(_LIGHTINGMODE_REALISTIC) || defined(_LIGHTINGMODE_PBR)
+							#if !defined(LIGHTMAP_ON) && !defined(DYNAMICLIGHTMAP_ON)
+							if (_LightingCastedShadows != 0)
+							#endif
+							{
+								float3 receivedColor = light.color * lerp(1, light.visibility, _LightingCastedShadows);
+								PoiLVDiffuseL0 += receivedColor;
+								PoiLVDiffuseL1r += light.shDirection * receivedColor.r;
+								PoiLVDiffuseL1g += light.shDirection * receivedColor.g;
+								PoiLVDiffuseL1b += light.shDirection * receivedColor.b;
+							}
+							#endif
+						}
+					}
+					#endif
+					PoiLVSpecularFinish();
+					#if defined(_LIGHTINGMODE_REALISTIC) || defined(_LIGHTINGMODE_PBR)
+					#if !defined(LIGHTMAP_ON) && !defined(DYNAMICLIGHTMAP_ON)
+					// Without cast shadows the received sums started from L0/L1 and took the same light.
+					if (_LightingCastedShadows == 0)
+					{
+						PoiLVDiffuseL0 = L0; PoiLVDiffuseL1r = L1r; PoiLVDiffuseL1g = L1g; PoiLVDiffuseL1b = L1b;
+					}
+					#endif
+					// The shading normal is final here; PBR normalizes it as PoiPreparePBR does.
+					#ifdef _LIGHTINGMODE_PBR
+					PoiLVDiffuseColor = PoiLVDiffuse(normalize(normal));
+					#else
+					PoiLVDiffuseColor = PoiLVDiffuse(normal);
+					#endif
+					#endif
+					PoiSHAr = float4(L1r, L0.r);
+					PoiSHAg = float4(L1g, L0.g);
+					PoiSHAb = float4(L1b, L0.b);
+					PoiSHL2Off = true;
+				}
+				// Recomputed after the walk so the compiler doesn't keep them live through it.
+				poiCam.eyeViewDir = !IsOrthographicCamera() ? (getCameraPosition(false) - i.worldPos.xyz) : UNITY_MATRIX_I_V._m02_m12_m22;
+				poiCam.eyeViewDir = normalize(poiCam.eyeViewDir);
+				float3 poiLVCenterViewDelta = getCameraPosition() - i.worldPos.xyz;
+				float poiLVCenterViewDistanceSq = dot(poiLVCenterViewDelta, poiLVCenterViewDelta);
+				float poiLVCenterViewInvDistance = rsqrt(max(poiLVCenterViewDistanceSq, 1e-12));
+				poiCam.viewDir = !IsOrthographicCamera() ? poiLVCenterViewDelta * poiLVCenterViewInvDistance : normalize(UNITY_MATRIX_I_V._m02_m12_m22);
+				//endex
+				#endif
+				#if POI_PIPE == POI_URP
+				//ifex _LightingEnableLightVolumes==0 && isNotAnimated(_LightingEnableLightVolumes)
+				#if defined(PROBE_VOLUMES_L1) || defined(PROBE_VOLUMES_L2)
+				if (_LightingEnableLightVolumes >= 0.5)
+				{
+					APVResources apvRes = FillAPVResources();
+					float3 posWS = GetAbsolutePositionWS(poiMesh.worldPos + poiMesh.normals[1] * _LightingLightVolumesNormalBias);
+					posWS = AddNoiseToSamplingPosition(posWS, poiCam.clipPos.xy, poiCam.viewDir);
+					APVSample apvSample = SampleAPV(posWS, poiMesh.normals[1], GetMeshRenderingLayer(), poiCam.viewDir);
+					if (apvSample.status != APV_SAMPLE_STATUS_INVALID)
+					{
+						apvSample.Decode();
+						PoiSHAr = float4(apvSample.L1_R, apvSample.L0.r);
+						PoiSHAg = float4(apvSample.L1_G, apvSample.L0.g);
+						PoiSHAb = float4(apvSample.L1_B, apvSample.L0.b);
+						#ifdef PROBE_VOLUMES_L2
+						// Decode() already folds the L2 z-squared constant into L0, matching unity_SH layout
+						PoiSHBr = apvSample.L2_R;
+						PoiSHBg = apvSample.L2_G;
+						PoiSHBb = apvSample.L2_B;
+						PoiSHC = float4(apvSample.L2_C, 0);
+						#else
+						PoiSHBr = 0;
+						PoiSHBg = 0;
+						PoiSHBb = 0;
+						PoiSHC = 0;
+						#endif
+					}
+				}
+				#endif
+				//endex
+				#endif
+				#endif
+				
 				if (_UdonForceSceneLighting)
 				{
 					poiLight.lightingMinLightBrightness = 0;
@@ -44341,70 +45750,19 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				}
 				
 				#if defined(POI_PASS_BASE) || defined(POI_PASS_OUTLINE)
-				float3 L0 = float3(0, 0, 0);
-				float3 L1r = float3(0, 0, 0);
-				float3 L1g = float3(0, 0, 0);
-				float3 L1b = float3(0, 0, 0);
-				#if POI_PIPE == POI_BIRP
-				//ifex _LightingEnableLightVolumes==0 && isNotAnimated(_LightingEnableLightVolumes)
-				if (_UdonLightVolumeEnabled && _LightingEnableLightVolumes >= 0.5)
+				[branch] if (poiLight.lightingMinLightBrightness > EPSILON)
 				{
-					LightVolumeSH(poiMesh.worldPos, L0, L1r, L1g, L1b, poiMesh.normals[1] * _LightingLightVolumesNormalBias, poiMesh.normals[1]);
-					float lightVolumeIntensity = saturate(_LightingLightVolumesIntensity);
-					PoiSHAr = lerp(PoiSHAr, float4(L1r, L0.r), lightVolumeIntensity);
-					PoiSHAg = lerp(PoiSHAg, float4(L1g, L0.g), lightVolumeIntensity);
-					PoiSHAb = lerp(PoiSHAb, float4(L1b, L0.b), lightVolumeIntensity);
-					PoiSHBr = lerp(PoiSHBr, 0, lightVolumeIntensity);
-					PoiSHBg = lerp(PoiSHBg, 0, lightVolumeIntensity);
-					PoiSHBb = lerp(PoiSHBb, 0, lightVolumeIntensity);
-					PoiSHC = lerp(PoiSHC, 0, lightVolumeIntensity);
+					PoiApplyMinBrightnessToSH(poiLight.lightingMinLightBrightness);
 				}
-				//endex
-				#endif
-				#if POI_PIPE == POI_URP
-				//ifex _LightingEnableLightVolumes==0 && isNotAnimated(_LightingEnableLightVolumes)
-				#ifdef PROBE_VOLUMES_L1
-				if (_LightingEnableLightVolumes >= 0.5)
-				{
-					APVResources apvRes = FillAPVResources();
-					float3 posWS = GetAbsolutePositionWS(poiMesh.worldPos + poiMesh.normals[1] * _LightingLightVolumesNormalBias);
-					posWS = AddNoiseToSamplingPosition(posWS, poiCam.clipPos.xy, poiCam.viewDir);
-					APVSample apvSample = SampleAPV(posWS, poiMesh.normals[1], GetMeshRenderingLayer(), poiCam.viewDir);
-					if (apvSample.status != APV_SAMPLE_STATUS_INVALID)
-					{
-						apvSample.Decode();
-						PoiSHAr = float4(apvSample.L1_R, apvSample.L0.r);
-						PoiSHAg = float4(apvSample.L1_G, apvSample.L0.g);
-						PoiSHAb = float4(apvSample.L1_B, apvSample.L0.b);
-						#ifdef PROBE_VOLUMES_L2
-						PoiSHBr = float4(apvSample.L2_R, apvSample.L0.r);
-						PoiSHBg = float4(apvSample.L2_G, apvSample.L0.g);
-						PoiSHBb = float4(apvSample.L2_B, apvSample.L0.b);
-						PoiSHC = float4(apvSample.L2_C, 0);
-						#else
-						PoiSHBr = 0;
-						PoiSHBg = 0;
-						PoiSHBb = 0;
-						PoiSHC = 0;
-						#endif
-					}
-				}
-				#endif
-				//endex
-				#endif
-				
-				PoiApplyMinBrightnessToSH(poiLight.lightingMinLightBrightness);
 				#endif
 				
 				// Detail Shadows
+				half4 DetailShadows = 1;
 				#if defined(PROP_LIGHTINGDETAILSHADOWMAPS)
-				half4 DetailShadows = POI2D_SAMPLER_PAN(_LightingDetailShadowMaps, _MainTex, poiUV(poiMesh.uv[_LightingDetailShadowMapsUV], _LightingDetailShadowMaps_ST), _LightingDetailShadowMapsPan);
-				half poiDetailShadowAdditional = lerp(1, DetailShadows.r, _LightingDetailShadowStrengthR) * lerp(1, DetailShadows.g, _LightingDetailShadowStrengthG) * lerp(1, DetailShadows.b, _LightingDetailShadowStrengthB) * lerp(1, DetailShadows.a, _LightingDetailShadowStrengthA);
-				half poiDetailShadowMain = lerp(1, DetailShadows.r, _LightingAddDetailShadowStrengthR) * lerp(1, DetailShadows.g, _LightingAddDetailShadowStrengthG) * lerp(1, DetailShadows.b, _LightingAddDetailShadowStrengthB) * lerp(1, DetailShadows.a, _LightingAddDetailShadowStrengthA);
-				#else
-				half poiDetailShadowAdditional = 1;
-				half poiDetailShadowMain = 1;
+				DetailShadows = POI2D_SAMPLER_PAN(_LightingDetailShadowMaps, _MainTex, poiUV(poiMesh.uv[_LightingDetailShadowMapsUV], _LightingDetailShadowMaps_ST), _LightingDetailShadowMapsPan);
 				#endif
+				half poiDetailShadowAdditional = lerp(1, DetailShadows.r, _LightingAddDetailShadowStrengthR) * lerp(1, DetailShadows.g, _LightingAddDetailShadowStrengthG) * lerp(1, DetailShadows.b, _LightingAddDetailShadowStrengthB) * lerp(1, DetailShadows.a, _LightingAddDetailShadowStrengthA);
+				half poiDetailShadowMain = lerp(1, DetailShadows.r, _LightingDetailShadowStrengthR) * lerp(1, DetailShadows.g, _LightingDetailShadowStrengthG) * lerp(1, DetailShadows.b, _LightingDetailShadowStrengthB) * lerp(1, DetailShadows.a, _LightingDetailShadowStrengthA);
 				
 				if (_LightDataDetailShadowGlobalMaskR > 0)
 				{
@@ -44419,12 +45777,11 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				#endif
 				
 				// Shadow Masks
+				half4 ShadowMasks = 1;
 				#if defined(PROP_LIGHTINGSHADOWMASKS)
-				half4 ShadowMasks = POI2D_SAMPLER_PAN(_LightingShadowMasks, _MainTex, poiUV(poiMesh.uv[_LightingShadowMasksUV], _LightingShadowMasks_ST), _LightingShadowMasksPan);
-				poiLight.toonShadowMask = lerp(1, ShadowMasks.r, _LightingShadowMaskStrengthR) * lerp(1, ShadowMasks.g, _LightingShadowMaskStrengthG) * lerp(1, ShadowMasks.b, _LightingShadowMaskStrengthB) * lerp(1, ShadowMasks.a, _LightingShadowMaskStrengthA);
-				#else
-				poiLight.toonShadowMask = 1;
+				ShadowMasks = POI2D_SAMPLER_PAN(_LightingShadowMasks, _MainTex, poiUV(poiMesh.uv[_LightingShadowMasksUV], _LightingShadowMasks_ST), _LightingShadowMasksPan);
 				#endif
+				poiLight.toonShadowMask = lerp(1, ShadowMasks.r, _LightingShadowMaskStrengthR) * lerp(1, ShadowMasks.g, _LightingShadowMaskStrengthG) * lerp(1, ShadowMasks.b, _LightingShadowMaskStrengthB) * lerp(1, ShadowMasks.a, _LightingShadowMaskStrengthA);
 				
 				if (_LightDataShadowMaskGlobalMaskR > 0)
 				{
@@ -44432,12 +45789,11 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				}
 				
 				// Ambient Occlusion
+				float4 AOMaps = 1;
 				#if defined(PROP_LIGHTINGAOMAPS)
-				float4 AOMaps = POI2D_SAMPLER_PAN(_LightingAOMaps, _MainTex, poiUV(poiMesh.uv[_LightingAOMapsUV], _LightingAOMaps_ST), _LightingAOMapsPan);
-				poiLight.occlusion = min(min(min(lerp(1, AOMaps.r, _LightDataAOStrengthR), lerp(1, AOMaps.g, _LightDataAOStrengthG)), lerp(1, AOMaps.b, _LightDataAOStrengthB)), lerp(1, AOMaps.a, _LightDataAOStrengthA));
-				#else
-				poiLight.occlusion = 1;
+				AOMaps = POI2D_SAMPLER_PAN(_LightingAOMaps, _MainTex, poiUV(poiMesh.uv[_LightingAOMapsUV], _LightingAOMaps_ST), _LightingAOMapsPan);
 				#endif
+				poiLight.occlusion = min(min(min(lerp(1, AOMaps.r, _LightDataAOStrengthR), lerp(1, AOMaps.g, _LightDataAOStrengthG)), lerp(1, AOMaps.b, _LightDataAOStrengthB)), lerp(1, AOMaps.a, _LightDataAOStrengthA));
 				
 				if (_LightDataAOGlobalMaskR > 0)
 				{
@@ -44445,12 +45801,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				}
 				
 				#if POI_PIPE == POI_URP
-				#if UNITY_VERSION >= 202100
 				poiLight.aoFactor = CreateAmbientOcclusionFactor(poiCam.screenUV, poiLight.occlusion);
-				#else
-				poiLight.aoFactor = GetScreenSpaceAmbientOcclusion(poiCam.screenUV);
-				poiLight.aoFactor.indirectAmbientOcclusion = min(poiLight.aoFactor.indirectAmbientOcclusion, poiLight.occlusion);
-				#endif
 				#endif
 				
 				Light mainLight;
@@ -44460,7 +45811,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				mainLight.direction = _WorldSpaceLightPos0.xyz;
 				mainLight.color = _LightColor0.rgb;
 				#elif POI_PIPE == POI_URP
-				half4 poiBakedShadowMask = PoiCalculateShadowMask(i.lightmapUV.xy);
+				half4 poiBakedShadowMask = PoiCalculateShadowMask(i.lightmapUV.xy, poiMesh.worldPos, poiMesh.normals[1], poiCam.viewDir, poiCam.clipPos.xy);
 				mainLight = PoiGetMainLight(TransformWorldToShadowCoord(poiMesh.worldPos), poiMesh.worldPos, poiBakedShadowMask, poiLight.aoFactor);
 				#ifdef _LIGHT_LAYERS
 				uint poiMeshRenderingLayers = GetMeshRenderingLayer();
@@ -44488,6 +45839,17 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				PoiInitStruct(PoiShadingParams, poiShadingParams);
 				PoiLightDataSetup(poiLight, poiFragData, poiMesh, poiCam, poiMods, i, poiShadingParams);
 				if (poiShadingParams.exitCode != 0) return POI_SAFE_RGB1;
+				#if (defined(POI_PASS_BASE) || defined(POI_PASS_OUTLINE)) && POI_PIPE == POI_BIRP && !defined(POI_CAMERA_DATA_REPLACED)
+				//ifex _LightingEnableLightVolumes==0 && isNotAnimated(_LightingEnableLightVolumes)
+				float3 poiLVCamDelta = getCameraPosition() - i.worldPos.xyz;
+				float poiLVCamDistanceSq = dot(poiLVCamDelta, poiLVCamDelta);
+				poiCam.reflectionDir = reflect(-poiCam.eyeViewDir, poiMesh.normals[1]);
+				poiCam.vertexReflectionDir = reflect(-poiCam.eyeViewDir, poiMesh.normals[0]);
+				poiCam.distanceToVert = poiLVCamDistanceSq * rsqrt(max(poiLVCamDistanceSq, 1e-12));
+				poiCam.vDotN = abs(dot(poiCam.eyeViewDir, poiMesh.normals[1]));
+				poiCam.vDotNCentered = abs(dot(poiCam.viewDir, poiMesh.normals[1]));
+				//endex
+				#endif
 				
 				#if POI_PIPE == POI_BIRP
 				#if defined(POI_PASS_BASE) || defined(POI_PASS_ADD)
@@ -44567,6 +45929,28 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				if (!skipShading)
 				{
 					PoiCalculateShading(poiLight, poiFragData, poiMods, poiMesh, poiCam);
+					#if POI_PIPE == POI_BIRP && defined(VERTEXLIGHT_ON) && !defined(_LIGHTINGMODE_PBR)
+					if (poiFragData.toggleVertexLights && _LightingAdditiveType == 3)
+					{
+						[unroll] for (uint poiVertexIndex = 0; poiVertexIndex < 4; poiVertexIndex++)
+						{
+							PoiLight poiVertexLight;
+							PoiVertexLightSetup(poiVertexLight, poiLight, poiVertexIndex, poiMesh, poiCam, poiDetailShadowAdditional);
+							PoiCalculateShading(poiVertexLight, poiFragData, poiMods, poiMesh, poiCam);
+							// Pixel lights blend over the base pass with the add pass's Blend Op, Max by default
+							if (_AddBlendOp == 4)
+							{
+								poiLight.finalLighting = max(poiLight.finalLighting, poiVertexLight.finalLighting);
+								poiLight.finalLightAdd = max(poiLight.finalLightAdd, poiVertexLight.finalLightAdd);
+							}
+							else
+							{
+								poiLight.finalLighting += poiVertexLight.finalLighting;
+								poiLight.finalLightAdd += poiVertexLight.finalLightAdd;
+							}
+						}
+					}
+					#endif
 					PoiLightingNoLoopModules(poiLight, poiFragData, poiMesh, poiCam, poiMods);
 					
 					PoiLightingDependantModules(poiLight, poiFragData, mochieBRDFData, poiMesh, poiCam, poiMods);
@@ -44587,8 +45971,10 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 						PoiLight poiLightAdd;
 						PoiAdditionalLightCopy(poiLightAdd, poiLight, additionalLight, POI_DIRECTIONAL, poiDetailShadowAdditional);
 						poiShadingParams.lightIndex = lightIndex;
+						// Else the main light's debug color is re-added per light
+						poiShadingParams.debugColor = 0;
 						PoiLightDataSetupAdd(poiLightAdd, poiFragData, poiMesh, poiCam, poiMods, i, poiShadingParams);
-						poiLightOut.totalLightMap = saturate(poiLightOut.totalLightMap + poiLightAdd.lightMap * poiLightAdd.attenDistance);
+						poiLightOut.totalLightMap = saturate(poiLightOut.totalLightMap + poiLightAdd.lightMap * saturate(poiLightAdd.attenDistance));
 						if (poiShadingParams.exitCode != 0) continue;
 						PoiCalculateShading(poiLightAdd, poiFragData, poiMods, poiMesh, poiCam);
 						poiLightOut.totalRampedLightMap = poiLightOut.totalRampedLightMap + poiLightAdd.rampedLightMap - poiLightOut.totalRampedLightMap * poiLightAdd.rampedLightMap;
@@ -44610,10 +45996,16 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 					if (!IsMatchingLightLayer(additionalLight.layerMask, poiMeshRenderingLayers)) continue;
 					#endif
 					PoiLight poiLightAdd;
-					PoiAdditionalLightCopy(poiLightAdd, poiLight, additionalLight, POI_POINT_SPOT, poiDetailShadowAdditional);
+					#if USE_CLUSTER_LIGHT_LOOP
+					uint poiAddLightType = POI_POINT_SPOT;
+					#else
+					uint poiAddLightType = _AdditionalLightsPosition[GetPerObjectLightIndex(lightIndex)].w == 0 ? POI_DIRECTIONAL : POI_POINT_SPOT;
+					#endif
+					PoiAdditionalLightCopy(poiLightAdd, poiLight, additionalLight, poiAddLightType, poiDetailShadowAdditional);
 					poiShadingParams.lightIndex = lightIndex;
+					poiShadingParams.debugColor = 0;
 					PoiLightDataSetupAdd(poiLightAdd, poiFragData, poiMesh, poiCam, poiMods, i, poiShadingParams);
-					poiLightOut.totalLightMap = saturate(poiLightOut.totalLightMap + poiLightAdd.lightMap * poiLightAdd.attenDistance);
+					poiLightOut.totalLightMap = saturate(poiLightOut.totalLightMap + poiLightAdd.lightMap * saturate(poiLightAdd.attenDistance));
 					if (poiShadingParams.exitCode != 0) continue;
 					PoiCalculateShading(poiLightAdd, poiFragData, poiMods, poiMesh, poiCam);
 					poiLightOut.totalRampedLightMap = poiLightOut.totalRampedLightMap + poiLightAdd.rampedLightMap - poiLightOut.totalRampedLightMap * poiLightAdd.rampedLightMap;
@@ -44639,8 +46031,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				poiLight.finalLighting = 1;
 				poiLight.rampedLightMap = poiEdgeNonLinear(poiLight.nDotL, 0.1, .1);
 				poiLight.lightMap = poiLight.nDotLNormalized;
-				PoiLightingNoLoopModules(poiLight, poiFragData, poiMesh, poiCam, poiMods);
-				
+				// Unlit/meta effects run below, after global masks, exactly once (also when locked).
 				//ifex _ShadingEnabled==0
 				#endif
 				
@@ -44653,14 +46044,12 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				#endif
 				//endex
 				
-				//ifex _ShadingEnabled!=0
 				#if !defined(VIGNETTE_MASKED) || defined(POI_PASS_META)
 				PoiShadingGlobalMasks(poiMods, poiLight);
 				PoiLightingNoLoopModules(poiLight, poiFragData, poiMesh, poiCam, poiMods);
 				
 				PoiLightingDependantModules(poiLight, poiFragData, mochieBRDFData, poiMesh, poiCam, poiMods);
 				#endif
-				//endex
 				
 				#if POI_PIPE == POI_URP
 				poiLight.lightMap = saturate(poiLightOut.totalLightMap + poiLight.lightMap);
@@ -45116,13 +46505,26 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			#pragma fragment frag
 			
 			#if POI_PIPE == POI_URP
-			#pragma skip_variants FOG_LINEAR FOG_EXP FOG_EXP2
-			// https://issuetracker.unity3d.com/issues/number-pragma-skip-variants-fog-linear-does-not-remove-fog-linear-keyword-declared-keyword
-			// Skip variants not working for fog in URP
-			#define FOG_LINEAR 0
-			#define FOG_EXP 0
-			#define FOG_EXP2 0
-			#pragma multi_compile_vertex _ _CASTING_PUNCTUAL_LIGHT_SHADOW
+			#pragma multi_compile _ _MAIN_LIGHT_SHADOWS _MAIN_LIGHT_SHADOWS_CASCADE _MAIN_LIGHT_SHADOWS_SCREEN
+			
+			#if UNITY_VERSION >= 600000
+			#pragma multi_compile _ _CLUSTER_LIGHT_LOOP
+			#else
+			#pragma multi_compile _ _FORWARD_PLUS
+			#endif
+			
+			#pragma multi_compile_fragment _ _ADDITIONAL_LIGHTS
+			#pragma multi_compile_fragment _ _ADDITIONAL_LIGHT_SHADOWS
+			#pragma multi_compile_fragment _ _LIGHT_LAYERS
+			#pragma multi_compile_fragment _ _SHADOWS_SOFT
+			#pragma multi_compile_fragment _ _REFLECTION_PROBE_BLENDING
+			#pragma multi_compile_fragment _ _REFLECTION_PROBE_BOX_PROJECTION
+			
+			#pragma multi_compile_fragment _ _LIGHT_COOKIES
+			
+			#pragma dynamic_branch _ FOG_LINEAR
+			#pragma dynamic_branch _ FOG_EXP
+			#pragma dynamic_branch _ FOG_EXP2
 			#else
 			#pragma dynamic_branch _ FOG_LINEAR
 			#pragma dynamic_branch _ FOG_EXP
@@ -45235,6 +46637,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _RenderingReduceClipDistance;
 			int _FlipBackfaceNormals;
 			float _AddBlendOp;
+			float _AddSrcBlend;
 			float _Cull;
 			
 			//ifex _RenderingAOBlockerEnabled==0
@@ -45824,11 +47227,13 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _LightingIndirectUsesNormals;
 			float _LightingCapEnabled;
 			float _LightingCap;
+			float _LightingCapLuminance;
 			half _LightingForceColorEnabled;
 			half3 _LightingForcedColor;
 			float _LightingForcedColorThemeIndex;
 			half _LightingCastedShadows;
 			half _LightingShadowSoftness;
+			half _LightingCleanCastedShadows;
 			float _LightingMonochromatic;
 			half _LightingMinLightBrightness;
 			// Additive Lighting Data
@@ -45843,10 +47248,8 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _LightingVertexLightingEnabled;
 			float _LightingMirrorVertexLightingEnabled;
 			float _LightingEnableLightVolumes;
-			float _LightingLightVolumesIntensity;
 			float _LightingLightVolumesNormalBias;
 			float _LightingLightVolumesSpecular;
-			float _LightingLightVolumesShadows;
 			// Lighting Data Debug
 			float _LightDataDebugEnabled;
 			float _LightingDebugVisualize;
@@ -47153,10 +48556,12 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float4 _SkinThicknessMap_ST;
 			float2 _SkinThicknessMapPan;
 			float _SkinThicknessMapUV;
-			float _SkinThicknessMapInvert;
 			#endif
+			float _SkinThicknessMapInvert;
 			float _SkinThicknessPower;
 			float _SssBumpBlur;
+			float _SkinDiffuseSoftnessEnabled;
+			float _SkinScatteringStability;
 			float3 _SssTransmissionAbsorption;
 			half3 _SssColorBleedAoWeights;
 			#endif
@@ -47167,6 +48572,13 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float2 _ShadowBorderMaskPan;
 			float _ShadowBorderMaskUV;
 			#endif
+			half _ShadowBorderMaskMode;
+			half _ShadowBorderMaskStrengthR;
+			half _ShadowBorderMaskStrengthG;
+			half _ShadowBorderMaskStrengthB;
+			half _ShadowBorderMaskStrengthA;
+			half _ShadowBorderMaskGlobalMask;
+			half _ShadowBorderMaskGlobalMaskBlendType;
 			half _ShadowPostAO;
 			half _ShadowBorderMaskLOD;
 			half4 _ShadowAOShift;
@@ -47240,6 +48652,14 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			half _ClothMetallic;
 			half _ClothReflectance;
 			half _ClothSmoothness;
+			half _ClothMetallicGlobalMask;
+			float _ClothMetallicGlobalMaskBlendType;
+			half _ClothMaskGlobalMask;
+			float _ClothMaskGlobalMaskBlendType;
+			half _ClothReflectanceGlobalMask;
+			float _ClothReflectanceGlobalMaskBlendType;
+			half _ClothSmoothnessGlobalMask;
+			float _ClothSmoothnessGlobalMaskBlendType;
 			#endif
 			
 			#ifdef _LIGHTINGMODE_SDF
@@ -47247,17 +48667,16 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _SDFShadingTextureUV;
 			float2 _SDFShadingTexturePan;
 			float4 _SDFShadingTexture_ST;
+			#endif
 			float _SDFBlur;
 			float4 _SDFForward;
 			float4 _SDFLeft;
-			#endif
 			#endif
 			
 			// Additive
 			float _LightingAdditiveType;
 			float _LightingAdditiveGradientStart;
 			float _LightingAdditiveGradientEnd;
-			float _LightingAdditiveDetailStrength;
 			//endex
 			
 			//ifex _DecalEnabled==0 && _DecalEnabled1==0 && _DecalEnabled2==0 && _DecalEnabled3==0
@@ -50820,6 +52239,22 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			#endif // defined(_STOCHASTICMODE_HEXTILE)
 			//endex
 			
+			// Clean Casted Shadows averages a fixed disk (no per-pixel rotation, so the result doesn't crawl) and runs it through
+			// an S-curve, which turns the shadow map's texel steps into a clean edge.
+			#define POI_SHADOW_CLEAN_TAPS 12
+			
+			float2 PoiShadowCleanTap(int index)
+			{
+				float angle = index * 2.3999632;
+				return float2(cos(angle), sin(angle)) * sqrt((index + 0.5) / POI_SHADOW_CLEAN_TAPS);
+			}
+			
+			// Clean Casted Shadows uses a fixed size and ignores Softness
+			float PoiShadowFilterSize()
+			{
+				return _LightingCleanCastedShadows >= 0.5 ? 0.3 : _LightingShadowSoftness;
+			}
+			
 			// Directional/main light shadow blur (4-tap Vogel disk), shared by BIRP and URP.
 			half PoiDirectionalShadowBlur(
 			half attenShadows,
@@ -50835,11 +52270,11 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				#if POI_PIPE == POI_BIRP
 				#if defined(SHADOWS_SCREEN) && !defined(UNITY_NO_SCREENSPACE_SHADOWS)
 				UNITY_BRANCH
-				if (_LightingShadowSoftness > 0 && _LightingCastedShadows > 0)
+				if (_LightingShadowSoftness > 0 || _LightingCleanCastedShadows >= 0.5)
 				{
 					float4 poiShadowCoord = i._ShadowCoord;
 					float poiCamDist = distance(posWS, _WorldSpaceCameraPos);
-					float poiRadiusPx = _LightingShadowSoftness * (108.0 / max(poiCamDist * 1.8, 2.0));
+					float poiRadiusPx = PoiShadowFilterSize() * (108.0 / max(poiCamDist * 1.8, 2.0));
 					float2 poiStep = (_ScreenParams.zw - 1.0) * (poiShadowCoord.w * poiRadiusPx);
 					float2 poiPix = (poiShadowCoord.xy / max(poiShadowCoord.w, 1e-5)) * _ScreenParams.xy;
 					#ifdef POI_PASS_LILFUR
@@ -50847,50 +52282,89 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 					#else
 					float poiRot = frac(52.9829189 * frac(dot(poiPix, float2(0.06711056, 0.00583715)))) * 6.2831853;
 					#endif
-					float poiSinR, poiCosR;
-					sincos(poiRot, poiSinR, poiCosR);
-					half poiShadowSum = attenShadows; // center tap (r=0)
-					[unroll] for (int poiT = 0; poiT < 4; poiT++)
+					if (_LightingCleanCastedShadows >= 0.5)
 					{
-						float poiR = sqrt((poiT + 0.5) / 4.0);
-						float poiC = poiT * 2.3999632;
-						float2 poiBase = float2(cos(poiC), sin(poiC)) * poiR; // compile-time constant
-						float2 poiDir = float2(poiCosR * poiBase.x - poiSinR * poiBase.y, poiSinR * poiBase.x + poiCosR * poiBase.y);
-						float4 sc = poiShadowCoord;
-						sc.xy += poiDir * poiStep;
-						poiShadowSum += UNITY_SAMPLE_SCREEN_SHADOW(_ShadowMapTexture, sc);
+						// Taps that land on another surface would vote with that surface's shadow, so each tap is
+						// weighted by how close its depth is to this surface's tangent plane.
+						float2 poiCenterUV = poiShadowCoord.xy / poiShadowCoord.w;
+						float poiDepth = poiShadowCoord.w;
+						float2 poiDepthSlope = float2(ddx(poiDepth) / ddx(poiCenterUV.x), ddy(poiDepth) / ddy(poiCenterUV.y));
+						half poiShadowSum = attenShadows;
+						half poiWeightSum = 1;
+						[unroll] for (int poiT = 0; poiT < POI_SHADOW_CLEAN_TAPS; poiT++)
+						{
+							float4 sc = poiShadowCoord;
+							sc.xy += PoiShadowCleanTap(poiT) * poiStep;
+							float2 poiTapUV = sc.xy / sc.w;
+							float poiTapDepth = LinearEyeDepth(_CameraDepthTexture.SampleLevel(sampler_point_clamp, STEREO_UV(poiTapUV), 0));
+							float poiExpectedDepth = poiDepth + dot(poiDepthSlope, poiTapUV - poiCenterUV);
+							half poiWeight = saturate(2.0 - abs(poiTapDepth - poiExpectedDepth) / (poiDepth * 0.01));
+							poiShadowSum += UNITY_SAMPLE_SCREEN_SHADOW(_ShadowMapTexture, sc) * poiWeight;
+							poiWeightSum += poiWeight;
+						}
+						attenShadows = smoothstep(0, 1, poiShadowSum / poiWeightSum);
 					}
-					attenShadows = poiShadowSum / 5.0; // 4 disk taps + center
+					else
+					{
+						float poiSinR, poiCosR;
+						sincos(poiRot, poiSinR, poiCosR);
+						half poiShadowSum = attenShadows; // center tap (r=0)
+						[unroll] for (int poiT = 0; poiT < 4; poiT++)
+						{
+							float poiR = sqrt((poiT + 0.5) / 4.0);
+							float poiC = poiT * 2.3999632;
+							float2 poiBase = float2(cos(poiC), sin(poiC)) * poiR; // compile-time constant
+							float2 poiDir = float2(poiCosR * poiBase.x - poiSinR * poiBase.y, poiSinR * poiBase.x + poiCosR * poiBase.y);
+							float4 sc = poiShadowCoord;
+							sc.xy += poiDir * poiStep;
+							poiShadowSum += UNITY_SAMPLE_SCREEN_SHADOW(_ShadowMapTexture, sc);
+						}
+						attenShadows = poiShadowSum / 5.0; // 4 disk taps + center
+					}
 				}
 				#endif
 				#elif POI_PIPE == POI_URP
 				#if defined(_MAIN_LIGHT_SHADOWS) || defined(_MAIN_LIGHT_SHADOWS_CASCADE) || defined(_MAIN_LIGHT_SHADOWS_SCREEN)
 				UNITY_BRANCH
-				if (_LightingShadowSoftness > 0 && _LightingCastedShadows > 0)
+				if (_LightingShadowSoftness > 0 || _LightingCleanCastedShadows >= 0.5)
 				{
 					float3 poiLdir = lightDir;
 					float3 poiShadowT = normalize(cross(poiLdir, float3(0.0, 1.0, 0.001)));
 					float3 poiShadowB = cross(poiLdir, poiShadowT);
-					float poiShadowRadius = _LightingShadowSoftness * 0.06;
-					float2 poiPix = screenUV * _ScreenParams.xy;
+					float poiShadowRadius = PoiShadowFilterSize() * 0.06;
+					float2 poiPix = screenUV * GetScaledScreenParams().xy;
 					#ifdef POI_PASS_LILFUR
 					float poiRot = PoiBayer8(floor(poiPix)) * 6.2831853;
 					#else
 					float poiRot = frac(52.9829189 * frac(dot(poiPix, float2(0.06711056, 0.00583715)))) * 6.2831853;
 					#endif
-					float poiSinR, poiCosR;
-					sincos(poiRot, poiSinR, poiCosR);
-					half poiShadowSum = attenShadows; // center tap (r=0)
-					[unroll] for (int poiT = 0; poiT < 4; poiT++)
+					if (_LightingCleanCastedShadows >= 0.5)
 					{
-						float poiR = sqrt((poiT + 0.5) / 4.0);
-						float poiC = poiT * 2.3999632;
-						float2 poiBase = float2(cos(poiC), sin(poiC)) * poiR; // compile-time constant
-						float2 poiOff = float2(poiCosR * poiBase.x - poiSinR * poiBase.y, poiSinR * poiBase.x + poiCosR * poiBase.y) * poiShadowRadius;
-						float3 op = posWS + poiShadowT * poiOff.x + poiShadowB * poiOff.y;
-						poiShadowSum += MainLightRealtimeShadow(TransformWorldToShadowCoord(op));
+						half poiShadowSum = attenShadows;
+						[unroll] for (int poiT = 0; poiT < POI_SHADOW_CLEAN_TAPS; poiT++)
+						{
+							float2 poiOff = PoiShadowCleanTap(poiT) * poiShadowRadius;
+							float3 op = posWS + poiShadowT * poiOff.x + poiShadowB * poiOff.y;
+							poiShadowSum += MainLightRealtimeShadow(TransformWorldToShadowCoord(op));
+						}
+						attenShadows = smoothstep(0, 1, poiShadowSum / (POI_SHADOW_CLEAN_TAPS + 1.0));
 					}
-					attenShadows = poiShadowSum / 5.0; // 4 disk taps + center
+					else
+					{
+						float poiSinR, poiCosR;
+						sincos(poiRot, poiSinR, poiCosR);
+						half poiShadowSum = attenShadows; // center tap (r=0)
+						[unroll] for (int poiT = 0; poiT < 4; poiT++)
+						{
+							float poiR = sqrt((poiT + 0.5) / 4.0);
+							float poiC = poiT * 2.3999632;
+							float2 poiBase = float2(cos(poiC), sin(poiC)) * poiR; // compile-time constant
+							float2 poiOff = float2(poiCosR * poiBase.x - poiSinR * poiBase.y, poiSinR * poiBase.x + poiCosR * poiBase.y) * poiShadowRadius;
+							float3 op = posWS + poiShadowT * poiOff.x + poiShadowB * poiOff.y;
+							poiShadowSum += MainLightRealtimeShadow(TransformWorldToShadowCoord(op));
+						}
+						attenShadows = poiShadowSum / 5.0; // 4 disk taps + center
+					}
 				}
 				#endif
 				#endif
@@ -50938,6 +52412,101 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				#endif
 			}
 			#endif
+			
+			// Face SDF light map for whichever light poiLight holds, so add-pass lights follow the same face shading
+			float PoiLightDataSDF(in PoiMesh poiMesh, in PoiLight poiLight)
+			{
+				#if defined(PROP_LIGHTDATASDFMAP)
+				float2 lightDataSDFMap = 1;
+				if (_LightDataSDFMapLOD > 0)
+				{
+					float sdfLod = pow(_LightDataSDFMapLOD, 4.0);
+					lightDataSDFMap = POI2D_SAMPLER_PANGRAD(_LightDataSDFMap, _linear_repeat, poiUV(poiMesh.uv[_LightDataSDFMapUV], _LightDataSDFMap_ST), _LightDataSDFMapPan, max(poiMesh.dx, sdfLod), max(poiMesh.dy, sdfLod)).rg;
+				}
+				else
+				{
+					lightDataSDFMap = POI2D_SAMPLER_PAN(_LightDataSDFMap, _linear_repeat, poiUV(poiMesh.uv[_LightDataSDFMapUV], _LightDataSDFMap_ST), _LightDataSDFMapPan).rg;
+				}
+				
+				float3 faceR = mul((float3x3)unity_ObjectToWorld, float3(-1.0, 0.0, 0.0));
+				float LdotR = dot(poiLight.direction.xz, faceR.xz);
+				float sdf = LdotR < 0 ? lightDataSDFMap.g : lightDataSDFMap.r;
+				
+				float3 faceF = mul((float3x3)unity_ObjectToWorld, float3(0.0, 0.0, 1.0)).xyz;
+				faceF.y *= _LightDataSDFBlendY;
+				faceF = dot(faceF, faceF) == 0 ? 0 : normalize(faceF);
+				float3 faceL = poiLight.direction;
+				faceL.y *= _LightDataSDFBlendY;
+				faceL = dot(faceL, faceL) == 0 ? 0 : normalize(faceL);
+				
+				float lnSDF = dot(faceL, faceF);
+				return saturate(lnSDF * 0.5 + sdf * 0.5 + 0.25);
+				#else
+				return poiLight.nDotLNormalized;
+				#endif
+			}
+			
+			// Shared by add-pass lights, URP additional lights and vertex lights once direction, color and attenuation are set
+			void PoiFinishAdditiveLight(inout PoiLight poiLight, in PoiMesh poiMesh, in PoiCam poiCam)
+			{
+				poiLight.halfDir = normalize(poiLight.direction + poiCam.eyeViewDir);
+				poiLight.nDotL = dot(poiMesh.normals[1], poiLight.direction);
+				poiLight.nDotLSaturated = saturate(poiLight.nDotL);
+				poiLight.nDotLNormalized = (poiLight.nDotL + 1) * 0.5;
+				poiLight.nDotV = abs(dot(poiMesh.normals[1], poiCam.eyeViewDir));
+				poiLight.nDotVCentered = abs(dot(poiMesh.normals[1], poiCam.viewDir));
+				poiLight.nDotH = dot(poiMesh.normals[1], poiLight.halfDir);
+				poiLight.lDotv = dot(poiLight.direction, poiCam.eyeViewDir);
+				poiLight.lDotH = dot(poiLight.direction, poiLight.halfDir);
+				poiLight.vertexNDotL = dot(poiMesh.normals[0], poiLight.direction);
+				poiLight.vertexNDotV = abs(dot(poiMesh.normals[0], poiCam.eyeViewDir));
+				poiLight.vertexNDotH = max(0.00001, dot(poiMesh.normals[0], poiLight.halfDir));
+				
+				[flatten]
+				switch ((int)_LightingMapMode)
+				{
+					// Poi Custom's curve without its ambient terms, which only the base pass adds
+					case 0:
+					{
+						poiLight.lightMap = smoothstep(0, 1, poiLight.nDotLNormalized);
+						poiLight.lightMapMode = 0;
+						break;
+					}
+					// Saturated NDotL
+					case 2:
+					{
+						poiLight.lightMap = poiLight.nDotLSaturated;
+						poiLight.lightMapMode = 2;
+						break;
+					}
+					// Casted Shadows Only
+					case 3:
+					{
+						poiLight.lightMap = 1;
+						poiLight.lightMapMode = 3;
+						break;
+					}
+					case 4:
+					{
+						poiLight.lightMap = PoiLightDataSDF(poiMesh, poiLight);
+						poiLight.lightMapMode = 4;
+						break;
+					}
+					default:
+					{
+						poiLight.lightMap = poiLight.nDotLNormalized;
+						poiLight.lightMapMode = 1;
+						break;
+					}
+				}
+				
+				poiLight.lightMap *= poiLight.detailShadow;
+				poiLight.lightMapNoAttenuation = poiLight.lightMap;
+				poiLight.lightMap *= CalculateLuminance(poiLight.lightCookie) * poiLight.attenShadowsStrength;
+				// backwards compatibility
+				poiLight.attenuation = poiLight.lightMap;
+				poiLight.additiveShadow = poiLight.lightMap;
+			}
 			
 			void PoiLightDataSetupAdd(
 			inout PoiLight poiLight,
@@ -50992,7 +52561,8 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				PoiGetLightAttenuation(poiMesh.worldPos, i, poiLight.attenShadows, poiLight.attenDistance, poiLight.lightCookie);
 				#elif POI_PIPE == POI_URP
 				poiLight.attenShadows = poiLight.unityLight.shadowAttenuation;
-				poiLight.attenDistance = poiSampleCurve4(_LightingAdditiveAttenCurve, poiLight.unityLight.distanceAttenuation);
+				// Inverse-square attenuation exceeds 1 near the light; the curve only shapes the 0-1 range
+				poiLight.attenDistance = poiSampleCurve4(_LightingAdditiveAttenCurve, poiLight.unityLight.distanceAttenuation) * max(poiLight.unityLight.distanceAttenuation, 1);
 				#if defined(_LIGHT_COOKIES)
 				#if USE_CLUSTER_LIGHT_LOOP
 				int lightBufferIndex = params.lightIndex;
@@ -51015,47 +52585,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				poiLight.directColor = lerp(poiLight.directColor, dot(poiLight.directColor, float3(0.299, 0.587, 0.114)), _LightingAdditiveMonochromatic);
 				poiLight.indirectColor = lerp(poiLight.indirectColor, dot(poiLight.indirectColor, float3(0.299, 0.587, 0.114)), _LightingAdditiveMonochromatic);
 				
-				poiLight.halfDir = normalize(poiLight.direction + poiCam.eyeViewDir);
-				poiLight.nDotL = dot(poiMesh.normals[1], poiLight.direction);
-				poiLight.nDotLSaturated = saturate(poiLight.nDotL);
-				poiLight.nDotLNormalized = (poiLight.nDotL + 1) * 0.5;
-				poiLight.nDotV = abs(dot(poiMesh.normals[1], poiCam.eyeViewDir));
-				poiLight.nDotVCentered = abs(dot(poiMesh.normals[1], poiCam.viewDir));
-				poiLight.nDotH = dot(poiMesh.normals[1], poiLight.halfDir);
-				poiLight.lDotv = dot(poiLight.direction, poiCam.eyeViewDir);
-				poiLight.lDotH = dot(poiLight.direction, poiLight.halfDir);
-				poiLight.vertexNDotL = dot(poiMesh.normals[0], poiLight.direction);
-				poiLight.vertexNDotV = abs(dot(poiMesh.normals[0], poiCam.eyeViewDir));
-				poiLight.vertexNDotH = max(0.00001, dot(poiMesh.normals[0], poiLight.halfDir));
-				
-				[flatten]
-				switch ((int)_LightingMapMode)
-				{
-					// Saturated NDotL
-					case 2:
-					{
-						poiLight.lightMap = poiLight.nDotLSaturated;
-						break;
-					}
-					// Casted Shadows Only
-					case 3:
-					{
-						poiLight.lightMap = 1;
-						break;
-					}
-					default:
-					{
-						poiLight.lightMap = poiLight.nDotLNormalized;
-						break;
-					}
-				}
-				
-				poiLight.lightMap *= poiLight.detailShadow;
-				poiLight.lightMapNoAttenuation = poiLight.lightMap;
-				poiLight.lightMap *= CalculateLuminance(poiLight.lightCookie) * poiLight.attenShadowsStrength;
-				// backwards compatibility
-				poiLight.attenuation = poiLight.lightMap;
-				poiLight.additiveShadow = poiLight.lightMap;
+				PoiFinishAdditiveLight(poiLight, poiMesh, poiCam);
 				
 				//ifex _LightDataDebugEnabled==0
 				if (_LightDataDebugEnabled >= 0.5)
@@ -51099,6 +52629,51 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				params.exitCode = 0;
 			}
 			
+			#if POI_PIPE == POI_BIRP && defined(VERTEXLIGHT_ON)
+			// Turns one of Unity's four vertex lights into an additive light, so it can be shaded like a pixel light
+			void PoiVertexLightSetup(inout PoiLight vertexLight, in PoiLight mainLight, uint index, in PoiMesh poiMesh, in PoiCam poiCam, half detailShadow)
+			{
+				PoiInitStruct(PoiLight, vertexLight);
+				vertexLight.lightType = POI_POINT_SPOT;
+				vertexLight.isAdditive = 1;
+				vertexLight.detailShadow = detailShadow;
+				vertexLight.toonShadowMask = mainLight.toonShadowMask;
+				vertexLight.occlusion = mainLight.occlusion;
+				vertexLight.lightingMinLightBrightness = mainLight.lightingMinLightBrightness;
+				vertexLight.lightingCapEnabled = mainLight.lightingCapEnabled;
+				vertexLight.lightingMonochromatic = mainLight.lightingMonochromatic;
+				
+				vertexLight.direction = mainLight.vDirection[index];
+				vertexLight.attenDistance = mainLight.vAttenuation[index];
+				vertexLight.attenShadows = 1;
+				vertexLight.attenShadowsStrength = 1;
+				vertexLight.lightCookie = 1;
+				
+				vertexLight.directColor = mainLight.vColor[index];
+				vertexLight.indirectColor = unity_LightColor[index].rgb * vertexLight.attenDistance * _LightingAdditivePassthrough;
+				vertexLight.indirectColor = _LightingAdditiveLimited ? MaxLuminance(vertexLight.indirectColor, _LightingAdditiveLimit) : vertexLight.indirectColor;
+				vertexLight.indirectColor = lerp(vertexLight.indirectColor, dot(vertexLight.indirectColor, float3(0.299, 0.587, 0.114)), _LightingAdditiveMonochromatic);
+				
+				PoiFinishAdditiveLight(vertexLight, poiMesh, poiCam);
+			}
+			#endif
+			
+			float3 PoiCapDirectLight(float3 directColor)
+			{
+				float3 cappedDirectColor = min(directColor, _LightingCap);
+				if (_LightingCapLuminance > 0)
+				{
+					#if defined(UNITY_COLORSPACE_GAMMA)
+					float luminance = dot(directColor, float3(0.299, 0.587, 0.114));
+					#else
+					float luminance = dot(directColor, float3(0.2126, 0.7152, 0.0722));
+					#endif
+					float3 luminanceLimitedColor = directColor * saturate(_LightingCap / max(luminance, 0.00001));
+					cappedDirectColor = lerp(cappedDirectColor, luminanceLimitedColor, saturate(_LightingCapLuminance));
+				}
+				return cappedDirectColor;
+			}
+			
 			void PoiLightDataSetup(
 			inout PoiLight poiLight,
 			inout PoiFragData poiFragData,
@@ -51127,52 +52702,6 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				{
 					poiFragData.toggleVertexLights = 0;
 				}
-				
-				#if POI_PIPE == POI_BIRP
-				if (_LightingVertexLightingEnabled >= 0.5)
-				{
-					#if defined(VERTEXLIGHT_ON)
-					float4 toLightX = unity_4LightPosX0 - poiMesh.worldPos.x;
-					float4 toLightY = unity_4LightPosY0 - poiMesh.worldPos.y;
-					float4 toLightZ = unity_4LightPosZ0 - poiMesh.worldPos.z;
-					float4 lengthSq = 0;
-					lengthSq += toLightX * toLightX;
-					lengthSq += toLightY * toLightY;
-					lengthSq += toLightZ * toLightZ;
-					
-					float4 lightAttenSq = unity_4LightAtten0;
-					float4 atten = 1.0 / (1.0 + lengthSq * lightAttenSq);
-					half4 vLightWeight = saturate(1 - (lengthSq * lightAttenSq / 25));
-					poiLight.vAttenuation = min(atten, vLightWeight * vLightWeight);
-					
-					poiLight.vDotNL = 0;
-					poiLight.vDotNL += toLightX * poiMesh.normals[1].x;
-					poiLight.vDotNL += toLightY * poiMesh.normals[1].y;
-					poiLight.vDotNL += toLightZ * poiMesh.normals[1].z;
-					
-					float4 corr = rsqrt(lengthSq);
-					poiLight.vDotNL *= corr;
-					poiLight.vertexVDotNL = max(0, poiLight.vDotNL);
-					poiLight.vSaturatedDotNL = saturate(poiLight.vDotNL);
-					
-					[unroll]
-					for (int index = 0; index < 4; index++)
-					{
-						poiLight.vPosition[index] = float3(unity_4LightPosX0[index], unity_4LightPosY0[index], unity_4LightPosZ0[index]);
-						poiLight.vDirection[index] = float3(toLightX[index], toLightY[index], toLightZ[index]) * corr[index];
-						poiLight.vAttenuation[index] = poiSampleCurve4(_LightingAdditiveAttenCurve, poiLight.vAttenuation[index]);
-						float3 col = unity_LightColor[index].rgb * poiLight.vAttenuation[index];
-						poiLight.vColor[index] = _LightingAdditiveLimited ? MaxLuminance(col, _LightingAdditiveLimit) : col;
-						poiLight.vColor[index] = lerp(poiLight.vColor[index], dot(poiLight.vColor[index], float3(0.299,0.587,0.114)), _LightingAdditiveMonochromatic);
-						poiLight.vHalfDir[index] = Unity_SafeNormalize(poiLight.vDirection[index] + poiCam.eyeViewDir);
-						poiLight.vDotLH[index] = saturate(dot(poiLight.vDirection[index], poiLight.vHalfDir[index]));
-						poiLight.vDotNH[index] = dot(poiMesh.normals[1], poiLight.vHalfDir[index]);
-						poiLight.vCorrectedDotNL[index] = .5 * (poiLight.vDotNL[index] + 1);
-						poiLight.vertexVDotNH[index] = saturate(dot(poiMesh.normals[0], poiLight.vHalfDir[index]));
-					}
-					#endif
-				}
-				#endif
 				
 				poiLight.attenStrength = _LightingCastedShadows;
 				
@@ -51355,6 +52884,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				poiLight.lDotv = dot(poiLight.direction, poiCam.eyeViewDir);
 				poiLight.lDotH = max(0.00001, dot(poiLight.direction, poiLight.halfDir));
 				
+				poiLight.lightMapMode = lightMapMode;
 				float lightCookieLuminance = CalculateLuminance(poiLight.lightCookie);
 				[flatten]
 				switch (lightMapMode)
@@ -51400,41 +52930,19 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 					}
 					case 4:
 					{
-						#if defined(PROP_LIGHTDATASDFMAP)
-						float2 lightDataSDFMap = 1;
-						if (_LightDataSDFMapLOD > 0)
-						{
-							float sdfLod = pow(_LightDataSDFMapLOD, 4.0);
-							lightDataSDFMap = POI2D_SAMPLER_PANGRAD(_LightDataSDFMap, _linear_repeat, poiUV(poiMesh.uv[_LightDataSDFMapUV], _LightDataSDFMap_ST), _LightDataSDFMapPan, max(poiMesh.dx, sdfLod), max(poiMesh.dy, sdfLod)).rg;
-						}
-						else
-						{
-							lightDataSDFMap = POI2D_SAMPLER_PAN(_LightDataSDFMap, _linear_repeat, poiUV(poiMesh.uv[_LightDataSDFMapUV], _LightDataSDFMap_ST), _LightDataSDFMapPan).rg;
-						}
-						
-						poiLight.lightMapNoAttenuation = poiLight.nDotLSaturated;
-						float3 faceR = mul((float3x3)unity_ObjectToWorld, float3(-1.0, 0.0, 0.0));
-						float LdotR = dot(poiLight.direction.xz, faceR.xz);
-						float sdf = LdotR < 0 ? lightDataSDFMap.g : lightDataSDFMap.r;
-						
-						float3 faceF = mul((float3x3)unity_ObjectToWorld, float3(0.0, 0.0, 1.0)).xyz;
-						faceF.y *= _LightDataSDFBlendY;
-						faceF = dot(faceF, faceF) == 0 ? 0 : normalize(faceF);
-						float3 faceL = poiLight.direction;
-						faceL.y *= _LightDataSDFBlendY;
-						faceL = dot(faceL, faceL) == 0 ? 0 : normalize(faceL);
-						
-						float lnSDF = dot(faceL, faceF);
-						poiLight.lightMapNoAttenuation = saturate(lnSDF * 0.5 + sdf * 0.5 + 0.25);
-						poiLight.lightMap = saturate(lnSDF * 0.5 + sdf * 0.5 + 0.25) * poiLight.attenShadowsStrength * lightCookieLuminance;
-						#else
-						poiLight.lightMapNoAttenuation = poiLight.nDotLNormalized;
-						poiLight.lightMap = poiLight.nDotLNormalized * poiLight.attenShadowsStrength * lightCookieLuminance;
-						#endif
+						poiLight.lightMapNoAttenuation = PoiLightDataSDF(poiMesh, poiLight);
+						poiLight.lightMap = poiLight.lightMapNoAttenuation * poiLight.attenShadowsStrength * lightCookieLuminance;
 						break;
 					}
 				}
 				
+				#ifdef POI_LIGHT_VOLUME_FORM
+				[branch] if (PoiLightVolumesActive())
+				{
+					poiLight.lightMap = PoiLVLightmap(0, poiMesh.normals[1], poiLight.lightMap, _LightingCastedShadows,
+					poiLight.unityLight.color.rgb * poiLight.attenDistance * poiLight.lightCookie, poiLight.unityLight.direction.xyz, poiLight.attenShadows);
+				}
+				#endif
 				poiLight.lightMapNoAttenuation *= poiLight.detailShadow;
 				poiLight.lightMap *= poiLight.detailShadow;
 				// backwards compatibility
@@ -51454,8 +52962,11 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 					// poiLight.directColor = max(poiLight.directColor, poiLight.directColor * min(10000, (_LightingMinLightBrightness * rcp(CalculateLuminance(poiLight.directColor)))));
 					// poiLight.indirectColor = max(poiLight.indirectColor, poiLight.indirectColor * min(10000, (_LightingMinLightBrightness * rcp(CalculateLuminance(poiLight.indirectColor)))));
 					
-					poiLight.directColor = PoiMinBrightness(poiLight.directColor, poiLight.lightingMinLightBrightness);
-					poiLight.indirectColor = PoiMinBrightness(poiLight.indirectColor, poiLight.lightingMinLightBrightness);
+					if (poiLight.lightingMinLightBrightness > EPSILON)
+					{
+						poiLight.directColor = PoiMinBrightness(poiLight.directColor, poiLight.lightingMinLightBrightness);
+						poiLight.indirectColor = PoiMinBrightness(poiLight.indirectColor, poiLight.lightingMinLightBrightness);
+					}
 				}
 				
 				poiLight.directColor = lerp(poiLight.directColor, dot(poiLight.directColor, float3(0.299, 0.587, 0.114)), poiLight.lightingMonochromatic);
@@ -51463,7 +52974,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				
 				if (poiLight.lightingCapEnabled)
 				{
-					poiLight.directColor = min(poiLight.directColor, _LightingCap);
+					poiLight.directColor = PoiCapDirectLight(poiLight.directColor);
 					poiLight.indirectColor = min(poiLight.indirectColor, _LightingCap);
 				}
 				
@@ -51477,6 +52988,52 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				poiLight.directColor = max(poiLight.directColor + _PPLightingAddition, 0);
 				poiLight.indirectColor = max(poiLight.indirectColor * _PPLightingMultiplier, 0);
 				poiLight.indirectColor = max(poiLight.indirectColor + _PPLightingAddition, 0);
+				#endif
+				
+				#if POI_PIPE == POI_BIRP
+				if (_LightingVertexLightingEnabled >= 0.5)
+				{
+					#if defined(VERTEXLIGHT_ON)
+					float4 toLightX = unity_4LightPosX0 - poiMesh.worldPos.x;
+					float4 toLightY = unity_4LightPosY0 - poiMesh.worldPos.y;
+					float4 toLightZ = unity_4LightPosZ0 - poiMesh.worldPos.z;
+					float4 lengthSq = 0;
+					lengthSq += toLightX * toLightX;
+					lengthSq += toLightY * toLightY;
+					lengthSq += toLightZ * toLightZ;
+					
+					float4 lightAttenSq = unity_4LightAtten0;
+					float4 atten = 1.0 / (1.0 + lengthSq * lightAttenSq);
+					half4 vLightWeight = saturate(1 - (lengthSq * lightAttenSq / 25));
+					poiLight.vAttenuation = min(atten, vLightWeight * vLightWeight);
+					
+					poiLight.vDotNL = 0;
+					poiLight.vDotNL += toLightX * poiMesh.normals[1].x;
+					poiLight.vDotNL += toLightY * poiMesh.normals[1].y;
+					poiLight.vDotNL += toLightZ * poiMesh.normals[1].z;
+					
+					float4 corr = rsqrt(lengthSq);
+					poiLight.vDotNL *= corr;
+					poiLight.vertexVDotNL = max(0, poiLight.vDotNL);
+					poiLight.vSaturatedDotNL = saturate(poiLight.vDotNL);
+					
+					[unroll]
+					for (int index = 0; index < 4; index++)
+					{
+						poiLight.vPosition[index] = float3(unity_4LightPosX0[index], unity_4LightPosY0[index], unity_4LightPosZ0[index]);
+						poiLight.vDirection[index] = float3(toLightX[index], toLightY[index], toLightZ[index]) * corr[index];
+						poiLight.vAttenuation[index] = poiSampleCurve4(_LightingAdditiveAttenCurve, poiLight.vAttenuation[index]);
+						float3 col = unity_LightColor[index].rgb * poiLight.vAttenuation[index];
+						poiLight.vColor[index] = _LightingAdditiveLimited ? MaxLuminance(col, _LightingAdditiveLimit) : col;
+						poiLight.vColor[index] = lerp(poiLight.vColor[index], dot(poiLight.vColor[index], float3(0.299,0.587,0.114)), _LightingAdditiveMonochromatic);
+						poiLight.vHalfDir[index] = Unity_SafeNormalize(poiLight.vDirection[index] + poiCam.eyeViewDir);
+						poiLight.vDotLH[index] = saturate(dot(poiLight.vDirection[index], poiLight.vHalfDir[index]));
+						poiLight.vDotNH[index] = dot(poiMesh.normals[1], poiLight.vHalfDir[index]);
+						poiLight.vCorrectedDotNL[index] = .5 * (poiLight.vDotNL[index] + 1);
+						poiLight.vertexVDotNH[index] = saturate(dot(poiMesh.normals[0], poiLight.vHalfDir[index]));
+					}
+					#endif
+				}
 				#endif
 				
 				#ifdef POI_PASS_ADD
@@ -53356,6 +54913,10 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			
 			void PoiShadingGlobalMasks(inout PoiMods poiMods, in PoiLight poiLight)
 			{
+				// URP additional lights and vertex lights are shaded in the base pass; only the main light writes the mask
+				#if POI_PIPE == POI_URP || !defined(POI_PASS_ADD)
+				if (poiLight.isAdditive) return;
+				#endif
 				if (_ShadingRampedLightMapApplyGlobalMaskIndex > 0)
 				{
 					applyToGlobalMask(poiMods, _ShadingRampedLightMapApplyGlobalMaskIndex - 1, _ShadingRampedLightMapApplyGlobalMaskBlendType, saturate(poiMax(poiLight.rampedLightMap * _ShadingRampedLightMapApplyGlobalMaskStrength)));
@@ -53525,20 +55086,6 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				return (D * V) * F;
 			}
 			
-			float3 getBoxProjection(float3 direction, float3 position, float4 cubemapPosition, float3 boxMin, float3 boxMax)
-			{
-				#if UNITY_SPECCUBE_BOX_PROJECTION
-				if (cubemapPosition.w > 0)
-				{
-					float3 factors = ((direction > 0 ? boxMax : boxMin) - position) / direction;
-					float scalar = min(min(factors.x, factors.y), factors.z);
-					direction = direction * scalar + (position - cubemapPosition.xyz);
-				}
-				#endif
-				
-				return direction;
-			}
-			
 			float SpecularAO(float NoV, float ao, float roughness)
 			{
 				return clamp(pow(NoV + ao, exp2(-16.0 * roughness - 1.0)) - 1.0 + ao, 0.0, 1.0);
@@ -53552,7 +55099,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				#if POI_PIPE == POI_BIRP
 				Unity_GlossyEnvironmentData envData;
 				envData.roughness = roughness;
-				envData.reflUVW = getBoxProjection(reflDir, poiMesh.worldPos, unity_SpecCube0_ProbePosition,
+				envData.reflUVW = BoxProjection(reflDir, poiMesh.worldPos, unity_SpecCube0_ProbePosition,
 				unity_SpecCube0_BoxMin.xyz, unity_SpecCube0_BoxMax.xyz);
 				
 				float3 probe0 = Unity_GlossyEnvironment(UNITY_PASS_TEXCUBE(unity_SpecCube0), unity_SpecCube0_HDR, envData);
@@ -53562,7 +55109,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				UNITY_BRANCH
 				if (unity_SpecCube0_BoxMin.w < 0.99999)
 				{
-					envData.reflUVW = getBoxProjection(reflDir, poiMesh.worldPos, unity_SpecCube1_ProbePosition, unity_SpecCube1_BoxMin.xyz, unity_SpecCube1_BoxMax.xyz);
+					envData.reflUVW = BoxProjection(reflDir, poiMesh.worldPos, unity_SpecCube1_ProbePosition, unity_SpecCube1_BoxMin.xyz, unity_SpecCube1_BoxMax.xyz);
 					float3 probe1 = Unity_GlossyEnvironment(UNITY_PASS_TEXCUBE_SAMPLER(unity_SpecCube1, unity_SpecCube0), unity_SpecCube1_HDR, envData);
 					indirectSpecular = lerp(probe1, probe0, unity_SpecCube0_BoxMin.w);
 				}
@@ -53570,7 +55117,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				#endif
 				
 				#if POI_PIPE == POI_URP
-				float3 indirectSpecular = PoiGlossyEnvironmentReflection(reflDir, poiMesh.worldPos.xyz, roughness, 1.0, poiCam.screenUV);
+				float3 indirectSpecular = GlossyEnvironmentReflection(reflDir, poiMesh.worldPos.xyz, roughness, 1.0, poiCam.screenUV);
 				#endif
 				
 				float horizon = min(1 + dot(reflDir, normal), 1);
@@ -53579,6 +55126,25 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				indirectSpecular *= SpecularAO(poiLight.nDotV, occlusion, roughness);
 				return indirectSpecular;
 			};
+			
+			float4 PoiClothMapSample(in PoiMesh poiMesh)
+			{
+				float4 clothmapsample = 1;
+				#if defined(PROP_CLOTHMETALLICSMOOTHNESSMAP) || !defined(OPTIMIZER_ENABLED)
+				clothmapsample = POI2D_SAMPLER_PAN(_ClothMetallicSmoothnessMap, _MainTex, poiUV(poiMesh.uv[_ClothMetallicSmoothnessMapUV], _ClothMetallicSmoothnessMap_ST), _ClothMetallicSmoothnessMapPan);
+				#endif
+				return clothmapsample;
+			}
+			
+			half PoiClothMetallic(float4 clothmapsample, in PoiMods poiMods)
+			{
+				half metallic = pow(clothmapsample.r * _ClothMetallic, 2);
+				if (_ClothMetallicGlobalMask > 0)
+				{
+					metallic = maskBlend(metallic, poiMods.globalMask[_ClothMetallicGlobalMask - 1], _ClothMetallicGlobalMaskBlendType);
+				}
+				return metallic;
+			}
 			#endif
 			
 			#ifdef _LIGHTINGMODE_WRAPPED
@@ -53795,6 +55361,17 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				#endif
 				#endif
 				
+				#ifdef POI_LIGHT_VOLUME_FORM
+				[branch] if (PoiLightVolumesActive())
+				{
+					#if defined(LIGHTMAP_ON) || defined(DYNAMICLIGHTMAP_ON)
+					indirectLight.diffuse += PoiLVDiffuseColor;
+					#else
+					indirectLight.diffuse = PoiLVDiffuseColor;
+					#endif
+				}
+				#endif
+				
 				indirectLight.diffuse *= poiLight.occlusion;
 				
 				return indirectLight;
@@ -53871,31 +55448,22 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			{
 				half3 litColor = poiLight.directColor * poiLight.lightCookie;
 				half3 passthroughColor = poiLight.indirectColor * poiLight.lightCookie;
+				// Additive lights use Passthrough as their ambient but follow the same Ignore Indirect Shadow Color as the main light
 				half3 ambientColor = poiLight.isAdditive ? passthroughColor : poiLight.indirectColor;
-				half ignoreAmbientColor = poiLight.isAdditive ? 0 : _LightingIgnoreAmbientColor;
+				half ignoreAmbientColor = _LightingIgnoreAmbientColor;
 				
 				#if (POI_PIPE == POI_BIRP && defined(POI_PASS_ADD)) || (POI_PIPE == POI_URP)
 				if (poiLight.isAdditive)
 				{
-					if (_LightingAdditiveType == 3)
-					{
-						#if defined(_LIGHTINGMODE_REALISTIC) || defined(_LIGHTINGMODE_CLOTH) || defined(_LIGHTINGMODE_WRAPPED)
-						poiLight.rampedLightMap = poiLight.nDotLSaturated;
-						poiLight.rampedLightMap *= poiLight.attenDistance;
-						#if POI_PIPE == POI_BIRP
-						poiLight.finalLighting = litColor * poiLight.nDotLSaturated * poiLight.detailShadow * poiLight.attenShadowsStrength;
-						#elif POI_PIPE == POI_URP
-						poiLight.finalLighting = LightingPhysicallyBased(poiLight.brdfData, poiLight.brdfDataClearCoat, litColor, poiLight.direction, poiLight.detailShadow * poiLight.attenShadowsStrength, poiMesh.normals[1], poiCam.eyeViewDir, 1.0, false);
-						#endif
-						poiLight.finalLighting = max(poiLight.finalLighting, passthroughColor);
-						return;
-						#endif
-					}
+					// The Cloth block that removes metallic diffuse only runs for the main light
+					#if POI_PIPE == POI_BIRP && defined(_LIGHTINGMODE_CLOTH)
+					poiFragData.baseColor.xyz *= 1 - PoiClothMetallic(PoiClothMapSample(poiMesh), poiMods);
+					#endif
 					// Realistic
 					if (_LightingAdditiveType == 0)
 					{
 						poiLight.rampedLightMap = poiLight.nDotLSaturated;
-						poiLight.rampedLightMap *= poiLight.attenDistance;
+						poiLight.rampedLightMap *= saturate(poiLight.attenDistance);
 						#if POI_PIPE == POI_BIRP
 						poiLight.finalLighting = litColor * poiLight.nDotLSaturated * poiLight.detailShadow * poiLight.attenShadowsStrength;
 						#elif POI_PIPE == POI_URP
@@ -53912,7 +55480,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 						if (ToonAddGradient.x == ToonAddGradient.y) ToonAddGradient.y += 0.0001;
 						
 						poiLight.rampedLightMap = smoothstep(ToonAddGradient.y, ToonAddGradient.x, 1 - poiLight.nDotLNormalized);
-						poiLight.rampedLightMap *= poiLight.attenDistance;
+						poiLight.rampedLightMap *= saturate(poiLight.attenDistance);
 						poiLight.finalLighting = lerp(litColor * poiLight.detailShadow * poiLight.attenShadowsStrength, passthroughColor,
 						smoothstep(ToonAddGradient.x, ToonAddGradient.y, 1 - poiLight.nDotLNormalized));
 						return;
@@ -53929,10 +55497,17 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				// These blocks shouldn't need ifex, they should be removed on lock when their keywords aren't present
 				
 				#ifdef _LIGHTINGMODE_FLAT
-				poiLight.finalLighting = litColor * poiLight.attenShadowsStrength;
+				float flatVisibility = poiLight.attenShadowsStrength;
+				#ifdef POI_LIGHT_VOLUME_FORM
+				[branch] if (PoiLightVolumesActive())
+				flatVisibility = PoiLVFlatVisibility(poiLight.unityLight.color.rgb * poiLight.attenDistance * poiLight.lightCookie,
+				poiLight.attenShadows, _LightingCastedShadows);
+				#endif
+				poiLight.finalLighting = litColor * flatVisibility;
 				if (_ForceFlatRampedLightmap >= 0.5)
 				{
-					poiLight.rampedLightMap = smoothstep(0.4, 0.6, poiLight.nDotLNormalized);
+					// Additional lights ramp on the vertex normal: Flat reads no normal maps
+					poiLight.rampedLightMap = smoothstep(0.4, 0.6, poiLight.isAdditive ? poiLight.vertexNDotL * 0.5 + 0.5 : poiLight.nDotLNormalized);
 				}
 				else
 				{
@@ -53963,11 +55538,8 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				
 				float4 lns = float4(1, 1, 1, 1);
 				
-				// This mode builds its own light map instead of ramping poiLight.lightMap
-				half mlReceive = max(_ShadowReceive, max(_Shadow2ndReceive, _Shadow3rdReceive));
-				half mlCastDepth = lerp(0.44, 0.15, mlReceive); // lower is lighter shadow
-				half mlCast = lerp(1.0, exp2(-(1.0 - poiLight.attenShadows) * mlCastDepth), poiLight.attenStrength);
-				half3 mlLitColor = litColor * mlCast;
+				// This mode builds its own light map instead of ramping poiLight.lightMap. Cast shadows only come in
+				// through each layer's Receive Shadow; Light Data's Receive Casted Shadows doesn't apply here.
 				
 				float3 N1 = poiMesh.normals[1];
 				float3 N2 = poiMesh.normals[1];
@@ -53983,13 +55555,37 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				lightMap.x *= lerp(1.0, poiLight.attenShadows, _ShadowReceive);
 				lightMap.y *= lerp(1.0, poiLight.attenShadows, _Shadow2ndReceive);
 				lightMap.z *= lerp(1.0, poiLight.attenShadows, _Shadow3rdReceive);
+				#ifdef POI_LIGHT_VOLUME_FORM
+				[branch] if (PoiLightVolumesActive())
+				{
+					float3 unityColor = poiLight.unityLight.color.rgb * poiLight.attenDistance * poiLight.lightCookie;
+					lightMap.x = PoiLVLightmap(0, N1, lightMap.x, _ShadowReceive,
+					unityColor, poiLight.unityLight.direction.xyz, poiLight.attenShadows);
+					#if defined(OPTIMIZER_ENABLED)
+					if (_Shadow2ndNormalStrength == _ShadowNormalStrength && _Shadow2ndReceive == _ShadowReceive) lightMap.y = lightMap.x;
+					else
+					#endif
+					lightMap.y = PoiLVLightmap(1, N2, lightMap.y, _Shadow2ndReceive,
+					unityColor, poiLight.unityLight.direction.xyz, poiLight.attenShadows);
+					#if defined(OPTIMIZER_ENABLED)
+					if (_Shadow3rdNormalStrength == _ShadowNormalStrength && _Shadow3rdReceive == _ShadowReceive) lightMap.z = lightMap.x;
+					else
+					#endif
+					lightMap.z = PoiLVLightmap(2, N3, lightMap.z, _Shadow3rdReceive,
+					unityColor, poiLight.unityLight.direction.xyz, poiLight.attenShadows);
+				}
+				#endif
 				
 				half4 shadowBorderMask = 1;
 				
-				if (_ShadowBorderMapToggle >= 0.5)
+				// Keep the legacy no-texture optimizer path neutral, but allow masks without a texture.
+				bool shadowBorderMaskActive = _ShadowBorderMaskGlobalMask > 0;
+				#if defined(PROP_SHADOWBORDERMASK) || !defined(OPTIMIZER_ENABLED)
+				shadowBorderMaskActive = true;
+				#endif
+				if (_ShadowBorderMapToggle >= 0.5 && shadowBorderMaskActive)
 				{
 					
-					#if defined(PROP_SHADOWBORDERMASK) || !defined(OPTIMIZER_ENABLED)
 					// This should be moved to ui but honestly if these are locked in the compiler should be able to resolve it at compile time
 					half2 shadowShift0 = float2(_ShadowAOShift.x, _ShadowAOShift.y);
 					half2 shadowShift1 = float2(_ShadowAOShift.z, _ShadowAOShift.w);
@@ -54011,26 +55607,37 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 					float2 shadowBorderMaskUV = poiUV(poiMesh.uv[_ShadowBorderMaskUV], _ShadowBorderMask_ST);
 					if (_ShadowBorderMaskLOD)
 					{
-						shadowBorderMask = POI2D_SAMPLE_TEX2D_SAMPLERGRADD(_ShadowBorderMask, sampler_trilinear_repeat, shadowBorderMaskUV, _ShadowBorderMaskPan, max(abs(ddx(shadowBorderMaskUV)), pow(_ShadowBorderMaskLOD, 4)), max(abs(ddy(shadowBorderMaskUV)), pow(_ShadowBorderMaskLOD, 4)));
+						shadowBorderMask *= POI2D_SAMPLE_TEX2D_SAMPLERGRADD(_ShadowBorderMask, sampler_trilinear_repeat, shadowBorderMaskUV, _ShadowBorderMaskPan, max(abs(ddx(shadowBorderMaskUV)), pow(_ShadowBorderMaskLOD, 4)), max(abs(ddy(shadowBorderMaskUV)), pow(_ShadowBorderMaskLOD, 4)));
 					}
 					else
 					{
-						shadowBorderMask = POI2D_SAMPLER_PAN(_ShadowBorderMask, _linear_repeat, shadowBorderMaskUV, _ShadowBorderMaskPan);
+						shadowBorderMask *= POI2D_SAMPLER_PAN(_ShadowBorderMask, _linear_repeat, shadowBorderMaskUV, _ShadowBorderMaskPan);
 					}
 					#endif
+					
+					// Packed channels follow Light Data AO: zero strength is neutral white.
+					if (_ShadowBorderMaskMode > 0.5)
+					{
+						half packedAO = min(min(lerp(1, shadowBorderMask.r, _ShadowBorderMaskStrengthR), lerp(1, shadowBorderMask.g, _ShadowBorderMaskStrengthG)), min(lerp(1, shadowBorderMask.b, _ShadowBorderMaskStrengthB), lerp(1, shadowBorderMask.a, _ShadowBorderMaskStrengthA)));
+						shadowBorderMask.rgb = packedAO.xxx;
+					}
+					shadowBorderMask.r = globalMaskBlend(shadowBorderMask.r, _ShadowBorderMaskGlobalMask, _ShadowBorderMaskGlobalMaskBlendType, poiMods);
+					shadowBorderMask.g = globalMaskBlend(shadowBorderMask.g, _ShadowBorderMaskGlobalMask, _ShadowBorderMaskGlobalMaskBlendType, poiMods);
+					shadowBorderMask.b = globalMaskBlend(shadowBorderMask.b, _ShadowBorderMaskGlobalMask, _ShadowBorderMaskGlobalMaskBlendType, poiMods);
 					
 					shadowBorderMask.r = saturate(shadowBorderMask.r * shadowShift0.x + shadowShift0.y);
 					shadowBorderMask.g = saturate(shadowBorderMask.g * shadowShift1.x + shadowShift1.y);
 					shadowBorderMask.b = saturate(shadowBorderMask.b * shadowShift2.x + shadowShift2.y);
 					
 					lightMap.xyz = _ShadowPostAO ? lightMap.xyz : lightMap.xyz * shadowBorderMask.rgb;
-					#endif
 				}
 				
 				if (_LightingMapMode == 4)
 				{
-					// mlLitColor already carries the cookie and the shadow
 					lightMap.xyz = poiLight.lightMapNoAttenuation;
+					lightMap.x *= lerp(1.0, poiLight.attenShadows, _ShadowReceive);
+					lightMap.y *= lerp(1.0, poiLight.attenShadows, _Shadow2ndReceive);
+					lightMap.z *= lerp(1.0, poiLight.attenShadows, _Shadow3rdReceive);
 				}
 				if (_LightingMulitlayerNonLinear >= 0.5)
 				{
@@ -54047,16 +55654,13 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 					lns.w = poiEdgeLinearNoSaturate(lightMap.x, _ShadowBorder, _ShadowBlur * blurMap.r, _ShadowBorderRange);
 				}
 				
-				#if defined(PROP_SHADOWBORDERMASK) || !defined(OPTIMIZER_ENABLED)
 				lns = _ShadowPostAO ? lns * shadowBorderMask.rgbr : lns;
-				#endif
 				lns *= poiLight.detailShadow;
 				lns = saturate(lns);
 				
-				#if defined(PROP_SHADOWSTRENGTHMASK) || !defined(OPTIMIZER_ENABLED)
-				half4 shadowStrengthMask = POI2D_SAMPLER_PAN(_ShadowStrengthMask, _MainTex, poiUV(poiMesh.uv[_ShadowStrengthMaskUV], _ShadowStrengthMask_ST), _ShadowStrengthMaskPan);
-				#else
 				half4 shadowStrengthMask = 1;
+				#if defined(PROP_SHADOWSTRENGTHMASK) || !defined(OPTIMIZER_ENABLED)
+				shadowStrengthMask *= POI2D_SAMPLER_PAN(_ShadowStrengthMask, _MainTex, poiUV(poiMesh.uv[_ShadowStrengthMaskUV], _ShadowStrengthMask_ST), _ShadowStrengthMaskPan);
 				#endif
 				if (_ShadowMaskType == 1)
 				{
@@ -54112,11 +55716,11 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				indirectColor = lerp(indirectColor, indirectColor * poiFragData.baseColor, _ShadowMainStrength);
 				poiLight.rampedLightMap = lns.x;
 				indirectColor = lerp(indirectColor, 1, lns.w * _ShadowBorderColor.rgb * _ShadowBorderColor.a);
-				indirectColor = indirectColor * lerp(ambientColor * poiLight.occlusion, mlLitColor, ignoreAmbientColor);
+				indirectColor = indirectColor * lerp(ambientColor * poiLight.occlusion, litColor, ignoreAmbientColor);
 				if (!poiLight.isAdditive)
-				indirectColor = lerp(indirectColor, mlLitColor, poiLight.indirectColor * _ShadowEnvStrength);
-				indirectColor = lerp(mlLitColor, indirectColor, shadowStrength);
-				poiLight.finalLighting = lerp(indirectColor, mlLitColor, lns.x);
+				indirectColor = lerp(indirectColor, litColor, poiLight.indirectColor * _ShadowEnvStrength);
+				indirectColor = lerp(litColor, indirectColor, shadowStrength);
+				poiLight.finalLighting = lerp(indirectColor, litColor, lns.x);
 				#endif
 				
 				#ifdef _LIGHTINGMODE_SHADEMAP
@@ -54137,46 +55741,29 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				#if POI_PIPE == POI_BIRP
 				UnityLight light;
 				light.dir = poiLight.direction;
-				light.color = max(0, poiLight.unityLight.color * poiLight.lightCookie * poiLight.attenDistance * poiLight.attenShadowsStrength) * realisticLightMap;
+				// Add lights bring their own limit and grayscale in litColor
+				half3 realisticLightColor = poiLight.isAdditive ? litColor : poiLight.unityLight.color * poiLight.lightCookie * poiLight.attenDistance;
+				light.color = max(0, realisticLightColor * poiLight.attenShadowsStrength) * realisticLightMap;
 				light.ndotl = poiLight.nDotLSaturated;
 				UnityIndirect indirectLight = (UnityIndirect)0;
-				#if defined(POI_PASS_BASE) || defined(POI_PASS_OUTLINE)
-				indirectLight = CreateIndirectLight(poiMesh, poiCam, poiLight);
-				indirectLight.diffuse = lerp(indirectLight.diffuse, dot(indirectLight.diffuse, float3(0.299, 0.587, 0.114)), poiLight.lightingMonochromatic);
-				#endif
-				#if defined(POI_PASS_BASE) || defined(POI_PASS_OUTLINE)
-				light.color = max(light.color * _PPLightingMultiplier, 0);
-				light.color = max(light.color + _PPLightingAddition, 0);
-				indirectLight.diffuse = max(indirectLight.diffuse * _PPLightingMultiplier, 0);
-				indirectLight.diffuse = max(indirectLight.diffuse + _PPLightingAddition, 0);
-				#endif
-				
+				// Ambient light and lighting mods belong to the main light only
+				if (!poiLight.isAdditive)
+				{
+					#if defined(POI_PASS_BASE) || defined(POI_PASS_OUTLINE)
+					indirectLight = CreateIndirectLight(poiMesh, poiCam, poiLight);
+					indirectLight.diffuse = lerp(indirectLight.diffuse, dot(indirectLight.diffuse, float3(0.299, 0.587, 0.114)), poiLight.lightingMonochromatic);
+					#endif
+					#if defined(POI_PASS_BASE) || defined(POI_PASS_OUTLINE)
+					light.color = max(light.color * _PPLightingMultiplier, 0);
+					light.color = max(light.color + _PPLightingAddition, 0);
+					indirectLight.diffuse = max(indirectLight.diffuse * _PPLightingMultiplier, 0);
+					indirectLight.diffuse = max(indirectLight.diffuse + _PPLightingAddition, 0);
+					#endif
+					
+				}
 				poiLight.rampedLightMap = poiLight.nDotLSaturated;
 				poiLight.finalLighting = POI_BRDF_PBS(1, unity_ColorSpaceDielectricSpec.rgb, unity_ColorSpaceDielectricSpec.a, 0, poiMesh.normals[1], poiCam.eyeViewDir, poiLight.nDotVSaturated, poiLight.nDotLSaturated, light, indirectLight).xyz;
 				
-				//ifex _LightingEnableLightVolumes==0 && isNotAnimated(_LightingEnableLightVolumes)
-				#if defined(POI_PASS_BASE) || defined(POI_PASS_OUTLINE)
-				[branch]
-				if (_UdonLightVolumeEnabled && _LightingEnableLightVolumes >= 0.5)
-				{
-					float3 L0 = 0;
-					float3 L1r = 0;
-					float3 L1g = 0;
-					float3 L1b = 0;
-					#ifdef LIGHTMAP_ON
-					LightVolumeAdditiveSH(poiMesh.worldPos, L0, L1r, L1g, L1b, poiMesh.normals[1] * _LightingLightVolumesNormalBias, poiMesh.normals[1]);
-					float lightVolumeIntensity = saturate(_LightingLightVolumesIntensity);
-					L0 *= lightVolumeIntensity;
-					L1r *= lightVolumeIntensity;
-					L1g *= lightVolumeIntensity;
-					L1b *= lightVolumeIntensity;
-					float3 lightVolumeAdditive = max(LightVolumeEvaluate(poiMesh.normals[1], L0, L1r, L1g, L1b), 0);
-					if (poiLight.lightingCapEnabled) lightVolumeAdditive = min(lightVolumeAdditive, _LightingCap);
-					poiLight.finalLighting += lightVolumeAdditive;
-					#endif
-				}
-				#endif
-				//endex
 				#endif
 				
 				#if POI_PIPE == POI_URP
@@ -54184,12 +55771,11 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				half3 realisticLightColor = poiLight.isAdditive ? litColor : max(0, poiLight.unityLight.color.rgb * poiLight.lightCookie * poiLight.attenDistance);
 				poiLight.rampedLightMap = poiLight.nDotLSaturated;
 				poiLight.finalLighting = LightingPhysicallyBased(poiLight.brdfData, poiLight.brdfDataClearCoat, realisticLightColor, poiLight.direction, realisticLightMap * poiLight.attenShadowsStrength, poiMesh.normals[1], poiCam.eyeViewDir, 1.0, false);
-				//ifex _LightingEnableLightVolumes==0 && isNotAnimated(_LightingEnableLightVolumes)
 				// Global Illumination
 				// URP Outline pass doesn't have access to lightmaps or SH
 				#if defined(POI_PASS_BASE) || defined(POI_PASS_OUTLINE)
 				[branch]
-				if (_LightingEnableLightVolumes >= 0.5 && !poiLight.isAdditive)
+				if (!poiLight.isAdditive)
 				{
 					float4 lightNormalWS = float4(poiMesh.normals[1], 1);
 					if (_LightingColorMode == 0)
@@ -54197,32 +55783,33 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 					
 					float3 poiGI = 0;
 					float3 vertexSH = SampleSHVertex(lightNormalWS);
+					float poiGINormalBias = _LightingEnableLightVolumes >= 0.5 ? _LightingLightVolumesNormalBias : 0;
 					
 					#if defined(_SCREEN_SPACE_IRRADIANCE)
 					poiGI = SAMPLE_GI(_ScreenSpaceIrradiance, poiCam.clipPos.xy);
 					#elif defined(DYNAMICLIGHTMAP_ON)
 					poiGI = SAMPLE_GI(poiMesh.lightmapUV.xy, poiMesh.lightmapUV.zw, vertexSH, lightNormalWS.xyz);
 					#elif !defined(LIGHTMAP_ON) && (defined(PROBE_VOLUMES_L1) || defined(PROBE_VOLUMES_L2))
+					float4 poiGIProbeOcclusion = 1;
 					poiGI = SAMPLE_GI(vertexSH,
-					GetAbsolutePositionWS(poiMesh.worldPos + poiMesh.normals[1] * _LightingLightVolumesNormalBias),
+					GetAbsolutePositionWS(poiMesh.worldPos + poiMesh.normals[1] * poiGINormalBias),
 					poiMesh.normals[1],
 					poiCam.viewDir,
 					poiCam.clipPos.xy,
-					poiLight.occlusion,
-					PoiCalculateShadowMask(poiMesh.lightmapUV.xy));
+					poiGIProbeOcclusion,
+					poiGIProbeOcclusion);
 					#else
 					poiGI = SAMPLE_GI(poiMesh.lightmapUV.xy, vertexSH, lightNormalWS.xyz);
 					#endif
 					
 					MixRealtimeAndBakedGI(poiLight.unityLight, poiMesh.normals[1], poiGI);
-					poiGI = PoiGlobalIllumination(poiLight.brdfData, poiLight.brdfDataClearCoat, 1,
-					poiGI, poiLight.aoFactor.indirectAmbientOcclusion, poiMesh.worldPos + poiMesh.normals[1] * _LightingLightVolumesNormalBias,
+					poiGI = GlobalIllumination(poiLight.brdfData, poiLight.brdfDataClearCoat, 1,
+					poiGI, poiLight.aoFactor.indirectAmbientOcclusion, poiMesh.worldPos + poiMesh.normals[1] * poiGINormalBias,
 					poiMesh.normals[1], poiCam.eyeViewDir, poiCam.screenUV);
 					if (poiLight.lightingCapEnabled) poiGI = min(poiGI, _LightingCap);
 					poiLight.finalLighting += lerp(poiGI, dot(poiGI, float3(0.299, 0.587, 0.114)), poiLight.lightingMonochromatic);
 				}
 				#endif
-				//endex
 				
 				if (!poiLight.isAdditive)
 				{
@@ -54232,22 +55819,30 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				
 				half realisticShadowAmount = saturate((1.0 - saturate(poiLight.lightMap)) * shadowStrength);
 				poiLight.finalLighting *= lerp(1.0, _LightingShadowColor, realisticShadowAmount);
+				if (poiLight.isAdditive)
+				poiLight.finalLighting = max(poiLight.finalLighting, passthroughColor);
 				#endif
 				
 				#ifdef _LIGHTINGMODE_CLOTH
-				#if defined(PROP_CLOTHMETALLICSMOOTHNESSMAP) || !defined(OPTIMIZER_ENABLED)
-				float4 clothmapsample = POI2D_SAMPLER_PAN(_ClothMetallicSmoothnessMap, _MainTex, poiUV(poiMesh.uv[_ClothMetallicSmoothnessMapUV], _ClothMetallicSmoothnessMap_ST), _ClothMetallicSmoothnessMapPan);
-				half roughness = 1 - (clothmapsample.a * _ClothSmoothness);
+				float4 clothmapsample = PoiClothMapSample(poiMesh);
+				half clothSmoothnessMap = _ClothMetallicSmoothnessMapInvert >= 0.5 ? 1 - clothmapsample.a : clothmapsample.a;
+				half roughness = 1 - (clothSmoothnessMap * _ClothSmoothness);
 				half reflectance = _ClothReflectance * clothmapsample.b;
 				half clothmask = clothmapsample.g;
-				half metallic = pow(clothmapsample.r * _ClothMetallic, 2);
-				roughness = _ClothMetallicSmoothnessMapInvert >= 0.5 ? 1 - roughness : roughness;
-				#else
-				half roughness = 1 - (_ClothSmoothness);
-				half metallic = pow(_ClothMetallic, 2);
-				half reflectance = _ClothReflectance;
-				half clothmask = 1;
-				#endif
+				half metallic = PoiClothMetallic(clothmapsample, poiMods);
+				
+				if (_ClothMaskGlobalMask > 0)
+				{
+					clothmask = maskBlend(clothmask, poiMods.globalMask[_ClothMaskGlobalMask - 1], _ClothMaskGlobalMaskBlendType);
+				}
+				if (_ClothReflectanceGlobalMask > 0)
+				{
+					reflectance = maskBlend(reflectance, poiMods.globalMask[_ClothReflectanceGlobalMask - 1], _ClothReflectanceGlobalMaskBlendType);
+				}
+				if (_ClothSmoothnessGlobalMask > 0)
+				{
+					roughness = 1 - maskBlend(1 - roughness, poiMods.globalMask[_ClothSmoothnessGlobalMask - 1], _ClothSmoothnessGlobalMaskBlendType);
+				}
 				
 				half clothBrdfMask = clothmask * (1 - metallic);
 				
@@ -54260,14 +55855,19 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				
 				float3 energyCompensation = EnvBRDFEnergyCompensation(dfg, f0, clothBrdfMask);
 				
-				poiLight.finalLighting = Fd_Burley(perceptualRoughness, poiLight.nDotV, poiLight.nDotLSaturated, poiLight.lDotH);
-				poiLight.finalLighting *= litColor * poiLight.attenShadowsStrength * poiLight.nDotLSaturated;
+				half clothShadow = poiLight.attenShadowsStrength;
+				#ifdef POI_LIGHT_VOLUME_FORM
+				[branch] if (PoiLightVolumesActive() && !poiLight.isAdditive)
+				clothShadow = PoiLVReceivedShadow(poiLight.unityLight.color.rgb * poiLight.attenDistance * poiLight.lightCookie, poiLight.attenShadows);
+				#endif
+				half3 clothLightTerm = litColor * clothShadow * poiLight.nDotLSaturated;
+				poiLight.finalLighting = Fd_Burley(perceptualRoughness, poiLight.nDotV, poiLight.nDotLSaturated, poiLight.lDotH) * clothLightTerm;
 				poiLight.rampedLightMap = poiLight.nDotLSaturated;
 				
-				half3 specular = max(0, Specular(clampedRoughness, poiLight, f0, poiMesh.normals[1], clothBrdfMask) * poiLight.finalLighting * energyCompensation * UNITY_PI); // (D * V) * F
+				half3 specular = max(0, Specular(clampedRoughness, poiLight, f0, poiMesh.normals[1], clothBrdfMask) * clothLightTerm * energyCompensation * UNITY_PI); // (D * V) * F
 				
-				#if defined(POI_PASS_BASE) || defined(POI_PASS_OUTLINE)
 				poiLight.finalLightAdd += max(0, specular);
+				#if defined(POI_PASS_BASE) || defined(POI_PASS_OUTLINE)
 				if (!poiLight.isAdditive)
 				{
 					float3 L0 = float3(PoiSHAr.w, PoiSHAg.w, PoiSHAb.w);
@@ -54284,13 +55884,18 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				}
 				#endif
 				
+				// Add lights already had the metallic diffuse removed before shading
+				if (!poiLight.isAdditive)
 				poiFragData.baseColor.xyz *= (1 - metallic);
+				else
+				poiLight.finalLighting = max(poiLight.finalLighting, passthroughColor);
 				#endif
 				
 				#ifdef _LIGHTINGMODE_WRAPPED
 				#define GREYSCALE_VECTOR float3(.33333, .33333, .33333)
-				half3 wrappedLightColor = poiLight.unityLight.color * poiLight.lightCookie;
-				if (_LightingForceColorEnabled >= 0.5)
+				// Add lights bring their own falloff, limit and grayscale in litColor
+				half3 wrappedLightColor = poiLight.isAdditive ? litColor : poiLight.unityLight.color * poiLight.lightCookie;
+				if (_LightingForceColorEnabled >= 0.5 && !poiLight.isAdditive)
 				{
 					wrappedLightColor = poiThemeColor(poiMods, _LightingForcedColor.rgb, _LightingForcedColorThemeIndex);
 				}
@@ -54300,38 +55905,57 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				if (!poiLight.isAdditive)
 				indirectColor = ShadeSH9_wrapped(lerp(poiMesh.normals[0], poiMesh.normals[1], _LightingIndirectUsesNormals), _LightingWrappedWrap) * poiLight.occlusion;
 				#endif
-				directColor = lerp(directColor, dot(directColor, float3(0.299, 0.587, 0.114)), poiLight.lightingMonochromatic); // Duplicated from Lightdata due to recreating the light colour
-				indirectColor = lerp(indirectColor, dot(indirectColor, float3(0.299, 0.587, 0.114)), poiLight.lightingMonochromatic); // Ditto^
-				
-				float3 ShadeSH9Plus_2 = GetSHMaxL1();
+				float3 ShadeSH9Plus_2 = 0;
+				if (!poiLight.isAdditive)
+				{
+					directColor = lerp(directColor, dot(directColor, float3(0.299, 0.587, 0.114)), poiLight.lightingMonochromatic); // Duplicated from Lightdata due to recreating the light colour
+					indirectColor = lerp(indirectColor, dot(indirectColor, float3(0.299, 0.587, 0.114)), poiLight.lightingMonochromatic); // Ditto^
+					ShadeSH9Plus_2 = GetSHMaxL1();
+				}
 				float bw_topDirectLighting_2 = dot(wrappedLightColor, GREYSCALE_VECTOR);
 				float bw_directLighting = dot(directColor, GREYSCALE_VECTOR);
 				float bw_indirectLighting = dot(indirectColor, GREYSCALE_VECTOR);
 				float bw_topIndirectLighting = dot(ShadeSH9Plus_2, GREYSCALE_VECTOR);
+				#ifdef POI_LIGHT_VOLUME_FORM
+				if (!poiLight.isAdditive)
+				{
+					float3 lvBlocked = PoiLVWrappedBlocked * poiLight.occlusion;
+					indirectColor -= lerp(lvBlocked, dot(lvBlocked, float3(0.299, 0.587, 0.114)), poiLight.lightingMonochromatic);
+				}
+				#endif
 				
-				poiLight.lightMap = smoothstep(0, bw_topIndirectLighting + bw_topDirectLighting_2, bw_indirectLighting + bw_directLighting) * min(poiLight.detailShadow, poiLight.attenShadowsStrength);
+				poiLight.lightMap = smoothstep(0, max(bw_topIndirectLighting + bw_topDirectLighting_2, 0.0001), bw_indirectLighting + bw_directLighting) * min(poiLight.detailShadow, poiLight.attenShadowsStrength);
+				#ifdef POI_LIGHT_VOLUME_FORM
+				[branch] if (PoiLightVolumesActive() && !poiLight.isAdditive)
+				{
+					float wrappedMap = smoothstep(0, max(bw_topIndirectLighting + bw_topDirectLighting_2, 0.0001), bw_indirectLighting + bw_directLighting) * poiLight.attenShadowsStrength;
+					poiLight.lightMap = PoiLVLightmap(0, poiMesh.normals[1], wrappedMap, _LightingCastedShadows,
+					poiLight.unityLight.color.rgb * poiLight.attenDistance * poiLight.lightCookie,
+					poiLight.unityLight.direction.xyz, poiLight.attenShadows) * poiLight.detailShadow;
+				}
+				#endif
 				poiLight.rampedLightMap = saturate((poiLight.lightMap - (1 - _LightingGradientEnd)) / saturate((1 - _LightingGradientStart) - (1 - _LightingGradientEnd) + 0.001));
-				float3 mathRamp = lerp(float3(1, 1, 1), saturate(lerp((_LightingShadowColor * lerp(indirectColor, 1, _LightingIgnoreAmbientColor)), float3(1, 1, 1), saturate(poiLight.rampedLightMap))), shadowStrength);
+				float3 mathRamp = lerp(float3(1, 1, 1), saturate(lerp(_LightingShadowColor, float3(1, 1, 1), saturate(poiLight.rampedLightMap))), shadowStrength);
 				
 				directColor *= saturate(poiLight.rampedLightMap + 1 - shadowStrength) * _LightingWrappedColor;
 				
 				float3 finalWrap = directColor + indirectColor;
-				if (poiLight.lightingCapEnabled)
+				if (poiLight.lightingCapEnabled && !poiLight.isAdditive)
 				{
 					finalWrap = min(finalWrap, _LightingCap);
 				}
-				poiLight.finalLighting = finalWrap * saturate(mathRamp + 1 - shadowStrength);
+				poiLight.finalLighting = finalWrap * mathRamp;
+				if (poiLight.isAdditive)
+				poiLight.finalLighting = max(poiLight.finalLighting, passthroughColor);
 				#endif
 				
 				#ifdef _LIGHTINGMODE_SKIN
-				float3 ambientNormalWorld = poiMesh.normals[1];//aTangentToWorld(s, s.blurredNormalTangent);
 				poiLight.rampedLightMap = poiLight.nDotLSaturated;
 				
 				// Scattering mask.
-				#if defined(PROP_SKINTHICKNESSMAP) || !defined(OPTIMIZER_ENABLED)
-				float subsurface = 1 - POI2D_SAMPLER_PAN(_SkinThicknessMap, _MainTex, poiUV(poiMesh.uv[_SkinThicknessMapUV], _SkinThicknessMap_ST), _SkinThicknessMapPan).r;
-				#else
 				float subsurface = 1;
+				#if defined(PROP_SKINTHICKNESSMAP) || !defined(OPTIMIZER_ENABLED)
+				subsurface = 1 - POI2D_SAMPLER_PAN(_SkinThicknessMap, _MainTex, poiUV(poiMesh.uv[_SkinThicknessMapUV], _SkinThicknessMap_ST), _SkinThicknessMapPan).r;
 				#endif
 				if (_SkinThicknessMapInvert >= 0.5)
 				{
@@ -54350,28 +55974,66 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				// Albedo scale for absorption assumes ~0.5 luminance for Caucasian skin.
 				absorption *= saturate(poiFragData.baseColor * unity_ColorSpaceDouble.rgb);
 				
-				// Blurred normals for indirect diffuse and direct scattering.
-				ambientNormalWorld = normalize(lerp(poiMesh.normals[1], ambientNormalWorld, _SssBumpBlur));
-				half3 skinLitColor = litColor * poiLight.attenShadowsStrength;
+				half skinShadow = poiLight.attenShadowsStrength;
+				#ifdef POI_LIGHT_VOLUME_FORM
+				[branch] if (PoiLightVolumesActive() && !poiLight.isAdditive)
+				skinShadow = PoiLVReceivedShadow(poiLight.unityLight.color.rgb * poiLight.attenDistance * poiLight.lightCookie, poiLight.attenShadows);
+				#endif
+				half3 skinLitColor = litColor * skinShadow;
 				float ndlBlur = poiLight.nDotLNormalized;
+				float skinLightMap = poiLight.lightMapNoAttenuation;
+				// Keep changes local: other modules (especially specular) retain their detailed normals.
+				//ifex isNotAnimated(_SkinDiffuseSoftnessEnabled) && _SkinDiffuseSoftnessEnabled==0
+				if (_SkinDiffuseSoftnessEnabled > 0.5 && _SssBumpBlur > 0)
+				{
+					float3 diffuseNormal = lerp(poiMesh.normals[1], poiMesh.normals[0], saturate(_SssBumpBlur));
+					float normalLengthSq = dot(diffuseNormal, diffuseNormal);
+					diffuseNormal = normalLengthSq > 1e-6 ? diffuseNormal * rsqrt(max(normalLengthSq, 1e-6)) : poiMesh.normals[1];
+					float diffuseNDotL = dot(diffuseNormal, poiLight.direction);
+					ndlBlur = saturate(diffuseNDotL * 0.5 + 0.5);
+					if (poiLight.lightMapMode == 2)
+					skinLightMap = saturate(diffuseNDotL) * poiLight.detailShadow;
+					else if (poiLight.lightMapMode == 1)
+					skinLightMap = ndlBlur * poiLight.detailShadow;
+					else if (poiLight.lightMapMode == 0 && poiLight.isAdditive)
+					skinLightMap = smoothstep(0, 1, ndlBlur) * poiLight.detailShadow;
+					else if (poiLight.lightMapMode == 0)
+					{
+						// Re-evaluate the custom light map with the softened normal, retaining its SH response.
+						float3 shBottom = float3(PoiSHAr.w, PoiSHAg.w, PoiSHAb.w) + float3(PoiSHBr.z, PoiSHBg.z, PoiSHBb.z) / 3.0;
+						float3 grey = float3(0.33333, 0.33333, 0.33333);
+						float directLuma = dot(poiLight.directColor, grey);
+						float bottomLuma = dot(shBottom, grey);
+						float lightRange = dot(GetSHLength(), grey) + directLuma - bottomLuma;
+						if (lightRange > 1e-5)
+						skinLightMap = smoothstep(0, lightRange, ndlBlur * directLuma + dot(PoiShadeSH9(float4(diffuseNormal, 1)), grey) - bottomLuma) * poiLight.detailShadow;
+					}
+					// Casted Shadows Only and base-pass SDF retain their authored light maps.
+				}
+				//endex
 				float lumi = dot(litColor, half3(0.2126h, 0.7152h, 0.0722h));
+				lumi = lerp(lumi, 1.0, _SkinScatteringStability);
 				float4 sssLookupUv = float4(ndlBlur, skinScattering * lumi, 0.0f, 0.0f);
 				#if defined(PROP_SKINLUT) || !defined(OPTIMIZER_ENABLED)
-				half3 sss = poiLight.lightMapNoAttenuation * _SkinLUT.SampleLevel(sampler_linear_clamp, sssLookupUv.xy, sssLookupUv.w).rgb;
+				half3 sss = skinLightMap * _SkinLUT.SampleLevel(sampler_linear_clamp, sssLookupUv.xy, sssLookupUv.w).rgb;
 				#else
-				half3 sss = poiLight.lightMapNoAttenuation;
+				half3 sss = skinLightMap;
 				#endif
 				
-				poiLight.finalLighting = lerp(skinLitColor, min(lerp(ambientColor * _LightingShadowColor, _LightingShadowColor, ignoreAmbientColor) * poiLight.occlusion + (sss * skinLitColor), litColor), shadowStrength);
+				// Shadow Tint is the main light's shadow floor; point lights keep their ambient.
+				half skinIgnoreAmbient = poiLight.isAdditive ? 0 : ignoreAmbientColor;
+				poiLight.finalLighting = lerp(litColor, min(lerp(ambientColor * _LightingShadowColor, _LightingShadowColor, skinIgnoreAmbient) * poiLight.occlusion + (sss * skinLitColor), litColor), shadowStrength);
 				#endif
 				
 				#ifdef _LIGHTINGMODE_SDF
 				float3 forward = normalize(mul((float3x3)unity_ObjectToWorld, _SDFForward.xyz));
 				float3 left = normalize(mul((float3x3)unity_ObjectToWorld, _SDFLeft.xyz));
-				float3 lightDirHorizontal = normalize(float3(poiLight.direction.x, 0, poiLight.direction.z));
+				float2 lightDirXZ = poiLight.direction.xz;
+				float3 lightDirHorizontal = dot(lightDirXZ, lightDirXZ) > 0 ? normalize(float3(lightDirXZ.x, 0, lightDirXZ.y)) : forward;
 				
 				float lightAtten = 1 - (dot(lightDirHorizontal, forward) * 0.5 + 0.5);
-				float filpU = sign(dot(lightDirHorizontal, left));
+				// Not sign(): it returns 0 for light from front or back
+				float filpU = dot(lightDirHorizontal, left) < 0 ? -1 : 1;
 				
 				#if defined(PROP_SDFSHADINGTEXTURE) || !defined(OPTIMIZER_ENABLED)
 				float shadowSDF = POI2D_SAMPLER_PAN(_SDFShadingTexture, _MainTex, poiUV(poiMesh.uv[_SDFShadingTextureUV], _SDFShadingTexture_ST) * float2(filpU, 1), _SDFShadingTexturePan).r;
@@ -54380,8 +56042,13 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				#endif
 				float blur = _SDFBlur * 0.1;
 				half faceShadow = smoothstep(lightAtten - blur, lightAtten + blur, shadowSDF) * poiLight.detailShadow;
-				half3 sdfLitColor = litColor * poiLight.attenShadowsStrength;
-				poiLight.rampedLightMap = faceShadow * poiLight.attenShadowsStrength;
+				half sdfShadow = poiLight.attenShadowsStrength;
+				#ifdef POI_LIGHT_VOLUME_FORM
+				[branch] if (PoiLightVolumesActive() && !poiLight.isAdditive)
+				sdfShadow = PoiLVReceivedShadow(poiLight.unityLight.color.rgb * poiLight.attenDistance * poiLight.lightCookie, poiLight.attenShadows);
+				#endif
+				half3 sdfLitColor = litColor * sdfShadow;
+				poiLight.rampedLightMap = faceShadow * sdfShadow;
 				
 				float3 indirectColor = _LightingShadowColor.rgb;
 				indirectColor = indirectColor * lerp(ambientColor * poiLight.occlusion, sdfLitColor, ignoreAmbientColor);
@@ -54391,26 +56058,19 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				#endif
 				
 				#if POI_PIPE == POI_BIRP
-				if (poiFragData.toggleVertexLights)
+				// Same as Base Pass shades vertex lights like pixel lights after the main light (see PoiVertexLightSetup)
+				if (poiFragData.toggleVertexLights && _LightingAdditiveType != 3 && !poiLight.isAdditive)
 				{
 					#if defined(VERTEXLIGHT_ON)
 					float3 vertexLighting = float3(0, 0, 0);
 					for (int index = 0; index < 4; index++)
 					{
 						float lightingMode = _LightingAdditiveType;
-						if (lightingMode == 3)
-						{
-							//This is a temporary bandaid fix
-							#if defined(_LIGHTINGMODE_REALISTIC)
-							lightingMode = 0;
-							#else
-							lightingMode = 1;
-							#endif
-						}
 						//UNITY_BRANCH
 						if (lightingMode == 0)
 						{
-							vertexLighting += poiLight.vColor[index] * poiLight.vSaturatedDotNL[index] * poiLight.detailShadow; // Realistic
+							half3 vertexLight = poiLight.vColor[index] * poiLight.vSaturatedDotNL[index] * poiLight.detailShadow; // Realistic
+							vertexLighting = _AddBlendOp == 4 ? max(vertexLighting, vertexLight) : vertexLighting + vertexLight;
 						}
 						//UNITY_BRANCH
 						// Toon
@@ -54418,15 +56078,16 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 						{
 							float2 ToonAddGradient = float2(_LightingAdditiveGradientStart, _LightingAdditiveGradientEnd);
 							if (ToonAddGradient.x == ToonAddGradient.y) ToonAddGradient.y += 0.0001;
-							vertexLighting += lerp(poiLight.vColor[index] * poiLight.detailShadow, poiLight.vColor[index] * _LightingAdditivePassthrough, smoothstep(ToonAddGradient.x, ToonAddGradient.y, 1 - (.5 * poiLight.vDotNL[index] + .5)));
+							half3 vertexLight = lerp(poiLight.vColor[index] * poiLight.detailShadow, poiLight.vColor[index] * _LightingAdditivePassthrough, smoothstep(ToonAddGradient.x, ToonAddGradient.y, 1 - (.5 * poiLight.vDotNL[index] + .5)));
+							vertexLighting = _AddBlendOp == 4 ? max(vertexLighting, vertexLight) : vertexLighting + vertexLight;
 						}
 					}
-					poiLight.finalLighting += vertexLighting;
+					poiLight.finalLighting = _AddBlendOp == 4 ? max(poiLight.finalLighting, vertexLighting) : poiLight.finalLighting + vertexLighting;
 					#endif
 				}
 				#endif
 				
-				poiLight.rampedLightMap *= poiLight.attenDistance;
+				poiLight.rampedLightMap *= saturate(poiLight.attenDistance);
 				PoiShadingGlobalMasks(poiMods, poiLight);
 			}
 			#endif
@@ -55471,7 +57132,10 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 						// A solution to top pinch would be so awesome
 						
 						float3 worldUp = float3(0, 1, 0);
-						float3 tangent = normalize(cross(normal, worldUp));
+						float3 tangent = cross(normal, worldUp);
+						// A normal pointing straight up or down has no cross product with world up; normalizing zero gives NaN.
+						if (dot(tangent, tangent) < 1e-12) tangent = cross(normal, float3(0, 0, 1));
+						tangent = normalize(tangent);
 						
 						float3 bitangent = normalize(cross(normal, tangent));
 						float2 projection;
@@ -56731,21 +58395,30 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				#endif
 				
 				float3 col = poiFragData.finalColor;
+				// The add pass blends additively, so only linear adjustments are applied per light
+				#if !defined(POI_PASS_ADD)
 				col = hueShift(col, _PPHue + _PPHueOffset * ppMask[_PPHueOffsetMask] + frac(POI_TIME.x * _PPHueSpeed), _PPHueShiftColorSpace, _ppHueSelectOrShift);
+				#endif
 				col *= _PPTint;
 				col *= _PPRGB;
 				col = GetSaturation(col, _PPSaturation);
+				#if !defined(POI_PASS_ADD)
 				col = lerp(col, GetHDR(col), _PPHDR);
 				col = GetContrast(col, _PPContrast);
+				#endif
 				col *= _PPBrightness;
+				#if !defined(POI_PASS_ADD)
 				col += _PPLightness;
+				#endif
 				
 				col = lerp(poiFragData.finalColor, col, ppMask[_PPMaskChannel]);
 				
+				#if !defined(POI_PASS_ADD)
 				if (_PPPosterization >= 0.5)
 				{
 					col = lerp(col, poiPosterize(col, _PPPosterizationAmount), ppMask[_PPMaskChannel]);
 				}
+				#endif
 				
 				poiFragData.finalColor = col;
 			}
@@ -56768,7 +58441,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				float3 normalCorrectObject = posOS - _NormalCorrectOrigin;
 				normalCorrectObject.y = 0;
 				normalCorrectObject = normalize(normalCorrectObject);
-				float3 normalCorrectWorld = mul((float3x3)unity_ObjectToWorld, normalCorrectObject).xyz;
+				float3 normalCorrectWorld = PoiObjectToWorldNormal(normalCorrectObject);
 				i.normal.xyz = normalize(lerp(i.normal.xyz, normalCorrectWorld, _NormalCorrectAmount));
 				//i.objNormal.xyz = normalize(lerp(i.objNormal.xyz, normalCorrectObject, _NormalCorrectAmount));
 			}
@@ -56780,9 +58453,9 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			{
 				
 				// Color
-				half3 backlightColor = _BacklightColor.rgb;
+				half4 backlightColor = _BacklightColor;
 				#if defined(PROP_BACKLIGHTCOLORTEX) || !defined(OPTIMIZER_ENABLED)
-				backlightColor *= POI2D_SAMPLER_PAN(_BacklightColorTex, _MainTex, poiUV(poiMesh.uv[_BacklightColorTexUV], _BacklightColorTex_ST), _BacklightColorTexPan).rgb;
+				backlightColor *= POI2D_SAMPLER_PAN(_BacklightColorTex, _MainTex, poiUV(poiMesh.uv[_BacklightColorTexUV], _BacklightColorTex_ST), _BacklightColorTexPan);
 				#endif
 				
 				float3 normal = lerp(poiMesh.normals[0], poiMesh.normals[1], _BacklightNormalStrength);
@@ -56793,11 +58466,21 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				half backlightLN = dot(normalize(-headDir * _BacklightViewStrength + poiLight.direction), normal) * 0.5 + 0.5;
 				
 				if (_BacklightReceiveShadow >= 0.5)
-				backlightLN *= poiLight.lightMap;
+				{
+					// Match lilToon's raw attenuation and shading-direction correction before tooning.
+					// The surface light map also contains NdotL and the separate Light Data shadow strength.
+					half backlightShadow = poiLight.attenShadows * saturate(poiLight.attenDistance) * CalculateLuminance(poiLight.lightCookie) + distance(poiLight.direction, poiLight.unityLight.direction);
+					#ifdef POI_LIGHT_VOLUME_FORM
+					// LV shadows each light separately, so the light direction no longer tells shadowed light apart.
+					[branch] if (PoiLightVolumesActive())
+					backlightShadow = PoiLVVisibility(0, poiMesh.normals[1], poiLight.unityLight.color.rgb * poiLight.attenDistance * poiLight.lightCookie, poiLight.unityLight.direction, poiLight.attenShadows);
+					#endif
+					backlightLN *= saturate(backlightShadow);
+				}
 				
 				backlightLN = poiEdgeLinear(backlightLN, _BacklightBorder, _BacklightBlur);
-				half backlight = saturate(backlightFactor * backlightLN);
-				backlight = !poiMesh.isFrontFace && _BacklightBackfaceMask >= 0.5 ? 0.0 : backlight;
+				half backlightAmount = saturate(backlightFactor * backlightLN);
+				backlightAmount = !poiMesh.isFrontFace && _BacklightBackfaceMask >= 0.5 ? 0.0 : backlightAmount;
 				
 				// Global Masking
 				half backlightMask = 1;
@@ -56807,16 +58490,20 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 					backlightMask = maskBlend(backlightMask, poiMods.globalMask[_BacklightGlobalMask - 1], _BacklightGlobalMaskBlendType);
 				}
 				
-				backlight *= backlightMask;
+				backlightAmount *= backlightMask;
 				
 				if (_BacklightApplyGlobalMaskIndex > 0)
 				{
-					applyToGlobalMask(poiMods, _BacklightApplyGlobalMaskIndex - 1, _BacklightApplyGlobalMaskBlendType, backlight);
+					applyToGlobalMask(poiMods, _BacklightApplyGlobalMaskIndex - 1, _BacklightApplyGlobalMaskBlendType, backlightAmount);
 				}
 				
 				// Blend
-				backlightColor = lerp(backlightColor, backlightColor * poiFragData.baseColor, _BacklightMainStrength);
-				poiLight.finalLightAdd += backlight * backlightColor * poiLight.directColor;
+				backlightColor.rgb = lerp(backlightColor.rgb, backlightColor.rgb * poiFragData.baseColor, _BacklightMainStrength);
+				// lilToon's ForwardAdd light color already carries the light's shadow and cookie.
+				half3 backlightLightColor = poiLight.directColor;
+				if (poiLight.isAdditive)
+				backlightLightColor *= poiLight.attenShadows * poiLight.lightCookie;
+				poiLight.finalLightAdd += backlightAmount * backlightColor.a * backlightColor.rgb * backlightLightColor;
 			}
 			#endif
 			//endex
@@ -57262,10 +58949,12 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				PoiSHAr = unity_SHAr;
 				PoiSHAg = unity_SHAg;
 				PoiSHAb = unity_SHAb;
+				#if POI_PIPE != POI_BIRP
 				PoiSHBr = unity_SHBr;
 				PoiSHBg = unity_SHBg;
 				PoiSHBb = unity_SHBb;
 				PoiSHC =  unity_SHC;
+				#endif
 				
 				PoiMesh poiMesh;
 				PoiInitStruct(PoiMesh, poiMesh);
@@ -57296,7 +58985,6 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				poiFragData.reflectionMask = 1;
 				poiFragData.alpha = 1;
 				
-				MochieBRDFData mochieBRDFData;
 				PoiInitStruct(MochieBRDFData, mochieBRDFData);
 				
 				//ifex _EnableUDIMDiscardOptions==0
@@ -57337,7 +59025,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				
 				poiMesh.isFrontFace = facing;
 				
-				#ifndef POI_PASS_OUTLINE
+				#if !defined(POI_PASS_OUTLINE) && !defined(POI_PASS_LILFUR)
 				if (!poiMesh.isFrontFace && _FlipBackfaceNormals >= 0.5)
 				{
 					poiMesh.normals[0] *= -1;
@@ -57508,8 +59196,9 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				poiMesh.tangentSpaceNormal.z * poiMesh.normals[0]
 				);
 				
-				poiMesh.tangent[1] = normalize(cross(poiMesh.binormal[0], -poiMesh.normals[1]));
-				poiMesh.binormal[1] = normalize(cross(-poiMesh.normals[1], poiMesh.tangent[0]));
+				float poiTangentSign = dot(cross(poiMesh.normals[0], poiMesh.tangent[0]), poiMesh.binormal[0]) < 0 ? -1 : 1;
+				poiMesh.tangent[1] = normalize(cross(poiMesh.binormal[0], poiMesh.normals[1])) * poiTangentSign;
+				poiMesh.binormal[1] = normalize(cross(poiMesh.normals[1], poiMesh.tangent[0])) * poiTangentSign;
 				
 				//ifex _EnableBentNormal==0
 				#if defined(POI_BENTNORMALMAP) && !defined(POI_PASS_SHADOW) && !defined(POI_PASS_MOTION_VECTORS)
@@ -57579,6 +59268,247 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				#endif
 				//endex
 				
+				#if defined(POI_PASS_BASE) || defined(POI_PASS_OUTLINE)
+				float3 L0 = float3(0, 0, 0);
+				float3 L1r = float3(0, 0, 0);
+				float3 L1g = float3(0, 0, 0);
+				float3 L1b = float3(0, 0, 0);
+				#if POI_PIPE == POI_BIRP
+				//ifex _LightingEnableLightVolumes==0 && isNotAnimated(_LightingEnableLightVolumes)
+				[branch] if (PoiLightVolumesActive())
+				{
+					float3 worldPos = poiMesh.worldPos;
+					float3 offset = poiMesh.normals[1] * _LightingLightVolumesNormalBias;
+					float3 normal = poiMesh.normals[1];
+					float3 geometryNormal = poiMesh.normals[0];
+					// Included in frag, inside Light Data's Light Volumes branch.
+					LV_LightVolumeRegularSH(worldPos + offset, L0, L1r, L1g, L1b);
+					#if defined(LIGHTMAP_ON) || defined(DYNAMICLIGHTMAP_ON)
+					// Lightmaps already contain regular baked lighting.
+					PoiLVL0 = 0; PoiLVL1r = 0; PoiLVL1g = 0; PoiLVL1b = 0;
+					LV_LightVolumeAdditiveSH(worldPos + offset, PoiLVL0, PoiLVL1r, PoiLVL1g, PoiLVL1b);
+					L0 += PoiLVL0; L1r += PoiLVL1r; L1g += PoiLVL1g; L1b += PoiLVL1b;
+					#else
+					LV_LightVolumeAdditiveSH(worldPos + offset, L0, L1r, L1g, L1b);
+					PoiLVL0 = L0; PoiLVL1r = L1r; PoiLVL1g = L1g; PoiLVL1b = L1b;
+					#endif
+					PoiLVSHDiscCompute(PoiLVSHDiscColor, PoiLVSHDiscDirection, PoiLVSHDiscSpreadSq);
+					#if defined(_LIGHTINGMODE_REALISTIC) || defined(_LIGHTINGMODE_PBR)
+					PoiLVDiffuseL0 = PoiLVL0; PoiLVDiffuseL1r = PoiLVL1r;
+					PoiLVDiffuseL1g = PoiLVL1g; PoiLVDiffuseL1b = PoiLVL1b;
+					#endif
+					float3 N1 = normal, N2 = normal, N3 = normal;
+					#ifdef _LIGHTINGMODE_MULTILAYER_MATH
+					N1 = lerp(geometryNormal, normal, _ShadowNormalStrength);
+					N2 = lerp(geometryNormal, normal, _Shadow2ndNormalStrength);
+					N3 = lerp(geometryNormal, normal, _Shadow3rdNormalStrength);
+					#endif
+					PoiLVAvailableForm = float3(PoiLVForm(N1, L0, L1r, L1g, L1b),
+					PoiLVForm(N2, L0, L1r, L1g, L1b), PoiLVForm(N3, L0, L1r, L1g, L1b));
+					PoiLVFormWeight = PoiLVLuminance(max(L0, 0)) + length(L1r * .2126 + L1g * .7152 + L1b * .0722);
+					#if defined(_LIGHTINGMODE_WRAPPED) && defined(VIGNETTE_MASKED)
+					N1 = lerp(geometryNormal, normal, _LightingIndirectUsesNormals);
+					float3 convolution = lerp(GreenWrapSH(_LightingWrappedWrap), GreenWrapSHOpt(_LightingWrappedWrap), _LightingWrappedNormalization) * float3(1, 1.5, 4);
+					PoiLVAvailableForm = PoiLVForm(N1, L0 * convolution.x, L1r * convolution.y, L1g * convolution.y, L1b * convolution.y);
+					PoiLVFormWeight = PoiLVLuminance(max(L0 * convolution.x, 0)) + length((L1r * .2126 + L1g * .7152 + L1b * .0722) * convolution.y);
+					PoiLVWrappedBlocked = 0;
+					#endif
+					PoiLVArrivingForm = PoiLVAvailableForm;
+					PoiLVLampWeight = 0;
+					PoiLVLampArriving = 0;
+					#if defined(_LIGHTINGMODE_TEXTURERAMP) || defined(_LIGHTINGMODE_SHADEMAP)
+					PoiLVCustomAvailable = PoiLVAvailableForm.x;
+					PoiLVCustomArriving = PoiLVAvailableForm.x;
+					#endif
+					#ifdef _LIGHTINGMODE_FLAT
+					PoiLVFlatAvailable = PoiLVLuminance(max(L0, 0));
+					PoiLVFlatArriving = PoiLVFlatAvailable;
+					#endif
+					PoiLVIterator lights = PoiLVBeginLive(worldPos);
+					PoiLVLight light;
+					//ifex _LightingLightVolumesSpecular==0 && isNotAnimated(_LightingLightVolumesSpecular)
+					#if (POI_PIPE == POI_BIRP) && defined(POI_PASS_BASE)
+					// Specular layers with a GGX lobe evaluate every light inside this loop, as LV's own shader does.
+					// Their surface is prepared here because the walk runs before they set it up.
+					bool specularLayers = _LightingLightVolumesSpecular > 0;
+					#if defined(_LIGHTINGMODE_PBR) && defined(VIGNETTE_MASKED)
+					bool specularMaterialLayers = specularLayers && !PoiUsesCalibratedPBR(poiMesh);
+					#else
+					bool specularMaterialLayers = specularLayers;
+					#endif
+					#ifdef MOCHIE_PBR
+					if (specularMaterialLayers) PoiMochieLVPrepare(poiFragData, poiMesh, poiMods, poiCam);
+					#endif
+					#ifdef POI_CLEARCOAT
+					if (specularMaterialLayers) PoiClearCoatLVPrepare(poiMesh, poiMods, poiCam);
+					#endif
+					#ifdef _LIGHTINGMODE_PBR
+					if (specularLayers) PoiPreparePBR(poiFragData, poiLight, poiMesh, poiCam);
+					#endif
+					#endif
+					//endex
+					#if VRCLV_LIGHTS_SUPPORTED
+					// Each found light runs the body once, in ID order. Behind a function, FXC built a second
+					// skip loop inside this one.
+					VRCLV_DYNAMIC_LOOP while (lights.count < lights.limit)
+					{
+						uint id;
+						bool masked = true;
+						if (lights.index < lights.end)
+						{
+							id = lights.index++;
+							#if VRCLV_CLUSTERING_SUPPORTED
+							if (lights.includeShadowed)
+							{
+								uint word = id >> 5u;
+								uint candidates = word == 0u ? lights.mask.x : LV_ClusterMaskWord(lights.mask, word);
+								masked = (candidates & (1u << (id & 31u))) != 0u;
+								if (!masked)
+								{
+									float shadowId = abs(_UdonPointLightVolumeCustomID[id].y);
+									if (shadowId < 1 || shadowId >= 10000) continue;
+								}
+							}
+							#endif
+						}
+						else
+						{
+							if (lights.end > 0) break;
+							#if VRCLV_CLUSTERING_SUPPORTED
+							if (!LV_NextClusteredLight(lights.mask, lights.index, lights.bits, id)) break;
+							#else
+							break;
+							#endif
+						}
+						// Normal response belongs to the lightmap or BRDF, not LV's normal mask. Keep the body
+						// inside this branch: routing it through a status flag loses most of the saving.
+						if (LV_PointLightVolumeContribution(id, worldPos, 0, -1,
+						light.color, light.shDirection, light.direction, light.spreadSq, light.visibility))
+						{
+							lights.count++;
+							// Poiyomi's color modes consume the available SH. Cast shadows shape the
+							// lightmap, so the material's shadow colors remain in charge of darkness.
+							L0 += light.color;
+							L1r += light.shDirection * light.color.r;
+							L1g += light.shDirection * light.color.g;
+							L1b += light.shDirection * light.color.b;
+							float3 form = saturate(float3(dot(N1, light.direction), dot(N2, light.direction), dot(N3, light.direction)));
+							float weight = PoiLVLuminance(max(light.color, 0));
+							PoiLVLampWeight += weight;
+							PoiLVLampArriving += weight * light.visibility;
+							PoiLVSpecularAdd(light.color, light.direction, light.spreadSq, weight, light.visibility, poiCam.reflectionDir);
+							//ifex _LightingLightVolumesSpecular==0 && isNotAnimated(_LightingLightVolumesSpecular)
+							#if (POI_PIPE == POI_BIRP) && defined(POI_PASS_BASE)
+							#ifdef MOCHIE_PBR
+							[branch] if (specularMaterialLayers) PoiMochieLVAdd(light.color, light.visibility, light.direction, light.spreadSq);
+							#endif
+							#ifdef POI_CLEARCOAT
+							[branch] if (specularMaterialLayers) PoiClearCoatLVAdd(light.color, light.visibility, light.direction, light.spreadSq);
+							#endif
+							#ifdef _LIGHTINGMODE_PBR
+							[branch] if (specularLayers) PoiPBRLVAdd(light.color, light.visibility, light.direction, light.spreadSq);
+							#endif
+							#endif
+							//endex
+							#if defined(_LIGHTINGMODE_TEXTURERAMP) || defined(_LIGHTINGMODE_SHADEMAP)
+							float customForm = weight * PoiLVCustomForm(N1, light.direction);
+							PoiLVCustomAvailable += customForm;
+							PoiLVCustomArriving += customForm * light.visibility;
+							#endif
+							#if defined(_LIGHTINGMODE_WRAPPED) && defined(VIGNETTE_MASKED)
+							form = saturate(RTWrapFunc(dot(N1, light.direction), _LightingWrappedWrap, _LightingWrappedNormalization));
+							PoiLVFormWeight += weight * saturate(RTWrapFunc(1, _LightingWrappedWrap, _LightingWrappedNormalization));
+							// Wrapped shades LV light as ambient, so its cast-shadowed share is taken out there.
+							PoiLVWrappedBlocked += light.color * (1 - lerp(1, light.visibility, _LightingCastedShadows))
+							* (convolution.x + convolution.y * dot(N1, light.shDirection));
+							#else
+							PoiLVFormWeight += weight;
+							#endif
+							PoiLVAvailableForm += weight * form;
+							PoiLVArrivingForm += weight * form * light.visibility;
+							#ifdef _LIGHTINGMODE_FLAT
+							PoiLVFlatAvailable += weight;
+							PoiLVFlatArriving += weight * light.visibility;
+							#endif
+							#if defined(_LIGHTINGMODE_REALISTIC) || defined(_LIGHTINGMODE_PBR)
+							#if !defined(LIGHTMAP_ON) && !defined(DYNAMICLIGHTMAP_ON)
+							if (_LightingCastedShadows != 0)
+							#endif
+							{
+								float3 receivedColor = light.color * lerp(1, light.visibility, _LightingCastedShadows);
+								PoiLVDiffuseL0 += receivedColor;
+								PoiLVDiffuseL1r += light.shDirection * receivedColor.r;
+								PoiLVDiffuseL1g += light.shDirection * receivedColor.g;
+								PoiLVDiffuseL1b += light.shDirection * receivedColor.b;
+							}
+							#endif
+						}
+					}
+					#endif
+					PoiLVSpecularFinish();
+					#if defined(_LIGHTINGMODE_REALISTIC) || defined(_LIGHTINGMODE_PBR)
+					#if !defined(LIGHTMAP_ON) && !defined(DYNAMICLIGHTMAP_ON)
+					// Without cast shadows the received sums started from L0/L1 and took the same light.
+					if (_LightingCastedShadows == 0)
+					{
+						PoiLVDiffuseL0 = L0; PoiLVDiffuseL1r = L1r; PoiLVDiffuseL1g = L1g; PoiLVDiffuseL1b = L1b;
+					}
+					#endif
+					// The shading normal is final here; PBR normalizes it as PoiPreparePBR does.
+					#ifdef _LIGHTINGMODE_PBR
+					PoiLVDiffuseColor = PoiLVDiffuse(normalize(normal));
+					#else
+					PoiLVDiffuseColor = PoiLVDiffuse(normal);
+					#endif
+					#endif
+					PoiSHAr = float4(L1r, L0.r);
+					PoiSHAg = float4(L1g, L0.g);
+					PoiSHAb = float4(L1b, L0.b);
+					PoiSHL2Off = true;
+				}
+				// Recomputed after the walk so the compiler doesn't keep them live through it.
+				poiCam.eyeViewDir = !IsOrthographicCamera() ? (getCameraPosition(false) - i.worldPos.xyz) : UNITY_MATRIX_I_V._m02_m12_m22;
+				poiCam.eyeViewDir = normalize(poiCam.eyeViewDir);
+				float3 poiLVCenterViewDelta = getCameraPosition() - i.worldPos.xyz;
+				float poiLVCenterViewDistanceSq = dot(poiLVCenterViewDelta, poiLVCenterViewDelta);
+				float poiLVCenterViewInvDistance = rsqrt(max(poiLVCenterViewDistanceSq, 1e-12));
+				poiCam.viewDir = !IsOrthographicCamera() ? poiLVCenterViewDelta * poiLVCenterViewInvDistance : normalize(UNITY_MATRIX_I_V._m02_m12_m22);
+				//endex
+				#endif
+				#if POI_PIPE == POI_URP
+				//ifex _LightingEnableLightVolumes==0 && isNotAnimated(_LightingEnableLightVolumes)
+				#if defined(PROBE_VOLUMES_L1) || defined(PROBE_VOLUMES_L2)
+				if (_LightingEnableLightVolumes >= 0.5)
+				{
+					APVResources apvRes = FillAPVResources();
+					float3 posWS = GetAbsolutePositionWS(poiMesh.worldPos + poiMesh.normals[1] * _LightingLightVolumesNormalBias);
+					posWS = AddNoiseToSamplingPosition(posWS, poiCam.clipPos.xy, poiCam.viewDir);
+					APVSample apvSample = SampleAPV(posWS, poiMesh.normals[1], GetMeshRenderingLayer(), poiCam.viewDir);
+					if (apvSample.status != APV_SAMPLE_STATUS_INVALID)
+					{
+						apvSample.Decode();
+						PoiSHAr = float4(apvSample.L1_R, apvSample.L0.r);
+						PoiSHAg = float4(apvSample.L1_G, apvSample.L0.g);
+						PoiSHAb = float4(apvSample.L1_B, apvSample.L0.b);
+						#ifdef PROBE_VOLUMES_L2
+						// Decode() already folds the L2 z-squared constant into L0, matching unity_SH layout
+						PoiSHBr = apvSample.L2_R;
+						PoiSHBg = apvSample.L2_G;
+						PoiSHBb = apvSample.L2_B;
+						PoiSHC = float4(apvSample.L2_C, 0);
+						#else
+						PoiSHBr = 0;
+						PoiSHBg = 0;
+						PoiSHBb = 0;
+						PoiSHC = 0;
+						#endif
+					}
+				}
+				#endif
+				//endex
+				#endif
+				#endif
+				
 				if (_UdonForceSceneLighting)
 				{
 					poiLight.lightingMinLightBrightness = 0;
@@ -57593,70 +59523,19 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				}
 				
 				#if defined(POI_PASS_BASE) || defined(POI_PASS_OUTLINE)
-				float3 L0 = float3(0, 0, 0);
-				float3 L1r = float3(0, 0, 0);
-				float3 L1g = float3(0, 0, 0);
-				float3 L1b = float3(0, 0, 0);
-				#if POI_PIPE == POI_BIRP
-				//ifex _LightingEnableLightVolumes==0 && isNotAnimated(_LightingEnableLightVolumes)
-				if (_UdonLightVolumeEnabled && _LightingEnableLightVolumes >= 0.5)
+				[branch] if (poiLight.lightingMinLightBrightness > EPSILON)
 				{
-					LightVolumeSH(poiMesh.worldPos, L0, L1r, L1g, L1b, poiMesh.normals[1] * _LightingLightVolumesNormalBias, poiMesh.normals[1]);
-					float lightVolumeIntensity = saturate(_LightingLightVolumesIntensity);
-					PoiSHAr = lerp(PoiSHAr, float4(L1r, L0.r), lightVolumeIntensity);
-					PoiSHAg = lerp(PoiSHAg, float4(L1g, L0.g), lightVolumeIntensity);
-					PoiSHAb = lerp(PoiSHAb, float4(L1b, L0.b), lightVolumeIntensity);
-					PoiSHBr = lerp(PoiSHBr, 0, lightVolumeIntensity);
-					PoiSHBg = lerp(PoiSHBg, 0, lightVolumeIntensity);
-					PoiSHBb = lerp(PoiSHBb, 0, lightVolumeIntensity);
-					PoiSHC = lerp(PoiSHC, 0, lightVolumeIntensity);
+					PoiApplyMinBrightnessToSH(poiLight.lightingMinLightBrightness);
 				}
-				//endex
-				#endif
-				#if POI_PIPE == POI_URP
-				//ifex _LightingEnableLightVolumes==0 && isNotAnimated(_LightingEnableLightVolumes)
-				#ifdef PROBE_VOLUMES_L1
-				if (_LightingEnableLightVolumes >= 0.5)
-				{
-					APVResources apvRes = FillAPVResources();
-					float3 posWS = GetAbsolutePositionWS(poiMesh.worldPos + poiMesh.normals[1] * _LightingLightVolumesNormalBias);
-					posWS = AddNoiseToSamplingPosition(posWS, poiCam.clipPos.xy, poiCam.viewDir);
-					APVSample apvSample = SampleAPV(posWS, poiMesh.normals[1], GetMeshRenderingLayer(), poiCam.viewDir);
-					if (apvSample.status != APV_SAMPLE_STATUS_INVALID)
-					{
-						apvSample.Decode();
-						PoiSHAr = float4(apvSample.L1_R, apvSample.L0.r);
-						PoiSHAg = float4(apvSample.L1_G, apvSample.L0.g);
-						PoiSHAb = float4(apvSample.L1_B, apvSample.L0.b);
-						#ifdef PROBE_VOLUMES_L2
-						PoiSHBr = float4(apvSample.L2_R, apvSample.L0.r);
-						PoiSHBg = float4(apvSample.L2_G, apvSample.L0.g);
-						PoiSHBb = float4(apvSample.L2_B, apvSample.L0.b);
-						PoiSHC = float4(apvSample.L2_C, 0);
-						#else
-						PoiSHBr = 0;
-						PoiSHBg = 0;
-						PoiSHBb = 0;
-						PoiSHC = 0;
-						#endif
-					}
-				}
-				#endif
-				//endex
-				#endif
-				
-				PoiApplyMinBrightnessToSH(poiLight.lightingMinLightBrightness);
 				#endif
 				
 				// Detail Shadows
+				half4 DetailShadows = 1;
 				#if defined(PROP_LIGHTINGDETAILSHADOWMAPS)
-				half4 DetailShadows = POI2D_SAMPLER_PAN(_LightingDetailShadowMaps, _MainTex, poiUV(poiMesh.uv[_LightingDetailShadowMapsUV], _LightingDetailShadowMaps_ST), _LightingDetailShadowMapsPan);
-				half poiDetailShadowAdditional = lerp(1, DetailShadows.r, _LightingDetailShadowStrengthR) * lerp(1, DetailShadows.g, _LightingDetailShadowStrengthG) * lerp(1, DetailShadows.b, _LightingDetailShadowStrengthB) * lerp(1, DetailShadows.a, _LightingDetailShadowStrengthA);
-				half poiDetailShadowMain = lerp(1, DetailShadows.r, _LightingAddDetailShadowStrengthR) * lerp(1, DetailShadows.g, _LightingAddDetailShadowStrengthG) * lerp(1, DetailShadows.b, _LightingAddDetailShadowStrengthB) * lerp(1, DetailShadows.a, _LightingAddDetailShadowStrengthA);
-				#else
-				half poiDetailShadowAdditional = 1;
-				half poiDetailShadowMain = 1;
+				DetailShadows = POI2D_SAMPLER_PAN(_LightingDetailShadowMaps, _MainTex, poiUV(poiMesh.uv[_LightingDetailShadowMapsUV], _LightingDetailShadowMaps_ST), _LightingDetailShadowMapsPan);
 				#endif
+				half poiDetailShadowAdditional = lerp(1, DetailShadows.r, _LightingAddDetailShadowStrengthR) * lerp(1, DetailShadows.g, _LightingAddDetailShadowStrengthG) * lerp(1, DetailShadows.b, _LightingAddDetailShadowStrengthB) * lerp(1, DetailShadows.a, _LightingAddDetailShadowStrengthA);
+				half poiDetailShadowMain = lerp(1, DetailShadows.r, _LightingDetailShadowStrengthR) * lerp(1, DetailShadows.g, _LightingDetailShadowStrengthG) * lerp(1, DetailShadows.b, _LightingDetailShadowStrengthB) * lerp(1, DetailShadows.a, _LightingDetailShadowStrengthA);
 				
 				if (_LightDataDetailShadowGlobalMaskR > 0)
 				{
@@ -57671,12 +59550,11 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				#endif
 				
 				// Shadow Masks
+				half4 ShadowMasks = 1;
 				#if defined(PROP_LIGHTINGSHADOWMASKS)
-				half4 ShadowMasks = POI2D_SAMPLER_PAN(_LightingShadowMasks, _MainTex, poiUV(poiMesh.uv[_LightingShadowMasksUV], _LightingShadowMasks_ST), _LightingShadowMasksPan);
-				poiLight.toonShadowMask = lerp(1, ShadowMasks.r, _LightingShadowMaskStrengthR) * lerp(1, ShadowMasks.g, _LightingShadowMaskStrengthG) * lerp(1, ShadowMasks.b, _LightingShadowMaskStrengthB) * lerp(1, ShadowMasks.a, _LightingShadowMaskStrengthA);
-				#else
-				poiLight.toonShadowMask = 1;
+				ShadowMasks = POI2D_SAMPLER_PAN(_LightingShadowMasks, _MainTex, poiUV(poiMesh.uv[_LightingShadowMasksUV], _LightingShadowMasks_ST), _LightingShadowMasksPan);
 				#endif
+				poiLight.toonShadowMask = lerp(1, ShadowMasks.r, _LightingShadowMaskStrengthR) * lerp(1, ShadowMasks.g, _LightingShadowMaskStrengthG) * lerp(1, ShadowMasks.b, _LightingShadowMaskStrengthB) * lerp(1, ShadowMasks.a, _LightingShadowMaskStrengthA);
 				
 				if (_LightDataShadowMaskGlobalMaskR > 0)
 				{
@@ -57684,12 +59562,11 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				}
 				
 				// Ambient Occlusion
+				float4 AOMaps = 1;
 				#if defined(PROP_LIGHTINGAOMAPS)
-				float4 AOMaps = POI2D_SAMPLER_PAN(_LightingAOMaps, _MainTex, poiUV(poiMesh.uv[_LightingAOMapsUV], _LightingAOMaps_ST), _LightingAOMapsPan);
-				poiLight.occlusion = min(min(min(lerp(1, AOMaps.r, _LightDataAOStrengthR), lerp(1, AOMaps.g, _LightDataAOStrengthG)), lerp(1, AOMaps.b, _LightDataAOStrengthB)), lerp(1, AOMaps.a, _LightDataAOStrengthA));
-				#else
-				poiLight.occlusion = 1;
+				AOMaps = POI2D_SAMPLER_PAN(_LightingAOMaps, _MainTex, poiUV(poiMesh.uv[_LightingAOMapsUV], _LightingAOMaps_ST), _LightingAOMapsPan);
 				#endif
+				poiLight.occlusion = min(min(min(lerp(1, AOMaps.r, _LightDataAOStrengthR), lerp(1, AOMaps.g, _LightDataAOStrengthG)), lerp(1, AOMaps.b, _LightDataAOStrengthB)), lerp(1, AOMaps.a, _LightDataAOStrengthA));
 				
 				if (_LightDataAOGlobalMaskR > 0)
 				{
@@ -57697,12 +59574,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				}
 				
 				#if POI_PIPE == POI_URP
-				#if UNITY_VERSION >= 202100
 				poiLight.aoFactor = CreateAmbientOcclusionFactor(poiCam.screenUV, poiLight.occlusion);
-				#else
-				poiLight.aoFactor = GetScreenSpaceAmbientOcclusion(poiCam.screenUV);
-				poiLight.aoFactor.indirectAmbientOcclusion = min(poiLight.aoFactor.indirectAmbientOcclusion, poiLight.occlusion);
-				#endif
 				#endif
 				
 				Light mainLight;
@@ -57712,7 +59584,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				mainLight.direction = _WorldSpaceLightPos0.xyz;
 				mainLight.color = _LightColor0.rgb;
 				#elif POI_PIPE == POI_URP
-				half4 poiBakedShadowMask = PoiCalculateShadowMask(i.lightmapUV.xy);
+				half4 poiBakedShadowMask = PoiCalculateShadowMask(i.lightmapUV.xy, poiMesh.worldPos, poiMesh.normals[1], poiCam.viewDir, poiCam.clipPos.xy);
 				mainLight = PoiGetMainLight(TransformWorldToShadowCoord(poiMesh.worldPos), poiMesh.worldPos, poiBakedShadowMask, poiLight.aoFactor);
 				#ifdef _LIGHT_LAYERS
 				uint poiMeshRenderingLayers = GetMeshRenderingLayer();
@@ -57740,6 +59612,17 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				PoiInitStruct(PoiShadingParams, poiShadingParams);
 				PoiLightDataSetup(poiLight, poiFragData, poiMesh, poiCam, poiMods, i, poiShadingParams);
 				if (poiShadingParams.exitCode != 0) return POI_SAFE_RGB1;
+				#if (defined(POI_PASS_BASE) || defined(POI_PASS_OUTLINE)) && POI_PIPE == POI_BIRP && !defined(POI_CAMERA_DATA_REPLACED)
+				//ifex _LightingEnableLightVolumes==0 && isNotAnimated(_LightingEnableLightVolumes)
+				float3 poiLVCamDelta = getCameraPosition() - i.worldPos.xyz;
+				float poiLVCamDistanceSq = dot(poiLVCamDelta, poiLVCamDelta);
+				poiCam.reflectionDir = reflect(-poiCam.eyeViewDir, poiMesh.normals[1]);
+				poiCam.vertexReflectionDir = reflect(-poiCam.eyeViewDir, poiMesh.normals[0]);
+				poiCam.distanceToVert = poiLVCamDistanceSq * rsqrt(max(poiLVCamDistanceSq, 1e-12));
+				poiCam.vDotN = abs(dot(poiCam.eyeViewDir, poiMesh.normals[1]));
+				poiCam.vDotNCentered = abs(dot(poiCam.viewDir, poiMesh.normals[1]));
+				//endex
+				#endif
 				
 				#if POI_PIPE == POI_BIRP
 				#if defined(POI_PASS_BASE) || defined(POI_PASS_ADD)
@@ -57819,6 +59702,28 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				if (!skipShading)
 				{
 					PoiCalculateShading(poiLight, poiFragData, poiMods, poiMesh, poiCam);
+					#if POI_PIPE == POI_BIRP && defined(VERTEXLIGHT_ON) && !defined(_LIGHTINGMODE_PBR)
+					if (poiFragData.toggleVertexLights && _LightingAdditiveType == 3)
+					{
+						[unroll] for (uint poiVertexIndex = 0; poiVertexIndex < 4; poiVertexIndex++)
+						{
+							PoiLight poiVertexLight;
+							PoiVertexLightSetup(poiVertexLight, poiLight, poiVertexIndex, poiMesh, poiCam, poiDetailShadowAdditional);
+							PoiCalculateShading(poiVertexLight, poiFragData, poiMods, poiMesh, poiCam);
+							// Pixel lights blend over the base pass with the add pass's Blend Op, Max by default
+							if (_AddBlendOp == 4)
+							{
+								poiLight.finalLighting = max(poiLight.finalLighting, poiVertexLight.finalLighting);
+								poiLight.finalLightAdd = max(poiLight.finalLightAdd, poiVertexLight.finalLightAdd);
+							}
+							else
+							{
+								poiLight.finalLighting += poiVertexLight.finalLighting;
+								poiLight.finalLightAdd += poiVertexLight.finalLightAdd;
+							}
+						}
+					}
+					#endif
 					PoiLightingNoLoopModules(poiLight, poiFragData, poiMesh, poiCam, poiMods);
 					
 					PoiLightingDependantModules(poiLight, poiFragData, mochieBRDFData, poiMesh, poiCam, poiMods);
@@ -57839,8 +59744,10 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 						PoiLight poiLightAdd;
 						PoiAdditionalLightCopy(poiLightAdd, poiLight, additionalLight, POI_DIRECTIONAL, poiDetailShadowAdditional);
 						poiShadingParams.lightIndex = lightIndex;
+						// Else the main light's debug color is re-added per light
+						poiShadingParams.debugColor = 0;
 						PoiLightDataSetupAdd(poiLightAdd, poiFragData, poiMesh, poiCam, poiMods, i, poiShadingParams);
-						poiLightOut.totalLightMap = saturate(poiLightOut.totalLightMap + poiLightAdd.lightMap * poiLightAdd.attenDistance);
+						poiLightOut.totalLightMap = saturate(poiLightOut.totalLightMap + poiLightAdd.lightMap * saturate(poiLightAdd.attenDistance));
 						if (poiShadingParams.exitCode != 0) continue;
 						PoiCalculateShading(poiLightAdd, poiFragData, poiMods, poiMesh, poiCam);
 						poiLightOut.totalRampedLightMap = poiLightOut.totalRampedLightMap + poiLightAdd.rampedLightMap - poiLightOut.totalRampedLightMap * poiLightAdd.rampedLightMap;
@@ -57862,10 +59769,16 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 					if (!IsMatchingLightLayer(additionalLight.layerMask, poiMeshRenderingLayers)) continue;
 					#endif
 					PoiLight poiLightAdd;
-					PoiAdditionalLightCopy(poiLightAdd, poiLight, additionalLight, POI_POINT_SPOT, poiDetailShadowAdditional);
+					#if USE_CLUSTER_LIGHT_LOOP
+					uint poiAddLightType = POI_POINT_SPOT;
+					#else
+					uint poiAddLightType = _AdditionalLightsPosition[GetPerObjectLightIndex(lightIndex)].w == 0 ? POI_DIRECTIONAL : POI_POINT_SPOT;
+					#endif
+					PoiAdditionalLightCopy(poiLightAdd, poiLight, additionalLight, poiAddLightType, poiDetailShadowAdditional);
 					poiShadingParams.lightIndex = lightIndex;
+					poiShadingParams.debugColor = 0;
 					PoiLightDataSetupAdd(poiLightAdd, poiFragData, poiMesh, poiCam, poiMods, i, poiShadingParams);
-					poiLightOut.totalLightMap = saturate(poiLightOut.totalLightMap + poiLightAdd.lightMap * poiLightAdd.attenDistance);
+					poiLightOut.totalLightMap = saturate(poiLightOut.totalLightMap + poiLightAdd.lightMap * saturate(poiLightAdd.attenDistance));
 					if (poiShadingParams.exitCode != 0) continue;
 					PoiCalculateShading(poiLightAdd, poiFragData, poiMods, poiMesh, poiCam);
 					poiLightOut.totalRampedLightMap = poiLightOut.totalRampedLightMap + poiLightAdd.rampedLightMap - poiLightOut.totalRampedLightMap * poiLightAdd.rampedLightMap;
@@ -57891,8 +59804,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				poiLight.finalLighting = 1;
 				poiLight.rampedLightMap = poiEdgeNonLinear(poiLight.nDotL, 0.1, .1);
 				poiLight.lightMap = poiLight.nDotLNormalized;
-				PoiLightingNoLoopModules(poiLight, poiFragData, poiMesh, poiCam, poiMods);
-				
+				// Unlit/meta effects run below, after global masks, exactly once (also when locked).
 				//ifex _ShadingEnabled==0
 				#endif
 				
@@ -57905,14 +59817,12 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				#endif
 				//endex
 				
-				//ifex _ShadingEnabled!=0
 				#if !defined(VIGNETTE_MASKED) || defined(POI_PASS_META)
 				PoiShadingGlobalMasks(poiMods, poiLight);
 				PoiLightingNoLoopModules(poiLight, poiFragData, poiMesh, poiCam, poiMods);
 				
 				PoiLightingDependantModules(poiLight, poiFragData, mochieBRDFData, poiMesh, poiCam, poiMods);
 				#endif
-				//endex
 				
 				#if POI_PIPE == POI_URP
 				poiLight.lightMap = saturate(poiLightOut.totalLightMap + poiLight.lightMap);
@@ -59824,6 +61734,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _RenderingReduceClipDistance;
 			int _FlipBackfaceNormals;
 			float _AddBlendOp;
+			float _AddSrcBlend;
 			float _Cull;
 			
 			//ifex _RenderingAOBlockerEnabled==0
@@ -64440,7 +66351,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				float3 normalCorrectObject = posOS - _NormalCorrectOrigin;
 				normalCorrectObject.y = 0;
 				normalCorrectObject = normalize(normalCorrectObject);
-				float3 normalCorrectWorld = mul((float3x3)unity_ObjectToWorld, normalCorrectObject).xyz;
+				float3 normalCorrectWorld = PoiObjectToWorldNormal(normalCorrectObject);
 				i.normal.xyz = normalize(lerp(i.normal.xyz, normalCorrectWorld, _NormalCorrectAmount));
 				//i.objNormal.xyz = normalize(lerp(i.objNormal.xyz, normalCorrectObject, _NormalCorrectAmount));
 			}
@@ -64847,10 +66758,12 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				PoiSHAr = unity_SHAr;
 				PoiSHAg = unity_SHAg;
 				PoiSHAb = unity_SHAb;
+				#if POI_PIPE != POI_BIRP
 				PoiSHBr = unity_SHBr;
 				PoiSHBg = unity_SHBg;
 				PoiSHBb = unity_SHBb;
 				PoiSHC =  unity_SHC;
+				#endif
 				
 				PoiMesh poiMesh;
 				PoiInitStruct(PoiMesh, poiMesh);
@@ -64919,7 +66832,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				
 				poiMesh.isFrontFace = facing;
 				
-				#ifndef POI_PASS_OUTLINE
+				#if !defined(POI_PASS_OUTLINE) && !defined(POI_PASS_LILFUR)
 				if (!poiMesh.isFrontFace && _FlipBackfaceNormals >= 0.5)
 				{
 					poiMesh.normals[0] *= -1;
@@ -65090,8 +67003,9 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				poiMesh.tangentSpaceNormal.z * poiMesh.normals[0]
 				);
 				
-				poiMesh.tangent[1] = normalize(cross(poiMesh.binormal[0], -poiMesh.normals[1]));
-				poiMesh.binormal[1] = normalize(cross(-poiMesh.normals[1], poiMesh.tangent[0]));
+				float poiTangentSign = dot(cross(poiMesh.normals[0], poiMesh.tangent[0]), poiMesh.binormal[0]) < 0 ? -1 : 1;
+				poiMesh.tangent[1] = normalize(cross(poiMesh.binormal[0], poiMesh.normals[1])) * poiTangentSign;
+				poiMesh.binormal[1] = normalize(cross(poiMesh.normals[1], poiMesh.tangent[0])) * poiTangentSign;
 				
 				//ifex _EnableBentNormal==0
 				#if defined(POI_BENTNORMALMAP) && !defined(POI_PASS_SHADOW) && !defined(POI_PASS_MOTION_VECTORS)
@@ -67126,6 +69040,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _RenderingReduceClipDistance;
 			int _FlipBackfaceNormals;
 			float _AddBlendOp;
+			float _AddSrcBlend;
 			float _Cull;
 			
 			//ifex _RenderingAOBlockerEnabled==0
@@ -72088,10 +74003,12 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				PoiSHAr = unity_SHAr;
 				PoiSHAg = unity_SHAg;
 				PoiSHAb = unity_SHAb;
+				#if POI_PIPE != POI_BIRP
 				PoiSHBr = unity_SHBr;
 				PoiSHBg = unity_SHBg;
 				PoiSHBb = unity_SHBb;
 				PoiSHC =  unity_SHC;
+				#endif
 				
 				PoiMesh poiMesh;
 				PoiInitStruct(PoiMesh, poiMesh);
@@ -72152,7 +74069,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				
 				poiMesh.isFrontFace = facing;
 				
-				#ifndef POI_PASS_OUTLINE
+				#if !defined(POI_PASS_OUTLINE) && !defined(POI_PASS_LILFUR)
 				if (!poiMesh.isFrontFace && _FlipBackfaceNormals >= 0.5)
 				{
 					poiMesh.normals[0] *= -1;
@@ -72323,8 +74240,9 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				poiMesh.tangentSpaceNormal.z * poiMesh.normals[0]
 				);
 				
-				poiMesh.tangent[1] = normalize(cross(poiMesh.binormal[0], -poiMesh.normals[1]));
-				poiMesh.binormal[1] = normalize(cross(-poiMesh.normals[1], poiMesh.tangent[0]));
+				float poiTangentSign = dot(cross(poiMesh.normals[0], poiMesh.tangent[0]), poiMesh.binormal[0]) < 0 ? -1 : 1;
+				poiMesh.tangent[1] = normalize(cross(poiMesh.binormal[0], poiMesh.normals[1])) * poiTangentSign;
+				poiMesh.binormal[1] = normalize(cross(poiMesh.normals[1], poiMesh.tangent[0])) * poiTangentSign;
 				
 				//ifex _EnableBentNormal==0
 				#if defined(POI_BENTNORMALMAP) && !defined(POI_PASS_SHADOW) && !defined(POI_PASS_MOTION_VECTORS)
@@ -74355,6 +76273,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _RenderingReduceClipDistance;
 			int _FlipBackfaceNormals;
 			float _AddBlendOp;
+			float _AddSrcBlend;
 			float _Cull;
 			
 			//ifex _RenderingAOBlockerEnabled==0
@@ -79322,10 +81241,12 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				PoiSHAr = unity_SHAr;
 				PoiSHAg = unity_SHAg;
 				PoiSHAb = unity_SHAb;
+				#if POI_PIPE != POI_BIRP
 				PoiSHBr = unity_SHBr;
 				PoiSHBg = unity_SHBg;
 				PoiSHBb = unity_SHBb;
 				PoiSHC =  unity_SHC;
+				#endif
 				
 				PoiMesh poiMesh;
 				PoiInitStruct(PoiMesh, poiMesh);
@@ -79386,7 +81307,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				
 				poiMesh.isFrontFace = facing;
 				
-				#ifndef POI_PASS_OUTLINE
+				#if !defined(POI_PASS_OUTLINE) && !defined(POI_PASS_LILFUR)
 				if (!poiMesh.isFrontFace && _FlipBackfaceNormals >= 0.5)
 				{
 					poiMesh.normals[0] *= -1;
@@ -79557,8 +81478,9 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				poiMesh.tangentSpaceNormal.z * poiMesh.normals[0]
 				);
 				
-				poiMesh.tangent[1] = normalize(cross(poiMesh.binormal[0], -poiMesh.normals[1]));
-				poiMesh.binormal[1] = normalize(cross(-poiMesh.normals[1], poiMesh.tangent[0]));
+				float poiTangentSign = dot(cross(poiMesh.normals[0], poiMesh.tangent[0]), poiMesh.binormal[0]) < 0 ? -1 : 1;
+				poiMesh.tangent[1] = normalize(cross(poiMesh.binormal[0], poiMesh.normals[1])) * poiTangentSign;
+				poiMesh.binormal[1] = normalize(cross(poiMesh.normals[1], poiMesh.tangent[0])) * poiTangentSign;
 				
 				//ifex _EnableBentNormal==0
 				#if defined(POI_BENTNORMALMAP) && !defined(POI_PASS_SHADOW) && !defined(POI_PASS_MOTION_VECTORS)
@@ -81133,6 +83055,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _RenderingReduceClipDistance;
 			int _FlipBackfaceNormals;
 			float _AddBlendOp;
+			float _AddSrcBlend;
 			float _Cull;
 			
 			//ifex _RenderingAOBlockerEnabled==0
@@ -85163,10 +87086,12 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				PoiSHAr = unity_SHAr;
 				PoiSHAg = unity_SHAg;
 				PoiSHAb = unity_SHAb;
+				#if POI_PIPE != POI_BIRP
 				PoiSHBr = unity_SHBr;
 				PoiSHBg = unity_SHBg;
 				PoiSHBb = unity_SHBb;
 				PoiSHC =  unity_SHC;
+				#endif
 				
 				PoiMesh poiMesh;
 				PoiInitStruct(PoiMesh, poiMesh);
@@ -85227,7 +87152,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				
 				poiMesh.isFrontFace = facing;
 				
-				#ifndef POI_PASS_OUTLINE
+				#if !defined(POI_PASS_OUTLINE) && !defined(POI_PASS_LILFUR)
 				if (!poiMesh.isFrontFace && _FlipBackfaceNormals >= 0.5)
 				{
 					poiMesh.normals[0] *= -1;
@@ -85398,8 +87323,9 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				poiMesh.tangentSpaceNormal.z * poiMesh.normals[0]
 				);
 				
-				poiMesh.tangent[1] = normalize(cross(poiMesh.binormal[0], -poiMesh.normals[1]));
-				poiMesh.binormal[1] = normalize(cross(-poiMesh.normals[1], poiMesh.tangent[0]));
+				float poiTangentSign = dot(cross(poiMesh.normals[0], poiMesh.tangent[0]), poiMesh.binormal[0]) < 0 ? -1 : 1;
+				poiMesh.tangent[1] = normalize(cross(poiMesh.binormal[0], poiMesh.normals[1])) * poiTangentSign;
+				poiMesh.binormal[1] = normalize(cross(poiMesh.normals[1], poiMesh.tangent[0])) * poiTangentSign;
 				
 				//ifex _EnableBentNormal==0
 				#if defined(POI_BENTNORMALMAP) && !defined(POI_PASS_SHADOW) && !defined(POI_PASS_MOTION_VECTORS)

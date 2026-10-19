@@ -36,7 +36,7 @@ float3 _NormalCorrectOrigin;
         float3 normalCorrectObject = posOS - _NormalCorrectOrigin;
         normalCorrectObject.y = 0;
         normalCorrectObject = normalize(normalCorrectObject);
-        float3 normalCorrectWorld = mul((float3x3)unity_ObjectToWorld, normalCorrectObject).xyz;
+        float3 normalCorrectWorld = PoiObjectToWorldNormal(normalCorrectObject);
         i.normal.xyz = normalize(lerp(i.normal.xyz, normalCorrectWorld, _NormalCorrectAmount));
         //i.objNormal.xyz = normalize(lerp(i.objNormal.xyz, normalCorrectObject, _NormalCorrectAmount));
     }

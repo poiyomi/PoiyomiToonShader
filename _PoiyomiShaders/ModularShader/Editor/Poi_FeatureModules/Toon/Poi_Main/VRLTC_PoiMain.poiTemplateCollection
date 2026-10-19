@@ -545,7 +545,8 @@ poiMesh.normals[1] = normalize(
 	poiMesh.tangentSpaceNormal.z * poiMesh.normals[0]
 );
 
-poiMesh.tangent[1] = normalize(cross(poiMesh.binormal[0], -poiMesh.normals[1]));
-poiMesh.binormal[1] = normalize(cross(-poiMesh.normals[1], poiMesh.tangent[0]));
+float poiTangentSign = dot(cross(poiMesh.normals[0], poiMesh.tangent[0]), poiMesh.binormal[0]) < 0 ? -1 : 1;
+poiMesh.tangent[1] = normalize(cross(poiMesh.binormal[0], poiMesh.normals[1])) * poiTangentSign;
+poiMesh.binormal[1] = normalize(cross(poiMesh.normals[1], poiMesh.tangent[0])) * poiTangentSign;
 
 #K#TANGENT_NORMAL_INJECTION_END

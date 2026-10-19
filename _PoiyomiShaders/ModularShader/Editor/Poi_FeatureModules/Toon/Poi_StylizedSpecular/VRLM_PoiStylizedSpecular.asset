@@ -71,5 +71,12 @@ MonoBehaviour:
     - LILFUR_LIGHT_LOOP
     NeedsVariant: 0
     Queue: 100
+  - Template: {fileID: -3162017751176071251, guid: 9c4cc3fe8a24ded449ad957cb11c9ec0, type: 3}
+    Keywords:
+    - FRAGMENT_BASE_LIGHTING_LATE
+    - FRAGMENT_ADD_LIGHTING_LATE
+    - FRAGMENT_LILFUR_LIGHTING_LATE
+    NeedsVariant: 0
+    Queue: 50
   Functions: []
   AdditionalSerializedData: 

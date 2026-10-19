@@ -507,7 +507,7 @@ inline half4 Refraction(float indexOfRefraction, half chromaticAberration, float
 	else
 	{
 		//ifex isNotAnimated(_EnableBlur) && _EnableBlur==0
-		#ifdef CHROMATIC_ABERRATION_LOW
+		#if defined(CHROMATIC_ABERRATION_LOW) && !defined(POI_PASS_ADD)
 			refractionColor = grabpassBlur(refractedGrab, camDistance, poiFragData.smoothness, depthFade, blurMask, pixelMask, pixelSize, pixelAnchor);
 		#else
 		//endex
@@ -709,7 +709,7 @@ void applyGrabEffects(inout PoiFragData poiFragData, in PoiCam poiCam, in PoiMes
 		depthFade = getGrabBlurDepthFade(poiCam.screenUV, direction, poiMesh.worldPos);
 		//endex
 		//ifex isNotAnimated(_EnableBlur) && _EnableBlur==0
-		#ifdef CHROMATIC_ABERRATION_LOW
+		#if defined(CHROMATIC_ABERRATION_LOW) && !defined(POI_PASS_ADD)
 			grabpassColor = grabpassBlur(poiCam.screenUV, camDistance, poiFragData.smoothness, depthFade, blurMask, pixelMask, pixelSize, pixelAnchor);
 		#else
 		//endex

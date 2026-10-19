@@ -640,7 +640,7 @@ _AudioLinkRim2ColorOverride ("Color", Color) = (1,1,1,1)
                 {
                     case 0:
                     {
-                        half rampedLightMap = poiLight.rampedLightMap;
+                        half rampedLightMap = dot(poiLight.rampedLightMap, float3(0.299, 0.587, 0.114));
                         if (RimShadowMaskInvert) rampedLightMap = 1 - rampedLightMap;
                         rim = lerp(rim, rim * rampedLightMap, RimShadowMaskStrength);
                         break;
@@ -766,8 +766,9 @@ _AudioLinkRim2ColorOverride ("Color", Color) = (1,1,1,1)
             rimDir = poiEdgeLinear(rimDir, RimBorder, RimBlur);
             rimIndir = poiEdgeLinear(rimIndir, RimIndirBorder, RimIndirBlur);
 
-            rimDir = lerp(rimDir, rimDir * poiLight.rampedLightMap, RimShadowMask);
-            rimIndir = lerp(rimIndir, rimIndir * poiLight.rampedLightMap, RimShadowMask);
+            half rampedLightMap = dot(poiLight.rampedLightMap, float3(0.299, 0.587, 0.114));
+            rimDir = lerp(rimDir, rimDir * rampedLightMap, RimShadowMask);
+            rimIndir = lerp(rimIndir, rimIndir * rampedLightMap, RimShadowMask);
 
             half3 lightCol = poiLight.finalLighting;
             /*

@@ -1,0 +1,119 @@
+#T#Properties
+//ifex _LightingMode!=4
+_1st_ShadeColor ("1st ShadeColor--{condition_showS:(_LightingMode==4)}", Color) = (1, 1, 1)
+[sRGBWarning(true)]_1st_ShadeMap ("1st ShadeMap--{reference_properties:[_1st_ShadeMapPan, _1st_ShadeMapUV, _Use_1stShadeMapAlpha_As_ShadowMask, _1stShadeMapMask_Inverse],condition_showS:(_LightingMode==4)}", 2D) = "white" { }
+[ThryHideInInspector][Vector2]_1st_ShadeMapPan ("Panning", Vector) = (0, 0, 0, 0)
+[ThryHideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7, Matcap, 9, Screen Space, 10)] _1st_ShadeMapUV ("UV", Int) = 0
+[ThryHideInInspector][ToggleUI]_Use_1stShadeMapAlpha_As_ShadowMask ("1st ShadeMap.a As ShadowMask", Float) = 0
+[ThryHideInInspector][ToggleUI]_1stShadeMapMask_Inverse ("1st ShadeMapMask Inverse", Float) = 0
+[ToggleUI] _Use_BaseAs1st ("Use BaseMap as 1st ShadeMap--{condition_showS:(_LightingMode==4)}", Float) = 0
+_2nd_ShadeColor ("2nd ShadeColor--{condition_showS:(_LightingMode==4)}", Color) = (1, 1, 1, 1)
+[sRGBWarning(true)]_2nd_ShadeMap ("2nd ShadeMap--{reference_properties:[_2nd_ShadeMapPan, _2nd_ShadeMapUV, _Use_2ndShadeMapAlpha_As_ShadowMask, _2ndShadeMapMask_Inverse],condition_showS:(_LightingMode==4)}", 2D) = "white" { }
+[ThryHideInInspector][Vector2]_2nd_ShadeMapPan ("Panning", Vector) = (0, 0, 0, 0)
+[ThryHideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7, Matcap, 9, Screen Space, 10)] _2nd_ShadeMapUV ("UV", Int) = 0
+[ThryHideInInspector][ToggleUI]_Use_2ndShadeMapAlpha_As_ShadowMask ("2nd ShadeMap.a As ShadowMask", Float) = 0
+[ThryHideInInspector][ToggleUI]_2ndShadeMapMask_Inverse ("2nd ShadeMapMask Inverse", Float) = 0
+[ToggleUI] _Use_1stAs2nd ("Use 1st ShadeMap as 2nd_ShadeMap--{condition_showS:(_LightingMode==4)}", Float) = 0
+_BaseColor_Step ("BaseColor_Step--{condition_showS:(_LightingMode==4)}", Range(0.01, 1)) = 0.5
+_BaseShade_Feather ("Base/Shade_Feather--{condition_showS:(_LightingMode==4)}", Range(0.0001, 1)) = 0.0001
+_ShadeColor_Step ("ShadeColor_Step--{condition_showS:(_LightingMode==4)}", Range(0, 1)) = 0
+_1st2nd_Shades_Feather ("1st/2nd_Shades_Feather--{condition_showS:(_LightingMode==4)}", Range(0.0001, 1)) = 0.0001
+[Enum(Replace, 0, Multiply, 1)]_ShadingShadeMapBlendType ("Blend Mode--{condition_showS:(_LightingMode==4)}", Int) = 0
+//endex
+#T#VariablesExposed
+#ifdef _LIGHTINGMODE_SHADEMAP
+	half3 _1st_ShadeColor;
+	float4 _1st_ShadeMap_ST;
+	float2 _1st_ShadeMapPan;
+	float _1st_ShadeMapUV;
+	half _Use_1stShadeMapAlpha_As_ShadowMask;
+	half _1stShadeMapMask_Inverse;
+	float _Use_BaseAs1st;
+	half3 _2nd_ShadeColor;
+	float4 _2nd_ShadeMap_ST;
+	float2 _2nd_ShadeMapPan;
+	float _2nd_ShadeMapUV;
+	half _Use_2ndShadeMapAlpha_As_ShadowMask;
+	half _2ndShadeMapMask_Inverse;
+	float _Use_1stAs2nd;
+	float _BaseColor_Step;
+	float _BaseShade_Feather;
+	float _ShadeColor_Step;
+	float _1st2nd_Shades_Feather;
+	float _ShadingShadeMapBlendType;
+#endif
+#T#Variables
+#ifdef _LIGHTINGMODE_SHADEMAP
+	#if defined(PROP_1ST_SHADEMAP) || !defined(OPTIMIZER_ENABLED)
+		Texture2D _1st_ShadeMap;
+	#endif
+	#if defined(PROP_2ND_SHADEMAP) || !defined(OPTIMIZER_ENABLED)
+		Texture2D _2nd_ShadeMap;
+	#endif
+#endif
+#T#Helpers
+	#ifdef _LIGHTINGMODE_SHADEMAP
+		void applyShadeMapping(inout PoiFragData poiFragData, PoiMesh poiMesh, inout PoiLight poiLight)
+		{
+			float MainColorFeatherStep = _BaseColor_Step - _BaseShade_Feather;
+			float firstColorFeatherStep = _ShadeColor_Step - _1st2nd_Shades_Feather;
+			
+			#if defined(PROP_1ST_SHADEMAP) || !defined(OPTIMIZER_ENABLED)
+				float4 firstShadeMap = POI2D_SAMPLER_PAN(_1st_ShadeMap, _MainTex, poiUV(poiMesh.uv[_1st_ShadeMapUV], _1st_ShadeMap_ST), _1st_ShadeMapPan);
+			#else
+				float4 firstShadeMap = float4(1, 1, 1, 1);
+			#endif
+			firstShadeMap = lerp(firstShadeMap, float4(poiFragData.baseColor, 1), _Use_BaseAs1st);
+			
+			#if defined(PROP_2ND_SHADEMAP) || !defined(OPTIMIZER_ENABLED)
+				float4 secondShadeMap = POI2D_SAMPLER_PAN(_2nd_ShadeMap, _MainTex, poiUV(poiMesh.uv[_2nd_ShadeMapUV], _2nd_ShadeMap_ST), _2nd_ShadeMapPan);
+			#else
+				float4 secondShadeMap = float4(1, 1, 1, 1);
+			#endif
+			secondShadeMap = lerp(secondShadeMap, firstShadeMap, _Use_1stAs2nd);
+			
+			firstShadeMap.rgb *= _1st_ShadeColor.rgb * poiLight.occlusion; //* lighColor
+			secondShadeMap.rgb *= _2nd_ShadeColor.rgb * poiLight.occlusion; //* LightColor;
+			
+			half shadowMask = 1;
+			shadowMask *= _Use_1stShadeMapAlpha_As_ShadowMask ? (_1stShadeMapMask_Inverse ? (1.0 - firstShadeMap.a) : firstShadeMap.a) : 1;
+			shadowMask *= _Use_2ndShadeMapAlpha_As_ShadowMask ? (_2ndShadeMapMask_Inverse ? (1.0 - secondShadeMap.a) : secondShadeMap.a) : 1;
+			
+			half mainShadowMask = saturate(1 - ((poiLight.lightMap) - MainColorFeatherStep) / (_BaseColor_Step - MainColorFeatherStep) * (shadowMask));
+			half firstSecondShadowMask = saturate(1 - ((poiLight.lightMap) - firstColorFeatherStep) / (_ShadeColor_Step - firstColorFeatherStep) * (shadowMask));
+			
+			mainShadowMask *= poiLight.toonShadowMask;
+			firstSecondShadowMask *= poiLight.toonShadowMask;
+
+			half3 shadedColor;
+			// 0 lerp | 1 multiply
+			if (_ShadingShadeMapBlendType == 0)
+			{
+				shadedColor = lerp(poiFragData.baseColor.rgb, lerp(firstShadeMap.rgb, secondShadeMap.rgb, firstSecondShadowMask), mainShadowMask);
+			}
+			else
+			{
+				shadedColor = poiFragData.baseColor.rgb * lerp(1, lerp(firstShadeMap.rgb, secondShadeMap.rgb, firstSecondShadowMask), mainShadowMask);
+			}
+			poiFragData.baseColor.rgb = lerp(poiFragData.baseColor.rgb, shadedColor, _ShadowStrength);
+			poiLight.rampedLightMap = 1 - mainShadowMask * _ShadowStrength;
+		}
+	#endif
+#T#Block
+		#ifdef _LIGHTINGMODE_SHADEMAP
+			poiLight.finalLighting = litColor;
+			if (poiLight.isAdditive)
+			{
+				half addShadeMask = saturate(1 - (poiLight.lightMap - (_BaseColor_Step - _BaseShade_Feather)) / _BaseShade_Feather) * shadowStrength;
+				poiLight.finalLighting = lerp(litColor, passthroughColor, addShadeMask);
+				poiLight.rampedLightMap = 1 - addShadeMask;
+			}
+		#endif
+#T#Call
+//ifex _ShadingEnabled==0
+#if defined(_LIGHTINGMODE_SHADEMAP) && defined(VIGNETTE_MASKED)
+	#ifndef POI_PASS_OUTLINE
+		applyShadeMapping(poiFragData, poiMesh, poiLight);
+	#endif
+#endif
+//endex
