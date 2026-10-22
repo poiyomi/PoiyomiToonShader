@@ -85,7 +85,9 @@ VertexOut vert(appdata v)
 		POI_TRANSFER_SHADOW_CASTER_NOPOS(o, o.pos);
 	#endif
 
-	o.worldDir = dot(o.pos, CalculateFrustumCorrection());
+	#if !defined(POI_PASS_SHADOW) && (!defined(OPTIMIZER_ENABLED) || defined(_POI_DEPTH_RIMLIGHT) || defined(GRAIN) || defined(POI_GRABPASS) || defined(TRIPLANAR_PROJECTION))
+		o.worldDir = dot(o.pos, CalculateFrustumCorrection());
+	#endif
 
 	if (_RenderingReduceClipDistance >= 0.5)
 	{
@@ -125,6 +127,22 @@ VertexOut vert(appdata v)
 	#endif
 
 	#K#VERTEX_MODS_FINAL
+
+	#if defined(OPTIMIZER_ENABLED)
+		#if !defined(POI_USES_UV1)
+			o.uv[0] = float4(o.uv[0].xy, 0, 0);
+		#endif
+		#if !defined(POI_USES_UV2) && !defined(POI_USES_UV3)
+			o.uv[1] = 0;
+		#elif !defined(POI_USES_UV2)
+			o.uv[1] = float4(0, 0, o.uv[1].zw);
+		#elif !defined(POI_USES_UV3)
+			o.uv[1] = float4(o.uv[1].xy, 0, 0);
+		#endif
+		#if !defined(POI_USES_TANGENT)
+			o.tangent = 0;
+		#endif
+	#endif
 
 	return o;
 }

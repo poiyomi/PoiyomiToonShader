@@ -236,6 +236,9 @@ float PoiLVLightmap(uint layer, float3 normal, float authoredMap, float receive,
     [branch] if (!PoiLightVolumesActive() || PoiLVFormWeight < 0.00001) return authoredMap;
     float unityWeight = PoiLVLuminance(max(unityColor, 0));
     float unityForm = unityWeight * saturate(dot(normal, unityDirection));
+    #ifdef _LIGHTINGMODE_MULTILAYER_MATH
+        unityForm = unityWeight * saturate(dot(normal, unityDirection) * 0.5 + 0.5);
+    #endif
     #if defined(_LIGHTINGMODE_WRAPPED) && defined(VIGNETTE_MASKED)
         unityForm = unityWeight * saturate(RTWrapFunc(dot(normal, unityDirection), _LightingWrappedWrap, _LightingWrappedNormalization));
         unityWeight *= saturate(RTWrapFunc(1, _LightingWrappedWrap, _LightingWrappedNormalization));
@@ -261,6 +264,9 @@ float PoiLVLightmap(uint layer, float3 normal, float authoredMap, float receive,
 float PoiLVVisibility(uint layer, float3 normal, float3 unityColor, float3 unityDirection, float unityShadow)
 {
     float unityForm = PoiLVLuminance(max(unityColor, 0)) * saturate(dot(normal, unityDirection));
+    #ifdef _LIGHTINGMODE_MULTILAYER_MATH
+        unityForm = PoiLVLuminance(max(unityColor, 0)) * saturate(dot(normal, unityDirection) * 0.5 + 0.5);
+    #endif
     #if defined(_LIGHTINGMODE_WRAPPED) && defined(VIGNETTE_MASKED)
         unityForm = PoiLVLuminance(max(unityColor, 0)) * saturate(RTWrapFunc(dot(normal, unityDirection), _LightingWrappedWrap, _LightingWrappedNormalization));
     #endif
@@ -388,7 +394,12 @@ VRCLV_DYNAMIC_LOOP while (lights.count < lights.limit)
         L1r += light.shDirection * light.color.r;
         L1g += light.shDirection * light.color.g;
         L1b += light.shDirection * light.color.b;
-        float3 form = saturate(float3(dot(N1, light.direction), dot(N2, light.direction), dot(N3, light.direction)));
+        float3 form = float3(dot(N1, light.direction), dot(N2, light.direction), dot(N3, light.direction));
+        #ifdef _LIGHTINGMODE_MULTILAYER_MATH
+            // Multilayer Math's own light map is half-Lambert.
+            form = form * 0.5 + 0.5;
+        #endif
+        form = saturate(form);
         float weight = PoiLVLuminance(max(light.color, 0));
         PoiLVLampWeight += weight;
         PoiLVLampArriving += weight * light.visibility;

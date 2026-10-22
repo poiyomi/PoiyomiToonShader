@@ -1,6 +1,6 @@
 #T#PoiSkinProperties
 //ifex _PoiSkinEnabled==0
-[HideInInspector] m_start_PoiSkin (" Skin (Experimental)--{reference_property:_PoiSkinEnabled,button_help:{text:Tutorial,action:{type:URL,data:https://www.poiyomi.com/color-and-normals/skin},hover:Documentation}}", Float) = 0
+[HideInInspector] m_start_PoiSkin (" Skin--{reference_property:_PoiSkinEnabled,button_help:{text:Tutorial,action:{type:URL,data:https://www.poiyomi.com/color-and-normals/skin},hover:Documentation}}", Float) = 0
 [HideInInspector][ThryToggle(POI_SKIN)]_PoiSkinEnabled ("Enable", Float) = 0
 [ThryWideEnum(None, 0, Porcelain, 1, Light, 2, Golden, 3, Medium, 4, Olive, 5, Tan, 6, Brown, 7, Dark Brown, 8, Deep, 9)]_PoiSkinPreset ("Skin Tone Preset--{on_value_actions:[{value:1,actions:[{type:SET_PROPERTY,data:_PoiSkinMelanin=0.0},{type:SET_PROPERTY,data:_PoiSkinMelaninRedness=0.5},{type:SET_PROPERTY,data:_PoiSkinHemoglobin=0.05}]},{value:2,actions:[{type:SET_PROPERTY,data:_PoiSkinMelanin=0.2},{type:SET_PROPERTY,data:_PoiSkinMelaninRedness=0.5},{type:SET_PROPERTY,data:_PoiSkinHemoglobin=0.05}]},{value:3,actions:[{type:SET_PROPERTY,data:_PoiSkinMelanin=0.25},{type:SET_PROPERTY,data:_PoiSkinMelaninRedness=0.75},{type:SET_PROPERTY,data:_PoiSkinHemoglobin=0.0}]},{value:4,actions:[{type:SET_PROPERTY,data:_PoiSkinMelanin=0.3},{type:SET_PROPERTY,data:_PoiSkinMelaninRedness=0.5},{type:SET_PROPERTY,data:_PoiSkinHemoglobin=0.0}]},{value:5,actions:[{type:SET_PROPERTY,data:_PoiSkinMelanin=0.35},{type:SET_PROPERTY,data:_PoiSkinMelaninRedness=0.25},{type:SET_PROPERTY,data:_PoiSkinHemoglobin=0.0}]},{value:6,actions:[{type:SET_PROPERTY,data:_PoiSkinMelanin=0.4},{type:SET_PROPERTY,data:_PoiSkinMelaninRedness=0.75},{type:SET_PROPERTY,data:_PoiSkinHemoglobin=0.0}]},{value:7,actions:[{type:SET_PROPERTY,data:_PoiSkinMelanin=0.5},{type:SET_PROPERTY,data:_PoiSkinMelaninRedness=0.5},{type:SET_PROPERTY,data:_PoiSkinHemoglobin=0.0}]},{value:8,actions:[{type:SET_PROPERTY,data:_PoiSkinMelanin=0.65},{type:SET_PROPERTY,data:_PoiSkinMelaninRedness=0.5},{type:SET_PROPERTY,data:_PoiSkinHemoglobin=0.0}]},{value:9,actions:[{type:SET_PROPERTY,data:_PoiSkinMelanin=0.85},{type:SET_PROPERTY,data:_PoiSkinMelaninRedness=0.5},{type:SET_PROPERTY,data:_PoiSkinHemoglobin=0.0}]}]}", Int) = 0
 [sRGBWarning][ThryRGBAPacker(Mask, Freckles, Tan, Unused, Linear, false)]_PoiSkinDetailMap ("Skin Detail Map--{tooltip:R = Mask  G = Freckles  B = Tan}", 2D) = "black" {}
@@ -65,6 +65,15 @@ float _PoiSkinTanMapUV;
 float4 _PoiSkinTanMapTiling;
 float _PoiSkinTanAmount;
 float _PoiSkinTanRednessShift;
+//ifex _PoiSkinFreckleMapUV!=1 && isNotAnimated(_PoiSkinFreckleMapUV) && _PoiSkinTanMapUV!=1 && isNotAnimated(_PoiSkinTanMapUV)
+#define POI_USES_UV1
+//endex
+//ifex _PoiSkinFreckleMapUV!=2 && isNotAnimated(_PoiSkinFreckleMapUV) && _PoiSkinTanMapUV!=2 && isNotAnimated(_PoiSkinTanMapUV)
+#define POI_USES_UV2
+//endex
+//ifex _PoiSkinFreckleMapUV!=3 && isNotAnimated(_PoiSkinFreckleMapUV) && _PoiSkinTanMapUV!=3 && isNotAnimated(_PoiSkinTanMapUV)
+#define POI_USES_UV3
+//endex
 #endif
 //endex
 

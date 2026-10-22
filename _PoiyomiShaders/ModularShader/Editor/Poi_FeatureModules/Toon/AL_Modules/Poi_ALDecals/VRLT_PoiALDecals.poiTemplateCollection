@@ -140,6 +140,18 @@ _ALDecalDebugBorderWidth ("Debug Border Width--{ condition_showS:_ALDecalDebug==
         float _ALDecalGlobalMaskBlendType;
         float _ALDecalDebug;
         half _ALDecalDebugBorderWidth;
+        //ifex _ALDecalUV!=1 && isNotAnimated(_ALDecalUV) && _ALDecalColorMaskUV!=1 && isNotAnimated(_ALDecalColorMaskUV)
+        #define POI_USES_UV1
+        //endex
+        //ifex _ALDecalUV!=2 && isNotAnimated(_ALDecalUV) && _ALDecalColorMaskUV!=2 && isNotAnimated(_ALDecalColorMaskUV)
+        #define POI_USES_UV2
+        //endex
+        //ifex _ALDecalUV!=3 && isNotAnimated(_ALDecalUV) && _ALDecalColorMaskUV!=3 && isNotAnimated(_ALDecalColorMaskUV)
+        #define POI_USES_UV3
+        //endex
+        //ifex _ALDecalMirroredUVMode==0 && isNotAnimated(_ALDecalMirroredUVMode)
+        #define POI_USES_TANGENT
+        //endex
     #endif
 #endif
 //endex

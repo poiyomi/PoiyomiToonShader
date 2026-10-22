@@ -85,6 +85,15 @@ _CubeMapSaturation ("Saturation", Range(-1, 10)) = 1
     half _CubeMapBrightness;
     half _CubeMapContrast;
     half _CubeMapSmoothness;
+    //ifex _CubeMapMaskUV!=1 && isNotAnimated(_CubeMapMaskUV)
+    #define POI_USES_UV1
+    //endex
+    //ifex _CubeMapMaskUV!=2 && isNotAnimated(_CubeMapMaskUV)
+    #define POI_USES_UV2
+    //endex
+    //ifex _CubeMapMaskUV!=3 && isNotAnimated(_CubeMapMaskUV)
+    #define POI_USES_UV3
+    //endex
 #endif
 //endex
 

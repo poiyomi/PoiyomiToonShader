@@ -77,6 +77,16 @@ _VideoCRTPixelEnergizedTime ("Pixel Fade Time", Float) = 1.9
     half _VideoSaturation;
     half _VideoContrast;
     half _VideoEmissionEnabled;
+    //ifex _VideoPixelTextureUV!=1 && isNotAnimated(_VideoPixelTextureUV) && _VideoMaskTextureUV!=1 && isNotAnimated(_VideoMaskTextureUV)
+    #define POI_USES_UV1
+    //endex
+    //ifex _VideoPixelTextureUV!=2 && isNotAnimated(_VideoPixelTextureUV) && _VideoMaskTextureUV!=2 && isNotAnimated(_VideoMaskTextureUV)
+    #define POI_USES_UV2
+    //endex
+    //ifex _VideoPixelTextureUV!=3 && isNotAnimated(_VideoPixelTextureUV) && _VideoMaskTextureUV!=3 && isNotAnimated(_VideoMaskTextureUV)
+    #define POI_USES_UV3
+    //endex
+    #define POI_USES_TANGENT
 #endif
 //endex
 

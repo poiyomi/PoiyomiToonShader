@@ -98,6 +98,18 @@ _Aniso1Blur ("Blur", Range(0, 1)) = 0
 	float _Aniso1ToonMode;
 	half _Aniso1Edge;
 	half _Aniso1Blur;
+	//ifex _AnisoColorMapUV!=1 && isNotAnimated(_AnisoColorMapUV)
+	#define POI_USES_UV1
+	//endex
+	//ifex _AnisoColorMapUV!=2 && isNotAnimated(_AnisoColorMapUV)
+	#define POI_USES_UV2
+	//endex
+	//ifex _AnisoColorMapUV!=3 && isNotAnimated(_AnisoColorMapUV)
+	#define POI_USES_UV3
+	//endex
+	#if !defined(POI_PASS_SHADOW) && !defined(POI_PASS_DEPTH_ONLY)
+		#define POI_USES_TANGENT
+	#endif
 #endif
 //endex
 

@@ -50,6 +50,10 @@ int _DEBUG_uvUnwrap;
 int _DEBUG_uvUnwrap_select;
 float _DEBUG_uvUnwrap_scale;
 int _DEBUG_uvUnwrap_space;
+#define POI_USES_UV1
+#define POI_USES_UV2
+#define POI_USES_UV3
+#define POI_USES_TANGENT
 //endex
 #T#PoiDEBUGFunction
 //ifex _DEBUG_PersistDuringLock==0

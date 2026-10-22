@@ -254,6 +254,15 @@ float _GrabPassHueSelectOrShift;
 half _GrabPassHueShift;
 float _GrabPassHueShiftSpeed;
 //endex
+//ifex _GrabPassBlendMapUV!=1 && isNotAnimated(_GrabPassBlendMapUV)
+#define POI_USES_UV1
+//endex
+//ifex _GrabPassBlendMapUV!=2 && isNotAnimated(_GrabPassBlendMapUV)
+#define POI_USES_UV2
+//endex
+//ifex _GrabPassBlendMapUV!=3 && isNotAnimated(_GrabPassBlendMapUV)
+#define POI_USES_UV3
+//endex
 //endex
 
 #T#PoiGrabPassBlendingFunctions

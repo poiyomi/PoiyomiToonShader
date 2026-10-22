@@ -59,6 +59,15 @@ _MirrorColor ("Color--{reference_property:_MirrorColorThemeIndex}", Color) = (1,
         float4 _MirrorTexture_ST;
         float2 _MirrorTexturePan;
         float _MirrorTextureUV;
+        //ifex _MirrorTextureUV!=1 && isNotAnimated(_MirrorTextureUV)
+        #define POI_USES_UV1
+        //endex
+        //ifex _MirrorTextureUV!=2 && isNotAnimated(_MirrorTextureUV)
+        #define POI_USES_UV2
+        //endex
+        //ifex _MirrorTextureUV!=3 && isNotAnimated(_MirrorTextureUV)
+        #define POI_USES_UV3
+        //endex
     #endif
 #endif
 //endex

@@ -213,6 +213,18 @@ _FlipbookALColorOverride__mIDx__ ("Color", Color) = (1,1,1,1)
         float _FlipbookALColorOverrideBand__mIDx__;
         half4 _FlipbookALColorOverrideRamp__mIDx__;
     #endif
+    //ifex _FlipbookTexArrayUV__mIDx__!=1 && isNotAnimated(_FlipbookTexArrayUV__mIDx__) && _FlipbookMaskUV__mIDx__!=1 && isNotAnimated(_FlipbookMaskUV__mIDx__)
+    #define POI_USES_UV1
+    //endex
+    //ifex _FlipbookTexArrayUV__mIDx__!=2 && isNotAnimated(_FlipbookTexArrayUV__mIDx__) && _FlipbookMaskUV__mIDx__!=2 && isNotAnimated(_FlipbookMaskUV__mIDx__)
+    #define POI_USES_UV2
+    //endex
+    //ifex _FlipbookTexArrayUV__mIDx__!=3 && isNotAnimated(_FlipbookTexArrayUV__mIDx__) && _FlipbookMaskUV__mIDx__!=3 && isNotAnimated(_FlipbookMaskUV__mIDx__)
+    #define POI_USES_UV3
+    //endex
+    //ifex _FlipbookMirroredUVMode__mIDx__==0 && isNotAnimated(_FlipbookMirroredUVMode__mIDx__)
+    #define POI_USES_TANGENT
+    //endex
 #endif
 //endex
 

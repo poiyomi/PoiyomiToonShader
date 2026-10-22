@@ -169,6 +169,15 @@ _DecalRotationCTALSpeed__mID__ ("Chrono Rotation Speed", Float) = 0
 	float2 _DecalMaskPan;
 	float _DecalMaskUV;
 #endif
+//ifex _DecalMaskUV!=1 && isNotAnimated(_DecalMaskUV)
+#define POI_USES_UV1
+//endex
+//ifex _DecalMaskUV!=2 && isNotAnimated(_DecalMaskUV)
+#define POI_USES_UV2
+//endex
+//ifex _DecalMaskUV!=3 && isNotAnimated(_DecalMaskUV)
+#define POI_USES_UV3
+//endex
 //endex
 }
 
@@ -253,6 +262,18 @@ _DecalRotationCTALSpeed__mID__ ("Chrono Rotation Speed", Float) = 0
 		float _AudioLinkDecal__mID__ColorOverrideBand;
 		half4 _AudioLinkDecal__mID__ColorOverrideRamp;
 	#endif
+	//ifex _DecalTexture__mIDx__UV!=1 && isNotAnimated(_DecalTexture__mIDx__UV)
+	#define POI_USES_UV1
+	//endex
+	//ifex _DecalTexture__mIDx__UV!=2 && isNotAnimated(_DecalTexture__mIDx__UV)
+	#define POI_USES_UV2
+	//endex
+	//ifex _DecalTexture__mIDx__UV!=3 && isNotAnimated(_DecalTexture__mIDx__UV)
+	#define POI_USES_UV3
+	//endex
+	//ifex _DecalMirroredUVMode__mIDx__==0 && isNotAnimated(_DecalMirroredUVMode__mIDx__) && _Decal__mID__Depth==0 && isNotAnimated(_Decal__mID__Depth)
+	#define POI_USES_TANGENT
+	//endex
 #endif
 //endex
 

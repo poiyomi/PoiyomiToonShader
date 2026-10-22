@@ -91,6 +91,15 @@ _DepthRimAdditiveLighting ("Unlit Add", Range(0, 1)) = 0
         float _DepthRimMaskUV;
         float _DepthRimMaskChannel;
     #endif
+    //ifex _DepthRimMaskUV!=1 && isNotAnimated(_DepthRimMaskUV)
+    #define POI_USES_UV1
+    //endex
+    //ifex _DepthRimMaskUV!=2 && isNotAnimated(_DepthRimMaskUV)
+    #define POI_USES_UV2
+    //endex
+    //ifex _DepthRimMaskUV!=3 && isNotAnimated(_DepthRimMaskUV)
+    #define POI_USES_UV3
+    //endex
 #endif
 //endex
 

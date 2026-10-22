@@ -326,11 +326,11 @@ _VertexSpectrumOffsetMax ("Offset Max", Vector) = (0, .1, 0)
 
 			if (any(_VertexLocalTranslationALMin) || any(_VertexLocalTranslationALMax))
 			{
-				ALLocalTranslation = lerp(_VertexLocalTranslationALMin, _VertexLocalTranslationALMax, audioLinkBands[_VertexLocalTranslationALBand]);
+				ALLocalTranslation = lerp(_VertexLocalTranslationALMin, _VertexLocalTranslationALMax, poiSelect5(audioLinkBands, _VertexLocalTranslationALBand));
 			}
 			if (any(_VertexLocalRotationAL))
 			{
-				ALrotation = audioLinkBands[_VertexLocalRotationALBand] * _VertexLocalRotationAL;
+				ALrotation = poiSelect5(audioLinkBands, _VertexLocalRotationALBand) * _VertexLocalRotationAL;
 			}
 			if (any(_VertexLocalRotationCTALSpeed))
 			{
@@ -340,20 +340,20 @@ _VertexSpectrumOffsetMax ("Offset Max", Vector) = (0, .1, 0)
 			}
 			if (any(_VertexLocalScaleALMin.xyz) || any(_VertexLocalScaleALMax.xyz))
 			{
-				ALScale = lerp(_VertexLocalScaleALMin.xyz + _VertexLocalScaleALMin.w, _VertexLocalScaleALMax.xyz + _VertexLocalScaleALMax.w, audioLinkBands[_VertexLocalScaleALBand]);
+				ALScale = lerp(_VertexLocalScaleALMin.xyz + _VertexLocalScaleALMin.w, _VertexLocalScaleALMax.xyz + _VertexLocalScaleALMax.w, poiSelect5(audioLinkBands, _VertexLocalScaleALBand));
 			}
 			if (any(_VertexWorldTranslationALMin.xyz) || any(_VertexWorldTranslationALMax.xyz))
 			{
-				ALWorldTranslation = lerp(_VertexWorldTranslationALMin, _VertexWorldTranslationALMax, audioLinkBands[_VertexWorldTranslationALBand]);
+				ALWorldTranslation = lerp(_VertexWorldTranslationALMin, _VertexWorldTranslationALMax, poiSelect5(audioLinkBands, _VertexWorldTranslationALBand));
 			}
 			if (any(_VertexManipulationHeightAL.xy))
 			{
-				ALHeight = lerp(_VertexManipulationHeightAL.x, _VertexManipulationHeightAL.y, audioLinkBands[_VertexManipulationHeightBand]);
+				ALHeight = lerp(_VertexManipulationHeightAL.x, _VertexManipulationHeightAL.y, poiSelect5(audioLinkBands, _VertexManipulationHeightBand));
 			}
 			//ifex isNotAnimated(_VertexRoundingEnabled) && _VertexRoundingEnabled==0
 			if (any(_VertexRoundingRangeAL.xy))
 			{
-				ALRoundingAmount = lerp(_VertexRoundingRangeAL.x, _VertexRoundingRangeAL.y, audioLinkBands[_VertexRoundingRangeBand]);
+				ALRoundingAmount = lerp(_VertexRoundingRangeAL.x, _VertexRoundingRangeAL.y, poiSelect5(audioLinkBands, _VertexRoundingRangeBand));
 			}
 			//endex
 			//ifex isNotAnimated(_VertexSpectrumMotion) && _VertexSpectrumMotion==0
@@ -383,7 +383,7 @@ _VertexSpectrumOffsetMax ("Offset Max", Vector) = (0, .1, 0)
 		v.color.a
 	};
 
-	half basicsMask = vertexEffectsMask[_VertexBasicsMaskChannel];
+	half basicsMask = poiSelect8(vertexEffectsMask, _VertexBasicsMaskChannel);
 
 	ALLocalTranslation *= basicsMask;
 	ALrotation *= basicsMask;
@@ -419,7 +419,7 @@ _VertexSpectrumOffsetMax ("Offset Max", Vector) = (0, .1, 0)
 		#else
 			heightOffset = (1 - _VertexManipulationHeightBias) * (_VertexManipulationHeight + ALHeight) * o.normal.xyz;
 		#endif
-		heightOffset *= vertexEffectsMask[_VertexManipulationHeightMaskChannel] * o.normal.w;
+		heightOffset *= poiSelect8(vertexEffectsMask, _VertexManipulationHeightMaskChannel) * o.normal.w;
 
 	}
 	// Fix z fighting issue with projectors maybe probably I hope
@@ -429,7 +429,7 @@ _VertexSpectrumOffsetMax ("Offset Max", Vector) = (0, .1, 0)
 	UNITY_BRANCH
 	if (_VertexBarrelMode >= 0.5)
 	{
-		half barrelMask = vertexEffectsMask[_VertexBarrelMaskChannel];
+		half barrelMask = poiSelect8(vertexEffectsMask, _VertexBarrelMaskChannel);
 		v.vertex.xz = lerp(v.vertex.xz, normalize(v.vertex.xz) * _VertexBarrelWidth + v.vertex.xz * _VertexBarrelHeight, _VertexBarrelAlpha * barrelMask);
 	}
 	//endex
@@ -438,7 +438,7 @@ _VertexSpectrumOffsetMax ("Offset Max", Vector) = (0, .1, 0)
 	UNITY_BRANCH
 	if (_VertexSphereMode >= 0.5)
 	{
-		half sphereMask = vertexEffectsMask[_VertexSphereMaskChannel];
+		half sphereMask = poiSelect8(vertexEffectsMask, _VertexSphereMaskChannel);
 		v.vertex.xyz = lerp(v.vertex.xyz, normalize(v.vertex.xyz + _VertexSphereCenter.xyz) * _VertexSphereRadius + v.vertex.xyz * _VertexSphereHeight, _VertexSphereAlpha * sphereMask);
 	}
 	//endex
@@ -447,7 +447,7 @@ _VertexSpectrumOffsetMax ("Offset Max", Vector) = (0, .1, 0)
 	UNITY_BRANCH
 	if (_VertexTornadoMode >= 0.5)
 	{
-		half tornadoMask = vertexEffectsMask[_VertexTornadoMaskChannel];
+		half tornadoMask = poiSelect8(vertexEffectsMask, _VertexTornadoMaskChannel);
 		float heightStrength = smoothstep(_VertexTornadoBaseHeight, _VertexTornadoTopHeight, v.vertex.y);
 		float funnelStrength = pow(heightStrength, _VertexTornadoFunnelShape);
 		float totalStrength = funnelStrength * tornadoMask;
@@ -474,7 +474,7 @@ _VertexSpectrumOffsetMax ("Offset Max", Vector) = (0, .1, 0)
 	UNITY_BRANCH
 	if (_VertexWindEnabled >= 0.5)
 	{
-		half windMask = vertexEffectsMask[_VertexWindMaskChannel];
+		half windMask = poiSelect8(vertexEffectsMask, _VertexWindMaskChannel);
 		if (windMask > 0)
 		{
 			float3 worldPos = mul(unity_ObjectToWorld, v.vertex).xyz;
@@ -506,7 +506,7 @@ _VertexSpectrumOffsetMax ("Offset Max", Vector) = (0, .1, 0)
 	UNITY_BRANCH
 	if (_VertexRoundingEnabled >= 0.5)
 	{
-		half roundingMask = vertexEffectsMask[_VertexRoundingMaskChannel];
+		half roundingMask = poiSelect8(vertexEffectsMask, _VertexRoundingMaskChannel);
 		if (roundingMask > 0)
 		{
 			float3 preRoundingVertex = v.vertex.xyz;

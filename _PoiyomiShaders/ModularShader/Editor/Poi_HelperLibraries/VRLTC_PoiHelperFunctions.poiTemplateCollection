@@ -457,6 +457,17 @@ float poiMax(float4 i)
 	return max(max(max(i.x, i.y), i.z), i.w);
 }
 
+float poiSelect5(const float values[5], uint index)
+{
+	return index == 1 ? values[1] : index == 2 ? values[2] : index == 3 ? values[3] : index == 4 ? values[4] : values[0];
+}
+
+float poiSelect8(const float values[8], uint index)
+{
+	return index < 4 ? (index == 1 ? values[1] : index == 2 ? values[2] : index == 3 ? values[3] : values[0])
+		: (index == 5 ? values[5] : index == 6 ? values[6] : index == 7 ? values[7] : values[4]);
+}
+
 half3 calculateNormal(in half3 baseNormal, in PoiMesh poiMesh, in Texture2D normalTexture, in SamplerState mainSampler, in float4 normal_ST, in float2 normalPan, in float normalUV, in half normalIntensity)
 {
 	half3 normal = PoiUnpackNormalScale(normalTexture.Sample(mainSampler, POI_PAN_UV(poiUV(poiMesh.uv[normalUV], normal_ST), normalPan)), normalIntensity);
@@ -1667,8 +1678,7 @@ half3 ClampLuminance(half3 rgb, half minLuminance, half maxLuminance)
 half3 MaxLuminance(half3 rgb, half maxLuminance)
 {
 	half currentLuminance = dot(rgb, float3(0.299, 0.587, 0.114));
-	half luminanceRatio = (currentLuminance != 0) ? maxLuminance / max(currentLuminance, 0.00001) : 1.0;
-	return lerp(rgb, rgb * luminanceRatio, currentLuminance > maxLuminance);
+	return currentLuminance > maxLuminance ? rgb * (maxLuminance / max(currentLuminance, 0.00001)) : rgb;
 }
 
 half OpenLitGray(half3 rgb)

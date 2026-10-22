@@ -44,6 +44,15 @@ _ClothSmoothness ("Smoothness--{condition_showS:(_LightingMode==7)}", Range(0, 1
 	float _ClothReflectanceGlobalMaskBlendType;
 	half _ClothSmoothnessGlobalMask;
 	float _ClothSmoothnessGlobalMaskBlendType;
+	//ifex _ClothMetallicSmoothnessMapUV!=1 && isNotAnimated(_ClothMetallicSmoothnessMapUV)
+	#define POI_USES_UV1
+	//endex
+	//ifex _ClothMetallicSmoothnessMapUV!=2 && isNotAnimated(_ClothMetallicSmoothnessMapUV)
+	#define POI_USES_UV2
+	//endex
+	//ifex _ClothMetallicSmoothnessMapUV!=3 && isNotAnimated(_ClothMetallicSmoothnessMapUV)
+	#define POI_USES_UV3
+	//endex
 #endif
 #T#Variables
 #ifdef _LIGHTINGMODE_CLOTH

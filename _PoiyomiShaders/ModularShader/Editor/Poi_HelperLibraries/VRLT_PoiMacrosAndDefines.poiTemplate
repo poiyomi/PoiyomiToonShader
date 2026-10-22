@@ -143,6 +143,7 @@ SamplerState sampler_point_repeat;
 #define POI_SAFE_RGB0 half4(mainTexture.rgb * .0001h, 0.0h)
 #define POI_SAFE_RGB1 half4(mainTexture.rgb * .0001h, 1.0h)
 #define POI_SAFE_RGBA mainTexture
+#define POI_SAFE_MAINTEX_RGB0 half4(UNITY_SAMPLE_TEX2D_LOD(_MainTex, float2(0, 0), 0).rgb * .0001h, 0.0h)
 
 #if POI_PIPE == POI_URP || defined(UNITY_COMPILER_HLSL) || defined(SHADER_API_PSSL) || defined(UNITY_COMPILER_HLSLCC)
     #define PoiInitStruct(type,name) name = (type)0;

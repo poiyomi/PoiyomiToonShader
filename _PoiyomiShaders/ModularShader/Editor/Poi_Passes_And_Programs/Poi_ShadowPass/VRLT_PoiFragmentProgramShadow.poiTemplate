@@ -45,6 +45,5 @@ float4 frag(VertexOut i, bool facing : SV_IsFrontFace) : SV_Target
 	
 	clip(poiFragData.alpha - _Cutoff);
 
-	applyUnityFog(poiFragData.finalColor, i.fogData, _IgnoreFog);
-	return float4(poiFragData.finalColor, poiFragData.alpha) + POI_SAFE_RGB0;
+	return float4(0, 0, 0, poiFragData.alpha) + POI_SAFE_MAINTEX_RGB0;
 }

@@ -454,6 +454,18 @@ _Matcap3ALColorOverride ("Color", Color) = (1,1,1,1)
         float2 _Matcap0NormalMapPan;
         float _Matcap0NormalMapUV;
         float _Matcap0NormalMapScale;
+        //ifex _Matcap0NormalMapUV!=1 && isNotAnimated(_Matcap0NormalMapUV)
+        #define POI_USES_UV1
+        //endex
+        //ifex _Matcap0NormalMapUV!=2 && isNotAnimated(_Matcap0NormalMapUV)
+        #define POI_USES_UV2
+        //endex
+        //ifex _Matcap0NormalMapUV!=3 && isNotAnimated(_Matcap0NormalMapUV)
+        #define POI_USES_UV3
+        //endex
+        #if !defined(POI_PASS_SHADOW) && !defined(POI_PASS_DEPTH_ONLY)
+            #define POI_USES_TANGENT
+        #endif
     #endif
     half _Matcap0CircleMaskEnabled;
     half _Matcap0CircleMaskBorder;
@@ -461,6 +473,15 @@ _Matcap3ALColorOverride ("Color", Color) = (1,1,1,1)
     float _Matcap0LightVsReflection;
     float _MatcapUVToBlend;
     float4 _MatCapBlendUV1;
+    //ifex _MatcapUVToBlend!=1 && isNotAnimated(_MatcapUVToBlend)
+    #define POI_USES_UV1
+    //endex
+    //ifex _MatcapUVToBlend!=2 && isNotAnimated(_MatcapUVToBlend)
+    #define POI_USES_UV2
+    //endex
+    //ifex _MatcapUVToBlend!=3 && isNotAnimated(_MatcapUVToBlend)
+    #define POI_USES_UV3
+    //endex
     float _MatcapUVMode;
     half _MatcapMaskInvert;
     half _MatcapMaskGlobalMask;
@@ -516,6 +537,15 @@ _Matcap3ALColorOverride ("Color", Color) = (1,1,1,1)
     float _Matcap0ALColorOverrideThemeIndex;
     float _Matcap0ALColorOverrideBand;
     half4 _Matcap0ALColorOverrideRamp;
+    //ifex _MatcapMaskUV!=1 && isNotAnimated(_MatcapMaskUV)
+    #define POI_USES_UV1
+    //endex
+    //ifex _MatcapMaskUV!=2 && isNotAnimated(_MatcapMaskUV)
+    #define POI_USES_UV2
+    //endex
+    //ifex _MatcapMaskUV!=3 && isNotAnimated(_MatcapMaskUV)
+    #define POI_USES_UV3
+    //endex
 #endif
 //endex
 //ifex _Matcap2Enable==0
@@ -537,12 +567,33 @@ _Matcap3ALColorOverride ("Color", Color) = (1,1,1,1)
         float2 _Matcap1NormalMapPan;
         float _Matcap1NormalMapUV;
         float _Matcap1NormalMapScale;
+        //ifex _Matcap1NormalMapUV!=1 && isNotAnimated(_Matcap1NormalMapUV)
+        #define POI_USES_UV1
+        //endex
+        //ifex _Matcap1NormalMapUV!=2 && isNotAnimated(_Matcap1NormalMapUV)
+        #define POI_USES_UV2
+        //endex
+        //ifex _Matcap1NormalMapUV!=3 && isNotAnimated(_Matcap1NormalMapUV)
+        #define POI_USES_UV3
+        //endex
+        #if !defined(POI_PASS_SHADOW) && !defined(POI_PASS_DEPTH_ONLY)
+            #define POI_USES_TANGENT
+        #endif
     #endif
     half _Matcap2CircleMaskEnabled;
     half _Matcap2CircleMaskBorder;
     half _Matcap2CircleMaskBlur;
     float _Matcap2UVToBlend;
     float4 _MatCap2ndBlendUV1;
+    //ifex _Matcap2UVToBlend!=1 && isNotAnimated(_Matcap2UVToBlend)
+    #define POI_USES_UV1
+    //endex
+    //ifex _Matcap2UVToBlend!=2 && isNotAnimated(_Matcap2UVToBlend)
+    #define POI_USES_UV2
+    //endex
+    //ifex _Matcap2UVToBlend!=3 && isNotAnimated(_Matcap2UVToBlend)
+    #define POI_USES_UV3
+    //endex
     float _Matcap2UVMode;
     half _Matcap2MaskInvert;
     half _Matcap2MaskGlobalMask;
@@ -598,6 +649,15 @@ _Matcap3ALColorOverride ("Color", Color) = (1,1,1,1)
     float _Matcap1ALColorOverrideThemeIndex;
     float _Matcap1ALColorOverrideBand;
     half4 _Matcap1ALColorOverrideRamp;
+    //ifex _Matcap2MaskUV!=1 && isNotAnimated(_Matcap2MaskUV)
+    #define POI_USES_UV1
+    //endex
+    //ifex _Matcap2MaskUV!=2 && isNotAnimated(_Matcap2MaskUV)
+    #define POI_USES_UV2
+    //endex
+    //ifex _Matcap2MaskUV!=3 && isNotAnimated(_Matcap2MaskUV)
+    #define POI_USES_UV3
+    //endex
 #endif
 //endex
 
@@ -620,12 +680,33 @@ _Matcap3ALColorOverride ("Color", Color) = (1,1,1,1)
         float2 _Matcap2NormalMapPan;
         float _Matcap2NormalMapUV;
         float _Matcap2NormalMapScale;
+        //ifex _Matcap2NormalMapUV!=1 && isNotAnimated(_Matcap2NormalMapUV)
+        #define POI_USES_UV1
+        //endex
+        //ifex _Matcap2NormalMapUV!=2 && isNotAnimated(_Matcap2NormalMapUV)
+        #define POI_USES_UV2
+        //endex
+        //ifex _Matcap2NormalMapUV!=3 && isNotAnimated(_Matcap2NormalMapUV)
+        #define POI_USES_UV3
+        //endex
+        #if !defined(POI_PASS_SHADOW) && !defined(POI_PASS_DEPTH_ONLY)
+            #define POI_USES_TANGENT
+        #endif
     #endif
     half _Matcap3CircleMaskEnabled;
     half _Matcap3CircleMaskBorder;
     half _Matcap3CircleMaskBlur;
     float _Matcap3UVToBlend;
     float4 _MatCap3rdBlendUV1;
+    //ifex _Matcap3UVToBlend!=1 && isNotAnimated(_Matcap3UVToBlend)
+    #define POI_USES_UV1
+    //endex
+    //ifex _Matcap3UVToBlend!=2 && isNotAnimated(_Matcap3UVToBlend)
+    #define POI_USES_UV2
+    //endex
+    //ifex _Matcap3UVToBlend!=3 && isNotAnimated(_Matcap3UVToBlend)
+    #define POI_USES_UV3
+    //endex
     float _Matcap3UVMode;
     half _Matcap3MaskInvert;
     half _Matcap3MaskGlobalMask;
@@ -681,6 +762,15 @@ _Matcap3ALColorOverride ("Color", Color) = (1,1,1,1)
     float _Matcap2ALColorOverrideThemeIndex;
     float _Matcap2ALColorOverrideBand;
     half4 _Matcap2ALColorOverrideRamp;
+    //ifex _Matcap3MaskUV!=1 && isNotAnimated(_Matcap3MaskUV)
+    #define POI_USES_UV1
+    //endex
+    //ifex _Matcap3MaskUV!=2 && isNotAnimated(_Matcap3MaskUV)
+    #define POI_USES_UV2
+    //endex
+    //ifex _Matcap3MaskUV!=3 && isNotAnimated(_Matcap3MaskUV)
+    #define POI_USES_UV3
+    //endex
 #endif
 //endex
 
@@ -703,12 +793,33 @@ _Matcap3ALColorOverride ("Color", Color) = (1,1,1,1)
         float2 _Matcap3NormalMapPan;
         float _Matcap3NormalMapUV;
         float _Matcap3NormalMapScale;
+        //ifex _Matcap3NormalMapUV!=1 && isNotAnimated(_Matcap3NormalMapUV)
+        #define POI_USES_UV1
+        //endex
+        //ifex _Matcap3NormalMapUV!=2 && isNotAnimated(_Matcap3NormalMapUV)
+        #define POI_USES_UV2
+        //endex
+        //ifex _Matcap3NormalMapUV!=3 && isNotAnimated(_Matcap3NormalMapUV)
+        #define POI_USES_UV3
+        //endex
+        #if !defined(POI_PASS_SHADOW) && !defined(POI_PASS_DEPTH_ONLY)
+            #define POI_USES_TANGENT
+        #endif
     #endif
     half _Matcap4CircleMaskEnabled;
     half _Matcap4CircleMaskBorder;
     half _Matcap4CircleMaskBlur;
     float _Matcap4UVToBlend;
     float4 _MatCap4thBlendUV1;
+    //ifex _Matcap4UVToBlend!=1 && isNotAnimated(_Matcap4UVToBlend)
+    #define POI_USES_UV1
+    //endex
+    //ifex _Matcap4UVToBlend!=2 && isNotAnimated(_Matcap4UVToBlend)
+    #define POI_USES_UV2
+    //endex
+    //ifex _Matcap4UVToBlend!=3 && isNotAnimated(_Matcap4UVToBlend)
+    #define POI_USES_UV3
+    //endex
     float _Matcap4UVMode;
     half _Matcap4MaskInvert;
     half _Matcap4MaskGlobalMask;
@@ -764,6 +875,15 @@ _Matcap3ALColorOverride ("Color", Color) = (1,1,1,1)
     float _Matcap3ALColorOverrideThemeIndex;
     float _Matcap3ALColorOverrideBand;
     half4 _Matcap3ALColorOverrideRamp;
+    //ifex _Matcap4MaskUV!=1 && isNotAnimated(_Matcap4MaskUV)
+    #define POI_USES_UV1
+    //endex
+    //ifex _Matcap4MaskUV!=2 && isNotAnimated(_Matcap4MaskUV)
+    #define POI_USES_UV2
+    //endex
+    //ifex _Matcap4MaskUV!=3 && isNotAnimated(_Matcap4MaskUV)
+    #define POI_USES_UV3
+    //endex
 #endif
 //endex
 

@@ -141,6 +141,15 @@ float _BumpMapStochastic;
 	float _Bump2ndScaleMaskUV;
 	float _Bump2ndScaleMaskGlobalMask;
 	float _Bump2ndScaleMaskGlobalMaskBlendType;
+	//ifex _Bump2ndMapUV!=1 && isNotAnimated(_Bump2ndMapUV) && _Bump2ndScaleMaskUV!=1 && isNotAnimated(_Bump2ndScaleMaskUV)
+	#define POI_USES_UV1
+	//endex
+	//ifex _Bump2ndMapUV!=2 && isNotAnimated(_Bump2ndMapUV) && _Bump2ndScaleMaskUV!=2 && isNotAnimated(_Bump2ndScaleMaskUV)
+	#define POI_USES_UV2
+	//endex
+	//ifex _Bump2ndMapUV!=3 && isNotAnimated(_Bump2ndMapUV) && _Bump2ndScaleMaskUV!=3 && isNotAnimated(_Bump2ndScaleMaskUV)
+	#define POI_USES_UV3
+	//endex
 #endif
 //endex
 float4 _AlphaMask_ST;
@@ -196,6 +205,15 @@ float _Cutoff;
 	half _ColorGradingToggle;
 	float _MainGradationStrength;
 	float _MainGradationMaskChannel;
+	//ifex _MainColorAdjustTextureUV!=1 && isNotAnimated(_MainColorAdjustTextureUV) && _MainTintTextureUV!=1 && isNotAnimated(_MainTintTextureUV)
+	#define POI_USES_UV1
+	//endex
+	//ifex _MainColorAdjustTextureUV!=2 && isNotAnimated(_MainColorAdjustTextureUV) && _MainTintTextureUV!=2 && isNotAnimated(_MainTintTextureUV)
+	#define POI_USES_UV2
+	//endex
+	//ifex _MainColorAdjustTextureUV!=3 && isNotAnimated(_MainColorAdjustTextureUV) && _MainTintTextureUV!=3 && isNotAnimated(_MainTintTextureUV)
+	#define POI_USES_UV3
+	//endex
 #endif
 //endex
 
@@ -245,13 +263,37 @@ bool DepthTextureExists()
 #define sampler_MainTex sampler_linear_repeat
 */
 UNITY_DECLARE_TEX2D(_MainTex);
+//ifex _MainTexUV!=1 && isNotAnimated(_MainTexUV) && _AlphaMaskUV!=1 && isNotAnimated(_AlphaMaskUV)
+#define POI_USES_UV1
+//endex
+//ifex _MainTexUV!=2 && isNotAnimated(_MainTexUV) && _AlphaMaskUV!=2 && isNotAnimated(_AlphaMaskUV)
+#define POI_USES_UV2
+//endex
+//ifex _MainTexUV!=3 && isNotAnimated(_MainTexUV) && _AlphaMaskUV!=3 && isNotAnimated(_AlphaMaskUV)
+#define POI_USES_UV3
+//endex
 #if defined(PROP_BUMPMAP) || !defined(OPTIMIZER_ENABLED)
 	Texture2D _BumpMap;
+	#if !defined(POI_PASS_SHADOW) && !defined(POI_PASS_DEPTH_ONLY)
+		#define POI_USES_TANGENT
+	#endif
+	//ifex _BumpMapUV!=1 && isNotAnimated(_BumpMapUV)
+	#define POI_USES_UV1
+	//endex
+	//ifex _BumpMapUV!=2 && isNotAnimated(_BumpMapUV)
+	#define POI_USES_UV2
+	//endex
+	//ifex _BumpMapUV!=3 && isNotAnimated(_BumpMapUV)
+	#define POI_USES_UV3
+	//endex
 #endif
 //ifex _UseBump2ndMap==0
 #ifdef POI_BUMP2NDMAP
 	#if defined(PROP_BUMP2NDMAP) || !defined(OPTIMIZER_ENABLED)
 		Texture2D _Bump2ndMap;
+		#if !defined(POI_PASS_SHADOW) && !defined(POI_PASS_DEPTH_ONLY)
+			#define POI_USES_TANGENT
+		#endif
 	#endif
 	#if defined(PROP_BUMP2NDSCALEMASK) || !defined(OPTIMIZER_ENABLED)
 		Texture2D _Bump2ndScaleMask;

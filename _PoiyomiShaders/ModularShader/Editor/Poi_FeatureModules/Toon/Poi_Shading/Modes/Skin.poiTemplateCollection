@@ -28,6 +28,15 @@ _SkinScatteringStability ("Scattering Stability--{condition_showS:(_LightingMode
 	float _SkinScatteringStability;
 	float3 _SssTransmissionAbsorption;
 	half3 _SssColorBleedAoWeights;
+	//ifex _SkinThicknessMapUV!=1 && isNotAnimated(_SkinThicknessMapUV)
+	#define POI_USES_UV1
+	//endex
+	//ifex _SkinThicknessMapUV!=2 && isNotAnimated(_SkinThicknessMapUV)
+	#define POI_USES_UV2
+	//endex
+	//ifex _SkinThicknessMapUV!=3 && isNotAnimated(_SkinThicknessMapUV)
+	#define POI_USES_UV3
+	//endex
 #endif
 #T#Variables
 #ifdef _LIGHTINGMODE_SKIN

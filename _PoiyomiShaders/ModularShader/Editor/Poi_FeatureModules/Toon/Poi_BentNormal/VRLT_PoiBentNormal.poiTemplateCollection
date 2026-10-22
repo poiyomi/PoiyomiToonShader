@@ -25,6 +25,15 @@ _BentNormalSpecOccStrength ("Specular Occlusion Strength", Range(0, 1)) = 1
 	float _BentNormalMapStochastic;
 	half _BentNormalSpecOccStrength;
 	float _BentNormalIndirectDiffuse;
+	//ifex _BentNormalMapUV!=1 && isNotAnimated(_BentNormalMapUV)
+	#define POI_USES_UV1
+	//endex
+	//ifex _BentNormalMapUV!=2 && isNotAnimated(_BentNormalMapUV)
+	#define POI_USES_UV2
+	//endex
+	//ifex _BentNormalMapUV!=3 && isNotAnimated(_BentNormalMapUV)
+	#define POI_USES_UV3
+	//endex
 #endif
 //endex
 
@@ -33,6 +42,9 @@ _BentNormalSpecOccStrength ("Specular Occlusion Strength", Range(0, 1)) = 1
 #ifdef POI_BENTNORMALMAP
 	#if defined(PROP_BENTNORMALMAP) || !defined(OPTIMIZER_ENABLED)
 		Texture2D _BentNormalMap;
+		#if !defined(POI_PASS_SHADOW) && !defined(POI_PASS_DEPTH_ONLY)
+			#define POI_USES_TANGENT
+		#endif
 	#endif
 #endif
 //endex

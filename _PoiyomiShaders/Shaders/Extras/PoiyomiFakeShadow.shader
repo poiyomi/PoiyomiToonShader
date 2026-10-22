@@ -57,7 +57,6 @@ Shader ".poiyomi/Extras/Poiyomi Fake Shadow"
 			#pragma vertex vert
 			#pragma fragment frag
 			#pragma multi_compile_instancing
-			#pragma multi_compile_fwdbase
 			#pragma multi_compile_fog
 			
 			#include "UnityCG.cginc"

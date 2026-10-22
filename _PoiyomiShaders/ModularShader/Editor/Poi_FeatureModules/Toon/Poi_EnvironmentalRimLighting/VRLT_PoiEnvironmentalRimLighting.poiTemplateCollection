@@ -31,6 +31,15 @@ _RimEnviroIntensity ("Intensity", Range(0, 1)) = 1
     half _RimEnviroWidth;
     half _RimEnviroSharpness;
     half _RimEnviroIntensity;
+	//ifex _RimEnviroMaskUV!=1 && isNotAnimated(_RimEnviroMaskUV)
+	#define POI_USES_UV1
+	//endex
+	//ifex _RimEnviroMaskUV!=2 && isNotAnimated(_RimEnviroMaskUV)
+	#define POI_USES_UV2
+	//endex
+	//ifex _RimEnviroMaskUV!=3 && isNotAnimated(_RimEnviroMaskUV)
+	#define POI_USES_UV3
+	//endex
 #endif
 //endex
 

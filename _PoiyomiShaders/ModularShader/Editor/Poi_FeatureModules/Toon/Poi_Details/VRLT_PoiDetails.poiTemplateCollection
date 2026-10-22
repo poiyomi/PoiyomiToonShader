@@ -61,6 +61,15 @@ _DetailBrightness ("Brightness", Range(0, 2)) = 1
 	half _DetailBrightness;
 	half _DetailTexGlobalMask;
 	float _DetailTexGlobalMaskBlendType;
+	//ifex _DetailMaskUV!=1 && isNotAnimated(_DetailMaskUV) && _DetailNormalMapUV!=1 && isNotAnimated(_DetailNormalMapUV) && _DetailTexUV!=1 && isNotAnimated(_DetailTexUV)
+	#define POI_USES_UV1
+	//endex
+	//ifex _DetailMaskUV!=2 && isNotAnimated(_DetailMaskUV) && _DetailNormalMapUV!=2 && isNotAnimated(_DetailNormalMapUV) && _DetailTexUV!=2 && isNotAnimated(_DetailTexUV)
+	#define POI_USES_UV2
+	//endex
+	//ifex _DetailMaskUV!=3 && isNotAnimated(_DetailMaskUV) && _DetailNormalMapUV!=3 && isNotAnimated(_DetailNormalMapUV) && _DetailTexUV!=3 && isNotAnimated(_DetailTexUV)
+	#define POI_USES_UV3
+	//endex
 #endif
 //endex
 
@@ -72,6 +81,9 @@ _DetailBrightness ("Brightness", Range(0, 2)) = 1
 	#endif
 	#if defined(PROP_DETAILNORMALMAP) || !defined(OPTIMIZER_ENABLED)
 		Texture2D _DetailNormalMap;
+		#if !defined(POI_PASS_SHADOW) && !defined(POI_PASS_DEPTH_ONLY)
+			#define POI_USES_TANGENT
+		#endif
 	#endif
 	#if defined(PROP_DETAILTEX) || !defined(OPTIMIZER_ENABLED)
 		Texture2D _DetailTex;

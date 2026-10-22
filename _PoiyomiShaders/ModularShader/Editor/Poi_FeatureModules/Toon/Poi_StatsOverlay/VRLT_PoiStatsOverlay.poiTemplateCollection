@@ -195,6 +195,15 @@ _TextNumericRotation ("Rotation", Range(0, 360)) = 0
 	float2 _TextFPSScale;
 	float _TextFPSRotation;
 	float _TextFPSColorThemeIndex;
+	//ifex _TextFPSUV!=1 && isNotAnimated(_TextFPSUV)
+	#define POI_USES_UV1
+	//endex
+	//ifex _TextFPSUV!=2 && isNotAnimated(_TextFPSUV)
+	#define POI_USES_UV2
+	//endex
+	//ifex _TextFPSUV!=3 && isNotAnimated(_TextFPSUV)
+	#define POI_USES_UV3
+	//endex
 	//endex
 
 	//ifex _TextPositionEnabled==0 && isNotAnimated(_TextPositionEnabled)
@@ -208,6 +217,15 @@ _TextNumericRotation ("Rotation", Range(0, 360)) = 0
 	float2 _TextPositionScale;
 	float _TextPositionRotation;
 	float _TextPositionColorThemeIndex;
+	//ifex _TextPositionUV!=1 && isNotAnimated(_TextPositionUV)
+	#define POI_USES_UV1
+	//endex
+	//ifex _TextPositionUV!=2 && isNotAnimated(_TextPositionUV)
+	#define POI_USES_UV2
+	//endex
+	//ifex _TextPositionUV!=3 && isNotAnimated(_TextPositionUV)
+	#define POI_USES_UV3
+	//endex
 	//endex
 
 	//ifex _TextTimeEnabled==0 && isNotAnimated(_TextTimeEnabled)
@@ -220,6 +238,15 @@ _TextNumericRotation ("Rotation", Range(0, 360)) = 0
 	float2 _TextTimeScale;
 	float _TextTimeRotation;
 	float _TextTimeColorThemeIndex;
+	//ifex _TextTimeUV!=1 && isNotAnimated(_TextTimeUV)
+	#define POI_USES_UV1
+	//endex
+	//ifex _TextTimeUV!=2 && isNotAnimated(_TextTimeUV)
+	#define POI_USES_UV2
+	//endex
+	//ifex _TextTimeUV!=3 && isNotAnimated(_TextTimeUV)
+	#define POI_USES_UV3
+	//endex
 	//endex
 
 	//ifex _TextUTCTimeEnabled==0 && isNotAnimated(_TextUTCTimeEnabled)
@@ -235,6 +262,15 @@ _TextNumericRotation ("Rotation", Range(0, 360)) = 0
 	float _TextUTCTimeZone;
 	float _TextUTCTimeZoneOffset;
 	float _TextUTCTimeColorThemeIndex;
+	//ifex _TextUTCTimeUV!=1 && isNotAnimated(_TextUTCTimeUV)
+	#define POI_USES_UV1
+	//endex
+	//ifex _TextUTCTimeUV!=2 && isNotAnimated(_TextUTCTimeUV)
+	#define POI_USES_UV2
+	//endex
+	//ifex _TextUTCTimeUV!=3 && isNotAnimated(_TextUTCTimeUV)
+	#define POI_USES_UV3
+	//endex
 	//endex
 
 	//ifex _TextNumericEnabled==0 && isNotAnimated(_TextNumericEnabled)
@@ -251,6 +287,15 @@ _TextNumericRotation ("Rotation", Range(0, 360)) = 0
 	float _TextNumericDecimalDigits;
 	half _TextNumericTrimZeroes;
 	float _TextNumericColorThemeIndex;
+	//ifex _TextNumericUV!=1 && isNotAnimated(_TextNumericUV)
+	#define POI_USES_UV1
+	//endex
+	//ifex _TextNumericUV!=2 && isNotAnimated(_TextNumericUV)
+	#define POI_USES_UV2
+	//endex
+	//ifex _TextNumericUV!=3 && isNotAnimated(_TextNumericUV)
+	#define POI_USES_UV3
+	//endex
 	//endex
 #endif
 //endex
@@ -328,7 +373,7 @@ _TextNumericRotation ("Rotation", Range(0, 360)) = 0
 
 	float SampleTextDistance(float2 uv, float2 uvDx, float2 uvDy)
 	{
-		float2 sampleUV = TRANSFORM_TEX(uv, _TextGlyphs);
+		float2 sampleUV = uv * _TextGlyphs_ST.xy + _TextGlyphs_ST.zw;
 		float2 sampleDx = uvDx * _TextGlyphs_ST.xy;
 		float2 sampleDy = uvDy * _TextGlyphs_ST.xy;
 		float3 samp = tex2Dgrad(_TextGlyphs, sampleUV, sampleDx, sampleDy).rgb;
@@ -451,29 +496,7 @@ _TextNumericRotation ("Rotation", Range(0, 360)) = 0
 		#else
 			float3 cameraPos = clamp(getCameraPosition(), -999, 999);
 		#endif
-		float3 absCameraPos = abs(cameraPos);
 		float totalCharacters = 20;
-		float positionArray[20];
-		positionArray[0] = cameraPos.x < 0 ? ASCII_NEGATIVE : ASCII_POSITIVE;
-		positionArray[1] = floor((absCameraPos.x * .01) % 10) + 48;
-		positionArray[2] = floor((absCameraPos.x * .1) % 10) + 48;
-		positionArray[3] = floor(absCameraPos.x % 10) + 48;
-		positionArray[4] = ASCII_PERIOD;
-		positionArray[5] = floor((absCameraPos.x * 10) % 10) + 48;
-		positionArray[6] = ASCII_COMMA;
-		positionArray[7] = cameraPos.y < 0 ? ASCII_NEGATIVE : ASCII_POSITIVE;
-		positionArray[8] = floor((absCameraPos.y * .01) % 10) + 48;
-		positionArray[9] = floor((absCameraPos.y * .1) % 10) + 48;
-		positionArray[10] = floor(absCameraPos.y % 10) + 48;
-		positionArray[11] = ASCII_PERIOD;
-		positionArray[12] = floor((absCameraPos.y * 10) % 10) + 48;
-		positionArray[13] = ASCII_COMMA;
-		positionArray[14] = cameraPos.z < 0 ? ASCII_NEGATIVE : ASCII_POSITIVE;
-		positionArray[15] = floor((absCameraPos.z * .01) % 10) + 48;
-		positionArray[16] = floor((absCameraPos.z * .1) % 10) + 48;
-		positionArray[17] = floor(absCameraPos.z % 10) + 48;
-		positionArray[18] = ASCII_PERIOD;
-		positionArray[19] = floor((absCameraPos.z * 10) % 10) + 48;
 
 		float glyphIndex;
 		if (!GetTextGlyphIndex(uv, _TextPositionOffset, _TextPositionRotation, _TextPositionScale, totalCharacters, glyphIndex))
@@ -481,7 +504,20 @@ _TextNumericRotation ("Rotation", Range(0, 360)) = 0
 			return;
 		}
 
-		DrawTextGlyph(poiFragData, globalTextEmission, poiMods, uv, positionArray[glyphIndex], glyphIndex, totalCharacters, _TextPositionPadding, _TextPositionColor, _TextPositionEmissionStrength, _TextPositionColorThemeIndex);
+		uint posIndex = glyphIndex;
+		uint posAxis = posIndex / 7;
+		uint posSlot = posIndex - posAxis * 7;
+		float posValue = posAxis == 0 ? cameraPos.x : (posAxis == 1 ? cameraPos.y : cameraPos.z);
+		float posAbs = abs(posValue);
+		float posChar = posSlot == 0 ? (posValue < 0 ? ASCII_NEGATIVE : ASCII_POSITIVE)
+			: posSlot == 1 ? floor((posAbs * .01) % 10) + 48
+			: posSlot == 2 ? floor((posAbs * .1) % 10) + 48
+			: posSlot == 3 ? floor(posAbs % 10) + 48
+			: posSlot == 4 ? ASCII_PERIOD
+			: posSlot == 5 ? floor((posAbs * 10) % 10) + 48
+			: ASCII_COMMA;
+
+		DrawTextGlyph(poiFragData, globalTextEmission, poiMods, uv, posChar, glyphIndex, totalCharacters, _TextPositionPadding, _TextPositionColor, _TextPositionEmissionStrength, _TextPositionColorThemeIndex);
 	}
 	//endex
 
@@ -493,15 +529,6 @@ _TextNumericRotation ("Rotation", Range(0, 360)) = 0
 		float minutes = (instanceTime / 60) % 60;
 		float seconds = instanceTime % 60;
 		float totalCharacters = 8;
-		float timeArray[8];
-		timeArray[0] = floor((hours * .1) % 10) + 48;
-		timeArray[1] = floor(hours % 10) + 48;
-		timeArray[2] = ASCII_SEMICOLON;
-		timeArray[3] = floor((minutes * .1) % 10) + 48;
-		timeArray[4] = floor(minutes % 10) + 48;
-		timeArray[5] = ASCII_SEMICOLON;
-		timeArray[6] = floor((seconds * .1) % 10) + 48;
-		timeArray[7] = floor(seconds % 10) + 48;
 
 		float glyphIndex;
 		if (!GetTextGlyphIndex(uv, _TextTimeOffset, _TextTimeRotation, _TextTimeScale, totalCharacters, glyphIndex))
@@ -509,7 +536,15 @@ _TextNumericRotation ("Rotation", Range(0, 360)) = 0
 			return;
 		}
 
-		DrawTextGlyph(poiFragData, globalTextEmission, poiMods, uv, timeArray[glyphIndex], glyphIndex, totalCharacters, _TextTimePadding, _TextTimeColor, _TextTimeEmissionStrength, _TextTimeColorThemeIndex);
+		uint timeIndex = glyphIndex;
+		uint timeGroup = timeIndex / 3;
+		uint timeSlot = timeIndex - timeGroup * 3;
+		float timeValue = timeGroup == 0 ? hours : (timeGroup == 1 ? minutes : seconds);
+		float timeChar = timeSlot == 0 ? floor((timeValue * .1) % 10) + 48
+			: timeSlot == 1 ? floor(timeValue % 10) + 48
+			: ASCII_SEMICOLON;
+
+		DrawTextGlyph(poiFragData, globalTextEmission, poiMods, uv, timeChar, glyphIndex, totalCharacters, _TextTimePadding, _TextTimeColor, _TextTimeEmissionStrength, _TextTimeColorThemeIndex);
 	}
 	//endex
 
@@ -541,20 +576,6 @@ _TextNumericRotation ("Rotation", Range(0, 360)) = 0
 		}
 
 		float totalCharacters = is12Hour ? 11 : 8;	// HH:MM:SS, plus " AM" on 12 hour
-		float utcArray[11];
-		utcArray[0] = (hours / 10) + 48;
-		utcArray[1] = (hours % 10) + 48;
-		utcArray[2] = ASCII_SEMICOLON;
-		utcArray[3] = (minutes / 10) + 48;
-		utcArray[4] = (minutes % 10) + 48;
-		utcArray[5] = ASCII_SEMICOLON;
-		utcArray[6] = (seconds / 10) + 48;
-		utcArray[7] = (seconds % 10) + 48;
-		utcArray[8] = ASCII_SPACE;
-		utcArray[9] = isPM ? ASCII_P : ASCII_A;
-		utcArray[10] = ASCII_M;
-		// 12 hour drops the leading zero on the hour
-		utcArray[0] = (is12Hour && hours < 10) ? ASCII_SPACE : utcArray[0];
 
 		float glyphIndex;
 		if (!GetTextGlyphIndex(uv, _TextUTCTimeOffset, _TextUTCTimeRotation, _TextUTCTimeScale, totalCharacters, glyphIndex))
@@ -562,7 +583,17 @@ _TextNumericRotation ("Rotation", Range(0, 360)) = 0
 			return;
 		}
 
-		DrawTextGlyph(poiFragData, globalTextEmission, poiMods, uv, utcArray[glyphIndex], glyphIndex, totalCharacters, _TextUTCTimePadding, _TextUTCTimeColor, _TextUTCTimeEmissionStrength, _TextUTCTimeColorThemeIndex);
+		uint utcIndex = glyphIndex;
+		uint utcGroup = utcIndex / 3;
+		uint utcSlot = utcIndex - utcGroup * 3;
+		uint utcValue = utcGroup == 0 ? hours : (utcGroup == 1 ? minutes : seconds);
+		// 12 hour drops the leading zero on the hour
+		float utcChar = utcIndex >= 8 ? (utcIndex == 8 ? ASCII_SPACE : utcIndex == 9 ? (isPM ? ASCII_P : ASCII_A) : ASCII_M)
+			: utcSlot == 0 ? ((utcIndex == 0 && is12Hour && hours < 10) ? ASCII_SPACE : (utcValue / 10) + 48)
+			: utcSlot == 1 ? (utcValue % 10) + 48
+			: ASCII_SEMICOLON;
+
+		DrawTextGlyph(poiFragData, globalTextEmission, poiMods, uv, utcChar, glyphIndex, totalCharacters, _TextUTCTimePadding, _TextUTCTimeColor, _TextUTCTimeEmissionStrength, _TextUTCTimeColorThemeIndex);
 	}
 	//endex
 
@@ -571,14 +602,6 @@ _TextNumericRotation ("Rotation", Range(0, 360)) = 0
 	{
 		float smoothDeltaTime = clamp(unity_DeltaTime.w, 0, 999);
 		float totalCharacters = 7;
-		float fpsArray[7];
-		fpsArray[0] = ASCII_F;
-		fpsArray[1] = ASCII_P;
-		fpsArray[2] = ASCII_S;
-		fpsArray[3] = ASCII_SEMICOLON;
-		fpsArray[4] = floor((smoothDeltaTime * .01) % 10) + 48;
-		fpsArray[5] = floor((smoothDeltaTime * .1) % 10) + 48;
-		fpsArray[6] = floor(smoothDeltaTime % 10) + 48;
 
 		float glyphIndex;
 		if (!GetTextGlyphIndex(uv, _TextFPSOffset, _TextFPSRotation, _TextFPSScale, totalCharacters, glyphIndex))
@@ -586,7 +609,16 @@ _TextNumericRotation ("Rotation", Range(0, 360)) = 0
 			return;
 		}
 
-		DrawTextGlyph(poiFragData, globalTextEmission, poiMods, uv, fpsArray[glyphIndex], glyphIndex, totalCharacters, _TextFPSPadding, _TextFPSColor, _TextFPSEmissionStrength, _TextFPSColorThemeIndex);
+		uint fpsIndex = glyphIndex;
+		float fpsChar = fpsIndex == 0 ? ASCII_F
+			: fpsIndex == 1 ? ASCII_P
+			: fpsIndex == 2 ? ASCII_S
+			: fpsIndex == 3 ? ASCII_SEMICOLON
+			: fpsIndex == 4 ? floor((smoothDeltaTime * .01) % 10) + 48
+			: fpsIndex == 5 ? floor((smoothDeltaTime * .1) % 10) + 48
+			: floor(smoothDeltaTime % 10) + 48;
+
+		DrawTextGlyph(poiFragData, globalTextEmission, poiMods, uv, fpsChar, glyphIndex, totalCharacters, _TextFPSPadding, _TextFPSColor, _TextFPSEmissionStrength, _TextFPSColorThemeIndex);
 	}
 	//endex
 

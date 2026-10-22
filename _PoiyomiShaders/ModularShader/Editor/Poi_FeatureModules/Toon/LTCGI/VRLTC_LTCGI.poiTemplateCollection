@@ -35,6 +35,7 @@ _LTCGI_DiffuseMultiplier ("Diffuse Multiplier", Range(0, 2)) = 1.0
     int _LTCGI_UsePBR;
     int _LTCGI_UseEO;
     int _LTCGI_AnimToggle;
+    #define POI_USES_UV1
 #endif
 //endex
 #T#PoiLTCGIFunction
@@ -70,6 +71,7 @@ _LTCGI_DiffuseMultiplier ("Diffuse Multiplier", Range(0, 2)) = 1.0
         float2 uvStart; // 
         float2 uvEnd; // defines the UV layout of the area, top left to bottom right
         half3 rawColor; // the raw light color, unaffected by any colormode calculations (i.e. exactly what's given as "color" in editor)
+        half3 screenColor; // rawColor with the single UV or AudioLink colormode applied
         float3 screenNormal; // world space normal direction of area light
         ltcgi_flags flags; // flags, see above
 
@@ -360,12 +362,14 @@ _LTCGI_DiffuseMultiplier ("Diffuse Multiplier", Range(0, 2)) = 1.0
 
     void LTCGI_ClipQuadToHorizon(inout float3 L[5], out int n)
     {
+        float3 L0 = L[0], L1 = L[1], L2 = L[2], L3 = L[3], L4 = L[4];
+
         // detect clipping config
         uint config = 0;
-        if (L[0].z > 0.0) config += 1;
-        if (L[1].z > 0.0) config += 2;
-        if (L[2].z > 0.0) config += 4;
-        if (L[3].z > 0.0) config += 8;
+        if (L0.z > 0.0) config += 1;
+        if (L1.z > 0.0) config += 2;
+        if (L2.z > 0.0) config += 4;
+        if (L3.z > 0.0) config += 8;
 
         n = 0;
 
@@ -381,88 +385,94 @@ _LTCGI_DiffuseMultiplier ("Diffuse Multiplier", Range(0, 2)) = 1.0
         {
             case 13: // V1 V3 V4 clip V2 <- tl;dr: this fecker has to be first or shader go boom
             n = 5;
-            L[4] = L[3];
-            L[3] = L[2];
-            L[2] = -L[1].z * L[2] + L[2].z * L[1];
-            L[1] = -L[1].z * L[0] + L[0].z * L[1];
+            L4 = L3;
+            L3 = L2;
+            L2 = -L1.z * L2 + L2.z * L1;
+            L1 = -L1.z * L0 + L0.z * L1;
             break;
             case 15: // V1 V2 V3 V4 - most common
             n = 4;
             break;
             case 9: // V1 V4 clip V2 V3
             n = 4;
-            L[1] = -L[1].z * L[0] + L[0].z * L[1];
-            L[2] = -L[2].z * L[3] + L[3].z * L[2];
+            L1 = -L1.z * L0 + L0.z * L1;
+            L2 = -L2.z * L3 + L3.z * L2;
             break;
             case 0: // clip all
             break;
             case 1: // V1 clip V2 V3 V4
             n = 3;
-            L[1] = -L[1].z * L[0] + L[0].z * L[1];
-            L[2] = -L[3].z * L[0] + L[0].z * L[3];
-            L[3] = L[0];
+            L1 = -L1.z * L0 + L0.z * L1;
+            L2 = -L3.z * L0 + L0.z * L3;
+            L3 = L0;
             break;
             case 2: // V2 clip V1 V3 V4
             n = 3;
-            L[0] = -L[0].z * L[1] + L[1].z * L[0];
-            L[2] = -L[2].z * L[1] + L[1].z * L[2];
-            L[3] = L[0];
+            L0 = -L0.z * L1 + L1.z * L0;
+            L2 = -L2.z * L1 + L1.z * L2;
+            L3 = L0;
             break;
             case 3: // V1 V2 clip V3 V4
             n = 4;
-            L[2] = -L[2].z * L[1] + L[1].z * L[2];
-            L[3] = -L[3].z * L[0] + L[0].z * L[3];
+            L2 = -L2.z * L1 + L1.z * L2;
+            L3 = -L3.z * L0 + L0.z * L3;
             break;
             case 4: // V3 clip V1 V2 V4
             n = 3;
-            L[0] = -L[3].z * L[2] + L[2].z * L[3];
-            L[1] = -L[1].z * L[2] + L[2].z * L[1];
-            L[3] = L[0];
+            L0 = -L3.z * L2 + L2.z * L3;
+            L1 = -L1.z * L2 + L2.z * L1;
+            L3 = L0;
             break;
             case 5: // V1 V3 clip V2 V4) impossible
             break;
             case 6: // V2 V3 clip V1 V4
             n = 4;
-            L[0] = -L[0].z * L[1] + L[1].z * L[0];
-            L[3] = -L[3].z * L[2] + L[2].z * L[3];
+            L0 = -L0.z * L1 + L1.z * L0;
+            L3 = -L3.z * L2 + L2.z * L3;
             break;
             case 7: // V1 V2 V3 clip V4
             n = 5;
-            L[4] = -L[3].z * L[0] + L[0].z * L[3];
-            L[3] = -L[3].z * L[2] + L[2].z * L[3];
+            L4 = -L3.z * L0 + L0.z * L3;
+            L3 = -L3.z * L2 + L2.z * L3;
             break;
             case 8: // V4 clip V1 V2 V3
             n = 3;
-            L[0] = -L[0].z * L[3] + L[3].z * L[0];
-            L[1] = -L[2].z * L[3] + L[3].z * L[2];
-            L[2] = L[3];
+            L0 = -L0.z * L3 + L3.z * L0;
+            L1 = -L2.z * L3 + L3.z * L2;
+            L2 = L3;
             break;
             case 10: // V2 V4 clip V1 V3) impossible
             break;
             case 11: // V1 V2 V4 clip V3
             n = 5;
-            L[4] = L[3];
-            L[3] = -L[2].z * L[3] + L[3].z * L[2];
-            L[2] = -L[2].z * L[1] + L[1].z * L[2];
+            L4 = L3;
+            L3 = -L2.z * L3 + L3.z * L2;
+            L2 = -L2.z * L1 + L1.z * L2;
             break;
             case 12: // V3 V4 clip V1 V2
             n = 4;
-            L[1] = -L[1].z * L[2] + L[2].z * L[1];
-            L[0] = -L[0].z * L[3] + L[3].z * L[0];
+            L1 = -L1.z * L2 + L2.z * L1;
+            L0 = -L0.z * L3 + L3.z * L0;
             break;
             case 14: // V2 V3 V4 clip V1
             n = 5;
-            L[4] = -L[0].z * L[3] + L[3].z * L[0];
-            L[0] = -L[0].z * L[1] + L[1].z * L[0];
+            L4 = -L0.z * L3 + L3.z * L0;
+            L0 = -L0.z * L1 + L1.z * L0;
             break;
         }
         
         // inlining these branches *unconditionally* breaks the [forcecase] above
         // ...yeah I know
         if (n == 3)
-            L[3] = L[0];
+            L3 = L0;
         if (n == 4)
-            L[4] = L[0];
+            L4 = L0;
+
+        L[0] = L0;
+        L[1] = L1;
+        L[2] = L2;
+        L[3] = L3;
+        L[4] = L4;
     }
 
     /*
@@ -670,7 +680,7 @@ _LTCGI_DiffuseMultiplier ("Diffuse Multiplier", Range(0, 2)) = 1.0
 
         // map barycentric triangle coordinates to the according object UVs
         float3 bary3 = float3(bary, 1 - bary.x - bary.y);
-        float2 uv = uvs[1 + hit0 * 2] * bary3.x + uvs[3 - hit0] * bary3.y + uvs[0] * bary3.z;
+        float2 uv = (hit0 ? uvs[3] : uvs[1]) * bary3.x + (hit0 ? uvs[2] : uvs[3]) * bary3.y + uvs[0] * bary3.z;
 
         return uv;
     }
@@ -909,7 +919,7 @@ _LTCGI_DiffuseMultiplier ("Diffuse Multiplier", Range(0, 2)) = 1.0
     void LTCGI_Evaluate(ltcgi_input input, float3 worldNorm, float3 viewDir, float3x3 Minv, float roughness, const bool diffuse, out ltcgi_output output)
     {
         output.input = input;
-        output.color = input.rawColor; // copy for colormode static
+        output.color = input.screenColor; // copy for colormode static
         output.intensity = 0;
 
         // diffuse distance fade
@@ -937,26 +947,12 @@ _LTCGI_DiffuseMultiplier ("Diffuse Multiplier", Range(0, 2)) = 1.0
 
         if (input.flags.colormode == LTCGI_COLORMODE_SINGLEUV)
         {
-            float2 uv = input.uvStart;
-            if (uv.x < 0) uv.xy = uv.yx;
-            // TODO: make more configurable?
-            #ifdef LTCGI_VISUALIZE_SAMPLE_UV
-                output.color = float3(uv.xy, 0);
-            #else
-                float3 sampled;
-                LTCGI_sample(LTCGI_inset_uv(uv), 1, input.flags.texindex, 0, sampled);
-                output.color *= sampled;
-            #endif
-
             RET1_IF_LMDIFF
         }
 
         #ifdef LTCGI_AUDIOLINK
             if (input.flags.colormode == LTCGI_COLORMODE_AUDIOLINK)
             {
-                float al = AudioLinkData(ALPASS_AUDIOLINK + uint2(0, input.flags.alBand)).r;
-                output.color *= al;
-
                 RET1_IF_LMDIFF
             }
         #endif
@@ -1174,6 +1170,28 @@ _LTCGI_DiffuseMultiplier ("Diffuse Multiplier", Range(0, 2)) = 1.0
                 if (lm < 0.001) continue;
             }
 
+            half3 screenColor = color;
+            if (flags.colormode == LTCGI_COLORMODE_SINGLEUV)
+            {
+                float2 sampleUV = uvStart;
+                if (sampleUV.x < 0) sampleUV.xy = sampleUV.yx;
+                #ifdef LTCGI_VISUALIZE_SAMPLE_UV
+                    screenColor = float3(sampleUV.xy, 0);
+                #else
+                    float3 sampled;
+                    LTCGI_sample(LTCGI_inset_uv(sampleUV), 1, flags.texindex, 0, sampled);
+                    screenColor *= sampled;
+                #endif
+            }
+
+            #ifdef LTCGI_AUDIOLINK
+                if (flags.colormode == LTCGI_COLORMODE_AUDIOLINK)
+                {
+                    float al = AudioLinkData(ALPASS_AUDIOLINK + uint2(0, flags.alBand)).r;
+                    screenColor *= al;
+                }
+            #endif
+
             ltcgi_input input;
             input.i = i;
             input.Lw = Lw;
@@ -1181,6 +1199,7 @@ _LTCGI_DiffuseMultiplier ("Diffuse Multiplier", Range(0, 2)) = 1.0
             input.uvStart = uvStart;
             input.uvEnd = uvEnd;
             input.rawColor = color;
+            input.screenColor = screenColor;
             input.flags = flags;
             input.screenNormal = screenNorm;
 

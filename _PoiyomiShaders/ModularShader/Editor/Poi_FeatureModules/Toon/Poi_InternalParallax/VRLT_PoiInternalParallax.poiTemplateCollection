@@ -192,6 +192,15 @@ _ParallaxInternalALMaxColorOverride ("Color", Color) = (1, 1, 1, 1)
 		float4 _ParallaxInternalALHistoryBump;
 	#endif
 	//endex
+	//ifex _ParallaxInternalMapUV!=1 && isNotAnimated(_ParallaxInternalMapUV) && _ParallaxInternalMapMaskUV!=1 && isNotAnimated(_ParallaxInternalMapMaskUV)
+	#define POI_USES_UV1
+	//endex
+	//ifex _ParallaxInternalMapUV!=2 && isNotAnimated(_ParallaxInternalMapUV) && _ParallaxInternalMapMaskUV!=2 && isNotAnimated(_ParallaxInternalMapMaskUV)
+	#define POI_USES_UV2
+	//endex
+	//ifex _ParallaxInternalMapUV!=3 && isNotAnimated(_ParallaxInternalMapUV) && _ParallaxInternalMapMaskUV!=3 && isNotAnimated(_ParallaxInternalMapMaskUV)
+	#define POI_USES_UV3
+	//endex
 #endif
 //endex
 
@@ -200,6 +209,7 @@ _ParallaxInternalALMaxColorOverride ("Color", Color) = (1, 1, 1, 1)
 #ifdef POI_INTERNALPARALLAX
 	#if defined(PROP_PARALLAXINTERNALMAP) || !defined(OPTIMIZER_ENABLED)
 		Texture2D _ParallaxInternalMap;
+		#define POI_USES_TANGENT
 	#endif
 	#if defined(PROP_PARALLAXINTERNALMAPMASK) || !defined(OPTIMIZER_ENABLED)
 		Texture2D _ParallaxInternalMapMask;

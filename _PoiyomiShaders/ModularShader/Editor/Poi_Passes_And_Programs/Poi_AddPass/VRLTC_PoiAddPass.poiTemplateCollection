@@ -21,6 +21,20 @@ Blend [_AddSrcBlend] [_AddDstBlend], [_AddSrcBlendAlpha] [_AddDstBlendAlpha]
 
 #T#AddPassOnlyKeywords
 #pragma multi_compile_fwdadd_fullshadows
+//ifex 0==0
+#define POI_KEEP_ADD_SHADOWS
+//endex
+//ifex _LightingAdditiveCastedShadows!=0 || isAnimated(_LightingAdditiveCastedShadows) || _LightDataDebugEnabled!=0
+//ifex _BacklightEnabled!=0
+//ifex _LightingMode==1 && (_ShadowReceive!=0 || _Shadow2ndReceive!=0 || _Shadow3rdReceive!=0 || isAnimated(_ShadowReceive) || isAnimated(_Shadow2ndReceive) || isAnimated(_Shadow3rdReceive))
+//ifex _StylizedSpecular!=0 && _StylizedReflectionMode==1 && (_SpecularToon==0 || isAnimated(_SpecularToon))
+#if defined(OPTIMIZER_ENABLED) && !defined(POI_WORLD) && !defined(POI_KEEP_ADD_SHADOWS)
+    #pragma skip_variants SHADOWS_DEPTH SHADOWS_SCREEN SHADOWS_CUBE SHADOWS_SOFT
+#endif
+//endex
+//endex
+//endex
+//endex
 #pragma multi_compile_instancing
 #pragma dynamic_branch _ FOG_LINEAR
 #pragma dynamic_branch _ FOG_EXP

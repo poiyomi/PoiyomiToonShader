@@ -164,6 +164,15 @@ _AudioLinkVoronoiInnerColorOverride ("Color", Color) = (1,1,1,1)
     float _AudioLinkVoronoiInnerColorOverrideThemeIndex;
     float _AudioLinkVoronoiInnerColorOverrideBand;
     half4 _AudioLinkVoronoiInnerColorOverrideRamp;
+    //ifex _VoronoiMaskUV!=1 && isNotAnimated(_VoronoiMaskUV) && _VoronoiNoiseUV!=1 && isNotAnimated(_VoronoiNoiseUV) && _VoronoiUV!=1 && isNotAnimated(_VoronoiUV)
+    #define POI_USES_UV1
+    //endex
+    //ifex _VoronoiMaskUV!=2 && isNotAnimated(_VoronoiMaskUV) && _VoronoiNoiseUV!=2 && isNotAnimated(_VoronoiNoiseUV) && _VoronoiUV!=2 && isNotAnimated(_VoronoiUV)
+    #define POI_USES_UV2
+    //endex
+    //ifex _VoronoiMaskUV!=3 && isNotAnimated(_VoronoiMaskUV) && _VoronoiNoiseUV!=3 && isNotAnimated(_VoronoiNoiseUV) && _VoronoiUV!=3 && isNotAnimated(_VoronoiUV)
+    #define POI_USES_UV3
+    //endex
 #endif
 //endex
 
@@ -204,7 +213,9 @@ _AudioLinkVoronoiInnerColorOverride ("Color", Color) = (1,1,1,1)
         float3 pz = Permutation(Pi.z + oi);
         
         float3 p, ox, oy, oz, dx, dy, dz;
-        float3 F = 1e6;
+        float F0 = 1e6;
+        float3 L0 = 1e6;
+        float3 L1 = 1e6;
 
         randomPoint = 0;
         
@@ -218,7 +229,6 @@ _AudioLinkVoronoiInnerColorOverride ("Color", Color) = (1,1,1,1)
                 for (int k = 0; k < 3; k++)
                 {
                     p = Permutation(px[i] + py[j] + pz[k] + oi); // pij1, pij2, pij3
-                    float3 ogp = p;
                     
                     ox = frac(p * VoronoiK) - VoronoiKo;
                     oy = glsl_mod(floor(p * VoronoiK), 7.0) * VoronoiK - VoronoiKo;
@@ -233,29 +243,25 @@ _AudioLinkVoronoiInnerColorOverride ("Color", Color) = (1,1,1,1)
                     float3 d = dx * dx + dy * dy + dz * dz; // dij1, dij2 and dij3, squared
                     
                     //Find lowest and second lowest distances
+                    L1 = min(L1, max(L0, d));
+                    L0 = min(L0, d);
                     [unroll(3)]
                     for (int n = 0; n < 3; n++)
                     {
-                        // if (d[n] < F[0])
-                        // {
-                        //     F[1] = F[0];
-                        //     F[0] = d[n];
-                        //     randomPoint = p;
-                        // }
-                        // else if (d[n] < F[1])
-                        // {
-                        //     F[1] = d[n];
-                        // }
-                        bool newMin = d[n] < F[0];
-                        F[1] = min(newMin ? F[0] : d[n], F[1]);
+                        bool newMin = d[n] < F0;
                         randomPoint = newMin ? p : randomPoint;
-                        F[0] = min(F[0], d[n]);
+                        F0 = min(F0, d[n]);
                     }
                 }
             }
         }
         
-        return F;
+        float2 F = float2(L0.x, L1.x);
+        F.y = min(min(F.y, max(F.x, L0.y)), L1.y);
+        F.x = min(F.x, L0.y);
+        F.y = min(min(F.y, max(F.x, L0.z)), L1.z);
+        F.x = min(F.x, L0.z);
+        return float3(F, 1e6);
     }
     
 

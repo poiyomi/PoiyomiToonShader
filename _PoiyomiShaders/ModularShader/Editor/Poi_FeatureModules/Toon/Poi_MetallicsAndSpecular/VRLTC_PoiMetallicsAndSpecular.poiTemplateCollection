@@ -245,7 +245,28 @@ _ClearCoatTPSMaskStrength ("Mask Strength", Range(0, 1)) = 1
         half _Anisotropy;
         half _ReflectionAnisotropicStretch;
         half _RoughnessAnisotropy;
+        //ifex _AnisotropyMapUV!=1 && isNotAnimated(_AnisotropyMapUV) && _AnisotropyDirectionMapUV!=1 && isNotAnimated(_AnisotropyDirectionMapUV)
+        #define POI_USES_UV1
+        //endex
+        //ifex _AnisotropyMapUV!=2 && isNotAnimated(_AnisotropyMapUV) && _AnisotropyDirectionMapUV!=2 && isNotAnimated(_AnisotropyDirectionMapUV)
+        #define POI_USES_UV2
+        //endex
+        //ifex _AnisotropyMapUV!=3 && isNotAnimated(_AnisotropyMapUV) && _AnisotropyDirectionMapUV!=3 && isNotAnimated(_AnisotropyDirectionMapUV)
+        #define POI_USES_UV3
+        //endex
+        #if !defined(POI_PASS_SHADOW) && !defined(POI_PASS_DEPTH_ONLY)
+            #define POI_USES_TANGENT
+        #endif
     #endif
+    //ifex _MochieMetallicMapsUV!=1 && isNotAnimated(_MochieMetallicMapsUV) && _MochieMetallicMasksUV!=1 && isNotAnimated(_MochieMetallicMasksUV)
+    #define POI_USES_UV1
+    //endex
+    //ifex _MochieMetallicMapsUV!=2 && isNotAnimated(_MochieMetallicMapsUV) && _MochieMetallicMasksUV!=2 && isNotAnimated(_MochieMetallicMasksUV)
+    #define POI_USES_UV2
+    //endex
+    //ifex _MochieMetallicMapsUV!=3 && isNotAnimated(_MochieMetallicMapsUV) && _MochieMetallicMasksUV!=3 && isNotAnimated(_MochieMetallicMasksUV)
+    #define POI_USES_UV3
+    //endex
 #endif
 //endex
 //ifex _ClearCoatBRDF==0
@@ -297,6 +318,15 @@ _ClearCoatTPSMaskStrength ("Mask Strength", Range(0, 1)) = 1
     float _ClearCoatReflectionStrengthGlobalMaskBlendType;
     half _ClearCoatSpecularStrengthGlobalMask;
     float _ClearCoatSpecularStrengthGlobalMaskBlendType;
+    //ifex _ClearCoatMapsUV!=1 && isNotAnimated(_ClearCoatMapsUV)
+    #define POI_USES_UV1
+    //endex
+    //ifex _ClearCoatMapsUV!=2 && isNotAnimated(_ClearCoatMapsUV)
+    #define POI_USES_UV2
+    //endex
+    //ifex _ClearCoatMapsUV!=3 && isNotAnimated(_ClearCoatMapsUV)
+    #define POI_USES_UV3
+    //endex
 #endif
 //endex
 

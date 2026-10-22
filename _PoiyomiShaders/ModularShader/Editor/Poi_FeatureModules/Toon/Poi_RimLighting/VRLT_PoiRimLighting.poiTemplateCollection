@@ -321,6 +321,15 @@ _AudioLinkRim2ColorOverride ("Color", Color) = (1,1,1,1)
             float _AudioLinkRimColorOverrideBand;
             half4 _AudioLinkRimColorOverrideRamp;
         #endif
+        //ifex _RimTexUV!=1 && isNotAnimated(_RimTexUV) && _RimMaskUV!=1 && isNotAnimated(_RimMaskUV)
+        #define POI_USES_UV1
+        //endex
+        //ifex _RimTexUV!=2 && isNotAnimated(_RimTexUV) && _RimMaskUV!=2 && isNotAnimated(_RimMaskUV)
+        #define POI_USES_UV2
+        //endex
+        //ifex _RimTexUV!=3 && isNotAnimated(_RimTexUV) && _RimMaskUV!=3 && isNotAnimated(_RimMaskUV)
+        #define POI_USES_UV3
+        //endex
     #endif
 
     #ifdef _RIMSTYLE_UTS2
@@ -344,6 +353,15 @@ _AudioLinkRim2ColorOverride ("Color", Color) = (1,1,1,1)
             float _Set_RimLightMaskChannel;
         #endif
         half _Tweak_RimLightMaskLevel;
+        //ifex _Set_RimLightMaskUV!=1 && isNotAnimated(_Set_RimLightMaskUV)
+        #define POI_USES_UV1
+        //endex
+        //ifex _Set_RimLightMaskUV!=2 && isNotAnimated(_Set_RimLightMaskUV)
+        #define POI_USES_UV2
+        //endex
+        //ifex _Set_RimLightMaskUV!=3 && isNotAnimated(_Set_RimLightMaskUV)
+        #define POI_USES_UV3
+        //endex
     #endif
 
     #ifdef _RIMSTYLE_LILTOON
@@ -370,6 +388,15 @@ _AudioLinkRim2ColorOverride ("Color", Color) = (1,1,1,1)
         half _RimIndirBlur;
         half _RimMaskOnlyMask;
         int _RimBlendMode;
+        //ifex _RimColorTexUV!=1 && isNotAnimated(_RimColorTexUV)
+        #define POI_USES_UV1
+        //endex
+        //ifex _RimColorTexUV!=2 && isNotAnimated(_RimColorTexUV)
+        #define POI_USES_UV2
+        //endex
+        //ifex _RimColorTexUV!=3 && isNotAnimated(_RimColorTexUV)
+        #define POI_USES_UV3
+        //endex
     #endif
 
     half _RimGlobalMask;
@@ -433,6 +460,15 @@ _AudioLinkRim2ColorOverride ("Color", Color) = (1,1,1,1)
             float _AudioLinkRim2ColorOverrideBand;
             half4 _AudioLinkRim2ColorOverrideRamp;
         #endif
+        //ifex _Rim2TexUV!=1 && isNotAnimated(_Rim2TexUV) && _Rim2MaskUV!=1 && isNotAnimated(_Rim2MaskUV)
+        #define POI_USES_UV1
+        //endex
+        //ifex _Rim2TexUV!=2 && isNotAnimated(_Rim2TexUV) && _Rim2MaskUV!=2 && isNotAnimated(_Rim2MaskUV)
+        #define POI_USES_UV2
+        //endex
+        //ifex _Rim2TexUV!=3 && isNotAnimated(_Rim2TexUV) && _Rim2MaskUV!=3 && isNotAnimated(_Rim2MaskUV)
+        #define POI_USES_UV3
+        //endex
     #endif
 
     #ifdef _RIM2STYLE_UTS2
@@ -456,6 +492,15 @@ _AudioLinkRim2ColorOverride ("Color", Color) = (1,1,1,1)
             float _Set_Rim2LightMaskChannel;
         #endif
         half _Tweak_Rim2LightMaskLevel;
+        //ifex _Set_Rim2LightMaskUV!=1 && isNotAnimated(_Set_Rim2LightMaskUV)
+        #define POI_USES_UV1
+        //endex
+        //ifex _Set_Rim2LightMaskUV!=2 && isNotAnimated(_Set_Rim2LightMaskUV)
+        #define POI_USES_UV2
+        //endex
+        //ifex _Set_Rim2LightMaskUV!=3 && isNotAnimated(_Set_Rim2LightMaskUV)
+        #define POI_USES_UV3
+        //endex
     #endif
 
     #ifdef _RIM2STYLE_LILTOON
@@ -483,6 +528,15 @@ _AudioLinkRim2ColorOverride ("Color", Color) = (1,1,1,1)
         half _Rim2IndirBlur;
         half _Rim2MaskOnlyMask;
         int _Rim2BlendMode;
+        //ifex _Rim2ColorTexUV!=1 && isNotAnimated(_Rim2ColorTexUV)
+        #define POI_USES_UV1
+        //endex
+        //ifex _Rim2ColorTexUV!=2 && isNotAnimated(_Rim2ColorTexUV)
+        #define POI_USES_UV2
+        //endex
+        //ifex _Rim2ColorTexUV!=3 && isNotAnimated(_Rim2ColorTexUV)
+        #define POI_USES_UV3
+        //endex
     #endif
 
 

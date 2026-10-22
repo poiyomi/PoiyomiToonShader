@@ -67,6 +67,15 @@ _PPPosterizationAmount ("Steps", Range(1, 30)) = 4
 	float _ppHueSelectOrShift;
 	float _PPPosterization;
 	float _PPPosterizationAmount;
+	//ifex _PPMaskUV!=1 && isNotAnimated(_PPMaskUV)
+	#define POI_USES_UV1
+	//endex
+	//ifex _PPMaskUV!=2 && isNotAnimated(_PPMaskUV)
+	#define POI_USES_UV2
+	//endex
+	//ifex _PPMaskUV!=3 && isNotAnimated(_PPMaskUV)
+	#define POI_USES_UV3
+	//endex
 #endif
 //endex
 

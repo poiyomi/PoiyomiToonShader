@@ -41,16 +41,16 @@ _StochasticHexFallOffPower ("Falloff Power", Range(0, 20)) = 7
 #T#PoiStochasticFunction
 //ifex _StochasticMode!=0
 #if defined(_STOCHASTICMODE_DELIOT_HEITZ)
-	#define POI2D_SAMPLER_STOCHASTIC(tex, texSampler, uv, useStochastic) (useStochastic ? DeliotHeitzSampleTexture(tex, sampler##texSampler, uv) : POI2D_SAMPLER(tex, texSampler, uv))
-	#define POI2D_SAMPLER_PAN_STOCHASTIC(tex, texSampler, uv, pan, useStochastic) (useStochastic ? DeliotHeitzSampleTexture(tex, sampler##texSampler, POI_PAN_UV(uv, pan)) : POI2D_SAMPLER_PAN(tex, texSampler, uv, pan))
-	#define POI2D_SAMPLER_PANGRAD_STOCHASTIC(tex, texSampler, uv, pan, dx, dy, useStochastic) (useStochastic ? DeliotHeitzSampleTexture(tex, sampler##texSampler, POI_PAN_UV(uv, pan), dx, dy) : POI2D_SAMPLER_PANGRAD(tex, texSampler, uv, pan, dx, dy))
+	#define POI2D_SAMPLER_STOCHASTIC(tex, texSampler, uv, useStochastic) (PoiStochasticSample(tex, sampler##texSampler, uv, useStochastic))
+	#define POI2D_SAMPLER_PAN_STOCHASTIC(tex, texSampler, uv, pan, useStochastic) (PoiStochasticSample(tex, sampler##texSampler, POI_PAN_UV(uv, pan), useStochastic))
+	#define POI2D_SAMPLER_PANGRAD_STOCHASTIC(tex, texSampler, uv, pan, dx, dy, useStochastic) (PoiStochasticSampleGrad(tex, sampler##texSampler, POI_PAN_UV(uv, pan), dx, dy, useStochastic))
 #endif
 //endex
 //ifex _StochasticMode!=1
 #if defined(_STOCHASTICMODE_HEXTILE)
-	#define POI2D_SAMPLER_STOCHASTIC(tex, texSampler, uv, useStochastic) (useStochastic ? HextileSampleTexture(tex, sampler##texSampler, uv, false) : POI2D_SAMPLER(tex, texSampler, uv))
-	#define POI2D_SAMPLER_PAN_STOCHASTIC(tex, texSampler, uv, pan, useStochastic) (useStochastic ? HextileSampleTexture(tex, sampler##texSampler, POI_PAN_UV(uv, pan), false) : POI2D_SAMPLER_PAN(tex, texSampler, uv, pan))
-	#define POI2D_SAMPLER_PANGRAD_STOCHASTIC(tex, texSampler, uv, pan, dx, dy, useStochastic) (useStochastic ? HextileSampleTexture(tex, sampler##texSampler, POI_PAN_UV(uv, pan), false, dx, dy) : POI2D_SAMPLER_PANGRAD(tex, texSampler, uv, pan, dx, dy))
+	#define POI2D_SAMPLER_STOCHASTIC(tex, texSampler, uv, useStochastic) (PoiStochasticSample(tex, sampler##texSampler, uv, useStochastic))
+	#define POI2D_SAMPLER_PAN_STOCHASTIC(tex, texSampler, uv, pan, useStochastic) (PoiStochasticSample(tex, sampler##texSampler, POI_PAN_UV(uv, pan), useStochastic))
+	#define POI2D_SAMPLER_PANGRAD_STOCHASTIC(tex, texSampler, uv, pan, dx, dy, useStochastic) (PoiStochasticSampleGrad(tex, sampler##texSampler, POI_PAN_UV(uv, pan), dx, dy, useStochastic))
 #endif
 //endex
 
@@ -137,6 +137,27 @@ _StochasticHexFallOffPower ("Falloff Power", Range(0, 20)) = 7
 	{
 		float2 dx = ddx(uv), dy = ddy(uv);
 		return DeliotHeitzSampleTexture(tex, texSampler, uv, dx, dy);
+	}
+
+	// Branch instead of ?: so textures with stochastic off don't also pay for the stochastic samples
+	float4 PoiStochasticSample(Texture2D tex, SamplerState texSampler, float2 uv, float useStochastic)
+	{
+		UNITY_BRANCH
+		if (useStochastic)
+		{
+			return DeliotHeitzSampleTexture(tex, texSampler, uv);
+		}
+		return tex.Sample(texSampler, uv);
+	}
+
+	float4 PoiStochasticSampleGrad(Texture2D tex, SamplerState texSampler, float2 uv, float2 dx, float2 dy, float useStochastic)
+	{
+		UNITY_BRANCH
+		if (useStochastic)
+		{
+			return DeliotHeitzSampleTexture(tex, texSampler, uv, dx, dy);
+		}
+		return tex.SampleGrad(texSampler, uv, dx, dy);
 	}
 #endif // defined(_STOCHASTICMODE_DELIOT_HEITZ)
 //endex
@@ -260,6 +281,27 @@ _StochasticHexFallOffPower ("Falloff Power", Range(0, 20)) = 7
 	float4 HextileSampleTexture(Texture2D tex, SamplerState texSampler, float2 uv, bool isNormalMap)
 	{
 		return HextileSampleTexture(tex, texSampler, uv, isNormalMap, ddx(uv), ddy(uv));
+	}
+
+	// Branch instead of ?: so textures with stochastic off don't also pay for the stochastic samples
+	float4 PoiStochasticSample(Texture2D tex, SamplerState texSampler, float2 uv, float useStochastic)
+	{
+		UNITY_BRANCH
+		if (useStochastic)
+		{
+			return HextileSampleTexture(tex, texSampler, uv, false);
+		}
+		return tex.Sample(texSampler, uv);
+	}
+
+	float4 PoiStochasticSampleGrad(Texture2D tex, SamplerState texSampler, float2 uv, float2 dx, float2 dy, float useStochastic)
+	{
+		UNITY_BRANCH
+		if (useStochastic)
+		{
+			return HextileSampleTexture(tex, texSampler, uv, false, dx, dy);
+		}
+		return tex.SampleGrad(texSampler, uv, dx, dy);
 	}
 #endif // defined(_STOCHASTICMODE_HEXTILE)
 //endex

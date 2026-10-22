@@ -77,12 +77,22 @@ _ParallaxAnisotropyScale ("Anisotropy Scale--{ condition_showS:_ParallaxAnisotro
 	half _ParallaxAnisotropyScale;
 	float4 _ParallaxLOD;
 #endif
+//ifex _HeightMapUV!=1 && isNotAnimated(_HeightMapUV) && _HeightmaskUV!=1 && isNotAnimated(_HeightmaskUV) && _ParallaxUV!=1 && isNotAnimated(_ParallaxUV)
+#define POI_USES_UV1
+//endex
+//ifex _HeightMapUV!=2 && isNotAnimated(_HeightMapUV) && _HeightmaskUV!=2 && isNotAnimated(_HeightmaskUV) && _ParallaxUV!=2 && isNotAnimated(_ParallaxUV)
+#define POI_USES_UV2
+//endex
+//ifex _HeightMapUV!=3 && isNotAnimated(_HeightMapUV) && _HeightmaskUV!=3 && isNotAnimated(_HeightmaskUV) && _ParallaxUV!=3 && isNotAnimated(_ParallaxUV)
+#define POI_USES_UV3
+//endex
 //endex
 
 #T#PoiParallaxVariables
 //ifex _PoiParallax==0
 #if defined(POI_PARALLAX) && (defined(PROP_HEIGHTMAP) || !defined(OPTIMIZER_ENABLED))
 	Texture2D _HeightMap;
+	#define POI_USES_TANGENT
 	#if defined(PROP_HEIGHTMASK) || !defined(OPTIMIZER_ENABLED)
 		Texture2D _Heightmask;
 	#endif

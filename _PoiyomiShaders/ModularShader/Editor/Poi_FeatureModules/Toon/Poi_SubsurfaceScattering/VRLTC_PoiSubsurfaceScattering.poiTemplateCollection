@@ -46,6 +46,15 @@ _SSSShadowStrength ("Shadow Strength", Range(0, 1)) = 0.25
     half _SSSShadowStrength;
     float _SSSGlobalMaskIndex;
     float _SSSGlobalMaskBlendType;
+    //ifex _SSSThicknessMapUV!=1 && isNotAnimated(_SSSThicknessMapUV)
+    #define POI_USES_UV1
+    //endex
+    //ifex _SSSThicknessMapUV!=2 && isNotAnimated(_SSSThicknessMapUV)
+    #define POI_USES_UV2
+    //endex
+    //ifex _SSSThicknessMapUV!=3 && isNotAnimated(_SSSThicknessMapUV)
+    #define POI_USES_UV3
+    //endex
 #endif
 //endex
 

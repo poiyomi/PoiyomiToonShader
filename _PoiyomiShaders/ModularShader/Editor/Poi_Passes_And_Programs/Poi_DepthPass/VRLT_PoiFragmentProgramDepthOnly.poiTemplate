@@ -25,7 +25,7 @@
 	clip(poiFragData.alpha - _Cutoff);
 
 	#if POI_PIPE == POI_URP
-    	outDepth = i.pos.z + POI_SAFE_RGB0.r;
+    	outDepth = i.pos.z + POI_SAFE_MAINTEX_RGB0.r;
 	#endif
 
 	#if POI_PIPE == POI_BIRP

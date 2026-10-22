@@ -2,7 +2,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 {
 	Properties
 	{
-		[HideInInspector] shader_master_label ("<color=#E75898ff>Poiyomi 10.0.26</color>", Float) = 0
+		[HideInInspector] shader_master_label ("<color=#E75898ff>Poiyomi 10.0.27</color>", Float) = 0
 		[HideInInspector] shader_is_using_thry_editor ("", Float) = 0
 		[HideInInspector] shader_locale ("0db0b86376c3dca4b9a6828ef8615fe0", Float) = 0
 		[HideInInspector] footer_website ("{texture:{name:icon-poilogo,height:24},action:{type:URL,data:https://www.poiyomi.com},hover:WEBSITE}", Float) = 0
@@ -286,7 +286,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 		[HideInInspector] m_end_Alpha ("Alpha Options", Float) = 0
 		
 		//ifex _PoiSkinEnabled==0
-		[HideInInspector] m_start_PoiSkin (" Skin (Experimental)--{reference_property:_PoiSkinEnabled,button_help:{text:Tutorial,action:{type:URL,data:https://www.poiyomi.com/color-and-normals/skin},hover:Documentation}}", Float) = 0
+		[HideInInspector] m_start_PoiSkin (" Skin--{reference_property:_PoiSkinEnabled,button_help:{text:Tutorial,action:{type:URL,data:https://www.poiyomi.com/color-and-normals/skin},hover:Documentation}}", Float) = 0
 		[HideInInspector][ThryToggle(POI_SKIN)]_PoiSkinEnabled ("Enable", Float) = 0
 		[ThryWideEnum(None, 0, Porcelain, 1, Light, 2, Golden, 3, Medium, 4, Olive, 5, Tan, 6, Brown, 7, Dark Brown, 8, Deep, 9)]_PoiSkinPreset ("Skin Tone Preset--{on_value_actions:[{value:1,actions:[{type:SET_PROPERTY,data:_PoiSkinMelanin=0.0},{type:SET_PROPERTY,data:_PoiSkinMelaninRedness=0.5},{type:SET_PROPERTY,data:_PoiSkinHemoglobin=0.05}]},{value:2,actions:[{type:SET_PROPERTY,data:_PoiSkinMelanin=0.2},{type:SET_PROPERTY,data:_PoiSkinMelaninRedness=0.5},{type:SET_PROPERTY,data:_PoiSkinHemoglobin=0.05}]},{value:3,actions:[{type:SET_PROPERTY,data:_PoiSkinMelanin=0.25},{type:SET_PROPERTY,data:_PoiSkinMelaninRedness=0.75},{type:SET_PROPERTY,data:_PoiSkinHemoglobin=0.0}]},{value:4,actions:[{type:SET_PROPERTY,data:_PoiSkinMelanin=0.3},{type:SET_PROPERTY,data:_PoiSkinMelaninRedness=0.5},{type:SET_PROPERTY,data:_PoiSkinHemoglobin=0.0}]},{value:5,actions:[{type:SET_PROPERTY,data:_PoiSkinMelanin=0.35},{type:SET_PROPERTY,data:_PoiSkinMelaninRedness=0.25},{type:SET_PROPERTY,data:_PoiSkinHemoglobin=0.0}]},{value:6,actions:[{type:SET_PROPERTY,data:_PoiSkinMelanin=0.4},{type:SET_PROPERTY,data:_PoiSkinMelaninRedness=0.75},{type:SET_PROPERTY,data:_PoiSkinHemoglobin=0.0}]},{value:7,actions:[{type:SET_PROPERTY,data:_PoiSkinMelanin=0.5},{type:SET_PROPERTY,data:_PoiSkinMelaninRedness=0.5},{type:SET_PROPERTY,data:_PoiSkinHemoglobin=0.0}]},{value:8,actions:[{type:SET_PROPERTY,data:_PoiSkinMelanin=0.65},{type:SET_PROPERTY,data:_PoiSkinMelaninRedness=0.5},{type:SET_PROPERTY,data:_PoiSkinHemoglobin=0.0}]},{value:9,actions:[{type:SET_PROPERTY,data:_PoiSkinMelanin=0.85},{type:SET_PROPERTY,data:_PoiSkinMelaninRedness=0.5},{type:SET_PROPERTY,data:_PoiSkinHemoglobin=0.0}]}]}", Int) = 0
 		[sRGBWarning][ThryRGBAPacker(Mask, Freckles, Tan, Unused, Linear, false)]_PoiSkinDetailMap ("Skin Detail Map--{tooltip:R = Mask  G = Freckles  B = Tan}", 2D) = "black" {}
@@ -6183,6 +6183,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 		#define POI_SAFE_RGB0 half4(mainTexture.rgb * .0001h, 0.0h)
 		#define POI_SAFE_RGB1 half4(mainTexture.rgb * .0001h, 1.0h)
 		#define POI_SAFE_RGBA mainTexture
+		#define POI_SAFE_MAINTEX_RGB0 half4(UNITY_SAMPLE_TEX2D_LOD(_MainTex, float2(0, 0), 0).rgb * .0001h, 0.0h)
 		
 		#if POI_PIPE == POI_URP || defined(UNITY_COMPILER_HLSL) || defined(SHADER_API_PSSL) || defined(UNITY_COMPILER_HLSLCC)
 		#define PoiInitStruct(type,name) name = (type)0;
@@ -7279,6 +7280,17 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 		float poiMax(float4 i)
 		{
 			return max(max(max(i.x, i.y), i.z), i.w);
+		}
+		
+		float poiSelect5(const float values[5], uint index)
+		{
+			return index == 1 ? values[1] : index == 2 ? values[2] : index == 3 ? values[3] : index == 4 ? values[4] : values[0];
+		}
+		
+		float poiSelect8(const float values[8], uint index)
+		{
+			return index < 4 ? (index == 1 ? values[1] : index == 2 ? values[2] : index == 3 ? values[3] : values[0])
+			: (index == 5 ? values[5] : index == 6 ? values[6] : index == 7 ? values[7] : values[4]);
 		}
 		
 		half3 calculateNormal(in half3 baseNormal, in PoiMesh poiMesh, in Texture2D normalTexture, in SamplerState mainSampler, in float4 normal_ST, in float2 normalPan, in float normalUV, in half normalIntensity)
@@ -8481,8 +8493,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 		half3 MaxLuminance(half3 rgb, half maxLuminance)
 		{
 			half currentLuminance = dot(rgb, float3(0.299, 0.587, 0.114));
-			half luminanceRatio = (currentLuminance != 0) ? maxLuminance / max(currentLuminance, 0.00001) : 1.0;
-			return lerp(rgb, rgb * luminanceRatio, currentLuminance > maxLuminance);
+			return currentLuminance > maxLuminance ? rgb * (maxLuminance / max(currentLuminance, 0.00001)) : rgb;
 		}
 		
 		half OpenLitGray(half3 rgb)
@@ -9269,6 +9280,20 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			#pragma dynamic_branch _ FOG_EXP2
 			#pragma multi_compile_fwdbase
 			#pragma multi_compile_fragment _ VERTEXLIGHT_ON
+			//ifex 0==0
+			#define POI_KEEP_SHADOWS_SCREEN
+			//endex
+			//ifex _LightingCastedShadows!=0 || isAnimated(_LightingCastedShadows) || _LightDataDebugEnabled!=0
+			//ifex _BacklightEnabled!=0 && (_BacklightReceiveShadow!=0 || isAnimated(_BacklightReceiveShadow))
+			//ifex _LightingMode==1 && (_ShadowReceive!=0 || _Shadow2ndReceive!=0 || _Shadow3rdReceive!=0 || isAnimated(_ShadowReceive) || isAnimated(_Shadow2ndReceive) || isAnimated(_Shadow3rdReceive))
+			//ifex _StylizedSpecular!=0 && _StylizedReflectionMode==1 && (_SpecularToon==0 || isAnimated(_SpecularToon))
+			#if defined(OPTIMIZER_ENABLED) && !defined(POI_WORLD) && !defined(POI_KEEP_SHADOWS_SCREEN)
+			#pragma skip_variants SHADOWS_SCREEN
+			#endif
+			//endex
+			//endex
+			//endex
+			//endex
 			#endif
 			
 			// BIRP gets these from multi_compile_fwdbase
@@ -9449,6 +9474,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _LightDataSDFMapLOD;
 			float _LightDataSDFBlendY;
 			#endif
+			//ifex _LightingAOMapsUV!=1 && isNotAnimated(_LightingAOMapsUV) && _LightingDetailShadowMapsUV!=1 && isNotAnimated(_LightingDetailShadowMapsUV) && _LightingShadowMasksUV!=1 && isNotAnimated(_LightingShadowMasksUV) && _LightDataSDFMapUV!=1 && isNotAnimated(_LightDataSDFMapUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _LightingAOMapsUV!=2 && isNotAnimated(_LightingAOMapsUV) && _LightingDetailShadowMapsUV!=2 && isNotAnimated(_LightingDetailShadowMapsUV) && _LightingShadowMasksUV!=2 && isNotAnimated(_LightingShadowMasksUV) && _LightDataSDFMapUV!=2 && isNotAnimated(_LightDataSDFMapUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _LightingAOMapsUV!=3 && isNotAnimated(_LightingAOMapsUV) && _LightingDetailShadowMapsUV!=3 && isNotAnimated(_LightingDetailShadowMapsUV) && _LightingShadowMasksUV!=3 && isNotAnimated(_LightingShadowMasksUV) && _LightDataSDFMapUV!=3 && isNotAnimated(_LightDataSDFMapUV)
+			#define POI_USES_UV3
+			//endex
 			float _LightingDirectionMode;
 			float3 _LightngForcedDirection;
 			float _LightingViewDirOffsetPitch;
@@ -9509,6 +9543,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _Bump2ndScaleMaskUV;
 			float _Bump2ndScaleMaskGlobalMask;
 			float _Bump2ndScaleMaskGlobalMaskBlendType;
+			//ifex _Bump2ndMapUV!=1 && isNotAnimated(_Bump2ndMapUV) && _Bump2ndScaleMaskUV!=1 && isNotAnimated(_Bump2ndScaleMaskUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _Bump2ndMapUV!=2 && isNotAnimated(_Bump2ndMapUV) && _Bump2ndScaleMaskUV!=2 && isNotAnimated(_Bump2ndScaleMaskUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _Bump2ndMapUV!=3 && isNotAnimated(_Bump2ndMapUV) && _Bump2ndScaleMaskUV!=3 && isNotAnimated(_Bump2ndScaleMaskUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			//endex
 			float4 _AlphaMask_ST;
@@ -9564,6 +9607,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			half _ColorGradingToggle;
 			float _MainGradationStrength;
 			float _MainGradationMaskChannel;
+			//ifex _MainColorAdjustTextureUV!=1 && isNotAnimated(_MainColorAdjustTextureUV) && _MainTintTextureUV!=1 && isNotAnimated(_MainTintTextureUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _MainColorAdjustTextureUV!=2 && isNotAnimated(_MainColorAdjustTextureUV) && _MainTintTextureUV!=2 && isNotAnimated(_MainTintTextureUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _MainColorAdjustTextureUV!=3 && isNotAnimated(_MainColorAdjustTextureUV) && _MainTintTextureUV!=3 && isNotAnimated(_MainTintTextureUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			//endex
 			
@@ -9602,6 +9654,9 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			half _AlphaFresnelInvert;
 			half _AlphaFresnelGlobalMask;
 			float _AlphaFresnelGlobalMaskBlendType;
+			#if defined(POI_PASS_SHADOW) || defined(POI_PASS_DEPTH_ONLY)
+			#define POI_USES_TANGENT
+			#endif
 			//endex
 			
 			//ifex _AlphaAngular==0 && isNotAnimated(_AlphaAngular)
@@ -9635,6 +9690,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _BentNormalMapStochastic;
 			half _BentNormalSpecOccStrength;
 			float _BentNormalIndirectDiffuse;
+			//ifex _BentNormalMapUV!=1 && isNotAnimated(_BentNormalMapUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _BentNormalMapUV!=2 && isNotAnimated(_BentNormalMapUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _BentNormalMapUV!=3 && isNotAnimated(_BentNormalMapUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			//endex
 			
@@ -9732,6 +9796,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _AudioLinkOutlineHighlightColorThemeIndex;
 			half4 _AudioLinkOutlineHighlightColorRamp;
 			#endif
+			//ifex _OutlineMaskUV!=1 && isNotAnimated(_OutlineMaskUV) && _OutlineTextureUV!=1 && isNotAnimated(_OutlineTextureUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _OutlineMaskUV!=2 && isNotAnimated(_OutlineMaskUV) && _OutlineTextureUV!=2 && isNotAnimated(_OutlineTextureUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _OutlineMaskUV!=3 && isNotAnimated(_OutlineMaskUV) && _OutlineTextureUV!=3 && isNotAnimated(_OutlineTextureUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			//endex
 			
@@ -9810,6 +9883,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			half4 _GlobalMaskTexture3SplitPan_B;
 			float4 _GlobalMaskTexture3SplitTilingOffset_A;
 			half4 _GlobalMaskTexture3SplitPan_A;
+			//ifex _GlobalMaskTexture0UV!=1 && isNotAnimated(_GlobalMaskTexture0UV) && _GlobalMaskTexture1UV!=1 && isNotAnimated(_GlobalMaskTexture1UV) && _GlobalMaskTexture2UV!=1 && isNotAnimated(_GlobalMaskTexture2UV) && _GlobalMaskTexture3UV!=1 && isNotAnimated(_GlobalMaskTexture3UV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _GlobalMaskTexture0UV!=2 && isNotAnimated(_GlobalMaskTexture0UV) && _GlobalMaskTexture1UV!=2 && isNotAnimated(_GlobalMaskTexture1UV) && _GlobalMaskTexture2UV!=2 && isNotAnimated(_GlobalMaskTexture2UV) && _GlobalMaskTexture3UV!=2 && isNotAnimated(_GlobalMaskTexture3UV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _GlobalMaskTexture0UV!=3 && isNotAnimated(_GlobalMaskTexture0UV) && _GlobalMaskTexture1UV!=3 && isNotAnimated(_GlobalMaskTexture1UV) && _GlobalMaskTexture2UV!=3 && isNotAnimated(_GlobalMaskTexture2UV) && _GlobalMaskTexture3UV!=3 && isNotAnimated(_GlobalMaskTexture3UV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			//endex
 			//ifex _GlobalMaskOptionsEnable==0
@@ -10190,6 +10272,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			half2 _DistortionStrength1AudioLink;
 			half _DistortionStrength1AudioLinkBand;
 			#endif
+			//ifex _DistortionFlowTextureUV!=1 && isNotAnimated(_DistortionFlowTextureUV) && _DistortionFlowTexture1UV!=1 && isNotAnimated(_DistortionFlowTexture1UV) && _DistortionMaskUV!=1 && isNotAnimated(_DistortionMaskUV) && _DistortionUvToDistort!=1 && isNotAnimated(_DistortionUvToDistort)
+			#define POI_USES_UV1
+			//endex
+			//ifex _DistortionFlowTextureUV!=2 && isNotAnimated(_DistortionFlowTextureUV) && _DistortionFlowTexture1UV!=2 && isNotAnimated(_DistortionFlowTexture1UV) && _DistortionMaskUV!=2 && isNotAnimated(_DistortionMaskUV) && _DistortionUvToDistort!=2 && isNotAnimated(_DistortionUvToDistort)
+			#define POI_USES_UV2
+			//endex
+			//ifex _DistortionFlowTextureUV!=3 && isNotAnimated(_DistortionFlowTextureUV) && _DistortionFlowTexture1UV!=3 && isNotAnimated(_DistortionFlowTexture1UV) && _DistortionMaskUV!=3 && isNotAnimated(_DistortionMaskUV) && _DistortionUvToDistort!=3 && isNotAnimated(_DistortionUvToDistort)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			//endex
 			float2 _UVSettingsTiling0;
@@ -10217,6 +10308,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			int _StereoEnabled;
 			int _PanoUseBothEyes;
 			float _PolarUV;
+			//ifex _PolarUV!=1 && isNotAnimated(_PolarUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _PolarUV!=2 && isNotAnimated(_PolarUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _PolarUV!=3 && isNotAnimated(_PolarUV)
+			#define POI_USES_UV3
+			//endex
 			float _PolarMode;
 			float2 _PolarCenter;
 			float _PolarRadialScale;
@@ -10267,6 +10367,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _UDIMFaceDiscardRow0_1;
 			float _UDIMFaceDiscardRow0_2;
 			float _UDIMFaceDiscardRow0_3;
+			//ifex _UDIMDiscardUV!=1 && isNotAnimated(_UDIMDiscardUV) && _UDIMFaceDiscardUV!=1 && isNotAnimated(_UDIMFaceDiscardUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _UDIMDiscardUV!=2 && isNotAnimated(_UDIMDiscardUV) && _UDIMFaceDiscardUV!=2 && isNotAnimated(_UDIMFaceDiscardUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _UDIMDiscardUV!=3 && isNotAnimated(_UDIMDiscardUV) && _UDIMFaceDiscardUV!=3 && isNotAnimated(_UDIMFaceDiscardUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			//endex
 			
@@ -10304,6 +10413,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			half _ParallaxAnisotropyScale;
 			float4 _ParallaxLOD;
 			#endif
+			//ifex _HeightMapUV!=1 && isNotAnimated(_HeightMapUV) && _HeightmaskUV!=1 && isNotAnimated(_HeightmaskUV) && _ParallaxUV!=1 && isNotAnimated(_ParallaxUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _HeightMapUV!=2 && isNotAnimated(_HeightMapUV) && _HeightmaskUV!=2 && isNotAnimated(_HeightmaskUV) && _ParallaxUV!=2 && isNotAnimated(_ParallaxUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _HeightMapUV!=3 && isNotAnimated(_HeightMapUV) && _HeightmaskUV!=3 && isNotAnimated(_HeightmaskUV) && _ParallaxUV!=3 && isNotAnimated(_ParallaxUV)
+			#define POI_USES_UV3
+			//endex
 			//endex
 			
 			//ifex _BlackLightMaskingEnabled==0
@@ -10353,6 +10471,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			half _DetailBrightness;
 			half _DetailTexGlobalMask;
 			float _DetailTexGlobalMaskBlendType;
+			//ifex _DetailMaskUV!=1 && isNotAnimated(_DetailMaskUV) && _DetailNormalMapUV!=1 && isNotAnimated(_DetailNormalMapUV) && _DetailTexUV!=1 && isNotAnimated(_DetailTexUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _DetailMaskUV!=2 && isNotAnimated(_DetailMaskUV) && _DetailNormalMapUV!=2 && isNotAnimated(_DetailNormalMapUV) && _DetailTexUV!=2 && isNotAnimated(_DetailTexUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _DetailMaskUV!=3 && isNotAnimated(_DetailMaskUV) && _DetailNormalMapUV!=3 && isNotAnimated(_DetailNormalMapUV) && _DetailTexUV!=3 && isNotAnimated(_DetailTexUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			//endex
 			
@@ -10605,6 +10732,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float4 _PoiSkinTanMapTiling;
 			float _PoiSkinTanAmount;
 			float _PoiSkinTanRednessShift;
+			//ifex _PoiSkinFreckleMapUV!=1 && isNotAnimated(_PoiSkinFreckleMapUV) && _PoiSkinTanMapUV!=1 && isNotAnimated(_PoiSkinTanMapUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _PoiSkinFreckleMapUV!=2 && isNotAnimated(_PoiSkinFreckleMapUV) && _PoiSkinTanMapUV!=2 && isNotAnimated(_PoiSkinTanMapUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _PoiSkinFreckleMapUV!=3 && isNotAnimated(_PoiSkinFreckleMapUV) && _PoiSkinTanMapUV!=3 && isNotAnimated(_PoiSkinTanMapUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			//endex
 			
@@ -10647,6 +10783,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _BackFaceHueShiftSpeed;
 			half _BackFaceEmissionLimiter;
 			float _BackFaceHueSelectOrShift;
+			//ifex _BackFaceTextureUV!=1 && isNotAnimated(_BackFaceTextureUV) && _BackFaceMaskUV!=1 && isNotAnimated(_BackFaceMaskUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _BackFaceTextureUV!=2 && isNotAnimated(_BackFaceTextureUV) && _BackFaceMaskUV!=2 && isNotAnimated(_BackFaceMaskUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _BackFaceTextureUV!=3 && isNotAnimated(_BackFaceTextureUV) && _BackFaceMaskUV!=3 && isNotAnimated(_BackFaceMaskUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			//endex
 			
@@ -10813,6 +10958,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float4 _RgbNormalABlendSources;
 			
 			float _RGBMaskType;
+			//ifex _RGBMaskUV!=1 && isNotAnimated(_RGBMaskUV) && _RGBAMetallicMapsUV!=1 && isNotAnimated(_RGBAMetallicMapsUV) && _RGBARedPBRUV!=1 && isNotAnimated(_RGBARedPBRUV) && _RGBAGreenPBRUV!=1 && isNotAnimated(_RGBAGreenPBRUV) && _RGBABluePBRUV!=1 && isNotAnimated(_RGBABluePBRUV) && _RGBAAlphaPBRUV!=1 && isNotAnimated(_RGBAAlphaPBRUV) && _RGBASmoothnessMapsUV!=1 && isNotAnimated(_RGBASmoothnessMapsUV) && _RedTextureUV!=1 && isNotAnimated(_RedTextureUV) && _RgbNormalRUV!=1 && isNotAnimated(_RgbNormalRUV) && _GreenTextureUV!=1 && isNotAnimated(_GreenTextureUV) && _RgbNormalGUV!=1 && isNotAnimated(_RgbNormalGUV) && _BlueTextureUV!=1 && isNotAnimated(_BlueTextureUV) && _RgbNormalBUV!=1 && isNotAnimated(_RgbNormalBUV) && _AlphaTextureUV!=1 && isNotAnimated(_AlphaTextureUV) && _RgbNormalAUV!=1 && isNotAnimated(_RgbNormalAUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _RGBMaskUV!=2 && isNotAnimated(_RGBMaskUV) && _RGBAMetallicMapsUV!=2 && isNotAnimated(_RGBAMetallicMapsUV) && _RGBARedPBRUV!=2 && isNotAnimated(_RGBARedPBRUV) && _RGBAGreenPBRUV!=2 && isNotAnimated(_RGBAGreenPBRUV) && _RGBABluePBRUV!=2 && isNotAnimated(_RGBABluePBRUV) && _RGBAAlphaPBRUV!=2 && isNotAnimated(_RGBAAlphaPBRUV) && _RGBASmoothnessMapsUV!=2 && isNotAnimated(_RGBASmoothnessMapsUV) && _RedTextureUV!=2 && isNotAnimated(_RedTextureUV) && _RgbNormalRUV!=2 && isNotAnimated(_RgbNormalRUV) && _GreenTextureUV!=2 && isNotAnimated(_GreenTextureUV) && _RgbNormalGUV!=2 && isNotAnimated(_RgbNormalGUV) && _BlueTextureUV!=2 && isNotAnimated(_BlueTextureUV) && _RgbNormalBUV!=2 && isNotAnimated(_RgbNormalBUV) && _AlphaTextureUV!=2 && isNotAnimated(_AlphaTextureUV) && _RgbNormalAUV!=2 && isNotAnimated(_RgbNormalAUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _RGBMaskUV!=3 && isNotAnimated(_RGBMaskUV) && _RGBAMetallicMapsUV!=3 && isNotAnimated(_RGBAMetallicMapsUV) && _RGBARedPBRUV!=3 && isNotAnimated(_RGBARedPBRUV) && _RGBAGreenPBRUV!=3 && isNotAnimated(_RGBAGreenPBRUV) && _RGBABluePBRUV!=3 && isNotAnimated(_RGBABluePBRUV) && _RGBAAlphaPBRUV!=3 && isNotAnimated(_RGBAAlphaPBRUV) && _RGBASmoothnessMapsUV!=3 && isNotAnimated(_RGBASmoothnessMapsUV) && _RedTextureUV!=3 && isNotAnimated(_RedTextureUV) && _RgbNormalRUV!=3 && isNotAnimated(_RgbNormalRUV) && _GreenTextureUV!=3 && isNotAnimated(_GreenTextureUV) && _RgbNormalGUV!=3 && isNotAnimated(_RgbNormalGUV) && _BlueTextureUV!=3 && isNotAnimated(_BlueTextureUV) && _RgbNormalBUV!=3 && isNotAnimated(_RgbNormalBUV) && _AlphaTextureUV!=3 && isNotAnimated(_AlphaTextureUV) && _RgbNormalAUV!=3 && isNotAnimated(_RgbNormalAUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			//endex
 			
@@ -10829,6 +10983,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			int _LTCGI_UsePBR;
 			int _LTCGI_UseEO;
 			int _LTCGI_AnimToggle;
+			#define POI_USES_UV1
 			#endif
 			//endex
 			
@@ -10850,6 +11005,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _ShadowOffset;
 			int _ToonRampCount;
 			int _ToonRampUVSelector;
+			//ifex (_ToonRampCount<=1 && isNotAnimated(_ToonRampCount)) || (_ToonRampUVSelector!=1 && isNotAnimated(_ToonRampUVSelector))
+			#define POI_USES_UV1
+			//endex
+			//ifex (_ToonRampCount<=1 && isNotAnimated(_ToonRampCount)) || (_ToonRampUVSelector!=2 && isNotAnimated(_ToonRampUVSelector))
+			#define POI_USES_UV2
+			//endex
+			//ifex (_ToonRampCount<=1 && isNotAnimated(_ToonRampCount)) || (_ToonRampUVSelector!=3 && isNotAnimated(_ToonRampUVSelector))
+			#define POI_USES_UV3
+			//endex
 			#endif
 			
 			#ifdef _LIGHTINGMODE_WRAPPED
@@ -10880,6 +11044,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _ShadeColor_Step;
 			float _1st2nd_Shades_Feather;
 			float _ShadingShadeMapBlendType;
+			//ifex _1st_ShadeMapUV!=1 && isNotAnimated(_1st_ShadeMapUV) && _2nd_ShadeMapUV!=1 && isNotAnimated(_2nd_ShadeMapUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _1st_ShadeMapUV!=2 && isNotAnimated(_1st_ShadeMapUV) && _2nd_ShadeMapUV!=2 && isNotAnimated(_2nd_ShadeMapUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _1st_ShadeMapUV!=3 && isNotAnimated(_1st_ShadeMapUV) && _2nd_ShadeMapUV!=3 && isNotAnimated(_2nd_ShadeMapUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			
 			#ifdef _LIGHTINGMODE_SKIN
@@ -10896,6 +11069,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _SkinScatteringStability;
 			float3 _SssTransmissionAbsorption;
 			half3 _SssColorBleedAoWeights;
+			//ifex _SkinThicknessMapUV!=1 && isNotAnimated(_SkinThicknessMapUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _SkinThicknessMapUV!=2 && isNotAnimated(_SkinThicknessMapUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _SkinThicknessMapUV!=3 && isNotAnimated(_SkinThicknessMapUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			
 			#ifdef _LIGHTINGMODE_MULTILAYER_MATH
@@ -10968,6 +11150,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			half _ShadowFlatBorder;
 			half _ShadowFlatBlur;
 			half _MultilayerShadowStrength;
+			//ifex _ShadowBorderMaskUV!=1 && isNotAnimated(_ShadowBorderMaskUV) && _ShadowColorTexUV!=1 && isNotAnimated(_ShadowColorTexUV) && _MultilayerMathBlurMapUV!=1 && isNotAnimated(_MultilayerMathBlurMapUV) && _Shadow2ndColorTexUV!=1 && isNotAnimated(_Shadow2ndColorTexUV) && _Shadow3rdColorTexUV!=1 && isNotAnimated(_Shadow3rdColorTexUV) && _ShadowStrengthMaskUV!=1 && isNotAnimated(_ShadowStrengthMaskUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _ShadowBorderMaskUV!=2 && isNotAnimated(_ShadowBorderMaskUV) && _ShadowColorTexUV!=2 && isNotAnimated(_ShadowColorTexUV) && _MultilayerMathBlurMapUV!=2 && isNotAnimated(_MultilayerMathBlurMapUV) && _Shadow2ndColorTexUV!=2 && isNotAnimated(_Shadow2ndColorTexUV) && _Shadow3rdColorTexUV!=2 && isNotAnimated(_Shadow3rdColorTexUV) && _ShadowStrengthMaskUV!=2 && isNotAnimated(_ShadowStrengthMaskUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _ShadowBorderMaskUV!=3 && isNotAnimated(_ShadowBorderMaskUV) && _ShadowColorTexUV!=3 && isNotAnimated(_ShadowColorTexUV) && _MultilayerMathBlurMapUV!=3 && isNotAnimated(_MultilayerMathBlurMapUV) && _Shadow2ndColorTexUV!=3 && isNotAnimated(_Shadow2ndColorTexUV) && _Shadow3rdColorTexUV!=3 && isNotAnimated(_Shadow3rdColorTexUV) && _ShadowStrengthMaskUV!=3 && isNotAnimated(_ShadowStrengthMaskUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			
 			#ifdef _LIGHTINGMODE_FLAT
@@ -10992,6 +11183,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _ClothReflectanceGlobalMaskBlendType;
 			half _ClothSmoothnessGlobalMask;
 			float _ClothSmoothnessGlobalMaskBlendType;
+			//ifex _ClothMetallicSmoothnessMapUV!=1 && isNotAnimated(_ClothMetallicSmoothnessMapUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _ClothMetallicSmoothnessMapUV!=2 && isNotAnimated(_ClothMetallicSmoothnessMapUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _ClothMetallicSmoothnessMapUV!=3 && isNotAnimated(_ClothMetallicSmoothnessMapUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			
 			#ifdef _LIGHTINGMODE_SDF
@@ -11003,6 +11203,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _SDFBlur;
 			float4 _SDFForward;
 			float4 _SDFLeft;
+			//ifex _SDFShadingTextureUV!=1 && isNotAnimated(_SDFShadingTextureUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _SDFShadingTextureUV!=2 && isNotAnimated(_SDFShadingTextureUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _SDFShadingTextureUV!=3 && isNotAnimated(_SDFShadingTextureUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			
 			// Additive
@@ -11017,6 +11226,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float2 _DecalMaskPan;
 			float _DecalMaskUV;
 			#endif
+			//ifex _DecalMaskUV!=1 && isNotAnimated(_DecalMaskUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _DecalMaskUV!=2 && isNotAnimated(_DecalMaskUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _DecalMaskUV!=3 && isNotAnimated(_DecalMaskUV)
+			#define POI_USES_UV3
+			//endex
 			//endex
 			
 			//ifex _DecalEnabled==0
@@ -11099,6 +11317,18 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _AudioLinkDecal0ColorOverrideBand;
 			half4 _AudioLinkDecal0ColorOverrideRamp;
 			#endif
+			//ifex _DecalTextureUV!=1 && isNotAnimated(_DecalTextureUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _DecalTextureUV!=2 && isNotAnimated(_DecalTextureUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _DecalTextureUV!=3 && isNotAnimated(_DecalTextureUV)
+			#define POI_USES_UV3
+			//endex
+			//ifex _DecalMirroredUVMode==0 && isNotAnimated(_DecalMirroredUVMode) && _Decal0Depth==0 && isNotAnimated(_Decal0Depth)
+			#define POI_USES_TANGENT
+			//endex
 			#endif
 			//endex
 			
@@ -11182,6 +11412,18 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _AudioLinkDecal1ColorOverrideBand;
 			half4 _AudioLinkDecal1ColorOverrideRamp;
 			#endif
+			//ifex _DecalTexture1UV!=1 && isNotAnimated(_DecalTexture1UV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _DecalTexture1UV!=2 && isNotAnimated(_DecalTexture1UV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _DecalTexture1UV!=3 && isNotAnimated(_DecalTexture1UV)
+			#define POI_USES_UV3
+			//endex
+			//ifex _DecalMirroredUVMode1==0 && isNotAnimated(_DecalMirroredUVMode1) && _Decal1Depth==0 && isNotAnimated(_Decal1Depth)
+			#define POI_USES_TANGENT
+			//endex
 			#endif
 			//endex
 			
@@ -11265,6 +11507,18 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _AudioLinkDecal2ColorOverrideBand;
 			half4 _AudioLinkDecal2ColorOverrideRamp;
 			#endif
+			//ifex _DecalTexture2UV!=1 && isNotAnimated(_DecalTexture2UV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _DecalTexture2UV!=2 && isNotAnimated(_DecalTexture2UV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _DecalTexture2UV!=3 && isNotAnimated(_DecalTexture2UV)
+			#define POI_USES_UV3
+			//endex
+			//ifex _DecalMirroredUVMode2==0 && isNotAnimated(_DecalMirroredUVMode2) && _Decal2Depth==0 && isNotAnimated(_Decal2Depth)
+			#define POI_USES_TANGENT
+			//endex
 			#endif
 			//endex
 			
@@ -11348,6 +11602,18 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _AudioLinkDecal3ColorOverrideBand;
 			half4 _AudioLinkDecal3ColorOverrideRamp;
 			#endif
+			//ifex _DecalTexture3UV!=1 && isNotAnimated(_DecalTexture3UV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _DecalTexture3UV!=2 && isNotAnimated(_DecalTexture3UV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _DecalTexture3UV!=3 && isNotAnimated(_DecalTexture3UV)
+			#define POI_USES_UV3
+			//endex
+			//ifex _DecalMirroredUVMode3==0 && isNotAnimated(_DecalMirroredUVMode3) && _Decal3Depth==0 && isNotAnimated(_Decal3Depth)
+			#define POI_USES_TANGENT
+			//endex
 			#endif
 			//endex
 			
@@ -11489,6 +11755,20 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _DissolveALColorOverrideBand;
 			half4 _DissolveALColorOverrideRamp;
 			#endif
+			//ifex _DissolveToTextureUV!=1 && isNotAnimated(_DissolveToTextureUV) && _DissolveNoiseTextureUV!=1 && isNotAnimated(_DissolveNoiseTextureUV) && _DissolveDetailNoiseUV!=1 && isNotAnimated(_DissolveDetailNoiseUV) && _DissolveMaskUV!=1 && isNotAnimated(_DissolveMaskUV) && _DissolveP2PUV!=1 && isNotAnimated(_DissolveP2PUV) && _UVTileDissolveUV!=1 && isNotAnimated(_UVTileDissolveUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _DissolveToTextureUV!=2 && isNotAnimated(_DissolveToTextureUV) && _DissolveNoiseTextureUV!=2 && isNotAnimated(_DissolveNoiseTextureUV) && _DissolveDetailNoiseUV!=2 && isNotAnimated(_DissolveDetailNoiseUV) && _DissolveMaskUV!=2 && isNotAnimated(_DissolveMaskUV) && _DissolveP2PUV!=2 && isNotAnimated(_DissolveP2PUV) && _UVTileDissolveUV!=2 && isNotAnimated(_UVTileDissolveUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _DissolveToTextureUV!=3 && isNotAnimated(_DissolveToTextureUV) && _DissolveNoiseTextureUV!=3 && isNotAnimated(_DissolveNoiseTextureUV) && _DissolveDetailNoiseUV!=3 && isNotAnimated(_DissolveDetailNoiseUV) && _DissolveMaskUV!=3 && isNotAnimated(_DissolveMaskUV) && _DissolveP2PUV!=3 && isNotAnimated(_DissolveP2PUV) && _UVTileDissolveUV!=3 && isNotAnimated(_UVTileDissolveUV)
+			#define POI_USES_UV3
+			//endex
+			//ifex _CenterOutDissolveNormals==0 && isNotAnimated(_CenterOutDissolveNormals)
+			#if defined(POI_PASS_SHADOW) || defined(POI_PASS_DEPTH_ONLY)
+			#define POI_USES_TANGENT
+			#endif
+			//endex
 			#endif
 			//endex
 			
@@ -11533,6 +11813,18 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _Aniso1ToonMode;
 			half _Aniso1Edge;
 			half _Aniso1Blur;
+			//ifex _AnisoColorMapUV!=1 && isNotAnimated(_AnisoColorMapUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _AnisoColorMapUV!=2 && isNotAnimated(_AnisoColorMapUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _AnisoColorMapUV!=3 && isNotAnimated(_AnisoColorMapUV)
+			#define POI_USES_UV3
+			//endex
+			#if !defined(POI_PASS_SHADOW) && !defined(POI_PASS_DEPTH_ONLY)
+			#define POI_USES_TANGENT
+			#endif
 			#endif
 			//endex
 			
@@ -11555,6 +11847,18 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float2 _Matcap0NormalMapPan;
 			float _Matcap0NormalMapUV;
 			float _Matcap0NormalMapScale;
+			//ifex _Matcap0NormalMapUV!=1 && isNotAnimated(_Matcap0NormalMapUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _Matcap0NormalMapUV!=2 && isNotAnimated(_Matcap0NormalMapUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _Matcap0NormalMapUV!=3 && isNotAnimated(_Matcap0NormalMapUV)
+			#define POI_USES_UV3
+			//endex
+			#if !defined(POI_PASS_SHADOW) && !defined(POI_PASS_DEPTH_ONLY)
+			#define POI_USES_TANGENT
+			#endif
 			#endif
 			half _Matcap0CircleMaskEnabled;
 			half _Matcap0CircleMaskBorder;
@@ -11562,6 +11866,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _Matcap0LightVsReflection;
 			float _MatcapUVToBlend;
 			float4 _MatCapBlendUV1;
+			//ifex _MatcapUVToBlend!=1 && isNotAnimated(_MatcapUVToBlend)
+			#define POI_USES_UV1
+			//endex
+			//ifex _MatcapUVToBlend!=2 && isNotAnimated(_MatcapUVToBlend)
+			#define POI_USES_UV2
+			//endex
+			//ifex _MatcapUVToBlend!=3 && isNotAnimated(_MatcapUVToBlend)
+			#define POI_USES_UV3
+			//endex
 			float _MatcapUVMode;
 			half _MatcapMaskInvert;
 			half _MatcapMaskGlobalMask;
@@ -11617,6 +11930,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _Matcap0ALColorOverrideThemeIndex;
 			float _Matcap0ALColorOverrideBand;
 			half4 _Matcap0ALColorOverrideRamp;
+			//ifex _MatcapMaskUV!=1 && isNotAnimated(_MatcapMaskUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _MatcapMaskUV!=2 && isNotAnimated(_MatcapMaskUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _MatcapMaskUV!=3 && isNotAnimated(_MatcapMaskUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			//endex
 			//ifex _Matcap2Enable==0
@@ -11638,12 +11960,33 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float2 _Matcap1NormalMapPan;
 			float _Matcap1NormalMapUV;
 			float _Matcap1NormalMapScale;
+			//ifex _Matcap1NormalMapUV!=1 && isNotAnimated(_Matcap1NormalMapUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _Matcap1NormalMapUV!=2 && isNotAnimated(_Matcap1NormalMapUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _Matcap1NormalMapUV!=3 && isNotAnimated(_Matcap1NormalMapUV)
+			#define POI_USES_UV3
+			//endex
+			#if !defined(POI_PASS_SHADOW) && !defined(POI_PASS_DEPTH_ONLY)
+			#define POI_USES_TANGENT
+			#endif
 			#endif
 			half _Matcap2CircleMaskEnabled;
 			half _Matcap2CircleMaskBorder;
 			half _Matcap2CircleMaskBlur;
 			float _Matcap2UVToBlend;
 			float4 _MatCap2ndBlendUV1;
+			//ifex _Matcap2UVToBlend!=1 && isNotAnimated(_Matcap2UVToBlend)
+			#define POI_USES_UV1
+			//endex
+			//ifex _Matcap2UVToBlend!=2 && isNotAnimated(_Matcap2UVToBlend)
+			#define POI_USES_UV2
+			//endex
+			//ifex _Matcap2UVToBlend!=3 && isNotAnimated(_Matcap2UVToBlend)
+			#define POI_USES_UV3
+			//endex
 			float _Matcap2UVMode;
 			half _Matcap2MaskInvert;
 			half _Matcap2MaskGlobalMask;
@@ -11699,6 +12042,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _Matcap1ALColorOverrideThemeIndex;
 			float _Matcap1ALColorOverrideBand;
 			half4 _Matcap1ALColorOverrideRamp;
+			//ifex _Matcap2MaskUV!=1 && isNotAnimated(_Matcap2MaskUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _Matcap2MaskUV!=2 && isNotAnimated(_Matcap2MaskUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _Matcap2MaskUV!=3 && isNotAnimated(_Matcap2MaskUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			//endex
 			
@@ -11721,12 +12073,33 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float2 _Matcap2NormalMapPan;
 			float _Matcap2NormalMapUV;
 			float _Matcap2NormalMapScale;
+			//ifex _Matcap2NormalMapUV!=1 && isNotAnimated(_Matcap2NormalMapUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _Matcap2NormalMapUV!=2 && isNotAnimated(_Matcap2NormalMapUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _Matcap2NormalMapUV!=3 && isNotAnimated(_Matcap2NormalMapUV)
+			#define POI_USES_UV3
+			//endex
+			#if !defined(POI_PASS_SHADOW) && !defined(POI_PASS_DEPTH_ONLY)
+			#define POI_USES_TANGENT
+			#endif
 			#endif
 			half _Matcap3CircleMaskEnabled;
 			half _Matcap3CircleMaskBorder;
 			half _Matcap3CircleMaskBlur;
 			float _Matcap3UVToBlend;
 			float4 _MatCap3rdBlendUV1;
+			//ifex _Matcap3UVToBlend!=1 && isNotAnimated(_Matcap3UVToBlend)
+			#define POI_USES_UV1
+			//endex
+			//ifex _Matcap3UVToBlend!=2 && isNotAnimated(_Matcap3UVToBlend)
+			#define POI_USES_UV2
+			//endex
+			//ifex _Matcap3UVToBlend!=3 && isNotAnimated(_Matcap3UVToBlend)
+			#define POI_USES_UV3
+			//endex
 			float _Matcap3UVMode;
 			half _Matcap3MaskInvert;
 			half _Matcap3MaskGlobalMask;
@@ -11782,6 +12155,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _Matcap2ALColorOverrideThemeIndex;
 			float _Matcap2ALColorOverrideBand;
 			half4 _Matcap2ALColorOverrideRamp;
+			//ifex _Matcap3MaskUV!=1 && isNotAnimated(_Matcap3MaskUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _Matcap3MaskUV!=2 && isNotAnimated(_Matcap3MaskUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _Matcap3MaskUV!=3 && isNotAnimated(_Matcap3MaskUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			//endex
 			
@@ -11804,12 +12186,33 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float2 _Matcap3NormalMapPan;
 			float _Matcap3NormalMapUV;
 			float _Matcap3NormalMapScale;
+			//ifex _Matcap3NormalMapUV!=1 && isNotAnimated(_Matcap3NormalMapUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _Matcap3NormalMapUV!=2 && isNotAnimated(_Matcap3NormalMapUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _Matcap3NormalMapUV!=3 && isNotAnimated(_Matcap3NormalMapUV)
+			#define POI_USES_UV3
+			//endex
+			#if !defined(POI_PASS_SHADOW) && !defined(POI_PASS_DEPTH_ONLY)
+			#define POI_USES_TANGENT
+			#endif
 			#endif
 			half _Matcap4CircleMaskEnabled;
 			half _Matcap4CircleMaskBorder;
 			half _Matcap4CircleMaskBlur;
 			float _Matcap4UVToBlend;
 			float4 _MatCap4thBlendUV1;
+			//ifex _Matcap4UVToBlend!=1 && isNotAnimated(_Matcap4UVToBlend)
+			#define POI_USES_UV1
+			//endex
+			//ifex _Matcap4UVToBlend!=2 && isNotAnimated(_Matcap4UVToBlend)
+			#define POI_USES_UV2
+			//endex
+			//ifex _Matcap4UVToBlend!=3 && isNotAnimated(_Matcap4UVToBlend)
+			#define POI_USES_UV3
+			//endex
 			float _Matcap4UVMode;
 			half _Matcap4MaskInvert;
 			half _Matcap4MaskGlobalMask;
@@ -11865,6 +12268,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _Matcap3ALColorOverrideThemeIndex;
 			float _Matcap3ALColorOverrideBand;
 			half4 _Matcap3ALColorOverrideRamp;
+			//ifex _Matcap4MaskUV!=1 && isNotAnimated(_Matcap4MaskUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _Matcap4MaskUV!=2 && isNotAnimated(_Matcap4MaskUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _Matcap4MaskUV!=3 && isNotAnimated(_Matcap4MaskUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			//endex
 			
@@ -11903,6 +12315,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			half _CubeMapBrightness;
 			half _CubeMapContrast;
 			half _CubeMapSmoothness;
+			//ifex _CubeMapMaskUV!=1 && isNotAnimated(_CubeMapMaskUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _CubeMapMaskUV!=2 && isNotAnimated(_CubeMapMaskUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _CubeMapMaskUV!=3 && isNotAnimated(_CubeMapMaskUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			//endex
 			
@@ -11967,6 +12388,18 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _ALDecalGlobalMaskBlendType;
 			float _ALDecalDebug;
 			half _ALDecalDebugBorderWidth;
+			//ifex _ALDecalUV!=1 && isNotAnimated(_ALDecalUV) && _ALDecalColorMaskUV!=1 && isNotAnimated(_ALDecalColorMaskUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _ALDecalUV!=2 && isNotAnimated(_ALDecalUV) && _ALDecalColorMaskUV!=2 && isNotAnimated(_ALDecalColorMaskUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _ALDecalUV!=3 && isNotAnimated(_ALDecalUV) && _ALDecalColorMaskUV!=3 && isNotAnimated(_ALDecalColorMaskUV)
+			#define POI_USES_UV3
+			//endex
+			//ifex _ALDecalMirroredUVMode==0 && isNotAnimated(_ALDecalMirroredUVMode)
+			#define POI_USES_TANGENT
+			//endex
 			#endif
 			#endif
 			//endex
@@ -11987,6 +12420,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			half _ALLowEmission;
 			half _ALMidEmission;
 			half _ALHighEmission;
+			//ifex _ALVolumeColorUV!=1 && isNotAnimated(_ALVolumeColorUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _ALVolumeColorUV!=2 && isNotAnimated(_ALVolumeColorUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _ALVolumeColorUV!=3 && isNotAnimated(_ALVolumeColorUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			#endif
 			//endex
@@ -12067,6 +12509,18 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _FlipbookALColorOverrideBand;
 			half4 _FlipbookALColorOverrideRamp;
 			#endif
+			//ifex _FlipbookTexArrayUV!=1 && isNotAnimated(_FlipbookTexArrayUV) && _FlipbookMaskUV!=1 && isNotAnimated(_FlipbookMaskUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _FlipbookTexArrayUV!=2 && isNotAnimated(_FlipbookTexArrayUV) && _FlipbookMaskUV!=2 && isNotAnimated(_FlipbookMaskUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _FlipbookTexArrayUV!=3 && isNotAnimated(_FlipbookTexArrayUV) && _FlipbookMaskUV!=3 && isNotAnimated(_FlipbookMaskUV)
+			#define POI_USES_UV3
+			//endex
+			//ifex _FlipbookMirroredUVMode==0 && isNotAnimated(_FlipbookMirroredUVMode)
+			#define POI_USES_TANGENT
+			//endex
 			#endif
 			//endex
 			
@@ -12146,6 +12600,18 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _FlipbookALColorOverrideBand1;
 			half4 _FlipbookALColorOverrideRamp1;
 			#endif
+			//ifex _FlipbookTexArrayUV1!=1 && isNotAnimated(_FlipbookTexArrayUV1) && _FlipbookMaskUV1!=1 && isNotAnimated(_FlipbookMaskUV1)
+			#define POI_USES_UV1
+			//endex
+			//ifex _FlipbookTexArrayUV1!=2 && isNotAnimated(_FlipbookTexArrayUV1) && _FlipbookMaskUV1!=2 && isNotAnimated(_FlipbookMaskUV1)
+			#define POI_USES_UV2
+			//endex
+			//ifex _FlipbookTexArrayUV1!=3 && isNotAnimated(_FlipbookTexArrayUV1) && _FlipbookMaskUV1!=3 && isNotAnimated(_FlipbookMaskUV1)
+			#define POI_USES_UV3
+			//endex
+			//ifex _FlipbookMirroredUVMode1==0 && isNotAnimated(_FlipbookMirroredUVMode1)
+			#define POI_USES_TANGENT
+			//endex
 			#endif
 			//endex
 			
@@ -12216,6 +12682,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _EmissionAL0ColorOverrideThemeIndex;
 			float _EmissionAL0ColorOverrideBand;
 			half4 _EmissionAL0ColorOverrideRamp;
+			//ifex _EmissionMapUV!=1 && isNotAnimated(_EmissionMapUV) && _EmissionMaskUV!=1 && isNotAnimated(_EmissionMaskUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _EmissionMapUV!=2 && isNotAnimated(_EmissionMapUV) && _EmissionMaskUV!=2 && isNotAnimated(_EmissionMaskUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _EmissionMapUV!=3 && isNotAnimated(_EmissionMapUV) && _EmissionMaskUV!=3 && isNotAnimated(_EmissionMaskUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			//endex
 			
@@ -12286,6 +12761,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _EmissionAL1ColorOverrideThemeIndex;
 			float _EmissionAL1ColorOverrideBand;
 			half4 _EmissionAL1ColorOverrideRamp;
+			//ifex _EmissionMap1UV!=1 && isNotAnimated(_EmissionMap1UV) && _EmissionMask1UV!=1 && isNotAnimated(_EmissionMask1UV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _EmissionMap1UV!=2 && isNotAnimated(_EmissionMap1UV) && _EmissionMask1UV!=2 && isNotAnimated(_EmissionMask1UV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _EmissionMap1UV!=3 && isNotAnimated(_EmissionMap1UV) && _EmissionMask1UV!=3 && isNotAnimated(_EmissionMask1UV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			//endex
 			
@@ -12356,6 +12840,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _EmissionAL2ColorOverrideThemeIndex;
 			float _EmissionAL2ColorOverrideBand;
 			half4 _EmissionAL2ColorOverrideRamp;
+			//ifex _EmissionMap2UV!=1 && isNotAnimated(_EmissionMap2UV) && _EmissionMask2UV!=1 && isNotAnimated(_EmissionMask2UV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _EmissionMap2UV!=2 && isNotAnimated(_EmissionMap2UV) && _EmissionMask2UV!=2 && isNotAnimated(_EmissionMask2UV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _EmissionMap2UV!=3 && isNotAnimated(_EmissionMap2UV) && _EmissionMask2UV!=3 && isNotAnimated(_EmissionMask2UV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			//endex
 			
@@ -12426,6 +12919,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _EmissionAL3ColorOverrideThemeIndex;
 			float _EmissionAL3ColorOverrideBand;
 			half4 _EmissionAL3ColorOverrideRamp;
+			//ifex _EmissionMap3UV!=1 && isNotAnimated(_EmissionMap3UV) && _EmissionMask3UV!=1 && isNotAnimated(_EmissionMask3UV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _EmissionMap3UV!=2 && isNotAnimated(_EmissionMap3UV) && _EmissionMask3UV!=2 && isNotAnimated(_EmissionMask3UV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _EmissionMap3UV!=3 && isNotAnimated(_EmissionMap3UV) && _EmissionMask3UV!=3 && isNotAnimated(_EmissionMask3UV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			//endex
 			
@@ -12477,6 +12979,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _AudioLinkRimColorOverrideBand;
 			half4 _AudioLinkRimColorOverrideRamp;
 			#endif
+			//ifex _RimTexUV!=1 && isNotAnimated(_RimTexUV) && _RimMaskUV!=1 && isNotAnimated(_RimMaskUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _RimTexUV!=2 && isNotAnimated(_RimTexUV) && _RimMaskUV!=2 && isNotAnimated(_RimMaskUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _RimTexUV!=3 && isNotAnimated(_RimTexUV) && _RimMaskUV!=3 && isNotAnimated(_RimMaskUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			
 			#ifdef _RIMSTYLE_UTS2
@@ -12500,6 +13011,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _Set_RimLightMaskChannel;
 			#endif
 			half _Tweak_RimLightMaskLevel;
+			//ifex _Set_RimLightMaskUV!=1 && isNotAnimated(_Set_RimLightMaskUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _Set_RimLightMaskUV!=2 && isNotAnimated(_Set_RimLightMaskUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _Set_RimLightMaskUV!=3 && isNotAnimated(_Set_RimLightMaskUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			
 			#ifdef _RIMSTYLE_LILTOON
@@ -12526,6 +13046,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			half _RimIndirBlur;
 			half _RimMaskOnlyMask;
 			int _RimBlendMode;
+			//ifex _RimColorTexUV!=1 && isNotAnimated(_RimColorTexUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _RimColorTexUV!=2 && isNotAnimated(_RimColorTexUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _RimColorTexUV!=3 && isNotAnimated(_RimColorTexUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			
 			half _RimGlobalMask;
@@ -12589,6 +13118,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _AudioLinkRim2ColorOverrideBand;
 			half4 _AudioLinkRim2ColorOverrideRamp;
 			#endif
+			//ifex _Rim2TexUV!=1 && isNotAnimated(_Rim2TexUV) && _Rim2MaskUV!=1 && isNotAnimated(_Rim2MaskUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _Rim2TexUV!=2 && isNotAnimated(_Rim2TexUV) && _Rim2MaskUV!=2 && isNotAnimated(_Rim2MaskUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _Rim2TexUV!=3 && isNotAnimated(_Rim2TexUV) && _Rim2MaskUV!=3 && isNotAnimated(_Rim2MaskUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			
 			#ifdef _RIM2STYLE_UTS2
@@ -12612,6 +13150,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _Set_Rim2LightMaskChannel;
 			#endif
 			half _Tweak_Rim2LightMaskLevel;
+			//ifex _Set_Rim2LightMaskUV!=1 && isNotAnimated(_Set_Rim2LightMaskUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _Set_Rim2LightMaskUV!=2 && isNotAnimated(_Set_Rim2LightMaskUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _Set_Rim2LightMaskUV!=3 && isNotAnimated(_Set_Rim2LightMaskUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			
 			#ifdef _RIM2STYLE_LILTOON
@@ -12639,6 +13186,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			half _Rim2IndirBlur;
 			half _Rim2MaskOnlyMask;
 			int _Rim2BlendMode;
+			//ifex _Rim2ColorTexUV!=1 && isNotAnimated(_Rim2ColorTexUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _Rim2ColorTexUV!=2 && isNotAnimated(_Rim2ColorTexUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _Rim2ColorTexUV!=3 && isNotAnimated(_Rim2ColorTexUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			
 			half _Rim2GlobalMask;
@@ -12688,6 +13244,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _DepthRimMaskUV;
 			float _DepthRimMaskChannel;
 			#endif
+			//ifex _DepthRimMaskUV!=1 && isNotAnimated(_DepthRimMaskUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _DepthRimMaskUV!=2 && isNotAnimated(_DepthRimMaskUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _DepthRimMaskUV!=3 && isNotAnimated(_DepthRimMaskUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			//endex
 			
@@ -12784,6 +13349,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			half _GlitterSpriteSheetFPS;
 			half _GlitterSpriteSheetRandomStart;
 			half _GlitterSpriteSheetTotalFrames;
+			//ifex _GlitterUV!=1 && isNotAnimated(_GlitterUV) && _GlitterMaskUV!=1 && isNotAnimated(_GlitterMaskUV) && _GlitterColorMapUV!=1 && isNotAnimated(_GlitterColorMapUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _GlitterUV!=2 && isNotAnimated(_GlitterUV) && _GlitterMaskUV!=2 && isNotAnimated(_GlitterMaskUV) && _GlitterColorMapUV!=2 && isNotAnimated(_GlitterColorMapUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _GlitterUV!=3 && isNotAnimated(_GlitterUV) && _GlitterMaskUV!=3 && isNotAnimated(_GlitterMaskUV) && _GlitterColorMapUV!=3 && isNotAnimated(_GlitterColorMapUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			//endex
 			
@@ -12803,6 +13377,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			half _SSSShadowStrength;
 			float _SSSGlobalMaskIndex;
 			float _SSSGlobalMaskBlendType;
+			//ifex _SSSThicknessMapUV!=1 && isNotAnimated(_SSSThicknessMapUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _SSSThicknessMapUV!=2 && isNotAnimated(_SSSThicknessMapUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _SSSThicknessMapUV!=3 && isNotAnimated(_SSSThicknessMapUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			//endex
 			
@@ -12885,7 +13468,28 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			half _Anisotropy;
 			half _ReflectionAnisotropicStretch;
 			half _RoughnessAnisotropy;
+			//ifex _AnisotropyMapUV!=1 && isNotAnimated(_AnisotropyMapUV) && _AnisotropyDirectionMapUV!=1 && isNotAnimated(_AnisotropyDirectionMapUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _AnisotropyMapUV!=2 && isNotAnimated(_AnisotropyMapUV) && _AnisotropyDirectionMapUV!=2 && isNotAnimated(_AnisotropyDirectionMapUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _AnisotropyMapUV!=3 && isNotAnimated(_AnisotropyMapUV) && _AnisotropyDirectionMapUV!=3 && isNotAnimated(_AnisotropyDirectionMapUV)
+			#define POI_USES_UV3
+			//endex
+			#if !defined(POI_PASS_SHADOW) && !defined(POI_PASS_DEPTH_ONLY)
+			#define POI_USES_TANGENT
 			#endif
+			#endif
+			//ifex _MochieMetallicMapsUV!=1 && isNotAnimated(_MochieMetallicMapsUV) && _MochieMetallicMasksUV!=1 && isNotAnimated(_MochieMetallicMasksUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _MochieMetallicMapsUV!=2 && isNotAnimated(_MochieMetallicMapsUV) && _MochieMetallicMasksUV!=2 && isNotAnimated(_MochieMetallicMasksUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _MochieMetallicMapsUV!=3 && isNotAnimated(_MochieMetallicMapsUV) && _MochieMetallicMasksUV!=3 && isNotAnimated(_MochieMetallicMasksUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			//endex
 			//ifex _ClearCoatBRDF==0
@@ -12937,6 +13541,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _ClearCoatReflectionStrengthGlobalMaskBlendType;
 			half _ClearCoatSpecularStrengthGlobalMask;
 			float _ClearCoatSpecularStrengthGlobalMaskBlendType;
+			//ifex _ClearCoatMapsUV!=1 && isNotAnimated(_ClearCoatMapsUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _ClearCoatMapsUV!=2 && isNotAnimated(_ClearCoatMapsUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _ClearCoatMapsUV!=3 && isNotAnimated(_ClearCoatMapsUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			//endex
 			
@@ -12951,6 +13564,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			half _RimEnviroWidth;
 			half _RimEnviroSharpness;
 			half _RimEnviroIntensity;
+			//ifex _RimEnviroMaskUV!=1 && isNotAnimated(_RimEnviroMaskUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _RimEnviroMaskUV!=2 && isNotAnimated(_RimEnviroMaskUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _RimEnviroMaskUV!=3 && isNotAnimated(_RimEnviroMaskUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			//endex
 			
@@ -12987,6 +13609,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			half _StylizedSpecularIgnoreShadow;
 			half _SSIgnoreCastedShadows;
 			half _UseSpecularOptMap2;
+			//ifex _HighColor_TexUV!=1 && isNotAnimated(_HighColor_TexUV) && _Set_HighColorMaskUV!=1 && isNotAnimated(_Set_HighColorMaskUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _HighColor_TexUV!=2 && isNotAnimated(_HighColor_TexUV) && _Set_HighColorMaskUV!=2 && isNotAnimated(_Set_HighColorMaskUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _HighColor_TexUV!=3 && isNotAnimated(_HighColor_TexUV) && _Set_HighColorMaskUV!=3 && isNotAnimated(_Set_HighColorMaskUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			
 			#ifdef _STYLIZEDREFLECTIONMODE_LILTOON
@@ -13021,6 +13652,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _ReflectionCubeOverride;
 			float _ReflectionCubeEnableLighting;
 			float _ReflectionBlendMode;
+			//ifex _SmoothnessTexUV!=1 && isNotAnimated(_SmoothnessTexUV) && _MetallicGlossMapUV!=1 && isNotAnimated(_MetallicGlossMapUV) && _ReflectionColorTexUV!=1 && isNotAnimated(_ReflectionColorTexUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _SmoothnessTexUV!=2 && isNotAnimated(_SmoothnessTexUV) && _MetallicGlossMapUV!=2 && isNotAnimated(_MetallicGlossMapUV) && _ReflectionColorTexUV!=2 && isNotAnimated(_ReflectionColorTexUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _SmoothnessTexUV!=3 && isNotAnimated(_SmoothnessTexUV) && _MetallicGlossMapUV!=3 && isNotAnimated(_MetallicGlossMapUV) && _ReflectionColorTexUV!=3 && isNotAnimated(_ReflectionColorTexUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			#endif
 			//endex
@@ -13154,6 +13794,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _PathChronoTypeA;
 			float _PathChronoSpeedA;
 			#endif
+			//ifex _PathingMapUV!=1 && isNotAnimated(_PathingMapUV) && _PathingColorMapUV!=1 && isNotAnimated(_PathingColorMapUV) && _PathingUVSelect!=1 && isNotAnimated(_PathingUVSelect)
+			#define POI_USES_UV1
+			//endex
+			//ifex _PathingMapUV!=2 && isNotAnimated(_PathingMapUV) && _PathingColorMapUV!=2 && isNotAnimated(_PathingColorMapUV) && _PathingUVSelect!=2 && isNotAnimated(_PathingUVSelect)
+			#define POI_USES_UV2
+			//endex
+			//ifex _PathingMapUV!=3 && isNotAnimated(_PathingMapUV) && _PathingColorMapUV!=3 && isNotAnimated(_PathingColorMapUV) && _PathingUVSelect!=3 && isNotAnimated(_PathingUVSelect)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			//endex
 			
@@ -13176,6 +13825,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float4 _MirrorTexture_ST;
 			float2 _MirrorTexturePan;
 			float _MirrorTextureUV;
+			//ifex _MirrorTextureUV!=1 && isNotAnimated(_MirrorTextureUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _MirrorTextureUV!=2 && isNotAnimated(_MirrorTextureUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _MirrorTextureUV!=3 && isNotAnimated(_MirrorTextureUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			#endif
 			//endex
@@ -13210,6 +13868,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			half _DepthAlphaMaxValue;
 			float _DepthAlphaMinDepth;
 			float _DepthAlphaMaxDepth;
+			//ifex _DepthMaskUV!=1 && isNotAnimated(_DepthMaskUV) && _DepthTextureUV!=1 && isNotAnimated(_DepthTextureUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _DepthMaskUV!=2 && isNotAnimated(_DepthMaskUV) && _DepthTextureUV!=2 && isNotAnimated(_DepthTextureUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _DepthMaskUV!=3 && isNotAnimated(_DepthMaskUV) && _DepthTextureUV!=3 && isNotAnimated(_DepthTextureUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			//endex
 			
@@ -13259,6 +13926,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float2 _TextFPSScale;
 			float _TextFPSRotation;
 			float _TextFPSColorThemeIndex;
+			//ifex _TextFPSUV!=1 && isNotAnimated(_TextFPSUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _TextFPSUV!=2 && isNotAnimated(_TextFPSUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _TextFPSUV!=3 && isNotAnimated(_TextFPSUV)
+			#define POI_USES_UV3
+			//endex
 			//endex
 			
 			//ifex _TextPositionEnabled==0 && isNotAnimated(_TextPositionEnabled)
@@ -13272,6 +13948,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float2 _TextPositionScale;
 			float _TextPositionRotation;
 			float _TextPositionColorThemeIndex;
+			//ifex _TextPositionUV!=1 && isNotAnimated(_TextPositionUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _TextPositionUV!=2 && isNotAnimated(_TextPositionUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _TextPositionUV!=3 && isNotAnimated(_TextPositionUV)
+			#define POI_USES_UV3
+			//endex
 			//endex
 			
 			//ifex _TextTimeEnabled==0 && isNotAnimated(_TextTimeEnabled)
@@ -13284,6 +13969,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float2 _TextTimeScale;
 			float _TextTimeRotation;
 			float _TextTimeColorThemeIndex;
+			//ifex _TextTimeUV!=1 && isNotAnimated(_TextTimeUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _TextTimeUV!=2 && isNotAnimated(_TextTimeUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _TextTimeUV!=3 && isNotAnimated(_TextTimeUV)
+			#define POI_USES_UV3
+			//endex
 			//endex
 			
 			//ifex _TextUTCTimeEnabled==0 && isNotAnimated(_TextUTCTimeEnabled)
@@ -13299,6 +13993,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _TextUTCTimeZone;
 			float _TextUTCTimeZoneOffset;
 			float _TextUTCTimeColorThemeIndex;
+			//ifex _TextUTCTimeUV!=1 && isNotAnimated(_TextUTCTimeUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _TextUTCTimeUV!=2 && isNotAnimated(_TextUTCTimeUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _TextUTCTimeUV!=3 && isNotAnimated(_TextUTCTimeUV)
+			#define POI_USES_UV3
+			//endex
 			//endex
 			
 			//ifex _TextNumericEnabled==0 && isNotAnimated(_TextNumericEnabled)
@@ -13315,6 +14018,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _TextNumericDecimalDigits;
 			half _TextNumericTrimZeroes;
 			float _TextNumericColorThemeIndex;
+			//ifex _TextNumericUV!=1 && isNotAnimated(_TextNumericUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _TextNumericUV!=2 && isNotAnimated(_TextNumericUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _TextNumericUV!=3 && isNotAnimated(_TextNumericUV)
+			#define POI_USES_UV3
+			//endex
 			//endex
 			#endif
 			//endex
@@ -13361,6 +14073,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _ppHueSelectOrShift;
 			float _PPPosterization;
 			float _PPPosterizationAmount;
+			//ifex _PPMaskUV!=1 && isNotAnimated(_PPMaskUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _PPMaskUV!=2 && isNotAnimated(_PPMaskUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _PPMaskUV!=3 && isNotAnimated(_PPMaskUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			//endex
 			
@@ -13442,6 +14163,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float4 _ParallaxInternalALHistoryBump;
 			#endif
 			//endex
+			//ifex _ParallaxInternalMapUV!=1 && isNotAnimated(_ParallaxInternalMapUV) && _ParallaxInternalMapMaskUV!=1 && isNotAnimated(_ParallaxInternalMapMaskUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _ParallaxInternalMapUV!=2 && isNotAnimated(_ParallaxInternalMapUV) && _ParallaxInternalMapMaskUV!=2 && isNotAnimated(_ParallaxInternalMapMaskUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _ParallaxInternalMapUV!=3 && isNotAnimated(_ParallaxInternalMapUV) && _ParallaxInternalMapMaskUV!=3 && isNotAnimated(_ParallaxInternalMapMaskUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			//endex
 			
@@ -13482,6 +14212,16 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			half _VideoSaturation;
 			half _VideoContrast;
 			half _VideoEmissionEnabled;
+			//ifex _VideoPixelTextureUV!=1 && isNotAnimated(_VideoPixelTextureUV) && _VideoMaskTextureUV!=1 && isNotAnimated(_VideoMaskTextureUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _VideoPixelTextureUV!=2 && isNotAnimated(_VideoPixelTextureUV) && _VideoMaskTextureUV!=2 && isNotAnimated(_VideoMaskTextureUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _VideoPixelTextureUV!=3 && isNotAnimated(_VideoPixelTextureUV) && _VideoMaskTextureUV!=3 && isNotAnimated(_VideoMaskTextureUV)
+			#define POI_USES_UV3
+			//endex
+			#define POI_USES_TANGENT
 			#endif
 			//endex
 			
@@ -13505,6 +14245,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _BacklightGlobalMaskBlendType;
 			float _BacklightApplyGlobalMaskIndex;
 			float _BacklightApplyGlobalMaskBlendType;
+			//ifex _BacklightColorTexUV!=1 && isNotAnimated(_BacklightColorTexUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _BacklightColorTexUV!=2 && isNotAnimated(_BacklightColorTexUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _BacklightColorTexUV!=3 && isNotAnimated(_BacklightColorTexUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			//endex
 			
@@ -13576,6 +14325,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _AudioLinkVoronoiInnerColorOverrideThemeIndex;
 			float _AudioLinkVoronoiInnerColorOverrideBand;
 			half4 _AudioLinkVoronoiInnerColorOverrideRamp;
+			//ifex _VoronoiMaskUV!=1 && isNotAnimated(_VoronoiMaskUV) && _VoronoiNoiseUV!=1 && isNotAnimated(_VoronoiNoiseUV) && _VoronoiUV!=1 && isNotAnimated(_VoronoiUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _VoronoiMaskUV!=2 && isNotAnimated(_VoronoiMaskUV) && _VoronoiNoiseUV!=2 && isNotAnimated(_VoronoiNoiseUV) && _VoronoiUV!=2 && isNotAnimated(_VoronoiUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _VoronoiMaskUV!=3 && isNotAnimated(_VoronoiMaskUV) && _VoronoiNoiseUV!=3 && isNotAnimated(_VoronoiNoiseUV) && _VoronoiUV!=3 && isNotAnimated(_VoronoiUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			//endex
 			
@@ -13622,6 +14380,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _TruchetALColorOverrideBand;
 			half4 _TruchetALColorOverrideRamp;
 			#endif
+			//endex
+			//ifex _TruchetUV!=1 && isNotAnimated(_TruchetUV) && _TruchetMaskUV!=1 && isNotAnimated(_TruchetMaskUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _TruchetUV!=2 && isNotAnimated(_TruchetUV) && _TruchetMaskUV!=2 && isNotAnimated(_TruchetMaskUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _TruchetUV!=3 && isNotAnimated(_TruchetUV) && _TruchetMaskUV!=3 && isNotAnimated(_TruchetMaskUV)
+			#define POI_USES_UV3
 			//endex
 			#endif
 			//endex
@@ -13708,13 +14475,37 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			// End Depth texture handling
 			
 			UNITY_DECLARE_TEX2D(_MainTex);
+			//ifex _MainTexUV!=1 && isNotAnimated(_MainTexUV) && _AlphaMaskUV!=1 && isNotAnimated(_AlphaMaskUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _MainTexUV!=2 && isNotAnimated(_MainTexUV) && _AlphaMaskUV!=2 && isNotAnimated(_AlphaMaskUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _MainTexUV!=3 && isNotAnimated(_MainTexUV) && _AlphaMaskUV!=3 && isNotAnimated(_AlphaMaskUV)
+			#define POI_USES_UV3
+			//endex
 			#if defined(PROP_BUMPMAP) || !defined(OPTIMIZER_ENABLED)
 			Texture2D _BumpMap;
+			#if !defined(POI_PASS_SHADOW) && !defined(POI_PASS_DEPTH_ONLY)
+			#define POI_USES_TANGENT
+			#endif
+			//ifex _BumpMapUV!=1 && isNotAnimated(_BumpMapUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _BumpMapUV!=2 && isNotAnimated(_BumpMapUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _BumpMapUV!=3 && isNotAnimated(_BumpMapUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			//ifex _UseBump2ndMap==0
 			#ifdef POI_BUMP2NDMAP
 			#if defined(PROP_BUMP2NDMAP) || !defined(OPTIMIZER_ENABLED)
 			Texture2D _Bump2ndMap;
+			#if !defined(POI_PASS_SHADOW) && !defined(POI_PASS_DEPTH_ONLY)
+			#define POI_USES_TANGENT
+			#endif
 			#endif
 			#if defined(PROP_BUMP2NDSCALEMASK) || !defined(OPTIMIZER_ENABLED)
 			Texture2D _Bump2ndScaleMask;
@@ -13742,6 +14533,9 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			#ifdef POI_BENTNORMALMAP
 			#if defined(PROP_BENTNORMALMAP) || !defined(OPTIMIZER_ENABLED)
 			Texture2D _BentNormalMap;
+			#if !defined(POI_PASS_SHADOW) && !defined(POI_PASS_DEPTH_ONLY)
+			#define POI_USES_TANGENT
+			#endif
 			#endif
 			#endif
 			//endex
@@ -13791,6 +14585,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			//ifex _PoiParallax==0
 			#if defined(POI_PARALLAX) && (defined(PROP_HEIGHTMAP) || !defined(OPTIMIZER_ENABLED))
 			Texture2D _HeightMap;
+			#define POI_USES_TANGENT
 			#if defined(PROP_HEIGHTMASK) || !defined(OPTIMIZER_ENABLED)
 			Texture2D _Heightmask;
 			#endif
@@ -13822,6 +14617,9 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			#endif
 			#if defined(PROP_DETAILNORMALMAP) || !defined(OPTIMIZER_ENABLED)
 			Texture2D _DetailNormalMap;
+			#if !defined(POI_PASS_SHADOW) && !defined(POI_PASS_DEPTH_ONLY)
+			#define POI_USES_TANGENT
+			#endif
 			#endif
 			#if defined(PROP_DETAILTEX) || !defined(OPTIMIZER_ENABLED)
 			Texture2D _DetailTex;
@@ -13921,6 +14719,9 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			#endif
 			#if defined(PROP_RGBNORMALA)
 			Texture2D _RgbNormalA;
+			#endif
+			#if (defined(PROP_RGBNORMALR) || defined(PROP_RGBNORMALG) || defined(PROP_RGBNORMALB) || defined(PROP_RGBNORMALA)) && !defined(POI_PASS_SHADOW) && !defined(POI_PASS_DEPTH_ONLY)
+			#define POI_USES_TANGENT
 			#endif
 			#endif
 			//endex
@@ -14467,6 +15268,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			#ifdef POI_INTERNALPARALLAX
 			#if defined(PROP_PARALLAXINTERNALMAP) || !defined(OPTIMIZER_ENABLED)
 			Texture2D _ParallaxInternalMap;
+			#define POI_USES_TANGENT
 			#endif
 			#if defined(PROP_PARALLAXINTERNALMAPMASK) || !defined(OPTIMIZER_ENABLED)
 			Texture2D _ParallaxInternalMapMask;
@@ -14670,6 +15472,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _GrabPassHueSelectOrShift;
 			half _GrabPassHueShift;
 			float _GrabPassHueShiftSpeed;
+			//endex
+			//ifex _GrabPassBlendMapUV!=1 && isNotAnimated(_GrabPassBlendMapUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _GrabPassBlendMapUV!=2 && isNotAnimated(_GrabPassBlendMapUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _GrabPassBlendMapUV!=3 && isNotAnimated(_GrabPassBlendMapUV)
+			#define POI_USES_UV3
 			//endex
 			//endex
 			
@@ -15646,39 +16457,9 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			
 			void applyDissolve(inout PoiFragData poiFragData, in PoiMesh poiMesh, inout PoiMods poiMods, in PoiCam poiCam, in PoiLight poiLight)
 			{
-				half dissolveMask = 1;
-				#if defined(PROP_DISSOLVEMASK) || !defined(OPTIMIZER_ENABLED)
-				dissolveMask = POI2D_SAMPLER_PAN(_DissolveMask, _MainTex, poiUV(poiMesh.uv[_DissolveMaskUV], _DissolveMask_ST), _DissolveMaskPan).r;
-				#endif
-				
-				UNITY_BRANCH
-				if (_DissolveUseVertexColors > 0)
-				dissolveMask = ceil(poiMesh.vertexColor[max(_DissolveUseVertexColors - 1, 0)] * 100000) / 100000;
-				
-				if (_DissolveMaskGlobalMask > 0)
-				dissolveMask = maskBlend(dissolveMask, poiMods.globalMask[_DissolveMaskGlobalMask - 1], _DissolveMaskGlobalMaskBlendType);
-				
-				if (_DissolveMaskInvert >= 0.5)
-				dissolveMask = 1 - dissolveMask;
-				
-				#if defined(PROP_DISSOLVETOTEXTURE) || !defined(OPTIMIZER_ENABLED)
-				float4 dissolveToTexture = POI2D_SAMPLER_PAN(_DissolveToTexture, _MainTex, poiUV(poiMesh.uv[_DissolveToTextureUV], _DissolveToTexture_ST), _DissolveToTexturePan) * float4(poiThemeColor(poiMods, _DissolveTextureColor.rgb, _DissolveTextureColorThemeIndex), _DissolveTextureColor.a);
-				#else
-				float4 dissolveToTexture = float4(poiThemeColor(poiMods, _DissolveTextureColor.rgb, _DissolveTextureColorThemeIndex), _DissolveTextureColor.a);
-				#endif
-				float dissolveNoise = 1;
-				#if defined(PROP_DISSOLVENOISETEXTURE) || !defined(OPTIMIZER_ENABLED)
-				dissolveNoise = POI2D_SAMPLER_PAN(_DissolveNoiseTexture, _MainTex, poiUV(poiMesh.uv[_DissolveNoiseTextureUV], _DissolveNoiseTexture_ST), _DissolveNoiseTexturePan).r;
-				#endif
-				dissolveNoise = _DissolveInvertNoise ? 1 - dissolveNoise : dissolveNoise;
-				
-				float detailNoise = 0;
 				half detailStrength = 0;
 				if (_DissolveDetailNoiseEnabled >= 0.5)
-				{
-					detailNoise = getDissolveDetailNoise(poiMesh.worldPos, poiMesh.uv[_DissolveDetailNoiseUV]);
-					detailStrength = _DissolveDetailStrength;
-				}
+				detailStrength = _DissolveDetailStrength;
 				
 				float dissolveAmount = _DissolveAlpha;
 				if (_UVTileDissolveEnabled >= 0.5)
@@ -15717,6 +16498,52 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 					}
 				}
 				dissolveAmount = saturate(dissolveAmount);
+				
+				// Early exit
+				UNITY_BRANCH
+				if (dissolveAmount <= 0 && _UVTileDissolveEnabled < 0.5 && _DissolveWaveMode < 0.5 && _DissolveDebugGradient < 0.5 && alEdgeWidthMod <= 0)
+				{
+					if (_DissolveAlphaOnly >= 0.5)
+					poiFragData.alpha *= evalRamp4(0, _DissolveAlphaOnlyRamp);
+					#if !defined(POI_PASS_OUTLINE) && !defined(POI_PASS_SHADOW)
+					if (_DissolveApplyGlobalMaskIndex > 0)
+					applyToGlobalMask(poiMods, _DissolveApplyGlobalMaskIndex - 1, _DissolveApplyGlobalMaskBlendType, 0);
+					if (_DissolveInverseApplyGlobalMaskIndex > 0)
+					applyToGlobalMask(poiMods, _DissolveInverseApplyGlobalMaskIndex - 1, _DissolveInverseApplyGlobalMaskBlendType, 1);
+					#endif
+					return;
+				}
+				
+				half dissolveMask = 1;
+				#if defined(PROP_DISSOLVEMASK) || !defined(OPTIMIZER_ENABLED)
+				dissolveMask = POI2D_SAMPLER_PAN(_DissolveMask, _MainTex, poiUV(poiMesh.uv[_DissolveMaskUV], _DissolveMask_ST), _DissolveMaskPan).r;
+				#endif
+				
+				UNITY_BRANCH
+				if (_DissolveUseVertexColors > 0)
+				dissolveMask = ceil(poiMesh.vertexColor[max(_DissolveUseVertexColors - 1, 0)] * 100000) / 100000;
+				
+				if (_DissolveMaskGlobalMask > 0)
+				dissolveMask = maskBlend(dissolveMask, poiMods.globalMask[_DissolveMaskGlobalMask - 1], _DissolveMaskGlobalMaskBlendType);
+				
+				if (_DissolveMaskInvert >= 0.5)
+				dissolveMask = 1 - dissolveMask;
+				
+				#if defined(PROP_DISSOLVETOTEXTURE) || !defined(OPTIMIZER_ENABLED)
+				float4 dissolveToTexture = POI2D_SAMPLER_PAN(_DissolveToTexture, _MainTex, poiUV(poiMesh.uv[_DissolveToTextureUV], _DissolveToTexture_ST), _DissolveToTexturePan) * float4(poiThemeColor(poiMods, _DissolveTextureColor.rgb, _DissolveTextureColorThemeIndex), _DissolveTextureColor.a);
+				#else
+				float4 dissolveToTexture = float4(poiThemeColor(poiMods, _DissolveTextureColor.rgb, _DissolveTextureColorThemeIndex), _DissolveTextureColor.a);
+				#endif
+				float dissolveNoise = 1;
+				#if defined(PROP_DISSOLVENOISETEXTURE) || !defined(OPTIMIZER_ENABLED)
+				dissolveNoise = POI2D_SAMPLER_PAN(_DissolveNoiseTexture, _MainTex, poiUV(poiMesh.uv[_DissolveNoiseTextureUV], _DissolveNoiseTexture_ST), _DissolveNoiseTexturePan).r;
+				#endif
+				dissolveNoise = _DissolveInvertNoise ? 1 - dissolveNoise : dissolveNoise;
+				
+				float detailNoise = 0;
+				if (_DissolveDetailNoiseEnabled >= 0.5)
+				detailNoise = getDissolveDetailNoise(poiMesh.worldPos, poiMesh.uv[_DissolveDetailNoiseUV]);
+				
 				dissolveAmount *= dissolveMask;
 				detailStrength = saturate(detailStrength);
 				
@@ -16016,11 +16843,11 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 					
 					if (any(_VertexLocalTranslationALMin) || any(_VertexLocalTranslationALMax))
 					{
-						ALLocalTranslation = lerp(_VertexLocalTranslationALMin, _VertexLocalTranslationALMax, audioLinkBands[_VertexLocalTranslationALBand]);
+						ALLocalTranslation = lerp(_VertexLocalTranslationALMin, _VertexLocalTranslationALMax, poiSelect5(audioLinkBands, _VertexLocalTranslationALBand));
 					}
 					if (any(_VertexLocalRotationAL))
 					{
-						ALrotation = audioLinkBands[_VertexLocalRotationALBand] * _VertexLocalRotationAL;
+						ALrotation = poiSelect5(audioLinkBands, _VertexLocalRotationALBand) * _VertexLocalRotationAL;
 					}
 					if (any(_VertexLocalRotationCTALSpeed))
 					{
@@ -16030,20 +16857,20 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 					}
 					if (any(_VertexLocalScaleALMin.xyz) || any(_VertexLocalScaleALMax.xyz))
 					{
-						ALScale = lerp(_VertexLocalScaleALMin.xyz + _VertexLocalScaleALMin.w, _VertexLocalScaleALMax.xyz + _VertexLocalScaleALMax.w, audioLinkBands[_VertexLocalScaleALBand]);
+						ALScale = lerp(_VertexLocalScaleALMin.xyz + _VertexLocalScaleALMin.w, _VertexLocalScaleALMax.xyz + _VertexLocalScaleALMax.w, poiSelect5(audioLinkBands, _VertexLocalScaleALBand));
 					}
 					if (any(_VertexWorldTranslationALMin.xyz) || any(_VertexWorldTranslationALMax.xyz))
 					{
-						ALWorldTranslation = lerp(_VertexWorldTranslationALMin, _VertexWorldTranslationALMax, audioLinkBands[_VertexWorldTranslationALBand]);
+						ALWorldTranslation = lerp(_VertexWorldTranslationALMin, _VertexWorldTranslationALMax, poiSelect5(audioLinkBands, _VertexWorldTranslationALBand));
 					}
 					if (any(_VertexManipulationHeightAL.xy))
 					{
-						ALHeight = lerp(_VertexManipulationHeightAL.x, _VertexManipulationHeightAL.y, audioLinkBands[_VertexManipulationHeightBand]);
+						ALHeight = lerp(_VertexManipulationHeightAL.x, _VertexManipulationHeightAL.y, poiSelect5(audioLinkBands, _VertexManipulationHeightBand));
 					}
 					//ifex isNotAnimated(_VertexRoundingEnabled) && _VertexRoundingEnabled==0
 					if (any(_VertexRoundingRangeAL.xy))
 					{
-						ALRoundingAmount = lerp(_VertexRoundingRangeAL.x, _VertexRoundingRangeAL.y, audioLinkBands[_VertexRoundingRangeBand]);
+						ALRoundingAmount = lerp(_VertexRoundingRangeAL.x, _VertexRoundingRangeAL.y, poiSelect5(audioLinkBands, _VertexRoundingRangeBand));
 					}
 					//endex
 					//ifex isNotAnimated(_VertexSpectrumMotion) && _VertexSpectrumMotion==0
@@ -16073,7 +16900,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 					v.color.a
 				};
 				
-				half basicsMask = vertexEffectsMask[_VertexBasicsMaskChannel];
+				half basicsMask = poiSelect8(vertexEffectsMask, _VertexBasicsMaskChannel);
 				
 				ALLocalTranslation *= basicsMask;
 				ALrotation *= basicsMask;
@@ -16109,7 +16936,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 					#else
 					heightOffset = (1 - _VertexManipulationHeightBias) * (_VertexManipulationHeight + ALHeight) * o.normal.xyz;
 					#endif
-					heightOffset *= vertexEffectsMask[_VertexManipulationHeightMaskChannel] * o.normal.w;
+					heightOffset *= poiSelect8(vertexEffectsMask, _VertexManipulationHeightMaskChannel) * o.normal.w;
 					
 				}
 				// Fix z fighting issue with projectors maybe probably I hope
@@ -16119,7 +16946,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				UNITY_BRANCH
 				if (_VertexBarrelMode >= 0.5)
 				{
-					half barrelMask = vertexEffectsMask[_VertexBarrelMaskChannel];
+					half barrelMask = poiSelect8(vertexEffectsMask, _VertexBarrelMaskChannel);
 					v.vertex.xz = lerp(v.vertex.xz, normalize(v.vertex.xz) * _VertexBarrelWidth + v.vertex.xz * _VertexBarrelHeight, _VertexBarrelAlpha * barrelMask);
 				}
 				//endex
@@ -16128,7 +16955,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				UNITY_BRANCH
 				if (_VertexSphereMode >= 0.5)
 				{
-					half sphereMask = vertexEffectsMask[_VertexSphereMaskChannel];
+					half sphereMask = poiSelect8(vertexEffectsMask, _VertexSphereMaskChannel);
 					v.vertex.xyz = lerp(v.vertex.xyz, normalize(v.vertex.xyz + _VertexSphereCenter.xyz) * _VertexSphereRadius + v.vertex.xyz * _VertexSphereHeight, _VertexSphereAlpha * sphereMask);
 				}
 				//endex
@@ -16137,7 +16964,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				UNITY_BRANCH
 				if (_VertexTornadoMode >= 0.5)
 				{
-					half tornadoMask = vertexEffectsMask[_VertexTornadoMaskChannel];
+					half tornadoMask = poiSelect8(vertexEffectsMask, _VertexTornadoMaskChannel);
 					float heightStrength = smoothstep(_VertexTornadoBaseHeight, _VertexTornadoTopHeight, v.vertex.y);
 					float funnelStrength = pow(heightStrength, _VertexTornadoFunnelShape);
 					float totalStrength = funnelStrength * tornadoMask;
@@ -16164,7 +16991,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				UNITY_BRANCH
 				if (_VertexWindEnabled >= 0.5)
 				{
-					half windMask = vertexEffectsMask[_VertexWindMaskChannel];
+					half windMask = poiSelect8(vertexEffectsMask, _VertexWindMaskChannel);
 					if (windMask > 0)
 					{
 						float3 worldPos = mul(unity_ObjectToWorld, v.vertex).xyz;
@@ -16196,7 +17023,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				UNITY_BRANCH
 				if (_VertexRoundingEnabled >= 0.5)
 				{
-					half roundingMask = vertexEffectsMask[_VertexRoundingMaskChannel];
+					half roundingMask = poiSelect8(vertexEffectsMask, _VertexRoundingMaskChannel);
 					if (roundingMask > 0)
 					{
 						float3 preRoundingVertex = v.vertex.xyz;
@@ -16230,7 +17057,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				{
 					if (AudioLinkIsAvailable())
 					{
-						alpha = saturate(alpha + lerp(_VertexLookAtAlphaAudiolink.x, _VertexLookAtAlphaAudiolink.y, vertexAudioLink[_VertexLookAtAudioLinkBand]) * _VertexLookAtAudioLinkEnabled);
+						alpha = saturate(alpha + lerp(_VertexLookAtAlphaAudiolink.x, _VertexLookAtAlphaAudiolink.y, poiSelect5(vertexAudioLink, _VertexLookAtAudioLinkBand)) * _VertexLookAtAudioLinkEnabled);
 					}
 				}
 				#endif
@@ -16777,7 +17604,9 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				POI_TRANSFER_SHADOW_CASTER_NOPOS(o, o.pos);
 				#endif
 				
+				#if !defined(POI_PASS_SHADOW) && (!defined(OPTIMIZER_ENABLED) || defined(_POI_DEPTH_RIMLIGHT) || defined(GRAIN) || defined(POI_GRABPASS) || defined(TRIPLANAR_PROJECTION))
 				o.worldDir = dot(o.pos, CalculateFrustumCorrection());
+				#endif
 				
 				if (_RenderingReduceClipDistance >= 0.5)
 				{
@@ -16816,21 +17645,37 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				
 				#endif
 				
+				#if defined(OPTIMIZER_ENABLED)
+				#if !defined(POI_USES_UV1)
+				o.uv[0] = float4(o.uv[0].xy, 0, 0);
+				#endif
+				#if !defined(POI_USES_UV2) && !defined(POI_USES_UV3)
+				o.uv[1] = 0;
+				#elif !defined(POI_USES_UV2)
+				o.uv[1] = float4(0, 0, o.uv[1].zw);
+				#elif !defined(POI_USES_UV3)
+				o.uv[1] = float4(o.uv[1].xy, 0, 0);
+				#endif
+				#if !defined(POI_USES_TANGENT)
+				o.tangent = 0;
+				#endif
+				#endif
+				
 				return o;
 			}
 			
 			//ifex _StochasticMode!=0
 			#if defined(_STOCHASTICMODE_DELIOT_HEITZ)
-			#define POI2D_SAMPLER_STOCHASTIC(tex, texSampler, uv, useStochastic) (useStochastic ? DeliotHeitzSampleTexture(tex, sampler##texSampler, uv) : POI2D_SAMPLER(tex, texSampler, uv))
-			#define POI2D_SAMPLER_PAN_STOCHASTIC(tex, texSampler, uv, pan, useStochastic) (useStochastic ? DeliotHeitzSampleTexture(tex, sampler##texSampler, POI_PAN_UV(uv, pan)) : POI2D_SAMPLER_PAN(tex, texSampler, uv, pan))
-			#define POI2D_SAMPLER_PANGRAD_STOCHASTIC(tex, texSampler, uv, pan, dx, dy, useStochastic) (useStochastic ? DeliotHeitzSampleTexture(tex, sampler##texSampler, POI_PAN_UV(uv, pan), dx, dy) : POI2D_SAMPLER_PANGRAD(tex, texSampler, uv, pan, dx, dy))
+			#define POI2D_SAMPLER_STOCHASTIC(tex, texSampler, uv, useStochastic) (PoiStochasticSample(tex, sampler##texSampler, uv, useStochastic))
+			#define POI2D_SAMPLER_PAN_STOCHASTIC(tex, texSampler, uv, pan, useStochastic) (PoiStochasticSample(tex, sampler##texSampler, POI_PAN_UV(uv, pan), useStochastic))
+			#define POI2D_SAMPLER_PANGRAD_STOCHASTIC(tex, texSampler, uv, pan, dx, dy, useStochastic) (PoiStochasticSampleGrad(tex, sampler##texSampler, POI_PAN_UV(uv, pan), dx, dy, useStochastic))
 			#endif
 			//endex
 			//ifex _StochasticMode!=1
 			#if defined(_STOCHASTICMODE_HEXTILE)
-			#define POI2D_SAMPLER_STOCHASTIC(tex, texSampler, uv, useStochastic) (useStochastic ? HextileSampleTexture(tex, sampler##texSampler, uv, false) : POI2D_SAMPLER(tex, texSampler, uv))
-			#define POI2D_SAMPLER_PAN_STOCHASTIC(tex, texSampler, uv, pan, useStochastic) (useStochastic ? HextileSampleTexture(tex, sampler##texSampler, POI_PAN_UV(uv, pan), false) : POI2D_SAMPLER_PAN(tex, texSampler, uv, pan))
-			#define POI2D_SAMPLER_PANGRAD_STOCHASTIC(tex, texSampler, uv, pan, dx, dy, useStochastic) (useStochastic ? HextileSampleTexture(tex, sampler##texSampler, POI_PAN_UV(uv, pan), false, dx, dy) : POI2D_SAMPLER_PANGRAD(tex, texSampler, uv, pan, dx, dy))
+			#define POI2D_SAMPLER_STOCHASTIC(tex, texSampler, uv, useStochastic) (PoiStochasticSample(tex, sampler##texSampler, uv, useStochastic))
+			#define POI2D_SAMPLER_PAN_STOCHASTIC(tex, texSampler, uv, pan, useStochastic) (PoiStochasticSample(tex, sampler##texSampler, POI_PAN_UV(uv, pan), useStochastic))
+			#define POI2D_SAMPLER_PANGRAD_STOCHASTIC(tex, texSampler, uv, pan, dx, dy, useStochastic) (PoiStochasticSampleGrad(tex, sampler##texSampler, POI_PAN_UV(uv, pan), dx, dy, useStochastic))
 			#endif
 			//endex
 			
@@ -16916,6 +17761,27 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			{
 				float2 dx = ddx(uv), dy = ddy(uv);
 				return DeliotHeitzSampleTexture(tex, texSampler, uv, dx, dy);
+			}
+			
+			// Branch instead of ?: so textures with stochastic off don't also pay for the stochastic samples
+			float4 PoiStochasticSample(Texture2D tex, SamplerState texSampler, float2 uv, float useStochastic)
+			{
+				UNITY_BRANCH
+				if (useStochastic)
+				{
+					return DeliotHeitzSampleTexture(tex, texSampler, uv);
+				}
+				return tex.Sample(texSampler, uv);
+			}
+			
+			float4 PoiStochasticSampleGrad(Texture2D tex, SamplerState texSampler, float2 uv, float2 dx, float2 dy, float useStochastic)
+			{
+				UNITY_BRANCH
+				if (useStochastic)
+				{
+					return DeliotHeitzSampleTexture(tex, texSampler, uv, dx, dy);
+				}
+				return tex.SampleGrad(texSampler, uv, dx, dy);
 			}
 			#endif // defined(_STOCHASTICMODE_DELIOT_HEITZ)
 			//endex
@@ -17039,6 +17905,27 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float4 HextileSampleTexture(Texture2D tex, SamplerState texSampler, float2 uv, bool isNormalMap)
 			{
 				return HextileSampleTexture(tex, texSampler, uv, isNormalMap, ddx(uv), ddy(uv));
+			}
+			
+			// Branch instead of ?: so textures with stochastic off don't also pay for the stochastic samples
+			float4 PoiStochasticSample(Texture2D tex, SamplerState texSampler, float2 uv, float useStochastic)
+			{
+				UNITY_BRANCH
+				if (useStochastic)
+				{
+					return HextileSampleTexture(tex, texSampler, uv, false);
+				}
+				return tex.Sample(texSampler, uv);
+			}
+			
+			float4 PoiStochasticSampleGrad(Texture2D tex, SamplerState texSampler, float2 uv, float2 dx, float2 dy, float useStochastic)
+			{
+				UNITY_BRANCH
+				if (useStochastic)
+				{
+					return HextileSampleTexture(tex, texSampler, uv, false, dx, dy);
+				}
+				return tex.SampleGrad(texSampler, uv, dx, dy);
 			}
 			#endif // defined(_STOCHASTICMODE_HEXTILE)
 			//endex
@@ -20197,6 +21084,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				float2 uvStart; //
 				float2 uvEnd; // defines the UV layout of the area, top left to bottom right
 				half3 rawColor; // the raw light color, unaffected by any colormode calculations (i.e. exactly what's given as "color" in editor)
+				half3 screenColor; // rawColor with the single UV or AudioLink colormode applied
 				float3 screenNormal; // world space normal direction of area light
 				ltcgi_flags flags; // flags, see above
 				
@@ -20484,12 +21372,14 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			
 			void LTCGI_ClipQuadToHorizon(inout float3 L[5], out int n)
 			{
+				float3 L0 = L[0], L1 = L[1], L2 = L[2], L3 = L[3], L4 = L[4];
+				
 				// detect clipping config
 				uint config = 0;
-				if (L[0].z > 0.0) config += 1;
-				if (L[1].z > 0.0) config += 2;
-				if (L[2].z > 0.0) config += 4;
-				if (L[3].z > 0.0) config += 8;
+				if (L0.z > 0.0) config += 1;
+				if (L1.z > 0.0) config += 2;
+				if (L2.z > 0.0) config += 4;
+				if (L3.z > 0.0) config += 8;
 				
 				n = 0;
 				
@@ -20505,88 +21395,94 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				{
 					case 13: // V1 V3 V4 clip V2 <- tl;dr: this fecker has to be first or shader go boom
 					n = 5;
-					L[4] = L[3];
-					L[3] = L[2];
-					L[2] = -L[1].z * L[2] + L[2].z * L[1];
-					L[1] = -L[1].z * L[0] + L[0].z * L[1];
+					L4 = L3;
+					L3 = L2;
+					L2 = -L1.z * L2 + L2.z * L1;
+					L1 = -L1.z * L0 + L0.z * L1;
 					break;
 					case 15: // V1 V2 V3 V4 - most common
 					n = 4;
 					break;
 					case 9: // V1 V4 clip V2 V3
 					n = 4;
-					L[1] = -L[1].z * L[0] + L[0].z * L[1];
-					L[2] = -L[2].z * L[3] + L[3].z * L[2];
+					L1 = -L1.z * L0 + L0.z * L1;
+					L2 = -L2.z * L3 + L3.z * L2;
 					break;
 					case 0: // clip all
 					break;
 					case 1: // V1 clip V2 V3 V4
 					n = 3;
-					L[1] = -L[1].z * L[0] + L[0].z * L[1];
-					L[2] = -L[3].z * L[0] + L[0].z * L[3];
-					L[3] = L[0];
+					L1 = -L1.z * L0 + L0.z * L1;
+					L2 = -L3.z * L0 + L0.z * L3;
+					L3 = L0;
 					break;
 					case 2: // V2 clip V1 V3 V4
 					n = 3;
-					L[0] = -L[0].z * L[1] + L[1].z * L[0];
-					L[2] = -L[2].z * L[1] + L[1].z * L[2];
-					L[3] = L[0];
+					L0 = -L0.z * L1 + L1.z * L0;
+					L2 = -L2.z * L1 + L1.z * L2;
+					L3 = L0;
 					break;
 					case 3: // V1 V2 clip V3 V4
 					n = 4;
-					L[2] = -L[2].z * L[1] + L[1].z * L[2];
-					L[3] = -L[3].z * L[0] + L[0].z * L[3];
+					L2 = -L2.z * L1 + L1.z * L2;
+					L3 = -L3.z * L0 + L0.z * L3;
 					break;
 					case 4: // V3 clip V1 V2 V4
 					n = 3;
-					L[0] = -L[3].z * L[2] + L[2].z * L[3];
-					L[1] = -L[1].z * L[2] + L[2].z * L[1];
-					L[3] = L[0];
+					L0 = -L3.z * L2 + L2.z * L3;
+					L1 = -L1.z * L2 + L2.z * L1;
+					L3 = L0;
 					break;
 					case 5: // V1 V3 clip V2 V4) impossible
 					break;
 					case 6: // V2 V3 clip V1 V4
 					n = 4;
-					L[0] = -L[0].z * L[1] + L[1].z * L[0];
-					L[3] = -L[3].z * L[2] + L[2].z * L[3];
+					L0 = -L0.z * L1 + L1.z * L0;
+					L3 = -L3.z * L2 + L2.z * L3;
 					break;
 					case 7: // V1 V2 V3 clip V4
 					n = 5;
-					L[4] = -L[3].z * L[0] + L[0].z * L[3];
-					L[3] = -L[3].z * L[2] + L[2].z * L[3];
+					L4 = -L3.z * L0 + L0.z * L3;
+					L3 = -L3.z * L2 + L2.z * L3;
 					break;
 					case 8: // V4 clip V1 V2 V3
 					n = 3;
-					L[0] = -L[0].z * L[3] + L[3].z * L[0];
-					L[1] = -L[2].z * L[3] + L[3].z * L[2];
-					L[2] = L[3];
+					L0 = -L0.z * L3 + L3.z * L0;
+					L1 = -L2.z * L3 + L3.z * L2;
+					L2 = L3;
 					break;
 					case 10: // V2 V4 clip V1 V3) impossible
 					break;
 					case 11: // V1 V2 V4 clip V3
 					n = 5;
-					L[4] = L[3];
-					L[3] = -L[2].z * L[3] + L[3].z * L[2];
-					L[2] = -L[2].z * L[1] + L[1].z * L[2];
+					L4 = L3;
+					L3 = -L2.z * L3 + L3.z * L2;
+					L2 = -L2.z * L1 + L1.z * L2;
 					break;
 					case 12: // V3 V4 clip V1 V2
 					n = 4;
-					L[1] = -L[1].z * L[2] + L[2].z * L[1];
-					L[0] = -L[0].z * L[3] + L[3].z * L[0];
+					L1 = -L1.z * L2 + L2.z * L1;
+					L0 = -L0.z * L3 + L3.z * L0;
 					break;
 					case 14: // V2 V3 V4 clip V1
 					n = 5;
-					L[4] = -L[0].z * L[3] + L[3].z * L[0];
-					L[0] = -L[0].z * L[1] + L[1].z * L[0];
+					L4 = -L0.z * L3 + L3.z * L0;
+					L0 = -L0.z * L1 + L1.z * L0;
 					break;
 				}
 				
 				// inlining these branches *unconditionally* breaks the [forcecase] above
 				// ...yeah I know
 				if (n == 3)
-				L[3] = L[0];
+				L3 = L0;
 				if (n == 4)
-				L[4] = L[0];
+				L4 = L0;
+				
+				L[0] = L0;
+				L[1] = L1;
+				L[2] = L2;
+				L[3] = L3;
+				L[4] = L4;
 			}
 			
 			/*
@@ -20794,7 +21690,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				
 				// map barycentric triangle coordinates to the according object UVs
 				float3 bary3 = float3(bary, 1 - bary.x - bary.y);
-				float2 uv = uvs[1 + hit0 * 2] * bary3.x + uvs[3 - hit0] * bary3.y + uvs[0] * bary3.z;
+				float2 uv = (hit0 ? uvs[3] : uvs[1]) * bary3.x + (hit0 ? uvs[2] : uvs[3]) * bary3.y + uvs[0] * bary3.z;
 				
 				return uv;
 			}
@@ -21032,7 +21928,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			void LTCGI_Evaluate(ltcgi_input input, float3 worldNorm, float3 viewDir, float3x3 Minv, float roughness, const bool diffuse, out ltcgi_output output)
 			{
 				output.input = input;
-				output.color = input.rawColor; // copy for colormode static
+				output.color = input.screenColor; // copy for colormode static
 				output.intensity = 0;
 				
 				// diffuse distance fade
@@ -21060,26 +21956,12 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				
 				if (input.flags.colormode == LTCGI_COLORMODE_SINGLEUV)
 				{
-					float2 uv = input.uvStart;
-					if (uv.x < 0) uv.xy = uv.yx;
-					// TODO: make more configurable?
-					#ifdef LTCGI_VISUALIZE_SAMPLE_UV
-					output.color = float3(uv.xy, 0);
-					#else
-					float3 sampled;
-					LTCGI_sample(LTCGI_inset_uv(uv), 1, input.flags.texindex, 0, sampled);
-					output.color *= sampled;
-					#endif
-					
 					RET1_IF_LMDIFF
 				}
 				
 				#ifdef LTCGI_AUDIOLINK
 				if (input.flags.colormode == LTCGI_COLORMODE_AUDIOLINK)
 				{
-					float al = AudioLinkData(ALPASS_AUDIOLINK + uint2(0, input.flags.alBand)).r;
-					output.color *= al;
-					
 					RET1_IF_LMDIFF
 				}
 				#endif
@@ -21297,6 +22179,28 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 						if (lm < 0.001) continue;
 					}
 					
+					half3 screenColor = color;
+					if (flags.colormode == LTCGI_COLORMODE_SINGLEUV)
+					{
+						float2 sampleUV = uvStart;
+						if (sampleUV.x < 0) sampleUV.xy = sampleUV.yx;
+						#ifdef LTCGI_VISUALIZE_SAMPLE_UV
+						screenColor = float3(sampleUV.xy, 0);
+						#else
+						float3 sampled;
+						LTCGI_sample(LTCGI_inset_uv(sampleUV), 1, flags.texindex, 0, sampled);
+						screenColor *= sampled;
+						#endif
+					}
+					
+					#ifdef LTCGI_AUDIOLINK
+					if (flags.colormode == LTCGI_COLORMODE_AUDIOLINK)
+					{
+						float al = AudioLinkData(ALPASS_AUDIOLINK + uint2(0, flags.alBand)).r;
+						screenColor *= al;
+					}
+					#endif
+					
 					ltcgi_input input;
 					input.i = i;
 					input.Lw = Lw;
@@ -21304,6 +22208,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 					input.uvStart = uvStart;
 					input.uvEnd = uvEnd;
 					input.rawColor = color;
+					input.screenColor = screenColor;
 					input.flags = flags;
 					input.screenNormal = screenNorm;
 					
@@ -28671,10 +29576,10 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				half4 pathColorMap = float4(1, 1, 1, 1);
 				#endif
 				
-				// Array of per-channel colors (RGBA includes alpha for opacity control)
-				half4 PathColor[4] = {
-					_PathColorR, _PathColorG, _PathColorB, _PathColorA
-				};
+				// Per-channel colors (RGBA includes alpha for opacity control)
+				half4x4 PathColor = half4x4(
+				_PathColorR, _PathColorG, _PathColorB, _PathColorA
+				);
 				float4 pathTypes = float4(_PathTypeR, _PathTypeG, _PathTypeB, _PathTypeA);
 				// Per-channel global mask selection + blend mode, applied to each channel's color contribution
 				half pathGlobalMaskIndices[4] = {
@@ -29119,7 +30024,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			
 			float SampleTextDistance(float2 uv, float2 uvDx, float2 uvDy)
 			{
-				float2 sampleUV = TRANSFORM_TEX(uv, _TextGlyphs);
+				float2 sampleUV = uv * _TextGlyphs_ST.xy + _TextGlyphs_ST.zw;
 				float2 sampleDx = uvDx * _TextGlyphs_ST.xy;
 				float2 sampleDy = uvDy * _TextGlyphs_ST.xy;
 				float3 samp = tex2Dgrad(_TextGlyphs, sampleUV, sampleDx, sampleDy).rgb;
@@ -29242,29 +30147,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				#else
 				float3 cameraPos = clamp(getCameraPosition(), -999, 999);
 				#endif
-				float3 absCameraPos = abs(cameraPos);
 				float totalCharacters = 20;
-				float positionArray[20];
-				positionArray[0] = cameraPos.x < 0 ? ASCII_NEGATIVE : ASCII_POSITIVE;
-				positionArray[1] = floor((absCameraPos.x * .01) % 10) + 48;
-				positionArray[2] = floor((absCameraPos.x * .1) % 10) + 48;
-				positionArray[3] = floor(absCameraPos.x % 10) + 48;
-				positionArray[4] = ASCII_PERIOD;
-				positionArray[5] = floor((absCameraPos.x * 10) % 10) + 48;
-				positionArray[6] = ASCII_COMMA;
-				positionArray[7] = cameraPos.y < 0 ? ASCII_NEGATIVE : ASCII_POSITIVE;
-				positionArray[8] = floor((absCameraPos.y * .01) % 10) + 48;
-				positionArray[9] = floor((absCameraPos.y * .1) % 10) + 48;
-				positionArray[10] = floor(absCameraPos.y % 10) + 48;
-				positionArray[11] = ASCII_PERIOD;
-				positionArray[12] = floor((absCameraPos.y * 10) % 10) + 48;
-				positionArray[13] = ASCII_COMMA;
-				positionArray[14] = cameraPos.z < 0 ? ASCII_NEGATIVE : ASCII_POSITIVE;
-				positionArray[15] = floor((absCameraPos.z * .01) % 10) + 48;
-				positionArray[16] = floor((absCameraPos.z * .1) % 10) + 48;
-				positionArray[17] = floor(absCameraPos.z % 10) + 48;
-				positionArray[18] = ASCII_PERIOD;
-				positionArray[19] = floor((absCameraPos.z * 10) % 10) + 48;
 				
 				float glyphIndex;
 				if (!GetTextGlyphIndex(uv, _TextPositionOffset, _TextPositionRotation, _TextPositionScale, totalCharacters, glyphIndex))
@@ -29272,7 +30155,20 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 					return;
 				}
 				
-				DrawTextGlyph(poiFragData, globalTextEmission, poiMods, uv, positionArray[glyphIndex], glyphIndex, totalCharacters, _TextPositionPadding, _TextPositionColor, _TextPositionEmissionStrength, _TextPositionColorThemeIndex);
+				uint posIndex = glyphIndex;
+				uint posAxis = posIndex / 7;
+				uint posSlot = posIndex - posAxis * 7;
+				float posValue = posAxis == 0 ? cameraPos.x : (posAxis == 1 ? cameraPos.y : cameraPos.z);
+				float posAbs = abs(posValue);
+				float posChar = posSlot == 0 ? (posValue < 0 ? ASCII_NEGATIVE : ASCII_POSITIVE)
+				: posSlot == 1 ? floor((posAbs * .01) % 10) + 48
+				: posSlot == 2 ? floor((posAbs * .1) % 10) + 48
+				: posSlot == 3 ? floor(posAbs % 10) + 48
+				: posSlot == 4 ? ASCII_PERIOD
+				: posSlot == 5 ? floor((posAbs * 10) % 10) + 48
+				: ASCII_COMMA;
+				
+				DrawTextGlyph(poiFragData, globalTextEmission, poiMods, uv, posChar, glyphIndex, totalCharacters, _TextPositionPadding, _TextPositionColor, _TextPositionEmissionStrength, _TextPositionColorThemeIndex);
 			}
 			//endex
 			
@@ -29284,15 +30180,6 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				float minutes = (instanceTime / 60) % 60;
 				float seconds = instanceTime % 60;
 				float totalCharacters = 8;
-				float timeArray[8];
-				timeArray[0] = floor((hours * .1) % 10) + 48;
-				timeArray[1] = floor(hours % 10) + 48;
-				timeArray[2] = ASCII_SEMICOLON;
-				timeArray[3] = floor((minutes * .1) % 10) + 48;
-				timeArray[4] = floor(minutes % 10) + 48;
-				timeArray[5] = ASCII_SEMICOLON;
-				timeArray[6] = floor((seconds * .1) % 10) + 48;
-				timeArray[7] = floor(seconds % 10) + 48;
 				
 				float glyphIndex;
 				if (!GetTextGlyphIndex(uv, _TextTimeOffset, _TextTimeRotation, _TextTimeScale, totalCharacters, glyphIndex))
@@ -29300,7 +30187,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 					return;
 				}
 				
-				DrawTextGlyph(poiFragData, globalTextEmission, poiMods, uv, timeArray[glyphIndex], glyphIndex, totalCharacters, _TextTimePadding, _TextTimeColor, _TextTimeEmissionStrength, _TextTimeColorThemeIndex);
+				uint timeIndex = glyphIndex;
+				uint timeGroup = timeIndex / 3;
+				uint timeSlot = timeIndex - timeGroup * 3;
+				float timeValue = timeGroup == 0 ? hours : (timeGroup == 1 ? minutes : seconds);
+				float timeChar = timeSlot == 0 ? floor((timeValue * .1) % 10) + 48
+				: timeSlot == 1 ? floor(timeValue % 10) + 48
+				: ASCII_SEMICOLON;
+				
+				DrawTextGlyph(poiFragData, globalTextEmission, poiMods, uv, timeChar, glyphIndex, totalCharacters, _TextTimePadding, _TextTimeColor, _TextTimeEmissionStrength, _TextTimeColorThemeIndex);
 			}
 			//endex
 			
@@ -29332,20 +30227,6 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				}
 				
 				float totalCharacters = is12Hour ? 11 : 8;	// HH:MM:SS, plus " AM" on 12 hour
-				float utcArray[11];
-				utcArray[0] = (hours / 10) + 48;
-				utcArray[1] = (hours % 10) + 48;
-				utcArray[2] = ASCII_SEMICOLON;
-				utcArray[3] = (minutes / 10) + 48;
-				utcArray[4] = (minutes % 10) + 48;
-				utcArray[5] = ASCII_SEMICOLON;
-				utcArray[6] = (seconds / 10) + 48;
-				utcArray[7] = (seconds % 10) + 48;
-				utcArray[8] = ASCII_SPACE;
-				utcArray[9] = isPM ? ASCII_P : ASCII_A;
-				utcArray[10] = ASCII_M;
-				// 12 hour drops the leading zero on the hour
-				utcArray[0] = (is12Hour && hours < 10) ? ASCII_SPACE : utcArray[0];
 				
 				float glyphIndex;
 				if (!GetTextGlyphIndex(uv, _TextUTCTimeOffset, _TextUTCTimeRotation, _TextUTCTimeScale, totalCharacters, glyphIndex))
@@ -29353,7 +30234,17 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 					return;
 				}
 				
-				DrawTextGlyph(poiFragData, globalTextEmission, poiMods, uv, utcArray[glyphIndex], glyphIndex, totalCharacters, _TextUTCTimePadding, _TextUTCTimeColor, _TextUTCTimeEmissionStrength, _TextUTCTimeColorThemeIndex);
+				uint utcIndex = glyphIndex;
+				uint utcGroup = utcIndex / 3;
+				uint utcSlot = utcIndex - utcGroup * 3;
+				uint utcValue = utcGroup == 0 ? hours : (utcGroup == 1 ? minutes : seconds);
+				// 12 hour drops the leading zero on the hour
+				float utcChar = utcIndex >= 8 ? (utcIndex == 8 ? ASCII_SPACE : utcIndex == 9 ? (isPM ? ASCII_P : ASCII_A) : ASCII_M)
+				: utcSlot == 0 ? ((utcIndex == 0 && is12Hour && hours < 10) ? ASCII_SPACE : (utcValue / 10) + 48)
+				: utcSlot == 1 ? (utcValue % 10) + 48
+				: ASCII_SEMICOLON;
+				
+				DrawTextGlyph(poiFragData, globalTextEmission, poiMods, uv, utcChar, glyphIndex, totalCharacters, _TextUTCTimePadding, _TextUTCTimeColor, _TextUTCTimeEmissionStrength, _TextUTCTimeColorThemeIndex);
 			}
 			//endex
 			
@@ -29362,14 +30253,6 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			{
 				float smoothDeltaTime = clamp(unity_DeltaTime.w, 0, 999);
 				float totalCharacters = 7;
-				float fpsArray[7];
-				fpsArray[0] = ASCII_F;
-				fpsArray[1] = ASCII_P;
-				fpsArray[2] = ASCII_S;
-				fpsArray[3] = ASCII_SEMICOLON;
-				fpsArray[4] = floor((smoothDeltaTime * .01) % 10) + 48;
-				fpsArray[5] = floor((smoothDeltaTime * .1) % 10) + 48;
-				fpsArray[6] = floor(smoothDeltaTime % 10) + 48;
 				
 				float glyphIndex;
 				if (!GetTextGlyphIndex(uv, _TextFPSOffset, _TextFPSRotation, _TextFPSScale, totalCharacters, glyphIndex))
@@ -29377,7 +30260,16 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 					return;
 				}
 				
-				DrawTextGlyph(poiFragData, globalTextEmission, poiMods, uv, fpsArray[glyphIndex], glyphIndex, totalCharacters, _TextFPSPadding, _TextFPSColor, _TextFPSEmissionStrength, _TextFPSColorThemeIndex);
+				uint fpsIndex = glyphIndex;
+				float fpsChar = fpsIndex == 0 ? ASCII_F
+				: fpsIndex == 1 ? ASCII_P
+				: fpsIndex == 2 ? ASCII_S
+				: fpsIndex == 3 ? ASCII_SEMICOLON
+				: fpsIndex == 4 ? floor((smoothDeltaTime * .01) % 10) + 48
+				: fpsIndex == 5 ? floor((smoothDeltaTime * .1) % 10) + 48
+				: floor(smoothDeltaTime % 10) + 48;
+				
+				DrawTextGlyph(poiFragData, globalTextEmission, poiMods, uv, fpsChar, glyphIndex, totalCharacters, _TextFPSPadding, _TextFPSColor, _TextFPSEmissionStrength, _TextFPSColorThemeIndex);
 			}
 			//endex
 			
@@ -29886,7 +30778,9 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				float3 pz = Permutation(Pi.z + oi);
 				
 				float3 p, ox, oy, oz, dx, dy, dz;
-				float3 F = 1e6;
+				float F0 = 1e6;
+				float3 L0 = 1e6;
+				float3 L1 = 1e6;
 				
 				randomPoint = 0;
 				
@@ -29900,7 +30794,6 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 						for (int k = 0; k < 3; k++)
 						{
 							p = Permutation(px[i] + py[j] + pz[k] + oi); // pij1, pij2, pij3
-							float3 ogp = p;
 							
 							ox = frac(p * VoronoiK) - VoronoiKo;
 							oy = glsl_mod(floor(p * VoronoiK), 7.0) * VoronoiK - VoronoiKo;
@@ -29915,29 +30808,25 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 							float3 d = dx * dx + dy * dy + dz * dz; // dij1, dij2 and dij3, squared
 							
 							//Find lowest and second lowest distances
+							L1 = min(L1, max(L0, d));
+							L0 = min(L0, d);
 							[unroll(3)]
 							for (int n = 0; n < 3; n++)
 							{
-								// if (d[n] < F[0])
-								// {
-								//     F[1] = F[0];
-								//     F[0] = d[n];
-								//     randomPoint = p;
-								// }
-								// else if (d[n] < F[1])
-								// {
-								//     F[1] = d[n];
-								// }
-								bool newMin = d[n] < F[0];
-								F[1] = min(newMin ? F[0] : d[n], F[1]);
+								bool newMin = d[n] < F0;
 								randomPoint = newMin ? p : randomPoint;
-								F[0] = min(F[0], d[n]);
+								F0 = min(F0, d[n]);
 							}
 						}
 					}
 				}
 				
-				return F;
+				float2 F = float2(L0.x, L1.x);
+				F.y = min(min(F.y, max(F.x, L0.y)), L1.y);
+				F.x = min(F.x, L0.y);
+				F.y = min(min(F.y, max(F.x, L0.z)), L1.z);
+				F.x = min(F.x, L0.z);
+				return float3(F, 1e6);
 			}
 			
 			float voronoi2D(in float2 x, float scale, float2 speed, out float2 randomPoint)
@@ -31435,7 +32324,12 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 							L1r += light.shDirection * light.color.r;
 							L1g += light.shDirection * light.color.g;
 							L1b += light.shDirection * light.color.b;
-							float3 form = saturate(float3(dot(N1, light.direction), dot(N2, light.direction), dot(N3, light.direction)));
+							float3 form = float3(dot(N1, light.direction), dot(N2, light.direction), dot(N3, light.direction));
+							#ifdef _LIGHTINGMODE_MULTILAYER_MATH
+							// Multilayer Math's own light map is half-Lambert.
+							form = form * 0.5 + 0.5;
+							#endif
+							form = saturate(form);
 							float weight = PoiLVLuminance(max(light.color, 0));
 							PoiLVLampWeight += weight;
 							PoiLVLampArriving += weight * light.visibility;
@@ -32909,6 +33803,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _LightDataSDFMapLOD;
 			float _LightDataSDFBlendY;
 			#endif
+			//ifex _LightingAOMapsUV!=1 && isNotAnimated(_LightingAOMapsUV) && _LightingDetailShadowMapsUV!=1 && isNotAnimated(_LightingDetailShadowMapsUV) && _LightingShadowMasksUV!=1 && isNotAnimated(_LightingShadowMasksUV) && _LightDataSDFMapUV!=1 && isNotAnimated(_LightDataSDFMapUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _LightingAOMapsUV!=2 && isNotAnimated(_LightingAOMapsUV) && _LightingDetailShadowMapsUV!=2 && isNotAnimated(_LightingDetailShadowMapsUV) && _LightingShadowMasksUV!=2 && isNotAnimated(_LightingShadowMasksUV) && _LightDataSDFMapUV!=2 && isNotAnimated(_LightDataSDFMapUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _LightingAOMapsUV!=3 && isNotAnimated(_LightingAOMapsUV) && _LightingDetailShadowMapsUV!=3 && isNotAnimated(_LightingDetailShadowMapsUV) && _LightingShadowMasksUV!=3 && isNotAnimated(_LightingShadowMasksUV) && _LightDataSDFMapUV!=3 && isNotAnimated(_LightDataSDFMapUV)
+			#define POI_USES_UV3
+			//endex
 			float _LightingDirectionMode;
 			float3 _LightngForcedDirection;
 			float _LightingViewDirOffsetPitch;
@@ -32969,6 +33872,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _Bump2ndScaleMaskUV;
 			float _Bump2ndScaleMaskGlobalMask;
 			float _Bump2ndScaleMaskGlobalMaskBlendType;
+			//ifex _Bump2ndMapUV!=1 && isNotAnimated(_Bump2ndMapUV) && _Bump2ndScaleMaskUV!=1 && isNotAnimated(_Bump2ndScaleMaskUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _Bump2ndMapUV!=2 && isNotAnimated(_Bump2ndMapUV) && _Bump2ndScaleMaskUV!=2 && isNotAnimated(_Bump2ndScaleMaskUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _Bump2ndMapUV!=3 && isNotAnimated(_Bump2ndMapUV) && _Bump2ndScaleMaskUV!=3 && isNotAnimated(_Bump2ndScaleMaskUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			//endex
 			float4 _AlphaMask_ST;
@@ -33024,6 +33936,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			half _ColorGradingToggle;
 			float _MainGradationStrength;
 			float _MainGradationMaskChannel;
+			//ifex _MainColorAdjustTextureUV!=1 && isNotAnimated(_MainColorAdjustTextureUV) && _MainTintTextureUV!=1 && isNotAnimated(_MainTintTextureUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _MainColorAdjustTextureUV!=2 && isNotAnimated(_MainColorAdjustTextureUV) && _MainTintTextureUV!=2 && isNotAnimated(_MainTintTextureUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _MainColorAdjustTextureUV!=3 && isNotAnimated(_MainColorAdjustTextureUV) && _MainTintTextureUV!=3 && isNotAnimated(_MainTintTextureUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			//endex
 			
@@ -33062,6 +33983,9 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			half _AlphaFresnelInvert;
 			half _AlphaFresnelGlobalMask;
 			float _AlphaFresnelGlobalMaskBlendType;
+			#if defined(POI_PASS_SHADOW) || defined(POI_PASS_DEPTH_ONLY)
+			#define POI_USES_TANGENT
+			#endif
 			//endex
 			
 			//ifex _AlphaAngular==0 && isNotAnimated(_AlphaAngular)
@@ -33095,6 +34019,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _BentNormalMapStochastic;
 			half _BentNormalSpecOccStrength;
 			float _BentNormalIndirectDiffuse;
+			//ifex _BentNormalMapUV!=1 && isNotAnimated(_BentNormalMapUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _BentNormalMapUV!=2 && isNotAnimated(_BentNormalMapUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _BentNormalMapUV!=3 && isNotAnimated(_BentNormalMapUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			//endex
 			
@@ -33192,6 +34125,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _AudioLinkOutlineHighlightColorThemeIndex;
 			half4 _AudioLinkOutlineHighlightColorRamp;
 			#endif
+			//ifex _OutlineMaskUV!=1 && isNotAnimated(_OutlineMaskUV) && _OutlineTextureUV!=1 && isNotAnimated(_OutlineTextureUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _OutlineMaskUV!=2 && isNotAnimated(_OutlineMaskUV) && _OutlineTextureUV!=2 && isNotAnimated(_OutlineTextureUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _OutlineMaskUV!=3 && isNotAnimated(_OutlineMaskUV) && _OutlineTextureUV!=3 && isNotAnimated(_OutlineTextureUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			//endex
 			
@@ -33270,6 +34212,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			half4 _GlobalMaskTexture3SplitPan_B;
 			float4 _GlobalMaskTexture3SplitTilingOffset_A;
 			half4 _GlobalMaskTexture3SplitPan_A;
+			//ifex _GlobalMaskTexture0UV!=1 && isNotAnimated(_GlobalMaskTexture0UV) && _GlobalMaskTexture1UV!=1 && isNotAnimated(_GlobalMaskTexture1UV) && _GlobalMaskTexture2UV!=1 && isNotAnimated(_GlobalMaskTexture2UV) && _GlobalMaskTexture3UV!=1 && isNotAnimated(_GlobalMaskTexture3UV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _GlobalMaskTexture0UV!=2 && isNotAnimated(_GlobalMaskTexture0UV) && _GlobalMaskTexture1UV!=2 && isNotAnimated(_GlobalMaskTexture1UV) && _GlobalMaskTexture2UV!=2 && isNotAnimated(_GlobalMaskTexture2UV) && _GlobalMaskTexture3UV!=2 && isNotAnimated(_GlobalMaskTexture3UV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _GlobalMaskTexture0UV!=3 && isNotAnimated(_GlobalMaskTexture0UV) && _GlobalMaskTexture1UV!=3 && isNotAnimated(_GlobalMaskTexture1UV) && _GlobalMaskTexture2UV!=3 && isNotAnimated(_GlobalMaskTexture2UV) && _GlobalMaskTexture3UV!=3 && isNotAnimated(_GlobalMaskTexture3UV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			//endex
 			//ifex _GlobalMaskOptionsEnable==0
@@ -33650,6 +34601,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			half2 _DistortionStrength1AudioLink;
 			half _DistortionStrength1AudioLinkBand;
 			#endif
+			//ifex _DistortionFlowTextureUV!=1 && isNotAnimated(_DistortionFlowTextureUV) && _DistortionFlowTexture1UV!=1 && isNotAnimated(_DistortionFlowTexture1UV) && _DistortionMaskUV!=1 && isNotAnimated(_DistortionMaskUV) && _DistortionUvToDistort!=1 && isNotAnimated(_DistortionUvToDistort)
+			#define POI_USES_UV1
+			//endex
+			//ifex _DistortionFlowTextureUV!=2 && isNotAnimated(_DistortionFlowTextureUV) && _DistortionFlowTexture1UV!=2 && isNotAnimated(_DistortionFlowTexture1UV) && _DistortionMaskUV!=2 && isNotAnimated(_DistortionMaskUV) && _DistortionUvToDistort!=2 && isNotAnimated(_DistortionUvToDistort)
+			#define POI_USES_UV2
+			//endex
+			//ifex _DistortionFlowTextureUV!=3 && isNotAnimated(_DistortionFlowTextureUV) && _DistortionFlowTexture1UV!=3 && isNotAnimated(_DistortionFlowTexture1UV) && _DistortionMaskUV!=3 && isNotAnimated(_DistortionMaskUV) && _DistortionUvToDistort!=3 && isNotAnimated(_DistortionUvToDistort)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			//endex
 			float2 _UVSettingsTiling0;
@@ -33677,6 +34637,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			int _StereoEnabled;
 			int _PanoUseBothEyes;
 			float _PolarUV;
+			//ifex _PolarUV!=1 && isNotAnimated(_PolarUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _PolarUV!=2 && isNotAnimated(_PolarUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _PolarUV!=3 && isNotAnimated(_PolarUV)
+			#define POI_USES_UV3
+			//endex
 			float _PolarMode;
 			float2 _PolarCenter;
 			float _PolarRadialScale;
@@ -33727,6 +34696,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _UDIMFaceDiscardRow0_1;
 			float _UDIMFaceDiscardRow0_2;
 			float _UDIMFaceDiscardRow0_3;
+			//ifex _UDIMDiscardUV!=1 && isNotAnimated(_UDIMDiscardUV) && _UDIMFaceDiscardUV!=1 && isNotAnimated(_UDIMFaceDiscardUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _UDIMDiscardUV!=2 && isNotAnimated(_UDIMDiscardUV) && _UDIMFaceDiscardUV!=2 && isNotAnimated(_UDIMFaceDiscardUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _UDIMDiscardUV!=3 && isNotAnimated(_UDIMDiscardUV) && _UDIMFaceDiscardUV!=3 && isNotAnimated(_UDIMFaceDiscardUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			//endex
 			
@@ -34003,6 +34981,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float4 _PoiSkinTanMapTiling;
 			float _PoiSkinTanAmount;
 			float _PoiSkinTanRednessShift;
+			//ifex _PoiSkinFreckleMapUV!=1 && isNotAnimated(_PoiSkinFreckleMapUV) && _PoiSkinTanMapUV!=1 && isNotAnimated(_PoiSkinTanMapUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _PoiSkinFreckleMapUV!=2 && isNotAnimated(_PoiSkinFreckleMapUV) && _PoiSkinTanMapUV!=2 && isNotAnimated(_PoiSkinTanMapUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _PoiSkinFreckleMapUV!=3 && isNotAnimated(_PoiSkinFreckleMapUV) && _PoiSkinTanMapUV!=3 && isNotAnimated(_PoiSkinTanMapUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			//endex
 			
@@ -34186,6 +35173,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float4 _RgbNormalABlendSources;
 			
 			float _RGBMaskType;
+			//ifex _RGBMaskUV!=1 && isNotAnimated(_RGBMaskUV) && _RGBAMetallicMapsUV!=1 && isNotAnimated(_RGBAMetallicMapsUV) && _RGBARedPBRUV!=1 && isNotAnimated(_RGBARedPBRUV) && _RGBAGreenPBRUV!=1 && isNotAnimated(_RGBAGreenPBRUV) && _RGBABluePBRUV!=1 && isNotAnimated(_RGBABluePBRUV) && _RGBAAlphaPBRUV!=1 && isNotAnimated(_RGBAAlphaPBRUV) && _RGBASmoothnessMapsUV!=1 && isNotAnimated(_RGBASmoothnessMapsUV) && _RedTextureUV!=1 && isNotAnimated(_RedTextureUV) && _RgbNormalRUV!=1 && isNotAnimated(_RgbNormalRUV) && _GreenTextureUV!=1 && isNotAnimated(_GreenTextureUV) && _RgbNormalGUV!=1 && isNotAnimated(_RgbNormalGUV) && _BlueTextureUV!=1 && isNotAnimated(_BlueTextureUV) && _RgbNormalBUV!=1 && isNotAnimated(_RgbNormalBUV) && _AlphaTextureUV!=1 && isNotAnimated(_AlphaTextureUV) && _RgbNormalAUV!=1 && isNotAnimated(_RgbNormalAUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _RGBMaskUV!=2 && isNotAnimated(_RGBMaskUV) && _RGBAMetallicMapsUV!=2 && isNotAnimated(_RGBAMetallicMapsUV) && _RGBARedPBRUV!=2 && isNotAnimated(_RGBARedPBRUV) && _RGBAGreenPBRUV!=2 && isNotAnimated(_RGBAGreenPBRUV) && _RGBABluePBRUV!=2 && isNotAnimated(_RGBABluePBRUV) && _RGBAAlphaPBRUV!=2 && isNotAnimated(_RGBAAlphaPBRUV) && _RGBASmoothnessMapsUV!=2 && isNotAnimated(_RGBASmoothnessMapsUV) && _RedTextureUV!=2 && isNotAnimated(_RedTextureUV) && _RgbNormalRUV!=2 && isNotAnimated(_RgbNormalRUV) && _GreenTextureUV!=2 && isNotAnimated(_GreenTextureUV) && _RgbNormalGUV!=2 && isNotAnimated(_RgbNormalGUV) && _BlueTextureUV!=2 && isNotAnimated(_BlueTextureUV) && _RgbNormalBUV!=2 && isNotAnimated(_RgbNormalBUV) && _AlphaTextureUV!=2 && isNotAnimated(_AlphaTextureUV) && _RgbNormalAUV!=2 && isNotAnimated(_RgbNormalAUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _RGBMaskUV!=3 && isNotAnimated(_RGBMaskUV) && _RGBAMetallicMapsUV!=3 && isNotAnimated(_RGBAMetallicMapsUV) && _RGBARedPBRUV!=3 && isNotAnimated(_RGBARedPBRUV) && _RGBAGreenPBRUV!=3 && isNotAnimated(_RGBAGreenPBRUV) && _RGBABluePBRUV!=3 && isNotAnimated(_RGBABluePBRUV) && _RGBAAlphaPBRUV!=3 && isNotAnimated(_RGBAAlphaPBRUV) && _RGBASmoothnessMapsUV!=3 && isNotAnimated(_RGBASmoothnessMapsUV) && _RedTextureUV!=3 && isNotAnimated(_RedTextureUV) && _RgbNormalRUV!=3 && isNotAnimated(_RgbNormalRUV) && _GreenTextureUV!=3 && isNotAnimated(_GreenTextureUV) && _RgbNormalGUV!=3 && isNotAnimated(_RgbNormalGUV) && _BlueTextureUV!=3 && isNotAnimated(_BlueTextureUV) && _RgbNormalBUV!=3 && isNotAnimated(_RgbNormalBUV) && _AlphaTextureUV!=3 && isNotAnimated(_AlphaTextureUV) && _RgbNormalAUV!=3 && isNotAnimated(_RgbNormalAUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			//endex
 			
@@ -34207,6 +35203,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _ShadowOffset;
 			int _ToonRampCount;
 			int _ToonRampUVSelector;
+			//ifex (_ToonRampCount<=1 && isNotAnimated(_ToonRampCount)) || (_ToonRampUVSelector!=1 && isNotAnimated(_ToonRampUVSelector))
+			#define POI_USES_UV1
+			//endex
+			//ifex (_ToonRampCount<=1 && isNotAnimated(_ToonRampCount)) || (_ToonRampUVSelector!=2 && isNotAnimated(_ToonRampUVSelector))
+			#define POI_USES_UV2
+			//endex
+			//ifex (_ToonRampCount<=1 && isNotAnimated(_ToonRampCount)) || (_ToonRampUVSelector!=3 && isNotAnimated(_ToonRampUVSelector))
+			#define POI_USES_UV3
+			//endex
 			#endif
 			
 			#ifdef _LIGHTINGMODE_WRAPPED
@@ -34237,6 +35242,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _ShadeColor_Step;
 			float _1st2nd_Shades_Feather;
 			float _ShadingShadeMapBlendType;
+			//ifex _1st_ShadeMapUV!=1 && isNotAnimated(_1st_ShadeMapUV) && _2nd_ShadeMapUV!=1 && isNotAnimated(_2nd_ShadeMapUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _1st_ShadeMapUV!=2 && isNotAnimated(_1st_ShadeMapUV) && _2nd_ShadeMapUV!=2 && isNotAnimated(_2nd_ShadeMapUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _1st_ShadeMapUV!=3 && isNotAnimated(_1st_ShadeMapUV) && _2nd_ShadeMapUV!=3 && isNotAnimated(_2nd_ShadeMapUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			
 			#ifdef _LIGHTINGMODE_SKIN
@@ -34253,6 +35267,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _SkinScatteringStability;
 			float3 _SssTransmissionAbsorption;
 			half3 _SssColorBleedAoWeights;
+			//ifex _SkinThicknessMapUV!=1 && isNotAnimated(_SkinThicknessMapUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _SkinThicknessMapUV!=2 && isNotAnimated(_SkinThicknessMapUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _SkinThicknessMapUV!=3 && isNotAnimated(_SkinThicknessMapUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			
 			#ifdef _LIGHTINGMODE_MULTILAYER_MATH
@@ -34325,6 +35348,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			half _ShadowFlatBorder;
 			half _ShadowFlatBlur;
 			half _MultilayerShadowStrength;
+			//ifex _ShadowBorderMaskUV!=1 && isNotAnimated(_ShadowBorderMaskUV) && _ShadowColorTexUV!=1 && isNotAnimated(_ShadowColorTexUV) && _MultilayerMathBlurMapUV!=1 && isNotAnimated(_MultilayerMathBlurMapUV) && _Shadow2ndColorTexUV!=1 && isNotAnimated(_Shadow2ndColorTexUV) && _Shadow3rdColorTexUV!=1 && isNotAnimated(_Shadow3rdColorTexUV) && _ShadowStrengthMaskUV!=1 && isNotAnimated(_ShadowStrengthMaskUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _ShadowBorderMaskUV!=2 && isNotAnimated(_ShadowBorderMaskUV) && _ShadowColorTexUV!=2 && isNotAnimated(_ShadowColorTexUV) && _MultilayerMathBlurMapUV!=2 && isNotAnimated(_MultilayerMathBlurMapUV) && _Shadow2ndColorTexUV!=2 && isNotAnimated(_Shadow2ndColorTexUV) && _Shadow3rdColorTexUV!=2 && isNotAnimated(_Shadow3rdColorTexUV) && _ShadowStrengthMaskUV!=2 && isNotAnimated(_ShadowStrengthMaskUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _ShadowBorderMaskUV!=3 && isNotAnimated(_ShadowBorderMaskUV) && _ShadowColorTexUV!=3 && isNotAnimated(_ShadowColorTexUV) && _MultilayerMathBlurMapUV!=3 && isNotAnimated(_MultilayerMathBlurMapUV) && _Shadow2ndColorTexUV!=3 && isNotAnimated(_Shadow2ndColorTexUV) && _Shadow3rdColorTexUV!=3 && isNotAnimated(_Shadow3rdColorTexUV) && _ShadowStrengthMaskUV!=3 && isNotAnimated(_ShadowStrengthMaskUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			
 			#ifdef _LIGHTINGMODE_FLAT
@@ -34349,6 +35381,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _ClothReflectanceGlobalMaskBlendType;
 			half _ClothSmoothnessGlobalMask;
 			float _ClothSmoothnessGlobalMaskBlendType;
+			//ifex _ClothMetallicSmoothnessMapUV!=1 && isNotAnimated(_ClothMetallicSmoothnessMapUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _ClothMetallicSmoothnessMapUV!=2 && isNotAnimated(_ClothMetallicSmoothnessMapUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _ClothMetallicSmoothnessMapUV!=3 && isNotAnimated(_ClothMetallicSmoothnessMapUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			
 			#ifdef _LIGHTINGMODE_SDF
@@ -34360,6 +35401,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _SDFBlur;
 			float4 _SDFForward;
 			float4 _SDFLeft;
+			//ifex _SDFShadingTextureUV!=1 && isNotAnimated(_SDFShadingTextureUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _SDFShadingTextureUV!=2 && isNotAnimated(_SDFShadingTextureUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _SDFShadingTextureUV!=3 && isNotAnimated(_SDFShadingTextureUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			
 			// Additive
@@ -34374,6 +35424,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float2 _DecalMaskPan;
 			float _DecalMaskUV;
 			#endif
+			//ifex _DecalMaskUV!=1 && isNotAnimated(_DecalMaskUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _DecalMaskUV!=2 && isNotAnimated(_DecalMaskUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _DecalMaskUV!=3 && isNotAnimated(_DecalMaskUV)
+			#define POI_USES_UV3
+			//endex
 			//endex
 			
 			//ifex _DecalEnabled==0
@@ -34456,6 +35515,18 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _AudioLinkDecal0ColorOverrideBand;
 			half4 _AudioLinkDecal0ColorOverrideRamp;
 			#endif
+			//ifex _DecalTextureUV!=1 && isNotAnimated(_DecalTextureUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _DecalTextureUV!=2 && isNotAnimated(_DecalTextureUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _DecalTextureUV!=3 && isNotAnimated(_DecalTextureUV)
+			#define POI_USES_UV3
+			//endex
+			//ifex _DecalMirroredUVMode==0 && isNotAnimated(_DecalMirroredUVMode) && _Decal0Depth==0 && isNotAnimated(_Decal0Depth)
+			#define POI_USES_TANGENT
+			//endex
 			#endif
 			//endex
 			
@@ -34539,6 +35610,18 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _AudioLinkDecal1ColorOverrideBand;
 			half4 _AudioLinkDecal1ColorOverrideRamp;
 			#endif
+			//ifex _DecalTexture1UV!=1 && isNotAnimated(_DecalTexture1UV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _DecalTexture1UV!=2 && isNotAnimated(_DecalTexture1UV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _DecalTexture1UV!=3 && isNotAnimated(_DecalTexture1UV)
+			#define POI_USES_UV3
+			//endex
+			//ifex _DecalMirroredUVMode1==0 && isNotAnimated(_DecalMirroredUVMode1) && _Decal1Depth==0 && isNotAnimated(_Decal1Depth)
+			#define POI_USES_TANGENT
+			//endex
 			#endif
 			//endex
 			
@@ -34622,6 +35705,18 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _AudioLinkDecal2ColorOverrideBand;
 			half4 _AudioLinkDecal2ColorOverrideRamp;
 			#endif
+			//ifex _DecalTexture2UV!=1 && isNotAnimated(_DecalTexture2UV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _DecalTexture2UV!=2 && isNotAnimated(_DecalTexture2UV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _DecalTexture2UV!=3 && isNotAnimated(_DecalTexture2UV)
+			#define POI_USES_UV3
+			//endex
+			//ifex _DecalMirroredUVMode2==0 && isNotAnimated(_DecalMirroredUVMode2) && _Decal2Depth==0 && isNotAnimated(_Decal2Depth)
+			#define POI_USES_TANGENT
+			//endex
 			#endif
 			//endex
 			
@@ -34705,6 +35800,18 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _AudioLinkDecal3ColorOverrideBand;
 			half4 _AudioLinkDecal3ColorOverrideRamp;
 			#endif
+			//ifex _DecalTexture3UV!=1 && isNotAnimated(_DecalTexture3UV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _DecalTexture3UV!=2 && isNotAnimated(_DecalTexture3UV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _DecalTexture3UV!=3 && isNotAnimated(_DecalTexture3UV)
+			#define POI_USES_UV3
+			//endex
+			//ifex _DecalMirroredUVMode3==0 && isNotAnimated(_DecalMirroredUVMode3) && _Decal3Depth==0 && isNotAnimated(_Decal3Depth)
+			#define POI_USES_TANGENT
+			//endex
 			#endif
 			//endex
 			
@@ -34846,6 +35953,20 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _DissolveALColorOverrideBand;
 			half4 _DissolveALColorOverrideRamp;
 			#endif
+			//ifex _DissolveToTextureUV!=1 && isNotAnimated(_DissolveToTextureUV) && _DissolveNoiseTextureUV!=1 && isNotAnimated(_DissolveNoiseTextureUV) && _DissolveDetailNoiseUV!=1 && isNotAnimated(_DissolveDetailNoiseUV) && _DissolveMaskUV!=1 && isNotAnimated(_DissolveMaskUV) && _DissolveP2PUV!=1 && isNotAnimated(_DissolveP2PUV) && _UVTileDissolveUV!=1 && isNotAnimated(_UVTileDissolveUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _DissolveToTextureUV!=2 && isNotAnimated(_DissolveToTextureUV) && _DissolveNoiseTextureUV!=2 && isNotAnimated(_DissolveNoiseTextureUV) && _DissolveDetailNoiseUV!=2 && isNotAnimated(_DissolveDetailNoiseUV) && _DissolveMaskUV!=2 && isNotAnimated(_DissolveMaskUV) && _DissolveP2PUV!=2 && isNotAnimated(_DissolveP2PUV) && _UVTileDissolveUV!=2 && isNotAnimated(_UVTileDissolveUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _DissolveToTextureUV!=3 && isNotAnimated(_DissolveToTextureUV) && _DissolveNoiseTextureUV!=3 && isNotAnimated(_DissolveNoiseTextureUV) && _DissolveDetailNoiseUV!=3 && isNotAnimated(_DissolveDetailNoiseUV) && _DissolveMaskUV!=3 && isNotAnimated(_DissolveMaskUV) && _DissolveP2PUV!=3 && isNotAnimated(_DissolveP2PUV) && _UVTileDissolveUV!=3 && isNotAnimated(_UVTileDissolveUV)
+			#define POI_USES_UV3
+			//endex
+			//ifex _CenterOutDissolveNormals==0 && isNotAnimated(_CenterOutDissolveNormals)
+			#if defined(POI_PASS_SHADOW) || defined(POI_PASS_DEPTH_ONLY)
+			#define POI_USES_TANGENT
+			#endif
+			//endex
 			#endif
 			//endex
 			
@@ -34868,6 +35989,18 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float2 _Matcap0NormalMapPan;
 			float _Matcap0NormalMapUV;
 			float _Matcap0NormalMapScale;
+			//ifex _Matcap0NormalMapUV!=1 && isNotAnimated(_Matcap0NormalMapUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _Matcap0NormalMapUV!=2 && isNotAnimated(_Matcap0NormalMapUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _Matcap0NormalMapUV!=3 && isNotAnimated(_Matcap0NormalMapUV)
+			#define POI_USES_UV3
+			//endex
+			#if !defined(POI_PASS_SHADOW) && !defined(POI_PASS_DEPTH_ONLY)
+			#define POI_USES_TANGENT
+			#endif
 			#endif
 			half _Matcap0CircleMaskEnabled;
 			half _Matcap0CircleMaskBorder;
@@ -34875,6 +36008,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _Matcap0LightVsReflection;
 			float _MatcapUVToBlend;
 			float4 _MatCapBlendUV1;
+			//ifex _MatcapUVToBlend!=1 && isNotAnimated(_MatcapUVToBlend)
+			#define POI_USES_UV1
+			//endex
+			//ifex _MatcapUVToBlend!=2 && isNotAnimated(_MatcapUVToBlend)
+			#define POI_USES_UV2
+			//endex
+			//ifex _MatcapUVToBlend!=3 && isNotAnimated(_MatcapUVToBlend)
+			#define POI_USES_UV3
+			//endex
 			float _MatcapUVMode;
 			half _MatcapMaskInvert;
 			half _MatcapMaskGlobalMask;
@@ -34930,6 +36072,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _Matcap0ALColorOverrideThemeIndex;
 			float _Matcap0ALColorOverrideBand;
 			half4 _Matcap0ALColorOverrideRamp;
+			//ifex _MatcapMaskUV!=1 && isNotAnimated(_MatcapMaskUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _MatcapMaskUV!=2 && isNotAnimated(_MatcapMaskUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _MatcapMaskUV!=3 && isNotAnimated(_MatcapMaskUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			//endex
 			//ifex _Matcap2Enable==0
@@ -34951,12 +36102,33 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float2 _Matcap1NormalMapPan;
 			float _Matcap1NormalMapUV;
 			float _Matcap1NormalMapScale;
+			//ifex _Matcap1NormalMapUV!=1 && isNotAnimated(_Matcap1NormalMapUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _Matcap1NormalMapUV!=2 && isNotAnimated(_Matcap1NormalMapUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _Matcap1NormalMapUV!=3 && isNotAnimated(_Matcap1NormalMapUV)
+			#define POI_USES_UV3
+			//endex
+			#if !defined(POI_PASS_SHADOW) && !defined(POI_PASS_DEPTH_ONLY)
+			#define POI_USES_TANGENT
+			#endif
 			#endif
 			half _Matcap2CircleMaskEnabled;
 			half _Matcap2CircleMaskBorder;
 			half _Matcap2CircleMaskBlur;
 			float _Matcap2UVToBlend;
 			float4 _MatCap2ndBlendUV1;
+			//ifex _Matcap2UVToBlend!=1 && isNotAnimated(_Matcap2UVToBlend)
+			#define POI_USES_UV1
+			//endex
+			//ifex _Matcap2UVToBlend!=2 && isNotAnimated(_Matcap2UVToBlend)
+			#define POI_USES_UV2
+			//endex
+			//ifex _Matcap2UVToBlend!=3 && isNotAnimated(_Matcap2UVToBlend)
+			#define POI_USES_UV3
+			//endex
 			float _Matcap2UVMode;
 			half _Matcap2MaskInvert;
 			half _Matcap2MaskGlobalMask;
@@ -35012,6 +36184,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _Matcap1ALColorOverrideThemeIndex;
 			float _Matcap1ALColorOverrideBand;
 			half4 _Matcap1ALColorOverrideRamp;
+			//ifex _Matcap2MaskUV!=1 && isNotAnimated(_Matcap2MaskUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _Matcap2MaskUV!=2 && isNotAnimated(_Matcap2MaskUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _Matcap2MaskUV!=3 && isNotAnimated(_Matcap2MaskUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			//endex
 			
@@ -35034,12 +36215,33 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float2 _Matcap2NormalMapPan;
 			float _Matcap2NormalMapUV;
 			float _Matcap2NormalMapScale;
+			//ifex _Matcap2NormalMapUV!=1 && isNotAnimated(_Matcap2NormalMapUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _Matcap2NormalMapUV!=2 && isNotAnimated(_Matcap2NormalMapUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _Matcap2NormalMapUV!=3 && isNotAnimated(_Matcap2NormalMapUV)
+			#define POI_USES_UV3
+			//endex
+			#if !defined(POI_PASS_SHADOW) && !defined(POI_PASS_DEPTH_ONLY)
+			#define POI_USES_TANGENT
+			#endif
 			#endif
 			half _Matcap3CircleMaskEnabled;
 			half _Matcap3CircleMaskBorder;
 			half _Matcap3CircleMaskBlur;
 			float _Matcap3UVToBlend;
 			float4 _MatCap3rdBlendUV1;
+			//ifex _Matcap3UVToBlend!=1 && isNotAnimated(_Matcap3UVToBlend)
+			#define POI_USES_UV1
+			//endex
+			//ifex _Matcap3UVToBlend!=2 && isNotAnimated(_Matcap3UVToBlend)
+			#define POI_USES_UV2
+			//endex
+			//ifex _Matcap3UVToBlend!=3 && isNotAnimated(_Matcap3UVToBlend)
+			#define POI_USES_UV3
+			//endex
 			float _Matcap3UVMode;
 			half _Matcap3MaskInvert;
 			half _Matcap3MaskGlobalMask;
@@ -35095,6 +36297,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _Matcap2ALColorOverrideThemeIndex;
 			float _Matcap2ALColorOverrideBand;
 			half4 _Matcap2ALColorOverrideRamp;
+			//ifex _Matcap3MaskUV!=1 && isNotAnimated(_Matcap3MaskUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _Matcap3MaskUV!=2 && isNotAnimated(_Matcap3MaskUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _Matcap3MaskUV!=3 && isNotAnimated(_Matcap3MaskUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			//endex
 			
@@ -35117,12 +36328,33 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float2 _Matcap3NormalMapPan;
 			float _Matcap3NormalMapUV;
 			float _Matcap3NormalMapScale;
+			//ifex _Matcap3NormalMapUV!=1 && isNotAnimated(_Matcap3NormalMapUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _Matcap3NormalMapUV!=2 && isNotAnimated(_Matcap3NormalMapUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _Matcap3NormalMapUV!=3 && isNotAnimated(_Matcap3NormalMapUV)
+			#define POI_USES_UV3
+			//endex
+			#if !defined(POI_PASS_SHADOW) && !defined(POI_PASS_DEPTH_ONLY)
+			#define POI_USES_TANGENT
+			#endif
 			#endif
 			half _Matcap4CircleMaskEnabled;
 			half _Matcap4CircleMaskBorder;
 			half _Matcap4CircleMaskBlur;
 			float _Matcap4UVToBlend;
 			float4 _MatCap4thBlendUV1;
+			//ifex _Matcap4UVToBlend!=1 && isNotAnimated(_Matcap4UVToBlend)
+			#define POI_USES_UV1
+			//endex
+			//ifex _Matcap4UVToBlend!=2 && isNotAnimated(_Matcap4UVToBlend)
+			#define POI_USES_UV2
+			//endex
+			//ifex _Matcap4UVToBlend!=3 && isNotAnimated(_Matcap4UVToBlend)
+			#define POI_USES_UV3
+			//endex
 			float _Matcap4UVMode;
 			half _Matcap4MaskInvert;
 			half _Matcap4MaskGlobalMask;
@@ -35178,6 +36410,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _Matcap3ALColorOverrideThemeIndex;
 			float _Matcap3ALColorOverrideBand;
 			half4 _Matcap3ALColorOverrideRamp;
+			//ifex _Matcap4MaskUV!=1 && isNotAnimated(_Matcap4MaskUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _Matcap4MaskUV!=2 && isNotAnimated(_Matcap4MaskUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _Matcap4MaskUV!=3 && isNotAnimated(_Matcap4MaskUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			//endex
 			
@@ -35257,6 +36498,18 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _FlipbookALColorOverrideBand;
 			half4 _FlipbookALColorOverrideRamp;
 			#endif
+			//ifex _FlipbookTexArrayUV!=1 && isNotAnimated(_FlipbookTexArrayUV) && _FlipbookMaskUV!=1 && isNotAnimated(_FlipbookMaskUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _FlipbookTexArrayUV!=2 && isNotAnimated(_FlipbookTexArrayUV) && _FlipbookMaskUV!=2 && isNotAnimated(_FlipbookMaskUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _FlipbookTexArrayUV!=3 && isNotAnimated(_FlipbookTexArrayUV) && _FlipbookMaskUV!=3 && isNotAnimated(_FlipbookMaskUV)
+			#define POI_USES_UV3
+			//endex
+			//ifex _FlipbookMirroredUVMode==0 && isNotAnimated(_FlipbookMirroredUVMode)
+			#define POI_USES_TANGENT
+			//endex
 			#endif
 			//endex
 			
@@ -35336,6 +36589,18 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _FlipbookALColorOverrideBand1;
 			half4 _FlipbookALColorOverrideRamp1;
 			#endif
+			//ifex _FlipbookTexArrayUV1!=1 && isNotAnimated(_FlipbookTexArrayUV1) && _FlipbookMaskUV1!=1 && isNotAnimated(_FlipbookMaskUV1)
+			#define POI_USES_UV1
+			//endex
+			//ifex _FlipbookTexArrayUV1!=2 && isNotAnimated(_FlipbookTexArrayUV1) && _FlipbookMaskUV1!=2 && isNotAnimated(_FlipbookMaskUV1)
+			#define POI_USES_UV2
+			//endex
+			//ifex _FlipbookTexArrayUV1!=3 && isNotAnimated(_FlipbookTexArrayUV1) && _FlipbookMaskUV1!=3 && isNotAnimated(_FlipbookMaskUV1)
+			#define POI_USES_UV3
+			//endex
+			//ifex _FlipbookMirroredUVMode1==0 && isNotAnimated(_FlipbookMirroredUVMode1)
+			#define POI_USES_TANGENT
+			//endex
 			#endif
 			//endex
 			
@@ -35358,6 +36623,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float4 _MirrorTexture_ST;
 			float2 _MirrorTexturePan;
 			float _MirrorTextureUV;
+			//ifex _MirrorTextureUV!=1 && isNotAnimated(_MirrorTextureUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _MirrorTextureUV!=2 && isNotAnimated(_MirrorTextureUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _MirrorTextureUV!=3 && isNotAnimated(_MirrorTextureUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			#endif
 			//endex
@@ -35392,6 +36666,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			half _DepthAlphaMaxValue;
 			float _DepthAlphaMinDepth;
 			float _DepthAlphaMaxDepth;
+			//ifex _DepthMaskUV!=1 && isNotAnimated(_DepthMaskUV) && _DepthTextureUV!=1 && isNotAnimated(_DepthTextureUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _DepthMaskUV!=2 && isNotAnimated(_DepthMaskUV) && _DepthTextureUV!=2 && isNotAnimated(_DepthTextureUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _DepthMaskUV!=3 && isNotAnimated(_DepthMaskUV) && _DepthTextureUV!=3 && isNotAnimated(_DepthTextureUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			//endex
 			
@@ -35442,6 +36725,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _ppHueSelectOrShift;
 			float _PPPosterization;
 			float _PPPosterizationAmount;
+			//ifex _PPMaskUV!=1 && isNotAnimated(_PPMaskUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _PPMaskUV!=2 && isNotAnimated(_PPMaskUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _PPMaskUV!=3 && isNotAnimated(_PPMaskUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			//endex
 			
@@ -35471,6 +36763,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _BacklightGlobalMaskBlendType;
 			float _BacklightApplyGlobalMaskIndex;
 			float _BacklightApplyGlobalMaskBlendType;
+			//ifex _BacklightColorTexUV!=1 && isNotAnimated(_BacklightColorTexUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _BacklightColorTexUV!=2 && isNotAnimated(_BacklightColorTexUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _BacklightColorTexUV!=3 && isNotAnimated(_BacklightColorTexUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			//endex
 			
@@ -35542,6 +36843,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _AudioLinkVoronoiInnerColorOverrideThemeIndex;
 			float _AudioLinkVoronoiInnerColorOverrideBand;
 			half4 _AudioLinkVoronoiInnerColorOverrideRamp;
+			//ifex _VoronoiMaskUV!=1 && isNotAnimated(_VoronoiMaskUV) && _VoronoiNoiseUV!=1 && isNotAnimated(_VoronoiNoiseUV) && _VoronoiUV!=1 && isNotAnimated(_VoronoiUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _VoronoiMaskUV!=2 && isNotAnimated(_VoronoiMaskUV) && _VoronoiNoiseUV!=2 && isNotAnimated(_VoronoiNoiseUV) && _VoronoiUV!=2 && isNotAnimated(_VoronoiUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _VoronoiMaskUV!=3 && isNotAnimated(_VoronoiMaskUV) && _VoronoiNoiseUV!=3 && isNotAnimated(_VoronoiNoiseUV) && _VoronoiUV!=3 && isNotAnimated(_VoronoiUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			//endex
 			
@@ -35627,13 +36937,37 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			// End Depth texture handling
 			
 			UNITY_DECLARE_TEX2D(_MainTex);
+			//ifex _MainTexUV!=1 && isNotAnimated(_MainTexUV) && _AlphaMaskUV!=1 && isNotAnimated(_AlphaMaskUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _MainTexUV!=2 && isNotAnimated(_MainTexUV) && _AlphaMaskUV!=2 && isNotAnimated(_AlphaMaskUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _MainTexUV!=3 && isNotAnimated(_MainTexUV) && _AlphaMaskUV!=3 && isNotAnimated(_AlphaMaskUV)
+			#define POI_USES_UV3
+			//endex
 			#if defined(PROP_BUMPMAP) || !defined(OPTIMIZER_ENABLED)
 			Texture2D _BumpMap;
+			#if !defined(POI_PASS_SHADOW) && !defined(POI_PASS_DEPTH_ONLY)
+			#define POI_USES_TANGENT
+			#endif
+			//ifex _BumpMapUV!=1 && isNotAnimated(_BumpMapUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _BumpMapUV!=2 && isNotAnimated(_BumpMapUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _BumpMapUV!=3 && isNotAnimated(_BumpMapUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			//ifex _UseBump2ndMap==0
 			#ifdef POI_BUMP2NDMAP
 			#if defined(PROP_BUMP2NDMAP) || !defined(OPTIMIZER_ENABLED)
 			Texture2D _Bump2ndMap;
+			#if !defined(POI_PASS_SHADOW) && !defined(POI_PASS_DEPTH_ONLY)
+			#define POI_USES_TANGENT
+			#endif
 			#endif
 			#if defined(PROP_BUMP2NDSCALEMASK) || !defined(OPTIMIZER_ENABLED)
 			Texture2D _Bump2ndScaleMask;
@@ -35661,6 +36995,9 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			#ifdef POI_BENTNORMALMAP
 			#if defined(PROP_BENTNORMALMAP) || !defined(OPTIMIZER_ENABLED)
 			Texture2D _BentNormalMap;
+			#if !defined(POI_PASS_SHADOW) && !defined(POI_PASS_DEPTH_ONLY)
+			#define POI_USES_TANGENT
+			#endif
 			#endif
 			#endif
 			//endex
@@ -35804,6 +37141,9 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			#endif
 			#if defined(PROP_RGBNORMALA)
 			Texture2D _RgbNormalA;
+			#endif
+			#if (defined(PROP_RGBNORMALR) || defined(PROP_RGBNORMALG) || defined(PROP_RGBNORMALB) || defined(PROP_RGBNORMALA)) && !defined(POI_PASS_SHADOW) && !defined(POI_PASS_DEPTH_ONLY)
+			#define POI_USES_TANGENT
 			#endif
 			#endif
 			//endex
@@ -37069,39 +38409,9 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			
 			void applyDissolve(inout PoiFragData poiFragData, in PoiMesh poiMesh, inout PoiMods poiMods, in PoiCam poiCam, in PoiLight poiLight)
 			{
-				half dissolveMask = 1;
-				#if defined(PROP_DISSOLVEMASK) || !defined(OPTIMIZER_ENABLED)
-				dissolveMask = POI2D_SAMPLER_PAN(_DissolveMask, _MainTex, poiUV(poiMesh.uv[_DissolveMaskUV], _DissolveMask_ST), _DissolveMaskPan).r;
-				#endif
-				
-				UNITY_BRANCH
-				if (_DissolveUseVertexColors > 0)
-				dissolveMask = ceil(poiMesh.vertexColor[max(_DissolveUseVertexColors - 1, 0)] * 100000) / 100000;
-				
-				if (_DissolveMaskGlobalMask > 0)
-				dissolveMask = maskBlend(dissolveMask, poiMods.globalMask[_DissolveMaskGlobalMask - 1], _DissolveMaskGlobalMaskBlendType);
-				
-				if (_DissolveMaskInvert >= 0.5)
-				dissolveMask = 1 - dissolveMask;
-				
-				#if defined(PROP_DISSOLVETOTEXTURE) || !defined(OPTIMIZER_ENABLED)
-				float4 dissolveToTexture = POI2D_SAMPLER_PAN(_DissolveToTexture, _MainTex, poiUV(poiMesh.uv[_DissolveToTextureUV], _DissolveToTexture_ST), _DissolveToTexturePan) * float4(poiThemeColor(poiMods, _DissolveTextureColor.rgb, _DissolveTextureColorThemeIndex), _DissolveTextureColor.a);
-				#else
-				float4 dissolveToTexture = float4(poiThemeColor(poiMods, _DissolveTextureColor.rgb, _DissolveTextureColorThemeIndex), _DissolveTextureColor.a);
-				#endif
-				float dissolveNoise = 1;
-				#if defined(PROP_DISSOLVENOISETEXTURE) || !defined(OPTIMIZER_ENABLED)
-				dissolveNoise = POI2D_SAMPLER_PAN(_DissolveNoiseTexture, _MainTex, poiUV(poiMesh.uv[_DissolveNoiseTextureUV], _DissolveNoiseTexture_ST), _DissolveNoiseTexturePan).r;
-				#endif
-				dissolveNoise = _DissolveInvertNoise ? 1 - dissolveNoise : dissolveNoise;
-				
-				float detailNoise = 0;
 				half detailStrength = 0;
 				if (_DissolveDetailNoiseEnabled >= 0.5)
-				{
-					detailNoise = getDissolveDetailNoise(poiMesh.worldPos, poiMesh.uv[_DissolveDetailNoiseUV]);
-					detailStrength = _DissolveDetailStrength;
-				}
+				detailStrength = _DissolveDetailStrength;
 				
 				float dissolveAmount = _DissolveAlpha;
 				if (_UVTileDissolveEnabled >= 0.5)
@@ -37140,6 +38450,52 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 					}
 				}
 				dissolveAmount = saturate(dissolveAmount);
+				
+				// Early exit
+				UNITY_BRANCH
+				if (dissolveAmount <= 0 && _UVTileDissolveEnabled < 0.5 && _DissolveWaveMode < 0.5 && _DissolveDebugGradient < 0.5 && alEdgeWidthMod <= 0)
+				{
+					if (_DissolveAlphaOnly >= 0.5)
+					poiFragData.alpha *= evalRamp4(0, _DissolveAlphaOnlyRamp);
+					#if !defined(POI_PASS_OUTLINE) && !defined(POI_PASS_SHADOW)
+					if (_DissolveApplyGlobalMaskIndex > 0)
+					applyToGlobalMask(poiMods, _DissolveApplyGlobalMaskIndex - 1, _DissolveApplyGlobalMaskBlendType, 0);
+					if (_DissolveInverseApplyGlobalMaskIndex > 0)
+					applyToGlobalMask(poiMods, _DissolveInverseApplyGlobalMaskIndex - 1, _DissolveInverseApplyGlobalMaskBlendType, 1);
+					#endif
+					return;
+				}
+				
+				half dissolveMask = 1;
+				#if defined(PROP_DISSOLVEMASK) || !defined(OPTIMIZER_ENABLED)
+				dissolveMask = POI2D_SAMPLER_PAN(_DissolveMask, _MainTex, poiUV(poiMesh.uv[_DissolveMaskUV], _DissolveMask_ST), _DissolveMaskPan).r;
+				#endif
+				
+				UNITY_BRANCH
+				if (_DissolveUseVertexColors > 0)
+				dissolveMask = ceil(poiMesh.vertexColor[max(_DissolveUseVertexColors - 1, 0)] * 100000) / 100000;
+				
+				if (_DissolveMaskGlobalMask > 0)
+				dissolveMask = maskBlend(dissolveMask, poiMods.globalMask[_DissolveMaskGlobalMask - 1], _DissolveMaskGlobalMaskBlendType);
+				
+				if (_DissolveMaskInvert >= 0.5)
+				dissolveMask = 1 - dissolveMask;
+				
+				#if defined(PROP_DISSOLVETOTEXTURE) || !defined(OPTIMIZER_ENABLED)
+				float4 dissolveToTexture = POI2D_SAMPLER_PAN(_DissolveToTexture, _MainTex, poiUV(poiMesh.uv[_DissolveToTextureUV], _DissolveToTexture_ST), _DissolveToTexturePan) * float4(poiThemeColor(poiMods, _DissolveTextureColor.rgb, _DissolveTextureColorThemeIndex), _DissolveTextureColor.a);
+				#else
+				float4 dissolveToTexture = float4(poiThemeColor(poiMods, _DissolveTextureColor.rgb, _DissolveTextureColorThemeIndex), _DissolveTextureColor.a);
+				#endif
+				float dissolveNoise = 1;
+				#if defined(PROP_DISSOLVENOISETEXTURE) || !defined(OPTIMIZER_ENABLED)
+				dissolveNoise = POI2D_SAMPLER_PAN(_DissolveNoiseTexture, _MainTex, poiUV(poiMesh.uv[_DissolveNoiseTextureUV], _DissolveNoiseTexture_ST), _DissolveNoiseTexturePan).r;
+				#endif
+				dissolveNoise = _DissolveInvertNoise ? 1 - dissolveNoise : dissolveNoise;
+				
+				float detailNoise = 0;
+				if (_DissolveDetailNoiseEnabled >= 0.5)
+				detailNoise = getDissolveDetailNoise(poiMesh.worldPos, poiMesh.uv[_DissolveDetailNoiseUV]);
+				
 				dissolveAmount *= dissolveMask;
 				detailStrength = saturate(detailStrength);
 				
@@ -37439,11 +38795,11 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 					
 					if (any(_VertexLocalTranslationALMin) || any(_VertexLocalTranslationALMax))
 					{
-						ALLocalTranslation = lerp(_VertexLocalTranslationALMin, _VertexLocalTranslationALMax, audioLinkBands[_VertexLocalTranslationALBand]);
+						ALLocalTranslation = lerp(_VertexLocalTranslationALMin, _VertexLocalTranslationALMax, poiSelect5(audioLinkBands, _VertexLocalTranslationALBand));
 					}
 					if (any(_VertexLocalRotationAL))
 					{
-						ALrotation = audioLinkBands[_VertexLocalRotationALBand] * _VertexLocalRotationAL;
+						ALrotation = poiSelect5(audioLinkBands, _VertexLocalRotationALBand) * _VertexLocalRotationAL;
 					}
 					if (any(_VertexLocalRotationCTALSpeed))
 					{
@@ -37453,20 +38809,20 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 					}
 					if (any(_VertexLocalScaleALMin.xyz) || any(_VertexLocalScaleALMax.xyz))
 					{
-						ALScale = lerp(_VertexLocalScaleALMin.xyz + _VertexLocalScaleALMin.w, _VertexLocalScaleALMax.xyz + _VertexLocalScaleALMax.w, audioLinkBands[_VertexLocalScaleALBand]);
+						ALScale = lerp(_VertexLocalScaleALMin.xyz + _VertexLocalScaleALMin.w, _VertexLocalScaleALMax.xyz + _VertexLocalScaleALMax.w, poiSelect5(audioLinkBands, _VertexLocalScaleALBand));
 					}
 					if (any(_VertexWorldTranslationALMin.xyz) || any(_VertexWorldTranslationALMax.xyz))
 					{
-						ALWorldTranslation = lerp(_VertexWorldTranslationALMin, _VertexWorldTranslationALMax, audioLinkBands[_VertexWorldTranslationALBand]);
+						ALWorldTranslation = lerp(_VertexWorldTranslationALMin, _VertexWorldTranslationALMax, poiSelect5(audioLinkBands, _VertexWorldTranslationALBand));
 					}
 					if (any(_VertexManipulationHeightAL.xy))
 					{
-						ALHeight = lerp(_VertexManipulationHeightAL.x, _VertexManipulationHeightAL.y, audioLinkBands[_VertexManipulationHeightBand]);
+						ALHeight = lerp(_VertexManipulationHeightAL.x, _VertexManipulationHeightAL.y, poiSelect5(audioLinkBands, _VertexManipulationHeightBand));
 					}
 					//ifex isNotAnimated(_VertexRoundingEnabled) && _VertexRoundingEnabled==0
 					if (any(_VertexRoundingRangeAL.xy))
 					{
-						ALRoundingAmount = lerp(_VertexRoundingRangeAL.x, _VertexRoundingRangeAL.y, audioLinkBands[_VertexRoundingRangeBand]);
+						ALRoundingAmount = lerp(_VertexRoundingRangeAL.x, _VertexRoundingRangeAL.y, poiSelect5(audioLinkBands, _VertexRoundingRangeBand));
 					}
 					//endex
 					//ifex isNotAnimated(_VertexSpectrumMotion) && _VertexSpectrumMotion==0
@@ -37496,7 +38852,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 					v.color.a
 				};
 				
-				half basicsMask = vertexEffectsMask[_VertexBasicsMaskChannel];
+				half basicsMask = poiSelect8(vertexEffectsMask, _VertexBasicsMaskChannel);
 				
 				ALLocalTranslation *= basicsMask;
 				ALrotation *= basicsMask;
@@ -37532,7 +38888,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 					#else
 					heightOffset = (1 - _VertexManipulationHeightBias) * (_VertexManipulationHeight + ALHeight) * o.normal.xyz;
 					#endif
-					heightOffset *= vertexEffectsMask[_VertexManipulationHeightMaskChannel] * o.normal.w;
+					heightOffset *= poiSelect8(vertexEffectsMask, _VertexManipulationHeightMaskChannel) * o.normal.w;
 					
 				}
 				// Fix z fighting issue with projectors maybe probably I hope
@@ -37542,7 +38898,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				UNITY_BRANCH
 				if (_VertexBarrelMode >= 0.5)
 				{
-					half barrelMask = vertexEffectsMask[_VertexBarrelMaskChannel];
+					half barrelMask = poiSelect8(vertexEffectsMask, _VertexBarrelMaskChannel);
 					v.vertex.xz = lerp(v.vertex.xz, normalize(v.vertex.xz) * _VertexBarrelWidth + v.vertex.xz * _VertexBarrelHeight, _VertexBarrelAlpha * barrelMask);
 				}
 				//endex
@@ -37551,7 +38907,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				UNITY_BRANCH
 				if (_VertexSphereMode >= 0.5)
 				{
-					half sphereMask = vertexEffectsMask[_VertexSphereMaskChannel];
+					half sphereMask = poiSelect8(vertexEffectsMask, _VertexSphereMaskChannel);
 					v.vertex.xyz = lerp(v.vertex.xyz, normalize(v.vertex.xyz + _VertexSphereCenter.xyz) * _VertexSphereRadius + v.vertex.xyz * _VertexSphereHeight, _VertexSphereAlpha * sphereMask);
 				}
 				//endex
@@ -37560,7 +38916,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				UNITY_BRANCH
 				if (_VertexTornadoMode >= 0.5)
 				{
-					half tornadoMask = vertexEffectsMask[_VertexTornadoMaskChannel];
+					half tornadoMask = poiSelect8(vertexEffectsMask, _VertexTornadoMaskChannel);
 					float heightStrength = smoothstep(_VertexTornadoBaseHeight, _VertexTornadoTopHeight, v.vertex.y);
 					float funnelStrength = pow(heightStrength, _VertexTornadoFunnelShape);
 					float totalStrength = funnelStrength * tornadoMask;
@@ -37587,7 +38943,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				UNITY_BRANCH
 				if (_VertexWindEnabled >= 0.5)
 				{
-					half windMask = vertexEffectsMask[_VertexWindMaskChannel];
+					half windMask = poiSelect8(vertexEffectsMask, _VertexWindMaskChannel);
 					if (windMask > 0)
 					{
 						float3 worldPos = mul(unity_ObjectToWorld, v.vertex).xyz;
@@ -37619,7 +38975,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				UNITY_BRANCH
 				if (_VertexRoundingEnabled >= 0.5)
 				{
-					half roundingMask = vertexEffectsMask[_VertexRoundingMaskChannel];
+					half roundingMask = poiSelect8(vertexEffectsMask, _VertexRoundingMaskChannel);
 					if (roundingMask > 0)
 					{
 						float3 preRoundingVertex = v.vertex.xyz;
@@ -37653,7 +39009,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				{
 					if (AudioLinkIsAvailable())
 					{
-						alpha = saturate(alpha + lerp(_VertexLookAtAlphaAudiolink.x, _VertexLookAtAlphaAudiolink.y, vertexAudioLink[_VertexLookAtAudioLinkBand]) * _VertexLookAtAudioLinkEnabled);
+						alpha = saturate(alpha + lerp(_VertexLookAtAlphaAudiolink.x, _VertexLookAtAlphaAudiolink.y, poiSelect5(vertexAudioLink, _VertexLookAtAudioLinkBand)) * _VertexLookAtAudioLinkEnabled);
 					}
 				}
 				#endif
@@ -38200,7 +39556,9 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				POI_TRANSFER_SHADOW_CASTER_NOPOS(o, o.pos);
 				#endif
 				
+				#if !defined(POI_PASS_SHADOW) && (!defined(OPTIMIZER_ENABLED) || defined(_POI_DEPTH_RIMLIGHT) || defined(GRAIN) || defined(POI_GRABPASS) || defined(TRIPLANAR_PROJECTION))
 				o.worldDir = dot(o.pos, CalculateFrustumCorrection());
+				#endif
 				
 				if (_RenderingReduceClipDistance >= 0.5)
 				{
@@ -38239,21 +39597,37 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				
 				#endif
 				
+				#if defined(OPTIMIZER_ENABLED)
+				#if !defined(POI_USES_UV1)
+				o.uv[0] = float4(o.uv[0].xy, 0, 0);
+				#endif
+				#if !defined(POI_USES_UV2) && !defined(POI_USES_UV3)
+				o.uv[1] = 0;
+				#elif !defined(POI_USES_UV2)
+				o.uv[1] = float4(0, 0, o.uv[1].zw);
+				#elif !defined(POI_USES_UV3)
+				o.uv[1] = float4(o.uv[1].xy, 0, 0);
+				#endif
+				#if !defined(POI_USES_TANGENT)
+				o.tangent = 0;
+				#endif
+				#endif
+				
 				return o;
 			}
 			
 			//ifex _StochasticMode!=0
 			#if defined(_STOCHASTICMODE_DELIOT_HEITZ)
-			#define POI2D_SAMPLER_STOCHASTIC(tex, texSampler, uv, useStochastic) (useStochastic ? DeliotHeitzSampleTexture(tex, sampler##texSampler, uv) : POI2D_SAMPLER(tex, texSampler, uv))
-			#define POI2D_SAMPLER_PAN_STOCHASTIC(tex, texSampler, uv, pan, useStochastic) (useStochastic ? DeliotHeitzSampleTexture(tex, sampler##texSampler, POI_PAN_UV(uv, pan)) : POI2D_SAMPLER_PAN(tex, texSampler, uv, pan))
-			#define POI2D_SAMPLER_PANGRAD_STOCHASTIC(tex, texSampler, uv, pan, dx, dy, useStochastic) (useStochastic ? DeliotHeitzSampleTexture(tex, sampler##texSampler, POI_PAN_UV(uv, pan), dx, dy) : POI2D_SAMPLER_PANGRAD(tex, texSampler, uv, pan, dx, dy))
+			#define POI2D_SAMPLER_STOCHASTIC(tex, texSampler, uv, useStochastic) (PoiStochasticSample(tex, sampler##texSampler, uv, useStochastic))
+			#define POI2D_SAMPLER_PAN_STOCHASTIC(tex, texSampler, uv, pan, useStochastic) (PoiStochasticSample(tex, sampler##texSampler, POI_PAN_UV(uv, pan), useStochastic))
+			#define POI2D_SAMPLER_PANGRAD_STOCHASTIC(tex, texSampler, uv, pan, dx, dy, useStochastic) (PoiStochasticSampleGrad(tex, sampler##texSampler, POI_PAN_UV(uv, pan), dx, dy, useStochastic))
 			#endif
 			//endex
 			//ifex _StochasticMode!=1
 			#if defined(_STOCHASTICMODE_HEXTILE)
-			#define POI2D_SAMPLER_STOCHASTIC(tex, texSampler, uv, useStochastic) (useStochastic ? HextileSampleTexture(tex, sampler##texSampler, uv, false) : POI2D_SAMPLER(tex, texSampler, uv))
-			#define POI2D_SAMPLER_PAN_STOCHASTIC(tex, texSampler, uv, pan, useStochastic) (useStochastic ? HextileSampleTexture(tex, sampler##texSampler, POI_PAN_UV(uv, pan), false) : POI2D_SAMPLER_PAN(tex, texSampler, uv, pan))
-			#define POI2D_SAMPLER_PANGRAD_STOCHASTIC(tex, texSampler, uv, pan, dx, dy, useStochastic) (useStochastic ? HextileSampleTexture(tex, sampler##texSampler, POI_PAN_UV(uv, pan), false, dx, dy) : POI2D_SAMPLER_PANGRAD(tex, texSampler, uv, pan, dx, dy))
+			#define POI2D_SAMPLER_STOCHASTIC(tex, texSampler, uv, useStochastic) (PoiStochasticSample(tex, sampler##texSampler, uv, useStochastic))
+			#define POI2D_SAMPLER_PAN_STOCHASTIC(tex, texSampler, uv, pan, useStochastic) (PoiStochasticSample(tex, sampler##texSampler, POI_PAN_UV(uv, pan), useStochastic))
+			#define POI2D_SAMPLER_PANGRAD_STOCHASTIC(tex, texSampler, uv, pan, dx, dy, useStochastic) (PoiStochasticSampleGrad(tex, sampler##texSampler, POI_PAN_UV(uv, pan), dx, dy, useStochastic))
 			#endif
 			//endex
 			
@@ -38339,6 +39713,27 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			{
 				float2 dx = ddx(uv), dy = ddy(uv);
 				return DeliotHeitzSampleTexture(tex, texSampler, uv, dx, dy);
+			}
+			
+			// Branch instead of ?: so textures with stochastic off don't also pay for the stochastic samples
+			float4 PoiStochasticSample(Texture2D tex, SamplerState texSampler, float2 uv, float useStochastic)
+			{
+				UNITY_BRANCH
+				if (useStochastic)
+				{
+					return DeliotHeitzSampleTexture(tex, texSampler, uv);
+				}
+				return tex.Sample(texSampler, uv);
+			}
+			
+			float4 PoiStochasticSampleGrad(Texture2D tex, SamplerState texSampler, float2 uv, float2 dx, float2 dy, float useStochastic)
+			{
+				UNITY_BRANCH
+				if (useStochastic)
+				{
+					return DeliotHeitzSampleTexture(tex, texSampler, uv, dx, dy);
+				}
+				return tex.SampleGrad(texSampler, uv, dx, dy);
 			}
 			#endif // defined(_STOCHASTICMODE_DELIOT_HEITZ)
 			//endex
@@ -38462,6 +39857,27 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float4 HextileSampleTexture(Texture2D tex, SamplerState texSampler, float2 uv, bool isNormalMap)
 			{
 				return HextileSampleTexture(tex, texSampler, uv, isNormalMap, ddx(uv), ddy(uv));
+			}
+			
+			// Branch instead of ?: so textures with stochastic off don't also pay for the stochastic samples
+			float4 PoiStochasticSample(Texture2D tex, SamplerState texSampler, float2 uv, float useStochastic)
+			{
+				UNITY_BRANCH
+				if (useStochastic)
+				{
+					return HextileSampleTexture(tex, texSampler, uv, false);
+				}
+				return tex.Sample(texSampler, uv);
+			}
+			
+			float4 PoiStochasticSampleGrad(Texture2D tex, SamplerState texSampler, float2 uv, float2 dx, float2 dy, float useStochastic)
+			{
+				UNITY_BRANCH
+				if (useStochastic)
+				{
+					return HextileSampleTexture(tex, texSampler, uv, false, dx, dy);
+				}
+				return tex.SampleGrad(texSampler, uv, dx, dy);
 			}
 			#endif // defined(_STOCHASTICMODE_HEXTILE)
 			//endex
@@ -44759,7 +46175,9 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				float3 pz = Permutation(Pi.z + oi);
 				
 				float3 p, ox, oy, oz, dx, dy, dz;
-				float3 F = 1e6;
+				float F0 = 1e6;
+				float3 L0 = 1e6;
+				float3 L1 = 1e6;
 				
 				randomPoint = 0;
 				
@@ -44773,7 +46191,6 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 						for (int k = 0; k < 3; k++)
 						{
 							p = Permutation(px[i] + py[j] + pz[k] + oi); // pij1, pij2, pij3
-							float3 ogp = p;
 							
 							ox = frac(p * VoronoiK) - VoronoiKo;
 							oy = glsl_mod(floor(p * VoronoiK), 7.0) * VoronoiK - VoronoiKo;
@@ -44788,29 +46205,25 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 							float3 d = dx * dx + dy * dy + dz * dz; // dij1, dij2 and dij3, squared
 							
 							//Find lowest and second lowest distances
+							L1 = min(L1, max(L0, d));
+							L0 = min(L0, d);
 							[unroll(3)]
 							for (int n = 0; n < 3; n++)
 							{
-								// if (d[n] < F[0])
-								// {
-								//     F[1] = F[0];
-								//     F[0] = d[n];
-								//     randomPoint = p;
-								// }
-								// else if (d[n] < F[1])
-								// {
-								//     F[1] = d[n];
-								// }
-								bool newMin = d[n] < F[0];
-								F[1] = min(newMin ? F[0] : d[n], F[1]);
+								bool newMin = d[n] < F0;
 								randomPoint = newMin ? p : randomPoint;
-								F[0] = min(F[0], d[n]);
+								F0 = min(F0, d[n]);
 							}
 						}
 					}
 				}
 				
-				return F;
+				float2 F = float2(L0.x, L1.x);
+				F.y = min(min(F.y, max(F.x, L0.y)), L1.y);
+				F.x = min(F.x, L0.y);
+				F.y = min(min(F.y, max(F.x, L0.z)), L1.z);
+				F.x = min(F.x, L0.z);
+				return float3(F, 1e6);
 			}
 			
 			float voronoi2D(in float2 x, float scale, float2 speed, out float2 randomPoint)
@@ -45619,7 +47032,12 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 							L1r += light.shDirection * light.color.r;
 							L1g += light.shDirection * light.color.g;
 							L1b += light.shDirection * light.color.b;
-							float3 form = saturate(float3(dot(N1, light.direction), dot(N2, light.direction), dot(N3, light.direction)));
+							float3 form = float3(dot(N1, light.direction), dot(N2, light.direction), dot(N3, light.direction));
+							#ifdef _LIGHTINGMODE_MULTILAYER_MATH
+							// Multilayer Math's own light map is half-Lambert.
+							form = form * 0.5 + 0.5;
+							#endif
+							form = saturate(form);
 							float weight = PoiLVLuminance(max(light.color, 0));
 							PoiLVLampWeight += weight;
 							PoiLVLampArriving += weight * light.visibility;
@@ -46686,13 +48104,37 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			// End Depth texture handling
 			
 			UNITY_DECLARE_TEX2D(_MainTex);
+			//ifex _MainTexUV!=1 && isNotAnimated(_MainTexUV) && _AlphaMaskUV!=1 && isNotAnimated(_AlphaMaskUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _MainTexUV!=2 && isNotAnimated(_MainTexUV) && _AlphaMaskUV!=2 && isNotAnimated(_AlphaMaskUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _MainTexUV!=3 && isNotAnimated(_MainTexUV) && _AlphaMaskUV!=3 && isNotAnimated(_AlphaMaskUV)
+			#define POI_USES_UV3
+			//endex
 			#if defined(PROP_BUMPMAP) || !defined(OPTIMIZER_ENABLED)
 			Texture2D _BumpMap;
+			#if !defined(POI_PASS_SHADOW) && !defined(POI_PASS_DEPTH_ONLY)
+			#define POI_USES_TANGENT
+			#endif
+			//ifex _BumpMapUV!=1 && isNotAnimated(_BumpMapUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _BumpMapUV!=2 && isNotAnimated(_BumpMapUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _BumpMapUV!=3 && isNotAnimated(_BumpMapUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			//ifex _UseBump2ndMap==0
 			#ifdef POI_BUMP2NDMAP
 			#if defined(PROP_BUMP2NDMAP) || !defined(OPTIMIZER_ENABLED)
 			Texture2D _Bump2ndMap;
+			#if !defined(POI_PASS_SHADOW) && !defined(POI_PASS_DEPTH_ONLY)
+			#define POI_USES_TANGENT
+			#endif
 			#endif
 			#if defined(PROP_BUMP2NDSCALEMASK) || !defined(OPTIMIZER_ENABLED)
 			Texture2D _Bump2ndScaleMask;
@@ -46720,6 +48162,9 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			#ifdef POI_BENTNORMALMAP
 			#if defined(PROP_BENTNORMALMAP) || !defined(OPTIMIZER_ENABLED)
 			Texture2D _BentNormalMap;
+			#if !defined(POI_PASS_SHADOW) && !defined(POI_PASS_DEPTH_ONLY)
+			#define POI_USES_TANGENT
+			#endif
 			#endif
 			#endif
 			//endex
@@ -46863,6 +48308,9 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			#endif
 			#if defined(PROP_RGBNORMALA)
 			Texture2D _RgbNormalA;
+			#endif
+			#if (defined(PROP_RGBNORMALR) || defined(PROP_RGBNORMALG) || defined(PROP_RGBNORMALB) || defined(PROP_RGBNORMALA)) && !defined(POI_PASS_SHADOW) && !defined(POI_PASS_DEPTH_ONLY)
+			#define POI_USES_TANGENT
 			#endif
 			#endif
 			//endex
@@ -47220,6 +48668,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _LightDataSDFMapLOD;
 			float _LightDataSDFBlendY;
 			#endif
+			//ifex _LightingAOMapsUV!=1 && isNotAnimated(_LightingAOMapsUV) && _LightingDetailShadowMapsUV!=1 && isNotAnimated(_LightingDetailShadowMapsUV) && _LightingShadowMasksUV!=1 && isNotAnimated(_LightingShadowMasksUV) && _LightDataSDFMapUV!=1 && isNotAnimated(_LightDataSDFMapUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _LightingAOMapsUV!=2 && isNotAnimated(_LightingAOMapsUV) && _LightingDetailShadowMapsUV!=2 && isNotAnimated(_LightingDetailShadowMapsUV) && _LightingShadowMasksUV!=2 && isNotAnimated(_LightingShadowMasksUV) && _LightDataSDFMapUV!=2 && isNotAnimated(_LightDataSDFMapUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _LightingAOMapsUV!=3 && isNotAnimated(_LightingAOMapsUV) && _LightingDetailShadowMapsUV!=3 && isNotAnimated(_LightingDetailShadowMapsUV) && _LightingShadowMasksUV!=3 && isNotAnimated(_LightingShadowMasksUV) && _LightDataSDFMapUV!=3 && isNotAnimated(_LightDataSDFMapUV)
+			#define POI_USES_UV3
+			//endex
 			float _LightingDirectionMode;
 			float3 _LightngForcedDirection;
 			float _LightingViewDirOffsetPitch;
@@ -47280,6 +48737,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _Bump2ndScaleMaskUV;
 			float _Bump2ndScaleMaskGlobalMask;
 			float _Bump2ndScaleMaskGlobalMaskBlendType;
+			//ifex _Bump2ndMapUV!=1 && isNotAnimated(_Bump2ndMapUV) && _Bump2ndScaleMaskUV!=1 && isNotAnimated(_Bump2ndScaleMaskUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _Bump2ndMapUV!=2 && isNotAnimated(_Bump2ndMapUV) && _Bump2ndScaleMaskUV!=2 && isNotAnimated(_Bump2ndScaleMaskUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _Bump2ndMapUV!=3 && isNotAnimated(_Bump2ndMapUV) && _Bump2ndScaleMaskUV!=3 && isNotAnimated(_Bump2ndScaleMaskUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			//endex
 			float4 _AlphaMask_ST;
@@ -47335,6 +48801,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			half _ColorGradingToggle;
 			float _MainGradationStrength;
 			float _MainGradationMaskChannel;
+			//ifex _MainColorAdjustTextureUV!=1 && isNotAnimated(_MainColorAdjustTextureUV) && _MainTintTextureUV!=1 && isNotAnimated(_MainTintTextureUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _MainColorAdjustTextureUV!=2 && isNotAnimated(_MainColorAdjustTextureUV) && _MainTintTextureUV!=2 && isNotAnimated(_MainTintTextureUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _MainColorAdjustTextureUV!=3 && isNotAnimated(_MainColorAdjustTextureUV) && _MainTintTextureUV!=3 && isNotAnimated(_MainTintTextureUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			//endex
 			
@@ -47373,6 +48848,9 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			half _AlphaFresnelInvert;
 			half _AlphaFresnelGlobalMask;
 			float _AlphaFresnelGlobalMaskBlendType;
+			#if defined(POI_PASS_SHADOW) || defined(POI_PASS_DEPTH_ONLY)
+			#define POI_USES_TANGENT
+			#endif
 			//endex
 			
 			//ifex _AlphaAngular==0 && isNotAnimated(_AlphaAngular)
@@ -47406,6 +48884,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _BentNormalMapStochastic;
 			half _BentNormalSpecOccStrength;
 			float _BentNormalIndirectDiffuse;
+			//ifex _BentNormalMapUV!=1 && isNotAnimated(_BentNormalMapUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _BentNormalMapUV!=2 && isNotAnimated(_BentNormalMapUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _BentNormalMapUV!=3 && isNotAnimated(_BentNormalMapUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			//endex
 			
@@ -47503,6 +48990,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _AudioLinkOutlineHighlightColorThemeIndex;
 			half4 _AudioLinkOutlineHighlightColorRamp;
 			#endif
+			//ifex _OutlineMaskUV!=1 && isNotAnimated(_OutlineMaskUV) && _OutlineTextureUV!=1 && isNotAnimated(_OutlineTextureUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _OutlineMaskUV!=2 && isNotAnimated(_OutlineMaskUV) && _OutlineTextureUV!=2 && isNotAnimated(_OutlineTextureUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _OutlineMaskUV!=3 && isNotAnimated(_OutlineMaskUV) && _OutlineTextureUV!=3 && isNotAnimated(_OutlineTextureUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			//endex
 			
@@ -47581,6 +49077,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			half4 _GlobalMaskTexture3SplitPan_B;
 			float4 _GlobalMaskTexture3SplitTilingOffset_A;
 			half4 _GlobalMaskTexture3SplitPan_A;
+			//ifex _GlobalMaskTexture0UV!=1 && isNotAnimated(_GlobalMaskTexture0UV) && _GlobalMaskTexture1UV!=1 && isNotAnimated(_GlobalMaskTexture1UV) && _GlobalMaskTexture2UV!=1 && isNotAnimated(_GlobalMaskTexture2UV) && _GlobalMaskTexture3UV!=1 && isNotAnimated(_GlobalMaskTexture3UV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _GlobalMaskTexture0UV!=2 && isNotAnimated(_GlobalMaskTexture0UV) && _GlobalMaskTexture1UV!=2 && isNotAnimated(_GlobalMaskTexture1UV) && _GlobalMaskTexture2UV!=2 && isNotAnimated(_GlobalMaskTexture2UV) && _GlobalMaskTexture3UV!=2 && isNotAnimated(_GlobalMaskTexture3UV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _GlobalMaskTexture0UV!=3 && isNotAnimated(_GlobalMaskTexture0UV) && _GlobalMaskTexture1UV!=3 && isNotAnimated(_GlobalMaskTexture1UV) && _GlobalMaskTexture2UV!=3 && isNotAnimated(_GlobalMaskTexture2UV) && _GlobalMaskTexture3UV!=3 && isNotAnimated(_GlobalMaskTexture3UV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			//endex
 			//ifex _GlobalMaskOptionsEnable==0
@@ -47961,6 +49466,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			half2 _DistortionStrength1AudioLink;
 			half _DistortionStrength1AudioLinkBand;
 			#endif
+			//ifex _DistortionFlowTextureUV!=1 && isNotAnimated(_DistortionFlowTextureUV) && _DistortionFlowTexture1UV!=1 && isNotAnimated(_DistortionFlowTexture1UV) && _DistortionMaskUV!=1 && isNotAnimated(_DistortionMaskUV) && _DistortionUvToDistort!=1 && isNotAnimated(_DistortionUvToDistort)
+			#define POI_USES_UV1
+			//endex
+			//ifex _DistortionFlowTextureUV!=2 && isNotAnimated(_DistortionFlowTextureUV) && _DistortionFlowTexture1UV!=2 && isNotAnimated(_DistortionFlowTexture1UV) && _DistortionMaskUV!=2 && isNotAnimated(_DistortionMaskUV) && _DistortionUvToDistort!=2 && isNotAnimated(_DistortionUvToDistort)
+			#define POI_USES_UV2
+			//endex
+			//ifex _DistortionFlowTextureUV!=3 && isNotAnimated(_DistortionFlowTextureUV) && _DistortionFlowTexture1UV!=3 && isNotAnimated(_DistortionFlowTexture1UV) && _DistortionMaskUV!=3 && isNotAnimated(_DistortionMaskUV) && _DistortionUvToDistort!=3 && isNotAnimated(_DistortionUvToDistort)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			//endex
 			float2 _UVSettingsTiling0;
@@ -47988,6 +49502,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			int _StereoEnabled;
 			int _PanoUseBothEyes;
 			float _PolarUV;
+			//ifex _PolarUV!=1 && isNotAnimated(_PolarUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _PolarUV!=2 && isNotAnimated(_PolarUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _PolarUV!=3 && isNotAnimated(_PolarUV)
+			#define POI_USES_UV3
+			//endex
 			float _PolarMode;
 			float2 _PolarCenter;
 			float _PolarRadialScale;
@@ -48038,6 +49561,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _UDIMFaceDiscardRow0_1;
 			float _UDIMFaceDiscardRow0_2;
 			float _UDIMFaceDiscardRow0_3;
+			//ifex _UDIMDiscardUV!=1 && isNotAnimated(_UDIMDiscardUV) && _UDIMFaceDiscardUV!=1 && isNotAnimated(_UDIMFaceDiscardUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _UDIMDiscardUV!=2 && isNotAnimated(_UDIMDiscardUV) && _UDIMFaceDiscardUV!=2 && isNotAnimated(_UDIMFaceDiscardUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _UDIMDiscardUV!=3 && isNotAnimated(_UDIMDiscardUV) && _UDIMFaceDiscardUV!=3 && isNotAnimated(_UDIMFaceDiscardUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			//endex
 			
@@ -48314,6 +49846,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float4 _PoiSkinTanMapTiling;
 			float _PoiSkinTanAmount;
 			float _PoiSkinTanRednessShift;
+			//ifex _PoiSkinFreckleMapUV!=1 && isNotAnimated(_PoiSkinFreckleMapUV) && _PoiSkinTanMapUV!=1 && isNotAnimated(_PoiSkinTanMapUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _PoiSkinFreckleMapUV!=2 && isNotAnimated(_PoiSkinFreckleMapUV) && _PoiSkinTanMapUV!=2 && isNotAnimated(_PoiSkinTanMapUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _PoiSkinFreckleMapUV!=3 && isNotAnimated(_PoiSkinFreckleMapUV) && _PoiSkinTanMapUV!=3 && isNotAnimated(_PoiSkinTanMapUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			//endex
 			
@@ -48497,6 +50038,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float4 _RgbNormalABlendSources;
 			
 			float _RGBMaskType;
+			//ifex _RGBMaskUV!=1 && isNotAnimated(_RGBMaskUV) && _RGBAMetallicMapsUV!=1 && isNotAnimated(_RGBAMetallicMapsUV) && _RGBARedPBRUV!=1 && isNotAnimated(_RGBARedPBRUV) && _RGBAGreenPBRUV!=1 && isNotAnimated(_RGBAGreenPBRUV) && _RGBABluePBRUV!=1 && isNotAnimated(_RGBABluePBRUV) && _RGBAAlphaPBRUV!=1 && isNotAnimated(_RGBAAlphaPBRUV) && _RGBASmoothnessMapsUV!=1 && isNotAnimated(_RGBASmoothnessMapsUV) && _RedTextureUV!=1 && isNotAnimated(_RedTextureUV) && _RgbNormalRUV!=1 && isNotAnimated(_RgbNormalRUV) && _GreenTextureUV!=1 && isNotAnimated(_GreenTextureUV) && _RgbNormalGUV!=1 && isNotAnimated(_RgbNormalGUV) && _BlueTextureUV!=1 && isNotAnimated(_BlueTextureUV) && _RgbNormalBUV!=1 && isNotAnimated(_RgbNormalBUV) && _AlphaTextureUV!=1 && isNotAnimated(_AlphaTextureUV) && _RgbNormalAUV!=1 && isNotAnimated(_RgbNormalAUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _RGBMaskUV!=2 && isNotAnimated(_RGBMaskUV) && _RGBAMetallicMapsUV!=2 && isNotAnimated(_RGBAMetallicMapsUV) && _RGBARedPBRUV!=2 && isNotAnimated(_RGBARedPBRUV) && _RGBAGreenPBRUV!=2 && isNotAnimated(_RGBAGreenPBRUV) && _RGBABluePBRUV!=2 && isNotAnimated(_RGBABluePBRUV) && _RGBAAlphaPBRUV!=2 && isNotAnimated(_RGBAAlphaPBRUV) && _RGBASmoothnessMapsUV!=2 && isNotAnimated(_RGBASmoothnessMapsUV) && _RedTextureUV!=2 && isNotAnimated(_RedTextureUV) && _RgbNormalRUV!=2 && isNotAnimated(_RgbNormalRUV) && _GreenTextureUV!=2 && isNotAnimated(_GreenTextureUV) && _RgbNormalGUV!=2 && isNotAnimated(_RgbNormalGUV) && _BlueTextureUV!=2 && isNotAnimated(_BlueTextureUV) && _RgbNormalBUV!=2 && isNotAnimated(_RgbNormalBUV) && _AlphaTextureUV!=2 && isNotAnimated(_AlphaTextureUV) && _RgbNormalAUV!=2 && isNotAnimated(_RgbNormalAUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _RGBMaskUV!=3 && isNotAnimated(_RGBMaskUV) && _RGBAMetallicMapsUV!=3 && isNotAnimated(_RGBAMetallicMapsUV) && _RGBARedPBRUV!=3 && isNotAnimated(_RGBARedPBRUV) && _RGBAGreenPBRUV!=3 && isNotAnimated(_RGBAGreenPBRUV) && _RGBABluePBRUV!=3 && isNotAnimated(_RGBABluePBRUV) && _RGBAAlphaPBRUV!=3 && isNotAnimated(_RGBAAlphaPBRUV) && _RGBASmoothnessMapsUV!=3 && isNotAnimated(_RGBASmoothnessMapsUV) && _RedTextureUV!=3 && isNotAnimated(_RedTextureUV) && _RgbNormalRUV!=3 && isNotAnimated(_RgbNormalRUV) && _GreenTextureUV!=3 && isNotAnimated(_GreenTextureUV) && _RgbNormalGUV!=3 && isNotAnimated(_RgbNormalGUV) && _BlueTextureUV!=3 && isNotAnimated(_BlueTextureUV) && _RgbNormalBUV!=3 && isNotAnimated(_RgbNormalBUV) && _AlphaTextureUV!=3 && isNotAnimated(_AlphaTextureUV) && _RgbNormalAUV!=3 && isNotAnimated(_RgbNormalAUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			//endex
 			
@@ -48518,6 +50068,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _ShadowOffset;
 			int _ToonRampCount;
 			int _ToonRampUVSelector;
+			//ifex (_ToonRampCount<=1 && isNotAnimated(_ToonRampCount)) || (_ToonRampUVSelector!=1 && isNotAnimated(_ToonRampUVSelector))
+			#define POI_USES_UV1
+			//endex
+			//ifex (_ToonRampCount<=1 && isNotAnimated(_ToonRampCount)) || (_ToonRampUVSelector!=2 && isNotAnimated(_ToonRampUVSelector))
+			#define POI_USES_UV2
+			//endex
+			//ifex (_ToonRampCount<=1 && isNotAnimated(_ToonRampCount)) || (_ToonRampUVSelector!=3 && isNotAnimated(_ToonRampUVSelector))
+			#define POI_USES_UV3
+			//endex
 			#endif
 			
 			#ifdef _LIGHTINGMODE_WRAPPED
@@ -48548,6 +50107,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _ShadeColor_Step;
 			float _1st2nd_Shades_Feather;
 			float _ShadingShadeMapBlendType;
+			//ifex _1st_ShadeMapUV!=1 && isNotAnimated(_1st_ShadeMapUV) && _2nd_ShadeMapUV!=1 && isNotAnimated(_2nd_ShadeMapUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _1st_ShadeMapUV!=2 && isNotAnimated(_1st_ShadeMapUV) && _2nd_ShadeMapUV!=2 && isNotAnimated(_2nd_ShadeMapUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _1st_ShadeMapUV!=3 && isNotAnimated(_1st_ShadeMapUV) && _2nd_ShadeMapUV!=3 && isNotAnimated(_2nd_ShadeMapUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			
 			#ifdef _LIGHTINGMODE_SKIN
@@ -48564,6 +50132,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _SkinScatteringStability;
 			float3 _SssTransmissionAbsorption;
 			half3 _SssColorBleedAoWeights;
+			//ifex _SkinThicknessMapUV!=1 && isNotAnimated(_SkinThicknessMapUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _SkinThicknessMapUV!=2 && isNotAnimated(_SkinThicknessMapUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _SkinThicknessMapUV!=3 && isNotAnimated(_SkinThicknessMapUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			
 			#ifdef _LIGHTINGMODE_MULTILAYER_MATH
@@ -48636,6 +50213,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			half _ShadowFlatBorder;
 			half _ShadowFlatBlur;
 			half _MultilayerShadowStrength;
+			//ifex _ShadowBorderMaskUV!=1 && isNotAnimated(_ShadowBorderMaskUV) && _ShadowColorTexUV!=1 && isNotAnimated(_ShadowColorTexUV) && _MultilayerMathBlurMapUV!=1 && isNotAnimated(_MultilayerMathBlurMapUV) && _Shadow2ndColorTexUV!=1 && isNotAnimated(_Shadow2ndColorTexUV) && _Shadow3rdColorTexUV!=1 && isNotAnimated(_Shadow3rdColorTexUV) && _ShadowStrengthMaskUV!=1 && isNotAnimated(_ShadowStrengthMaskUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _ShadowBorderMaskUV!=2 && isNotAnimated(_ShadowBorderMaskUV) && _ShadowColorTexUV!=2 && isNotAnimated(_ShadowColorTexUV) && _MultilayerMathBlurMapUV!=2 && isNotAnimated(_MultilayerMathBlurMapUV) && _Shadow2ndColorTexUV!=2 && isNotAnimated(_Shadow2ndColorTexUV) && _Shadow3rdColorTexUV!=2 && isNotAnimated(_Shadow3rdColorTexUV) && _ShadowStrengthMaskUV!=2 && isNotAnimated(_ShadowStrengthMaskUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _ShadowBorderMaskUV!=3 && isNotAnimated(_ShadowBorderMaskUV) && _ShadowColorTexUV!=3 && isNotAnimated(_ShadowColorTexUV) && _MultilayerMathBlurMapUV!=3 && isNotAnimated(_MultilayerMathBlurMapUV) && _Shadow2ndColorTexUV!=3 && isNotAnimated(_Shadow2ndColorTexUV) && _Shadow3rdColorTexUV!=3 && isNotAnimated(_Shadow3rdColorTexUV) && _ShadowStrengthMaskUV!=3 && isNotAnimated(_ShadowStrengthMaskUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			
 			#ifdef _LIGHTINGMODE_FLAT
@@ -48660,6 +50246,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _ClothReflectanceGlobalMaskBlendType;
 			half _ClothSmoothnessGlobalMask;
 			float _ClothSmoothnessGlobalMaskBlendType;
+			//ifex _ClothMetallicSmoothnessMapUV!=1 && isNotAnimated(_ClothMetallicSmoothnessMapUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _ClothMetallicSmoothnessMapUV!=2 && isNotAnimated(_ClothMetallicSmoothnessMapUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _ClothMetallicSmoothnessMapUV!=3 && isNotAnimated(_ClothMetallicSmoothnessMapUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			
 			#ifdef _LIGHTINGMODE_SDF
@@ -48671,6 +50266,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _SDFBlur;
 			float4 _SDFForward;
 			float4 _SDFLeft;
+			//ifex _SDFShadingTextureUV!=1 && isNotAnimated(_SDFShadingTextureUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _SDFShadingTextureUV!=2 && isNotAnimated(_SDFShadingTextureUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _SDFShadingTextureUV!=3 && isNotAnimated(_SDFShadingTextureUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			
 			// Additive
@@ -48685,6 +50289,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float2 _DecalMaskPan;
 			float _DecalMaskUV;
 			#endif
+			//ifex _DecalMaskUV!=1 && isNotAnimated(_DecalMaskUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _DecalMaskUV!=2 && isNotAnimated(_DecalMaskUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _DecalMaskUV!=3 && isNotAnimated(_DecalMaskUV)
+			#define POI_USES_UV3
+			//endex
 			//endex
 			
 			//ifex _DecalEnabled==0
@@ -48767,6 +50380,18 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _AudioLinkDecal0ColorOverrideBand;
 			half4 _AudioLinkDecal0ColorOverrideRamp;
 			#endif
+			//ifex _DecalTextureUV!=1 && isNotAnimated(_DecalTextureUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _DecalTextureUV!=2 && isNotAnimated(_DecalTextureUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _DecalTextureUV!=3 && isNotAnimated(_DecalTextureUV)
+			#define POI_USES_UV3
+			//endex
+			//ifex _DecalMirroredUVMode==0 && isNotAnimated(_DecalMirroredUVMode) && _Decal0Depth==0 && isNotAnimated(_Decal0Depth)
+			#define POI_USES_TANGENT
+			//endex
 			#endif
 			//endex
 			
@@ -48850,6 +50475,18 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _AudioLinkDecal1ColorOverrideBand;
 			half4 _AudioLinkDecal1ColorOverrideRamp;
 			#endif
+			//ifex _DecalTexture1UV!=1 && isNotAnimated(_DecalTexture1UV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _DecalTexture1UV!=2 && isNotAnimated(_DecalTexture1UV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _DecalTexture1UV!=3 && isNotAnimated(_DecalTexture1UV)
+			#define POI_USES_UV3
+			//endex
+			//ifex _DecalMirroredUVMode1==0 && isNotAnimated(_DecalMirroredUVMode1) && _Decal1Depth==0 && isNotAnimated(_Decal1Depth)
+			#define POI_USES_TANGENT
+			//endex
 			#endif
 			//endex
 			
@@ -48933,6 +50570,18 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _AudioLinkDecal2ColorOverrideBand;
 			half4 _AudioLinkDecal2ColorOverrideRamp;
 			#endif
+			//ifex _DecalTexture2UV!=1 && isNotAnimated(_DecalTexture2UV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _DecalTexture2UV!=2 && isNotAnimated(_DecalTexture2UV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _DecalTexture2UV!=3 && isNotAnimated(_DecalTexture2UV)
+			#define POI_USES_UV3
+			//endex
+			//ifex _DecalMirroredUVMode2==0 && isNotAnimated(_DecalMirroredUVMode2) && _Decal2Depth==0 && isNotAnimated(_Decal2Depth)
+			#define POI_USES_TANGENT
+			//endex
 			#endif
 			//endex
 			
@@ -49016,6 +50665,18 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _AudioLinkDecal3ColorOverrideBand;
 			half4 _AudioLinkDecal3ColorOverrideRamp;
 			#endif
+			//ifex _DecalTexture3UV!=1 && isNotAnimated(_DecalTexture3UV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _DecalTexture3UV!=2 && isNotAnimated(_DecalTexture3UV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _DecalTexture3UV!=3 && isNotAnimated(_DecalTexture3UV)
+			#define POI_USES_UV3
+			//endex
+			//ifex _DecalMirroredUVMode3==0 && isNotAnimated(_DecalMirroredUVMode3) && _Decal3Depth==0 && isNotAnimated(_Decal3Depth)
+			#define POI_USES_TANGENT
+			//endex
 			#endif
 			//endex
 			
@@ -49157,6 +50818,20 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _DissolveALColorOverrideBand;
 			half4 _DissolveALColorOverrideRamp;
 			#endif
+			//ifex _DissolveToTextureUV!=1 && isNotAnimated(_DissolveToTextureUV) && _DissolveNoiseTextureUV!=1 && isNotAnimated(_DissolveNoiseTextureUV) && _DissolveDetailNoiseUV!=1 && isNotAnimated(_DissolveDetailNoiseUV) && _DissolveMaskUV!=1 && isNotAnimated(_DissolveMaskUV) && _DissolveP2PUV!=1 && isNotAnimated(_DissolveP2PUV) && _UVTileDissolveUV!=1 && isNotAnimated(_UVTileDissolveUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _DissolveToTextureUV!=2 && isNotAnimated(_DissolveToTextureUV) && _DissolveNoiseTextureUV!=2 && isNotAnimated(_DissolveNoiseTextureUV) && _DissolveDetailNoiseUV!=2 && isNotAnimated(_DissolveDetailNoiseUV) && _DissolveMaskUV!=2 && isNotAnimated(_DissolveMaskUV) && _DissolveP2PUV!=2 && isNotAnimated(_DissolveP2PUV) && _UVTileDissolveUV!=2 && isNotAnimated(_UVTileDissolveUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _DissolveToTextureUV!=3 && isNotAnimated(_DissolveToTextureUV) && _DissolveNoiseTextureUV!=3 && isNotAnimated(_DissolveNoiseTextureUV) && _DissolveDetailNoiseUV!=3 && isNotAnimated(_DissolveDetailNoiseUV) && _DissolveMaskUV!=3 && isNotAnimated(_DissolveMaskUV) && _DissolveP2PUV!=3 && isNotAnimated(_DissolveP2PUV) && _UVTileDissolveUV!=3 && isNotAnimated(_UVTileDissolveUV)
+			#define POI_USES_UV3
+			//endex
+			//ifex _CenterOutDissolveNormals==0 && isNotAnimated(_CenterOutDissolveNormals)
+			#if defined(POI_PASS_SHADOW) || defined(POI_PASS_DEPTH_ONLY)
+			#define POI_USES_TANGENT
+			#endif
+			//endex
 			#endif
 			//endex
 			
@@ -49179,6 +50854,18 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float2 _Matcap0NormalMapPan;
 			float _Matcap0NormalMapUV;
 			float _Matcap0NormalMapScale;
+			//ifex _Matcap0NormalMapUV!=1 && isNotAnimated(_Matcap0NormalMapUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _Matcap0NormalMapUV!=2 && isNotAnimated(_Matcap0NormalMapUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _Matcap0NormalMapUV!=3 && isNotAnimated(_Matcap0NormalMapUV)
+			#define POI_USES_UV3
+			//endex
+			#if !defined(POI_PASS_SHADOW) && !defined(POI_PASS_DEPTH_ONLY)
+			#define POI_USES_TANGENT
+			#endif
 			#endif
 			half _Matcap0CircleMaskEnabled;
 			half _Matcap0CircleMaskBorder;
@@ -49186,6 +50873,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _Matcap0LightVsReflection;
 			float _MatcapUVToBlend;
 			float4 _MatCapBlendUV1;
+			//ifex _MatcapUVToBlend!=1 && isNotAnimated(_MatcapUVToBlend)
+			#define POI_USES_UV1
+			//endex
+			//ifex _MatcapUVToBlend!=2 && isNotAnimated(_MatcapUVToBlend)
+			#define POI_USES_UV2
+			//endex
+			//ifex _MatcapUVToBlend!=3 && isNotAnimated(_MatcapUVToBlend)
+			#define POI_USES_UV3
+			//endex
 			float _MatcapUVMode;
 			half _MatcapMaskInvert;
 			half _MatcapMaskGlobalMask;
@@ -49241,6 +50937,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _Matcap0ALColorOverrideThemeIndex;
 			float _Matcap0ALColorOverrideBand;
 			half4 _Matcap0ALColorOverrideRamp;
+			//ifex _MatcapMaskUV!=1 && isNotAnimated(_MatcapMaskUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _MatcapMaskUV!=2 && isNotAnimated(_MatcapMaskUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _MatcapMaskUV!=3 && isNotAnimated(_MatcapMaskUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			//endex
 			//ifex _Matcap2Enable==0
@@ -49262,12 +50967,33 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float2 _Matcap1NormalMapPan;
 			float _Matcap1NormalMapUV;
 			float _Matcap1NormalMapScale;
+			//ifex _Matcap1NormalMapUV!=1 && isNotAnimated(_Matcap1NormalMapUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _Matcap1NormalMapUV!=2 && isNotAnimated(_Matcap1NormalMapUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _Matcap1NormalMapUV!=3 && isNotAnimated(_Matcap1NormalMapUV)
+			#define POI_USES_UV3
+			//endex
+			#if !defined(POI_PASS_SHADOW) && !defined(POI_PASS_DEPTH_ONLY)
+			#define POI_USES_TANGENT
+			#endif
 			#endif
 			half _Matcap2CircleMaskEnabled;
 			half _Matcap2CircleMaskBorder;
 			half _Matcap2CircleMaskBlur;
 			float _Matcap2UVToBlend;
 			float4 _MatCap2ndBlendUV1;
+			//ifex _Matcap2UVToBlend!=1 && isNotAnimated(_Matcap2UVToBlend)
+			#define POI_USES_UV1
+			//endex
+			//ifex _Matcap2UVToBlend!=2 && isNotAnimated(_Matcap2UVToBlend)
+			#define POI_USES_UV2
+			//endex
+			//ifex _Matcap2UVToBlend!=3 && isNotAnimated(_Matcap2UVToBlend)
+			#define POI_USES_UV3
+			//endex
 			float _Matcap2UVMode;
 			half _Matcap2MaskInvert;
 			half _Matcap2MaskGlobalMask;
@@ -49323,6 +51049,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _Matcap1ALColorOverrideThemeIndex;
 			float _Matcap1ALColorOverrideBand;
 			half4 _Matcap1ALColorOverrideRamp;
+			//ifex _Matcap2MaskUV!=1 && isNotAnimated(_Matcap2MaskUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _Matcap2MaskUV!=2 && isNotAnimated(_Matcap2MaskUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _Matcap2MaskUV!=3 && isNotAnimated(_Matcap2MaskUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			//endex
 			
@@ -49345,12 +51080,33 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float2 _Matcap2NormalMapPan;
 			float _Matcap2NormalMapUV;
 			float _Matcap2NormalMapScale;
+			//ifex _Matcap2NormalMapUV!=1 && isNotAnimated(_Matcap2NormalMapUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _Matcap2NormalMapUV!=2 && isNotAnimated(_Matcap2NormalMapUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _Matcap2NormalMapUV!=3 && isNotAnimated(_Matcap2NormalMapUV)
+			#define POI_USES_UV3
+			//endex
+			#if !defined(POI_PASS_SHADOW) && !defined(POI_PASS_DEPTH_ONLY)
+			#define POI_USES_TANGENT
+			#endif
 			#endif
 			half _Matcap3CircleMaskEnabled;
 			half _Matcap3CircleMaskBorder;
 			half _Matcap3CircleMaskBlur;
 			float _Matcap3UVToBlend;
 			float4 _MatCap3rdBlendUV1;
+			//ifex _Matcap3UVToBlend!=1 && isNotAnimated(_Matcap3UVToBlend)
+			#define POI_USES_UV1
+			//endex
+			//ifex _Matcap3UVToBlend!=2 && isNotAnimated(_Matcap3UVToBlend)
+			#define POI_USES_UV2
+			//endex
+			//ifex _Matcap3UVToBlend!=3 && isNotAnimated(_Matcap3UVToBlend)
+			#define POI_USES_UV3
+			//endex
 			float _Matcap3UVMode;
 			half _Matcap3MaskInvert;
 			half _Matcap3MaskGlobalMask;
@@ -49406,6 +51162,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _Matcap2ALColorOverrideThemeIndex;
 			float _Matcap2ALColorOverrideBand;
 			half4 _Matcap2ALColorOverrideRamp;
+			//ifex _Matcap3MaskUV!=1 && isNotAnimated(_Matcap3MaskUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _Matcap3MaskUV!=2 && isNotAnimated(_Matcap3MaskUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _Matcap3MaskUV!=3 && isNotAnimated(_Matcap3MaskUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			//endex
 			
@@ -49428,12 +51193,33 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float2 _Matcap3NormalMapPan;
 			float _Matcap3NormalMapUV;
 			float _Matcap3NormalMapScale;
+			//ifex _Matcap3NormalMapUV!=1 && isNotAnimated(_Matcap3NormalMapUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _Matcap3NormalMapUV!=2 && isNotAnimated(_Matcap3NormalMapUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _Matcap3NormalMapUV!=3 && isNotAnimated(_Matcap3NormalMapUV)
+			#define POI_USES_UV3
+			//endex
+			#if !defined(POI_PASS_SHADOW) && !defined(POI_PASS_DEPTH_ONLY)
+			#define POI_USES_TANGENT
+			#endif
 			#endif
 			half _Matcap4CircleMaskEnabled;
 			half _Matcap4CircleMaskBorder;
 			half _Matcap4CircleMaskBlur;
 			float _Matcap4UVToBlend;
 			float4 _MatCap4thBlendUV1;
+			//ifex _Matcap4UVToBlend!=1 && isNotAnimated(_Matcap4UVToBlend)
+			#define POI_USES_UV1
+			//endex
+			//ifex _Matcap4UVToBlend!=2 && isNotAnimated(_Matcap4UVToBlend)
+			#define POI_USES_UV2
+			//endex
+			//ifex _Matcap4UVToBlend!=3 && isNotAnimated(_Matcap4UVToBlend)
+			#define POI_USES_UV3
+			//endex
 			float _Matcap4UVMode;
 			half _Matcap4MaskInvert;
 			half _Matcap4MaskGlobalMask;
@@ -49489,6 +51275,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _Matcap3ALColorOverrideThemeIndex;
 			float _Matcap3ALColorOverrideBand;
 			half4 _Matcap3ALColorOverrideRamp;
+			//ifex _Matcap4MaskUV!=1 && isNotAnimated(_Matcap4MaskUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _Matcap4MaskUV!=2 && isNotAnimated(_Matcap4MaskUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _Matcap4MaskUV!=3 && isNotAnimated(_Matcap4MaskUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			//endex
 			
@@ -49568,6 +51363,18 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _FlipbookALColorOverrideBand;
 			half4 _FlipbookALColorOverrideRamp;
 			#endif
+			//ifex _FlipbookTexArrayUV!=1 && isNotAnimated(_FlipbookTexArrayUV) && _FlipbookMaskUV!=1 && isNotAnimated(_FlipbookMaskUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _FlipbookTexArrayUV!=2 && isNotAnimated(_FlipbookTexArrayUV) && _FlipbookMaskUV!=2 && isNotAnimated(_FlipbookMaskUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _FlipbookTexArrayUV!=3 && isNotAnimated(_FlipbookTexArrayUV) && _FlipbookMaskUV!=3 && isNotAnimated(_FlipbookMaskUV)
+			#define POI_USES_UV3
+			//endex
+			//ifex _FlipbookMirroredUVMode==0 && isNotAnimated(_FlipbookMirroredUVMode)
+			#define POI_USES_TANGENT
+			//endex
 			#endif
 			//endex
 			
@@ -49647,6 +51454,18 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _FlipbookALColorOverrideBand1;
 			half4 _FlipbookALColorOverrideRamp1;
 			#endif
+			//ifex _FlipbookTexArrayUV1!=1 && isNotAnimated(_FlipbookTexArrayUV1) && _FlipbookMaskUV1!=1 && isNotAnimated(_FlipbookMaskUV1)
+			#define POI_USES_UV1
+			//endex
+			//ifex _FlipbookTexArrayUV1!=2 && isNotAnimated(_FlipbookTexArrayUV1) && _FlipbookMaskUV1!=2 && isNotAnimated(_FlipbookMaskUV1)
+			#define POI_USES_UV2
+			//endex
+			//ifex _FlipbookTexArrayUV1!=3 && isNotAnimated(_FlipbookTexArrayUV1) && _FlipbookMaskUV1!=3 && isNotAnimated(_FlipbookMaskUV1)
+			#define POI_USES_UV3
+			//endex
+			//ifex _FlipbookMirroredUVMode1==0 && isNotAnimated(_FlipbookMirroredUVMode1)
+			#define POI_USES_TANGENT
+			//endex
 			#endif
 			//endex
 			
@@ -49669,6 +51488,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float4 _MirrorTexture_ST;
 			float2 _MirrorTexturePan;
 			float _MirrorTextureUV;
+			//ifex _MirrorTextureUV!=1 && isNotAnimated(_MirrorTextureUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _MirrorTextureUV!=2 && isNotAnimated(_MirrorTextureUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _MirrorTextureUV!=3 && isNotAnimated(_MirrorTextureUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			#endif
 			//endex
@@ -49703,6 +51531,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			half _DepthAlphaMaxValue;
 			float _DepthAlphaMinDepth;
 			float _DepthAlphaMaxDepth;
+			//ifex _DepthMaskUV!=1 && isNotAnimated(_DepthMaskUV) && _DepthTextureUV!=1 && isNotAnimated(_DepthTextureUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _DepthMaskUV!=2 && isNotAnimated(_DepthMaskUV) && _DepthTextureUV!=2 && isNotAnimated(_DepthTextureUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _DepthMaskUV!=3 && isNotAnimated(_DepthMaskUV) && _DepthTextureUV!=3 && isNotAnimated(_DepthTextureUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			//endex
 			
@@ -49753,6 +51590,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _ppHueSelectOrShift;
 			float _PPPosterization;
 			float _PPPosterizationAmount;
+			//ifex _PPMaskUV!=1 && isNotAnimated(_PPMaskUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _PPMaskUV!=2 && isNotAnimated(_PPMaskUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _PPMaskUV!=3 && isNotAnimated(_PPMaskUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			//endex
 			
@@ -49782,6 +51628,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _BacklightGlobalMaskBlendType;
 			float _BacklightApplyGlobalMaskIndex;
 			float _BacklightApplyGlobalMaskBlendType;
+			//ifex _BacklightColorTexUV!=1 && isNotAnimated(_BacklightColorTexUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _BacklightColorTexUV!=2 && isNotAnimated(_BacklightColorTexUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _BacklightColorTexUV!=3 && isNotAnimated(_BacklightColorTexUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			//endex
 			
@@ -49853,6 +51708,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _AudioLinkVoronoiInnerColorOverrideThemeIndex;
 			float _AudioLinkVoronoiInnerColorOverrideBand;
 			half4 _AudioLinkVoronoiInnerColorOverrideRamp;
+			//ifex _VoronoiMaskUV!=1 && isNotAnimated(_VoronoiMaskUV) && _VoronoiNoiseUV!=1 && isNotAnimated(_VoronoiNoiseUV) && _VoronoiUV!=1 && isNotAnimated(_VoronoiUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _VoronoiMaskUV!=2 && isNotAnimated(_VoronoiMaskUV) && _VoronoiNoiseUV!=2 && isNotAnimated(_VoronoiNoiseUV) && _VoronoiUV!=2 && isNotAnimated(_VoronoiUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _VoronoiMaskUV!=3 && isNotAnimated(_VoronoiMaskUV) && _VoronoiNoiseUV!=3 && isNotAnimated(_VoronoiNoiseUV) && _VoronoiUV!=3 && isNotAnimated(_VoronoiUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			//endex
 			
@@ -50842,39 +52706,9 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			
 			void applyDissolve(inout PoiFragData poiFragData, in PoiMesh poiMesh, inout PoiMods poiMods, in PoiCam poiCam, in PoiLight poiLight)
 			{
-				half dissolveMask = 1;
-				#if defined(PROP_DISSOLVEMASK) || !defined(OPTIMIZER_ENABLED)
-				dissolveMask = POI2D_SAMPLER_PAN(_DissolveMask, _MainTex, poiUV(poiMesh.uv[_DissolveMaskUV], _DissolveMask_ST), _DissolveMaskPan).r;
-				#endif
-				
-				UNITY_BRANCH
-				if (_DissolveUseVertexColors > 0)
-				dissolveMask = ceil(poiMesh.vertexColor[max(_DissolveUseVertexColors - 1, 0)] * 100000) / 100000;
-				
-				if (_DissolveMaskGlobalMask > 0)
-				dissolveMask = maskBlend(dissolveMask, poiMods.globalMask[_DissolveMaskGlobalMask - 1], _DissolveMaskGlobalMaskBlendType);
-				
-				if (_DissolveMaskInvert >= 0.5)
-				dissolveMask = 1 - dissolveMask;
-				
-				#if defined(PROP_DISSOLVETOTEXTURE) || !defined(OPTIMIZER_ENABLED)
-				float4 dissolveToTexture = POI2D_SAMPLER_PAN(_DissolveToTexture, _MainTex, poiUV(poiMesh.uv[_DissolveToTextureUV], _DissolveToTexture_ST), _DissolveToTexturePan) * float4(poiThemeColor(poiMods, _DissolveTextureColor.rgb, _DissolveTextureColorThemeIndex), _DissolveTextureColor.a);
-				#else
-				float4 dissolveToTexture = float4(poiThemeColor(poiMods, _DissolveTextureColor.rgb, _DissolveTextureColorThemeIndex), _DissolveTextureColor.a);
-				#endif
-				float dissolveNoise = 1;
-				#if defined(PROP_DISSOLVENOISETEXTURE) || !defined(OPTIMIZER_ENABLED)
-				dissolveNoise = POI2D_SAMPLER_PAN(_DissolveNoiseTexture, _MainTex, poiUV(poiMesh.uv[_DissolveNoiseTextureUV], _DissolveNoiseTexture_ST), _DissolveNoiseTexturePan).r;
-				#endif
-				dissolveNoise = _DissolveInvertNoise ? 1 - dissolveNoise : dissolveNoise;
-				
-				float detailNoise = 0;
 				half detailStrength = 0;
 				if (_DissolveDetailNoiseEnabled >= 0.5)
-				{
-					detailNoise = getDissolveDetailNoise(poiMesh.worldPos, poiMesh.uv[_DissolveDetailNoiseUV]);
-					detailStrength = _DissolveDetailStrength;
-				}
+				detailStrength = _DissolveDetailStrength;
 				
 				float dissolveAmount = _DissolveAlpha;
 				if (_UVTileDissolveEnabled >= 0.5)
@@ -50913,6 +52747,52 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 					}
 				}
 				dissolveAmount = saturate(dissolveAmount);
+				
+				// Early exit
+				UNITY_BRANCH
+				if (dissolveAmount <= 0 && _UVTileDissolveEnabled < 0.5 && _DissolveWaveMode < 0.5 && _DissolveDebugGradient < 0.5 && alEdgeWidthMod <= 0)
+				{
+					if (_DissolveAlphaOnly >= 0.5)
+					poiFragData.alpha *= evalRamp4(0, _DissolveAlphaOnlyRamp);
+					#if !defined(POI_PASS_OUTLINE) && !defined(POI_PASS_SHADOW)
+					if (_DissolveApplyGlobalMaskIndex > 0)
+					applyToGlobalMask(poiMods, _DissolveApplyGlobalMaskIndex - 1, _DissolveApplyGlobalMaskBlendType, 0);
+					if (_DissolveInverseApplyGlobalMaskIndex > 0)
+					applyToGlobalMask(poiMods, _DissolveInverseApplyGlobalMaskIndex - 1, _DissolveInverseApplyGlobalMaskBlendType, 1);
+					#endif
+					return;
+				}
+				
+				half dissolveMask = 1;
+				#if defined(PROP_DISSOLVEMASK) || !defined(OPTIMIZER_ENABLED)
+				dissolveMask = POI2D_SAMPLER_PAN(_DissolveMask, _MainTex, poiUV(poiMesh.uv[_DissolveMaskUV], _DissolveMask_ST), _DissolveMaskPan).r;
+				#endif
+				
+				UNITY_BRANCH
+				if (_DissolveUseVertexColors > 0)
+				dissolveMask = ceil(poiMesh.vertexColor[max(_DissolveUseVertexColors - 1, 0)] * 100000) / 100000;
+				
+				if (_DissolveMaskGlobalMask > 0)
+				dissolveMask = maskBlend(dissolveMask, poiMods.globalMask[_DissolveMaskGlobalMask - 1], _DissolveMaskGlobalMaskBlendType);
+				
+				if (_DissolveMaskInvert >= 0.5)
+				dissolveMask = 1 - dissolveMask;
+				
+				#if defined(PROP_DISSOLVETOTEXTURE) || !defined(OPTIMIZER_ENABLED)
+				float4 dissolveToTexture = POI2D_SAMPLER_PAN(_DissolveToTexture, _MainTex, poiUV(poiMesh.uv[_DissolveToTextureUV], _DissolveToTexture_ST), _DissolveToTexturePan) * float4(poiThemeColor(poiMods, _DissolveTextureColor.rgb, _DissolveTextureColorThemeIndex), _DissolveTextureColor.a);
+				#else
+				float4 dissolveToTexture = float4(poiThemeColor(poiMods, _DissolveTextureColor.rgb, _DissolveTextureColorThemeIndex), _DissolveTextureColor.a);
+				#endif
+				float dissolveNoise = 1;
+				#if defined(PROP_DISSOLVENOISETEXTURE) || !defined(OPTIMIZER_ENABLED)
+				dissolveNoise = POI2D_SAMPLER_PAN(_DissolveNoiseTexture, _MainTex, poiUV(poiMesh.uv[_DissolveNoiseTextureUV], _DissolveNoiseTexture_ST), _DissolveNoiseTexturePan).r;
+				#endif
+				dissolveNoise = _DissolveInvertNoise ? 1 - dissolveNoise : dissolveNoise;
+				
+				float detailNoise = 0;
+				if (_DissolveDetailNoiseEnabled >= 0.5)
+				detailNoise = getDissolveDetailNoise(poiMesh.worldPos, poiMesh.uv[_DissolveDetailNoiseUV]);
+				
 				dissolveAmount *= dissolveMask;
 				detailStrength = saturate(detailStrength);
 				
@@ -51212,11 +53092,11 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 					
 					if (any(_VertexLocalTranslationALMin) || any(_VertexLocalTranslationALMax))
 					{
-						ALLocalTranslation = lerp(_VertexLocalTranslationALMin, _VertexLocalTranslationALMax, audioLinkBands[_VertexLocalTranslationALBand]);
+						ALLocalTranslation = lerp(_VertexLocalTranslationALMin, _VertexLocalTranslationALMax, poiSelect5(audioLinkBands, _VertexLocalTranslationALBand));
 					}
 					if (any(_VertexLocalRotationAL))
 					{
-						ALrotation = audioLinkBands[_VertexLocalRotationALBand] * _VertexLocalRotationAL;
+						ALrotation = poiSelect5(audioLinkBands, _VertexLocalRotationALBand) * _VertexLocalRotationAL;
 					}
 					if (any(_VertexLocalRotationCTALSpeed))
 					{
@@ -51226,20 +53106,20 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 					}
 					if (any(_VertexLocalScaleALMin.xyz) || any(_VertexLocalScaleALMax.xyz))
 					{
-						ALScale = lerp(_VertexLocalScaleALMin.xyz + _VertexLocalScaleALMin.w, _VertexLocalScaleALMax.xyz + _VertexLocalScaleALMax.w, audioLinkBands[_VertexLocalScaleALBand]);
+						ALScale = lerp(_VertexLocalScaleALMin.xyz + _VertexLocalScaleALMin.w, _VertexLocalScaleALMax.xyz + _VertexLocalScaleALMax.w, poiSelect5(audioLinkBands, _VertexLocalScaleALBand));
 					}
 					if (any(_VertexWorldTranslationALMin.xyz) || any(_VertexWorldTranslationALMax.xyz))
 					{
-						ALWorldTranslation = lerp(_VertexWorldTranslationALMin, _VertexWorldTranslationALMax, audioLinkBands[_VertexWorldTranslationALBand]);
+						ALWorldTranslation = lerp(_VertexWorldTranslationALMin, _VertexWorldTranslationALMax, poiSelect5(audioLinkBands, _VertexWorldTranslationALBand));
 					}
 					if (any(_VertexManipulationHeightAL.xy))
 					{
-						ALHeight = lerp(_VertexManipulationHeightAL.x, _VertexManipulationHeightAL.y, audioLinkBands[_VertexManipulationHeightBand]);
+						ALHeight = lerp(_VertexManipulationHeightAL.x, _VertexManipulationHeightAL.y, poiSelect5(audioLinkBands, _VertexManipulationHeightBand));
 					}
 					//ifex isNotAnimated(_VertexRoundingEnabled) && _VertexRoundingEnabled==0
 					if (any(_VertexRoundingRangeAL.xy))
 					{
-						ALRoundingAmount = lerp(_VertexRoundingRangeAL.x, _VertexRoundingRangeAL.y, audioLinkBands[_VertexRoundingRangeBand]);
+						ALRoundingAmount = lerp(_VertexRoundingRangeAL.x, _VertexRoundingRangeAL.y, poiSelect5(audioLinkBands, _VertexRoundingRangeBand));
 					}
 					//endex
 					//ifex isNotAnimated(_VertexSpectrumMotion) && _VertexSpectrumMotion==0
@@ -51269,7 +53149,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 					v.color.a
 				};
 				
-				half basicsMask = vertexEffectsMask[_VertexBasicsMaskChannel];
+				half basicsMask = poiSelect8(vertexEffectsMask, _VertexBasicsMaskChannel);
 				
 				ALLocalTranslation *= basicsMask;
 				ALrotation *= basicsMask;
@@ -51305,7 +53185,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 					#else
 					heightOffset = (1 - _VertexManipulationHeightBias) * (_VertexManipulationHeight + ALHeight) * o.normal.xyz;
 					#endif
-					heightOffset *= vertexEffectsMask[_VertexManipulationHeightMaskChannel] * o.normal.w;
+					heightOffset *= poiSelect8(vertexEffectsMask, _VertexManipulationHeightMaskChannel) * o.normal.w;
 					
 				}
 				// Fix z fighting issue with projectors maybe probably I hope
@@ -51315,7 +53195,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				UNITY_BRANCH
 				if (_VertexBarrelMode >= 0.5)
 				{
-					half barrelMask = vertexEffectsMask[_VertexBarrelMaskChannel];
+					half barrelMask = poiSelect8(vertexEffectsMask, _VertexBarrelMaskChannel);
 					v.vertex.xz = lerp(v.vertex.xz, normalize(v.vertex.xz) * _VertexBarrelWidth + v.vertex.xz * _VertexBarrelHeight, _VertexBarrelAlpha * barrelMask);
 				}
 				//endex
@@ -51324,7 +53204,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				UNITY_BRANCH
 				if (_VertexSphereMode >= 0.5)
 				{
-					half sphereMask = vertexEffectsMask[_VertexSphereMaskChannel];
+					half sphereMask = poiSelect8(vertexEffectsMask, _VertexSphereMaskChannel);
 					v.vertex.xyz = lerp(v.vertex.xyz, normalize(v.vertex.xyz + _VertexSphereCenter.xyz) * _VertexSphereRadius + v.vertex.xyz * _VertexSphereHeight, _VertexSphereAlpha * sphereMask);
 				}
 				//endex
@@ -51333,7 +53213,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				UNITY_BRANCH
 				if (_VertexTornadoMode >= 0.5)
 				{
-					half tornadoMask = vertexEffectsMask[_VertexTornadoMaskChannel];
+					half tornadoMask = poiSelect8(vertexEffectsMask, _VertexTornadoMaskChannel);
 					float heightStrength = smoothstep(_VertexTornadoBaseHeight, _VertexTornadoTopHeight, v.vertex.y);
 					float funnelStrength = pow(heightStrength, _VertexTornadoFunnelShape);
 					float totalStrength = funnelStrength * tornadoMask;
@@ -51360,7 +53240,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				UNITY_BRANCH
 				if (_VertexWindEnabled >= 0.5)
 				{
-					half windMask = vertexEffectsMask[_VertexWindMaskChannel];
+					half windMask = poiSelect8(vertexEffectsMask, _VertexWindMaskChannel);
 					if (windMask > 0)
 					{
 						float3 worldPos = mul(unity_ObjectToWorld, v.vertex).xyz;
@@ -51392,7 +53272,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				UNITY_BRANCH
 				if (_VertexRoundingEnabled >= 0.5)
 				{
-					half roundingMask = vertexEffectsMask[_VertexRoundingMaskChannel];
+					half roundingMask = poiSelect8(vertexEffectsMask, _VertexRoundingMaskChannel);
 					if (roundingMask > 0)
 					{
 						float3 preRoundingVertex = v.vertex.xyz;
@@ -51426,7 +53306,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				{
 					if (AudioLinkIsAvailable())
 					{
-						alpha = saturate(alpha + lerp(_VertexLookAtAlphaAudiolink.x, _VertexLookAtAlphaAudiolink.y, vertexAudioLink[_VertexLookAtAudioLinkBand]) * _VertexLookAtAudioLinkEnabled);
+						alpha = saturate(alpha + lerp(_VertexLookAtAlphaAudiolink.x, _VertexLookAtAlphaAudiolink.y, poiSelect5(vertexAudioLink, _VertexLookAtAudioLinkBand)) * _VertexLookAtAudioLinkEnabled);
 					}
 				}
 				#endif
@@ -51973,7 +53853,9 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				POI_TRANSFER_SHADOW_CASTER_NOPOS(o, o.pos);
 				#endif
 				
+				#if !defined(POI_PASS_SHADOW) && (!defined(OPTIMIZER_ENABLED) || defined(_POI_DEPTH_RIMLIGHT) || defined(GRAIN) || defined(POI_GRABPASS) || defined(TRIPLANAR_PROJECTION))
 				o.worldDir = dot(o.pos, CalculateFrustumCorrection());
+				#endif
 				
 				if (_RenderingReduceClipDistance >= 0.5)
 				{
@@ -52012,21 +53894,37 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				
 				#endif
 				
+				#if defined(OPTIMIZER_ENABLED)
+				#if !defined(POI_USES_UV1)
+				o.uv[0] = float4(o.uv[0].xy, 0, 0);
+				#endif
+				#if !defined(POI_USES_UV2) && !defined(POI_USES_UV3)
+				o.uv[1] = 0;
+				#elif !defined(POI_USES_UV2)
+				o.uv[1] = float4(0, 0, o.uv[1].zw);
+				#elif !defined(POI_USES_UV3)
+				o.uv[1] = float4(o.uv[1].xy, 0, 0);
+				#endif
+				#if !defined(POI_USES_TANGENT)
+				o.tangent = 0;
+				#endif
+				#endif
+				
 				return o;
 			}
 			
 			//ifex _StochasticMode!=0
 			#if defined(_STOCHASTICMODE_DELIOT_HEITZ)
-			#define POI2D_SAMPLER_STOCHASTIC(tex, texSampler, uv, useStochastic) (useStochastic ? DeliotHeitzSampleTexture(tex, sampler##texSampler, uv) : POI2D_SAMPLER(tex, texSampler, uv))
-			#define POI2D_SAMPLER_PAN_STOCHASTIC(tex, texSampler, uv, pan, useStochastic) (useStochastic ? DeliotHeitzSampleTexture(tex, sampler##texSampler, POI_PAN_UV(uv, pan)) : POI2D_SAMPLER_PAN(tex, texSampler, uv, pan))
-			#define POI2D_SAMPLER_PANGRAD_STOCHASTIC(tex, texSampler, uv, pan, dx, dy, useStochastic) (useStochastic ? DeliotHeitzSampleTexture(tex, sampler##texSampler, POI_PAN_UV(uv, pan), dx, dy) : POI2D_SAMPLER_PANGRAD(tex, texSampler, uv, pan, dx, dy))
+			#define POI2D_SAMPLER_STOCHASTIC(tex, texSampler, uv, useStochastic) (PoiStochasticSample(tex, sampler##texSampler, uv, useStochastic))
+			#define POI2D_SAMPLER_PAN_STOCHASTIC(tex, texSampler, uv, pan, useStochastic) (PoiStochasticSample(tex, sampler##texSampler, POI_PAN_UV(uv, pan), useStochastic))
+			#define POI2D_SAMPLER_PANGRAD_STOCHASTIC(tex, texSampler, uv, pan, dx, dy, useStochastic) (PoiStochasticSampleGrad(tex, sampler##texSampler, POI_PAN_UV(uv, pan), dx, dy, useStochastic))
 			#endif
 			//endex
 			//ifex _StochasticMode!=1
 			#if defined(_STOCHASTICMODE_HEXTILE)
-			#define POI2D_SAMPLER_STOCHASTIC(tex, texSampler, uv, useStochastic) (useStochastic ? HextileSampleTexture(tex, sampler##texSampler, uv, false) : POI2D_SAMPLER(tex, texSampler, uv))
-			#define POI2D_SAMPLER_PAN_STOCHASTIC(tex, texSampler, uv, pan, useStochastic) (useStochastic ? HextileSampleTexture(tex, sampler##texSampler, POI_PAN_UV(uv, pan), false) : POI2D_SAMPLER_PAN(tex, texSampler, uv, pan))
-			#define POI2D_SAMPLER_PANGRAD_STOCHASTIC(tex, texSampler, uv, pan, dx, dy, useStochastic) (useStochastic ? HextileSampleTexture(tex, sampler##texSampler, POI_PAN_UV(uv, pan), false, dx, dy) : POI2D_SAMPLER_PANGRAD(tex, texSampler, uv, pan, dx, dy))
+			#define POI2D_SAMPLER_STOCHASTIC(tex, texSampler, uv, useStochastic) (PoiStochasticSample(tex, sampler##texSampler, uv, useStochastic))
+			#define POI2D_SAMPLER_PAN_STOCHASTIC(tex, texSampler, uv, pan, useStochastic) (PoiStochasticSample(tex, sampler##texSampler, POI_PAN_UV(uv, pan), useStochastic))
+			#define POI2D_SAMPLER_PANGRAD_STOCHASTIC(tex, texSampler, uv, pan, dx, dy, useStochastic) (PoiStochasticSampleGrad(tex, sampler##texSampler, POI_PAN_UV(uv, pan), dx, dy, useStochastic))
 			#endif
 			//endex
 			
@@ -52112,6 +54010,27 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			{
 				float2 dx = ddx(uv), dy = ddy(uv);
 				return DeliotHeitzSampleTexture(tex, texSampler, uv, dx, dy);
+			}
+			
+			// Branch instead of ?: so textures with stochastic off don't also pay for the stochastic samples
+			float4 PoiStochasticSample(Texture2D tex, SamplerState texSampler, float2 uv, float useStochastic)
+			{
+				UNITY_BRANCH
+				if (useStochastic)
+				{
+					return DeliotHeitzSampleTexture(tex, texSampler, uv);
+				}
+				return tex.Sample(texSampler, uv);
+			}
+			
+			float4 PoiStochasticSampleGrad(Texture2D tex, SamplerState texSampler, float2 uv, float2 dx, float2 dy, float useStochastic)
+			{
+				UNITY_BRANCH
+				if (useStochastic)
+				{
+					return DeliotHeitzSampleTexture(tex, texSampler, uv, dx, dy);
+				}
+				return tex.SampleGrad(texSampler, uv, dx, dy);
 			}
 			#endif // defined(_STOCHASTICMODE_DELIOT_HEITZ)
 			//endex
@@ -52235,6 +54154,27 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float4 HextileSampleTexture(Texture2D tex, SamplerState texSampler, float2 uv, bool isNormalMap)
 			{
 				return HextileSampleTexture(tex, texSampler, uv, isNormalMap, ddx(uv), ddy(uv));
+			}
+			
+			// Branch instead of ?: so textures with stochastic off don't also pay for the stochastic samples
+			float4 PoiStochasticSample(Texture2D tex, SamplerState texSampler, float2 uv, float useStochastic)
+			{
+				UNITY_BRANCH
+				if (useStochastic)
+				{
+					return HextileSampleTexture(tex, texSampler, uv, false);
+				}
+				return tex.Sample(texSampler, uv);
+			}
+			
+			float4 PoiStochasticSampleGrad(Texture2D tex, SamplerState texSampler, float2 uv, float2 dx, float2 dy, float useStochastic)
+			{
+				UNITY_BRANCH
+				if (useStochastic)
+				{
+					return HextileSampleTexture(tex, texSampler, uv, false, dx, dy);
+				}
+				return tex.SampleGrad(texSampler, uv, dx, dy);
 			}
 			#endif // defined(_STOCHASTICMODE_HEXTILE)
 			//endex
@@ -58532,7 +60472,9 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				float3 pz = Permutation(Pi.z + oi);
 				
 				float3 p, ox, oy, oz, dx, dy, dz;
-				float3 F = 1e6;
+				float F0 = 1e6;
+				float3 L0 = 1e6;
+				float3 L1 = 1e6;
 				
 				randomPoint = 0;
 				
@@ -58546,7 +60488,6 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 						for (int k = 0; k < 3; k++)
 						{
 							p = Permutation(px[i] + py[j] + pz[k] + oi); // pij1, pij2, pij3
-							float3 ogp = p;
 							
 							ox = frac(p * VoronoiK) - VoronoiKo;
 							oy = glsl_mod(floor(p * VoronoiK), 7.0) * VoronoiK - VoronoiKo;
@@ -58561,29 +60502,25 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 							float3 d = dx * dx + dy * dy + dz * dz; // dij1, dij2 and dij3, squared
 							
 							//Find lowest and second lowest distances
+							L1 = min(L1, max(L0, d));
+							L0 = min(L0, d);
 							[unroll(3)]
 							for (int n = 0; n < 3; n++)
 							{
-								// if (d[n] < F[0])
-								// {
-								//     F[1] = F[0];
-								//     F[0] = d[n];
-								//     randomPoint = p;
-								// }
-								// else if (d[n] < F[1])
-								// {
-								//     F[1] = d[n];
-								// }
-								bool newMin = d[n] < F[0];
-								F[1] = min(newMin ? F[0] : d[n], F[1]);
+								bool newMin = d[n] < F0;
 								randomPoint = newMin ? p : randomPoint;
-								F[0] = min(F[0], d[n]);
+								F0 = min(F0, d[n]);
 							}
 						}
 					}
 				}
 				
-				return F;
+				float2 F = float2(L0.x, L1.x);
+				F.y = min(min(F.y, max(F.x, L0.y)), L1.y);
+				F.x = min(F.x, L0.y);
+				F.y = min(min(F.y, max(F.x, L0.z)), L1.z);
+				F.x = min(F.x, L0.z);
+				return float3(F, 1e6);
 			}
 			
 			float voronoi2D(in float2 x, float scale, float2 speed, out float2 randomPoint)
@@ -59392,7 +61329,12 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 							L1r += light.shDirection * light.color.r;
 							L1g += light.shDirection * light.color.g;
 							L1b += light.shDirection * light.color.b;
-							float3 form = saturate(float3(dot(N1, light.direction), dot(N2, light.direction), dot(N3, light.direction)));
+							float3 form = float3(dot(N1, light.direction), dot(N2, light.direction), dot(N3, light.direction));
+							#ifdef _LIGHTINGMODE_MULTILAYER_MATH
+							// Multilayer Math's own light map is half-Lambert.
+							form = form * 0.5 + 0.5;
+							#endif
+							form = saturate(form);
 							float weight = PoiLVLuminance(max(light.color, 0));
 							PoiLVLampWeight += weight;
 							PoiLVLampArriving += weight * light.visibility;
@@ -60358,6 +62300,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _Bump2ndScaleMaskUV;
 			float _Bump2ndScaleMaskGlobalMask;
 			float _Bump2ndScaleMaskGlobalMaskBlendType;
+			//ifex _Bump2ndMapUV!=1 && isNotAnimated(_Bump2ndMapUV) && _Bump2ndScaleMaskUV!=1 && isNotAnimated(_Bump2ndScaleMaskUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _Bump2ndMapUV!=2 && isNotAnimated(_Bump2ndMapUV) && _Bump2ndScaleMaskUV!=2 && isNotAnimated(_Bump2ndScaleMaskUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _Bump2ndMapUV!=3 && isNotAnimated(_Bump2ndMapUV) && _Bump2ndScaleMaskUV!=3 && isNotAnimated(_Bump2ndScaleMaskUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			//endex
 			float4 _AlphaMask_ST;
@@ -60413,6 +62364,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			half _ColorGradingToggle;
 			float _MainGradationStrength;
 			float _MainGradationMaskChannel;
+			//ifex _MainColorAdjustTextureUV!=1 && isNotAnimated(_MainColorAdjustTextureUV) && _MainTintTextureUV!=1 && isNotAnimated(_MainTintTextureUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _MainColorAdjustTextureUV!=2 && isNotAnimated(_MainColorAdjustTextureUV) && _MainTintTextureUV!=2 && isNotAnimated(_MainTintTextureUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _MainColorAdjustTextureUV!=3 && isNotAnimated(_MainColorAdjustTextureUV) && _MainTintTextureUV!=3 && isNotAnimated(_MainTintTextureUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			//endex
 			
@@ -60451,6 +62411,9 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			half _AlphaFresnelInvert;
 			half _AlphaFresnelGlobalMask;
 			float _AlphaFresnelGlobalMaskBlendType;
+			#if defined(POI_PASS_SHADOW) || defined(POI_PASS_DEPTH_ONLY)
+			#define POI_USES_TANGENT
+			#endif
 			//endex
 			
 			//ifex _AlphaAngular==0 && isNotAnimated(_AlphaAngular)
@@ -60518,6 +62481,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			half4 _GlobalMaskTexture3SplitPan_B;
 			float4 _GlobalMaskTexture3SplitTilingOffset_A;
 			half4 _GlobalMaskTexture3SplitPan_A;
+			//ifex _GlobalMaskTexture0UV!=1 && isNotAnimated(_GlobalMaskTexture0UV) && _GlobalMaskTexture1UV!=1 && isNotAnimated(_GlobalMaskTexture1UV) && _GlobalMaskTexture2UV!=1 && isNotAnimated(_GlobalMaskTexture2UV) && _GlobalMaskTexture3UV!=1 && isNotAnimated(_GlobalMaskTexture3UV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _GlobalMaskTexture0UV!=2 && isNotAnimated(_GlobalMaskTexture0UV) && _GlobalMaskTexture1UV!=2 && isNotAnimated(_GlobalMaskTexture1UV) && _GlobalMaskTexture2UV!=2 && isNotAnimated(_GlobalMaskTexture2UV) && _GlobalMaskTexture3UV!=2 && isNotAnimated(_GlobalMaskTexture3UV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _GlobalMaskTexture0UV!=3 && isNotAnimated(_GlobalMaskTexture0UV) && _GlobalMaskTexture1UV!=3 && isNotAnimated(_GlobalMaskTexture1UV) && _GlobalMaskTexture2UV!=3 && isNotAnimated(_GlobalMaskTexture2UV) && _GlobalMaskTexture3UV!=3 && isNotAnimated(_GlobalMaskTexture3UV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			//endex
 			//ifex _GlobalMaskOptionsEnable==0
@@ -60898,6 +62870,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			half2 _DistortionStrength1AudioLink;
 			half _DistortionStrength1AudioLinkBand;
 			#endif
+			//ifex _DistortionFlowTextureUV!=1 && isNotAnimated(_DistortionFlowTextureUV) && _DistortionFlowTexture1UV!=1 && isNotAnimated(_DistortionFlowTexture1UV) && _DistortionMaskUV!=1 && isNotAnimated(_DistortionMaskUV) && _DistortionUvToDistort!=1 && isNotAnimated(_DistortionUvToDistort)
+			#define POI_USES_UV1
+			//endex
+			//ifex _DistortionFlowTextureUV!=2 && isNotAnimated(_DistortionFlowTextureUV) && _DistortionFlowTexture1UV!=2 && isNotAnimated(_DistortionFlowTexture1UV) && _DistortionMaskUV!=2 && isNotAnimated(_DistortionMaskUV) && _DistortionUvToDistort!=2 && isNotAnimated(_DistortionUvToDistort)
+			#define POI_USES_UV2
+			//endex
+			//ifex _DistortionFlowTextureUV!=3 && isNotAnimated(_DistortionFlowTextureUV) && _DistortionFlowTexture1UV!=3 && isNotAnimated(_DistortionFlowTexture1UV) && _DistortionMaskUV!=3 && isNotAnimated(_DistortionMaskUV) && _DistortionUvToDistort!=3 && isNotAnimated(_DistortionUvToDistort)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			//endex
 			float2 _UVSettingsTiling0;
@@ -60925,6 +62906,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			int _StereoEnabled;
 			int _PanoUseBothEyes;
 			float _PolarUV;
+			//ifex _PolarUV!=1 && isNotAnimated(_PolarUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _PolarUV!=2 && isNotAnimated(_PolarUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _PolarUV!=3 && isNotAnimated(_PolarUV)
+			#define POI_USES_UV3
+			//endex
 			float _PolarMode;
 			float2 _PolarCenter;
 			float _PolarRadialScale;
@@ -60975,6 +62965,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _UDIMFaceDiscardRow0_1;
 			float _UDIMFaceDiscardRow0_2;
 			float _UDIMFaceDiscardRow0_3;
+			//ifex _UDIMDiscardUV!=1 && isNotAnimated(_UDIMDiscardUV) && _UDIMFaceDiscardUV!=1 && isNotAnimated(_UDIMFaceDiscardUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _UDIMDiscardUV!=2 && isNotAnimated(_UDIMDiscardUV) && _UDIMFaceDiscardUV!=2 && isNotAnimated(_UDIMFaceDiscardUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _UDIMDiscardUV!=3 && isNotAnimated(_UDIMDiscardUV) && _UDIMFaceDiscardUV!=3 && isNotAnimated(_UDIMFaceDiscardUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			//endex
 			
@@ -61012,6 +63011,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			half _ParallaxAnisotropyScale;
 			float4 _ParallaxLOD;
 			#endif
+			//ifex _HeightMapUV!=1 && isNotAnimated(_HeightMapUV) && _HeightmaskUV!=1 && isNotAnimated(_HeightmaskUV) && _ParallaxUV!=1 && isNotAnimated(_ParallaxUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _HeightMapUV!=2 && isNotAnimated(_HeightMapUV) && _HeightmaskUV!=2 && isNotAnimated(_HeightmaskUV) && _ParallaxUV!=2 && isNotAnimated(_ParallaxUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _HeightMapUV!=3 && isNotAnimated(_HeightMapUV) && _HeightmaskUV!=3 && isNotAnimated(_HeightmaskUV) && _ParallaxUV!=3 && isNotAnimated(_ParallaxUV)
+			#define POI_USES_UV3
+			//endex
 			//endex
 			
 			//ifex _BlackLightMaskingEnabled==0
@@ -61295,6 +63303,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _BackFaceHueShiftSpeed;
 			half _BackFaceEmissionLimiter;
 			float _BackFaceHueSelectOrShift;
+			//ifex _BackFaceTextureUV!=1 && isNotAnimated(_BackFaceTextureUV) && _BackFaceMaskUV!=1 && isNotAnimated(_BackFaceMaskUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _BackFaceTextureUV!=2 && isNotAnimated(_BackFaceTextureUV) && _BackFaceMaskUV!=2 && isNotAnimated(_BackFaceMaskUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _BackFaceTextureUV!=3 && isNotAnimated(_BackFaceTextureUV) && _BackFaceMaskUV!=3 && isNotAnimated(_BackFaceMaskUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			//endex
 			
@@ -61436,6 +63453,20 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _DissolveALColorOverrideBand;
 			half4 _DissolveALColorOverrideRamp;
 			#endif
+			//ifex _DissolveToTextureUV!=1 && isNotAnimated(_DissolveToTextureUV) && _DissolveNoiseTextureUV!=1 && isNotAnimated(_DissolveNoiseTextureUV) && _DissolveDetailNoiseUV!=1 && isNotAnimated(_DissolveDetailNoiseUV) && _DissolveMaskUV!=1 && isNotAnimated(_DissolveMaskUV) && _DissolveP2PUV!=1 && isNotAnimated(_DissolveP2PUV) && _UVTileDissolveUV!=1 && isNotAnimated(_UVTileDissolveUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _DissolveToTextureUV!=2 && isNotAnimated(_DissolveToTextureUV) && _DissolveNoiseTextureUV!=2 && isNotAnimated(_DissolveNoiseTextureUV) && _DissolveDetailNoiseUV!=2 && isNotAnimated(_DissolveDetailNoiseUV) && _DissolveMaskUV!=2 && isNotAnimated(_DissolveMaskUV) && _DissolveP2PUV!=2 && isNotAnimated(_DissolveP2PUV) && _UVTileDissolveUV!=2 && isNotAnimated(_UVTileDissolveUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _DissolveToTextureUV!=3 && isNotAnimated(_DissolveToTextureUV) && _DissolveNoiseTextureUV!=3 && isNotAnimated(_DissolveNoiseTextureUV) && _DissolveDetailNoiseUV!=3 && isNotAnimated(_DissolveDetailNoiseUV) && _DissolveMaskUV!=3 && isNotAnimated(_DissolveMaskUV) && _DissolveP2PUV!=3 && isNotAnimated(_DissolveP2PUV) && _UVTileDissolveUV!=3 && isNotAnimated(_UVTileDissolveUV)
+			#define POI_USES_UV3
+			//endex
+			//ifex _CenterOutDissolveNormals==0 && isNotAnimated(_CenterOutDissolveNormals)
+			#if defined(POI_PASS_SHADOW) || defined(POI_PASS_DEPTH_ONLY)
+			#define POI_USES_TANGENT
+			#endif
+			//endex
 			#endif
 			//endex
 			
@@ -61515,6 +63546,18 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _FlipbookALColorOverrideBand;
 			half4 _FlipbookALColorOverrideRamp;
 			#endif
+			//ifex _FlipbookTexArrayUV!=1 && isNotAnimated(_FlipbookTexArrayUV) && _FlipbookMaskUV!=1 && isNotAnimated(_FlipbookMaskUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _FlipbookTexArrayUV!=2 && isNotAnimated(_FlipbookTexArrayUV) && _FlipbookMaskUV!=2 && isNotAnimated(_FlipbookMaskUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _FlipbookTexArrayUV!=3 && isNotAnimated(_FlipbookTexArrayUV) && _FlipbookMaskUV!=3 && isNotAnimated(_FlipbookMaskUV)
+			#define POI_USES_UV3
+			//endex
+			//ifex _FlipbookMirroredUVMode==0 && isNotAnimated(_FlipbookMirroredUVMode)
+			#define POI_USES_TANGENT
+			//endex
 			#endif
 			//endex
 			
@@ -61594,6 +63637,18 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _FlipbookALColorOverrideBand1;
 			half4 _FlipbookALColorOverrideRamp1;
 			#endif
+			//ifex _FlipbookTexArrayUV1!=1 && isNotAnimated(_FlipbookTexArrayUV1) && _FlipbookMaskUV1!=1 && isNotAnimated(_FlipbookMaskUV1)
+			#define POI_USES_UV1
+			//endex
+			//ifex _FlipbookTexArrayUV1!=2 && isNotAnimated(_FlipbookTexArrayUV1) && _FlipbookMaskUV1!=2 && isNotAnimated(_FlipbookMaskUV1)
+			#define POI_USES_UV2
+			//endex
+			//ifex _FlipbookTexArrayUV1!=3 && isNotAnimated(_FlipbookTexArrayUV1) && _FlipbookMaskUV1!=3 && isNotAnimated(_FlipbookMaskUV1)
+			#define POI_USES_UV3
+			//endex
+			//ifex _FlipbookMirroredUVMode1==0 && isNotAnimated(_FlipbookMirroredUVMode1)
+			#define POI_USES_TANGENT
+			//endex
 			#endif
 			//endex
 			
@@ -61616,6 +63671,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float4 _MirrorTexture_ST;
 			float2 _MirrorTexturePan;
 			float _MirrorTextureUV;
+			//ifex _MirrorTextureUV!=1 && isNotAnimated(_MirrorTextureUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _MirrorTextureUV!=2 && isNotAnimated(_MirrorTextureUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _MirrorTextureUV!=3 && isNotAnimated(_MirrorTextureUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			#endif
 			//endex
@@ -61713,6 +63777,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _AudioLinkVoronoiInnerColorOverrideThemeIndex;
 			float _AudioLinkVoronoiInnerColorOverrideBand;
 			half4 _AudioLinkVoronoiInnerColorOverrideRamp;
+			//ifex _VoronoiMaskUV!=1 && isNotAnimated(_VoronoiMaskUV) && _VoronoiNoiseUV!=1 && isNotAnimated(_VoronoiNoiseUV) && _VoronoiUV!=1 && isNotAnimated(_VoronoiUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _VoronoiMaskUV!=2 && isNotAnimated(_VoronoiMaskUV) && _VoronoiNoiseUV!=2 && isNotAnimated(_VoronoiNoiseUV) && _VoronoiUV!=2 && isNotAnimated(_VoronoiUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _VoronoiMaskUV!=3 && isNotAnimated(_VoronoiMaskUV) && _VoronoiNoiseUV!=3 && isNotAnimated(_VoronoiNoiseUV) && _VoronoiUV!=3 && isNotAnimated(_VoronoiUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			//endex
 			
@@ -61783,13 +63856,37 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			// End Depth texture handling
 			
 			UNITY_DECLARE_TEX2D(_MainTex);
+			//ifex _MainTexUV!=1 && isNotAnimated(_MainTexUV) && _AlphaMaskUV!=1 && isNotAnimated(_AlphaMaskUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _MainTexUV!=2 && isNotAnimated(_MainTexUV) && _AlphaMaskUV!=2 && isNotAnimated(_AlphaMaskUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _MainTexUV!=3 && isNotAnimated(_MainTexUV) && _AlphaMaskUV!=3 && isNotAnimated(_AlphaMaskUV)
+			#define POI_USES_UV3
+			//endex
 			#if defined(PROP_BUMPMAP) || !defined(OPTIMIZER_ENABLED)
 			Texture2D _BumpMap;
+			#if !defined(POI_PASS_SHADOW) && !defined(POI_PASS_DEPTH_ONLY)
+			#define POI_USES_TANGENT
+			#endif
+			//ifex _BumpMapUV!=1 && isNotAnimated(_BumpMapUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _BumpMapUV!=2 && isNotAnimated(_BumpMapUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _BumpMapUV!=3 && isNotAnimated(_BumpMapUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			//ifex _UseBump2ndMap==0
 			#ifdef POI_BUMP2NDMAP
 			#if defined(PROP_BUMP2NDMAP) || !defined(OPTIMIZER_ENABLED)
 			Texture2D _Bump2ndMap;
+			#if !defined(POI_PASS_SHADOW) && !defined(POI_PASS_DEPTH_ONLY)
+			#define POI_USES_TANGENT
+			#endif
 			#endif
 			#if defined(PROP_BUMP2NDSCALEMASK) || !defined(OPTIMIZER_ENABLED)
 			Texture2D _Bump2ndScaleMask;
@@ -61847,6 +63944,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			//ifex _PoiParallax==0
 			#if defined(POI_PARALLAX) && (defined(PROP_HEIGHTMAP) || !defined(OPTIMIZER_ENABLED))
 			Texture2D _HeightMap;
+			#define POI_USES_TANGENT
 			#if defined(PROP_HEIGHTMASK) || !defined(OPTIMIZER_ENABLED)
 			Texture2D _Heightmask;
 			#endif
@@ -62927,39 +65025,9 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			
 			void applyDissolve(inout PoiFragData poiFragData, in PoiMesh poiMesh, inout PoiMods poiMods, in PoiCam poiCam, in PoiLight poiLight)
 			{
-				half dissolveMask = 1;
-				#if defined(PROP_DISSOLVEMASK) || !defined(OPTIMIZER_ENABLED)
-				dissolveMask = POI2D_SAMPLER_PAN(_DissolveMask, _MainTex, poiUV(poiMesh.uv[_DissolveMaskUV], _DissolveMask_ST), _DissolveMaskPan).r;
-				#endif
-				
-				UNITY_BRANCH
-				if (_DissolveUseVertexColors > 0)
-				dissolveMask = ceil(poiMesh.vertexColor[max(_DissolveUseVertexColors - 1, 0)] * 100000) / 100000;
-				
-				if (_DissolveMaskGlobalMask > 0)
-				dissolveMask = maskBlend(dissolveMask, poiMods.globalMask[_DissolveMaskGlobalMask - 1], _DissolveMaskGlobalMaskBlendType);
-				
-				if (_DissolveMaskInvert >= 0.5)
-				dissolveMask = 1 - dissolveMask;
-				
-				#if defined(PROP_DISSOLVETOTEXTURE) || !defined(OPTIMIZER_ENABLED)
-				float4 dissolveToTexture = POI2D_SAMPLER_PAN(_DissolveToTexture, _MainTex, poiUV(poiMesh.uv[_DissolveToTextureUV], _DissolveToTexture_ST), _DissolveToTexturePan) * float4(poiThemeColor(poiMods, _DissolveTextureColor.rgb, _DissolveTextureColorThemeIndex), _DissolveTextureColor.a);
-				#else
-				float4 dissolveToTexture = float4(poiThemeColor(poiMods, _DissolveTextureColor.rgb, _DissolveTextureColorThemeIndex), _DissolveTextureColor.a);
-				#endif
-				float dissolveNoise = 1;
-				#if defined(PROP_DISSOLVENOISETEXTURE) || !defined(OPTIMIZER_ENABLED)
-				dissolveNoise = POI2D_SAMPLER_PAN(_DissolveNoiseTexture, _MainTex, poiUV(poiMesh.uv[_DissolveNoiseTextureUV], _DissolveNoiseTexture_ST), _DissolveNoiseTexturePan).r;
-				#endif
-				dissolveNoise = _DissolveInvertNoise ? 1 - dissolveNoise : dissolveNoise;
-				
-				float detailNoise = 0;
 				half detailStrength = 0;
 				if (_DissolveDetailNoiseEnabled >= 0.5)
-				{
-					detailNoise = getDissolveDetailNoise(poiMesh.worldPos, poiMesh.uv[_DissolveDetailNoiseUV]);
-					detailStrength = _DissolveDetailStrength;
-				}
+				detailStrength = _DissolveDetailStrength;
 				
 				float dissolveAmount = _DissolveAlpha;
 				if (_UVTileDissolveEnabled >= 0.5)
@@ -62998,6 +65066,52 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 					}
 				}
 				dissolveAmount = saturate(dissolveAmount);
+				
+				// Early exit
+				UNITY_BRANCH
+				if (dissolveAmount <= 0 && _UVTileDissolveEnabled < 0.5 && _DissolveWaveMode < 0.5 && _DissolveDebugGradient < 0.5 && alEdgeWidthMod <= 0)
+				{
+					if (_DissolveAlphaOnly >= 0.5)
+					poiFragData.alpha *= evalRamp4(0, _DissolveAlphaOnlyRamp);
+					#if !defined(POI_PASS_OUTLINE) && !defined(POI_PASS_SHADOW)
+					if (_DissolveApplyGlobalMaskIndex > 0)
+					applyToGlobalMask(poiMods, _DissolveApplyGlobalMaskIndex - 1, _DissolveApplyGlobalMaskBlendType, 0);
+					if (_DissolveInverseApplyGlobalMaskIndex > 0)
+					applyToGlobalMask(poiMods, _DissolveInverseApplyGlobalMaskIndex - 1, _DissolveInverseApplyGlobalMaskBlendType, 1);
+					#endif
+					return;
+				}
+				
+				half dissolveMask = 1;
+				#if defined(PROP_DISSOLVEMASK) || !defined(OPTIMIZER_ENABLED)
+				dissolveMask = POI2D_SAMPLER_PAN(_DissolveMask, _MainTex, poiUV(poiMesh.uv[_DissolveMaskUV], _DissolveMask_ST), _DissolveMaskPan).r;
+				#endif
+				
+				UNITY_BRANCH
+				if (_DissolveUseVertexColors > 0)
+				dissolveMask = ceil(poiMesh.vertexColor[max(_DissolveUseVertexColors - 1, 0)] * 100000) / 100000;
+				
+				if (_DissolveMaskGlobalMask > 0)
+				dissolveMask = maskBlend(dissolveMask, poiMods.globalMask[_DissolveMaskGlobalMask - 1], _DissolveMaskGlobalMaskBlendType);
+				
+				if (_DissolveMaskInvert >= 0.5)
+				dissolveMask = 1 - dissolveMask;
+				
+				#if defined(PROP_DISSOLVETOTEXTURE) || !defined(OPTIMIZER_ENABLED)
+				float4 dissolveToTexture = POI2D_SAMPLER_PAN(_DissolveToTexture, _MainTex, poiUV(poiMesh.uv[_DissolveToTextureUV], _DissolveToTexture_ST), _DissolveToTexturePan) * float4(poiThemeColor(poiMods, _DissolveTextureColor.rgb, _DissolveTextureColorThemeIndex), _DissolveTextureColor.a);
+				#else
+				float4 dissolveToTexture = float4(poiThemeColor(poiMods, _DissolveTextureColor.rgb, _DissolveTextureColorThemeIndex), _DissolveTextureColor.a);
+				#endif
+				float dissolveNoise = 1;
+				#if defined(PROP_DISSOLVENOISETEXTURE) || !defined(OPTIMIZER_ENABLED)
+				dissolveNoise = POI2D_SAMPLER_PAN(_DissolveNoiseTexture, _MainTex, poiUV(poiMesh.uv[_DissolveNoiseTextureUV], _DissolveNoiseTexture_ST), _DissolveNoiseTexturePan).r;
+				#endif
+				dissolveNoise = _DissolveInvertNoise ? 1 - dissolveNoise : dissolveNoise;
+				
+				float detailNoise = 0;
+				if (_DissolveDetailNoiseEnabled >= 0.5)
+				detailNoise = getDissolveDetailNoise(poiMesh.worldPos, poiMesh.uv[_DissolveDetailNoiseUV]);
+				
 				dissolveAmount *= dissolveMask;
 				detailStrength = saturate(detailStrength);
 				
@@ -63331,11 +65445,11 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 					
 					if (any(_VertexLocalTranslationALMin) || any(_VertexLocalTranslationALMax))
 					{
-						ALLocalTranslation = lerp(_VertexLocalTranslationALMin, _VertexLocalTranslationALMax, audioLinkBands[_VertexLocalTranslationALBand]);
+						ALLocalTranslation = lerp(_VertexLocalTranslationALMin, _VertexLocalTranslationALMax, poiSelect5(audioLinkBands, _VertexLocalTranslationALBand));
 					}
 					if (any(_VertexLocalRotationAL))
 					{
-						ALrotation = audioLinkBands[_VertexLocalRotationALBand] * _VertexLocalRotationAL;
+						ALrotation = poiSelect5(audioLinkBands, _VertexLocalRotationALBand) * _VertexLocalRotationAL;
 					}
 					if (any(_VertexLocalRotationCTALSpeed))
 					{
@@ -63345,20 +65459,20 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 					}
 					if (any(_VertexLocalScaleALMin.xyz) || any(_VertexLocalScaleALMax.xyz))
 					{
-						ALScale = lerp(_VertexLocalScaleALMin.xyz + _VertexLocalScaleALMin.w, _VertexLocalScaleALMax.xyz + _VertexLocalScaleALMax.w, audioLinkBands[_VertexLocalScaleALBand]);
+						ALScale = lerp(_VertexLocalScaleALMin.xyz + _VertexLocalScaleALMin.w, _VertexLocalScaleALMax.xyz + _VertexLocalScaleALMax.w, poiSelect5(audioLinkBands, _VertexLocalScaleALBand));
 					}
 					if (any(_VertexWorldTranslationALMin.xyz) || any(_VertexWorldTranslationALMax.xyz))
 					{
-						ALWorldTranslation = lerp(_VertexWorldTranslationALMin, _VertexWorldTranslationALMax, audioLinkBands[_VertexWorldTranslationALBand]);
+						ALWorldTranslation = lerp(_VertexWorldTranslationALMin, _VertexWorldTranslationALMax, poiSelect5(audioLinkBands, _VertexWorldTranslationALBand));
 					}
 					if (any(_VertexManipulationHeightAL.xy))
 					{
-						ALHeight = lerp(_VertexManipulationHeightAL.x, _VertexManipulationHeightAL.y, audioLinkBands[_VertexManipulationHeightBand]);
+						ALHeight = lerp(_VertexManipulationHeightAL.x, _VertexManipulationHeightAL.y, poiSelect5(audioLinkBands, _VertexManipulationHeightBand));
 					}
 					//ifex isNotAnimated(_VertexRoundingEnabled) && _VertexRoundingEnabled==0
 					if (any(_VertexRoundingRangeAL.xy))
 					{
-						ALRoundingAmount = lerp(_VertexRoundingRangeAL.x, _VertexRoundingRangeAL.y, audioLinkBands[_VertexRoundingRangeBand]);
+						ALRoundingAmount = lerp(_VertexRoundingRangeAL.x, _VertexRoundingRangeAL.y, poiSelect5(audioLinkBands, _VertexRoundingRangeBand));
 					}
 					//endex
 					//ifex isNotAnimated(_VertexSpectrumMotion) && _VertexSpectrumMotion==0
@@ -63388,7 +65502,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 					v.color.a
 				};
 				
-				half basicsMask = vertexEffectsMask[_VertexBasicsMaskChannel];
+				half basicsMask = poiSelect8(vertexEffectsMask, _VertexBasicsMaskChannel);
 				
 				ALLocalTranslation *= basicsMask;
 				ALrotation *= basicsMask;
@@ -63424,7 +65538,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 					#else
 					heightOffset = (1 - _VertexManipulationHeightBias) * (_VertexManipulationHeight + ALHeight) * o.normal.xyz;
 					#endif
-					heightOffset *= vertexEffectsMask[_VertexManipulationHeightMaskChannel] * o.normal.w;
+					heightOffset *= poiSelect8(vertexEffectsMask, _VertexManipulationHeightMaskChannel) * o.normal.w;
 					
 				}
 				// Fix z fighting issue with projectors maybe probably I hope
@@ -63434,7 +65548,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				UNITY_BRANCH
 				if (_VertexBarrelMode >= 0.5)
 				{
-					half barrelMask = vertexEffectsMask[_VertexBarrelMaskChannel];
+					half barrelMask = poiSelect8(vertexEffectsMask, _VertexBarrelMaskChannel);
 					v.vertex.xz = lerp(v.vertex.xz, normalize(v.vertex.xz) * _VertexBarrelWidth + v.vertex.xz * _VertexBarrelHeight, _VertexBarrelAlpha * barrelMask);
 				}
 				//endex
@@ -63443,7 +65557,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				UNITY_BRANCH
 				if (_VertexSphereMode >= 0.5)
 				{
-					half sphereMask = vertexEffectsMask[_VertexSphereMaskChannel];
+					half sphereMask = poiSelect8(vertexEffectsMask, _VertexSphereMaskChannel);
 					v.vertex.xyz = lerp(v.vertex.xyz, normalize(v.vertex.xyz + _VertexSphereCenter.xyz) * _VertexSphereRadius + v.vertex.xyz * _VertexSphereHeight, _VertexSphereAlpha * sphereMask);
 				}
 				//endex
@@ -63452,7 +65566,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				UNITY_BRANCH
 				if (_VertexTornadoMode >= 0.5)
 				{
-					half tornadoMask = vertexEffectsMask[_VertexTornadoMaskChannel];
+					half tornadoMask = poiSelect8(vertexEffectsMask, _VertexTornadoMaskChannel);
 					float heightStrength = smoothstep(_VertexTornadoBaseHeight, _VertexTornadoTopHeight, v.vertex.y);
 					float funnelStrength = pow(heightStrength, _VertexTornadoFunnelShape);
 					float totalStrength = funnelStrength * tornadoMask;
@@ -63479,7 +65593,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				UNITY_BRANCH
 				if (_VertexWindEnabled >= 0.5)
 				{
-					half windMask = vertexEffectsMask[_VertexWindMaskChannel];
+					half windMask = poiSelect8(vertexEffectsMask, _VertexWindMaskChannel);
 					if (windMask > 0)
 					{
 						float3 worldPos = mul(unity_ObjectToWorld, v.vertex).xyz;
@@ -63511,7 +65625,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				UNITY_BRANCH
 				if (_VertexRoundingEnabled >= 0.5)
 				{
-					half roundingMask = vertexEffectsMask[_VertexRoundingMaskChannel];
+					half roundingMask = poiSelect8(vertexEffectsMask, _VertexRoundingMaskChannel);
 					if (roundingMask > 0)
 					{
 						float3 preRoundingVertex = v.vertex.xyz;
@@ -63545,7 +65659,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				{
 					if (AudioLinkIsAvailable())
 					{
-						alpha = saturate(alpha + lerp(_VertexLookAtAlphaAudiolink.x, _VertexLookAtAlphaAudiolink.y, vertexAudioLink[_VertexLookAtAudioLinkBand]) * _VertexLookAtAudioLinkEnabled);
+						alpha = saturate(alpha + lerp(_VertexLookAtAlphaAudiolink.x, _VertexLookAtAlphaAudiolink.y, poiSelect5(vertexAudioLink, _VertexLookAtAudioLinkBand)) * _VertexLookAtAudioLinkEnabled);
 					}
 				}
 				#endif
@@ -64092,7 +66206,9 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				POI_TRANSFER_SHADOW_CASTER_NOPOS(o, o.pos);
 				#endif
 				
+				#if !defined(POI_PASS_SHADOW) && (!defined(OPTIMIZER_ENABLED) || defined(_POI_DEPTH_RIMLIGHT) || defined(GRAIN) || defined(POI_GRABPASS) || defined(TRIPLANAR_PROJECTION))
 				o.worldDir = dot(o.pos, CalculateFrustumCorrection());
+				#endif
 				
 				if (_RenderingReduceClipDistance >= 0.5)
 				{
@@ -64131,21 +66247,37 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				
 				#endif
 				
+				#if defined(OPTIMIZER_ENABLED)
+				#if !defined(POI_USES_UV1)
+				o.uv[0] = float4(o.uv[0].xy, 0, 0);
+				#endif
+				#if !defined(POI_USES_UV2) && !defined(POI_USES_UV3)
+				o.uv[1] = 0;
+				#elif !defined(POI_USES_UV2)
+				o.uv[1] = float4(0, 0, o.uv[1].zw);
+				#elif !defined(POI_USES_UV3)
+				o.uv[1] = float4(o.uv[1].xy, 0, 0);
+				#endif
+				#if !defined(POI_USES_TANGENT)
+				o.tangent = 0;
+				#endif
+				#endif
+				
 				return o;
 			}
 			
 			//ifex _StochasticMode!=0
 			#if defined(_STOCHASTICMODE_DELIOT_HEITZ)
-			#define POI2D_SAMPLER_STOCHASTIC(tex, texSampler, uv, useStochastic) (useStochastic ? DeliotHeitzSampleTexture(tex, sampler##texSampler, uv) : POI2D_SAMPLER(tex, texSampler, uv))
-			#define POI2D_SAMPLER_PAN_STOCHASTIC(tex, texSampler, uv, pan, useStochastic) (useStochastic ? DeliotHeitzSampleTexture(tex, sampler##texSampler, POI_PAN_UV(uv, pan)) : POI2D_SAMPLER_PAN(tex, texSampler, uv, pan))
-			#define POI2D_SAMPLER_PANGRAD_STOCHASTIC(tex, texSampler, uv, pan, dx, dy, useStochastic) (useStochastic ? DeliotHeitzSampleTexture(tex, sampler##texSampler, POI_PAN_UV(uv, pan), dx, dy) : POI2D_SAMPLER_PANGRAD(tex, texSampler, uv, pan, dx, dy))
+			#define POI2D_SAMPLER_STOCHASTIC(tex, texSampler, uv, useStochastic) (PoiStochasticSample(tex, sampler##texSampler, uv, useStochastic))
+			#define POI2D_SAMPLER_PAN_STOCHASTIC(tex, texSampler, uv, pan, useStochastic) (PoiStochasticSample(tex, sampler##texSampler, POI_PAN_UV(uv, pan), useStochastic))
+			#define POI2D_SAMPLER_PANGRAD_STOCHASTIC(tex, texSampler, uv, pan, dx, dy, useStochastic) (PoiStochasticSampleGrad(tex, sampler##texSampler, POI_PAN_UV(uv, pan), dx, dy, useStochastic))
 			#endif
 			//endex
 			//ifex _StochasticMode!=1
 			#if defined(_STOCHASTICMODE_HEXTILE)
-			#define POI2D_SAMPLER_STOCHASTIC(tex, texSampler, uv, useStochastic) (useStochastic ? HextileSampleTexture(tex, sampler##texSampler, uv, false) : POI2D_SAMPLER(tex, texSampler, uv))
-			#define POI2D_SAMPLER_PAN_STOCHASTIC(tex, texSampler, uv, pan, useStochastic) (useStochastic ? HextileSampleTexture(tex, sampler##texSampler, POI_PAN_UV(uv, pan), false) : POI2D_SAMPLER_PAN(tex, texSampler, uv, pan))
-			#define POI2D_SAMPLER_PANGRAD_STOCHASTIC(tex, texSampler, uv, pan, dx, dy, useStochastic) (useStochastic ? HextileSampleTexture(tex, sampler##texSampler, POI_PAN_UV(uv, pan), false, dx, dy) : POI2D_SAMPLER_PANGRAD(tex, texSampler, uv, pan, dx, dy))
+			#define POI2D_SAMPLER_STOCHASTIC(tex, texSampler, uv, useStochastic) (PoiStochasticSample(tex, sampler##texSampler, uv, useStochastic))
+			#define POI2D_SAMPLER_PAN_STOCHASTIC(tex, texSampler, uv, pan, useStochastic) (PoiStochasticSample(tex, sampler##texSampler, POI_PAN_UV(uv, pan), useStochastic))
+			#define POI2D_SAMPLER_PANGRAD_STOCHASTIC(tex, texSampler, uv, pan, dx, dy, useStochastic) (PoiStochasticSampleGrad(tex, sampler##texSampler, POI_PAN_UV(uv, pan), dx, dy, useStochastic))
 			#endif
 			//endex
 			
@@ -64231,6 +66363,27 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			{
 				float2 dx = ddx(uv), dy = ddy(uv);
 				return DeliotHeitzSampleTexture(tex, texSampler, uv, dx, dy);
+			}
+			
+			// Branch instead of ?: so textures with stochastic off don't also pay for the stochastic samples
+			float4 PoiStochasticSample(Texture2D tex, SamplerState texSampler, float2 uv, float useStochastic)
+			{
+				UNITY_BRANCH
+				if (useStochastic)
+				{
+					return DeliotHeitzSampleTexture(tex, texSampler, uv);
+				}
+				return tex.Sample(texSampler, uv);
+			}
+			
+			float4 PoiStochasticSampleGrad(Texture2D tex, SamplerState texSampler, float2 uv, float2 dx, float2 dy, float useStochastic)
+			{
+				UNITY_BRANCH
+				if (useStochastic)
+				{
+					return DeliotHeitzSampleTexture(tex, texSampler, uv, dx, dy);
+				}
+				return tex.SampleGrad(texSampler, uv, dx, dy);
 			}
 			#endif // defined(_STOCHASTICMODE_DELIOT_HEITZ)
 			//endex
@@ -64354,6 +66507,27 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float4 HextileSampleTexture(Texture2D tex, SamplerState texSampler, float2 uv, bool isNormalMap)
 			{
 				return HextileSampleTexture(tex, texSampler, uv, isNormalMap, ddx(uv), ddy(uv));
+			}
+			
+			// Branch instead of ?: so textures with stochastic off don't also pay for the stochastic samples
+			float4 PoiStochasticSample(Texture2D tex, SamplerState texSampler, float2 uv, float useStochastic)
+			{
+				UNITY_BRANCH
+				if (useStochastic)
+				{
+					return HextileSampleTexture(tex, texSampler, uv, false);
+				}
+				return tex.Sample(texSampler, uv);
+			}
+			
+			float4 PoiStochasticSampleGrad(Texture2D tex, SamplerState texSampler, float2 uv, float2 dx, float2 dy, float useStochastic)
+			{
+				UNITY_BRANCH
+				if (useStochastic)
+				{
+					return HextileSampleTexture(tex, texSampler, uv, false, dx, dy);
+				}
+				return tex.SampleGrad(texSampler, uv, dx, dy);
 			}
 			#endif // defined(_STOCHASTICMODE_HEXTILE)
 			//endex
@@ -66381,7 +68555,9 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				float3 pz = Permutation(Pi.z + oi);
 				
 				float3 p, ox, oy, oz, dx, dy, dz;
-				float3 F = 1e6;
+				float F0 = 1e6;
+				float3 L0 = 1e6;
+				float3 L1 = 1e6;
 				
 				randomPoint = 0;
 				
@@ -66395,7 +68571,6 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 						for (int k = 0; k < 3; k++)
 						{
 							p = Permutation(px[i] + py[j] + pz[k] + oi); // pij1, pij2, pij3
-							float3 ogp = p;
 							
 							ox = frac(p * VoronoiK) - VoronoiKo;
 							oy = glsl_mod(floor(p * VoronoiK), 7.0) * VoronoiK - VoronoiKo;
@@ -66410,29 +68585,25 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 							float3 d = dx * dx + dy * dy + dz * dz; // dij1, dij2 and dij3, squared
 							
 							//Find lowest and second lowest distances
+							L1 = min(L1, max(L0, d));
+							L0 = min(L0, d);
 							[unroll(3)]
 							for (int n = 0; n < 3; n++)
 							{
-								// if (d[n] < F[0])
-								// {
-								//     F[1] = F[0];
-								//     F[0] = d[n];
-								//     randomPoint = p;
-								// }
-								// else if (d[n] < F[1])
-								// {
-								//     F[1] = d[n];
-								// }
-								bool newMin = d[n] < F[0];
-								F[1] = min(newMin ? F[0] : d[n], F[1]);
+								bool newMin = d[n] < F0;
 								randomPoint = newMin ? p : randomPoint;
-								F[0] = min(F[0], d[n]);
+								F0 = min(F0, d[n]);
 							}
 						}
 					}
 				}
 				
-				return F;
+				float2 F = float2(L0.x, L1.x);
+				F.y = min(min(F.y, max(F.x, L0.y)), L1.y);
+				F.x = min(F.x, L0.y);
+				F.y = min(min(F.y, max(F.x, L0.z)), L1.z);
+				F.x = min(F.x, L0.z);
+				return float3(F, 1e6);
 			}
 			
 			float voronoi2D(in float2 x, float scale, float2 speed, out float2 randomPoint)
@@ -67182,8 +69353,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				
 				clip(poiFragData.alpha - _Cutoff);
 				
-				applyUnityFog(poiFragData.finalColor, i.fogData, _IgnoreFog);
-				return float4(poiFragData.finalColor, poiFragData.alpha) + POI_SAFE_RGB0;
+				return float4(0, 0, 0, poiFragData.alpha) + POI_SAFE_MAINTEX_RGB0;
 			}
 			
 			ENDHLSL
@@ -67512,6 +69682,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _Bump2ndScaleMaskUV;
 			float _Bump2ndScaleMaskGlobalMask;
 			float _Bump2ndScaleMaskGlobalMaskBlendType;
+			//ifex _Bump2ndMapUV!=1 && isNotAnimated(_Bump2ndMapUV) && _Bump2ndScaleMaskUV!=1 && isNotAnimated(_Bump2ndScaleMaskUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _Bump2ndMapUV!=2 && isNotAnimated(_Bump2ndMapUV) && _Bump2ndScaleMaskUV!=2 && isNotAnimated(_Bump2ndScaleMaskUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _Bump2ndMapUV!=3 && isNotAnimated(_Bump2ndMapUV) && _Bump2ndScaleMaskUV!=3 && isNotAnimated(_Bump2ndScaleMaskUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			//endex
 			float4 _AlphaMask_ST;
@@ -67567,6 +69746,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			half _ColorGradingToggle;
 			float _MainGradationStrength;
 			float _MainGradationMaskChannel;
+			//ifex _MainColorAdjustTextureUV!=1 && isNotAnimated(_MainColorAdjustTextureUV) && _MainTintTextureUV!=1 && isNotAnimated(_MainTintTextureUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _MainColorAdjustTextureUV!=2 && isNotAnimated(_MainColorAdjustTextureUV) && _MainTintTextureUV!=2 && isNotAnimated(_MainTintTextureUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _MainColorAdjustTextureUV!=3 && isNotAnimated(_MainColorAdjustTextureUV) && _MainTintTextureUV!=3 && isNotAnimated(_MainTintTextureUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			//endex
 			
@@ -67605,6 +69793,9 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			half _AlphaFresnelInvert;
 			half _AlphaFresnelGlobalMask;
 			float _AlphaFresnelGlobalMaskBlendType;
+			#if defined(POI_PASS_SHADOW) || defined(POI_PASS_DEPTH_ONLY)
+			#define POI_USES_TANGENT
+			#endif
 			//endex
 			
 			//ifex _AlphaAngular==0 && isNotAnimated(_AlphaAngular)
@@ -67638,6 +69829,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _BentNormalMapStochastic;
 			half _BentNormalSpecOccStrength;
 			float _BentNormalIndirectDiffuse;
+			//ifex _BentNormalMapUV!=1 && isNotAnimated(_BentNormalMapUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _BentNormalMapUV!=2 && isNotAnimated(_BentNormalMapUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _BentNormalMapUV!=3 && isNotAnimated(_BentNormalMapUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			//endex
 			
@@ -67683,6 +69883,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			half4 _GlobalMaskTexture3SplitPan_B;
 			float4 _GlobalMaskTexture3SplitTilingOffset_A;
 			half4 _GlobalMaskTexture3SplitPan_A;
+			//ifex _GlobalMaskTexture0UV!=1 && isNotAnimated(_GlobalMaskTexture0UV) && _GlobalMaskTexture1UV!=1 && isNotAnimated(_GlobalMaskTexture1UV) && _GlobalMaskTexture2UV!=1 && isNotAnimated(_GlobalMaskTexture2UV) && _GlobalMaskTexture3UV!=1 && isNotAnimated(_GlobalMaskTexture3UV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _GlobalMaskTexture0UV!=2 && isNotAnimated(_GlobalMaskTexture0UV) && _GlobalMaskTexture1UV!=2 && isNotAnimated(_GlobalMaskTexture1UV) && _GlobalMaskTexture2UV!=2 && isNotAnimated(_GlobalMaskTexture2UV) && _GlobalMaskTexture3UV!=2 && isNotAnimated(_GlobalMaskTexture3UV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _GlobalMaskTexture0UV!=3 && isNotAnimated(_GlobalMaskTexture0UV) && _GlobalMaskTexture1UV!=3 && isNotAnimated(_GlobalMaskTexture1UV) && _GlobalMaskTexture2UV!=3 && isNotAnimated(_GlobalMaskTexture2UV) && _GlobalMaskTexture3UV!=3 && isNotAnimated(_GlobalMaskTexture3UV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			//endex
 			//ifex _GlobalMaskOptionsEnable==0
@@ -68063,6 +70272,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			half2 _DistortionStrength1AudioLink;
 			half _DistortionStrength1AudioLinkBand;
 			#endif
+			//ifex _DistortionFlowTextureUV!=1 && isNotAnimated(_DistortionFlowTextureUV) && _DistortionFlowTexture1UV!=1 && isNotAnimated(_DistortionFlowTexture1UV) && _DistortionMaskUV!=1 && isNotAnimated(_DistortionMaskUV) && _DistortionUvToDistort!=1 && isNotAnimated(_DistortionUvToDistort)
+			#define POI_USES_UV1
+			//endex
+			//ifex _DistortionFlowTextureUV!=2 && isNotAnimated(_DistortionFlowTextureUV) && _DistortionFlowTexture1UV!=2 && isNotAnimated(_DistortionFlowTexture1UV) && _DistortionMaskUV!=2 && isNotAnimated(_DistortionMaskUV) && _DistortionUvToDistort!=2 && isNotAnimated(_DistortionUvToDistort)
+			#define POI_USES_UV2
+			//endex
+			//ifex _DistortionFlowTextureUV!=3 && isNotAnimated(_DistortionFlowTextureUV) && _DistortionFlowTexture1UV!=3 && isNotAnimated(_DistortionFlowTexture1UV) && _DistortionMaskUV!=3 && isNotAnimated(_DistortionMaskUV) && _DistortionUvToDistort!=3 && isNotAnimated(_DistortionUvToDistort)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			//endex
 			float2 _UVSettingsTiling0;
@@ -68090,6 +70308,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			int _StereoEnabled;
 			int _PanoUseBothEyes;
 			float _PolarUV;
+			//ifex _PolarUV!=1 && isNotAnimated(_PolarUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _PolarUV!=2 && isNotAnimated(_PolarUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _PolarUV!=3 && isNotAnimated(_PolarUV)
+			#define POI_USES_UV3
+			//endex
 			float _PolarMode;
 			float2 _PolarCenter;
 			float _PolarRadialScale;
@@ -68140,6 +70367,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _UDIMFaceDiscardRow0_1;
 			float _UDIMFaceDiscardRow0_2;
 			float _UDIMFaceDiscardRow0_3;
+			//ifex _UDIMDiscardUV!=1 && isNotAnimated(_UDIMDiscardUV) && _UDIMFaceDiscardUV!=1 && isNotAnimated(_UDIMFaceDiscardUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _UDIMDiscardUV!=2 && isNotAnimated(_UDIMDiscardUV) && _UDIMFaceDiscardUV!=2 && isNotAnimated(_UDIMFaceDiscardUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _UDIMDiscardUV!=3 && isNotAnimated(_UDIMDiscardUV) && _UDIMFaceDiscardUV!=3 && isNotAnimated(_UDIMFaceDiscardUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			//endex
 			
@@ -68177,6 +70413,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			half _ParallaxAnisotropyScale;
 			float4 _ParallaxLOD;
 			#endif
+			//ifex _HeightMapUV!=1 && isNotAnimated(_HeightMapUV) && _HeightmaskUV!=1 && isNotAnimated(_HeightmaskUV) && _ParallaxUV!=1 && isNotAnimated(_ParallaxUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _HeightMapUV!=2 && isNotAnimated(_HeightMapUV) && _HeightmaskUV!=2 && isNotAnimated(_HeightmaskUV) && _ParallaxUV!=2 && isNotAnimated(_ParallaxUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _HeightMapUV!=3 && isNotAnimated(_HeightMapUV) && _HeightmaskUV!=3 && isNotAnimated(_HeightmaskUV) && _ParallaxUV!=3 && isNotAnimated(_ParallaxUV)
+			#define POI_USES_UV3
+			//endex
 			//endex
 			
 			//ifex _BlackLightMaskingEnabled==0
@@ -68226,6 +70471,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			half _DetailBrightness;
 			half _DetailTexGlobalMask;
 			float _DetailTexGlobalMaskBlendType;
+			//ifex _DetailMaskUV!=1 && isNotAnimated(_DetailMaskUV) && _DetailNormalMapUV!=1 && isNotAnimated(_DetailNormalMapUV) && _DetailTexUV!=1 && isNotAnimated(_DetailTexUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _DetailMaskUV!=2 && isNotAnimated(_DetailMaskUV) && _DetailNormalMapUV!=2 && isNotAnimated(_DetailNormalMapUV) && _DetailTexUV!=2 && isNotAnimated(_DetailTexUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _DetailMaskUV!=3 && isNotAnimated(_DetailMaskUV) && _DetailNormalMapUV!=3 && isNotAnimated(_DetailNormalMapUV) && _DetailTexUV!=3 && isNotAnimated(_DetailTexUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			//endex
 			
@@ -68479,6 +70733,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _BackFaceHueShiftSpeed;
 			half _BackFaceEmissionLimiter;
 			float _BackFaceHueSelectOrShift;
+			//ifex _BackFaceTextureUV!=1 && isNotAnimated(_BackFaceTextureUV) && _BackFaceMaskUV!=1 && isNotAnimated(_BackFaceMaskUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _BackFaceTextureUV!=2 && isNotAnimated(_BackFaceTextureUV) && _BackFaceMaskUV!=2 && isNotAnimated(_BackFaceMaskUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _BackFaceTextureUV!=3 && isNotAnimated(_BackFaceTextureUV) && _BackFaceMaskUV!=3 && isNotAnimated(_BackFaceMaskUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			//endex
 			
@@ -68645,6 +70908,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float4 _RgbNormalABlendSources;
 			
 			float _RGBMaskType;
+			//ifex _RGBMaskUV!=1 && isNotAnimated(_RGBMaskUV) && _RGBAMetallicMapsUV!=1 && isNotAnimated(_RGBAMetallicMapsUV) && _RGBARedPBRUV!=1 && isNotAnimated(_RGBARedPBRUV) && _RGBAGreenPBRUV!=1 && isNotAnimated(_RGBAGreenPBRUV) && _RGBABluePBRUV!=1 && isNotAnimated(_RGBABluePBRUV) && _RGBAAlphaPBRUV!=1 && isNotAnimated(_RGBAAlphaPBRUV) && _RGBASmoothnessMapsUV!=1 && isNotAnimated(_RGBASmoothnessMapsUV) && _RedTextureUV!=1 && isNotAnimated(_RedTextureUV) && _RgbNormalRUV!=1 && isNotAnimated(_RgbNormalRUV) && _GreenTextureUV!=1 && isNotAnimated(_GreenTextureUV) && _RgbNormalGUV!=1 && isNotAnimated(_RgbNormalGUV) && _BlueTextureUV!=1 && isNotAnimated(_BlueTextureUV) && _RgbNormalBUV!=1 && isNotAnimated(_RgbNormalBUV) && _AlphaTextureUV!=1 && isNotAnimated(_AlphaTextureUV) && _RgbNormalAUV!=1 && isNotAnimated(_RgbNormalAUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _RGBMaskUV!=2 && isNotAnimated(_RGBMaskUV) && _RGBAMetallicMapsUV!=2 && isNotAnimated(_RGBAMetallicMapsUV) && _RGBARedPBRUV!=2 && isNotAnimated(_RGBARedPBRUV) && _RGBAGreenPBRUV!=2 && isNotAnimated(_RGBAGreenPBRUV) && _RGBABluePBRUV!=2 && isNotAnimated(_RGBABluePBRUV) && _RGBAAlphaPBRUV!=2 && isNotAnimated(_RGBAAlphaPBRUV) && _RGBASmoothnessMapsUV!=2 && isNotAnimated(_RGBASmoothnessMapsUV) && _RedTextureUV!=2 && isNotAnimated(_RedTextureUV) && _RgbNormalRUV!=2 && isNotAnimated(_RgbNormalRUV) && _GreenTextureUV!=2 && isNotAnimated(_GreenTextureUV) && _RgbNormalGUV!=2 && isNotAnimated(_RgbNormalGUV) && _BlueTextureUV!=2 && isNotAnimated(_BlueTextureUV) && _RgbNormalBUV!=2 && isNotAnimated(_RgbNormalBUV) && _AlphaTextureUV!=2 && isNotAnimated(_AlphaTextureUV) && _RgbNormalAUV!=2 && isNotAnimated(_RgbNormalAUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _RGBMaskUV!=3 && isNotAnimated(_RGBMaskUV) && _RGBAMetallicMapsUV!=3 && isNotAnimated(_RGBAMetallicMapsUV) && _RGBARedPBRUV!=3 && isNotAnimated(_RGBARedPBRUV) && _RGBAGreenPBRUV!=3 && isNotAnimated(_RGBAGreenPBRUV) && _RGBABluePBRUV!=3 && isNotAnimated(_RGBABluePBRUV) && _RGBAAlphaPBRUV!=3 && isNotAnimated(_RGBAAlphaPBRUV) && _RGBASmoothnessMapsUV!=3 && isNotAnimated(_RGBASmoothnessMapsUV) && _RedTextureUV!=3 && isNotAnimated(_RedTextureUV) && _RgbNormalRUV!=3 && isNotAnimated(_RgbNormalRUV) && _GreenTextureUV!=3 && isNotAnimated(_GreenTextureUV) && _RgbNormalGUV!=3 && isNotAnimated(_RgbNormalGUV) && _BlueTextureUV!=3 && isNotAnimated(_BlueTextureUV) && _RgbNormalBUV!=3 && isNotAnimated(_RgbNormalBUV) && _AlphaTextureUV!=3 && isNotAnimated(_AlphaTextureUV) && _RgbNormalAUV!=3 && isNotAnimated(_RgbNormalAUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			//endex
 			
@@ -68786,6 +71058,20 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _DissolveALColorOverrideBand;
 			half4 _DissolveALColorOverrideRamp;
 			#endif
+			//ifex _DissolveToTextureUV!=1 && isNotAnimated(_DissolveToTextureUV) && _DissolveNoiseTextureUV!=1 && isNotAnimated(_DissolveNoiseTextureUV) && _DissolveDetailNoiseUV!=1 && isNotAnimated(_DissolveDetailNoiseUV) && _DissolveMaskUV!=1 && isNotAnimated(_DissolveMaskUV) && _DissolveP2PUV!=1 && isNotAnimated(_DissolveP2PUV) && _UVTileDissolveUV!=1 && isNotAnimated(_UVTileDissolveUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _DissolveToTextureUV!=2 && isNotAnimated(_DissolveToTextureUV) && _DissolveNoiseTextureUV!=2 && isNotAnimated(_DissolveNoiseTextureUV) && _DissolveDetailNoiseUV!=2 && isNotAnimated(_DissolveDetailNoiseUV) && _DissolveMaskUV!=2 && isNotAnimated(_DissolveMaskUV) && _DissolveP2PUV!=2 && isNotAnimated(_DissolveP2PUV) && _UVTileDissolveUV!=2 && isNotAnimated(_UVTileDissolveUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _DissolveToTextureUV!=3 && isNotAnimated(_DissolveToTextureUV) && _DissolveNoiseTextureUV!=3 && isNotAnimated(_DissolveNoiseTextureUV) && _DissolveDetailNoiseUV!=3 && isNotAnimated(_DissolveDetailNoiseUV) && _DissolveMaskUV!=3 && isNotAnimated(_DissolveMaskUV) && _DissolveP2PUV!=3 && isNotAnimated(_DissolveP2PUV) && _UVTileDissolveUV!=3 && isNotAnimated(_UVTileDissolveUV)
+			#define POI_USES_UV3
+			//endex
+			//ifex _CenterOutDissolveNormals==0 && isNotAnimated(_CenterOutDissolveNormals)
+			#if defined(POI_PASS_SHADOW) || defined(POI_PASS_DEPTH_ONLY)
+			#define POI_USES_TANGENT
+			#endif
+			//endex
 			#endif
 			//endex
 			
@@ -68865,6 +71151,18 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _FlipbookALColorOverrideBand;
 			half4 _FlipbookALColorOverrideRamp;
 			#endif
+			//ifex _FlipbookTexArrayUV!=1 && isNotAnimated(_FlipbookTexArrayUV) && _FlipbookMaskUV!=1 && isNotAnimated(_FlipbookMaskUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _FlipbookTexArrayUV!=2 && isNotAnimated(_FlipbookTexArrayUV) && _FlipbookMaskUV!=2 && isNotAnimated(_FlipbookMaskUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _FlipbookTexArrayUV!=3 && isNotAnimated(_FlipbookTexArrayUV) && _FlipbookMaskUV!=3 && isNotAnimated(_FlipbookMaskUV)
+			#define POI_USES_UV3
+			//endex
+			//ifex _FlipbookMirroredUVMode==0 && isNotAnimated(_FlipbookMirroredUVMode)
+			#define POI_USES_TANGENT
+			//endex
 			#endif
 			//endex
 			
@@ -68944,6 +71242,18 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _FlipbookALColorOverrideBand1;
 			half4 _FlipbookALColorOverrideRamp1;
 			#endif
+			//ifex _FlipbookTexArrayUV1!=1 && isNotAnimated(_FlipbookTexArrayUV1) && _FlipbookMaskUV1!=1 && isNotAnimated(_FlipbookMaskUV1)
+			#define POI_USES_UV1
+			//endex
+			//ifex _FlipbookTexArrayUV1!=2 && isNotAnimated(_FlipbookTexArrayUV1) && _FlipbookMaskUV1!=2 && isNotAnimated(_FlipbookMaskUV1)
+			#define POI_USES_UV2
+			//endex
+			//ifex _FlipbookTexArrayUV1!=3 && isNotAnimated(_FlipbookTexArrayUV1) && _FlipbookMaskUV1!=3 && isNotAnimated(_FlipbookMaskUV1)
+			#define POI_USES_UV3
+			//endex
+			//ifex _FlipbookMirroredUVMode1==0 && isNotAnimated(_FlipbookMirroredUVMode1)
+			#define POI_USES_TANGENT
+			//endex
 			#endif
 			//endex
 			
@@ -68966,6 +71276,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float4 _MirrorTexture_ST;
 			float2 _MirrorTexturePan;
 			float _MirrorTextureUV;
+			//ifex _MirrorTextureUV!=1 && isNotAnimated(_MirrorTextureUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _MirrorTextureUV!=2 && isNotAnimated(_MirrorTextureUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _MirrorTextureUV!=3 && isNotAnimated(_MirrorTextureUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			#endif
 			//endex
@@ -69000,6 +71319,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			half _DepthAlphaMaxValue;
 			float _DepthAlphaMinDepth;
 			float _DepthAlphaMaxDepth;
+			//ifex _DepthMaskUV!=1 && isNotAnimated(_DepthMaskUV) && _DepthTextureUV!=1 && isNotAnimated(_DepthTextureUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _DepthMaskUV!=2 && isNotAnimated(_DepthMaskUV) && _DepthTextureUV!=2 && isNotAnimated(_DepthTextureUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _DepthMaskUV!=3 && isNotAnimated(_DepthMaskUV) && _DepthTextureUV!=3 && isNotAnimated(_DepthTextureUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			//endex
 			
@@ -69089,13 +71417,37 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			// End Depth texture handling
 			
 			UNITY_DECLARE_TEX2D(_MainTex);
+			//ifex _MainTexUV!=1 && isNotAnimated(_MainTexUV) && _AlphaMaskUV!=1 && isNotAnimated(_AlphaMaskUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _MainTexUV!=2 && isNotAnimated(_MainTexUV) && _AlphaMaskUV!=2 && isNotAnimated(_AlphaMaskUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _MainTexUV!=3 && isNotAnimated(_MainTexUV) && _AlphaMaskUV!=3 && isNotAnimated(_AlphaMaskUV)
+			#define POI_USES_UV3
+			//endex
 			#if defined(PROP_BUMPMAP) || !defined(OPTIMIZER_ENABLED)
 			Texture2D _BumpMap;
+			#if !defined(POI_PASS_SHADOW) && !defined(POI_PASS_DEPTH_ONLY)
+			#define POI_USES_TANGENT
+			#endif
+			//ifex _BumpMapUV!=1 && isNotAnimated(_BumpMapUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _BumpMapUV!=2 && isNotAnimated(_BumpMapUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _BumpMapUV!=3 && isNotAnimated(_BumpMapUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			//ifex _UseBump2ndMap==0
 			#ifdef POI_BUMP2NDMAP
 			#if defined(PROP_BUMP2NDMAP) || !defined(OPTIMIZER_ENABLED)
 			Texture2D _Bump2ndMap;
+			#if !defined(POI_PASS_SHADOW) && !defined(POI_PASS_DEPTH_ONLY)
+			#define POI_USES_TANGENT
+			#endif
 			#endif
 			#if defined(PROP_BUMP2NDSCALEMASK) || !defined(OPTIMIZER_ENABLED)
 			Texture2D _Bump2ndScaleMask;
@@ -69123,6 +71475,9 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			#ifdef POI_BENTNORMALMAP
 			#if defined(PROP_BENTNORMALMAP) || !defined(OPTIMIZER_ENABLED)
 			Texture2D _BentNormalMap;
+			#if !defined(POI_PASS_SHADOW) && !defined(POI_PASS_DEPTH_ONLY)
+			#define POI_USES_TANGENT
+			#endif
 			#endif
 			#endif
 			//endex
@@ -69161,6 +71516,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			//ifex _PoiParallax==0
 			#if defined(POI_PARALLAX) && (defined(PROP_HEIGHTMAP) || !defined(OPTIMIZER_ENABLED))
 			Texture2D _HeightMap;
+			#define POI_USES_TANGENT
 			#if defined(PROP_HEIGHTMASK) || !defined(OPTIMIZER_ENABLED)
 			Texture2D _Heightmask;
 			#endif
@@ -69192,6 +71548,9 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			#endif
 			#if defined(PROP_DETAILNORMALMAP) || !defined(OPTIMIZER_ENABLED)
 			Texture2D _DetailNormalMap;
+			#if !defined(POI_PASS_SHADOW) && !defined(POI_PASS_DEPTH_ONLY)
+			#define POI_USES_TANGENT
+			#endif
 			#endif
 			#if defined(PROP_DETAILTEX) || !defined(OPTIMIZER_ENABLED)
 			Texture2D _DetailTex;
@@ -69272,6 +71631,9 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			#endif
 			#if defined(PROP_RGBNORMALA)
 			Texture2D _RgbNormalA;
+			#endif
+			#if (defined(PROP_RGBNORMALR) || defined(PROP_RGBNORMALG) || defined(PROP_RGBNORMALB) || defined(PROP_RGBNORMALA)) && !defined(POI_PASS_SHADOW) && !defined(POI_PASS_DEPTH_ONLY)
+			#define POI_USES_TANGENT
 			#endif
 			#endif
 			//endex
@@ -70290,39 +72652,9 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			
 			void applyDissolve(inout PoiFragData poiFragData, in PoiMesh poiMesh, inout PoiMods poiMods, in PoiCam poiCam, in PoiLight poiLight)
 			{
-				half dissolveMask = 1;
-				#if defined(PROP_DISSOLVEMASK) || !defined(OPTIMIZER_ENABLED)
-				dissolveMask = POI2D_SAMPLER_PAN(_DissolveMask, _MainTex, poiUV(poiMesh.uv[_DissolveMaskUV], _DissolveMask_ST), _DissolveMaskPan).r;
-				#endif
-				
-				UNITY_BRANCH
-				if (_DissolveUseVertexColors > 0)
-				dissolveMask = ceil(poiMesh.vertexColor[max(_DissolveUseVertexColors - 1, 0)] * 100000) / 100000;
-				
-				if (_DissolveMaskGlobalMask > 0)
-				dissolveMask = maskBlend(dissolveMask, poiMods.globalMask[_DissolveMaskGlobalMask - 1], _DissolveMaskGlobalMaskBlendType);
-				
-				if (_DissolveMaskInvert >= 0.5)
-				dissolveMask = 1 - dissolveMask;
-				
-				#if defined(PROP_DISSOLVETOTEXTURE) || !defined(OPTIMIZER_ENABLED)
-				float4 dissolveToTexture = POI2D_SAMPLER_PAN(_DissolveToTexture, _MainTex, poiUV(poiMesh.uv[_DissolveToTextureUV], _DissolveToTexture_ST), _DissolveToTexturePan) * float4(poiThemeColor(poiMods, _DissolveTextureColor.rgb, _DissolveTextureColorThemeIndex), _DissolveTextureColor.a);
-				#else
-				float4 dissolveToTexture = float4(poiThemeColor(poiMods, _DissolveTextureColor.rgb, _DissolveTextureColorThemeIndex), _DissolveTextureColor.a);
-				#endif
-				float dissolveNoise = 1;
-				#if defined(PROP_DISSOLVENOISETEXTURE) || !defined(OPTIMIZER_ENABLED)
-				dissolveNoise = POI2D_SAMPLER_PAN(_DissolveNoiseTexture, _MainTex, poiUV(poiMesh.uv[_DissolveNoiseTextureUV], _DissolveNoiseTexture_ST), _DissolveNoiseTexturePan).r;
-				#endif
-				dissolveNoise = _DissolveInvertNoise ? 1 - dissolveNoise : dissolveNoise;
-				
-				float detailNoise = 0;
 				half detailStrength = 0;
 				if (_DissolveDetailNoiseEnabled >= 0.5)
-				{
-					detailNoise = getDissolveDetailNoise(poiMesh.worldPos, poiMesh.uv[_DissolveDetailNoiseUV]);
-					detailStrength = _DissolveDetailStrength;
-				}
+				detailStrength = _DissolveDetailStrength;
 				
 				float dissolveAmount = _DissolveAlpha;
 				if (_UVTileDissolveEnabled >= 0.5)
@@ -70361,6 +72693,52 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 					}
 				}
 				dissolveAmount = saturate(dissolveAmount);
+				
+				// Early exit
+				UNITY_BRANCH
+				if (dissolveAmount <= 0 && _UVTileDissolveEnabled < 0.5 && _DissolveWaveMode < 0.5 && _DissolveDebugGradient < 0.5 && alEdgeWidthMod <= 0)
+				{
+					if (_DissolveAlphaOnly >= 0.5)
+					poiFragData.alpha *= evalRamp4(0, _DissolveAlphaOnlyRamp);
+					#if !defined(POI_PASS_OUTLINE) && !defined(POI_PASS_SHADOW)
+					if (_DissolveApplyGlobalMaskIndex > 0)
+					applyToGlobalMask(poiMods, _DissolveApplyGlobalMaskIndex - 1, _DissolveApplyGlobalMaskBlendType, 0);
+					if (_DissolveInverseApplyGlobalMaskIndex > 0)
+					applyToGlobalMask(poiMods, _DissolveInverseApplyGlobalMaskIndex - 1, _DissolveInverseApplyGlobalMaskBlendType, 1);
+					#endif
+					return;
+				}
+				
+				half dissolveMask = 1;
+				#if defined(PROP_DISSOLVEMASK) || !defined(OPTIMIZER_ENABLED)
+				dissolveMask = POI2D_SAMPLER_PAN(_DissolveMask, _MainTex, poiUV(poiMesh.uv[_DissolveMaskUV], _DissolveMask_ST), _DissolveMaskPan).r;
+				#endif
+				
+				UNITY_BRANCH
+				if (_DissolveUseVertexColors > 0)
+				dissolveMask = ceil(poiMesh.vertexColor[max(_DissolveUseVertexColors - 1, 0)] * 100000) / 100000;
+				
+				if (_DissolveMaskGlobalMask > 0)
+				dissolveMask = maskBlend(dissolveMask, poiMods.globalMask[_DissolveMaskGlobalMask - 1], _DissolveMaskGlobalMaskBlendType);
+				
+				if (_DissolveMaskInvert >= 0.5)
+				dissolveMask = 1 - dissolveMask;
+				
+				#if defined(PROP_DISSOLVETOTEXTURE) || !defined(OPTIMIZER_ENABLED)
+				float4 dissolveToTexture = POI2D_SAMPLER_PAN(_DissolveToTexture, _MainTex, poiUV(poiMesh.uv[_DissolveToTextureUV], _DissolveToTexture_ST), _DissolveToTexturePan) * float4(poiThemeColor(poiMods, _DissolveTextureColor.rgb, _DissolveTextureColorThemeIndex), _DissolveTextureColor.a);
+				#else
+				float4 dissolveToTexture = float4(poiThemeColor(poiMods, _DissolveTextureColor.rgb, _DissolveTextureColorThemeIndex), _DissolveTextureColor.a);
+				#endif
+				float dissolveNoise = 1;
+				#if defined(PROP_DISSOLVENOISETEXTURE) || !defined(OPTIMIZER_ENABLED)
+				dissolveNoise = POI2D_SAMPLER_PAN(_DissolveNoiseTexture, _MainTex, poiUV(poiMesh.uv[_DissolveNoiseTextureUV], _DissolveNoiseTexture_ST), _DissolveNoiseTexturePan).r;
+				#endif
+				dissolveNoise = _DissolveInvertNoise ? 1 - dissolveNoise : dissolveNoise;
+				
+				float detailNoise = 0;
+				if (_DissolveDetailNoiseEnabled >= 0.5)
+				detailNoise = getDissolveDetailNoise(poiMesh.worldPos, poiMesh.uv[_DissolveDetailNoiseUV]);
+				
 				dissolveAmount *= dissolveMask;
 				detailStrength = saturate(detailStrength);
 				
@@ -70660,11 +73038,11 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 					
 					if (any(_VertexLocalTranslationALMin) || any(_VertexLocalTranslationALMax))
 					{
-						ALLocalTranslation = lerp(_VertexLocalTranslationALMin, _VertexLocalTranslationALMax, audioLinkBands[_VertexLocalTranslationALBand]);
+						ALLocalTranslation = lerp(_VertexLocalTranslationALMin, _VertexLocalTranslationALMax, poiSelect5(audioLinkBands, _VertexLocalTranslationALBand));
 					}
 					if (any(_VertexLocalRotationAL))
 					{
-						ALrotation = audioLinkBands[_VertexLocalRotationALBand] * _VertexLocalRotationAL;
+						ALrotation = poiSelect5(audioLinkBands, _VertexLocalRotationALBand) * _VertexLocalRotationAL;
 					}
 					if (any(_VertexLocalRotationCTALSpeed))
 					{
@@ -70674,20 +73052,20 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 					}
 					if (any(_VertexLocalScaleALMin.xyz) || any(_VertexLocalScaleALMax.xyz))
 					{
-						ALScale = lerp(_VertexLocalScaleALMin.xyz + _VertexLocalScaleALMin.w, _VertexLocalScaleALMax.xyz + _VertexLocalScaleALMax.w, audioLinkBands[_VertexLocalScaleALBand]);
+						ALScale = lerp(_VertexLocalScaleALMin.xyz + _VertexLocalScaleALMin.w, _VertexLocalScaleALMax.xyz + _VertexLocalScaleALMax.w, poiSelect5(audioLinkBands, _VertexLocalScaleALBand));
 					}
 					if (any(_VertexWorldTranslationALMin.xyz) || any(_VertexWorldTranslationALMax.xyz))
 					{
-						ALWorldTranslation = lerp(_VertexWorldTranslationALMin, _VertexWorldTranslationALMax, audioLinkBands[_VertexWorldTranslationALBand]);
+						ALWorldTranslation = lerp(_VertexWorldTranslationALMin, _VertexWorldTranslationALMax, poiSelect5(audioLinkBands, _VertexWorldTranslationALBand));
 					}
 					if (any(_VertexManipulationHeightAL.xy))
 					{
-						ALHeight = lerp(_VertexManipulationHeightAL.x, _VertexManipulationHeightAL.y, audioLinkBands[_VertexManipulationHeightBand]);
+						ALHeight = lerp(_VertexManipulationHeightAL.x, _VertexManipulationHeightAL.y, poiSelect5(audioLinkBands, _VertexManipulationHeightBand));
 					}
 					//ifex isNotAnimated(_VertexRoundingEnabled) && _VertexRoundingEnabled==0
 					if (any(_VertexRoundingRangeAL.xy))
 					{
-						ALRoundingAmount = lerp(_VertexRoundingRangeAL.x, _VertexRoundingRangeAL.y, audioLinkBands[_VertexRoundingRangeBand]);
+						ALRoundingAmount = lerp(_VertexRoundingRangeAL.x, _VertexRoundingRangeAL.y, poiSelect5(audioLinkBands, _VertexRoundingRangeBand));
 					}
 					//endex
 					//ifex isNotAnimated(_VertexSpectrumMotion) && _VertexSpectrumMotion==0
@@ -70717,7 +73095,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 					v.color.a
 				};
 				
-				half basicsMask = vertexEffectsMask[_VertexBasicsMaskChannel];
+				half basicsMask = poiSelect8(vertexEffectsMask, _VertexBasicsMaskChannel);
 				
 				ALLocalTranslation *= basicsMask;
 				ALrotation *= basicsMask;
@@ -70753,7 +73131,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 					#else
 					heightOffset = (1 - _VertexManipulationHeightBias) * (_VertexManipulationHeight + ALHeight) * o.normal.xyz;
 					#endif
-					heightOffset *= vertexEffectsMask[_VertexManipulationHeightMaskChannel] * o.normal.w;
+					heightOffset *= poiSelect8(vertexEffectsMask, _VertexManipulationHeightMaskChannel) * o.normal.w;
 					
 				}
 				// Fix z fighting issue with projectors maybe probably I hope
@@ -70763,7 +73141,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				UNITY_BRANCH
 				if (_VertexBarrelMode >= 0.5)
 				{
-					half barrelMask = vertexEffectsMask[_VertexBarrelMaskChannel];
+					half barrelMask = poiSelect8(vertexEffectsMask, _VertexBarrelMaskChannel);
 					v.vertex.xz = lerp(v.vertex.xz, normalize(v.vertex.xz) * _VertexBarrelWidth + v.vertex.xz * _VertexBarrelHeight, _VertexBarrelAlpha * barrelMask);
 				}
 				//endex
@@ -70772,7 +73150,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				UNITY_BRANCH
 				if (_VertexSphereMode >= 0.5)
 				{
-					half sphereMask = vertexEffectsMask[_VertexSphereMaskChannel];
+					half sphereMask = poiSelect8(vertexEffectsMask, _VertexSphereMaskChannel);
 					v.vertex.xyz = lerp(v.vertex.xyz, normalize(v.vertex.xyz + _VertexSphereCenter.xyz) * _VertexSphereRadius + v.vertex.xyz * _VertexSphereHeight, _VertexSphereAlpha * sphereMask);
 				}
 				//endex
@@ -70781,7 +73159,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				UNITY_BRANCH
 				if (_VertexTornadoMode >= 0.5)
 				{
-					half tornadoMask = vertexEffectsMask[_VertexTornadoMaskChannel];
+					half tornadoMask = poiSelect8(vertexEffectsMask, _VertexTornadoMaskChannel);
 					float heightStrength = smoothstep(_VertexTornadoBaseHeight, _VertexTornadoTopHeight, v.vertex.y);
 					float funnelStrength = pow(heightStrength, _VertexTornadoFunnelShape);
 					float totalStrength = funnelStrength * tornadoMask;
@@ -70808,7 +73186,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				UNITY_BRANCH
 				if (_VertexWindEnabled >= 0.5)
 				{
-					half windMask = vertexEffectsMask[_VertexWindMaskChannel];
+					half windMask = poiSelect8(vertexEffectsMask, _VertexWindMaskChannel);
 					if (windMask > 0)
 					{
 						float3 worldPos = mul(unity_ObjectToWorld, v.vertex).xyz;
@@ -70840,7 +73218,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				UNITY_BRANCH
 				if (_VertexRoundingEnabled >= 0.5)
 				{
-					half roundingMask = vertexEffectsMask[_VertexRoundingMaskChannel];
+					half roundingMask = poiSelect8(vertexEffectsMask, _VertexRoundingMaskChannel);
 					if (roundingMask > 0)
 					{
 						float3 preRoundingVertex = v.vertex.xyz;
@@ -70874,7 +73252,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				{
 					if (AudioLinkIsAvailable())
 					{
-						alpha = saturate(alpha + lerp(_VertexLookAtAlphaAudiolink.x, _VertexLookAtAlphaAudiolink.y, vertexAudioLink[_VertexLookAtAudioLinkBand]) * _VertexLookAtAudioLinkEnabled);
+						alpha = saturate(alpha + lerp(_VertexLookAtAlphaAudiolink.x, _VertexLookAtAlphaAudiolink.y, poiSelect5(vertexAudioLink, _VertexLookAtAudioLinkBand)) * _VertexLookAtAudioLinkEnabled);
 					}
 				}
 				#endif
@@ -71421,7 +73799,9 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				POI_TRANSFER_SHADOW_CASTER_NOPOS(o, o.pos);
 				#endif
 				
+				#if !defined(POI_PASS_SHADOW) && (!defined(OPTIMIZER_ENABLED) || defined(_POI_DEPTH_RIMLIGHT) || defined(GRAIN) || defined(POI_GRABPASS) || defined(TRIPLANAR_PROJECTION))
 				o.worldDir = dot(o.pos, CalculateFrustumCorrection());
+				#endif
 				
 				if (_RenderingReduceClipDistance >= 0.5)
 				{
@@ -71460,21 +73840,37 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				
 				#endif
 				
+				#if defined(OPTIMIZER_ENABLED)
+				#if !defined(POI_USES_UV1)
+				o.uv[0] = float4(o.uv[0].xy, 0, 0);
+				#endif
+				#if !defined(POI_USES_UV2) && !defined(POI_USES_UV3)
+				o.uv[1] = 0;
+				#elif !defined(POI_USES_UV2)
+				o.uv[1] = float4(0, 0, o.uv[1].zw);
+				#elif !defined(POI_USES_UV3)
+				o.uv[1] = float4(o.uv[1].xy, 0, 0);
+				#endif
+				#if !defined(POI_USES_TANGENT)
+				o.tangent = 0;
+				#endif
+				#endif
+				
 				return o;
 			}
 			
 			//ifex _StochasticMode!=0
 			#if defined(_STOCHASTICMODE_DELIOT_HEITZ)
-			#define POI2D_SAMPLER_STOCHASTIC(tex, texSampler, uv, useStochastic) (useStochastic ? DeliotHeitzSampleTexture(tex, sampler##texSampler, uv) : POI2D_SAMPLER(tex, texSampler, uv))
-			#define POI2D_SAMPLER_PAN_STOCHASTIC(tex, texSampler, uv, pan, useStochastic) (useStochastic ? DeliotHeitzSampleTexture(tex, sampler##texSampler, POI_PAN_UV(uv, pan)) : POI2D_SAMPLER_PAN(tex, texSampler, uv, pan))
-			#define POI2D_SAMPLER_PANGRAD_STOCHASTIC(tex, texSampler, uv, pan, dx, dy, useStochastic) (useStochastic ? DeliotHeitzSampleTexture(tex, sampler##texSampler, POI_PAN_UV(uv, pan), dx, dy) : POI2D_SAMPLER_PANGRAD(tex, texSampler, uv, pan, dx, dy))
+			#define POI2D_SAMPLER_STOCHASTIC(tex, texSampler, uv, useStochastic) (PoiStochasticSample(tex, sampler##texSampler, uv, useStochastic))
+			#define POI2D_SAMPLER_PAN_STOCHASTIC(tex, texSampler, uv, pan, useStochastic) (PoiStochasticSample(tex, sampler##texSampler, POI_PAN_UV(uv, pan), useStochastic))
+			#define POI2D_SAMPLER_PANGRAD_STOCHASTIC(tex, texSampler, uv, pan, dx, dy, useStochastic) (PoiStochasticSampleGrad(tex, sampler##texSampler, POI_PAN_UV(uv, pan), dx, dy, useStochastic))
 			#endif
 			//endex
 			//ifex _StochasticMode!=1
 			#if defined(_STOCHASTICMODE_HEXTILE)
-			#define POI2D_SAMPLER_STOCHASTIC(tex, texSampler, uv, useStochastic) (useStochastic ? HextileSampleTexture(tex, sampler##texSampler, uv, false) : POI2D_SAMPLER(tex, texSampler, uv))
-			#define POI2D_SAMPLER_PAN_STOCHASTIC(tex, texSampler, uv, pan, useStochastic) (useStochastic ? HextileSampleTexture(tex, sampler##texSampler, POI_PAN_UV(uv, pan), false) : POI2D_SAMPLER_PAN(tex, texSampler, uv, pan))
-			#define POI2D_SAMPLER_PANGRAD_STOCHASTIC(tex, texSampler, uv, pan, dx, dy, useStochastic) (useStochastic ? HextileSampleTexture(tex, sampler##texSampler, POI_PAN_UV(uv, pan), false, dx, dy) : POI2D_SAMPLER_PANGRAD(tex, texSampler, uv, pan, dx, dy))
+			#define POI2D_SAMPLER_STOCHASTIC(tex, texSampler, uv, useStochastic) (PoiStochasticSample(tex, sampler##texSampler, uv, useStochastic))
+			#define POI2D_SAMPLER_PAN_STOCHASTIC(tex, texSampler, uv, pan, useStochastic) (PoiStochasticSample(tex, sampler##texSampler, POI_PAN_UV(uv, pan), useStochastic))
+			#define POI2D_SAMPLER_PANGRAD_STOCHASTIC(tex, texSampler, uv, pan, dx, dy, useStochastic) (PoiStochasticSampleGrad(tex, sampler##texSampler, POI_PAN_UV(uv, pan), dx, dy, useStochastic))
 			#endif
 			//endex
 			
@@ -71560,6 +73956,27 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			{
 				float2 dx = ddx(uv), dy = ddy(uv);
 				return DeliotHeitzSampleTexture(tex, texSampler, uv, dx, dy);
+			}
+			
+			// Branch instead of ?: so textures with stochastic off don't also pay for the stochastic samples
+			float4 PoiStochasticSample(Texture2D tex, SamplerState texSampler, float2 uv, float useStochastic)
+			{
+				UNITY_BRANCH
+				if (useStochastic)
+				{
+					return DeliotHeitzSampleTexture(tex, texSampler, uv);
+				}
+				return tex.Sample(texSampler, uv);
+			}
+			
+			float4 PoiStochasticSampleGrad(Texture2D tex, SamplerState texSampler, float2 uv, float2 dx, float2 dy, float useStochastic)
+			{
+				UNITY_BRANCH
+				if (useStochastic)
+				{
+					return DeliotHeitzSampleTexture(tex, texSampler, uv, dx, dy);
+				}
+				return tex.SampleGrad(texSampler, uv, dx, dy);
 			}
 			#endif // defined(_STOCHASTICMODE_DELIOT_HEITZ)
 			//endex
@@ -71683,6 +74100,27 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float4 HextileSampleTexture(Texture2D tex, SamplerState texSampler, float2 uv, bool isNormalMap)
 			{
 				return HextileSampleTexture(tex, texSampler, uv, isNormalMap, ddx(uv), ddy(uv));
+			}
+			
+			// Branch instead of ?: so textures with stochastic off don't also pay for the stochastic samples
+			float4 PoiStochasticSample(Texture2D tex, SamplerState texSampler, float2 uv, float useStochastic)
+			{
+				UNITY_BRANCH
+				if (useStochastic)
+				{
+					return HextileSampleTexture(tex, texSampler, uv, false);
+				}
+				return tex.Sample(texSampler, uv);
+			}
+			
+			float4 PoiStochasticSampleGrad(Texture2D tex, SamplerState texSampler, float2 uv, float2 dx, float2 dy, float useStochastic)
+			{
+				UNITY_BRANCH
+				if (useStochastic)
+				{
+					return HextileSampleTexture(tex, texSampler, uv, false, dx, dy);
+				}
+				return tex.SampleGrad(texSampler, uv, dx, dy);
 			}
 			#endif // defined(_STOCHASTICMODE_HEXTILE)
 			//endex
@@ -74408,7 +76846,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				clip(poiFragData.alpha - _Cutoff);
 				
 				#if POI_PIPE == POI_URP
-				outDepth = i.pos.z + POI_SAFE_RGB0.r;
+				outDepth = i.pos.z + POI_SAFE_MAINTEX_RGB0.r;
 				#endif
 				
 				#if POI_PIPE == POI_BIRP
@@ -74745,6 +77183,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _Bump2ndScaleMaskUV;
 			float _Bump2ndScaleMaskGlobalMask;
 			float _Bump2ndScaleMaskGlobalMaskBlendType;
+			//ifex _Bump2ndMapUV!=1 && isNotAnimated(_Bump2ndMapUV) && _Bump2ndScaleMaskUV!=1 && isNotAnimated(_Bump2ndScaleMaskUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _Bump2ndMapUV!=2 && isNotAnimated(_Bump2ndMapUV) && _Bump2ndScaleMaskUV!=2 && isNotAnimated(_Bump2ndScaleMaskUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _Bump2ndMapUV!=3 && isNotAnimated(_Bump2ndMapUV) && _Bump2ndScaleMaskUV!=3 && isNotAnimated(_Bump2ndScaleMaskUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			//endex
 			float4 _AlphaMask_ST;
@@ -74800,6 +77247,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			half _ColorGradingToggle;
 			float _MainGradationStrength;
 			float _MainGradationMaskChannel;
+			//ifex _MainColorAdjustTextureUV!=1 && isNotAnimated(_MainColorAdjustTextureUV) && _MainTintTextureUV!=1 && isNotAnimated(_MainTintTextureUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _MainColorAdjustTextureUV!=2 && isNotAnimated(_MainColorAdjustTextureUV) && _MainTintTextureUV!=2 && isNotAnimated(_MainTintTextureUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _MainColorAdjustTextureUV!=3 && isNotAnimated(_MainColorAdjustTextureUV) && _MainTintTextureUV!=3 && isNotAnimated(_MainTintTextureUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			//endex
 			
@@ -74838,6 +77294,9 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			half _AlphaFresnelInvert;
 			half _AlphaFresnelGlobalMask;
 			float _AlphaFresnelGlobalMaskBlendType;
+			#if defined(POI_PASS_SHADOW) || defined(POI_PASS_DEPTH_ONLY)
+			#define POI_USES_TANGENT
+			#endif
 			//endex
 			
 			//ifex _AlphaAngular==0 && isNotAnimated(_AlphaAngular)
@@ -74871,6 +77330,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _BentNormalMapStochastic;
 			half _BentNormalSpecOccStrength;
 			float _BentNormalIndirectDiffuse;
+			//ifex _BentNormalMapUV!=1 && isNotAnimated(_BentNormalMapUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _BentNormalMapUV!=2 && isNotAnimated(_BentNormalMapUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _BentNormalMapUV!=3 && isNotAnimated(_BentNormalMapUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			//endex
 			
@@ -74916,6 +77384,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			half4 _GlobalMaskTexture3SplitPan_B;
 			float4 _GlobalMaskTexture3SplitTilingOffset_A;
 			half4 _GlobalMaskTexture3SplitPan_A;
+			//ifex _GlobalMaskTexture0UV!=1 && isNotAnimated(_GlobalMaskTexture0UV) && _GlobalMaskTexture1UV!=1 && isNotAnimated(_GlobalMaskTexture1UV) && _GlobalMaskTexture2UV!=1 && isNotAnimated(_GlobalMaskTexture2UV) && _GlobalMaskTexture3UV!=1 && isNotAnimated(_GlobalMaskTexture3UV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _GlobalMaskTexture0UV!=2 && isNotAnimated(_GlobalMaskTexture0UV) && _GlobalMaskTexture1UV!=2 && isNotAnimated(_GlobalMaskTexture1UV) && _GlobalMaskTexture2UV!=2 && isNotAnimated(_GlobalMaskTexture2UV) && _GlobalMaskTexture3UV!=2 && isNotAnimated(_GlobalMaskTexture3UV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _GlobalMaskTexture0UV!=3 && isNotAnimated(_GlobalMaskTexture0UV) && _GlobalMaskTexture1UV!=3 && isNotAnimated(_GlobalMaskTexture1UV) && _GlobalMaskTexture2UV!=3 && isNotAnimated(_GlobalMaskTexture2UV) && _GlobalMaskTexture3UV!=3 && isNotAnimated(_GlobalMaskTexture3UV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			//endex
 			//ifex _GlobalMaskOptionsEnable==0
@@ -75296,6 +77773,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			half2 _DistortionStrength1AudioLink;
 			half _DistortionStrength1AudioLinkBand;
 			#endif
+			//ifex _DistortionFlowTextureUV!=1 && isNotAnimated(_DistortionFlowTextureUV) && _DistortionFlowTexture1UV!=1 && isNotAnimated(_DistortionFlowTexture1UV) && _DistortionMaskUV!=1 && isNotAnimated(_DistortionMaskUV) && _DistortionUvToDistort!=1 && isNotAnimated(_DistortionUvToDistort)
+			#define POI_USES_UV1
+			//endex
+			//ifex _DistortionFlowTextureUV!=2 && isNotAnimated(_DistortionFlowTextureUV) && _DistortionFlowTexture1UV!=2 && isNotAnimated(_DistortionFlowTexture1UV) && _DistortionMaskUV!=2 && isNotAnimated(_DistortionMaskUV) && _DistortionUvToDistort!=2 && isNotAnimated(_DistortionUvToDistort)
+			#define POI_USES_UV2
+			//endex
+			//ifex _DistortionFlowTextureUV!=3 && isNotAnimated(_DistortionFlowTextureUV) && _DistortionFlowTexture1UV!=3 && isNotAnimated(_DistortionFlowTexture1UV) && _DistortionMaskUV!=3 && isNotAnimated(_DistortionMaskUV) && _DistortionUvToDistort!=3 && isNotAnimated(_DistortionUvToDistort)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			//endex
 			float2 _UVSettingsTiling0;
@@ -75323,6 +77809,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			int _StereoEnabled;
 			int _PanoUseBothEyes;
 			float _PolarUV;
+			//ifex _PolarUV!=1 && isNotAnimated(_PolarUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _PolarUV!=2 && isNotAnimated(_PolarUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _PolarUV!=3 && isNotAnimated(_PolarUV)
+			#define POI_USES_UV3
+			//endex
 			float _PolarMode;
 			float2 _PolarCenter;
 			float _PolarRadialScale;
@@ -75373,6 +77868,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _UDIMFaceDiscardRow0_1;
 			float _UDIMFaceDiscardRow0_2;
 			float _UDIMFaceDiscardRow0_3;
+			//ifex _UDIMDiscardUV!=1 && isNotAnimated(_UDIMDiscardUV) && _UDIMFaceDiscardUV!=1 && isNotAnimated(_UDIMFaceDiscardUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _UDIMDiscardUV!=2 && isNotAnimated(_UDIMDiscardUV) && _UDIMFaceDiscardUV!=2 && isNotAnimated(_UDIMFaceDiscardUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _UDIMDiscardUV!=3 && isNotAnimated(_UDIMDiscardUV) && _UDIMFaceDiscardUV!=3 && isNotAnimated(_UDIMFaceDiscardUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			//endex
 			
@@ -75410,6 +77914,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			half _ParallaxAnisotropyScale;
 			float4 _ParallaxLOD;
 			#endif
+			//ifex _HeightMapUV!=1 && isNotAnimated(_HeightMapUV) && _HeightmaskUV!=1 && isNotAnimated(_HeightmaskUV) && _ParallaxUV!=1 && isNotAnimated(_ParallaxUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _HeightMapUV!=2 && isNotAnimated(_HeightMapUV) && _HeightmaskUV!=2 && isNotAnimated(_HeightmaskUV) && _ParallaxUV!=2 && isNotAnimated(_ParallaxUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _HeightMapUV!=3 && isNotAnimated(_HeightMapUV) && _HeightmaskUV!=3 && isNotAnimated(_HeightmaskUV) && _ParallaxUV!=3 && isNotAnimated(_ParallaxUV)
+			#define POI_USES_UV3
+			//endex
 			//endex
 			
 			//ifex _BlackLightMaskingEnabled==0
@@ -75459,6 +77972,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			half _DetailBrightness;
 			half _DetailTexGlobalMask;
 			float _DetailTexGlobalMaskBlendType;
+			//ifex _DetailMaskUV!=1 && isNotAnimated(_DetailMaskUV) && _DetailNormalMapUV!=1 && isNotAnimated(_DetailNormalMapUV) && _DetailTexUV!=1 && isNotAnimated(_DetailTexUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _DetailMaskUV!=2 && isNotAnimated(_DetailMaskUV) && _DetailNormalMapUV!=2 && isNotAnimated(_DetailNormalMapUV) && _DetailTexUV!=2 && isNotAnimated(_DetailTexUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _DetailMaskUV!=3 && isNotAnimated(_DetailMaskUV) && _DetailNormalMapUV!=3 && isNotAnimated(_DetailNormalMapUV) && _DetailTexUV!=3 && isNotAnimated(_DetailTexUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			//endex
 			
@@ -75712,6 +78234,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _BackFaceHueShiftSpeed;
 			half _BackFaceEmissionLimiter;
 			float _BackFaceHueSelectOrShift;
+			//ifex _BackFaceTextureUV!=1 && isNotAnimated(_BackFaceTextureUV) && _BackFaceMaskUV!=1 && isNotAnimated(_BackFaceMaskUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _BackFaceTextureUV!=2 && isNotAnimated(_BackFaceTextureUV) && _BackFaceMaskUV!=2 && isNotAnimated(_BackFaceMaskUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _BackFaceTextureUV!=3 && isNotAnimated(_BackFaceTextureUV) && _BackFaceMaskUV!=3 && isNotAnimated(_BackFaceMaskUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			//endex
 			
@@ -75878,6 +78409,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float4 _RgbNormalABlendSources;
 			
 			float _RGBMaskType;
+			//ifex _RGBMaskUV!=1 && isNotAnimated(_RGBMaskUV) && _RGBAMetallicMapsUV!=1 && isNotAnimated(_RGBAMetallicMapsUV) && _RGBARedPBRUV!=1 && isNotAnimated(_RGBARedPBRUV) && _RGBAGreenPBRUV!=1 && isNotAnimated(_RGBAGreenPBRUV) && _RGBABluePBRUV!=1 && isNotAnimated(_RGBABluePBRUV) && _RGBAAlphaPBRUV!=1 && isNotAnimated(_RGBAAlphaPBRUV) && _RGBASmoothnessMapsUV!=1 && isNotAnimated(_RGBASmoothnessMapsUV) && _RedTextureUV!=1 && isNotAnimated(_RedTextureUV) && _RgbNormalRUV!=1 && isNotAnimated(_RgbNormalRUV) && _GreenTextureUV!=1 && isNotAnimated(_GreenTextureUV) && _RgbNormalGUV!=1 && isNotAnimated(_RgbNormalGUV) && _BlueTextureUV!=1 && isNotAnimated(_BlueTextureUV) && _RgbNormalBUV!=1 && isNotAnimated(_RgbNormalBUV) && _AlphaTextureUV!=1 && isNotAnimated(_AlphaTextureUV) && _RgbNormalAUV!=1 && isNotAnimated(_RgbNormalAUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _RGBMaskUV!=2 && isNotAnimated(_RGBMaskUV) && _RGBAMetallicMapsUV!=2 && isNotAnimated(_RGBAMetallicMapsUV) && _RGBARedPBRUV!=2 && isNotAnimated(_RGBARedPBRUV) && _RGBAGreenPBRUV!=2 && isNotAnimated(_RGBAGreenPBRUV) && _RGBABluePBRUV!=2 && isNotAnimated(_RGBABluePBRUV) && _RGBAAlphaPBRUV!=2 && isNotAnimated(_RGBAAlphaPBRUV) && _RGBASmoothnessMapsUV!=2 && isNotAnimated(_RGBASmoothnessMapsUV) && _RedTextureUV!=2 && isNotAnimated(_RedTextureUV) && _RgbNormalRUV!=2 && isNotAnimated(_RgbNormalRUV) && _GreenTextureUV!=2 && isNotAnimated(_GreenTextureUV) && _RgbNormalGUV!=2 && isNotAnimated(_RgbNormalGUV) && _BlueTextureUV!=2 && isNotAnimated(_BlueTextureUV) && _RgbNormalBUV!=2 && isNotAnimated(_RgbNormalBUV) && _AlphaTextureUV!=2 && isNotAnimated(_AlphaTextureUV) && _RgbNormalAUV!=2 && isNotAnimated(_RgbNormalAUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _RGBMaskUV!=3 && isNotAnimated(_RGBMaskUV) && _RGBAMetallicMapsUV!=3 && isNotAnimated(_RGBAMetallicMapsUV) && _RGBARedPBRUV!=3 && isNotAnimated(_RGBARedPBRUV) && _RGBAGreenPBRUV!=3 && isNotAnimated(_RGBAGreenPBRUV) && _RGBABluePBRUV!=3 && isNotAnimated(_RGBABluePBRUV) && _RGBAAlphaPBRUV!=3 && isNotAnimated(_RGBAAlphaPBRUV) && _RGBASmoothnessMapsUV!=3 && isNotAnimated(_RGBASmoothnessMapsUV) && _RedTextureUV!=3 && isNotAnimated(_RedTextureUV) && _RgbNormalRUV!=3 && isNotAnimated(_RgbNormalRUV) && _GreenTextureUV!=3 && isNotAnimated(_GreenTextureUV) && _RgbNormalGUV!=3 && isNotAnimated(_RgbNormalGUV) && _BlueTextureUV!=3 && isNotAnimated(_BlueTextureUV) && _RgbNormalBUV!=3 && isNotAnimated(_RgbNormalBUV) && _AlphaTextureUV!=3 && isNotAnimated(_AlphaTextureUV) && _RgbNormalAUV!=3 && isNotAnimated(_RgbNormalAUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			//endex
 			
@@ -76019,6 +78559,20 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _DissolveALColorOverrideBand;
 			half4 _DissolveALColorOverrideRamp;
 			#endif
+			//ifex _DissolveToTextureUV!=1 && isNotAnimated(_DissolveToTextureUV) && _DissolveNoiseTextureUV!=1 && isNotAnimated(_DissolveNoiseTextureUV) && _DissolveDetailNoiseUV!=1 && isNotAnimated(_DissolveDetailNoiseUV) && _DissolveMaskUV!=1 && isNotAnimated(_DissolveMaskUV) && _DissolveP2PUV!=1 && isNotAnimated(_DissolveP2PUV) && _UVTileDissolveUV!=1 && isNotAnimated(_UVTileDissolveUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _DissolveToTextureUV!=2 && isNotAnimated(_DissolveToTextureUV) && _DissolveNoiseTextureUV!=2 && isNotAnimated(_DissolveNoiseTextureUV) && _DissolveDetailNoiseUV!=2 && isNotAnimated(_DissolveDetailNoiseUV) && _DissolveMaskUV!=2 && isNotAnimated(_DissolveMaskUV) && _DissolveP2PUV!=2 && isNotAnimated(_DissolveP2PUV) && _UVTileDissolveUV!=2 && isNotAnimated(_UVTileDissolveUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _DissolveToTextureUV!=3 && isNotAnimated(_DissolveToTextureUV) && _DissolveNoiseTextureUV!=3 && isNotAnimated(_DissolveNoiseTextureUV) && _DissolveDetailNoiseUV!=3 && isNotAnimated(_DissolveDetailNoiseUV) && _DissolveMaskUV!=3 && isNotAnimated(_DissolveMaskUV) && _DissolveP2PUV!=3 && isNotAnimated(_DissolveP2PUV) && _UVTileDissolveUV!=3 && isNotAnimated(_UVTileDissolveUV)
+			#define POI_USES_UV3
+			//endex
+			//ifex _CenterOutDissolveNormals==0 && isNotAnimated(_CenterOutDissolveNormals)
+			#if defined(POI_PASS_SHADOW) || defined(POI_PASS_DEPTH_ONLY)
+			#define POI_USES_TANGENT
+			#endif
+			//endex
 			#endif
 			//endex
 			
@@ -76098,6 +78652,18 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _FlipbookALColorOverrideBand;
 			half4 _FlipbookALColorOverrideRamp;
 			#endif
+			//ifex _FlipbookTexArrayUV!=1 && isNotAnimated(_FlipbookTexArrayUV) && _FlipbookMaskUV!=1 && isNotAnimated(_FlipbookMaskUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _FlipbookTexArrayUV!=2 && isNotAnimated(_FlipbookTexArrayUV) && _FlipbookMaskUV!=2 && isNotAnimated(_FlipbookMaskUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _FlipbookTexArrayUV!=3 && isNotAnimated(_FlipbookTexArrayUV) && _FlipbookMaskUV!=3 && isNotAnimated(_FlipbookMaskUV)
+			#define POI_USES_UV3
+			//endex
+			//ifex _FlipbookMirroredUVMode==0 && isNotAnimated(_FlipbookMirroredUVMode)
+			#define POI_USES_TANGENT
+			//endex
 			#endif
 			//endex
 			
@@ -76177,6 +78743,18 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _FlipbookALColorOverrideBand1;
 			half4 _FlipbookALColorOverrideRamp1;
 			#endif
+			//ifex _FlipbookTexArrayUV1!=1 && isNotAnimated(_FlipbookTexArrayUV1) && _FlipbookMaskUV1!=1 && isNotAnimated(_FlipbookMaskUV1)
+			#define POI_USES_UV1
+			//endex
+			//ifex _FlipbookTexArrayUV1!=2 && isNotAnimated(_FlipbookTexArrayUV1) && _FlipbookMaskUV1!=2 && isNotAnimated(_FlipbookMaskUV1)
+			#define POI_USES_UV2
+			//endex
+			//ifex _FlipbookTexArrayUV1!=3 && isNotAnimated(_FlipbookTexArrayUV1) && _FlipbookMaskUV1!=3 && isNotAnimated(_FlipbookMaskUV1)
+			#define POI_USES_UV3
+			//endex
+			//ifex _FlipbookMirroredUVMode1==0 && isNotAnimated(_FlipbookMirroredUVMode1)
+			#define POI_USES_TANGENT
+			//endex
 			#endif
 			//endex
 			
@@ -76199,6 +78777,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float4 _MirrorTexture_ST;
 			float2 _MirrorTexturePan;
 			float _MirrorTextureUV;
+			//ifex _MirrorTextureUV!=1 && isNotAnimated(_MirrorTextureUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _MirrorTextureUV!=2 && isNotAnimated(_MirrorTextureUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _MirrorTextureUV!=3 && isNotAnimated(_MirrorTextureUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			#endif
 			//endex
@@ -76233,6 +78820,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			half _DepthAlphaMaxValue;
 			float _DepthAlphaMinDepth;
 			float _DepthAlphaMaxDepth;
+			//ifex _DepthMaskUV!=1 && isNotAnimated(_DepthMaskUV) && _DepthTextureUV!=1 && isNotAnimated(_DepthTextureUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _DepthMaskUV!=2 && isNotAnimated(_DepthMaskUV) && _DepthTextureUV!=2 && isNotAnimated(_DepthTextureUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _DepthMaskUV!=3 && isNotAnimated(_DepthMaskUV) && _DepthTextureUV!=3 && isNotAnimated(_DepthTextureUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			//endex
 			
@@ -76322,13 +78918,37 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			// End Depth texture handling
 			
 			UNITY_DECLARE_TEX2D(_MainTex);
+			//ifex _MainTexUV!=1 && isNotAnimated(_MainTexUV) && _AlphaMaskUV!=1 && isNotAnimated(_AlphaMaskUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _MainTexUV!=2 && isNotAnimated(_MainTexUV) && _AlphaMaskUV!=2 && isNotAnimated(_AlphaMaskUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _MainTexUV!=3 && isNotAnimated(_MainTexUV) && _AlphaMaskUV!=3 && isNotAnimated(_AlphaMaskUV)
+			#define POI_USES_UV3
+			//endex
 			#if defined(PROP_BUMPMAP) || !defined(OPTIMIZER_ENABLED)
 			Texture2D _BumpMap;
+			#if !defined(POI_PASS_SHADOW) && !defined(POI_PASS_DEPTH_ONLY)
+			#define POI_USES_TANGENT
+			#endif
+			//ifex _BumpMapUV!=1 && isNotAnimated(_BumpMapUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _BumpMapUV!=2 && isNotAnimated(_BumpMapUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _BumpMapUV!=3 && isNotAnimated(_BumpMapUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			//ifex _UseBump2ndMap==0
 			#ifdef POI_BUMP2NDMAP
 			#if defined(PROP_BUMP2NDMAP) || !defined(OPTIMIZER_ENABLED)
 			Texture2D _Bump2ndMap;
+			#if !defined(POI_PASS_SHADOW) && !defined(POI_PASS_DEPTH_ONLY)
+			#define POI_USES_TANGENT
+			#endif
 			#endif
 			#if defined(PROP_BUMP2NDSCALEMASK) || !defined(OPTIMIZER_ENABLED)
 			Texture2D _Bump2ndScaleMask;
@@ -76356,6 +78976,9 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			#ifdef POI_BENTNORMALMAP
 			#if defined(PROP_BENTNORMALMAP) || !defined(OPTIMIZER_ENABLED)
 			Texture2D _BentNormalMap;
+			#if !defined(POI_PASS_SHADOW) && !defined(POI_PASS_DEPTH_ONLY)
+			#define POI_USES_TANGENT
+			#endif
 			#endif
 			#endif
 			//endex
@@ -76394,6 +79017,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			//ifex _PoiParallax==0
 			#if defined(POI_PARALLAX) && (defined(PROP_HEIGHTMAP) || !defined(OPTIMIZER_ENABLED))
 			Texture2D _HeightMap;
+			#define POI_USES_TANGENT
 			#if defined(PROP_HEIGHTMASK) || !defined(OPTIMIZER_ENABLED)
 			Texture2D _Heightmask;
 			#endif
@@ -76425,6 +79049,9 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			#endif
 			#if defined(PROP_DETAILNORMALMAP) || !defined(OPTIMIZER_ENABLED)
 			Texture2D _DetailNormalMap;
+			#if !defined(POI_PASS_SHADOW) && !defined(POI_PASS_DEPTH_ONLY)
+			#define POI_USES_TANGENT
+			#endif
 			#endif
 			#if defined(PROP_DETAILTEX) || !defined(OPTIMIZER_ENABLED)
 			Texture2D _DetailTex;
@@ -76505,6 +79132,9 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			#endif
 			#if defined(PROP_RGBNORMALA)
 			Texture2D _RgbNormalA;
+			#endif
+			#if (defined(PROP_RGBNORMALR) || defined(PROP_RGBNORMALG) || defined(PROP_RGBNORMALB) || defined(PROP_RGBNORMALA)) && !defined(POI_PASS_SHADOW) && !defined(POI_PASS_DEPTH_ONLY)
+			#define POI_USES_TANGENT
 			#endif
 			#endif
 			//endex
@@ -77523,39 +80153,9 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			
 			void applyDissolve(inout PoiFragData poiFragData, in PoiMesh poiMesh, inout PoiMods poiMods, in PoiCam poiCam, in PoiLight poiLight)
 			{
-				half dissolveMask = 1;
-				#if defined(PROP_DISSOLVEMASK) || !defined(OPTIMIZER_ENABLED)
-				dissolveMask = POI2D_SAMPLER_PAN(_DissolveMask, _MainTex, poiUV(poiMesh.uv[_DissolveMaskUV], _DissolveMask_ST), _DissolveMaskPan).r;
-				#endif
-				
-				UNITY_BRANCH
-				if (_DissolveUseVertexColors > 0)
-				dissolveMask = ceil(poiMesh.vertexColor[max(_DissolveUseVertexColors - 1, 0)] * 100000) / 100000;
-				
-				if (_DissolveMaskGlobalMask > 0)
-				dissolveMask = maskBlend(dissolveMask, poiMods.globalMask[_DissolveMaskGlobalMask - 1], _DissolveMaskGlobalMaskBlendType);
-				
-				if (_DissolveMaskInvert >= 0.5)
-				dissolveMask = 1 - dissolveMask;
-				
-				#if defined(PROP_DISSOLVETOTEXTURE) || !defined(OPTIMIZER_ENABLED)
-				float4 dissolveToTexture = POI2D_SAMPLER_PAN(_DissolveToTexture, _MainTex, poiUV(poiMesh.uv[_DissolveToTextureUV], _DissolveToTexture_ST), _DissolveToTexturePan) * float4(poiThemeColor(poiMods, _DissolveTextureColor.rgb, _DissolveTextureColorThemeIndex), _DissolveTextureColor.a);
-				#else
-				float4 dissolveToTexture = float4(poiThemeColor(poiMods, _DissolveTextureColor.rgb, _DissolveTextureColorThemeIndex), _DissolveTextureColor.a);
-				#endif
-				float dissolveNoise = 1;
-				#if defined(PROP_DISSOLVENOISETEXTURE) || !defined(OPTIMIZER_ENABLED)
-				dissolveNoise = POI2D_SAMPLER_PAN(_DissolveNoiseTexture, _MainTex, poiUV(poiMesh.uv[_DissolveNoiseTextureUV], _DissolveNoiseTexture_ST), _DissolveNoiseTexturePan).r;
-				#endif
-				dissolveNoise = _DissolveInvertNoise ? 1 - dissolveNoise : dissolveNoise;
-				
-				float detailNoise = 0;
 				half detailStrength = 0;
 				if (_DissolveDetailNoiseEnabled >= 0.5)
-				{
-					detailNoise = getDissolveDetailNoise(poiMesh.worldPos, poiMesh.uv[_DissolveDetailNoiseUV]);
-					detailStrength = _DissolveDetailStrength;
-				}
+				detailStrength = _DissolveDetailStrength;
 				
 				float dissolveAmount = _DissolveAlpha;
 				if (_UVTileDissolveEnabled >= 0.5)
@@ -77594,6 +80194,52 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 					}
 				}
 				dissolveAmount = saturate(dissolveAmount);
+				
+				// Early exit
+				UNITY_BRANCH
+				if (dissolveAmount <= 0 && _UVTileDissolveEnabled < 0.5 && _DissolveWaveMode < 0.5 && _DissolveDebugGradient < 0.5 && alEdgeWidthMod <= 0)
+				{
+					if (_DissolveAlphaOnly >= 0.5)
+					poiFragData.alpha *= evalRamp4(0, _DissolveAlphaOnlyRamp);
+					#if !defined(POI_PASS_OUTLINE) && !defined(POI_PASS_SHADOW)
+					if (_DissolveApplyGlobalMaskIndex > 0)
+					applyToGlobalMask(poiMods, _DissolveApplyGlobalMaskIndex - 1, _DissolveApplyGlobalMaskBlendType, 0);
+					if (_DissolveInverseApplyGlobalMaskIndex > 0)
+					applyToGlobalMask(poiMods, _DissolveInverseApplyGlobalMaskIndex - 1, _DissolveInverseApplyGlobalMaskBlendType, 1);
+					#endif
+					return;
+				}
+				
+				half dissolveMask = 1;
+				#if defined(PROP_DISSOLVEMASK) || !defined(OPTIMIZER_ENABLED)
+				dissolveMask = POI2D_SAMPLER_PAN(_DissolveMask, _MainTex, poiUV(poiMesh.uv[_DissolveMaskUV], _DissolveMask_ST), _DissolveMaskPan).r;
+				#endif
+				
+				UNITY_BRANCH
+				if (_DissolveUseVertexColors > 0)
+				dissolveMask = ceil(poiMesh.vertexColor[max(_DissolveUseVertexColors - 1, 0)] * 100000) / 100000;
+				
+				if (_DissolveMaskGlobalMask > 0)
+				dissolveMask = maskBlend(dissolveMask, poiMods.globalMask[_DissolveMaskGlobalMask - 1], _DissolveMaskGlobalMaskBlendType);
+				
+				if (_DissolveMaskInvert >= 0.5)
+				dissolveMask = 1 - dissolveMask;
+				
+				#if defined(PROP_DISSOLVETOTEXTURE) || !defined(OPTIMIZER_ENABLED)
+				float4 dissolveToTexture = POI2D_SAMPLER_PAN(_DissolveToTexture, _MainTex, poiUV(poiMesh.uv[_DissolveToTextureUV], _DissolveToTexture_ST), _DissolveToTexturePan) * float4(poiThemeColor(poiMods, _DissolveTextureColor.rgb, _DissolveTextureColorThemeIndex), _DissolveTextureColor.a);
+				#else
+				float4 dissolveToTexture = float4(poiThemeColor(poiMods, _DissolveTextureColor.rgb, _DissolveTextureColorThemeIndex), _DissolveTextureColor.a);
+				#endif
+				float dissolveNoise = 1;
+				#if defined(PROP_DISSOLVENOISETEXTURE) || !defined(OPTIMIZER_ENABLED)
+				dissolveNoise = POI2D_SAMPLER_PAN(_DissolveNoiseTexture, _MainTex, poiUV(poiMesh.uv[_DissolveNoiseTextureUV], _DissolveNoiseTexture_ST), _DissolveNoiseTexturePan).r;
+				#endif
+				dissolveNoise = _DissolveInvertNoise ? 1 - dissolveNoise : dissolveNoise;
+				
+				float detailNoise = 0;
+				if (_DissolveDetailNoiseEnabled >= 0.5)
+				detailNoise = getDissolveDetailNoise(poiMesh.worldPos, poiMesh.uv[_DissolveDetailNoiseUV]);
+				
 				dissolveAmount *= dissolveMask;
 				detailStrength = saturate(detailStrength);
 				
@@ -77893,11 +80539,11 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 					
 					if (any(_VertexLocalTranslationALMin) || any(_VertexLocalTranslationALMax))
 					{
-						ALLocalTranslation = lerp(_VertexLocalTranslationALMin, _VertexLocalTranslationALMax, audioLinkBands[_VertexLocalTranslationALBand]);
+						ALLocalTranslation = lerp(_VertexLocalTranslationALMin, _VertexLocalTranslationALMax, poiSelect5(audioLinkBands, _VertexLocalTranslationALBand));
 					}
 					if (any(_VertexLocalRotationAL))
 					{
-						ALrotation = audioLinkBands[_VertexLocalRotationALBand] * _VertexLocalRotationAL;
+						ALrotation = poiSelect5(audioLinkBands, _VertexLocalRotationALBand) * _VertexLocalRotationAL;
 					}
 					if (any(_VertexLocalRotationCTALSpeed))
 					{
@@ -77907,20 +80553,20 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 					}
 					if (any(_VertexLocalScaleALMin.xyz) || any(_VertexLocalScaleALMax.xyz))
 					{
-						ALScale = lerp(_VertexLocalScaleALMin.xyz + _VertexLocalScaleALMin.w, _VertexLocalScaleALMax.xyz + _VertexLocalScaleALMax.w, audioLinkBands[_VertexLocalScaleALBand]);
+						ALScale = lerp(_VertexLocalScaleALMin.xyz + _VertexLocalScaleALMin.w, _VertexLocalScaleALMax.xyz + _VertexLocalScaleALMax.w, poiSelect5(audioLinkBands, _VertexLocalScaleALBand));
 					}
 					if (any(_VertexWorldTranslationALMin.xyz) || any(_VertexWorldTranslationALMax.xyz))
 					{
-						ALWorldTranslation = lerp(_VertexWorldTranslationALMin, _VertexWorldTranslationALMax, audioLinkBands[_VertexWorldTranslationALBand]);
+						ALWorldTranslation = lerp(_VertexWorldTranslationALMin, _VertexWorldTranslationALMax, poiSelect5(audioLinkBands, _VertexWorldTranslationALBand));
 					}
 					if (any(_VertexManipulationHeightAL.xy))
 					{
-						ALHeight = lerp(_VertexManipulationHeightAL.x, _VertexManipulationHeightAL.y, audioLinkBands[_VertexManipulationHeightBand]);
+						ALHeight = lerp(_VertexManipulationHeightAL.x, _VertexManipulationHeightAL.y, poiSelect5(audioLinkBands, _VertexManipulationHeightBand));
 					}
 					//ifex isNotAnimated(_VertexRoundingEnabled) && _VertexRoundingEnabled==0
 					if (any(_VertexRoundingRangeAL.xy))
 					{
-						ALRoundingAmount = lerp(_VertexRoundingRangeAL.x, _VertexRoundingRangeAL.y, audioLinkBands[_VertexRoundingRangeBand]);
+						ALRoundingAmount = lerp(_VertexRoundingRangeAL.x, _VertexRoundingRangeAL.y, poiSelect5(audioLinkBands, _VertexRoundingRangeBand));
 					}
 					//endex
 					//ifex isNotAnimated(_VertexSpectrumMotion) && _VertexSpectrumMotion==0
@@ -77950,7 +80596,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 					v.color.a
 				};
 				
-				half basicsMask = vertexEffectsMask[_VertexBasicsMaskChannel];
+				half basicsMask = poiSelect8(vertexEffectsMask, _VertexBasicsMaskChannel);
 				
 				ALLocalTranslation *= basicsMask;
 				ALrotation *= basicsMask;
@@ -77986,7 +80632,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 					#else
 					heightOffset = (1 - _VertexManipulationHeightBias) * (_VertexManipulationHeight + ALHeight) * o.normal.xyz;
 					#endif
-					heightOffset *= vertexEffectsMask[_VertexManipulationHeightMaskChannel] * o.normal.w;
+					heightOffset *= poiSelect8(vertexEffectsMask, _VertexManipulationHeightMaskChannel) * o.normal.w;
 					
 				}
 				// Fix z fighting issue with projectors maybe probably I hope
@@ -77996,7 +80642,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				UNITY_BRANCH
 				if (_VertexBarrelMode >= 0.5)
 				{
-					half barrelMask = vertexEffectsMask[_VertexBarrelMaskChannel];
+					half barrelMask = poiSelect8(vertexEffectsMask, _VertexBarrelMaskChannel);
 					v.vertex.xz = lerp(v.vertex.xz, normalize(v.vertex.xz) * _VertexBarrelWidth + v.vertex.xz * _VertexBarrelHeight, _VertexBarrelAlpha * barrelMask);
 				}
 				//endex
@@ -78005,7 +80651,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				UNITY_BRANCH
 				if (_VertexSphereMode >= 0.5)
 				{
-					half sphereMask = vertexEffectsMask[_VertexSphereMaskChannel];
+					half sphereMask = poiSelect8(vertexEffectsMask, _VertexSphereMaskChannel);
 					v.vertex.xyz = lerp(v.vertex.xyz, normalize(v.vertex.xyz + _VertexSphereCenter.xyz) * _VertexSphereRadius + v.vertex.xyz * _VertexSphereHeight, _VertexSphereAlpha * sphereMask);
 				}
 				//endex
@@ -78014,7 +80660,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				UNITY_BRANCH
 				if (_VertexTornadoMode >= 0.5)
 				{
-					half tornadoMask = vertexEffectsMask[_VertexTornadoMaskChannel];
+					half tornadoMask = poiSelect8(vertexEffectsMask, _VertexTornadoMaskChannel);
 					float heightStrength = smoothstep(_VertexTornadoBaseHeight, _VertexTornadoTopHeight, v.vertex.y);
 					float funnelStrength = pow(heightStrength, _VertexTornadoFunnelShape);
 					float totalStrength = funnelStrength * tornadoMask;
@@ -78041,7 +80687,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				UNITY_BRANCH
 				if (_VertexWindEnabled >= 0.5)
 				{
-					half windMask = vertexEffectsMask[_VertexWindMaskChannel];
+					half windMask = poiSelect8(vertexEffectsMask, _VertexWindMaskChannel);
 					if (windMask > 0)
 					{
 						float3 worldPos = mul(unity_ObjectToWorld, v.vertex).xyz;
@@ -78073,7 +80719,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				UNITY_BRANCH
 				if (_VertexRoundingEnabled >= 0.5)
 				{
-					half roundingMask = vertexEffectsMask[_VertexRoundingMaskChannel];
+					half roundingMask = poiSelect8(vertexEffectsMask, _VertexRoundingMaskChannel);
 					if (roundingMask > 0)
 					{
 						float3 preRoundingVertex = v.vertex.xyz;
@@ -78107,7 +80753,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				{
 					if (AudioLinkIsAvailable())
 					{
-						alpha = saturate(alpha + lerp(_VertexLookAtAlphaAudiolink.x, _VertexLookAtAlphaAudiolink.y, vertexAudioLink[_VertexLookAtAudioLinkBand]) * _VertexLookAtAudioLinkEnabled);
+						alpha = saturate(alpha + lerp(_VertexLookAtAlphaAudiolink.x, _VertexLookAtAlphaAudiolink.y, poiSelect5(vertexAudioLink, _VertexLookAtAudioLinkBand)) * _VertexLookAtAudioLinkEnabled);
 					}
 				}
 				#endif
@@ -78654,7 +81300,9 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				POI_TRANSFER_SHADOW_CASTER_NOPOS(o, o.pos);
 				#endif
 				
+				#if !defined(POI_PASS_SHADOW) && (!defined(OPTIMIZER_ENABLED) || defined(_POI_DEPTH_RIMLIGHT) || defined(GRAIN) || defined(POI_GRABPASS) || defined(TRIPLANAR_PROJECTION))
 				o.worldDir = dot(o.pos, CalculateFrustumCorrection());
+				#endif
 				
 				if (_RenderingReduceClipDistance >= 0.5)
 				{
@@ -78693,21 +81341,37 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				
 				#endif
 				
+				#if defined(OPTIMIZER_ENABLED)
+				#if !defined(POI_USES_UV1)
+				o.uv[0] = float4(o.uv[0].xy, 0, 0);
+				#endif
+				#if !defined(POI_USES_UV2) && !defined(POI_USES_UV3)
+				o.uv[1] = 0;
+				#elif !defined(POI_USES_UV2)
+				o.uv[1] = float4(0, 0, o.uv[1].zw);
+				#elif !defined(POI_USES_UV3)
+				o.uv[1] = float4(o.uv[1].xy, 0, 0);
+				#endif
+				#if !defined(POI_USES_TANGENT)
+				o.tangent = 0;
+				#endif
+				#endif
+				
 				return o;
 			}
 			
 			//ifex _StochasticMode!=0
 			#if defined(_STOCHASTICMODE_DELIOT_HEITZ)
-			#define POI2D_SAMPLER_STOCHASTIC(tex, texSampler, uv, useStochastic) (useStochastic ? DeliotHeitzSampleTexture(tex, sampler##texSampler, uv) : POI2D_SAMPLER(tex, texSampler, uv))
-			#define POI2D_SAMPLER_PAN_STOCHASTIC(tex, texSampler, uv, pan, useStochastic) (useStochastic ? DeliotHeitzSampleTexture(tex, sampler##texSampler, POI_PAN_UV(uv, pan)) : POI2D_SAMPLER_PAN(tex, texSampler, uv, pan))
-			#define POI2D_SAMPLER_PANGRAD_STOCHASTIC(tex, texSampler, uv, pan, dx, dy, useStochastic) (useStochastic ? DeliotHeitzSampleTexture(tex, sampler##texSampler, POI_PAN_UV(uv, pan), dx, dy) : POI2D_SAMPLER_PANGRAD(tex, texSampler, uv, pan, dx, dy))
+			#define POI2D_SAMPLER_STOCHASTIC(tex, texSampler, uv, useStochastic) (PoiStochasticSample(tex, sampler##texSampler, uv, useStochastic))
+			#define POI2D_SAMPLER_PAN_STOCHASTIC(tex, texSampler, uv, pan, useStochastic) (PoiStochasticSample(tex, sampler##texSampler, POI_PAN_UV(uv, pan), useStochastic))
+			#define POI2D_SAMPLER_PANGRAD_STOCHASTIC(tex, texSampler, uv, pan, dx, dy, useStochastic) (PoiStochasticSampleGrad(tex, sampler##texSampler, POI_PAN_UV(uv, pan), dx, dy, useStochastic))
 			#endif
 			//endex
 			//ifex _StochasticMode!=1
 			#if defined(_STOCHASTICMODE_HEXTILE)
-			#define POI2D_SAMPLER_STOCHASTIC(tex, texSampler, uv, useStochastic) (useStochastic ? HextileSampleTexture(tex, sampler##texSampler, uv, false) : POI2D_SAMPLER(tex, texSampler, uv))
-			#define POI2D_SAMPLER_PAN_STOCHASTIC(tex, texSampler, uv, pan, useStochastic) (useStochastic ? HextileSampleTexture(tex, sampler##texSampler, POI_PAN_UV(uv, pan), false) : POI2D_SAMPLER_PAN(tex, texSampler, uv, pan))
-			#define POI2D_SAMPLER_PANGRAD_STOCHASTIC(tex, texSampler, uv, pan, dx, dy, useStochastic) (useStochastic ? HextileSampleTexture(tex, sampler##texSampler, POI_PAN_UV(uv, pan), false, dx, dy) : POI2D_SAMPLER_PANGRAD(tex, texSampler, uv, pan, dx, dy))
+			#define POI2D_SAMPLER_STOCHASTIC(tex, texSampler, uv, useStochastic) (PoiStochasticSample(tex, sampler##texSampler, uv, useStochastic))
+			#define POI2D_SAMPLER_PAN_STOCHASTIC(tex, texSampler, uv, pan, useStochastic) (PoiStochasticSample(tex, sampler##texSampler, POI_PAN_UV(uv, pan), useStochastic))
+			#define POI2D_SAMPLER_PANGRAD_STOCHASTIC(tex, texSampler, uv, pan, dx, dy, useStochastic) (PoiStochasticSampleGrad(tex, sampler##texSampler, POI_PAN_UV(uv, pan), dx, dy, useStochastic))
 			#endif
 			//endex
 			
@@ -78793,6 +81457,27 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			{
 				float2 dx = ddx(uv), dy = ddy(uv);
 				return DeliotHeitzSampleTexture(tex, texSampler, uv, dx, dy);
+			}
+			
+			// Branch instead of ?: so textures with stochastic off don't also pay for the stochastic samples
+			float4 PoiStochasticSample(Texture2D tex, SamplerState texSampler, float2 uv, float useStochastic)
+			{
+				UNITY_BRANCH
+				if (useStochastic)
+				{
+					return DeliotHeitzSampleTexture(tex, texSampler, uv);
+				}
+				return tex.Sample(texSampler, uv);
+			}
+			
+			float4 PoiStochasticSampleGrad(Texture2D tex, SamplerState texSampler, float2 uv, float2 dx, float2 dy, float useStochastic)
+			{
+				UNITY_BRANCH
+				if (useStochastic)
+				{
+					return DeliotHeitzSampleTexture(tex, texSampler, uv, dx, dy);
+				}
+				return tex.SampleGrad(texSampler, uv, dx, dy);
 			}
 			#endif // defined(_STOCHASTICMODE_DELIOT_HEITZ)
 			//endex
@@ -78916,6 +81601,27 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float4 HextileSampleTexture(Texture2D tex, SamplerState texSampler, float2 uv, bool isNormalMap)
 			{
 				return HextileSampleTexture(tex, texSampler, uv, isNormalMap, ddx(uv), ddy(uv));
+			}
+			
+			// Branch instead of ?: so textures with stochastic off don't also pay for the stochastic samples
+			float4 PoiStochasticSample(Texture2D tex, SamplerState texSampler, float2 uv, float useStochastic)
+			{
+				UNITY_BRANCH
+				if (useStochastic)
+				{
+					return HextileSampleTexture(tex, texSampler, uv, false);
+				}
+				return tex.Sample(texSampler, uv);
+			}
+			
+			float4 PoiStochasticSampleGrad(Texture2D tex, SamplerState texSampler, float2 uv, float2 dx, float2 dy, float useStochastic)
+			{
+				UNITY_BRANCH
+				if (useStochastic)
+				{
+					return HextileSampleTexture(tex, texSampler, uv, false, dx, dy);
+				}
+				return tex.SampleGrad(texSampler, uv, dx, dy);
 			}
 			#endif // defined(_STOCHASTICMODE_HEXTILE)
 			//endex
@@ -81652,7 +84358,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				
 				#if POI_PIPE == POI_URP
 				float3 normalWS = NormalizeNormalPerPixel(poiMesh.normals[0]);
-				outNormalWS = half4(normalWS, 0.0) + POI_SAFE_RGB0;
+				outNormalWS = half4(normalWS, 0.0) + POI_SAFE_MAINTEX_RGB0;
 				#ifdef _WRITE_RENDERING_LAYERS
 				outRenderingLayers = EncodeMeshRenderingLayer();
 				#endif
@@ -81931,6 +84637,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _Bump2ndScaleMaskUV;
 			float _Bump2ndScaleMaskGlobalMask;
 			float _Bump2ndScaleMaskGlobalMaskBlendType;
+			//ifex _Bump2ndMapUV!=1 && isNotAnimated(_Bump2ndMapUV) && _Bump2ndScaleMaskUV!=1 && isNotAnimated(_Bump2ndScaleMaskUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _Bump2ndMapUV!=2 && isNotAnimated(_Bump2ndMapUV) && _Bump2ndScaleMaskUV!=2 && isNotAnimated(_Bump2ndScaleMaskUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _Bump2ndMapUV!=3 && isNotAnimated(_Bump2ndMapUV) && _Bump2ndScaleMaskUV!=3 && isNotAnimated(_Bump2ndScaleMaskUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			//endex
 			float4 _AlphaMask_ST;
@@ -81986,6 +84701,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			half _ColorGradingToggle;
 			float _MainGradationStrength;
 			float _MainGradationMaskChannel;
+			//ifex _MainColorAdjustTextureUV!=1 && isNotAnimated(_MainColorAdjustTextureUV) && _MainTintTextureUV!=1 && isNotAnimated(_MainTintTextureUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _MainColorAdjustTextureUV!=2 && isNotAnimated(_MainColorAdjustTextureUV) && _MainTintTextureUV!=2 && isNotAnimated(_MainTintTextureUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _MainColorAdjustTextureUV!=3 && isNotAnimated(_MainColorAdjustTextureUV) && _MainTintTextureUV!=3 && isNotAnimated(_MainTintTextureUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			//endex
 			
@@ -82024,6 +84748,9 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			half _AlphaFresnelInvert;
 			half _AlphaFresnelGlobalMask;
 			float _AlphaFresnelGlobalMaskBlendType;
+			#if defined(POI_PASS_SHADOW) || defined(POI_PASS_DEPTH_ONLY)
+			#define POI_USES_TANGENT
+			#endif
 			//endex
 			
 			//ifex _AlphaAngular==0 && isNotAnimated(_AlphaAngular)
@@ -82091,6 +84818,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			half4 _GlobalMaskTexture3SplitPan_B;
 			float4 _GlobalMaskTexture3SplitTilingOffset_A;
 			half4 _GlobalMaskTexture3SplitPan_A;
+			//ifex _GlobalMaskTexture0UV!=1 && isNotAnimated(_GlobalMaskTexture0UV) && _GlobalMaskTexture1UV!=1 && isNotAnimated(_GlobalMaskTexture1UV) && _GlobalMaskTexture2UV!=1 && isNotAnimated(_GlobalMaskTexture2UV) && _GlobalMaskTexture3UV!=1 && isNotAnimated(_GlobalMaskTexture3UV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _GlobalMaskTexture0UV!=2 && isNotAnimated(_GlobalMaskTexture0UV) && _GlobalMaskTexture1UV!=2 && isNotAnimated(_GlobalMaskTexture1UV) && _GlobalMaskTexture2UV!=2 && isNotAnimated(_GlobalMaskTexture2UV) && _GlobalMaskTexture3UV!=2 && isNotAnimated(_GlobalMaskTexture3UV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _GlobalMaskTexture0UV!=3 && isNotAnimated(_GlobalMaskTexture0UV) && _GlobalMaskTexture1UV!=3 && isNotAnimated(_GlobalMaskTexture1UV) && _GlobalMaskTexture2UV!=3 && isNotAnimated(_GlobalMaskTexture2UV) && _GlobalMaskTexture3UV!=3 && isNotAnimated(_GlobalMaskTexture3UV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			//endex
 			//ifex _GlobalMaskOptionsEnable==0
@@ -82471,6 +85207,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			half2 _DistortionStrength1AudioLink;
 			half _DistortionStrength1AudioLinkBand;
 			#endif
+			//ifex _DistortionFlowTextureUV!=1 && isNotAnimated(_DistortionFlowTextureUV) && _DistortionFlowTexture1UV!=1 && isNotAnimated(_DistortionFlowTexture1UV) && _DistortionMaskUV!=1 && isNotAnimated(_DistortionMaskUV) && _DistortionUvToDistort!=1 && isNotAnimated(_DistortionUvToDistort)
+			#define POI_USES_UV1
+			//endex
+			//ifex _DistortionFlowTextureUV!=2 && isNotAnimated(_DistortionFlowTextureUV) && _DistortionFlowTexture1UV!=2 && isNotAnimated(_DistortionFlowTexture1UV) && _DistortionMaskUV!=2 && isNotAnimated(_DistortionMaskUV) && _DistortionUvToDistort!=2 && isNotAnimated(_DistortionUvToDistort)
+			#define POI_USES_UV2
+			//endex
+			//ifex _DistortionFlowTextureUV!=3 && isNotAnimated(_DistortionFlowTextureUV) && _DistortionFlowTexture1UV!=3 && isNotAnimated(_DistortionFlowTexture1UV) && _DistortionMaskUV!=3 && isNotAnimated(_DistortionMaskUV) && _DistortionUvToDistort!=3 && isNotAnimated(_DistortionUvToDistort)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			//endex
 			float2 _UVSettingsTiling0;
@@ -82498,6 +85243,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			int _StereoEnabled;
 			int _PanoUseBothEyes;
 			float _PolarUV;
+			//ifex _PolarUV!=1 && isNotAnimated(_PolarUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _PolarUV!=2 && isNotAnimated(_PolarUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _PolarUV!=3 && isNotAnimated(_PolarUV)
+			#define POI_USES_UV3
+			//endex
 			float _PolarMode;
 			float2 _PolarCenter;
 			float _PolarRadialScale;
@@ -82548,6 +85302,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _UDIMFaceDiscardRow0_1;
 			float _UDIMFaceDiscardRow0_2;
 			float _UDIMFaceDiscardRow0_3;
+			//ifex _UDIMDiscardUV!=1 && isNotAnimated(_UDIMDiscardUV) && _UDIMFaceDiscardUV!=1 && isNotAnimated(_UDIMFaceDiscardUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _UDIMDiscardUV!=2 && isNotAnimated(_UDIMDiscardUV) && _UDIMFaceDiscardUV!=2 && isNotAnimated(_UDIMFaceDiscardUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _UDIMDiscardUV!=3 && isNotAnimated(_UDIMDiscardUV) && _UDIMFaceDiscardUV!=3 && isNotAnimated(_UDIMFaceDiscardUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			//endex
 			
@@ -82585,6 +85348,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			half _ParallaxAnisotropyScale;
 			float4 _ParallaxLOD;
 			#endif
+			//ifex _HeightMapUV!=1 && isNotAnimated(_HeightMapUV) && _HeightmaskUV!=1 && isNotAnimated(_HeightmaskUV) && _ParallaxUV!=1 && isNotAnimated(_ParallaxUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _HeightMapUV!=2 && isNotAnimated(_HeightMapUV) && _HeightmaskUV!=2 && isNotAnimated(_HeightmaskUV) && _ParallaxUV!=2 && isNotAnimated(_ParallaxUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _HeightMapUV!=3 && isNotAnimated(_HeightMapUV) && _HeightmaskUV!=3 && isNotAnimated(_HeightmaskUV) && _ParallaxUV!=3 && isNotAnimated(_ParallaxUV)
+			#define POI_USES_UV3
+			//endex
 			//endex
 			
 			//ifex _VertexManipulationsEnabled==0
@@ -82837,6 +85609,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _BackFaceHueShiftSpeed;
 			half _BackFaceEmissionLimiter;
 			float _BackFaceHueSelectOrShift;
+			//ifex _BackFaceTextureUV!=1 && isNotAnimated(_BackFaceTextureUV) && _BackFaceMaskUV!=1 && isNotAnimated(_BackFaceMaskUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _BackFaceTextureUV!=2 && isNotAnimated(_BackFaceTextureUV) && _BackFaceMaskUV!=2 && isNotAnimated(_BackFaceMaskUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _BackFaceTextureUV!=3 && isNotAnimated(_BackFaceTextureUV) && _BackFaceMaskUV!=3 && isNotAnimated(_BackFaceMaskUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			//endex
 			
@@ -82978,6 +85759,20 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float _DissolveALColorOverrideBand;
 			half4 _DissolveALColorOverrideRamp;
 			#endif
+			//ifex _DissolveToTextureUV!=1 && isNotAnimated(_DissolveToTextureUV) && _DissolveNoiseTextureUV!=1 && isNotAnimated(_DissolveNoiseTextureUV) && _DissolveDetailNoiseUV!=1 && isNotAnimated(_DissolveDetailNoiseUV) && _DissolveMaskUV!=1 && isNotAnimated(_DissolveMaskUV) && _DissolveP2PUV!=1 && isNotAnimated(_DissolveP2PUV) && _UVTileDissolveUV!=1 && isNotAnimated(_UVTileDissolveUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _DissolveToTextureUV!=2 && isNotAnimated(_DissolveToTextureUV) && _DissolveNoiseTextureUV!=2 && isNotAnimated(_DissolveNoiseTextureUV) && _DissolveDetailNoiseUV!=2 && isNotAnimated(_DissolveDetailNoiseUV) && _DissolveMaskUV!=2 && isNotAnimated(_DissolveMaskUV) && _DissolveP2PUV!=2 && isNotAnimated(_DissolveP2PUV) && _UVTileDissolveUV!=2 && isNotAnimated(_UVTileDissolveUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _DissolveToTextureUV!=3 && isNotAnimated(_DissolveToTextureUV) && _DissolveNoiseTextureUV!=3 && isNotAnimated(_DissolveNoiseTextureUV) && _DissolveDetailNoiseUV!=3 && isNotAnimated(_DissolveDetailNoiseUV) && _DissolveMaskUV!=3 && isNotAnimated(_DissolveMaskUV) && _DissolveP2PUV!=3 && isNotAnimated(_DissolveP2PUV) && _UVTileDissolveUV!=3 && isNotAnimated(_UVTileDissolveUV)
+			#define POI_USES_UV3
+			//endex
+			//ifex _CenterOutDissolveNormals==0 && isNotAnimated(_CenterOutDissolveNormals)
+			#if defined(POI_PASS_SHADOW) || defined(POI_PASS_DEPTH_ONLY)
+			#define POI_USES_TANGENT
+			#endif
+			//endex
 			#endif
 			//endex
 			
@@ -83000,6 +85795,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float4 _MirrorTexture_ST;
 			float2 _MirrorTexturePan;
 			float _MirrorTextureUV;
+			//ifex _MirrorTextureUV!=1 && isNotAnimated(_MirrorTextureUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _MirrorTextureUV!=2 && isNotAnimated(_MirrorTextureUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _MirrorTextureUV!=3 && isNotAnimated(_MirrorTextureUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			#endif
 			//endex
@@ -83034,6 +85838,15 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			half _DepthAlphaMaxValue;
 			float _DepthAlphaMinDepth;
 			float _DepthAlphaMaxDepth;
+			//ifex _DepthMaskUV!=1 && isNotAnimated(_DepthMaskUV) && _DepthTextureUV!=1 && isNotAnimated(_DepthTextureUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _DepthMaskUV!=2 && isNotAnimated(_DepthMaskUV) && _DepthTextureUV!=2 && isNotAnimated(_DepthTextureUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _DepthMaskUV!=3 && isNotAnimated(_DepthMaskUV) && _DepthTextureUV!=3 && isNotAnimated(_DepthTextureUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			//endex
 			
@@ -83104,13 +85917,37 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			// End Depth texture handling
 			
 			UNITY_DECLARE_TEX2D(_MainTex);
+			//ifex _MainTexUV!=1 && isNotAnimated(_MainTexUV) && _AlphaMaskUV!=1 && isNotAnimated(_AlphaMaskUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _MainTexUV!=2 && isNotAnimated(_MainTexUV) && _AlphaMaskUV!=2 && isNotAnimated(_AlphaMaskUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _MainTexUV!=3 && isNotAnimated(_MainTexUV) && _AlphaMaskUV!=3 && isNotAnimated(_AlphaMaskUV)
+			#define POI_USES_UV3
+			//endex
 			#if defined(PROP_BUMPMAP) || !defined(OPTIMIZER_ENABLED)
 			Texture2D _BumpMap;
+			#if !defined(POI_PASS_SHADOW) && !defined(POI_PASS_DEPTH_ONLY)
+			#define POI_USES_TANGENT
+			#endif
+			//ifex _BumpMapUV!=1 && isNotAnimated(_BumpMapUV)
+			#define POI_USES_UV1
+			//endex
+			//ifex _BumpMapUV!=2 && isNotAnimated(_BumpMapUV)
+			#define POI_USES_UV2
+			//endex
+			//ifex _BumpMapUV!=3 && isNotAnimated(_BumpMapUV)
+			#define POI_USES_UV3
+			//endex
 			#endif
 			//ifex _UseBump2ndMap==0
 			#ifdef POI_BUMP2NDMAP
 			#if defined(PROP_BUMP2NDMAP) || !defined(OPTIMIZER_ENABLED)
 			Texture2D _Bump2ndMap;
+			#if !defined(POI_PASS_SHADOW) && !defined(POI_PASS_DEPTH_ONLY)
+			#define POI_USES_TANGENT
+			#endif
 			#endif
 			#if defined(PROP_BUMP2NDSCALEMASK) || !defined(OPTIMIZER_ENABLED)
 			Texture2D _Bump2ndScaleMask;
@@ -83168,6 +86005,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			//ifex _PoiParallax==0
 			#if defined(POI_PARALLAX) && (defined(PROP_HEIGHTMAP) || !defined(OPTIMIZER_ENABLED))
 			Texture2D _HeightMap;
+			#define POI_USES_TANGENT
 			#if defined(PROP_HEIGHTMASK) || !defined(OPTIMIZER_ENABLED)
 			Texture2D _Heightmask;
 			#endif
@@ -84151,39 +86989,9 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			
 			void applyDissolve(inout PoiFragData poiFragData, in PoiMesh poiMesh, inout PoiMods poiMods, in PoiCam poiCam, in PoiLight poiLight)
 			{
-				half dissolveMask = 1;
-				#if defined(PROP_DISSOLVEMASK) || !defined(OPTIMIZER_ENABLED)
-				dissolveMask = POI2D_SAMPLER_PAN(_DissolveMask, _MainTex, poiUV(poiMesh.uv[_DissolveMaskUV], _DissolveMask_ST), _DissolveMaskPan).r;
-				#endif
-				
-				UNITY_BRANCH
-				if (_DissolveUseVertexColors > 0)
-				dissolveMask = ceil(poiMesh.vertexColor[max(_DissolveUseVertexColors - 1, 0)] * 100000) / 100000;
-				
-				if (_DissolveMaskGlobalMask > 0)
-				dissolveMask = maskBlend(dissolveMask, poiMods.globalMask[_DissolveMaskGlobalMask - 1], _DissolveMaskGlobalMaskBlendType);
-				
-				if (_DissolveMaskInvert >= 0.5)
-				dissolveMask = 1 - dissolveMask;
-				
-				#if defined(PROP_DISSOLVETOTEXTURE) || !defined(OPTIMIZER_ENABLED)
-				float4 dissolveToTexture = POI2D_SAMPLER_PAN(_DissolveToTexture, _MainTex, poiUV(poiMesh.uv[_DissolveToTextureUV], _DissolveToTexture_ST), _DissolveToTexturePan) * float4(poiThemeColor(poiMods, _DissolveTextureColor.rgb, _DissolveTextureColorThemeIndex), _DissolveTextureColor.a);
-				#else
-				float4 dissolveToTexture = float4(poiThemeColor(poiMods, _DissolveTextureColor.rgb, _DissolveTextureColorThemeIndex), _DissolveTextureColor.a);
-				#endif
-				float dissolveNoise = 1;
-				#if defined(PROP_DISSOLVENOISETEXTURE) || !defined(OPTIMIZER_ENABLED)
-				dissolveNoise = POI2D_SAMPLER_PAN(_DissolveNoiseTexture, _MainTex, poiUV(poiMesh.uv[_DissolveNoiseTextureUV], _DissolveNoiseTexture_ST), _DissolveNoiseTexturePan).r;
-				#endif
-				dissolveNoise = _DissolveInvertNoise ? 1 - dissolveNoise : dissolveNoise;
-				
-				float detailNoise = 0;
 				half detailStrength = 0;
 				if (_DissolveDetailNoiseEnabled >= 0.5)
-				{
-					detailNoise = getDissolveDetailNoise(poiMesh.worldPos, poiMesh.uv[_DissolveDetailNoiseUV]);
-					detailStrength = _DissolveDetailStrength;
-				}
+				detailStrength = _DissolveDetailStrength;
 				
 				float dissolveAmount = _DissolveAlpha;
 				if (_UVTileDissolveEnabled >= 0.5)
@@ -84222,6 +87030,52 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 					}
 				}
 				dissolveAmount = saturate(dissolveAmount);
+				
+				// Early exit
+				UNITY_BRANCH
+				if (dissolveAmount <= 0 && _UVTileDissolveEnabled < 0.5 && _DissolveWaveMode < 0.5 && _DissolveDebugGradient < 0.5 && alEdgeWidthMod <= 0)
+				{
+					if (_DissolveAlphaOnly >= 0.5)
+					poiFragData.alpha *= evalRamp4(0, _DissolveAlphaOnlyRamp);
+					#if !defined(POI_PASS_OUTLINE) && !defined(POI_PASS_SHADOW)
+					if (_DissolveApplyGlobalMaskIndex > 0)
+					applyToGlobalMask(poiMods, _DissolveApplyGlobalMaskIndex - 1, _DissolveApplyGlobalMaskBlendType, 0);
+					if (_DissolveInverseApplyGlobalMaskIndex > 0)
+					applyToGlobalMask(poiMods, _DissolveInverseApplyGlobalMaskIndex - 1, _DissolveInverseApplyGlobalMaskBlendType, 1);
+					#endif
+					return;
+				}
+				
+				half dissolveMask = 1;
+				#if defined(PROP_DISSOLVEMASK) || !defined(OPTIMIZER_ENABLED)
+				dissolveMask = POI2D_SAMPLER_PAN(_DissolveMask, _MainTex, poiUV(poiMesh.uv[_DissolveMaskUV], _DissolveMask_ST), _DissolveMaskPan).r;
+				#endif
+				
+				UNITY_BRANCH
+				if (_DissolveUseVertexColors > 0)
+				dissolveMask = ceil(poiMesh.vertexColor[max(_DissolveUseVertexColors - 1, 0)] * 100000) / 100000;
+				
+				if (_DissolveMaskGlobalMask > 0)
+				dissolveMask = maskBlend(dissolveMask, poiMods.globalMask[_DissolveMaskGlobalMask - 1], _DissolveMaskGlobalMaskBlendType);
+				
+				if (_DissolveMaskInvert >= 0.5)
+				dissolveMask = 1 - dissolveMask;
+				
+				#if defined(PROP_DISSOLVETOTEXTURE) || !defined(OPTIMIZER_ENABLED)
+				float4 dissolveToTexture = POI2D_SAMPLER_PAN(_DissolveToTexture, _MainTex, poiUV(poiMesh.uv[_DissolveToTextureUV], _DissolveToTexture_ST), _DissolveToTexturePan) * float4(poiThemeColor(poiMods, _DissolveTextureColor.rgb, _DissolveTextureColorThemeIndex), _DissolveTextureColor.a);
+				#else
+				float4 dissolveToTexture = float4(poiThemeColor(poiMods, _DissolveTextureColor.rgb, _DissolveTextureColorThemeIndex), _DissolveTextureColor.a);
+				#endif
+				float dissolveNoise = 1;
+				#if defined(PROP_DISSOLVENOISETEXTURE) || !defined(OPTIMIZER_ENABLED)
+				dissolveNoise = POI2D_SAMPLER_PAN(_DissolveNoiseTexture, _MainTex, poiUV(poiMesh.uv[_DissolveNoiseTextureUV], _DissolveNoiseTexture_ST), _DissolveNoiseTexturePan).r;
+				#endif
+				dissolveNoise = _DissolveInvertNoise ? 1 - dissolveNoise : dissolveNoise;
+				
+				float detailNoise = 0;
+				if (_DissolveDetailNoiseEnabled >= 0.5)
+				detailNoise = getDissolveDetailNoise(poiMesh.worldPos, poiMesh.uv[_DissolveDetailNoiseUV]);
+				
 				dissolveAmount *= dissolveMask;
 				detailStrength = saturate(detailStrength);
 				
@@ -84521,11 +87375,11 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 					
 					if (any(_VertexLocalTranslationALMin) || any(_VertexLocalTranslationALMax))
 					{
-						ALLocalTranslation = lerp(_VertexLocalTranslationALMin, _VertexLocalTranslationALMax, audioLinkBands[_VertexLocalTranslationALBand]);
+						ALLocalTranslation = lerp(_VertexLocalTranslationALMin, _VertexLocalTranslationALMax, poiSelect5(audioLinkBands, _VertexLocalTranslationALBand));
 					}
 					if (any(_VertexLocalRotationAL))
 					{
-						ALrotation = audioLinkBands[_VertexLocalRotationALBand] * _VertexLocalRotationAL;
+						ALrotation = poiSelect5(audioLinkBands, _VertexLocalRotationALBand) * _VertexLocalRotationAL;
 					}
 					if (any(_VertexLocalRotationCTALSpeed))
 					{
@@ -84535,20 +87389,20 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 					}
 					if (any(_VertexLocalScaleALMin.xyz) || any(_VertexLocalScaleALMax.xyz))
 					{
-						ALScale = lerp(_VertexLocalScaleALMin.xyz + _VertexLocalScaleALMin.w, _VertexLocalScaleALMax.xyz + _VertexLocalScaleALMax.w, audioLinkBands[_VertexLocalScaleALBand]);
+						ALScale = lerp(_VertexLocalScaleALMin.xyz + _VertexLocalScaleALMin.w, _VertexLocalScaleALMax.xyz + _VertexLocalScaleALMax.w, poiSelect5(audioLinkBands, _VertexLocalScaleALBand));
 					}
 					if (any(_VertexWorldTranslationALMin.xyz) || any(_VertexWorldTranslationALMax.xyz))
 					{
-						ALWorldTranslation = lerp(_VertexWorldTranslationALMin, _VertexWorldTranslationALMax, audioLinkBands[_VertexWorldTranslationALBand]);
+						ALWorldTranslation = lerp(_VertexWorldTranslationALMin, _VertexWorldTranslationALMax, poiSelect5(audioLinkBands, _VertexWorldTranslationALBand));
 					}
 					if (any(_VertexManipulationHeightAL.xy))
 					{
-						ALHeight = lerp(_VertexManipulationHeightAL.x, _VertexManipulationHeightAL.y, audioLinkBands[_VertexManipulationHeightBand]);
+						ALHeight = lerp(_VertexManipulationHeightAL.x, _VertexManipulationHeightAL.y, poiSelect5(audioLinkBands, _VertexManipulationHeightBand));
 					}
 					//ifex isNotAnimated(_VertexRoundingEnabled) && _VertexRoundingEnabled==0
 					if (any(_VertexRoundingRangeAL.xy))
 					{
-						ALRoundingAmount = lerp(_VertexRoundingRangeAL.x, _VertexRoundingRangeAL.y, audioLinkBands[_VertexRoundingRangeBand]);
+						ALRoundingAmount = lerp(_VertexRoundingRangeAL.x, _VertexRoundingRangeAL.y, poiSelect5(audioLinkBands, _VertexRoundingRangeBand));
 					}
 					//endex
 					//ifex isNotAnimated(_VertexSpectrumMotion) && _VertexSpectrumMotion==0
@@ -84578,7 +87432,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 					v.color.a
 				};
 				
-				half basicsMask = vertexEffectsMask[_VertexBasicsMaskChannel];
+				half basicsMask = poiSelect8(vertexEffectsMask, _VertexBasicsMaskChannel);
 				
 				ALLocalTranslation *= basicsMask;
 				ALrotation *= basicsMask;
@@ -84614,7 +87468,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 					#else
 					heightOffset = (1 - _VertexManipulationHeightBias) * (_VertexManipulationHeight + ALHeight) * o.normal.xyz;
 					#endif
-					heightOffset *= vertexEffectsMask[_VertexManipulationHeightMaskChannel] * o.normal.w;
+					heightOffset *= poiSelect8(vertexEffectsMask, _VertexManipulationHeightMaskChannel) * o.normal.w;
 					
 				}
 				// Fix z fighting issue with projectors maybe probably I hope
@@ -84624,7 +87478,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				UNITY_BRANCH
 				if (_VertexBarrelMode >= 0.5)
 				{
-					half barrelMask = vertexEffectsMask[_VertexBarrelMaskChannel];
+					half barrelMask = poiSelect8(vertexEffectsMask, _VertexBarrelMaskChannel);
 					v.vertex.xz = lerp(v.vertex.xz, normalize(v.vertex.xz) * _VertexBarrelWidth + v.vertex.xz * _VertexBarrelHeight, _VertexBarrelAlpha * barrelMask);
 				}
 				//endex
@@ -84633,7 +87487,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				UNITY_BRANCH
 				if (_VertexSphereMode >= 0.5)
 				{
-					half sphereMask = vertexEffectsMask[_VertexSphereMaskChannel];
+					half sphereMask = poiSelect8(vertexEffectsMask, _VertexSphereMaskChannel);
 					v.vertex.xyz = lerp(v.vertex.xyz, normalize(v.vertex.xyz + _VertexSphereCenter.xyz) * _VertexSphereRadius + v.vertex.xyz * _VertexSphereHeight, _VertexSphereAlpha * sphereMask);
 				}
 				//endex
@@ -84642,7 +87496,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				UNITY_BRANCH
 				if (_VertexTornadoMode >= 0.5)
 				{
-					half tornadoMask = vertexEffectsMask[_VertexTornadoMaskChannel];
+					half tornadoMask = poiSelect8(vertexEffectsMask, _VertexTornadoMaskChannel);
 					float heightStrength = smoothstep(_VertexTornadoBaseHeight, _VertexTornadoTopHeight, v.vertex.y);
 					float funnelStrength = pow(heightStrength, _VertexTornadoFunnelShape);
 					float totalStrength = funnelStrength * tornadoMask;
@@ -84669,7 +87523,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				UNITY_BRANCH
 				if (_VertexWindEnabled >= 0.5)
 				{
-					half windMask = vertexEffectsMask[_VertexWindMaskChannel];
+					half windMask = poiSelect8(vertexEffectsMask, _VertexWindMaskChannel);
 					if (windMask > 0)
 					{
 						float3 worldPos = mul(unity_ObjectToWorld, v.vertex).xyz;
@@ -84701,7 +87555,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				UNITY_BRANCH
 				if (_VertexRoundingEnabled >= 0.5)
 				{
-					half roundingMask = vertexEffectsMask[_VertexRoundingMaskChannel];
+					half roundingMask = poiSelect8(vertexEffectsMask, _VertexRoundingMaskChannel);
 					if (roundingMask > 0)
 					{
 						float3 preRoundingVertex = v.vertex.xyz;
@@ -84735,7 +87589,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				{
 					if (AudioLinkIsAvailable())
 					{
-						alpha = saturate(alpha + lerp(_VertexLookAtAlphaAudiolink.x, _VertexLookAtAlphaAudiolink.y, vertexAudioLink[_VertexLookAtAudioLinkBand]) * _VertexLookAtAudioLinkEnabled);
+						alpha = saturate(alpha + lerp(_VertexLookAtAlphaAudiolink.x, _VertexLookAtAlphaAudiolink.y, poiSelect5(vertexAudioLink, _VertexLookAtAudioLinkBand)) * _VertexLookAtAudioLinkEnabled);
 					}
 				}
 				#endif
@@ -85282,7 +88136,9 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				POI_TRANSFER_SHADOW_CASTER_NOPOS(o, o.pos);
 				#endif
 				
+				#if !defined(POI_PASS_SHADOW) && (!defined(OPTIMIZER_ENABLED) || defined(_POI_DEPTH_RIMLIGHT) || defined(GRAIN) || defined(POI_GRABPASS) || defined(TRIPLANAR_PROJECTION))
 				o.worldDir = dot(o.pos, CalculateFrustumCorrection());
+				#endif
 				
 				if (_RenderingReduceClipDistance >= 0.5)
 				{
@@ -85321,21 +88177,37 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				
 				#endif
 				
+				#if defined(OPTIMIZER_ENABLED)
+				#if !defined(POI_USES_UV1)
+				o.uv[0] = float4(o.uv[0].xy, 0, 0);
+				#endif
+				#if !defined(POI_USES_UV2) && !defined(POI_USES_UV3)
+				o.uv[1] = 0;
+				#elif !defined(POI_USES_UV2)
+				o.uv[1] = float4(0, 0, o.uv[1].zw);
+				#elif !defined(POI_USES_UV3)
+				o.uv[1] = float4(o.uv[1].xy, 0, 0);
+				#endif
+				#if !defined(POI_USES_TANGENT)
+				o.tangent = 0;
+				#endif
+				#endif
+				
 				return o;
 			}
 			
 			//ifex _StochasticMode!=0
 			#if defined(_STOCHASTICMODE_DELIOT_HEITZ)
-			#define POI2D_SAMPLER_STOCHASTIC(tex, texSampler, uv, useStochastic) (useStochastic ? DeliotHeitzSampleTexture(tex, sampler##texSampler, uv) : POI2D_SAMPLER(tex, texSampler, uv))
-			#define POI2D_SAMPLER_PAN_STOCHASTIC(tex, texSampler, uv, pan, useStochastic) (useStochastic ? DeliotHeitzSampleTexture(tex, sampler##texSampler, POI_PAN_UV(uv, pan)) : POI2D_SAMPLER_PAN(tex, texSampler, uv, pan))
-			#define POI2D_SAMPLER_PANGRAD_STOCHASTIC(tex, texSampler, uv, pan, dx, dy, useStochastic) (useStochastic ? DeliotHeitzSampleTexture(tex, sampler##texSampler, POI_PAN_UV(uv, pan), dx, dy) : POI2D_SAMPLER_PANGRAD(tex, texSampler, uv, pan, dx, dy))
+			#define POI2D_SAMPLER_STOCHASTIC(tex, texSampler, uv, useStochastic) (PoiStochasticSample(tex, sampler##texSampler, uv, useStochastic))
+			#define POI2D_SAMPLER_PAN_STOCHASTIC(tex, texSampler, uv, pan, useStochastic) (PoiStochasticSample(tex, sampler##texSampler, POI_PAN_UV(uv, pan), useStochastic))
+			#define POI2D_SAMPLER_PANGRAD_STOCHASTIC(tex, texSampler, uv, pan, dx, dy, useStochastic) (PoiStochasticSampleGrad(tex, sampler##texSampler, POI_PAN_UV(uv, pan), dx, dy, useStochastic))
 			#endif
 			//endex
 			//ifex _StochasticMode!=1
 			#if defined(_STOCHASTICMODE_HEXTILE)
-			#define POI2D_SAMPLER_STOCHASTIC(tex, texSampler, uv, useStochastic) (useStochastic ? HextileSampleTexture(tex, sampler##texSampler, uv, false) : POI2D_SAMPLER(tex, texSampler, uv))
-			#define POI2D_SAMPLER_PAN_STOCHASTIC(tex, texSampler, uv, pan, useStochastic) (useStochastic ? HextileSampleTexture(tex, sampler##texSampler, POI_PAN_UV(uv, pan), false) : POI2D_SAMPLER_PAN(tex, texSampler, uv, pan))
-			#define POI2D_SAMPLER_PANGRAD_STOCHASTIC(tex, texSampler, uv, pan, dx, dy, useStochastic) (useStochastic ? HextileSampleTexture(tex, sampler##texSampler, POI_PAN_UV(uv, pan), false, dx, dy) : POI2D_SAMPLER_PANGRAD(tex, texSampler, uv, pan, dx, dy))
+			#define POI2D_SAMPLER_STOCHASTIC(tex, texSampler, uv, useStochastic) (PoiStochasticSample(tex, sampler##texSampler, uv, useStochastic))
+			#define POI2D_SAMPLER_PAN_STOCHASTIC(tex, texSampler, uv, pan, useStochastic) (PoiStochasticSample(tex, sampler##texSampler, POI_PAN_UV(uv, pan), useStochastic))
+			#define POI2D_SAMPLER_PANGRAD_STOCHASTIC(tex, texSampler, uv, pan, dx, dy, useStochastic) (PoiStochasticSampleGrad(tex, sampler##texSampler, POI_PAN_UV(uv, pan), dx, dy, useStochastic))
 			#endif
 			//endex
 			
@@ -85421,6 +88293,27 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			{
 				float2 dx = ddx(uv), dy = ddy(uv);
 				return DeliotHeitzSampleTexture(tex, texSampler, uv, dx, dy);
+			}
+			
+			// Branch instead of ?: so textures with stochastic off don't also pay for the stochastic samples
+			float4 PoiStochasticSample(Texture2D tex, SamplerState texSampler, float2 uv, float useStochastic)
+			{
+				UNITY_BRANCH
+				if (useStochastic)
+				{
+					return DeliotHeitzSampleTexture(tex, texSampler, uv);
+				}
+				return tex.Sample(texSampler, uv);
+			}
+			
+			float4 PoiStochasticSampleGrad(Texture2D tex, SamplerState texSampler, float2 uv, float2 dx, float2 dy, float useStochastic)
+			{
+				UNITY_BRANCH
+				if (useStochastic)
+				{
+					return DeliotHeitzSampleTexture(tex, texSampler, uv, dx, dy);
+				}
+				return tex.SampleGrad(texSampler, uv, dx, dy);
 			}
 			#endif // defined(_STOCHASTICMODE_DELIOT_HEITZ)
 			//endex
@@ -85544,6 +88437,27 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			float4 HextileSampleTexture(Texture2D tex, SamplerState texSampler, float2 uv, bool isNormalMap)
 			{
 				return HextileSampleTexture(tex, texSampler, uv, isNormalMap, ddx(uv), ddy(uv));
+			}
+			
+			// Branch instead of ?: so textures with stochastic off don't also pay for the stochastic samples
+			float4 PoiStochasticSample(Texture2D tex, SamplerState texSampler, float2 uv, float useStochastic)
+			{
+				UNITY_BRANCH
+				if (useStochastic)
+				{
+					return HextileSampleTexture(tex, texSampler, uv, false);
+				}
+				return tex.Sample(texSampler, uv);
+			}
+			
+			float4 PoiStochasticSampleGrad(Texture2D tex, SamplerState texSampler, float2 uv, float2 dx, float2 dy, float useStochastic)
+			{
+				UNITY_BRANCH
+				if (useStochastic)
+				{
+					return HextileSampleTexture(tex, texSampler, uv, false, dx, dy);
+				}
+				return tex.SampleGrad(texSampler, uv, dx, dy);
 			}
 			#endif // defined(_STOCHASTICMODE_HEXTILE)
 			//endex

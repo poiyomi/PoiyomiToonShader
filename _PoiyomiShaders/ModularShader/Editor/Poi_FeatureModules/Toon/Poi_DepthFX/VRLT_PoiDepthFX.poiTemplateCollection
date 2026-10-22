@@ -72,6 +72,15 @@ _DepthAlphaMaxValue ("Max Alpha", Range(0, 1)) = 0
     half _DepthAlphaMaxValue;
     float _DepthAlphaMinDepth;
     float _DepthAlphaMaxDepth;
+    //ifex _DepthMaskUV!=1 && isNotAnimated(_DepthMaskUV) && _DepthTextureUV!=1 && isNotAnimated(_DepthTextureUV)
+    #define POI_USES_UV1
+    //endex
+    //ifex _DepthMaskUV!=2 && isNotAnimated(_DepthMaskUV) && _DepthTextureUV!=2 && isNotAnimated(_DepthTextureUV)
+    #define POI_USES_UV2
+    //endex
+    //ifex _DepthMaskUV!=3 && isNotAnimated(_DepthMaskUV) && _DepthTextureUV!=3 && isNotAnimated(_DepthTextureUV)
+    #define POI_USES_UV3
+    //endex
 #endif
 //endex
 

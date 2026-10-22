@@ -36,7 +36,7 @@ frag( VertexOut i, bool facing : SV_IsFrontFace
 
 	#if POI_PIPE == POI_URP
 		float3 normalWS = NormalizeNormalPerPixel(poiMesh.normals[0]);
-		outNormalWS = half4(normalWS, 0.0) + POI_SAFE_RGB0;
+		outNormalWS = half4(normalWS, 0.0) + POI_SAFE_MAINTEX_RGB0;
 		#ifdef _WRITE_RENDERING_LAYERS
 		outRenderingLayers = EncodeMeshRenderingLayer();
 		#endif

@@ -490,6 +490,15 @@ _GlobalMaskSlider_15 ("4A", Range(-1, 1)) = 0
     half4 _GlobalMaskTexture3SplitPan_B;
     float4 _GlobalMaskTexture3SplitTilingOffset_A;
     half4 _GlobalMaskTexture3SplitPan_A;
+    //ifex _GlobalMaskTexture0UV!=1 && isNotAnimated(_GlobalMaskTexture0UV) && _GlobalMaskTexture1UV!=1 && isNotAnimated(_GlobalMaskTexture1UV) && _GlobalMaskTexture2UV!=1 && isNotAnimated(_GlobalMaskTexture2UV) && _GlobalMaskTexture3UV!=1 && isNotAnimated(_GlobalMaskTexture3UV)
+    #define POI_USES_UV1
+    //endex
+    //ifex _GlobalMaskTexture0UV!=2 && isNotAnimated(_GlobalMaskTexture0UV) && _GlobalMaskTexture1UV!=2 && isNotAnimated(_GlobalMaskTexture1UV) && _GlobalMaskTexture2UV!=2 && isNotAnimated(_GlobalMaskTexture2UV) && _GlobalMaskTexture3UV!=2 && isNotAnimated(_GlobalMaskTexture3UV)
+    #define POI_USES_UV2
+    //endex
+    //ifex _GlobalMaskTexture0UV!=3 && isNotAnimated(_GlobalMaskTexture0UV) && _GlobalMaskTexture1UV!=3 && isNotAnimated(_GlobalMaskTexture1UV) && _GlobalMaskTexture2UV!=3 && isNotAnimated(_GlobalMaskTexture2UV) && _GlobalMaskTexture3UV!=3 && isNotAnimated(_GlobalMaskTexture3UV)
+    #define POI_USES_UV3
+    //endex
 #endif
 //endex
 //ifex _GlobalMaskOptionsEnable==0

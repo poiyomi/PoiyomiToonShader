@@ -212,6 +212,15 @@ _EmissionAL__mID__ColorOverride ("Color Override", Color) = (1,1,1,1)
 	float _EmissionAL__mID__ColorOverrideThemeIndex;
 	float _EmissionAL__mID__ColorOverrideBand;
 	half4 _EmissionAL__mID__ColorOverrideRamp;
+	//ifex _EmissionMap__mIDx__UV!=1 && isNotAnimated(_EmissionMap__mIDx__UV) && _EmissionMask__mIDx__UV!=1 && isNotAnimated(_EmissionMask__mIDx__UV)
+	#define POI_USES_UV1
+	//endex
+	//ifex _EmissionMap__mIDx__UV!=2 && isNotAnimated(_EmissionMap__mIDx__UV) && _EmissionMask__mIDx__UV!=2 && isNotAnimated(_EmissionMask__mIDx__UV)
+	#define POI_USES_UV2
+	//endex
+	//ifex _EmissionMap__mIDx__UV!=3 && isNotAnimated(_EmissionMap__mIDx__UV) && _EmissionMask__mIDx__UV!=3 && isNotAnimated(_EmissionMask__mIDx__UV)
+	#define POI_USES_UV3
+	//endex
 #endif
 //endex
 

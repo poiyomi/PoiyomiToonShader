@@ -324,6 +324,15 @@ _PathChronoSpeedA ("A Speed", Float) = 0
 		float _PathChronoTypeA;
 		float _PathChronoSpeedA;
 	#endif
+	//ifex _PathingMapUV!=1 && isNotAnimated(_PathingMapUV) && _PathingColorMapUV!=1 && isNotAnimated(_PathingColorMapUV) && _PathingUVSelect!=1 && isNotAnimated(_PathingUVSelect)
+	#define POI_USES_UV1
+	//endex
+	//ifex _PathingMapUV!=2 && isNotAnimated(_PathingMapUV) && _PathingColorMapUV!=2 && isNotAnimated(_PathingColorMapUV) && _PathingUVSelect!=2 && isNotAnimated(_PathingUVSelect)
+	#define POI_USES_UV2
+	//endex
+	//ifex _PathingMapUV!=3 && isNotAnimated(_PathingMapUV) && _PathingColorMapUV!=3 && isNotAnimated(_PathingColorMapUV) && _PathingUVSelect!=3 && isNotAnimated(_PathingUVSelect)
+	#define POI_USES_UV3
+	//endex
 #endif
 //endex
 
@@ -402,10 +411,10 @@ _PathChronoSpeedA ("A Speed", Float) = 0
 			half4 pathColorMap = float4(1, 1, 1, 1);
 		#endif
 
-		// Array of per-channel colors (RGBA includes alpha for opacity control)
-		half4 PathColor[4] = {
+		// Per-channel colors (RGBA includes alpha for opacity control)
+		half4x4 PathColor = half4x4(
 			_PathColorR, _PathColorG, _PathColorB, _PathColorA
-		};
+		);
 		float4 pathTypes = float4(_PathTypeR, _PathTypeG, _PathTypeB, _PathTypeA);
 		// Per-channel global mask selection + blend mode, applied to each channel's color contribution
 		half pathGlobalMaskIndices[4] = {

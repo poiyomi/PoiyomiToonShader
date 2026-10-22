@@ -148,6 +148,15 @@ _ShadowEnvStrength ("Env Strength on Shadow Color--{condition_showS:(_LightingMo
 	half _ShadowFlatBorder;
 	half _ShadowFlatBlur;
 	half _MultilayerShadowStrength;
+	//ifex _ShadowBorderMaskUV!=1 && isNotAnimated(_ShadowBorderMaskUV) && _ShadowColorTexUV!=1 && isNotAnimated(_ShadowColorTexUV) && _MultilayerMathBlurMapUV!=1 && isNotAnimated(_MultilayerMathBlurMapUV) && _Shadow2ndColorTexUV!=1 && isNotAnimated(_Shadow2ndColorTexUV) && _Shadow3rdColorTexUV!=1 && isNotAnimated(_Shadow3rdColorTexUV) && _ShadowStrengthMaskUV!=1 && isNotAnimated(_ShadowStrengthMaskUV)
+	#define POI_USES_UV1
+	//endex
+	//ifex _ShadowBorderMaskUV!=2 && isNotAnimated(_ShadowBorderMaskUV) && _ShadowColorTexUV!=2 && isNotAnimated(_ShadowColorTexUV) && _MultilayerMathBlurMapUV!=2 && isNotAnimated(_MultilayerMathBlurMapUV) && _Shadow2ndColorTexUV!=2 && isNotAnimated(_Shadow2ndColorTexUV) && _Shadow3rdColorTexUV!=2 && isNotAnimated(_Shadow3rdColorTexUV) && _ShadowStrengthMaskUV!=2 && isNotAnimated(_ShadowStrengthMaskUV)
+	#define POI_USES_UV2
+	//endex
+	//ifex _ShadowBorderMaskUV!=3 && isNotAnimated(_ShadowBorderMaskUV) && _ShadowColorTexUV!=3 && isNotAnimated(_ShadowColorTexUV) && _MultilayerMathBlurMapUV!=3 && isNotAnimated(_MultilayerMathBlurMapUV) && _Shadow2ndColorTexUV!=3 && isNotAnimated(_Shadow2ndColorTexUV) && _Shadow3rdColorTexUV!=3 && isNotAnimated(_Shadow3rdColorTexUV) && _ShadowStrengthMaskUV!=3 && isNotAnimated(_ShadowStrengthMaskUV)
+	#define POI_USES_UV3
+	//endex
 #endif
 #T#Variables
 #ifdef _LIGHTINGMODE_MULTILAYER_MATH

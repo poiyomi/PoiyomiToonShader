@@ -343,6 +343,20 @@ _UVTileDissolveAlpha_Row0_3 ("Col 3", Range(-1, 1)) = 0
 		float _DissolveALColorOverrideBand;
 		half4 _DissolveALColorOverrideRamp;
 	#endif
+	//ifex _DissolveToTextureUV!=1 && isNotAnimated(_DissolveToTextureUV) && _DissolveNoiseTextureUV!=1 && isNotAnimated(_DissolveNoiseTextureUV) && _DissolveDetailNoiseUV!=1 && isNotAnimated(_DissolveDetailNoiseUV) && _DissolveMaskUV!=1 && isNotAnimated(_DissolveMaskUV) && _DissolveP2PUV!=1 && isNotAnimated(_DissolveP2PUV) && _UVTileDissolveUV!=1 && isNotAnimated(_UVTileDissolveUV)
+	#define POI_USES_UV1
+	//endex
+	//ifex _DissolveToTextureUV!=2 && isNotAnimated(_DissolveToTextureUV) && _DissolveNoiseTextureUV!=2 && isNotAnimated(_DissolveNoiseTextureUV) && _DissolveDetailNoiseUV!=2 && isNotAnimated(_DissolveDetailNoiseUV) && _DissolveMaskUV!=2 && isNotAnimated(_DissolveMaskUV) && _DissolveP2PUV!=2 && isNotAnimated(_DissolveP2PUV) && _UVTileDissolveUV!=2 && isNotAnimated(_UVTileDissolveUV)
+	#define POI_USES_UV2
+	//endex
+	//ifex _DissolveToTextureUV!=3 && isNotAnimated(_DissolveToTextureUV) && _DissolveNoiseTextureUV!=3 && isNotAnimated(_DissolveNoiseTextureUV) && _DissolveDetailNoiseUV!=3 && isNotAnimated(_DissolveDetailNoiseUV) && _DissolveMaskUV!=3 && isNotAnimated(_DissolveMaskUV) && _DissolveP2PUV!=3 && isNotAnimated(_DissolveP2PUV) && _UVTileDissolveUV!=3 && isNotAnimated(_UVTileDissolveUV)
+	#define POI_USES_UV3
+	//endex
+	//ifex _CenterOutDissolveNormals==0 && isNotAnimated(_CenterOutDissolveNormals)
+	#if defined(POI_PASS_SHADOW) || defined(POI_PASS_DEPTH_ONLY)
+		#define POI_USES_TANGENT
+	#endif
+	//endex
 #endif
 //endex
 
@@ -634,39 +648,9 @@ _UVTileDissolveAlpha_Row0_3 ("Col 3", Range(-1, 1)) = 0
 
 	void applyDissolve(inout PoiFragData poiFragData, in PoiMesh poiMesh, inout PoiMods poiMods, in PoiCam poiCam, in PoiLight poiLight)
 	{
-		half dissolveMask = 1;
-		#if defined(PROP_DISSOLVEMASK) || !defined(OPTIMIZER_ENABLED)
-			dissolveMask = POI2D_SAMPLER_PAN(_DissolveMask, _MainTex, poiUV(poiMesh.uv[_DissolveMaskUV], _DissolveMask_ST), _DissolveMaskPan).r;
-		#endif
-
-		UNITY_BRANCH
-		if (_DissolveUseVertexColors > 0)
-			dissolveMask = ceil(poiMesh.vertexColor[max(_DissolveUseVertexColors - 1, 0)] * 100000) / 100000;
-
-		if (_DissolveMaskGlobalMask > 0)
-			dissolveMask = maskBlend(dissolveMask, poiMods.globalMask[_DissolveMaskGlobalMask - 1], _DissolveMaskGlobalMaskBlendType);
-
-		if (_DissolveMaskInvert >= 0.5)
-			dissolveMask = 1 - dissolveMask;
-
-		#if defined(PROP_DISSOLVETOTEXTURE) || !defined(OPTIMIZER_ENABLED)
-			float4 dissolveToTexture = POI2D_SAMPLER_PAN(_DissolveToTexture, _MainTex, poiUV(poiMesh.uv[_DissolveToTextureUV], _DissolveToTexture_ST), _DissolveToTexturePan) * float4(poiThemeColor(poiMods, _DissolveTextureColor.rgb, _DissolveTextureColorThemeIndex), _DissolveTextureColor.a);
-		#else
-			float4 dissolveToTexture = float4(poiThemeColor(poiMods, _DissolveTextureColor.rgb, _DissolveTextureColorThemeIndex), _DissolveTextureColor.a);
-		#endif
-		float dissolveNoise = 1;
-		#if defined(PROP_DISSOLVENOISETEXTURE) || !defined(OPTIMIZER_ENABLED)
-			dissolveNoise = POI2D_SAMPLER_PAN(_DissolveNoiseTexture, _MainTex, poiUV(poiMesh.uv[_DissolveNoiseTextureUV], _DissolveNoiseTexture_ST), _DissolveNoiseTexturePan).r;
-		#endif
-		dissolveNoise = _DissolveInvertNoise ? 1 - dissolveNoise : dissolveNoise;
-		
-		float detailNoise = 0;
 		half detailStrength = 0;
 		if (_DissolveDetailNoiseEnabled >= 0.5)
-		{
-			detailNoise = getDissolveDetailNoise(poiMesh.worldPos, poiMesh.uv[_DissolveDetailNoiseUV]);
 			detailStrength = _DissolveDetailStrength;
-		}
 
 		float dissolveAmount = _DissolveAlpha;
 		if (_UVTileDissolveEnabled >= 0.5)
@@ -705,6 +689,52 @@ _UVTileDissolveAlpha_Row0_3 ("Col 3", Range(-1, 1)) = 0
 			}
 		}
 		dissolveAmount = saturate(dissolveAmount);
+
+		// Early exit
+		UNITY_BRANCH
+		if (dissolveAmount <= 0 && _UVTileDissolveEnabled < 0.5 && _DissolveWaveMode < 0.5 && _DissolveDebugGradient < 0.5 && alEdgeWidthMod <= 0)
+		{
+			if (_DissolveAlphaOnly >= 0.5)
+				poiFragData.alpha *= evalRamp4(0, _DissolveAlphaOnlyRamp);
+			#if !defined(POI_PASS_OUTLINE) && !defined(POI_PASS_SHADOW)
+				if (_DissolveApplyGlobalMaskIndex > 0)
+					applyToGlobalMask(poiMods, _DissolveApplyGlobalMaskIndex - 1, _DissolveApplyGlobalMaskBlendType, 0);
+				if (_DissolveInverseApplyGlobalMaskIndex > 0)
+					applyToGlobalMask(poiMods, _DissolveInverseApplyGlobalMaskIndex - 1, _DissolveInverseApplyGlobalMaskBlendType, 1);
+			#endif
+			return;
+		}
+
+		half dissolveMask = 1;
+		#if defined(PROP_DISSOLVEMASK) || !defined(OPTIMIZER_ENABLED)
+			dissolveMask = POI2D_SAMPLER_PAN(_DissolveMask, _MainTex, poiUV(poiMesh.uv[_DissolveMaskUV], _DissolveMask_ST), _DissolveMaskPan).r;
+		#endif
+
+		UNITY_BRANCH
+		if (_DissolveUseVertexColors > 0)
+			dissolveMask = ceil(poiMesh.vertexColor[max(_DissolveUseVertexColors - 1, 0)] * 100000) / 100000;
+
+		if (_DissolveMaskGlobalMask > 0)
+			dissolveMask = maskBlend(dissolveMask, poiMods.globalMask[_DissolveMaskGlobalMask - 1], _DissolveMaskGlobalMaskBlendType);
+
+		if (_DissolveMaskInvert >= 0.5)
+			dissolveMask = 1 - dissolveMask;
+
+		#if defined(PROP_DISSOLVETOTEXTURE) || !defined(OPTIMIZER_ENABLED)
+			float4 dissolveToTexture = POI2D_SAMPLER_PAN(_DissolveToTexture, _MainTex, poiUV(poiMesh.uv[_DissolveToTextureUV], _DissolveToTexture_ST), _DissolveToTexturePan) * float4(poiThemeColor(poiMods, _DissolveTextureColor.rgb, _DissolveTextureColorThemeIndex), _DissolveTextureColor.a);
+		#else
+			float4 dissolveToTexture = float4(poiThemeColor(poiMods, _DissolveTextureColor.rgb, _DissolveTextureColorThemeIndex), _DissolveTextureColor.a);
+		#endif
+		float dissolveNoise = 1;
+		#if defined(PROP_DISSOLVENOISETEXTURE) || !defined(OPTIMIZER_ENABLED)
+			dissolveNoise = POI2D_SAMPLER_PAN(_DissolveNoiseTexture, _MainTex, poiUV(poiMesh.uv[_DissolveNoiseTextureUV], _DissolveNoiseTexture_ST), _DissolveNoiseTexturePan).r;
+		#endif
+		dissolveNoise = _DissolveInvertNoise ? 1 - dissolveNoise : dissolveNoise;
+
+		float detailNoise = 0;
+		if (_DissolveDetailNoiseEnabled >= 0.5)
+			detailNoise = getDissolveDetailNoise(poiMesh.worldPos, poiMesh.uv[_DissolveDetailNoiseUV]);
+
 		dissolveAmount *= dissolveMask;
 		detailStrength = saturate(detailStrength);
 

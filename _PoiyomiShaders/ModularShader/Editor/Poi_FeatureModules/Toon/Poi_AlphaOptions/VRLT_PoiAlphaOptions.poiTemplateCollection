@@ -113,6 +113,9 @@ half _AlphaFresnelWidth;
 half _AlphaFresnelInvert;
 half _AlphaFresnelGlobalMask;
 float _AlphaFresnelGlobalMaskBlendType;
+#if defined(POI_PASS_SHADOW) || defined(POI_PASS_DEPTH_ONLY)
+	#define POI_USES_TANGENT
+#endif
 //endex
 
 //ifex _AlphaAngular==0 && isNotAnimated(_AlphaAngular)

@@ -353,6 +353,15 @@ _RGBAAlphaEmissionStrength ("Emission Strength", Range(0, 20)) = 0
     float4 _RgbNormalABlendSources;
 
     float _RGBMaskType;
+    //ifex _RGBMaskUV!=1 && isNotAnimated(_RGBMaskUV) && _RGBAMetallicMapsUV!=1 && isNotAnimated(_RGBAMetallicMapsUV) && _RGBARedPBRUV!=1 && isNotAnimated(_RGBARedPBRUV) && _RGBAGreenPBRUV!=1 && isNotAnimated(_RGBAGreenPBRUV) && _RGBABluePBRUV!=1 && isNotAnimated(_RGBABluePBRUV) && _RGBAAlphaPBRUV!=1 && isNotAnimated(_RGBAAlphaPBRUV) && _RGBASmoothnessMapsUV!=1 && isNotAnimated(_RGBASmoothnessMapsUV) && _RedTextureUV!=1 && isNotAnimated(_RedTextureUV) && _RgbNormalRUV!=1 && isNotAnimated(_RgbNormalRUV) && _GreenTextureUV!=1 && isNotAnimated(_GreenTextureUV) && _RgbNormalGUV!=1 && isNotAnimated(_RgbNormalGUV) && _BlueTextureUV!=1 && isNotAnimated(_BlueTextureUV) && _RgbNormalBUV!=1 && isNotAnimated(_RgbNormalBUV) && _AlphaTextureUV!=1 && isNotAnimated(_AlphaTextureUV) && _RgbNormalAUV!=1 && isNotAnimated(_RgbNormalAUV)
+    #define POI_USES_UV1
+    //endex
+    //ifex _RGBMaskUV!=2 && isNotAnimated(_RGBMaskUV) && _RGBAMetallicMapsUV!=2 && isNotAnimated(_RGBAMetallicMapsUV) && _RGBARedPBRUV!=2 && isNotAnimated(_RGBARedPBRUV) && _RGBAGreenPBRUV!=2 && isNotAnimated(_RGBAGreenPBRUV) && _RGBABluePBRUV!=2 && isNotAnimated(_RGBABluePBRUV) && _RGBAAlphaPBRUV!=2 && isNotAnimated(_RGBAAlphaPBRUV) && _RGBASmoothnessMapsUV!=2 && isNotAnimated(_RGBASmoothnessMapsUV) && _RedTextureUV!=2 && isNotAnimated(_RedTextureUV) && _RgbNormalRUV!=2 && isNotAnimated(_RgbNormalRUV) && _GreenTextureUV!=2 && isNotAnimated(_GreenTextureUV) && _RgbNormalGUV!=2 && isNotAnimated(_RgbNormalGUV) && _BlueTextureUV!=2 && isNotAnimated(_BlueTextureUV) && _RgbNormalBUV!=2 && isNotAnimated(_RgbNormalBUV) && _AlphaTextureUV!=2 && isNotAnimated(_AlphaTextureUV) && _RgbNormalAUV!=2 && isNotAnimated(_RgbNormalAUV)
+    #define POI_USES_UV2
+    //endex
+    //ifex _RGBMaskUV!=3 && isNotAnimated(_RGBMaskUV) && _RGBAMetallicMapsUV!=3 && isNotAnimated(_RGBAMetallicMapsUV) && _RGBARedPBRUV!=3 && isNotAnimated(_RGBARedPBRUV) && _RGBAGreenPBRUV!=3 && isNotAnimated(_RGBAGreenPBRUV) && _RGBABluePBRUV!=3 && isNotAnimated(_RGBABluePBRUV) && _RGBAAlphaPBRUV!=3 && isNotAnimated(_RGBAAlphaPBRUV) && _RGBASmoothnessMapsUV!=3 && isNotAnimated(_RGBASmoothnessMapsUV) && _RedTextureUV!=3 && isNotAnimated(_RedTextureUV) && _RgbNormalRUV!=3 && isNotAnimated(_RgbNormalRUV) && _GreenTextureUV!=3 && isNotAnimated(_GreenTextureUV) && _RgbNormalGUV!=3 && isNotAnimated(_RgbNormalGUV) && _BlueTextureUV!=3 && isNotAnimated(_BlueTextureUV) && _RgbNormalBUV!=3 && isNotAnimated(_RgbNormalBUV) && _AlphaTextureUV!=3 && isNotAnimated(_AlphaTextureUV) && _RgbNormalAUV!=3 && isNotAnimated(_RgbNormalAUV)
+    #define POI_USES_UV3
+    //endex
 #endif
 //endex
 
@@ -391,6 +400,9 @@ _RGBAAlphaEmissionStrength ("Emission Strength", Range(0, 20)) = 0
     #endif
     #if defined(PROP_RGBNORMALA)
         Texture2D _RgbNormalA;
+    #endif
+    #if (defined(PROP_RGBNORMALR) || defined(PROP_RGBNORMALG) || defined(PROP_RGBNORMALB) || defined(PROP_RGBNORMALA)) && !defined(POI_PASS_SHADOW) && !defined(POI_PASS_DEPTH_ONLY)
+        #define POI_USES_TANGENT
     #endif
 #endif
 //endex

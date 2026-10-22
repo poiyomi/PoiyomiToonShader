@@ -58,6 +58,15 @@ _BackFaceEmissionLimiter ("Global Emission Multiplier", Float) = 1
     float _BackFaceHueShiftSpeed;
     half _BackFaceEmissionLimiter;
     float _BackFaceHueSelectOrShift;
+    //ifex _BackFaceTextureUV!=1 && isNotAnimated(_BackFaceTextureUV) && _BackFaceMaskUV!=1 && isNotAnimated(_BackFaceMaskUV)
+    #define POI_USES_UV1
+    //endex
+    //ifex _BackFaceTextureUV!=2 && isNotAnimated(_BackFaceTextureUV) && _BackFaceMaskUV!=2 && isNotAnimated(_BackFaceMaskUV)
+    #define POI_USES_UV2
+    //endex
+    //ifex _BackFaceTextureUV!=3 && isNotAnimated(_BackFaceTextureUV) && _BackFaceMaskUV!=3 && isNotAnimated(_BackFaceMaskUV)
+    #define POI_USES_UV3
+    //endex
 #endif
 //endex
 

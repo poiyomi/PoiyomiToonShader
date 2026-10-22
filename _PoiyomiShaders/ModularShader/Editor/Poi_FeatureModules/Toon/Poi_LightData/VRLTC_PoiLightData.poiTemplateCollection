@@ -147,6 +147,15 @@ float _LightingMapMode;
 	float _LightDataSDFMapLOD;
 	float _LightDataSDFBlendY;
 #endif
+//ifex _LightingAOMapsUV!=1 && isNotAnimated(_LightingAOMapsUV) && _LightingDetailShadowMapsUV!=1 && isNotAnimated(_LightingDetailShadowMapsUV) && _LightingShadowMasksUV!=1 && isNotAnimated(_LightingShadowMasksUV) && _LightDataSDFMapUV!=1 && isNotAnimated(_LightDataSDFMapUV)
+#define POI_USES_UV1
+//endex
+//ifex _LightingAOMapsUV!=2 && isNotAnimated(_LightingAOMapsUV) && _LightingDetailShadowMapsUV!=2 && isNotAnimated(_LightingDetailShadowMapsUV) && _LightingShadowMasksUV!=2 && isNotAnimated(_LightingShadowMasksUV) && _LightDataSDFMapUV!=2 && isNotAnimated(_LightDataSDFMapUV)
+#define POI_USES_UV2
+//endex
+//ifex _LightingAOMapsUV!=3 && isNotAnimated(_LightingAOMapsUV) && _LightingDetailShadowMapsUV!=3 && isNotAnimated(_LightingDetailShadowMapsUV) && _LightingShadowMasksUV!=3 && isNotAnimated(_LightingShadowMasksUV) && _LightDataSDFMapUV!=3 && isNotAnimated(_LightDataSDFMapUV)
+#define POI_USES_UV3
+//endex
 float _LightingDirectionMode;
 float3 _LightngForcedDirection;
 float _LightingViewDirOffsetPitch;

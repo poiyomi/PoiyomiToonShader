@@ -301,7 +301,7 @@ _LookAtAlphaAlpha ("Alpha", Range(0, 1)) = 1
 		{
 			if (AudioLinkIsAvailable())
 			{
-				alpha = saturate(alpha + lerp(_VertexLookAtAlphaAudiolink.x, _VertexLookAtAlphaAudiolink.y, vertexAudioLink[_VertexLookAtAudioLinkBand]) * _VertexLookAtAudioLinkEnabled);
+				alpha = saturate(alpha + lerp(_VertexLookAtAlphaAudiolink.x, _VertexLookAtAlphaAudiolink.y, poiSelect5(vertexAudioLink, _VertexLookAtAudioLinkBand)) * _VertexLookAtAudioLinkEnabled);
 			}
 		}
 	#endif

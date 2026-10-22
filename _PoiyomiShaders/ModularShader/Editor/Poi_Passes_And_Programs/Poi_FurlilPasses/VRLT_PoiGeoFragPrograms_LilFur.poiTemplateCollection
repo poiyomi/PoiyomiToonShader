@@ -254,6 +254,15 @@ int _FurNoiseMaskUV;
 float4 _FurNoiseMask_ST;
 float4 _FurMaskPan;
 int _FurMaskUV;
+//ifex _FurNoiseMaskUV!=1 && isNotAnimated(_FurNoiseMaskUV) && _FurMaskUV!=1 && isNotAnimated(_FurMaskUV)
+#define POI_USES_UV1
+//endex
+//ifex _FurNoiseMaskUV!=2 && isNotAnimated(_FurNoiseMaskUV) && _FurMaskUV!=2 && isNotAnimated(_FurMaskUV)
+#define POI_USES_UV2
+//endex
+//ifex _FurNoiseMaskUV!=3 && isNotAnimated(_FurNoiseMaskUV) && _FurMaskUV!=3 && isNotAnimated(_FurMaskUV)
+#define POI_USES_UV3
+//endex
 float4 _FurMask_ST;
 int _FurLengthChannel;
 int _FurAlphaChannel;

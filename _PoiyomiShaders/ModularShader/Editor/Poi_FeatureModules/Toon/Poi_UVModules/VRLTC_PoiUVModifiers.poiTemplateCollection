@@ -190,6 +190,15 @@ _PolarSpiralPower ("Spiral Power", Float) = 0
 		half2 _DistortionStrength1AudioLink;
 		half _DistortionStrength1AudioLinkBand;
 	#endif
+	//ifex _DistortionFlowTextureUV!=1 && isNotAnimated(_DistortionFlowTextureUV) && _DistortionFlowTexture1UV!=1 && isNotAnimated(_DistortionFlowTexture1UV) && _DistortionMaskUV!=1 && isNotAnimated(_DistortionMaskUV) && _DistortionUvToDistort!=1 && isNotAnimated(_DistortionUvToDistort)
+	#define POI_USES_UV1
+	//endex
+	//ifex _DistortionFlowTextureUV!=2 && isNotAnimated(_DistortionFlowTextureUV) && _DistortionFlowTexture1UV!=2 && isNotAnimated(_DistortionFlowTexture1UV) && _DistortionMaskUV!=2 && isNotAnimated(_DistortionMaskUV) && _DistortionUvToDistort!=2 && isNotAnimated(_DistortionUvToDistort)
+	#define POI_USES_UV2
+	//endex
+	//ifex _DistortionFlowTextureUV!=3 && isNotAnimated(_DistortionFlowTextureUV) && _DistortionFlowTexture1UV!=3 && isNotAnimated(_DistortionFlowTexture1UV) && _DistortionMaskUV!=3 && isNotAnimated(_DistortionMaskUV) && _DistortionUvToDistort!=3 && isNotAnimated(_DistortionUvToDistort)
+	#define POI_USES_UV3
+	//endex
 #endif
 //endex
 float2 _UVSettingsTiling0;
@@ -217,6 +226,15 @@ float _UVSettingsShiftBackfaceUV;
 int _StereoEnabled;
 int _PanoUseBothEyes;
 float _PolarUV;
+//ifex _PolarUV!=1 && isNotAnimated(_PolarUV)
+#define POI_USES_UV1
+//endex
+//ifex _PolarUV!=2 && isNotAnimated(_PolarUV)
+#define POI_USES_UV2
+//endex
+//ifex _PolarUV!=3 && isNotAnimated(_PolarUV)
+#define POI_USES_UV3
+//endex
 float _PolarMode;
 float2 _PolarCenter;
 float _PolarRadialScale;

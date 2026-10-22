@@ -311,6 +311,15 @@ _OutlineZOffsetVertexColorStrength ("Vertex Color Strength", Range(0, 1)) = 1
     	float _AudioLinkOutlineHighlightColorThemeIndex;
     	half4 _AudioLinkOutlineHighlightColorRamp;
 	#endif
+	//ifex _OutlineMaskUV!=1 && isNotAnimated(_OutlineMaskUV) && _OutlineTextureUV!=1 && isNotAnimated(_OutlineTextureUV)
+	#define POI_USES_UV1
+	//endex
+	//ifex _OutlineMaskUV!=2 && isNotAnimated(_OutlineMaskUV) && _OutlineTextureUV!=2 && isNotAnimated(_OutlineTextureUV)
+	#define POI_USES_UV2
+	//endex
+	//ifex _OutlineMaskUV!=3 && isNotAnimated(_OutlineMaskUV) && _OutlineTextureUV!=3 && isNotAnimated(_OutlineTextureUV)
+	#define POI_USES_UV3
+	//endex
 #endif
 //endex
 

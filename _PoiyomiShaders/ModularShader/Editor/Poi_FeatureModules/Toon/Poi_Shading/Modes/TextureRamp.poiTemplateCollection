@@ -11,6 +11,15 @@ _ToonRampCount ("Ramp Count--{condition_showS:(_LightingMode==0)}", Int) = 1
 	float _ShadowOffset;
 	int _ToonRampCount;
 	int _ToonRampUVSelector;
+	//ifex (_ToonRampCount<=1 && isNotAnimated(_ToonRampCount)) || (_ToonRampUVSelector!=1 && isNotAnimated(_ToonRampUVSelector))
+	#define POI_USES_UV1
+	//endex
+	//ifex (_ToonRampCount<=1 && isNotAnimated(_ToonRampCount)) || (_ToonRampUVSelector!=2 && isNotAnimated(_ToonRampUVSelector))
+	#define POI_USES_UV2
+	//endex
+	//ifex (_ToonRampCount<=1 && isNotAnimated(_ToonRampCount)) || (_ToonRampUVSelector!=3 && isNotAnimated(_ToonRampUVSelector))
+	#define POI_USES_UV3
+	//endex
 #endif
 #T#Variables
 #ifdef _LIGHTINGMODE_TEXTURERAMP

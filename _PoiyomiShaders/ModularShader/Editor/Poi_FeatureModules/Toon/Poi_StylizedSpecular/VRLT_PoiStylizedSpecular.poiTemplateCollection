@@ -121,6 +121,15 @@ _ReflectionCubeEnableLighting ("Enable Lighting (Fallback)", Range(0, 1)) = 1
 		half _StylizedSpecularIgnoreShadow;
 		half _SSIgnoreCastedShadows;
 		half _UseSpecularOptMap2;
+		//ifex _HighColor_TexUV!=1 && isNotAnimated(_HighColor_TexUV) && _Set_HighColorMaskUV!=1 && isNotAnimated(_Set_HighColorMaskUV)
+		#define POI_USES_UV1
+		//endex
+		//ifex _HighColor_TexUV!=2 && isNotAnimated(_HighColor_TexUV) && _Set_HighColorMaskUV!=2 && isNotAnimated(_Set_HighColorMaskUV)
+		#define POI_USES_UV2
+		//endex
+		//ifex _HighColor_TexUV!=3 && isNotAnimated(_HighColor_TexUV) && _Set_HighColorMaskUV!=3 && isNotAnimated(_Set_HighColorMaskUV)
+		#define POI_USES_UV3
+		//endex
 	#endif
 
 	#ifdef _STYLIZEDREFLECTIONMODE_LILTOON
@@ -155,6 +164,15 @@ _ReflectionCubeEnableLighting ("Enable Lighting (Fallback)", Range(0, 1)) = 1
 		float _ReflectionCubeOverride;
 		float _ReflectionCubeEnableLighting;
 		float _ReflectionBlendMode;
+		//ifex _SmoothnessTexUV!=1 && isNotAnimated(_SmoothnessTexUV) && _MetallicGlossMapUV!=1 && isNotAnimated(_MetallicGlossMapUV) && _ReflectionColorTexUV!=1 && isNotAnimated(_ReflectionColorTexUV)
+		#define POI_USES_UV1
+		//endex
+		//ifex _SmoothnessTexUV!=2 && isNotAnimated(_SmoothnessTexUV) && _MetallicGlossMapUV!=2 && isNotAnimated(_MetallicGlossMapUV) && _ReflectionColorTexUV!=2 && isNotAnimated(_ReflectionColorTexUV)
+		#define POI_USES_UV2
+		//endex
+		//ifex _SmoothnessTexUV!=3 && isNotAnimated(_SmoothnessTexUV) && _MetallicGlossMapUV!=3 && isNotAnimated(_MetallicGlossMapUV) && _ReflectionColorTexUV!=3 && isNotAnimated(_ReflectionColorTexUV)
+		#define POI_USES_UV3
+		//endex
 	#endif
 #endif
 //endex
