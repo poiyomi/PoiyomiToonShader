@@ -58,20 +58,52 @@ If **distributing** an avatar or other asset that uses Poiyomi shaders, **do not
   </h3>
 </div>
 
-## Features
-
-- Multiple Shading models (Realistic, Toon, Flat, and more) with deep customization and robust handling of adverse lighting conditions
-- Multiple rendering modes (Opaque, Cutout, Transparent, and more)
-- Physically-based Reflections and Specular (metallic/smoothness workflow)
-- Stylized rendering functionality (matcaps, outlines, rim lighting)
-- Special effects (glitter/sparkle, emission, iridescence, etc)
-- Powerful global masking system
-- Extensive control over rendering options (Culling, ZWrite, ZTest, Stencils, etc)
-- Much, much more!
+## Feature Highlights
+- **Various Shading Styles**
+  - Stylized Toon Shading presets with customizable options, such as Texture Ramp, Multilayer Math, and ShadeMap.
+  - Realistic Shading presets, such as Wrapped, Skin, Realistic, and Cloth.
+  - Sophisticated Light Data settings for changing how the lighting and shading is influenced on the Material.
+  - Outline features for adding cartoon-style outer stencils to your Model, using the inverse-hull effect.
+  - Grab Pass features, available as a separate shader variant.
+- **Easy to Use**
+  - User Interface with sophisticated organization and layout that sets it apart from other Toon shaders.
+- **Fun, Decorative, and Powerful Features**
+  - Up to 4 Decals, for fun and unique ways to decorate an Avatar with logos, shapes, stickers, and patterns.
+  - Details, allowing you to apply (often tiled textures) to the Base Color and Normals.
+  - Up to 4 Matcaps for creating fast and approximate looks from a spherical texture, can often add to a shading style.
+  - UV Tile Discard support.
+  - Cubemaps, for simulating reflections and other effects using an HDR cubemap texture.
+  - Flipbooks, providing support for Texture Arrays that can be played as an animation on the Material.
+  - Up to 4 Emission Slots, each with independent unique options for adding highlights or glow effects.
+  - Dissolve effects with various transition styles. Also supports UV Tile Discarding using Dissolve.
+  - Glitter, providing voronoi-based sparkles to the color of the mesh that can create glittery surfaces with specular lighting.
+  - Various UV options such as support for UV0, UV1, UV2, UV3, Distortion, Panosphere, and Polar UV.
+- **PBR Features**
+  - Reflections & Specular, for metallics and reflective surfaces.
+  - Clear Coat, creating glossy appearances that can be compared to automotive paint or carbon fiber composite.
+  - Up to 2 Rim Lighting effects, allowing for fresnel-like highlights or glows around the edges of a Material.
+  - Environmental Rim, simulating low-angle reflections from the surrounding environment.
+- **Advanced Masking Features**
+  - Vertex Colors support and various masking support for advanced customization.
+  - RGBA Color Masking for applying different color tints, textures, and normal maps with the main color.
+  - Signature Global Masking support, allowing for up to 16 Color Channels to use from up to 4 Global Masks across the Material.
+- **The most advanced Material User Interface**
+  - Integrated Texture Packers for merging Masks and Color Channels in various features.
+  - Use Presets to easily apply features from a Material onto another Material.
+  - Search functionality, allowing ease of access to common features.
+  - Cross-Shader Editor for editing multiple Materials using Poiyomi Shaders, all at once.
+  - All features of ThryEditor.
+- **Full AudioLink Support**
+  - Over 10+ modules in Poiyomi Shaders supporting various AudioLink effects!
+  - AL Spectrum, projecting a waveform-like effect that react to the World's music onto the UV.
+- **LTCGI Support**
+  - Supports receiving LTCGI diffuse and specular lighting from Worlds actively producing LTCGI.
+- **Light Volumes Support**
+  - Supports receiving volumetric and balanced lighting from Worlds baked with VRC Light Volumes.
 
 ## Versions
 
-Poiyomi Shaders include multiple released versions for backwards compatibility. The latest version is always the most up-to-date, and is recommended for use in new projects.
+Poiyomi Shaders include multiple released versions for backwards compatibility. The latest version is always the most up-to-date and is recommended for use in new projects.
 
 Currently, the latest publicly-accessible version contains versions 9.3 thru 10.0.
 
@@ -99,13 +131,21 @@ Poiyomi relies on [ThryEditor](https://github.com/poiyomi/ThryEditor) to display
 
 ## Compatibility
 
-Poiyomi Shaders are designed for use with the **Built-In Render Pipeline (BIRP)** on **DX11**. We target VRChat's [currently supported Unity version](https://docs.vrchat.com/docs/current-unity-version), **2022.3.22f1** at time of writing. Higher Unity versions have been tested and are known to work, but we primarily target the latest Unity version that VRChat supports.
+### VRChat / Built-in Render Pipeline
 
-Compatibility with the Universal Rendering Pipeline (URP) is also available. For more information, join the [Discord](https://discord.gg/poiyomi).
+Poiyomi Shaders are designed for use on Windows 10/11 with the `Built-In Render Pipeline (BIRP)` on `Direct3D 11`. We target VRChat's [currently supported Unity version](https://docs.vrchat.com/docs/current-unity-version), `2022.3.22f1` at time of writing. Higher Unity versions above 2022.3 are tested and are known to work, but we primarily target the latest Unity version that VRChat supports.
 
-Poiyomi Shaders are currently **not compatible** with Unity's Scriptable Rendering Pipelines (HDRP, SRP). Non-DirectX 11 platforms (e.g. OpenGL, Metal, Vulkan, etc.) are not guaranteed to work, although Vulkan support is highly experimental.
+Linux users are advised to use Vulkan, as OpenGL is unsupported.
 
-The shaders can be used for games outside of VRChat, but may not be ideal due to materials being unable to share a common shader. For non-VRChat usage, make sure to use the [Locking](https://www.poiyomi.com/general/locking) functionality provided by ThryEditor to create optimized shaders for each material.
+### BasisVR / Universal Render Pipeline (URP)
+
+We support the Universal Rendering Pipeline (URP) on `Unity 6000.0 and newer` for BasisVR and other games running on URP. Packages can be acquired in the [Releases](https://github.com/poiyomi/PoiyomiToonShader/releases/latest) page. **If using the URP version, you must use the package labeled `Poi.Toon.URP.<version>.unitypackage`.**
+
+### Incompatibility
+
+**WE DO NOT SUPPORT the High Definition Render Pipeline (HDRP) and Scriptable Render Pipeline (SRP)!**
+
+Non-DirectX 11 platforms (e.g. OpenGL, Metal, etc.) are not guaranteed to work as most of our code requires DirectX 11. However the shader has been tested on Linux using Vulkan and does work, but keep in mind it is highly experimental.
 
 ## Contributing
 
