@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text.RegularExpressions;
 using UnityEditor;
 using UnityEngine;
@@ -68,6 +69,7 @@ namespace Poi.Tools
             _serializedObject = new SerializedObject(this);
 
             EnsureListInitialized();
+            FollowInstallRoot();
         }
 
         void EnsureListInitialized()
@@ -76,15 +78,16 @@ namespace Poi.Tools
                 destinations = new List<ShaderDestination>();
             if(destinations.Count == 0)
             {
+                string root = FindInstallRoot() ?? DefaultInstallRoot;
                 destinations.Add(new ShaderDestination()
                 {
-                    folderPath = "Assets/_PoiyomiShaders/Shaders/10.0/Pro",
+                    folderPath = $"{root}/Shaders/10.0/Pro",
                     matchString = "Poiyomi Pro",
                     matchType = ShaderDestination.MatchType.StartsWith
                 });
                 destinations.Add(new ShaderDestination()
                 {
-                    folderPath = "Assets/_PoiyomiShaders/Shaders/10.0/Toon",
+                    folderPath = $"{root}/Shaders/10.0/Toon",
                     matchString = "Poiyomi Toon",
                     matchType = ShaderDestination.MatchType.StartsWith
                 });
@@ -96,6 +99,65 @@ namespace Poi.Tools
             }
         }
 
+        const string DefaultInstallRoot = "Assets/_PoiyomiShaders";
+
+        // Inside Packages/ on a VCC install
+        string FindInstallRoot()
+        {
+            const string scriptsFolder = "/Scripts/poi-tools/";
+            string scriptPath = AssetDatabase.GetAssetPath(MonoScript.FromScriptableObject(this));
+            int index = string.IsNullOrEmpty(scriptPath) ? -1 : scriptPath.IndexOf(scriptsFolder, StringComparison.Ordinal);
+            return index > 0 ? scriptPath.Substring(0, index) : null;
+        }
+
+        // Older files have no installRoot; their defaults were in Assets/_PoiyomiShaders
+        void FollowInstallRoot()
+        {
+            string root = FindInstallRoot();
+            if(root == null)
+                return;
+            string previousRoot = string.IsNullOrEmpty(installRoot) ? DefaultInstallRoot : installRoot;
+            installRoot = root;
+            if(MoveToInstallRoot(destinations, previousRoot, root))
+                PoiSettingsUtility.SaveSettings(SettingsFileName, this);
+        }
+
+        internal static bool MoveToInstallRoot(IEnumerable<ShaderDestination> destinations, string previousRoot, string root)
+        {
+            if(destinations == null || previousRoot.Equals(root, StringComparison.OrdinalIgnoreCase))
+                return false;
+
+            bool moved = false;
+            foreach(var destination in destinations)
+            {
+                string path = GetPathRelativeToProject(destination?.folderPath);
+                if(path == null)
+                    continue;
+                if(path.Equals(previousRoot, StringComparison.OrdinalIgnoreCase) || path.StartsWith(previousRoot + "/", StringComparison.OrdinalIgnoreCase))
+                {
+                    destination.folderPath = root + path.Substring(previousRoot.Length);
+                    moved = true;
+                }
+            }
+            return moved;
+        }
+
+        static string GetPathRelativeToProject(string path)
+        {
+            if(string.IsNullOrWhiteSpace(path))
+                return null;
+            try
+            {
+                string projectRoot = Directory.GetParent(Application.dataPath).FullName.Replace('\\', '/');
+                string absolutePath = Path.GetFullPath(Path.Combine(projectRoot, path.Replace('\\', '/'))).Replace('\\', '/').TrimEnd('/');
+                return absolutePath.StartsWith(projectRoot + "/", StringComparison.OrdinalIgnoreCase) ? absolutePath.Substring(projectRoot.Length + 1) : null;
+            }
+            catch(Exception)
+            {
+                return null;
+            }
+        }
+
         private void OnDestroy()
         {
             PoiSettingsUtility.SaveSettings(SettingsFileName, this);
@@ -104,6 +166,7 @@ namespace Poi.Tools
         const string SettingsFileName = "PoiShaderDestinations.json";
 
         public List<ShaderDestination> destinations;
+        [SerializeField] string installRoot;
 
 #if UNITY_2020_1_OR_NEWER
         public string GetDestinationFromShaderName(string shaderName)

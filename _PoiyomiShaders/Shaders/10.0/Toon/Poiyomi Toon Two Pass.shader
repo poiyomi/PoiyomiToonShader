@@ -2,7 +2,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 {
 	Properties
 	{
-		[HideInInspector] shader_master_label ("<color=#E75898ff>Poiyomi 10.0.27</color>", Float) = 0
+		[HideInInspector] shader_master_label ("<color=#E75898ff>Poiyomi 10.0.28</color>", Float) = 0
 		[HideInInspector] shader_is_using_thry_editor ("", Float) = 0
 		[HideInInspector] shader_locale ("0db0b86376c3dca4b9a6828ef8615fe0", Float) = 0
 		[HideInInspector] footer_website ("{texture:{name:icon-poilogo,height:24},action:{type:URL,data:https://www.poiyomi.com},hover:WEBSITE}", Float) = 0
@@ -1116,8 +1116,8 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 		_LightingShadowSoftness ("Casted Shadow Softness--{condition_showS:(_LightingCleanCastedShadows==0),tooltip:Softens the casted shadows applied to the model.}", Range(0, 1)) = 0
 		[ToggleUI]_LightingCleanCastedShadows ("Clean Casted Shadows--{tooltip:Smooths the blocky steps out of casted shadow edges.}", Float) = 0
 		[DoNotLock]_LightingMonochromatic ("Grayscale Lighting--{tooltip:De-saturates the base lighting color while keeping perceptual luminance the same.}", Range(0, 1)) = 0
-		[ToggleUI]_LightingVertexLightingEnabled ("Vertex lights (Non-Important)--{tooltip:Enables realtime vertex lights to perform unimportant lighting calculations.}", Float) = 1
-		[ToggleUI]_LightingMirrorVertexLightingEnabled ("Mirror Vertex lights (Non-Important)--{tooltip:Invokes correct handling of vertex lighting due to how VRChat performs lighting differently in various mirrors.}", Float) = 1
+		[ToggleUI]_LightingVertexLightingEnabled ("Vertex Lights (Non-Important)--{tooltip:Enables realtime vertex lights to perform unimportant lighting calculations.}", Float) = 1
+		[ToggleUI]_LightingMirrorVertexLightingEnabled ("Mirror Vertex Lights (Non-Important)--{tooltip:Invokes correct handling of vertex lighting due to how VRChat performs lighting differently in various mirrors.}", Float) = 1
 		[HideInInspector] s_end_LightDataBasePass ("Base Pass", Float) = 1
 		
 		// Lighting Additive
@@ -1257,24 +1257,24 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 		
 		// Shade Maps
 		//ifex _LightingMode!=4
-		_1st_ShadeColor ("1st ShadeColor--{condition_showS:(_LightingMode==4)}", Color) = (1, 1, 1)
-		[sRGBWarning(true)]_1st_ShadeMap ("1st ShadeMap--{reference_properties:[_1st_ShadeMapPan, _1st_ShadeMapUV, _Use_1stShadeMapAlpha_As_ShadowMask, _1stShadeMapMask_Inverse],condition_showS:(_LightingMode==4)}", 2D) = "white" { }
+		_1st_ShadeColor ("1st Shade Color--{condition_showS:(_LightingMode==4)}", Color) = (1, 1, 1)
+		[sRGBWarning(true)]_1st_ShadeMap ("1st Shade Map--{reference_properties:[_1st_ShadeMapPan, _1st_ShadeMapUV, _Use_1stShadeMapAlpha_As_ShadowMask, _1stShadeMapMask_Inverse],condition_showS:(_LightingMode==4)}", 2D) = "white" { }
 		[ThryHideInInspector][Vector2]_1st_ShadeMapPan ("Panning", Vector) = (0, 0, 0, 0)
 		[ThryHideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7, Matcap, 9, Screen Space, 10)] _1st_ShadeMapUV ("UV", Int) = 0
-		[ThryHideInInspector][ToggleUI]_Use_1stShadeMapAlpha_As_ShadowMask ("1st ShadeMap.a As ShadowMask", Float) = 0
-		[ThryHideInInspector][ToggleUI]_1stShadeMapMask_Inverse ("1st ShadeMapMask Inverse", Float) = 0
-		[ToggleUI] _Use_BaseAs1st ("Use BaseMap as 1st ShadeMap--{condition_showS:(_LightingMode==4)}", Float) = 0
-		_2nd_ShadeColor ("2nd ShadeColor--{condition_showS:(_LightingMode==4)}", Color) = (1, 1, 1, 1)
-		[sRGBWarning(true)]_2nd_ShadeMap ("2nd ShadeMap--{reference_properties:[_2nd_ShadeMapPan, _2nd_ShadeMapUV, _Use_2ndShadeMapAlpha_As_ShadowMask, _2ndShadeMapMask_Inverse],condition_showS:(_LightingMode==4)}", 2D) = "white" { }
+		[ThryHideInInspector][ToggleUI]_Use_1stShadeMapAlpha_As_ShadowMask ("Use Alpha as Shadow Mask", Float) = 0
+		[ThryHideInInspector][ToggleUI]_1stShadeMapMask_Inverse ("Invert", Float) = 0
+		[ToggleUI] _Use_BaseAs1st ("Base Map as 1st Shade Map--{condition_showS:(_LightingMode==4)}", Float) = 0
+		_2nd_ShadeColor ("2nd Shade Color--{condition_showS:(_LightingMode==4)}", Color) = (1, 1, 1, 1)
+		[sRGBWarning(true)]_2nd_ShadeMap ("2nd Shade Map--{reference_properties:[_2nd_ShadeMapPan, _2nd_ShadeMapUV, _Use_2ndShadeMapAlpha_As_ShadowMask, _2ndShadeMapMask_Inverse],condition_showS:(_LightingMode==4)}", 2D) = "white" { }
 		[ThryHideInInspector][Vector2]_2nd_ShadeMapPan ("Panning", Vector) = (0, 0, 0, 0)
 		[ThryHideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7, Matcap, 9, Screen Space, 10)] _2nd_ShadeMapUV ("UV", Int) = 0
-		[ThryHideInInspector][ToggleUI]_Use_2ndShadeMapAlpha_As_ShadowMask ("2nd ShadeMap.a As ShadowMask", Float) = 0
-		[ThryHideInInspector][ToggleUI]_2ndShadeMapMask_Inverse ("2nd ShadeMapMask Inverse", Float) = 0
-		[ToggleUI] _Use_1stAs2nd ("Use 1st ShadeMap as 2nd_ShadeMap--{condition_showS:(_LightingMode==4)}", Float) = 0
-		_BaseColor_Step ("BaseColor_Step--{condition_showS:(_LightingMode==4)}", Range(0.01, 1)) = 0.5
-		_BaseShade_Feather ("Base/Shade_Feather--{condition_showS:(_LightingMode==4)}", Range(0.0001, 1)) = 0.0001
-		_ShadeColor_Step ("ShadeColor_Step--{condition_showS:(_LightingMode==4)}", Range(0, 1)) = 0
-		_1st2nd_Shades_Feather ("1st/2nd_Shades_Feather--{condition_showS:(_LightingMode==4)}", Range(0.0001, 1)) = 0.0001
+		[ThryHideInInspector][ToggleUI]_Use_2ndShadeMapAlpha_As_ShadowMask ("Use Alpha as Shadow Mask", Float) = 0
+		[ThryHideInInspector][ToggleUI]_2ndShadeMapMask_Inverse ("Invert", Float) = 0
+		[ToggleUI] _Use_1stAs2nd ("Use 1st as 2nd Shade Map--{condition_showS:(_LightingMode==4)}", Float) = 0
+		_BaseColor_Step ("Base Color Step--{condition_showS:(_LightingMode==4)}", Range(0.01, 1)) = 0.5
+		_BaseShade_Feather ("Base/Shade Feather--{condition_showS:(_LightingMode==4)}", Range(0.0001, 1)) = 0.0001
+		_ShadeColor_Step ("Shade Color Step--{condition_showS:(_LightingMode==4)}", Range(0, 1)) = 0
+		_1st2nd_Shades_Feather ("1st/2nd Shades Feather--{condition_showS:(_LightingMode==4)}", Range(0.0001, 1)) = 0.0001
 		[Enum(Replace, 0, Multiply, 1)]_ShadingShadeMapBlendType ("Blend Mode--{condition_showS:(_LightingMode==4)}", Int) = 0
 		//endex
 		
@@ -1845,7 +1845,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 		_CubeMapIntensity ("Brightness", Range(0, 5)) = 1
 		_CubeMapEmissionStrength ("Emission Strength", Range(0, 20)) = 0
 		_CubeMapSmoothness ("Smoothness", Range(0, 1)) = 1
-		[Enum(Vertex, 0, Pixel, 1)] _CubeMapNormal ("Normal to use", Int) = 1
+		[Enum(Vertex, 0, Pixel, 1)] _CubeMapNormal ("Normal to Use", Int) = 1
 		
 		[HideInInspector] s_start_CubeMapMasking ("Masking--{persistent_expand:true,default_expand:true}", Float) = 1
 		[sRGBWarning]_CubeMapMask ("Mask--{reference_properties:[_CubeMapMaskPan, _CubeMapMaskUV, _CubeMapMaskChannel, _CubeMapMaskInvert]}", 2D) = "white" { }
@@ -1880,7 +1880,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 		[HideInInspector][ThryToggle(_GLOSSYREFLECTIONS_OFF)]_EnableRimLighting ("Enable Rim Lighting", Float) = 0
 		[DoNotAnimate][KeywordEnum(Poiyomi, UTS2, LilToon)] _RimStyle ("Style", Float) = 0
 		
-		[sRGBWarning]_Set_RimLightMask ("Set_RimLightMask--{reference_properties:[_Set_RimLightMaskPan, _Set_RimLightMaskUV, _Set_RimLightMaskChannel], condition_showS:_RimStyle==1}", 2D) = "white" { }
+		[sRGBWarning]_Set_RimLightMask ("Mask--{reference_properties:[_Set_RimLightMaskPan, _Set_RimLightMaskUV, _Set_RimLightMaskChannel], condition_showS:_RimStyle==1}", 2D) = "white" { }
 		[ThryHideInInspector][Vector2]_Set_RimLightMaskPan ("Panning", Vector) = (0, 0, 0, 0)
 		[ThryHideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7, Matcap, 9, Screen Space, 10)] _Set_RimLightMaskUV ("UV", Int) = 0
 		[ThryHideInInspector][Enum(R, 0, G, 1, B, 2, A, 3)]_Set_RimLightMaskChannel ("Channel", Float) = 1
@@ -1902,7 +1902,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 		_RimBaseColorMix ("Mix Base Color--{ condition_showS:_RimStyle==0}", Range(0, 1)) = 0
 		_RimBrightness ("Brightness--{ condition_showS:_RimStyle==0}", Range(0, 10)) = 1
 		_RimStrength ("Emission--{ condition_showS:_RimStyle==0}", Range(0, 20)) = 0
-		_Tweak_RimLightMaskLevel ("Tweak_RimLightMaskLevel--{ condition_showS:_RimStyle==1}", Range(-1, 1)) = 0
+		_Tweak_RimLightMaskLevel ("Mask Range--{ condition_showS:_RimStyle==1}", Range(-1, 1)) = 0
 		_Is_LightColor_RimLight ("Mix Light Color--{ condition_showS:_RimStyle==1}", Range(0, 1)) = 1
 		[HideInInspector] s_end_RimLight0Color ("Color & Brightness", Float) = 0
 		
@@ -1931,12 +1931,14 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 		[HideInInspector] s_start_RimLightDirectionMask ("Light Direction Mask--{persistent_expand:true,default_expand:false, condition_showS:_RimStyle==1}", Float) = 0
 		[ToggleUI] _LightDirection_MaskOn ("Light Direction Mask--{ condition_showS:_RimStyle==1}", Float) = 0
 		_Tweak_LightDirection_MaskLevel ("Light Dir Mask Level--{ condition_showS:_RimStyle==1}", Range(0, 0.5)) = 0
-		[ThryToggleUI(true)] _Add_Antipodean_RimLight ("<size=13><b>  Antipodean(Ap) Rim</b></size>--{ condition_showS:_RimStyle==1}", Float) = 0
-		_Is_LightColor_Ap_RimLight ("Ap Light Color Mix--{ condition_showS:_Add_Antipodean_RimLight==1&&_RimStyle==1}", Range(0, 1)) = 1
-		_Ap_RimLightColor ("Ap Color--{reference_property:_RimApColorThemeIndex, condition_showS:_Add_Antipodean_RimLight==1&&_RimStyle==1}", Color) = (1, 1, 1, 1)
+		[HideInInspector] ss_start_Antipodean_Rim_SubSection ("Antipodean(Ap) Rim--{reference_property:_Add_Antipodean_RimLight,condition_showS:_RimStyle==1}", Float) = 0
+		[ThryHideInInspector][ToggleUI] _Add_Antipodean_RimLight ("Antipodean(Ap) Rim--{ condition_showS:_RimStyle==1}", Float) = 0
+		_Is_LightColor_Ap_RimLight ("Ap Light Color Mix--{ condition_showS:_RimStyle==1}", Range(0, 1)) = 1
+		_Ap_RimLightColor ("Ap Color--{reference_property:_RimApColorThemeIndex, condition_showS:_RimStyle==1}", Color) = (1, 1, 1, 1)
 		[ThryHideInInspector][ThryWideEnum(Off, 0, Theme Color 0, 1, Theme Color 1, 2, Theme Color 2, 3, Theme Color 3, 4, ColorChord 0, 5, ColorChord 1, 6, ColorChord 2, 7, ColorChord 3, 8, AL Theme 0, 9, AL Theme 1, 10, AL Theme 2, 11, AL Theme 3, 12)] _RimApColorThemeIndex ("", Int) = 0
-		_Ap_RimLight_Power ("Ap Power--{ condition_showS:_Add_Antipodean_RimLight==1&&_RimStyle==1}", Range(0, 1)) = 0.1
-		[Toggle(_)] _Ap_RimLight_FeatherOff ("Ap Feather Off--{ condition_showS:_Add_Antipodean_RimLight==1&&_RimStyle==1}", Float) = 0
+		_Ap_RimLight_Power ("Ap Power--{ condition_showS:_RimStyle==1}", Range(0, 1)) = 0.1
+		[Toggle(_)] _Ap_RimLight_FeatherOff ("Ap Feather Off--{ condition_showS:_RimStyle==1}", Float) = 0
+		[HideInInspector] ss_end_Antipodean_Rim_SubSection ("Antipodean(Ap) Rim", Float) = 0
 		[HideInInspector] s_end_RimLightDirectionMask ("Light Direction Mask", Float) = 0
 		// Liltoon
 		[HDR][Gamma]_RimColor ("Rim Color--{condition_showS:_RimStyle==2,reference_property:_RimLightColorThemeIndex}", Color) = (0.66, 0.5, 0.48, 1)
@@ -1957,7 +1959,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 		[ThryWideEnum(Replace, 0, Add, 1, Screen, 2, Multiply, 3)]_RimBlendMode ("Blend Mode--{condition_showS:_RimStyle==2}", Int) = 1
 		
 		[HideInInspector] s_start_liltoon_rim_lightdir ("Light Direction--{persistent_expand:true,default_expand:false, condition_showS:_RimStyle==2}", Float) = 0
-		_RimDirStrength ("Light direction strength", Range(0, 1)) = 0
+		_RimDirStrength ("Light Direction Strength", Range(0, 1)) = 0
 		_RimDirRange ("Direction Light Width", Range(-1, 1)) = 0
 		_RimIndirRange ("Indirection Light Width", Range(-1, 1)) = 0
 		[HDR][Gamma]_RimIndirColor ("Indirection Color", Color) = (1, 1, 1, 1)
@@ -2009,7 +2011,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 		[HideInInspector][ThryToggle(POI_RIM2)]_EnableRim2Lighting ("Enable Rim2 Lighting", Float) = 0
 		[DoNotAnimate][KeywordEnum(Poiyomi, UTS2, LilToon)] _Rim2Style ("Style", Float) = 0
 		
-		[sRGBWarning]_Set_Rim2LightMask ("Set_RimLightMask--{reference_properties:[_Set_Rim2LightMaskPan, _Set_Rim2LightMaskUV, _Set_Rim2LightMaskChannel], condition_showS:_Rim2Style==1}", 2D) = "white" { }
+		[sRGBWarning]_Set_Rim2LightMask ("Mask--{reference_properties:[_Set_Rim2LightMaskPan, _Set_Rim2LightMaskUV, _Set_Rim2LightMaskChannel], condition_showS:_Rim2Style==1}", 2D) = "white" { }
 		[ThryHideInInspector][Vector2]_Set_Rim2LightMaskPan ("Panning", Vector) = (0, 0, 0, 0)
 		[ThryHideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7, Matcap, 9, Screen Space, 10)] _Set_Rim2LightMaskUV ("UV", Int) = 0
 		[ThryHideInInspector][Enum(R, 0, G, 1, B, 2, A, 3)]_Set_Rim2LightMaskChannel ("Channel", Float) = 1
@@ -2031,7 +2033,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 		_Rim2BaseColorMix ("Mix Base Color--{ condition_showS:_Rim2Style==0}", Range(0, 1)) = 0
 		_Rim2Brightness ("Brightness--{ condition_showS:_Rim2Style==0}", Range(0, 10)) = 1
 		_Rim2Strength ("Emission--{ condition_showS:_Rim2Style==0}", Range(0, 20)) = 0
-		_Tweak_Rim2LightMaskLevel ("Tweak_RimLightMaskLevel--{ condition_showS:_Rim2Style==1}", Range(-1, 1)) = 0
+		_Tweak_Rim2LightMaskLevel ("Mask Range--{ condition_showS:_Rim2Style==1}", Range(-1, 1)) = 0
 		_Is_LightColor_Rim2Light ("Mix Light Color--{ condition_showS:_Rim2Style==1}", Range(0, 1)) = 1
 		[HideInInspector] s_end_RimLight1Color ("Color & Brightness", Float) = 0
 		
@@ -2058,14 +2060,16 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 		
 		// UTS2
 		[HideInInspector] s_start_RimLight2DirectionMask ("Light Direction Mask--{persistent_expand:true,default_expand:false, condition_showS:_Rim2Style==1}", Float) = 0
-		[ThryHideInInspector][ToggleUI] _LightDirection_MaskOn2 ("Light Direction Mask--{ condition_showS:_Rim2Style==1}", Float) = 0
+		[ToggleUI] _LightDirection_MaskOn2 ("Light Direction Mask--{ condition_showS:_Rim2Style==1}", Float) = 0
 		_Tweak_LightDirection_MaskLevel2 ("Light Dir Mask Level--{ condition_showS:_Rim2Style==1}", Range(0, 0.5)) = 0
-		[ThryToggleUI(true)] _Add_Antipodean_Rim2Light ("<size=13><b>  Antipodean(Ap) Rim</b></size>--{ condition_showS:_Rim2Style==1}", Float) = 0
-		_Is_LightColor_Ap_Rim2Light ("Ap Light Color Mix--{ condition_showS:_Add_Antipodean_Rim2Light==1&&_Rim2Style==1}", Range(0, 1)) = 1
-		_Ap_Rim2LightColor ("Ap Color--{reference_property:_Rim2ApColorThemeIndex, condition_showS:_Add_Antipodean_Rim2Light==1&&_Rim2Style==1}", Color) = (1, 1, 1, 1)
+		[HideInInspector] ss_start_Antipodean_Rim2_SubSection ("Antipodean(Ap) Rim--{reference_property:_Add_Antipodean_Rim2Light,condition_showS:_RimStyle==1}", Float) = 0
+		[ThryHideInInspector][ToggleUI] _Add_Antipodean_Rim2Light ("Antipodean(Ap) Rim--{ condition_showS:_Rim2Style==1}", Float) = 0
+		_Is_LightColor_Ap_Rim2Light ("Ap Light Color Mix--{ condition_showS:_Rim2Style==1}", Range(0, 1)) = 1
+		_Ap_Rim2LightColor ("Ap Color--{reference_property:_Rim2ApColorThemeIndex, condition_showS:_Rim2Style==1}", Color) = (1, 1, 1, 1)
 		[ThryHideInInspector][ThryWideEnum(Off, 0, Theme Color 0, 1, Theme Color 1, 2, Theme Color 2, 3, Theme Color 3, 4, ColorChord 0, 5, ColorChord 1, 6, ColorChord 2, 7, ColorChord 3, 8, AL Theme 0, 9, AL Theme 1, 10, AL Theme 2, 11, AL Theme 3, 12)] _Rim2ApColorThemeIndex ("", Int) = 0
-		_Ap_Rim2Light_Power ("Ap Power--{ condition_showS:_Add_Antipodean_Rim2Light==1&&_Rim2Style==1}", Range(0, 1)) = 0.1
-		[Toggle(_)] _Ap_Rim2Light_FeatherOff ("Ap Feather Off--{ condition_showS:_Add_Antipodean_Rim2Light==1&&_Rim2Style==1}", Float) = 0
+		_Ap_Rim2Light_Power ("Ap Power--{ condition_showS:_Rim2Style==1}", Range(0, 1)) = 0.1
+		[Toggle(_)] _Ap_Rim2Light_FeatherOff ("Ap Feather Off--{ condition_showS:_Rim2Style==1}", Float) = 0
+		[HideInInspector] ss_end_Antipodean_Rim2_SubSection ("Antipodean(Ap) Rim", Float) = 0
 		[HideInInspector] s_end_RimLight2DirectionMask ("Light Direction Mask", Float) = 0
 		
 		// Liltoon
@@ -2086,7 +2090,7 @@ Shader ".poiyomi/Poiyomi Toon Two Pass"
 		// [ToggleUI]_Rim2ApplyTransparency ("Apply Transparency--{condition_showS:_Rim2Style==2}", Int) = 1
 		[ThryWideEnum(Replace, 0, Add, 1, Screen, 2, Multiply, 3)]_Rim2BlendMode ("Blend Mode--{condition_showS:_Rim2Style==2}", Int) = 1
 		[HideInInspector] s_start_liltoon_rim2_lightdir ("Light Direction--{persistent_expand:true,default_expand:false, condition_showS:_Rim2Style==2}", Float) = 0
-		_Rim2DirStrength ("Light direction strength", Range(0, 1)) = 0
+		_Rim2DirStrength ("Light Direction Strength", Range(0, 1)) = 0
 		_Rim2DirRange ("Direction Light Width", Range(-1, 1)) = 0
 		_Rim2IndirRange ("Indirection Light Width", Range(-1, 1)) = 0
 		[HDR][Gamma]_Rim2IndirColor ("Indirection Color", Color) = (1, 1, 1, 1)

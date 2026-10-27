@@ -7,7 +7,7 @@
 [HideInInspector][ThryToggle(_GLOSSYREFLECTIONS_OFF)]_EnableRimLighting ("Enable Rim Lighting", Float) = 0
 [DoNotAnimate][KeywordEnum(Poiyomi, UTS2, LilToon)] _RimStyle ("Style", Float) = 0
 
-[sRGBWarning]_Set_RimLightMask ("Set_RimLightMask--{reference_properties:[_Set_RimLightMaskPan, _Set_RimLightMaskUV, _Set_RimLightMaskChannel], condition_showS:_RimStyle==1}", 2D) = "white" { }
+[sRGBWarning]_Set_RimLightMask ("Mask--{reference_properties:[_Set_RimLightMaskPan, _Set_RimLightMaskUV, _Set_RimLightMaskChannel], condition_showS:_RimStyle==1}", 2D) = "white" { }
 [ThryHideInInspector][Vector2]_Set_RimLightMaskPan ("Panning", Vector) = (0, 0, 0, 0)
 [ThryHideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7, Matcap, 9, Screen Space, 10)] _Set_RimLightMaskUV ("UV", Int) = 0
 [ThryHideInInspector][Enum(R, 0, G, 1, B, 2, A, 3)]_Set_RimLightMaskChannel ("Channel", Float) = 1
@@ -29,7 +29,7 @@ _RimBlendStrength ("Blend Alpha--{ condition_showS:_RimStyle==0}", Range(0, 1)) 
 _RimBaseColorMix ("Mix Base Color--{ condition_showS:_RimStyle==0}", Range(0, 1)) = 0
 _RimBrightness ("Brightness--{ condition_showS:_RimStyle==0}", Range(0, 10)) = 1
 _RimStrength ("Emission--{ condition_showS:_RimStyle==0}", Range(0, 20)) = 0
-_Tweak_RimLightMaskLevel ("Tweak_RimLightMaskLevel--{ condition_showS:_RimStyle==1}", Range(-1, 1)) = 0
+_Tweak_RimLightMaskLevel ("Mask Range--{ condition_showS:_RimStyle==1}", Range(-1, 1)) = 0
 _Is_LightColor_RimLight ("Mix Light Color--{ condition_showS:_RimStyle==1}", Range(0, 1)) = 1
 [HideInInspector] s_end_RimLight0Color ("Color & Brightness", Float) = 0
 
@@ -58,12 +58,14 @@ _RimShadowWidth ("Shrink In Shadow", Range(0, 1)) = 0
 [HideInInspector] s_start_RimLightDirectionMask ("Light Direction Mask--{persistent_expand:true,default_expand:false, condition_showS:_RimStyle==1}", Float) = 0
 [ToggleUI] _LightDirection_MaskOn ("Light Direction Mask--{ condition_showS:_RimStyle==1}", Float) = 0
 _Tweak_LightDirection_MaskLevel ("Light Dir Mask Level--{ condition_showS:_RimStyle==1}", Range(0, 0.5)) = 0
-[ThryToggleUI(true)] _Add_Antipodean_RimLight ("<size=13><b>  Antipodean(Ap) Rim</b></size>--{ condition_showS:_RimStyle==1}", Float) = 0
-_Is_LightColor_Ap_RimLight ("Ap Light Color Mix--{ condition_showS:_Add_Antipodean_RimLight==1&&_RimStyle==1}", Range(0, 1)) = 1
-_Ap_RimLightColor ("Ap Color--{reference_property:_RimApColorThemeIndex, condition_showS:_Add_Antipodean_RimLight==1&&_RimStyle==1}", Color) = (1, 1, 1, 1)
+[HideInInspector] ss_start_Antipodean_Rim_SubSection ("Antipodean(Ap) Rim--{reference_property:_Add_Antipodean_RimLight,condition_showS:_RimStyle==1}", Float) = 0
+[ThryHideInInspector][ToggleUI] _Add_Antipodean_RimLight ("Antipodean(Ap) Rim--{ condition_showS:_RimStyle==1}", Float) = 0
+_Is_LightColor_Ap_RimLight ("Ap Light Color Mix--{ condition_showS:_RimStyle==1}", Range(0, 1)) = 1
+_Ap_RimLightColor ("Ap Color--{reference_property:_RimApColorThemeIndex, condition_showS:_RimStyle==1}", Color) = (1, 1, 1, 1)
 [ThryHideInInspector][ThryWideEnum(Off, 0, Theme Color 0, 1, Theme Color 1, 2, Theme Color 2, 3, Theme Color 3, 4, ColorChord 0, 5, ColorChord 1, 6, ColorChord 2, 7, ColorChord 3, 8, AL Theme 0, 9, AL Theme 1, 10, AL Theme 2, 11, AL Theme 3, 12)] _RimApColorThemeIndex ("", Int) = 0
-_Ap_RimLight_Power ("Ap Power--{ condition_showS:_Add_Antipodean_RimLight==1&&_RimStyle==1}", Range(0, 1)) = 0.1
-[Toggle(_)] _Ap_RimLight_FeatherOff ("Ap Feather Off--{ condition_showS:_Add_Antipodean_RimLight==1&&_RimStyle==1}", Float) = 0
+_Ap_RimLight_Power ("Ap Power--{ condition_showS:_RimStyle==1}", Range(0, 1)) = 0.1
+[Toggle(_)] _Ap_RimLight_FeatherOff ("Ap Feather Off--{ condition_showS:_RimStyle==1}", Float) = 0
+[HideInInspector] ss_end_Antipodean_Rim_SubSection ("Antipodean(Ap) Rim", Float) = 0
 [HideInInspector] s_end_RimLightDirectionMask ("Light Direction Mask", Float) = 0
 // Liltoon
 [HDR][Gamma]_RimColor ("Rim Color--{condition_showS:_RimStyle==2,reference_property:_RimLightColorThemeIndex}", Color) = (0.66, 0.5, 0.48, 1)
@@ -84,7 +86,7 @@ _RimVRParallaxStrength ("VR Parallax Strength--{condition_showS:_RimStyle==2}", 
 [ThryWideEnum(Replace, 0, Add, 1, Screen, 2, Multiply, 3)]_RimBlendMode ("Blend Mode--{condition_showS:_RimStyle==2}", Int) = 1
 
 [HideInInspector] s_start_liltoon_rim_lightdir ("Light Direction--{persistent_expand:true,default_expand:false, condition_showS:_RimStyle==2}", Float) = 0
-_RimDirStrength ("Light direction strength", Range(0, 1)) = 0
+_RimDirStrength ("Light Direction Strength", Range(0, 1)) = 0
 _RimDirRange ("Direction Light Width", Range(-1, 1)) = 0
 _RimIndirRange ("Indirection Light Width", Range(-1, 1)) = 0
 [HDR][Gamma]_RimIndirColor ("Indirection Color", Color) = (1, 1, 1, 1)
@@ -137,7 +139,7 @@ _AudioLinkRimColorOverride ("Color", Color) = (1,1,1,1)
 [HideInInspector][ThryToggle(POI_RIM2)]_EnableRim2Lighting ("Enable Rim2 Lighting", Float) = 0
 [DoNotAnimate][KeywordEnum(Poiyomi, UTS2, LilToon)] _Rim2Style ("Style", Float) = 0
 
-[sRGBWarning]_Set_Rim2LightMask ("Set_RimLightMask--{reference_properties:[_Set_Rim2LightMaskPan, _Set_Rim2LightMaskUV, _Set_Rim2LightMaskChannel], condition_showS:_Rim2Style==1}", 2D) = "white" { }
+[sRGBWarning]_Set_Rim2LightMask ("Mask--{reference_properties:[_Set_Rim2LightMaskPan, _Set_Rim2LightMaskUV, _Set_Rim2LightMaskChannel], condition_showS:_Rim2Style==1}", 2D) = "white" { }
 [ThryHideInInspector][Vector2]_Set_Rim2LightMaskPan ("Panning", Vector) = (0, 0, 0, 0)
 [ThryHideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7, Matcap, 9, Screen Space, 10)] _Set_Rim2LightMaskUV ("UV", Int) = 0
 [ThryHideInInspector][Enum(R, 0, G, 1, B, 2, A, 3)]_Set_Rim2LightMaskChannel ("Channel", Float) = 1
@@ -159,7 +161,7 @@ _Rim2BlendStrength ("Blend Alpha--{ condition_showS:_Rim2Style==0}", Range(0, 1)
 _Rim2BaseColorMix ("Mix Base Color--{ condition_showS:_Rim2Style==0}", Range(0, 1)) = 0
 _Rim2Brightness ("Brightness--{ condition_showS:_Rim2Style==0}", Range(0, 10)) = 1
 _Rim2Strength ("Emission--{ condition_showS:_Rim2Style==0}", Range(0, 20)) = 0
-_Tweak_Rim2LightMaskLevel ("Tweak_RimLightMaskLevel--{ condition_showS:_Rim2Style==1}", Range(-1, 1)) = 0
+_Tweak_Rim2LightMaskLevel ("Mask Range--{ condition_showS:_Rim2Style==1}", Range(-1, 1)) = 0
 _Is_LightColor_Rim2Light ("Mix Light Color--{ condition_showS:_Rim2Style==1}", Range(0, 1)) = 1
 [HideInInspector] s_end_RimLight1Color ("Color & Brightness", Float) = 0
 
@@ -186,14 +188,16 @@ _Rim2ShadowWidth ("Shrink In Shadow", Range(0, 1)) = 0
 
 // UTS2
 [HideInInspector] s_start_RimLight2DirectionMask ("Light Direction Mask--{persistent_expand:true,default_expand:false, condition_showS:_Rim2Style==1}", Float) = 0
-[ThryHideInInspector][ToggleUI] _LightDirection_MaskOn2 ("Light Direction Mask--{ condition_showS:_Rim2Style==1}", Float) = 0
+[ToggleUI] _LightDirection_MaskOn2 ("Light Direction Mask--{ condition_showS:_Rim2Style==1}", Float) = 0
 _Tweak_LightDirection_MaskLevel2 ("Light Dir Mask Level--{ condition_showS:_Rim2Style==1}", Range(0, 0.5)) = 0
-[ThryToggleUI(true)] _Add_Antipodean_Rim2Light ("<size=13><b>  Antipodean(Ap) Rim</b></size>--{ condition_showS:_Rim2Style==1}", Float) = 0
-_Is_LightColor_Ap_Rim2Light ("Ap Light Color Mix--{ condition_showS:_Add_Antipodean_Rim2Light==1&&_Rim2Style==1}", Range(0, 1)) = 1
-_Ap_Rim2LightColor ("Ap Color--{reference_property:_Rim2ApColorThemeIndex, condition_showS:_Add_Antipodean_Rim2Light==1&&_Rim2Style==1}", Color) = (1, 1, 1, 1)
+[HideInInspector] ss_start_Antipodean_Rim2_SubSection ("Antipodean(Ap) Rim--{reference_property:_Add_Antipodean_Rim2Light,condition_showS:_RimStyle==1}", Float) = 0
+[ThryHideInInspector][ToggleUI] _Add_Antipodean_Rim2Light ("Antipodean(Ap) Rim--{ condition_showS:_Rim2Style==1}", Float) = 0
+_Is_LightColor_Ap_Rim2Light ("Ap Light Color Mix--{ condition_showS:_Rim2Style==1}", Range(0, 1)) = 1
+_Ap_Rim2LightColor ("Ap Color--{reference_property:_Rim2ApColorThemeIndex, condition_showS:_Rim2Style==1}", Color) = (1, 1, 1, 1)
 [ThryHideInInspector][ThryWideEnum(Off, 0, Theme Color 0, 1, Theme Color 1, 2, Theme Color 2, 3, Theme Color 3, 4, ColorChord 0, 5, ColorChord 1, 6, ColorChord 2, 7, ColorChord 3, 8, AL Theme 0, 9, AL Theme 1, 10, AL Theme 2, 11, AL Theme 3, 12)] _Rim2ApColorThemeIndex ("", Int) = 0
-_Ap_Rim2Light_Power ("Ap Power--{ condition_showS:_Add_Antipodean_Rim2Light==1&&_Rim2Style==1}", Range(0, 1)) = 0.1
-[Toggle(_)] _Ap_Rim2Light_FeatherOff ("Ap Feather Off--{ condition_showS:_Add_Antipodean_Rim2Light==1&&_Rim2Style==1}", Float) = 0
+_Ap_Rim2Light_Power ("Ap Power--{ condition_showS:_Rim2Style==1}", Range(0, 1)) = 0.1
+[Toggle(_)] _Ap_Rim2Light_FeatherOff ("Ap Feather Off--{ condition_showS:_Rim2Style==1}", Float) = 0
+[HideInInspector] ss_end_Antipodean_Rim2_SubSection ("Antipodean(Ap) Rim", Float) = 0
 [HideInInspector] s_end_RimLight2DirectionMask ("Light Direction Mask", Float) = 0
 
 // Liltoon
@@ -214,7 +218,7 @@ _Rim2VRParallaxStrength ("VR Parallax Strength--{condition_showS:_Rim2Style==2}"
 // [ToggleUI]_Rim2ApplyTransparency ("Apply Transparency--{condition_showS:_Rim2Style==2}", Int) = 1
 [ThryWideEnum(Replace, 0, Add, 1, Screen, 2, Multiply, 3)]_Rim2BlendMode ("Blend Mode--{condition_showS:_Rim2Style==2}", Int) = 1
 [HideInInspector] s_start_liltoon_rim2_lightdir ("Light Direction--{persistent_expand:true,default_expand:false, condition_showS:_Rim2Style==2}", Float) = 0
-_Rim2DirStrength ("Light direction strength", Range(0, 1)) = 0
+_Rim2DirStrength ("Light Direction Strength", Range(0, 1)) = 0
 _Rim2DirRange ("Direction Light Width", Range(-1, 1)) = 0
 _Rim2IndirRange ("Indirection Light Width", Range(-1, 1)) = 0
 [HDR][Gamma]_Rim2IndirColor ("Indirection Color", Color) = (1, 1, 1, 1)

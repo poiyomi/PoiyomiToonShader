@@ -64,8 +64,8 @@ _LightingCastedShadows ("Receive Casted Shadows--{tooltip:Controls how much Unit
 _LightingShadowSoftness ("Casted Shadow Softness--{condition_showS:(_LightingCleanCastedShadows==0),tooltip:Softens the casted shadows applied to the model.}", Range(0, 1)) = 0
 [ToggleUI]_LightingCleanCastedShadows ("Clean Casted Shadows--{tooltip:Smooths the blocky steps out of casted shadow edges.}", Float) = 0
 [DoNotLock]_LightingMonochromatic ("Grayscale Lighting--{tooltip:De-saturates the base lighting color while keeping perceptual luminance the same.}", Range(0, 1)) = 0
-[ToggleUI]_LightingVertexLightingEnabled ("Vertex lights (Non-Important)--{tooltip:Enables realtime vertex lights to perform unimportant lighting calculations.}", Float) = 1
-[ToggleUI]_LightingMirrorVertexLightingEnabled ("Mirror Vertex lights (Non-Important)--{tooltip:Invokes correct handling of vertex lighting due to how VRChat performs lighting differently in various mirrors.}", Float) = 1
+[ToggleUI]_LightingVertexLightingEnabled ("Vertex Lights (Non-Important)--{tooltip:Enables realtime vertex lights to perform unimportant lighting calculations.}", Float) = 1
+[ToggleUI]_LightingMirrorVertexLightingEnabled ("Mirror Vertex Lights (Non-Important)--{tooltip:Invokes correct handling of vertex lighting due to how VRChat performs lighting differently in various mirrors.}", Float) = 1
 [HideInInspector] s_end_LightDataBasePass ("Base Pass", Float) = 1
 
 // Lighting Additive

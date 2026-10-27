@@ -15,7 +15,7 @@ _CubeMapBlendAmount ("Blend Alpha", Range(0, 1)) = 1
 _CubeMapIntensity ("Brightness", Range(0, 5)) = 1
 _CubeMapEmissionStrength ("Emission Strength", Range(0, 20)) = 0
 _CubeMapSmoothness ("Smoothness", Range(0, 1)) = 1
-[Enum(Vertex, 0, Pixel, 1)] _CubeMapNormal ("Normal to use", Int) = 1
+[Enum(Vertex, 0, Pixel, 1)] _CubeMapNormal ("Normal to Use", Int) = 1
 
 
 [HideInInspector] s_start_CubeMapMasking ("Masking--{persistent_expand:true,default_expand:true}", Float) = 1

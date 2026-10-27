@@ -1,23 +1,23 @@
 #T#Properties
 //ifex _LightingMode!=4
-_1st_ShadeColor ("1st ShadeColor--{condition_showS:(_LightingMode==4)}", Color) = (1, 1, 1)
-[sRGBWarning(true)]_1st_ShadeMap ("1st ShadeMap--{reference_properties:[_1st_ShadeMapPan, _1st_ShadeMapUV, _Use_1stShadeMapAlpha_As_ShadowMask, _1stShadeMapMask_Inverse],condition_showS:(_LightingMode==4)}", 2D) = "white" { }
+_1st_ShadeColor ("1st Shade Color--{condition_showS:(_LightingMode==4)}", Color) = (1, 1, 1)
+[sRGBWarning(true)]_1st_ShadeMap ("1st Shade Map--{reference_properties:[_1st_ShadeMapPan, _1st_ShadeMapUV, _Use_1stShadeMapAlpha_As_ShadowMask, _1stShadeMapMask_Inverse],condition_showS:(_LightingMode==4)}", 2D) = "white" { }
 [ThryHideInInspector][Vector2]_1st_ShadeMapPan ("Panning", Vector) = (0, 0, 0, 0)
 [ThryHideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7, Matcap, 9, Screen Space, 10)] _1st_ShadeMapUV ("UV", Int) = 0
-[ThryHideInInspector][ToggleUI]_Use_1stShadeMapAlpha_As_ShadowMask ("1st ShadeMap.a As ShadowMask", Float) = 0
-[ThryHideInInspector][ToggleUI]_1stShadeMapMask_Inverse ("1st ShadeMapMask Inverse", Float) = 0
-[ToggleUI] _Use_BaseAs1st ("Use BaseMap as 1st ShadeMap--{condition_showS:(_LightingMode==4)}", Float) = 0
-_2nd_ShadeColor ("2nd ShadeColor--{condition_showS:(_LightingMode==4)}", Color) = (1, 1, 1, 1)
-[sRGBWarning(true)]_2nd_ShadeMap ("2nd ShadeMap--{reference_properties:[_2nd_ShadeMapPan, _2nd_ShadeMapUV, _Use_2ndShadeMapAlpha_As_ShadowMask, _2ndShadeMapMask_Inverse],condition_showS:(_LightingMode==4)}", 2D) = "white" { }
+[ThryHideInInspector][ToggleUI]_Use_1stShadeMapAlpha_As_ShadowMask ("Use Alpha as Shadow Mask", Float) = 0
+[ThryHideInInspector][ToggleUI]_1stShadeMapMask_Inverse ("Invert", Float) = 0
+[ToggleUI] _Use_BaseAs1st ("Base Map as 1st Shade Map--{condition_showS:(_LightingMode==4)}", Float) = 0
+_2nd_ShadeColor ("2nd Shade Color--{condition_showS:(_LightingMode==4)}", Color) = (1, 1, 1, 1)
+[sRGBWarning(true)]_2nd_ShadeMap ("2nd Shade Map--{reference_properties:[_2nd_ShadeMapPan, _2nd_ShadeMapUV, _Use_2ndShadeMapAlpha_As_ShadowMask, _2ndShadeMapMask_Inverse],condition_showS:(_LightingMode==4)}", 2D) = "white" { }
 [ThryHideInInspector][Vector2]_2nd_ShadeMapPan ("Panning", Vector) = (0, 0, 0, 0)
 [ThryHideInInspector][ThryWideEnum(UV0, 0, UV1, 1, UV2, 2, UV3, 3, Panosphere, 4, World Pos, 5, Local Pos, 8, Polar UV, 6, Distorted UV, 7, Matcap, 9, Screen Space, 10)] _2nd_ShadeMapUV ("UV", Int) = 0
-[ThryHideInInspector][ToggleUI]_Use_2ndShadeMapAlpha_As_ShadowMask ("2nd ShadeMap.a As ShadowMask", Float) = 0
-[ThryHideInInspector][ToggleUI]_2ndShadeMapMask_Inverse ("2nd ShadeMapMask Inverse", Float) = 0
-[ToggleUI] _Use_1stAs2nd ("Use 1st ShadeMap as 2nd_ShadeMap--{condition_showS:(_LightingMode==4)}", Float) = 0
-_BaseColor_Step ("BaseColor_Step--{condition_showS:(_LightingMode==4)}", Range(0.01, 1)) = 0.5
-_BaseShade_Feather ("Base/Shade_Feather--{condition_showS:(_LightingMode==4)}", Range(0.0001, 1)) = 0.0001
-_ShadeColor_Step ("ShadeColor_Step--{condition_showS:(_LightingMode==4)}", Range(0, 1)) = 0
-_1st2nd_Shades_Feather ("1st/2nd_Shades_Feather--{condition_showS:(_LightingMode==4)}", Range(0.0001, 1)) = 0.0001
+[ThryHideInInspector][ToggleUI]_Use_2ndShadeMapAlpha_As_ShadowMask ("Use Alpha as Shadow Mask", Float) = 0
+[ThryHideInInspector][ToggleUI]_2ndShadeMapMask_Inverse ("Invert", Float) = 0
+[ToggleUI] _Use_1stAs2nd ("Use 1st as 2nd Shade Map--{condition_showS:(_LightingMode==4)}", Float) = 0
+_BaseColor_Step ("Base Color Step--{condition_showS:(_LightingMode==4)}", Range(0.01, 1)) = 0.5
+_BaseShade_Feather ("Base/Shade Feather--{condition_showS:(_LightingMode==4)}", Range(0.0001, 1)) = 0.0001
+_ShadeColor_Step ("Shade Color Step--{condition_showS:(_LightingMode==4)}", Range(0, 1)) = 0
+_1st2nd_Shades_Feather ("1st/2nd Shades Feather--{condition_showS:(_LightingMode==4)}", Range(0.0001, 1)) = 0.0001
 [Enum(Replace, 0, Multiply, 1)]_ShadingShadeMapBlendType ("Blend Mode--{condition_showS:(_LightingMode==4)}", Int) = 0
 //endex
 #T#VariablesExposed
