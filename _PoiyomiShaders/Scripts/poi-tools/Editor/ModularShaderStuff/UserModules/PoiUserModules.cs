@@ -258,7 +258,8 @@ namespace Poi.Tools
                 .FirstOrDefault();
             if (reference == null) return;
 
-            var baseModules = ShaderGenerator.FindAllModules(reference);
+            // Applied user modules are left out, or every applied module would clash with itself below
+            var baseModules = ShaderGenerator.FindAllModules(reference).Where(m => IsShipped(AssetDatabase.GetAssetPath(m))).ToList();
             var enabled = entries.Where(x => x.Enabled).Select(x => x.Module).ToList();
 
             foreach (var entry in entries)

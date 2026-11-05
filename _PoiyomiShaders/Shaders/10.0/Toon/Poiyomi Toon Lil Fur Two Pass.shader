@@ -2,7 +2,7 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 {
 	Properties
 	{
-		[HideInInspector] shader_master_label ("<color=#E75898ff>Poiyomi 10.0.28</color>", Float) = 0
+		[HideInInspector] shader_master_label ("<color=#E75898ff>Poiyomi 10.0.29</color>", Float) = 0
 		[HideInInspector] shader_is_using_thry_editor ("", Float) = 0
 		[HideInInspector] shader_locale ("0db0b86376c3dca4b9a6828ef8615fe0", Float) = 0
 		[HideInInspector] footer_website ("{texture:{name:icon-poilogo,height:24},action:{type:URL,data:https://www.poiyomi.com},hover:WEBSITE}", Float) = 0
@@ -1577,7 +1577,7 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 		[ThryHideInInspector][VectorToSliders(Blend UV X, 0.0, 1.0, Blend UV Y, 0.0, 1.0)]_MatCapBlendUV1 ("UV Blend", Vector) = (0, 0, 0, 0)
 		[ThryHideInInspector]_MatcapBorder ("Border", Range(0, 5)) = 0.5
 		[ThryHideInInspector]_MatcapRotation ("Rotation", Range(-1, 1)) = 0
-		[ThryHideInInspector]_MatCapVRParallaxStrength ("VR Parallax Strength", Range(0, 1)) = 0
+		[ThryHideInInspector]_MatCapVRParallaxStrength ("VR Parallax Strength", Range(0, 1)) = 1
 		_MatcapIntensity ("Intensity", Range(0, 5)) = 1
 		_MatcapEmissionStrength ("Emission Strength", Range(0, 20)) = 0
 		_MatcapBaseColorMix ("Base Color Mix", Range(0, 1)) = 0
@@ -1680,7 +1680,7 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 		[ThryHideInInspector][VectorToSliders(Blend UV X, 0.0, 1.0, Blend UV Y, 0.0, 1.0)]_MatCap2ndBlendUV1 ("UV Blend", Vector) = (0, 0, 0, 0)
 		[ThryHideInInspector]_Matcap2Border ("Border", Range(0, 5)) = 0.5
 		[ThryHideInInspector]_Matcap2Rotation ("Rotation", Range(-1, 1)) = 0
-		[ThryHideInInspector]_MatCap2ndVRParallaxStrength ("VR Parallax Strength", Range(0, 1)) = 0
+		[ThryHideInInspector]_MatCap2ndVRParallaxStrength ("VR Parallax Strength", Range(0, 1)) = 1
 		_Matcap2Intensity ("Intensity", Range(0, 5)) = 1
 		_Matcap2EmissionStrength ("Emission Strength", Range(0, 20)) = 0
 		_Matcap2BaseColorMix ("Base Color Mix", Range(0, 1)) = 0
@@ -1783,7 +1783,7 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 		[ThryHideInInspector][VectorToSliders(Blend UV X, 0.0, 1.0, Blend UV Y, 0.0, 1.0)]_MatCap3rdBlendUV1 ("UV Blend", Vector) = (0, 0, 0, 0)
 		[ThryHideInInspector]_Matcap3Border ("Border", Range(0, 5)) = 0.5
 		[ThryHideInInspector]_Matcap3Rotation ("Rotation", Range(-1, 1)) = 0
-		[ThryHideInInspector]_MatCap3rdVRParallaxStrength ("VR Parallax Strength", Range(0, 1)) = 0
+		[ThryHideInInspector]_MatCap3rdVRParallaxStrength ("VR Parallax Strength", Range(0, 1)) = 1
 		_Matcap3Intensity ("Intensity", Range(0, 5)) = 1
 		_Matcap3EmissionStrength ("Emission Strength", Range(0, 20)) = 0
 		_Matcap3BaseColorMix ("Base Color Mix", Range(0, 1)) = 0
@@ -1886,7 +1886,7 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 		[ThryHideInInspector][VectorToSliders(Blend UV X, 0.0, 1.0, Blend UV Y, 0.0, 1.0)]_MatCap4thBlendUV1 ("UV Blend", Vector) = (0, 0, 0, 0)
 		[ThryHideInInspector]_Matcap4Border ("Border", Range(0, 5)) = 0.5
 		[ThryHideInInspector]_Matcap4Rotation ("Rotation", Range(-1, 1)) = 0
-		[ThryHideInInspector]_MatCap4thVRParallaxStrength ("VR Parallax Strength", Range(0, 1)) = 0
+		[ThryHideInInspector]_MatCap4thVRParallaxStrength ("VR Parallax Strength", Range(0, 1)) = 1
 		_Matcap4Intensity ("Intensity", Range(0, 5)) = 1
 		_Matcap4EmissionStrength ("Emission Strength", Range(0, 20)) = 0
 		_Matcap4BaseColorMix ("Base Color Mix", Range(0, 1)) = 0
@@ -26438,8 +26438,8 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 			
 			float2 calculateViewNormalUV(in PoiMesh poiMesh, in PoiCam poiCam)
 			{
-				float3 worldViewUp = normalize(float3(0, 1, 0) - poiCam.viewDir * dot(poiCam.viewDir, float3(0, 1, 0)));
-				float3 worldViewRight = normalize(cross(poiCam.viewDir, worldViewUp));
+				float3 worldViewUp = normalize(float3(0, 1, 0) - poiCam.eyeViewDir * dot(poiCam.eyeViewDir, float3(0, 1, 0)));
+				float3 worldViewRight = cross(poiCam.eyeViewDir, worldViewUp);
 				return float2(dot(worldViewRight, poiMesh.normals[0]), dot(worldViewUp, poiMesh.normals[0])) * 0.5 + 0.5;
 			}
 			
@@ -49524,8 +49524,8 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 			
 			float2 calculateViewNormalUV(in PoiMesh poiMesh, in PoiCam poiCam)
 			{
-				float3 worldViewUp = normalize(float3(0, 1, 0) - poiCam.viewDir * dot(poiCam.viewDir, float3(0, 1, 0)));
-				float3 worldViewRight = normalize(cross(poiCam.viewDir, worldViewUp));
+				float3 worldViewUp = normalize(float3(0, 1, 0) - poiCam.eyeViewDir * dot(poiCam.eyeViewDir, float3(0, 1, 0)));
+				float3 worldViewRight = cross(poiCam.eyeViewDir, worldViewUp);
 				return float2(dot(worldViewRight, poiMesh.normals[0]), dot(worldViewUp, poiMesh.normals[0])) * 0.5 + 0.5;
 			}
 			
@@ -69723,8 +69723,8 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 			
 			float2 calculateViewNormalUV(in PoiMesh poiMesh, in PoiCam poiCam)
 			{
-				float3 worldViewUp = normalize(float3(0, 1, 0) - poiCam.viewDir * dot(poiCam.viewDir, float3(0, 1, 0)));
-				float3 worldViewRight = normalize(cross(poiCam.viewDir, worldViewUp));
+				float3 worldViewUp = normalize(float3(0, 1, 0) - poiCam.eyeViewDir * dot(poiCam.eyeViewDir, float3(0, 1, 0)));
+				float3 worldViewRight = cross(poiCam.eyeViewDir, worldViewUp);
 				return float2(dot(worldViewRight, poiMesh.normals[0]), dot(worldViewUp, poiMesh.normals[0])) * 0.5 + 0.5;
 			}
 			
@@ -88178,8 +88178,8 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 			
 			float2 calculateViewNormalUV(in PoiMesh poiMesh, in PoiCam poiCam)
 			{
-				float3 worldViewUp = normalize(float3(0, 1, 0) - poiCam.viewDir * dot(poiCam.viewDir, float3(0, 1, 0)));
-				float3 worldViewRight = normalize(cross(poiCam.viewDir, worldViewUp));
+				float3 worldViewUp = normalize(float3(0, 1, 0) - poiCam.eyeViewDir * dot(poiCam.eyeViewDir, float3(0, 1, 0)));
+				float3 worldViewRight = cross(poiCam.eyeViewDir, worldViewUp);
 				return float2(dot(worldViewRight, poiMesh.normals[0]), dot(worldViewUp, poiMesh.normals[0])) * 0.5 + 0.5;
 			}
 			
@@ -112177,8 +112177,8 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 			
 			float2 calculateViewNormalUV(in PoiMesh poiMesh, in PoiCam poiCam)
 			{
-				float3 worldViewUp = normalize(float3(0, 1, 0) - poiCam.viewDir * dot(poiCam.viewDir, float3(0, 1, 0)));
-				float3 worldViewRight = normalize(cross(poiCam.viewDir, worldViewUp));
+				float3 worldViewUp = normalize(float3(0, 1, 0) - poiCam.eyeViewDir * dot(poiCam.eyeViewDir, float3(0, 1, 0)));
+				float3 worldViewRight = cross(poiCam.eyeViewDir, worldViewUp);
 				return float2(dot(worldViewRight, poiMesh.normals[0]), dot(worldViewUp, poiMesh.normals[0])) * 0.5 + 0.5;
 			}
 			
@@ -137947,8 +137947,8 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 			
 			float2 calculateViewNormalUV(in PoiMesh poiMesh, in PoiCam poiCam)
 			{
-				float3 worldViewUp = normalize(float3(0, 1, 0) - poiCam.viewDir * dot(poiCam.viewDir, float3(0, 1, 0)));
-				float3 worldViewRight = normalize(cross(poiCam.viewDir, worldViewUp));
+				float3 worldViewUp = normalize(float3(0, 1, 0) - poiCam.eyeViewDir * dot(poiCam.eyeViewDir, float3(0, 1, 0)));
+				float3 worldViewRight = cross(poiCam.eyeViewDir, worldViewUp);
 				return float2(dot(worldViewRight, poiMesh.normals[0]), dot(worldViewUp, poiMesh.normals[0])) * 0.5 + 0.5;
 			}
 			
@@ -161947,8 +161947,8 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 			
 			float2 calculateViewNormalUV(in PoiMesh poiMesh, in PoiCam poiCam)
 			{
-				float3 worldViewUp = normalize(float3(0, 1, 0) - poiCam.viewDir * dot(poiCam.viewDir, float3(0, 1, 0)));
-				float3 worldViewRight = normalize(cross(poiCam.viewDir, worldViewUp));
+				float3 worldViewUp = normalize(float3(0, 1, 0) - poiCam.eyeViewDir * dot(poiCam.eyeViewDir, float3(0, 1, 0)));
+				float3 worldViewRight = cross(poiCam.eyeViewDir, worldViewUp);
 				return float2(dot(worldViewRight, poiMesh.normals[0]), dot(worldViewUp, poiMesh.normals[0])) * 0.5 + 0.5;
 			}
 			
@@ -180402,8 +180402,8 @@ Shader ".poiyomi/Poiyomi Toon + Lil Fur Two Pass"
 			
 			float2 calculateViewNormalUV(in PoiMesh poiMesh, in PoiCam poiCam)
 			{
-				float3 worldViewUp = normalize(float3(0, 1, 0) - poiCam.viewDir * dot(poiCam.viewDir, float3(0, 1, 0)));
-				float3 worldViewRight = normalize(cross(poiCam.viewDir, worldViewUp));
+				float3 worldViewUp = normalize(float3(0, 1, 0) - poiCam.eyeViewDir * dot(poiCam.eyeViewDir, float3(0, 1, 0)));
+				float3 worldViewRight = cross(poiCam.eyeViewDir, worldViewUp);
 				return float2(dot(worldViewRight, poiMesh.normals[0]), dot(worldViewUp, poiMesh.normals[0])) * 0.5 + 0.5;
 			}
 			
