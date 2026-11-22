@@ -623,6 +623,7 @@ namespace Poi.Tools
                 }
 
                 // Prepare all shader contexts on main thread (Unity API calls happen here)
+                var duplicateCache = new Dictionary<(ShaderModule, int), ShaderModule[]>();
                 foreach (var task in tasksInGroup)
                 {
                     float prepProgress = 0.02f + 0.08f * (prepTotal > 0 ? (float)prepIndex / prepTotal : 0f);
@@ -632,7 +633,7 @@ namespace Poi.Tools
                         break;
                     }
 
-                    var (contexts, duplicates) = ShaderGenerator.PrepareShaderContexts(task.destination.folderPath, task.shader);
+                    var (contexts, duplicates) = ShaderGenerator.PrepareShaderContexts(task.destination.folderPath, task.shader, duplicateCache: duplicateCache);
                     foreach (var ctx in contexts)
                         allPreparedContexts.Add((ctx, duplicates));
                     prepIndex++;

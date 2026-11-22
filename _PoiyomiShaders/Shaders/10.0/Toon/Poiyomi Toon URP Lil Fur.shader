@@ -2,7 +2,7 @@ Shader ".poiyomi/Poiyomi Toon URP + Lil Fur"
 {
 	Properties
 	{
-		[HideInInspector] shader_master_label ("<color=#E75898ff>Poiyomi 10.0.29</color>", Float) = 0
+		[HideInInspector] shader_master_label ("<color=#E75898ff>Poiyomi 10.0.30</color>", Float) = 0
 		[HideInInspector] shader_is_using_thry_editor ("", Float) = 0
 		[HideInInspector] shader_locale ("0db0b86376c3dca4b9a6828ef8615fe0", Float) = 0
 		[HideInInspector] footer_website ("{texture:{name:icon-poilogo,height:24},action:{type:URL,data:https://www.poiyomi.com},hover:WEBSITE}", Float) = 0
@@ -7112,6 +7112,13 @@ Shader ".poiyomi/Poiyomi Toon URP + Lil Fur"
 			#elif POI_PIPE == POI_URP
 			return mul(unity_WorldToObject, float4(_WorldSpaceCameraPos, 1.0)).xyz - v.xyz;
 			#endif
+		}
+		
+		float3 PoiHalfDirection(float3 lightDir, float3 viewDir)
+		{
+			float3 h = lightDir + viewDir;
+			float dp3 = dot(h, h);
+			return dp3 > 1e-12 ? h * rsqrt(dp3) : 0;
 		}
 		
 		float2 poiUV(float2 uv, float4 tex_st)
@@ -18220,7 +18227,7 @@ Shader ".poiyomi/Poiyomi Toon URP + Lil Fur"
 			// Shared by add-pass lights, URP additional lights and vertex lights once direction, color and attenuation are set
 			void PoiFinishAdditiveLight(inout PoiLight poiLight, in PoiMesh poiMesh, in PoiCam poiCam)
 			{
-				poiLight.halfDir = normalize(poiLight.direction + poiCam.eyeViewDir);
+				poiLight.halfDir = PoiHalfDirection(poiLight.direction, poiCam.eyeViewDir);
 				poiLight.nDotL = dot(poiMesh.normals[1], poiLight.direction);
 				poiLight.nDotLSaturated = saturate(poiLight.nDotL);
 				poiLight.nDotLNormalized = (poiLight.nDotL + 1) * 0.5;
@@ -18640,7 +18647,7 @@ Shader ".poiyomi/Poiyomi Toon URP + Lil Fur"
 					}
 				}
 				
-				poiLight.halfDir = normalize(poiLight.direction + poiCam.eyeViewDir);
+				poiLight.halfDir = PoiHalfDirection(poiLight.direction, poiCam.eyeViewDir);
 				poiLight.vertexNDotL = dot(poiMesh.normals[0], poiLight.direction);
 				poiLight.nDotL = dot(poiMesh.normals[1], poiLight.direction);
 				poiLight.nDotLSaturated = saturate(poiLight.nDotL);
@@ -18797,7 +18804,7 @@ Shader ".poiyomi/Poiyomi Toon URP + Lil Fur"
 						float3 col = unity_LightColor[index].rgb * poiLight.vAttenuation[index];
 						poiLight.vColor[index] = _LightingAdditiveLimited ? MaxLuminance(col, _LightingAdditiveLimit) : col;
 						poiLight.vColor[index] = lerp(poiLight.vColor[index], dot(poiLight.vColor[index], float3(0.299,0.587,0.114)), _LightingAdditiveMonochromatic);
-						poiLight.vHalfDir[index] = Unity_SafeNormalize(poiLight.vDirection[index] + poiCam.eyeViewDir);
+						poiLight.vHalfDir[index] = PoiHalfDirection(poiLight.vDirection[index], poiCam.eyeViewDir);
 						poiLight.vDotLH[index] = saturate(dot(poiLight.vDirection[index], poiLight.vHalfDir[index]));
 						poiLight.vDotNH[index] = dot(poiMesh.normals[1], poiLight.vHalfDir[index]);
 						poiLight.vCorrectedDotNL[index] = .5 * (poiLight.vDotNL[index] + 1);
@@ -28082,7 +28089,7 @@ Shader ".poiyomi/Poiyomi Toon URP + Lil Fur"
 				float ab = max(pbrAnistropics * ((1 + (roughness * adjustedAnisotropy.y)) - adjustedAnisotropy.x), 0.005);
 				float visibilityTerm = 0;
 				
-				if (nDotL > 0)
+				if (nDotL > 0 && nDotH > 0)
 				{
 					float a2 = at * ab;
 					//V_SmithGGXCorrelated
@@ -28142,7 +28149,7 @@ Shader ".poiyomi/Poiyomi Toon URP + Lil Fur"
 			float PoiMaterialLVTerm(float3 normal, float3 view, float3 direction, float alpha, float3 tangent, float3 binormal,
 			float2 anisotropy, bool anisotropic, float spreadSq, out float fresnelWeight)
 			{
-				float3 halfDirection = LV_NormalizeSafe(direction + view);
+				float3 halfDirection = PoiHalfDirection(direction, view);
 				float NoL = PoiLVSpecularNoL(dot(normal, direction), spreadSq);
 				float NoV = max(saturate(dot(normal, view)), 0.0001);
 				float NoH = saturate(dot(normal, halfDirection));
@@ -28535,7 +28542,7 @@ Shader ".poiyomi/Poiyomi Toon URP + Lil Fur"
 					// Local LV highlights are evaluated separately below.
 					specLight.direction = poiLight.unityLight.direction;
 					specLight.directColor = poiLight.unityLight.color.rgb * poiLight.attenDistance * poiLight.lightCookie;
-					specLight.halfDir = Unity_SafeNormalize(specLight.direction + poiCam.eyeViewDir);
+					specLight.halfDir = PoiHalfDirection(specLight.direction, poiCam.eyeViewDir);
 					specLight.nDotL = dot(poiMesh.normals[1], specLight.direction);
 					specLight.vertexNDotL = dot(poiMesh.normals[0], specLight.direction);
 					specLight.nDotH = dot(poiMesh.normals[1], specLight.halfDir);
@@ -28588,10 +28595,11 @@ Shader ".poiyomi/Poiyomi Toon URP + Lil Fur"
 				float pbrBDotL = dot(pbrBSelect, specLight.direction);
 				float pbrTDotH = dot(pbrTSelect, specLight.halfDir);
 				float pbrBDotH = dot(pbrBSelect, specLight.halfDir);
+				float pbrNSelectDotH = dot(pbrNSelect, specLight.halfDir);
 				
 				#ifdef GGX_ANISOTROPICS
 				float2 adjustedAnisotropy = mochieBRDFData.adjustedAnisotropy;
-				GetSpecFresTerm(pbrNDotL, pbrNDotV, pbrNDotH, specLight.lDotH, specularTerm, fresnelTerm, specCol, brdfRoughness, pbrTDotV, pbrBDotV, pbrTDotL, pbrBDotL, pbrTDotH, pbrBDotH, adjustedAnisotropy);
+				GetSpecFresTerm(pbrNDotL, pbrNDotV, pbrNSelectDotH, specLight.lDotH, specularTerm, fresnelTerm, specCol, brdfRoughness, pbrTDotV, pbrBDotV, pbrTDotL, pbrBDotL, pbrTDotH, pbrBDotH, adjustedAnisotropy);
 				#else
 				GetSpecFresTerm(pbrNDotL, pbrNDotV, pbrNDotH, specLight.lDotH, specularTerm, fresnelTerm, specCol, brdfRoughness);
 				#endif
@@ -28621,7 +28629,8 @@ Shader ".poiyomi/Poiyomi Toon URP + Lil Fur"
 						float pbrBDotvL = dot(pbrBSelect, specLight.vDirection[index]);
 						float pbrTDotvH = dot(pbrTSelect, specLight.vHalfDir[index]);
 						float pbrBDotvH = dot(pbrBSelect, specLight.vHalfDir[index]);
-						GetSpecFresTerm(pbrVDotNL, pbrNDotV, pbrVDotNH, specLight.vDotLH[index], specularTerm, fresnelTerm, specCol, brdfRoughness, pbrTDotV, pbrBDotV, pbrTDotvL, pbrBDotvL, pbrTDotvH, pbrBDotvH, adjustedAnisotropy);
+						float pbrNSelectDotvH = dot(pbrNSelect, specLight.vHalfDir[index]);
+						GetSpecFresTerm(pbrVDotNL, pbrNDotV, pbrNSelectDotvH, specLight.vDotLH[index], specularTerm, fresnelTerm, specCol, brdfRoughness, pbrTDotV, pbrBDotV, pbrTDotvL, pbrBDotvL, pbrTDotvH, pbrBDotvH, adjustedAnisotropy);
 						#else
 						GetSpecFresTerm(pbrVDotNL, pbrNDotV, pbrVDotNH, specLight.vDotLH[index], specularTerm, fresnelTerm, specCol, brdfRoughness);
 						#endif
@@ -28635,7 +28644,7 @@ Shader ".poiyomi/Poiyomi Toon URP + Lil Fur"
 					half3 fresnelTerm = 1;
 					half3 specularTerm = 1;
 					#ifdef GGX_ANISOTROPICS
-					GetSpecFresTerm(pbrNDotL, pbrNDotV, pbrNDotH, specLight.lDotH, specularTerm, fresnelTerm, specCol, brdfRoughness2, pbrTDotV, pbrBDotV, pbrTDotL, pbrBDotL, pbrTDotH, pbrBDotH, adjustedAnisotropy);
+					GetSpecFresTerm(pbrNDotL, pbrNDotV, pbrNSelectDotH, specLight.lDotH, specularTerm, fresnelTerm, specCol, brdfRoughness2, pbrTDotV, pbrBDotV, pbrTDotL, pbrBDotL, pbrTDotH, pbrBDotH, adjustedAnisotropy);
 					#else
 					GetSpecFresTerm(pbrNDotL, pbrNDotV, pbrNDotH, specLight.lDotH, specularTerm, fresnelTerm, specCol, brdfRoughness2);
 					#endif
@@ -28657,7 +28666,8 @@ Shader ".poiyomi/Poiyomi Toon URP + Lil Fur"
 							float pbrBDotvL = dot(pbrBSelect, specLight.vDirection[index]);
 							float pbrTDotvH = dot(pbrTSelect, specLight.vHalfDir[index]);
 							float pbrBDotvH = dot(pbrBSelect, specLight.vHalfDir[index]);
-							GetSpecFresTerm(pbrVDotNL, pbrNDotV, pbrVDotNH, specLight.vDotLH[index], specularTerm, fresnelTerm, specCol, brdfRoughness2, pbrTDotV, pbrBDotV, pbrTDotvL, pbrBDotvL, pbrTDotvH, pbrBDotvH, adjustedAnisotropy);
+							float pbrNSelectDotvH = dot(pbrNSelect, specLight.vHalfDir[index]);
+							GetSpecFresTerm(pbrVDotNL, pbrNDotV, pbrNSelectDotvH, specLight.vDotLH[index], specularTerm, fresnelTerm, specCol, brdfRoughness2, pbrTDotV, pbrBDotV, pbrTDotvL, pbrBDotvL, pbrTDotvH, pbrBDotvH, adjustedAnisotropy);
 							#else
 							GetSpecFresTerm(pbrVDotNL, pbrNDotV, pbrVDotNH, specLight.vDotLH[index], specularTerm, fresnelTerm, specCol, brdfRoughness2);
 							#endif
@@ -43748,7 +43758,7 @@ Shader ".poiyomi/Poiyomi Toon URP + Lil Fur"
 			// Shared by add-pass lights, URP additional lights and vertex lights once direction, color and attenuation are set
 			void PoiFinishAdditiveLight(inout PoiLight poiLight, in PoiMesh poiMesh, in PoiCam poiCam)
 			{
-				poiLight.halfDir = normalize(poiLight.direction + poiCam.eyeViewDir);
+				poiLight.halfDir = PoiHalfDirection(poiLight.direction, poiCam.eyeViewDir);
 				poiLight.nDotL = dot(poiMesh.normals[1], poiLight.direction);
 				poiLight.nDotLSaturated = saturate(poiLight.nDotL);
 				poiLight.nDotLNormalized = (poiLight.nDotL + 1) * 0.5;
@@ -44168,7 +44178,7 @@ Shader ".poiyomi/Poiyomi Toon URP + Lil Fur"
 					}
 				}
 				
-				poiLight.halfDir = normalize(poiLight.direction + poiCam.eyeViewDir);
+				poiLight.halfDir = PoiHalfDirection(poiLight.direction, poiCam.eyeViewDir);
 				poiLight.vertexNDotL = dot(poiMesh.normals[0], poiLight.direction);
 				poiLight.nDotL = dot(poiMesh.normals[1], poiLight.direction);
 				poiLight.nDotLSaturated = saturate(poiLight.nDotL);
@@ -44325,7 +44335,7 @@ Shader ".poiyomi/Poiyomi Toon URP + Lil Fur"
 						float3 col = unity_LightColor[index].rgb * poiLight.vAttenuation[index];
 						poiLight.vColor[index] = _LightingAdditiveLimited ? MaxLuminance(col, _LightingAdditiveLimit) : col;
 						poiLight.vColor[index] = lerp(poiLight.vColor[index], dot(poiLight.vColor[index], float3(0.299,0.587,0.114)), _LightingAdditiveMonochromatic);
-						poiLight.vHalfDir[index] = Unity_SafeNormalize(poiLight.vDirection[index] + poiCam.eyeViewDir);
+						poiLight.vHalfDir[index] = PoiHalfDirection(poiLight.vDirection[index], poiCam.eyeViewDir);
 						poiLight.vDotLH[index] = saturate(dot(poiLight.vDirection[index], poiLight.vHalfDir[index]));
 						poiLight.vDotNH[index] = dot(poiMesh.normals[1], poiLight.vHalfDir[index]);
 						poiLight.vCorrectedDotNL[index] = .5 * (poiLight.vDotNL[index] + 1);
@@ -53611,7 +53621,7 @@ Shader ".poiyomi/Poiyomi Toon URP + Lil Fur"
 				float ab = max(pbrAnistropics * ((1 + (roughness * adjustedAnisotropy.y)) - adjustedAnisotropy.x), 0.005);
 				float visibilityTerm = 0;
 				
-				if (nDotL > 0)
+				if (nDotL > 0 && nDotH > 0)
 				{
 					float a2 = at * ab;
 					//V_SmithGGXCorrelated
@@ -53671,7 +53681,7 @@ Shader ".poiyomi/Poiyomi Toon URP + Lil Fur"
 			float PoiMaterialLVTerm(float3 normal, float3 view, float3 direction, float alpha, float3 tangent, float3 binormal,
 			float2 anisotropy, bool anisotropic, float spreadSq, out float fresnelWeight)
 			{
-				float3 halfDirection = LV_NormalizeSafe(direction + view);
+				float3 halfDirection = PoiHalfDirection(direction, view);
 				float NoL = PoiLVSpecularNoL(dot(normal, direction), spreadSq);
 				float NoV = max(saturate(dot(normal, view)), 0.0001);
 				float NoH = saturate(dot(normal, halfDirection));
@@ -54064,7 +54074,7 @@ Shader ".poiyomi/Poiyomi Toon URP + Lil Fur"
 					// Local LV highlights are evaluated separately below.
 					specLight.direction = poiLight.unityLight.direction;
 					specLight.directColor = poiLight.unityLight.color.rgb * poiLight.attenDistance * poiLight.lightCookie;
-					specLight.halfDir = Unity_SafeNormalize(specLight.direction + poiCam.eyeViewDir);
+					specLight.halfDir = PoiHalfDirection(specLight.direction, poiCam.eyeViewDir);
 					specLight.nDotL = dot(poiMesh.normals[1], specLight.direction);
 					specLight.vertexNDotL = dot(poiMesh.normals[0], specLight.direction);
 					specLight.nDotH = dot(poiMesh.normals[1], specLight.halfDir);
@@ -54117,10 +54127,11 @@ Shader ".poiyomi/Poiyomi Toon URP + Lil Fur"
 				float pbrBDotL = dot(pbrBSelect, specLight.direction);
 				float pbrTDotH = dot(pbrTSelect, specLight.halfDir);
 				float pbrBDotH = dot(pbrBSelect, specLight.halfDir);
+				float pbrNSelectDotH = dot(pbrNSelect, specLight.halfDir);
 				
 				#ifdef GGX_ANISOTROPICS
 				float2 adjustedAnisotropy = mochieBRDFData.adjustedAnisotropy;
-				GetSpecFresTerm(pbrNDotL, pbrNDotV, pbrNDotH, specLight.lDotH, specularTerm, fresnelTerm, specCol, brdfRoughness, pbrTDotV, pbrBDotV, pbrTDotL, pbrBDotL, pbrTDotH, pbrBDotH, adjustedAnisotropy);
+				GetSpecFresTerm(pbrNDotL, pbrNDotV, pbrNSelectDotH, specLight.lDotH, specularTerm, fresnelTerm, specCol, brdfRoughness, pbrTDotV, pbrBDotV, pbrTDotL, pbrBDotL, pbrTDotH, pbrBDotH, adjustedAnisotropy);
 				#else
 				GetSpecFresTerm(pbrNDotL, pbrNDotV, pbrNDotH, specLight.lDotH, specularTerm, fresnelTerm, specCol, brdfRoughness);
 				#endif
@@ -54150,7 +54161,8 @@ Shader ".poiyomi/Poiyomi Toon URP + Lil Fur"
 						float pbrBDotvL = dot(pbrBSelect, specLight.vDirection[index]);
 						float pbrTDotvH = dot(pbrTSelect, specLight.vHalfDir[index]);
 						float pbrBDotvH = dot(pbrBSelect, specLight.vHalfDir[index]);
-						GetSpecFresTerm(pbrVDotNL, pbrNDotV, pbrVDotNH, specLight.vDotLH[index], specularTerm, fresnelTerm, specCol, brdfRoughness, pbrTDotV, pbrBDotV, pbrTDotvL, pbrBDotvL, pbrTDotvH, pbrBDotvH, adjustedAnisotropy);
+						float pbrNSelectDotvH = dot(pbrNSelect, specLight.vHalfDir[index]);
+						GetSpecFresTerm(pbrVDotNL, pbrNDotV, pbrNSelectDotvH, specLight.vDotLH[index], specularTerm, fresnelTerm, specCol, brdfRoughness, pbrTDotV, pbrBDotV, pbrTDotvL, pbrBDotvL, pbrTDotvH, pbrBDotvH, adjustedAnisotropy);
 						#else
 						GetSpecFresTerm(pbrVDotNL, pbrNDotV, pbrVDotNH, specLight.vDotLH[index], specularTerm, fresnelTerm, specCol, brdfRoughness);
 						#endif
@@ -54164,7 +54176,7 @@ Shader ".poiyomi/Poiyomi Toon URP + Lil Fur"
 					half3 fresnelTerm = 1;
 					half3 specularTerm = 1;
 					#ifdef GGX_ANISOTROPICS
-					GetSpecFresTerm(pbrNDotL, pbrNDotV, pbrNDotH, specLight.lDotH, specularTerm, fresnelTerm, specCol, brdfRoughness2, pbrTDotV, pbrBDotV, pbrTDotL, pbrBDotL, pbrTDotH, pbrBDotH, adjustedAnisotropy);
+					GetSpecFresTerm(pbrNDotL, pbrNDotV, pbrNSelectDotH, specLight.lDotH, specularTerm, fresnelTerm, specCol, brdfRoughness2, pbrTDotV, pbrBDotV, pbrTDotL, pbrBDotL, pbrTDotH, pbrBDotH, adjustedAnisotropy);
 					#else
 					GetSpecFresTerm(pbrNDotL, pbrNDotV, pbrNDotH, specLight.lDotH, specularTerm, fresnelTerm, specCol, brdfRoughness2);
 					#endif
@@ -54186,7 +54198,8 @@ Shader ".poiyomi/Poiyomi Toon URP + Lil Fur"
 							float pbrBDotvL = dot(pbrBSelect, specLight.vDirection[index]);
 							float pbrTDotvH = dot(pbrTSelect, specLight.vHalfDir[index]);
 							float pbrBDotvH = dot(pbrBSelect, specLight.vHalfDir[index]);
-							GetSpecFresTerm(pbrVDotNL, pbrNDotV, pbrVDotNH, specLight.vDotLH[index], specularTerm, fresnelTerm, specCol, brdfRoughness2, pbrTDotV, pbrBDotV, pbrTDotvL, pbrBDotvL, pbrTDotvH, pbrBDotvH, adjustedAnisotropy);
+							float pbrNSelectDotvH = dot(pbrNSelect, specLight.vHalfDir[index]);
+							GetSpecFresTerm(pbrVDotNL, pbrNDotV, pbrNSelectDotvH, specLight.vDotLH[index], specularTerm, fresnelTerm, specCol, brdfRoughness2, pbrTDotV, pbrBDotV, pbrTDotvL, pbrBDotvL, pbrTDotvH, pbrBDotvH, adjustedAnisotropy);
 							#else
 							GetSpecFresTerm(pbrVDotNL, pbrNDotV, pbrVDotNH, specLight.vDotLH[index], specularTerm, fresnelTerm, specCol, brdfRoughness2);
 							#endif
@@ -65499,7 +65512,7 @@ Shader ".poiyomi/Poiyomi Toon URP + Lil Fur"
 			// Shared by add-pass lights, URP additional lights and vertex lights once direction, color and attenuation are set
 			void PoiFinishAdditiveLight(inout PoiLight poiLight, in PoiMesh poiMesh, in PoiCam poiCam)
 			{
-				poiLight.halfDir = normalize(poiLight.direction + poiCam.eyeViewDir);
+				poiLight.halfDir = PoiHalfDirection(poiLight.direction, poiCam.eyeViewDir);
 				poiLight.nDotL = dot(poiMesh.normals[1], poiLight.direction);
 				poiLight.nDotLSaturated = saturate(poiLight.nDotL);
 				poiLight.nDotLNormalized = (poiLight.nDotL + 1) * 0.5;
@@ -65919,7 +65932,7 @@ Shader ".poiyomi/Poiyomi Toon URP + Lil Fur"
 					}
 				}
 				
-				poiLight.halfDir = normalize(poiLight.direction + poiCam.eyeViewDir);
+				poiLight.halfDir = PoiHalfDirection(poiLight.direction, poiCam.eyeViewDir);
 				poiLight.vertexNDotL = dot(poiMesh.normals[0], poiLight.direction);
 				poiLight.nDotL = dot(poiMesh.normals[1], poiLight.direction);
 				poiLight.nDotLSaturated = saturate(poiLight.nDotL);
@@ -66076,7 +66089,7 @@ Shader ".poiyomi/Poiyomi Toon URP + Lil Fur"
 						float3 col = unity_LightColor[index].rgb * poiLight.vAttenuation[index];
 						poiLight.vColor[index] = _LightingAdditiveLimited ? MaxLuminance(col, _LightingAdditiveLimit) : col;
 						poiLight.vColor[index] = lerp(poiLight.vColor[index], dot(poiLight.vColor[index], float3(0.299,0.587,0.114)), _LightingAdditiveMonochromatic);
-						poiLight.vHalfDir[index] = Unity_SafeNormalize(poiLight.vDirection[index] + poiCam.eyeViewDir);
+						poiLight.vHalfDir[index] = PoiHalfDirection(poiLight.vDirection[index], poiCam.eyeViewDir);
 						poiLight.vDotLH[index] = saturate(dot(poiLight.vDirection[index], poiLight.vHalfDir[index]));
 						poiLight.vDotNH[index] = dot(poiMesh.normals[1], poiLight.vHalfDir[index]);
 						poiLight.vCorrectedDotNL[index] = .5 * (poiLight.vDotNL[index] + 1);
@@ -101725,3 +101738,4 @@ Shader ".poiyomi/Poiyomi Toon URP + Lil Fur"
 	}
 	CustomEditor "Thry.ShaderEditor"
 }
+// UNITY_SHADER_NO_UPGRADE

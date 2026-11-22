@@ -363,16 +363,11 @@ namespace Poi.Tools
             AssetDatabase.Refresh();
             try
             {
-                AssetDatabase.StartAssetEditing();
-                for (int i = 0; i < modifiedShaders.Count; i++)
-                {
-                    EditorUtility.DisplayProgressBar("Poi Module Toggle, Generating", $"Generating {modifiedShaders[i].Name}", i / (float)modifiedShaders.Count);
-                    ShaderGenerator.GenerateShader(ShaderDestinationManager.Instance.GetDestinationFromShaderName(modifiedShaders[i].Name), modifiedShaders[i]);
-                }
+                // No StartAssetEditing here: the batch needs its own refresh and imports to land before ReloadActive
+                GenerateTogether(modifiedShaders);
             }
             finally
             {
-                AssetDatabase.StopAssetEditing();
                 Thry.ShaderEditor.ReloadActive();
                 EditorUtility.ClearProgressBar();
             }
@@ -421,11 +416,7 @@ namespace Poi.Tools
             AssetDatabase.Refresh();
             try
             {
-                for (int i = 0; i < modifiedShaders.Count; i++)
-                {
-                    EditorUtility.DisplayProgressBar("Poi Module Toggle, Generating", $"Generating {modifiedShaders[i].Name}", i / (float)modifiedShaders.Count);
-                    ShaderGenerator.GenerateShader(ShaderDestinationManager.Instance.GetDestinationFromShaderName(modifiedShaders[i].Name), modifiedShaders[i]);
-                }
+                GenerateTogether(modifiedShaders);
             }
             finally
             {
@@ -433,6 +424,14 @@ namespace Poi.Tools
                 EditorUtility.ClearProgressBar();
             }
             if (!skipDialog) EditorUtility.DisplayDialog("Poi Modules Toggles", "Revert successful!", "Ok");
+        }
+
+        // One batch shares duplicated module copies and import refreshes. A shader can be listed more than once.
+        static void GenerateTogether(List<ModularShader> shaders)
+        {
+            var unique = shaders.Distinct().ToList();
+            EditorUtility.DisplayProgressBar("Poi Module Toggle, Generating", $"Generating {unique.Count} shader{(unique.Count == 1 ? "" : "s")}", 0.5f);
+            ShaderGenerator.GenerateShaders(unique.Select(shader => (ShaderDestinationManager.Instance.GetDestinationFromShaderName(shader.Name), shader)));
         }
     }
 }

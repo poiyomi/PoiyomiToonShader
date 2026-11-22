@@ -14,7 +14,8 @@ using UnityEngine;
 
 namespace Poiyomi.ModularShaderSystem
 {
-    [ScriptedImporter(3, MSSConstants.TEMPLATE_COLLECTION_EXTENSION)]
+    // Version 4 reimports collections whose source includes failed when the project was opened through a symlink.
+    [ScriptedImporter(4, MSSConstants.TEMPLATE_COLLECTION_EXTENSION)]
     public class TemplateColletionAssetImporter : ScriptedImporter
     {
         // Source references also retain the files during package export. Import them first so
@@ -22,20 +23,22 @@ namespace Poiyomi.ModularShaderSystem
         private static string[] GatherDependenciesFromSourceFile(string path)
         {
             var dependencies = new HashSet<string>();
-            string ownerPath = Path.GetFullPath(path);
+            string ownerPath = TemplateSourceIncludes.NormalizePath(path);
             TemplateSourceIncludes.Expand(path, dependency =>
             {
-                if (dependency != ownerPath) dependencies.Add(ProjectRelativePath(dependency));
+                if (dependency != ownerPath) dependencies.Add(RequireProjectPath(dependency));
             });
             return dependencies.OrderBy(p => p, StringComparer.Ordinal).ToArray();
         }
 
-        private static string ProjectRelativePath(string path)
+        // Includes resolve against the owner's project path, so they arrive as project paths already.
+        // Matching them against the working directory instead broke when the project was opened through
+        // a symlink, because Unity's package paths keep the unresolved spelling.
+        private static string RequireProjectPath(string path)
         {
-            string projectRoot = Path.GetFullPath(".").TrimEnd(Path.DirectorySeparatorChar) + Path.DirectorySeparatorChar;
-            if (!path.StartsWith(projectRoot, StringComparison.Ordinal))
+            if (!path.StartsWith("Assets/", StringComparison.Ordinal) && !path.StartsWith("Packages/", StringComparison.Ordinal))
                 throw new InvalidDataException("Template source includes must stay inside the Unity project: " + path);
-            return path.Substring(projectRoot.Length).Replace('\\', '/');
+            return path;
         }
 
         public override void OnImportAsset(AssetImportContext ctx)
@@ -47,13 +50,13 @@ namespace Poiyomi.ModularShaderSystem
             
             // Resolve source fragments before creating subassets: queues, names/file IDs, keyword
             // discovery, duplication, locking and section provenance see the original complete template.
-            string ownerPath = Path.GetFullPath(ctx.assetPath);
+            string ownerPath = TemplateSourceIncludes.NormalizePath(ctx.assetPath);
             var dependencies = new HashSet<string>();
             string source = TemplateSourceIncludes.Expand(ctx.assetPath, dependency =>
             {
                 // The owner already reimports on its own changes; Unity disallows a dependency on itself.
                 if (dependency == ownerPath) return;
-                string path = ProjectRelativePath(dependency);
+                string path = RequireProjectPath(dependency);
                 ctx.DependsOnSourceAsset(path);
                 dependencies.Add(path);
             });

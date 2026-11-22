@@ -22,12 +22,28 @@ namespace Poiyomi.ModularShaderSystem
 
         public static void GenerateShader(string path, ModularShader shader, Action<StringBuilder, ShaderContext> postGeneration, bool hideVariants = false)
         {
-            var contexts = GenerateShaderBatched(path, shader, postGeneration, hideVariants);
-            AssetDatabase.Refresh();
-            ApplyDefaultTextures(contexts);
+            GenerateShaders(new[] { (path, shader) }, postGeneration, hideVariants);
+        }
 
-            foreach (var context in contexts)
-                shader.LastGeneratedShaders.Add(AssetDatabase.LoadAssetAtPath<Shader>($"{context.FilePath}/" + context.VariantFileName));
+        // Every import refresh reloads all shaders in the project, so shaders generated together share one.
+        public static void GenerateShaders(IEnumerable<(string path, ModularShader shader)> shaders, Action<StringBuilder, ShaderContext> postGeneration = null, bool hideVariants = false)
+        {
+            var duplicateCache = new Dictionary<(ShaderModule, int), ShaderModule[]>();
+            var prepared = new List<(ShaderContext context, Dictionary<string, ShaderModule[]> duplicates)>();
+            foreach (var (path, shader) in shaders)
+            {
+                var (contexts, duplicates) = PrepareShaderContexts(path, shader, postGeneration, hideVariants, duplicateCache);
+                prepared.AddRange(contexts.Select(context => (context, duplicates)));
+            }
+
+            prepared.AsParallel().ForAll(x => x.context.GenerateShader(x.duplicates));
+            var generated = prepared.Select(x => x.context).ToList();
+            WriteShaderFiles(generated);
+            AssetDatabase.Refresh();
+            ApplyDefaultTextures(generated);
+
+            foreach (var context in generated)
+                context.Shader.LastGeneratedShaders.Add(AssetDatabase.LoadAssetAtPath<Shader>($"{context.FilePath}/" + context.VariantFileName));
             AssetDatabase.Refresh();
         }
 
@@ -52,7 +68,8 @@ namespace Poiyomi.ModularShaderSystem
         /// Use GenerateShaderContexts() to run the actual generation (can be parallelized).
         /// </summary>
         public static (List<ShaderContext> contexts, Dictionary<string, ShaderModule[]> duplicates) PrepareShaderContexts(
-            string path, ModularShader shader, Action<StringBuilder, ShaderContext> postGeneration = null, bool hideVariants = false)
+            string path, ModularShader shader, Action<StringBuilder, ShaderContext> postGeneration = null, bool hideVariants = false,
+            Dictionary<(ShaderModule, int), ShaderModule[]> duplicateCache = null)
         {
             if(Path.IsPathRooted(path) && !Directory.Exists(path))
                 Directory.CreateDirectory(path);
@@ -60,7 +77,7 @@ namespace Poiyomi.ModularShaderSystem
             path = GetPathRelativeToProject(path);
 
             var modules = FindAllModules(shader);
-            var duplicates = GenerateDuplicates(modules);
+            var duplicates = GenerateDuplicates(modules, duplicateCache);
             ApplyDupliactes(modules, duplicates);
 
             var freshAssets = new Dictionary<TemplateAsset, TemplateAsset>();
@@ -117,16 +134,23 @@ namespace Poiyomi.ModularShaderSystem
             foreach (var context in contexts)
             {
                 string filePath = $"{context.FilePath}/" + context.VariantFileName;
+                string text = context.ShaderFile.ToString();
                 if (File.Exists(filePath))
                 {
                     FileAttributes fileAttributes = File.GetAttributes(filePath) & ~FileAttributes.ReadOnly;
+                    // An untouched file isn't reimported
+                    if (new FileInfo(filePath).Length == Encoding.UTF8.GetByteCount(text) && File.ReadAllText(filePath) == text)
+                    {
+                        File.SetAttributes(filePath, fileAttributes | FileAttributes.ReadOnly);
+                        continue;
+                    }
                     File.SetAttributes(filePath, fileAttributes);
-                    File.WriteAllText(filePath, context.ShaderFile.ToString());
+                    File.WriteAllText(filePath, text);
                     File.SetAttributes(filePath, fileAttributes | FileAttributes.ReadOnly);
                 }
                 else
                 {
-                    File.WriteAllText(filePath, context.ShaderFile.ToString());
+                    File.WriteAllText(filePath, text);
                     File.SetAttributes(filePath, File.GetAttributes(filePath) | FileAttributes.ReadOnly);
                 }
             }
@@ -503,29 +527,30 @@ namespace Poiyomi.ModularShaderSystem
                 if (!string.IsNullOrWhiteSpace(Shader.CustomEditor))
                     ShaderFile.AppendLine($"CustomEditor \"{Shader.CustomEditor}\"");
                 ShaderFile.AppendLine("}");
+                // Unity otherwise scans the whole file for legacy syntax to upgrade on every import
+                ShaderFile.AppendLine("// UNITY_SHADER_NO_UPGRADE");
 
                 PostGeneration?.Invoke(ShaderFile, this);
 
                 RemoveKeywords();
                 HandleIterators();
 
+                string shaderText;
                 if (DisabledSections != null && DisabledSections.Length > 0)
                 {
                     var repeatedIds = new HashSet<string>(_modules.GroupBy(m => m.Id).Where(g => g.Count() > 1).Select(g => g.Key));
-                    ShaderFile = new StringBuilder(ShaderSectionFilter.Apply(ShaderFile.ToString(), DisabledSections,
-                        _modules.Select((m, i) => new { module = m, index = i }).Where(x => repeatedIds.Contains(x.module.Id)).Select(x => x.index)));
+                    shaderText = ShaderSectionFilter.Apply(ShaderFile.ToString(), DisabledSections,
+                        _modules.Select((m, i) => new { module = m, index = i }).Where(x => repeatedIds.Contains(x.module.Id)).Select(x => x.index));
                 }
-                else ShaderFile = new StringBuilder(ShaderSectionFilter.RemoveTemplateAnnotations(ShaderFile.ToString()));
+                else shaderText = ShaderSectionFilter.RemoveTemplateAnnotations(ShaderFile.ToString());
 
-                ShaderFile.Replace("\r\n", "\n");
-
-                ShaderFile = CleanupShaderFile(ShaderFile);
+                ShaderFile = CleanupShaderFile(shaderText.Replace("\r\n", "\n"));
             }
 
             private void HandleIterators()
             {
                 string shader = ShaderFile.ToString();
-                ShaderFile = new StringBuilder();
+                ShaderFile = new StringBuilder(shader.Length);
 
                 Dictionary<string, int> iterators = new Dictionary<string, int>();
                 MatchCollection m = Regex.Matches(shader, ITERATOR_NAMING);
@@ -533,7 +558,7 @@ namespace Poiyomi.ModularShaderSystem
                 int startIdx = 0;
                 foreach (Match match in m)
                 {
-                    ShaderFile.Append(shader.Substring(startIdx, match.Index - startIdx));
+                    ShaderFile.Append(shader, startIdx, match.Index - startIdx);
                     string idx_id = match.Value;
                     bool iterate = idx_id.Contains("++");
                     idx_id = idx_id.Substring(1, idx_id.Length - (iterate ? 3 : 1));
@@ -547,7 +572,7 @@ namespace Poiyomi.ModularShaderSystem
 
                     startIdx = match.Index + match.Length;
                 }
-                ShaderFile.Append(shader.Substring(startIdx));
+                ShaderFile.Append(shader, startIdx, shader.Length - startIdx);
             }
 
             private void GetLiveUpdateEnablers()
@@ -567,13 +592,13 @@ namespace Poiyomi.ModularShaderSystem
             {
                 foreach (var startKeyword in _functions.Where(x => x.AppendAfter?.StartsWith("#K#") ?? false).Select(x => x.AppendAfter).Distinct())
                 {
-                    if (!ShaderFile.Contains(startKeyword)) continue;
+                    var matches = Regex.Matches(ShaderFile.ToString(), $@"{startKeyword}(\s|$)", RegexOptions.Multiline);
+                    if (matches.Count == 0) continue;
 
                     var callSequence = new StringBuilder();
                     WriteFunctionCallSequence(callSequence, startKeyword);
-                    var m = Regex.Matches(ShaderFile.ToString(), $@"{startKeyword}(\s|$)", RegexOptions.Multiline);
-                    for (int i = m.Count - 1; i >= 0; i--)
-                        ShaderFile.Insert(m[i].Index, callSequence.ToString());
+                    for (int i = matches.Count - 1; i >= 0; i--)
+                        ShaderFile.Insert(matches[i].Index, callSequence.ToString());
                 }
             }
 
@@ -587,6 +612,7 @@ namespace Poiyomi.ModularShaderSystem
                 Dictionary<ModuleTemplate, ShaderModule> moduleByTemplate = new Dictionary<ModuleTemplate, ShaderModule>();
                 Dictionary<(string, string), string> convertedKeyword = new Dictionary<(string, string), string>();
                 int instanceCounter = 0;
+                var document = new KeywordDocument(ShaderFile.ToString());
 
                 foreach (var module in _modules)
                     foreach (var template in module.Templates)
@@ -618,8 +644,8 @@ namespace Poiyomi.ModularShaderSystem
                             tmp.AppendLine("}");
                         }
 
-                        MatchCollection mki = Regex.Matches(tmp.ToString(), @"#KI#\S*", RegexOptions.Multiline);
-                        for (int i = mki.Count - 1; i >= 0; i--)
+                        MatchCollection mki = freshTemplate.Template.Contains("#KI#") ? Regex.Matches(tmp.ToString(), @"#KI#\S*", RegexOptions.Multiline) : null;
+                        for (int i = (mki?.Count ?? 0) - 1; i >= 0; i--)
                         {
                             string newKeyword;
                             if (convertedKeyword.TryGetValue((module.Id, mki[i].Value), out string replacedKeyword))
@@ -643,24 +669,17 @@ namespace Poiyomi.ModularShaderSystem
                             tmp.Append(ShaderSectionFilter.EndModule(moduleIndex));
                         }
 
+                        var fragment = KeywordDocument.Parse(tmp.ToString());
                         foreach (var keyword in template.Keywords.Count == 0 ? new[] { MSSConstants.DEFAULT_CODE_KEYWORD } : template.Keywords.Where(x => !string.IsNullOrWhiteSpace(x)).ToArray())
                         {
-                            MatchCollection m = Regex.Matches(ShaderFile.ToString(), $@"#K#{keyword}(\s|$)", RegexOptions.Multiline);
-                            for (int i = m.Count - 1; i >= 0; i--)
-                                ShaderFile.Insert(m[i].Index, tmp.ToString());
+                            document.InsertBefore($"#K#{keyword}", fragment);
 
                             if (convertedKeyword.TryGetValue((module.Id, $@"#KI#{keyword}"), out string replacedKeyword))
-                            {
-                                m = Regex.Matches(ShaderFile.ToString(), $@"{replacedKeyword}(\s|$)", RegexOptions.Multiline);
-                                for (int i = m.Count - 1; i >= 0; i--)
-                                    ShaderFile.Insert(m[i].Index, tmp.ToString());
-                            }
+                                document.InsertBefore(replacedKeyword, fragment);
                         }
                     }
-                    MatchCollection mkr = Regex.Matches(ShaderFile.ToString(), @"#KI#\S*", RegexOptions.Multiline);
-                    for (int i = mkr.Count - 1; i >= 0; i--)
-                        ShaderFile.Remove(mkr[i].Index, mkr[i].Length);
 
+                ShaderFile = document.Build();
                 ShaderFile.AppendLine("}");
             }
 
@@ -773,32 +792,17 @@ namespace Poiyomi.ModularShaderSystem
 
             private void RemoveKeywords()
             {
-                int current = 0;
-
-                while (current < ShaderFile.Length)
+                string source = ShaderFile.ToString();
+                var output = new StringBuilder(source.Length);
+                int position = 0, marker;
+                while ((marker = source.IndexOf("#K#", position, StringComparison.Ordinal)) >= 0)
                 {
-                    if (ShaderFile.Length >= current + 3 && ShaderFile[current] == '#' && ShaderFile[current + 1] == 'K' &&
-                        ShaderFile[current + 2] == '#')
-                    {
-                        int end = current+3;
-                        bool stillToRemove = true;
-                        while (end < ShaderFile.Length)
-                        {
-                            if (char.IsWhiteSpace(ShaderFile[end]))
-                            {
-                                ShaderFile.Remove(current, end - current);
-                                stillToRemove = false;
-                                break;
-                            }
-
-                            end++;
-                        }
-                        if(stillToRemove)
-                            ShaderFile.Remove(current, end - current);
-                    }
-
-                    current++;
+                    output.Append(source, position, marker - position);
+                    position = marker + 3;
+                    while (position < source.Length && !char.IsWhiteSpace(source[position]))
+                        position++;
                 }
+                ShaderFile = output.Append(source, position, source.Length - position);
             }
 
             private static bool CheckPropertyBlockLine(StringBuilder builder, StringReader reader, string line, ref int tabs, ref bool deleteEmptyLine)
@@ -829,10 +833,10 @@ namespace Poiyomi.ModularShaderSystem
                 return false;
             }
 
-            private static StringBuilder CleanupShaderFile(StringBuilder shaderVariant)
+            private static StringBuilder CleanupShaderFile(string shaderVariant)
             {
-                var finalFile = new StringBuilder();
-                using (var sr = new StringReader(shaderVariant.ToString()))
+                var finalFile = new StringBuilder(shaderVariant.Length + shaderVariant.Length / 8);
+                using (var sr = new StringReader(shaderVariant))
                 {
                     string line;
                     int tabs = 0;
@@ -890,6 +894,122 @@ namespace Poiyomi.ModularShaderSystem
             }
         }
 
+        // The file split at its #K# and #KI# markers, so inserting before a marker never rescans or copies the file.
+        private sealed class KeywordDocument
+        {
+            public sealed class Fragment
+            {
+                public string Source;
+                public readonly List<(int start, int length)> Text = new List<(int, int)>();
+                public readonly List<string> Markers = new List<string>();
+            }
+
+            private sealed class Marker
+            {
+                public string Name;
+                public List<Instance> Inserted;
+            }
+
+            private sealed class Instance
+            {
+                public Fragment Source;
+                public Marker[] Markers;
+            }
+
+            private readonly Dictionary<string, List<Marker>> _markers = new Dictionary<string, List<Marker>>();
+            private readonly Instance _root;
+
+            public KeywordDocument(string text) => _root = Instantiate(Parse(text));
+
+            public static Fragment Parse(string text)
+            {
+                var fragment = new Fragment { Source = text };
+                int start = 0, i = 0;
+                while ((i = text.IndexOf("#K", i, StringComparison.Ordinal)) >= 0)
+                {
+                    int length = i + 2 < text.Length && text[i + 2] == '#' ? 3 :
+                        i + 3 < text.Length && text[i + 2] == 'I' && text[i + 3] == '#' ? 4 : 0;
+                    if (length == 0)
+                    {
+                        i += 2;
+                        continue;
+                    }
+                    int end = i + length;
+                    while (end < text.Length && !char.IsWhiteSpace(text[end]))
+                        end++;
+                    fragment.Text.Add((start, i - start));
+                    fragment.Markers.Add(text.Substring(i, end - i));
+                    start = i = end;
+                }
+                fragment.Text.Add((start, text.Length - start));
+                return fragment;
+            }
+
+            // Copies inserted by this call don't receive the fragment again.
+            public void InsertBefore(string marker, Fragment fragment)
+            {
+                if (!_markers.TryGetValue(marker, out var targets)) return;
+                foreach (var target in targets.ToArray())
+                    (target.Inserted ??= new List<Instance>()).Add(Instantiate(fragment));
+            }
+
+            private Instance Instantiate(Fragment fragment)
+            {
+                var instance = new Instance { Source = fragment, Markers = new Marker[fragment.Markers.Count] };
+                for (int i = 0; i < instance.Markers.Length; i++)
+                {
+                    var marker = instance.Markers[i] = new Marker { Name = fragment.Markers[i] };
+                    if (!_markers.TryGetValue(marker.Name, out var markers))
+                        _markers.Add(marker.Name, markers = new List<Marker>());
+                    markers.Add(marker);
+                }
+                return instance;
+            }
+
+            // #KI# markers are left out: they only mark where a module's own templates go.
+            public StringBuilder Build()
+            {
+                var builder = new StringBuilder(Length(_root) + 1024);
+                Write(_root, builder);
+                return builder;
+            }
+
+            private static bool IsWritten(Marker marker) => !marker.Name.StartsWith("#KI#", StringComparison.Ordinal);
+
+            private static int Length(Instance instance)
+            {
+                int length = 0;
+                foreach (var (_, textLength) in instance.Source.Text)
+                    length += textLength;
+                foreach (var marker in instance.Markers)
+                {
+                    if (marker.Inserted != null)
+                        foreach (var inserted in marker.Inserted)
+                            length += Length(inserted);
+                    if (IsWritten(marker))
+                        length += marker.Name.Length;
+                }
+                return length;
+            }
+
+            private static void Write(Instance instance, StringBuilder builder)
+            {
+                string source = instance.Source.Source;
+                for (int i = 0; i < instance.Markers.Length; i++)
+                {
+                    var (start, length) = instance.Source.Text[i];
+                    builder.Append(source, start, length);
+                    if (instance.Markers[i].Inserted != null)
+                        foreach (var inserted in instance.Markers[i].Inserted)
+                            Write(inserted, builder);
+                    if (IsWritten(instance.Markers[i]))
+                        builder.Append(instance.Markers[i].Name);
+                }
+                var (lastStart, lastLength) = instance.Source.Text[instance.Markers.Length];
+                builder.Append(source, lastStart, lastLength);
+            }
+        }
+
         private static string GetPropertiesBlock(ModularShader shader, List<ShaderModule> modules, Dictionary<TemplateAsset, TemplateAsset> freshAssets, bool includeEnablers = true)
         {
             var block = new StringBuilder();
@@ -937,18 +1057,48 @@ namespace Poiyomi.ModularShaderSystem
 
         public static void ApplyDefaultTextures(List<ShaderContext> contexts)
         {
-            foreach (var context in contexts)
+            // Unity reparses every shader with errors after each import, so import once for all of them.
+            AssetDatabase.StartAssetEditing();
+            try
             {
-                var importedShader = AssetImporter.GetAtPath($"{context.FilePath}/" + context.VariantFileName) as ShaderImporter;
-                var customTextures = context.Modules.SelectMany(x => x.Properties).Where(x => x.DefaultTextureAsset != null).ToList();
-                customTextures.AddRange(context.Shader.Properties.Where(x => x.DefaultTextureAsset != null).ToList());
-                if (importedShader != null)
+                foreach (var context in contexts)
                 {
-                    importedShader.SetDefaultTextures(customTextures.Select(x => x.Name).ToArray(), customTextures.Select(x => x.DefaultTextureAsset).ToArray());
-                    importedShader.SetNonModifiableTextures(customTextures.Select(x => x.Name).ToArray(), customTextures.Select(x => x.DefaultTextureAsset).ToArray());
+                    string path = $"{context.FilePath}/" + context.VariantFileName;
+                    var importedShader = AssetImporter.GetAtPath(path) as ShaderImporter;
+                    var customTextures = context.Modules.SelectMany(x => x.Properties).Where(x => x.DefaultTextureAsset != null).ToList();
+                    customTextures.AddRange(context.Shader.Properties.Where(x => x.DefaultTextureAsset != null).ToList());
+                    if (importedShader != null)
+                    {
+                        string[] names = customTextures.Select(x => x.Name).ToArray();
+                        Texture[] textures = customTextures.Select(x => x.DefaultTextureAsset).ToArray();
+                        var serializedImporter = new SerializedObject(importedShader);
+                        if (HasTextures(serializedImporter, "m_DefaultTextures", names, textures) &&
+                            HasTextures(serializedImporter, "m_NonModifiableTextures", names, textures))
+                            continue;
+                        importedShader.SetDefaultTextures(names, textures);
+                        importedShader.SetNonModifiableTextures(names, textures);
+                    }
+                    AssetDatabase.ImportAsset(path);
                 }
-                AssetDatabase.ImportAsset($"{context.FilePath}/" + context.VariantFileName);
             }
+            finally
+            {
+                AssetDatabase.StopAssetEditing();
+            }
+        }
+
+        private static bool HasTextures(SerializedObject importer, string listName, string[] names, Texture[] textures)
+        {
+            var list = importer.FindProperty(listName);
+            if (list == null || !list.isArray || list.arraySize != names.Length) return false;
+            for (int i = 0; i < names.Length; i++)
+            {
+                var entry = list.GetArrayElementAtIndex(i);
+                if (entry.FindPropertyRelative("first")?.stringValue != names[i] ||
+                    entry.FindPropertyRelative("second")?.objectReferenceValue != textures[i])
+                    return false;
+            }
+            return true;
         }
 
         public static List<ShaderModule> FindAllModules(ModularShader shader)
@@ -989,13 +1139,21 @@ namespace Poiyomi.ModularShaderSystem
             public bool SkipOriginal;
         }
 
-        static Dictionary<string,ShaderModule[]> GenerateDuplicates(List<ShaderModule> modules)
+        // Instances are built from the group's first module alone, so groups with the same first module and size can share them.
+        static Dictionary<string,ShaderModule[]> GenerateDuplicates(List<ShaderModule> modules, Dictionary<(ShaderModule, int), ShaderModule[]> cache = null)
         {
             Dictionary<string,ShaderModule[]> generatedDuplicates = new Dictionary<string, ShaderModule[]>();
             var duplicates = modules.GroupBy(x => x.Id).Where(x => x.Count() > 1 || x.First().ForceDuplicateLogic).Select(x => x.Key).ToList();
             foreach (var duplicateId in duplicates)
             {
                 var dupeIndices = modules.Select((x, i) => (x, i)).Where(x => x.x.Id.Equals(duplicateId)).Select(x => x.i).ToList();
+
+                var cacheKey = (modules[dupeIndices[0]], dupeIndices.Count);
+                if (cache != null && cache.TryGetValue(cacheKey, out var cachedInstances))
+                {
+                    generatedDuplicates.Add(duplicateId, cachedInstances);
+                    continue;
+                }
 
                 ShaderModule[] moduleInstances = new ShaderModule[dupeIndices.Count];
 
@@ -1293,6 +1451,7 @@ namespace Poiyomi.ModularShaderSystem
                 }
 
                 generatedDuplicates.Add(duplicateId, moduleInstances);
+                if (cache != null) cache[cacheKey] = moduleInstances;
             }
 
             return generatedDuplicates;

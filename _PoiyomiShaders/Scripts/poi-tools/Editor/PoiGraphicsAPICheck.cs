@@ -25,7 +25,9 @@ namespace Poi.Tools
             switch (api)
             {
                 case GraphicsDeviceType.OpenGLCore:
+#if !UNITY_2023_1_OR_NEWER
                 case GraphicsDeviceType.OpenGLES2:
+#endif
                 case GraphicsDeviceType.OpenGLES3:
                     IsError = true;
                     Message = $"Unity is running on {api}. Poiyomi Shaders does not support OpenGL and will not compile.\n\n{OpenGLFix()}";

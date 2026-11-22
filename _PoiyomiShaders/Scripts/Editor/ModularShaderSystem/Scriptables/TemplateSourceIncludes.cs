@@ -16,9 +16,49 @@ namespace Poiyomi.ModularShaderSystem
         private static readonly Regex Include = new Regex(
             @"^\s*#TI#\s+""(?<path>[^""]+)""\s+(?<section>\w+)\s*$");
 
+        /// <summary>
+        /// Expands the #TI# includes in a template collection. Pass its project path ("Packages/..." or
+        /// "Assets/..."); each included collection is reported to <paramref name="dependsOnSource"/> as a
+        /// project path too.
+        /// </summary>
+        /// <remarks>
+        /// Includes are resolved by path arithmetic, never by comparing absolute paths. Unity spells a
+        /// package's absolute path from the project path it was opened with, while the working directory
+        /// is the resolved one, so the two disagree when the project sits behind a symlink (Fedora
+        /// Atomic links /mnt and /home into /var). Absolute paths are only used to read the files.
+        /// </remarks>
         public static string Expand(string assetPath, Action<string> dependsOnSource = null)
         {
-            return new Expansion(dependsOnSource).ExpandFile(Path.GetFullPath(assetPath), null);
+            return new Expansion(dependsOnSource).ExpandFile(NormalizePath(assetPath), null);
+        }
+
+        /// <summary>The path with forward slashes, the form Unity uses for asset paths.</summary>
+        public static string NormalizePath(string path) => path.Replace('\\', '/');
+
+        /// <summary>
+        /// The include <paramref name="relative"/> taken from the collection at <paramref name="from"/>.
+        /// A project path stays a project path; climbing above it is refused instead of looked up on disk.
+        /// </summary>
+        private static string Resolve(string from, string relative, string line)
+        {
+            if (Path.IsPathRooted(from))
+                return NormalizePath(Path.GetFullPath(Path.Combine(Path.GetDirectoryName(from), relative)));
+
+            var parts = new List<string>();
+            string directory = from.Substring(0, Math.Max(0, from.LastIndexOf('/')));
+            foreach (string part in (directory + "/" + relative).Split('/'))
+            {
+                if (part.Length == 0 || part == ".") continue;
+                if (part != "..")
+                {
+                    parts.Add(part);
+                    continue;
+                }
+                if (parts.Count == 0)
+                    throw new InvalidDataException("Template source includes must stay inside the Unity project: " + line);
+                parts.RemoveAt(parts.Count - 1);
+            }
+            return string.Join("/", parts);
         }
 
         private sealed class Expansion
@@ -38,7 +78,8 @@ namespace Poiyomi.ModularShaderSystem
                 {
                     if (!_sources.TryGetValue(path, out string source))
                     {
-                        source = File.ReadAllText(path);
+                        // Unity maps "Packages/..." to wherever the package really lives
+                        source = File.ReadAllText(Path.GetFullPath(path));
                         _sources.Add(path, source);
                     }
                     if (section != null) source = ReadSection(source, section, path);
@@ -59,7 +100,7 @@ namespace Poiyomi.ModularShaderSystem
                             string relative = match.Groups["path"].Value.Replace('\\', '/');
                             if (Path.IsPathRooted(relative) || relative.Contains(":"))
                                 throw new InvalidDataException("Template source includes must use relative paths: " + line);
-                            string included = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(path), relative));
+                            string included = Resolve(path, relative, line);
                             if (!string.Equals(Path.GetExtension(included), "." + MSSConstants.TEMPLATE_COLLECTION_EXTENSION, StringComparison.Ordinal))
                                 throw new InvalidDataException("Template source includes must reference a template collection: " + line);
                             // Report the dependency before reading it, so a missing source being restored reimports its owner.

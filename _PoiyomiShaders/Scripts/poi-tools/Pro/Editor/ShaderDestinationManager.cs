@@ -38,7 +38,7 @@ namespace Poi.Tools
             {
                 if(!_instance)
                 {
-#if UNITY_6000_2_OR_NEWER
+#if UNITY_2023_1_OR_NEWER
                     var manager = FindAnyObjectByType<ShaderDestinationManager>();
 #else
                     var manager = FindObjectOfType<ShaderDestinationManager>();

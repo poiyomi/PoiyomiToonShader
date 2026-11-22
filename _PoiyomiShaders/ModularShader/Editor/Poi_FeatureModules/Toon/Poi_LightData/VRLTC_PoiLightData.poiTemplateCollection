@@ -607,7 +607,7 @@ float PoiLightDataSDF(in PoiMesh poiMesh, in PoiLight poiLight)
 // Shared by add-pass lights, URP additional lights and vertex lights once direction, color and attenuation are set
 void PoiFinishAdditiveLight(inout PoiLight poiLight, in PoiMesh poiMesh, in PoiCam poiCam)
 {
-	poiLight.halfDir = normalize(poiLight.direction + poiCam.eyeViewDir);
+	poiLight.halfDir = PoiHalfDirection(poiLight.direction, poiCam.eyeViewDir);
 	poiLight.nDotL = dot(poiMesh.normals[1], poiLight.direction);
 	poiLight.nDotLSaturated = saturate(poiLight.nDotL);
 	poiLight.nDotLNormalized = (poiLight.nDotL + 1) * 0.5;
@@ -1028,7 +1028,7 @@ void PoiLightDataSetup(
 		}
 	}
 
-	poiLight.halfDir = normalize(poiLight.direction + poiCam.eyeViewDir);
+	poiLight.halfDir = PoiHalfDirection(poiLight.direction, poiCam.eyeViewDir);
 	poiLight.vertexNDotL = dot(poiMesh.normals[0], poiLight.direction);
 	poiLight.nDotL = dot(poiMesh.normals[1], poiLight.direction);
 	poiLight.nDotLSaturated = saturate(poiLight.nDotL);
@@ -1180,7 +1180,7 @@ void PoiLightDataSetup(
 					float3 col = unity_LightColor[index].rgb * poiLight.vAttenuation[index];
 					poiLight.vColor[index] = _LightingAdditiveLimited ? MaxLuminance(col, _LightingAdditiveLimit) : col;
 					poiLight.vColor[index] = lerp(poiLight.vColor[index], dot(poiLight.vColor[index], float3(0.299,0.587,0.114)), _LightingAdditiveMonochromatic);
-					poiLight.vHalfDir[index] = Unity_SafeNormalize(poiLight.vDirection[index] + poiCam.eyeViewDir);
+					poiLight.vHalfDir[index] = PoiHalfDirection(poiLight.vDirection[index], poiCam.eyeViewDir);
 					poiLight.vDotLH[index] = saturate(dot(poiLight.vDirection[index], poiLight.vHalfDir[index]));
 					poiLight.vDotNH[index] = dot(poiMesh.normals[1], poiLight.vHalfDir[index]);
 					poiLight.vCorrectedDotNL[index] = .5 * (poiLight.vDotNL[index] + 1);

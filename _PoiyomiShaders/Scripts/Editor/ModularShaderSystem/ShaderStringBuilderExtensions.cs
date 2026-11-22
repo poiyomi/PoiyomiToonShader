@@ -12,7 +12,7 @@ namespace Poiyomi.ModularShaderSystem
         
         public static StringBuilder AppendLineTabbed(this StringBuilder builder, int tabLevel, string value)
         {
-            return builder.Append(Tabs(tabLevel)).AppendLine(value);
+            return builder.Append('\t', Math.Max(0, tabLevel)).AppendLine(value);
         }
         
         public static StringBuilder PrependLineTabbed(this StringBuilder builder, int tabLevel, string value)
@@ -22,7 +22,7 @@ namespace Poiyomi.ModularShaderSystem
         
         public static StringBuilder AppendTabbed(this StringBuilder builder, int tabLevel, string value)
         {
-            return builder.Append(Tabs(tabLevel)).Append(value);
+            return builder.Append('\t', Math.Max(0, tabLevel)).Append(value);
         }
         
         public static StringBuilder PrependTabbed(this StringBuilder builder, int tabLevel, string value)

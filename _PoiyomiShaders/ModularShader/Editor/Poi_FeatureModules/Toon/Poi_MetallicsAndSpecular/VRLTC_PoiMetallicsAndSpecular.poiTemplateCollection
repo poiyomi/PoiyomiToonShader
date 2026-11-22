@@ -542,7 +542,7 @@ PoiInitStruct(MochieBRDFData, mochieBRDFData);
         float ab = max(pbrAnistropics * ((1 + (roughness * adjustedAnisotropy.y)) - adjustedAnisotropy.x), 0.005);
         float visibilityTerm = 0;
 
-        if (nDotL > 0)
+        if (nDotL > 0 && nDotH > 0)
         {
             float a2 = at * ab;
             //V_SmithGGXCorrelated
@@ -604,7 +604,7 @@ PoiInitStruct(MochieBRDFData, mochieBRDFData);
     float PoiMaterialLVTerm(float3 normal, float3 view, float3 direction, float alpha, float3 tangent, float3 binormal,
         float2 anisotropy, bool anisotropic, float spreadSq, out float fresnelWeight)
     {
-        float3 halfDirection = LV_NormalizeSafe(direction + view);
+        float3 halfDirection = PoiHalfDirection(direction, view);
         float NoL = PoiLVSpecularNoL(dot(normal, direction), spreadSq);
         float NoV = max(saturate(dot(normal, view)), 0.0001);
         float NoH = saturate(dot(normal, halfDirection));
@@ -917,7 +917,7 @@ PoiInitStruct(MochieBRDFData, mochieBRDFData);
             // Local LV highlights are evaluated separately below.
             specLight.direction = poiLight.unityLight.direction;
             specLight.directColor = poiLight.unityLight.color.rgb * poiLight.attenDistance * poiLight.lightCookie;
-            specLight.halfDir = Unity_SafeNormalize(specLight.direction + poiCam.eyeViewDir);
+            specLight.halfDir = PoiHalfDirection(specLight.direction, poiCam.eyeViewDir);
             specLight.nDotL = dot(poiMesh.normals[1], specLight.direction);
             specLight.vertexNDotL = dot(poiMesh.normals[0], specLight.direction);
             specLight.nDotH = dot(poiMesh.normals[1], specLight.halfDir);
@@ -970,10 +970,11 @@ PoiInitStruct(MochieBRDFData, mochieBRDFData);
         float pbrBDotL = dot(pbrBSelect, specLight.direction);
         float pbrTDotH = dot(pbrTSelect, specLight.halfDir);
         float pbrBDotH = dot(pbrBSelect, specLight.halfDir);
+        float pbrNSelectDotH = dot(pbrNSelect, specLight.halfDir);
 
     #ifdef GGX_ANISOTROPICS
         float2 adjustedAnisotropy = mochieBRDFData.adjustedAnisotropy;
-        GetSpecFresTerm(pbrNDotL, pbrNDotV, pbrNDotH, specLight.lDotH, specularTerm, fresnelTerm, specCol, brdfRoughness, pbrTDotV, pbrBDotV, pbrTDotL, pbrBDotL, pbrTDotH, pbrBDotH, adjustedAnisotropy);
+        GetSpecFresTerm(pbrNDotL, pbrNDotV, pbrNSelectDotH, specLight.lDotH, specularTerm, fresnelTerm, specCol, brdfRoughness, pbrTDotV, pbrBDotV, pbrTDotL, pbrBDotL, pbrTDotH, pbrBDotH, adjustedAnisotropy);
     #else
         GetSpecFresTerm(pbrNDotL, pbrNDotV, pbrNDotH, specLight.lDotH, specularTerm, fresnelTerm, specCol, brdfRoughness);
     #endif
@@ -1003,7 +1004,8 @@ PoiInitStruct(MochieBRDFData, mochieBRDFData);
                      float pbrBDotvL = dot(pbrBSelect, specLight.vDirection[index]);
                      float pbrTDotvH = dot(pbrTSelect, specLight.vHalfDir[index]);
                      float pbrBDotvH = dot(pbrBSelect, specLight.vHalfDir[index]);
-                    GetSpecFresTerm(pbrVDotNL, pbrNDotV, pbrVDotNH, specLight.vDotLH[index], specularTerm, fresnelTerm, specCol, brdfRoughness, pbrTDotV, pbrBDotV, pbrTDotvL, pbrBDotvL, pbrTDotvH, pbrBDotvH, adjustedAnisotropy);
+                     float pbrNSelectDotvH = dot(pbrNSelect, specLight.vHalfDir[index]);
+                    GetSpecFresTerm(pbrVDotNL, pbrNDotV, pbrNSelectDotvH, specLight.vDotLH[index], specularTerm, fresnelTerm, specCol, brdfRoughness, pbrTDotV, pbrBDotV, pbrTDotvL, pbrBDotvL, pbrTDotvH, pbrBDotvH, adjustedAnisotropy);
                     #else
                     GetSpecFresTerm(pbrVDotNL, pbrNDotV, pbrVDotNH, specLight.vDotLH[index], specularTerm, fresnelTerm, specCol, brdfRoughness);
                     #endif
@@ -1017,7 +1019,7 @@ PoiInitStruct(MochieBRDFData, mochieBRDFData);
             half3 fresnelTerm = 1;
             half3 specularTerm = 1;
             #ifdef GGX_ANISOTROPICS
-            GetSpecFresTerm(pbrNDotL, pbrNDotV, pbrNDotH, specLight.lDotH, specularTerm, fresnelTerm, specCol, brdfRoughness2, pbrTDotV, pbrBDotV, pbrTDotL, pbrBDotL, pbrTDotH, pbrBDotH, adjustedAnisotropy);
+            GetSpecFresTerm(pbrNDotL, pbrNDotV, pbrNSelectDotH, specLight.lDotH, specularTerm, fresnelTerm, specCol, brdfRoughness2, pbrTDotV, pbrBDotV, pbrTDotL, pbrBDotL, pbrTDotH, pbrBDotH, adjustedAnisotropy);
             #else
             GetSpecFresTerm(pbrNDotL, pbrNDotV, pbrNDotH, specLight.lDotH, specularTerm, fresnelTerm, specCol, brdfRoughness2);
             #endif
@@ -1039,7 +1041,8 @@ PoiInitStruct(MochieBRDFData, mochieBRDFData);
                          float pbrBDotvL = dot(pbrBSelect, specLight.vDirection[index]);
                          float pbrTDotvH = dot(pbrTSelect, specLight.vHalfDir[index]);
                          float pbrBDotvH = dot(pbrBSelect, specLight.vHalfDir[index]);
-                        GetSpecFresTerm(pbrVDotNL, pbrNDotV, pbrVDotNH, specLight.vDotLH[index], specularTerm, fresnelTerm, specCol, brdfRoughness2, pbrTDotV, pbrBDotV, pbrTDotvL, pbrBDotvL, pbrTDotvH, pbrBDotvH, adjustedAnisotropy);
+                         float pbrNSelectDotvH = dot(pbrNSelect, specLight.vHalfDir[index]);
+                        GetSpecFresTerm(pbrVDotNL, pbrNDotV, pbrNSelectDotvH, specLight.vDotLH[index], specularTerm, fresnelTerm, specCol, brdfRoughness2, pbrTDotV, pbrBDotV, pbrTDotvL, pbrBDotvL, pbrTDotvH, pbrBDotvH, adjustedAnisotropy);
                         #else
                         GetSpecFresTerm(pbrVDotNL, pbrNDotV, pbrVDotNH, specLight.vDotLH[index], specularTerm, fresnelTerm, specCol, brdfRoughness2);
                         #endif

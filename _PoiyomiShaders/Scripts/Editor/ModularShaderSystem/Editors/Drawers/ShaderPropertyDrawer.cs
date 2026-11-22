@@ -161,7 +161,7 @@ namespace Poiyomi.ModularShaderSystem.UI
                         if (e.newValue > valueSlider.highValue || e.newValue < valueSlider.lowValue)
                         {
                             e.StopImmediatePropagation();
-#if UNITY_6000_2_OR_NEWER
+#if UNITY_6000_0_OR_NEWER
                             e.StopPropagation();
 #else
                             e.PreventDefault();

@@ -229,6 +229,13 @@ float3 PoiObjSpaceViewDir(float4 v)
 	#endif
 }
 
+float3 PoiHalfDirection(float3 lightDir, float3 viewDir)
+{
+	float3 h = lightDir + viewDir;
+	float dp3 = dot(h, h);
+	return dp3 > 1e-12 ? h * rsqrt(dp3) : 0;
+}
+
 float2 poiUV(float2 uv, float4 tex_st)
 {
 	return uv * tex_st.xy + tex_st.zw;

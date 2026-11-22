@@ -13,7 +13,7 @@ namespace Poiyomi.ModularShaderSystem.UI
         void DeHighlightDrops();
     }
 
-#if UNITY_6000_4_OR_NEWER
+#if UNITY_6000_0_OR_NEWER
     [UxmlElement]
 #endif
     public partial class InspectorList : BindableElement, IInspectorList
@@ -96,7 +96,7 @@ namespace Poiyomi.ModularShaderSystem.UI
             _highlightDrops = false;
         }
 
-#if UNITY_6000_2_OR_NEWER
+#if UNITY_6000_0_OR_NEWER
         protected override void HandleEventBubbleUp(EventBase evt)
 #elif UNITY_2022_1_OR_NEWER
         protected override void ExecuteDefaultAction(EventBase evt)
@@ -116,7 +116,7 @@ namespace Poiyomi.ModularShaderSystem.UI
                 }
                 UpdateList();
             }
-#if UNITY_6000_2_OR_NEWER
+#if UNITY_6000_0_OR_NEWER
             base.HandleEventBubbleUp(evt);
 #elif UNITY_2022_1_OR_NEWER
             base.ExecuteDefaultAction(evt);
@@ -250,7 +250,7 @@ namespace Poiyomi.ModularShaderSystem.UI
             else _hasFoldingBeenForced = true;
         }
 
-#if UNITY_6000_4_OR_NEWER
+#if UNITY_6000_0_OR_NEWER
         [UxmlAttribute("show-elements-text")]
         public bool ShowElementsText { get => _showElementsButtons; set => _showElementsButtons = value; }
 #else
