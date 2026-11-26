@@ -2,7 +2,7 @@ Shader ".poiyomi/Poiyomi Toon URP + Lil Fur"
 {
 	Properties
 	{
-		[HideInInspector] shader_master_label ("<color=#E75898ff>Poiyomi 10.0.30</color>", Float) = 0
+		[HideInInspector] shader_master_label ("<color=#E75898ff>Poiyomi 10.0.31</color>", Float) = 0
 		[HideInInspector] shader_is_using_thry_editor ("", Float) = 0
 		[HideInInspector] shader_locale ("0db0b86376c3dca4b9a6828ef8615fe0", Float) = 0
 		[HideInInspector] footer_website ("{texture:{name:icon-poilogo,height:24},action:{type:URL,data:https://www.poiyomi.com},hover:WEBSITE}", Float) = 0
@@ -9024,10 +9024,6 @@ Shader ".poiyomi/Poiyomi Toon URP + Lil Fur"
 			//endex
 			
 			//#pragma shader_feature KEYWORD
-			
-			//#pragma shader_feature_local PROP_FURVECTORTEX
-			//#pragma shader_feature_local PROP_FURNOISEMASK
-			//#pragma shader_feature_local PROP_FURMASK
 			
 			//ifex _EnableBentNormal==0
 			#pragma shader_feature_local POI_BENTNORMALMAP
@@ -33053,10 +33049,6 @@ Shader ".poiyomi/Poiyomi Toon URP + Lil Fur"
 			
 			//#pragma shader_feature KEYWORD
 			
-			//#pragma shader_feature_local PROP_FURVECTORTEX
-			//#pragma shader_feature_local PROP_FURNOISEMASK
-			//#pragma shader_feature_local PROP_FURMASK
-			
 			//ifex _EnableBentNormal==0
 			#pragma shader_feature_local POI_BENTNORMALMAP
 			//endex
@@ -44556,7 +44548,7 @@ Shader ".poiyomi/Poiyomi Toon URP + Lil Fur"
 				#endif
 			}
 			
-			void lilFur(inout PoiFragData poiFragData, in PoiMods poiMods, in PoiMesh poiMesh, PoiGeoToFragLilFur i, float4 mainTex)
+			void lilFur(inout PoiFragData poiFragData, in PoiMods poiMods, in PoiMesh poiMesh, PoiGeoToFragLilFur i)
 			{
 				float furLayer = i.furLayer;
 				float furLayerShift = furLayer - furLayer * (_FurRootOffset) + (_FurRootOffset);
@@ -44589,7 +44581,7 @@ Shader ".poiyomi/Poiyomi Toon URP + Lil Fur"
 				}
 				#endif
 				
-				poiFragData.alpha = mainTex.a * _Color.a * furAlpha;
+				poiFragData.alpha *= furAlpha;
 			}
 			
 			//ifex _EnableBentNormal==0
@@ -57938,8 +57930,6 @@ Shader ".poiyomi/Poiyomi Toon URP + Lil Fur"
 				
 				applyAlphaOptions(poiFragData, poiMesh, poiCam, poiMods);
 				
-				lilFur(poiFragData, poiMods, poiMesh, i, mainTexture);
-				
 				//ifex _EnableTouchGlow==0
 				#ifdef GRAIN
 				applyDepthFX(poiFragData, poiCam, poiMesh, poiMods);
@@ -57970,6 +57960,15 @@ Shader ".poiyomi/Poiyomi Toon URP + Lil Fur"
 				
 				#endif
 				//endex
+				
+				//ifex _EnableDissolve==0
+				#ifdef DISTORT
+				applyDissolve(poiFragData, poiMesh, poiMods, poiCam, poiLight);
+				
+				#endif
+				//endex
+				
+				lilFur(poiFragData, poiMods, poiMesh, i);
 				
 				//ifex _ShadingEnabled==0
 				#if defined(_LIGHTINGMODE_SHADEMAP) && defined(VIGNETTE_MASKED)
@@ -87652,10 +87651,11 @@ Shader ".poiyomi/Poiyomi Toon URP + Lil Fur"
 			//endex
 			
 			#if POI_PIPE == POI_BIRP
-			float4 frag( VertexOut i, bool facing : SV_IsFrontFace ) : SV_Target
+			#define POI_DEPTH_FRAG_OUT float4
 			#else
-			void frag( VertexOut i, bool facing : SV_IsFrontFace, out half outDepth: SV_Target0 )
+			#define POI_DEPTH_FRAG_OUT half
 			#endif
+			POI_DEPTH_FRAG_OUT frag( VertexOut i, bool facing : SV_IsFrontFace ) : SV_Target
 			{
 				#if POI_PIPE == POI_BIRP
 				clip(_RenderingEarlyZEnabled - 1.0);
@@ -88070,14 +88070,10 @@ Shader ".poiyomi/Poiyomi Toon URP + Lil Fur"
 				
 				clip(poiFragData.alpha - _Cutoff);
 				
-				#if POI_PIPE == POI_URP
-				outDepth = i.pos.z + POI_SAFE_MAINTEX_RGB0.r;
-				#endif
-				
 				#if POI_PIPE == POI_BIRP
-				return float4(1, 1, 1, 1);
+				return float4(1, 1, 1, 1) + POI_SAFE_MAINTEX_RGB0;
 				#else
-				return;
+				return i.pos.z + POI_SAFE_MAINTEX_RGB0.r;
 				#endif
 			}
 			

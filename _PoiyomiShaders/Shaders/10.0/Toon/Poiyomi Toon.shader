@@ -2,7 +2,7 @@ Shader ".poiyomi/Poiyomi Toon"
 {
 	Properties
 	{
-		[HideInInspector] shader_master_label ("<color=#E75898ff>Poiyomi 10.0.30</color>", Float) = 0
+		[HideInInspector] shader_master_label ("<color=#E75898ff>Poiyomi 10.0.31</color>", Float) = 0
 		[HideInInspector] shader_is_using_thry_editor ("", Float) = 0
 		[HideInInspector] shader_locale ("0db0b86376c3dca4b9a6828ef8615fe0", Float) = 0
 		[HideInInspector] footer_website ("{texture:{name:icon-poilogo,height:24},action:{type:URL,data:https://www.poiyomi.com},hover:WEBSITE}", Float) = 0
@@ -8786,24 +8786,13 @@ Shader ".poiyomi/Poiyomi Toon"
 			{
 				Ref [_StencilRef]
 				ReadMask [_StencilReadMask]
-				WriteMask [_StencilWriteMask]
 				//ifex _StencilType==1
 				Comp [_StencilCompareFunction]
-				Pass [_StencilPassOp]
-				Fail [_StencilFailOp]
-				ZFail [_StencilZFailOp]
 				//endex
 				
 				//ifex _StencilType==0
 				CompBack [_StencilBackCompareFunction]
-				PassBack [_StencilBackPassOp]
-				FailBack [_StencilBackFailOp]
-				ZFailBack [_StencilBackZFailOp]
-				
 				CompFront [_StencilFrontCompareFunction]
-				PassFront [_StencilFrontPassOp]
-				FailFront [_StencilFrontFailOp]
-				ZFailFront [_StencilFrontZFailOp]
 				//endex
 			}
 			
@@ -8811,6 +8800,7 @@ Shader ".poiyomi/Poiyomi Toon"
 			Cull [_Cull]
 			ZClip [_ZClip]
 			ColorMask 0
+			Offset [_OffsetFactor], [_OffsetUnits]
 			
 			CGPROGRAM
 			
@@ -13271,18 +13261,2998 @@ Shader ".poiyomi/Poiyomi Toon"
 				return o;
 			}
 			
-			// Poi fragement program from VRLT_PoiEarlyZPass
-			float4 frag(VertexOut i, bool facing : SV_IsFrontFace) : SV_Target
-			/*
-			#ifdef
-			, out float depth : SV_DEPTH
+			//ifex _StochasticMode!=0
+			#if defined(_STOCHASTICMODE_DELIOT_HEITZ)
+			#define POI2D_SAMPLER_STOCHASTIC(tex, texSampler, uv, useStochastic) (PoiStochasticSample(tex, sampler##texSampler, uv, useStochastic))
+			#define POI2D_SAMPLER_PAN_STOCHASTIC(tex, texSampler, uv, pan, useStochastic) (PoiStochasticSample(tex, sampler##texSampler, POI_PAN_UV(uv, pan), useStochastic))
+			#define POI2D_SAMPLER_PANGRAD_STOCHASTIC(tex, texSampler, uv, pan, dx, dy, useStochastic) (PoiStochasticSampleGrad(tex, sampler##texSampler, POI_PAN_UV(uv, pan), dx, dy, useStochastic))
 			#endif
-			*/
+			//endex
+			//ifex _StochasticMode!=1
+			#if defined(_STOCHASTICMODE_HEXTILE)
+			#define POI2D_SAMPLER_STOCHASTIC(tex, texSampler, uv, useStochastic) (PoiStochasticSample(tex, sampler##texSampler, uv, useStochastic))
+			#define POI2D_SAMPLER_PAN_STOCHASTIC(tex, texSampler, uv, pan, useStochastic) (PoiStochasticSample(tex, sampler##texSampler, POI_PAN_UV(uv, pan), useStochastic))
+			#define POI2D_SAMPLER_PANGRAD_STOCHASTIC(tex, texSampler, uv, pan, dx, dy, useStochastic) (PoiStochasticSampleGrad(tex, sampler##texSampler, POI_PAN_UV(uv, pan), dx, dy, useStochastic))
+			#endif
+			//endex
+			
+			//ifex _StochasticMode!=2
+			
+			#ifndef POI2D_SAMPLER_STOCHASTIC
+			#define POI2D_SAMPLER_STOCHASTIC(tex, texSampler, uv, useStochastic) (POI2D_SAMPLER(tex, texSampler, uv))
+			#endif
+			#ifndef POI2D_SAMPLER_PAN_STOCHASTIC
+			#define POI2D_SAMPLER_PAN_STOCHASTIC(tex, texSampler, uv, pan, useStochastic) (POI2D_SAMPLER_PAN(tex, texSampler, uv, pan))
+			#endif
+			#ifndef POI2D_SAMPLER_PANGRAD_STOCHASTIC
+			#define POI2D_SAMPLER_PANGRAD_STOCHASTIC(tex, texSampler, uv, pan, dx, dy, useStochastic) (POI2D_SAMPLER_PANGRAD(tex, texSampler, uv, pan, dx, dy))
+			#endif
+			
+			//endex
+			
+			// When using, properties won't properly lock at optimize time; needs macro evaluation implemented
+			// #define POI2D_SAMPLER_STOCHASTIC_INLINED(tex, texSampler) (POI2D_SAMPLER_STOCHASTIC(tex, texSampler, poiUV(poiMesh.uv[tex##UV], tex##_ST), tex##Stochastic))
+			// #define POI2D_SAMPLER_PAN_STOCHASTIC_INLINED(tex, texSampler) (POI2D_SAMPLER_PAN_STOCHASTIC(tex, texSampler, poiUV(poiMesh.uv[tex##UV], tex##_ST), tex##Pan, tex##Stochastic))
+			
+			// #define POI2D_MAINTEX_SAMPLER_STOCHASTIC_INLINED(tex) (POI2D_SAMPLER_STOCHASTIC(tex, _MainTex, poiUV(poiMesh.uv[tex##UV], tex##_ST), tex##Stochastic))
+			// #define POI2D_MAINTEX_SAMPLER_PAN_STOCHASTIC_INLINED(tex) (POI2D_SAMPLER_PAN_STOCHASTIC(tex, _MainTex, poiUV(poiMesh.uv[tex##UV], tex##_ST), tex##Pan, tex##Stochastic))
+			
+			// Deliot, Heitz 2019 - Fast, but non-histogram-preserving (ends up looking a bit blurry and lower contrast)
+			// https://eheitzresearch.wordpress.com/738-2/
+			
+			// Classic Magic Numbers fracsin
+			//ifex _StochasticMode==2
+			#if !defined(_STOCHASTICMODE_NONE)
+			float2 StochasticHash2D2D(float2 s)
 			{
+				// return frac(sin(glsl_mod(float2(dot(s, float2(127.1, 311.7)), dot(s, float2(269.5, 183.3))), 3.14159)) * 43758.5453);
+				return frac(sin(float2(dot(s, float2(127.1, 311.7)), dot(s, float2(269.5, 183.3)))) * 43758.5453);
+			}
+			#endif
+			//endex
+			
+			//ifex _StochasticMode!=0
+			#if defined(_STOCHASTICMODE_DELIOT_HEITZ)
+			// UV Offsets and blend weights
+			// UVBW[0...2].xy = UV Offsets
+			// UVBW[0...2].z = Blend Weights
+			float3x3 DeliotHeitzStochasticUVBW(float2 uv)
+			{
+				// UV transformed into triangular grid space with UV scaled by approximation of 2*sqrt(3)
+				const float2x2 stochasticSkewedGrid = float2x2(1.0, -0.57735027, 0.0, 1.15470054);
+				float2 skewUV = mul(stochasticSkewedGrid, uv * 3.4641 * _StochasticDeliotHeitzDensity);
+				
+				// Vertex IDs and barycentric coords
+				float2 vxID = floor(skewUV);
+				float3 bary = float3(frac(skewUV), 0);
+				bary.z = 1.0 - bary.x - bary.y;
+				
+				float3x3 pos = float3x3(
+				float3(vxID, bary.z),
+				float3(vxID + float2(0, 1), bary.y),
+				float3(vxID + float2(1, 0), bary.x)
+				);
+				
+				float3x3 neg = float3x3(
+				float3(vxID + float2(1, 1), -bary.z),
+				float3(vxID + float2(1, 0), 1.0 - bary.y),
+				float3(vxID + float2(0, 1), 1.0 - bary.x)
+				);
+				
+				return (bary.z > 0) ? pos : neg;
+			}
+			
+			float4 DeliotHeitzSampleTexture(Texture2D tex, SamplerState texSampler, float2 uv, float2 dx, float2 dy)
+			{
+				// UVBW[0...2].xy = UV Offsets
+				// UVBW[0...2].z = Blend Weights
+				float3x3 UVBW = DeliotHeitzStochasticUVBW(uv);
+				
+				//blend samples with calculated weights
+				return mul(tex.SampleGrad(texSampler, uv + StochasticHash2D2D(UVBW[0].xy), dx, dy), UVBW[0].z) +
+				mul(tex.SampleGrad(texSampler, uv + StochasticHash2D2D(UVBW[1].xy), dx, dy), UVBW[1].z) +
+				mul(tex.SampleGrad(texSampler, uv + StochasticHash2D2D(UVBW[2].xy), dx, dy), UVBW[2].z) ;
+			}
+			
+			float4 DeliotHeitzSampleTexture(Texture2D tex, SamplerState texSampler, float2 uv)
+			{
+				float2 dx = ddx(uv), dy = ddy(uv);
+				return DeliotHeitzSampleTexture(tex, texSampler, uv, dx, dy);
+			}
+			
+			// Branch instead of ?: so textures with stochastic off don't also pay for the stochastic samples
+			float4 PoiStochasticSample(Texture2D tex, SamplerState texSampler, float2 uv, float useStochastic)
+			{
+				UNITY_BRANCH
+				if (useStochastic)
+				{
+					return DeliotHeitzSampleTexture(tex, texSampler, uv);
+				}
+				return tex.Sample(texSampler, uv);
+			}
+			
+			float4 PoiStochasticSampleGrad(Texture2D tex, SamplerState texSampler, float2 uv, float2 dx, float2 dy, float useStochastic)
+			{
+				UNITY_BRANCH
+				if (useStochastic)
+				{
+					return DeliotHeitzSampleTexture(tex, texSampler, uv, dx, dy);
+				}
+				return tex.SampleGrad(texSampler, uv, dx, dy);
+			}
+			#endif // defined(_STOCHASTICMODE_DELIOT_HEITZ)
+			//endex
+			
+			//ifex _StochasticMode!=1
+			#if defined(_STOCHASTICMODE_HEXTILE)
+			// HexTiling: Slower, but histogram-preserving
+			// SPDX-License-Idenfitier: MIT
+			// Copyright (c) 2022 mmikk
+			// https://github.com/mmikk/hextile-demo
+			float2 HextileMakeCenUV(float2 vertex)
+			{
+				// 0.288675 ~= 1/(2*sqrt(3))
+				const float2x2 stochasticInverseSkewedGrid = float2x2(1.0, 0.5, 0.0, 1.0 / 1.15470054);
+				return mul(stochasticInverseSkewedGrid, vertex) * 0.288675;
+			}
+			
+			float2x2 HextileLoadRot2x2(float2 idx, float rotStrength)
+			{
+				float angle = abs(idx.x * idx.y) + abs(idx.x + idx.y) + UNITY_PI;
+				
+				// remap to +/-pi
+				angle = glsl_mod(angle, 2 * UNITY_PI);
+				if (angle < 0)  angle += 2 * UNITY_PI;
+				if (angle > UNITY_PI) angle -= 2 * UNITY_PI;
+				
+				angle *= rotStrength;
+				
+				float cs, si; sincos(angle, si, cs);
+				return float2x2(cs, -si, si, cs);
+			}
+			
+			// UV Offsets and base blend weights
+			// UVBWR[0...2].xy = UV Offsets
+			// UVBWR[0...2].zw = rotation costh/sinth -> reconstruct rotation matrix with float2x2(UVBWR[n].z, -UVBWR[n].w, UVBWR[n].w, UVBWR[n].z)
+			// UVBWR[3].xyz = Blend Weights (w unused) - needs luminance weighting
+			float4x4 HextileUVBWR(float2 uv)
+			{
+				// Create Triangle Grid
+				// Skew input space into simplex triangle grid (3.4641 ~= 2*sqrt(3))
+				const float2x2 stochasticSkewedGrid = float2x2(1.0, -0.57735027, 0.0, 1.15470054);
+				float2 skewedCoord = mul(stochasticSkewedGrid, uv * 3.4641 * _StochasticHexGridDensity);
+				
+				float2 baseId = float2(floor(skewedCoord));
+				float3 temp = float3(frac(skewedCoord), 0);
+				temp.z = 1 - temp.x - temp.y;
+				
+				float s = step(0.0, -temp.z);
+				float s2 = 2 * s - 1;
+				
+				half3 weights = float3(-temp.z * s2, s - temp.y * s2, s - temp.x * s2);
+				
+				float2 vertex0 = baseId + float2(s, s);
+				float2 vertex1 = baseId + float2(s, 1 - s);
+				float2 vertex2 = baseId + float2(1 - s, s);
+				
+				float2 cen0 = HextileMakeCenUV(vertex0), cen1 = HextileMakeCenUV(vertex1), cen2 = HextileMakeCenUV(vertex2);
+				float2x2 rot0 = float2x2(1, 0, 0, 1), rot1 = float2x2(1, 0, 0, 1), rot2 = float2x2(1, 0, 0, 1);
+				
+				if (_StochasticHexRotationStrength > 0)
+				{
+					rot0 = HextileLoadRot2x2(vertex0, _StochasticHexRotationStrength);
+					rot1 = HextileLoadRot2x2(vertex1, _StochasticHexRotationStrength);
+					rot2 = HextileLoadRot2x2(vertex2, _StochasticHexRotationStrength);
+				}
+				
+				return float4x4(
+				float4(mul(uv - cen0, rot0) + cen0 + StochasticHash2D2D(vertex0), rot0[0].x, -rot0[0].y),
+				float4(mul(uv - cen1, rot1) + cen1 + StochasticHash2D2D(vertex1), rot1[0].x, -rot1[0].y),
+				float4(mul(uv - cen2, rot2) + cen2 + StochasticHash2D2D(vertex2), rot2[0].x, -rot2[0].y),
+				float4(weights, 0)
+				);
+			}
+			
+			float4 HextileSampleTexture(Texture2D tex, SamplerState texSampler, float2 uv, bool isNormalMap, float2 dUVdx, float2 dUVdy)
+			{
+				// For some reason doing this instead of just calculating it directly prevents it from \
+				// breaking after a certain number of textures use it. I don't understand why yet
+				float4x4 UVBWR = HextileUVBWR(uv);
+				
+				// 2D Rotation Matrices for dUVdx/dy
+				// Not sure if this constant folds during compiling when rot is locked at 0, so force it
+				float2x2 rot0 = float2x2(1, 0, 0, 1), rot1 = float2x2(1, 0, 0, 1), rot2 = float2x2(1, 0, 0, 1);
+				
+				if (_StochasticHexRotationStrength > 0)
+				{
+					rot0 = float2x2(UVBWR[0].z, -UVBWR[0].w, UVBWR[0].w, UVBWR[0].z);
+					rot1 = float2x2(UVBWR[1].z, -UVBWR[1].w, UVBWR[1].w, UVBWR[1].z);
+					rot2 = float2x2(UVBWR[2].z, -UVBWR[2].w, UVBWR[2].w, UVBWR[2].z);
+				}
+				
+				// Weights
+				float3 W = UVBWR[3].xyz;
+				
+				// Sample texture
+				// float3x4 c = float3x4(
+				// 	tex.SampleGrad(texSampler, UVBWR[0].xy, mul(dUVdx, rot0), mul(dUVdy, rot0)),
+				// 	tex.SampleGrad(texSampler, UVBWR[1].xy, mul(dUVdx, rot1), mul(dUVdy, rot1)),
+				// 	tex.SampleGrad(texSampler, UVBWR[2].xy, mul(dUVdx, rot2), mul(dUVdy, rot2))
+				// );
+				
+				float4 c0 = tex.SampleGrad(texSampler, UVBWR[0].xy, mul(dUVdx, rot0), mul(dUVdy, rot0));
+				float4 c1 = tex.SampleGrad(texSampler, UVBWR[1].xy, mul(dUVdx, rot1), mul(dUVdy, rot1));
+				float4 c2 = tex.SampleGrad(texSampler, UVBWR[2].xy, mul(dUVdx, rot2), mul(dUVdy, rot2));
+				
+				// Blend samples using luminance
+				// This is technically incorrect for normal maps, but produces very similar
+				// results to blending using normal map gradients (steepness)
+				const float3 Lw = float3(0.299, 0.587, 0.114);
+				float3 Dw = float3(dot(c0.xyz, Lw), dot(c1.xyz, Lw), dot(c2.xyz, Lw));
+				
+				Dw = lerp(1.0, Dw, _StochasticHexFallOffContrast);
+				W = Dw * pow(W, _StochasticHexFallOffPower);
+				// In the original hextiling there's a Gain3 step here, but it seems to slow things down \
+				// and cause the UVs to break, so I've omitted it. Looks fine without
+				
+				W /= (W.x + W.y + W.z);
+				return W.x * c0 + W.y * c1 + W.z * c2;
+			}
+			
+			float4 HextileSampleTexture(Texture2D tex, SamplerState texSampler, float2 uv, bool isNormalMap)
+			{
+				return HextileSampleTexture(tex, texSampler, uv, isNormalMap, ddx(uv), ddy(uv));
+			}
+			
+			// Branch instead of ?: so textures with stochastic off don't also pay for the stochastic samples
+			float4 PoiStochasticSample(Texture2D tex, SamplerState texSampler, float2 uv, float useStochastic)
+			{
+				UNITY_BRANCH
+				if (useStochastic)
+				{
+					return HextileSampleTexture(tex, texSampler, uv, false);
+				}
+				return tex.Sample(texSampler, uv);
+			}
+			
+			float4 PoiStochasticSampleGrad(Texture2D tex, SamplerState texSampler, float2 uv, float2 dx, float2 dy, float useStochastic)
+			{
+				UNITY_BRANCH
+				if (useStochastic)
+				{
+					return HextileSampleTexture(tex, texSampler, uv, false, dx, dy);
+				}
+				return tex.SampleGrad(texSampler, uv, dx, dy);
+			}
+			#endif // defined(_STOCHASTICMODE_HEXTILE)
+			//endex
+			
+			void applyAlphaOptions(inout PoiFragData poiFragData, in PoiMesh poiMesh, in PoiCam poiCam, in PoiMods poiMods)
+			{
+				poiFragData.alpha = saturate(poiFragData.alpha + _AlphaMod);
+				
+				if (_AlphaGlobalMask > 0)
+				{
+					poiFragData.alpha = maskBlend(poiFragData.alpha, poiMods.globalMask[_AlphaGlobalMask - 1], _AlphaGlobalMaskBlendType);
+				}
+				
+				//ifex _AlphaDistanceFade==0 && isNotAnimated(_AlphaDistanceFade)
+				if (_AlphaDistanceFade >= 0.5)
+				{
+					float3 position = _AlphaDistanceFadeType ? poiMesh.worldPos : poiMesh.objectPosition;
+					float distanceFadeMultiplier = lerp(_AlphaDistanceFadeMinAlpha, _AlphaDistanceFadeMaxAlpha, smoothstep(_AlphaDistanceFadeMin, _AlphaDistanceFadeMax, distance(position, poiCam.worldPos)));
+					if (_AlphaDistanceFadeGlobalMask > 0)
+					{
+						distanceFadeMultiplier = lerp(1, distanceFadeMultiplier, poiMods.globalMask[_AlphaDistanceFadeGlobalMask - 1]);
+					}
+					poiFragData.alpha *= distanceFadeMultiplier;
+				}
+				//endex
+				
+				//ifex _AlphaFresnel==0 && isNotAnimated(_AlphaFresnel)
+				if (_AlphaFresnel >= 0.5)
+				{
+					half holoRim = saturate(1 - smoothstep(min(_AlphaFresnelSharpness, _AlphaFresnelWidth), _AlphaFresnelWidth, (poiCam.vDotNCentered)));
+					holoRim = abs(lerp(1, holoRim, _AlphaFresnelAlpha));
+					holoRim = _AlphaFresnelInvert ? 1 - holoRim : holoRim;
+					if (_AlphaFresnelGlobalMask > 0)
+					{
+						holoRim = lerp(1, holoRim, poiMods.globalMask[_AlphaFresnelGlobalMask - 1]);
+					}
+					poiFragData.alpha *= holoRim;
+				}
+				//endex
+				
+				//ifex _AlphaAngular==0 && isNotAnimated(_AlphaAngular)
+				if (_AlphaAngular >= 0.5)
+				{
+					half cameraAngleMin = _CameraAngleMin / 180;
+					half cameraAngleMax = _CameraAngleMax / 180;
+					half modelAngleMin = _ModelAngleMin / 180;
+					half modelAngleMax = _ModelAngleMax / 180;
+					float3 pos = _AngleCompareTo == 0 ? poiMesh.objectPosition : poiMesh.worldPos;
+					half3 cameraToModelDirection = normalize(pos - poiCam.worldPos);
+					half3 modelForwardDirection = normalize(mul((float3x3)unity_ObjectToWorld, normalize(_AngleForwardDirection.rgb)));
+					half cameraLookAtModel = remapClamped(cameraAngleMax, cameraAngleMin, .5 * dot(cameraToModelDirection, poiCam.forwardDir) + .5);
+					half modelLookAtCamera = remapClamped(modelAngleMax, modelAngleMin, .5 * dot(-cameraToModelDirection, modelForwardDirection) + .5);
+					half angularAlphaMod = 1;
+					if (_AngleType == 0)
+					{
+						angularAlphaMod = max(cameraLookAtModel, _AngleMinAlpha);
+					}
+					else if (_AngleType == 1)
+					{
+						angularAlphaMod = max(modelLookAtCamera, _AngleMinAlpha);
+					}
+					else if (_AngleType == 2)
+					{
+						angularAlphaMod = max(cameraLookAtModel * modelLookAtCamera, _AngleMinAlpha);
+					}
+					if (_AlphaAngularGlobalMask > 0)
+					{
+						angularAlphaMod = lerp(1, angularAlphaMod, poiMods.globalMask[_AlphaAngularGlobalMask - 1]);
+					}
+					poiFragData.alpha *= angularAlphaMod;
+				}
+				//endex
+				
+				//ifex _AlphaAudioLinkEnabled==0 && isNotAnimated(_AlphaAudioLinkEnabled)
+				#ifdef POI_AUDIOLINK
+				if (poiMods.audioLinkAvailable && _AlphaAudioLinkEnabled >= 0.5)
+				{
+					poiFragData.alpha = saturate(poiFragData.alpha + lerp(_AlphaAudioLinkAddRange.x, _AlphaAudioLinkAddRange.y, poiMods.audioLink[_AlphaAudioLinkAddBand]));
+				}
+				#endif
+				//endex
+				
+			}
+			
+			//ifex _AlphaDithering==0 && isNotAnimated(_AlphaDithering)
+			inline half Dither8x8Bayer(int x, int y)
+			{
+				// Premultiplied by 1/64
+				const half dither[ 64 ] = {
+					0.015625, 0.765625, 0.203125, 0.953125, 0.06250, 0.81250, 0.25000, 1.00000,
+					0.515625, 0.265625, 0.703125, 0.453125, 0.56250, 0.31250, 0.75000, 0.50000,
+					0.140625, 0.890625, 0.078125, 0.828125, 0.18750, 0.93750, 0.12500, 0.87500,
+					0.640625, 0.390625, 0.578125, 0.328125, 0.68750, 0.43750, 0.62500, 0.37500,
+					0.046875, 0.796875, 0.234375, 0.984375, 0.03125, 0.78125, 0.21875, 0.96875,
+					0.546875, 0.296875, 0.734375, 0.484375, 0.53125, 0.28125, 0.71875, 0.46875,
+					0.171875, 0.921875, 0.109375, 0.859375, 0.15625, 0.90625, 0.09375, 0.84375,
+					0.671875, 0.421875, 0.609375, 0.359375, 0.65625, 0.40625, 0.59375, 0.34375
+				};
+				int r = y * 8 + x;
+				return dither[r];
+			}
+			
+			half calcDither(half2 grabPos)
+			{
+				return Dither8x8Bayer(glsl_mod(grabPos.x, 8), glsl_mod(grabPos.y, 8));
+			}
+			
+			void applyDithering(inout PoiFragData poiFragData, in PoiCam poiCam)
+			{
+				if (_AlphaDithering >= 0.5)
+				{
+					float dither = calcDither(poiCam.posScreenPixels) - _AlphaDitherBias;
+					poiFragData.alpha = saturate(poiFragData.alpha - (dither * (1 - poiFragData.alpha) * _AlphaDitherGradient));
+				}
+			}
+			//endex
+			
+			//ifex _AlphaToCoverage==0 && isNotAnimated(_AlphaToCoverage) && isNotAnimated(_AlphaSharpenedA2C)
+			void ApplyAlphaToCoverage(inout PoiFragData poiFragData, in PoiMesh poiMesh)
+			{
+				// Force Model Opacity to 1 if desired
+				UNITY_BRANCH
+				if (_Mode == 1)
+				{
+					UNITY_BRANCH
+					if (_AlphaSharpenedA2C >= 0.5 && _AlphaToCoverage >= 0.5)
+					{
+						// rescale alpha by mip level
+						poiFragData.alpha *= 1 + max(0, CalcMipLevel(poiMesh.uv[0] * _MainTex_TexelSize.zw)) * _AlphaMipScale;
+						// rescale alpha by partial derivative
+						poiFragData.alpha = (poiFragData.alpha - _Cutoff) / max(fwidth(poiFragData.alpha), 0.0001) + _Cutoff;
+						poiFragData.alpha = saturate(poiFragData.alpha);
+					}
+				}
+			}
+			//endex
+			
+			//ifex _EnableBentNormal==0
+			#ifdef POI_BENTNORMALMAP
+			// Jimenez 2016, "Practical Realtime Strategies for Accurate Indirect Occlusion"
+			// Cone intersection for specular occlusion using bent normal
+			half PoiSpecularOcclusionBentNormal(half3 reflectionDir, half3 bentNormal, half occlusion, half roughness)
+			{
+				roughness = max(roughness, 0.01);
+				
+				// Unoccluded cone angle from scalar AO
+				float cosUnoccludedAngle = sqrt(1.0 - occlusion);
+				float unoccludedAngle = acos(cosUnoccludedAngle);
+				
+				// Specular cone angle from roughness
+				float cosSpecularAngle = exp2(-3.32192809489 * (roughness * roughness));
+				float specularAngle = acos(cosSpecularAngle);
+				
+				// Angle between bent normal and reflection direction
+				float angleBentToReflection = acos(saturate(dot(bentNormal, reflectionDir)));
+				
+				// Cone intersection (smoothstep approximation)
+				float angleSum = unoccludedAngle + specularAngle;
+				float angleDiff = abs(unoccludedAngle - specularAngle);
+				float intersection = 1.0 - smoothstep(0.0, 1.0, saturate((angleBentToReflection - angleDiff) / max(angleSum - angleDiff, 0.0001)));
+				
+				return min(intersection, occlusion);
+			}
+			#endif
+			//endex
+			
+			void poiApplyAlphaMask(inout PoiFragData poiFragData, in PoiMesh poiMesh)
+			{
+				if (_MainAlphaMaskMode)
+				{
+					half4 alphaMaskTex = 1;
+					#if defined(PROP_ALPHAMASK) || !defined(OPTIMIZER_ENABLED)
+					alphaMaskTex = POI2D_SAMPLER_PAN(_AlphaMask, _MainTex, poiUV(poiMesh.uv[_AlphaMaskUV], _AlphaMask_ST), _AlphaMaskPan.xy);
+					#endif
+					half alphaMask = poiSampleMask(alphaMaskTex, float4(_AlphaMaskR, _AlphaMaskG, _AlphaMaskB, _AlphaMaskA), _AlphaMaskChannelBlendMode, _AlphaMaskInvert, _AlphaMaskMinMax, _AlphaMaskGamma, _AlphaMaskBlendStrength, _AlphaMaskValue);
+					switch ((int)_MainAlphaMaskMode)
+					{
+						case 1: poiFragData.alpha = alphaMask; break;
+						case 2: poiFragData.alpha *= alphaMask; break;
+						case 3: poiFragData.alpha = saturate(poiFragData.alpha + alphaMask); break;
+						case 4: poiFragData.alpha = saturate(poiFragData.alpha - alphaMask); break;
+					}
+				}
+			}
+			
+			void applyMainColor(inout PoiFragData poiFragData, inout PoiMesh poiMesh, inout PoiCam poiCam, inout PoiMods poiMods, inout float4 mainTexture)
+			{
+				poiFragData.baseColor = mainTexture.rgb;
+				#if !defined(POI_PASS_BASETWO) && !defined(POI_PASS_ADDTWO)
+				poiFragData.baseColor *= poiThemeColor(poiMods, _Color.rgb, _ColorThemeIndex);
+				poiFragData.alpha = mainTexture.a * _Color.a;
+				#else
+				if(_TwoPassOverrideFirstPassColor == 1)
+				{
+					poiFragData.baseColor *= poiThemeColor(poiMods, _TwoPassColor.rgb, _TwoPassColorThemeIndex);
+					poiFragData.alpha = mainTexture.a * _TwoPassColor.a;
+				}
+				else if(_TwoPassOverrideFirstPassColor == 2)
+				{
+					poiFragData.baseColor *= poiThemeColor(poiMods, _Color.rgb, _ColorThemeIndex);
+					poiFragData.alpha = mainTexture.a * _TwoPassAlphaOverride;
+				}
+				else
+				{
+					poiFragData.baseColor *= poiThemeColor(poiMods, _Color.rgb, _ColorThemeIndex);
+					poiFragData.alpha = mainTexture.a * _Color.a;
+				}
+				#endif
+				
+				//ifex _MainColorAdjustToggle==0
+				#ifdef COLOR_GRADING_HDR
+				#if defined(PROP_MAINCOLORADJUSTTEXTURE) || !defined(OPTIMIZER_ENABLED)
+				half4 hueShiftAlpha = POI2D_SAMPLER_PAN(_MainColorAdjustTexture, _MainTex, poiUV(poiMesh.uv[_MainColorAdjustTextureUV], _MainColorAdjustTexture_ST), _MainColorAdjustTexturePan);
+				#else
+				half4 hueShiftAlpha = 1;
+				#endif
+				
+				if (_MainHueGlobalMask > 0)
+				{
+					hueShiftAlpha.r = maskBlend(hueShiftAlpha.r, poiMods.globalMask[_MainHueGlobalMask - 1], _MainHueGlobalMaskBlendType);
+				}
+				if (_MainSaturationGlobalMask > 0)
+				{
+					hueShiftAlpha.b = maskBlend(hueShiftAlpha.b, poiMods.globalMask[_MainSaturationGlobalMask - 1], _MainSaturationGlobalMaskBlendType);
+				}
+				if (_MainBrightnessGlobalMask > 0)
+				{
+					hueShiftAlpha.g = maskBlend(hueShiftAlpha.g, poiMods.globalMask[_MainBrightnessGlobalMask - 1], _MainBrightnessGlobalMaskBlendType);
+				}
+				if (_MainGammaGlobalMask > 0)
+				{
+					hueShiftAlpha.a = maskBlend(hueShiftAlpha.a, poiMods.globalMask[_MainGammaGlobalMask - 1], _MainGammaGlobalMaskBlendType);
+				}
+				
+				if (_MainHueShiftToggle >= 0.5)
+				{
+					float shift = _MainHueShift;
+					#ifdef POI_AUDIOLINK
+					//UNITY_BRANCH
+					if (poiMods.audioLinkAvailable && _MainHueALCTEnabled >= 0.5)
+					{
+						shift += AudioLinkGetChronoTime(_MainALHueShiftCTIndex, _MainALHueShiftBand) * _MainHueALMotionSpeed;
+					}
+					#endif
+					if (_MainHueShiftReplace >= 0.5)
+					{
+						poiFragData.baseColor = lerp(poiFragData.baseColor, hueShift(poiFragData.baseColor, shift + _MainHueShiftSpeed * POI_TIME.x, _MainHueShiftColorSpace, _MainHueShiftSelectOrShift), hueShiftAlpha.r);
+					}
+					else
+					{
+						poiFragData.baseColor = hueShift(poiFragData.baseColor, frac((shift - (1 - hueShiftAlpha.r) + _MainHueShiftSpeed * POI_TIME.x)), _MainHueShiftColorSpace, _MainHueShiftSelectOrShift);
+					}
+				}
+				
+				if (_MainGradationStrength && _ColorGradingToggle >= 0.5)
+				{
+					#if !defined(UNITY_COLORSPACE_GAMMA)
+					half3 tempColor = OpenLitLinearToSRGB(poiFragData.baseColor);
+					#else
+					half3 tempColor = poiFragData.baseColor;
+					#endif
+					#if defined(PROP_MAINGRADATIONTEX)
+					tempColor.r = POI_SAMPLE_1D_X(_MainGradationTex, sampler_linear_clamp, tempColor.r).r;
+					tempColor.g = POI_SAMPLE_1D_X(_MainGradationTex, sampler_linear_clamp, tempColor.g).g;
+					tempColor.b = POI_SAMPLE_1D_X(_MainGradationTex, sampler_linear_clamp, tempColor.b).b;
+					#else
+					tempColor = float3(1, 1, 1);
+					#endif
+					#if !defined(UNITY_COLORSPACE_GAMMA)
+					tempColor = OpenLitSRGBToLinear(tempColor);
+					#endif
+					half gradationMask = 1;
+					if (_MainGradationMaskChannel > 0)
+					{
+						gradationMask = hueShiftAlpha[_MainGradationMaskChannel - 1];
+					}
+					poiFragData.baseColor = lerp(poiFragData.baseColor, tempColor, _MainGradationStrength * gradationMask);
+				}
+				if (_MainGamma != 1)
+				{
+					float3 gammaAdjustedColor = sign(poiFragData.baseColor) * pow(abs(poiFragData.baseColor), _MainGamma);
+					poiFragData.baseColor = lerp(poiFragData.baseColor, gammaAdjustedColor, hueShiftAlpha.a);
+				}
+				poiFragData.baseColor = lerp(poiFragData.baseColor, dot(poiFragData.baseColor, float3(0.3, 0.59, 0.11)), - (_Saturation) * hueShiftAlpha.b);
+				if (_MainChromatize != 0)
+				{
+					#if !defined(UNITY_COLORSPACE_GAMMA)
+					float3 chromaLinear = poiFragData.baseColor;
+					#else
+					float3 chromaLinear = OpenLitSRGBToLinear(poiFragData.baseColor);
+					#endif
+					chromaLinear = PoiApplyChromatize(chromaLinear, _MainChromatize * hueShiftAlpha.r);
+					
+					#if !defined(UNITY_COLORSPACE_GAMMA)
+					poiFragData.baseColor = saturate(chromaLinear);
+					#else
+					poiFragData.baseColor = saturate(OpenLitLinearToSRGB(chromaLinear));
+					#endif
+				}
+				if (_MainTintColor.a > 0)
+				{
+					#if defined(PROP_MAINTINTTEXTURE) || !defined(OPTIMIZER_ENABLED)
+					half4 mainTintTexSample = POI2D_SAMPLER_PAN(_MainTintTexture, _MainTex, poiUV(poiMesh.uv[_MainTintTextureUV], _MainTintTexture_ST), _MainTintTexturePan);
+					#else
+					half4 mainTintTexSample = 1;
+					#endif
+					half3 finalTintColor = _MainTintColor.rgb * mainTintTexSample.rgb;
+					half finalTintAlpha = _MainTintColor.a * mainTintTexSample.a;
+					
+					#if !defined(UNITY_COLORSPACE_GAMMA)
+					half3 tintInputLinear = poiFragData.baseColor;
+					half3 tintColorLinear = finalTintColor;
+					#else
+					half3 tintInputLinear = OpenLitSRGBToLinear(poiFragData.baseColor);
+					half3 tintColorLinear = OpenLitSRGBToLinear(finalTintColor);
+					#endif
+					
+					// Get tint color's hue and saturation factor
+					half3 tintOklab = linear_srgb_to_oklab(tintColorLinear);
+					half tintHue = atan2(tintOklab.z, tintOklab.y);
+					half tintMin = min(tintColorLinear.r, min(tintColorLinear.g, tintColorLinear.b));
+					half tintMax = max(tintColorLinear.r, max(tintColorLinear.g, tintColorLinear.b));
+					half tintSatFactor = (tintMax > 0.0001) ? 1.0 - (tintMin / tintMax) : 0;
+					
+					// Get input's lightness and chroma
+					float3 inputOklab = linear_srgb_to_oklab(tintInputLinear);
+					float inputL = inputOklab.x;
+					float inputChroma = length(inputOklab.yz);
+					
+					// Combine: input's L, tint's H, input's C scaled by tint saturation
+					float newChroma = inputChroma * tintSatFactor;
+					half3 tintedOklab = float3(inputL, newChroma * cos(tintHue), newChroma * sin(tintHue));
+					half3 tintedLinear = saturate(oklab_to_linear_srgb(tintedOklab));
+					
+					// Lerp by alpha
+					tintInputLinear = lerp(tintInputLinear, tintedLinear, finalTintAlpha);
+					
+					#if !defined(UNITY_COLORSPACE_GAMMA)
+					poiFragData.baseColor = tintInputLinear;
+					#else
+					poiFragData.baseColor = OpenLitLinearToSRGB(tintInputLinear);
+					#endif
+				}
+				poiFragData.baseColor = lerp(poiFragData.baseColor, poiFragData.baseColor * (_MainBrightness + 1), hueShiftAlpha.g);
+				if (_MainColorAdjustClamp > 0.5)
+				{
+					poiFragData.baseColor = saturate(poiFragData.baseColor);
+				}
+				#endif
+				//endex
+				
+				poiApplyAlphaMask(poiFragData, poiMesh);
+			}
+			
+			void applyMainNormal(inout PoiMesh poiMesh)
+			{
+				#if defined(PROP_BUMPMAP) || !defined(OPTIMIZER_ENABLED)
+				poiMesh.tangentSpaceNormal = PoiUnpackNormalScale(POI2D_SAMPLER_PAN_STOCHASTIC(_BumpMap, _MainTex, poiUV(poiMesh.uv[_BumpMapUV].xy, _BumpMap_ST), _BumpMapPan, _BumpMapStochastic), _BumpScale);
+				#else
+				poiMesh.tangentSpaceNormal = float3(0, 0, 1);
+				#endif
+			}
+			
+			//ifex _UseBump2ndMap==0
+			#if defined(POI_BUMP2NDMAP)
+			void applyMainNormal2(inout PoiMesh poiMesh, in PoiMods poiMods)
+			{
+				#if defined(PROP_BUMP2NDMAP) || !defined(OPTIMIZER_ENABLED)
+				#if defined(PROP_BUMP2NDSCALEMASK) || !defined(OPTIMIZER_ENABLED)
+				half bump2ndMask = POI2D_SAMPLER_PAN(_Bump2ndScaleMask, _MainTex, poiUV(poiMesh.uv[_Bump2ndScaleMaskUV].xy, _Bump2ndScaleMask_ST), _Bump2ndScaleMaskPan).r;
+				#else
+				half bump2ndMask = 1;
+				#endif
+				if (_Bump2ndScaleMaskGlobalMask > 0)
+				{
+					bump2ndMask = maskBlend(bump2ndMask, poiMods.globalMask[_Bump2ndScaleMaskGlobalMask - 1], _Bump2ndScaleMaskGlobalMaskBlendType);
+				}
+				float3 bump2ndNormal = PoiUnpackNormalScale(POI2D_SAMPLER_PAN_STOCHASTIC(_Bump2ndMap, _MainTex, poiUV(poiMesh.uv[_Bump2ndMapUV].xy, _Bump2ndMap_ST), _Bump2ndMapPan, _Bump2ndMapStochastic), _Bump2ndScale * bump2ndMask);
+				poiMesh.tangentSpaceNormal = PoiBlendNormal(bump2ndNormal, poiMesh.tangentSpaceNormal);
+				#endif
+			}
+			#endif
+			//endex
+			
+			//ifex _GlobalMaskTexturesEnable==0
+			#ifdef POI_GLOBALMASK_TEXTURES
+			void ApplyGlobalMaskTextures(in PoiMesh poiMesh, inout PoiMods poiMods)
+			{
+				#if defined(PROP_GLOBALMASKTEXTURE0) || !defined(OPTIMIZER_ENABLED)
+				float4 gmcol0 = POI2D_SAMPLER_PAN(_GlobalMaskTexture0, _MainTex, poiUV(poiMesh.uv[_GlobalMaskTexture0UV], _GlobalMaskTexture0_ST), _GlobalMaskTexture0Pan);
+				if (_GlobalMaskTexture0Split >= 0.5)
+				{
+					poiMods.globalMask[0] = gmcol0.r;
+					poiMods.globalMask[1] = POI2D_SAMPLER_PAN(_GlobalMaskTexture0, _MainTex, poiUV(poiMesh.uv[_GlobalMaskTexture0UV], _GlobalMaskTexture0SplitTilingOffset_G), _GlobalMaskTexture0SplitPan_G).g;
+					poiMods.globalMask[2] = POI2D_SAMPLER_PAN(_GlobalMaskTexture0, _MainTex, poiUV(poiMesh.uv[_GlobalMaskTexture0UV], _GlobalMaskTexture0SplitTilingOffset_B), _GlobalMaskTexture0SplitPan_B).b;
+					poiMods.globalMask[3] = POI2D_SAMPLER_PAN(_GlobalMaskTexture0, _MainTex, poiUV(poiMesh.uv[_GlobalMaskTexture0UV], _GlobalMaskTexture0SplitTilingOffset_A), _GlobalMaskTexture0SplitPan_A).a;
+				}
+				else
+				{
+					poiMods.globalMask[0] = gmcol0[0];
+					poiMods.globalMask[1] = gmcol0[1];
+					poiMods.globalMask[2] = gmcol0[2];
+					poiMods.globalMask[3] = gmcol0[3];
+				}
+				#endif
+				
+				#if defined(PROP_GLOBALMASKTEXTURE1) || !defined(OPTIMIZER_ENABLED)
+				float4 gmcol1 = POI2D_SAMPLER_PAN(_GlobalMaskTexture1, _MainTex, poiUV(poiMesh.uv[_GlobalMaskTexture1UV], _GlobalMaskTexture1_ST), _GlobalMaskTexture1Pan);
+				if (_GlobalMaskTexture1Split >= 0.5)
+				{
+					poiMods.globalMask[4] = gmcol1.r;
+					poiMods.globalMask[5] = POI2D_SAMPLER_PAN(_GlobalMaskTexture1, _MainTex, poiUV(poiMesh.uv[_GlobalMaskTexture1UV], _GlobalMaskTexture1SplitTilingOffset_G), _GlobalMaskTexture1SplitPan_G).g;
+					poiMods.globalMask[6] = POI2D_SAMPLER_PAN(_GlobalMaskTexture1, _MainTex, poiUV(poiMesh.uv[_GlobalMaskTexture1UV], _GlobalMaskTexture1SplitTilingOffset_B), _GlobalMaskTexture1SplitPan_B).b;
+					poiMods.globalMask[7] = POI2D_SAMPLER_PAN(_GlobalMaskTexture1, _MainTex, poiUV(poiMesh.uv[_GlobalMaskTexture1UV], _GlobalMaskTexture1SplitTilingOffset_A), _GlobalMaskTexture1SplitPan_A).a;
+				}
+				else
+				{
+					poiMods.globalMask[4] = gmcol1[0];
+					poiMods.globalMask[5] = gmcol1[1];
+					poiMods.globalMask[6] = gmcol1[2];
+					poiMods.globalMask[7] = gmcol1[3];
+				}
+				#endif
+				
+				#if defined(PROP_GLOBALMASKTEXTURE2) || !defined(OPTIMIZER_ENABLED)
+				float4 gmcol2 = POI2D_SAMPLER_PAN(_GlobalMaskTexture2, _MainTex, poiUV(poiMesh.uv[_GlobalMaskTexture2UV], _GlobalMaskTexture2_ST), _GlobalMaskTexture2Pan);
+				if (_GlobalMaskTexture2Split >= 0.5)
+				{
+					poiMods.globalMask[8] = gmcol2.r;
+					poiMods.globalMask[9] = POI2D_SAMPLER_PAN(_GlobalMaskTexture2, _MainTex, poiUV(poiMesh.uv[_GlobalMaskTexture2UV], _GlobalMaskTexture2SplitTilingOffset_G), _GlobalMaskTexture2SplitPan_G).g;
+					poiMods.globalMask[10] = POI2D_SAMPLER_PAN(_GlobalMaskTexture2, _MainTex, poiUV(poiMesh.uv[_GlobalMaskTexture2UV], _GlobalMaskTexture2SplitTilingOffset_B), _GlobalMaskTexture2SplitPan_B).b;
+					poiMods.globalMask[11] = POI2D_SAMPLER_PAN(_GlobalMaskTexture2, _MainTex, poiUV(poiMesh.uv[_GlobalMaskTexture2UV], _GlobalMaskTexture2SplitTilingOffset_A), _GlobalMaskTexture2SplitPan_A).a;
+				}
+				else
+				{
+					poiMods.globalMask[8] = gmcol2[0];
+					poiMods.globalMask[9] = gmcol2[1];
+					poiMods.globalMask[10] = gmcol2[2];
+					poiMods.globalMask[11] = gmcol2[3];
+				}
+				#endif
+				
+				#if defined(PROP_GLOBALMASKTEXTURE3) || !defined(OPTIMIZER_ENABLED)
+				float4 gmcol3 = POI2D_SAMPLER_PAN(_GlobalMaskTexture3, _MainTex, poiUV(poiMesh.uv[_GlobalMaskTexture3UV], _GlobalMaskTexture3_ST), _GlobalMaskTexture3Pan);
+				if (_GlobalMaskTexture3Split >= 0.5)
+				{
+					poiMods.globalMask[12] = gmcol3.r;
+					poiMods.globalMask[13] = POI2D_SAMPLER_PAN(_GlobalMaskTexture3, _MainTex, poiUV(poiMesh.uv[_GlobalMaskTexture3UV], _GlobalMaskTexture3SplitTilingOffset_G), _GlobalMaskTexture3SplitPan_G).g;
+					poiMods.globalMask[14] = POI2D_SAMPLER_PAN(_GlobalMaskTexture3, _MainTex, poiUV(poiMesh.uv[_GlobalMaskTexture3UV], _GlobalMaskTexture3SplitTilingOffset_B), _GlobalMaskTexture3SplitPan_B).b;
+					poiMods.globalMask[15] = POI2D_SAMPLER_PAN(_GlobalMaskTexture3, _MainTex, poiUV(poiMesh.uv[_GlobalMaskTexture3UV], _GlobalMaskTexture3SplitTilingOffset_A), _GlobalMaskTexture3SplitPan_A).a;
+				}
+				else
+				{
+					poiMods.globalMask[12] = gmcol3[0];
+					poiMods.globalMask[13] = gmcol3[1];
+					poiMods.globalMask[14] = gmcol3[2];
+					poiMods.globalMask[15] = gmcol3[3];
+				}
+				#endif
+			}
+			#endif
+			//endex
+			//ifex _GlobalMaskOptionsEnable==0
+			void ApplyGlobalMaskOptions(inout PoiMods poiMods)
+			{
+				//ifex _GlobalMaskOptionsType!=0
+				if (_GlobalMaskOptionsType == 0)
+				{
+					poiMods.globalMask[0] = saturate(poiMods.globalMask[0] + _GlobalMaskSlider_0);
+					poiMods.globalMask[1] = saturate(poiMods.globalMask[1] + _GlobalMaskSlider_1);
+					poiMods.globalMask[2] = saturate(poiMods.globalMask[2] + _GlobalMaskSlider_2);
+					poiMods.globalMask[3] = saturate(poiMods.globalMask[3] + _GlobalMaskSlider_3);
+					poiMods.globalMask[4] = saturate(poiMods.globalMask[4] + _GlobalMaskSlider_4);
+					poiMods.globalMask[5] = saturate(poiMods.globalMask[5] + _GlobalMaskSlider_5);
+					poiMods.globalMask[6] = saturate(poiMods.globalMask[6] + _GlobalMaskSlider_6);
+					poiMods.globalMask[7] = saturate(poiMods.globalMask[7] + _GlobalMaskSlider_7);
+					poiMods.globalMask[8] = saturate(poiMods.globalMask[8] + _GlobalMaskSlider_8);
+					poiMods.globalMask[9] = saturate(poiMods.globalMask[9] + _GlobalMaskSlider_9);
+					poiMods.globalMask[10] = saturate(poiMods.globalMask[10] + _GlobalMaskSlider_10);
+					poiMods.globalMask[11] = saturate(poiMods.globalMask[11] + _GlobalMaskSlider_11);
+					poiMods.globalMask[12] = saturate(poiMods.globalMask[12] + _GlobalMaskSlider_12);
+					poiMods.globalMask[13] = saturate(poiMods.globalMask[13] + _GlobalMaskSlider_13);
+					poiMods.globalMask[14] = saturate(poiMods.globalMask[14] + _GlobalMaskSlider_14);
+					poiMods.globalMask[15] = saturate(poiMods.globalMask[15] + _GlobalMaskSlider_15);
+				}
+				//endex
+				//ifex _GlobalMaskOptionsType!=1
+				if (_GlobalMaskOptionsType == 1)
+				{
+					poiMods.globalMask[0] = lerp(_GlobalMaskMinMaxSlider_0.x, _GlobalMaskMinMaxSlider_0.y, poiMods.globalMask[0]);
+					poiMods.globalMask[1] = lerp(_GlobalMaskMinMaxSlider_1.x, _GlobalMaskMinMaxSlider_1.y, poiMods.globalMask[1]);
+					poiMods.globalMask[2] = lerp(_GlobalMaskMinMaxSlider_2.x, _GlobalMaskMinMaxSlider_2.y, poiMods.globalMask[2]);
+					poiMods.globalMask[3] = lerp(_GlobalMaskMinMaxSlider_3.x, _GlobalMaskMinMaxSlider_3.y, poiMods.globalMask[3]);
+					poiMods.globalMask[4] = lerp(_GlobalMaskMinMaxSlider_4.x, _GlobalMaskMinMaxSlider_4.y, poiMods.globalMask[4]);
+					poiMods.globalMask[5] = lerp(_GlobalMaskMinMaxSlider_5.x, _GlobalMaskMinMaxSlider_5.y, poiMods.globalMask[5]);
+					poiMods.globalMask[6] = lerp(_GlobalMaskMinMaxSlider_6.x, _GlobalMaskMinMaxSlider_6.y, poiMods.globalMask[6]);
+					poiMods.globalMask[7] = lerp(_GlobalMaskMinMaxSlider_7.x, _GlobalMaskMinMaxSlider_7.y, poiMods.globalMask[7]);
+					poiMods.globalMask[8] = lerp(_GlobalMaskMinMaxSlider_8.x, _GlobalMaskMinMaxSlider_8.y, poiMods.globalMask[8]);
+					poiMods.globalMask[9] = lerp(_GlobalMaskMinMaxSlider_9.x, _GlobalMaskMinMaxSlider_9.y, poiMods.globalMask[9]);
+					poiMods.globalMask[10] = lerp(_GlobalMaskMinMaxSlider_10.x, _GlobalMaskMinMaxSlider_10.y, poiMods.globalMask[10]);
+					poiMods.globalMask[11] = lerp(_GlobalMaskMinMaxSlider_11.x, _GlobalMaskMinMaxSlider_11.y, poiMods.globalMask[11]);
+					poiMods.globalMask[12] = lerp(_GlobalMaskMinMaxSlider_12.x, _GlobalMaskMinMaxSlider_12.y, poiMods.globalMask[12]);
+					poiMods.globalMask[13] = lerp(_GlobalMaskMinMaxSlider_13.x, _GlobalMaskMinMaxSlider_13.y, poiMods.globalMask[13]);
+					poiMods.globalMask[14] = lerp(_GlobalMaskMinMaxSlider_14.x, _GlobalMaskMinMaxSlider_14.y, poiMods.globalMask[14]);
+					poiMods.globalMask[15] = lerp(_GlobalMaskMinMaxSlider_15.x, _GlobalMaskMinMaxSlider_15.y, poiMods.globalMask[15]);
+				}
+				//endex
+				//ifex _GlobalMaskOptionsType!=2
+				if (_GlobalMaskOptionsType == 2)
+				{
+					if (_GlobalMaskToggleOn_0 >= 0.5)  poiMods.globalMask[0] = 1;
+					if (_GlobalMaskToggleOn_1 >= 0.5)  poiMods.globalMask[1] = 1;
+					if (_GlobalMaskToggleOn_2 >= 0.5)  poiMods.globalMask[2] = 1;
+					if (_GlobalMaskToggleOn_3 >= 0.5)  poiMods.globalMask[3] = 1;
+					if (_GlobalMaskToggleOn_4 >= 0.5)  poiMods.globalMask[4] = 1;
+					if (_GlobalMaskToggleOn_5 >= 0.5)  poiMods.globalMask[5] = 1;
+					if (_GlobalMaskToggleOn_6 >= 0.5)  poiMods.globalMask[6] = 1;
+					if (_GlobalMaskToggleOn_7 >= 0.5)  poiMods.globalMask[7] = 1;
+					if (_GlobalMaskToggleOn_8 >= 0.5)  poiMods.globalMask[8] = 1;
+					if (_GlobalMaskToggleOn_9 >= 0.5)  poiMods.globalMask[9] = 1;
+					if (_GlobalMaskToggleOn_10 >= 0.5) poiMods.globalMask[10] = 1;
+					if (_GlobalMaskToggleOn_11 >= 0.5) poiMods.globalMask[11] = 1;
+					if (_GlobalMaskToggleOn_12 >= 0.5) poiMods.globalMask[12] = 1;
+					if (_GlobalMaskToggleOn_13 >= 0.5) poiMods.globalMask[13] = 1;
+					if (_GlobalMaskToggleOn_14 >= 0.5) poiMods.globalMask[14] = 1;
+					if (_GlobalMaskToggleOn_15 >= 0.5) poiMods.globalMask[15] = 1;
+					
+					poiMods.globalMask[0] *= (1 - _GlobalMaskToggleOff_0);
+					poiMods.globalMask[1] *= (1 - _GlobalMaskToggleOff_1);
+					poiMods.globalMask[2] *= (1 - _GlobalMaskToggleOff_2);
+					poiMods.globalMask[3] *= (1 - _GlobalMaskToggleOff_3);
+					poiMods.globalMask[4] *= (1 - _GlobalMaskToggleOff_4);
+					poiMods.globalMask[5] *= (1 - _GlobalMaskToggleOff_5);
+					poiMods.globalMask[6] *= (1 - _GlobalMaskToggleOff_6);
+					poiMods.globalMask[7] *= (1 - _GlobalMaskToggleOff_7);
+					poiMods.globalMask[8] *= (1 - _GlobalMaskToggleOff_8);
+					poiMods.globalMask[9] *= (1 - _GlobalMaskToggleOff_9);
+					poiMods.globalMask[10] *= (1 - _GlobalMaskToggleOff_10);
+					poiMods.globalMask[11] *= (1 - _GlobalMaskToggleOff_11);
+					poiMods.globalMask[12] *= (1 - _GlobalMaskToggleOff_12);
+					poiMods.globalMask[13] *= (1 - _GlobalMaskToggleOff_13);
+					poiMods.globalMask[14] *= (1 - _GlobalMaskToggleOff_14);
+					poiMods.globalMask[15] *= (1 - _GlobalMaskToggleOff_15);
+				}
+				//endex
+				
+			}
+			//endex
+			
+			//ifex _GlobalMaskModifiersDistanceEnable==0
+			half customDistanceBlend(half base, half blend, half blendType)
+			{
+				switch(blendType)
+				{
+					case 0: { return blendNormal(base, blend); break; }
+					case 2: { return blendMultiply(base, blend); break; }
+					default: { return 0; break; }
+				}
+			}
+			
+			void handleGlobalMaskDistance(int index, bool enable, bool type, float minAlpha, float maxAlpha, float min, float max, int blendType, in PoiMesh poiMesh, inout PoiMods poiMods)
+			{
+				if (enable)
+				{
+					float3 position = type ? poiMesh.worldPos : poiMesh.objectPosition;
+					float val = lerp(minAlpha, maxAlpha, smoothstep(min, max, distance(position, getCameraPosition())));
+					poiMods.globalMask[index] = saturate(customDistanceBlend(poiMods.globalMask[index], val, blendType));
+				}
+			}
+			//endex
+			
+			void ApplyGlobalMaskModifiers(in PoiMesh poiMesh, inout PoiMods poiMods, in PoiCam poiCam)
+			{
+				//ifex _GlobalMaskModifiersBackfaceEnable==0
+				if (_GlobalMaskModifiersBackfaceEnable >= 0.5)
+				{
+					float facingMode = saturate(poiMesh.isFrontFace) + 1;
+					// _GlobalMaskBackface is 0 for ignore, 1 for back only, 2 for front only
+					poiMods.globalMask[0] *= _GlobalMaskBackface_0 == 0 ? 1 : (facingMode == (_GlobalMaskBackface_0));
+					poiMods.globalMask[1] *= _GlobalMaskBackface_1 == 0 ? 1 : (facingMode == (_GlobalMaskBackface_1));
+					poiMods.globalMask[2] *= _GlobalMaskBackface_2 == 0 ? 1 : (facingMode == (_GlobalMaskBackface_2));
+					poiMods.globalMask[3] *= _GlobalMaskBackface_3 == 0 ? 1 : (facingMode == (_GlobalMaskBackface_3));
+					poiMods.globalMask[4] *= _GlobalMaskBackface_4 == 0 ? 1 : (facingMode == (_GlobalMaskBackface_4));
+					poiMods.globalMask[5] *= _GlobalMaskBackface_5 == 0 ? 1 : (facingMode == (_GlobalMaskBackface_5));
+					poiMods.globalMask[6] *= _GlobalMaskBackface_6 == 0 ? 1 : (facingMode == (_GlobalMaskBackface_6));
+					poiMods.globalMask[7] *= _GlobalMaskBackface_7 == 0 ? 1 : (facingMode == (_GlobalMaskBackface_7));
+					poiMods.globalMask[8] *= _GlobalMaskBackface_8 == 0 ? 1 : (facingMode == (_GlobalMaskBackface_8));
+					poiMods.globalMask[9] *= _GlobalMaskBackface_9 == 0 ? 1 : (facingMode == (_GlobalMaskBackface_9));
+					poiMods.globalMask[10] *= _GlobalMaskBackface_10 == 0 ? 1 : (facingMode == (_GlobalMaskBackface_10));
+					poiMods.globalMask[11] *= _GlobalMaskBackface_11 == 0 ? 1 : (facingMode == (_GlobalMaskBackface_11));
+					poiMods.globalMask[12] *= _GlobalMaskBackface_12 == 0 ? 1 : (facingMode == (_GlobalMaskBackface_12));
+					poiMods.globalMask[13] *= _GlobalMaskBackface_13 == 0 ? 1 : (facingMode == (_GlobalMaskBackface_13));
+					poiMods.globalMask[14] *= _GlobalMaskBackface_14 == 0 ? 1 : (facingMode == (_GlobalMaskBackface_14));
+					poiMods.globalMask[15] *= _GlobalMaskBackface_15 == 0 ? 1 : (facingMode == (_GlobalMaskBackface_15));
+				}
+				//endex
+				
+				//ifex _GlobalMaskModifiersMirrorEnable==0
+				if (_GlobalMaskModifiersMirrorEnable >= 0.5)
+				{
+					float mirrorMode = 0;
+					if (_GlobalMaskMirrorVisibilityMode == 1) // VRC
+					mirrorMode = VRCMirrorMode() > 0;
+					else // Generic (CVR, etc)
+					mirrorMode = IsInMirror();
+					
+					mirrorMode += 1;
+					// _GlobalMaskMirror is 0 for ignore, 1 for outside mirror only, 2 for in mirror only
+					poiMods.globalMask[0] *= _GlobalMaskMirror_0 == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_0));
+					poiMods.globalMask[1] *= _GlobalMaskMirror_1 == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_1));
+					poiMods.globalMask[2] *= _GlobalMaskMirror_2 == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_2));
+					poiMods.globalMask[3] *= _GlobalMaskMirror_3 == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_3));
+					poiMods.globalMask[4] *= _GlobalMaskMirror_4 == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_4));
+					poiMods.globalMask[5] *= _GlobalMaskMirror_5 == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_5));
+					poiMods.globalMask[6] *= _GlobalMaskMirror_6 == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_6));
+					poiMods.globalMask[7] *= _GlobalMaskMirror_7 == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_7));
+					poiMods.globalMask[8] *= _GlobalMaskMirror_8 == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_8));
+					poiMods.globalMask[9] *= _GlobalMaskMirror_9 == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_9));
+					poiMods.globalMask[10] *= _GlobalMaskMirror_10 == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_10));
+					poiMods.globalMask[11] *= _GlobalMaskMirror_11 == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_11));
+					poiMods.globalMask[12] *= _GlobalMaskMirror_12 == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_12));
+					poiMods.globalMask[13] *= _GlobalMaskMirror_13 == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_13));
+					poiMods.globalMask[14] *= _GlobalMaskMirror_14 == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_14));
+					poiMods.globalMask[15] *= _GlobalMaskMirror_15 == 0 ? 1 : (mirrorMode == (_GlobalMaskMirror_15));
+				}
+				//endex
+				
+				//ifex _GlobalMaskModifiersCameraEnable==0
+				if (_GlobalMaskModifiersCameraEnable >= 0.5)
+				{
+					float isCamera = VRCCameraMode() > 0;
+					isCamera += 1;
+					// _GlobalMaskCamera is 0 for ignore, 1 for outside camera only, 2 for in camera only
+					poiMods.globalMask[0] *= _GlobalMaskCamera_0 == 0 ? 1 : (isCamera == (_GlobalMaskCamera_0));
+					poiMods.globalMask[1] *= _GlobalMaskCamera_1 == 0 ? 1 : (isCamera == (_GlobalMaskCamera_1));
+					poiMods.globalMask[2] *= _GlobalMaskCamera_2 == 0 ? 1 : (isCamera == (_GlobalMaskCamera_2));
+					poiMods.globalMask[3] *= _GlobalMaskCamera_3 == 0 ? 1 : (isCamera == (_GlobalMaskCamera_3));
+					poiMods.globalMask[4] *= _GlobalMaskCamera_4 == 0 ? 1 : (isCamera == (_GlobalMaskCamera_4));
+					poiMods.globalMask[5] *= _GlobalMaskCamera_5 == 0 ? 1 : (isCamera == (_GlobalMaskCamera_5));
+					poiMods.globalMask[6] *= _GlobalMaskCamera_6 == 0 ? 1 : (isCamera == (_GlobalMaskCamera_6));
+					poiMods.globalMask[7] *= _GlobalMaskCamera_7 == 0 ? 1 : (isCamera == (_GlobalMaskCamera_7));
+					poiMods.globalMask[8] *= _GlobalMaskCamera_8 == 0 ? 1 : (isCamera == (_GlobalMaskCamera_8));
+					poiMods.globalMask[9] *= _GlobalMaskCamera_9 == 0 ? 1 : (isCamera == (_GlobalMaskCamera_9));
+					poiMods.globalMask[10] *= _GlobalMaskCamera_10 == 0 ? 1 : (isCamera == (_GlobalMaskCamera_10));
+					poiMods.globalMask[11] *= _GlobalMaskCamera_11 == 0 ? 1 : (isCamera == (_GlobalMaskCamera_11));
+					poiMods.globalMask[12] *= _GlobalMaskCamera_12 == 0 ? 1 : (isCamera == (_GlobalMaskCamera_12));
+					poiMods.globalMask[13] *= _GlobalMaskCamera_13 == 0 ? 1 : (isCamera == (_GlobalMaskCamera_13));
+					poiMods.globalMask[14] *= _GlobalMaskCamera_14 == 0 ? 1 : (isCamera == (_GlobalMaskCamera_14));
+					poiMods.globalMask[15] *= _GlobalMaskCamera_15 == 0 ? 1 : (isCamera == (_GlobalMaskCamera_15));
+				}
+				//endex
+				//ifex _GlobalMaskModifiersDistanceEnable==0
+				if (_GlobalMaskModifiersDistanceEnable >= 0.5)
+				{
+					//ifex _GlobalMaskDistanceEnable_0==0
+					handleGlobalMaskDistance(0, _GlobalMaskDistanceEnable_0, _GlobalMaskDistanceType_0, _GlobalMaskDistanceMinAlpha_0, _GlobalMaskDistanceMaxAlpha_0, _GlobalMaskDistanceMin_0, _GlobalMaskDistanceMax_0, _GlobalMaskDistanceBlendType_0, poiMesh, poiMods);
+					//endex
+					//ifex _GlobalMaskDistanceEnable_1==0
+					handleGlobalMaskDistance(1, _GlobalMaskDistanceEnable_1, _GlobalMaskDistanceType_1, _GlobalMaskDistanceMinAlpha_1, _GlobalMaskDistanceMaxAlpha_1, _GlobalMaskDistanceMin_1, _GlobalMaskDistanceMax_1, _GlobalMaskDistanceBlendType_1, poiMesh, poiMods);
+					//endex
+					//ifex _GlobalMaskDistanceEnable_2==0
+					handleGlobalMaskDistance(2, _GlobalMaskDistanceEnable_2, _GlobalMaskDistanceType_2, _GlobalMaskDistanceMinAlpha_2, _GlobalMaskDistanceMaxAlpha_2, _GlobalMaskDistanceMin_2, _GlobalMaskDistanceMax_2, _GlobalMaskDistanceBlendType_2, poiMesh, poiMods);
+					//endex
+					//ifex _GlobalMaskDistanceEnable_3==0
+					handleGlobalMaskDistance(3, _GlobalMaskDistanceEnable_3, _GlobalMaskDistanceType_3, _GlobalMaskDistanceMinAlpha_3, _GlobalMaskDistanceMaxAlpha_3, _GlobalMaskDistanceMin_3, _GlobalMaskDistanceMax_3, _GlobalMaskDistanceBlendType_3, poiMesh, poiMods);
+					//endex
+					//ifex _GlobalMaskDistanceEnable_4==0
+					handleGlobalMaskDistance(4, _GlobalMaskDistanceEnable_4, _GlobalMaskDistanceType_4, _GlobalMaskDistanceMinAlpha_4, _GlobalMaskDistanceMaxAlpha_4, _GlobalMaskDistanceMin_4, _GlobalMaskDistanceMax_4, _GlobalMaskDistanceBlendType_4, poiMesh, poiMods);
+					//endex
+					//ifex _GlobalMaskDistanceEnable_5==0
+					handleGlobalMaskDistance(5, _GlobalMaskDistanceEnable_5, _GlobalMaskDistanceType_5, _GlobalMaskDistanceMinAlpha_5, _GlobalMaskDistanceMaxAlpha_5, _GlobalMaskDistanceMin_5, _GlobalMaskDistanceMax_5, _GlobalMaskDistanceBlendType_5, poiMesh, poiMods);
+					//endex
+					//ifex _GlobalMaskDistanceEnable_6==0
+					handleGlobalMaskDistance(6, _GlobalMaskDistanceEnable_6, _GlobalMaskDistanceType_6, _GlobalMaskDistanceMinAlpha_6, _GlobalMaskDistanceMaxAlpha_6, _GlobalMaskDistanceMin_6, _GlobalMaskDistanceMax_6, _GlobalMaskDistanceBlendType_6, poiMesh, poiMods);
+					//endex
+					//ifex _GlobalMaskDistanceEnable_7==0
+					handleGlobalMaskDistance(7, _GlobalMaskDistanceEnable_7, _GlobalMaskDistanceType_7, _GlobalMaskDistanceMinAlpha_7, _GlobalMaskDistanceMaxAlpha_7, _GlobalMaskDistanceMin_7, _GlobalMaskDistanceMax_7, _GlobalMaskDistanceBlendType_7, poiMesh, poiMods);
+					//endex
+					//ifex _GlobalMaskDistanceEnable_8==0
+					handleGlobalMaskDistance(8, _GlobalMaskDistanceEnable_8, _GlobalMaskDistanceType_8, _GlobalMaskDistanceMinAlpha_8, _GlobalMaskDistanceMaxAlpha_8, _GlobalMaskDistanceMin_8, _GlobalMaskDistanceMax_8, _GlobalMaskDistanceBlendType_8, poiMesh, poiMods);
+					//endex
+					//ifex _GlobalMaskDistanceEnable_9==0
+					handleGlobalMaskDistance(9, _GlobalMaskDistanceEnable_9, _GlobalMaskDistanceType_9, _GlobalMaskDistanceMinAlpha_9, _GlobalMaskDistanceMaxAlpha_9, _GlobalMaskDistanceMin_9, _GlobalMaskDistanceMax_9, _GlobalMaskDistanceBlendType_9, poiMesh, poiMods);
+					//endex
+					//ifex _GlobalMaskDistanceEnable_10==0
+					handleGlobalMaskDistance(10, _GlobalMaskDistanceEnable_10, _GlobalMaskDistanceType_10, _GlobalMaskDistanceMinAlpha_10, _GlobalMaskDistanceMaxAlpha_10, _GlobalMaskDistanceMin_10, _GlobalMaskDistanceMax_10, _GlobalMaskDistanceBlendType_10, poiMesh, poiMods);
+					//endex
+					//ifex _GlobalMaskDistanceEnable_11==0
+					handleGlobalMaskDistance(11, _GlobalMaskDistanceEnable_11, _GlobalMaskDistanceType_11, _GlobalMaskDistanceMinAlpha_11, _GlobalMaskDistanceMaxAlpha_11, _GlobalMaskDistanceMin_11, _GlobalMaskDistanceMax_11, _GlobalMaskDistanceBlendType_11, poiMesh, poiMods);
+					//endex
+					//ifex _GlobalMaskDistanceEnable_12==0
+					handleGlobalMaskDistance(12, _GlobalMaskDistanceEnable_12, _GlobalMaskDistanceType_12, _GlobalMaskDistanceMinAlpha_12, _GlobalMaskDistanceMaxAlpha_12, _GlobalMaskDistanceMin_12, _GlobalMaskDistanceMax_12, _GlobalMaskDistanceBlendType_12, poiMesh, poiMods);
+					//endex
+					//ifex _GlobalMaskDistanceEnable_13==0
+					handleGlobalMaskDistance(13, _GlobalMaskDistanceEnable_13, _GlobalMaskDistanceType_13, _GlobalMaskDistanceMinAlpha_13, _GlobalMaskDistanceMaxAlpha_13, _GlobalMaskDistanceMin_13, _GlobalMaskDistanceMax_13, _GlobalMaskDistanceBlendType_13, poiMesh, poiMods);
+					//endex
+					//ifex _GlobalMaskDistanceEnable_14==0
+					handleGlobalMaskDistance(14, _GlobalMaskDistanceEnable_14, _GlobalMaskDistanceType_14, _GlobalMaskDistanceMinAlpha_14, _GlobalMaskDistanceMaxAlpha_14, _GlobalMaskDistanceMin_14, _GlobalMaskDistanceMax_14, _GlobalMaskDistanceBlendType_14, poiMesh, poiMods);
+					//endex
+					//ifex _GlobalMaskDistanceEnable_15==0
+					handleGlobalMaskDistance(15, _GlobalMaskDistanceEnable_15, _GlobalMaskDistanceType_15, _GlobalMaskDistanceMinAlpha_15, _GlobalMaskDistanceMaxAlpha_15, _GlobalMaskDistanceMin_15, _GlobalMaskDistanceMax_15, _GlobalMaskDistanceBlendType_15, poiMesh, poiMods);
+					//endex
+					
+				}
+				//endex
+				
+			}
+			
+			//ifex _GlobalMaskVertexColorRed==0 && _GlobalMaskVertexColorGreen==0 && _GlobalMaskVertexColorBlue==0 && _GlobalMaskVertexColorAlpha==0 && isNotAnimated(_GlobalMaskVertexColorRed) && isNotAnimated(_GlobalMaskVertexColorGreen) && isNotAnimated(_GlobalMaskVertexColorBlue) && isNotAnimated(_GlobalMaskVertexColorAlpha)
+			void ApplyGlobalMaskVertexColors(in PoiMesh poiMesh, inout PoiMods poiMods)
+			{
+				float4 vcol = poiMesh.vertexColor;
+				if (_GlobalMaskVertexColorLinearSpace >= 0.5)
+				{
+					vcol.rgb = GammaToLinearSpace(vcol.rgb);
+				}
+				//ifex _GlobalMaskVertexColorRed==0 && isNotAnimated(_GlobalMaskVertexColorRed)
+				if (_GlobalMaskVertexColorRed > 0)
+				{
+					applyToGlobalMask(poiMods, _GlobalMaskVertexColorRed - 1, _GlobalMaskVertexColorRedBlendType, vcol.r);
+				}
+				//endex
+				//ifex _GlobalMaskVertexColorGreen==0 && isNotAnimated(_GlobalMaskVertexColorGreen)
+				if (_GlobalMaskVertexColorGreen > 0)
+				{
+					applyToGlobalMask(poiMods, _GlobalMaskVertexColorGreen - 1, _GlobalMaskVertexColorGreenBlendType, vcol.g);
+				}
+				//endex
+				//ifex _GlobalMaskVertexColorBlue==0 && isNotAnimated(_GlobalMaskVertexColorBlue)
+				if (_GlobalMaskVertexColorBlue > 0)
+				{
+					applyToGlobalMask(poiMods, _GlobalMaskVertexColorBlue - 1, _GlobalMaskVertexColorBlueBlendType, vcol.b);
+				}
+				//endex
+				//ifex _GlobalMaskVertexColorAlpha==0 && isNotAnimated(_GlobalMaskVertexColorAlpha)
+				if (_GlobalMaskVertexColorAlpha > 0)
+				{
+					applyToGlobalMask(poiMods, _GlobalMaskVertexColorAlpha - 1, _GlobalMaskVertexColorAlphaBlendType, vcol.a);
+				}
+				//endex
+			}
+			//endex
+			
+			float2 applyUVSettings(float2 uv, float2 tiling, float2 offset, float angle, float2 pan, float rotate)
+			{
+				uv = uv * tiling + offset;
+				
+				float angleRad = angle * (UNITY_PI / 180.0);
+				float rotateRad = rotate * (UNITY_PI / 180.0);
+				float totalAngle = angleRad + rotateRad * POI_TIME.y;
+				
+				if (totalAngle != 0)
+				{
+					float2 pivot = float2(0.5, 0.5);
+					float cosA = cos(totalAngle);
+					float sinA = sin(totalAngle);
+					uv -= pivot;
+					uv = float2(
+					uv.x * cosA - uv.y * sinA,
+					uv.x * sinA + uv.y * cosA
+					);
+					uv += pivot;
+				}
+				
+				uv += pan * POI_TIME.y;
+				
+				return uv;
+			}
+			
+			float2 calculatePolarCoordinate(in PoiMesh poiMesh)
+			{
+				float2 delta = poiMesh.uv[_PolarUV] - _PolarCenter;
+				float dist = length(delta);
+				float radius;
+				
+				// Calculate radius based on mode
+				UNITY_BRANCH
+				if (_PolarMode == 0) // Standard
+				{
+					radius = dist * 2 * _PolarRadialScale;
+				}
+				else if (_PolarMode == 1) // Log Polar - preserves texture scale
+				{
+					radius = log(dist + 0.001) * _PolarRadialScale + 1;
+				}
+				else // Square Polar
+				{
+					radius = max(abs(delta.x), abs(delta.y)) * 2 * _PolarRadialScale;
+				}
+				
+				// Calculate angle
+				float angle = atan2(delta.x, delta.y);
+				float phi = angle / (UNITY_PI * 2.0);
+				float phi_frac = frac(phi);
+				angle = fwidth(phi) - 0.0001 < fwidth(phi_frac) ? phi : phi_frac;
+				angle *= _PolarLengthScale;
+				
+				return float2(radius, angle + dist * _PolarSpiralPower);
+			}
+			
+			float2 MonoPanoProjection(float3 coords)
+			{
+				float3 normalizedCoords = normalize(coords);
+				float latitude = acos(normalizedCoords.y);
+				float longitude = atan2(normalizedCoords.z, normalizedCoords.x);
+				float phi = longitude / (UNITY_PI * 2.0);
+				float phi_frac = frac(phi);
+				longitude = fwidth(phi) - 0.0001 < fwidth(phi_frac) ? phi : phi_frac;
+				longitude *= 2;
+				float2 sphereCoords = float2(longitude, latitude) * float2(1.0, 1.0 / UNITY_PI);
+				return float2(1.0, 1.0) - sphereCoords;
+			}
+			
+			float2 StereoPanoProjection(float3 coords, int stereoLayout)
+			{
+				float3 normalizedCoords = normalize(coords);
+				float latitude = acos(normalizedCoords.y);
+				float longitude = atan2(normalizedCoords.z, normalizedCoords.x);
+				float phi = longitude / (UNITY_PI * 2.0);
+				float phi_frac = frac(phi);
+				longitude = fwidth(phi) - 0.0001 < fwidth(phi_frac) ? phi : phi_frac;
+				longitude *= 2;
+				float2 sphereCoords = float2(longitude, latitude) * float2(0.5, 1.0 / UNITY_PI);
+				sphereCoords = float2(0.5, 1.0) - sphereCoords;
+				if (stereoLayout == 2)
+				return float2(sphereCoords.x * 0.5 + unity_StereoEyeIndex * 0.5, sphereCoords.y);
+				return float2(sphereCoords.x, sphereCoords.y * 0.5 + (1 - unity_StereoEyeIndex) * 0.5);
+			}
+			
+			float2 calculateWorldUV(in PoiMesh poiMesh)
+			{
+				return float2(_UVModWorldPos0 != 3 ? poiMesh.worldPos[ _UVModWorldPos0] : 0.0f, _UVModWorldPos1 != 3 ? poiMesh.worldPos[_UVModWorldPos1] : 0.0f);
+			}
+			
+			float2 calculatelocalUV(in PoiMesh poiMesh)
+			{
+				float localUVs[8];
+				localUVs[0] = poiMesh.localPos.x;
+				localUVs[1] = poiMesh.localPos.y;
+				localUVs[2] = poiMesh.localPos.z;
+				localUVs[3] = 0;
+				localUVs[4] = poiMesh.vertexColor.r;
+				localUVs[5] = poiMesh.vertexColor.g;
+				localUVs[6] = poiMesh.vertexColor.b;
+				localUVs[7] = poiMesh.vertexColor.a;
+				
+				return float2(localUVs[_UVModLocalPos0],localUVs[_UVModLocalPos1]);
+			}
+			
+			float2 calculatePanosphereUV(in PoiMesh poiMesh, int panoUseBothEyes, int stereoLayout)
+			{
+				bool useCenterEye = panoUseBothEyes <= 0;
+				float3 panoCameraPosition = getCameraPosition(useCenterEye);
+				
+				float3 viewDirection = normalize(poiMesh.worldPos.xyz - panoCameraPosition);
+				if (stereoLayout != 0)
+				return StereoPanoProjection(viewDirection, stereoLayout);
+				else
+				return MonoPanoProjection(viewDirection);
+			}
+			
+			float2 calculateViewNormalUV(in PoiMesh poiMesh, in PoiCam poiCam)
+			{
+				float3 worldViewUp = normalize(float3(0, 1, 0) - poiCam.eyeViewDir * dot(poiCam.eyeViewDir, float3(0, 1, 0)));
+				float3 worldViewRight = cross(poiCam.eyeViewDir, worldViewUp);
+				return float2(dot(worldViewRight, poiMesh.normals[0]), dot(worldViewUp, poiMesh.normals[0])) * 0.5 + 0.5;
+			}
+			
+			float2 calculateScreenSpaceUV(float4 clipPos)
+			{
+				float4 poiScreenSpaceUV = poiTransformClipSpacetoScreenSpaceFrag(clipPos);
+				float2 screenUV = poiScreenSpaceUV.xy / poiScreenSpaceUV.w;
+				
+				#ifdef UNITY_SINGLE_PASS_STEREO
+				screenUV.x -= unity_StereoEyeIndex;
+				#endif
+				
+				// Per-eye optical center (projection principal point) in UV. Centering the square
+				// here instead of the raw screen center (0.5) anchors the texture center to the
+				// same forward direction in both eyes so it FUSES in stereo.
+				float2 poiEyeOpticalCenter = 0.5 - 0.5 * float2(UNITY_MATRIX_P._m02, UNITY_MATRIX_P._m12);
+				#if UNITY_UV_STARTS_AT_TOP
+				poiEyeOpticalCenter.y = 1.0 - poiEyeOpticalCenter.y;
+				#endif
+				
+				// Stretch the long axis from eye space so the UV stays square.
+				float poiViewAspect = abs(UNITY_MATRIX_P._m11) / max(abs(UNITY_MATRIX_P._m00), 0.000001);
+				float2 poiScreenSquareScale = float2(1.0 / max(poiViewAspect, 1.0), min(poiViewAspect, 1.0));
+				
+				screenUV = (screenUV - poiEyeOpticalCenter) / poiScreenSquareScale + 0.5;
+				
+				return screenUV;
+			}
+			
+			//ifex _EnableDistortion==0
+			#ifdef USER_LUT
+			float2 gerstnerWaveDisplacement(float2 pos, float2 dir, float amplitude, float wavelength, float speedMult, float steepness, float time)
+			{
+				float w = UNITY_TWO_PI / wavelength;
+				float phase = _DistortionGerstnerSpeed * speedMult * w;
+				float theta = w * dot(dir, pos) + phase * time;
+				return steepness * amplitude * dir * cos(theta);
+			}
+			
+			float2 computeGerstnerFlow(float2 pos, float time)
+			{
+				float2 flow = 0;
+				float deg2rad = UNITY_PI / 180.0;
+				float2 dir1 = float2(cos(_DistortionGerstnerWave1.x * deg2rad), sin(_DistortionGerstnerWave1.x * deg2rad));
+				float2 dir2 = float2(cos(_DistortionGerstnerWave2.x * deg2rad), sin(_DistortionGerstnerWave2.x * deg2rad));
+				float2 dir3 = float2(cos(_DistortionGerstnerWave3.x * deg2rad), sin(_DistortionGerstnerWave3.x * deg2rad));
+				float2 dir4 = float2(cos(_DistortionGerstnerWave4.x * deg2rad), sin(_DistortionGerstnerWave4.x * deg2rad));
+				flow += gerstnerWaveDisplacement(pos, dir1, _DistortionGerstnerWave1.y, _DistortionGerstnerWave1.z, _DistortionGerstnerWave1.w, _DistortionGerstnerSteepness, time);
+				flow += gerstnerWaveDisplacement(pos, dir2, _DistortionGerstnerWave2.y, _DistortionGerstnerWave2.z, _DistortionGerstnerWave2.w, _DistortionGerstnerSteepness, time);
+				flow += gerstnerWaveDisplacement(pos, dir3, _DistortionGerstnerWave3.y, _DistortionGerstnerWave3.z, _DistortionGerstnerWave3.w, _DistortionGerstnerSteepness, time);
+				flow += gerstnerWaveDisplacement(pos, dir4, _DistortionGerstnerWave4.y, _DistortionGerstnerWave4.z, _DistortionGerstnerWave4.w, _DistortionGerstnerSteepness, time);
+				return flow;
+			}
+			
+			float2 computeSimplexFlow(float2 pos, float time)
+			{
+				float2 samplePos = pos + _DistortionPanSpeed * time;
+				float n1 = snoise(samplePos + float2(time * _DistortionSimplexSpeed, 0));
+				float n2 = snoise(samplePos + float2(0, time * _DistortionSimplexSpeed) + 100);
+				return float2(n1, n2) * _DistortionSimplexStrength;
+			}
+			
+			// Voronoi noise
+			float2 poiUVD_voronoiHash(float2 p)
+			{
+				p = float2(dot(p, float2(127.1, 311.7)), dot(p, float2(269.5, 183.3)));
+				return frac(sin(p) * 43758.5453);
+			}
+			
+			float2 computeVoronoiFlow(float2 pos, float time)
+			{
+				float2 samplePos = pos + _DistortionPanSpeed * time;
+				float2 n = floor(samplePos);
+				float2 f = frac(samplePos);
+				float2 mg, mr;
+				float md = 8.0;
+				for (int j = -1; j <= 1; j++)
+				{
+					for (int i = -1; i <= 1; i++)
+					{
+						float2 g = float2(float(i), float(j));
+						float2 o = poiUVD_voronoiHash(n + g);
+						o = 0.5 + 0.5 * sin(time * _DistortionVoronoiSpeed + 6.2831 * o);
+						float2 r = g + o - f;
+						float d = dot(r, r);
+						if (d < md)
+						{
+							md = d;
+							mr = r;
+							mg = g;
+						}
+					}
+				}
+				md = 8.0;
+				for (int j2 = -2; j2 <= 2; j2++)
+				{
+					for (int i2 = -2; i2 <= 2; i2++)
+					{
+						float2 g = mg + float2(float(i2), float(j2));
+						float2 o = poiUVD_voronoiHash(n + g);
+						o = 0.5 + 0.5 * sin(time * _DistortionVoronoiSpeed + 6.2831 * o);
+						float2 r = g + o - f;
+						if (dot(mr - r, mr - r) > 0.00001)
+						md = min(md, dot(0.5 * (mr + r), normalize(r - mr)));
+					}
+				}
+				float edge = md;
+				float2 flow = mr * lerp(1.0, edge, _DistortionVoronoiEdgeBlend);
+				return flow * _DistortionVoronoiStrength;
+			}
+			
+			// Curl noise (derived from simplex)
+			float2 computeCurlFlow(float2 pos, float time)
+			{
+				float2 samplePos = pos + _DistortionPanSpeed * time;
+				float eps = 0.01;
+				float n1 = snoise(samplePos + float2(eps, 0) + time * _DistortionCurlSpeed);
+				float n2 = snoise(samplePos - float2(eps, 0) + time * _DistortionCurlSpeed);
+				float n3 = snoise(samplePos + float2(0, eps) + time * _DistortionCurlSpeed);
+				float n4 = snoise(samplePos - float2(0, eps) + time * _DistortionCurlSpeed);
+				float2 curl = float2((n3 - n4) / (2.0 * eps), -(n1 - n2) / (2.0 * eps));
+				return curl * _DistortionCurlStrength;
+			}
+			
+			// FBM (Fractal Brownian Motion)
+			float2 computeFBMFlow(float2 pos, float time)
+			{
+				float2 samplePos = pos + _DistortionPanSpeed * time;
+				float2 flow = 0;
+				float amplitude = 1.0;
+				float frequency = 1.0;
+				float totalAmplitude = 0;
+				int octaveCount = min((int)_DistortionFBMOctaves, 8);
+				for (int i = 0; i < octaveCount; i++)
+				{
+					float2 p = samplePos * frequency + time * _DistortionFBMSpeed * (i + 1) * 0.5;
+					float n1 = snoise(p);
+					float n2 = snoise(p + 100);
+					flow += float2(n1, n2) * amplitude;
+					totalAmplitude += amplitude;
+					frequency *= _DistortionFBMLacunarity;
+					amplitude *= _DistortionFBMGain;
+				}
+				return (flow / totalAmplitude) * _DistortionFBMStrength;
+			}
+			
+			float2 distortedUV(in PoiMesh poiMesh)
+			{
+				#if defined(PROP_DISTORTIONMASK) || !defined(OPTIMIZER_ENABLED)
+				half distortionMask = POI2D_SAMPLER_PAN(_DistortionMask, _MainTex, poiMesh.uv[_DistortionMaskUV], _DistortionMaskPan)[_DistortionMaskChannel];
+				#else
+				half distortionMask = 1;
+				#endif
+				
+				float2 flowOffset = 0;
+				
+				UNITY_BRANCH
+				if (_DistortionMode == 0)
+				{
+					#if defined(PROP_DISTORTIONFLOWTEXTURE) || !defined(OPTIMIZER_ENABLED)
+					float4 flowVector = POI2D_SAMPLER_PAN(_DistortionFlowTexture, _MainTex, poiUV(poiMesh.uv[_DistortionFlowTextureUV], _DistortionFlowTexture_ST), _DistortionFlowTexturePan) * 2 - 1;
+					#else
+					float4 flowVector = -1;
+					#endif
+					
+					#if defined(PROP_DISTORTIONFLOWTEXTURE1) || !defined(OPTIMIZER_ENABLED)
+					float4 flowVector1 = POI2D_SAMPLER_PAN(_DistortionFlowTexture1, _MainTex, poiUV(poiMesh.uv[_DistortionFlowTexture1UV], _DistortionFlowTexture1_ST), _DistortionFlowTexture1Pan) * 2 - 1;
+					#else
+					float4 flowVector1 = -1;
+					#endif
+					
+					half distortionStrength = _DistortionStrength;
+					half distortionStrength1 = _DistortionStrength1;
+					
+					#ifdef POI_AUDIOLINK
+					UNITY_BRANCH
+					if (AudioLinkIsAvailable() && _EnableDistortionAudioLink >= 0.5 && _AudioLinkAnimToggle >= 0.5)
+					{
+						distortionStrength += lerp(_DistortionStrengthAudioLink.x, _DistortionStrengthAudioLink.y, AudioLinkData(uint2(0, uint(_DistortionStrengthAudioLinkBand))).r);
+						distortionStrength1 += lerp(_DistortionStrength1AudioLink.x, _DistortionStrength1AudioLink.y, AudioLinkData(uint2(0, uint(_DistortionStrength1AudioLinkBand))).r);
+					}
+					#endif
+					
+					flowVector *= distortionStrength;
+					flowVector1 *= distortionStrength1;
+					flowOffset = (flowVector.xy + flowVector1.xy) / 2;
+				}
+				else if (_DistortionMode == 1)
+				{
+					float2 samplePos = poiMesh.worldPos.xz * _DistortionTiling * _DistortionGerstnerScale + _DistortionPanSpeed * POI_TIME.y;
+					flowOffset = computeGerstnerFlow(samplePos, POI_TIME.y) * _DistortionGerstnerStrength;
+				}
+				else if (_DistortionMode == 2)
+				{
+					float2 samplePos = poiMesh.worldPos.xz * _DistortionTiling * _DistortionSimplexScale;
+					flowOffset = computeSimplexFlow(samplePos, POI_TIME.y);
+				}
+				else if (_DistortionMode == 3)
+				{
+					float2 samplePos = poiMesh.worldPos.xz * _DistortionTiling * _DistortionVoronoiScale;
+					flowOffset = computeVoronoiFlow(samplePos, POI_TIME.y);
+				}
+				else if (_DistortionMode == 4)
+				{
+					float2 samplePos = poiMesh.worldPos.xz * _DistortionTiling * _DistortionCurlScale;
+					flowOffset = computeCurlFlow(samplePos, POI_TIME.y);
+				}
+				else if (_DistortionMode == 5)
+				{
+					float2 samplePos = poiMesh.worldPos.xz * _DistortionTiling * _DistortionFBMScale;
+					flowOffset = computeFBMFlow(samplePos, POI_TIME.y);
+				}
+				
+				return poiMesh.uv[_DistortionUvToDistort] + flowOffset * distortionMask;
+			}
+			#endif
+			//endex
+			
+			//ifex _EnableUDIMDiscardOptions==0
+			#ifdef POI_UDIMDISCARD
+			#ifdef POI_PASS_LILFUR
+			void applyUDIMDiscard(in PoiGeoToFragLilFur i, in uint facing)
+			#else
+			void applyUDIMDiscard(in VertexOut i, in uint facing)
+			#endif
+			{
+				// UDIM Discaarad
+				if(_UDIMDiscardMode == 1) // Don't run if in vertex mode
+				{
+					float2 udim = floor(vertexUV(i, _UDIMDiscardUV));
+					
+					float4 UDIMDiscardRows[4];
+					UDIMDiscardRows[0] = float4(_UDIMDiscardRow0_0, _UDIMDiscardRow0_1, _UDIMDiscardRow0_2, _UDIMDiscardRow0_3);
+					UDIMDiscardRows[1] = float4(_UDIMDiscardRow1_0, _UDIMDiscardRow1_1, _UDIMDiscardRow1_2, _UDIMDiscardRow1_3);
+					UDIMDiscardRows[2] = float4(_UDIMDiscardRow2_0, _UDIMDiscardRow2_1, _UDIMDiscardRow2_2, _UDIMDiscardRow2_3);
+					UDIMDiscardRows[3] = float4(_UDIMDiscardRow3_0, _UDIMDiscardRow3_1, _UDIMDiscardRow3_2, _UDIMDiscardRow3_3);
+					
+					float shouldDiscard = shouldPerformUDIMDiscard(udim, UDIMDiscardRows);
+					
+					clip(shouldDiscard); // Clip if discarded
+				}
+				
+				// UDIM Face Discard
+				if(_EnableUDIMFaceDiscardOptions >= 0.5 && saturate(facing) == _UDIMFaceDiscardFace) // Run if Face Discard enabled & this is the face to discard
+				{
+					float2 faceUdim = floor(vertexUV(i, _UDIMFaceDiscardUV));
+					
+					float4 UDIMFaceDiscardRows[4];
+					UDIMFaceDiscardRows[0] = float4(_UDIMFaceDiscardRow0_0, _UDIMFaceDiscardRow0_1, _UDIMFaceDiscardRow0_2, _UDIMFaceDiscardRow0_3);
+					UDIMFaceDiscardRows[1] = float4(_UDIMFaceDiscardRow1_0, _UDIMFaceDiscardRow1_1, _UDIMFaceDiscardRow1_2, _UDIMFaceDiscardRow1_3);
+					UDIMFaceDiscardRows[2] = float4(_UDIMFaceDiscardRow2_0, _UDIMFaceDiscardRow2_1, _UDIMFaceDiscardRow2_2, _UDIMFaceDiscardRow2_3);
+					UDIMFaceDiscardRows[3] = float4(_UDIMFaceDiscardRow3_0, _UDIMFaceDiscardRow3_1, _UDIMFaceDiscardRow3_2, _UDIMFaceDiscardRow3_3);
+					
+					float shouldDiscard = shouldPerformUDIMDiscard(faceUdim, UDIMFaceDiscardRows);
+					
+					clip(shouldDiscard); // Clip if discarded
+				}
+				
+				return;
+			}
+			#endif
+			//endex
+			
+			//ifex _PoiParallax==0
+			#if defined(POI_PARALLAX) && (defined(PROP_HEIGHTMAP) || !defined(OPTIMIZER_ENABLED))
+			
+			float SampleHeightAnisotropic(
+			Texture2D heightMap,
+			float2 uv,
+			float2 dx,
+			float2 dy,
+			float mipBias,
+			float anisotropyScale
+			)
+			{
+				float mipScale = pow(2.0, mipBias);
+				dx *= mipScale;
+				dy *= mipScale;
+				
+				if (_ParallaxAnisotropic >= 0.5)
+				{
+					float2 dxScaled = dx * anisotropyScale;
+					float2 dyScaled = dy * anisotropyScale;
+					
+					//return tex2Dgrad(heightMap, uv, dxScaled, dyScaled).r;
+					return POI2D_SAMPLE_TEX2D_SAMPLERGRAD(_HeightMap, _MainTex, uv, dxScaled, dyScaled).r;
+				}
+				else
+				{
+					//return tex2Dgrad(heightMap, uv, dx, dy).r;
+					return POI2D_SAMPLE_TEX2D_SAMPLERGRAD(_HeightMap, _MainTex, uv, dx, dy).r;
+				}
+			}
+			
+			void CalculateAnisotropicDerivatives(
+			float2 baseUV,
+			float2 currentUV,
+			float2 baseDx,
+			float2 baseDy,
+			float parallaxStrength,
+			float viewDotNormal,
+			out float2 dx,
+			out float2 dy
+			)
+			{
+				float2 uvOffset = currentUV - baseUV;
+				float offsetLength = length(uvOffset);
+				
+				// More offset = more blur needed
+				float angleCompensation = 1.0 + (1.0 - viewDotNormal) * 2.0;
+				float anisotropicFactor = 1.0 + offsetLength * parallaxStrength * angleCompensation;
+				
+				dx = baseDx * anisotropicFactor;
+				dy = baseDy * anisotropicFactor;
+			}
+			
+			inline float2 ParallaxOcclusionMapping(
+			in PoiLight poiLight,
+			Texture2D heightMap,
+			in PoiMesh poiMesh,
+			inout PoiMods poiMods,
+			float3 worldViewDir,
+			float3 viewDirTan,
+			int minSamples,
+			int maxSamples,
+			float parallaxStrength,
+			float heightOffset,
+			float2 curvature
+			)
+			{
+				if (parallaxStrength <= 0.0) return poiMesh.uv[_ParallaxUV];
+				
+				// Check mask first - saves work if masked out
+				half heightMask = 1.0;
+				#if defined(PROP_HEIGHTMASK) || !defined(OPTIMIZER_ENABLED)
+				float2 maskUV = poiUV(poiMesh.uv[_HeightmaskUV], _Heightmask_ST) + _HeightmaskPan * POI_TIME.x;
+				half maskSample = POI2D_SAMPLER_PAN(_Heightmask, _linear_repeat, maskUV, float2(0, 0))[_HeightmaskChannel];
+				heightMask = _HeightmaskInvert ? 1.0 - maskSample : maskSample;
+				if (_HeightmaskGlobalMask > 0)
+				{
+					heightMask = maskBlend(heightMask, poiMods.globalMask[_HeightmaskGlobalMask - 1], _HeightmaskGlobalMaskBlendType);
+				}
+				#endif
+				
+				if (heightMask <= 0.0) return poiMesh.uv[_ParallaxUV];
+				
+				float2 baseUV = poiMesh.uv[_ParallaxUV];
+				float2 heightmapUV = poiUV(poiMesh.uv[_HeightMapUV], _HeightMap_ST);
+				
+				float2 baseDx = ddx(heightmapUV);
+				float2 baseDy = ddy(heightmapUV);
+				float2 dx = baseDx;
+				float2 dy = baseDy;
+				
+				// Fewer steps when looking straight down
+				half viewDotNormal = saturate(dot(poiMesh.normals[0], worldViewDir));
+				
+				float parallaxCamDist = distance(poiMesh.worldPos, _WorldSpaceCameraPos);
+				half parallaxLOD = saturate((parallaxCamDist - _ParallaxLOD.x) / max(_ParallaxLOD.y - _ParallaxLOD.x, 0.0001));
+				int lodMaxSamples = (int)lerp(maxSamples, minSamples, parallaxLOD);
+				
+				int numSteps = (int)lerp(lodMaxSamples, minSamples, viewDotNormal);
+				numSteps = max(numSteps, 1);
+				
+				half layerHeight = 1.0 / numSteps;
+				float viewDirZ = max(abs(viewDirTan.z), 0.001);
+				float2 offsetScale = parallaxStrength * heightMask * (viewDirTan.xy / viewDirZ);
+				float2 deltaUV = -offsetScale * layerHeight;
+				
+				float2 currentUV = baseUV + heightOffset * offsetScale;
+				half currentRayZ = 1.0 - heightOffset;
+				half currentHeight = 0.0;
+				
+				float2 prevUV = currentUV;
+				half prevRayZ = currentRayZ;
+				half prevHeight = 0.0;
+				
+				// Cone stepping lets us take bigger steps when far from surface
+				half coneRatio = _ParallaxRelaxedCone ? _ParallaxConeRatio : 1.0;
+				half currentConeRadius = 0.0;
+				half stepMultiplier = 1.0;
+				
+				bool intersectionFound = false;
+				for (int i = 0; i < numSteps && !intersectionFound; i++)
+				{
+					float2 uvOffset = currentUV - baseUV;
+					half curvatureEffect = dot(curvature, uvOffset * uvOffset);
+					half curvatureFactor = 1.0 - saturate(curvatureEffect);
+					
+					if (_ParallaxAnisotropic >= 0.5)
+					{
+						CalculateAnisotropicDerivatives(
+						baseUV, currentUV,
+						baseDx, baseDy,
+						parallaxStrength,
+						viewDotNormal,
+						dx, dy
+						);
+					}
+					
+					float2 sampleUV = heightmapUV + (uvOffset * _HeightMap_ST.xy) + _HeightMapPan * POI_TIME.x;
+					currentHeight = SampleHeightAnisotropic(
+					heightMap, sampleUV,
+					dx, dy,
+					_ParallaxMipBias,
+					_ParallaxAnisotropyScale
+					) * curvatureFactor;
+					
+					if (_ParallaxRelaxedCone >= 0.5)
+					{
+						currentConeRadius = currentRayZ * coneRatio * layerHeight;
+						half heightDifference = currentRayZ - currentHeight;
+						
+						if (heightDifference < currentConeRadius)
+						{
+							stepMultiplier = max(0.5, heightDifference / currentConeRadius);
+							
+							if (currentHeight > currentRayZ)
+							{
+								intersectionFound = true;
+							}
+						}
+						else
+						{
+							stepMultiplier = min(2.0, heightDifference / currentConeRadius);
+						}
+					}
+					else
+					{
+						if (currentHeight > currentRayZ)
+						{
+							intersectionFound = true;
+						}
+					}
+					
+					if (!intersectionFound)
+					{
+						prevUV = currentUV;
+						prevRayZ = currentRayZ;
+						prevHeight = currentHeight;
+						
+						float2 adaptiveDeltaUV = deltaUV * stepMultiplier;
+						currentUV += adaptiveDeltaUV;
+						
+						half curvatureCompensation = curvatureFactor * (1.0 + _CurvFix * 0.1);
+						currentRayZ -= layerHeight * stepMultiplier * curvatureCompensation;
+					}
+				}
+				
+				// Binary search to find exact intersection point
+				if (intersectionFound)
+				{
+					int binarySteps = (int)_ParallaxBinarySteps;
+					
+					float2 midUV = float2(0, 0);
+					half midHeight = 0;
+					half midRayZ = 0;
+					
+					for (int j = 0; j < binarySteps; j++)
+					{
+						half intersection;
+						
+						half denominator = prevHeight - currentHeight + currentRayZ - prevRayZ + 0.0001;
+						intersection = saturate((prevHeight - prevRayZ) / denominator);
+						
+						// Don't overshoot
+						intersection = lerp(0.25, 0.75, intersection);
+						
+						float2 testUV = lerp(prevUV, currentUV, intersection);
+						half testRayZ = lerp(prevRayZ, currentRayZ, intersection);
+						
+						float2 uvOffset = testUV - baseUV;
+						half curvatureEffect = dot(curvature, uvOffset * uvOffset);
+						half curvatureFactor = 1.0 - saturate(curvatureEffect);
+						
+						if (_ParallaxAnisotropic >= 0.5)
+						{
+							CalculateAnisotropicDerivatives(
+							baseUV, testUV,
+							baseDx, baseDy,
+							parallaxStrength,
+							viewDotNormal,
+							dx, dy
+							);
+						}
+						
+						float2 sampleUV = heightmapUV + (uvOffset * _HeightMap_ST.xy) + _HeightMapPan * POI_TIME.x;
+						half testHeight = SampleHeightAnisotropic(
+						heightMap, sampleUV,
+						dx, dy,
+						_ParallaxMipBias,
+						_ParallaxAnisotropyScale
+						) * curvatureFactor;
+						
+						if (j == 0)
+						{
+							midUV = testUV;
+							midHeight = testHeight;
+							midRayZ = testRayZ;
+						}
+						
+						if (testHeight > testRayZ)
+						{
+							currentUV = testUV;
+							currentHeight = testHeight;
+							currentRayZ = testRayZ;
+						}
+						else
+						{
+							prevUV = testUV;
+							prevHeight = testHeight;
+							prevRayZ = testRayZ;
+						}
+						
+						half error = abs(testHeight - testRayZ);
+						if (error < 0.001) break;
+					}
+				}
+				
+				float2 finalOffset = currentUV - baseUV;
+				float offsetLength = length(finalOffset);
+				float maxOffset = parallaxStrength * heightMask;
+				
+				return currentUV;
+			}
+			
+			void applyParallax(inout PoiMesh poiMesh, in PoiLight poiLight, in PoiCam poiCam, inout PoiMods poiMods)
+			{
+				float2 parallaxUV = ParallaxOcclusionMapping(
+				poiLight,
+				_HeightMap,
+				poiMesh,
+				poiMods,
+				poiCam.viewDir,
+				poiCam.tangentViewDir,
+				(int)_HeightStepsMin,
+				(int)_HeightStepsMax,
+				_HeightStrength,
+				_HeightOffset,
+				float2(_CurvatureU, _CurvatureV)
+				);
+				
+				//d4rkAO:require_constant(_ParallaxUV)
+				#if defined(OPTIMIZER_ENABLED)
+				poiMesh.uv[_ParallaxUV] = parallaxUV;
+				#else
+				if (_ParallaxUV == 0) poiMesh.uv[0] = parallaxUV;
+				else if (_ParallaxUV == 1) poiMesh.uv[1] = parallaxUV;
+				else if (_ParallaxUV == 2) poiMesh.uv[2] = parallaxUV;
+				else if (_ParallaxUV == 3) poiMesh.uv[3] = parallaxUV;
+				else if (_ParallaxUV == 4) poiMesh.uv[4] = parallaxUV;
+				else if (_ParallaxUV == 5) poiMesh.uv[5] = parallaxUV;
+				else if (_ParallaxUV == 6) poiMesh.uv[6] = parallaxUV;
+				else if (_ParallaxUV == 7) poiMesh.uv[7] = parallaxUV;
+				else if (_ParallaxUV == 8) poiMesh.uv[8] = parallaxUV;
+				else if (_ParallaxUV == 9) poiMesh.uv[9] = parallaxUV;
+				else if (_ParallaxUV == 10) poiMesh.uv[10] = parallaxUV;
+				#endif
+			}
+			#endif
+			//endex
+			
+			//ifex _BlackLightMaskingEnabled==0
+			#ifdef POI_BLACKLIGHTMASKING
+			void calculateBlackLightMasks(in PoiMesh poiMesh, inout PoiMods poiMods)
+			{
+				#if defined(VERTEXLIGHT_ON)
+				for (int lightIndex = 0; lightIndex < 4; lightIndex++)
+				{
+					float3 lightPos = float3(unity_4LightPosX0[lightIndex], unity_4LightPosY0[lightIndex], unity_4LightPosZ0[lightIndex]);
+					if (!distance(unity_LightColor[lightIndex].rgb, float3(0, 0, 0)))
+					{
+						if (_BlackLightMasking0GlobalMaskIndex > 0)
+						{
+							if (unity_LightColor[lightIndex].a == _BlackLightMasking0Key)
+							{
+								applyToGlobalMask(poiMods, _BlackLightMasking0GlobalMaskIndex - 1, _BlackLightMasking0GlobalMaskBlendType, smoothstep(_BlackLightMasking0Range.y, _BlackLightMasking0Range.x, distance(poiMesh.worldPos, lightPos)));
+							}
+						}
+						
+						if (_BlackLightMasking1GlobalMaskIndex > 0)
+						{
+							if (unity_LightColor[lightIndex].a == _BlackLightMasking1Key)
+							{
+								applyToGlobalMask(poiMods, _BlackLightMasking1GlobalMaskIndex - 1, _BlackLightMasking1GlobalMaskBlendType, smoothstep(_BlackLightMasking1Range.y, _BlackLightMasking1Range.x, distance(poiMesh.worldPos, lightPos)));
+							}
+						}
+						
+						if (_BlackLightMasking2GlobalMaskIndex > 0)
+						{
+							if (unity_LightColor[lightIndex].a == _BlackLightMasking2Key)
+							{
+								applyToGlobalMask(poiMods, _BlackLightMasking2GlobalMaskIndex - 1, _BlackLightMasking2GlobalMaskBlendType, smoothstep(_BlackLightMasking0Range.y, _BlackLightMasking0Range.x, distance(poiMesh.worldPos, lightPos)));
+							}
+						}
+						
+						if (_BlackLightMasking3GlobalMaskIndex > 0)
+						{
+							if (unity_LightColor[lightIndex].a == _BlackLightMasking3Key)
+							{
+								applyToGlobalMask(poiMods, _BlackLightMasking3GlobalMaskIndex - 1, _BlackLightMasking3GlobalMaskBlendType, smoothstep(_BlackLightMasking0Range.y, _BlackLightMasking0Range.x, distance(poiMesh.worldPos, lightPos)));
+							}
+						}
+					}
+				}
+				#else
+				if (_BlackLightMasking0GlobalMaskIndex > 0)
+				{
+					applyToGlobalMask(poiMods, _BlackLightMasking0GlobalMaskIndex - 1, _BlackLightMasking0GlobalMaskBlendType, 0);
+				}
+				
+				if (_BlackLightMasking1GlobalMaskIndex > 0)
+				{
+					applyToGlobalMask(poiMods, _BlackLightMasking1GlobalMaskIndex - 1, _BlackLightMasking1GlobalMaskBlendType, 0);
+				}
+				
+				if (_BlackLightMasking2GlobalMaskIndex > 0)
+				{
+					applyToGlobalMask(poiMods, _BlackLightMasking2GlobalMaskIndex - 1, _BlackLightMasking2GlobalMaskBlendType, 0);
+				}
+				
+				if (_BlackLightMasking3GlobalMaskIndex > 0)
+				{
+					applyToGlobalMask(poiMods, _BlackLightMasking3GlobalMaskIndex - 1, _BlackLightMasking3GlobalMaskBlendType, 0);
+				}
+				#endif
+			}
+			#endif
+			//endex
+			
+			//ifex _DetailEnabled==0
+			#ifdef FINALPASS
+			void ApplyDetailColor(inout PoiFragData poiFragData, in PoiMesh poiMesh, in PoiMods poiMods)
+			{
+				#if defined(PROP_DETAILTEX) || !defined(OPTIMIZER_ENABLED)
+				half3 detailTexture = POI2D_SAMPLER_PAN_STOCHASTIC(_DetailTex, _MainTex, poiUV(poiMesh.uv[_DetailTexUV], _DetailTex_ST), _DetailTexPan, _DetailTexStochastic).rgb * poiThemeColor(poiMods, _DetailTint.rgb, _DetailTintThemeIndex);
+				#else
+				half3 detailTexture = 0.21763764082 * poiThemeColor(poiMods, _DetailTint.rgb, _DetailTintThemeIndex);
+				#endif
+				
+				poiFragData.baseColor.rgb *= LerpWhiteTo(detailTexture * _DetailBrightness * unity_ColorSpaceDouble.rgb, poiMods.detailMask.r * _DetailTexIntensity);
+			}
+			
+			void ApplyDetailNormal(inout PoiMods poiMods, inout PoiMesh poiMesh)
+			{
+				#if defined(PROP_DETAILMASK) || !defined(OPTIMIZER_ENABLED)
+				poiMods.detailMask = POI2D_SAMPLER_PAN_STOCHASTIC(_DetailMask, _MainTex, poiUV(poiMesh.uv[_DetailMaskUV], _DetailMask_ST), _DetailMaskPan, _DetailMaskStochastic).rg;
+				#else
+				poiMods.detailMask = 1;
+				#endif
+				
+				#ifdef POI_BACKFACE
+				if (!poiMesh.isFrontFace)
+				{
+					poiMods.detailMask.rg *= _BackFaceDetailIntensity;
+				}
+				#endif
+				
+				if (_DetailTexGlobalMask > 0)
+				{
+					poiMods.detailMask.r = maskBlend(poiMods.detailMask.r, poiMods.globalMask[_DetailTexGlobalMask - 1], _DetailTexGlobalMaskBlendType);
+				}
+				if (_DetailNormalGlobalMask > 0)
+				{
+					poiMods.detailMask.g = maskBlend(poiMods.detailMask.g, poiMods.globalMask[_DetailNormalGlobalMask - 1], _DetailNormalGlobalMaskBlendType);
+				}
+				
+				#if defined(PROP_DETAILNORMALMAP) || !defined(OPTIMIZER_ENABLED)
+				half3 detailNormal = PoiUnpackNormalScale(POI2D_SAMPLER_PAN_STOCHASTIC(_DetailNormalMap, _MainTex, poiUV(poiMesh.uv[_DetailNormalMapUV], _DetailNormalMap_ST), _DetailNormalMapPan, _DetailNormalMapStochastic), _DetailNormalMapScale * poiMods.detailMask.g);
+				poiMesh.tangentSpaceNormal = PoiBlendNormal(detailNormal, poiMesh.tangentSpaceNormal);
+				#endif
+			}
+			#endif
+			//endex
+			
+			//ifex _BackFaceEnabled!=1
+			#ifdef POI_BACKFACE
+			void ApplyBackFaceColor(inout PoiFragData poiFragData, in PoiMesh poiMesh, inout PoiMods poiMods)
+			{
+				if (!poiMesh.isFrontFace)
+				{
+					half4 backFaceColor = _BackFaceColor;
+					backFaceColor.rgb = poiThemeColor(poiMods, backFaceColor.rgb, _BackFaceColorThemeIndex);
+					#if defined(PROP_BACKFACETEXTURE) || !defined(OPTIMIZER_ENABLED)
+					backFaceColor *= POI2D_SAMPLER_PAN(_BackFaceTexture, _MainTex, poiUV(poiMesh.uv[_BackFaceTextureUV], _BackFaceTexture_ST), _BackFaceTexturePan);
+					#endif
+					
+					if (_BackFaceHueShiftEnabled >= 0.5)
+					{
+						backFaceColor.rgb = hueShift(backFaceColor.rgb, frac(_BackFaceHueShift + _BackFaceHueShiftSpeed * POI_TIME.x), _BackFaceShiftColorSpace, _BackFaceHueSelectOrShift);
+					}
+					
+					half backFaceMask = 1;
+					#if defined(PROP_BACKFACEMASK) || !defined(OPTIMIZER_ENABLED)
+					backFaceMask *= POI2D_SAMPLER_PAN(_BackFaceMask, _MainTex, poiUV(poiMesh.uv[_BackFaceMaskUV], _BackFaceMask_ST), _BackFaceMaskPan)[_BackFaceMaskChannel];
+					#endif
+					if (_BackFaceReplaceAlpha < 0.5)
+					{
+						backFaceMask *= backFaceColor.a;
+					}
+					
+					poiFragData.baseColor = lerp(poiFragData.baseColor, backFaceColor.rgb, backFaceMask);
+					
+					UNITY_BRANCH
+					if (_BackFaceReplaceAlpha >= 0.5)
+					{
+						poiFragData.alpha = backFaceColor.a;
+					}
+					
+					poiFragData.emission += backFaceColor.rgb * _BackFaceEmissionStrength * backFaceMask;
+					poiMods.globalEmission = poiMods.globalEmission * _BackFaceEmissionLimiter;
+				}
+			}
+			#endif
+			//endex
+			
+			//ifex _RGBMaskEnabled==0
+			
+			float4 PoiUVMerge(in float4 uV, in float4 uVToMerge)
+			{
+				uV.xy *= uVToMerge.xy;
+				uV.zw += uVToMerge.zw;
+				return uV;
+			}
+			
+			void RGBABlendColor(inout PoiFragData poiFragData, in float mask, in float4 color, float emissionStrength, in float blendType, in float blendAdd, in float enabled)
+			{
+				if (!enabled) return;
+				half alpha = mask * saturate(color.a + blendAdd);
+				poiFragData.baseColor = lerp(poiFragData.baseColor.rgb, customBlend(poiFragData.baseColor.rgb, color.rgb, blendType), alpha);
+				poiFragData.emission += color.rgb * emissionStrength * alpha;
+			}
+			
+			void RGBABlendNormals(inout float3 tangentSpaceNormal, in float3 originalNormal, float3 normalToBlendWith, float maskValue, int blendMode)
+			{
+				
+				if (blendMode == 0)
+				{
+					tangentSpaceNormal = lerp(tangentSpaceNormal, normalToBlendWith, maskValue);
+				}
+				else if (blendMode == 1)
+				{
+					tangentSpaceNormal = lerp(tangentSpaceNormal, PoiBlendNormal(tangentSpaceNormal, normalToBlendWith), maskValue);
+				}
+				else if (blendMode == 2)
+				{
+					tangentSpaceNormal = lerp(tangentSpaceNormal, PoiBlendNormal(originalNormal, normalToBlendWith), maskValue);
+				}
+			}
+			
+			#ifdef VIGNETTE
+			#if !defined(POI_PASS_SHADOW) && !defined(POI_PASS_OUTLINE)
+			void calculateRGBNormals(inout PoiMesh poiMesh, inout PoiMods poiMods)
+			{
+				// Only define this if we actually have any normal map textures. Can't do the same in color textures because users can tint
+				#if defined(PROP_RGBNORMALR) || defined(PROP_RGBNORMALG) || defined(PROP_RGBNORMALB) || defined(PROP_RGBNORMALA)
+				half4 rgbMask = 1;
+				
+				#if defined(PROP_RGBMASK)
+				if (_RGBMaskType == 0)
+				{
+					rgbMask = POI2D_SAMPLER_PAN(_RGBMask, _MainTex, poiUV(poiMesh.uv[_RGBMaskUV], _RGBMask_ST), _RGBMaskPan);
+				}
+				#endif
+				
+				if (_RGBMaskType == 1)
+				{
+					rgbMask = poiMesh.vertexColor;
+				}
+				
+				half4 maskFinal = 1;
+				maskFinal.r = rgbMask[_RgbNormalRMaskChannel];
+				maskFinal.g = rgbMask[_RgbNormalGMaskChannel];
+				maskFinal.b = rgbMask[_RgbNormalBMaskChannel];
+				maskFinal.a = rgbMask[_RgbNormalAMaskChannel];
+				
+				if (_RgbNormalRGlobalMaskChannel > 0) maskFinal.r = globalMaskBlend(maskFinal.r, _RgbNormalRGlobalMaskChannel, _RgbNormalRGlobalMaskBlendType, poiMods);
+				if (_RgbNormalGGlobalMaskChannel > 0) maskFinal.g = globalMaskBlend(maskFinal.g, _RgbNormalGGlobalMaskChannel, _RgbNormalGGlobalMaskBlendType, poiMods);
+				if (_RgbNormalBGlobalMaskChannel > 0) maskFinal.b = globalMaskBlend(maskFinal.b, _RgbNormalBGlobalMaskChannel, _RgbNormalBGlobalMaskBlendType, poiMods);
+				if (_RgbNormalAGlobalMaskChannel > 0) maskFinal.a = globalMaskBlend(maskFinal.a, _RgbNormalAGlobalMaskChannel, _RgbNormalAGlobalMaskBlendType, poiMods);
+				
+				float3 originalNormal = poiMesh.tangentSpaceNormal;
+				const float3 neutralNormal = float3(0, 0, 1);
+				float3 nR = 0;
+				float3 nG = 0;
+				float3 nB = 0;
+				float hasR = 0;
+				float hasG = 0;
+				float hasB = 0;
+				
+				#if defined(PROP_RGBNORMALR)
+				if (_RgbNormalRScale > 0 && _RGBARedEnable >= 0.5)
+				{
+					nR = PoiUnpackNormalScale(POI2D_SAMPLER_PAN_STOCHASTIC(_RgbNormalR, _MainTex, poiUV(poiMesh.uv[_RgbNormalRUV], PoiUVMerge(_RgbNormalR_ST, _RGBARedScaleOffset )), _RgbNormalRPan, _RgbNormalRStochastic), _RgbNormalRScale);
+					hasR = 1;
+					bool selBaseR = (_RgbNormalRBlendSources.x > 0.5);
+					int modeR = selBaseR ? 2 : 0; // selection empty => Replace
+					float3 fromNormalR = selBaseR ? originalNormal : neutralNormal;
+					RGBABlendNormals(poiMesh.tangentSpaceNormal, fromNormalR, nR, maskFinal.r, modeR);
+				}
+				#endif
+				#if defined(PROP_RGBNORMALG)
+				if (_RgbNormalGScale > 0 && _RGBAGreenEnable >= 0.5)
+				{
+					nG = PoiUnpackNormalScale(POI2D_SAMPLER_PAN_STOCHASTIC(_RgbNormalG, _MainTex, poiUV(poiMesh.uv[_RgbNormalGUV], PoiUVMerge(_RgbNormalG_ST, _RGBAGreenScaleOffset )), _RgbNormalGPan, _RgbNormalGStochastic), _RgbNormalGScale);
+					hasG = 1;
+					bool selBaseG = (_RgbNormalGBlendSources.x > 0.5);
+					bool selRedG = (_RgbNormalGBlendSources.y > 0.5);
+					int modeG = (selBaseG || selRedG) ? 2 : 0;
+					float3 fromNormalG = selBaseG ? originalNormal : neutralNormal;
+					if (selRedG && hasR > 0.5) fromNormalG = lerp(fromNormalG, PoiBlendNormal(fromNormalG, nR), maskFinal.r);
+					RGBABlendNormals(poiMesh.tangentSpaceNormal, fromNormalG, nG, maskFinal.g, modeG);
+				}
+				#endif
+				#if defined(PROP_RGBNORMALB)
+				if (_RgbNormalBScale > 0 && _RGBABlueEnable >= 0.5)
+				{
+					nB = PoiUnpackNormalScale(POI2D_SAMPLER_PAN_STOCHASTIC(_RgbNormalB, _MainTex, poiUV(poiMesh.uv[_RgbNormalBUV], PoiUVMerge(_RgbNormalB_ST, _RGBABlueScaleOffset)), _RgbNormalBPan, _RgbNormalBStochastic), _RgbNormalBScale);
+					hasB = 1;
+					bool selBaseB = (_RgbNormalBBlendSources.x > 0.5);
+					bool selRedB = (_RgbNormalBBlendSources.y > 0.5);
+					bool selGreenB = (_RgbNormalBBlendSources.z > 0.5);
+					int modeB = (selBaseB || selRedB || selGreenB) ? 2 : 0;
+					float3 fromNormalB = selBaseB ? originalNormal : neutralNormal;
+					if (selRedB && hasR > 0.5) fromNormalB = lerp(fromNormalB, PoiBlendNormal(fromNormalB, nR), maskFinal.r);
+					if (selGreenB && hasG > 0.5) fromNormalB = lerp(fromNormalB, PoiBlendNormal(fromNormalB, nG), maskFinal.g);
+					RGBABlendNormals(poiMesh.tangentSpaceNormal, fromNormalB, nB, maskFinal.b, modeB);
+				}
+				#endif
+				#if defined(PROP_RGBNORMALA)
+				if (_RgbNormalAScale > 0 && _RGBAAlphaEnable >= 0.5)
+				{
+					float3 normalToBlendWith = PoiUnpackNormalScale(POI2D_SAMPLER_PAN_STOCHASTIC(_RgbNormalA, _MainTex, poiUV(poiMesh.uv[_RgbNormalAUV], PoiUVMerge(_RgbNormalA_ST, _RGBAAlphaScaleOffset)), _RgbNormalAPan, _RgbNormalAStochastic), _RgbNormalAScale);
+					bool selBaseA = (_RgbNormalABlendSources.x > 0.5);
+					bool selRedA = (_RgbNormalABlendSources.y > 0.5);
+					bool selGreenA = (_RgbNormalABlendSources.z > 0.5);
+					bool selBlueA = (_RgbNormalABlendSources.w > 0.5);
+					int modeA = (selBaseA || selRedA || selGreenA || selBlueA) ? 2 : 0;
+					float3 fromNormalA = selBaseA ? originalNormal : neutralNormal;
+					if (selRedA && hasR > 0.5) fromNormalA = lerp(fromNormalA, PoiBlendNormal(fromNormalA, nR), maskFinal.r);
+					if (selGreenA && hasG > 0.5) fromNormalA = lerp(fromNormalA, PoiBlendNormal(fromNormalA, nG), maskFinal.g);
+					if (selBlueA && hasB > 0.5) fromNormalA = lerp(fromNormalA, PoiBlendNormal(fromNormalA, nB), maskFinal.b);
+					RGBABlendNormals(poiMesh.tangentSpaceNormal, fromNormalA, normalToBlendWith, maskFinal.a, modeA);
+				}
+				#endif
+				#endif
+			}
+			#endif
+			
+			void calculateRGBMask(inout PoiFragData poiFragData, in PoiMesh poiMesh, in PoiMods poiMods)
+			{
+				half4 rgbMask = float4(1, 1, 1, 1);
+				float4 red = float4(poiThemeColor(poiMods, _RedColor.rgb, _RedColorThemeIndex), _RedColor.a);
+				float4 green = float4(poiThemeColor(poiMods, _GreenColor.rgb, _GreenColorThemeIndex), _GreenColor.a);
+				float4 blue = float4(poiThemeColor(poiMods, _BlueColor.rgb, _BlueColorThemeIndex), _BlueColor.a);
+				half4 alpha = float4(poiThemeColor(poiMods, _AlphaColor.rgb, _AlphaColorThemeIndex), _AlphaColor.a);
+				
+				#if defined(PROP_RGBMASK)
+				if (_RGBMaskType == 0)
+				{
+					rgbMask = POI2D_SAMPLER_PAN(_RGBMask, _MainTex, poiUV(poiMesh.uv[_RGBMaskUV], _RGBMask_ST), _RGBMaskPan);
+				}
+				#endif
+				
+				if (_RGBMaskType == 1)
+				{
+					rgbMask = poiMesh.vertexColor;
+				}
+				
+				#if defined(PROP_REDTEXTURE)
+				red *= POI2D_SAMPLER_PAN_STOCHASTIC(_RedTexture, _MainTex, poiUV(poiMesh.uv[_RedTextureUV], PoiUVMerge(_RedTexture_ST, _RGBARedScaleOffset)), _RedTexturePan.xy, _RedTextureStochastic);
+				#endif
+				#if defined(PROP_GREENTEXTURE)
+				green *= POI2D_SAMPLER_PAN_STOCHASTIC(_GreenTexture, _MainTex, poiUV(poiMesh.uv[_GreenTextureUV], PoiUVMerge(_GreenTexture_ST, _RGBAGreenScaleOffset)), _GreenTexturePan.xy, _GreenTextureStochastic);
+				#endif
+				#if defined(PROP_BLUETEXTURE)
+				blue *= POI2D_SAMPLER_PAN_STOCHASTIC(_BlueTexture, _MainTex, poiUV(poiMesh.uv[_BlueTextureUV], PoiUVMerge(_BlueTexture_ST, _RGBABlueScaleOffset)), _BlueTexturePan.xy, _BlueTextureStochastic);
+				#endif
+				#if defined(PROP_ALPHATEXTURE)
+				alpha *= POI2D_SAMPLER_PAN_STOCHASTIC(_AlphaTexture, _MainTex, poiUV(poiMesh.uv[_AlphaTextureUV], PoiUVMerge(_AlphaTexture_ST, _RGBAAlphaScaleOffset)), _AlphaTexturePan.xy, _AlphaTextureStochastic);
+				#endif
+				
+				RGBABlendColor(poiFragData, globalMaskBlend(rgbMask[_RgbRedMaskChannel], _RgbRedGlobalMaskChannel, _RgbRedGlobalMaskBlendType, poiMods), red, _RGBARedEmissionStrength, _RGBARedBlendType, _RedAlphaAdd, _RGBARedEnable);
+				RGBABlendColor(poiFragData, globalMaskBlend(rgbMask[_RgbGreenMaskChannel], _RgbGreenGlobalMaskChannel, _RgbGreenGlobalMaskBlendType, poiMods), green, _RGBAGreenEmissionStrength, _RGBAGreenBlendType, _GreenAlphaAdd, _RGBAGreenEnable);
+				RGBABlendColor(poiFragData, globalMaskBlend(rgbMask[_RgbBlueMaskChannel], _RgbBlueGlobalMaskChannel, _RgbBlueGlobalMaskBlendType, poiMods), blue, _RGBABlueEmissionStrength, _RGBABlueBlendType, _BlueAlphaAdd, _RGBABlueEnable);
+				RGBABlendColor(poiFragData, globalMaskBlend(rgbMask[_RgbAlphaMaskChannel], _RgbAlphaGlobalMaskChannel, _RgbAlphaGlobalMaskBlendType, poiMods), alpha, _RGBAAlphaEmissionStrength, _RGBAAlphaBlendType, _AlphaAlphaAdd, _RGBAAlphaEnable);
+				// Note: PBR smoothness/metallic is now handled earlier in PoiRGBAMaskingPBRFunctionCall
+			}
+			#endif
+			//endex
+			
+			//ifex _EnableFlipbook==0
+			#ifdef _SUNDISK_HIGH_QUALITY
+			
+			void applyFlipbook(inout PoiFragData poiFragData, in PoiMesh poiMesh, in PoiMods poiMods)
+			{
+				#if defined(PROP_FLIPBOOKTEXARRAY) || !defined(OPTIMIZER_ENABLED)
+				float4 flipBookPixel = float4(0, 0, 0, 0);
+				#if defined(PROP_FLIPBOOKMASK) || !defined(OPTIMIZER_ENABLED)
+				half flipBookMask = POI2D_SAMPLER_PAN(_FlipbookMask, _MainTex, poiUV(poiMesh.uv[_FlipbookMaskUV], _FlipbookMask_ST), _FlipbookMaskPan)[_FlipbookMaskChannel];
+				#else
+				half flipBookMask = 1;
+				#endif
+				if (_FlipbookMaskGlobalMask > 0)
+				{
+					flipBookMask = maskBlend(flipBookMask, poiMods.globalMask[_FlipbookMaskGlobalMask - 1], _FlipbookMaskGlobalMaskBlendType);
+				}
+				
+				float2 flipbookScale = _FlipbookScale.xy;
+				#ifdef POI_AUDIOLINK
+				if (poiMods.audioLinkAvailable)
+				{
+					flipbookScale += lerp(_AudioLinkFlipbookScale.xy, _AudioLinkFlipbookScale.zw, poiMods.audioLink[_AudioLinkFlipbookScaleBand]);
+				}
+				#endif
+				
+				// Aspect ratio correction
+				if (_FlipbookAspectRatioMode > 0)
+				{
+					float texWidth;
+					float texHeight;
+					float texFrames;
+					_FlipbookTexArray.GetDimensions(texWidth, texHeight, texFrames);
+					
+					if (_FlipbookAspectRatioMode == 1) // Shrink to Fit
+					{
+						if (texWidth > texHeight)
+						flipbookScale *= float2(1, texHeight / texWidth);
+						else
+						flipbookScale *= float2(texWidth / texHeight, 1);
+					}
+					else // Grow to Fit
+					{
+						if (texWidth > texHeight)
+						flipbookScale *= float2(texWidth / texHeight, 1);
+						else
+						flipbookScale *= float2(1, texHeight / texWidth);
+					}
+				}
+				
+				float4 sideOffset = float4(-_FlipbookSideOffset.x, _FlipbookSideOffset.y, -_FlipbookSideOffset.z, _FlipbookSideOffset.w);
+				float2 centerOffset = float2((sideOffset.x + sideOffset.y) / 2, (sideOffset.z + sideOffset.w) / 2);
+				float2 uv = poiMesh.uv[_FlipbookTexArrayUV];
+				
+				// Symmetry mode
+				if (_FlipbookSymmetryMode == 1) uv.x = abs(uv.x - 0.5) + 0.5;
+				if (_FlipbookSymmetryMode == 2 && uv.x < 0.5) uv.x = uv.x + 0.5;
+				
+				// Mirrored UV mode
+				if ((_FlipbookMirroredUVMode == 1 || _FlipbookMirroredUVMode == 4) && poiMesh.isRightHand) uv.x = 1.0 - uv.x;
+				if (_FlipbookMirroredUVMode == 2 && poiMesh.isRightHand) uv.x = -1.0;
+				if ((_FlipbookMirroredUVMode == 3 || _FlipbookMirroredUVMode == 4) && !poiMesh.isRightHand) uv.x = -1.0;
+				
+				float2 flipbookCenter = _FlipbookPosition + centerOffset;
+				float theta = radians(_FlipbookRotation + POI_TIME.z * _FlipbookRotationSpeed);
+				float cs = cos(theta);
+				float sn = sin(theta);
+				uv = float2((uv.x - flipbookCenter.x) * cs - (uv.y - flipbookCenter.y) * sn + flipbookCenter.x, (uv.x - flipbookCenter.x) * sn + (uv.y - flipbookCenter.y) * cs + flipbookCenter.y);
+				float2 newUV = remap(uv, float2(0, 0) - flipbookScale / 2 + _FlipbookPosition + sideOffset.xz, flipbookScale / 2 + _FlipbookPosition + sideOffset.yw, float2(0, 0), float2(1, 1));
+				
+				half edgeAlpha = 1.0;
+				
+				if (_FlipbookTiled == 0)
+				{
+					float2 pixelWidth = fwidth(newUV) + 1.0e-7;
+					float2 edgeFactor = (1.0 - abs(newUV * 2.0 - 1.0)) / pixelWidth;
+					edgeAlpha = saturate(min(edgeFactor.x, edgeFactor.y));
+				}
+				else if (_FlipbookTiled == 2)
+				{
+					float2 tiledUVs = frac(newUV);
+					float2 pixelWidth = fwidth(newUV) + 1.0e-7;
+					float2 edgeFactor = (1.0 - abs(tiledUVs * 2.0 - 1.0)) / pixelWidth;
+					edgeAlpha = saturate(min(edgeFactor.x, edgeFactor.y));
+				}
+				
+				float currentFrame = 0;
+				float width;
+				float height;
+				float totalFrames;
+				_FlipbookTexArray.GetDimensions(width, height, totalFrames);
+				
+				if (_FlipbookStartAndEnd >= 0.5)
+				{
+					totalFrames -= (totalFrames - min(max(_FlipbookStartFrame, _FlipbookEndFrame), totalFrames));
+					totalFrames -= max(0, _FlipbookStartFrame);
+				}
+				if (_FlipbookManualFrameControl < 0.5)
+				{
+					if (_FlipbookFPS != 0)
+					{
+						currentFrame = ((POI_TIME.y / (1 / _FlipbookFPS)) + _FlipbookFrameOffset) % totalFrames;
+						if (_FlipbookStartAndEnd >= 0.5)
+						{
+							currentFrame += _FlipbookStartFrame;
+						}
+					}
+				}
+				else
+				{
+					currentFrame = fmod(_FlipbookCurrentFrame, totalFrames);
+				}
+				#ifdef POI_AUDIOLINK
+				if (poiMods.audioLinkAvailable)
+				{
+					if (_FlipbookChronotensityEnabled >= 0.5)
+					{
+						currentFrame += AudioLinkGetChronoTime(_FlipbookChronoType, _FlipbookChronotensityBand) * _FlipbookChronotensitySpeed;
+					}
+					currentFrame += lerp(_AudioLinkFlipbookFrame.x, _AudioLinkFlipbookFrame.y, poiMods.audioLink[_AudioLinkFlipbookFrameBand]);
+					float totalFramesAL = totalFrames;
+					if (_FlipbookStartAndEnd >= 0.5)
+					{
+						totalFramesAL += max(0, _FlipbookStartFrame);
+					}
+					currentFrame %= totalFramesAL;
+				}
+				#endif
+				
+				float2 finalUV = TRANSFORM_TEX(newUV, _FlipbookTexArray) + POI_TIME.x * _FlipbookTexArrayPan;
+				float2 ddxUV = ddx(finalUV);
+				float2 ddyUV = ddy(finalUV);
+				flipBookPixel = _FlipbookTexArray.SampleGrad(sampler_FlipbookTexArray, float3(finalUV, floor(currentFrame)), ddxUV, ddyUV);
+				
+				UNITY_BRANCH
+				if (_FlipbookCrossfadeEnabled >= 0.5)
+				{
+					float totalFramesCF = totalFrames;
+					if (_FlipbookStartAndEnd >= 0.5)
+					{
+						totalFramesCF += max(0, _FlipbookStartFrame);
+					}
+					float4 flipbookNextPixel = _FlipbookTexArray.SampleGrad(sampler_FlipbookTexArray, float3(finalUV, floor((currentFrame + 1) % totalFramesCF)), ddxUV, ddyUV);
+					flipBookPixel = lerp(flipBookPixel, flipbookNextPixel, smoothstep(_FlipbookCrossfadeRange.x, _FlipbookCrossfadeRange.y, frac(currentFrame)));
+				}
+				
+				UNITY_BRANCH
+				if (_FlipbookIntensityControlsAlpha >= 0.5)
+				{
+					flipBookPixel.a = poiMax(flipBookPixel.rgb) * edgeAlpha;
+				}
+				else
+				{
+					flipBookPixel.a *= edgeAlpha;
+				}
+				UNITY_BRANCH
+				if (_FlipbookColorReplaces >= 0.5)
+				{
+					flipBookPixel.rgb = poiThemeColor(poiMods, _FlipbookColor.rgb, _FlipbookColorThemeIndex);
+				}
+				else
+				{
+					flipBookPixel.rgb *= poiThemeColor(poiMods, _FlipbookColor.rgb, _FlipbookColorThemeIndex);
+				}
+				
+				UNITY_BRANCH
+				if (_FlipbookHueShiftEnabled >= 0.5)
+				{
+					flipBookPixel.rgb = hueShift(flipBookPixel.rgb, _FlipbookHueShift + POI_TIME.x * _FlipbookHueShiftSpeed, _FlipbookHueShiftColorSpace, _FlipbookHueSelectOrShift);
+				}
+				#ifdef POI_AUDIOLINK
+				if (poiMods.audioLinkAvailable && _FlipbookALColorOverrideEnabled >= 0.5)
+				{
+					half alColorOverrideIntensity = poiMods.audioLink[_FlipbookALColorOverrideBand];
+					half alColorOverrideBlend = evalRamp4(alColorOverrideIntensity, _FlipbookALColorOverrideRamp);
+					if (alColorOverrideBlend > 0)
+					{
+						half3 alOverrideColor = _FlipbookALColorOverride.rgb;
+						if (_FlipbookALColorOverrideThemeIndex > 0)
+						{
+							alOverrideColor = poiThemeColor(poiMods, alOverrideColor, _FlipbookALColorOverrideThemeIndex);
+						}
+						flipBookPixel.rgb = lerp(flipBookPixel.rgb, alOverrideColor, alColorOverrideBlend);
+					}
+				}
+				#endif
+				half flipbookAlpha = _FlipbookAlpha;
+				#ifdef POI_AUDIOLINK
+				if (poiMods.audioLinkAvailable)
+				{
+					flipbookAlpha += lerp(_AudioLinkFlipbookAlpha.x, _AudioLinkFlipbookAlpha.y, poiMods.audioLink[_AudioLinkFlipbookAlphaBand]);
+				}
+				#endif
+				flipbookAlpha = saturate(flipbookAlpha);
+				
+				#if !defined(POI_PASS_OUTLINE) && !defined(POI_PASS_SHADOW)
+				
+				half finalFlipbookAlpha = saturate(flipBookPixel.a * _FlipbookColor.a * flipbookAlpha * flipBookMask);
+				
+				if (_FlipbookAlphaControlsFinalAlpha == 2)
+				{
+					poiFragData.baseColor = flipBookPixel.rgb;
+					poiFragData.alpha = finalFlipbookAlpha;
+				}
+				else
+				{
+					poiFragData.baseColor = lerp(poiFragData.baseColor.rgb, customBlend(poiFragData.baseColor.rgb, flipBookPixel.rgb, _FlipbookBlendType), finalFlipbookAlpha);
+				}
+				
+				half flipbookEmissionStrength = _FlipbookEmissionStrength;
+				#ifdef POI_AUDIOLINK
+				if (poiMods.audioLinkAvailable)
+				{
+					flipbookEmissionStrength += max(lerp(_AudioLinkFlipbookEmission.x, _AudioLinkFlipbookEmission.y, poiMods.audioLink[_AudioLinkFlipbookEmissionBand]), 0);
+				}
+				#endif
+				poiFragData.emission += lerp(0, flipBookPixel.rgb * flipbookEmissionStrength, finalFlipbookAlpha);
+				
+				#endif
+				
+				UNITY_BRANCH
+				if (_FlipbookAlphaControlsFinalAlpha > 0 && _FlipbookAlphaControlsFinalAlpha != 2)
+				{
+					poiFragData.alpha = lerp(poiFragData.alpha, saturate(flipBookPixel.a * _FlipbookColor.a * flipbookAlpha), flipBookMask);
+				}
+				#endif
+			}
+			
+			#endif
+			//endex
+			
+			//ifex _EnableFlipbook1==0
+			#ifdef POI_FLIPBOOK_1
+			
+			void applyFlipbook1(inout PoiFragData poiFragData, in PoiMesh poiMesh, in PoiMods poiMods)
+			{
+				#if defined(PROP_FLIPBOOKTEXARRAY1) || !defined(OPTIMIZER_ENABLED)
+				float4 flipBookPixel__1 = float4(0, 0, 0, 0);
+				#if defined(PROP_FLIPBOOKMASK1) || !defined(OPTIMIZER_ENABLED)
+				half flipBookMask__1 = POI2D_SAMPLER_PAN(_FlipbookMask1, _MainTex, poiUV(poiMesh.uv[_FlipbookMaskUV1], _FlipbookMask1_ST), _FlipbookMaskPan1)[_FlipbookMaskChannel1];
+				#else
+				half flipBookMask__1 = 1;
+				#endif
+				if (_FlipbookMaskGlobalMask1 > 0)
+				{
+					flipBookMask__1 = maskBlend(flipBookMask__1, poiMods.globalMask[_FlipbookMaskGlobalMask1 - 1], _FlipbookMaskGlobalMaskBlendType1);
+				}
+				
+				float2 flipbookScale__1 = _FlipbookScale1.xy;
+				#ifdef POI_AUDIOLINK
+				if (poiMods.audioLinkAvailable)
+				{
+					flipbookScale__1 += lerp(_AudioLinkFlipbookScale1.xy, _AudioLinkFlipbookScale1.zw, poiMods.audioLink[_AudioLinkFlipbookScaleBand1]);
+				}
+				#endif
+				
+				// Aspect ratio correction
+				if (_FlipbookAspectRatioMode1 > 0)
+				{
+					float texWidth__1;
+					float texHeight__1;
+					float texFrames__1;
+					_FlipbookTexArray1.GetDimensions(texWidth__1, texHeight__1, texFrames__1);
+					
+					if (_FlipbookAspectRatioMode1 == 1) // Shrink to Fit
+					{
+						if (texWidth__1 > texHeight__1)
+						flipbookScale__1 *= float2(1, texHeight__1 / texWidth__1);
+						else
+						flipbookScale__1 *= float2(texWidth__1 / texHeight__1, 1);
+					}
+					else // Grow to Fit
+					{
+						if (texWidth__1 > texHeight__1)
+						flipbookScale__1 *= float2(texWidth__1 / texHeight__1, 1);
+						else
+						flipbookScale__1 *= float2(1, texHeight__1 / texWidth__1);
+					}
+				}
+				
+				float4 sideOffset__1 = float4(-_FlipbookSideOffset1.x, _FlipbookSideOffset1.y, -_FlipbookSideOffset1.z, _FlipbookSideOffset1.w);
+				float2 centerOffset__1 = float2((sideOffset__1.x + sideOffset__1.y) / 2, (sideOffset__1.z + sideOffset__1.w) / 2);
+				float2 uv__1 = poiMesh.uv[_FlipbookTexArrayUV1];
+				
+				// Symmetry mode
+				if (_FlipbookSymmetryMode1 == 1) uv__1.x = abs(uv__1.x - 0.5) + 0.5;
+				if (_FlipbookSymmetryMode1 == 2 && uv__1.x < 0.5) uv__1.x = uv__1.x + 0.5;
+				
+				// Mirrored UV mode
+				if ((_FlipbookMirroredUVMode1 == 1 || _FlipbookMirroredUVMode1 == 4) && poiMesh.isRightHand) uv__1.x = 1.0 - uv__1.x;
+				if (_FlipbookMirroredUVMode1 == 2 && poiMesh.isRightHand) uv__1.x = -1.0;
+				if ((_FlipbookMirroredUVMode1 == 3 || _FlipbookMirroredUVMode1 == 4) && !poiMesh.isRightHand) uv__1.x = -1.0;
+				
+				float2 flipbookCenter__1 = _FlipbookPosition1 + centerOffset__1;
+				float theta__1 = radians(_FlipbookRotation1 + POI_TIME.z * _FlipbookRotationSpeed1);
+				float cs__1 = cos(theta__1);
+				float sn__1 = sin(theta__1);
+				uv__1 = float2((uv__1.x - flipbookCenter__1.x) * cs__1 - (uv__1.y - flipbookCenter__1.y) * sn__1 + flipbookCenter__1.x, (uv__1.x - flipbookCenter__1.x) * sn__1 + (uv__1.y - flipbookCenter__1.y) * cs__1 + flipbookCenter__1.y);
+				float2 newUV__1 = remap(uv__1, float2(0, 0) - flipbookScale__1 / 2 + _FlipbookPosition1 + sideOffset__1.xz, flipbookScale__1 / 2 + _FlipbookPosition1 + sideOffset__1.yw, float2(0, 0), float2(1, 1));
+				
+				half edgeAlpha__1 = 1.0;
+				
+				if (_FlipbookTiled1 == 0)
+				{
+					float2 pixelWidth__1 = fwidth(newUV__1) + 1.0e-7;
+					float2 edgeFactor__1 = (1.0 - abs(newUV__1 * 2.0 - 1.0)) / pixelWidth__1;
+					edgeAlpha__1 = saturate(min(edgeFactor__1.x, edgeFactor__1.y));
+				}
+				else if (_FlipbookTiled1 == 2)
+				{
+					float2 tiledUVs__1 = frac(newUV__1);
+					float2 pixelWidth__1 = fwidth(newUV__1) + 1.0e-7;
+					float2 edgeFactor__1 = (1.0 - abs(tiledUVs__1 * 2.0 - 1.0)) / pixelWidth__1;
+					edgeAlpha__1 = saturate(min(edgeFactor__1.x, edgeFactor__1.y));
+				}
+				
+				float currentFrame__1 = 0;
+				float width__1;
+				float height__1;
+				float totalFrames__1;
+				_FlipbookTexArray1.GetDimensions(width__1, height__1, totalFrames__1);
+				
+				if (_FlipbookStartAndEnd1 >= 0.5)
+				{
+					totalFrames__1 -= (totalFrames__1 - min(max(_FlipbookStartFrame1, _FlipbookEndFrame1), totalFrames__1));
+					totalFrames__1 -= max(0, _FlipbookStartFrame1);
+				}
+				if (_FlipbookManualFrameControl1 < 0.5)
+				{
+					if (_FlipbookFPS1 != 0)
+					{
+						currentFrame__1 = ((POI_TIME.y / (1 / _FlipbookFPS1)) + _FlipbookFrameOffset1) % totalFrames__1;
+						if (_FlipbookStartAndEnd1 >= 0.5)
+						{
+							currentFrame__1 += _FlipbookStartFrame1;
+						}
+					}
+				}
+				else
+				{
+					currentFrame__1 = fmod(_FlipbookCurrentFrame1, totalFrames__1);
+				}
+				#ifdef POI_AUDIOLINK
+				if (poiMods.audioLinkAvailable)
+				{
+					if (_FlipbookChronotensityEnabled1 >= 0.5)
+					{
+						currentFrame__1 += AudioLinkGetChronoTime(_FlipbookChronoType1, _FlipbookChronotensityBand1) * _FlipbookChronotensitySpeed1;
+					}
+					currentFrame__1 += lerp(_AudioLinkFlipbookFrame1.x, _AudioLinkFlipbookFrame1.y, poiMods.audioLink[_AudioLinkFlipbookFrameBand1]);
+					float totalFramesAL__1 = totalFrames__1;
+					if (_FlipbookStartAndEnd1 >= 0.5)
+					{
+						totalFramesAL__1 += max(0, _FlipbookStartFrame1);
+					}
+					currentFrame__1 %= totalFramesAL__1;
+				}
+				#endif
+				
+				float2 finalUV__1 = TRANSFORM_TEX(newUV__1, _FlipbookTexArray1) + POI_TIME.x * _FlipbookTexArrayPan1;
+				float2 ddxUV__1 = ddx(finalUV__1);
+				float2 ddyUV__1 = ddy(finalUV__1);
+				flipBookPixel__1 = _FlipbookTexArray1.SampleGrad(sampler_FlipbookTexArray1, float3(finalUV__1, floor(currentFrame__1)), ddxUV__1, ddyUV__1);
+				
+				UNITY_BRANCH
+				if (_FlipbookCrossfadeEnabled1 >= 0.5)
+				{
+					float totalFramesCF__1 = totalFrames__1;
+					if (_FlipbookStartAndEnd1 >= 0.5)
+					{
+						totalFramesCF__1 += max(0, _FlipbookStartFrame1);
+					}
+					float4 flipbookNextPixel__1 = _FlipbookTexArray1.SampleGrad(sampler_FlipbookTexArray1, float3(finalUV__1, floor((currentFrame__1 + 1) % totalFramesCF__1)), ddxUV__1, ddyUV__1);
+					flipBookPixel__1 = lerp(flipBookPixel__1, flipbookNextPixel__1, smoothstep(_FlipbookCrossfadeRange1.x, _FlipbookCrossfadeRange1.y, frac(currentFrame__1)));
+				}
+				
+				UNITY_BRANCH
+				if (_FlipbookIntensityControlsAlpha1 >= 0.5)
+				{
+					flipBookPixel__1.a = poiMax(flipBookPixel__1.rgb) * edgeAlpha__1;
+				}
+				else
+				{
+					flipBookPixel__1.a *= edgeAlpha__1;
+				}
+				UNITY_BRANCH
+				if (_FlipbookColorReplaces1 >= 0.5)
+				{
+					flipBookPixel__1.rgb = poiThemeColor(poiMods, _FlipbookColor1.rgb, _FlipbookColorThemeIndex1);
+				}
+				else
+				{
+					flipBookPixel__1.rgb *= poiThemeColor(poiMods, _FlipbookColor1.rgb, _FlipbookColorThemeIndex1);
+				}
+				
+				UNITY_BRANCH
+				if (_FlipbookHueShiftEnabled1 >= 0.5)
+				{
+					flipBookPixel__1.rgb = hueShift(flipBookPixel__1.rgb, _FlipbookHueShift1 + POI_TIME.x * _FlipbookHueShiftSpeed1, _FlipbookHueShiftColorSpace1, _FlipbookHueSelectOrShift1);
+				}
+				#ifdef POI_AUDIOLINK
+				if (poiMods.audioLinkAvailable && _FlipbookALColorOverrideEnabled1 >= 0.5)
+				{
+					half alColorOverrideIntensity__1 = poiMods.audioLink[_FlipbookALColorOverrideBand1];
+					half alColorOverrideBlend__1 = evalRamp4(alColorOverrideIntensity__1, _FlipbookALColorOverrideRamp1);
+					if (alColorOverrideBlend__1 > 0)
+					{
+						half3 alOverrideColor__1 = _FlipbookALColorOverride1.rgb;
+						if (_FlipbookALColorOverrideThemeIndex1 > 0)
+						{
+							alOverrideColor__1 = poiThemeColor(poiMods, alOverrideColor__1, _FlipbookALColorOverrideThemeIndex1);
+						}
+						flipBookPixel__1.rgb = lerp(flipBookPixel__1.rgb, alOverrideColor__1, alColorOverrideBlend__1);
+					}
+				}
+				#endif
+				half flipbookAlpha__1 = _FlipbookAlpha1;
+				#ifdef POI_AUDIOLINK
+				if (poiMods.audioLinkAvailable)
+				{
+					flipbookAlpha__1 += lerp(_AudioLinkFlipbookAlpha1.x, _AudioLinkFlipbookAlpha1.y, poiMods.audioLink[_AudioLinkFlipbookAlphaBand1]);
+				}
+				#endif
+				flipbookAlpha__1 = saturate(flipbookAlpha__1);
+				
+				#if !defined(POI_PASS_OUTLINE) && !defined(POI_PASS_SHADOW)
+				
+				half finalFlipbookAlpha__1 = saturate(flipBookPixel__1.a * _FlipbookColor1.a * flipbookAlpha__1 * flipBookMask__1);
+				
+				if (_FlipbookAlphaControlsFinalAlpha1 == 2)
+				{
+					poiFragData.baseColor = flipBookPixel__1.rgb;
+					poiFragData.alpha = finalFlipbookAlpha__1;
+				}
+				else
+				{
+					poiFragData.baseColor = lerp(poiFragData.baseColor.rgb, customBlend(poiFragData.baseColor.rgb, flipBookPixel__1.rgb, _FlipbookBlendType1), finalFlipbookAlpha__1);
+				}
+				
+				half flipbookEmissionStrength__1 = _FlipbookEmissionStrength1;
+				#ifdef POI_AUDIOLINK
+				if (poiMods.audioLinkAvailable)
+				{
+					flipbookEmissionStrength__1 += max(lerp(_AudioLinkFlipbookEmission1.x, _AudioLinkFlipbookEmission1.y, poiMods.audioLink[_AudioLinkFlipbookEmissionBand1]), 0);
+				}
+				#endif
+				poiFragData.emission += lerp(0, flipBookPixel__1.rgb * flipbookEmissionStrength__1, finalFlipbookAlpha__1);
+				
+				#endif
+				
+				UNITY_BRANCH
+				if (_FlipbookAlphaControlsFinalAlpha1 > 0 && _FlipbookAlphaControlsFinalAlpha1 != 2)
+				{
+					poiFragData.alpha = lerp(poiFragData.alpha, saturate(flipBookPixel__1.a * _FlipbookColor1.a * flipbookAlpha__1), flipBookMask__1);
+				}
+				#endif
+			}
+			
+			#endif
+			//endex
+			
+			//ifex _EnableTouchGlow==0
+			#ifdef GRAIN
+			void applyDepthFX(inout PoiFragData poiFragData, in PoiCam poiCam, in PoiMesh poiMesh, in PoiMods poiMods)
+			{
+				half3 touchEmission = 0;
+				
+				float perspectiveDivide = 1.0f / poiCam.clipPos.w;
+				float4 direction = poiCam.worldDirection * perspectiveDivide;
+				float2 screenPos = poiCam.posScreenSpace * perspectiveDivide;
+				
+				if(!DepthTextureExists()) return;
+				float z = SampleScreenDepth(screenPos);
+				
+				#if UNITY_REVERSED_Z
+				if (z == 0)
+				#else
+				if (z == 1)
+				#endif
+				return;
+				
+				float depth = CorrectedLinearEyeDepth(z, direction.w);
+				float3 worldpos = direction * depth + getCameraPosition(false);
+				/*
+				finalColor.rgb = frac(worldpos);
+				return;
+				*/
+				
+				float diff = distance(worldpos, poiMesh.worldPos);
+				//poiFragData.finalColor = diff;
+				
+				#if defined(PROP_DEPTHMASK) || !defined(OPTIMIZER_ENABLED)
+				half depthMask = POI2D_SAMPLER_PAN(_DepthMask, _MainTex, poiUV(poiMesh.uv[_DepthMaskUV], _DepthMask_ST), _DepthMaskPan)[_DepthMaskChannel];
+				#else
+				half depthMask = 1;
+				#endif
+				
+				if (_DepthMaskGlobalMask > 0)
+				{
+					depthMask = maskBlend(depthMask, poiMods.globalMask[_DepthMaskGlobalMask - 1], _DepthMaskGlobalMaskBlendType);
+				}
+				
+				if (_DepthColorToggle >= 0.5)
+				{
+					half colorBlendAlpha = lerp(_DepthColorMinValue, _DepthColorMaxValue, remapClamped(_DepthColorMinDepth, _DepthColorMaxDepth, diff));
+					
+					#if defined(PROP_DEPTHTEXTURE) || !defined(OPTIMIZER_ENABLED)
+					float2 depthTextureUV = float2(0, 0);
+					if (_DepthTextureUV == 8)
+					{
+						depthTextureUV = lerp(0, 1, remapClamped(_DepthColorMinDepth, _DepthColorMaxDepth, diff));
+					}
+					else
+					{
+						depthTextureUV = poiMesh.uv[_DepthTextureUV];
+					}
+					half3 depthColor = POI2D_SAMPLER_PAN(_DepthTexture, _MainTex, poiUV(depthTextureUV, _DepthTexture_ST), _DepthTexturePan).rgb * poiThemeColor(poiMods, _DepthColor.rgb, _DepthColorThemeIndex);
+					#else
+					half3 depthColor = poiThemeColor(poiMods, _DepthColor.rgb, _DepthColorThemeIndex);
+					#endif
+					
+					switch(_DepthColorBlendMode)
+					{
+						case 0:
+						{
+							poiFragData.baseColor = lerp(poiFragData.baseColor, depthColor, colorBlendAlpha * depthMask);
+							break;
+						}
+						case 1:
+						{
+							poiFragData.baseColor *= lerp(1, depthColor, colorBlendAlpha * depthMask);
+							break;
+						}
+						case 2:
+						{
+							poiFragData.baseColor = saturate(poiFragData.baseColor + lerp(0, depthColor, colorBlendAlpha * depthMask));
+							break;
+						}
+					}
+					poiFragData.emission += depthColor * colorBlendAlpha * _DepthEmissionStrength * depthMask;
+				}
+				
+				if (_DepthAlphaToggle >= 0.5)
+				{
+					poiFragData.alpha *= lerp(poiFragData.alpha, saturate(lerp(_DepthAlphaMinValue, _DepthAlphaMaxValue, remapClamped(_DepthAlphaMinDepth, _DepthAlphaMaxDepth, diff))), depthMask);
+				}
+			}
+			#endif
+			//endex
+			
+			#if POI_PIPE == POI_BIRP
+			#define POI_DEPTH_FRAG_OUT float4
+			#else
+			#define POI_DEPTH_FRAG_OUT half
+			#endif
+			POI_DEPTH_FRAG_OUT frag( VertexOut i, bool facing : SV_IsFrontFace ) : SV_Target
+			{
+				#if POI_PIPE == POI_BIRP
 				clip(_RenderingEarlyZEnabled - 1.0);
+				#endif
 				UNITY_SETUP_INSTANCE_ID(i);
 				UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(i);
-				return float4(1, 1, 1, 1);
+				
+				PoiSHAr = unity_SHAr;
+				PoiSHAg = unity_SHAg;
+				PoiSHAb = unity_SHAb;
+				#if POI_PIPE != POI_BIRP
+				PoiSHBr = unity_SHBr;
+				PoiSHBg = unity_SHBg;
+				PoiSHBb = unity_SHBb;
+				PoiSHC =  unity_SHC;
+				#endif
+				
+				PoiMesh poiMesh;
+				PoiInitStruct(PoiMesh, poiMesh);
+				
+				PoiLight poiLight;
+				PoiInitStruct(PoiLight, poiLight);
+				
+				PoiCam poiCam;
+				PoiInitStruct(PoiCam, poiCam);
+				
+				PoiMods poiMods;
+				PoiInitStruct(PoiMods, poiMods);
+				
+				poiMods.globalEmission = 1;
+				
+				#if POI_PIPE == POI_URP
+				PoiLightOut poiLightOut;
+				PoiInitStruct(PoiLightOut, poiLightOut);
+				#endif
+				
+				PoiFragData poiFragData;
+				PoiInitStruct(PoiFragData, poiFragData);
+				
+				poiFragData.smoothness = 1;
+				poiFragData.smoothness2 = 1;
+				poiFragData.metallic = 1;
+				poiFragData.specularMask = 1;
+				poiFragData.reflectionMask = 1;
+				poiFragData.alpha = 1;
+				
+				//ifex _EnableUDIMDiscardOptions==0
+				#ifdef POI_UDIMDISCARD
+				applyUDIMDiscard(i, facing);
+				#endif
+				//endex
+				
+				// Mesh Data
+				//poiMesh.objectPosition = mul(unity_ObjectToWorld, float3(0, 0, 0)).xyz;
+				poiMesh.objectPosition = mul(unity_ObjectToWorld, float4(0, 0, 0, 1)).xyz;
+				poiMesh.objNormal = mul((float3x3)unity_WorldToObject, i.normal.xyz);
+				poiMesh.normals[0] = i.normal.xyz;
+				poiMesh.objectScale = i.normal.w;
+				poiMesh.worldPos = i.worldPos.xyz;
+				poiMesh.vertexColor = i.vertexColor;
+				
+				#if defined(POI_PASS_LILFUR)
+				float3 newTan = i.tangent.xyz - poiMesh.normals[0] * dot(poiMesh.normals[0], i.tangent.xyz);
+				poiMesh.tangent[0] = normalize(newTan);
+				poiMesh.binormal[0] = normalize(cross(poiMesh.normals[0], poiMesh.tangent[0])) * (i.tangent.w * unity_WorldTransformParams.w);
+				poiMesh.isRightHand = (i.tangent.w * unity_WorldTransformParams.w) > 0.0;
+				poiMesh.localPos = mul(unity_WorldToObject, float4(i.worldPos.xyz, 1)).xyz;
+				#else
+				poiMesh.tangent[0] = i.tangent.xyz;
+				poiMesh.binormal[0] = cross(i.normal.xyz, i.tangent.xyz) * (i.tangent.w * unity_WorldTransformParams.w);
+				poiMesh.isRightHand = i.tangent.w > 0.0;
+				poiMesh.localPos = i.localPos.xyz;
+				#endif
+				
+				poiMesh.isFrontFace = facing;
+				
+				#if !defined(POI_PASS_OUTLINE) && !defined(POI_PASS_LILFUR)
+				if (!poiMesh.isFrontFace && _FlipBackfaceNormals >= 0.5)
+				{
+					poiMesh.normals[0] *= -1;
+					poiMesh.tangent[0] *= -1;
+					poiMesh.binormal[0] *= -1;
+				}
+				#endif
+				
+				poiCam.eyeViewDir = !IsOrthographicCamera() ? (getCameraPosition(false) - i.worldPos.xyz) : UNITY_MATRIX_I_V._m02_m12_m22;
+				poiCam.eyeViewDir = normalize(poiCam.eyeViewDir);
+				float3 poiCenterCameraPosition = getCameraPosition();
+				float3 poiCenterViewDelta = poiCenterCameraPosition - i.worldPos.xyz;
+				float poiCenterViewDistanceSq = dot(poiCenterViewDelta, poiCenterViewDelta);
+				float poiCenterViewInvDistance = rsqrt(max(poiCenterViewDistanceSq, 1e-12));
+				poiCam.viewDir = !IsOrthographicCamera() ? poiCenterViewDelta * poiCenterViewInvDistance : normalize(UNITY_MATRIX_I_V._m02_m12_m22);
+				half3 tanToWorld0 = half3(poiMesh.tangent[0].x, poiMesh.binormal[0].x, poiMesh.normals[0].x);
+				half3 tanToWorld1 = half3(poiMesh.tangent[0].y, poiMesh.binormal[0].y, poiMesh.normals[0].y);
+				half3 tanToWorld2 = half3(poiMesh.tangent[0].z, poiMesh.binormal[0].z, poiMesh.normals[0].z);
+				half3 ase_tanViewDir = tanToWorld0 * poiCam.eyeViewDir.x + tanToWorld1 * poiCam.eyeViewDir.y + tanToWorld2 * poiCam.eyeViewDir.z;
+				poiCam.tangentViewDir = normalize(ase_tanViewDir);
+				
+				// 0-3 UV0-UV3
+				// 4 Panosphere UV
+				// 5 world pos xz
+				// 6 Polar UV
+				// 6 Distorted UV
+				#if defined(LIGHTMAP_ON) || defined(DYNAMICLIGHTMAP_ON)
+				poiMesh.lightmapUV = i.lightmapUV;
+				#endif
+				poiMesh.parallaxUV = poiCam.tangentViewDir.xy / max(poiCam.tangentViewDir.z, 0.0001);
+				poiMesh.uv[0] = i.uv[0].xy;
+				poiMesh.uv[1] = i.uv[0].zw;
+				poiMesh.uv[2] = i.uv[1].xy;
+				poiMesh.uv[3] = i.uv[1].zw;
+				poiMesh.uv[4] = poiMesh.uv[0];
+				poiMesh.uv[5] = poiMesh.uv[0];
+				poiMesh.uv[6] = poiMesh.uv[0];
+				poiMesh.uv[7] = poiMesh.uv[0];
+				poiMesh.uv[8] = poiMesh.uv[0];
+				
+				poiMesh.dx = ddx(poiMesh.uv[0]);
+				poiMesh.dy = ddy(poiMesh.uv[0]);
+				
+				poiMesh.uv[0] = applyUVSettings(poiMesh.uv[0], _UVSettingsTiling0, _UVSettingsOffset0, _UVSettingsAngle0, _UVSettingsPan0, _UVSettingsRotate0);
+				poiMesh.uv[1] = applyUVSettings(poiMesh.uv[1], _UVSettingsTiling1, _UVSettingsOffset1, _UVSettingsAngle1, _UVSettingsPan1, _UVSettingsRotate1);
+				poiMesh.uv[2] = applyUVSettings(poiMesh.uv[2], _UVSettingsTiling2, _UVSettingsOffset2, _UVSettingsAngle2, _UVSettingsPan2, _UVSettingsRotate2);
+				poiMesh.uv[3] = applyUVSettings(poiMesh.uv[3], _UVSettingsTiling3, _UVSettingsOffset3, _UVSettingsAngle3, _UVSettingsPan3, _UVSettingsRotate3);
+				
+				if (_UVSettingsShiftBackfaceUV >= 0.5 && !poiMesh.isFrontFace)
+				{
+					poiMesh.uv[0].x += 1.0;
+					poiMesh.uv[1].x += 1.0;
+					poiMesh.uv[2].x += 1.0;
+					poiMesh.uv[3].x += 1.0;
+				}
+				
+				poiMesh.uv[4] = calculatePanosphereUV(poiMesh, _PanoUseBothEyes, _StereoEnabled);
+				poiMesh.uv[5] = calculateWorldUV(poiMesh);
+				poiMesh.uv[8] = calculatelocalUV(poiMesh);
+				
+				poiMesh.uv[9] = calculateViewNormalUV(poiMesh, poiCam);
+				poiMesh.uv[10] = calculateScreenSpaceUV(i.pos);
+				
+				// Polar is computed last
+				poiMesh.uv[6] = calculatePolarCoordinate(poiMesh);
+				
+				//ifex _EnableDistortion==0
+				#ifdef USER_LUT
+				poiMesh.uv[7] = distortedUV(poiMesh);
+				#endif
+				//endex
+				
+				poiMods.globalMask[0] = 1;
+				poiMods.globalMask[1] = 1;
+				poiMods.globalMask[2] = 1;
+				poiMods.globalMask[3] = 1;
+				poiMods.globalMask[4] = 1;
+				poiMods.globalMask[5] = 1;
+				poiMods.globalMask[6] = 1;
+				poiMods.globalMask[7] = 1;
+				poiMods.globalMask[8] = 1;
+				poiMods.globalMask[9] = 1;
+				poiMods.globalMask[10] = 1;
+				poiMods.globalMask[11] = 1;
+				poiMods.globalMask[12] = 1;
+				poiMods.globalMask[13] = 1;
+				poiMods.globalMask[14] = 1;
+				poiMods.globalMask[15] = 1;
+				
+				//ifex _GlobalMaskTexturesEnable==0
+				#ifdef POI_GLOBALMASK_TEXTURES
+				ApplyGlobalMaskTextures(poiMesh, poiMods);
+				#endif
+				//endex
+				//ifex _GlobalMaskVertexColorRed==0 && _GlobalMaskVertexColorGreen==0 && _GlobalMaskVertexColorBlue==0 && _GlobalMaskVertexColorAlpha==0
+				ApplyGlobalMaskVertexColors(poiMesh, poiMods);
+				//endex
+				ApplyGlobalMaskModifiers(poiMesh, poiMods, poiCam);
+				//ifex _GlobalMaskOptionsEnable==0
+				if (_GlobalMaskOptionsEnable >= 0.5)
+				{
+					ApplyGlobalMaskOptions(poiMods);
+				}
+				//endex
+				
+				//ifex _PoiParallax==0
+				#if defined(POI_PARALLAX) && (defined(PROP_HEIGHTMAP) || !defined(OPTIMIZER_ENABLED))
+				#ifndef POI_PASS_OUTLINE
+				//return frac(i.tangentViewDir.x);
+				//return float4(i.binormal.xyz,1);
+				applyParallax(poiMesh, poiLight, poiCam, poiMods);
+				#endif
+				#endif
+				//endex
+				
+				float2 mainUV = poiUV(poiMesh.uv[_MainTexUV].xy, _MainTex_ST);
+				
+				if (_MainPixelMode >= 0.5)
+				{
+					mainUV = sharpSample(_MainTex_TexelSize, mainUV);
+				}
+				
+				float4 mainTexture = POI2D_SAMPLER_PAN_STOCHASTIC(_MainTex, _MainTex, mainUV, _MainTexPan, _MainTexStochastic);
+				mainTexture.a = max(mainTexture.a, _MainIgnoreTexAlpha);
+				
+				//ifex _VideoEffectsEnable==0
+				#if defined(POI_VIDEO_EFFECTS) && (defined(POI_PASS_BASE) || defined(POI_PASS_ADD) || defined(POI_PASS_META))
+				if (_VideoEffectsEnable >= 0.5)
+				{
+					applyVideoEffectsMainTex(mainTexture, poiMesh);
+					
+				}
+				#endif
+				//endex
+				
+				applyMainNormal(poiMesh);
+				
+				//ifex _UseBump2ndMap==0
+				#if defined(POI_BUMP2NDMAP)
+				applyMainNormal2(poiMesh, poiMods);
+				
+				#endif
+				//endex
+				
+				//ifex _DetailEnabled==0
+				#ifdef FINALPASS
+				#if (defined(POI_PASS_BASE) || defined(POI_PASS_ADD) || defined(POI_PASS_META) || defined(POI_PASS_DEPTH_NORMALS) || defined(POI_PASS_DEPTH_ONLY) || defined(POI_PASS_LILFUR))
+				ApplyDetailNormal(poiMods, poiMesh);
+				
+				#endif
+				#endif
+				//endex
+				
+				//ifex _RGBMaskEnabled==0
+				#ifdef VIGNETTE
+				#if !defined(POI_PASS_SHADOW) && !defined(POI_PASS_OUTLINE) && !defined(POI_PASS_MOTION_VECTORS)
+				calculateRGBNormals(poiMesh, poiMods);
+				
+				#endif
+				#endif
+				//endex
+				
+				poiMesh.normals[0] = normalize(poiMesh.normals[0]);
+				
+				poiMesh.normals[1] = normalize(
+				poiMesh.tangentSpaceNormal.x * poiMesh.tangent[0] +
+				poiMesh.tangentSpaceNormal.y * poiMesh.binormal[0] +
+				poiMesh.tangentSpaceNormal.z * poiMesh.normals[0]
+				);
+				
+				float poiTangentSign = dot(cross(poiMesh.normals[0], poiMesh.tangent[0]), poiMesh.binormal[0]) < 0 ? -1 : 1;
+				poiMesh.tangent[1] = normalize(cross(poiMesh.binormal[0], poiMesh.normals[1])) * poiTangentSign;
+				poiMesh.binormal[1] = normalize(cross(poiMesh.normals[1], poiMesh.tangent[0])) * poiTangentSign;
+				
+				//ifex _EnableBentNormal==0
+				#if defined(POI_BENTNORMALMAP) && !defined(POI_PASS_SHADOW) && !defined(POI_PASS_MOTION_VECTORS)
+				#if defined(PROP_BENTNORMALMAP) || !defined(OPTIMIZER_ENABLED)
+				float3 bentNormalTS = PoiUnpackNormalScale(
+				POI2D_SAMPLER_PAN_STOCHASTIC(_BentNormalMap, _MainTex,
+				poiUV(poiMesh.uv[_BentNormalMapUV].xy, _BentNormalMap_ST),
+				_BentNormalMapPan, _BentNormalMapStochastic), 1.0);
+				// Convert from tangent space to world space using vertex TBN frame
+				// (bent normals are baked relative to geometric normal, not detail normal)
+				poiMesh.bentNormal = normalize(
+				bentNormalTS.x * poiMesh.tangent[0] +
+				bentNormalTS.y * poiMesh.binormal[0] +
+				bentNormalTS.z * poiMesh.normals[0]
+				);
+				poiMesh.hasBentNormal = 1.0;
+				#endif
+				#endif
+				//endex
+				
+				//ifex _EnableOutlines!=1
+				#ifdef POI_PASS_OUTLINE
+				poiMesh.normals[1] = poiMesh.normals[0];
+				#endif
+				//endex
+				
+				// Camera data
+				poiCam.forwardDir = getCameraForward();
+				poiCam.worldPos = poiCenterCameraPosition;
+				poiCam.reflectionDir = reflect(-poiCam.eyeViewDir, poiMesh.normals[1]);
+				poiCam.vertexReflectionDir = reflect(-poiCam.eyeViewDir, poiMesh.normals[0]);
+				//poiCam.distanceToModel = distance(poiMesh.modelPos, poiCam.worldPos);
+				poiCam.clipPos = i.pos;
+				poiCam.distanceToVert = poiCenterViewDistanceSq * poiCenterViewInvDistance;
+				poiCam.posScreenSpace = poiTransformClipSpacetoScreenSpaceFrag(poiCam.clipPos);
+				#ifdef UNITY_SINGLE_PASS_STEREO
+				poiCam.posScreenSpace.x = poiCam.posScreenSpace.x * 0.5;
+				#endif
+				poiCam.screenUV = poiCam.posScreenSpace.xy / poiCam.posScreenSpace.w;
+				
+				poiCam.posScreenPixels = calcPixelScreenUVs(poiCam.posScreenSpace);
+				poiCam.vDotN = abs(dot(poiCam.eyeViewDir, poiMesh.normals[1]));
+				poiCam.vDotNCentered = abs(dot(poiCam.viewDir, poiMesh.normals[1]));
+				
+				poiCam.worldDirection.xyz = poiMesh.worldPos.xyz - poiCam.worldPos;
+				#if defined(POI_PASS_LILFUR)
+				poiCam.worldDirection.w = dot(PoiWorldToClipPos(poiMesh.worldPos.xyz), CalculateFrustumCorrection());
+				#else
+				poiCam.worldDirection.w = i.worldDir;
+				#endif
+				
+				#if POI_PIPE == POI_URP
+				// The Forward+ light loop (LIGHT_LOOP_BEGIN) requires the InputData struct to be in its scope.
+				InputData inputData;
+				PoiInitStruct(InputData, inputData);
+				inputData.positionWS = poiMesh.worldPos;
+				inputData.normalWS = poiMesh.normals[1];
+				inputData.viewDirectionWS = poiCam.eyeViewDir;
+				inputData.normalizedScreenSpaceUV = GetNormalizedScreenSpaceUV(i.pos);
+				#endif
+				
+				//ifex _BlackLightMaskingEnabled==0
+				#ifdef POI_BLACKLIGHTMASKING
+				calculateBlackLightMasks(poiMesh, poiMods);
+				#endif
+				//endex
+				
+				//ifex _EnableAudioLink==0
+				#ifdef POI_AUDIOLINK
+				SetupAudioLink(poiFragData, poiMods, poiMesh);
+				#endif
+				//endex
+				
+				applyMainColor(poiFragData, poiMesh, poiCam, poiMods, mainTexture);
+				
+				//ifex _VideoEffectsEnable==0
+				#if defined(POI_VIDEO_EFFECTS) && (defined(POI_PASS_BASE) || defined(POI_PASS_ADD) || defined(POI_PASS_META))
+				if (_VideoEffectsEnable >= 0.5)
+				{
+					applyVideoEffects(poiFragData, poiCam, poiMesh, poiMods);
+					
+				}
+				#endif
+				//endex
+				
+				applyAlphaOptions(poiFragData, poiMesh, poiCam, poiMods);
+				
+				//ifex _EnableTouchGlow==0
+				#ifdef GRAIN
+				applyDepthFX(poiFragData, poiCam, poiMesh, poiMods);
+				#endif
+				//endex
+				
+				//ifex _BackFaceEnabled!=1
+				#ifdef POI_BACKFACE
+				ApplyBackFaceColor(poiFragData, poiMesh, poiMods);
+				
+				#endif
+				//endex
+				
+				//ifex _EnableDissolve==0
+				#ifdef DISTORT
+				applyDissolve(poiFragData, poiMesh, poiMods, poiCam, poiLight);
+				
+				#endif
+				//endex
+				
+				//ifex _EnableFlipbook==0
+				#ifdef _SUNDISK_HIGH_QUALITY
+				applyFlipbook(poiFragData, poiMesh, poiMods);
+				#ifdef TRIPLANAR_PROJECTION
+				applyFlipbook(poiFragData2, poiMesh2, poiMods);
+				applyFlipbook(poiFragData3, poiMesh3, poiMods);
+				#endif
+				#endif
+				//endex
+				
+				//ifex _EnableFlipbook1==0
+				#ifdef POI_FLIPBOOK_1
+				applyFlipbook1(poiFragData, poiMesh, poiMods);
+				#ifdef TRIPLANAR_PROJECTION
+				applyFlipbook1(poiFragData2, poiMesh2, poiMods);
+				applyFlipbook1(poiFragData3, poiMesh3, poiMods);
+				#endif
+				#endif
+				//endex
+				
+				#ifndef POI_PASS_LILFUR
+				#if !defined(POI_PASS_BASETWO) && !defined(POI_PASS_ADDTWO)
+				poiFragData.alpha = _AlphaForceOpaque ? 1 : poiFragData.alpha;
+				#else
+				poiFragData.alpha = _AlphaForceOpaque2 ? 1 : poiFragData.alpha;
+				#endif
+				#endif
+				
+				//ifex _AlphaToCoverage==0 && isNotAnimated(_AlphaToCoverage) && isNotAnimated(_AlphaSharpenedA2C)
+				ApplyAlphaToCoverage(poiFragData, poiMesh);
+				//endex
+				
+				//ifex _AlphaDithering==0 && isNotAnimated(_AlphaDithering)
+				applyDithering(poiFragData, poiCam);
+				//endex
+				
+				//ifex _FXProximityColor==0
+				if (_FXProximityColor >= 0.5 && _FXProximityColorOverrideAlpha >= 0.5)
+				{
+					float3 position = _FXProximityColorType ? poiMesh.worldPos : poiMesh.objectPosition;
+					float dist = distance(position, poiCam.worldPos);
+					float lerpVal = inverseLerp(_FXProximityColorMinDistance, _FXProximityColorMaxDistance, dist);
+					lerpVal = poiSampleCurve4(_FXProximityColorCurve, lerpVal);
+					if (_FXProximityColorSolid >= 0.5)
+					{
+						lerpVal = step(0.5, lerpVal);
+					}
+					poiFragData.alpha *= lerp(_FXProximityColorMinColor.a, _FXProximityColorMaxColor.a, lerpVal);
+					
+					#if defined(POI_PASS_SHADOW) || defined(POI_PASS_DEPTH_ONLY) || defined(POI_PASS_DEPTH_NORMALS)
+					poiFragData.alpha = poiFragData.alpha < 1.0 ? 0 : 1.0;
+					#endif
+				}
+				//endex
+				
+				clip(poiFragData.alpha - _Cutoff);
+				
+				#if POI_PIPE == POI_BIRP
+				return float4(1, 1, 1, 1) + POI_SAFE_MAINTEX_RGB0;
+				#else
+				return i.pos.z + POI_SAFE_MAINTEX_RGB0.r;
+				#endif
 			}
 			
 			ENDCG

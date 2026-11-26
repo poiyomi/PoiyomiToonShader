@@ -1,8 +1,9 @@
 #if POI_PIPE == POI_BIRP
-	float4 frag( VertexOut i, bool facing : SV_IsFrontFace ) : SV_Target
+	#define POI_DEPTH_FRAG_OUT float4
 #else
-	void frag( VertexOut i, bool facing : SV_IsFrontFace, out half outDepth: SV_Target0 )
+	#define POI_DEPTH_FRAG_OUT half
 #endif
+POI_DEPTH_FRAG_OUT frag( VertexOut i, bool facing : SV_IsFrontFace ) : SV_Target
 {
 	#if POI_PIPE == POI_BIRP
 		clip(_RenderingEarlyZEnabled - 1.0);
@@ -24,13 +25,9 @@
 
 	clip(poiFragData.alpha - _Cutoff);
 
-	#if POI_PIPE == POI_URP
-    	outDepth = i.pos.z + POI_SAFE_MAINTEX_RGB0.r;
-	#endif
-
 	#if POI_PIPE == POI_BIRP
-		return float4(1, 1, 1, 1);
+		return float4(1, 1, 1, 1) + POI_SAFE_MAINTEX_RGB0;
 	#else
-		return;
+		return i.pos.z + POI_SAFE_MAINTEX_RGB0.r;
 	#endif
 }

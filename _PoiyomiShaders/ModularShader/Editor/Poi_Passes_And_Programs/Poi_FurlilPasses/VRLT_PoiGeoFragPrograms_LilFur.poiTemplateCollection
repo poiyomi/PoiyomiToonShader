@@ -807,7 +807,7 @@ half3 applyFurAO(half3 color, half furLayer, half furNoiseMask, half furLayerGra
 	#endif
 }
 
-void lilFur(inout PoiFragData poiFragData, in PoiMods poiMods, in PoiMesh poiMesh, PoiGeoToFragLilFur i, float4 mainTex)
+void lilFur(inout PoiFragData poiFragData, in PoiMods poiMods, in PoiMesh poiMesh, PoiGeoToFragLilFur i)
 {
 	float furLayer = i.furLayer;
 	float furLayerShift = furLayer - furLayer * (_FurRootOffset) + (_FurRootOffset);
@@ -840,11 +840,11 @@ void lilFur(inout PoiFragData poiFragData, in PoiMods poiMods, in PoiMesh poiMes
 	}
 	#endif
 	
-	poiFragData.alpha = mainTex.a * _Color.a * furAlpha;
+	poiFragData.alpha *= furAlpha;
 }
 
 #T#PoiLilFurFragmentFunctionCalls
-lilFur(poiFragData, poiMods, poiMesh, i, mainTexture);
+lilFur(poiFragData, poiMods, poiMesh, i);
 
 #T#PoiLilFurBasePassAOFunction
 void applyFurAOSimple(inout PoiFragData poiFragData, in PoiMesh poiMesh)

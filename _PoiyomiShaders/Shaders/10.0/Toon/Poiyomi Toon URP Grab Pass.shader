@@ -2,7 +2,7 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 {
 	Properties
 	{
-		[HideInInspector] shader_master_label ("<color=#E75898ff>Poiyomi 10.0.30</color>", Float) = 0
+		[HideInInspector] shader_master_label ("<color=#E75898ff>Poiyomi 10.0.31</color>", Float) = 0
 		[HideInInspector] shader_is_using_thry_editor ("", Float) = 0
 		[HideInInspector] shader_locale ("0db0b86376c3dca4b9a6828ef8615fe0", Float) = 0
 		[HideInInspector] footer_website ("{texture:{name:icon-poilogo,height:24},action:{type:URL,data:https://www.poiyomi.com},hover:WEBSITE}", Float) = 0
@@ -76441,10 +76441,11 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 			//endex
 			
 			#if POI_PIPE == POI_BIRP
-			float4 frag( VertexOut i, bool facing : SV_IsFrontFace ) : SV_Target
+			#define POI_DEPTH_FRAG_OUT float4
 			#else
-			void frag( VertexOut i, bool facing : SV_IsFrontFace, out half outDepth: SV_Target0 )
+			#define POI_DEPTH_FRAG_OUT half
 			#endif
+			POI_DEPTH_FRAG_OUT frag( VertexOut i, bool facing : SV_IsFrontFace ) : SV_Target
 			{
 				#if POI_PIPE == POI_BIRP
 				clip(_RenderingEarlyZEnabled - 1.0);
@@ -76859,14 +76860,10 @@ Shader ".poiyomi/Poiyomi Toon URP Grab Pass"
 				
 				clip(poiFragData.alpha - _Cutoff);
 				
-				#if POI_PIPE == POI_URP
-				outDepth = i.pos.z + POI_SAFE_MAINTEX_RGB0.r;
-				#endif
-				
 				#if POI_PIPE == POI_BIRP
-				return float4(1, 1, 1, 1);
+				return float4(1, 1, 1, 1) + POI_SAFE_MAINTEX_RGB0;
 				#else
-				return;
+				return i.pos.z + POI_SAFE_MAINTEX_RGB0.r;
 				#endif
 			}
 			

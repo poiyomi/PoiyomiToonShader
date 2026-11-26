@@ -86,6 +86,7 @@ MonoBehaviour:
     - FRAGMENT_META_COLOR
     - FRAGMENT_SHADOW_COLOR
     - FRAGMENT_MOTION_VECTORS_COLOR
+    - FRAGMENT_LILFUR_COLOR
     NeedsVariant: 0
     Queue: 15
   - Template: {fileID: -6783918953632530723, guid: db6fb035c5b46e941b0b8ad192fa9aef, type: 3}
